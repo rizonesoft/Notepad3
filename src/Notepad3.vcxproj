@@ -373,6 +373,7 @@
     <ClCompile Include="..\tinyexpr\tinyexpr.c" />
     <ClCompile Include="..\uchardet\uchardet\src\CharDistribution.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\JpCntx.cpp" />
+    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangAfricaansModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangArabicModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangBulgarianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangCroatianModel.cpp" />
