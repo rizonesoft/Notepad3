@@ -1750,7 +1750,7 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
 
 //=============================================================================
 //
-//  LoadExternalToolBar() - Select and Load an external Bitmal as ToolBarImage
+//  SelectExternalToolBar() - Select and Load an external Bitmal as ToolBarImage
 //
 //
 bool SelectExternalToolBar(HWND hwnd)
@@ -1789,16 +1789,37 @@ bool SelectExternalToolBar(HWND hwnd)
     StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), szFile);
 
     IniSetString(L"Toolbar Images", L"BitmapDefault", s_tchToolbarBitmap);
-    IniSetString(L"Toolbar Images", L"BitmapHot", NULL);
-    IniSetString(L"Toolbar Images", L"BitmapDisabled", NULL);
   }
 
   if (StrIsNotEmpty(s_tchToolbarBitmap))
   {
-    StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L""); // clear
-    StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapHot), L""); // clear
+    StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), s_tchToolbarBitmap);
+    PathRemoveExtension(s_tchToolbarBitmapHot);
+    StringCchCat(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"Hot.bmp");
+    if (PathFileExists(s_tchToolbarBitmapHot)) {
+      IniSetString(L"Toolbar Images", L"BitmapHot", s_tchToolbarBitmapHot);
+    }
+    else {
+      StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+      IniSetString(L"Toolbar Images", L"BitmapHot", NULL);
+    }
+
+    StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), s_tchToolbarBitmap);
+    PathRemoveExtension(s_tchToolbarBitmapDisabled);
+    StringCchCat(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"Disabled.bmp");
+    if (PathFileExists(s_tchToolbarBitmapDisabled)) {
+      IniSetString(L"Toolbar Images", L"BitmapDisabled", s_tchToolbarBitmapDisabled);
+    }
+    else {
+      StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+      IniSetString(L"Toolbar Images", L"BitmapDisabled", NULL);
+    }
     s_iToolBarTheme = 2;
     return true;
+  }
+  else {
+    IniSetString(L"Toolbar Images", L"BitmapHot", NULL);
+    IniSetString(L"Toolbar Images", L"BitmapDisabled", NULL);
   }
   return false;
 }
@@ -1834,23 +1855,24 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
-      s_iToolBarTheme = 1;
       DeleteObject(hbmp);
       hbmp = NULL;
     }
   }
-
   if (!hbmp) {
+    s_iToolBarTheme = 1;
     LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
+  // use copy for alphablend a disabled Toolbar (if not provided)
   hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
   // adjust to current DPI
   hbmp = ResizeImageForCurrentDPI(hbmp);
   hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
  
+
   HIMAGELIST himlOld = NULL;
   BUTTON_IMAGELIST bi;
   if (SendMessage(s_hwndToolbar, TB_GETIMAGELIST, 0, (LPARAM)&bi)) {
@@ -1865,92 +1887,131 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   HIMAGELIST himl = ImageList_Create(cx,cy,ILC_COLOR32|ILC_MASK,0,0);
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
+  hbmp = NULL;
   SendMessage(s_hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
   if (himlOld) {
     ImageList_Destroy(himlOld);
+    himlOld = NULL;
   }
 
 
-  // Optionally add hot Toolbar Bitmap
-  hbmp = NULL;
-  himlOld = NULL;
-  if (StrIsNotEmpty(s_tchToolbarBitmapHot))
+  // Add a Hot Toolbar Bitmap
+  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
   {
     hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot);
-    hbmp = ResizeImageForCurrentDPI(hbmp);
-    if (hbmp)
-    {
-      if (SendMessage(s_hwndToolbar, TB_GETHOTIMAGELIST, 0, (LPARAM)& bi)) {
-        himlOld = bi.himl;
-      }
-      GetObject(hbmp,sizeof(BITMAP),&bmp);
-      mod = bmp.bmWidth % NUMTOOLBITMAPS;
-      cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
-      cy = bmp.bmHeight;
-      himl = ImageList_Create(cx,cy,ILC_COLOR32|ILC_MASK,0,0);
-      ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
+
+    GetObject(hbmp, sizeof(BITMAP), &bmp);
+
+    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
+
+    if (!dimOk) {
+      MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapHot,
+        (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
+      StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
       DeleteObject(hbmp);
-      SendMessage(s_hwndToolbar,TB_SETHOTIMAGELIST,0,(LPARAM)himl);
+      hbmp = NULL;
     }
+  }
+  if (!hbmp && (s_iToolBarTheme < 2)) {
+    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
+    hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+  }
+  if (SendMessage(s_hwndToolbar, TB_GETHOTIMAGELIST, 0, (LPARAM)& bi)) {
+    himlOld = bi.himl;
+  }
+  if (hbmp) {
+    // adjust to current DPI
+    hbmp = ResizeImageForCurrentDPI(hbmp);
+
+    GetObject(hbmp, sizeof(BITMAP), &bmp);
+    mod = bmp.bmWidth % NUMTOOLBITMAPS;
+    cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
+    cy = bmp.bmHeight;
+    himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
+    ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
+    DeleteObject(hbmp);
+    hbmp = NULL;
+    SendMessage(s_hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
+  }
+  else { // clear the old one
+    SendMessage(s_hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
   }
   if (himlOld) {
     ImageList_Destroy(himlOld);
+    himlOld = NULL;
   }
 
-
-  // Optionally add disabled Toolbar Bitmap
-  hbmp = NULL;
-  himlOld = NULL;
-  if (StrIsNotEmpty(s_tchToolbarBitmapDisabled))
+  // Add a disabled Toolbar Bitmap
+  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
   {
     hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled);
-    hbmp = ResizeImageForCurrentDPI(hbmp);
-    if (hbmp)
-    {
-      if (SendMessage(s_hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
-        himlOld = bi.himl;
-      }
-      GetObject(hbmp,sizeof(BITMAP),&bmp);
-      mod = bmp.bmWidth % NUMTOOLBITMAPS;
-      cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
-      cy = bmp.bmHeight;
-      himl = ImageList_Create(cx,cy,ILC_COLOR32|ILC_MASK,0,0);
-      ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
+
+    GetObject(hbmp, sizeof(BITMAP), &bmp);
+
+    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
+
+    if (!dimOk) {
+      MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapDisabled,
+        (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
+      StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
       DeleteObject(hbmp);
-      SendMessage(s_hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
+      hbmp = NULL;
     }
   }
-  if (himlOld) {
-    ImageList_Destroy(himlOld);
+  if (!hbmp && (s_iToolBarTheme < 2)) {
+    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
+    hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+  }
+  if (SendMessage(s_hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
+    himlOld = bi.himl;
+  }
+  if (hbmp) {
+    // adjust to current DPI
+    hbmp = ResizeImageForCurrentDPI(hbmp);
+
+    GetObject(hbmp, sizeof(BITMAP), &bmp);
+    mod = bmp.bmWidth % NUMTOOLBITMAPS;
+    cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
+    cy = bmp.bmHeight;
+    himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
+    ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
+    DeleteObject(hbmp);
+    hbmp = NULL;
+    SendMessage(s_hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+  }
+  else {  // create disabled Toolbar, no external bitmap is supplied
+
+    if ((s_iToolBarTheme == 2) && StrIsEmpty(s_tchToolbarBitmapDisabled))
+    {
+      bool fProcessed = false;
+      if (Flags.ToolbarLook == 1) {
+        fProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
+      }
+      else if (Flags.ToolbarLook == 2 || (!IsXP() && Flags.ToolbarLook == 0)) {
+        fProcessed = BitmapGrayScale(hbmpCopy);
+      }
+      if (fProcessed && !IsXP()) {
+        BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
+      }
+      if (fProcessed) {
+        if (SendMessage(s_hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
+          himlOld = bi.himl;
+        }
+        himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
+        ImageList_AddMasked(himl, hbmpCopy, CLR_DEFAULT);
+        SendMessage(s_hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+      }
+    }
   }
 
-  himlOld = NULL;
-  if (StrIsEmpty(s_tchToolbarBitmapDisabled)) {
-    bool fProcessed = false;
-    if (Flags.ToolbarLook == 1) {
-      fProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
-    }
-    else if (Flags.ToolbarLook == 2 || (!IsXP() && Flags.ToolbarLook == 0)) {
-      fProcessed = BitmapGrayScale(hbmpCopy);
-    }
-    if (fProcessed && !IsXP()) {
-      BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
-    }
-    if (fProcessed) {
-      if (SendMessage(s_hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
-        himlOld = bi.himl;
-      }
-      himl = ImageList_Create(cx,cy,ILC_COLOR32|ILC_MASK,0,0);
-      ImageList_AddMasked(himl,hbmpCopy,CLR_DEFAULT);
-      SendMessage(s_hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
-    }
-  }
   if (hbmpCopy) {
     DeleteObject(hbmpCopy);
   }
   if (himlOld) {
     ImageList_Destroy(himlOld);
+    himlOld = NULL;
   }
+
 
   // Load toolbar labels
   size_t const len = 32 * 1024;

@@ -60,7 +60,11 @@ IDR_MAINWND             ICON                    "Notepad3.ico"
 //
 
 IDR_MAINWNDTB           BITMAP                  "Toolbar.bmp"
+IDR_MAINWNDTBHOT        BITMAP                  "ToolbarHot.bmp"
+IDR_MAINWNDTBDIS        BITMAP                  "ToolbarDisabled.bmp"
 IDR_MAINWNDTB2          BITMAP                  "Toolbar2.bmp"
+IDR_MAINWNDTB2HOT       BITMAP                  "Toolbar2Hot.bmp"
+IDR_MAINWNDTB2DIS       BITMAP                  "Toolbar2Disabled.bmp"
 IDB_OPEN                BITMAP                  "Open.bmp"
 IDB_NEXT                BITMAP                  "Next.bmp"
 IDB_PREV                BITMAP                  "Prev.bmp"
