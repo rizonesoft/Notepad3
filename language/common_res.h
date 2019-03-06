@@ -152,7 +152,11 @@
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
 #define IDR_MAINWNDTB                   16002
-#define IDR_MAINWNDTB2                  16003
+#define IDR_MAINWNDTBHOT                16003
+#define IDR_MAINWNDTBDIS                16004
+#define IDR_MAINWNDTB2                  16005
+#define IDR_MAINWNDTB2HOT               16006
+#define IDR_MAINWNDTB2DIS               16007
 
 #define IDI_MUI_RUN                     16100
 #define IDI_MUI_STYLES                  16101
