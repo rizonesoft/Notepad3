@@ -423,7 +423,6 @@ typedef struct _flags_t
   bool bStickyWindowPosition;
   bool bReuseWindow;
   bool bSingleFileInstance;
-  int fStickyWindowPosition;
   int fReuseWindow;
   int fSingleFileInstance;
   int fNoReuseWindow;
