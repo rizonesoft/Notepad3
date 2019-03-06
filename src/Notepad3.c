@@ -970,9 +970,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Source Encoding
-  if (s_lpEncodingArg)
+  if (s_lpEncodingArg) {
     Encoding_SrcCmdLn(Encoding_MatchW(s_lpEncodingArg));
-
+  }
   // Pathname parameter
   if (s_flagBufferFile || (s_lpFileArg /*&& !g_flagNewFromClipboard*/))
   {
@@ -6102,7 +6102,7 @@ bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
       }
       bHandled = true;
     }
-    else if (operation & (OPEN_WITH_NOTEPAD3 | OPEN_WITH_NOTEPAD3)) // open in web browser
+    else if (operation & (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3)) // open in web browser
     {
       WCHAR wchDirectory[MAX_PATH] = { L'\0' };
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
