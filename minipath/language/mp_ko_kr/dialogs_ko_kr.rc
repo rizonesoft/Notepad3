@@ -117,7 +117,7 @@ BEGIN
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
     CONTROL         "필터와 일치하는 파일들 제외(&E).",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,131,10
     DEFPUSHBUTTON   "확인",IDOK,72,58,50,14
     PUSHBUTTON      "취소",IDCANCEL,127,58,50,14
 END
@@ -129,7 +129,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "현재:",IDC_STATIC,7,9,28,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "바꿀 이름(&N):",IDC_STATIC,7,26,18,8
+    LTEXT           "바꿀 이름(&N):",IDC_STATIC,7,26,28,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "확인",IDOK,59,53,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,115,53,50,14
@@ -151,14 +151,14 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "복사/이동"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "원본:",IDC_STATIC,7,7,26,8
+    LTEXT           "원본:",IDC_STATIC,7,7,43,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "목적지(&D):",IDC_STATIC,7,37,40,8
+    LTEXT           "목적지(&D):",IDC_STATIC,7,37,43,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "동작:",IDC_STATIC,7,66,24,8
-    CONTROL         "복사(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "이동(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    CONTROL         "복사(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,47,10
+    CONTROL         "이동(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,47,10
     DEFPUSHBUTTON   "확인",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
@@ -172,20 +172,20 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath 일반 설정.",IDC_STATIC,40,15,153,8
     CONTROL         "한번의 클릭으로 열기(&A).",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
-    CONTROL         "추적 선택 사용(&E).",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "전체 행 선택(&F).",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,195,10
+    CONTROL         "추적 선택 사용(&E).",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,195,10
+    CONTROL         "전체 행 선택(&F).",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,195,10
     CONTROL         "파일을 열 때 항상 지정된 프로그램 창 활성화(A&).",IDC_FOCUSEDIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "MiniPath 창을 항상 위에 두기(&K).",IDC_ALWAYSONTOP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,195,10
     CONTROL         "시스템 트레이로 최소화(클릭하면 다시 활성화)(&M).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,195,10
     CONTROL         "MiniPath가 시작될 때 기존 창을 다시 사용(&T).",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "종료 시 설정 저장(&S).",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "종료 시 설정 저장(&S).",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,195,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,22 +195,22 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath 고급 설정.",IDC_STATIC,40,15,160,8
-    CONTROL         "시작 디렉토리 적용(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "최근 사용(&R).",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """즐겨 찾기"" 폴더(&F).",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         "시작 디렉토리 적용(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,92,10
+    CONTROL         "최근 사용(&R).",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,86,10
+    CONTROL         """즐겨 찾기"" 폴더(&F).",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,86,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "저장된 파일의 읽기 전용 속성 지우기(&C).",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,159,10
     CONTROL         "이름 중복시 복사된 파일 이름 바꾸기(&N).",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,159,10
     CONTROL         "삭제된 파일을 휴지통으로 이동(&M).",IDC_USERECYCLEBIN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,159,10
     CONTROL         "파일 삭제 확인 안 함 (추천하지 않음)(&D).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         """Esc"" 키 사용(&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "창 최소화(&W).",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "MiniPath 종료(&X).",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "창 최소화(&W).",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,78,10
+    CONTROL         "MiniPath 종료(&X).",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,78,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -240,10 +240,10 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "외부 프로그램 경로 지정.",IDC_STATIC,40,15,122,8
-    LTEXT           "기본 ""빠른 보기"" 프로그램(&D) (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "기본 ""빠른 보기"" 프로그램(&D) (Ctrl+Q):",IDC_STATIC,10,41,136,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "즐겨 찾는 폴더(&F) (F11):",IDC_STATIC,10,76,76,8
+    LTEXT           "즐겨 찾는 폴더(&F) (F11):",IDC_STATIC,10,76,136,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
@@ -263,12 +263,12 @@ BEGIN
     LTEXT           "메시지:",IDC_STATIC,20,120,32,8
     CONTROL         "안 함, 파일을 열 때마다 지정된 프로그램 실행.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "파일 열기 메시지를 지정된 프로그램 창에 보냅니다:",IDC_SENDDROPMSG,
+    CONTROL         "파일 열기 메시지를 전송 받을 프로그램 창을 선택합니다:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "다음의 DDE 명령 실행:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "프로그램:",IDC_STATIC,128,120,38,8
+    LTEXT           "프로그램:",IDC_STATIC,128,120,50,8
     PUSHBUTTON      "창 찾기...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "토픽:",IDC_STATIC,198,120,20,8
+    LTEXT           "토픽:",IDC_STATIC,198,120,28,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
@@ -284,7 +284,7 @@ BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
     LTEXT           "새로 지정할 프로그램의 창 위로 십자선을 끌어다 놓거나, Esc 키를 눌러 취소합니다.",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "창 클래스",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
+    LTEXT           "창 클래스",IDC_WINCLASS,7,60,51,8,NOT WS_VISIBLE
     LTEXT           "창 모듈",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
     DEFPUSHBUTTON   "확인",IDOK,99,64,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,153,64,50,14

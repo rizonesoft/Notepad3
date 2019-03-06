@@ -154,7 +154,7 @@ BEGIN
     IDS_ENC_ISO_2022_JP            "C;일본어 (ISO-2022);ISO-2022-JP"
     IDS_ENC_ISO_2022_KR            "C;한국어 (ISO-2022);ISO-2022-KR"
     IDS_ENC_X_CHINESE_CNS          "C;중국어 번체 (CNS);x-chinese-cns"
-    IDS_ENC_JOHAB                  "C;Korean (Johab);Korean (Johab)"
+    IDS_ENC_JOHAB                  "C;한국어 (조합);한국어 (조합)"
     IDS_ENC_ISO_8859_10            "B;Nordic (ISO-8859-10);ISO-8859-10"
     IDS_ENC_BIG5_HKSCS             "C;Chinese Hong Kong (Big5HKSCS);Big5HKSCS"
 END
