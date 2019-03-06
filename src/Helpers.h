@@ -59,17 +59,17 @@
   #define DEFAULT_ALLOC_FLAGS (0)
 #endif
 
-__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
+inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
   return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-__forceinline bool FreeMem(LPVOID lpMemory)
+inline bool FreeMem(LPVOID lpMemory)
 {
   return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
 }
 
-__forceinline size_t SizeOfMem(LPCVOID lpMemory)
+inline size_t SizeOfMem(LPCVOID lpMemory)
 {
   return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
 }
@@ -208,26 +208,44 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
+// ----------------------------------------------------------------------------
+
 DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
+
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-#define ScaleIntToCurrentDPI(val) MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI)
+inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-#define ScaleIntFontSize(val) MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y)
+inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y); }
 inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
+
 int GetSystemMetricsEx(int nValue);
 
 // ----------------------------------------------------------------------------
 
-inline bool IsFullHDOrHigher(int resX, int resY) {
-  if (resX <= 0) { resX = GetSystemMetrics(SM_CXSCREEN); }
-  if (resY <= 0) { resY = GetSystemMetrics(SM_CYSCREEN); }
+inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
+{
+  HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+  MONITORINFO mi;
+  ZeroMemory(&mi, sizeof(MONITORINFO));
+  mi.cbSize = sizeof(mi);
+  GetMonitorInfo(hMonitor, &mi);
+  *pCXScreen = (mi.rcMonitor.right - mi.rcMonitor.left);
+  *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);
+}
+
+inline bool IsFullHDOrHigher(HWND hwnd, int resX, int resY) 
+{
+  int cxScreen, cyScreen;
+  GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
+  if (resX <= 0) { resX = cxScreen; }
+  if (resY <= 0) { resY = cxScreen; }
   return ((resX >= 1920) && (resY >= 1080));
 }
 
-#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
+inline float GetBaseFontSize(HWND hwnd) { return (IsFullHDOrHigher(hwnd, -1, -1) ? 11.0f : 10.0f); }
 
 // ----------------------------------------------------------------------------
 

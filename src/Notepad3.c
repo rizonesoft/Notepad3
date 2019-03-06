@@ -147,7 +147,7 @@ static WIN32_FIND_DATA s_fdCurFile;
 
 static HMODULE s_hRichEdit = INVALID_HANDLE_VALUE;
 
-#define INISECTIONBUFCNT 32
+static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
 static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
                                     { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
@@ -192,9 +192,9 @@ static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON
                                     { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 }
 };
 
-#define NUMTOOLBITMAPS  28
-#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17"
-#define NUMINITIALTOOLS 34
+static int const NUMTOOLBITMAPS = 28;
+static const WCHAR* const TBBUTTON_DEFAULT_IDS = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
+static int const NUMINITIALTOOLS = 34;
 
 //=============================================================================
 
@@ -1667,7 +1667,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
   }
 
   // Create Toolbar and Statusbar
-  CreateBars(hwnd,hInstance);
+  CreateBars(hwnd, hInstance);
 
   // Window Initialization
 
@@ -1834,6 +1834,9 @@ bool SelectExternalToolBar(HWND hwnd)
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
   DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
+
+  if (s_hwndToolbar) { DestroyWindow(s_hwndToolbar); }
+
   s_hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
@@ -1861,7 +1864,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
   }
   if (!hbmp) {
-    s_iToolBarTheme = 1;
+    s_iToolBarTheme = s_iToolBarTheme % 2;
     LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
@@ -2058,11 +2061,17 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   // Create Statusbar 
   DWORD const dwStatusbarStyle = Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
+
+  if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
+
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
 
 
   // Create ReBar and add Toolbar
   DWORD const dwReBarStyle = Settings.ShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
+
+  if (s_hwndReBar) { DestroyWindow(s_hwndReBar); }
+
   s_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
@@ -2201,9 +2210,6 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   // recreate toolbar and statusbar
   Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-  DestroyWindow(s_hwndToolbar);
-  DestroyWindow(s_hwndReBar);
-  DestroyWindow(Globals.hwndStatus);
   CreateBars(hwnd, Globals.hInstance);
 
   RECT* const rc = (RECT*)lParam;
@@ -2268,9 +2274,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   // recreate toolbar and statusbar
   Toolbar_GetButtons(s_hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
 
-  DestroyWindow(s_hwndToolbar);
-  DestroyWindow(s_hwndReBar);
-  DestroyWindow(Globals.hwndStatus);
   CreateBars(hwnd,hInstance);
 
   SendWMSize(hwnd, NULL);
@@ -5006,7 +5009,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLETB:
-      s_iToolBarTheme = (s_iToolBarTheme + 1) % (StrIsEmpty(s_tchToolbarBitmap) ? 2 : 3);
+      s_iToolBarTheme = (s_iToolBarTheme + 1) % 3;
       SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
@@ -5034,8 +5037,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
-        int ResX = GetSystemMetrics(SM_CXSCREEN);
-        int ResY = GetSystemMetrics(SM_CYSCREEN);
+        int ResX, ResY;
+        GetCurrentMonitorResolution(hwnd, &ResX, &ResY);
 
         StringCchPrintf(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
         StringCchPrintf(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
@@ -6796,8 +6799,7 @@ void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
 //
 void LoadSettings()
 {
-  int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
-
+  int const cchIniSection = INISECTIONBUFCNT * 1024;
   WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
   
   if (pIniSection) 
@@ -7053,7 +7055,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    int const zoomScale  = float2int(1000.0f / INITIAL_BASE_FONT_SIZE);
+    int const zoomScale  = float2int(1000.0f / GetBaseFontSize(Globals.hwndMain));
     Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(pIniSection, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (s_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
@@ -7151,19 +7153,20 @@ void LoadSettings()
     IniSectionGetString(pIniSection, L"BitmapDisabled", L"",
                         s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmap));
 
-    int const ResX = GetSystemMetrics(SM_CXSCREEN);
-    int const ResY = GetSystemMetrics(SM_CYSCREEN);
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Window", pIniSection, cchIniSection);
     // --------------------------------------------------------------------------
+
+    int ResX, ResY;
+    GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
 
     WCHAR tchHighDpiToolBar[32] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
     s_iToolBarTheme = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
     s_iToolBarTheme = StrIsNotEmpty(s_tchToolbarBitmap) ? 2 : clampi(s_iToolBarTheme, -1, 1);
     if (s_iToolBarTheme < 0) { // undefined: determine high DPI (higher than Full-HD)
-      s_iToolBarTheme = IsFullHDOrHigher(ResX, ResY) ? 1 : 0;
+      s_iToolBarTheme = IsFullHDOrHigher(Globals.hwndMain, ResX, ResY) ? 1 : 0;
     }
 
     // --------------------------------------------------------------
@@ -7304,7 +7307,7 @@ void SaveSettings(bool bSaveSettingsNow)
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
 
-  int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
+  int const cchIniSection = INISECTIONBUFCNT * 1024;
   WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
 
   if (pIniSection) 
@@ -7477,8 +7480,8 @@ void SaveSettings(bool bSaveSettingsNow)
   // Scintilla Styles
   Style_Save();
 
-  int ResX = GetSystemMetrics(SM_CXSCREEN);
-  int ResY = GetSystemMetrics(SM_CYSCREEN);
+  int ResX, ResY;
+  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
 
   WCHAR tchHighDpiToolBar[32];
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
@@ -7925,8 +7928,7 @@ void ParseCommandLine()
 //
 void LoadFlags()
 {
-  int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
-
+  int const cchIniSection = INISECTIONBUFCNT * 1024;
   WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
 
   if (pIniSection) 
