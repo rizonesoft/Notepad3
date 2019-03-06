@@ -182,14 +182,14 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "선택 영역 외부 꾸미기(&E)"
             BEGIN
-                MENUITEM "단일 인용 부호(&S)\tCtrl+1",          CMD_STRINGIFY
-                MENUITEM "이중 인용 부호(&D)\tCtrl+2",          CMD_STRINGIFY2
+                MENUITEM "작은따옴표(&S)\tCtrl+1",          CMD_STRINGIFY
+                MENUITEM "큰따옴표(&D)\tCtrl+2",          CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "역 인용 부호(&B)\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "역따옴표(&B)\tCtrl+6",              CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "지정(&W)...\tAlt+Q",                 IDM_EDIT_ENCLOSESELECTION
             END
@@ -320,7 +320,7 @@ BEGIN
             MENUITEM "대소문자 구별(&C)",               IDM_VIEW_MARKOCCUR_CASE
             POPUP "단어 단위 일치(&W)"
             BEGIN
-                MENUITEM "기능 끄기",                             IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "사용 안함",                             IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "선택한 단어 일치(&S)",            IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "현재 단어와 일치(&R)",             IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -339,11 +339,11 @@ BEGIN
         END
         POPUP "도구 모음(&T)"
         BEGIN
-            MENUITEM "도구 모음 보기(&B)",                       IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle 도구 모음",                        IDM_VIEW_TOGGLETB
-            MENUITEM "도구 모음 사용자 지정(&U)...",              IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
-            MENUITEM "상태 표시 줄 보이기(&S)",                   IDM_VIEW_STATUSBAR
+            MENUITEM "도구 모음 보이기(&B)",                       IDM_VIEW_TOOLBAR
+            MENUITEM "도구 모음 전환(&G)",                     IDM_VIEW_TOGGLETB
+            MENUITEM "도구 모음 사용자 지정(&U)...",               IDM_VIEW_CUSTOMIZETB
+            MENUITEM "도구 모음 테마 변경(&L)...",                IDM_VIEW_LOADTHEMETB
+            MENUITEM "상태 표시 줄 보이기(&S)",                     IDM_VIEW_STATUSBAR
         END
         POPUP "확대/축소(&Z)"
         BEGIN
@@ -354,10 +354,10 @@ BEGIN
         POPUP "위치(&P)"
         BEGIN
             MENUITEM "창 위치 복사\tCtrl+Shift+K",        CMD_COPYWINPOS
-            MENUITEM "기본 위치에 고정\tCtrl+Shift+P",  CMD_DEFAULTWINPOS
+            MENUITEM "기본 위치에 맞추기\tCtrl+Shift+P",  CMD_DEFAULTWINPOS
             MENUITEM "기본 위치로 저장",                CMD_SAVEASDEFWINPOS
             MENUITEM "저장된 기본 위치 지우기",            CMD_CLEARSAVEDWINPOS
-            MENUITEM "초기 위치에 스냅\tCtrl+F11",      CMD_INITIALWINPOS
+            MENUITEM "처음 위치에 맞추기\tCtrl+F11",      CMD_INITIALWINPOS
             MENUITEM "전체 영역 위치 전환\tF11",          CMD_FULLSCRWINPOS
             MENUITEM "창 위치 고정(&P)",                 IDM_VIEW_STICKYWINPOS
         END
@@ -386,7 +386,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN
-            MENUITEM "최근 작업 파일 기억(&I)",              IDM_VIEW_NOSAVERECENT
+            MENUITEM "최근 파일들 기억(&I)",              IDM_VIEW_NOSAVERECENT
             MENUITEM "캐럿 위치 보존(&V)",            IDM_VIEW_NOPRESERVECARET
             MENUITEM "검색 문자열 기억(&E)",            IDM_VIEW_NOSAVEFINDREPL
         END
@@ -459,10 +459,10 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "도구 모음 보기(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI 도구 모음",                          IDM_VIEW_TOGGLETB
+        MENUITEM "도구 모음 보이기(&T)",                         IDM_VIEW_TOOLBAR
+        MENUITEM "도구 모음 전환(&G)",                          IDM_VIEW_TOGGLETB
         MENUITEM "도구 모음 사용자 지정(&C)...",                IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",                    IDM_VIEW_LOADTHEMETB
+        MENUITEM "도구 모음 테마 변경(&L)...",                    IDM_VIEW_LOADTHEMETB
         MENUITEM "상태 표시 줄 보이기(&S)",                    IDM_VIEW_STATUSBAR
     END
     POPUP "+"

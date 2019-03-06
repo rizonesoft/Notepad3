@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN               "열기"
     IDT_FILE_BROWSE             "Minipath로 탐색"
     IDT_FILE_SAVE               "저장"
-    IDT_FILE_RECENT             "History"
+    IDT_FILE_RECENT             "최근 파일들"
     IDT_EDIT_UNDO               "실행 취소"
     IDT_EDIT_REDO               "다시 실행"
     IDT_EDIT_CUT                "잘라내기"
@@ -112,7 +112,7 @@ BEGIN
     IDS_MUI_FILTER_ALL          "모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_EXE          "실행 파일 (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_INI          "설정 파일 (*.ini)|*.ini|모든 파일 (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP       "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP       "비트맵 파일 (*.bmp)|*.bmp|모든 파일 (*.*)|*.*|"
     IDS_MUI_OPENWITH            "선호하는 응용 프로그램 링크들의 디렉토리를 정하세요."
     IDS_MUI_FAVORITES           "즐겨 찾는 파일 링크들의 디렉토리를 정하세요."
     IDS_MUI_BACKSLASHHELP       "백 슬래시 변환\n\n\\a\t경보 (BEL, Ascii 7)\n\\b\t백스페이스 (BS, Ascii 8)\n\\f\t폼 피드 (FF, Ascii 12)\n\\n\t새 라인 (LF, Ascii 10)\n\\r\t캐리지 리턴 (CR, Ascii 13)\n\\t\t가로 탭 (HT, Ascii 9)\n\\v\t수직 탭 (VT, Ascii 11)\n\\0oo\t8진법 값\n\\u####\t16진수 값\n\\xhh\t16진수 값\n\\\\\t백 슬래시"
@@ -122,15 +122,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE        """%s"" 파일을 읽는 도중 오류가 발생했습니다."
-    IDS_MUI_ERR_SAVEFILE        """%s"" 파일을 저장하는 도중 오류가 발생했습니다."
+    IDS_MUI_ERR_LOADFILE        """%s"" 파일을 읽는 도중 오류가 발생하였습니다."
+    IDS_MUI_ERR_SAVEFILE        """%s"" 파일을 저장하는 도중 오류가 발생하였습니다."
     IDS_MUI_ERR_BROWSE          "파일 브라우저 플러그인을 찾을 수 없습니다. \nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
     IDS_MUI_ERR_MRUDLG          "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
-    IDS_MUI_ERR_CREATELINK      "데스크톱 링크를 만드는 중에 오류가 발생했습니다."
+    IDS_MUI_ERR_CREATELINK      "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\n메모장 3 창을 새로 열겠습니까?"
     IDS_MUI_ERR_ENCODINGNA      "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 지원하지 않습니다."
-    IDS_MUI_ERR_UNICODE         "이 유니코드 파일을 변환하는 중 오류가 발생했습니다.\n파일을 저장하면 데이터가 손실됩니다!"
-    IDS_MUI_ERR_BITMAP          "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_UNICODE         "이 유니코드 파일을 변환하는 중 오류가 발생하였습니다.\n파일을 저장하면 데이터가 손실됩니다!"
+    IDS_MUI_ERR_BITMAP          """%s"" 비트맵을 읽는 도중 오류가 발생하였습니다.\n필요한 크기: %i x %i (너비 >= %i x 높이)."
 END
 
 STRINGTABLE
@@ -167,8 +167,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL         "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생했습니다."
-    IDS_MUI_REGEX_INVALID       "정규 표현식을 평가하는 중 오류가 발생했습니다. 표현식이 유효하지 않습니다!"
+    IDS_MUI_EXPORT_FAIL         "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
+    IDS_MUI_REGEX_INVALID       "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
     IDS_MUI_DROP_NO_FILE        "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\n메모장 3의 도구 모음에 드래그 앤 드롭하십시오."
 END
 
@@ -220,15 +220,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "언어"
+    IDS_MUI_MENU_LANGUAGE   "나라말"
     IDS_MUI_LANG_EN_US      "영어 (미국)\t\t\t[%s]"
     IDS_MUI_LANG_AF_ZA      "아프리칸스 (남아프리카 공화국)\t\t\t[%s]"
-    IDS_MUI_LANG_BE_BY      "벨로루시 (벨로루시)\t\t\t[%s]"
+    IDS_MUI_LANG_BE_BY      "벨로루시어 (벨로루시)\t\t\t[%s]"
     IDS_MUI_LANG_DE_DE      "독일어 (독일)\t\t\t[%s]"
     IDS_MUI_LANG_EN_GB      "영어 (영국)\t\t\t[%s]"
     IDS_MUI_LANG_ES_ES      "스페인어 (스페인)\t\t\t[%s]"
     IDS_MUI_LANG_FR_FR      "프랑스어 (프랑스)\t\t\t[%s]"
-    IDS_MUI_LANG_HU_HU      "헝가리 (헝가리)\t\t\t[%s]"
+    IDS_MUI_LANG_HU_HU      "헝가리어 (헝가리)\t\t\t[%s]"
     IDS_MUI_LANG_IT_IT      "이탈리아어 (이탈리아)\t\t\t[%s]"
     IDS_MUI_LANG_JP_JP      "일본어 (일본)\t\t\t[%s]"
     IDS_MUI_LANG_KO_KR      "한국어 (대한민국)\t\t\t[%s]"
@@ -245,9 +245,9 @@ IDS_MUI_CMDLINEHELP "\
 Notepad3 \t[/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[...]]\r\n\r\n\
-파일명\t마지막 인수여야 하며, 기본적으로 따옴표 생략.\r\n\
-+\t여러개의 파일 지정(따옴표 사용).\r\n\
--\t단일 파일 지정(따옴표 생략).\r\n\r\n\
+파일명\t마지막 인수여야 하며, 기본적으로 큰따옴표 생략.\r\n\
++\t여러개의 파일 지정(큰따옴표 사용).\r\n\
+-\t단일 파일 지정(큰따옴표 생략).\r\n\r\n\
 옵션:\r\n\
 /?\t도움말 메시지 표시.\r\n\
 ...\t인코딩 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
