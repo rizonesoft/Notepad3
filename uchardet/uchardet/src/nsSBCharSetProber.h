@@ -246,14 +246,24 @@ extern const SequenceModel Iso_8859_16SloveneModel;
 extern const SequenceModel Ibm852SloveneModel;
 extern const SequenceModel MaccentraleuropeSloveneModel;
 
+extern const SequenceModel Windows_1252SwedishModel;
 extern const SequenceModel Iso_8859_1SwedishModel;
 extern const SequenceModel Iso_8859_4SwedishModel;
 extern const SequenceModel Iso_8859_9SwedishModel;
 extern const SequenceModel Iso_8859_15SwedishModel;
-extern const SequenceModel Windows_1252SwedishModel;
 
 extern const SequenceModel Windows_1252AfricaansModel;
+extern const SequenceModel Iso_8859_15AfricaansModel;
+extern const SequenceModel Iso_8859_1AfricaansModel;
+extern const SequenceModel Iso_8859_9AfricaansModel;
+
 extern const SequenceModel Windows_1251BelarusianModel;
+
+extern const SequenceModel Windows_1252NederlandsModel;
+extern const SequenceModel Iso_8859_1NederlandsModel;
+extern const SequenceModel Iso_8859_9NederlandsModel;
+extern const SequenceModel Iso_8859_15NederlandsModel;
+
 
 #endif /* nsSingleByteCharSetProber_h__ */
 

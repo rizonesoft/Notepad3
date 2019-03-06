@@ -58,6 +58,7 @@ BEGIN
     IDT_FILE_OPEN               "열기"
     IDT_FILE_BROWSE             "Minipath로 탐색"
     IDT_FILE_SAVE               "저장"
+    IDT_FILE_RECENT             "History"
     IDT_EDIT_UNDO               "실행 취소"
     IDT_EDIT_REDO               "다시 실행"
     IDT_EDIT_CUT                "잘라내기"

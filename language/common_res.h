@@ -37,6 +37,7 @@
 #define IDT_FILE_LAUNCH                 11024
 #define IDT_VIEW_TOGGLE_VIEW            11025
 #define IDT_VIEW_CHASING_DOCTAIL        11026
+#define IDT_FILE_RECENT                 11027
 
 #define IDS_MUI_APPTITLE                12005
 #define IDS_MUI_APPTITLE_ELEVATED       12006

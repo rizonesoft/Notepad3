@@ -58,6 +58,7 @@ BEGIN
     IDT_FILE_OPEN               "Адкрыць"
     IDT_FILE_BROWSE             "Агляд"
     IDT_FILE_SAVE               "Захаваць"
+    IDT_FILE_RECENT             "History"
     IDT_EDIT_UNDO               "Скасаваць"
     IDT_EDIT_REDO               "Паўтор"
     IDT_EDIT_CUT                "Выразать"

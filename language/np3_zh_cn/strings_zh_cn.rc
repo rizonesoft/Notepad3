@@ -58,6 +58,7 @@ BEGIN
     IDT_FILE_OPEN               "打开"
     IDT_FILE_BROWSE             "浏览"
     IDT_FILE_SAVE               "保存"
+    IDT_FILE_RECENT             "History"
     IDT_EDIT_UNDO               "撤销"
     IDT_EDIT_REDO               "重做"
     IDT_EDIT_CUT                "剪切"

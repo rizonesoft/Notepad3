@@ -393,6 +393,7 @@
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLatvianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLithuanianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangMalteseModel.cpp" />
+    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPolishModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPortugueseModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangRomanianModel.cpp" />

@@ -58,6 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Open"
     IDT_FILE_BROWSE         "Browse"
     IDT_FILE_SAVE           "Save"
+    IDT_FILE_RECENT         "History"
     IDT_EDIT_UNDO           "Undo"
     IDT_EDIT_REDO           "Redo"
     IDT_EDIT_CUT            "Cut"

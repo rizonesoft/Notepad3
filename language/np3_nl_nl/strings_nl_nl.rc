@@ -58,6 +58,7 @@ BEGIN
     IDT_FILE_OPEN               "Openen"
     IDT_FILE_BROWSE             "Doorbladeren"
     IDT_FILE_SAVE               "Opslaan"
+    IDT_FILE_RECENT             "History"
     IDT_EDIT_UNDO               "Ongedaan maken"
     IDT_EDIT_REDO               "Opnieuw doen"
     IDT_EDIT_CUT                "Knippen"

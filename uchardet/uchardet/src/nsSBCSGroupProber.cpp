@@ -192,8 +192,17 @@ nsSBCSGroupProber::nsSBCSGroupProber()
   mProbers[99] = new nsSingleByteCharSetProber(&Windows_1252SwedishModel);
   
   mProbers[100] = new nsSingleByteCharSetProber(&Windows_1252AfricaansModel);
-  mProbers[101] = new nsSingleByteCharSetProber(&Windows_1251BelarusianModel);
+  mProbers[101] = new nsSingleByteCharSetProber(&Iso_8859_1AfricaansModel);
+  mProbers[102] = new nsSingleByteCharSetProber(&Iso_8859_9AfricaansModel);
+  mProbers[103] = new nsSingleByteCharSetProber(&Iso_8859_15AfricaansModel);
 
+  mProbers[104] = new nsSingleByteCharSetProber(&Windows_1251BelarusianModel);
+
+  mProbers[105] = new nsSingleByteCharSetProber(&Windows_1252NederlandsModel);
+  mProbers[106] = new nsSingleByteCharSetProber(&Iso_8859_1NederlandsModel);
+  mProbers[107] = new nsSingleByteCharSetProber(&Iso_8859_9NederlandsModel);
+  mProbers[108] = new nsSingleByteCharSetProber(&Iso_8859_15NederlandsModel);
+  
   Reset();
 }
 
