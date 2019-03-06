@@ -1335,8 +1335,9 @@ bool EditLoadFile(
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // UCHARDET
-  _SetEncodingTitleInfo(origUCHARDET, iAnalyzedEncoding_UCD, confidence_UCD, iAnalyzedEncoding_CED, bIsReliable);
+  if (Flags.bDevDebugMode) {
+    _SetEncodingTitleInfo(origUCHARDET, iAnalyzedEncoding_UCD, confidence_UCD, iAnalyzedEncoding_CED, bIsReliable);
+  }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

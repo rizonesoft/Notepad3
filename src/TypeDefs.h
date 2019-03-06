@@ -420,6 +420,7 @@ extern SETTINGS_T Settings;
 
 typedef struct _flags_t
 {
+  bool bDevDebugMode;
   bool bStickyWindowPosition;
   bool bReuseWindow;
   bool bSingleFileInstance;
