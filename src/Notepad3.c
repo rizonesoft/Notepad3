@@ -117,7 +117,7 @@ static WCHAR     s_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 static bool      s_bRunningWatch = false;
 static bool      s_bFileReadOnly = false;
 
-static int       s_iHighDpiToolBar = -1;
+static int       s_iToolBarTheme = -1;
 static int       s_iSortOptions = 0;
 static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
@@ -153,6 +153,7 @@ static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON
                                     { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
                                     { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
                                     { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 27,IDT_FILE_RECENT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
                                     { 0,0,0,BTNS_SEP,{0},0,0 },
                                     { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
                                     { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
@@ -191,9 +192,9 @@ static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON
                                     { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 }
 };
 
-#define NUMTOOLBITMAPS  27
-#define NUMINITIALTOOLS 33
-#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17"
+#define NUMTOOLBITMAPS  28
+#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17"
+#define NUMINITIALTOOLS 34
 
 //=============================================================================
 
@@ -1796,7 +1797,7 @@ bool SelectExternalToolBar(HWND hwnd)
   {
     StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L""); // clear
     StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapHot), L""); // clear
-    s_iHighDpiToolBar = 2;
+    s_iToolBarTheme = 2;
     return true;
   }
   return false;
@@ -1820,7 +1821,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
 
-  if ((s_iHighDpiToolBar == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
+  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
   {
     hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
 
@@ -1829,20 +1830,18 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
     bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
 
-    if (!dimOk) 
-    {
+    if (!dimOk) {
       MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
-
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
-      s_iHighDpiToolBar = 1;
+      s_iToolBarTheme = 1;
       DeleteObject(hbmp);
       hbmp = NULL;
     }
   }
 
   if (!hbmp) {
-    LPWSTR toolBarIntRes = (s_iHighDpiToolBar == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
+    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -3330,12 +3329,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_RECENT:
       if (MRU_Count(Globals.pFileMRU) > 0) {
-        if (FileSave(false,true,false,false)) {
+        if (FileSave(false, true, false, false)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
-          if (FileMRUDlg(hwnd,tchFile))
-            FileLoad(true,false,false,false,true,tchFile);
+          if (FileMRUDlg(hwnd, tchFile)) {
+            FileLoad(true, false, false, false, true, tchFile);
           }
         }
+        UpdateToolbar();
+      }
       break;
 
 
@@ -4943,7 +4944,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLETB:
-      s_iHighDpiToolBar = (s_iHighDpiToolBar + 1) % (StrIsEmpty(s_tchToolbarBitmap) ? 2 : 3);
+      s_iToolBarTheme = (s_iToolBarTheme + 1) % (StrIsEmpty(s_tchToolbarBitmap) ? 2 : 3);
       SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
@@ -5730,6 +5731,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         MessageBeep(0);
       break;
 
+
+    case IDT_FILE_RECENT:
+      if (IsCmdEnabled(hwnd, IDM_FILE_RECENT))
+        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_FILE_RECENT, 1), 0);
+      else
+        MessageBeep(0);
+      break;
 
     case IDT_FILE_SAVE:
       if (IsCmdEnabled(hwnd,IDM_FILE_SAVE))
@@ -7088,10 +7096,10 @@ void LoadSettings()
 
     WCHAR tchHighDpiToolBar[32] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-    s_iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
-    s_iHighDpiToolBar = StrIsNotEmpty(s_tchToolbarBitmap) ? 2 : clampi(s_iHighDpiToolBar, -1, 1);
-    if (s_iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
-      s_iHighDpiToolBar = IsFullHDOrHigher(ResX, ResY) ? 1 : 0;
+    s_iToolBarTheme = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
+    s_iToolBarTheme = StrIsNotEmpty(s_tchToolbarBitmap) ? 2 : clampi(s_iToolBarTheme, -1, 1);
+    if (s_iToolBarTheme < 0) { // undefined: determine high DPI (higher than Full-HD)
+      s_iToolBarTheme = IsFullHDOrHigher(ResX, ResY) ? 1 : 0;
     }
 
     // --------------------------------------------------------------
@@ -7410,7 +7418,7 @@ void SaveSettings(bool bSaveSettingsNow)
 
   WCHAR tchHighDpiToolBar[32];
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
-  IniSetInt(L"Window", tchHighDpiToolBar, s_iHighDpiToolBar);
+  IniSetInt(L"Window", tchHighDpiToolBar, s_iToolBarTheme);
 
   if (Flags.fStickyWindowPosition == 0) {
 
@@ -8216,6 +8224,8 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
+
   CheckTool(IDT_VIEW_WORDWRAP, Settings.WordWrap);
   CheckTool(IDT_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
 
