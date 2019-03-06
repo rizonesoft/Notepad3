@@ -226,7 +226,7 @@ float Style_GetCurrentFontSize()
 void Style_Load()
 {
 
-  float const fBFS = INITIAL_BASE_FONT_SIZE;
+  float const fBFS = GetBaseFontSize(Globals.hwndMain);
   _SetBaseFontSize(fBFS);
   _SetCurrentFontSize(fBFS);
 
@@ -603,7 +603,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  float const fBFS = INITIAL_BASE_FONT_SIZE;
+  float const fBFS = GetBaseFontSize(Globals.hwndMain);
   _SetBaseFontSize(fBFS);
   _SetCurrentFontSize(fBFS);
   const WCHAR* const wchStandardStyleStrg = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
@@ -2390,7 +2390,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool const bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  float const fBFS = INITIAL_BASE_FONT_SIZE;
+  float const fBFS = GetBaseFontSize(Globals.hwndMain);
   float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
