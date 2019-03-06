@@ -457,6 +457,7 @@ static void _InitGlobals()
   Globals.FindReplaceMatchFoundState = FND_NOP;
 
 
+  DefaultFlags.bDevDebugMode = false;
   DefaultFlags.bStickyWindowPosition = false;
   DefaultFlags.bReuseWindow = false;
   DefaultFlags.bSingleFileInstance = true;
@@ -6812,6 +6813,8 @@ void LoadSettings()
     LoadIniSection(L"Settings2", pIniSection, cchIniSection);
     // --------------------------------------------------------------------------
 
+
+
     Defaults2.PreferredLanguageLocaleName[0] = L'\0';
     IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
                         Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
@@ -7930,6 +7933,7 @@ void LoadFlags()
   {
     LoadIniSection(L"Settings2", pIniSection, cchIniSection);
 
+    Flags.bDevDebugMode = IniSectionGetBool(pIniSection, L"DevDebugMode", DefaultFlags.bDevDebugMode);
     Flags.bStickyWindowPosition = IniSectionGetBool(pIniSection, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
     Flags.bReuseWindow = IniSectionGetBool(pIniSection, L"ReuseWindow", DefaultFlags.bReuseWindow);
     Flags.bSingleFileInstance = IniSectionGetBool(pIniSection, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);

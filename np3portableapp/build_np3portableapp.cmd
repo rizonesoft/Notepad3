@@ -41,7 +41,8 @@ set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\Portabl
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
-set NP3_DOC_DIR=%SCRIPT_DIR%..\DOC
+set NP3_DOC_DIR=%SCRIPT_DIR%..\doc
+set NP3_THEMES_DIR=%SCRIPT_DIR%..\themes
 ::set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
 ::set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v142
@@ -105,6 +106,8 @@ copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" 
 
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+
+xcopy "%NP3_THEMES_DIR%" "%NP3_PORTAPP_DIR%\App\themes" /C /V /I /S /Y
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d"
