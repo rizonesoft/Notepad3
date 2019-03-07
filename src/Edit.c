@@ -928,59 +928,6 @@ void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
 
 //=============================================================================
 //
-//  _SetEncodingTitleInfo()
-//
-static void _SetEncodingTitleInfo(const char* origUCHARDET, int encUCHARDET, float confidence, int encCED, bool bReliableCED)
-{
-  char tmpBuf[128] = { '\0' };
-  char chEncodingInfo[MAX_PATH] = { L'\0' };
-
-  StringCchCopyA(chEncodingInfo, COUNTOF(chEncodingInfo), "UCHARDET='");
-  if (encUCHARDET >= 0)
-  {
-    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), origUCHARDET);
-  }
-  else {
-    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), (encUCHARDET == CPI_ASCII_7BIT) ? "ASCII" : "<unknown>");
-  }
-  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%%", confidence * 100.0f);
-  StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), tmpBuf);
-
-  StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), " || CED='");
-  if (encCED >= 0)
-  {
-    char chEncodingLabel[128] = { '\0' };
-    WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, COUNTOF(chEncodingLabel),0 , 0);
-    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), chEncodingLabel);
-  }
-  else {
-    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), (encCED == CPI_ASCII_7BIT) ? "ascii" : "<unknown>");
-  }
-  if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
-    StringCchPrintfA(tmpBuf, 128, "' (%s)", bReliableCED ? "reliable" : "NOT reliable");
-    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), tmpBuf);
-  }
-  else {
-    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), "'");
-  }
-
-#if 1
-  WCHAR wchAddTitleInfo[MAX_PATH];
-  MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchAddTitleInfo, 128);
-  SetAdditionalTitleInfo(wchAddTitleInfo);
-#else
-  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
-  int const iXOff = SciCall_GetXOffset();
-  SciCall_SetXOffset(0);
-  SciCall_CallTipShow(iPos, chEncodingInfo);
-  SciCall_SetXOffset(iXOff);
-  Globals.CallTipType = CT_ENC_INFO;
-#endif
-}
-
-
-//=============================================================================
-//
 //  EditLoadFile()
 //
 bool EditLoadFile(
@@ -1085,52 +1032,26 @@ bool EditLoadFile(
     ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
-  bool bIsReliable = false;
+
   float confidence = 0.0f;
-  float const reliability_threshold = 0.51f;
+  int iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iPreferedEncoding);
 
-  char origUCHARDET[256] = { '\0' };
-  int const iAnalyzedEncoding_UCD = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence, origUCHARDET, 256);
-  float const confidence_UCD = confidence;
-  int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+  bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
+
+  if (Flags.bDevDebugMode) {
+#if 1
+    SetAdditionalTitleInfo(Encoding_GetTitleInfoW());
+#else
+    DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+    int const iXOff = SciCall_GetXOffset();
+    SciCall_SetXOffset(0);
+    SciCall_CallTipShow(iPos, Encoding_GetTitleInfoA());
+    SciCall_SetXOffset(iXOff);
+    Globals.CallTipType = CT_ENC_INFO;
+#endif
+  }
 
   // ------------------------------------------------------
-  // calculate reliability
-
-  float const ced_confidence = bIsReliable ? 0.70f : 0.20f;
-
-  int iAnalyzedEncoding = iAnalyzedEncoding_UCD;
-  float const bonus = (iAnalyzedEncoding == iPreferedEncoding) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
-  confidence = confidence_UCD + bonus;
-
-  if (iAnalyzedEncoding == iAnalyzedEncoding_CED) {
-    if (!Encoding_IsNONE(iAnalyzedEncoding)) {
-      confidence = (confidence + ced_confidence) / 2.0f;
-    }
-  }
-  else { // ambiguous results
-    if (Encoding_IsNONE(iAnalyzedEncoding)) {
-      // no UCHARDET rely on CED
-      iAnalyzedEncoding = iAnalyzedEncoding_CED;
-      confidence = ced_confidence;
-    }
-    else { // have UCHARDET result
-      if (!Encoding_IsNONE(iAnalyzedEncoding_CED)) 
-      {
-        if (confidence < ced_confidence) {
-          iAnalyzedEncoding = iAnalyzedEncoding_CED;
-          confidence = ced_confidence;
-        }
-        else if ((confidence < ced_confidence) && bIsReliable) {
-          iAnalyzedEncoding = iAnalyzedEncoding_CED;  // prefer CED
-          confidence = (confidence + ced_confidence) / 2.0f;
-        }
-      }
-    }
-  }
-  bIsReliable = (confidence >= reliability_threshold);
-  // ------------------------------------------------------
-
 
   if (!g_bForceCompEncDetection) 
   {
@@ -1333,14 +1254,6 @@ bool EditLoadFile(
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  if (Flags.bDevDebugMode) {
-    _SetEncodingTitleInfo(origUCHARDET, iAnalyzedEncoding_UCD, confidence_UCD, iAnalyzedEncoding_CED, bIsReliable);
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
   return true;
 }
 
@@ -1417,6 +1330,7 @@ bool EditSaveFile(
   else {
 
   // FIXME: move checks in front of disk file access
+  // Msg if file tag encoding does not correspond to BOM
   /*if ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) == 0 && (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
       bool bEncodingMismatch = true;
       FILEVARS fv;

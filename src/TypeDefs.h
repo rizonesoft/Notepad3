@@ -454,6 +454,7 @@ typedef struct _settings2_t
   DWORD  AutoReloadTimeout;
   int    IMEInteraction;
   int    SciFontQuality;
+
   int    MarkOccurrencesMaxCount;
   int    UpdateDelayHyperlinkStyling;
   int    UpdateDelayMarkAllOccurrences;
@@ -461,6 +462,10 @@ typedef struct _settings2_t
   bool   UseOldStyleBraceMatching;
   int    CurrentLineHorizontalSlop;
   int    CurrentLineVerticalSlop;
+
+  float  AnalyzeReliableConfidenceLevel;
+  float  ReliableCEDConfidenceMapping;   // = 0.66f;
+  float  UnReliableCEDConfidenceMapping; //= 0.20f;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
   WCHAR DefaultExtension[64];

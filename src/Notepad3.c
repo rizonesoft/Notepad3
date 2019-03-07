@@ -6882,11 +6882,9 @@ void LoadSettings()
     Defaults2.UpdateDelayHyperlinkStyling = 100;
     Settings2.UpdateDelayHyperlinkStyling = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling",
                                                                     Defaults2.UpdateDelayHyperlinkStyling), USER_TIMER_MINIMUM, 10000);
-
     Defaults2.UpdateDelayMarkAllOccurrences = 50;
     Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllOccurrences",
                                                                       Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
-
     Defaults2.DenyVirtualSpaceAccess = false;
     Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", Defaults2.DenyVirtualSpaceAccess);
 
@@ -6898,6 +6896,23 @@ void LoadSettings()
 
     Defaults2.CurrentLineVerticalSlop = 5;
     Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
+
+
+    int const iARCLdef = 51;
+    Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
+    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(pIniSection, 
+                                                             L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100) / 100.0f;
+
+    int const iRCEDCMdef = 51;
+    Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
+    Settings2.ReliableCEDConfidenceMapping = (float)clampi(IniSectionGetInt(pIniSection,
+                                                           L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100) / 100.0f;
+
+    int const iURCEDCMdef = 51;
+    Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
+    Settings2.UnReliableCEDConfidenceMapping = (float)clampi(IniSectionGetInt(pIniSection,
+                                                             L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, 100) / 100.0f;
+
 
     Defaults2.AdministrationTool[0] = L'\0';
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", Defaults2.AdministrationTool,
@@ -7044,7 +7059,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
     int const iPrefEncIniSetting = Encoding_MapIniSetting(false, CPI_UTF8);
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
