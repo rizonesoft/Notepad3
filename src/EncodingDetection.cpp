@@ -31,6 +31,7 @@
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 
+#include <future>                 // async detection
 
 #include "resource.h"
 
@@ -109,7 +110,7 @@ extern "C" const WCHAR* Encoding_GetTitleInfoW() { return wchEncodingInfo; }
 #define ENC_PARSE_NAM_MAC_JAPANESE         ",x-mac-japanese,xmacjapanese,mac-japanese,macjapanese,"
 #define ENC_PARSE_NAM_SHIFT_JIS            ",shift-jis,shift_jis,shiftjis,shiftjs,csshiftjis,cswindows31j,mskanji,xmscp932,xsjis,"
 #define ENC_PARSE_NAM_MAC_KOREAN           ",x-mac-korean,xmackorean,mac-korean,mackorean,"
-#define ENC_PARSE_NAM_WIN_949              ",Windows-949,windows949,UHC,uhc,EUC-KR,euckr,CP-949,cp949,ksx1001,ksc56011987,csksc5601,isoir149,korean,ksc56011989"  // ANSI/OEM Korean (Unified Hangul Code)
+#define ENC_PARSE_NAM_WIN_949              ",Windows-949,windows949,uhc,EUC-KR,euckr,CP-949,cp949,ksx1001,ksc56011987,csksc5601,isoir149,korean,ksc56011989"  // ANSI/OEM Korean (Unified Hangul Code)
 #define ENC_PARSE_NAM_ISO_8859_3           ",ISO-8859-3,iso88593,latin3,isoir109,l3,"
 #define ENC_PARSE_NAM_ISO_8859_15          ",ISO-8859-15,iso885915,latin9,l9,"
 #define ENC_PARSE_NAM_DOS_865              ",CP-865,cp865,ibm865,"
@@ -660,19 +661,37 @@ extern "C" int Encoding_AnalyzeText
   const char* const text, const size_t len, 
   float* confidence_io, const int encodingHint)
 {
-
+  float ucd_cnf = 0.0f;
   char encodingStrg_UCD[128] = { '\0' };
-  float confidence = 0.0f;
-  int const cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &confidence, encodingStrg_UCD, 128);
-  float const ucd_confidence = confidence;
+  int cpiEncoding_UCD = CPI_NONE;
 
-  // -----------------------------------------------------
+  float ced_cnf = 0.0f;
   char encodingStrg_CED[128] = { '\0' };
-  //bool ced_isReliable = false;
-  confidence = 0.0f;
-  int const cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &confidence, encodingStrg_CED, 128);
-  float const ced_confidence = confidence;
+  int cpiEncoding_CED = CPI_NONE;
 
+  size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
+  
+  if (len < largeFile)
+  {
+    // small file: do SERIAL encoding detection
+    cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, 128);
+    cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, 128);
+  }
+  else {  // large file:  start ASYNC PARALLEL encoding detection
+
+    std::future<int> cpiUCD = std::async(std::launch::async, AnalyzeText_UCHARDET,
+      text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, 128);
+
+    std::future<int> cpiCED = std::async(std::launch::async, AnalyzeText_CED,
+      text, len, encodingHint, &ced_cnf, encodingStrg_CED, 128);
+
+    cpiEncoding_UCD = cpiUCD.get();
+    cpiEncoding_CED = cpiCED.get();
+  }
+
+  float confidence = 0.0f;
+  float const ucd_confidence = ucd_cnf;
+  float const ced_confidence = ced_cnf;
 
   // --------------------------------------------------------------------------
   // vote for encoding prognosis based on confidence levels or reliability
