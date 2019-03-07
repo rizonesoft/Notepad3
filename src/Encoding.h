@@ -36,7 +36,6 @@ extern bool g_bForceCompEncDetection;
 #define NCP_EXTERNAL_8BIT   1024
 #define NCP_RECODE          2048
 
-#define CED_NO_MAPPING       (-4)
 #define CPI_ASCII_7BIT       (-3)
 #define CPI_GET              (-2)
 #define CPI_NONE             (-1)
@@ -125,8 +124,11 @@ bool IsValidUTF8(const char* pTest, size_t nLength);
 // Google's "Compact Encoding Detection" 
 extern NP2ENCODING g_Encodings[];
 void ChangeEncodingCodePage(int cpi, UINT newCP);
-int Encoding_Analyze_CED(const char* text, size_t len, int encodingHint, bool* pIsReliable);
-int Encoding_Analyze_UCHARDET(const char* text, size_t len, float* pConfidence, char* origUCHARDET, int cch);
+
+int Encoding_AnalyzeText(const char* const text, const size_t len, float* confidence_io, const int encodingHint);
+
+const char* Encoding_GetTitleInfoA();
+const WCHAR* Encoding_GetTitleInfoW();
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
 inline bool IsDBCSCodePage(UINT cp) {

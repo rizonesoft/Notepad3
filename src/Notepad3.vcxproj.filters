@@ -52,6 +52,9 @@
     <Filter Include="Source Files\uchardet\LangModels">
       <UniqueIdentifier>{8eb92563-615c-48e2-b715-e8c612da8a42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{80bb23ba-0110-42e2-b201-04e2f8cedbbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -661,9 +664,6 @@
     <None Include="..\Versions\VersionEx.h.tpl">
       <Filter>templates</Filter>
     </None>
-    <None Include="..\Build\Notepad3.ini">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\uchardet\uchardet\src\Big5Freq.tab">
       <Filter>Source Files\uchardet</Filter>
     </None>
@@ -679,6 +679,9 @@
     <None Include="..\uchardet\uchardet\src\JISFreq.tab">
       <Filter>Source Files\uchardet</Filter>
     </None>
+    <None Include="..\Build\Notepad3.ini">
+      <Filter>Config</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico">
@@ -688,6 +691,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\res\rizonesoft.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\Toolbar2Disabled.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\Toolbar2Hot.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\ToolbarDisabled.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\ToolbarHot.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

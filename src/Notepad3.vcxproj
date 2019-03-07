@@ -597,6 +597,10 @@
     <Image Include="..\res\Notepad3.ico" />
     <Image Include="..\res\rizonesoft.bmp" />
     <Image Include="..\res\Toolbar2.bmp" />
+    <Image Include="..\res\Toolbar2Disabled.bmp" />
+    <Image Include="..\res\Toolbar2Hot.bmp" />
+    <Image Include="..\res\ToolbarDisabled.bmp" />
+    <Image Include="..\res\ToolbarHot.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Versions\build.txt">

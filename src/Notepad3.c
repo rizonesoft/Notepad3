@@ -461,7 +461,6 @@ static void _InitGlobals()
   DefaultFlags.bStickyWindowPosition = false;
   DefaultFlags.bReuseWindow = false;
   DefaultFlags.bSingleFileInstance = true;
-  DefaultFlags.fStickyWindowPosition = 0; Flags.fStickyWindowPosition = 0;
   DefaultFlags.fReuseWindow = 0; Flags.fReuseWindow = 0;
   DefaultFlags.fNoReuseWindow = 0; Flags.fNoReuseWindow = 0;
   DefaultFlags.fSingleFileInstance = 1; Flags.fSingleFileInstance = 1;
@@ -5032,42 +5031,49 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_STICKYWINPOS:
-
-      if (!Flags.bStickyWindowPosition)
       {
-        WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
+        Flags.bStickyWindowPosition = !Flags.bStickyWindowPosition; // toggle
 
         int ResX, ResY;
         GetCurrentMonitorResolution(hwnd, &ResX, &ResY);
 
-        StringCchPrintf(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
-        StringCchPrintf(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
-        StringCchPrintf(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
-        StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
-        StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
+        WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
+
+        StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
+        StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
+        StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
+        StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
+        StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
         StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-        // GetWindowPlacement
-        WININFO wi = GetMyWindowPlacement(Globals.hwndMain,NULL);
-        IniSetInt(L"Window",tchPosX,wi.x);
-        IniSetInt(L"Window",tchPosY,wi.y);
-        IniSetInt(L"Window",tchSizeX,wi.cx);
-        IniSetInt(L"Window",tchSizeY,wi.cy);
-        IniSetBool(L"Window",tchMaximized,wi.max);
-        IniSetInt(L"Window", tchZoom, wi.zoom);
+        if (Flags.bStickyWindowPosition)
+        {
+          // GetWindowPlacement
+          WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
+          IniSetInt(L"Window", tchPosX, wi.x);
+          IniSetInt(L"Window", tchPosY, wi.y);
+          IniSetInt(L"Window", tchSizeX, wi.cx);
+          IniSetInt(L"Window", tchSizeY, wi.cy);
+          IniSetBool(L"Window", tchMaximized, wi.max);
+          IniSetInt(L"Window", tchZoom, wi.zoom);
 
-        Flags.bStickyWindowPosition = true;
-        InfoBoxLng(0,L"MsgStickyWinPos",IDS_MUI_STICKYWINPOS);
-      }
-      else {
-        Flags.bStickyWindowPosition = false;
-      }
-      
-      if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
-        IniSetBool(L"Settings2", L"StickyWindowPosition", Flags.bStickyWindowPosition);
-      else
-        IniSetString(L"Settings2", L"StickyWindowPosition", NULL);
+          InfoBoxLng(0, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
+        }
+        else { // clear entries
 
+          IniSetString(L"Window", tchPosX, NULL);
+          IniSetString(L"Window", tchPosY, NULL);
+          IniSetString(L"Window", tchSizeX, NULL);
+          IniSetString(L"Window", tchSizeY, NULL);
+          IniSetString(L"Window", tchMaximized, NULL);
+          IniSetString(L"Window", tchZoom, NULL);
+        }
+
+        if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
+          IniSetBool(L"Settings2", L"StickyWindowPosition", Flags.bStickyWindowPosition);
+        else
+          IniSetString(L"Settings2", L"StickyWindowPosition", NULL);
+      }
       break;
 
 
@@ -6876,11 +6882,9 @@ void LoadSettings()
     Defaults2.UpdateDelayHyperlinkStyling = 100;
     Settings2.UpdateDelayHyperlinkStyling = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling",
                                                                     Defaults2.UpdateDelayHyperlinkStyling), USER_TIMER_MINIMUM, 10000);
-
     Defaults2.UpdateDelayMarkAllOccurrences = 50;
     Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllOccurrences",
                                                                       Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
-
     Defaults2.DenyVirtualSpaceAccess = false;
     Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", Defaults2.DenyVirtualSpaceAccess);
 
@@ -6892,6 +6896,23 @@ void LoadSettings()
 
     Defaults2.CurrentLineVerticalSlop = 5;
     Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
+
+
+    int const iARCLdef = 51;
+    Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
+    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(pIniSection, 
+                                                             L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100) / 100.0f;
+
+    int const iRCEDCMdef = 51;
+    Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
+    Settings2.ReliableCEDConfidenceMapping = (float)clampi(IniSectionGetInt(pIniSection,
+                                                           L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100) / 100.0f;
+
+    int const iURCEDCMdef = 51;
+    Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
+    Settings2.UnReliableCEDConfidenceMapping = (float)clampi(IniSectionGetInt(pIniSection,
+                                                             L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, 100) / 100.0f;
+
 
     Defaults2.AdministrationTool[0] = L'\0';
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", Defaults2.AdministrationTool,
@@ -7038,7 +7059,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
     int const iPrefEncIniSetting = Encoding_MapIniSetting(false, CPI_UTF8);
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
@@ -7476,9 +7497,8 @@ void SaveSettings(bool bSaveSettingsNow)
 
     FreeMem(pIniSection);
   }
-
-  // Scintilla Styles
-  Style_Save();
+ 
+  Style_Save();  // Scintilla Styles
 
   int ResX, ResY;
   GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
@@ -7487,7 +7507,7 @@ void SaveSettings(bool bSaveSettingsNow)
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   IniSetInt(L"Window", tchHighDpiToolBar, s_iToolBarTheme);
 
-  if (Flags.fStickyWindowPosition == 0) {
+  if (!Flags.bStickyWindowPosition) {
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
