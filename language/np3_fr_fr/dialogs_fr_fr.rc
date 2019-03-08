@@ -100,7 +100,7 @@ BEGIN
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Fermer",IDCANCEL,212,99,54,14
+    PUSHBUTTON      "Fermer",IDCANCEL,211,99,55,14
     CONTROL         "<a>Aller à Remplacer (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,120,103,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
