@@ -57,17 +57,18 @@ extern bool g_bForceCompEncDetection;
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
+//typedef intptr_t cpi_enc_t;
+typedef int cpi_enc_t;
+
 typedef struct _np2encoding {
   UINT    uFlags;
   UINT    uCodePage;
   const char* pszParseNames;
   int     idsName;
-  int     iCEDEncoding;
   WCHAR   wchLabel[64];
 
 } NP2ENCODING;
 
-int  Encoding_CountOf();
 int  Encoding_Current(int iEncoding);            // getter/setter
 int  Encoding_SrcCmdLn(int iSrcEncoding);        // getter/setter
 int  Encoding_SrcWeak(int iSrcWeakEnc);          // getter/setter
@@ -121,19 +122,35 @@ bool IsValidUnicode(const char* pBuffer, size_t cb, bool*, bool*);
 bool IsValidUTF7(const char* pTest, size_t nLength);
 bool IsValidUTF8(const char* pTest, size_t nLength);
 
-// Google's "Compact Encoding Detection" 
+//////////////////////////////////////////////////////
+// Google's   CED       "Compact Encoding Detection" 
+// Mozilla's  UCHARDET  "Universal Charset Detection"
+//////////////////////////////////////////////////////
+
 extern NP2ENCODING g_Encodings[];
-void ChangeEncodingCodePage(int cpi, UINT newCP);
+
+cpi_enc_t Encoding_CountOf();
+
+inline bool Encoding_IsValidIdx(const cpi_enc_t cpi)
+{
+  return ((cpi >= 0) && (cpi < Encoding_CountOf()));
+}
+
+
+// 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 951 Big5-hkscs, 1361 Johab
+inline bool IsDBCSCodePage(UINT cp) {
+  return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 951) || (cp == 1361));
+}
+
+inline void ChangeEncodingCodePage(const cpi_enc_t cpi, UINT newCP)
+{
+  if (Encoding_IsValidIdx(cpi)) { g_Encodings[cpi].uCodePage = newCP; }
+}
 
 int Encoding_AnalyzeText(const char* const text, const size_t len, float* confidence_io, const int encodingHint);
 
-const char* Encoding_GetTitleInfoA();
+const char*  Encoding_GetTitleInfoA();
 const WCHAR* Encoding_GetTitleInfoW();
-
-// 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
-inline bool IsDBCSCodePage(UINT cp) {
-  return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 1361));
-}
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
