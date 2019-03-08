@@ -88,11 +88,13 @@ BEGIN
             MENUITEM "UTF-8 с BO&M",                IDM_ENCODING_UTF8SIGN
             MENUITEM "Е&щё...\tF9",                 IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Форсировать компактное определение кодировки",        CMD_RELOADFORCEDETECTION
+            MENUITEM "Форсировать определение кодировки",        CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ко&дировке по умолчанию\tCtrl-Alt-F",   CMD_RECODEDEFAULT
             MENUITEM "Переоткрыть в A&NSI\tCtrl-Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
+            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",                  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ASCII &как UTF-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
             MENUITEM "Игнорировать &теги кодировки\tAlt+F8",                CMD_RELOADNOFILEVARS
             MENUITEM "&Переоткрыть в...\tF8",                               IDM_ENCODING_RECODE

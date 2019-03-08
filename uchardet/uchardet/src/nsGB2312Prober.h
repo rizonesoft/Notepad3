@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -42,17 +42,18 @@
 #include "nsCodingStateMachine.h"
 #include "CharDistribution.h"
 
-// We use GB18030 to replace GB2312, because 18030 is a superset.
+// NOT VALID: We use GB18030 to replace GB2312, because 18030 is a superset.
+// it superseded GB2312, but it is NOT a superset
 
-class nsGB18030Prober: public nsCharSetProber {
+class nsGB2312Prober : public nsCharSetProber {
 public:
-  nsGB18030Prober(PRBool aIsPreferredLanguage)
+  nsGB2312Prober(PRBool aIsPreferredLanguage)
     :mIsPreferredLanguage(aIsPreferredLanguage)
-  {mCodingSM = new nsCodingStateMachine(&GB18030SMModel);
+  {mCodingSM = new nsCodingStateMachine(&GB2312SMModel);
     Reset();}
-  virtual ~nsGB18030Prober(void){delete mCodingSM;}
+  virtual ~nsGB2312Prober(void){delete mCodingSM;}
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return "GB18030";}
+  const char* GetCharSetName() {return "GB2312";}
   nsProbingState GetState(void) {return mState;}
   void      Reset(void);
   float     GetConfidence(void);

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -74,7 +74,7 @@ PRBool nsCharSetProber::FilterWithoutEnglishLetters(const char* aBuf, PRUint32 a
   if (meetMSB && curPtr > prevPtr) 
     while (prevPtr < curPtr) *newptr++ = *prevPtr++;  
 
-  newLen = (PRUint32) (newptr - *newBuf);
+  newLen = static_cast<PRUint32>(newptr - *newBuf);
 
   return PR_TRUE;
 }
@@ -119,7 +119,7 @@ PRBool nsCharSetProber::FilterWithEnglishLetters(const char* aBuf, PRUint32 aLen
     while (prevPtr < curPtr)
       *newptr++ = *prevPtr++;  
 
-  newLen = (PRUint32) (newptr - *newBuf);
+  newLen = static_cast<PRUint32>(newptr - *newBuf);
 
   return PR_TRUE;
 }

@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(936)  // Chinese Simplified (GBK-2312)
+#pragma code_page(20936)  // Chinese Simplified (GBK-2312-80)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,9 @@ BEGIN
     IDS_ENC_ISO_8859_2             "C;中欧 (ISO-8859-2);ISO-8859-2"
     IDS_ENC_MAC_CENTRAL_EUROP      "C;中欧 (Mac);Mac (Central)"
     IDS_ENC_WIN_1250               "C;中欧 (Windows-1250);Windows-1250"
-    IDS_ENC_GBK_2312               "C;简体中文 (GBK-2312);GBK-2312"
+    IDS_ENC_GB18030                "C;简体中文 (GB18030);GB-18030"
+    IDS_ENC_GB2312_80              "C;简体中文 Simplified (GB2312-80);GB-2312-80"
+    IDS_ENC_GBK_936                "C;简体中文 Simplified (GBK-936);GBK-936"
     IDS_ENC_MAC_ZH_CN              "C;简体中文 (Mac);Mac (zh-cn)"
     IDS_ENC_BIG5                   "C;繁体中文 (Big5);Big5"
     IDS_ENC_MAC_ZH_TW              "C;繁体中文 (Mac);Mac (zh-tw)"
@@ -146,7 +148,6 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_GB18030                "C;简体中文 (GB18030);GB18030"
     IDS_ENC_EUC_JAPANESE           "C;日文 (EUC);日文 (EUC)"
     IDS_ENC_EUC_KOREAN             "C;韩文 (EUC);韩文 (EUC)"
     IDS_ENC_ISO_2022_CN            "C;繁体中文 (ISO-2022);ISO-2022-CN"

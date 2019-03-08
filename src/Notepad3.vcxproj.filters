@@ -420,6 +420,9 @@
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp">
       <Filter>Source Files\uchardet\LangModels</Filter>
     </ClCompile>
+    <ClCompile Include="..\uchardet\uchardet\src\nsGB18030Prober.cpp">
+      <Filter>Source Files\uchardet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
@@ -626,6 +629,9 @@
     <ClInclude Include="..\uchardet\uchardet\src\uchardet.h">
       <Filter>Source Files\uchardet</Filter>
     </ClInclude>
+    <ClInclude Include="..\uchardet\uchardet\src\nsGB18030Prober.h">
+      <Filter>Source Files\uchardet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">
@@ -681,6 +687,9 @@
     </None>
     <None Include="..\Build\Notepad3.ini">
       <Filter>Config</Filter>
+    </None>
+    <None Include="..\uchardet\uchardet\src\GB18030Freq.tab">
+      <Filter>Source Files\uchardet</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

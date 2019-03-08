@@ -2757,6 +2757,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, CMD_RECODEOEM, i);
   EnableCmd(hmenu, CMD_RELOADNOFILEVARS, i);
   EnableCmd(hmenu, CMD_RECODEDEFAULT, i);
+  EnableCmd(hmenu, CMD_RECODEGB18030, i);
   EnableCmd(hmenu, IDM_FILE_LAUNCH, i);
 
   EnableCmd(hmenu,IDM_FILE_LAUNCH,i);
@@ -5433,6 +5434,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
       }
       break;
+
+
+    case CMD_RECODEGB18030:
+    {
+      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+        Encoding_SrcCmdLn(Encoding_GetByCodePage(54936)); // GB18030
+        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+        FileLoad(false, false, true, true, true, tchMaxPathBuffer);
+      }
+    }
+    break;
 
 
     case CMD_RELOADASCIIASUTF8:

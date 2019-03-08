@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -75,7 +75,7 @@ void nsEscCharSetProber::Reset(void)
 
 nsProbingState nsEscCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  PRUint32 codingState;
+  nsSMState codingState;
   PRInt32 j;
   PRUint32 i;
 

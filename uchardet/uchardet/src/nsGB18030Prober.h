@@ -35,54 +35,43 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsBig5Prober.h"
+#ifndef nsGB18030Prober_h__
+#define nsGB18030Prober_h__
 
-void  nsBig5Prober::Reset(void)
-{
-  mCodingSM->Reset(); 
-  mState = eDetecting;
-  mDistributionAnalyser.Reset(mIsPreferredLanguage);
-}
+#include "nsCharSetProber.h"
+#include "nsCodingStateMachine.h"
+#include "CharDistribution.h"
 
-nsProbingState nsBig5Prober::HandleData(const char* aBuf, PRUint32 aLen)
-{
-  nsSMState codingState;
+// NOT VALID: We use GB18030 to replace GB2312, because 18030 is a superset.
+// it superseded GB2312, but it is NOT a superset
 
-  for (PRUint32 i = 0; i < aLen; i++)
-  {
-    codingState = mCodingSM->NextState(aBuf[i]);
-    if (codingState == eItsMe)
-    {
-      mState = eFoundIt;
-      break;
-    }
-    if (codingState == eStart)
-    {
-      PRUint32 charLen = mCodingSM->GetCurrentCharLen();
+class nsGB18030Prober : public nsCharSetProber {
+public:
+  nsGB18030Prober(PRBool aIsPreferredLanguage)
+    :mIsPreferredLanguage(aIsPreferredLanguage)
+  {mCodingSM = new nsCodingStateMachine(&GB18030SMModel);
+    Reset();}
+  virtual ~nsGB18030Prober(void){delete mCodingSM;}
+  nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
+  const char* GetCharSetName() {return "GB18030";}
+  nsProbingState GetState(void) {return mState;}
+  void      Reset(void);
+  float     GetConfidence(void);
+  void      SetOpion() {}
 
-      if (i == 0)
-      {
-        mLastChar[1] = aBuf[0];
-        mDistributionAnalyser.HandleOneChar(mLastChar, charLen);
-      }
-      else
-        mDistributionAnalyser.HandleOneChar(aBuf+i-1, charLen);
-    }
-  }
+protected:
+  void      GetDistribution(PRUint32 aCharLen, const char* aStr);
+  
+  nsCodingStateMachine* mCodingSM;
+  nsProbingState mState;
 
-  mLastChar[0] = aBuf[aLen-1];
+  //GB18030ContextAnalysis mContextAnalyser;
+  GB18030DistributionAnalysis mDistributionAnalyser;
+  char mLastChar[2];
+  PRBool mIsPreferredLanguage;
 
-  if (mState == eDetecting)
-    if (mDistributionAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-      mState = eFoundIt;
+};
 
-  return mState;
-}
 
-float nsBig5Prober::GetConfidence(void)
-{
-  float distribCf = mDistributionAnalyser.GetConfidence();
-
-  return (float)distribCf;
-}
+#endif /* nsGB18030Prober_h__ */
 

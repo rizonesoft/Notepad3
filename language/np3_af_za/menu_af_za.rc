@@ -88,11 +88,13 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",               IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Force Kompakte Enkodering Opsporing", CMD_RELOADFORCEDETECTION
+            MENUITEM "Force Enkodering Opsporing",          CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Hercodeer na &Standaard\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Hercodeer na &ANSI\tCtrl-Shift+A",    CMD_RECODEANSI
             MENUITEM "Hercodeer na &OEM\tCtrl+Shift+O",     CMD_RECODEOEM
+            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "ASCII as UTF-&8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
             MENUITEM "Ignoreer Kodering &Tags\tAlt+F8",     CMD_RELOADNOFILEVARS
             MENUITEM "&Herkodeer...\tF8",                   IDM_ENCODING_RECODE
