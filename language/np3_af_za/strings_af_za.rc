@@ -200,21 +200,6 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "Taal"
-    IDS_MUI_LANG_EN_US      "Engels (Verenigde State)\t\t\t[%s]"
-    IDS_MUI_LANG_AF_ZA      "Afrikaans (Suid-Afrika)\t\t\t[%s]"
-    IDS_MUI_LANG_BE_BY      "Wit-Russies (Wit-Rusland)\t\t\t[%s]"
-    IDS_MUI_LANG_DE_DE      "Duits (Duitsland)\t\t\t[%s]"
-    IDS_MUI_LANG_EN_GB      "Engels (Verenigde Koninkryk)\t\t\t[%s]"
-    IDS_MUI_LANG_ES_ES      "Spaans (Spanje)\t\t\t[%s]"
-    IDS_MUI_LANG_FR_FR      "Frans (Frankryk)\t\t\t[%s]"
-    IDS_MUI_LANG_HU_HU      "Hongaars (Hongarye)\t\t\t[%s]"
-    IDS_MUI_LANG_IT_IT      "Italiaans (Italië)\t\t\t[%s]"
-    IDS_MUI_LANG_JP_JP      "Japannese (Japan)\t\t\t[%s]"
-    IDS_MUI_LANG_KO_KR      "Koreaanse (Korea)\t\t\t[%s]"
-    IDS_MUI_LANG_NL_NL      "Afrikaans (Nederland)\t\t\t[%s]"
-    IDS_MUI_LANG_PT_BR      "Portugees (Brasilië)\t\t\t[%s]"
-    IDS_MUI_LANG_RU_RU      "Russies (Rusland)\t\t\t[%s]"
-    IDS_MUI_LANG_ZH_CN      "Sjinees (Hans)\t\t\t[%s]"
 END
 
 STRINGTABLE

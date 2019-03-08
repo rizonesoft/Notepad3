@@ -42,7 +42,6 @@
 #include "SciXLexer.h"
 
 #include "MuiLanguage.h"
-
 #include "Notepad3.h"
 
 
@@ -478,6 +477,13 @@ static void _InitGlobals()
 }
 
 
+typedef struct _lng_menu_t {
+  LANGID LangID;
+  const WCHAR* MenuItem;
+} LNG_MENU_T;
+
+#include "../language/language_menus.hpp"
+
 static bool _InsertLanguageMenu(HMENU hMenuBar)
 {
   // check, if we need a language switching menu
@@ -493,7 +499,15 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   {
     if (MUI_LanguageDLLs[lng].bHasDLL) 
     {
-      GetLngString(MUI_LanguageDLLs[lng].rid, wchMenuItemFmt, COUNTOF(wchMenuItemFmt));
+      // GetLngString(MUI_LanguageDLLs[lng].rid, wchMenuItemFmt, COUNTOF(wchMenuItemFmt));
+      for (int i = 0; i < COUNTOF(s_LanguageMenu); ++i) {
+        if (MUI_LanguageDLLs[lng].LangId == s_LanguageMenu[i].LangID)
+        {
+          StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), s_LanguageMenu[i].MenuItem);
+          break;
+        }
+      }
+
       StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
       AppendMenu(hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
     }
@@ -1746,7 +1760,6 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
   HBITMAP const hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
   return hbmp;
 }
-
 
 //=============================================================================
 //
