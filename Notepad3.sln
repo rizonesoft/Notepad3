@@ -212,6 +212,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8FD783D5-8709-432D-A88E-6E3073AFF220}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}"
+	ProjectSection(SolutionItems) = preProject
+		language\language_menus.hpp = language\language_menus.hpp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

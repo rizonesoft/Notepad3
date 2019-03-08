@@ -22,7 +22,7 @@ typedef struct _muilanguage
   UINT    rid;
   WCHAR   szLocaleName[LOCALE_NAME_MAX_LENGTH];
   // !!! WARNING:  LCID is DEPRECATED 
-  LANGID  LangId; // just for historic reasons
+  LANGID  LangId;
   bool    bHasDLL;
   bool    bIsActive;
 

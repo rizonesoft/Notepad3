@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc.
+// Copyright 2016 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -149,8 +149,8 @@ static const EncodingInfo kEncodingInfoTable[] = {
   { "ISO-2022-KR", "ISO-2022-KR", KOREAN_EUC_KR},
       // due to potential confusion with HTML syntax chars
   { "GBK", "GBK", GBK},
-  { "GB18030", "GB18030", GBK},
-      // because gb18030 is not widely supported
+  { "GB18030", "GB18030", GB18030},
+      // { "GB18030", "GB18030", GBK},  // because gb18030 is not widely supported
   { "BIG5_HKSCS", "BIG5-HKSCS", CHINESE_BIG5},
       // because Big5-HKSCS is not widely supported
   { "ISO_2022_CN", "ISO-2022-CN", CHINESE_GB},

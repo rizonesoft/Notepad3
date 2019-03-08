@@ -8174,9 +8174,7 @@ bool FileVars_IsUTF8(LPFILEVARS lpfv) {
 //
 bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
   CPINFO cpi;
-  if (lpfv->mask & FV_ENCODING &&
-      lpfv->iEncoding >= 0 &&
-      lpfv->iEncoding < Encoding_CountOf()) {
+  if (lpfv->mask & FV_ENCODING && Encoding_IsValidIdx(lpfv->iEncoding)) {
     if ((Encoding_IsINTERNAL(lpfv->iEncoding)) ||
          (IsValidCodePage(Encoding_GetCodePage(lpfv->iEncoding)) &&
           GetCPInfo(Encoding_GetCodePage(lpfv->iEncoding),&cpi))) {

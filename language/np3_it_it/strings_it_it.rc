@@ -229,21 +229,6 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "Lingua"
-    IDS_MUI_LANG_EN_US      "Inglese (Stati Uniti)\t\t\t[%s]"
-    IDS_MUI_LANG_AF_ZA      "Afrikaans (Sudafrica)\t\t\t[%s]"
-    IDS_MUI_LANG_BE_BY      "Bielorusso (Bielorussia)\t\t\t[%s]"
-    IDS_MUI_LANG_DE_DE      "Tedesco (Germania)\t\t\t[%s]"
-    IDS_MUI_LANG_EN_GB      "Inglese (Regno Unito)\t\t\t[%s]"
-    IDS_MUI_LANG_ES_ES      "Spagnolo (Spagna)\t\t\t[%s]"
-    IDS_MUI_LANG_FR_FR      "Francese (Francia)\t\t\t[%s]"
-    IDS_MUI_LANG_HU_HU      "Ungherese (Ungheria)\t\t\t[%s]"
-    IDS_MUI_LANG_IT_IT      "Italiano (Italia)\t\t\t[%s]"
-    IDS_MUI_LANG_JP_JP      "Giapponese (Giappone)\t\t\t[%s]"
-    IDS_MUI_LANG_KO_KR      "Coreano (coreana\t\t\t[%s]"
-    IDS_MUI_LANG_NL_NL      "Olandese (Paesi Bassi)\t\t\t[%s]"
-    IDS_MUI_LANG_PT_BR      "Portoghese (Brasile)\t\t\t[%s]"
-    IDS_MUI_LANG_RU_RU      "Russo (Russia)\t\t\t[%s]"
-    IDS_MUI_LANG_ZH_CN      "Cinese (Hans)\t\t\t[%s]"
 END
 
 STRINGTABLE
