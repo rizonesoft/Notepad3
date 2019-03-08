@@ -100,7 +100,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "다음 찾기(&F)",IDOK,216,7,55,14
     PUSHBUTTON      "이전 찾기(&P)",IDC_FINDPREV,216,24,55,14
-    PUSHBUTTON      "닫기",IDCANCEL,217,99,54,14
+    PUSHBUTTON      "닫기",IDCANCEL,216,99,55,14
     CONTROL         "<a>바꾸기 (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10

@@ -100,7 +100,7 @@ BEGIN
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10    
     DEFPUSHBUTTON   "查找下一个(&F)",IDOK,234,6,67,14
     PUSHBUTTON      "查找上一个(&P)",IDC_FINDPREV,234,24,67,14
-    PUSHBUTTON      "关闭",IDCANCEL,234,96,66,14
+    PUSHBUTTON      "关闭",IDCANCEL,234,96,67,14
     CONTROL         "<a>切换到“替换”对话框 (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,94,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10

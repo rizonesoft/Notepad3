@@ -99,7 +99,7 @@ BEGIN
     CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
-    PUSHBUTTON      "Maak toe",IDCANCEL,222,99,55,14
+    PUSHBUTTON      "Maak toe",IDCANCEL,221,99,55,14
     CONTROL         "<a>Gaan na vervang (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,135,103,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,116,85,14,10

@@ -100,7 +100,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&N‰chstes",IDOK,211,7,55,14
     PUSHBUTTON      "&Vorheriges",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Schlieﬂen",IDCANCEL,212,99,54,14
+    PUSHBUTTON      "Schlieﬂen",IDCANCEL,211,99,55,14
     CONTROL         "<a>Ersetzen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
