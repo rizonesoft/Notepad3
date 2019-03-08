@@ -412,6 +412,12 @@
     <ClCompile Include="..\uchardet\uchardet\src\nsEUCJPProber.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsEUCKRProber.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsEUCTWProber.cpp" />
+    <ClCompile Include="..\uchardet\uchardet\src\nsGB18030Prober.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\uchardet\uchardet\src\nsGB2312Prober.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsHebrewProber.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsLatin1Prober.cpp" />
@@ -516,6 +522,12 @@
     <ClInclude Include="..\uchardet\uchardet\src\nsEUCJPProber.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsEUCKRProber.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsEUCTWProber.h" />
+    <ClInclude Include="..\uchardet\uchardet\src\nsGB18030Prober.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\uchardet\uchardet\src\nsGB2312Prober.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsHebrewProber.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsLatin1Prober.h" />
@@ -568,6 +580,7 @@
     <None Include="..\uchardet\uchardet\src\Big5Freq.tab" />
     <None Include="..\uchardet\uchardet\src\EUCKRFreq.tab" />
     <None Include="..\uchardet\uchardet\src\EUCTWFreq.tab" />
+    <None Include="..\uchardet\uchardet\src\GB18030Freq.tab" />
     <None Include="..\uchardet\uchardet\src\GB2312Freq.tab" />
     <None Include="..\uchardet\uchardet\src\JISFreq.tab" />
     <None Include="..\Versions\Notepad3.exe.manifest.tpl" />

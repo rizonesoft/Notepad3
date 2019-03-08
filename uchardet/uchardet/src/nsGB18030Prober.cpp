@@ -35,16 +35,22 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsBig5Prober.h"
+// for S-JIS encoding, obeserve characteristic:
+// 1, kana character (or hankaku?) often have hight frequency of appereance
+// 2, kana character often exist in group
+// 3, certain combination of kana is never used in japanese language
 
-void  nsBig5Prober::Reset(void)
+#include "nsGB18030Prober.h"
+
+void  nsGB18030Prober::Reset(void)
 {
   mCodingSM->Reset(); 
   mState = eDetecting;
   mDistributionAnalyser.Reset(mIsPreferredLanguage);
+  //mContextAnalyser.Reset();
 }
 
-nsProbingState nsBig5Prober::HandleData(const char* aBuf, PRUint32 aLen)
+nsProbingState nsGB18030Prober::HandleData(const char* aBuf, PRUint32 aLen)
 {
   nsSMState codingState;
 
@@ -75,11 +81,13 @@ nsProbingState nsBig5Prober::HandleData(const char* aBuf, PRUint32 aLen)
   if (mState == eDetecting)
     if (mDistributionAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
       mState = eFoundIt;
+//    else
+//      mDistributionAnalyser.HandleData(aBuf, aLen);
 
   return mState;
 }
 
-float nsBig5Prober::GetConfidence(void)
+float nsGB18030Prober::GetConfidence(void)
 {
   float distribCf = mDistributionAnalyser.GetConfidence();
 

@@ -78,7 +78,9 @@ BEGIN
     IDS_ENC_ISO_8859_2             "C;Central European (ISO-8859-2);ISO-8859-2"
     IDS_ENC_MAC_CENTRAL_EUROP      "C;Central European (Mac);Mac (Central)"
     IDS_ENC_WIN_1250               "C;Central European (Windows-1250);Windows-1250"
-    IDS_ENC_GBK_2312               "C;중국어 간체 (GBK-2312);GBK-2312"
+    IDS_ENC_GB18030                "C;중국어 간체 (GB18030);GB-18030"
+    IDS_ENC_GB2312_80              "C;중국어 간체 (GB2312-80);GB-2312-80"
+    IDS_ENC_GBK_936                "C;중국어 간체 (GBK-936);GBK-936"
     IDS_ENC_MAC_ZH_CN              "C;중국어 간체 (Mac);Mac (zh-cn)"
     IDS_ENC_BIG5                   "C;중국어 번체 (Big5);Big5"
     IDS_ENC_MAC_ZH_TW              "C;중국어 번체 (Mac);Mac (zh-tw)"
@@ -146,7 +148,6 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_GB18030                "C;중국어 간체 (GB18030);GB18030"
     IDS_ENC_EUC_JAPANESE           "C;일본어 (EUC);일본어 (EUC)"
     IDS_ENC_EUC_KOREAN             "C;한국어 (EUC);한국어 (EUC)"
     IDS_ENC_ISO_2022_CN            "C;중국어 번체 (ISO-2022);ISO-2022-CN"

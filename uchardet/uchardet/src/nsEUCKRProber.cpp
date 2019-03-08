@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -47,7 +47,7 @@ void  nsEUCKRProber::Reset(void)
 
 nsProbingState nsEUCKRProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  PRUint32 codingState;
+  nsSMState codingState;
 
   for (PRUint32 i = 0; i < aLen; i++)
   {

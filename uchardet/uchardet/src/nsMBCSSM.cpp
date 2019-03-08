@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -260,7 +260,9 @@ const SMModel EUCTWSMModel = {
   "EUC-TW",
 };
 
-/* obsolete GB2312 by GB18030
+
+//  GB-2312
+
 static PRUint32 GB2312_cls [ 256 / 8 ] = {
 //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07 
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07 
@@ -305,14 +307,16 @@ PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart,eStart) //08-0f
 
 static const PRUint32 GB2312CharLenTable[] = {0, 1, 2, 0};
 
-SMModel GB2312SMModel = {
+const SMModel GB2312SMModel = {
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, GB2312_cls },
    4,
   {eIdxSft4bits, eSftMsk4bits, eBitSft4bits, eUnitMsk4bits, GB2312_st },
   GB2312CharLenTable,
   "GB2312",
 };
-*/
+
+
+//  GB-18030
 
 // the following state machine data was created by perl script in 
 // intl/chardet/tools. It should be the same as in PSM detector.
@@ -352,7 +356,7 @@ PCK4BITS(6,6,6,6,6,6,6,0)   // f8 - ff
 };
 
 
-static const PRUint32 GB18030_st [ 6] = {
+static const PRUint32 GB18030_st [6] = {
 PCK4BITS(eError,eStart,eStart,eStart,eStart,eStart,     3,eError),//00-07 
 PCK4BITS(eError,eError,eError,eError,eError,eError,eItsMe,eItsMe),//08-0f 
 PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart),//10-17 
@@ -360,6 +364,7 @@ PCK4BITS(     4,eError,eStart,eStart,eError,eError,eError,eError),//18-1f
 PCK4BITS(eError,eError,     5,eError,eError,eError,eItsMe,eError),//20-27 
 PCK4BITS(eError,eError,eStart,eStart,eStart,eStart,eStart,eStart) //28-2f 
 };
+
 
 // To be accurate, the length of class 6 can be either 2 or 4. 
 // But it is not necessary to discriminate between the two since 
@@ -375,6 +380,7 @@ const SMModel GB18030SMModel = {
   GB18030CharLenTable,
   "GB18030",
 };
+
 
 // sjis
 

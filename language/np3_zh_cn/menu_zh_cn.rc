@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(936)  // Chinese Simplified (GBK-2312)
+#pragma code_page(20936)  // Chinese Simplified (GBK-2312-80)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -88,11 +88,13 @@ BEGIN
             MENUITEM "Unicode（UTF-8 带签名）(&S)",              IDM_ENCODING_UTF8SIGN
             MENUITEM "选择编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "使用 Compact Encoding Detection 检测编码并重新加载(&M)", CMD_RELOADFORCEDETECTION
+            MENUITEM "使用 Encoding Detection 检测编码并重新加载(&M)", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "使用默认编码重新加载(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
             MENUITEM "使用 ANSI 编码重新加载(&A)\tCtrl-Shift+A",      CMD_RECODEANSI
             MENUITEM "使用 OEM 编码重新加载(&O)\tCtrl+Shift+O",       CMD_RECODEOEM
+            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "使用 UTF-8 编码重新加载(&8)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
             MENUITEM "忽略编码标记并重新加载(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS
             MENUITEM "选择编码并重新加载(&R)...\tF8",                 IDM_ENCODING_RECODE

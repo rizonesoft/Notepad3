@@ -88,11 +88,13 @@ BEGIN
             MENUITEM "UTF-8 з BO&M",                IDM_ENCODING_UTF8SIGN
             MENUITEM "Я&шчэ...\tF9",                IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Прымусіць да кампактнага ўстанаўлення кадоўкі", CMD_RELOADFORCEDETECTION
+            MENUITEM "Прымусіць ўстанаўлення кадоўкі", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "Пераадкрыць у A&NSI\tCtrl-Shift+A", CMD_RECODEANSI
-            MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O", CMD_RECODEOEM
+            MENUITEM "Пераадкрыць у A&NSI\tCtrl-Shift+A",   CMD_RECODEANSI
+            MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",    CMD_RECODEOEM
+            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
             MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8", CMD_RELOADNOFILEVARS
             MENUITEM "&Пераадкрыць у...\tF8",       IDM_ENCODING_RECODE

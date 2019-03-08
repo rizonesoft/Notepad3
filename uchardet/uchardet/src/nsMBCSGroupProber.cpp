@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -47,7 +47,8 @@ const char *ProberName[] =
   "UTF-8",
   "SJIS",
   "EUC-JP",
-  "GB18030",
+  "GB2312",
+  //"GB18030",
   "EUC-KR",
   "Big5",
   "EUC-TW",
@@ -57,23 +58,29 @@ const char *ProberName[] =
 
 nsMBCSGroupProber::nsMBCSGroupProber(PRUint32 aLanguageFilter)
 {
-  for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++)
+  for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++) {
     mProbers[i] = nsnull;
-
-  mProbers[0] = new nsUTF8Prober();
+  }
+  PRUint32 i = 0;
+  mProbers[i] = new nsUTF8Prober();
   if (aLanguageFilter & NS_FILTER_JAPANESE) 
   {
-    mProbers[1] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
-    mProbers[2] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[++i] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[++i] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
   }
-  if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED)
-    mProbers[3] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+  if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED) 
+  {
+    mProbers[++i] = new nsGB2312Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+    //~mProbers[++i] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+  }
   if (aLanguageFilter & NS_FILTER_KOREAN)
-    mProbers[4] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
+  {
+    mProbers[++i] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
+  }
   if (aLanguageFilter & NS_FILTER_CHINESE_TRADITIONAL) 
   {
-    mProbers[5] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
-    mProbers[6] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[++i] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[++i] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
   }
   Reset();
 }

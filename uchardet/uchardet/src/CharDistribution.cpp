@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -42,6 +42,7 @@
 #include "EUCKRFreq.tab"
 #include "EUCTWFreq.tab"
 #include "GB2312Freq.tab"
+//#include "GB18030Freq.tab"
 
 #define SURE_YES 0.99f
 #define SURE_NO  0.01f
@@ -85,6 +86,13 @@ GB2312DistributionAnalysis::GB2312DistributionAnalysis()
   mTableSize = GB2312_TABLE_SIZE;
   mTypicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
 }
+
+//GB18030DistributionAnalysis::GB18030DistributionAnalysis()
+//{
+//  mCharToFreqOrder = GB18030CharToFreqOrder;
+//  mTableSize = GB18030_TABLE_SIZE;
+//  mTypicalDistributionRatio = GB18030_TYPICAL_DISTRIBUTION_RATIO;
+//}
 
 Big5DistributionAnalysis::Big5DistributionAnalysis()
 {

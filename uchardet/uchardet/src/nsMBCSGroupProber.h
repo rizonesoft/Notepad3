@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -43,6 +43,7 @@
 #include "nsUTF8Prober.h"
 #include "nsEUCJPProber.h"
 #include "nsGB2312Prober.h"
+//~#include "nsGB18030Prober.h"
 #include "nsEUCKRProber.h"
 #include "nsBig5Prober.h"
 #include "nsEUCTWProber.h"

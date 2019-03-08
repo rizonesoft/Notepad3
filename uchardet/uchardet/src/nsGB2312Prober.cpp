@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -42,7 +42,7 @@
 
 #include "nsGB2312Prober.h"
 
-void  nsGB18030Prober::Reset(void)
+void  nsGB2312Prober::Reset(void)
 {
   mCodingSM->Reset(); 
   mState = eDetecting;
@@ -50,9 +50,9 @@ void  nsGB18030Prober::Reset(void)
   //mContextAnalyser.Reset();
 }
 
-nsProbingState nsGB18030Prober::HandleData(const char* aBuf, PRUint32 aLen)
+nsProbingState nsGB2312Prober::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  PRUint32 codingState;
+  nsSMState codingState;
 
   for (PRUint32 i = 0; i < aLen; i++)
   {
@@ -87,7 +87,7 @@ nsProbingState nsGB18030Prober::HandleData(const char* aBuf, PRUint32 aLen)
   return mState;
 }
 
-float nsGB18030Prober::GetConfidence(void)
+float nsGB2312Prober::GetConfidence(void)
 {
   float distribCf = mDistributionAnalyser.GetConfidence();
 
