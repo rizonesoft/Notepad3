@@ -26,19 +26,26 @@ CED - (C)ompact (E)ncoding (D)etection (by Google)
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 SCI - (SCI)ntilla Library
+UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.228.build (2019-Feb-28)
+Current Version 5.19.309.build (2019-Mar-09)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Add (internal) [Settings2] to control encoding detection
+- Add Recent History button in Toolbar
+- Add support for external and internal Hot- and Disabled- Toolbar icons 
+- Add menu to load other toolbar themes (bitmaps)
+- Add 2nd Encoding-Detector "Mozilla's UCHARDET" in parallel with CED
+- Add Menu "Language" for Language Selector
 - Add a Languages Selection in UI Main Menu
 - Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
-- Customize Schemes: Caret style 'ovrbar' (default) to switch caret style 
-    between BAR and BLOCK 
+- Customize Schemes: Caret style 'ovrbar' (default) 
+    to switch caret style between BAR and BLOCK 
 - Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings)
 - Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
 - Add CED reliability option (NLS: dialogs)
@@ -49,27 +56,48 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
+- Make international language menu (language independent)
+- Start dual encoding detectors in (thread) parallel for large files
+    (disabled, due to lack of performance profiling)
+- Support (internal) DevDebugMode
+- Menu item "HighDPI Toolbar" -> "Toggle Toolbar"
+- Train Dutch (CP-1252) for UCD language detection models
+- Train Belarusian (CP-1251) for UCD language detection models
+- Train Africaans (CP-1252) for UCD language detection models
+- Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
+- Menu Languange Selector to Dynamic Language Selector
+
 - Up-to-Date SCI (GitHub Mirror 2019-Feb-07)
 - Update of CED (2019-Feb-01)
 - SpeedUp of RegEx Replace (in case of const replace pattern)
 - Update of Onigmo RegEx engine (2019-Jan-24)
 - Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
-- Scintilla Library (SCI) version 4.1.4 (2019-Fev-15)
+- Scintilla Library (SCI) version 4.1.4 (2019-Mar-07)
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
 
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- single file instance: find correct window for real paths
-- minor issue on UTF-8 encoding detection
-- high quality icon for Taskbar (big icons)
-- support high-definition icon for taskbar
+- Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
+- MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
+- Write Language change to Settings2 on change immediately
+- Focused View not working for some Lexers
+- Find correct window for "Single File Instance"
+
+- Single file instance: find correct window for real paths
+- Minor issue on UTF-8 encoding detection
+- High quality icon for Taskbar (big icons)
+- Support high-definition icon for taskbar
 - .vcxproj files supporting VS2019_Prev_2 (vc142)
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
+- Portuguese (pt-BR) Translation (In progress)
+- Hungarian (hu-HU) Translation (In progress)
+- Italian (it-IT) Translation (Partial)
 - Korean (UHC) Translation
 
 
