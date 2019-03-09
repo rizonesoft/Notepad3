@@ -47,8 +47,8 @@ const char *ProberName[] =
   "UTF-8",
   "SJIS",
   "EUC-JP",
-  "GB2312",
-  //"GB18030",
+  //"GB2312",
+  "GB18030",
   "EUC-KR",
   "Big5",
   "EUC-TW",
@@ -70,8 +70,8 @@ nsMBCSGroupProber::nsMBCSGroupProber(PRUint32 aLanguageFilter)
   }
   if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED) 
   {
-    mProbers[++i] = new nsGB2312Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
-    //~mProbers[++i] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+    //mProbers[++i] = new nsGB2312Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+    mProbers[++i] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
   }
   if (aLanguageFilter & NS_FILTER_KOREAN)
   {

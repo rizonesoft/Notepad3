@@ -41,8 +41,8 @@
 #include "Big5Freq.tab"
 #include "EUCKRFreq.tab"
 #include "EUCTWFreq.tab"
-#include "GB2312Freq.tab"
-//#include "GB18030Freq.tab"
+//#include "GB2312Freq.tab"
+#include "GB18030Freq.tab"
 
 #define SURE_YES 0.99f
 #define SURE_NO  0.01f
@@ -80,19 +80,19 @@ EUCKRDistributionAnalysis::EUCKRDistributionAnalysis()
   mTypicalDistributionRatio = EUCKR_TYPICAL_DISTRIBUTION_RATIO;
 }
 
-GB2312DistributionAnalysis::GB2312DistributionAnalysis()
-{
-  mCharToFreqOrder = GB2312CharToFreqOrder;
-  mTableSize = GB2312_TABLE_SIZE;
-  mTypicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
-}
-
-//GB18030DistributionAnalysis::GB18030DistributionAnalysis()
+//GB2312DistributionAnalysis::GB2312DistributionAnalysis()
 //{
-//  mCharToFreqOrder = GB18030CharToFreqOrder;
-//  mTableSize = GB18030_TABLE_SIZE;
-//  mTypicalDistributionRatio = GB18030_TYPICAL_DISTRIBUTION_RATIO;
+//  mCharToFreqOrder = GB2312CharToFreqOrder;
+//  mTableSize = GB2312_TABLE_SIZE;
+//  mTypicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
 //}
+
+GB18030DistributionAnalysis::GB18030DistributionAnalysis()
+{
+  mCharToFreqOrder = GB18030CharToFreqOrder;
+  mTableSize = GB18030_TABLE_SIZE;
+  mTypicalDistributionRatio = GB18030_TYPICAL_DISTRIBUTION_RATIO;
+}
 
 Big5DistributionAnalysis::Big5DistributionAnalysis()
 {
