@@ -67,7 +67,6 @@ CHANGES:
 - Train Africaans (CP-1252) for UCD language detection models
 - Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
 - Menu Languange Selector to Dynamic Language Selector
-
 - Up-to-Date SCI (GitHub Mirror 2019-Feb-07)
 - Update of CED (2019-Feb-01)
 - SpeedUp of RegEx Replace (in case of const replace pattern)
@@ -85,7 +84,6 @@ FIXES:
 - Write Language change to Settings2 on change immediately
 - Focused View not working for some Lexers
 - Find correct window for "Single File Instance"
-
 - Single file instance: find correct window for real paths
 - Minor issue on UTF-8 encoding detection
 - High quality icon for Taskbar (big icons)
