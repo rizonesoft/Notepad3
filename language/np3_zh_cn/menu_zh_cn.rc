@@ -93,7 +93,7 @@ BEGIN
             MENUITEM "使用默认编码重新加载(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
             MENUITEM "使用 ANSI 编码重新加载(&A)\tCtrl-Shift+A",      CMD_RECODEANSI
             MENUITEM "使用 OEM 编码重新加载(&O)\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
+            MENUITEM "使用 GB18030 编码重新加载(&G)\tCtrl+Shift+F10",           CMD_RECODEGB18030
             MENUITEM SEPARATOR
             MENUITEM "使用 UTF-8 编码重新加载(&8)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
             MENUITEM "忽略编码标记并重新加载(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS

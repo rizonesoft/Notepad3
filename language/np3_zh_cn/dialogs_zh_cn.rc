@@ -66,7 +66,7 @@ BEGIN
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Copy Version Text",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
+    PUSHBUTTON      "复制版本信息(&C)",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,171
 END
 
@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "查找后关闭(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,103,10
     CONTROL         "标记匹配(&O)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,103,10
     CONTROL         "使用通配符(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,79,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+    CONTROL         "当丢失焦点时置半透明(&T)", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10    
     DEFPUSHBUTTON   "查找下一个(&F)",IDOK,234,6,67,14
     PUSHBUTTON      "查找上一个(&P)",IDC_FINDPREV,234,24,67,14
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "替换后关闭(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,103,10
     CONTROL         "标记匹配(&O)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,103,10
     CONTROL         "使用通配符(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,79,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+    CONTROL         "当丢失焦点时置半透明(&T)", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "查找下一个(&F)",IDOK,234,6,67,14
     PUSHBUTTON      "查找上一个(&P)",IDC_FINDPREV,234,24,67,14
@@ -185,7 +185,7 @@ BEGIN
     GROUPBOX        "编码检测",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "用 UTF-8 模式打开纯 ASCII 文本(&M)",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,166,10
-    CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "仅使用可靠的检测结果(&R)", IDC_RELIABLE_DETECTION_RES,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "用 DOS-437 模式打开 .nfo 和 .diz 文件(&N)",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,166,10
@@ -206,7 +206,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "默认换行符(&D)：",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Show inconsistent line-breaks warning.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "当换行符不一致时显示警告(&W)",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
     CONTROL         "保存文件时确保一致的换行符(&E)",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
