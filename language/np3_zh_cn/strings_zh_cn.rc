@@ -100,7 +100,7 @@ BEGIN
     IDS_MUI_FILTER_ALL          "所有文件(*.*)|*.*|"
     IDS_MUI_FILTER_EXE          "可执行文件(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|所有文件(*.*)|*.*|"
     IDS_MUI_FILTER_INI          "配置文件(*.ini)|*.ini|所有文件(*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP       "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP       "位图文件(*.bmp)|*.bmp|所有文件(*.*)|*.*|"
     IDS_MUI_OPENWITH            "请选择用于收藏应用程序的文件夹。"
     IDS_MUI_FAVORITES           "请选择用于收藏文件的文件夹。"
     IDS_MUI_BACKSLASHHELP       "反斜杠转义序列：\n\n\\a\t响铃符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳页符 (FF, ASCII 12)\n\\n\t换行符 (LF, ASCII 10)\n\\r\t回车符 (CR, ASCII 13)\n\\t\t水平制表符 (HT, ASCII 9)\n\\v\t垂直制表符 (VT, ASCII 11)\n\\ooo\t八进制数值 ooo 对应的字符\n\\uHHHH\t十六进制数值 HHHH 对应的字符\n\\xHH\t十六进制数值 HH 对应的字符\n\\\\\t反斜杠"
@@ -125,8 +125,8 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE        "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE  "是否确实要打开一个如此庞大的文件？"
     IDS_MUI_WARN_UNKNOWN_EXT    "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
-    IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
+    IDS_MUI_WARN_INCONSIST_EOLS "此文件的换行符不一致：\n%s\n是否将全部换行符替换为“%s”？"
+    IDS_MUI_WARN_INCONS_INDENTS "此文件的缩进不一致：\n%s\n是否将全部缩进替换为“%s”？"
 END
 
 STRINGTABLE
@@ -194,13 +194,13 @@ BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(zh-CN) 简体中文翻译 by lhmouse"
     IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\n中国智造，慧及全球"
     IDS_MUI_ZERO_LEN_MATCH      "^ 零宽度匹配"
-    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
+    IDS_MUI_GOTO_LINE           "行（1 - %lli）："
+    IDS_MUI_GOTO_COLUMN         "列（1 - %lli）："
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "语言"
+    IDS_MUI_MENU_LANGUAGE   "语言(&L)"
 END
 
 STRINGTABLE
