@@ -40,7 +40,7 @@
 
 #include "nscore.h"
 
-#define ENOUGH_DATA_THRESHOLD 1024
+#define ENOUGH_DATA_THRESHOLD 2048
  
 #define MINIMUM_DATA_THRESHOLD  4
 
@@ -158,23 +158,24 @@ protected:
   }
 };
 
-class GB2312DistributionAnalysis : public CharDistributionAnalysis
-{
-public:
-  GB2312DistributionAnalysis();
-protected:
-  //for GB2312 encoding, we are interested 
-  //  first  byte range: 0xb0 -- 0xfe
-  //  second byte range: 0xa1 -- 0xfe
-  //no validation needed here. State machine has done that
-  PRInt32 GetOrder(const char* str)
-  {
-    if ((unsigned char)* str >= (unsigned char)0xb0 && (unsigned char)str[1] >= (unsigned char)0xa1)
-      return 94 * ((unsigned char)str[0] - (unsigned char)0xb0) + (unsigned char)str[1] - (unsigned char)0xa1;
-    else
-      return -1;
-  }
-};
+//class GB2312DistributionAnalysis : public CharDistributionAnalysis
+//{
+//public:
+//  GB2312DistributionAnalysis();
+//protected:
+//  //for GB2312 encoding, we are interested 
+//  //  first  byte range: 0xa1 -- 0xf7
+//  //  second byte range: 0xa1 -- 0xfe
+//
+//  //no validation needed here. State machine has done that
+//  PRInt32 GetOrder(const char* str)
+//  {
+//    if ((unsigned char)* str >= (unsigned char)0xa1 && (unsigned char)str[1] >= (unsigned char)0xa1)
+//      return 94 * ((unsigned char)str[0] - (unsigned char)0xa1) + (unsigned char)str[1] - (unsigned char)0xa1;
+//    else
+//      return -1;
+//  }
+//};
 
 class GB18030DistributionAnalysis : public CharDistributionAnalysis
 {

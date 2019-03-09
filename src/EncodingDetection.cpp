@@ -31,7 +31,7 @@
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 
-#include <future>                 // async detection
+//~#include <future>                 // async detection
 
 #include "resource.h"
 
@@ -691,6 +691,7 @@ extern "C" int Encoding_AnalyzeText
   char encodingStrg_CED[MAX_ENC_STRG_LEN] = { '\0' };
   int cpiEncoding_CED = CPI_NONE;
 
+#if FALSE
   size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
 
   if (len < largeFile)
@@ -710,23 +711,37 @@ extern "C" int Encoding_AnalyzeText
     cpiEncoding_UCD = cpiUCD.get();
     cpiEncoding_CED = cpiCED.get();
   }
+#else
+  // no need to run analyzers asynchron, cause they analyze only the first KB of large files ...
+  cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+  cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
+#endif
+
 
   float confidence = 0.0f;
   float const ucd_confidence = ucd_cnf;
   float const ced_confidence = ced_cnf;
 
-
-#if 0
   // --------------------------------------------------------------------------
   // GB18030 (UCD always) to GBK detection adjustment
   // --------------------------------------------------------------------------
-  if ((Encoding_GetCodePage(cpiEncoding_UCD) == 54936 /*GB-18030*/) &&
-    (Encoding_GetCodePage(cpiEncoding_CED) != 20936   /*GB-2312-80*/))
+  if (Encoding_GetCodePage(cpiEncoding_UCD) == 54936) 
   {
-    // CED (util/encodings/encoding.cc) changed to predict GB18030 if applicable
-    cpiEncoding_UCD = cpiEncoding_CED; // choose widely used encoding
+    switch (Encoding_GetCodePage(cpiEncoding_CED))
+    {
+    case 936:   // GBK
+    case 20936: // GB-2312-80
+      cpiEncoding_UCD = cpiEncoding_CED; // use CED's choice
+      break;
+
+    case 54936:
+      // CED (util/encodings/encoding.cc) changed to predict GB18030 if applicable
+    default:
+      // keep GB-18030
+      break;
+    }
   }
-#endif
+
 
   // --------------------------------------------------------------------------
   // vote for encoding prognosis based on confidence levels or reliability

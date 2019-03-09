@@ -262,7 +262,7 @@ const SMModel EUCTWSMModel = {
 
 
 //  GB-2312
-
+#if 0
 static PRUint32 GB2312_cls [ 256 / 8 ] = {
 //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07 
 PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07 
@@ -314,6 +314,7 @@ const SMModel GB2312SMModel = {
   GB2312CharLenTable,
   "GB2312",
 };
+#endif
 
 
 //  GB-18030
