@@ -164,7 +164,7 @@ typedef struct _filevars
   bool bTabIndents;
   bool fWordWrap;
   int iLongLinesLimit;
-  char tchEncoding[32];
+  char tchEncoding[64];
   int  iEncoding;
   char tchMode[32];
 
