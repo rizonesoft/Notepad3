@@ -69,14 +69,14 @@ BEGIN
         POPUP "启动(&L)"
         BEGIN
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
-            MENUITEM "清空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
+            MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "运行文档(&D)\tCtrl+L",               IDM_FILE_LAUNCH
             MENUITEM "打开方式(&O)...\tAlt+L",                 IDM_FILE_OPENWITH
             MENUITEM "命令(&C)...\tCtrl+R",                    IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web 模板 1(&1)\tCtrl+Shift+1",          CMD_WEBACTION1
-            MENUITEM "Web 模板 2(&2)\tCtrl+Shift+2",          CMD_WEBACTION2
+            MENUITEM "Web 模板 &1\tCtrl+Shift+1",          CMD_WEBACTION1
+            MENUITEM "Web 模板 &2\tCtrl+Shift+2",          CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
@@ -90,10 +90,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "强制检测编码(&M)", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "使用默认编码重新加载(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
-            MENUITEM "重新编码为 &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
-            MENUITEM "重新编码为 &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "重新编码为 &GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
+            MENUITEM "重载为默认编码(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
+            MENUITEM "重载为 &ANSI 编码\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "重载为 &OEM 编码\tCtrl+Shift+O",       CMD_RECODEOEM
+            MENUITEM "重载为 &GB18030 编码\tCtrl+Shift+F10",           CMD_RECODEGB18030
             MENUITEM SEPARATOR
             MENUITEM "重载 ASCII 为 UTF-&8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
             MENUITEM "忽略编码标记(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS
@@ -101,7 +101,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "设置默认(&D)...",                         IDM_ENCODING_SETDEFAULT
         END
-        POPUP "行末符号(&G)"
+        POPUP "行末(&G)"
         BEGIN
             MENUITEM "&Windows (CR+LF)",                  IDM_LINEENDINGS_CRLF
             MENUITEM "&Mac (CR)",                         IDM_LINEENDINGS_CR
@@ -137,7 +137,7 @@ BEGIN
         MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
-        MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
+        MENUITEM "交换剪贴板(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
         MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
@@ -172,9 +172,9 @@ BEGIN
             MENUITEM "合并行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "合并空行(&G)\tAlt+Y",                     IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "合并只有空白字符的行(&N)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "合并只有空格的行(&N)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
             MENUITEM "删除空行(&R)\tAlt+R",                     IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "删除只有空白字符的行(&M)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "删除只有空格的行(&M)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "删除重复行(&O)\tCtrl+Alt+D",              IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "选择(&S)"
@@ -182,7 +182,7 @@ BEGIN
             MENUITEM "增加缩进(&I)",                           IDM_EDIT_INDENT
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "给选定文本添加括号(&E)"
+            POPUP "围闭选区(&E)"
             BEGIN
                 MENUITEM "单引号(&S)\tCtrl+1",                CMD_STRINGIFY
                 MENUITEM "双引号(&D)\tCtrl+2",                CMD_STRINGIFY2
@@ -200,8 +200,8 @@ BEGIN
             MENUITEM "填充空格(&P)\tAlt+B",                     IDM_EDIT_PADWITHSPACES
             MENUITEM "删除第一个字符(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
             MENUITEM "删除最后一个字符(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "删除行尾空白字符(&T)\tAlt+W",             IDM_EDIT_TRIMLINES
-            MENUITEM "压缩空白字符(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "删除行尾空格(&T)\tAlt+W",             IDM_EDIT_TRIMLINES
+            MENUITEM "压缩空格(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "修改(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
@@ -302,7 +302,7 @@ BEGIN
         MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "显示软换行(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "显示空白字符(&W)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
+        MENUITEM "显示空格(&W)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
         MENUITEM "显示行末符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                IDM_VIEW_HYPERLINKHOTSPOTS
@@ -368,7 +368,7 @@ BEGIN
     BEGIN
         MENUITEM "将制表符替换为空格(&S)",                        IDM_VIEW_TABSASSPACES
         MENUITEM "制表符设置(&T)...\tCtrl+T",                     IDM_VIEW_TABSETTINGS
-        MENUITEM "字词换行设置(&W)...",                           IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "自动换行设置(&W)...",                           IDM_VIEW_WORDWRAPSETTINGS
         MENUITEM "长行标记设置(&L)...",                         IDM_VIEW_LONGLINESETTINGS
         MENUITEM "自动缩进(&D)",                                  IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
