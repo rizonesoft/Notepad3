@@ -75,7 +75,7 @@ CAPTION "Ejecutar"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Entrar el nombre de un archivo de programa ejecutable,\nuna carpeta o un documento para abrir.",IDC_STATIC,35,7,188,17
+    LTEXT           "Teclee el nombre de un archivo de programa ejecutable,\nuna carpeta o un documento para abrir.",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -101,7 +101,7 @@ CAPTION "Ir a"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Entrar el nombre de un archivo o carpeta para abrir,\no seleccionar un carpeta visitada reciente de la lista.",IDC_STATIC,35,7,182,17
+    LTEXT           "Teclee el nombre de un archivo o carpeta para abrir,\no seleccionar un carpeta visitada recientemente de la lista.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,167,66,50,14
@@ -140,7 +140,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Nueva carpeta"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Entrar el nombre para la nueva carpeta:",IDC_STATIC,7,7,158,8
+    LTEXT           "Teclee el nombre para la nueva carpeta:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,115,45,50,14
@@ -151,7 +151,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Copiar/Mover"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Fuente:",IDC_STATIC,7,7,26,8
+    LTEXT           "Origen:",IDC_STATIC,7,7,26,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "&Destino:",IDC_STATIC,7,37,40,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
@@ -199,7 +199,7 @@ BEGIN
     CONTROL         "Más &recientemente usado.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,90,10
     CONTROL         "Carpeta ""&Favoritos"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Claro atributo de sólo lectura de los archivos guardados.",IDC_CLEARREADONLY,
+    CONTROL         "&Quitar atributo de sólo lectura de los archivos guardados.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
     CONTROL         "Renombrar los archivos copiados en colisiones de &nombres.",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,200,10
