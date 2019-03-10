@@ -722,6 +722,7 @@ extern "C" int Encoding_AnalyzeText
   float const ucd_confidence = ucd_cnf;
   float const ced_confidence = ced_cnf;
 
+#if FALSE
   // --------------------------------------------------------------------------
   // GB18030 (UCD always) to GBK detection adjustment
   // --------------------------------------------------------------------------
@@ -741,7 +742,7 @@ extern "C" int Encoding_AnalyzeText
       break;
     }
   }
-
+#endif
 
   // --------------------------------------------------------------------------
   // vote for encoding prognosis based on confidence levels or reliability

@@ -7973,15 +7973,14 @@ static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
 //
 //  FileVars_Init()
 //
-
 bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
 
   char tch[LARGE_BUFFER];
 
   ZeroMemory(lpfv,sizeof(FILEVARS));
-  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData)
+  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData) {
     return true;
-
+  }
   StringCchCopyNA(tch,COUNTOF(tch),lpData,min_s(cbData + 1,COUNTOF(tch)));
   _SetFileVars(lpData, tch, lpfv);
 
@@ -7990,8 +7989,9 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
     _SetFileVars(lpData, tch, lpfv);
   }
 
-  if (lpfv->mask & FV_ENCODING)
+  if (lpfv->mask & FV_ENCODING) {
     lpfv->iEncoding = Encoding_MatchA(lpfv->tchEncoding);
+  }
 
   return true;
 }
