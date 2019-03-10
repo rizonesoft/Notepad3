@@ -26,19 +26,19 @@ LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -69,11 +69,11 @@ BEGIN
         POPUP "启动(&L)"
         BEGIN
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
-            MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
+            MENUITEM "清空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "运行当前文档(&D)\tCtrl+L",               IDM_FILE_LAUNCH
+            MENUITEM "运行文档(&D)\tCtrl+L",               IDM_FILE_LAUNCH
             MENUITEM "打开方式(&O)...\tAlt+L",                 IDM_FILE_OPENWITH
-            MENUITEM "运行(&C)...\tCtrl+R",                    IDM_FILE_RUN
+            MENUITEM "命令(&C)...\tCtrl+R",                    IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Web 模板 1(&1)\tCtrl+Shift+1",          CMD_WEBACTION1
             MENUITEM "Web 模板 2(&2)\tCtrl+Shift+2",          CMD_WEBACTION2
@@ -81,49 +81,49 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
         BEGIN
-            MENUITEM "ANSI(&A)",                              IDM_ENCODING_ANSI
-            MENUITEM "Unicode（UTF-16 小端序）(&U)",             IDM_ENCODING_UNICODE
-            MENUITEM "Unicode（UTF-16 大端序）(&B)",             IDM_ENCODING_UNICODEREV
-            MENUITEM "Unicode（UTF-8 无签名）(&8)\tShift+F8",    IDM_ENCODING_UTF8
-            MENUITEM "Unicode（UTF-8 带签名）(&S)",              IDM_ENCODING_UTF8SIGN
-            MENUITEM "选择编码(&M)...\tF9",                    IDM_ENCODING_SELECT
+            MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
+            MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
+            MENUITEM "Unicode &BE",         IDM_ENCODING_UNICODEREV
+            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
+            MENUITEM "UTF-8 &Sig",       IDM_ENCODING_UTF8SIGN
+            MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "使用 Encoding Detection 检测编码并重新加载(&M)", CMD_RELOADFORCEDETECTION
+            MENUITEM "强制检测编码(&M)", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "使用默认编码重新加载(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
-            MENUITEM "使用 ANSI 编码重新加载(&A)\tCtrl-Shift+A",      CMD_RECODEANSI
-            MENUITEM "使用 OEM 编码重新加载(&O)\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "使用 GB18030 编码重新加载(&G)\tCtrl+Shift+F10",           CMD_RECODEGB18030
+            MENUITEM "重新编码为 &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "重新编码为 &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
+            MENUITEM "重新编码为 &GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
             MENUITEM SEPARATOR
-            MENUITEM "使用 UTF-8 编码重新加载(&8)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
-            MENUITEM "忽略编码标记并重新加载(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS
-            MENUITEM "选择编码并重新加载(&R)...\tF8",                 IDM_ENCODING_RECODE
+            MENUITEM "重载 ASCII 为 UTF-&8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
+            MENUITEM "忽略编码标记(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS
+            MENUITEM "选择编码(&R)...\tF8",                 IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "设置(&D)...",                         IDM_ENCODING_SETDEFAULT
+            MENUITEM "设置默认(&D)...",                         IDM_ENCODING_SETDEFAULT
         END
-        POPUP "换行(&G)"
+        POPUP "行末符号(&G)"
         BEGIN
-            MENUITEM "Windows(&W) (CR+LF)",                  IDM_LINEENDINGS_CRLF
-            MENUITEM "Mac(&M) (CR)",                         IDM_LINEENDINGS_CR
-            MENUITEM "Unix(&U) (LF)",                        IDM_LINEENDINGS_LF
+            MENUITEM "&Windows (CR+LF)",                  IDM_LINEENDINGS_CRLF
+            MENUITEM "&Mac (CR)",                         IDM_LINEENDINGS_CR
+            MENUITEM "&Unix (LF)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "设置(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "默认(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
         MENUITEM "页面设置(&T)...",                           IDM_FILE_PAGESETUP
         MENUITEM "打印(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "属性(&I)...",                               IDM_FILE_PROPERTIES
-        MENUITEM "在桌面创建快捷方式(&D)",                     IDM_FILE_CREATELINK
+        MENUITEM "创建桌面链接(&D)",                     IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "浏览(&B)...\tCtrl+M",                       IDM_FILE_BROWSE
         POPUP "收藏夹(&F)"
         BEGIN
             MENUITEM "打开收藏夹(&O)...\tAlt+I",              IDM_FILE_OPENFAV
-            MENUITEM "将当前文件添加到收藏夹(&A)...\tAlt+K",   IDM_FILE_ADDTOFAV
+            MENUITEM "添加当前文件(&A)...\tAlt+K",   IDM_FILE_ADDTOFAV
             MENUITEM "管理收藏夹(&M)...\tAlt+F9",             IDM_FILE_MANAGEFAV
         END
-        MENUITEM "最近使用的(&H)...\tCtrl+Alt+H",             IDM_FILE_RECENT
+        MENUITEM "最近历史(&H)...\tCtrl+Alt+H",             IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)\tAlt+F4",                          IDM_FILE_EXIT
     END
@@ -137,7 +137,7 @@ BEGIN
         MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
-        MENUITEM "和剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
+        MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
         MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
@@ -158,7 +158,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "剪切行(&L)\tCtrl[+Shift]+X",             IDM_EDIT_CUTLINE
             MENUITEM "复制行(&C)\tCtrl[+Shift]+C",             IDM_EDIT_COPYLINE
-            MENUITEM "原地复制行/选区(&D)\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "复写上一行/选区(&D)\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "删除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
@@ -167,9 +167,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "硬换行处理(&W)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM "拆分行(&S)\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "连接行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
-            MENUITEM "连接行（不添加空格）(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "连接行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
+            MENUITEM "合并行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "合并行（不添加空格）(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "合并行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "合并空行(&G)\tAlt+Y",                     IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "合并只有空白字符的行(&N)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
@@ -195,7 +195,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "自定义(&W)...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "原地复制选定内容/Line(&D)\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "复写选定内容/行(&D)\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "填充空格(&P)\tAlt+B",                     IDM_EDIT_PADWITHSPACES
             MENUITEM "删除第一个字符(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
@@ -228,7 +228,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML 标记(&H)...\tAlt+X",            IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "编码名称(&E)\tCtrl+F8",                   IDM_EDIT_INSERT_ENCODING
+            MENUITEM "编码标识符(&E)\tCtrl+F8",                   IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "日期和时间（短格式）(&T)\tCtrl+F5",         IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
@@ -237,7 +237,7 @@ BEGIN
             MENUITEM "文件名(&F)\tCtrl+F9",                    IDM_EDIT_INSERT_FILENAME
             MENUITEM "完整文件路径(&P)\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
-            MENUITEM "GUID(&G)\tCtrl+Shift+.",                IDM_EDIT_INSERT_GUID
+            MENUITEM "&GUID\tCtrl+Shift+.",                IDM_EDIT_INSERT_GUID
         END
         POPUP "杂项(&M)"
         BEGIN
@@ -294,24 +294,24 @@ BEGIN
             MENUITEM "使用备选基本样式(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
             MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
             MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
-            MENUITEM "当前语法高亮方案默认字体(&H)...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+            MENUITEM "当前方案默认字体(&H)...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
         MENUITEM SEPARATOR
         MENUITEM "自动换行(&R)\tCtrl+W",                       IDM_VIEW_WORDWRAP
         MENUITEM "显示行长度标记(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
-        MENUITEM "显示缩进指引(&A)\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "显示软换行(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "显示空白字符(&W)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
-        MENUITEM "显示换行符(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
+        MENUITEM "显示行末符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
-        POPUP "高亮显示当前行(&G)\tCtrl+Shift+I"
+        POPUP "高亮当前行(&G)\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "清除高亮(&N)",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "背景颜色(&C)",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "边框(&F)",                      IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "标记匹配(&K)"
         BEGIN
@@ -329,22 +329,22 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
-        MENUITEM "整行选择栏(&M)\tCtrl+Shift+M",              IDM_VIEW_MARGIN
+        MENUITEM "显示边界(&M)\tCtrl+Shift+M",              IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
         POPUP "显示(&D)"
         BEGIN
             MENUITEM "代码折叠(&F)\tCtrl+Shift+Alt+F",        IDM_VIEW_FOLDING
-            MENUITEM "折叠/展开(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "仅显示匹配行(&V)\tCtrl+Alt+V",          IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "追踪文件末尾（tail 命令）(&T)",            IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "切换聚焦(&V)\tCtrl+Alt+V",          IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "追踪文件末尾（&Tail 命令）",            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允许滚动超过文件尾(&F)",                 IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "工具栏(&T)"
         BEGIN
             MENUITEM "显示工具栏(&T)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Toolbar",                      IDM_VIEW_TOGGLETB
+            MENUITEM "切换工具栏(&G)",                      IDM_VIEW_TOGGLETB
             MENUITEM "自定义工具栏(&C)...",                   IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",               IDM_VIEW_LOADTHEMETB
+            MENUITEM "加载工具栏主题(&L)...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "显示状态栏(&S)",                        IDM_VIEW_STATUSBAR
         END
         POPUP "缩放(&Z)"
@@ -359,24 +359,24 @@ BEGIN
             MENUITEM "调整窗口至默认位置(&D)\tCtrl+Shift+P",   CMD_DEFAULTWINPOS
             MENUITEM "保存为默认窗口位置(&V)",                 CMD_SAVEASDEFWINPOS
             MENUITEM "清除已保存的默认窗口位置(&C)",          CMD_CLEARSAVEDWINPOS
-            MENUITEM "调整窗口至初始位置(&T)\tCtrl+F11",       CMD_INITIALWINPOS
-            MENUITEM "调整窗口至屏幕大小(&S)\tF11",            CMD_FULLSCRWINPOS
-            MENUITEM "粘性窗口位置(&P)",                       IDM_VIEW_STICKYWINPOS
+            MENUITEM "移动窗口至初始位置(&T)\tCtrl+F11",       CMD_INITIALWINPOS
+            MENUITEM "切换窗口至屏幕大小(&S)\tF11",            CMD_FULLSCRWINPOS
+            MENUITEM "粘住窗口位置(&P)",                       IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "设置(&S)"
     BEGIN
         MENUITEM "将制表符替换为空格(&S)",                        IDM_VIEW_TABSASSPACES
         MENUITEM "制表符设置(&T)...\tCtrl+T",                     IDM_VIEW_TABSETTINGS
-        MENUITEM "自动换行设置(&W)...",                           IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "行长度标记设置(&L)...",                         IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "字词换行设置(&W)...",                           IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "长行标记设置(&L)...",                         IDM_VIEW_LONGLINESETTINGS
         MENUITEM "自动缩进(&D)",                                  IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "自动插入 HTML/XML 关闭标记(&H)\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
+        MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "自动补全单词(&U)",                              IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "自动补全语法关键字(&K)",                        IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                  IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "每个文件最多只允许打开一个实例(&F)",           IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "单一文件实例(&F)",           IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY
         POPUP "Esc 键功能(&K)"
         BEGIN
@@ -384,13 +384,13 @@ BEGIN
             MENUITEM "最小化 Notepad3(&M)",                    IDM_VIEW_ESCMINIMIZE
             MENUITEM "退出 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
         END
-        MENUITEM "运行工具前先保存文件(&B)",                   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "运行工具前先保存(&B)",                   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
         MENUITEM SEPARATOR
-        POPUP "记忆性(&R)"
+        POPUP "记忆(&R)"
         BEGIN
             MENUITEM "记忆最近使用的文件(&I)",                 IDM_VIEW_NOSAVERECENT
             MENUITEM "记忆插入光标位置(&V)",                   IDM_VIEW_NOPRESERVECARET
-            MENUITEM "记忆查找内容(&E)",                       IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "记忆查找方式(&E)",                       IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "窗口(&W)"
         BEGIN
@@ -402,24 +402,24 @@ BEGIN
                 MENUITEM "摘录选中内容(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
             MENUITEM "重用窗口(&R)",                           IDM_VIEW_REUSEWINDOW
-            MENUITEM "窗口置顶(&A)\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
+            MENUITEM "总是置顶(&A)\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
             MENUITEM "最小化到托盘(&Z)",                       IDM_VIEW_MINTOTRAY
-            MENUITEM "半透明窗口(&M)\tAlt+G",                  IDM_VIEW_TRANSPARENT
+            MENUITEM "透明模式(&M)\tAlt+G",                  IDM_VIEW_TRANSPARENT
         END
-        POPUP "文本处理技术(&T)"
+        POPUP "处理技术(&T)"
         BEGIN
-            POPUP "渲染技术(&R)"
+            POPUP "渲染(&R)"
             BEGIN
                 MENUITEM "默认 GDI(&G)",                    IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (Direct2D)(&D)",      IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite Retain(&R)",          IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "DirectWrite (&Direct2D)",      IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",          IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",          IDM_SET_RENDER_TECH_D2DDC
             END
-            POPUP "双向文本支持(&B)"
+            POPUP "双向(&B)"
             BEGIN
                 MENUITEM "禁用(&N)",                        IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "启用，默认从左向右(&L)",           IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "启用，默认从右向左(&R)",           IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "默认从左向右(&L)",           IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "默认从右向左(&R)",           IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "高级设置(&A)"
@@ -462,9 +462,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "显示工具栏(&T)",                            IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbar",                          IDM_VIEW_TOGGLETB
+        MENUITEM "切换工具栏(&G)",                          IDM_VIEW_TOGGLETB
         MENUITEM "自定义工具栏(&C)...",                       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",                   IDM_VIEW_LOADTHEMETB
+        MENUITEM "加载工具栏主题(&L)...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "显示状态栏(&S)",                            IDM_VIEW_STATUSBAR
     END
     POPUP "+"
