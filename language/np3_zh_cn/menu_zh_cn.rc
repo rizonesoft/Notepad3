@@ -81,21 +81,21 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
         BEGIN
-            MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &BE",         IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 &Sig",       IDM_ENCODING_UTF8SIGN
+            MENUITEM "ANSI(&A)",                       IDM_ENCODING_ANSI
+            MENUITEM "Unicode(&U)",                    IDM_ENCODING_UNICODE
+            MENUITEM "Unicode BE(&B)",         IDM_ENCODING_UNICODEREV
+            MENUITEM "UTF-8(&8)\tShift+F8",            IDM_ENCODING_UTF8
+            MENUITEM "UTF-8 带签名(&S)",       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
             MENUITEM "强制检测编码(&M)", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "重新编码为默认(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
-            MENUITEM "重新编码为 &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
-            MENUITEM "重新编码为 &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "重新编码为 &GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
+            MENUITEM "重新编码为 ANSI(&A)\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "重新编码为 OEM(&O)\tCtrl+Shift+O",       CMD_RECODEOEM
+            MENUITEM "重新编码为 GB18030(&G)\tCtrl+Shift+F10",           CMD_RECODEGB18030
             MENUITEM SEPARATOR
-            MENUITEM "重载 ASCII 为 UTF-&8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
+            MENUITEM "重载 ASCII 为 UTF-8(&8)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
             MENUITEM "忽略编码标记(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS
             MENUITEM "选择编码(&R)...\tF8",                 IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
@@ -103,9 +103,9 @@ BEGIN
         END
         POPUP "换行(&G)"
         BEGIN
-            MENUITEM "&Windows (CR+LF)",                  IDM_LINEENDINGS_CRLF
-            MENUITEM "&Mac (CR)",                         IDM_LINEENDINGS_CR
-            MENUITEM "&Unix (LF)",                        IDM_LINEENDINGS_LF
+            MENUITEM "Windows (CR+LF) (&W)",                  IDM_LINEENDINGS_CRLF
+            MENUITEM "Mac (CR) (&M)",                         IDM_LINEENDINGS_CR
+            MENUITEM "Unix (LF) (&U)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
             MENUITEM "默认(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
         END
