@@ -2767,7 +2767,8 @@ bool SelectDefLineEndingDlg(HWND hwnd, LPARAM piOption)
 //
 static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam) 
 {
-  switch (umsg) {
+  switch (umsg) 
+  {
   case WM_INITDIALOG: {
     SetWindowLongPtr(hwnd, DWLP_USER, lParam);
     const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
@@ -2796,33 +2797,34 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
       SetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, wch);
     }
 
-    if (Settings.WarnInconsistEOLs) {
-      CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, BST_CHECKED);
-    }
+    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, Settings.WarnInconsistEOLs ? BST_CHECKED : BST_UNCHECKED);
 
     CenterDlgInParent(hwnd);
   }
-                      return TRUE;
+  return true;
 
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
-    case IDOK: {
-      EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
-      const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
-      status->iEOLMode = iEOLMode;
-      Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
-      EndDialog(hwnd, IDOK);
-    }
-    break;
+    case IDOK: 
+      {
+        EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
+        status->iEOLMode = iEOLMode;
+        Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+        EndDialog(hwnd, IDOK);
+      }
+      break;
 
     case IDCANCEL:
-      Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
-      EndDialog(hwnd, IDCANCEL);
+      {
+        Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+        EndDialog(hwnd, IDCANCEL);
+      }
       break;
     }
-    return TRUE;
+    return true;
   }
-  return FALSE;
+  return false;
 }
 
 
@@ -2830,14 +2832,96 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 //
 //  SelectDefLineEndingDlg()
 //
-bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus) {
+bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus) 
+{
   MessageBeep(MB_ICONEXCLAMATION);
   const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer, 
                                                MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS), 
                                                hwnd, 
                                                WarnLineEndingDlgProc, 
                                                (LPARAM)fioStatus);
-  return iResult == IDOK;
+  return (iResult == IDOK);
+}
+
+
+
+//=============================================================================
+//
+//  WarnIndentationDlgProc()
+//
+//
+static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (umsg) 
+  {
+  case WM_INITDIALOG: {
+    SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+    const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
+
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    WCHAR wch[128];
+    WCHAR tchFmt[128];
+    WCHAR tchCnt[32];
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[INDENT_TAB]);
+    FormatNumberStr(tchCnt);
+    GetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt, Settings.TabWidth);
+    SetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, wch);
+
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[INDENT_SPC]);
+    FormatNumberStr(tchCnt);
+    GetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt, Settings.IndentWidth);
+    SetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, wch);
+
+    CheckRadioButton(hwnd, IDC_INDENT_BY_TABS, IDC_INDENT_BY_SPCS, Settings.TabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS);
+
+    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, Settings.WarnInconsistentIndents ? BST_CHECKED : BST_UNCHECKED);
+
+    CenterDlgInParent(hwnd);
+  }
+  return true;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
+    case IDOK: 
+      {
+        EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        fioStatus->iGlobalIndent = IsDlgButtonChecked(hwnd, IDC_INDENT_BY_TABS) ? INDENT_TAB : INDENT_SPC;
+        Settings.WarnInconsistentIndents = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+        EndDialog(hwnd, IDOK);
+      }
+      break;
+
+    case IDCANCEL: 
+      {
+        //EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        //fioStatus->iGlobalIndent = INDENT_NONE;
+        Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+        EndDialog(hwnd, IDCANCEL);
+      }
+      break;
+    }
+    return true;
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  SelectDefLineEndingDlg()
+//
+bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
+{
+  MessageBeep(MB_ICONEXCLAMATION);
+  const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                               MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
+                                               hwnd,
+                                               WarnIndentationDlgProc,
+                                               (LPARAM)fioStatus);
+  return (iResult == IDOK);
 }
 
 

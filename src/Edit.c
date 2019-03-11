@@ -884,24 +884,27 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 
 //=============================================================================
 //
-// EditCheckIndentationConsistency() - check indentation consistency
+// EditIndentationCount() - check indentation consistency
 //
-void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
+void EditIndentationCount(HWND hwnd, EditFileIOStatus* status)
 {
   UNUSED(hwnd);
 
-  //int const tabWidth = Settings.TabWidth;
+  int const tabWidth = Settings.TabWidth;
   int const indentWidth = Settings.IndentWidth;
-
-  int tabCount = 0;
-  int blankCount = 0;
-
   DocLn const lineCount = SciCall_GetLineCount();
+
+  status->indentCount[TAB_MODULO] = 0;
+  status->indentCount[SPC_MODULO] = 0;
 
   for (DocLn line = 0; line < lineCount; ++line) 
   {
     DocPos const lineStartPos = SciCall_PositionFromLine(line);
     DocPos const lineIndentBeg = SciCall_GetLineIndentPosition(line);
+    DocPos const lineIndentDepth = SciCall_GetLineIndentation(line);
+
+    int tabCount = 0;
+    int blankCount = 0;
     int subSpcCnt = 0;
     for (DocPos pos = lineStartPos; pos < lineIndentBeg; ++pos) {
       char const ch = SciCall_GetCharAt(pos);
@@ -920,9 +923,15 @@ void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
         break;
       }
     }
+    status->indentCount[INDENT_TAB] += tabCount;
+    status->indentCount[INDENT_SPC] += blankCount;
+    status->indentCount[TAB_MODULO] += ((lineIndentDepth % tabWidth) != 0 ? 1 : 0);
+    status->indentCount[SPC_MODULO] += ((lineIndentDepth % indentWidth) != 0 ? 1 : 0);
+
+    //if (tabCount != 0 || blankCount != 0) {
+    //  status->indentCount[INDENT_LN] += 1;
+    //}
   }
-  status->indentCount[0] = tabCount;
-  status->indentCount[1] = blankCount;
 }
 
 

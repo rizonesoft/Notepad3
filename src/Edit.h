@@ -32,7 +32,7 @@ bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
 void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
-void  EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status);
+void  EditIndentationCount(HWND hwnd, EditFileIOStatus* status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool, bool, EditFileIOStatus* status);
 bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 

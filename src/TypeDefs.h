@@ -490,6 +490,8 @@ extern SETTINGS2_T Settings2;
 
 //=============================================================================
 
+typedef enum { INDENT_TAB = 0, INDENT_SPC = 1, TAB_MODULO = 2, SPC_MODULO = 3 } INDENT_TYPE;
+
 typedef struct _editfileiostatus
 {
   int iEncoding;
@@ -506,11 +508,12 @@ typedef struct _editfileiostatus
   bool bUnknownExt;
 
   // inconsistent indentation
-  DocLn indentCount[2];
+  INDENT_TYPE iGlobalIndent;
+  DocLn indentCount[4];
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, {0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, {0,0,0,0} }
 
 //=============================================================================
 

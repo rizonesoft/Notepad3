@@ -9442,36 +9442,6 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSI
   return(fSuccess);
 }
 
-//=============================================================================
-//
-// _WarnInconsistentIndentation()
-//
-static void _WarnInconsistentIndentation(const EditFileIOStatus* const status)
-{
-  if (((status->indentCount[0] > 0) && (status->indentCount[1] > 0))
-      //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
-      //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
-      ) {
-    WCHAR szDefault[32];
-    WCHAR szStatistic[80];
-    StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s(%i)",
-      (Settings.TabsAsSpaces ? L"BLANK" : L"TABULATOR"), (Settings.TabsAsSpaces ? Settings.IndentWidth : Settings.TabWidth));
-    StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  # TABULATOR(%i) = %lli\n  # BLANK(%i) =     %lli\n",
-                    Settings.TabWidth, status->indentCount[0], Settings.IndentWidth, status->indentCount[1]);
-
-    int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
-
-    if (res == IDYES) {
-      BeginWaitCursor(NULL);
-      _BEGIN_UNDO_ACTION_;
-      EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
-      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
-      _END_UNDO_ACTION_;
-      EndWaitCursor();
-    }
-  }
-}
-
 
 //=============================================================================
 //
@@ -9688,11 +9658,59 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     }
 
     if (Settings.WarnInconsistentIndents && !Style_IsCurLexerStandard()) {
-      EditCheckIndentationConsistency(Globals.hwndEdit, &fioStatus);
-      _WarnInconsistentIndentation(&fioStatus);
-      // TODO: Set correct Indent mode / verify settings vs. file majority
-    }
 
+      EditIndentationCount(Globals.hwndEdit, &fioStatus);
+
+      if (((fioStatus.indentCount[INDENT_TAB] > 0) && (fioStatus.indentCount[INDENT_SPC] > 0))
+        //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
+        //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
+        ) {
+        if (WarnIndentationDlg(Globals.hwndMain, &fioStatus)) 
+        {
+          bool const useTabs = SciCall_GetUseTabs();
+          SciCall_SetUseTabs(fioStatus.iGlobalIndent == INDENT_TAB);
+          bool const tabIndents = SciCall_GetTabIndents();
+          SciCall_SetTabIndents(true);
+          bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
+          SciCall_SetBackSpaceUnIndents(true);
+
+          BeginWaitCursor(NULL);
+          _BEGIN_UNDO_ACTION_;
+          EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
+          EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
+          _END_UNDO_ACTION_;
+          EndWaitCursor();
+
+          SciCall_SetUseTabs(useTabs);
+          SciCall_SetTabIndents(tabIndents);
+          SciCall_SetBackSpaceUnIndents(backSpcUnindents);
+
+          // TODO: prepare SPACE or TAB indentation settings
+          //SciCall_SetUseTabs(!Settings.TabsAsSpaces);
+          //SciCall_SetTabIndents(Settings.TabIndents);
+          //SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
+          //Settings.TabWidth = clampi(Settings.TabWidth, 1, 256);
+          //Settings.IndentWidth = clampi(Settings.IndentWidth, 0, 256);
+          //SciCall_SetTabWidth(Settings.TabWidth);
+          //SciCall_SetIndent(Settings.IndentWidth);
+        }
+#if 0
+        WCHAR szDefault[32];
+        WCHAR szStatistic[80];
+        StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s(%i)",
+          (Settings.TabsAsSpaces ? L"BLANK" : L"TABULATOR"), (Settings.TabsAsSpaces ? Settings.IndentWidth : Settings.TabWidth));
+        StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  # TABULATOR(%i) = %lli\n  # BLANK(%i) =     %lli\n",
+          Settings.TabWidth, status->indentCount[0], Settings.IndentWidth, status->indentCount[1]);
+
+        int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
+
+        if (res == IDYES) {
+        }
+#endif
+      }
+      // TODO: Set correct Indent mode / verify settings vs. file majority
+
+    }
   }
   else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
     MsgBoxLng(MBWARN, IDS_MUI_ERR_LOADFILE, szFileName);

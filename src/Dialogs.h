@@ -37,6 +37,7 @@ bool SelectEncodingDlg(HWND hwnd,int * pidREncoding);
 bool RecodeDlg(HWND hwnd,int * pidREncoding);
 bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
+bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 
 bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo);
 void WinInfoToScreen(WININFO* pWinInfo);
