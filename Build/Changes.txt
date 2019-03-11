@@ -36,6 +36,9 @@ Current Version 5.19.309.build (2019-Mar-09)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+
+- Add a timer of 3.2 second to the Zoom bubbles popup
+
 - Add (internal) [Settings2] to control encoding detection
 - Add Recent History button in Toolbar
 - Add support for external and internal Hot- and Disabled- Toolbar icons 
@@ -56,6 +59,9 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+
+- Add here items for review...
+
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
 - Start dual encoding detectors in (thread) parallel for large files
@@ -79,6 +85,9 @@ CHANGES:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+
+- Add here items for review...
+
 - Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
 - MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
 - Write Language change to Settings2 on change immediately
@@ -93,7 +102,6 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Portuguese (pt-BR) Translation (In progress)
 - Hungarian (hu-HU) Translation (In progress)
 - Italian (it-IT) Translation (Partial)
 - Korean (UHC) Translation
