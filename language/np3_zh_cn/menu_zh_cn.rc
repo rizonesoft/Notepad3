@@ -75,8 +75,8 @@ BEGIN
             MENUITEM "打开方式(&O)...\tAlt+L",                 IDM_FILE_OPENWITH
             MENUITEM "命令(&C)...\tCtrl+R",                    IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web 模板 &1\tCtrl+Shift+1",          CMD_WEBACTION1
-            MENUITEM "Web 模板 &2\tCtrl+Shift+2",          CMD_WEBACTION2
+            MENUITEM "Web 模板 1(&1)\tCtrl+Shift+1",          CMD_WEBACTION1
+            MENUITEM "Web 模板 2(&2)\tCtrl+Shift+2",          CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
@@ -90,10 +90,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "强制检测编码(&M)", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "重载为默认编码(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
-            MENUITEM "重载为 &ANSI 编码\tCtrl-Shift+A",      CMD_RECODEANSI
-            MENUITEM "重载为 &OEM 编码\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "重载为 &GB18030 编码\tCtrl+Shift+F10",           CMD_RECODEGB18030
+            MENUITEM "重新编码为默认(&E)\tCtrl-Alt-F",          CMD_RECODEDEFAULT
+            MENUITEM "重新编码为 &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "重新编码为 &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
+            MENUITEM "重新编码为 &GB18030\tCtrl+Shift+F10",           CMD_RECODEGB18030
             MENUITEM SEPARATOR
             MENUITEM "重载 ASCII 为 UTF-&8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
             MENUITEM "忽略编码标记(&T)\tAlt+F8",             CMD_RELOADNOFILEVARS
@@ -101,7 +101,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "设置默认(&D)...",                         IDM_ENCODING_SETDEFAULT
         END
-        POPUP "行末(&G)"
+        POPUP "换行(&G)"
         BEGIN
             MENUITEM "&Windows (CR+LF)",                  IDM_LINEENDINGS_CRLF
             MENUITEM "&Mac (CR)",                         IDM_LINEENDINGS_CR
@@ -137,7 +137,7 @@ BEGIN
         MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
-        MENUITEM "交换剪贴板(&W)\tCtrl+K",                  IDM_EDIT_SWAP
+        MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
         MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
@@ -167,14 +167,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "硬换行处理(&W)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM "拆分行(&S)\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "合并行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
-            MENUITEM "合并行（不添加空格）(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "合并行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
+            MENUITEM "拼接行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "拼接行（不添加空格）(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "拼接行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "合并空行(&G)\tAlt+Y",                     IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "合并只有空格的行(&N)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "合并只有空白字符的行(&N)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
             MENUITEM "删除空行(&R)\tAlt+R",                     IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "删除只有空格的行(&M)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "删除只有空白字符的行(&M)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "删除重复行(&O)\tCtrl+Alt+D",              IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "选择(&S)"
@@ -201,7 +201,7 @@ BEGIN
             MENUITEM "删除第一个字符(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
             MENUITEM "删除最后一个字符(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
             MENUITEM "删除行尾空格(&T)\tAlt+W",             IDM_EDIT_TRIMLINES
-            MENUITEM "压缩空格(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "压缩空白字符(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "修改(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
@@ -253,8 +253,8 @@ BEGIN
             MENUITEM "转换为十六进制(&C)\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
             MENUITEM "从十六进制转换(&H)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
-            MENUITEM "增加数值(&+)\tCtrl+Alt+NK+",            CMD_INCREASENUM
-            MENUITEM "减少数值(&+)\tCtrl+Alt+NK-",            CMD_DECREASENUM
+            MENUITEM "增大数值(&+)\tCtrl+Alt+NK+",            CMD_INCREASENUM
+            MENUITEM "减小数值(&+)\tCtrl+Alt+NK-",            CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "查找配对的括号(&F)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "选定直到配对的括号(&M)\tCtrl+Shift+B",          IDM_EDIT_SELTOMATCHINGBRACE
@@ -303,7 +303,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "显示软换行(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "显示空格(&W)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
-        MENUITEM "显示行末符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
+        MENUITEM "显示换行符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
@@ -336,7 +336,7 @@ BEGIN
             MENUITEM "代码折叠(&F)\tCtrl+Shift+Alt+F",        IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM "切换聚焦(&V)\tCtrl+Alt+V",          IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "追踪文件末尾（&Tail 命令）",            IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "追踪文件末尾（&tail 命令）",            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允许滚动超过文件尾(&F)",                 IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "工具栏(&T)"
