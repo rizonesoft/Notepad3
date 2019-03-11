@@ -148,7 +148,7 @@ typedef struct _infobox {
   bool   bDisableCheckBox;
 } INFOBOX, *LPINFOBOX;
 
-INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   LPINFOBOX lpib;
 
@@ -157,8 +157,8 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
   case WM_INITDIALOG:
     {
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      lpib = (LPINFOBOX)lParam;
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      lpib = (LPINFOBOX)lParam;
       SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_EXCLAMATION), 0);
       SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
       if (lpib->bDisableCheckBox)
@@ -270,7 +270,7 @@ void DisplayCmdLineHelp(HWND hwnd)
 }
 #else
 
-INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
@@ -500,6 +500,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   {
   case WM_INITDIALOG:
   {
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
     SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
@@ -703,7 +705,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
           (GetDlgCtrlID((HWND)wParam) == IDC_RIZONEBMP))
       {
         SetCursor(LoadCursor(NULL, IDC_HAND));
-        SetWindowLongPtr(hwnd, DWLP_MSGRESULT, true);
+        SetWindowLongPtr(hwnd, DWLP_MSGRESULT, (LONG_PTR)true);
         return true;
       }
     }
@@ -747,13 +749,13 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 //
 //  RunDlgProc()
 //
-INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         // MakeBitmapButton(hwnd,IDC_SEARCHEXE,Globals.hInstance,IDB_OPEN);
         SendDlgItemMessage(hwnd,IDC_COMMANDLINE,EM_LIMITTEXT,MAX_PATH - 1,0);
@@ -916,21 +918,18 @@ INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 //
 //  OpenWithDlgProc()
 //
-INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   switch(umsg)
   {
 
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-
         ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP3);
 
-        SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         //SetExplorerTheme(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_OPENWITHDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
@@ -1117,20 +1116,18 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //
 //  FavoritesDlgProc()
 //
-INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
   {
 
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-
         ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP3);
 
-        SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         //SetExplorerTheme(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_FAVORITESDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
@@ -1293,15 +1290,14 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
 //
 //  Controls: 100 Edit
 //
-INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch (umsg) {
-    WCHAR *pszName;
 
   case WM_INITDIALOG:
     {
-      pszName = (LPWSTR)lParam;
-      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)pszName);
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      LPCWSTR const pszName = (LPCWSTR)lParam;
 
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, MAX_PATH - 1, 0);
@@ -1324,9 +1320,11 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       break;
 
     case IDOK:
-      pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
-      GetDlgItemText(hwnd, 100, pszName, MAX_PATH - 1);
-      EndDialog(hwnd, IDOK);
+      {
+        LPWSTR pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
+        GetDlgItemText(hwnd, 100, pszName, MAX_PATH - 1);
+        EndDialog(hwnd, IDOK);
+      }
       break;
 
     case IDCANCEL:
@@ -1470,12 +1468,14 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
   //return(0);
 }
 
-INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
@@ -1490,8 +1490,6 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
           lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
         }
-        SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
-
         ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
@@ -1842,15 +1840,17 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            103 Check Box    (Reset on New)
 //
 
-INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch (umsg) {
   case WM_INITDIALOG:
     {
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       CheckRadioButton(hwnd, 100, 102, 100 + Settings.FileWatchingMode);
-      if (Settings.ResetFileWatching)
+      if (Settings.ResetFileWatching) {
         CheckDlgButton(hwnd, 103, BST_CHECKED);
+      }
       CenterDlgInParent(hwnd);
     }
     return true;
@@ -1882,7 +1882,6 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
     }
     return true;
   }
-  UNUSED(lParam);
 
   return false;
 }
@@ -1915,17 +1914,16 @@ bool ChangeNotifyDlg(HWND hwnd)
 //
 //  Controls: Edit IDC_COLUMNWRAP
 //
-INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-
-  static UINT *piNumber;
-
   switch (umsg) {
   case WM_INITDIALOG:
     {
-      piNumber = (UINT*)lParam;
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      UINT const uiNumber = *((UINT*)lParam);
+
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      SetDlgItemInt(hwnd, IDC_COLUMNWRAP, *piNumber, false);
+      SetDlgItemInt(hwnd, IDC_COLUMNWRAP, uiNumber, false);
       SendDlgItemMessage(hwnd, IDC_COLUMNWRAP, EM_LIMITTEXT, 15, 0);
       CenterDlgInParent(hwnd);
     }
@@ -1944,9 +1942,11 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
     case IDOK:
       {
         BOOL fTranslated;
-        UINT iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP, &fTranslated, FALSE);
+        UINT const iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP, &fTranslated, FALSE);
         if (fTranslated) {
+          UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
           *piNumber = iNewNumber;
+
           EndDialog(hwnd, IDOK);
         }
         else
@@ -1999,14 +1999,13 @@ bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
 //            202 Text
 //            203 Text
 //
-INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(lParam);
-
   switch (umsg) {
 
   case WM_INITDIALOG:
     {
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       WCHAR tch[512];
       for (int i = 0; i < 4; i++) {
@@ -2104,24 +2103,26 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            101 Radio1
 //            102 Radio2
 //
-INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static int *piNumber;
-
   switch (umsg) {
 
   case WM_INITDIALOG:
     {
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      UINT const iNumber = *((UINT*)lParam);
+
+      // TODO: @@@  set GUI IDS for hard coded numbers
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      piNumber = (int*)lParam;
-      SetDlgItemInt(hwnd, 100, *piNumber, false);
+      SetDlgItemInt(hwnd, 100, iNumber, false);
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 15, 0);
 
-      if (Settings.LongLineMode == EDGE_LINE)
+      if (Settings.LongLineMode == EDGE_LINE) {
         CheckRadioButton(hwnd, 101, 102, 101);
-      else
+      }
+      else {
         CheckRadioButton(hwnd, 101, 102, 102);
-
+      }
       CenterDlgInParent(hwnd);
 
     }
@@ -2139,22 +2140,20 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
     case IDOK:
       {
-
         BOOL fTranslated;
-
-        UINT iNewNumber = GetDlgItemInt(hwnd, 100, &fTranslated, FALSE);
+        UINT const iNewNumber = GetDlgItemInt(hwnd, 100, &fTranslated, FALSE);
 
         if (fTranslated) {
+          UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
           *piNumber = iNewNumber;
-
           Settings.LongLineMode = (IsDlgButtonChecked(hwnd, 101)) ? EDGE_LINE : EDGE_BACKGROUND;
 
           EndDialog(hwnd, IDOK);
         }
 
-        else
+        else {
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, 100)), 1);
-
+        }
       }
       break;
 
@@ -2201,14 +2200,13 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            104 Check
 //
 
-INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  UNUSED(lParam);
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Settings.TabWidth,false);
@@ -2302,10 +2300,8 @@ typedef struct encodedlg {
   int  cyDlg;
 } ENCODEDLG, *PENCODEDLG;
 
-INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static PENCODEDLG pdd;
-
   static int s_iEnc;
   static bool s_bUseAsFallback;
   static bool s_bLoadASCIIasUTF8;
@@ -2314,17 +2310,15 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
   {
   case WM_INITDIALOG:
   {
-    HBITMAP hbmp;
-    HIMAGELIST himl;
-
-    pdd = (PENCODEDLG)lParam;
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    PENCODEDLG const pdd = (PENCODEDLG)lParam;
 
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-    hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     hbmp = ResizeImageForCurrentDPI(hbmp);
 
-    himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
+    HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
     ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
     DeleteObject(hbmp);
     SendDlgItemMessage(hwnd, IDC_ENCODINGLIST, CBEM_SETIMAGELIST, 0, (LPARAM)himl);
@@ -2414,6 +2408,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
     break;
 
     case IDOK: {
+      PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
       if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &pdd->idEncoding)) {
         if (pdd->idEncoding < 0) {
           MsgBoxLng(MBWARN, IDS_MUI_ERR_ENCODINGNA);
@@ -2430,8 +2425,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
           EndDialog(hwnd, IDOK);
         }
       }
-      else
+      else {
         PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_ENCODINGLIST)), 1);
+      }
     }
     break;
 
@@ -2478,10 +2474,9 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
 //  SelectEncodingDlgProc()
 //
 //
-INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
-  static PENCODEDLG pdd;
   static HWND hwndLV;
 
   switch(umsg)
@@ -2489,11 +2484,10 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
     case WM_INITDIALOG:
       {
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        HBITMAP hbmp;
-        HIMAGELIST himl;
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+        PENCODEDLG const pdd = (PENCODEDLG)lParam;
 
-        pdd = (PENCODEDLG)lParam;
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
@@ -2501,10 +2495,10 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
-        hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+        HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
         hbmp = ResizeImageForCurrentDPI(hbmp);
 
-        himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
+        HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
         DeleteObject(hbmp);
         ListView_SetImageList(GetDlgItem(hwnd,IDC_ENCODINGLIST),himl,LVSIL_SMALL);
@@ -2527,20 +2521,20 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
       break;
 
 
-    case WM_DESTROY:
-      ResizeDlg_Destroy(hwnd,&pdd->cxDlg,&pdd->cyDlg);
+    case WM_DESTROY: 
+      {
+        PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
+        ResizeDlg_Destroy(hwnd, &pdd->cxDlg, &pdd->cyDlg);
+      }
       return false;
 
 
     case WM_SIZE:
       {
-        int dx;
-        int dy;
-        HDWP hdwp;
-
+        int dx, dy;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
-        hdwp = BeginDeferWindowPos(4);
+        HDWP hdwp = BeginDeferWindowPos(4);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP4,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
@@ -2583,17 +2577,21 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
       {
 
         case IDOK:
-          if (Encoding_GetFromListView(hwndLV,&pdd->idEncoding)) {
+        {
+          PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
+          if (Encoding_GetFromListView(hwndLV, &pdd->idEncoding)) {
             if (pdd->idEncoding < 0) {
-              MsgBoxLng(MBWARN,IDS_MUI_ERR_ENCODINGNA);
-              EndDialog(hwnd,IDCANCEL);
+              MsgBoxLng(MBWARN, IDS_MUI_ERR_ENCODINGNA);
+              EndDialog(hwnd, IDCANCEL);
             }
-            else
-              EndDialog(hwnd,IDOK);
+            else {
+              EndDialog(hwnd, IDOK);
+            }
           }
-          else
-            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_ENCODINGLIST)),1);
-          
+          else {
+            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_ENCODINGLIST)), 1);
+          }
+        }
           break;
 
 
@@ -2678,33 +2676,34 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
 }
 
 
+
+
+
+
 //=============================================================================
 //
 //  SelectDefLineEndingDlgProc()
 //
 //
-INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  static int* piOption;
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
-        int i;
-        WCHAR wch[256] = { L'\0' };
-
-        piOption = (int*)lParam;
+        SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+        int const iOption = *((int*)lParam);
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         // Load options
-        for (i = 0; i < 3; i++) {
+        WCHAR wch[256] = { L'\0' };
+        for (int i = 0; i < 3; i++) {
           GetLngString(IDS_EOL_WIN+i,wch,COUNTOF(wch));
           SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_ADDSTRING,0,(LPARAM)wch);
         }
 
-        SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,(WPARAM)*piOption,0);
+        SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,iOption,0);
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETEXTENDEDUI,true,0);
 
         CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
@@ -2725,10 +2724,11 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
       switch(LOWORD(wParam))
       {
         case IDOK: {
+            int* piOption = (int*)GetWindowLongPtr(hwnd, DWLP_USER);
             *piOption = (int)SendDlgItemMessage(hwnd,IDC_EOLMODELIST,CB_GETCURSEL,0,0);
-            Settings.WarnInconsistEOLs = (IsDlgButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS) == BST_CHECKED);
-            Settings.FixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENT_EOLS) == BST_CHECKED);
-            Settings.FixTrailingBlanks = (IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS) == BST_CHECKED);
+            Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS);
+            Settings.FixLineEndings = IsDlgButtonChecked(hwnd,IDC_CONSISTENT_EOLS);
+            Settings.FixTrailingBlanks = IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS);
             EndDialog(hwnd,IDOK);
           }
           break;
@@ -2757,6 +2757,89 @@ bool SelectDefLineEndingDlg(HWND hwnd, LPARAM piOption)
 
   return (iResult == IDOK);
 }
+
+
+
+//=============================================================================
+//
+//  WarnLineEndingDlgProc()
+//
+//
+static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam) 
+{
+  switch (umsg) {
+  case WM_INITDIALOG: {
+    SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+    const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
+
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    int const iEOLMode = fioStatus->iEOLMode;
+
+    // Load options
+    WCHAR wch[128];
+    for (int i = 0; i < 3; i++) {
+      GetLngString(IDS_MUI_EOLMODENAME_CRLF + i, wch, COUNTOF(wch));
+      SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_ADDSTRING, 0, (LPARAM)wch);
+    }
+
+    SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_SETCURSEL, iEOLMode, 0);
+    SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_SETEXTENDEDUI, TRUE, 0);
+
+    WCHAR tchFmt[128];
+    for (int i = 0; i < 3; ++i) {
+      WCHAR tchLn[32];
+      StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", fioStatus->eolCount[i]);
+      FormatNumberStr(tchLn); 
+      GetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, tchFmt, COUNTOF(tchFmt));
+      StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchLn);
+      SetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, wch);
+    }
+
+    if (Settings.WarnInconsistEOLs) {
+      CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, BST_CHECKED);
+    }
+
+    CenterDlgInParent(hwnd);
+  }
+                      return TRUE;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
+    case IDOK: {
+      EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+      const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
+      status->iEOLMode = iEOLMode;
+      Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+      EndDialog(hwnd, IDOK);
+    }
+    break;
+
+    case IDCANCEL:
+      Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+      EndDialog(hwnd, IDCANCEL);
+      break;
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+//=============================================================================
+//
+//  SelectDefLineEndingDlg()
+//
+bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus) {
+  MessageBeep(MB_ICONEXCLAMATION);
+  const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer, 
+                                               MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS), 
+                                               hwnd, 
+                                               WarnLineEndingDlgProc, 
+                                               (LPARAM)fioStatus);
+  return iResult == IDOK;
+}
+
 
 
 //=============================================================================

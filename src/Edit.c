@@ -4992,7 +4992,7 @@ static char s_lastFind[FNDRPL_BUFFER] = { L'\0' };
 static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' };
 static WCHAR s_tchBuf2[FNDRPL_BUFFER] = { L'\0' };
 
-INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static LPEDITFINDREPLACE sg_pefrData = NULL;
   static DocPos s_InitialSearchStart = 0;
@@ -7039,7 +7039,7 @@ void EditMatchBrace(HWND hwnd)
 //
 //  EditLinenumDlgProc()
 //
-INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   UNUSED(lParam);
 
@@ -7173,7 +7173,7 @@ typedef struct _modlinesdata {
 } MODLINESDATA, *PMODLINESDATA;
 
 
-INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static PMODLINESDATA pdata;
 
@@ -7385,7 +7385,7 @@ bool EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2)
 //            103 Radio Button
 //            104 Radio Button
 //
-INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static int *piAlignMode;
   switch(umsg)
@@ -7466,7 +7466,7 @@ typedef struct _encloseselectiondata {
 } ENCLOSESELDATA, *PENCLOSESELDATA;
 
 
-INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static PENCLOSESELDATA pdata;
   switch(umsg)
@@ -7542,7 +7542,7 @@ typedef struct _tagsdata {
 } TAGSDATA, *PTAGSDATA;
 
 
-INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static PTAGSDATA pdata;
   switch(umsg)
@@ -7669,7 +7669,7 @@ bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
 //  Controls: 100-102 Radio Button
 //            103-109 Check Box
 //
-INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static int* piSortFlags;
   switch(umsg)
