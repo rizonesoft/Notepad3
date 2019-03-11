@@ -103,9 +103,9 @@ BEGIN
         END
         POPUP "»»ÐÐ(&G)"
         BEGIN
-            MENUITEM "Windows (CR+LF)(&W)",                  IDM_LINEENDINGS_CRLF
-            MENUITEM "Mac (CR)(&M)",                         IDM_LINEENDINGS_CR
-            MENUITEM "Unix (LF)(&U)",                        IDM_LINEENDINGS_LF
+            MENUITEM "Windows (CR+LF) (&W)",                  IDM_LINEENDINGS_CRLF
+            MENUITEM "Mac (CR) (&M)",                         IDM_LINEENDINGS_CR
+            MENUITEM "Unix (LF) (&U)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
             MENUITEM "Ä¬ÈÏ(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
         END
