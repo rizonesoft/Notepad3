@@ -141,8 +141,10 @@ BEGIN
     IDS_MUI_ERR_DROP            "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "이 대용량 파일을 열겠습니까?"
     IDS_MUI_WARN_UNKNOWN_EXT    "알 수 없는 확장자 (%s)!\n데이터를 로딩 하시겠습니까?"
-    IDS_MUI_WARN_INCONSIST_EOLS "파일의 줄 바꿈이 일관되지 않습니다!\n%s\n모든 줄 바꿈을 '%s'(으)로 바꾸시겠습니까?"
     IDS_MUI_WARN_INCONS_INDENTS "파일의 들여쓰기가 일관되지 않습니다!\n%s\n들여쓰기를 '%s'(으)로 바꾸시겠습니까?"
+    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
 END
 
 STRINGTABLE

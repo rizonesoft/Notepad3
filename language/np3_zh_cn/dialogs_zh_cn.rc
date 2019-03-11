@@ -216,6 +216,26 @@ BEGIN
     PUSHBUTTON      "取消",IDCANCEL,139,24,50,14
 END
 
+IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Inconsistent Line Endings"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Inconsistent line endings found in file:",IDC_STATIC,7,7,180,8
+    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
+    LTEXT           "LF:",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "CR:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,28,136,8
+    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,38,136,8
+    LTEXT           "&Do you want to normalize the line endings?",IDC_STATIC,7,52,180,8
+    COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Yes",IDOK,138,63,50,14
+    PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
+    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_EOLS,
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
+END
+
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "跳转到"

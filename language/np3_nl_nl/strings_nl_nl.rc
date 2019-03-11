@@ -125,8 +125,10 @@ BEGIN
     IDS_MUI_ERR_DROP            "Er kan slechts één bestand tegelijkertijd worden gedeponeerd!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Weet je zeker dat je dit grote bestand wilt openen?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Onbekende bestandsnaamextensie (%s) !\nGegevens toch laden?"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
+    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
 END
 
 STRINGTABLE

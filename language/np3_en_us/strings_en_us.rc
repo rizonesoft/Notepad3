@@ -145,8 +145,6 @@ BEGIN
                             "Are you sure you want to open this large file?"
     IDS_MUI_WARN_UNKNOWN_EXT 
                             "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_WARN_INCONSIST_EOLS 
-                            "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS 
                             "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"

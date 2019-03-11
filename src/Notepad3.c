@@ -9685,22 +9685,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
       }
-
-#if 0
-      int const eolm = SciCall_GetEOLMode(); //Settings.DefaultEOLMode;
-
-      WCHAR szDefault[32];
-      WCHAR szStatistic[80];
-      StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s",
-        ((eolm == SC_EOL_CRLF) ? L"CRLF (\\r\\n)" : ((eolm == SC_EOL_CR) ? L"CR (\\r)" : L"LF (\\n)")));
-      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #CRLF = %lli\n  #CR =   %lli\n  #LF =   %lli\n",
-                      fioStatus.eolCount[SC_EOL_CRLF], fioStatus.eolCount[SC_EOL_CR], fioStatus.eolCount[SC_EOL_LF]);
-      int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONSIST_EOLS, szStatistic, szDefault);
-      if (res == IDYES) {
-        SciCall_ConvertEOLs(eolm);
-      }
-#endif
-
     }
 
     if (Settings.WarnInconsistentIndents && !Style_IsCurLexerStandard()) {

@@ -26,19 +26,19 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -125,7 +125,6 @@ BEGIN
     IDS_MUI_ERR_DROP            "¡Sólo se puede eliminar un archivo al mismo tiempo!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "¿¿Seguro que quiere abrir este archivo grande??"
     IDS_MUI_WARN_UNKNOWN_EXT    "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
-    IDS_MUI_WARN_INCONSIST_EOLS "¡El archivo tiene saltos de línea inconsistentes!\n%s\n¿Reemplazar todos los saltos de línea con '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS "¡El archivo tiene sangría inconsistente!\n%s\n¿Reemplazar sangría con '%s'?"
 END
 
