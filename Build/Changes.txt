@@ -37,7 +37,7 @@ Current Version 5.19.309.build (2019-Mar-09)
 NEW:
 --------------------------------------------------
 
-- Add a timer of 3.2 second to the Zoom bubbles popup
+- Add a timer of 3.2 second to the Zoom Info Bubble
 
 - Add (internal) [Settings2] to control encoding detection
 - Add Recent History button in Toolbar
@@ -60,7 +60,7 @@ NEW:
 CHANGES:
 --------------------------------------------------
 
-- Add here items for review...
+- Add here items for later review...
 
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
@@ -86,7 +86,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------
 
-- Add here items for review...
+- Add here items for later review...
 
 - Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
 - MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
