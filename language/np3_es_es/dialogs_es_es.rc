@@ -153,7 +153,7 @@ CAPTION "Ejecutar"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Escriba el nombre de un programa, carpeta, documento o recurso de Internet, y Windows lo abrirá para usted.",IDC_STATIC,39,7,179,17
+    LTEXT           "Teclee el nombre de un programa, carpeta, documento o recurso de Internet, y Windows lo abrirá para usted.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Examinar...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
@@ -183,11 +183,11 @@ BEGIN
     CONTROL         "Utilizar como alternativa en caso de &fallo de detección.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,180,10
     GROUPBOX        "Detección de codificación: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Abrir archivos 7-bit &ASCII en UTF-8 modo.",IDC_ASCIIASUTF8,
+    CONTROL         "Abrir archivos 7-bit &ASCII en modo UTF-8.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
     CONTROL         "Utilizar solo &resultados de detección confiables.", IDC_RELIABLE_DETECTION_RES,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
-    CONTROL         "Abrir archivos 8-bit *.&nfo/diz en DOS-437 modo.",IDC_NFOASOEM,
+    CONTROL         "Abrir archivos 8-bit *.&nfo/diz en modo DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "No analizar las e&tiquetas de codificación de archivos.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,180,10
@@ -252,7 +252,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Nada.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
     CONTROL         "&Mostrar mensaje.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
-    CONTROL         "&Auto-recarga (sin modificar).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Auto-recarga (sin notificar).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "&Restablecer si se abre un nuevo archivo.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,150,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
@@ -286,7 +286,7 @@ BEGIN
     PUSHBUTTON      "C. T&exto...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "&C. Fondo...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "Fuen&te...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "&Ejemplo",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "&Prueba",IDC_PREVIEW,330,201,42,14
     PUSHBUTTON      "&Restablecer",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
@@ -410,7 +410,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Añadir a Favoritos"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Ingresar el nombre del nuevo elemento favorito:",IDC_STATIC,7,7,158,8
+    LTEXT           "Teclee el nombre del nuevo elemento favorito:",IDC_STATIC,7,7,158,8
     EDITTEXT        100,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,115,45,50,14
@@ -551,7 +551,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Ordenar &ascendente.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,80,10
     CONTROL         "Ordenar &descendente.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,80,10
-    CONTROL         "Mezclar lineas.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
+    CONTROL         "Mezclar líneas.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
     CONTROL         "&Fusionar las líneas duplicadas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,100,10
     CONTROL         "&Eliminar las líneas duplicadas.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,100,10
     CONTROL         "Eliminar las líneas &únicas.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,100,10
@@ -581,7 +581,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Codificación"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "S&eleccionar la codificación de archivo actual:",IDC_STATIC,7,7,150,8
+    LTEXT           "S&eleccionar la codificación del archivo actual:",IDC_STATIC,7,7,150,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,114,50,14
