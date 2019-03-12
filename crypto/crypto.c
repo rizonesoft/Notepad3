@@ -116,9 +116,9 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetDlgItemText(hDlg, IDC_PWD_EDIT1, unicodeFileKey);
         SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
-        CheckDlgButton(hDlg, IDC_PWD_CHECK3, DlgBtnChk(hasMasterFileKey));
-        CheckDlgButton(hDlg, IDC_PWD_CHECK2, DlgBtnChk(hasBinFileKey | useFileKey));
-        CheckDlgButton(hDlg, IDC_PWD_CHECK1, DlgBtnChk(useMasterKey));
+        CheckDlgButton(hDlg, IDC_PWD_CHECK3, SetBtn(hasMasterFileKey));
+        CheckDlgButton(hDlg, IDC_PWD_CHECK2, SetBtn(hasBinFileKey | useFileKey));
+        CheckDlgButton(hDlg, IDC_PWD_CHECK1, SetBtn(useMasterKey));
         CenterDlgInParent(hDlg);
         // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT1 ) );
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT1));
@@ -135,7 +135,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         switch (LOWORD(wParam)) {
         case IDC_PWD_CHECK4:
           {
-            if (IsDlgButtonChecked(hDlg, IDC_PWD_CHECK4) == BST_CHECKED) {
+            if (IsButtonChecked(hDlg, IDC_PWD_CHECK4)) {
               SendDlgItemMessage(hDlg, IDC_PWD_EDIT1, EM_SETPASSWORDCHAR, 0, 0);
               SendDlgItemMessage(hDlg, IDC_PWD_EDIT2, EM_SETPASSWORDCHAR, 0, 0);
             }
@@ -150,9 +150,9 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
         case IDOK:
         {
-            bool useMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK1) == BST_CHECKED;
-            bool useFil = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK2) == BST_CHECKED;
-            bool reuseMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED;
+            bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK1);
+            bool const useFil = IsButtonChecked(hDlg, IDC_PWD_CHECK2);
+            bool const reuseMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
             WCHAR newFileKey[WKEY_LEN] = { 0 };
             WCHAR newMasKey[WKEY_LEN] = { 0 };
             hasMasterFileKey &= reuseMas;
@@ -176,7 +176,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         {
             WCHAR newFileKey[WKEY_LEN] = { 0 };
             GetDlgItemText(hDlg, IDC_PWD_EDIT1, newFileKey, COUNTOF(newFileKey));
-            CheckDlgButton(hDlg, IDC_PWD_CHECK2, DlgBtnChk(newFileKey[0] > ' '));
+            CheckDlgButton(hDlg, IDC_PWD_CHECK2, SetBtn(newFileKey[0] > ' '));
         }
 
         break;
@@ -187,7 +187,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             GetDlgItemText(hDlg, IDC_PWD_EDIT2, newMasKey, COUNTOF(newMasKey));
             {
                 bool newuse = (newMasKey[0] > ' ');	// no leading whitespace or empty passwords
-                CheckDlgButton(hDlg, IDC_PWD_CHECK1, DlgBtnChk(newuse));
+                CheckDlgButton(hDlg, IDC_PWD_CHECK1, SetBtn(newuse));
 
                 if (newuse) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED); }
             }
@@ -197,16 +197,16 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
         case IDC_PWD_CHECK3:  // check reuse, uncheck set new and inverse
         {
-            bool const reuseMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED;
-            if (reuseMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK1, DlgBtnChk(!reuseMas)); }
+            bool const reuseMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
+            if (reuseMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK1, SetBtn(!reuseMas)); }
         }
 
         break;
 
         case IDC_PWD_CHECK1:
         {
-            bool const useMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK1) == BST_CHECKED;
-            if (useMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, DlgBtnChk(!useMas)); }
+            bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK1);
+            if (useMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, SetBtn(!useMas)); }
         }
 
         break;
@@ -264,7 +264,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         {
         case IDC_PWD_CHECK4:
           {
-            if (IsDlgButtonChecked(hDlg, IDC_PWD_CHECK4) == BST_CHECKED) {
+            if (IsButtonChecked(hDlg, IDC_PWD_CHECK4)) {
               SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
             }
             else {
@@ -276,7 +276,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
           }
         case IDOK:
           {
-              bool useMas = (IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED);
+              bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
               WCHAR newKey[WKEY_LEN] = L"\0";
               GetDlgItemText(hDlg, IDC_PWD_EDIT3, newKey, COUNTOF(newKey));
 

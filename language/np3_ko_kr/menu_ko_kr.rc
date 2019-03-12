@@ -110,6 +110,8 @@ BEGIN
             MENUITEM "기본값 설정(&D)...",                    IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
+        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM SEPARATOR
         MENUITEM "페이지 설정(&T)...",                        IDM_FILE_PAGESETUP
         MENUITEM "인쇄(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR

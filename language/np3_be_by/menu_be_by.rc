@@ -110,6 +110,8 @@ BEGIN
             MENUITEM "&Прадвызначыць...",           IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
+        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM SEPARATOR
         MENUITEM "Налады ста&ронкі...",         IDM_FILE_PAGESETUP
         MENUITEM "&Друк...\tCtrl+P",            IDM_FILE_PRINT
         MENUITEM SEPARATOR

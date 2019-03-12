@@ -264,7 +264,12 @@ bool IsFontAvailable(LPCWSTR lpszFontName);
 bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 
-#define DlgBtnChk(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
+#define SetBtn(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
+
+inline bool IsButtonChecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_CHECKED); }
+inline bool IsButtonIntermediate(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_INDETERMINATE); }
+inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED); }
+
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
@@ -324,7 +329,7 @@ void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszS
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 
 
-size_t FormatNumberStr(LPWSTR lpNumberStr);
+size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
 
