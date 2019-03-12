@@ -193,7 +193,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(fr-FR) Traduction française par hpwamr"
+    IDS_MUI_TRANSL_AUTHOR       "[fr-FR] Traduction française par hpwamr"
     IDS_MUI_EXAMPLE_TEXT        "Voix ambiguë d'un cœur qui au zéphyr préfère les jattes de kiwis, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Correspond à longueur zéro"
 END

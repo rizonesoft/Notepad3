@@ -193,7 +193,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(de-DE) Deutsche Übersetzung von RaiKoHoff"
+    IDS_MUI_TRANSL_AUTHOR       "[de-DE] Deutsche Übersetzung von RaiKoHoff"
     IDS_MUI_EXAMPLE_TEXT        "Zwölf laxe Typen qualmen verdächtig süße Objekte, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Null-Längen-Fund"
     IDS_MUI_GOTO_LINE           "Zeile (1 - %lli):"
