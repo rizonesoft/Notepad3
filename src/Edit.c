@@ -886,7 +886,7 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 //
 // EditIndentationCount() - check indentation consistency
 //
-void EditIndentationCount(HWND hwnd, EditFileIOStatus* status)
+void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status)
 {
   UNUSED(hwnd);
 
@@ -894,8 +894,11 @@ void EditIndentationCount(HWND hwnd, EditFileIOStatus* status)
   int const indentWidth = Settings.IndentWidth;
   DocLn const lineCount = SciCall_GetLineCount();
 
-  status->indentCount[TAB_MODULO] = 0;
-  status->indentCount[SPC_MODULO] = 0;
+  status->indentCount[I_TAB_LN] = 0;
+  status->indentCount[I_SPC_LN] = 0;
+  status->indentCount[I_MIX_LN] = 0;
+  status->indentCount[I_TAB_MOD_X] = 0;
+  status->indentCount[I_SPC_MOD_X] = 0;
 
   for (DocLn line = 0; line < lineCount; ++line) 
   {
@@ -923,14 +926,25 @@ void EditIndentationCount(HWND hwnd, EditFileIOStatus* status)
         break;
       }
     }
-    status->indentCount[INDENT_TAB] += tabCount;
-    status->indentCount[INDENT_SPC] += blankCount;
-    status->indentCount[TAB_MODULO] += ((lineIndentDepth % tabWidth) != 0 ? 1 : 0);
-    status->indentCount[SPC_MODULO] += ((lineIndentDepth % indentWidth) != 0 ? 1 : 0);
 
-    //if (tabCount != 0 || blankCount != 0) {
-    //  status->indentCount[INDENT_LN] += 1;
-    //}
+    // analyze
+    if (tabCount || blankCount) {
+      if (lineIndentDepth % tabWidth) {
+        ++(status->indentCount[I_TAB_MOD_X]);
+      }
+      if (lineIndentDepth % indentWidth) {
+        ++(status->indentCount[I_SPC_MOD_X]);
+      }
+    }
+    if (tabCount && blankCount) {
+      ++(status->indentCount[I_MIX_LN]);
+    }
+    else if (tabCount) {
+      ++(status->indentCount[I_TAB_LN]);
+    }
+    else if (blankCount) {
+      ++(status->indentCount[I_SPC_LN]);
+    }
   }
 }
 
@@ -4607,7 +4621,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bool bIsFlagSet = ((lpefr->fuFlags & SCFIND_MATCHCASE) != 0);
-  if (IsDlgButtonChecked(hwnd, IDC_FINDCASE) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_FINDCASE)) {
     if (!bIsFlagSet) {
       lpefr->fuFlags |= SCFIND_MATCHCASE;
       lpefr->bStateChanged = true;
@@ -4621,7 +4635,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = ((lpefr->fuFlags & SCFIND_WHOLEWORD) != 0);
-  if (IsDlgButtonChecked(hwnd, IDC_FINDWORD) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_FINDWORD)) {
     if (!bIsFlagSet) {
       lpefr->fuFlags |= SCFIND_WHOLEWORD;
       lpefr->bStateChanged = true;
@@ -4635,7 +4649,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = ((lpefr->fuFlags & SCFIND_WORDSTART) != 0);
-  if (IsDlgButtonChecked(hwnd, IDC_FINDSTART) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_FINDSTART)) {
     if (!bIsFlagSet) {
       lpefr->fuFlags |= SCFIND_WORDSTART;
       lpefr->bStateChanged = true;
@@ -4649,7 +4663,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = ((lpefr->fuFlags & SCFIND_NP3_REGEX) != 0);
-  if (IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_FINDREGEXP)) {
     if (!bIsFlagSet) {
       lpefr->fuFlags |= SCFIND_NP3_REGEX;
       lpefr->bStateChanged = true;
@@ -4664,7 +4678,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   if (bIsFlagSet) // check "dot match all" too
   {
     bIsFlagSet = ((lpefr->fuFlags & SCFIND_DOT_MATCH_ALL) != 0);
-    if (IsDlgButtonChecked(hwnd, IDC_DOT_MATCH_ALL) == BST_CHECKED) {
+    if (IsButtonChecked(hwnd, IDC_DOT_MATCH_ALL)) {
       if (!bIsFlagSet) {
         lpefr->fuFlags |= SCFIND_DOT_MATCH_ALL;
         lpefr->bStateChanged = true;
@@ -4679,7 +4693,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = lpefr->bWildcardSearch;
-  if (IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH)) {
     if (!bIsFlagSet) {
       lpefr->bWildcardSearch = true;
       lpefr->bStateChanged = true;
@@ -4707,7 +4721,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = lpefr->bTransformBS;
-  if (IsDlgButtonChecked(hwnd, IDC_FINDTRANSFORMBS) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS)) {
     if (!bIsFlagSet) {
       lpefr->bTransformBS = true;
       lpefr->bStateChanged = true;
@@ -4721,7 +4735,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = lpefr->bNoFindWrap;
-  if (IsDlgButtonChecked(hwnd, IDC_NOWRAP) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
     if (!bIsFlagSet) {
       lpefr->bNoFindWrap = true;
       lpefr->bStateChanged = true;
@@ -4735,7 +4749,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   }
 
   bIsFlagSet = lpefr->bMarkOccurences;
-  if (IsDlgButtonChecked(hwnd, IDC_ALL_OCCURRENCES) == BST_CHECKED) {
+  if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES)) {
     if (!bIsFlagSet) {
       lpefr->bMarkOccurences = true;
       lpefr->bStateChanged = true;
@@ -4751,7 +4765,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   if (bIsFindDlg) 
   {
     bIsFlagSet = lpefr->bFindClose;
-    if (IsDlgButtonChecked(hwnd, IDC_FINDCLOSE) == BST_CHECKED) {
+    if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
       if (!bIsFlagSet) {
         lpefr->bFindClose = true;
         lpefr->bStateChanged = true;
@@ -4767,7 +4781,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
   else // replace close
   {
     bIsFlagSet = lpefr->bReplaceClose;
-    if (IsDlgButtonChecked(hwnd, IDC_FINDCLOSE) == BST_CHECKED) {
+    if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
       if (!bIsFlagSet) {
         lpefr->bReplaceClose = true;
         lpefr->bStateChanged = true;
@@ -5155,7 +5169,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         }
       }
 
-      CheckDlgButton(hwnd, IDC_TRANSPARENT, Settings.FindReplaceTransparentMode ? BST_CHECKED : BST_UNCHECKED);
+      CheckDlgButton(hwnd, IDC_TRANSPARENT, SetBtn(Settings.FindReplaceTransparentMode));
 
       if (!s_bSwitchedFindReplace) {
         if (Settings.FindReplaceDlgPosX == CW_USEDEFAULT || Settings.FindReplaceDlgPosY == CW_USEDEFAULT)
@@ -5452,7 +5466,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         {
           _SetSearchFlags(hwnd, sg_pefrData);
 
-          if (IsDlgButtonChecked(hwnd, IDC_ALL_OCCURRENCES) == BST_CHECKED) 
+          if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES))
           {
             iSaveMarkOcc = Settings.MarkOccurrences;
             bSaveOccVisible = Settings.MarkOccurrencesMatchVisible;
@@ -5499,18 +5513,18 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
 
       case IDC_FINDREGEXP:
-        if (IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED)
+        if (IsButtonChecked(hwnd, IDC_FINDREGEXP))
         {
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, true);
           CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED); // Can not use wildcard search together with regexp
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED); // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
@@ -5522,24 +5536,24 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         break;
 
       case IDC_WILDCARDSEARCH:
-        if (IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED)
+        if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH))
         {
           CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);  // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         break;
 
       case IDC_FINDTRANSFORMBS:
-        bSaveTFBackSlashes = (IsDlgButtonChecked(hwnd, IDC_FINDTRANSFORMBS) == BST_CHECKED);
+        bSaveTFBackSlashes = IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS);
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         break;
@@ -5560,7 +5574,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         break;
 
       case IDC_TRANSPARENT:
-        Settings.FindReplaceTransparentMode = (IsDlgButtonChecked(hwnd, IDC_TRANSPARENT) == BST_CHECKED);
+        Settings.FindReplaceTransparentMode = IsButtonChecked(hwnd, IDC_TRANSPARENT);
         break;
 
       case IDC_REPLACE:
@@ -7417,15 +7431,15 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         case IDOK: {
             *piAlignMode = 0;
-            if (IsDlgButtonChecked(hwnd,100) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,100))
               *piAlignMode = ALIGN_LEFT;
-            else if (IsDlgButtonChecked(hwnd,101) == BST_CHECKED)
+            else if (IsButtonChecked(hwnd,101))
               *piAlignMode = ALIGN_RIGHT;
-            else if (IsDlgButtonChecked(hwnd,102) == BST_CHECKED)
+            else if (IsButtonChecked(hwnd,102))
               *piAlignMode = ALIGN_CENTER;
-            else if (IsDlgButtonChecked(hwnd,103) == BST_CHECKED)
+            else if (IsButtonChecked(hwnd,103))
               *piAlignMode = ALIGN_JUSTIFY;
-            else if (IsDlgButtonChecked(hwnd,104) == BST_CHECKED)
+            else if (IsButtonChecked(hwnd,104))
               *piAlignMode = ALIGN_JUSTIFY_EX;
             EndDialog(hwnd,IDOK);
           }
@@ -7754,27 +7768,27 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
       {
         case IDOK: {
             *piSortFlags = 0;
-            if (IsDlgButtonChecked(hwnd, 100) == BST_CHECKED)
+            if (IsButtonChecked(hwnd, 100))
               *piSortFlags |= SORT_ASCENDING;
-            if (IsDlgButtonChecked(hwnd,101) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,101))
               *piSortFlags |= SORT_DESCENDING;
-            if (IsDlgButtonChecked(hwnd,102) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,102))
               *piSortFlags |= SORT_SHUFFLE;
-            if (IsDlgButtonChecked(hwnd,103) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,103))
               *piSortFlags |= SORT_MERGEDUP;
-            if (IsDlgButtonChecked(hwnd,104) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,104))
               *piSortFlags |= SORT_UNIQDUP;
-            if (IsDlgButtonChecked(hwnd,105) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,105))
               *piSortFlags |= SORT_UNIQUNIQ;
-            if (IsDlgButtonChecked(hwnd,106) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,106))
               *piSortFlags |= SORT_REMZEROLEN;
-            if (IsDlgButtonChecked(hwnd,107) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,107))
               *piSortFlags |= SORT_REMWSPACELN;
-            if (IsDlgButtonChecked(hwnd,108) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,108))
               *piSortFlags |= SORT_NOCASE;
-            if (IsDlgButtonChecked(hwnd,109) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,109))
               *piSortFlags |= SORT_LOGICAL;
-            if (IsDlgButtonChecked(hwnd,110) == BST_CHECKED)
+            if (IsButtonChecked(hwnd,110))
               *piSortFlags |= SORT_COLUMN;
             EndDialog(hwnd,IDOK);
           }
@@ -7786,7 +7800,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
         case 100:
         case 101:
-          DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,105) != BST_CHECKED);
+          DialogEnableWindow(hwnd,103, IsButtonUnchecked(hwnd,105));
           DialogEnableWindow(hwnd,104,true);
           DialogEnableWindow(hwnd,105,true);
           DialogEnableWindow(hwnd,106,true);
@@ -7804,10 +7818,10 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           DialogEnableWindow(hwnd,109,false);
           break;
         case 104:
-          DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
+          DialogEnableWindow(hwnd,103,IsButtonUnchecked(hwnd,104));
           break;
         case 107:
-          if (IsDlgButtonChecked(hwnd, 107) == BST_CHECKED) {
+          if (IsButtonChecked(hwnd, 107)) {
             CheckDlgButton(hwnd, 106, BST_CHECKED);
             DialogEnableWindow(hwnd, 106, false);
           }

@@ -125,7 +125,10 @@ BEGIN
     IDS_MUI_ERR_DROP            "¡Sólo se puede eliminar un archivo al mismo tiempo!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "¿¿Seguro que quiere abrir este archivo grande??"
     IDS_MUI_WARN_UNKNOWN_EXT    "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
-    IDS_MUI_WARN_INCONS_INDENTS "¡El archivo tiene sangría inconsistente!\n%s\n¿Reemplazar sangría con '%s'?"
+    IDS_MUI_INDENT_CONSISTENT   "The file has a consistent indentation!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
 END
 
 STRINGTABLE

@@ -3796,6 +3796,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+    case CMD_CHECK_INDENTATION:
+      {  
+        EditFileIOStatus status = INIT_FILEIO_STATUS;
+        EditIndentationStatistic(Globals.hwndEdit, &status);
+        if (ConsistentIndentationCheck(&status)) {
+          MsgBoxLng(MBINFO, IDS_MUI_INDENT_CONSISTENT);
+        }
+      }
+    break;
+
     case CMD_DELETEBACK:
       {
         ///~_BEGIN_UNDO_ACTION_;
@@ -7065,6 +7075,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.iTabWidth = Settings.TabWidth;
     GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.iIndentWidth = Settings.IndentWidth;
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
+    GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, true);
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.iLongLinesLimit = Settings.LongLinesLimit;
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
@@ -7422,11 +7433,13 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AccelWordNavigation);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowIndentGuides);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
-
+    if (Globals.bTabsAsSpaces != Defaults.TabsAsSpaces) {
+      IniSectionSetBool(pIniSection, L"", Globals.bTabsAsSpaces);
+    }
     if (Globals.bTabIndents != Defaults.TabIndents) {
       IniSectionSetBool(pIniSection, L"", Globals.bTabIndents);
     }
+
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
 
     if (Globals.iTabWidth != Defaults.TabWidth) {
@@ -7436,6 +7449,7 @@ void SaveSettings(bool bSaveSettingsNow)
       IniSectionSetInt(pIniSection, L"IndentWidth", Globals.iIndentWidth);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoDetectIndentSettings);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLineMode);
@@ -8608,13 +8622,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bForceRedraw || (s_iLnFromPos != iLnFromPos)) {
       StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, iLnFromPos + 1);
-      FormatNumberStr(tchLn);
+      FormatNumberStr(tchLn, COUNTOF(tchLn), 0);
     }
 
     DocLn const  iLnCnt = SciCall_GetLineCount();
     if (bForceRedraw || (s_iLnCnt != iLnCnt)) {
       StringCchPrintf(tchLines, COUNTOF(tchLines), DOCPOSFMTW, iLnCnt);
-      FormatNumberStr(tchLines);
+      FormatNumberStr(tchLines, COUNTOF(tchLines), 0);
     }
 
     if (bForceRedraw || ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt)))
@@ -8638,7 +8652,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
     if (bForceRedraw || (s_iCol != iCol)) {
       StringCchPrintf(tchCol, COUNTOF(tchCol), DOCPOSFMTW, iCol + colOffset);
-      FormatNumberStr(tchCol);
+      FormatNumberStr(tchCol, COUNTOF(tchCol), 0);
     }
 
     static DocPos s_iCols = -1;
@@ -8646,7 +8660,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     DocPos const iCols = SciCall_GetColumn(iLineBack);
     if (bForceRedraw || (s_iCols != iCols)) {
       StringCchPrintf(tchCols, COUNTOF(tchCols), DOCPOSFMTW, iCols);
-      FormatNumberStr(tchCols);
+      FormatNumberStr(tchCols, COUNTOF(tchCols), 0);
     }
 
     if (bForceRedraw || ((s_iCol != iCol) || (s_iCols != iCols))) {
@@ -8670,14 +8684,14 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
     if (bForceRedraw || (s_iChr != iChr)) {
       StringCchPrintf(tchChr, COUNTOF(tchChr), DOCPOSFMTW, iChr + chrOffset);
-      FormatNumberStr(tchChr);
+      FormatNumberStr(tchChr, COUNTOF(tchChr), 0);
     }
 
     static DocPos s_iChrs = -1;
     DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
     if (bForceRedraw || (s_iChrs != iChrs)) {
       StringCchPrintf(tchChrs, COUNTOF(tchChrs), DOCPOSFMTW, iChrs);
-      FormatNumberStr(tchChrs);
+      FormatNumberStr(tchChrs, COUNTOF(tchChrs), 0);
     }
 
     if ((s_iChr != iChr) || (s_iChrs != iChrs)) {
@@ -8707,7 +8721,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       {
         const DocPos iSel = (DocPos)SendMessage(Globals.hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
         StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
-        FormatNumberStr(tchSel);
+        FormatNumberStr(tchSel, COUNTOF(tchSel), 0);
         StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
       }
       else {
@@ -8750,7 +8764,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       }
       else {
         StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%lli", iLinesSelected);
-        FormatNumberStr(tchLinesSelected);
+        FormatNumberStr(tchLinesSelected, COUNTOF(tchLinesSelected), 0);
       }
       StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
         s_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, s_mxSBPostfix[STATUS_SELCTLINES]);
@@ -8833,12 +8847,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         if ((Settings2.MarkOccurrencesMaxCount < 0) || (Globals.iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount))
         {
           StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", Globals.iMarkOccurrencesCount);
-          FormatNumberStr(tchOcc);
+          FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
         }
         else {
           static WCHAR tchTmp[32] = { L'\0' };
           StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", Globals.iMarkOccurrencesCount);
-          FormatNumberStr(tchTmp);
+          FormatNumberStr(tchTmp, COUNTOF(tchTmp), 0);
           StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
         }
       }
@@ -8867,7 +8881,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       if (Globals.iReplacedOccurrences > 0)
       {
         StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", Globals.iReplacedOccurrences);
-        FormatNumberStr(tchRepl);
+        FormatNumberStr(tchRepl, COUNTOF(tchRepl), 0);
       }
       else {
         StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
@@ -9442,6 +9456,47 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSI
   return(fSuccess);
 }
 
+//=============================================================================
+//
+//  ConsistentIndentationCheck()
+//
+//
+bool ConsistentIndentationCheck(EditFileIOStatus* status)
+{
+  bool const hasTabOrSpaceIndent = (status->indentCount[I_TAB_LN] > 0) && (status->indentCount[I_SPC_LN] > 0);
+  bool const hasMixedIndents = (status->indentCount[I_MIX_LN] > 0);
+  //bool const hasIrregularIndentDepth = (status->indentCount[I_TAB_MOD_X] > 0) || (status->indentCount[I_SPC_MOD_X] > 0);
+
+  if (hasTabOrSpaceIndent || hasMixedIndents /*|| hasIrregularIndentDepth */)
+  {
+    if (WarnIndentationDlg(Globals.hwndMain, status))
+    {
+      bool const useTabs = SciCall_GetUseTabs();
+      SciCall_SetUseTabs(status->iGlobalIndent == I_TAB_LN);
+      bool const tabIndents = SciCall_GetTabIndents();
+      SciCall_SetTabIndents(true);
+      bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
+      SciCall_SetBackSpaceUnIndents(true);
+
+      BeginWaitCursor(NULL);
+      _BEGIN_UNDO_ACTION_;
+      EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
+      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
+      _END_UNDO_ACTION_;
+      EndWaitCursor();
+
+      SciCall_SetUseTabs(useTabs);
+      SciCall_SetTabIndents(tabIndents);
+      SciCall_SetBackSpaceUnIndents(backSpcUnindents);
+    }
+    else {
+      status->iGlobalIndent = I_MIX_LN;
+      return false;
+    }
+  }
+  return true;
+}
+
 
 //=============================================================================
 //
@@ -9657,60 +9712,28 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       }
     }
 
-    if (Settings.WarnInconsistentIndents && !Style_IsCurLexerStandard()) {
+    // Show inconsistent indentation 
 
-      EditIndentationCount(Globals.hwndEdit, &fioStatus);
+    fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-      if (((fioStatus.indentCount[INDENT_TAB] > 0) && (fioStatus.indentCount[INDENT_SPC] > 0))
-        //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
-        //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
-        ) {
-        if (WarnIndentationDlg(Globals.hwndMain, &fioStatus)) 
-        {
-          bool const useTabs = SciCall_GetUseTabs();
-          SciCall_SetUseTabs(fioStatus.iGlobalIndent == INDENT_TAB);
-          bool const tabIndents = SciCall_GetTabIndents();
-          SciCall_SetTabIndents(true);
-          bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
-          SciCall_SetBackSpaceUnIndents(true);
-
-          BeginWaitCursor(NULL);
-          _BEGIN_UNDO_ACTION_;
-          EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
-          EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
-          _END_UNDO_ACTION_;
-          EndWaitCursor();
-
-          SciCall_SetUseTabs(useTabs);
-          SciCall_SetTabIndents(tabIndents);
-          SciCall_SetBackSpaceUnIndents(backSpcUnindents);
-
-          // TODO: prepare SPACE or TAB indentation settings
-          //SciCall_SetUseTabs(!Settings.TabsAsSpaces);
-          //SciCall_SetTabIndents(Settings.TabIndents);
-          //SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
-          //Settings.TabWidth = clampi(Settings.TabWidth, 1, 256);
-          //Settings.IndentWidth = clampi(Settings.IndentWidth, 0, 256);
-          //SciCall_SetTabWidth(Settings.TabWidth);
-          //SciCall_SetIndent(Settings.IndentWidth);
-        }
-#if 0
-        WCHAR szDefault[32];
-        WCHAR szStatistic[80];
-        StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s(%i)",
-          (Settings.TabsAsSpaces ? L"BLANK" : L"TABULATOR"), (Settings.TabsAsSpaces ? Settings.IndentWidth : Settings.TabWidth));
-        StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  # TABULATOR(%i) = %lli\n  # BLANK(%i) =     %lli\n",
-          Settings.TabWidth, status->indentCount[0], Settings.IndentWidth, status->indentCount[1]);
-
-        int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
-
-        if (res == IDYES) {
-        }
-#endif
-      }
-      // TODO: Set correct Indent mode / verify settings vs. file majority
-
+    if (Settings.WarnInconsistentIndents)
+    {
+      EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
+      ConsistentIndentationCheck(&fioStatus);
     }
+
+    if (Settings.AutoDetectIndentSettings) 
+    {
+      if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
+      {
+        EditIndentationStatistic(Globals.hwndMain, &fioStatus);  // new statistic needed
+      }
+      if (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) {
+        Settings.TabsAsSpaces = true;
+        SciCall_SetUseTabs(!Settings.TabsAsSpaces);
+      }
+    }
+
   }
   else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
     MsgBoxLng(MBWARN, IDS_MUI_ERR_LOADFILE, szFileName);

@@ -110,6 +110,8 @@ BEGIN
             MENUITEM "&Défaut...",                          IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
+        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM SEPARATOR
         MENUITEM "Mise en &page...",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR

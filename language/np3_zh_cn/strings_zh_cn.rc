@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: GBK
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(20936)  // Chinese Simplified (GBK-2312-80)
+#pragma code_page(936)  // Chinese Simplified (GBK)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE        "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE  "是否确实要打开一个如此庞大的文件？"
     IDS_MUI_WARN_UNKNOWN_EXT    "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
-    IDS_MUI_WARN_INCONS_INDENTS "此文件的缩进不一致：\n%s\n是否将全部缩进替换为“%s”？"
+    IDS_MUI_INDENT_CONSISTENT   "The file has a consistent indentation!"
     IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"

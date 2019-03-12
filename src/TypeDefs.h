@@ -349,6 +349,7 @@ typedef struct _settings_t
   int TabWidth;
   int IndentWidth;
   bool WarnInconsistentIndents;
+  bool AutoDetectIndentSettings;
   bool MarkLongLines;
   int LongLinesLimit;
   int LongLineMode;
@@ -490,7 +491,7 @@ extern SETTINGS2_T Settings2;
 
 //=============================================================================
 
-typedef enum { INDENT_TAB = 0, INDENT_SPC = 1, TAB_MODULO = 2, SPC_MODULO = 3 } INDENT_TYPE;
+typedef enum { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_MOD_X = 4 } INDENT_TYPE;
 
 typedef struct _editfileiostatus
 {
@@ -509,11 +510,11 @@ typedef struct _editfileiostatus
 
   // inconsistent indentation
   INDENT_TYPE iGlobalIndent;
-  DocLn indentCount[4];
+  DocLn indentCount[5];
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, {0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, I_MIX_LN, {0,0,0,0,0} }
 
 //=============================================================================
 

@@ -75,7 +75,6 @@
 #define IDS_MUI_ERR_BITMAP              13012
 #define IDS_MUI_WARN_LOAD_BIG_FILE      13013
 #define IDS_MUI_WARN_UNKNOWN_EXT        13014
-#define IDS_MUI_WARN_INCONS_INDENTS     13015
 // keep order (CRLF(0),  CR(1),  LF(2))
 #define IDS_MUI_EOLMODENAME_CRLF        13016
 #define IDS_MUI_EOLMODENAME_CR          13017
@@ -151,6 +150,7 @@
 #define IDS_MUI_STYLEEDIT_HELP          15054
 #define IDS_MUI_GOTO_LINE               15055
 #define IDS_MUI_GOTO_COLUMN             15056
+#define IDS_MUI_INDENT_CONSISTENT       15057
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
@@ -317,15 +317,19 @@
 #define IDC_TAB_INDENTS                 18100
 #define IDC_BACKTAB_INDENTS             18101
 #define IDC_WARN_INCONSISTENT_INDENTS   18102
-#define IDC_CMDLINEHELP                 18103
-#define IDC_STYLEEDIT_HELP              18104
-#define IDC_RELIABLE_DETECTION_RES      18105
-#define IDC_LINE_TEXT                   18106
-#define IDC_COLUMN_TEXT                 18107
-#define IDC_INDENT_SUM_TAB              18108
-#define IDC_INDENT_SUM_SPC              18109
-#define IDC_INDENT_BY_TABS              18110
-#define IDC_INDENT_BY_SPCS              18111
+#define IDC_AUTO_DETECT_INDENTS         18103
+#define IDC_CMDLINEHELP                 18104
+#define IDC_STYLEEDIT_HELP              18105
+#define IDC_RELIABLE_DETECTION_RES      18106
+#define IDC_LINE_TEXT                   18107
+#define IDC_COLUMN_TEXT                 18108
+#define IDC_INDENT_SUM_TAB              18109
+#define IDC_INDENT_SUM_SPC              18110
+#define IDC_INDENT_SUM_MIX              18111
+#define IDC_INDENT_BY_TABS              18112
+#define IDC_INDENT_BY_SPCS              18113
+#define IDC_INDENT_TAB_MODX             18114
+#define IDC_INDENT_SPC_MODX             18115
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
@@ -382,8 +386,9 @@
 #define CMD_DEFAULTWINPOS               20052
 #define CMD_SAVEASDEFWINPOS             20053
 #define CMD_CLEARSAVEDWINPOS            20054
-//#define CMD_LEFT                        20055
-//#define CMD_RIGHT                       20056
+#define CMD_CHECK_INDENTATION           20055
+//#define CMD_LEFT                        20056
+//#define CMD_RIGHT                       20057
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501

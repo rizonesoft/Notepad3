@@ -3866,13 +3866,13 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           {
             ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndLV,i,false);
-            CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, DlgBtnChk(s_iDefaultLexer == i));
+            CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(s_iDefaultLexer == i));
             break;
           }
         }
 
         iInternalDefault = s_iDefaultLexer;
-        CheckDlgButton(hwnd,IDC_AUTOSELECT, DlgBtnChk(s_bAutoSelect));
+        CheckDlgButton(hwnd,IDC_AUTOSELECT, SetBtn(s_bAutoSelect));
 
         CenterDlgInParent(hwnd);
       }
@@ -3961,7 +3961,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           case LVN_DELETEITEM:
             {
               int i = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
-              CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, DlgBtnChk(iInternalDefault == i));
+              CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(iInternalDefault == i));
               DialogEnableWindow(hwnd, IDC_DEFAULTSCHEME, i != -1);
               DialogEnableWindow(hwnd, IDOK, i != -1);
             }
@@ -3977,7 +3977,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         switch (LOWORD(wParam)) 
         {
         case IDC_DEFAULTSCHEME:
-          if (IsDlgButtonChecked(hwnd, IDC_DEFAULTSCHEME) == BST_CHECKED)
+          if (IsButtonChecked(hwnd, IDC_DEFAULTSCHEME))
             iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
           else
             iInternalDefault = 0;
@@ -3992,7 +3992,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
             if (ListView_GetItem(hwndLV, &lvi)) {
               s_pLexCurrent = (PEDITLEXER)lvi.lParam;
               s_iDefaultLexer = iInternalDefault;
-              s_bAutoSelect = (IsDlgButtonChecked(hwnd, IDC_AUTOSELECT) == BST_CHECKED) ? 1 : 0;
+              s_bAutoSelect = IsButtonChecked(hwnd, IDC_AUTOSELECT);
               EndDialog(hwnd,IDOK);
             }
           }

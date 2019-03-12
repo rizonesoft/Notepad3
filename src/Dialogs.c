@@ -180,8 +180,9 @@ static INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     case IDYES:
     case IDNO:
       lpib = (LPINFOBOX)GetWindowLongPtr(hwnd, DWLP_USER);
-      if (IsDlgButtonChecked(hwnd, IDC_INFOBOXCHECK))
+      if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK)) {
         IniSetInt(L"Suppressed Messages", lpib->lpstrSetting, 1);
+      }
       EndDialog(hwnd, LOWORD(wParam));
       break;
     }
@@ -1509,9 +1510,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        CheckDlgButton(hwnd, IDC_SAVEMRU, DlgBtnChk(Settings.SaveRecentFiles));
-        CheckDlgButton(hwnd, IDC_PRESERVECARET, DlgBtnChk(Settings.PreserveCaretPos));
-        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, DlgBtnChk(Settings.SaveFindReplace));
+        CheckDlgButton(hwnd, IDC_SAVEMRU, SetBtn(Settings.SaveRecentFiles));
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, SetBtn(Settings.SaveFindReplace));
 
         //if (!Settings.SaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
@@ -1545,9 +1546,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         RemoveProp(hwnd,L"it");
         FreeMem(lpit);
 
-        Settings.SaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
-        Settings.PreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
-        Settings.SaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
+        Settings.SaveFindReplace = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
+        Settings.PreserveCaretPos = IsButtonChecked(hwnd, IDC_PRESERVECARET);
+        Settings.SaveRecentFiles  = IsButtonChecked(hwnd, IDC_SAVEMRU);
 
         ResizeDlg_Destroy(hwnd,&Settings.FileMRUDlgSizeX,&Settings.FileMRUDlgSizeY);
       }
@@ -1862,14 +1863,14 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case IDOK:
-      if (IsDlgButtonChecked(hwnd, 100) == BST_CHECKED)
+      if (IsButtonChecked(hwnd, 100))
         Settings.FileWatchingMode = 0;
-      else if (IsDlgButtonChecked(hwnd, 101) == BST_CHECKED)
+      else if (IsButtonChecked(hwnd, 101))
         Settings.FileWatchingMode = 1;
       else
         Settings.FileWatchingMode = 2;
 
-      Settings.ResetFileWatching = (IsDlgButtonChecked(hwnd, 103) == BST_CHECKED) ? true : false;
+      Settings.ResetFileWatching = IsButtonChecked(hwnd, 103);
 
       if (Globals.bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
 
@@ -2146,7 +2147,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         if (fTranslated) {
           UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
           *piNumber = iNewNumber;
-          Settings.LongLineMode = (IsDlgButtonChecked(hwnd, 101)) ? EDGE_LINE : EDGE_BACKGROUND;
+          Settings.LongLineMode = IsButtonChecked(hwnd, 101) ? EDGE_LINE : EDGE_BACKGROUND;
 
           EndDialog(hwnd, IDOK);
         }
@@ -2215,10 +2216,11 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         SetDlgItemInt(hwnd,IDC_INDENT_DEPTH,Settings.IndentWidth,false);
         SendDlgItemMessage(hwnd,IDC_INDENT_DEPTH,EM_LIMITTEXT,15,0);
 
-        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, Settings.TabsAsSpaces ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd,IDC_TAB_INDENTS, Settings.TabIndents ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, Settings.BackspaceUnindents ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, Settings.WarnInconsistentIndents ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, SetBtn(Settings.TabsAsSpaces));
+        CheckDlgButton(hwnd,IDC_TAB_INDENTS, SetBtn(Settings.TabIndents));
+        CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, SetBtn(Settings.BackspaceUnindents));
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
+        CheckDlgButton(hwnd,IDC_AUTO_DETECT_INDENTS, SetBtn(Settings.AutoDetectIndentSettings));
 
         CenterDlgInParent(hwnd);
       }
@@ -2243,10 +2245,11 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
             if (fTranslated1 && fTranslated2) {
               Settings.TabWidth = iNewTabWidth;
               Settings.IndentWidth = iNewIndentWidth;
-              Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd, IDC_TAB_AS_SPC)) ? true : false;
-              Settings.TabIndents = (IsDlgButtonChecked(hwnd, IDC_TAB_INDENTS)) ? true : false;
-              Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd, IDC_BACKTAB_INDENTS)) ? true : false;
-              Settings.WarnInconsistentIndents = (IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS)) ? true : false;
+              Settings.TabsAsSpaces = IsButtonChecked(hwnd, IDC_TAB_AS_SPC);
+              Settings.TabIndents = IsButtonChecked(hwnd, IDC_TAB_INDENTS);
+              Settings.BackspaceUnindents = IsButtonChecked(hwnd, IDC_BACKTAB_INDENTS);
+              Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+              Settings.AutoDetectIndentSettings = IsButtonChecked(hwnd, IDC_AUTO_DETECT_INDENTS);
               EndDialog(hwnd, IDOK);
             }
             else {
@@ -2330,13 +2333,13 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
     s_bLoadASCIIasUTF8 = Settings.LoadASCIIasUTF8;
     s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
 
-    CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
-    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
-    CheckDlgButton(hwnd, IDC_RELIABLE_DETECTION_RES, DlgBtnChk(Settings.UseReliableCEDonly));
-    CheckDlgButton(hwnd, IDC_NFOASOEM, DlgBtnChk(Settings.LoadNFOasOEM));
-    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, DlgBtnChk(Settings.NoEncodingTags));
-    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, DlgBtnChk(Settings.SkipUnicodeDetection));
-    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(Settings.SkipANSICodePageDetection));
+    CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
+    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
+    CheckDlgButton(hwnd, IDC_RELIABLE_DETECTION_RES, SetBtn(Settings.UseReliableCEDonly));
+    CheckDlgButton(hwnd, IDC_NFOASOEM, SetBtn(Settings.LoadNFOasOEM));
+    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, SetBtn(Settings.NoEncodingTags));
+    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(Settings.SkipUnicodeDetection));
+    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(Settings.SkipANSICodePageDetection));
 
     DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
 
@@ -2355,23 +2358,23 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
     {
     case IDC_ASCIIASUTF8:
       if (s_iEnc != CPI_UTF8) {
-        s_bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd, IDC_ASCIIASUTF8) == BST_CHECKED);
+        s_bLoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
       }
       break;
 
     case IDC_USEASREADINGFALLBACK:
       if (s_iEnc != CPI_ANSI_DEFAULT) {
-        s_bUseAsFallback = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
+        s_bUseAsFallback = IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK);
       }
       if (s_iEnc == CPI_UTF8) {
         if (s_bUseAsFallback) {
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
         }
         else
         {
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         }
       }
       break;
@@ -2385,24 +2388,24 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
       if (s_iEnc == CPI_UTF8) {
         if (s_bUseAsFallback) {
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
         }
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
       else if (s_iEnc == CPI_ANSI_DEFAULT) {
         DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
-        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         s_bUseAsFallback = true;
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, false);
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
       else {
         s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
         DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
-        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
     }
     break;
@@ -2415,13 +2418,13 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
           EndDialog(hwnd, IDCANCEL);
         }
         else {
-          Settings.UseDefaultForFileEncoding = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
-          Settings.LoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd, IDC_ASCIIASUTF8) == BST_CHECKED);
-          Settings.UseReliableCEDonly = (IsDlgButtonChecked(hwnd, IDC_RELIABLE_DETECTION_RES) == BST_CHECKED);
-          Settings.LoadNFOasOEM = (IsDlgButtonChecked(hwnd, IDC_NFOASOEM) == BST_CHECKED);
-          Settings.NoEncodingTags = (IsDlgButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS) == BST_CHECKED);
-          Settings.SkipUnicodeDetection = (IsDlgButtonChecked(hwnd, IDC_NOUNICODEDETECTION) == BST_CHECKED);
-          Settings.SkipANSICodePageDetection = (IsDlgButtonChecked(hwnd, IDC_NOANSICPDETECTION) == BST_CHECKED);
+          Settings.UseDefaultForFileEncoding = IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK);
+          Settings.LoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
+          Settings.UseReliableCEDonly = IsButtonChecked(hwnd, IDC_RELIABLE_DETECTION_RES);
+          Settings.LoadNFOasOEM = IsButtonChecked(hwnd, IDC_NFOASOEM);
+          Settings.NoEncodingTags = IsButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS);
+          Settings.SkipUnicodeDetection = IsButtonChecked(hwnd, IDC_NOUNICODEDETECTION);
+          Settings.SkipANSICodePageDetection = IsButtonChecked(hwnd, IDC_NOANSICPDETECTION);
           EndDialog(hwnd, IDOK);
         }
       }
@@ -2706,9 +2709,9 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,iOption,0);
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETEXTENDEDUI,true,0);
 
-        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
-        CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, DlgBtnChk(Settings.FixLineEndings));
-        CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, DlgBtnChk(Settings.FixTrailingBlanks));
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
+        CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, SetBtn(Settings.FixLineEndings));
+        CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, SetBtn(Settings.FixTrailingBlanks));
 
         CenterDlgInParent(hwnd);
       }
@@ -2726,9 +2729,9 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
         case IDOK: {
             int* piOption = (int*)GetWindowLongPtr(hwnd, DWLP_USER);
             *piOption = (int)SendDlgItemMessage(hwnd,IDC_EOLMODELIST,CB_GETCURSEL,0,0);
-            Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS);
-            Settings.FixLineEndings = IsDlgButtonChecked(hwnd,IDC_CONSISTENT_EOLS);
-            Settings.FixTrailingBlanks = IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS);
+            Settings.WarnInconsistEOLs = IsButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS);
+            Settings.FixLineEndings = IsButtonChecked(hwnd,IDC_CONSISTENT_EOLS);
+            Settings.FixTrailingBlanks = IsButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS);
             EndDialog(hwnd,IDOK);
           }
           break;
@@ -2791,14 +2794,13 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
     for (int i = 0; i < 3; ++i) {
       WCHAR tchLn[32];
       StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", fioStatus->eolCount[i]);
-      FormatNumberStr(tchLn); 
+      FormatNumberStr(tchLn, COUNTOF(tchLn), 0);
       GetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, tchFmt, COUNTOF(tchFmt));
       StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchLn);
       SetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, wch);
     }
 
-    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, Settings.WarnInconsistEOLs ? BST_CHECKED : BST_UNCHECKED);
-
+    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
     CenterDlgInParent(hwnd);
   }
   return true;
@@ -2810,14 +2812,14 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
         EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
         const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
         status->iEOLMode = iEOLMode;
-        Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+        Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
         EndDialog(hwnd, IDOK);
       }
       break;
 
     case IDCANCEL:
       {
-        Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+        Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
         EndDialog(hwnd, IDCANCEL);
       }
       break;
@@ -2844,7 +2846,6 @@ bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 }
 
 
-
 //=============================================================================
 //
 //  WarnIndentationDlgProc()
@@ -2857,28 +2858,44 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
   case WM_INITDIALOG: {
     SetWindowLongPtr(hwnd, DWLP_USER, lParam);
     const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
-
+    
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
     WCHAR wch[128];
     WCHAR tchFmt[128];
     WCHAR tchCnt[32];
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[INDENT_TAB]);
-    FormatNumberStr(tchCnt);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_LN]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, tchFmt, COUNTOF(tchFmt));
-    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt, Settings.TabWidth);
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.TabWidth, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, wch);
 
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[INDENT_SPC]);
-    FormatNumberStr(tchCnt);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_SPC_LN]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, tchFmt, COUNTOF(tchFmt));
-    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt, Settings.IndentWidth);
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.IndentWidth, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, wch);
 
-    CheckRadioButton(hwnd, IDC_INDENT_BY_TABS, IDC_INDENT_BY_SPCS, Settings.TabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_MIX_LN]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    GetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, wch);
 
-    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, Settings.WarnInconsistentIndents ? BST_CHECKED : BST_UNCHECKED);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_MOD_X]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    GetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, wch);
 
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_SPC_MOD_X]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    GetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, wch);
+
+    CheckDlgButton(hwnd, Settings.TabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
+    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
     CenterDlgInParent(hwnd);
   }
   return true;
@@ -2888,17 +2905,17 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     case IDOK: 
       {
         EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
-        fioStatus->iGlobalIndent = IsDlgButtonChecked(hwnd, IDC_INDENT_BY_TABS) ? INDENT_TAB : INDENT_SPC;
-        Settings.WarnInconsistentIndents = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+        fioStatus->iGlobalIndent = IsButtonChecked(hwnd, IDC_INDENT_BY_TABS) ? I_TAB_LN : I_SPC_LN;
+        Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
         EndDialog(hwnd, IDOK);
       }
       break;
 
     case IDCANCEL: 
       {
-        //EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
-        //fioStatus->iGlobalIndent = INDENT_NONE;
-        Settings.WarnInconsistEOLs = IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+        EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        fioStatus->iGlobalIndent = I_MIX_LN;
+        Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
         EndDialog(hwnd, IDCANCEL);
       }
       break;
