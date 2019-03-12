@@ -158,7 +158,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE            "¿Guardar cambios a ""%s""?"
     IDS_MUI_ASK_REVERT          "¿Revertir archivo al último estado guardado? ¡Sus cambios se perderán!"
-    IDS_MUI_ASK_RECODE          "¡La recodificación requiere volver a cargar el archivo desde el disco y los cambios no guardados se perderán! ¿Continuar?"
+    IDS_MUI_ASK_RECODE          "¡La recodificación requiere volver a cargar el archivo desde el disco y los cambios no guardados se perderán!
     IDS_MUI_ASK_CREATE          """%s"" no encontrado.\n¿Quiere crear este archivo?"
     IDS_MUI_PRINT_HEADER        "Nombre de archivo, fecha y hora actual|Nombre del archivo, fecha actual|Nombre del archivo|Dejar en blanco"
     IDS_MUI_PRINT_FOOTER        "Número de página|Dejar en blanco"
