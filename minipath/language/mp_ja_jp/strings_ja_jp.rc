@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "対象のフォルダを選択してください。"
     IDS_CREATELINK          "選択項目のショートカットを作成するフォルダを選択します。"
     IDS_SAVESETTINGS        "設定の保存\n現在の設定を保存しました。"
-    IDS_MUI_TRANSL_AUTHOR   "(ja-JP) 日本語翻訳 by maboroshin"
+    IDS_MUI_TRANSL_AUTHOR   "[ja-JP] 日本語翻訳 by maboroshin"
 END
 
 
