@@ -156,7 +156,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE            "¿Guardar cambios a ""%s""?"
     IDS_MUI_ASK_REVERT          "¿Revertir archivo al último estado guardado? ¡Sus cambios se perderán!"
-    IDS_MUI_ASK_RECODE          "¡La recodificación requiere volver a cargar el archivo desde el disco, los cambios no guardados se perderán!"
+    IDS_MUI_ASK_RECODE          "¡La recodificación requiere volver a cargar el archivo desde el disco y los cambios no guardados se perderán! ¿Continuar?"
     IDS_MUI_ASK_CREATE          """%s"" no encontrado.\n¿Quiere crear este archivo?"
     IDS_MUI_PRINT_HEADER        "Nombre de archivo, fecha y hora actual|Nombre del archivo, fecha actual|Nombre del archivo|Dejar en blanco"
     IDS_MUI_PRINT_FOOTER        "Número de página|Dejar en blanco"
@@ -171,14 +171,14 @@ BEGIN
     IDS_MUI_RESETPOS            "&Reiniciar posición\tCtrl+R"
     IDS_MUI_PREVIEW             "Vista &previa configuración\tCtrl+P"
     IDS_MUI_PASS_FAILURE        "La frase de contraseña es incorrecta.\n¿Reintentar otra frase de contraseña?"
-    IDS_MUI_NOPASS              "¡Descifrado cancelado!\n¿Leer datos crudos encriptados?"
+    IDS_MUI_NOPASS              "¡Descifrado cancelado!\n¿Leer la información encriptada en bruto?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_STY_BASESTD         "BASE (Defecto Estilo):"
-    IDS_MUI_STY_BASE2ND         "BASE (2º Defecto Estilo):"
-    IDS_MUI_STY_LEXDEF          "%s - Defecto Estilo:"
+    IDS_MUI_STY_BASESTD         "BASE (Estilo por Defecto ):"
+    IDS_MUI_STY_BASE2ND         "BASE (2º Estilo por Defecto ):"
+    IDS_MUI_STY_LEXDEF          "%s - Estilo por Defecto:"
     IDS_MUI_STY_LEXSTYLE        "%s's  Estilo:"
     IDS_MUI_TITLE_RELBASE       " +++ BASE (%s) +++"
     IDS_MUI_TITLE_FIXBASE       " BASE (%s)"
@@ -191,16 +191,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(es-ES) Traducción española por hpwamr"
+    IDS_MUI_TRANSL_AUTHOR       "[es-ES] Traducción española por hpwamr"
     IDS_MUI_EXAMPLE_TEXT        "El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Corresponde a longitud cero"
-    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
+    IDS_MUI_GOTO_LINE           "Línea (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "Columna (1 - %lli):"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Idioma"
+    IDS_MUI_MENU_LANGUAGE   "&Idioma"
 END
 
 STRINGTABLE
@@ -272,7 +272,7 @@ IDS_MUI_ABOUT_RTF_0  "{\
 \\cf0 \\fs20\\b1\\ul1 Desarrollo:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Contribuyentes:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Contribuidores:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
 \\cf0 \\fs20\\b1\\ul1 Open Source / Bibliotecas:\\ul0\\b0\\fs18\\par\
