@@ -369,8 +369,8 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                         sc.Forward(2);
                     }
                 } else if (sc.ch == '.') {
-                    if (sc.chNext == '.') {
-                        // Pass
+                    if (IsADigit(sc.chNext)) {
+                        sc.Forward();
                     } else if (numType <= NumType::Exponent) {
                         sc.SetState(SCE_NIM_OPERATOR);
                         break;
@@ -391,7 +391,10 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                         }
                     }
                 } else if (sc.ch == '_') {
-                    break;
+                    // Accept only one underscore between digits
+                    if (IsADigit(sc.chNext)) {
+                        sc.Forward();
+                    }
                 } else if (numType == NumType::Decimal) {
                     if (sc.chPrev != '\'' && (sc.ch == 'e' || sc.ch == 'E')) {
                         numType = NumType::Exponent;
@@ -592,7 +595,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
         if (sc.state == SCE_NIM_DEFAULT) {
             // Number
-            if (IsADigit(sc.ch) || (IsADigit(sc.chNext) && sc.ch == '.')) {
+            if (IsADigit(sc.ch)) {
                 sc.SetState(SCE_NIM_NUMBER);
 
                 numType = NumType::Decimal;
@@ -703,15 +706,6 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
             // Operators
             else if (strchr("()[]{}:=;-\\/&%$!+<>|^?,.*~@", sc.ch)) {
                 sc.SetState(SCE_NIM_OPERATOR);
-
-                // Ignore decimal coloring in input like: range[0..5]
-                if (sc.Match('.', '.')) {
-                    sc.Forward();
-
-                    if (sc.chNext == '.') {
-                        sc.Forward();
-                    }
-                }
             }
         }
 

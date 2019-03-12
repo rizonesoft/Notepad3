@@ -125,8 +125,10 @@ BEGIN
     IDS_MUI_ERR_DROP            "Es kann immer nur eine Datei gleichzeitig verworfen werden!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Unbekannte Dateierweiterung (%s) !\nSollen die Daten trotzdem geladen werden?"
-    IDS_MUI_WARN_INCONSIST_EOLS "Die Datei hat uneinheitliche Zeilenumbrüche!\n%s\nAlle Zeilenumbrüche mit '%s' angleichen?"
-    IDS_MUI_WARN_INCONS_INDENTS "Die Datei hat uneinheitliche Einrückungen!\n%s\nErsetze die Einrückung mit '%s'?"
+    IDS_MUI_INDENT_CONSISTENT   "Die Datei hat einheitliche Einrückungen!"
+    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
 END
 
 STRINGTABLE

@@ -1364,7 +1364,7 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
 //
 //  FormatNumberStr()
 //
-size_t FormatNumberStr(LPWSTR lpNumberStr)
+size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth)
 {
   static WCHAR szSep[5] = { L'\0' };
   static WCHAR szGrp[11] = { L'\0' };
@@ -1409,6 +1409,13 @@ size_t FormatNumberStr(LPWSTR lpNumberStr)
       }
     }
   }
+
+  if (fixedWidth > 0) {
+    static WCHAR szCrop[256] = { L'\0' };
+    StringCchPrintf(szCrop, COUNTOF(szCrop), L"%*s", fixedWidth, lpNumberStr);
+    StringCchCopy(lpNumberStr, cch, szCrop);
+  }
+
   return StringCchLen(lpNumberStr,0);
 }
 
@@ -1422,7 +1429,7 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
   WCHAR szBuf[64] = { L'\0' };
 
   StringCchPrintf(szBuf,COUNTOF(szBuf),L"%u",uValue);
-  FormatNumberStr(szBuf);
+  FormatNumberStr(szBuf, COUNTOF(szBuf), 0);
 
   return(SetDlgItemText(hwnd,nIdItem,szBuf));
 }

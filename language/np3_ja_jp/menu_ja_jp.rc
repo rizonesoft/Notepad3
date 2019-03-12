@@ -110,6 +110,8 @@ BEGIN
             MENUITEM "デフォルトを設定する(&D)...",               IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
+        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM SEPARATOR
         MENUITEM "ページ設定(&T)...",                          IDM_FILE_PAGESETUP
         MENUITEM "印刷(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR

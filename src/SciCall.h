@@ -245,8 +245,6 @@ DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line)
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line)
 DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position)
 DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column)
-DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
-DeclareSciCallR1(GetLineIndentation, GETLINEINDENTATION, int, DocLn, line)
 DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos)
 DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative)
 
@@ -342,21 +340,28 @@ DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
 //
 // Indentation Guides
 //
-DeclareSciCallV1(SetIndent, SETINDENT, int, width)
 DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width)
-DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool)
-DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool)
+DeclareSciCallV1(SetIndent, SETINDENT, int, width)
+DeclareSciCallR0(GetIndent, GETINDENT, int)
 DeclareSciCallV1(SetUseTabs, SETUSETABS, bool, use)
+DeclareSciCallR0(GetUseTabs, GETUSETABS, bool)
 DeclareSciCallV1(SetTabIndents, SETTABINDENTS, bool, indents)
+DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool)
 DeclareSciCallV1(SetBackSpaceUnIndents, SETBACKSPACEUNINDENTS, bool, unindents)
+DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool)
+
+DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
+DeclareSciCallR1(GetLineIndentation, GETLINEINDENTATION, int, DocLn, line)
+DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
+
+DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
+DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
+
 DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
 DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2)
 DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos)
 DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, int, indic)
 DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic)
-DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
-DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
-DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
 
 
 //=============================================================================

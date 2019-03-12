@@ -125,8 +125,10 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE        "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Вы уверены, что хотите открыть этот очень большой файл?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
-    IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
+    IDS_MUI_INDENT_CONSISTENT   "The file has a consistent indentation!"
+    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
 END
 
 STRINGTABLE
