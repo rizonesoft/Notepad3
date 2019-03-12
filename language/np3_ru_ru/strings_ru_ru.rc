@@ -193,7 +193,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(ru-RU) ѕеревод: alexantr"
+    IDS_MUI_TRANSL_AUTHOR       "[ru-RU] ѕеревод: alexantr"
     IDS_MUI_EXAMPLE_TEXT        "—ъешь ещЄ этих м€гких французских булок да выпей чаю, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ —овпадение нулевой длины"
     IDS_MUI_GOTO_LINE           "Line (1 - %lli):"

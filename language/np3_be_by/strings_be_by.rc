@@ -193,7 +193,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(be-BY) Пераклад: alexantr"
+    IDS_MUI_TRANSL_AUTHOR       "[be-BY] Пераклад: alexantr"
     IDS_MUI_EXAMPLE_TEXT        "У Іўі худы жвавы чорт у зялёнай камізэльцы пабег пад'есці фаршу з юшкай, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Супадзенне нулявой даўжыні"
     IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
