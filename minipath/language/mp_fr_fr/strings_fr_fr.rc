@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Sélectionner un dossier de destination."
     IDS_CREATELINK          "Sélectionner un dossier de destination pour le nouveau lien."
     IDS_SAVESETTINGS        "Enregistrer les paramètres\nLes paramètres du programme en cours ont été sauvegardés."
-    IDS_MUI_TRANSL_AUTHOR   "(fr-FR) Traduction française par hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "[fr-FR] Traduction française par hpwamr"
 END
 
 

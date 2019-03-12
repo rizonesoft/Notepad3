@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Укажите папку назначения."
     IDS_CREATELINK          "Укажите папку назначения для нового ярлыка."
     IDS_SAVESETTINGS        "Сохранение настроек\nТекущие настройки приложения сохранены."
-    IDS_MUI_TRANSL_AUTHOR   "(ru-RU) Перевод: alexantr"
+    IDS_MUI_TRANSL_AUTHOR   "[ru-RU] Перевод: alexantr"
 END
 
 #endif    // Russian (Russia) resources
