@@ -345,11 +345,11 @@ CAPTION "Sangría inconsistente"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Estadística: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:    %s línea(s)",IDC_INDENT_SUM_TAB,24,18,100,8,SS_RIGHT
+    LTEXT           "Tabul.[%i]:    %s línea(s)",IDC_INDENT_SUM_TAB,24,18,100,8,SS_RIGHT
     LTEXT           "Blancos[%i]:  %s línea(s)",IDC_INDENT_SUM_SPC,24,30,100,8,SS_RIGHT
     LTEXT           "Mixto[x]:    %s línea(s)",IDC_INDENT_SUM_MIX,24,42,100,8,SS_RIGHT
     GROUPBOX        "Re-sangría todo ? ",IDC_STATIC,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,24,72,35,10
+    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,24,72,35,10
     CONTROL         "&Blancos",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,24,84,35,10
     LTEXT           "%s línea(s)  con conflicto(s)",IDC_INDENT_TAB_MODX,60,72,100,8,SS_RIGHT
     LTEXT           "%s línea(s)  con conflicto(s)",IDC_INDENT_SPC_MODX,60,84,100,8,SS_RIGHT
