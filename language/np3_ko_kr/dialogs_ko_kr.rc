@@ -346,14 +346,17 @@ CAPTION "Inconsistent Indentation"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistics: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:    %s line(s)",IDC_INDENT_SUM_TAB,24,18,100,8,SS_RIGHT
-    LTEXT           "Blanks[%i]:  %s line(s)",IDC_INDENT_SUM_SPC,24,30,100,8,SS_RIGHT
-    LTEXT           "Mixed[x]:    %s line(s)",IDC_INDENT_SUM_MIX,24,42,100,8,SS_RIGHT
+    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
+    LTEXT           "Blanks[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
+    LTEXT           "Mixed[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
+    LTEXT           "%s line(s)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
+    LTEXT           "%s line(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
+    LTEXT           "%s line(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
     GROUPBOX        "Re-Indent All ? ",IDC_STATIC,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,24,72,35,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,24,84,35,10
-    LTEXT           "%s line(s)  w/ depth conflicts",IDC_INDENT_TAB_MODX,60,72,100,8,SS_RIGHT
-    LTEXT           "%s line(s)  w/ depth conflicts",IDC_INDENT_SPC_MODX,60,84,100,8,SS_RIGHT
+    CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
+    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
+    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
+    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
     PUSHBUTTON      "&No",IDCANCEL,80,98,50,14
     PUSHBUTTON      "&Yes",IDOK,134,98,50,14
     CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_INDENTS,
@@ -727,6 +730,14 @@ BEGIN
         BOTTOMMARGIN, 73
     END
 
+    IDD_MUI_WARNLINEENDS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 93
+    END
+
     IDD_MUI_LINENUM, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -772,7 +783,15 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 167
         TOPMARGIN, 7
-        BOTTOMMARGIN, 95
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_MUI_WARNINDENTATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 131
     END
 
     IDD_MUI_LONGLINES, DIALOG

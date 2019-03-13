@@ -323,13 +323,15 @@
 #define IDC_RELIABLE_DETECTION_RES      18106
 #define IDC_LINE_TEXT                   18107
 #define IDC_COLUMN_TEXT                 18108
-#define IDC_INDENT_SUM_TAB              18109
-#define IDC_INDENT_SUM_SPC              18110
-#define IDC_INDENT_SUM_MIX              18111
-#define IDC_INDENT_BY_TABS              18112
-#define IDC_INDENT_BY_SPCS              18113
-#define IDC_INDENT_TAB_MODX             18114
-#define IDC_INDENT_SPC_MODX             18115
+#define IDC_INDENT_WIDTH_TAB            18109
+#define IDC_INDENT_WIDTH_SPC            18110
+#define IDC_INDENT_SUM_TAB              18111
+#define IDC_INDENT_SUM_SPC              18112
+#define IDC_INDENT_SUM_MIX              18113
+#define IDC_INDENT_BY_TABS              18114
+#define IDC_INDENT_BY_SPCS              18115
+#define IDC_INDENT_TAB_MODX             18116
+#define IDC_INDENT_SPC_MODX             18117
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
