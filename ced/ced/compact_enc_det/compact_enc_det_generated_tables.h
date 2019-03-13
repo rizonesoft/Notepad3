@@ -113,7 +113,7 @@ static const Encoding kMapToEncoding[NUM_RANKEDENCODING] = {
   MSFT_CP1257,		// encoding 32
   MSFT_CP1255,		// encoding 36
   RUSSIAN_KOI8_R,		// encoding 25
-  GBK,		// encoding 45
+  GBK,		      // encoding 45
   ISO_8859_7,		// encoding 6
   JAPANESE_JIS,		// encoding 12
   MSFT_CP1254,		// encoding 31

@@ -2297,15 +2297,16 @@ bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //
 //
 typedef struct encodedlg {
-  bool bRecodeOnly;
-  int  idEncoding;
-  int  cxDlg;
-  int  cyDlg;
-} ENCODEDLG, *PENCODEDLG;
+  bool       bRecodeOnly;
+  cpi_enc_t  idEncoding;
+  int        cxDlg;
+  int        cyDlg;
+} 
+ENCODEDLG, *PENCODEDLG;
 
 static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static int s_iEnc;
+  static cpi_enc_t s_iEnc;
   static bool s_bUseAsFallback;
   static bool s_bLoadASCIIasUTF8;
 
@@ -2448,7 +2449,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 //
 //  SelectDefEncodingDlg()
 //
-bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
+bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
   INT_PTR iResult;
@@ -2617,7 +2618,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 //
 //  SelectEncodingDlg()
 //
-bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
+bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
   INT_PTR iResult;
@@ -2650,7 +2651,7 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 //
 //  RecodeDlg()
 //
-bool RecodeDlg(HWND hwnd,int *pidREncoding)
+bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
   INT_PTR iResult;

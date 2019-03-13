@@ -346,9 +346,9 @@ UINT CharSetFromCodePage(UINT uCodePage);
 
 LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
-bool      MRU_Add(LPMRULIST pmru,LPCWSTR pszNew,int iEnc,DocPos iPos,LPCWSTR pszBookMarks);
+bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
 bool      MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex);
-bool      MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool,bool,int iEnc,DocPos iPos,LPCWSTR pszBookMarks);
+bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
 bool      MRU_Delete(LPMRULIST pmru,int iIndex);
 bool      MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile);
 bool      MRU_Empty(LPMRULIST pmru);

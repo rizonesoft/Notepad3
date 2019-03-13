@@ -23,8 +23,8 @@
 void  EditInitializeSciCtrl(HWND);
 void  EditInitWordDelimiter(HWND hwnd);
 void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText);
-bool  EditConvertText(HWND hwnd,int encSource,int encDest,bool);
-bool  EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool,bool);
+bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
+bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
@@ -33,8 +33,8 @@ bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
 void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
-bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool, bool, EditFileIOStatus* status);
-bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
+bool EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, EditFileIOStatus* status);
+bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 
 void  EditInvertCase(HWND hwnd);
 void  EditTitleCase(HWND hwnd);
@@ -127,13 +127,13 @@ inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPo
 #define FV_ENCODING       64
 #define FV_MODE          128
 
-bool FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
-bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);
-bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
-bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
-bool FileVars_IsUTF8(LPFILEVARS lpfv);
-bool FileVars_IsValidEncoding(LPFILEVARS lpfv);
-int  FileVars_GetEncoding(LPFILEVARS lpfv);
+bool       FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
+bool       FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);
+bool       FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
+bool       FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
+bool       FileVars_IsUTF8(LPFILEVARS lpfv);
+bool       FileVars_IsValidEncoding(LPFILEVARS lpfv);
+cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
 
 
 //

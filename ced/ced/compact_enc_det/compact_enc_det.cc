@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc.
+// Copyright 2016 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -509,7 +509,7 @@ static const Encoding kMapEncToBaseEncoding[] = {
   JAPANESE_SHIFT_JIS,  // 11: Teragram SJS
   JAPANESE_JIS,     // 12: Teragram JIS
   CHINESE_BIG5,     // 13: Teragram BIG5
-  CHINESE_GB,       // 14: Teragram GB
+  CHINESE_GB,       // 14: Teragram GB2312
   CHINESE_EUC_CN,   // 15: Teragram EUC-CN
   KOREAN_EUC_KR,    // 16: Teragram KSC
   UNICODE,          // 17: Teragram Unicode
@@ -540,8 +540,8 @@ static const Encoding kMapEncToBaseEncoding[] = {
   RUSSIAN_CP866,    // 42
   ISO_8859_13,      // 43
   ISO_2022_KR,      // 44
-  CHINESE_GB,       // 45 GBK --> 14
-  CHINESE_GB,       // 46 GB18030 --> 14
+  GBK,              // 45 GBK
+  GB18030,          // 46 GB18030
   CHINESE_BIG5,     // 47 BIG5_HKSCS --> 13
   ISO_2022_KR,      // 48 ISO_2022_CN --> 44
   TSCII,            // 49 Indic encoding
