@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP1252, CP-1252, Windows-1252, 
+//
 #include "common_res.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -11,7 +11,6 @@
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
-#pragma code_page(1252)  // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
