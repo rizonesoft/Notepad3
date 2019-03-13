@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
+<style type="text/css">
+	.icon-canvas-transparent{opacity:0;fill:#F6F6F6;}
+	.icon-vs-out{fill:#F6F6F6;}
+	.icon-vs-bg{fill:#424242;}
+	.icon-vs-action-green{fill:#388A34;}
+</style>
+<g id="canvas">
+	<path class="icon-canvas-transparent" d="M16,16H0V0h16V16z"/>
+</g>
+<g id="outline">
+	<path class="icon-vs-out" d="M15.991,2L10,10.045V16H6v-5.955L4.477,8H2V6H0V2h0.022H0.008H2V0h4v2H15.991z"/>
+</g>
+<g id="iconBg">
+	<path class="icon-vs-bg" d="M14,3L9,9.714V15H7V9.714L5.723,8H6V6h2V3H14z"/>
+</g>
+<g id="colorAction">
+	<path class="icon-vs-action-green" d="M7,5H5v2H3.019V5H1V3.018h2.019V1H5v2.018h2V5z"/>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+</g>
+</svg>
