@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP1251, CP-1251, Windows-1251
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)  // Cyrillic (Win-1251)
+#pragma code_page(1251)  // Cyrillic (Windows-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

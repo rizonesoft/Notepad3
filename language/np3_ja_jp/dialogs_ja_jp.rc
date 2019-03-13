@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP932, CP-932, Shift_JIS
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -14,7 +14,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Japanisch (Japan) resources
+// Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
@@ -320,7 +320,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 102
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "タブキーの設定"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -331,8 +331,12 @@ BEGIN
     EDITTEXT        IDC_INDENT_DEPTH,80,27,30,14,ES_AUTOHSCROLL
     CONTROL         "タブキーで空白を挿入(&S)"IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,162,10
     CONTROL         "タブキーで追加しインデント全体を再変換(&k)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,167,10
-    CONTROL         "バックスペースで削除し、同様に再変換(&B)",IDC_BACKTAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,201,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "バックスペースで削除し、同様に再変換(&B)",IDC_BACKTAB_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,201,10
+    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,117,27,50,14
 END
