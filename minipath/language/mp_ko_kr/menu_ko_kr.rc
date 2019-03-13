@@ -79,7 +79,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "파일 필터(&F)...",             IDM_VIEW_FILTER
         MENUITEM "필터 초기화(&R)",               IDM_VIEW_FILTERALL
-        POPUP "&보기"
+        POPUP "보기(&S)"
         BEGIN
             MENUITEM "디렉토리(&D)",            IDM_VIEW_FOLDERS
             MENUITEM "파일(&F)",                  IDM_VIEW_FILES
