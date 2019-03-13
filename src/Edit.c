@@ -838,40 +838,49 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 
   DocLn linesCount[3] = { 0, 0, 0 };
 
-  LPCSTR cp = lpData;
-  LPCSTR const end = cp + cbData;
-  while (cp < end) {
-    switch (*cp) {
-    case '\n':
-      ++cp;
+
+  // tools/GenerateTable.py
+  static const UINT8 eol_table[16] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, // 00 - 0F
+  };
+
+  const UINT8* ptr = (const UINT8*)lpData;
+  const UINT8* const end = ptr + cbData;
+  do {
+    // skip to line end
+    UINT ch;
+    UINT type = 0;
+    while (ptr < end && ((ch = *ptr++) > '\r' || (type = eol_table[ch]) == 0)) { /* nop */ }
+    switch (type) {
+    case 1: //'\n'
       ++linesCount[SC_EOL_LF];
       break;
-    case '\r':
-      ++cp;
-      if (*cp == '\n') {
-        ++cp;
+    case 2: //'\r'
+      if (*ptr == '\n') {
+        ++ptr;
         ++linesCount[SC_EOL_CRLF];
       }
       else {
         ++linesCount[SC_EOL_CR];
       }
       break;
-    default:
-      ++cp;
-      break;
     }
-  }
+  } while (ptr < end);
 
+  
   DocLn const linesMax = max_ln(max_ln(linesCount[0], linesCount[1]), linesCount[2]);
 
-  if (linesMax == linesCount[SC_EOL_CRLF]) {
-    iEOLMode = SC_EOL_CRLF;
-  }
-  else if (linesMax == linesCount[SC_EOL_CR]) {
-    iEOLMode = SC_EOL_CR;
-  }
-  else {
-    iEOLMode = SC_EOL_LF;
+  if (linesMax != linesCount[iEOLMode]) 
+  {
+    if (linesMax == linesCount[SC_EOL_CRLF]) {
+      iEOLMode = SC_EOL_CRLF;
+    }
+    else if (linesMax == linesCount[SC_EOL_CR]) {
+      iEOLMode = SC_EOL_CR;
+    }
+    else {
+      iEOLMode = SC_EOL_LF;
+    }
   }
 
   status->iEOLMode = iEOLMode;
