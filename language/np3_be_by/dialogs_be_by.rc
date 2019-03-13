@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP1251, CP-1251, Windows-1251
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)  // Cyrillic (Win-1251)
+#pragma code_page(1251)  // Cyrillic (Windows-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -320,7 +320,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 185, 102
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 185, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Налады табуляцыі"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -334,7 +334,9 @@ BEGIN
     CONTROL         "Клавіша Backspace &перафарматуе водступ",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,170,10
     CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,100
+    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Скасаваць",IDCANCEL,128,27,50,14
 END
