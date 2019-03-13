@@ -175,7 +175,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,195,10
     CONTROL         "추적 선택 사용(&E).",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,195,10
     CONTROL         "전체 행 선택(&F).",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,195,10
-    CONTROL         "파일을 열 때 항상 지정된 프로그램 창 활성화(A&).",IDC_FOCUSEDIT,
+    CONTROL         "파일을 열 때 항상 지정된 프로그램 창 활성화(&C).",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "MiniPath 창을 항상 위에 두기(&K).",IDC_ALWAYSONTOP,
