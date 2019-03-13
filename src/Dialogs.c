@@ -2865,32 +2865,41 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     WCHAR wch[128];
     WCHAR tchFmt[128];
     WCHAR tchCnt[32];
+
+    GetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.TabWidth);
+    SetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, wch);
+
+    GetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.IndentWidth);
+    SetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, wch);
+
     StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_LN]);
-    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, tchFmt, COUNTOF(tchFmt));
-    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.TabWidth, tchCnt);
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, wch);
 
     StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_SPC_LN]);
-    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, tchFmt, COUNTOF(tchFmt));
-    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.IndentWidth, tchCnt);
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, wch);
 
     StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_MIX_LN]);
-    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, wch);
 
     StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_MOD_X]);
-    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, wch);
 
     StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_SPC_MOD_X]);
-    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 8);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, wch);
