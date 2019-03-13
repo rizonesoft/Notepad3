@@ -31,15 +31,6 @@
 #include "Scintilla.h"
 
 
-//=============================================================================
-//
-//  Encoding Helper Functions
-//
-
-int g_DOSEncoding = CPI_NONE;
-bool g_bForceCompEncDetection = false;
-
-
 // ============================================================================
 
 // Supported Encodings
@@ -158,12 +149,12 @@ void Encoding_InitDefaults()
     }
   }
 
-  g_DOSEncoding = CPI_OEM;
+  Globals.DOSEncoding = CPI_OEM;
   // Try to set the DOS encoding to DOS-437 if the default OEMCP is not DOS-437
-  if (g_Encodings[g_DOSEncoding].uCodePage != 437) {
-    for (cpi_enc_t i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
-      if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == 437)) {
-        g_DOSEncoding = i;
+  if (g_Encodings[Globals.DOSEncoding].uCodePage != 437) {
+    for (cpi_enc_t cpi = CPI_UTF7 + 1; cpi < Encoding_CountOf(); ++cpi) {
+      if (Encoding_IsValid(cpi) && (g_Encodings[cpi].uCodePage == 437)) {
+        Globals.DOSEncoding = cpi;
         break;
       }
     }
@@ -173,7 +164,7 @@ void Encoding_InitDefaults()
 // ============================================================================
 
 
-cpi_enc_t Encoding_MapIniSetting(bool bLoad, cpi_enc_t iSetting)
+int Encoding_MapIniSetting(bool bLoad, int iSetting)
 {
   if (bLoad) {
     switch (iSetting) {
@@ -190,7 +181,7 @@ cpi_enc_t Encoding_MapIniSetting(bool bLoad, cpi_enc_t iSetting)
     default: {
       for (cpi_enc_t i = CPI_UTF7 + 1; i < Encoding_CountOf(); i++) {
         if ((g_Encodings[i].uCodePage == (UINT)iSetting) && Encoding_IsValid(i))
-          return(i);
+          return (int)i;
       }
       return CPI_ANSI_DEFAULT;
     }
@@ -209,8 +200,8 @@ cpi_enc_t Encoding_MapIniSetting(bool bLoad, cpi_enc_t iSetting)
     case CPI_UNICODEBE:    return  7;
     case CPI_UTF7:         return  8;
     default:
-      if (Encoding_IsValid(iSetting)) {
-        return(g_Encodings[iSetting].uCodePage);
+      if (Encoding_IsValid((cpi_enc_t)iSetting)) {
+        return (int)g_Encodings[iSetting].uCodePage;
       }
       return CPI_ANSI_DEFAULT;
     }
@@ -219,7 +210,7 @@ cpi_enc_t Encoding_MapIniSetting(bool bLoad, cpi_enc_t iSetting)
 // ============================================================================
 
 
-int Encoding_MapUnicode(cpi_enc_t iUni)
+cpi_enc_t Encoding_MapUnicode(cpi_enc_t iUni)
 {
   if (iUni == CPI_UNICODEBOM) {
     return CPI_UNICODE;
@@ -300,11 +291,11 @@ cpi_enc_t Encoding_MatchA(const char *pchTest)
 
 
 
-
-cpi_enc_t Encoding_GetByCodePage(UINT cp) {
-  for (int i = 0; i < Encoding_CountOf(); i++) {
-    if (cp == g_Encodings[i].uCodePage) {
-      return i;
+cpi_enc_t Encoding_GetByCodePage(const UINT codepage) 
+{
+  for (cpi_enc_t cpi = 0; cpi < Encoding_CountOf(); cpi++) {
+    if (codepage == g_Encodings[cpi].uCodePage) {
+      return cpi;
     }
   }
   return CPI_ANSI_DEFAULT;
@@ -327,9 +318,10 @@ bool Encoding_IsValid(cpi_enc_t iTestEncoding) {
 
 
 typedef struct _ee {
-  int    id;
-  WCHAR  wch[256];
-} ENCODINGENTRY, *PENCODINGENTRY;
+  cpi_enc_t id;
+  WCHAR     wch[256];
+} 
+ENCODINGENTRY, *PENCODINGENTRY;
 
 int CmpEncoding(const void *s1, const void *s2) {
   return StrCmp(((const PENCODINGENTRY)s1)->wch, ((const PENCODINGENTRY)s2)->wch);
@@ -337,14 +329,14 @@ int CmpEncoding(const void *s1, const void *s2) {
 // ============================================================================
 
 
-void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
+void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly) {
   int iSelItem = -1;
   LVITEM lvi;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (int i = 0; i < Encoding_CountOf(); i++) {
+    for (cpi_enc_t i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -356,7 +348,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
 
     for (int i = 0; i < Encoding_CountOf(); i++) {
 
-      int id = pEE[i].id;
+      cpi_enc_t id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
 
         lvi.iItem = ListView_GetItemCount(hwnd);
@@ -402,34 +394,37 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
 // ============================================================================
 
 
-bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
+bool Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding) 
+{
   LVITEM lvi;
-
+  ZeroMemory(&lvi, sizeof(LVITEM));
   lvi.iItem = ListView_GetNextItem(hwnd, -1, LVNI_ALL | LVNI_SELECTED);
   lvi.iSubItem = 0;
   lvi.mask = LVIF_PARAM;
 
   if (ListView_GetItem(hwnd, &lvi)) {
-    if (Encoding_IsValid((int)lvi.lParam))
-      *pidEncoding = (int)lvi.lParam;
-    else
-      *pidEncoding = -1;
-
-    return (true);
+    if (Encoding_IsValid((cpi_enc_t)lvi.lParam)) {
+      *pidEncoding = (cpi_enc_t)lvi.lParam;
+    }
+    else {
+      *pidEncoding = CPI_NONE;
+    }
+    return true;
   }
   return false;
 }
 // ============================================================================
 
 
-void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
+void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
+{
   int iSelItem = -1;
   COMBOBOXEXITEM cbei;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (int i = 0; i < Encoding_CountOf(); i++) {
+    for (cpi_enc_t i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -444,7 +439,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
 
     for (int i = 0; i < Encoding_CountOf(); i++) {
 
-      int id = pEE[i].id;
+      cpi_enc_t id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
 
         cbei.iItem = SendMessage(hwnd, CB_GETCOUNT, 0, 0);
@@ -481,19 +476,21 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
 // ============================================================================
 
 
-bool Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
+bool Encoding_GetFromComboboxEx(HWND hwnd, cpi_enc_t* pidEncoding) 
+{
   COMBOBOXEXITEM cbei;
-
+  ZeroMemory(&cbei, sizeof(COMBOBOXEXITEM));
   cbei.iItem = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
   cbei.mask = CBEIF_LPARAM;
 
   if (SendMessage(hwnd, CBEM_GETITEM, 0, (LPARAM)&cbei)) {
-    if (Encoding_IsValid((int)cbei.lParam))
-      *pidEncoding = (int)cbei.lParam;
-    else
+    if (Encoding_IsValid((cpi_enc_t)cbei.lParam)) {
+      *pidEncoding = (cpi_enc_t)cbei.lParam;
+    }
+    else {
       *pidEncoding = -1;
-
-    return (true);
+    }
+    return true;
   }
   return false;
 }
@@ -574,8 +571,9 @@ bool Encoding_IsRECODE(const cpi_enc_t iEncoding) {
 
 
 void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding) {
-  if (iEncoding >= 0)
+  if (iEncoding >= 0) {
     g_Encodings[iEncoding].uFlags |= NCP_DEFAULT;
+  }
 }
 // ============================================================================
 
@@ -608,8 +606,11 @@ bool Has_UTF16_BE_BOM(const char* pBuf, int cnt)
 // ============================================================================
 
 
-bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) 
+bool IsValidUnicode(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse) 
 {
+  size_t const enoughData = 2048LL;
+  size_t const cb = (len < enoughData) ? len : enoughData;
+
   if (!pBuffer || cb < 2) { return false; }
 
   // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
@@ -645,7 +646,6 @@ bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbRever
     }
     return true;
   }
-
   return false;
 }
 // ============================================================================

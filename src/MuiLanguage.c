@@ -265,7 +265,7 @@ LANGID LoadLanguageResources()
   SetThreadUILanguage(languageID);
 
   // update language dependent items
-  for (int enc = 0; enc < Encoding_CountOf(); ++enc) 
+  for (cpi_enc_t enc = 0; enc < Encoding_CountOf(); ++enc)
   {
     Encoding_SetLabel(enc);
   }

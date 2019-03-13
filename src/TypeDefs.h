@@ -59,11 +59,14 @@ typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
 
-// TODO(rkotten): refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
+// TODO: refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
 typedef int MBWC_DocPos_Cast; 
 
 // --------------------------------------------------------------------------
-    
+
+//typedef intptr_t cpi_enc_t;
+typedef int cpi_enc_t;
+
 typedef struct _dpi_t
 {
   UINT x;
@@ -143,7 +146,8 @@ typedef enum {
 #define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11, 12, 13, 14 }
 
 #define STATUSBAR_SECTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-#define STATUSBAR_SECTION_POSTFIXES L",,, [UTF-8],,, [UTF-8],,,,,,,,,"
+//#define STATUSBAR_SECTION_POSTFIXES L",,, [UTF-8],,, [UTF-8],,,,,,,,,"
+#define STATUSBAR_SECTION_POSTFIXES L",,,,,,,,,,,,,,,"
 #define STATUSBAR_DEFAULT_IDS  L"0 1 12 14 2 4 5 6 7 8 9 10 11"
 #define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0 20 20 20"
 #define STAUSBAR_RIGHT_MARGIN 20
@@ -157,16 +161,16 @@ typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO } CALLTIPTYPE
 typedef struct _filevars
 {
 
-  int mask;
-  int iTabWidth;
-  int iIndentWidth;
-  bool bTabsAsSpaces;
-  bool bTabIndents;
-  bool fWordWrap;
-  int iLongLinesLimit;
-  char tchEncoding[64];
-  int  iEncoding;
-  char tchMode[32];
+  int        mask;
+  int        iTabWidth;
+  int        iIndentWidth;
+  bool       bTabsAsSpaces;
+  bool       bTabIndents;
+  bool       fWordWrap;
+  int        iLongLinesLimit;
+  char       tchEncoding[64];
+  cpi_enc_t  iEncoding;
+  char       tchMode[32];
 
 } FILEVARS, *LPFILEVARS;
 
@@ -206,13 +210,13 @@ typedef struct _editfindreplace
 
 typedef struct _mrulist
 {
-  LPCWSTR szRegKey;
-  int     iFlags;
-  int     iSize;
-  LPWSTR  pszItems[MRU_MAXITEMS];
-  int     iEncoding[MRU_MAXITEMS];
-  DocPos  iCaretPos[MRU_MAXITEMS];
-  LPWSTR  pszBookMarks[MRU_MAXITEMS];
+  LPCWSTR   szRegKey;
+  int       iFlags;
+  int       iSize;
+  LPWSTR    pszItems[MRU_MAXITEMS];
+  cpi_enc_t iEncoding[MRU_MAXITEMS];
+  DocPos    iCaretPos[MRU_MAXITEMS];
+  LPWSTR    pszBookMarks[MRU_MAXITEMS];
 }
 MRULIST, *PMRULIST, *LPMRULIST;
 
@@ -280,6 +284,7 @@ typedef struct _globals_t
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
+  cpi_enc_t DOSEncoding;
   DPI_T     CurrentDPI;
   DPI_T     CurrentPPI;
   LANGID    iPrefLANGID;
@@ -363,7 +368,7 @@ typedef struct _settings_t
   bool MarkOccurrencesCurrentWord;
   bool ViewWhiteSpace;
   bool ViewEOLs;
-  int DefaultEncoding; // default new file encoding
+  cpi_enc_t DefaultEncoding; // default new file encoding
   bool UseDefaultForFileEncoding;
   bool LoadASCIIasUTF8;
   bool UseReliableCEDonly;
@@ -495,7 +500,7 @@ typedef enum { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_
 
 typedef struct _editfileiostatus
 {
-  int iEncoding;
+  cpi_enc_t iEncoding;
   int iEOLMode;
 
   bool bFileTooBig;

@@ -1528,7 +1528,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
   return(StringCchCompareX(psz1,psz2));
 }
 
-bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBookMarks)
+bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
@@ -1574,7 +1574,7 @@ bool MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
 }
 
 bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpandMyDocs,
-                 int iEnc, DocPos iPos, LPCWSTR pszBookMarks) {
+                 cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks) {
 
   int i = 0;
   if (MRU_FindFile(pmru,pszFile,&i)) {
@@ -1706,8 +1706,8 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->pszItems[n] = StrDup(tchItem);
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-        int iCP = IniSectionGetInt(pIniSection, tchName, 0);
-        pmru->iEncoding[n] = Encoding_MapIniSetting(true, iCP);
+        int const iCP = (cpi_enc_t)IniSectionGetInt(pIniSection, tchName, 0);
+        pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
         pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
@@ -1750,7 +1750,7 @@ bool MRU_Save(LPMRULIST pmru)
 
         if (pmru->iEncoding[i] > 0) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-          int iCP = Encoding_MapIniSetting(false, pmru->iEncoding[i]);
+          int const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
           IniSectionSetInt(pIniSection, tchName, iCP);
         }
         if (pmru->iCaretPos[i] > 0) {

@@ -26,21 +26,21 @@
 #define DATA_NOTEPAD3_PARAMS 0xFB10
 typedef struct np3params {
 
-  int   flagFileSpecified;
-  int   flagChangeNotify;
-  int   flagLexerSpecified;
-  int   iInitialLexer;
-  int   flagQuietCreate;
-  int   flagJumpTo;
-  int   iInitialLine;
-  int   iInitialColumn;
-  int   iSrcEncoding;
-  int   flagSetEncoding;
-  int   flagSetEOLMode;
-  int   flagTitleExcerpt;
-  WCHAR wchData;
-
-} np3params, *LPnp3params;
+  int        flagFileSpecified;
+  int        flagChangeNotify;
+  int        flagLexerSpecified;
+  int        iInitialLexer;
+  int        flagQuietCreate;
+  int        flagJumpTo;
+  int        iInitialLine;
+  int        iInitialColumn;
+  cpi_enc_t  iSrcEncoding;
+  cpi_enc_t  flagSetEncoding;
+  int        flagSetEOLMode;
+  int        flagTitleExcerpt;
+  WCHAR      wchData;
+} 
+np3params, *LPnp3params;
 
 
 typedef struct _undoSel
@@ -163,9 +163,12 @@ void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 
-bool FileIO(bool, LPWSTR pszFileName, bool, bool, EditFileIOStatus* status, bool);
-bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR lpszFile);
-bool FileRevert(LPCWSTR szFileName,bool);
+bool FileIO(bool fLoad, LPWSTR pszFileName,
+            bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection,
+            EditFileIOStatus* status, bool bSaveCopy);
+bool FileLoad(bool bDontSave, bool bNew, bool bReload,
+              bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile);
+bool FileRevert(LPCWSTR szFileName, bool);
 bool FileSave(bool,bool,bool,bool);
 bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
 bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);

@@ -374,7 +374,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 //
 //  EditConvertText()
 //
-bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
+bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSetSavePoint)
 {
   if (encSource == encDest)
     return true;
@@ -430,9 +430,9 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
 //
 //  EditSetNewEncoding()
 //
-bool EditSetNewEncoding(HWND hwnd, int iNewEncoding, bool bNoUI, bool bSetSavePoint) 
+bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSetSavePoint)
 {
-  int iCurrentEncoding = Encoding_Current(CPI_GET);
+  cpi_enc_t iCurrentEncoding = Encoding_Current(CPI_GET);
 
   if (iCurrentEncoding != iNewEncoding) {
 
@@ -967,6 +967,7 @@ bool EditLoadFile(
   LPWSTR pszFile,
   bool bSkipUTFDetection,
   bool bSkipANSICPDetection,
+  bool bForceEncDetection,
   EditFileIOStatus* status)
 {
   status->bUnicodeErr = false;
@@ -1060,13 +1061,13 @@ bool EditLoadFile(
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
-  int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
+  cpi_enc_t iPreferedEncoding = (bNfoDizDetected) ? Globals.DOSEncoding :
     ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
 
   float confidence = 0.0f;
-  int iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iPreferedEncoding);
+  cpi_enc_t iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iPreferedEncoding);
 
   bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
 
@@ -1085,7 +1086,7 @@ bool EditLoadFile(
 
   // ------------------------------------------------------
 
-  if (!g_bForceCompEncDetection) 
+  if (!bForceEncDetection)
   {
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
@@ -1100,11 +1101,11 @@ bool EditLoadFile(
   }
   // --------------------------------------------------------------------------
 
-  int iForcedEncoding = Globals.bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
+  cpi_enc_t iForcedEncoding = Globals.bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
   if (Encoding_IsNONE(iForcedEncoding) && bNfoDizDetected) {
-    iForcedEncoding = g_DOSEncoding;
+    iForcedEncoding = Globals.DOSEncoding;
   }
-  if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
+  if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
     iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
   }
   // --------------------------------------------------------------------------
@@ -1113,7 +1114,7 @@ bool EditLoadFile(
   bool const bIsUnicodeForced = Encoding_IsUNICODE(iForcedEncoding);
 
   // choose best encoding guess
-  int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
+  cpi_enc_t const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
 
   if (bIsForced) {
     iPreferedEncoding = iForcedEncoding;
@@ -1135,14 +1136,12 @@ bool EditLoadFile(
   bool bBOM = false;
   bool bReverse = false;
   bool const bIsUnicodeValid = IsValidUnicode(lpData, cbData, &bBOM, &bReverse);
-  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable)
-    && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
+  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = bIsForced ? iForcedEncoding :
-      (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
+    status->iEncoding = bIsForced ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
@@ -8221,7 +8220,8 @@ bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
 //
 //  FileVars_GetEncoding()
 //
-int FileVars_GetEncoding(LPFILEVARS lpfv) {
+cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv) 
+{
   if (lpfv->mask & FV_ENCODING) {
     return(lpfv->iEncoding);
   }
