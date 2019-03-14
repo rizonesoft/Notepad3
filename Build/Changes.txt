@@ -30,13 +30,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.309.build (2019-Mar-09)
+Current Version 5.19.314.build (2019-Mar-14)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
 
+- Add Theme Menu to load exported styles "on the fly (e.g.: "dark theme")
+- Add: dark scheme for 2nd default text
 - Add a timer of 3.2 second to the Zoom Info Bubble
 
 - Add (internal) [Settings2] to control encoding detection
@@ -83,10 +85,16 @@ CHANGES:
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
 
 --------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+
+- Enh: rework EOL and Indentation check with dialogs
+
+--------------------------------------------------
 FIXES:
 --------------------------------------------------
 
-- Add here items for later review...
+- Reworked: Consistent EOL and Indentation checks
 
 - Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
 - MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
@@ -98,6 +106,12 @@ FIXES:
 - High quality icon for Taskbar (big icons)
 - Support high-definition icon for taskbar
 - .vcxproj files supporting VS2019_Prev_2 (vc142)
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+
+- Add here items for later review...
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
