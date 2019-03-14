@@ -478,6 +478,11 @@ static void _InitGlobals()
 }
 
 
+//=============================================================================
+//
+//  _InsertLanguageMenu()
+//
+
 typedef struct _lng_menu_t {
   LANGID LangID;
   const WCHAR* MenuItem;
@@ -524,7 +529,147 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 }
 
 
+typedef struct _themeFiles
+{
+  UINT    rid;
+  WCHAR   szFileName[80];
+  WCHAR   szFilePath[MAX_PATH];
+  bool    bIsActive;
 
+} THEMEFILES, *PTHEMEFILES;
+
+
+#define THEME_MENU_MAX_ITEMS  24
+
+THEMEFILES Theme_Files[THEME_MENU_MAX_ITEMS] =
+{
+  { 0, L"", L"", false }, // Standard
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false },
+  { 0, L"", L"", false }
+};
+
+
+static bool bThemesMenuTableFilled = false;
+
+static bool _FillThemesMenuTable() 
+{
+  bThemesMenuTableFilled = true;
+
+  WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
+  // find "themes" sub-dir (side-by-side to Notepad3.ini)
+  StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
+  PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
+  PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
+  if (!PathIsDirectory(tchThemeDir)) { return false; }
+
+  WCHAR tchThemePath[MAX_PATH] = { L'\0' };
+  StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
+  PathCchAppend(tchThemePath, COUNTOF(tchThemePath), L"*.ini");
+
+  WIN32_FIND_DATA FindFileData;
+  ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
+  HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
+  if (hFindFile == INVALID_HANDLE_VALUE) { return false; }
+
+  // ---  fill table   ---
+
+  Theme_Files[0].rid = IDM_THEMES_FILE_ITEM;
+
+  WCHAR wchStdName[80];
+  GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
+  StringCchCopy(Theme_Files[0].szFileName, COUNTOF(Theme_Files[0].szFileName), wchStdName);
+  Theme_Files[0].bIsActive = true;  // TODO: read from settings active entry
+
+  int i = 1;
+  for (; i < THEME_MENU_MAX_ITEMS; ++i) 
+  {
+    Theme_Files[i].rid = (i + IDM_THEMES_FILE_ITEM);
+
+    StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
+    PathRemoveExtension(tchThemePath);
+    StringCchCopy(Theme_Files[i].szFileName, COUNTOF(Theme_Files[i].szFileName), tchThemePath);
+
+    StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
+    PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
+    StringCchCopy(Theme_Files[i].szFilePath, COUNTOF(Theme_Files[i].szFilePath), tchThemePath);
+
+    Theme_Files[i].bIsActive = false;
+
+    if (!FindNextFile(hFindFile, &FindFileData)) { break; }
+  }
+  for (++i; i < THEME_MENU_MAX_ITEMS; ++i) { 
+    Theme_Files[i].rid = 0;   // no themes available
+    Theme_Files[i].szFileName[0] = L'\0';
+    Theme_Files[i].szFilePath[0] = L'\0';
+    Theme_Files[i].bIsActive = false;
+  }
+
+  FindClose(hFindFile);
+  
+  return true;
+}
+
+
+//=============================================================================
+//
+//  _InsertThemesMenu()
+//
+static bool _InsertThemesMenu(HMENU hMenuBar)
+{
+  if (!bThemesMenuTableFilled) {
+    _FillThemesMenuTable();
+  }
+  if (Theme_Files[1].rid == 0) {
+    return false; // no themes available, use Standard (0)
+  }
+
+  HMENU hmenuThemes = CreatePopupMenu();
+  int const pos = GetMenuItemCount(hMenuBar) - 1;
+
+  for (int i = 0; i < THEME_MENU_MAX_ITEMS; ++i) 
+  {
+    if (Theme_Files[i].rid > 0) {
+      AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szFileName);
+    }
+    else {
+      break; // done
+    }
+  }
+
+  // --- insert ---
+  WCHAR wchMenuItemStrg[80] = { L'\0' };
+  GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+
+  return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
+
+}
+
+
+//=============================================================================
+//
+//  _CleanUpResources()
+//
 static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
   if (hwnd) {
@@ -584,7 +729,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   WCHAR wchAppDir[2 * MAX_PATH + 4] = { L'\0' };
   GetModuleFileName(NULL,wchAppDir,COUNTOF(wchAppDir));
-  PathRemoveFileSpec(wchAppDir);
+  PathCchRemoveFileSpec(wchAppDir, COUNTOF(wchAppDir));
   PathCanonicalizeEx(wchAppDir,COUNTOF(wchAppDir));
 
   if (!GetCurrentDirectory(COUNTOF(Globals.WorkingDirectory),Globals.WorkingDirectory)) {
@@ -686,8 +831,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     _CleanUpResources(NULL, false);
     return 1;
   }
+  
   _InsertLanguageMenu(Globals.hMainMenu);
   
+  _InsertThemesMenu(Globals.hMainMenu);
+
+
   if (!InitApplication(Globals.hInstance)) 
   {
     _CleanUpResources(NULL, false);
@@ -1750,7 +1899,7 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
   WCHAR szTmp[MAX_PATH];
   if (PathIsRelative(path)) {
     GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
-    PathRemoveFileSpec(szTmp);
+    PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp));
     PathAppend(szTmp, path);
     path = szTmp;
   }
@@ -3105,9 +3254,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  _DynamicLanguageMenuCmd() - Handles IDS_MUI_LANG_XX_YY messages
 //
 //
-static bool _DynamicLanguageMenuCmd(int cmd)
+__forceinline bool _DynamicLanguageMenuCmd(int cmd)
 {
-  int iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
+  int const iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
 
   if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
     return false;
@@ -3150,6 +3299,41 @@ static bool _DynamicLanguageMenuCmd(int cmd)
 
 //=============================================================================
 //
+//  _DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
+//
+//
+__forceinline bool _DynamicThemesMenuCmd(int cmd)
+{
+  int const iThemeIdx = (cmd - IDM_THEMES_FILE_ITEM); // consecutive IDs
+
+  if ((iThemeIdx < 0) || (iThemeIdx >= THEME_MENU_MAX_ITEMS)) {
+    return false;
+  }
+  bool result = false;
+
+  if (iThemeIdx == 0) {
+    Style_Load();
+    result = true;
+  }
+  else if (PathFileExists(Theme_Files[iThemeIdx].szFilePath)) 
+  {
+    result = Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
+  }
+
+  if (result) {
+    Style_ResetCurrentLexer(Globals.hwndEdit);
+    SendWMSize(Globals.hwndMain, NULL);
+    UpdateUI();
+    UpdateToolbar();
+    UpdateStatusbar(true);
+  }
+  return result;
+}
+
+
+
+//=============================================================================
+//
 //  MsgCommand() - Handles WM_COMMAND
 //
 //
@@ -3160,31 +3344,41 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   if (_DynamicLanguageMenuCmd(LOWORD(wParam))) { 
     return FALSE; 
   }
+  if (_DynamicThemesMenuCmd(LOWORD(wParam))) {
+    return FALSE;
+  }
+
   switch(LOWORD(wParam))
   {
     case SCEN_CHANGE:
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       break;
 
+
     case IDT_TIMER_UPDATE_STATUSBAR:
       _UpdateStatusbarDelayed((bool)lParam);
       break;
+
 
     case IDT_TIMER_UPDATE_TOOLBAR:
       _UpdateToolbarDelayed();
       break;
 
+
     case IDT_TIMER_MAIN_MRKALL:
       EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
       break;
+
 
     case IDT_TIMER_UPDATE_HOTSPOT:
       EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
       break;
 
+
     case IDT_TIMER_CLEAR_CALLTIP:
       CancelCallTip();
       break;
+
 
     case IDM_FILE_NEW:
       FileLoad(false,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, L"");
@@ -3265,7 +3459,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          PathRemoveFileSpec(tchMaxPathBuffer);
+          PathCchRemoveFileSpec(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer));
         }
 
         SHELLEXECUTEINFO sei;
@@ -5611,7 +5805,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               WCHAR wchDirectory[MAX_PATH] = { L'\0' };
               if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-                PathRemoveFileSpec(wchDirectory);
+                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
               }
 
               SHELLEXECUTEINFO sei;
@@ -6154,7 +6348,7 @@ bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
       WCHAR wchDirectory[MAX_PATH] = { L'\0' };
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
         StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-        PathRemoveFileSpec(wchDirectory);
+        PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
       }
 
       SHELLEXECUTEINFO sei;
@@ -8080,7 +8274,7 @@ static bool _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
     }
     // sub directory (.\np3\) 
     StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-    PathRemoveFileSpec(tchBuild);
+    PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild));
     StringCchCat(tchBuild,COUNTOF(tchBuild),L"\\np3\\");
     StringCchCat(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
     if (PathFileExists(tchBuild)) {
@@ -8148,18 +8342,18 @@ int FindIniFile() {
 
   // set env path to module dir
   StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
-  PathRemoveFileSpec(tchPath);
-  SetEnvironmentVariable(L"NOTEPAD3MODULEDIR", tchPath);
+  PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
+  SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, tchPath);
 
   if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile))) {
     if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
-      return(0);
+      return 0;
     }
     if (!_CheckIniFile(Globals.IniFile,tchModule)) {
       ExpandEnvironmentStringsEx(Globals.IniFile,COUNTOF(Globals.IniFile));
       if (PathIsRelative(Globals.IniFile)) {
         StringCchCopy(tchPath,COUNTOF(tchPath),tchModule);
-        PathRemoveFileSpec(tchPath);
+        PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
         PathCchAppend(tchPath,COUNTOF(tchPath),Globals.IniFile);
         StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),tchPath);
       }
@@ -8191,7 +8385,7 @@ int FindIniFile() {
 
   NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile), true, false);
  
-  return(1);
+  return 1;
 }
 
 
@@ -9913,7 +10107,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
         }
         else {
           StringCchCopy(s_tchLastSaveCopyDir,COUNTOF(s_tchLastSaveCopyDir),tchFile);
-          PathRemoveFileSpec(s_tchLastSaveCopyDir);
+          PathCchRemoveFileSpec(s_tchLastSaveCopyDir, COUNTOF(s_tchLastSaveCopyDir));
         }
       }
     }
@@ -10031,14 +10225,14 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   if (!lpstrInitialDir) {
     if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
       StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
-      PathRemoveFileSpec(tchInitialDir);
+      PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
     }
     else if (StringCchLenW(Settings2.DefaultDirectory,COUNTOF(Settings2.DefaultDirectory))) {
       ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
       if (PathIsRelative(tchInitialDir)) {
         WCHAR tchModule[MAX_PATH] = { L'\0' };
         GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
-        PathRemoveFileSpec(tchModule);
+        PathCchRemoveFileSpec(tchModule, COUNTOF(tchModule));
         PathCchAppend(tchModule,COUNTOF(tchModule),tchInitialDir);
         PathCchCanonicalize(tchInitialDir,COUNTOF(tchInitialDir),tchModule);
       }
@@ -10085,14 +10279,14 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),lpstrInitialDir);
   else if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
-    PathRemoveFileSpec(tchInitialDir);
+    PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
   }
   else if (StringCchLenW(Settings2.DefaultDirectory,COUNTOF(Settings2.DefaultDirectory))) {
     ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
     if (PathIsRelative(tchInitialDir)) {
       WCHAR tchModule[MAX_PATH] = { L'\0' };
       GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
-      PathRemoveFileSpec(tchModule);
+      PathCchRemoveFileSpec(tchModule, COUNTOF(tchModule));
       PathCchAppend(tchModule,COUNTOF(tchModule),tchInitialDir);
       PathCchCanonicalize(tchInitialDir,COUNTOF(tchInitialDir),tchModule);
     }
@@ -10644,7 +10838,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
 
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory,COUNTOF(tchDirectory),lpszFile);
-    PathRemoveFileSpec(tchDirectory);
+    PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
 
     // Save data of current file
     HANDLE hFind = FindFirstFile(Globals.CurrentFile,&s_fdCurFile);

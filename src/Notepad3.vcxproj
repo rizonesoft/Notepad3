@@ -259,6 +259,7 @@
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ManifestFile />
+      <Profile>true</Profile>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -325,6 +326,7 @@
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ManifestFile />
+      <Profile>true</Profile>
     </Link>
     <PreBuildEvent>
       <Command>

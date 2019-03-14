@@ -790,8 +790,8 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
 
   if (PathIsRelative(wchPath)) {
     GetModuleFileName(NULL,wchResult,COUNTOF(wchResult));
-    PathCanonicalizeEx(wchResult,MAX_PATH);
-    PathRemoveFileSpec(wchResult);
+    PathCanonicalizeEx(wchResult, COUNTOF(wchResult));
+    PathCchRemoveFileSpec(wchResult, COUNTOF(wchResult));
     PathCchAppend(wchResult,COUNTOF(wchResult),wchPath);
   }
   else

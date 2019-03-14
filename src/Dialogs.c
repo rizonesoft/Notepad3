@@ -857,7 +857,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
               if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-                PathRemoveFileSpec(wchDirectory);
+                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
               }
 
               SHELLEXECUTEINFO sei;
@@ -1086,7 +1086,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 
     if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
       StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-      PathRemoveFileSpec(wchDirectory);
+      PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
     }
 
     SHELLEXECUTEINFO sei;
@@ -3211,7 +3211,7 @@ void DialogFileBrowse(HWND hwnd)
   }
   if (PathIsRelative(tchExeFile)) {
     GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
-    PathRemoveFileSpec(tchTemp);
+    PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
     PathAppend(tchTemp, tchExeFile);
     if (PathFileExists(tchTemp)) {
       StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
@@ -3261,7 +3261,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
     // try Notepad3's dir path
     GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
-    PathRemoveFileSpec(tchExePath);
+    PathCchRemoveFileSpec(tchExePath, COUNTOF(tchExePath));
     PathCchAppend(tchExePath, COUNTOF(tchExePath), tchExe);
   }
 
@@ -3356,7 +3356,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
       if (iFormat == 1) {
         WCHAR tchPath[MAX_PATH] = { L'\0' };
         StringCchCopyN(tchPath, COUNTOF(tchPath), lpszFile, StringCchLen(lpszFile, MAX_PATH));
-        PathRemoveFileSpec(tchPath);
+        PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
         StringCchCat(szTitle, COUNTOF(szTitle), L" [");
         StringCchCat(szTitle, COUNTOF(szTitle), tchPath);
         StringCchCat(szTitle, COUNTOF(szTitle), L"]");

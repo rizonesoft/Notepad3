@@ -34,6 +34,7 @@ void   Style_Load();
 void   Style_Save();
 bool   Style_Import(HWND hwnd);
 bool   Style_Export(HWND hwnd);
+bool   Style_ImportFromFile(const WCHAR* szFile);
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
 void   Style_SetUrlHotSpot(HWND hwnd, bool);
