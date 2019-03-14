@@ -423,31 +423,45 @@ bool Style_Import(HWND hwnd)
 
   if (GetOpenFileName(&ofn))
   {
-    size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
-    WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    if (pIniSection) {
-      int const cchIniSection = (int)len;
-
-      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-        if (GetPrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection, szFile)) {
-          IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
-                              g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
-          int i = 0;
-          while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-            IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
-                                g_pLexArray[iLexer]->Styles[i].pszDefault,
-                                g_pLexArray[iLexer]->Styles[i].szValue,
-                                COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
-            i++;
-          }
-        }
-      }
-      FreeMem(pIniSection);
-      return true;
-    }
+    return Style_ImportFromFile(szFile);
   }
   return false;
 }
+
+
+//=============================================================================
+//
+//  Style_ImportFromFile()
+//
+bool Style_ImportFromFile(const WCHAR* szFile)
+{
+  if (!szFile || szFile[0] == L'\0') { return false; }
+
+  size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+  WCHAR* pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  if (pIniSection) {
+    int const cchIniSection = (int)len;
+
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+      if (GetPrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection, szFile)) {
+        IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
+          g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
+        int i = 0;
+        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+          IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
+            g_pLexArray[iLexer]->Styles[i].pszDefault,
+            g_pLexArray[iLexer]->Styles[i].szValue,
+            COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
+          i++;
+        }
+      }
+    }
+    FreeMem(pIniSection);
+    return true;
+  }
+  return false;
+}
+
 
 //=============================================================================
 //

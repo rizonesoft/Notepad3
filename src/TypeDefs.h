@@ -521,6 +521,12 @@ typedef struct _editfileiostatus
 
 #define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, I_MIX_LN, {0,0,0,0,0} }
 
+
+// ---------   common defines   --------
+
+#define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
+
+
 //=============================================================================
 
 #endif //_NP3_TYPEDEFS_H_
