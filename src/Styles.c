@@ -232,7 +232,10 @@ void Style_Load()
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  if (pIniSection) { ZeroMemory(pIniSection, len * sizeof(WCHAR)); }
+
   if (pIniSection) {
+
     // Default colors
     s_colorDefault[0] = RGB(0x00, 0x00, 0x00);
     s_colorDefault[1] = RGB(0x0A, 0x24, 0x6A);
@@ -254,7 +257,7 @@ void Style_Load()
     WCHAR tch[32] = { L'\0' };
     int const cchIniSection = (int)len;
 
-    LoadIniSection(L"Custom Colors", pIniSection, cchIniSection);
+    LoadStyleIniSection(L"Custom Colors", pIniSection, cchIniSection);
     for (int i = 0; i < 16; i++) {
       WCHAR wch[32] = { L'\0' };
       StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
@@ -273,7 +276,7 @@ void Style_Load()
       }
     }
 
-    LoadIniSection(L"Styles", pIniSection, cchIniSection);
+    LoadStyleIniSection(L"Styles", pIniSection, cchIniSection);
 
     // 2nd default
     Style_SetUse2ndDefault(IniSectionGetBool(pIniSection, L"Use2ndDefaultStyle", false));
@@ -288,113 +291,12 @@ void Style_Load()
     s_cxStyleSelectDlg = clampi(IniSectionGetInt(pIniSection, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
     s_cyStyleSelectDlg = clampi(IniSectionGetInt(pIniSection, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
 
-    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-
-      LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
-
-      LoadIniSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection);
-      if (IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
-        g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions)) > 0) {
-
-        if (StringCchCompareXIW(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0) {
-          (*pLexFunction)(FCT_SETTING_CHANGE, 1);
-        }
-      }
-      int i = 0;
-      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) 
-      {
-        if (IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
-          g_pLexArray[iLexer]->Styles[i].pszDefault,
-          g_pLexArray[iLexer]->Styles[i].szValue,
-          COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue)) > 0) {
-
-          if (StringCchCompareXIW(g_pLexArray[iLexer]->Styles[i].szValue, g_pLexArray[iLexer]->Styles[i].pszDefault) != 0) {
-            (*pLexFunction)(FCT_SETTING_CHANGE, (i + 2));
-          }
-        }
-        ++i;
-      }
-    }
     FreeMem(pIniSection);
+
+    Style_ImportFromFile(Globals.StyleIniFile);
   }
   // 2nd Default Style has same filename extension list as (1st) Default Style
   StringCchCopyW(lexStandard2nd.szExtensions, COUNTOF(lexStandard2nd.szExtensions), lexStandard.szExtensions);
-}
-
-
-//=============================================================================
-//
-//  Style_Save()
-//
-void Style_Save()
-{
-  size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
-  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (pIniSection) {
-    // Custom colors
-    for (int i = 0; i < 16; i++) {
-      if (s_colorCustom[i] != s_colorDefault[i]) {
-        WCHAR tch[32] = { L'\0' };
-        WCHAR wch[32] = { L'\0' };
-        StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-        StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
-          (int)GetRValue(s_colorCustom[i]), (int)GetGValue(s_colorCustom[i]), (int)GetBValue(s_colorCustom[i]));
-        IniSectionSetString(pIniSection, tch, wch);
-      }
-    }
-    SaveIniSection(L"Custom Colors", pIniSection);
-    ZeroMemory(pIniSection, len * sizeof(WCHAR));
-
-    // auto select
-    bool const bUse2ndSty = Style_GetUse2ndDefault();
-    if (bUse2ndSty)
-      IniSectionSetBool(pIniSection, L"Use2ndDefaultStyle", bUse2ndSty);
-
-    // default scheme
-    if (s_iDefaultLexer != 0)
-      IniSectionSetInt(pIniSection, L"DefaultScheme", s_iDefaultLexer);
-
-    // auto select
-    if (!s_bAutoSelect)
-     IniSectionSetInt(pIniSection, L"AutoSelect", s_bAutoSelect);
-
-    // scheme select dlg dimensions
-    if (s_cxStyleSelectDlg != STYLESELECTDLG_X)
-      IniSectionSetInt(pIniSection, L"SelectDlgSizeX", s_cxStyleSelectDlg);
-    if (s_cyStyleSelectDlg != STYLESELECTDLG_Y)
-      IniSectionSetInt(pIniSection, L"SelectDlgSizeY", s_cyStyleSelectDlg);
-
-    SaveIniSection(L"Styles", pIniSection);
-    ZeroMemory(pIniSection, len * sizeof(WCHAR));
-
-    if (Globals.bIniFileFromScratch) {
-      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-        SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
-      }
-    }
-
-    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-      LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
-      if (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << 1)) != 0LL) {
-        IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
-      }
-      int i = 0;
-      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-        if (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << (i+2))) != 0LL) {
-          // normalize
-          WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
-          szTmpStyle[0] = L'\0'; // clear
-          Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
-          IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
-        }
-        ++i;
-      }
-      SaveIniSection(g_pLexArray[iLexer]->pszName, pIniSection);
-      ZeroMemory(pIniSection, len * sizeof(WCHAR));
-      
-    }
-    FreeMem(pIniSection);
-  }
 }
 
 
@@ -408,8 +310,8 @@ bool Style_Import(HWND hwnd)
   WCHAR szFilter[MAX_PATH] = { L'\0' };
   OPENFILENAME ofn;
 
-  ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
+  ZeroMemory(&ofn, sizeof(OPENFILENAME));
+  GetLngString(IDS_MUI_FILTER_INI, szFilter, COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -419,13 +321,15 @@ bool Style_Import(HWND hwnd)
   ofn.lpstrDefExt = L"ini";
   ofn.nMaxFile = COUNTOF(szFile);
   ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-            | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
+    | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
+
+  bool result = false;
 
   if (GetOpenFileName(&ofn))
   {
-    return Style_ImportFromFile(szFile);
+    result = Style_ImportFromFile(szFile);
   }
-  return false;
+  return result;
 }
 
 
@@ -437,29 +341,100 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 {
   if (!szFile || szFile[0] == L'\0') { return false; }
 
+  bool result = false;
+
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR* pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  if (pIniSection) { ZeroMemory(pIniSection, len * sizeof(WCHAR)); }
+
   if (pIniSection) {
-    int const cchIniSection = (int)len;
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-      if (GetPrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection, szFile)) {
-        IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
-          g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
-        int i = 0;
-        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-          IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
-            g_pLexArray[iLexer]->Styles[i].pszDefault,
-            g_pLexArray[iLexer]->Styles[i].szValue,
-            COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
-          i++;
+
+      LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
+
+      GetPrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, (int)len, szFile);
+
+      if (IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
+        g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions)) > 0)
+      {
+        if (StringCchCompareXIW(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0) {
+          (*pLexFunction)(FCT_SETTING_CHANGE, 1);
         }
+      }
+      unsigned i = 0;
+      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+      {
+        if (IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
+          g_pLexArray[iLexer]->Styles[i].pszDefault,
+          g_pLexArray[iLexer]->Styles[i].szValue,
+          COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue)) > 0)
+        {
+          if (StringCchCompareXIW(g_pLexArray[iLexer]->Styles[i].szValue, g_pLexArray[iLexer]->Styles[i].pszDefault) != 0) {
+            (*pLexFunction)(FCT_SETTING_CHANGE, (i + 2));
+          }
+        }
+        ++i;
       }
     }
     FreeMem(pIniSection);
-    return true;
+    result = true;
   }
-  return false;
+  return result;
+}
+
+
+//=============================================================================
+//
+//  Style_Save()
+//
+void Style_Save()
+{
+  size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+  if (pIniSection) {
+    // Custom colors
+    for (int i = 0; i < 16; i++) {
+      if (s_colorCustom[i] != s_colorDefault[i]) {
+        WCHAR tch[32] = { L'\0' };
+        WCHAR wch[32] = { L'\0' };
+        StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+        StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
+          (int)GetRValue(s_colorCustom[i]), (int)GetGValue(s_colorCustom[i]), (int)GetBValue(s_colorCustom[i]));
+        IniSectionSetString(pIniSection, tch, wch);
+      }
+    }
+    SaveStyleIniSection(L"Custom Colors", pIniSection);
+    ZeroMemory(pIniSection, len * sizeof(WCHAR));
+
+    // auto select
+    bool const bUse2ndSty = Style_GetUse2ndDefault();
+    if (bUse2ndSty) {
+      IniSectionSetBool(pIniSection, L"Use2ndDefaultStyle", bUse2ndSty);
+    }
+    // default scheme
+    if (s_iDefaultLexer != 0) {
+      IniSectionSetInt(pIniSection, L"DefaultScheme", s_iDefaultLexer);
+    }
+    // auto select
+    if (!s_bAutoSelect) {
+      IniSectionSetInt(pIniSection, L"AutoSelect", s_bAutoSelect);
+    }
+
+    // scheme select dlg dimensions
+    if (s_cxStyleSelectDlg != STYLESELECTDLG_X) {
+      IniSectionSetInt(pIniSection, L"SelectDlgSizeX", s_cxStyleSelectDlg);
+    }
+    if (s_cyStyleSelectDlg != STYLESELECTDLG_Y) {
+      IniSectionSetInt(pIniSection, L"SelectDlgSizeY", s_cyStyleSelectDlg);
+    }
+    SaveStyleIniSection(L"Styles", pIniSection);
+    //ZeroMemory(pIniSection, len * sizeof(WCHAR));
+    FreeMem(pIniSection);
+
+    Style_ExportToFile(Globals.StyleIniFile, Globals.bIniFileFromScratch);
+  }
 }
 
 
@@ -486,31 +461,68 @@ bool Style_Export(HWND hwnd)
   ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
             | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
 
+  DWORD dwError = ERROR_SUCCESS;
+
   if (GetSaveFileName(&ofn)) 
   {
-    DWORD dwError = ERROR_SUCCESS;
-    size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
-    WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    if (pIniSection) {
-      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-        IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
-        int i = 0;
-        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-          IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, g_pLexArray[iLexer]->Styles[i].szValue);
-          i++;
-        }
-        if (!WritePrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, szFile))
-          dwError = GetLastError();
-        ZeroMemory(pIniSection, len * sizeof(WCHAR));
-      }
-      FreeMem(pIniSection);
-    }
+    dwError = Style_ExportToFile(szFile, true);
+    
     if (dwError != ERROR_SUCCESS) {
-      MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
+      MsgBoxLng(MBINFO, IDS_MUI_EXPORT_FAIL, szFile);
     }
-    return true;
   }
-  return false;
+  return (dwError == ERROR_SUCCESS);
+}
+
+
+//=============================================================================
+//
+//  Style_ExportToFile()
+//
+DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
+{
+  if (!szFile || szFile[0] == L'\0') { return false; }
+
+  size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+  WCHAR* pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  if (pIniSection) { ZeroMemory(pIniSection, len * sizeof(WCHAR)); }
+  DWORD dwError = ERROR_NOT_ENOUGH_MEMORY;
+
+  if (pIniSection) {
+
+    // create canonical order of lexer sections
+    if (bForceAll) {
+      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
+      {
+        WritePrivateProfileSection(g_pLexArray[iLexer]->pszName, L"\0", szFile);
+      }
+    }
+
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
+    {
+      LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
+      if (bForceAll || (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << 1)) != 0LL)) {
+        IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
+      }
+      unsigned i = 0;
+      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+        if (bForceAll || (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << (i + 2))) != 0LL)) {
+          // normalize
+          WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
+          szTmpStyle[0] = L'\0'; // clear
+          Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+          IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
+        }
+        ++i;
+      }
+      if (!WritePrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, szFile)) {
+        dwError = GetLastError();
+      }
+      ZeroMemory(pIniSection, len * sizeof(WCHAR));
+    }
+    FreeMem(pIniSection);
+  }
+  return dwError;
 }
 
 
@@ -1417,8 +1429,8 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
 
   if (!bCheckNames) 
   {
-    for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-      LPCWSTR p1 = g_pLexArray[i]->szExtensions;
+    for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
+      LPCWSTR p1 = g_pLexArray[iLex]->szExtensions;
       do {
         LPCWSTR p2 = StrStrI(p1, lpszMatch);
         if (p2 == NULL) {
@@ -1427,7 +1439,7 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
         WCHAR const ch = (p2 == p1) ? L'\0' : p2[-1];
         p2 += cch;
         if ((ch == L';' || ch == ' ' || ch == L'\0') && (*p2 == L';' || *p2 == L' ' || *p2 == L'\0')) {
-          return g_pLexArray[i];
+          return g_pLexArray[iLex];
         }
         p1 = StrChr(p2, L';');
       } while (p1 != NULL);
@@ -1435,9 +1447,9 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
   }
   else {
     if (cch >= 3) {
-      for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-        if (StrCmpNI(g_pLexArray[i]->pszName, lpszMatch, cch) == 0)
-          return(g_pLexArray[i]);
+      for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
+        if (StrCmpNI(g_pLexArray[iLex]->pszName, lpszMatch, cch) == 0)
+          return(g_pLexArray[iLex]);
       }
     }
   }
@@ -2990,11 +3002,12 @@ int Style_GetLexerIconId(PEDITLEXER plex)
   WCHAR pszFile[MAX_PATH + BUFZIZE_STYLE_EXTENTIONS];
 
   LPCWSTR pszExtensions;
-  if (StringCchLenW(plex->szExtensions,COUNTOF(plex->szExtensions)))
+  if (StrIsNotEmpty(plex->szExtensions)) {
     pszExtensions = plex->szExtensions;
-  else
+  }
+  else {
     pszExtensions = plex->pszDefExt;
-
+  }
   StringCchCopy(pszFile,COUNTOF(pszFile),L"*.");
   StringCchCat(pszFile,COUNTOF(pszFile),pszExtensions);
 
@@ -3002,9 +3015,9 @@ int Style_GetLexerIconId(PEDITLEXER plex)
   if (p) { *p = L'\0'; }
 
   // check for ; at beginning
-  if (StringCchLen(pszFile, COUNTOF(pszFile)) < 3)
-    StringCchCat(pszFile, COUNTOF(pszFile),L"txt");
-
+  if (StringCchLen(pszFile, COUNTOF(pszFile)) < 3) {
+    StringCchCat(pszFile, COUNTOF(pszFile), L"txt");
+  }
   SHFILEINFO shfi;
   ZeroMemory(&shfi,sizeof(SHFILEINFO));
 

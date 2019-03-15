@@ -534,54 +534,50 @@ typedef struct _themeFiles
   UINT    rid;
   WCHAR   szFileName[80];
   WCHAR   szFilePath[MAX_PATH];
-  bool    bIsActive;
 
 } THEMEFILES, *PTHEMEFILES;
 
 
 #define THEME_MENU_MAX_ITEMS  24
 
-THEMEFILES Theme_Files[THEME_MENU_MAX_ITEMS] =
+static THEMEFILES Theme_Files[THEME_MENU_MAX_ITEMS] =
 {
-  { 0, L"", L"", false }, // Standard
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false },
-  { 0, L"", L"", false }
+  { 0, L"", L"" }, // Standard
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" }
 };
 
-
-static bool bThemesMenuTableFilled = false;
+static unsigned s_idxSelectedTheme = 0;  // Standard
 
 static bool _FillThemesMenuTable() 
 {
-  bThemesMenuTableFilled = true;
-
   WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
   // find "themes" sub-dir (side-by-side to Notepad3.ini)
   StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
   PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
   PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
-  if (!PathIsDirectory(tchThemeDir)) { return false; }
+  if (!PathIsDirectory(tchThemeDir)) { s_idxSelectedTheme = 0; return false; }
 
   WCHAR tchThemePath[MAX_PATH] = { L'\0' };
   StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
@@ -590,7 +586,7 @@ static bool _FillThemesMenuTable()
   WIN32_FIND_DATA FindFileData;
   ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
   HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
-  if (hFindFile == INVALID_HANDLE_VALUE) { return false; }
+  if (hFindFile == INVALID_HANDLE_VALUE) { return s_idxSelectedTheme = 0; false; }
 
   // ---  fill table   ---
 
@@ -599,9 +595,9 @@ static bool _FillThemesMenuTable()
   WCHAR wchStdName[80];
   GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
   StringCchCopy(Theme_Files[0].szFileName, COUNTOF(Theme_Files[0].szFileName), wchStdName);
-  Theme_Files[0].bIsActive = true;  // TODO: read from settings active entry
+  StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), Globals.IniFile);
 
-  int i = 1;
+  unsigned i = 1;
   for (; i < THEME_MENU_MAX_ITEMS; ++i) 
   {
     Theme_Files[i].rid = (i + IDM_THEMES_FILE_ITEM);
@@ -614,19 +610,24 @@ static bool _FillThemesMenuTable()
     PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
     StringCchCopy(Theme_Files[i].szFilePath, COUNTOF(Theme_Files[i].szFilePath), tchThemePath);
 
-    Theme_Files[i].bIsActive = false;
-
     if (!FindNextFile(hFindFile, &FindFileData)) { break; }
   }
+  unsigned const check = s_idxSelectedTheme; // TODO: better string compare
+  s_idxSelectedTheme = clampu(s_idxSelectedTheme, 0, i);
+  if (s_idxSelectedTheme != check) {
+    StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Theme_Files[i].szFilePath);
+    // TODO: Update needed warning message 
+    //       better restart ?
+  }
+
   for (++i; i < THEME_MENU_MAX_ITEMS; ++i) { 
     Theme_Files[i].rid = 0;   // no themes available
     Theme_Files[i].szFileName[0] = L'\0';
     Theme_Files[i].szFilePath[0] = L'\0';
-    Theme_Files[i].bIsActive = false;
   }
 
   FindClose(hFindFile);
-  
+
   return true;
 }
 
@@ -637,9 +638,8 @@ static bool _FillThemesMenuTable()
 //
 static bool _InsertThemesMenu(HMENU hMenuBar)
 {
-  if (!bThemesMenuTableFilled) {
-    _FillThemesMenuTable();
-  }
+  _FillThemesMenuTable();
+
   if (Theme_Files[1].rid == 0) {
     return false; // no themes available, use Standard (0)
   }
@@ -661,8 +661,11 @@ static bool _InsertThemesMenu(HMENU hMenuBar)
   WCHAR wchMenuItemStrg[80] = { L'\0' };
   GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
 
-  return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
+  bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
 
+  CheckCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, true);
+
+  return res;
 }
 
 
@@ -833,9 +836,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   
   _InsertLanguageMenu(Globals.hMainMenu);
-  
   _InsertThemesMenu(Globals.hMainMenu);
-
 
   if (!InitApplication(Globals.hInstance)) 
   {
@@ -1464,7 +1465,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return MsgChangeNotify(hwnd, wParam, lParam);
 
     //case WM_PARENTNOTIFY:
-    //  if (LOWORD(wParam) & WM_DESTROY) {
+    //  if (iLoWParam & WM_DESTROY) {
     //    if (IsWindow(hDlgFindReplace) && (hDlgFindReplace == (HWND)lParam)) {
     //      hDlgFindReplace = NULL;
     //    }
@@ -3254,12 +3255,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  _DynamicLanguageMenuCmd() - Handles IDS_MUI_LANG_XX_YY messages
 //
 //
-__forceinline bool _DynamicLanguageMenuCmd(int cmd)
+static void _DynamicLanguageMenuCmd(int cmd)
 {
   int const iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
 
   if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
-    return false;
+    return;
   }
   if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
   {
@@ -3281,9 +3282,11 @@ __forceinline bool _DynamicLanguageMenuCmd(int cmd)
     if (!Globals.hMainMenu) {
       GetLastErrorToMsgBox(L"LoadMenu()", 0);
       PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
-      return true;
+      return;
     }
+
     _InsertLanguageMenu(Globals.hMainMenu);
+    _InsertThemesMenu(Globals.hMainMenu);
 
     SetMenu(Globals.hwndMain, Globals.hMainMenu);
     DrawMenuBar(Globals.hwndMain);
@@ -3293,7 +3296,7 @@ __forceinline bool _DynamicLanguageMenuCmd(int cmd)
     UpdateToolbar();
     UpdateStatusbar(true);
   }
-  return true;
+  return;
 }
 
 
@@ -3302,32 +3305,46 @@ __forceinline bool _DynamicLanguageMenuCmd(int cmd)
 //  _DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
 //
 //
-__forceinline bool _DynamicThemesMenuCmd(int cmd)
+static void _DynamicThemesMenuCmd(int cmd)
 {
-  int const iThemeIdx = (cmd - IDM_THEMES_FILE_ITEM); // consecutive IDs
+  unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_FILE_ITEM); // consecutive IDs
 
   if ((iThemeIdx < 0) || (iThemeIdx >= THEME_MENU_MAX_ITEMS)) {
-    return false;
+    return;
   }
-  bool result = false;
+  if (iThemeIdx == s_idxSelectedTheme) { return; }
+  
+  CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, false);
 
-  if (iThemeIdx == 0) {
-    Style_Load();
-    result = true;
+  if (Settings.SaveSettings) {
+    if ((s_idxSelectedTheme == 0) && s_bEnableSaveSettings) {
+      CreateIniFile();
+      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+    }
+    else if (PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
+    {
+      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+    }
   }
-  else if (PathFileExists(Theme_Files[iThemeIdx].szFilePath)) 
+
+  if (PathFileExists(Theme_Files[iThemeIdx].szFilePath)) 
   {
-    result = Style_ImportFromFile(Theme_Files[iThemeIdx].szFilePath);
+    StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Theme_Files[iThemeIdx].szFilePath);
   }
+  else {
+    StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Globals.IniFile);
+  }
+  s_idxSelectedTheme = iThemeIdx; // new scheme
 
-  if (result) {
+  if (Style_ImportFromFile(Globals.StyleIniFile)) {
     Style_ResetCurrentLexer(Globals.hwndEdit);
     SendWMSize(Globals.hwndMain, NULL);
     UpdateUI();
     UpdateToolbar();
     UpdateStatusbar(true);
   }
-  return result;
+
+  CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, true);
 }
 
 
@@ -3336,19 +3353,26 @@ __forceinline bool _DynamicThemesMenuCmd(int cmd)
 //
 //  MsgCommand() - Handles WM_COMMAND
 //
-//
+
+static   WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
+
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
-
-  if (_DynamicLanguageMenuCmd(LOWORD(wParam))) { 
+  int const iLoWParam = LOWORD(wParam);
+ 
+  bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
+  if (bIsLngMenuCmd) {
+    _DynamicLanguageMenuCmd(iLoWParam);
     return FALSE; 
   }
-  if (_DynamicThemesMenuCmd(LOWORD(wParam))) {
+
+  bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FILE_ITEM) && (iLoWParam < (IDM_THEMES_FILE_ITEM + THEME_MENU_MAX_ITEMS)));
+  if (bIsThemesMenuCmd) {
+    _DynamicThemesMenuCmd(iLoWParam);
     return FALSE;
   }
 
-  switch(LOWORD(wParam))
+  switch(iLoWParam)
   {
     case SCEN_CHANGE:
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
@@ -3445,7 +3469,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
       //~SaveSettings(false); 
-      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, (LOWORD(wParam) != IDM_FILE_NEWWINDOW2));
+      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, (iLoWParam != IDM_FILE_NEWWINDOW2));
       break;
 
 
@@ -3628,13 +3652,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         cpi_enc_t iNewEncoding = (HIWORD(wParam) >= IDM_ENCODING_SELECT) ? 
           (cpi_enc_t)(HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_Current(CPI_GET);
 
-        if (LOWORD(wParam) == IDM_ENCODING_SELECT) {
+        if (iLoWParam == IDM_ENCODING_SELECT) {
           if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
             break; // no change
           }
         }
         else {
-          switch (LOWORD(wParam))
+          switch (iLoWParam)
           {
           case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
           case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
@@ -3697,7 +3721,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        int const _eol_mode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
+        int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
         SciCall_SetEOLMode(_eol_mode);
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
@@ -4374,7 +4398,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         GetLocalTime(&st);
 
         StringCchCopyW(tchTemplate, COUNTOF(tchTemplate),
-          (LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? Settings2.DateTimeShort : Settings2.DateTimeLong);
+          (iLoWParam == IDM_EDIT_INSERT_SHORTDATE) ? Settings2.DateTimeShort : Settings2.DateTimeLong);
 
         if (StringCchLenW(tchTemplate,0) > 0)
         {
@@ -4394,7 +4418,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           WCHAR tchDate[64] = { L'\0' };
           WCHAR tchTime[64] = { L'\0' };
           GetDateFormat(LOCALE_USER_DEFAULT,(
-            LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? DATE_SHORTDATE : DATE_LONGDATE,
+            iLoWParam == IDM_EDIT_INSERT_SHORTDATE) ? DATE_SHORTDATE : DATE_LONGDATE,
             &st,NULL,tchDate,COUNTOF(tchDate));
           GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,NULL,tchTime,COUNTOF(tchTime));
 
@@ -4417,7 +4441,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR szDisplayName[MAX_PATH];
 
         if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
-          if (LOWORD(wParam) == IDM_EDIT_INSERT_FILENAME) {
+          if (iLoWParam == IDM_EDIT_INSERT_FILENAME) {
             PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
             pszInsert = szDisplayName;
           }
@@ -4774,14 +4798,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
       if (IsFindPatternEmpty() && !StringCchLenA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind)))
       {
-        if (LOWORD(wParam) != IDM_EDIT_REPLACENEXT)
+        if (iLoWParam != IDM_EDIT_REPLACENEXT)
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
         else
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REPLACE,1),0);
       }
       else {
 
-        switch (LOWORD(wParam)) {
+        switch (iLoWParam) {
 
           case IDM_EDIT_FINDNEXT:
             if (!SciCall_IsSelectionEmpty()) {
@@ -4855,7 +4879,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         MRU_Add(Globals.pMRUfind, wszBuf, 0, 0, NULL);
         SetFindPattern(wszBuf);
 
-        switch (LOWORD(wParam)) {
+        switch (iLoWParam) {
 
         case IDM_EDIT_SAVEFIND:
           break;
@@ -5142,7 +5166,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_HILITCURLN_BACK:
     case IDM_VIEW_HILITCURLN_FRAME:
       {
-        int set = LOWORD(wParam) - IDM_VIEW_HILITCURLN_NONE;
+        int set = iLoWParam - IDM_VIEW_HILITCURLN_NONE;
         Settings.HighlightCurrentLine = (set >= 0) ? set : ((Settings.HighlightCurrentLine + 1) % 3);
         Style_HighlightCurrentLine(Globals.hwndEdit, Settings.HighlightCurrentLine);
       }
@@ -5342,7 +5366,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_SET_RENDER_TECH_D2D:
     case IDM_SET_RENDER_TECH_D2DRETAIN:
     case IDM_SET_RENDER_TECH_D2DDC:
-      Settings.RenderingTechnology = (int)LOWORD(wParam) - IDM_SET_RENDER_TECH_DEFAULT;
+      Settings.RenderingTechnology = iLoWParam - IDM_SET_RENDER_TECH_DEFAULT;
       if (Settings.RenderingTechnology == 0) {
         SciCall_SetBidirectional(s_SciBidirectional[0]);
       }
@@ -5353,7 +5377,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_SET_BIDIRECTIONAL_NONE:
     case IDM_SET_BIDIRECTIONAL_L2R:
     case IDM_SET_BIDIRECTIONAL_R2L:
-      Settings.Bidirectional = (int)LOWORD(wParam) - IDM_SET_BIDIRECTIONAL_NONE;
+      Settings.Bidirectional = iLoWParam - IDM_SET_BIDIRECTIONAL_NONE;
       SciCall_SetBidirectional(s_SciBidirectional[Settings.Bidirectional]);
       break;
 
@@ -5365,7 +5389,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SHOWFILENAMEONLY:
     case IDM_VIEW_SHOWFILENAMEFIRST:
     case IDM_VIEW_SHOWFULLPATH:
-      Settings.PathNameFormat = (int)LOWORD(wParam) - IDM_VIEW_SHOWFILENAMEONLY;
+      Settings.PathNameFormat = iLoWParam - IDM_VIEW_SHOWFILENAMEONLY;
       StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
       UpdateToolbar();
       break;
@@ -5406,7 +5430,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_NOESCFUNC:
     case IDM_VIEW_ESCMINIMIZE:
     case IDM_VIEW_ESCEXIT:
-      Settings.EscFunction = (int)LOWORD(wParam) - IDM_VIEW_NOESCFUNC;
+      Settings.EscFunction = iLoWParam - IDM_VIEW_NOESCFUNC;
       break;
 
 
@@ -5771,7 +5795,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_WEBACTION2:
       {
         StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
-          (LOWORD(wParam) == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
+          (iLoWParam == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
 
         if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
 
@@ -5833,7 +5857,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!Settings.MarkLongLines)
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_LONGLINEMARKER,1),0);
       else {
-        if (LOWORD(wParam) == CMD_INCLINELIMIT)
+        if (iLoWParam == CMD_INCLINELIMIT)
           Settings.LongLinesLimit++;
         else
           Settings.LongLinesLimit--;
@@ -7901,6 +7925,7 @@ void ParseCommandLine()
             StringCchCopyN(Globals.IniFile, COUNTOF(Globals.IniFile), lp1, len);
             TrimStringW(Globals.IniFile);
             NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
+            StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Globals.IniFile);
           }
           break;
 
@@ -8333,8 +8358,9 @@ static bool  _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWST
 }
 
 
-int FindIniFile() {
-
+bool FindIniFile()
+{
+  bool bFound = false;
   WCHAR tchPath[MAX_PATH] = { L'\0' };
   WCHAR tchModule[MAX_PATH] = { L'\0' };
   
@@ -8347,7 +8373,7 @@ int FindIniFile() {
 
   if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile))) {
     if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
-      return 0;
+      return bFound;
     }
     if (!_CheckIniFile(Globals.IniFile,tchModule)) {
       ExpandEnvironmentStringsEx(Globals.IniFile,COUNTOF(Globals.IniFile));
@@ -8362,7 +8388,7 @@ int FindIniFile() {
   else {
     StringCchCopy(tchPath,COUNTOF(tchPath),PathFindFileName(tchModule));
     PathCchRenameExtension(tchPath,COUNTOF(tchPath),L".ini");
-    bool bFound = _CheckIniFile(tchPath,tchModule);
+    bFound = _CheckIniFile(tchPath,tchModule);
 
     if (!bFound) {
       StringCchCopy(tchPath,COUNTOF(tchPath),L"Notepad3.ini");
@@ -8384,8 +8410,10 @@ int FindIniFile() {
   }
 
   NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile), true, false);
+
+  StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Globals.IniFile);
  
-  return 1;
+  return bFound;
 }
 
 

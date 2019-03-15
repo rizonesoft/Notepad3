@@ -128,7 +128,7 @@ void LoadSettings();
 void SaveSettings(bool);
 void ParseCommandLine();
 void LoadFlags();
-int  FindIniFile();
+bool FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR lpszIniFile);

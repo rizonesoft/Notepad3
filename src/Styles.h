@@ -31,10 +31,12 @@
 
 
 void   Style_Load();
-void   Style_Save();
 bool   Style_Import(HWND hwnd);
-bool   Style_Export(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);
+void   Style_Save();
+bool   Style_Export(HWND hwnd);
+DWORD  Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
+
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
 void   Style_SetUrlHotSpot(HWND hwnd, bool);
