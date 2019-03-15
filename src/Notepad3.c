@@ -538,11 +538,13 @@ typedef struct _themeFiles
 } THEMEFILES, *PTHEMEFILES;
 
 
-#define THEME_MENU_MAX_ITEMS  24
+#define THEME_MENU_MAX_ITEMS  26
 
 static THEMEFILES Theme_Files[THEME_MENU_MAX_ITEMS] =
 {
   { 0, L"", L"" }, // Standard
+  { 0, L"", L"" },
+  { 0, L"", L"" },
   { 0, L"", L"" },
   { 0, L"", L"" },
   { 0, L"", L"" },
@@ -570,14 +572,30 @@ static THEMEFILES Theme_Files[THEME_MENU_MAX_ITEMS] =
 
 static unsigned s_idxSelectedTheme = 0;  // Standard
 
-static bool _FillThemesMenuTable() 
+static void _FillThemesMenuTable() 
 {
+  WCHAR wchStdName[80];
+
+  Theme_Files[0].rid = IDM_THEMES_DEFAULT;    // factory default
+  GetLngString(IDM_THEMES_DEFAULT, wchStdName, COUNTOF(wchStdName));
+  StringCchCopy(Theme_Files[0].szFileName, COUNTOF(Theme_Files[0].szFileName), wchStdName);
+  StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), L"");
+
+  Theme_Files[1].rid = IDM_THEMES_FILE_ITEM;  // NP3.ini settings
+  GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
+  StringCchCopy(Theme_Files[1].szFileName, COUNTOF(Theme_Files[1].szFileName), wchStdName);
+  StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), Globals.IniFile);
+
+  s_idxSelectedTheme = StrIsEmpty(Globals.IniFile) ? 0 : 1;
+
   WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
   // find "themes" sub-dir (side-by-side to Notepad3.ini)
-  StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
-  PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
-  PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
-  if (!PathIsDirectory(tchThemeDir)) { s_idxSelectedTheme = 0; return false; }
+  if (StrIsNotEmpty(Globals.IniFile)) {
+    StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
+    PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
+    PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
+  }
+  if (!PathIsDirectory(tchThemeDir)) { return; }
 
   WCHAR tchThemePath[MAX_PATH] = { L'\0' };
   StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
@@ -586,21 +604,14 @@ static bool _FillThemesMenuTable()
   WIN32_FIND_DATA FindFileData;
   ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
   HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
-  if (hFindFile == INVALID_HANDLE_VALUE) { return s_idxSelectedTheme = 0; false; }
+  if (hFindFile == INVALID_HANDLE_VALUE) { return; }
 
-  // ---  fill table   ---
+  // ---  fill table by directory entries  ---
 
-  Theme_Files[0].rid = IDM_THEMES_FILE_ITEM;
-
-  WCHAR wchStdName[80];
-  GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
-  StringCchCopy(Theme_Files[0].szFileName, COUNTOF(Theme_Files[0].szFileName), wchStdName);
-  StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), Globals.IniFile);
-
-  unsigned i = 1;
+  unsigned i = 2;
   for (; i < THEME_MENU_MAX_ITEMS; ++i) 
   {
-    Theme_Files[i].rid = (i + IDM_THEMES_FILE_ITEM);
+    Theme_Files[i].rid = (i + IDM_THEMES_DEFAULT);
 
     StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
     PathRemoveExtension(tchThemePath);
@@ -612,13 +623,8 @@ static bool _FillThemesMenuTable()
 
     if (!FindNextFile(hFindFile, &FindFileData)) { break; }
   }
-  unsigned const check = s_idxSelectedTheme; // TODO: better string compare
+
   s_idxSelectedTheme = clampu(s_idxSelectedTheme, 0, i);
-  if (s_idxSelectedTheme != check) {
-    StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Theme_Files[i].szFilePath);
-    // TODO: Update needed warning message 
-    //       better restart ?
-  }
 
   for (++i; i < THEME_MENU_MAX_ITEMS; ++i) { 
     Theme_Files[i].rid = 0;   // no themes available
@@ -627,8 +633,6 @@ static bool _FillThemesMenuTable()
   }
 
   FindClose(hFindFile);
-
-  return true;
 }
 
 
@@ -639,10 +643,6 @@ static bool _FillThemesMenuTable()
 static bool _InsertThemesMenu(HMENU hMenuBar)
 {
   _FillThemesMenuTable();
-
-  if (Theme_Files[1].rid == 0) {
-    return false; // no themes available, use Standard (0)
-  }
 
   HMENU hmenuThemes = CreatePopupMenu();
   int const pos = GetMenuItemCount(hMenuBar) - 1;
@@ -3216,19 +3216,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_NOESCFUNC;
   CheckMenuRadioItem(hmenu,IDM_VIEW_NOESCFUNC,IDM_VIEW_ESCEXIT,i,MF_BYCOMMAND);
 
-  i = (int)StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile));
-  CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,Settings.SaveSettings && i);
-
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
   EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
   EnableCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVERECENT,i);
   EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,s_bEnableSaveSettings && i);
-
-  i = (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) > 0 || StringCchLenW(s_wchIniFile2,COUNTOF(s_wchIniFile2)) > 0);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,s_bEnableSaveSettings && i);
 
   bool bIsHLink = false;
   int const iHotSpotStyleID = Style_GetHotspotStyleID();
@@ -3245,6 +3238,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
     CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
   }
+
+  UpdateSettingsCmds();
 
   return FALSE;
 }
@@ -3307,7 +3302,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
 //
 static void _DynamicThemesMenuCmd(int cmd)
 {
-  unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_FILE_ITEM); // consecutive IDs
+  unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
 
   if ((iThemeIdx < 0) || (iThemeIdx >= THEME_MENU_MAX_ITEMS)) {
     return;
@@ -3317,26 +3312,37 @@ static void _DynamicThemesMenuCmd(int cmd)
   CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, false);
 
   if (Settings.SaveSettings) {
-    if ((s_idxSelectedTheme == 0) && s_bEnableSaveSettings) {
-      CreateIniFile();
-      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+    if (s_idxSelectedTheme == 0) {
+      // nothing to do: internal defaults
+    }
+    else if (s_idxSelectedTheme == 1) {
+      if (s_bEnableSaveSettings) {
+        CreateIniFile();
+        Style_ExportToFile(Globals.IniFile, false);
+      }
     }
     else if (PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
     {
-      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+      bool const bIndependentFromStandardSettings = true;
+      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, bIndependentFromStandardSettings);
     }
   }
 
-  if (PathFileExists(Theme_Files[iThemeIdx].szFilePath)) 
+  s_idxSelectedTheme = iThemeIdx;
+
+  bool result = true;
+  if ((s_idxSelectedTheme > 1) && PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
   {
-    StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Theme_Files[iThemeIdx].szFilePath);
+    result = Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+  }
+  else if (s_idxSelectedTheme == 1) {
+    result = Style_ImportFromFile(Globals.IniFile, false);
   }
   else {
-    StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Globals.IniFile);
+    result = Style_ImportFromFile(L"", false);
   }
-  s_idxSelectedTheme = iThemeIdx; // new scheme
 
-  if (Style_ImportFromFile(Globals.StyleIniFile)) {
+  if (result) {
     Style_ResetCurrentLexer(Globals.hwndEdit);
     SendWMSize(Globals.hwndMain, NULL);
     UpdateUI();
@@ -3366,7 +3372,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     return FALSE; 
   }
 
-  bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FILE_ITEM) && (iLoWParam < (IDM_THEMES_FILE_ITEM + THEME_MENU_MAX_ITEMS)));
+  bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (IDM_THEMES_DEFAULT + THEME_MENU_MAX_ITEMS)));
   if (bIsThemesMenuCmd) {
     _DynamicThemesMenuCmd(iLoWParam);
     return FALSE;
@@ -5457,8 +5463,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),s_wchIniFile2);
               StringCchCopy(s_wchIniFile2,COUNTOF(s_wchIniFile2),L"");
             }
-            else
+            else {
               bCreateFailure = true;
+            }
           }
 
           else
@@ -7925,7 +7932,6 @@ void ParseCommandLine()
             StringCchCopyN(Globals.IniFile, COUNTOF(Globals.IniFile), lp1, len);
             TrimStringW(Globals.IniFile);
             NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
-            StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Globals.IniFile);
           }
           break;
 
@@ -8371,7 +8377,7 @@ bool FindIniFile()
   PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
   SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, tchPath);
 
-  if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile))) {
+  if (StrIsNotEmpty(Globals.IniFile)) {
     if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
       return bFound;
     }
@@ -8388,6 +8394,7 @@ bool FindIniFile()
   else {
     StringCchCopy(tchPath,COUNTOF(tchPath),PathFindFileName(tchModule));
     PathCchRenameExtension(tchPath,COUNTOF(tchPath),L".ini");
+    
     bFound = _CheckIniFile(tchPath,tchModule);
 
     if (!bFound) {
@@ -8398,7 +8405,8 @@ bool FindIniFile()
     if (bFound) 
     {
       // allow two redirections: administrator -> user -> custom
-      if (_CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule)) {
+      if (_CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule)) 
+      {
         _CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule);
       }
       StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),tchPath);
@@ -8411,8 +8419,6 @@ bool FindIniFile()
 
   NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile), true, false);
 
-  StringCchCopy(Globals.StyleIniFile, COUNTOF(Globals.StyleIniFile), Globals.IniFile);
- 
   return bFound;
 }
 
@@ -8450,15 +8456,15 @@ int TestIniFile() {
 }
 
 
-int CreateIniFile() 
+bool CreateIniFile() 
 {
   return(CreateIniFileEx(Globals.IniFile));
 }
 
-
-int CreateIniFileEx(LPCWSTR lpszIniFile) 
+bool CreateIniFileEx(LPCWSTR lpszIniFile) 
 {
-  if (*lpszIniFile) {
+  if (StrIsNotEmpty(lpszIniFile)) 
+  {
     WCHAR *pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
     if (pwchTail) {
       *pwchTail = 0;
@@ -8477,10 +8483,11 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
         Globals.bIniFileFromScratch = true;
       }
       CloseHandle(hFile);
-      return(1);
+      StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), lpszIniFile);
+      return true;
     }
   }
-  return(0);
+  return false;
 }
 
 
@@ -9343,12 +9350,11 @@ void UpdateMarginWidth()
 //
 void UpdateSettingsCmds()
 {
-    HMENU hmenu = GetSystemMenu(Globals.hwndMain, false);
-    bool hasIniFile = (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) > 0 || StringCchLenW(s_wchIniFile2,COUNTOF(s_wchIniFile2)) > 0);
-    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
-    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && s_bEnableSaveSettings);
-    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && s_bEnableSaveSettings);
-    COND_SHOW_ZOOM_CALLTIP();
+    //~HMENU hmenu = GetSystemMenu(Globals.hwndMain, false);
+    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && s_bEnableSaveSettings);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(s_wchIniFile2)) && s_bEnableSaveSettings);
+    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && s_bEnableSaveSettings);
 }
 
 
@@ -9789,6 +9795,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     InstallFileWatching(NULL);
     s_bEnableSaveSettings = true;
     UpdateSettingsCmds();
+    COND_SHOW_ZOOM_CALLTIP();
+
     return true;
   }
 
@@ -9929,6 +9937,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // consistent settings file handling (if loaded in editor)
     s_bEnableSaveSettings = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) ? false : true;
     UpdateSettingsCmds();
+    COND_SHOW_ZOOM_CALLTIP();
 
     // Show warning: Unicode file loaded as ANSI
     if (fioStatus.bUnicodeErr) {

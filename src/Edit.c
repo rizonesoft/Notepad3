@@ -2481,7 +2481,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
     char  mszPrefix2[256*3] = { '\0' };
     char  mszAppend2[256*3] = { '\0' };
 
-    if (StringCchLenA(mszPrefix1,COUNTOF(mszPrefix1))) 
+    if (!StrIsEmptyA(mszPrefix1))
     {
       char* p = StrStrA(mszPrefix1, "$(");
       while (!bPrefixNum && p) {
@@ -2552,7 +2552,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
     bool  bAppendNum = false;
 
-    if (StringCchLenA(mszAppend1,COUNTOF(mszAppend1)))
+    if (!StrIsEmptyA(mszAppend1))
     {
       char* p = StrStrA(mszAppend1, "$(");
       while (!bAppendNum && p) {

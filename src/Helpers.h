@@ -151,9 +151,7 @@ inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
 
 #define IniSetBool(lpSection,lpName,nValue)    IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
 #define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),Globals.IniFile)
-#define LoadStyleIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),Globals.StyleIniFile)
 #define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,Globals.IniFile)
-#define SaveStyleIniSection(lpSection,lpBuf)   WritePrivateProfileSection(lpSection,lpBuf,Globals.StyleIniFile)
 
 int IniSectionGetString(LPCWSTR lpCachedIniSection, LPCWSTR lpName, LPCWSTR lpDefault, LPWSTR lpReturnedString, int cchReturnedString);
 int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault);
@@ -466,8 +464,8 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 
 //==== StrIs(Not)Empty() =============================================
 
-inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
-inline bool StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+inline bool StrIsEmptyA(LPCSTR s)  { return (!s || (*s == '\0')); }
+inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)

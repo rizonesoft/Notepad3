@@ -318,7 +318,6 @@ typedef struct _globals_t
 
   WCHAR     WorkingDirectory[MAX_PATH];
   WCHAR     IniFile[MAX_PATH];
-  WCHAR     StyleIniFile[MAX_PATH];
   WCHAR     CurrentFile[MAX_PATH];
 
 } GLOBALS_T, *PGLOBALS_T;

@@ -32,7 +32,7 @@
 
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
-bool   Style_ImportFromFile(const WCHAR* szFile);
+bool   Style_ImportFromFile(const WCHAR* szFile, bool bDefaultGuard);
 void   Style_Save();
 bool   Style_Export(HWND hwnd);
 DWORD  Style_ExportToFile(const WCHAR* szFile, bool bForceAll);

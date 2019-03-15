@@ -410,7 +410,8 @@
 #define IDS_MUI_LANG_ZH_CN              34515
 
 #define IDS_MUI_MENU_THEMES             37000
-#define IDM_THEMES_FILE_ITEM            37001
+#define IDM_THEMES_DEFAULT         37001
+#define IDM_THEMES_FILE_ITEM            37002
 /// !!! dont use IDs until           ...37100
 
 #define IDM_FILE_NEW                    40000

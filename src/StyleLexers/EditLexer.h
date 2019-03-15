@@ -20,7 +20,7 @@
 
 typedef enum
 {
-  FCT_SETTING_CHANGE, // value -b: rest style bit, 0: get bit-set, +b: set style bit
+  FCT_SETTING_CHANGE, // value -b: reset style bit, 0: get bit-set, +b: set style bit
   FCT_PASS
 }
 LexFunctionType;

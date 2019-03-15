@@ -130,8 +130,8 @@ void ParseCommandLine();
 void LoadFlags();
 bool FindIniFile();
 int  TestIniFile();
-int  CreateIniFile();
-int  CreateIniFileEx(LPCWSTR lpszIniFile);
+bool  CreateIniFile();
+bool CreateIniFileEx(LPCWSTR lpszIniFile);
 void ShowZoomCallTip();
 void CancelCallTip();
 
