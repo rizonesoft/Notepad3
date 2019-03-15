@@ -406,9 +406,9 @@ bool Style_ImportFromFile(const WCHAR* szFile, bool bDefaultGuard)
 //
 //  Style_Save()
 //
-void Style_Save()
+void Style_Save(LPCWCH szFile)
 {
-    Style_ExportToFile(Globals.IniFile, false);
+    Style_ExportToFile(szFile, false);
 }
 
 

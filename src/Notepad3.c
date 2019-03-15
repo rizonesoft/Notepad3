@@ -7769,7 +7769,7 @@ void SaveSettings(bool bSaveSettingsNow)
     FreeMem(pIniSection);
   }
  
-  Style_Save();  // Scintilla Styles
+  Style_Save(Theme_Files[s_idxSelectedTheme].szFilePath);  // Scintilla Styles
 
   int ResX, ResY;
   GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
