@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-932
+// encoding: Shift_JIS
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)  // Japanese (Shift-JIS)
+LANGUAGE LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN
+#pragma code_page(932) // Japanese (Shift-JIS)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
