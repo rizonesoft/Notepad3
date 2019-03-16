@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_LUA = {
 "and break do else elseif end false for function goto if "
 "in local nil not or repeat return then true until while",
@@ -41,7 +33,6 @@ KEYWORDLIST KeyWords_LUA = {
 
 EDITLEXER lexLUA = { 
 SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua", L"", 
-&LexFunction, // static
 &KeyWords_LUA, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_LUA_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

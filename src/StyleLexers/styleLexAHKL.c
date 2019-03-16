@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_AHKL = {
 // Directives
 "#allowsamelinecomments #clipboardtimeout #commentflag #errorstdout #escapechar #hotkeyinterval "
@@ -129,7 +121,6 @@ KEYWORDLIST KeyWords_AHKL = {
 
 EDITLEXER lexAHKL = { 
 SCLEX_AHKL, IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L"", 
-&LexFunction, // static
 &KeyWords_AHKL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_AHK_NEUTRAL}, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -146,15 +137,15 @@ SCLEX_AHKL, IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L
     { {SCE_AHKL_VARREF}, IDS_LEX_STR_63309, L"Variable Dereferencing", L"fore:#990055", L"" },
     { {SCE_AHKL_OBJECT}, IDS_LEX_STR_63347, L"Object", L"fore:#008888", L"" },
     { {SCE_AHKL_USERFUNCTION}, IDS_LEX_STR_63305, L"User-Defined Function", L"fore:#0000DD", L"" },
-    { {SCE_AHKL_DIRECTIVE}, IDS_LEX_STR_63203, L"Directive", L"fore:#4A0000; italic", L"" },
-    { {SCE_AHKL_COMMAND}, IDS_LEX_STR_63236, L"Command", L"fore:#0000DD; bold", L"" },
+    { {SCE_AHKL_DIRECTIVE}, IDS_LEX_STR_63203, L"Directive", L"italic; fore:#4A0000", L"" },
+    { {SCE_AHKL_COMMAND}, IDS_LEX_STR_63236, L"Command", L"bold; fore:#0000DD", L"" },
     { {SCE_AHKL_PARAM}, IDS_LEX_STR_63281, L"Parameter", L"fore:#0085DD", L"" },   
-    { {SCE_AHKL_CONTROLFLOW}, IDS_LEX_STR_63310, L"Flow of Control", L"fore:#0000DD;", L"" },
+    { {SCE_AHKL_CONTROLFLOW}, IDS_LEX_STR_63310, L"Flow of Control", L"fore:#0000DD", L"" },
     { {SCE_AHKL_BUILTINFUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#DD00DD", L"" },
-    { {SCE_AHKL_BUILTINVAR}, IDS_LEX_STR_63312, L"Built-In Variables", L"fore:#EE3010; bold", L"" },
+    { {SCE_AHKL_BUILTINVAR}, IDS_LEX_STR_63312, L"Built-In Variables", L"bold; fore:#EE3010", L"" },
     { {SCE_AHKL_KEY}, IDS_LEX_STR_63348, L"Key", L"fore:#A2A2A2", L"" },
     //{ {SCE_AHKL_USERDEFINED}, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
     //{ {SCE_AHKL_USERDEFINED}, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
-    { {SCE_AHKL_ESCAPESEQ}, IDS_LEX_STR_63306, L"Escape", L"fore:#660000; italic", L"" },
+    { {SCE_AHKL_ESCAPESEQ}, IDS_LEX_STR_63306, L"Escape", L"italic; fore:#660000", L"" },
     { {SCE_AHKL_ERROR}, IDS_LEX_STR_63261, L"Error", L"back:#FF0000", L"" },
     EDITLEXER_SENTINEL } };

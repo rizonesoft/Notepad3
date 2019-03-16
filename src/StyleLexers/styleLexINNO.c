@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_INNO = {
 "code components custommessages dirs files icons ini installdelete langoptions languages messages "
 "registry run setup types tasks uninstalldelete uninstallrun _istool",
@@ -49,14 +41,13 @@ KEYWORDLIST KeyWords_INNO = {
 
 EDITLEXER lexINNO = { 
 SCLEX_INNOSETUP, IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"", 
-&LexFunction, // static
 &KeyWords_INNO, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_INNO_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {SCE_INNO_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
     { {SCE_INNO_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
     { {SCE_INNO_PARAMETER}, IDS_LEX_STR_63281, L"Parameter", L"fore:#0000FF", L"" },
-    { {SCE_INNO_SECTION}, IDS_LEX_STR_63232, L"Section", L"fore:#000080; bold", L"" },
+    { {SCE_INNO_SECTION}, IDS_LEX_STR_63232, L"Section", L"bold; fore:#000080", L"" },
     { {SCE_INNO_PREPROC}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#CC0000", L"" },
     { {SCE_INNO_INLINE_EXPANSION}, IDS_LEX_STR_63282, L"Inline Expansion", L"fore:#800080", L"" },
     { {SCE_INNO_COMMENT_PASCAL}, IDS_LEX_STR_63283, L"Pascal Comment", L"fore:#008000", L"" },

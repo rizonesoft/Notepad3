@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_ASM = {
 "aaa aad aam aas adc add and arpl bound bsf bsr bswap bt btc btr bts call cbw cdq cflush clc cld "
 "cli clts cmc cmova cmovae cmovb cmovbe cmovc cmove cmovg cmovge cmovl cmovle cmovna cmovnae "
@@ -102,7 +94,6 @@ KEYWORDLIST KeyWords_ASM = {
 
 EDITLEXER lexASM = { 
 SCLEX_ASM, IDS_LEX_ASM_SCR, L"Assembly Script", L"asm", L"", 
-&LexFunction, // static
 &KeyWords_ASM, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_ASM_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_HTML = {
 "!doctype ^aria- ^data- a abbr accept accept-charset accesskey acronym action address align alink "
 "alt and applet archive area article aside async audio autocomplete autofocus autoplay axis b "
@@ -69,7 +61,6 @@ KEYWORDLIST KeyWords_HTML = {
 
 EDITLEXER lexHTML = { 
 SCLEX_HTML, IDS_LEX_WEB_SRC, L"Web Source Code", L"html; htm; asp; aspx; shtml; htd; xhtml; php; php3; phtml; htt; cfm; tpl; dtd; hta; htc", L"", 
-&LexFunction, // static
 &KeyWords_HTML, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_H_TAG,SCE_H_TAGEND,0,0)}, IDS_LEX_STR_63136, L"HTML Tag", L"fore:#648000", L"" },

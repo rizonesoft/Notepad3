@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_PS = {
 "begin break catch continue data do dynamicparam else elseif end exit filter finally for foreach "
 "from function if in local param private process return switch throw trap try until where while",
@@ -68,7 +60,6 @@ KEYWORDLIST KeyWords_PS = {
 
 EDITLEXER lexPS = { 
 SCLEX_POWERSHELL, IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1", L"", 
-&LexFunction, // static
 &KeyWords_PS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_POWERSHELL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -3333,13 +3333,13 @@ static void _DynamicThemesMenuCmd(int cmd)
   bool result = true;
   if ((s_idxSelectedTheme > 1) && PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
   {
-    result = Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+    result = Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
   }
   else if (s_idxSelectedTheme == 1) {
-    result = Style_ImportFromFile(Globals.IniFile, false);
+    result = Style_ImportFromFile(Globals.IniFile);
   }
   else {
-    result = Style_ImportFromFile(L"", false);
+    result = Style_ImportFromFile(L"");
   }
 
   if (result) {

@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_R = {
   // Language Keywords
   "if else repeat while function for in next break "
@@ -88,7 +80,6 @@ KEYWORDLIST KeyWords_R = {
 
 EDITLEXER lexR = { 
 SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"R", L"", 
-&LexFunction, // static
 &KeyWords_R,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_R_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -101,5 +92,5 @@ SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"R", L"",
     { {SCE_R_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#B000B0", L"" },
     { {SCE_R_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
     { {SCE_R_INFIX}, IDS_LEX_STR_63269, L"Infix", L"fore:#660066", L"" },
-    { {SCE_R_INFIXEOL}, IDS_LEX_STR_63270, L"Infix EOL", L"fore:#FF4000; ,back:#E0C0E0; eolfilled", L"" },
+    { {SCE_R_INFIXEOL}, IDS_LEX_STR_63270, L"Infix EOL", L"fore:#FF4000; back:#E0C0E0; eolfilled", L"" },
     EDITLEXER_SENTINEL } };

@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_AVS = {
 "true false return global",
 "addborders alignedsplice amplify amplifydb animate applyrange assumebff assumefieldbased assumefps "
@@ -87,7 +79,6 @@ KEYWORDLIST KeyWords_AVS = {
 
 EDITLEXER lexAVS = { 
 SCLEX_AVS, IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"", 
-&LexFunction, // static
 &KeyWords_AVS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_AVS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -95,9 +86,9 @@ SCLEX_AVS, IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"",
     { {SCE_AVS_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"", L"" },
     { {MULTI_STYLE(SCE_AVS_STRING,SCE_AVS_TRIPLESTRING,0,0)}, IDS_LEX_STR_63131, L"String", L"fore:#7F007F", L"" },
     { {SCE_AVS_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#007F7F", L"" },
-    { {SCE_AVS_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F; bold", L"" },
-    { {SCE_AVS_FILTER}, IDS_LEX_STR_63314, L"Filter", L"fore:#00007F; bold", L"" },
-    { {SCE_AVS_PLUGIN}, IDS_LEX_STR_63315, L"Plugin", L"fore:#0080C0; bold", L"" },
+    { {SCE_AVS_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#00007F", L"" },
+    { {SCE_AVS_FILTER}, IDS_LEX_STR_63314, L"Filter", L"bold; fore:#00007F", L"" },
+    { {SCE_AVS_PLUGIN}, IDS_LEX_STR_63315, L"Plugin", L"bold; fore:#0080C0", L"" },
     { {SCE_AVS_FUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#007F7F", L"" },
     { {SCE_AVS_CLIPPROP}, IDS_LEX_STR_63316, L"Clip Property", L"fore:#00007F", L"" },
     //{ {SCE_AVS_USERDFN}, IDS_LEX_STR_63106, L"User Defined", L"fore:#8000FF", L"" },
