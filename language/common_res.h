@@ -405,9 +405,10 @@
 #define IDS_MUI_LANG_JP_JP              34510
 #define IDS_MUI_LANG_KO_KR              34511
 #define IDS_MUI_LANG_NL_NL              34512
-#define IDS_MUI_LANG_PT_BR              34513
-#define IDS_MUI_LANG_RU_RU              34514
-#define IDS_MUI_LANG_ZH_CN              34515
+#define IDS_MUI_LANG_PL_PL              34513
+#define IDS_MUI_LANG_PT_BR              34514
+#define IDS_MUI_LANG_RU_RU              34515
+#define IDS_MUI_LANG_ZH_CN              34516
 
 #define IDS_MUI_MENU_THEMES             37000
 #define IDM_THEMES_DEFAULT         37001
