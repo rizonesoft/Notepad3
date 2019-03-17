@@ -15,6 +15,7 @@ static LNG_MENU_T s_LanguageMenu[] =
     { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),               L"日本語（日本）\t\t\t[%s]" },
     { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                         L"한국어 (대한민국)\t\t\t[%s]" },
     { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                           L"Nederlands (Nederland)\t\t\t[%s]" },
+    { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),                  L"Polski (Polska)\t\t\t[%s]" },
     { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN),       L"Português (Brasil)\t\t\t[%s]" },
     { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),                L"Русский (Pоссия)\t\t\t[%s]" },
     { MAKELANGID(LANG_CHINESE_SIMPLIFIED, SUBLANG_CHINESE_SIMPLIFIED), L"中文（中国）\t\t\t[%s]" }
