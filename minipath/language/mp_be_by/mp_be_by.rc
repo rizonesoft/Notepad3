@@ -17,8 +17,8 @@
 // Belarusian (Belarus) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
-LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)  // Cyrillic (Windows-1251)
+LANGUAGE LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS
+#pragma code_page(1251) // Cyrillic (Windows-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

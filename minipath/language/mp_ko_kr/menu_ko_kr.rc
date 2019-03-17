@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-949
+// encoding: UHC
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_KOREAN
-#pragma code_page(949)  // Korean (Unified Hangul Code, UHC) (Windows-949)
+#pragma code_page(949) // Korean (Unified Hangul Code, UHC) (Windows-949)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

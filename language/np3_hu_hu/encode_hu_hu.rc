@@ -17,8 +17,8 @@
 // Hungarian (Hungary) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
-LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
-#pragma code_page(1250)  // Central European  (Windows-1250)
+LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
+#pragma code_page(1250) // Central European  (Windows-1250)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
