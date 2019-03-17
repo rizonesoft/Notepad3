@@ -33,9 +33,14 @@
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);
-void   Style_Save(LPCWCH szFile);
+void   Style_Save();
 bool   Style_Export(HWND hwnd);
 DWORD  Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
+
+unsigned ThemeItems_CountOf();
+void     Style_SetIniFile(LPCWSTR szIniFile);
+bool     Style_InsertThemesMenu(HMENU hMenuBar);
+void     Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings);
 
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);

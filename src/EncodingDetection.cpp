@@ -252,7 +252,7 @@ extern "C" const WCHAR* Encoding_GetTitleInfoW() { return wchEncodingInfo; }
 #define ENC_PARSE_NAM_ISO_8859_2           ",ISO-8859-2,iso88592,csisolatin2,isoir101,latin2,l2,"
 #define ENC_PARSE_NAM_MAC_CENTRAL_EUROP    ",x-mac-ce,xmacce,mac-ce,xmaccentraleurope,maccentraleurope,"
 #define ENC_PARSE_NAM_WIN_1250             ",Windows-1250,windows1250,CP-1250,cp1250,xcp1250,"
-#define ENC_PARSE_NAM_GBK_936              "CP-936,cp936,gb,gbk,chinese,cngb,cngbk,chinese_gb,chinese_gbk,"
+#define ENC_PARSE_NAM_GBK_936              "CP-936,cp936,gb,gbk,gbk-936,chinese,cngb,cngbk,chinese_gb,chinese_gbk,"
 #define ENC_PARSE_NAM_GB2312_80            ",gb2312,csgb2312,EUC-CN,euccn,gb2312-80,gb231280,gb231280,csgb231280,"
 #define ENC_PARSE_NAM_MAC_ZH_CN            ",x-mac-chinesesimp,xmacchinesesimp,mac-chinesesimp,macchinesesimp,"
 #define ENC_PARSE_NAM_BIG5                 ",big5,cnbig5,csbig5,xxbig5,chinese_big5,"

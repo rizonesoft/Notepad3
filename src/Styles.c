@@ -27,6 +27,7 @@
 #include "SciXLexer.h"
 
 #include "Notepad3.h"
+#include "Helpers.h"
 #include "Edit.h"
 #include "Dialogs.h"
 #include "resource.h"
@@ -104,8 +105,6 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 static int s_iDefaultLexer = 0;
 static PEDITLEXER s_pLexCurrent = &lexStandard;
 
-static bool s_fWarnedNoIniFile = false;
-
 static COLORREF s_colorDefault[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 static COLORREF s_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -115,6 +114,239 @@ static bool s_bAutoSelect = true;
 #define STYLESELECTDLG_Y 344
 static int  s_cxStyleSelectDlg = STYLESELECTDLG_X;
 static int  s_cyStyleSelectDlg = STYLESELECTDLG_Y;
+
+
+//=============================================================================
+
+typedef struct _themeFiles
+{
+  UINT    rid;
+  WCHAR   szFileName[80];
+  WCHAR   szFilePath[MAX_PATH];
+
+} THEMEFILES, * PTHEMEFILES;
+
+static THEMEFILES Theme_Files[] =
+{
+  { 0, L"", L"" }, // Standard
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" },
+  { 0, L"", L"" }
+};
+
+unsigned ThemeItems_CountOf() { return COUNTOF(Theme_Files); }
+
+
+static unsigned s_idxSelectedTheme = 1;  // Default(0), Standard(1)
+
+
+static void _FillThemesMenuTable()
+{
+  WCHAR wchStdName[80];
+
+  Theme_Files[0].rid = IDM_THEMES_DEFAULT;    // factory default
+  GetLngString(IDM_THEMES_DEFAULT, wchStdName, COUNTOF(wchStdName));
+  StringCchCopy(Theme_Files[0].szFileName, COUNTOF(Theme_Files[0].szFileName), wchStdName);
+  StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), L"");
+
+  Theme_Files[1].rid = IDM_THEMES_FILE_ITEM;  // NP3.ini settings
+  GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
+  StringCchCopy(Theme_Files[1].szFileName, COUNTOF(Theme_Files[1].szFileName), wchStdName);
+  StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), Globals.IniFile);
+
+  unsigned iTheme = 1; // Standard
+
+  WCHAR tchThemeDir[MAX_PATH] = { L'\0' };
+  // find "themes" sub-dir (side-by-side to Notepad3.ini)
+  if (StrIsNotEmpty(Globals.IniFile)) {
+    StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
+  }
+  else if (StrIsNotEmpty(Globals.IniFileDefault)) {
+    StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFileDefault);
+  }
+  if (StrIsNotEmpty(tchThemeDir)) {
+    PathCchRemoveFileSpec(tchThemeDir, COUNTOF(tchThemeDir));
+    PathCchAppend(tchThemeDir, COUNTOF(tchThemeDir), L"themes");
+  }
+
+  if (PathIsDirectory(tchThemeDir))
+  {
+    WCHAR tchThemePath[MAX_PATH] = { L'\0' };
+    StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
+    PathCchAppend(tchThemePath, COUNTOF(tchThemePath), L"*.ini");
+
+    WIN32_FIND_DATA FindFileData;
+    ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
+    HANDLE hFindFile = FindFirstFile(tchThemePath, &FindFileData);
+    if (hFindFile != INVALID_HANDLE_VALUE)
+    {
+      // ---  fill table by directory entries  ---
+      for (iTheme = 2; iTheme < ThemeItems_CountOf(); ++iTheme)
+      {
+        Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_DEFAULT);
+
+        StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
+        PathRemoveExtension(tchThemePath);
+        StringCchCopy(Theme_Files[iTheme].szFileName, COUNTOF(Theme_Files[iTheme].szFileName), tchThemePath);
+
+        StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
+        PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
+        StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), tchThemePath);
+
+        if (!FindNextFile(hFindFile, &FindFileData)) { break; }
+      }
+    }
+    FindClose(hFindFile);
+  }
+  s_idxSelectedTheme = clampu(s_idxSelectedTheme, 0, iTheme);
+
+  for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) {
+    Theme_Files[iTheme].rid = 0;   // no themes available
+    Theme_Files[iTheme].szFileName[0] = L'\0';
+    Theme_Files[iTheme].szFilePath[0] = L'\0';
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_SetIniFile()
+//
+void Style_SetIniFile(LPCWSTR szIniFile)
+{
+  StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), szIniFile);
+  _FillThemesMenuTable();
+}
+
+
+//=============================================================================
+//
+//  Style_InsertThemesMenu()
+//
+bool Style_InsertThemesMenu(HMENU hMenuBar)
+{
+  HMENU hmenuThemes = CreatePopupMenu();
+  int const pos = GetMenuItemCount(hMenuBar) - 1;
+
+  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[0].rid, Theme_Files[0].szFileName);
+  
+  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[1].rid, Theme_Files[1].szFileName);
+
+  for (unsigned i = 2; i < ThemeItems_CountOf(); ++i)
+  {
+    if (i == 2) {
+      AppendMenu(hmenuThemes, MF_SEPARATOR, 0, 0);
+    }
+    if (Theme_Files[i].rid > 0) {
+      AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szFileName);
+    }
+    else {
+      break; // done
+    }
+  }
+
+  // --- insert ---
+  WCHAR wchMenuItemStrg[80] = { L'\0' };
+  GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+
+  bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
+
+  CheckCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, true);
+
+  if (StrIsEmpty(Theme_Files[s_idxSelectedTheme].szFilePath)) 
+  {
+    EnableCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, false);
+  }
+
+  return res;
+}
+
+
+//=============================================================================
+//
+//  Style_DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
+//
+//
+void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
+{
+  unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
+
+  if ((iThemeIdx < 0) || (iThemeIdx >= ThemeItems_CountOf())) {
+    return;
+  }
+  if (iThemeIdx == s_idxSelectedTheme) { return; }
+
+  CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, false);
+
+  if (Settings.SaveSettings) {
+    if (s_idxSelectedTheme == 0) {
+      // nothing to do: internal defaults
+    }
+    else if (s_idxSelectedTheme == 1) {
+      if (bEnableSaveSettings) {
+        CreateIniFile();
+        if (StrIsNotEmpty(Globals.IniFile)) {
+          Style_ExportToFile(Globals.IniFile, false);
+        }
+      }
+    }
+    else if (PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
+    {
+      bool const bIndependentFromStandardSettings = true;
+      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, bIndependentFromStandardSettings);
+    }
+  }
+
+  s_idxSelectedTheme = iThemeIdx;
+
+  bool result = true;
+  if ((s_idxSelectedTheme > 1) && PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
+  {
+    result = Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
+  }
+  else if (s_idxSelectedTheme == 1) {
+    result = Style_ImportFromFile(Globals.IniFile);
+  }
+  else {
+    result = Style_ImportFromFile(L"");
+  }
+
+  if (result) {
+    Style_ResetCurrentLexer(Globals.hwndEdit);
+    SendWMSize(Globals.hwndMain, NULL);
+    UpdateUI();
+    UpdateToolbar();
+    UpdateStatusbar(true);
+  }
+
+  CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, true);
+}
+
+
+
+
 
 
 //=============================================================================
@@ -247,11 +479,12 @@ void Style_Load()
   s_colorDefault[14] = RGB(0xB0, 0x00, 0xB0);
   s_colorDefault[15] = RGB(0xB2, 0x8B, 0x40);
 
-
-  Style_ImportFromFile(Globals.IniFile);
+  Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
 
   // 2nd Default Style has same filename extension list as (1st) Default Style
   StringCchCopyW(lexStandard2nd.szExtensions, COUNTOF(lexStandard2nd.szExtensions), lexStandard.szExtensions);
+
+  _FillThemesMenuTable();
 }
 
 
@@ -380,9 +613,9 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //
 //  Style_Save()
 //
-void Style_Save(LPCWCH szFile)
+void Style_Save()
 {
-    Style_ExportToFile(szFile, false);
+    Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
 }
 
 
@@ -429,7 +662,11 @@ bool Style_Export(HWND hwnd)
 //
 DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
-  if (!szFile || szFile[0] == L'\0') { return false; }
+
+  if (!szFile || szFile[0] == L'\0') { 
+    MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
+    return false;
+  }
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR* pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
@@ -1085,6 +1322,7 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 
   if (bHotSpot)
   {
+    const WCHAR* const lpszStyleDefault = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
     const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)true);
@@ -1100,17 +1338,25 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
 
     COLORREF rgb = 0;
-    // Fore
-    if (Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &rgb)) {
-      COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
-      SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
-      SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
+
+    if (!Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &rgb)) 
+    {
+      Style_StrGetColor(L"italic; fore:#0000FF", FOREGROUND_LAYER, &rgb);
     }
-    // Back
-    if (Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &rgb)) {
-      SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
-      SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
+    COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
+    SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
+    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
+
+
+    if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &rgb))
+    {
+      if (!Style_StrGetColor(lpszStyleDefault, BACKGROUND_LAYER, &rgb))
+      {
+        rgb = GetSysColor(COLOR_WINDOW);
+      }
     }
+    SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
+    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
   }
   else {
     Style_SetStyles(hwnd, cHotSpotStyleID, L"", false); // uses Styles[STY_DEFAULT]
@@ -1118,7 +1364,6 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
   }
 
 }
-
 
 
 //=============================================================================
@@ -3162,6 +3407,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static HBRUSH hbrFore;
   static HBRUSH hbrBack;
   static bool bIsStyleSelected = false;
+  static bool bWarnedNoIniFile = false;
   static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
 
   static WCHAR tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
@@ -3259,6 +3505,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         GetLngString(IDS_MUI_RESETPOS, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchTmpBuffer);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+
+        bWarnedNoIniFile = false;
       }
       return true;
 
@@ -3699,9 +3947,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-            if (!s_fWarnedNoIniFile && (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) == 0)) {
+            if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[s_idxSelectedTheme].szFilePath)) && (s_idxSelectedTheme > 0)) 
+            {
               MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
-              s_fWarnedNoIniFile = true;
+              bWarnedNoIniFile = true;
             }
             //EndDialog(hwnd,IDOK);
             DestroyWindow(hwnd);
