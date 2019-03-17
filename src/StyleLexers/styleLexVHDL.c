@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_VHDL = {
 "access after alias all architecture array assert attribute begin block body buffer bus case component configuration "
 "constant disconnect downto else elsif end entity exit file for function generate generic group guarded if impure in "
@@ -30,7 +22,6 @@ KEYWORDLIST KeyWords_VHDL = {
 
 EDITLEXER lexVHDL = { 
 SCLEX_VHDL, IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"", 
-&LexFunction, // static
 &KeyWords_VHDL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_VHDL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

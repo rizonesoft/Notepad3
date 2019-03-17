@@ -161,7 +161,7 @@ HMODULE              g_hLngResContainer = NULL;
 WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 // 'en-US' internal default
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pt-BR ru-RU zh-CN";
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pl-PL pt-BR ru-RU zh-CN";
 
 
 //=============================================================================

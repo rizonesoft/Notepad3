@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_SQL = {
 "abort accessible action add after all alter analyze and as asc asensitive attach autoincrement "
 "before begin between bigint binary bit blob both by call cascade case cast change char character "
@@ -38,7 +30,6 @@ KEYWORDLIST KeyWords_SQL = {
 
 EDITLEXER lexSQL = { 
 SCLEX_SQL, IDS_LEX_SQL, L"SQL Query", L"sql", L"", 
-&LexFunction, // static
 &KeyWords_SQL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_SQL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

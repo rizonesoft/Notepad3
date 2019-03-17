@@ -204,7 +204,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE       "&Idioma"
     IDS_MUI_MENU_THEMES         "&Temas"
-    IDM_THEMES_FILE_ITEM        "Standard"
+    IDM_THEMES_DEFAULT          "Factory Default"
+    IDM_THEMES_FILE_ITEM        "Standard Settings"
 END
 
 STRINGTABLE

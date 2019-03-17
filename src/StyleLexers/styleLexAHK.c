@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_AHK = {
 "break continue else exit exitapp gosub goto if ifequal ifexist ifgreater ifgreaterorequal "
 "ifinstring ifless iflessorequal ifmsgbox ifnotequal ifnotexist ifnotinstring ifwinactive "
@@ -120,7 +112,6 @@ KEYWORDLIST KeyWords_AHK = {
 
 EDITLEXER lexAHK = { 
 SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"", L"",
-&LexFunction, // static
 &KeyWords_AHK, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AHK_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -133,14 +124,14 @@ SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"", L"",
     { {SCE_AHK_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"fore:#CF2F0F", L"" },
     { {SCE_AHK_VARREF}, IDS_LEX_STR_63309, L"Variable Dereferencing", L"fore:#CF2F0F; back:#E4FFE4", L"" },
     { {SCE_AHK_LABEL}, IDS_LEX_STR_63235, L"Label", L"fore:#000000; back:#FFFFA1", L"" },
-    { {SCE_AHK_WORD_CF}, IDS_LEX_STR_63310, L"Flow of Control", L"fore:#480048; bold", L"" },
+    { {SCE_AHK_WORD_CF}, IDS_LEX_STR_63310, L"Flow of Control", L"bold; fore:#480048", L"" },
     { {SCE_AHK_WORD_CMD}, IDS_LEX_STR_63236, L"Command", L"fore:#004080", L"" },
-    { {SCE_AHK_WORD_FN}, IDS_LEX_STR_63277, L"Function", L"fore:#0F707F; italic", L"" },
-    { {SCE_AHK_WORD_DIR}, IDS_LEX_STR_63203, L"Directive", L"fore:#F04020; italic", L"" },
-    { {SCE_AHK_WORD_KB}, IDS_LEX_STR_63311, L"Keys & Buttons", L"fore:#FF00FF; bold", L"" },
-    { {SCE_AHK_WORD_VAR}, IDS_LEX_STR_63312, L"Built-In Variables", L"fore:#CF00CF; italic", L"" },
-    { {SCE_AHK_WORD_SP}, IDS_LEX_STR_63280, L"Special", L"fore:#0000FF; italic", L"" },
+    { {SCE_AHK_WORD_FN}, IDS_LEX_STR_63277, L"Function", L"italic; fore:#0F707F", L"" },
+    { {SCE_AHK_WORD_DIR}, IDS_LEX_STR_63203, L"Directive", L"italic; fore:#F04020", L"" },
+    { {SCE_AHK_WORD_KB}, IDS_LEX_STR_63311, L"Keys & Buttons", L"bold; fore:#FF00FF", L"" },
+    { {SCE_AHK_WORD_VAR}, IDS_LEX_STR_63312, L"Built-In Variables", L"italic; fore:#CF00CF", L"" },
+    { {SCE_AHK_WORD_SP}, IDS_LEX_STR_63280, L"Special", L"italic; fore:#0000FF", L"" },
     //{ {SCE_AHK_WORD_UD}, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
-    { {SCE_AHK_VARREFKW}, IDS_LEX_STR_63313, L"Variable Keyword", L"fore:#CF00CF; italic; back:#F9F9FF", L"" },
+    { {SCE_AHK_VARREFKW}, IDS_LEX_STR_63313, L"Variable Keyword", L"italic; fore:#CF00CF; back:#F9F9FF", L"" },
     { {SCE_AHK_ERROR}, IDS_LEX_STR_63261, L"Error", L"back:#FFC0C0", L"" },
     EDITLEXER_SENTINEL } };

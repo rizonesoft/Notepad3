@@ -464,8 +464,8 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 
 //==== StrIs(Not)Empty() =============================================
 
-inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
-inline bool StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+inline bool StrIsEmptyA(LPCSTR s)  { return (!s || (*s == '\0')); }
+inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)

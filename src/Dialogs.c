@@ -809,7 +809,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
             if (GetOpenFileName(&ofn)) {
               PathQuoteSpaces(szFile);
-              if (StringCchLen(szArg2,COUNTOF(szArg2)))
+              if (StrIsNotEmpty(szArg2))
               {
                 StringCchCat(szFile,COUNTOF(szFile),L" ");
                 StringCchCat(szFile,COUNTOF(szFile),szArg2);
@@ -826,11 +826,13 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             bool bEnableOK = false;
             WCHAR args[MAX_PATH] = { L'\0' };
 
-            if (GetDlgItemText(hwnd,IDC_COMMANDLINE,args,MAX_PATH))
-              if (ExtractFirstArgument(args,args,NULL,MAX_PATH))
-                if (StringCchLenW(args,COUNTOF(args)))
+            if (GetDlgItemText(hwnd, IDC_COMMANDLINE, args, MAX_PATH)) {
+              if (ExtractFirstArgument(args, args, NULL, MAX_PATH)) {
+                if (StrIsNotEmpty(args)) {
                   bEnableOK = true;
-
+                }
+              }
+            }
             DialogEnableWindow(hwnd,IDOK,bEnableOK);
           }
           break;
@@ -855,7 +857,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                 bQuickExit = true;
               }
 
-              if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
+              if (StrIsNotEmpty(Globals.CurrentFile)) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
                 PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
               }
@@ -1084,7 +1086,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
+    if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
       PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
     }
@@ -3141,7 +3143,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
-  if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile))) {
+  if (StrIsNotEmpty(Globals.IniFile)) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
     StringCchCat(szParameters, COUNTOF(szParameters), Globals.IniFile);
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
@@ -3202,7 +3204,7 @@ void DialogFileBrowse(HWND hwnd)
 
   StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
 
-  if (StringCchLenW(Settings2.FileBrowserPath, 0) > 0)
+  if (StrIsNotEmpty(Settings2.FileBrowserPath))
   {
     ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
   }
@@ -3217,10 +3219,10 @@ void DialogFileBrowse(HWND hwnd)
       StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
     }
   }
-  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, COUNTOF(tchParam))) {
+  if (StrIsNotEmpty(tchParam) && StrIsNotEmpty(Globals.CurrentFile)) {
     StringCchCat(tchParam, COUNTOF(tchParam), L" ");
   }
-  if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
+  if (StrIsNotEmpty(Globals.CurrentFile)) {
     StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
     PathQuoteSpaces(tchTemp);
     StringCchCat(tchParam, COUNTOF(tchParam), tchTemp);
@@ -3255,7 +3257,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
   WCHAR tchExe[MAX_PATH];
 
   StringCchCopyW(tchExe, COUNTOF(tchExe), Settings2.AdministrationTool);
-  if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
+  if (bExecInstaller && StrIsEmpty(tchExe)) { return; }
 
   WCHAR tchExePath[MAX_PATH];
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
@@ -3355,7 +3357,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
       StringCchCat(szTitle, COUNTOF(szTitle), szCachedDisplayName);
       if (iFormat == 1) {
         WCHAR tchPath[MAX_PATH] = { L'\0' };
-        StringCchCopyN(tchPath, COUNTOF(tchPath), lpszFile, StringCchLen(lpszFile, MAX_PATH));
+        StringCchCopy(tchPath, COUNTOF(tchPath), lpszFile);
         PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
         StringCchCat(szTitle, COUNTOF(szTitle), L" [");
         StringCchCat(szTitle, COUNTOF(szTitle), tchPath);

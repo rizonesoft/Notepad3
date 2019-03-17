@@ -2,20 +2,11 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_COFFEESCRIPT = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexCOFFEESCRIPT = { 
 SCLEX_COFFEESCRIPT, IDS_LEX_COFFEE_SCR, L"Coffeescript", L"coffee; Cakefile", L"", 
-&LexFunction, // static
 &KeyWords_COFFEESCRIPT, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_COFFEESCRIPT_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

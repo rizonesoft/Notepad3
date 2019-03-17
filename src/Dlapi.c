@@ -873,13 +873,13 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
   int i = -1;
 
-  if (!lpszFullPath || !StringCchLen(lpszFullPath, MAX_PATH)) {
+  if (StrIsEmpty(lpszFullPath)) {
     return false;
   }
 
   GetShortPathName(lpszFullPath,szShortPath,MAX_PATH);
 
-  if (!lpszDisplayName || !StringCchLen(lpszDisplayName, MAX_PATH)) {
+  if (StrIsEmpty(lpszDisplayName)) {
     SHGetFileInfo(lpszFullPath, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
   }
   else {
@@ -928,8 +928,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
   StringCchCopyN(pdlf->tFilterBuf,COUNTOF(pdlf->tFilterBuf),lpszFileSpec,DL_FILTER_BUFSIZE);
   pdlf->bExcludeFilter = bExcludeFilter;
 
-  if (!StringCchCompareX(lpszFileSpec,L"*.*") || !StringCchLen(lpszFileSpec,DL_FILTER_BUFSIZE))
-    return;
+  if (!StringCchCompareX(lpszFileSpec, L"*.*") || StrIsEmpty(lpszFileSpec)) { return; }
 
   pdlf->nCount = 1;
   pdlf->pFilter[0] = &pdlf->tFilterBuf[0];    // Zeile zum Ausprobieren

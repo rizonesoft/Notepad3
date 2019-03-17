@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 // https://github.com/nim-lang/Nim/blob/devel/doc/keywords.txt
 
 KEYWORDLIST KeyWords_Nim = {
@@ -24,11 +16,10 @@ KEYWORDLIST KeyWords_Nim = {
 
 EDITLEXER lexNim = { 
 SCLEX_NIM, IDS_LEX_NIM_SRC, L"Nim Source Code", L"nim; nimrod", L"", 
-&LexFunction, // static
 &KeyWords_Nim,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_NIM_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    { {MULTI_STYLE(SCE_NIM_COMMENT,SCE_NIM_COMMENTDOC,SCE_NIM_COMMENTLINE,SCE_NIM_COMMENTLINEDOC)}, IDS_LEX_STR_63127, L"Comment", L"fore:#484A86; italics", L"" },
+    { {MULTI_STYLE(SCE_NIM_COMMENT,SCE_NIM_COMMENTDOC,SCE_NIM_COMMENTLINE,SCE_NIM_COMMENTLINEDOC)}, IDS_LEX_STR_63127, L"Comment", L"italic; fore:#484A86", L"" },
     { {SCE_NIM_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#5E8F60", L"" },
     { {SCE_NIM_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
     { {MULTI_STYLE(SCE_NIM_STRING,SCE_NIM_STRINGEOL,0,0)}, IDS_LEX_STR_63211, L"String Double Quoted", L"fore:#A4255B", L"" },
@@ -38,6 +29,6 @@ SCLEX_NIM, IDS_LEX_NIM_SRC, L"Nim Source Code", L"nim; nimrod", L"",
     { {SCE_NIM_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#252DBE", L"" },
     { {SCE_NIM_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#4B4B4B", L"" },
     { {SCE_NIM_FUNCNAME}, IDS_LEX_STR_63247, L"Function name", L"fore:#4B4B4B", L"" },
-    { {SCE_NIM_NUMERROR}, IDS_LEX_STR_63252, L"Parsing Error", L"fore:#FFFF00; back:#A00000; italics", L"" },
+    { {SCE_NIM_NUMERROR}, IDS_LEX_STR_63252, L"Parsing Error", L"italic; fore:#FFFF00; back:#A00000", L"" },
     //{ {SCE_NIM_BACKTICKS}, IDS_LEX_STR_63246, L"Class name", L"fore:#660066", L"" },
     EDITLEXER_SENTINEL } };

@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_AU3 = {
 "and byref case const continuecase continueloop default dim do else elseif endfunc endif "
 "endselect endswitch endwith enum exit exitloop false for func global if in local next not "
@@ -658,7 +650,6 @@ KEYWORDLIST KeyWords_AU3 = {
 
 EDITLEXER lexAU3 = { 
 SCLEX_AU3, IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"", 
-&LexFunction, // static
 &KeyWords_AU3, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AU3_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

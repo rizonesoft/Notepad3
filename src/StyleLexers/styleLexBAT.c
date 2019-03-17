@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_BAT = {
 "arp assoc attrib bcdedit bootcfg break cacls call cd change chcp chdir chkdsk chkntfs choice cipher "
 "cleanmgr cls cmd cmdkey color com comp compact con convert copy country ctty date defined defrag del "
@@ -26,7 +18,6 @@ KEYWORDLIST KeyWords_BAT = {
 
 EDITLEXER lexBAT = { 
 SCLEX_BATCH, IDS_LEX_BATCH, L"Batch Files", L"bat; cmd", L"", 
-&LexFunction, // static
 &KeyWords_BAT, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_BAT_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
