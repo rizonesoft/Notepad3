@@ -29,7 +29,6 @@
 #define NUMLEXERS 49
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
-
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);

@@ -192,7 +192,7 @@ int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
 {
   LPWSTR p = (LPWSTR)lpCachedIniSection;
   if (p) {
-    int ich = (int)StringCchLen(lpName,0);
+    int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         int i = 0;
@@ -873,8 +873,9 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
   }
 
   // This additional check seems reasonable
-  if (!StringCchLen(pszResPath,cchResPath))
+  if (StrIsEmpty(pszResPath)) {
     bSucceeded = false;
+  }
 
   if (bSucceeded) {
     ExpandEnvironmentStringsEx(pszResPath,cchResPath);
@@ -935,8 +936,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
   bool bSucceeded = false;
   BOOL fMustCopy;
 
-  if (!pszDocument || StringCchLen(pszDocument,MAX_PATH) == 0)
-    return true;
+  if (StrIsEmpty(pszDocument)) { return true; }
 
   // init strings
   GetModuleFileName(NULL,tchExeFile,COUNTOF(tchExeFile));
@@ -1002,8 +1002,7 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
   IShellLink *psl;
   bool bSucceeded = false;
 
-  if (!pszName || StringCchLen(pszName,MAX_PATH) == 0)
-    return true;
+  if (StrIsEmpty(pszName)) { return true; }
 
   StringCchCopy(tchLnkFileName,COUNTOF(tchLnkFileName),pszDir);
   PathCchAppend(tchLnkFileName,COUNTOF(tchLnkFileName),pszName);
@@ -1347,16 +1346,14 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
             p += 2;
             *p = L'\\';
           }
-          StringCchCopyW(lpszPath, MAX_PATH, p);
+          StringCchCopy(lpszPath, cchBuffer, p);
         }
       }
     }
     CloseHandle(hFile);
   }
 
-  size_t pathLen = 0;
-  StringCchLength(lpszPath, cchBuffer, &pathLen);
-  return (DWORD)pathLen;
+  return (DWORD)StringCchLen(lpszPath, cchBuffer);
 }
 
 

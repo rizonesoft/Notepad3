@@ -1804,7 +1804,7 @@ bool SelectExternalToolBar(HWND hwnd)
 
   if (GetOpenFileName(&ofn)) {
     PathQuoteSpaces(szFile);
-    if (StringCchLen(szArg2, COUNTOF(szArg2)))
+    if (StrIsNotEmpty(szArg2))
     {
       StringCchCat(szFile, COUNTOF(szFile), L" ");
       StringCchCat(szFile, COUNTOF(szFile), szArg2);
@@ -7571,6 +7571,7 @@ void SaveSettings(bool bSaveSettingsNow)
  
   Style_Save();  // Scintilla Styles
 
+
   int ResX, ResY;
   GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
 
@@ -9790,7 +9791,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 //
 bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc) 
 {
-  if (StringCchLen(szFileName, MAX_PATH) != 0) {
+  if (StrIsNotEmpty(szFileName)) {
 
     const DocPos iCurPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
@@ -10645,7 +10646,7 @@ void CancelCallTip()
 void InstallFileWatching(LPCWSTR lpszFile)
 {
   // Terminate
-  if (!Settings.FileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
+  if (!Settings.FileWatchingMode || StrIsEmpty(lpszFile))
   {
     if (s_bRunningWatch)
     {
