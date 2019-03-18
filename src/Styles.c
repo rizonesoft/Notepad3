@@ -943,23 +943,23 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // Occurrences Marker
   if (!Style_StrGetColor(pCurrentStandard->Styles[STY_MARK_OCC].szValue, FOREGROUND_LAYER, &dColor))
   {
-    WCHAR* sty = L"";
     switch (Settings.MarkOccurrences) {
     case 1:
-      sty = L"fore:0xFF0000";
       dColor = RGB(0xFF, 0x00, 0x00);
       break;
     case 2:
-      sty = L"fore:0x00FF00";
       dColor = RGB(0x00, 0xFF, 0x00);
       break;
     case 3:
-    default:
-      sty = L"fore:0x0000FF";
       dColor = RGB(0x00, 0xFF, 0x00);
       break;
+    default:
+      dColor = GetSysColor(COLOR_HIGHLIGHT);
+      break;
     }
-    StringCchCopyW(pCurrentStandard->Styles[STY_MARK_OCC].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), sty);
+    WCHAR sty[32] = { L'\0' };
+    StringCchPrintf(sty, COUNTOF(sty), L"fore:#%02X%02X%02X", (int)GetRValue(dColor), (int)GetGValue(dColor), (int)GetBValue(dColor));
+    StringCchCopy(pCurrentStandard->Styles[STY_MARK_OCC].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), sty);
   }
   SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, dColor);
 
@@ -1403,14 +1403,13 @@ void Style_SetLongLineColors(HWND hwnd)
     if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, FOREGROUND_LAYER, &rgb)) { // edge fore
       rgb = GetSysColor(COLOR_3DLIGHT);
     }
-    SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
   else {
-    if (Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) { // edge back
-      rgb = GetSysColor(COLOR_3DLIGHT);
+    if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) { // edge back
+      rgb = GetSysColor(COLOR_3DSHADOW);
     }
-    SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
+  SendMessage(hwnd, SCI_SETEDGECOLOUR, rgb, 0);
 }
 
 
@@ -1764,7 +1763,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   }
 
   if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
-      (lpszFile && StringCchLen(lpszFile,MAX_PATH) > 0 && *lpszExt)) {
+      (StrIsNotEmpty(lpszFile) && *lpszExt)) {
 
     if (*lpszExt == L'.') ++lpszExt;
 

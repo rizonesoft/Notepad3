@@ -7274,10 +7274,12 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         if (dwId >= 200 && dwId <= 205) {
           SetBkMode(hdc,TRANSPARENT);
-          if (GetSysColorBrush(COLOR_HOTLIGHT))
-            SetTextColor(hdc,GetSysColor(COLOR_HOTLIGHT));
-          else
-            SetTextColor(hdc,RGB(0, 0, 0xFF));
+          if (GetSysColorBrush(COLOR_HOTLIGHT)) {
+            SetTextColor(hdc, GetSysColor(COLOR_HOTLIGHT));
+          }
+          else {
+            SetTextColor(hdc, RGB(0, 0, 0xFF));
+          }
           SelectObject(hdc,/*dwId == id_hover?*/hFontHover/*:hFontNormal*/);
           return (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
         }

@@ -136,7 +136,7 @@ static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, L
   LANGID lngID = *pLangID;
   WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH+1];
 
-  if (StringCchLen(pszPrefLocaleName, cchBuffer) > 0)
+  if (StrIsNotEmpty(pszPrefLocaleName))
   {
     res = ResolveLocaleName(pszPrefLocaleName, wchLngLocalName, COUNTOF(wchLngLocalName));
     if (res > 0) {
