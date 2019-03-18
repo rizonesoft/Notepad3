@@ -676,7 +676,7 @@ bool Style_Export(HWND hwnd)
 DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
 
-  if (!szFile || szFile[0] == L'\0') { 
+  if (StrIsEmpty(szFile)) {
     MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
     return false;
   }
@@ -684,6 +684,7 @@ DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR* pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) { ZeroMemory(pIniSection, len * sizeof(WCHAR)); }
+
   DWORD dwError = ERROR_NOT_ENOUGH_MEMORY;
 
   if (pIniSection) {
@@ -765,6 +766,8 @@ DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
         }
         ++i;
       }
+
+      dwError = ERROR_SUCCESS;
       if (!WritePrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, szFile)) {
         dwError = GetLastError();
       }
@@ -1105,11 +1108,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   int ovr_mask = CARETSTYLE_OVERSTRIKE_BLOCK;
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrbar")) {
-    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrbar");
     ovr_mask = CARETSTYLE_OVERSTRIKE_BAR;
   }
 
-  if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"block")) {
+  if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"block")) {
     StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
     SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovr_mask), 0);
   }
@@ -1122,10 +1124,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (Style_StrGetSize(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
       iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
     }
+    SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
+
     StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
     StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
 
-    SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
+    if (CARETSTYLE_OVERSTRIKE_BAR == ovr_mask) {
+      StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrbar");
+    }
   }
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
