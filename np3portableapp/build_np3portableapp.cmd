@@ -82,6 +82,7 @@ if defined FILEVER set VERSION=%FILEVER%
 
 :: --- Prepare Build ---
 
+mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Help\Changes.txt" /Y /V
