@@ -121,7 +121,7 @@ static int  s_cyStyleSelectDlg = STYLESELECTDLG_Y;
 typedef struct _themeFiles
 {
   UINT    rid;
-  WCHAR   szFileName[80];
+  WCHAR   szName[80];
   WCHAR   szFilePath[MAX_PATH];
 
 } THEMEFILES, * PTHEMEFILES;
@@ -155,12 +155,10 @@ static THEMEFILES Theme_Files[] =
   { 0, L"", L"" },
   { 0, L"", L"" }
 };
-
 unsigned ThemeItems_CountOf() { return COUNTOF(Theme_Files); }
-
-
 static unsigned s_idxSelectedTheme = 1;  // Default(0), Standard(1)
 
+const WCHAR* const STYLING_THEME_NAME = L"ThemeFileName";
 
 static void _FillThemesMenuTable()
 {
@@ -168,12 +166,12 @@ static void _FillThemesMenuTable()
 
   Theme_Files[0].rid = IDM_THEMES_DEFAULT;    // factory default
   GetLngString(IDM_THEMES_DEFAULT, wchStdName, COUNTOF(wchStdName));
-  StringCchCopy(Theme_Files[0].szFileName, COUNTOF(Theme_Files[0].szFileName), wchStdName);
+  StringCchCopy(Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName), wchStdName);
   StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), L"");
 
   Theme_Files[1].rid = IDM_THEMES_FILE_ITEM;  // NP3.ini settings
   GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
-  StringCchCopy(Theme_Files[1].szFileName, COUNTOF(Theme_Files[1].szFileName), wchStdName);
+  StringCchCopy(Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName), wchStdName);
   StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), Globals.IniFile);
 
   unsigned iTheme = 1; // Standard
@@ -209,7 +207,7 @@ static void _FillThemesMenuTable()
 
         StringCchCopy(tchThemePath, COUNTOF(tchThemePath), PathFindFileName(FindFileData.cFileName));
         PathRemoveExtension(tchThemePath);
-        StringCchCopy(Theme_Files[iTheme].szFileName, COUNTOF(Theme_Files[iTheme].szFileName), tchThemePath);
+        StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), tchThemePath);
 
         StringCchCopy(tchThemePath, COUNTOF(tchThemePath), tchThemeDir);
         PathCchAppend(tchThemePath, COUNTOF(tchThemePath), FindFileData.cFileName);
@@ -220,14 +218,15 @@ static void _FillThemesMenuTable()
     }
     FindClose(hFindFile);
   }
-  s_idxSelectedTheme = clampu(s_idxSelectedTheme, 0, iTheme);
 
-  for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) {
+  for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) 
+  {
     Theme_Files[iTheme].rid = 0;   // no themes available
-    Theme_Files[iTheme].szFileName[0] = L'\0';
+    Theme_Files[iTheme].szName[0] = L'\0';
     Theme_Files[iTheme].szFilePath[0] = L'\0';
   }
 }
+
 
 
 //=============================================================================
@@ -250,9 +249,9 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   HMENU hmenuThemes = CreatePopupMenu();
   int const pos = GetMenuItemCount(hMenuBar) - 1;
 
-  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[0].rid, Theme_Files[0].szFileName);
+  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[0].rid, Theme_Files[0].szName);
   
-  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[1].rid, Theme_Files[1].szFileName);
+  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[1].rid, Theme_Files[1].szName);
 
   for (unsigned i = 2; i < ThemeItems_CountOf(); ++i)
   {
@@ -260,7 +259,7 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
       AppendMenu(hmenuThemes, MF_SEPARATOR, 0, 0);
     }
     if (Theme_Files[i].rid > 0) {
-      AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szFileName);
+      AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szName);
     }
     else {
       break; // done
@@ -479,12 +478,25 @@ void Style_Load()
   s_colorDefault[14] = RGB(0xB0, 0x00, 0xB0);
   s_colorDefault[15] = RGB(0xB2, 0x8B, 0x40);
 
-  Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
-
   // 2nd Default Style has same filename extension list as (1st) Default Style
   StringCchCopyW(lexStandard2nd.szExtensions, COUNTOF(lexStandard2nd.szExtensions), lexStandard.szExtensions);
 
   _FillThemesMenuTable();
+
+  // get theme name from settings2
+  WCHAR wchThemeName[80];
+  IniGetString(L"Styles", STYLING_THEME_NAME, L"", wchThemeName, COUNTOF(wchThemeName));
+
+  unsigned iTheme = 1;
+  if (StrIsNotEmpty(wchThemeName)) {
+    for (; iTheme < ThemeItems_CountOf(); ++iTheme)
+    {
+      if (StringCchCompareXI(wchThemeName, Theme_Files[iTheme].szName) == 0) { break; }
+    }
+  }
+  s_idxSelectedTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
+
+  Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
 }
 
 
@@ -615,7 +627,8 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //
 void Style_Save()
 {
-    Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+  Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
+  IniSetString(L"Styles", STYLING_THEME_NAME, (s_idxSelectedTheme > 1) ? Theme_Files[s_idxSelectedTheme].szName : NULL);
 }
 
 

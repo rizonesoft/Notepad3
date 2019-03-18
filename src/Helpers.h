@@ -286,12 +286,17 @@ bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
 
-
 bool PathIsLnkFile(LPCWSTR pszPath);
 bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath);
 bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath);
 bool PathCreateDeskLnk(LPCWSTR pszDocument);
 bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
+
+void  ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc);
+void  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
+DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
+void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
+DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 
 
 bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars);
@@ -320,13 +325,6 @@ void PrepareFilterStr(LPWSTR lpFilter);
 
 void StrTab2Space(LPWSTR lpsz);
 void PathFixBackslashes(LPWSTR lpsz);
-
-
-void  ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc);
-void  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
-DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
-void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
-DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 
 
 size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);

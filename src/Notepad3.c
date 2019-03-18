@@ -7571,6 +7571,7 @@ void SaveSettings(bool bSaveSettingsNow)
  
   Style_Save();  // Scintilla Styles
 
+
   int ResX, ResY;
   GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
 
