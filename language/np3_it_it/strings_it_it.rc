@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Apri"
     IDT_FILE_BROWSE         "Sfoglia"
     IDT_FILE_SAVE           "Salva"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "Recenti"
     IDT_EDIT_UNDO           "Annulla"
     IDT_EDIT_REDO           "Ripeti"
     IDT_EDIT_CUT            "Taglia"
@@ -112,7 +112,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "Tutti i file (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "File eseguibili (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Tutti i file (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "File di configurazione (*.ini)|*.ini|Tutti i file (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "File Bitmap (*.bmp)|*.bmp|Tutti i file (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Scegli la cartella con i collegamenti alle tue applicazioni preferite."
     IDS_MUI_FAVORITES       "Scegli la cartella con i collegamenti ai tuoi file preferiti."
     IDS_MUI_BACKSLASHHELP   "Trasformazioni backslash\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -144,8 +144,8 @@ BEGIN
     IDS_MUI_WARN_LOAD_BIG_FILE 
                             "Sei sicuro di voler aprire questo file grande?"
     IDS_MUI_WARN_UNKNOWN_EXT 
-                            "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_INDENT_CONSISTENT   "The file has a consistent indentation!"
+                            "Estensione sconosciuta (%s) !\nProseguire con il caricamento?"
+    IDS_MUI_INDENT_CONSISTENT   "Il file ha una indentazione consistente!"
     IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
@@ -220,7 +220,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Stile '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
+    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga! 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Riga (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Colonna (1 - %lli):"
@@ -229,61 +229,61 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "Lingua"
-    IDS_MUI_MENU_THEMES     "Themes"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDS_MUI_MENU_THEMES     "Temi"
+    IDM_THEMES_DEFAULT      "Impostazioni di fabbrica"
+    IDM_THEMES_FILE_ITEM    "Impostazioni standard"
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
+Utilizzo:\r\n\
 Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
+file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette per default.\r\n\
++\tAccetta argomenti multipli di tipo file (con spazi tra virgolette).\r\n\
+-\tAccetta un solo argomento di tipo file (senza spazi tra virgolette).\r\n\r\n\
+Opzioni:\r\n\
+/?\tVisualizza questo messaggio di help.\r\n\
 ...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
-Examples:\r\n\
+/e\tEncoding del file sorgente.\r\n\
+/g\tSalta alla posizione specificata (/g -1 EOF).\r\n\
+/m\tTrova il testo specificato (/m- ultimo, /mr regex, /mb backslash).\r\n\
+/l\tRicarica automaticamente i file modificati.\r\n\
+/q\tForza la creazione di nuovi file, senza richiedere conferma.\r\n\
+/s\tSeleziona lo Schema di sintassi specificato.\r\n\
+/d\tSeleziona lo Schema di default per il testo.\r\n\
+/h\tSeleziona lo Schema Web Source Code.\r\n\
+/x\tSeleziona lo Schema Documento XML.\r\n\
+/c\tApri una nuova finestra e incolla il contenuto degli Appunti.\r\n\
+/b\tApri una nuova Paste Board per collezionare il testo copiato negli Appunti.\r\n\
+/n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
+/r\tRiutilizza finestra (/rs istanza singola).\r\n\
+/p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tImposta titolo della finestra.\r\n\
+/i\tAvvia come icona nella Tray.\r\n\
+/o\tMantieni finestra in primo piano.\r\n\
+/f\tSpecifica il file INI (/f0 nessun file INI).\r\n\
+/u\tAvvia con privilegi elevati.\r\n\
+/v\tStampa il file immediatamente ed esci.\r\n\
+/vd\tStampa il file (apri il dialogo di stampa).\r\n\
+/y\tCerca la variabile d'ambiente PATH nel caso di filename relativo.\r\n\
+/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note basato su Registro).\r\n\r\n\
+Esempi:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Apri un nuovo file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately.\
+ \t... Stampa il file: ""Test.txt"" immediatamente.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\r\n\
-Style format:\r\n\
+Le estensioni devono essere separate con ';'\r\n\r\n\
+Formato Stile:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+Le proprietà di Stile possono essere copiate con Copia-e-incolla o Drag'n'drop.\
 "
 
 END
@@ -295,26 +295,26 @@ IDS_MUI_ABOUT_RTF_0  "{\
 \\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Sviluppo:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Collaboratori:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Librerie:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Riconoscimenti:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Risorse:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Licenze:\\ul0\\b0\\fs18\\par\
 "
 
 IDS_MUI_ABOUT_RTF_6 "\
-\\cf0 \\fs20\\b1\\ul1 Notepad3 Licence:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Licenza Notepad3:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2015-2019 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
