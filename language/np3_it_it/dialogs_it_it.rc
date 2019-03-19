@@ -66,7 +66,7 @@ BEGIN
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Copia il testo della versione",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
+    PUSHBUTTON      "Copia testo versione",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
@@ -207,7 +207,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Visualizza avvisi di interruzione di riga inconsistente.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "&Garantisci interruzione di riga consistente durante il salvataggio.",IDC_CONSISTENT_EOLS,
+    CONTROL         "&Garantisci interruz. riga consistente durante salvataggio.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
     CONTROL         "&Elimina gli spazi alla fine durante il salvataggio.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
@@ -249,10 +249,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Notifica su file modificato"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "&Nessuna.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
-    CONTROL         "&Visualizza messaggio.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
-    CONTROL         "&Ricarica automaticamente (non modificato).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Reimposta se si apre un nuovo file.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
+    CONTROL         "&Nessuna",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
+    CONTROL         "&Mostra messaggio",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
+    CONTROL         "&Ricarica (non modificato).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Reimposta aprendo nuovo file",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,127,24,50,14
 END
@@ -304,15 +304,15 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Impostazioni di tabulazione"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "N° Caratteri &Tabulazione:",IDC_STATIC,7,10,54,8
+    LTEXT           "Caratteri &Tab",IDC_STATIC,7,10,54,8
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "N° Caratteri &Indentazione:",IDC_STATIC,7,30,55,8
+    LTEXT           "Caratteri &Indent",IDC_STATIC,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Inserisci Tab come &spazi.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Il tasto Tab riformatta l'indentazione.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Il tasto &Backspace riformatta l'indentazione.",IDC_BACKTAB_INDENTS,
+    CONTROL         "Inserisci Tab come &spazi",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Il tasto Tab riformatta l'indentazione",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Il tasto &Backspace riformatta l'indentazione",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Avvisa in caso di indentazione inconsistente.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Avvisa in caso di indentazione inconsistente",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,117,27,50,14
@@ -320,20 +320,20 @@ END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Linee lunghe"
+CAPTION "Righe lunghe"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Limite per linee lunghe:",IDC_STATIC,7,10,60,8
+    LTEXT           "&Limite righe lunghe:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Mostra &indicatore linee lunghe.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
-    CONTROL         "Cambia &colore di sfondo.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
+    CONTROL         "Mostra &indicatore",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
+    CONTROL         "Cambia &colore di sfondo",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Impostazioni a capo automatico"
+CAPTION "Impostazioni ""A capo automatico"""
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -426,10 +426,10 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Master Key opzionale:",IDC_STATIC,17,61,72,10,NOT WS_GROUP
-    CONTROL         "Crittografa usando una Passphrase",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
+    CONTROL         "Crittografa con passphrase",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
     CONTROL         "Riutilizza la Master Key",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     GROUPBOX        "Passphrase",IDC_STATIC,7,7,297,108
-    CONTROL         "Visualizza Passphrase",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
+    CONTROL         "Mostra passphrase",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -462,15 +462,15 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Modifica righe"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Anteponi testo alle linee:",IDC_STATIC,7,7,62,8
+    LTEXT           "&Anteponi testo alle righe:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Posponi testo alle linee:",IDC_STATIC,7,37,68,8
+    LTEXT           "&Posponi testo alle righe:",IDC_STATIC,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Numero di riga del documento.",IDC_STATIC,57,72,74,8
+    LTEXT           "Numero riga doc.",IDC_STATIC,57,72,74,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
     LTEXT           "Numerazione continua.",IDC_STATIC,57,82,66,8
@@ -545,17 +545,17 @@ END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ordinamento linee"
+CAPTION "Ordinamento righe"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Ordinamento &crescente.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
     CONTROL         "Ordinamento &decrescente.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "Mescola linee.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
-    CONTROL         "&Fondi le linee duplicate.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
-    CONTROL         "&Rimuovi le linee duplicate.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
-    CONTROL         "Rimuovi le linee &uniche.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
-    CONTROL         "Rimuovi le linee &vuote.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Rimuovi le linee &white-space.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Mescola righe.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
+    CONTROL         "&Fondi le righe duplicate.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
+    CONTROL         "&Rimuovi le righe duplicate.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
+    CONTROL         "Rimuovi le righe &uniche.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
+    CONTROL         "Rimuovi le righe &vuote.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Rimuovi le righe &white-space.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
     CONTROL         "&Case-insensitive.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
     CONTROL         "Comparazione logica dei &numeri.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
     CONTROL         "Ordinamento &colonne (selezione rettangolare).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
