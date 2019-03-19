@@ -220,7 +220,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Stile '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
-    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga! 0123456789."
+    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga! 0123456789,."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Riga (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Colonna (1 - %lli):"
@@ -270,7 +270,8 @@ Opzioni:\r\n\
 /v\tStampa il file immediatamente ed esci.\r\n\
 /vd\tStampa il file (apri il dialogo di stampa).\r\n\
 /y\tCerca la variabile d'ambiente PATH nel caso di filename relativo.\r\n\
-/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note basato su Registro).\r\n\r\n\
+/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note\r\n\
+\tbasato su Registro).\r\n\r\n\
 Esempi:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Apri un nuovo file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
