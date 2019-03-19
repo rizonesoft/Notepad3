@@ -60,18 +60,18 @@ BEGIN
         MENUITEM "&Apri...\tCtrl+O",            IDM_FILE_OPEN
         MENUITEM "Ripris&tina\tF5",                 IDM_FILE_REVERT
         MENUITEM "&Salva\tCtrl+S",               IDM_FILE_SAVE
-        MENUITEM "Salva con Nome...\tF6",             IDM_FILE_SAVEAS
-        MENUITEM "Salva &Copia...\tCtrl+F6",      IDM_FILE_SAVECOPY
+        MENUITEM "Salva con nome...\tF6",             IDM_FILE_SAVEAS
+        MENUITEM "Salva &copia...\tCtrl+F6",      IDM_FILE_SAVECOPY
         MENUITEM "Sola lettu&ra",                  IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "Imposta passphrase crittografia...", IDM_SETPASS
+        MENUITEM "Imposta passphrase per crittografia...", IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Esegui"
         BEGIN
             MENUITEM "&Nuova finestra\tAlt+N",          IDM_FILE_NEWWINDOW
             MENUITEM "&Finestra vuota\tAlt+Shift+N",  IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "Esegui &Documento\tCtrl+L",   IDM_FILE_LAUNCH
+            MENUITEM "Esegui &documento\tCtrl+L",   IDM_FILE_LAUNCH
             MENUITEM "&Apri con...\tAlt+L",        IDM_FILE_OPENWITH
             MENUITEM "&Comando...\tCtrl+R",         IDM_FILE_RUN
             MENUITEM SEPARATOR
@@ -110,7 +110,7 @@ BEGIN
             MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Controlla &Indentazione..."                    CMD_CHECK_INDENTATION
+        MENUITEM "Controlla &indentazione..."                    CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Impos&tazione pagina...",              IDM_FILE_PAGESETUP
         MENUITEM "Stam&pa...\tCtrl+P",           IDM_FILE_PRINT
@@ -211,18 +211,18 @@ BEGIN
         END
         POPUP "Co&nverti"
         BEGIN
-            MENUITEM "&MAIUSCOLE\tCtrl+Shift+U",    IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "M&AIUSCOLE\tCtrl+Shift+U",    IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "m&inuscole\tCtrl+U",          IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Inverti maiuscole/minuscole\tCtrl+Alt+U",    IDM_EDIT_INVERTCASE
-            MENUITEM "Title &Case\tCtrl+Alt+I",     IDM_EDIT_TITLECASE
+            MENUITEM "In&verti maiuscole/minuscole\tCtrl+Alt+U",    IDM_EDIT_INVERTCASE
+            MENUITEM "&Title Case\tCtrl+Alt+I",     IDM_EDIT_TITLECASE
             MENUITEM "&Sentence Case\tCtrl+Alt+O",  IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "&Tabify Selection\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify Selection\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "Spazi -> Ta&b\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
+            MENUITEM "Tab -> Spa&zi\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Ta&bify Indent\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untabi&fy Indent\tCtrl+Alt+S", IDM_EDIT_CONVERTTABS2
+            MENUITEM "Indentazione: Spazi -> Ta&b\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Indentazione: Tab -> Spa&zi\tCtrl+Alt+S", IDM_EDIT_CONVERTTABS2
         END
         POPUP "&Inserisci"
         BEGIN
@@ -243,7 +243,7 @@ BEGIN
         END
         POPUP "&Altro"
         BEGIN
-            MENUITEM "&Commenta riga (Toggle)\tCtrl+Q", IDM_EDIT_LINECOMMENT
+            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q", IDM_EDIT_LINECOMMENT
             MENUITEM "&Commento multi-riga\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             MENUITEM "&URL Encode\tCtrl+Shift+E",   IDM_EDIT_URLENCODE
@@ -281,7 +281,7 @@ BEGIN
             MENUITEM "Salva testo di ricerca\tAlt+F3",      IDM_EDIT_SAVEFIND
             MENUITEM "Trova successivo\tF3",              IDM_EDIT_FINDNEXT
             MENUITEM "Trova precedente\tShift+F3",    IDM_EDIT_FINDPREV
-            MENUITEM "Trova prossima selezionate\tCtrl+F3", CMD_FINDNEXTSEL
+            MENUITEM "Trova prossima selezione\tCtrl+F3", CMD_FINDNEXTSEL
             MENUITEM "Trova selezione precedente\tCtrl+Shift+F3", CMD_FINDPREVSEL
             MENUITEM "&Sostituisci...\tCtrl+H",         IDM_EDIT_REPLACE
             MENUITEM "Sostituisci successivo\tF4",           IDM_EDIT_REPLACENEXT
@@ -307,8 +307,8 @@ BEGIN
         MENUITEM "Mostra terminatori di riga\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
-        MENUITEM "Indicatori di h&yperlink\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Corrispondenza &visuale delle parentesi\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
+        MENUITEM "Evidenzia h&yperlink\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Evidenzia &parentesi corrispondente\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Evidenzia riga corrente\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&Nessuna evidenziatura",               IDM_VIEW_HILITCURLN_NONE
@@ -360,15 +360,15 @@ BEGIN
             MENUITEM "Copia i parametri di posizione\tCtrl+Shift+K", CMD_COPYWINPOS
             MENUITEM "Snap alla posizione di default\tCtrl+Shift+P", CMD_DEFAULTWINPOS
             MENUITEM "Salva come posizione di default",    CMD_SAVEASDEFWINPOS
-            MENUITEM "Pulisci la posizione di default salvata", CMD_CLEARSAVEDWINPOS
+            MENUITEM "Azzera la posizione di default salvata", CMD_CLEARSAVEDWINPOS
             MENUITEM "Snap alla posizione iniziale\tCtrl+F11", CMD_INITIALWINPOS
-            MENUITEM "Alterna la posizione Full Area\tF11", CMD_FULLSCRWINPOS
+            MENUITEM "Massimizza la finestra (Full area)\tF11", CMD_FULLSCRWINPOS
             MENUITEM "Posizione finestra ""&sticky""",     IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "&Impostazioni"
     BEGIN
-        MENUITEM "Inserisci Tabs come &Spazi",      IDM_VIEW_TABSASSPACES
+        MENUITEM "Inserisci Tab come &Spazi",      IDM_VIEW_TABSASSPACES
         MENUITEM "Impostazioni &Tab...\tCtrl+T",    IDM_VIEW_TABSETTINGS
         MENUITEM "Impostazioni &A capo automatico...",      IDM_VIEW_WORDWRAPSETTINGS
         MENUITEM "Impostazioni &Righe lunghe...",      IDM_VIEW_LONGLINESETTINGS
