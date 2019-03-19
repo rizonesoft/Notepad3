@@ -30,15 +30,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.314.build (2019-Mar-14)
+Current Version 5.19.318.build (2019-Mar-18)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
 
-- Add Theme Menu to load exported styles "on the fly (e.g.: "dark theme")
-- Add: dark scheme for 2nd default text
+- Add Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
+- Add: Factory Default, Standard Settings, Dark Theme mode
 - Add a timer of 3.2 second to the Zoom Info Bubble
 
 - Add (internal) [Settings2] to control encoding detection
@@ -94,6 +94,7 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------
 
+- Indentation warning dialog
 - Reworked: Consistent EOL and Indentation checks
 
 - Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
@@ -116,6 +117,7 @@ REMOVED:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
+- Polish (it-IT) Translation (In progress)
 - Hungarian (hu-HU) Translation (In progress)
 - Italian (it-IT) Translation (Partial)
 - Korean (UHC) Translation

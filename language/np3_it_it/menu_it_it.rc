@@ -90,10 +90,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Forza il rilevamento compatto dell'Encoding", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "Ricodifica ad Encoding di &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "Ricodifica ad &ANSI\tCtrl-Shift+A", CMD_RECODEANSI
-            MENUITEM "Ricodifica ad &OEM\tCtrl+Shift+O", CMD_RECODEOEM
-            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM "Ricodifica con Encoding di &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
+            MENUITEM "Ricodifica come &ANSI\tCtrl-Shift+A", CMD_RECODEANSI
+            MENUITEM "Ricodifica come &OEM\tCtrl+Shift+O", CMD_RECODEOEM
+            MENUITEM "Ricodifica come &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
             MENUITEM SEPARATOR
             MENUITEM "ASCII come UTF-&8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
             MENUITEM "Ignora Encoding &Tags\tAlt+F8", CMD_RELOADNOFILEVARS
@@ -110,7 +110,7 @@ BEGIN
             MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM "Controlla &Indentazione..."                    CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Impos&tazione pagina...",              IDM_FILE_PAGESETUP
         MENUITEM "Stam&pa...\tCtrl+P",           IDM_FILE_PRINT
@@ -344,9 +344,9 @@ BEGIN
         POPUP "&Toolbar"
         BEGIN
             MENUITEM "Mostra Tool&bar",               IDM_VIEW_TOOLBAR
-            MENUITEM "Icone grandi nella Toolbar",             IDM_VIEW_TOGGLETB
+            MENUITEM "Icone &grandi nella Toolbar",             IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Carica Tema Toolbar...",      IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostra Barra di &Stato",             IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -464,9 +464,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "Tasti grandi nella Toolbar",             IDM_VIEW_TOGGLETB
+        MENUITEM "Tasti &grandi nella Toolbar",             IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Carica Tema Toolbar...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "Mostra &Barra di stato",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"

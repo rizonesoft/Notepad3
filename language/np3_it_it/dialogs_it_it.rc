@@ -100,7 +100,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&Trova il prossimo",IDOK,211,7,55,14
     PUSHBUTTON      "Trova il &Precedente",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Chiudi",IDCANCEL,212,99,54,14
+    PUSHBUTTON      "Chiudi",IDCANCEL,211,99,55,14
     CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
@@ -220,7 +220,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Vai a"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Linea:",IDC_LINE_TEXT,7,8,101,8
+    LTEXT           "&Riga:",IDC_LINE_TEXT,7,8,101,8
     EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
     LTEXT           "&Colonna:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
@@ -470,7 +470,7 @@ BEGIN
     PUSHBUTTON      "Annulla",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Numero di linea del documento.",IDC_STATIC,57,72,74,8
+    LTEXT           "Numero di riga del documento.",IDC_STATIC,57,72,74,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
     LTEXT           "Numerazione continua.",IDC_STATIC,57,82,66,8
