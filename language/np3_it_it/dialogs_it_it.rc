@@ -79,73 +79,74 @@ BEGIN
     EDITTEXT        IDC_CMDLINEHELP,15,7,278,176,ES_MULTILINE | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
 
-IDD_MUI_FIND DIALOGEX 0, 0, 273, 142
+IDD_MUI_FIND DIALOGEX 0, 0, 290, 142
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Trova testo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Cerca:",IDC_STATIC,7,7,46,8
-    COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Stringa di ri&cerca:",IDC_STATIC,7,7,66,8
+    COMBOBOX        IDC_FINDTEXT,7,17,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Case-sensitive",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
-    CONTROL         "Solo parole &intere",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
+    CONTROL         "Solo parole &intere",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,90,10
     CONTROL         "Solo l'&inizio della parola",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Trasforma backslash",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
     CONTROL         "Ricerca Regular &Expression",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         """."" corrisponde a &tutto",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "C&hiudi dopo aver trovato",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Usa w&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "Il punto corrisponde a &tutto",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,95,10
+    CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,90,10
+    CONTROL         "C&hiudi dopo aver trovato",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,90,10
+    CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,90,10
+    CONTROL         "Ricerca con w&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,72,10
     CONTROL         "Trasparente quando inattiva",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
-    DEFPUSHBUTTON   "Successivo &>",IDOK,211,7,55,14
-    PUSHBUTTON      "&< Precedente",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Chiudi",IDCANCEL,211,99,55,14
+    DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
+    PUSHBUTTON      "&< Precedente",IDC_FINDPREV,221,24,63,14
+    PUSHBUTTON      "Chiudi",IDCANCEL,221,99,63,14
     CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
-    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
-    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
-    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Focused &View",IDC_TOGGLE_VISIBILITY,211,65,55,14
+    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,73,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,201,85,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,277,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "&Visualiz. focalizzata",IDC_TOGGLE_VISIBILITY,221,65,63,14
 END
 
-IDD_MUI_REPLACE DIALOGEX 0, 0, 273, 168
+IDD_MUI_REPLACE DIALOGEX 0, 0, 290, 168
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sostituisci Testo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Cerca:",IDC_STATIC,7,7,46,8
-    COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Sostituisci con:",IDC_STATIC,7,36,44,8
-    COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Stringa da &cercare:",IDC_STATIC,7,7,66,8
+    COMBOBOX        IDC_FINDTEXT,7,17,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Sostituisci con:",IDC_STATIC,7,36,54,8
+    COMBOBOX        IDC_REPLACETEXT,7,47,202,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Case-sensitive",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
-    CONTROL         "Solo parole &intere",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
+    CONTROL         "Solo parole &intere",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,90,10
     CONTROL         "Solo l'&inizio della parola",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "&Trasforma backslash",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
+    CONTROL         "&Trasforma backslash",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,90,10
     CONTROL         "Ricerca &Regular Expression",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         """."" corrisponde a &tutto",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "C&hiudi dopo sostituzione",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Usa w&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "Il punto corrisponde a &tutto",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,95,10
+    CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,90,10
+    CONTROL         "C&hiudi dopo sostituzione",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,90,10
+    CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,90,10
+    CONTROL         "Ricerca con w&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,72,10
     CONTROL         "Trasparente quando inattiva",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "Successivo &>",IDOK,211,7,55,14
-    PUSHBUTTON      "&< Precedente",IDC_FINDPREV,211,23,55,14
-    PUSHBUTTON      "&Sostituisci",IDC_REPLACE,211,43,55,14
-    PUSHBUTTON      "Nella &Selezione",IDC_REPLACEINSEL,211,59,55,14
-    PUSHBUTTON      "Sostituisci &Tutto",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Scambia",IDC_SWAPSTRG,150,32,49,12
-    PUSHBUTTON      "Chiudi",IDCANCEL,211,126,55,14
+    DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
+    PUSHBUTTON      "&< Precedente",IDC_FINDPREV,221,23,63,14
+    PUSHBUTTON      "&Sostituisci",IDC_REPLACE,221,43,63,14
+    PUSHBUTTON      "Nella &Selezione",IDC_REPLACEINSEL,221,59,63,14
+    PUSHBUTTON      "Sostituisci &Tutto",IDC_REPLACEALL,221,75,63,14
+    PUSHBUTTON      "Scambia stringhe",IDC_SWAPSTRG,150,32,59,12
+    PUSHBUTTON      "Chiudi",IDCANCEL,221,126,63,14
     CONTROL         "<a>Vai a Cerca (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
-    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Focused &View",IDC_TOGGLE_VISIBILITY,211,94,55,14
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,201,114,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,277,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "&Visualiz. focalizzata",IDC_TOGGLE_VISIBILITY,221,94,63,14
 END
+
 
 IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -167,7 +168,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Clicca qui per specificare la cartella con i link alle tue applicazioni preferite.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Clicca qui per specificare la cartella con i collegamenti alle tue applicazioni preferite.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -354,7 +355,7 @@ CAPTION "Impostazione pagina"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Carta",1073,8,8,224,56,WS_GROUP
-    LTEXT           "Dimensione:",1089,16,24,36,8
+    LTEXT           "Dimensione:",1089,16,24,40,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Sorgente:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
@@ -362,18 +363,18 @@ BEGIN
     CONTROL         "P&ortrait",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
     CONTROL         "L&andscape",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
     GROUPBOX        "Margini",1075,80,69,152,56,WS_GROUP
-    LTEXT           "&Sinistro:",1102,88,85,32,8
+    LTEXT           "&Sinistro:",1102,86,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
     LTEXT           "&Destro:",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
-    LTEXT           "&Superiore:",1104,88,104,32,8
+    LTEXT           "&Superiore:",1104,86,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
     LTEXT           "&Inferiore:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
     GROUPBOX        "Intestazioni e Pié di pagina",1074,8,130,224,56,WS_GROUP
-    LTEXT           "&Intestazione:",IDC_STATIC,16,146,36,8
+    LTEXT           "&Intestazione:",IDC_STATIC,16,146,40,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Pié di pagina:",IDC_STATIC,16,167,36,8
+    LTEXT           "&Pié di pagina:",IDC_STATIC,16,167,45,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Stampa a colori",1076,8,191,224,37,WS_GROUP
     LTEXT           "Mo&de:",IDC_STATIC,16,207,36,8
@@ -398,7 +399,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Clicca qui per specificare la cartella con i link ai tuoi file preferiti.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Clicca qui per specificare la cartella con i collegamenti ai tuoi file preferiti.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
