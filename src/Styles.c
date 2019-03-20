@@ -249,8 +249,10 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   HMENU hmenuThemes = CreatePopupMenu();
   int const pos = GetMenuItemCount(hMenuBar) - 1;
 
+  GetLngString(IDM_THEMES_DEFAULT, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
   AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[0].rid, Theme_Files[0].szName);
-  
+
+  GetLngString(IDM_THEMES_FILE_ITEM, Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName));
   AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[1].rid, Theme_Files[1].szName);
 
   for (unsigned i = 2; i < ThemeItems_CountOf(); ++i)

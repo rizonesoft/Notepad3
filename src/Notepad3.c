@@ -441,7 +441,7 @@ static void _InitGlobals()
   Globals.iAvailLngCount = 1;
   Globals.iWrapCol = 0;
   Globals.bCodeFoldingAvailable = false;
-  Globals.bForceLoadASCIIasUTF8 = false;
+  Globals.bForceReLoadAsUTF8 = false;
   Globals.DOSEncoding = CPI_NONE;
   Globals.bZeroBasedColumnIndex = false;
   Globals.bZeroBasedCharacterCount = false;
@@ -5488,10 +5488,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
         {
-          Globals.bForceLoadASCIIasUTF8 = true;
+          Globals.bForceReLoadAsUTF8 = true;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-          Globals.bForceLoadASCIIasUTF8 = false;
+          Globals.bForceReLoadAsUTF8 = false;
         }
       }
       break;
@@ -5501,7 +5501,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     {
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) 
       {
-        Globals.bForceLoadASCIIasUTF8 = false;
+        Globals.bForceReLoadAsUTF8 = false;
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
         FileLoad(false, false, true, false, false, true, tchMaxPathBuffer);
       }

@@ -302,7 +302,7 @@ typedef struct _globals_t
   int       iWrapCol;
 
   bool      bCodeFoldingAvailable;
-  bool      bForceLoadASCIIasUTF8;
+  bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;

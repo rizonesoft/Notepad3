@@ -74,9 +74,9 @@ constexpr int GetFontSizeZoomed(int size, int zoomLevel) noexcept {
 class ColourOptional : public ColourDesired {
 public:
 	bool isSet;
-	ColourOptional(ColourDesired colour_=ColourDesired(0,0,0), bool isSet_=false) : ColourDesired(colour_), isSet(isSet_) {
+	ColourOptional(ColourDesired colour_=ColourDesired(0,0,0), bool isSet_=false) noexcept : ColourDesired(colour_), isSet(isSet_) {
 	}
-	ColourOptional(uptr_t wParam, sptr_t lParam) : ColourDesired(static_cast<int>(lParam)), isSet(wParam != 0) {
+	ColourOptional(uptr_t wParam, sptr_t lParam) noexcept : ColourDesired(static_cast<int>(lParam)), isSet(wParam != 0) {
 	}
 };
 
@@ -88,10 +88,10 @@ struct ForeBackColours {
 struct EdgeProperties {
 	int column;
 	ColourDesired colour;
-	EdgeProperties(int column_ = 0, ColourDesired colour_ = ColourDesired(0)) :
+	EdgeProperties(int column_ = 0, ColourDesired colour_ = ColourDesired(0)) noexcept :
 		column(column_), colour(colour_) {
 	}
-	EdgeProperties(uptr_t wParam, sptr_t lParam) :
+	EdgeProperties(uptr_t wParam, sptr_t lParam) noexcept :
 		column(static_cast<int>(wParam)), colour(static_cast<int>(lParam)) {
 	}
 };

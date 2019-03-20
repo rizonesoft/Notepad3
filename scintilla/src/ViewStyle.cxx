@@ -27,8 +27,6 @@
 #include "Style.h"
 #include "ViewStyle.h"
 
-#define CARETSTYLE_INS_MASK 0xF
-
 using namespace Scintilla;
 
 MarginStyle::MarginStyle(int style_, int width_, int mask_) :
