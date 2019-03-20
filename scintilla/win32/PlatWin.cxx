@@ -2797,9 +2797,7 @@ void ListBoxX::ResizeToCursor() {
 	PRectangle rc = GetPosition();
 	POINT ptw;
 	::GetCursorPos(&ptw);
-	Point pt = Point::FromInts(ptw.x, ptw.y);
-	pt.x += dragOffset.x;
-	pt.y += dragOffset.y;
+	const Point pt = Point::FromInts(ptw.x, ptw.y) + dragOffset;
 
 	switch (resizeHit) {
 		case HTLEFT:

@@ -1150,13 +1150,9 @@ slop | strict | jumps | even | Caret can go to the margin                 | When
 
 Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options) {
 	const PRectangle rcClient = GetTextRectangle();
-	Point pt = LocationFromPosition(range.caret);
-	Point ptAnchor = LocationFromPosition(range.anchor);
 	const Point ptOrigin = GetVisibleOriginInMain();
-	pt.x += ptOrigin.x;
-	pt.y += ptOrigin.y;
-	ptAnchor.x += ptOrigin.x;
-	ptAnchor.y += ptOrigin.y;
+	const Point pt = LocationFromPosition(range.caret) + ptOrigin;
+	const Point ptAnchor = LocationFromPosition(range.anchor) + ptOrigin;
 	const Point ptBottomCaret(pt.x, pt.y + vs.lineHeight - 1);
 
 	XYScrollPosition newXY(xOffset, topLine);
@@ -4176,9 +4172,10 @@ void Editor::GoToLine(Sci::Line lineNo) {
 }
 
 static bool Close(Point pt1, Point pt2, Point threshold) noexcept {
-	if (std::abs(pt1.x - pt2.x) > threshold.x)
+	const Point ptDifference = pt2 - pt1;
+	if (std::abs(ptDifference.x) > threshold.x)
 		return false;
-	if (std::abs(pt1.y - pt2.y) > threshold.y)
+	if (std::abs(ptDifference.y) > threshold.y)
 		return false;
 	return true;
 }
@@ -4268,9 +4265,8 @@ void Editor::DisplayCursor(Window::Cursor c) {
 }
 
 bool Editor::DragThreshold(Point ptStart, Point ptNow) {
-	const XYPOSITION xMove = ptStart.x - ptNow.x;
-	const XYPOSITION yMove = ptStart.y - ptNow.y;
-	const XYPOSITION distanceSquared = xMove * xMove + yMove * yMove;
+	const Point ptDiff = ptStart - ptNow;
+	const XYPOSITION distanceSquared = ptDiff.x * ptDiff.x + ptDiff.y * ptDiff.y;
 	return distanceSquared > 16.0f;
 }
 
@@ -4750,7 +4746,7 @@ Range Editor::GetHotSpotRange() const noexcept {
 }
 
 void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
-	if ((ptMouseLast.x != pt.x) || (ptMouseLast.y != pt.y)) {
+	if (ptMouseLast != pt) {
 		DwellEnd(true);
 	}
 
