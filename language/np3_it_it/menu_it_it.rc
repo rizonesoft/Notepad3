@@ -118,7 +118,7 @@ BEGIN
         MENUITEM "Propr&ietà...",              IDM_FILE_PROPERTIES
         MENUITEM "Crea collegamento su &Desktop",        IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "S&foglia...\tCtrl+M",          IDM_FILE_BROWSE
+        MENUITEM "S&foglia... (MiniPath)\tCtrl+M",          IDM_FILE_BROWSE
         POPUP "&Preferiti"
         BEGIN
             MENUITEM "&Apri Preferiti...\tAlt+I",  IDM_FILE_OPENFAV
@@ -218,8 +218,8 @@ BEGIN
             MENUITEM "&Title Case\tCtrl+Alt+I",     IDM_EDIT_TITLECASE
             MENUITEM "&Sentence Case\tCtrl+Alt+O",  IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "Spazi -> Ta&b\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
-            MENUITEM "Tab -> Spa&zi\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "Spazi -> Ta&bulazioni\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
+            MENUITEM "Tabulazioni -> Spa&zi\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "Indentazione: Spazi -> Ta&b\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
             MENUITEM "Indentazione: Tab -> Spa&zi\tCtrl+Alt+S", IDM_EDIT_CONVERTTABS2
@@ -337,7 +337,7 @@ BEGIN
         BEGIN
             MENUITEM "Code &Folding\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
             MENUITEM "&Attiva/Disattiva Folds\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "Visualizzazione Focused\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Visualizzazione focalizzata\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Controllo log (tail)",            IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scorri oltre la fine del file (EOF)",    IDM_VIEW_SCROLLPASTEOF
         END
@@ -351,16 +351,16 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
-            MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
+            MENUITEM "&Zoom avanti\tCtrl++",            IDM_VIEW_ZOOMIN
+            MENUITEM "&Zoom indietro\tCtrl+-",           IDM_VIEW_ZOOMOUT
+            MENUITEM "Reimposta &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         END
         POPUP "&Posizione"
         BEGIN
             MENUITEM "Copia i parametri di posizione\tCtrl+Shift+K", CMD_COPYWINPOS
             MENUITEM "Snap alla posizione di default\tCtrl+Shift+P", CMD_DEFAULTWINPOS
             MENUITEM "Salva come posizione di default",    CMD_SAVEASDEFWINPOS
-            MENUITEM "Azzera la posizione di default salvata", CMD_CLEARSAVEDWINPOS
+            MENUITEM "Reimposta la posizione di default salvata", CMD_CLEARSAVEDWINPOS
             MENUITEM "Snap alla posizione iniziale\tCtrl+F11", CMD_INITIALWINPOS
             MENUITEM "Massimizza la finestra (Full area)\tF11", CMD_FULLSCRWINPOS
             MENUITEM "Posizione finestra ""&sticky""",     IDM_VIEW_STICKYWINPOS
@@ -368,8 +368,8 @@ BEGIN
     END
     POPUP "&Impostazioni"
     BEGIN
-        MENUITEM "Inserisci Tab come &Spazi",      IDM_VIEW_TABSASSPACES
-        MENUITEM "Impostazioni &Tab...\tCtrl+T",    IDM_VIEW_TABSETTINGS
+        MENUITEM "Inserisci Tabulazioni come &Spazi",      IDM_VIEW_TABSASSPACES
+        MENUITEM "Impostazioni &Tabulazioni...\tCtrl+T",    IDM_VIEW_TABSETTINGS
         MENUITEM "Impostazioni &A capo automatico...",      IDM_VIEW_WORDWRAPSETTINGS
         MENUITEM "Impostazioni &Righe lunghe...",      IDM_VIEW_LONGLINESETTINGS
         MENUITEM "In&dentazione automatica",           IDM_VIEW_AUTOINDENTTEXT
