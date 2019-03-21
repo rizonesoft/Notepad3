@@ -118,14 +118,14 @@ BEGIN
         MENUITEM "Propr&ietà...",              IDM_FILE_PROPERTIES
         MENUITEM "Crea collegamento su &Desktop",        IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "S&foglia... (MiniPath)\tCtrl+M",          IDM_FILE_BROWSE
+        MENUITEM "S&foglia... (&MiniPath)\tCtrl+M",          IDM_FILE_BROWSE
         POPUP "&Preferiti"
         BEGIN
             MENUITEM "&Apri Preferiti...\tAlt+I",  IDM_FILE_OPENFAV
             MENUITEM "Aggiungi file &corrente...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Gestisci...\tAlt+F9",          IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recenti (&History)...\tCtrl+Alt+H", IDM_FILE_RECENT
+        MENUITEM "File recenti...\tCtrl+Alt+H", IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "Esci\tAlt+F4",               IDM_FILE_EXIT
     END
@@ -300,10 +300,10 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "A capo automatico\tCtrl+W",          IDM_VIEW_WORDWRAP
-        MENUITEM "&Marcatore di riga lunga\tCtrl+Shift+L", IDM_VIEW_LONGLINEMARKER
-        MENUITEM "&Guide di indentazione\tCtrl+Shift+G", IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "&Marcatore riga lunga\tCtrl+Shift+L", IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Guide indentazione\tCtrl+Shift+G", IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Mostra i blanks\tCtrl+Shift+8",  IDM_VIEW_SHOWBLANKS
+        MENUITEM "Mostra blanks\tCtrl+Shift+8",  IDM_VIEW_SHOWBLANKS
         MENUITEM "Mostra terminatori di riga\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
@@ -390,7 +390,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Ricorda"
         BEGIN
-            MENUITEM "Ricorda i &file recenti",      IDM_VIEW_NOSAVERECENT
+            MENUITEM "Ricorda &file recenti",      IDM_VIEW_NOSAVERECENT
             MENUITEM "Ricorda posizione del c&ursore",    IDM_VIEW_NOPRESERVECARET
             MENUITEM "Ricorda argomenti della &Ricerca",    IDM_VIEW_NOSAVEFINDREPL
         END
@@ -406,7 +406,7 @@ BEGIN
             MENUITEM "&Riusa finestra",               IDM_VIEW_REUSEWINDOW
             MENUITEM "&Sempre in primo piano\tAlt+T",       IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&zza nella Tray",           IDM_VIEW_MINTOTRAY
-            MENUITEM "Modalità &Trasparente\tAlt+G",    IDM_VIEW_TRANSPARENT
+            MENUITEM "Modalità &trasparente\tAlt+G",    IDM_VIEW_TRANSPARENT
         END
         POPUP "&Tecnologia"
         BEGIN
