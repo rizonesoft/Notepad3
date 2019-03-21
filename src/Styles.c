@@ -128,8 +128,8 @@ typedef struct _themeFiles
 
 static THEMEFILES Theme_Files[] =
 {
-  { 0, L"", L"" }, // Standard
-  { 0, L"", L"" },
+  { 0, L"Default", L"" },
+  { 0, L"Standard", L"" },
   { 0, L"", L"" },
   { 0, L"", L"" },
   { 0, L"", L"" },
@@ -162,16 +162,9 @@ const WCHAR* const STYLING_THEME_NAME = L"ThemeFileName";
 
 static void _FillThemesMenuTable()
 {
-  WCHAR wchStdName[80];
-
   Theme_Files[0].rid = IDM_THEMES_DEFAULT;    // factory default
-  GetLngString(IDM_THEMES_DEFAULT, wchStdName, COUNTOF(wchStdName));
-  StringCchCopy(Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName), wchStdName);
-  StringCchCopy(Theme_Files[0].szFilePath, COUNTOF(Theme_Files[0].szFilePath), L"");
-
   Theme_Files[1].rid = IDM_THEMES_FILE_ITEM;  // NP3.ini settings
-  GetLngString(IDM_THEMES_FILE_ITEM, wchStdName, COUNTOF(wchStdName));
-  StringCchCopy(Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName), wchStdName);
+  // names are filled by Style_InsertThemesMenu()
   StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), Globals.IniFile);
 
   unsigned iTheme = 1; // Standard
@@ -249,13 +242,10 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   HMENU hmenuThemes = CreatePopupMenu();
   int const pos = GetMenuItemCount(hMenuBar) - 1;
 
-  GetLngString(IDM_THEMES_DEFAULT, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
-  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[0].rid, Theme_Files[0].szName);
+  GetLngString(Theme_Files[0].rid, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
+  GetLngString(Theme_Files[1].rid, Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName));
 
-  GetLngString(IDM_THEMES_FILE_ITEM, Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName));
-  AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[1].rid, Theme_Files[1].szName);
-
-  for (unsigned i = 2; i < ThemeItems_CountOf(); ++i)
+  for (unsigned i = 0; i < ThemeItems_CountOf(); ++i)
   {
     if (i == 2) {
       AppendMenu(hmenuThemes, MF_SEPARATOR, 0, 0);
