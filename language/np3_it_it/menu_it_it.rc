@@ -344,7 +344,7 @@ BEGIN
         POPUP "&Toolbar"
         BEGIN
             MENUITEM "Mostra Tool&bar",               IDM_VIEW_TOOLBAR
-            MENUITEM "Icone &grandi nella Toolbar",             IDM_VIEW_TOGGLETB
+            MENUITEM "Ca&mbia Toolbar",             IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Carica Tema Toolbar...",      IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostra Barra di &Stato",             IDM_VIEW_STATUSBAR
@@ -464,7 +464,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "Tasti &grandi nella Toolbar",             IDM_VIEW_TOGGLETB
+        MENUITEM "Ca&mbia Toolbar",             IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Carica Tema Toolbar...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "Mostra &Barra di stato",             IDM_VIEW_STATUSBAR
