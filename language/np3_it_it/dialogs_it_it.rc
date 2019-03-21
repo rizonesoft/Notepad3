@@ -264,9 +264,9 @@ CAPTION "Seleziona Schema"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
-    CONTROL         "Imposta lo Schema selezionato come &default.",IDC_DEFAULTSCHEME,
+    CONTROL         "Imposta Schema come &default.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,118,10
-    CONTROL         "&Seleziona automaticamente in base all'estensione.",IDC_AUTOSELECT,
+    CONTROL         "&Automatico in base a estensione.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Annulla",IDCANCEL,108,113,50,14

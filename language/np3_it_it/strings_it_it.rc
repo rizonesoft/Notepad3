@@ -71,8 +71,8 @@ BEGIN
     IDT_EDIT_FIND           "Trova"
     IDT_EDIT_REPLACE        "Sostituisci"
     IDT_VIEW_WORDWRAP       "A capo automatico"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
+    IDT_VIEW_ZOOMIN         "Zoom avanti"
+    IDT_VIEW_ZOOMOUT        "Zoom indietro"
     IDT_VIEW_SCHEME         "Seleziona Schema"
     IDT_VIEW_SCHEMECONFIG   "Personalizza Schemi"
     IDT_FILE_EXIT           "Esci"
@@ -82,13 +82,13 @@ BEGIN
     IDT_FILE_PRINT          "Stampa"
     IDT_FILE_OPENFAV        "Preferiti"
     IDT_FILE_ADDTOFAV       "Aggiungi ai Preferiti"
-    IDT_VIEW_TOGGLEFOLDS    "Attiva/Disattiva Folding"
+    IDT_VIEW_TOGGLEFOLDS    "Attiva/disattiva Folding"
 END
 
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH         "Esegui documento"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
+    IDT_VIEW_TOGGLE_VIEW    "Vista focalizzata"
     IDT_VIEW_CHASING_DOCTAIL "Rileva modifiche Log (Tail)"
 END
 
