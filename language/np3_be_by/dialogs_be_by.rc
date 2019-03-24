@@ -193,8 +193,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,125,10
     CONTROL         "Не вызначаць кодавую старонку &ANSI",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,147,10
-    CONTROL         "Не вызначаць &UNICODE",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,96,10
+    CONTROL         "Не вызначаць &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,96,10
     DEFPUSHBUTTON   "OK",IDOK,101,151,50,14
     PUSHBUTTON      "Скасаваць",IDCANCEL,154,151,50,14
 END
@@ -942,13 +941,12 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 193
     END
-
 END
 #endif    // APSTUDIO_INVOKED
 
-
 #endif    // Belarusian (Belarus) resources
 /////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef APSTUDIO_INVOKED
@@ -960,5 +958,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
 

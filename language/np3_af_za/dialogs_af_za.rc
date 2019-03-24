@@ -96,7 +96,8 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,65,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,73,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
     PUSHBUTTON      "Maak toe",IDCANCEL,221,99,55,14
@@ -192,8 +193,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
     CONTROL         "Slaan &ANSI-kode opsporing oor.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
-    CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
+    CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,140,151,50,14
 END
