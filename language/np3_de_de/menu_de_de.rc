@@ -189,40 +189,40 @@ BEGIN
                 MENUITEM "&Einfache Anführungszeichen\tCtrl+1", CMD_STRINGIFY
                 MENUITEM "&Doppelte Anführungszeichen\tCtrl+2", CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                         CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                         CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                         CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "&Backticks\tCtrl+6",                  CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "Umschließe &mit...\tAlt+Q",       IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "Umschließe &mit...\tAlt+Q",           IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Dupliziere Auswahl/Zeile\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Dupliziere Auswahl/Zeile\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Fülle mit Leerzeichen\tAlt+B",       IDM_EDIT_PADWITHSPACES
-            MENUITEM "&Entferne ersten Buchstaben\tAlt+Z",  IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Entferne letzten &Buchstaben\tAlt+U", IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "&Fülle mit Leerzeichen\tAlt+B",           IDM_EDIT_PADWITHSPACES
+            MENUITEM "&Entferne ersten Buchstaben\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Entferne letzten &Buchstaben\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Entferne &anhängende Leerzeichen\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Vereinige &Leerzeichen\tAlt+P",       IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Vereinige &Leerzeichen\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Numeriere Zeilen...\tAlt+M",         IDM_EDIT_MODIFYLINES
-            MENUITEM "&Zeilen &ausrichten...\tAlt+J",       IDM_EDIT_ALIGN
-            MENUITEM "&Sortiere Zeilen...\tAlt+O",          IDM_EDIT_SORTLINES
+            MENUITEM "&Numeriere Zeilen...\tAlt+M",             IDM_EDIT_MODIFYLINES
+            MENUITEM "&Zeilen &ausrichten...\tAlt+J",           IDM_EDIT_ALIGN
+            MENUITEM "&Sortiere Zeilen...\tAlt+O",              IDM_EDIT_SORTLINES
         END
         POPUP "&Konvertiere"
         BEGIN
-            MENUITEM "&Großbuchstaben\tCtrl+Shift+U",       IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Kleinbuchstaben\tCtrl+U",            IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "&Großbuchstaben\tCtrl+Shift+U",           IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&Kleinbuchstaben\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
             MENUITEM "&Inveriere Groß- und Kleinbuchstaben\tCtrl+Alt+U", IDM_EDIT_INVERTCASE
-            MENUITEM "&Nur Großbuchstaben\tCtrl+Alt+I",     IDM_EDIT_TITLECASE
-            MENUITEM "&Satz Großschreibung\tCtrl+Alt+O",    IDM_EDIT_SENTENCECASE
+            MENUITEM "&Nur Großbuchstaben\tCtrl+Alt+I",                  IDM_EDIT_TITLECASE
+            MENUITEM "&Satz Großschreibung\tCtrl+Alt+O",                 IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "Leerzeichen zu &Tabulatoren\tCtrl+Shift+T",       IDM_EDIT_CONVERTSPACES
-            MENUITEM "Tabulatoren zu &Leerzeichen\tCtrl+Shift+S",       IDM_EDIT_CONVERTTABS
+            MENUITEM "Leerzeichen zu &Tabulatoren\tCtrl+Shift+T",        IDM_EDIT_CONVERTSPACES
+            MENUITEM "Tabulatoren zu &Leerzeichen\tCtrl+Shift+S",        IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Mittels Tabulatoren einrücken\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Mittels Leerzeichen einrücken\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "Mittels Tabulatoren einrücken\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Mittels Leerzeichen einrücken\tCtrl+Alt+S",       IDM_EDIT_CONVERTTABS2
         END
         POPUP "&Einfügen"
         BEGIN
