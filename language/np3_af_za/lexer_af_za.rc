@@ -159,10 +159,6 @@ BEGIN
     IDS_LEX_2ND_X_SPC              "2de Ekstra Lynspasie (Grootte)"
     IDS_LEX_STD_BKMRK              "Boekmerke en Voue (Kleure, Grootte)"
     IDS_LEX_2ND_BKMRK              "2de Boekmerke en Voue (Kleure, Grootte)"
-END
-    
-STRINGTABLE
-BEGIN
     IDS_LEX_STR_63126              "Verstek"
     IDS_LEX_STR_63127              "Kommentaar"
     IDS_LEX_STR_63128              "Trefwoord"
@@ -432,11 +428,11 @@ BEGIN
     IDS_LEX_STR_63340       "Standaard Tipe"
     IDS_LEX_STR_63341       "Woord"
     IDS_LEX_STR_63342       "Verbatim"
+    IDS_LEX_STR_63343       "Ingeboude Tipe"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63343       "Ingeboude Tipe"
     IDS_LEX_STR_63344       "Byte String"
     IDS_LEX_STR_63345       "Ander Trefwoord"
     IDS_LEX_STR_63346       "Rust Lewensduur"
@@ -453,6 +449,7 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
+
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -462,3 +459,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+

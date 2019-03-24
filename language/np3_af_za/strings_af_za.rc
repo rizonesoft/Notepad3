@@ -54,149 +54,176 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW                 "Nuwe"
-    IDT_FILE_OPEN                "Oop"
-    IDT_FILE_BROWSE              "Snuffel"
-    IDT_FILE_SAVE                "Stoor"
-    IDT_EDIT_UNDO                "Maak Ongedaan"
-    IDT_EDIT_REDO                "Doen Oor"
-    IDT_EDIT_CUT                 "Sny"
-    IDT_EDIT_COPY                "Kopie"
-    IDT_EDIT_PASTE               "Plak"
-    IDT_EDIT_FIND                "Vind"
-    IDT_EDIT_REPLACE             "Vervang"
-    IDT_VIEW_WORDWRAP            "Woordomslag"
-    IDT_VIEW_ZOOMIN              "Inzoem"
-    IDT_VIEW_ZOOMOUT             "Uitzoem"
-    IDT_VIEW_SCHEME              "Kies Skema"
-    IDT_VIEW_SCHEMECONFIG        "Pas Skemas Aan"
-    IDT_FILE_EXIT                "Uitgang"
-    IDT_FILE_SAVEAS              "Stoor As"
-    IDT_FILE_SAVECOPY            "Stoor Kopie"
-    IDT_EDIT_CLEAR               "Verwyder"
-    IDT_FILE_PRINT               "Druk"
-    IDT_FILE_OPENFAV             "Gunstelinge"
-    IDT_FILE_ADDTOFAV            "Voeg by Gunstelinge"
-    IDT_VIEW_TOGGLEFOLDS         "Wissel Voue"
-    IDT_FILE_LAUNCH              "Voer Dokument Uit"
-    IDT_VIEW_TOGGLE_VIEW         "Gefokusde Aansig"
-    IDT_VIEW_CHASING_DOCTAIL     "Doc Tail Chasing"
+    IDT_FILE_NEW            "Nuwe"
+    IDT_FILE_OPEN           "Oop"
+    IDT_FILE_BROWSE         "Snuffel"
+    IDT_FILE_SAVE           "Stoor"
+    IDT_FILE_RECENT         "History"
+    IDT_EDIT_UNDO           "Maak Ongedaan"
+    IDT_EDIT_REDO           "Doen Oor"
+    IDT_EDIT_CUT            "Sny"
+    IDT_EDIT_COPY           "Kopie"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE             "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED    "%s (Administrateur)"
-    IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3 : Knipbord"
-    IDS_MUI_UNTITLED             "Ongetiteld"
-    IDS_MUI_TITLEEXCERPT         """%s"""
-    IDS_MUI_READONLY             "(Lees Net)"
-    IDS_MUI_LOADFILE             "Laai ""%s""..."
-    IDS_MUI_SAVEFILE             "Stoor ""%s""..."
-    IDS_MUI_PRINTFILE            "Print Bladsy %i..."
-    IDS_MUI_SAVINGSETTINGS       "Stoor Stellings..."
-    IDS_MUI_LINKDESCRIPTION      "Redigeer met Notepad3"
-    IDS_MUI_FILTER_ALL           "Alle lêers (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE           "Uitvoerbare lêers (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI           "Konfigurasie lêers (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP        "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH             "Kies die gids met skakels na jou gunsteling programme."
-    IDS_MUI_FAVORITES            "Kies die gids met skakels na jou gunsteling lêers."
-    IDS_MUI_BACKSLASHHELP        "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP           "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP         "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDT_EDIT_PASTE          "Plak"
+    IDT_EDIT_FIND           "Vind"
+    IDT_EDIT_REPLACE        "Vervang"
+    IDT_VIEW_WORDWRAP       "Woordomslag"
+    IDT_VIEW_ZOOMIN         "Inzoem"
+    IDT_VIEW_ZOOMOUT        "Uitzoem"
+    IDT_VIEW_SCHEME         "Kies Skema"
+    IDT_VIEW_SCHEMECONFIG   "Pas Skemas Aan"
+    IDT_FILE_EXIT           "Uitgang"
+    IDT_FILE_SAVEAS         "Stoor As"
+    IDT_FILE_SAVECOPY       "Stoor Kopie"
+    IDT_EDIT_CLEAR          "Verwyder"
+    IDT_FILE_PRINT          "Druk"
+    IDT_FILE_OPENFAV        "Gunstelinge"
+    IDT_FILE_ADDTOFAV       "Voeg by Gunstelinge"
+    IDT_VIEW_TOGGLEFOLDS    "Wissel Voue"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE        "Kon nie ""%s"" laai nie."
-    IDS_MUI_ERR_SAVEFILE        "Kon nie ""%s"" stoor nie."
-    IDS_MUI_ERR_BROWSE          "Geen lêerblaaier plugin is gevind nie.\nDie MiniPath-lêerblaaier plugin kan afgelaai word vanaf https://www.rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG          "Geen toegang tot die gekose lêer nie!\nWil jy dit uit die lys verwyder?"
-    IDS_MUI_ERR_CREATELINK      "Kon nie die Desktop skakel skep nie."
-    IDS_MUI_ERR_PREVWINDISABLED "Bestaande Notepad3-venster is besig of het 'n aktiewe dialoog.\nWil jy 'n ander Notepad3-venster oopmaak?"
-    IDS_MUI_ERR_ENCODINGNA      "Kodeblad-omskakelingstabelle vir die geselekteerde enkodering is nie op u stelsel beskikbaar nie."
-    IDS_MUI_ERR_UNICODE         "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
-    IDS_MUI_ERR_BITMAP          "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
-    IDS_MUI_ERR_ADMINEXE        "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
-    IDS_MUI_ERR_ACCESSDENIED    "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nWil u Notepad as Administrateur begin?"
-    IDS_MUI_ERR_UNICODE2        "Sekere karakters in die huidige teks word nie deur die geselekteerde enkodering ondersteun nie, en kan vervang word deur standaard plekhouers wanneer hulle gestoor word. Dit word aanbeveel om 'n ander lêer kodering te kies. Gaan voort?"
-    IDS_MUI_ERR_DROP            "Slegs een lêer kan op dieselfde tyd laat val word!"
-    IDS_MUI_WARN_LOAD_BIG_FILE  "Is jy seker jy wil hierdie groot lêer oopmaak?"
-    IDS_MUI_WARN_UNKNOWN_EXT    "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
-    IDS_MUI_INDENT_CONSISTENT   "The file has a consistent indentation!"
-    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
-    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
+    IDT_FILE_LAUNCH         "Voer Dokument Uit"
+    IDT_VIEW_TOGGLE_VIEW    "Gefokusde Aansig"
+    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT             "Hierdie operasie kan nie binne 'n reghoekige seleksie uitgevoer word nie."
-    IDS_MUI_BUFFERTOOSMALL      "Hierdie operasie kan nie uitgevoer word nie (lyne te lank)."
-    IDS_MUI_FIND_WRAPFW         "Het die einde van die dokument bereik en begin die soektog weer vanaf die begin."
-    IDS_MUI_FIND_WRAPRE         "Het die begin van die dokument bereik en begin die soektog weer vanaf die einde."
-    IDS_MUI_NOTFOUND            "Die gespesifiseerde teks is nie gevind nie."
-    IDS_MUI_REPLCOUNT           "%i voorkomste van die gespesifiseerde teks is vervang."
-    IDS_MUI_ASK_ENCODING        "As u die lêer kodering van een kodering na 'n ander skuif, kan u nie-ondersteunde teks vervang met verstek karakters, en die ongedaan geskiedenis sal skoongemaak word. Gaan aan?"
-    IDS_MUI_ASK_ENCODING2       "Jy is op die punt om die kodering van 'n leë lêer te verander. Let daarop dat dit die geskiedenis ongedaan maak, aangesien dit nie met die nuwe enkodering gesinkroniseer kan word nie. Gaan aan?"
-    IDS_MUI_READONLY_SAVE       """%s"" is beskermd. Stoor na 'n ander lêer?"
-    IDS_MUI_FILECHANGENOTIFY    "Die huidige lêer is gewysig deur 'n eksterne program. Herlaai?"
-    IDS_MUI_FILECHANGENOTIFY2   "Die huidige lêer is verwyder. Stoor nou?"
-    IDS_MUI_STICKYWINPOS        "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
-    IDS_MUI_SAVEDSETTINGS       "Die huidige program instellings is gestoor."
-    IDS_MUI_CREATEINI_FAIL      "Kon nie konfigurasielêer skep nie."
-    IDS_MUI_WRITEINI_FAIL       "Kon nie instellings na konfigurasielêer skryf nie."
-    IDS_MUI_SETTINGSNOTSAVED    "Geen bestaande konfigurasielêer is gevind nie.\nOm jou stylwysigings te hou, stoor instellings nou (F7) of gaan terug na skemakonfigurasie (Ctrl + F12) en voer jou styl uit."
-    IDS_MUI_EXPORT_FAIL         "Kon nie stylinstellings uitvoer na ""%s""."
-    IDS_MUI_REGEX_INVALID       "Kon nie regular expression evalueer nie. Expression is ongeldig!"
-    IDS_MUI_DROP_NO_FILE        "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."
+    IDS_MUI_APPTITLE        "Notepad3"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Administrateur)"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Knipbord"
+    IDS_MUI_UNTITLED        "Ongetiteld"
+    IDS_MUI_TITLEEXCERPT    """%s"""
+    IDS_MUI_READONLY        "(Lees Net)"
+    IDS_MUI_LOADFILE        "Laai ""%s""..."
+    IDS_MUI_SAVEFILE        "Stoor ""%s""..."
+    IDS_MUI_PRINTFILE       "Print Bladsy %i..."
+    IDS_MUI_SAVINGSETTINGS  "Stoor Stellings..."
+    IDS_MUI_LINKDESCRIPTION "Redigeer met Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE            "Stoor veranderinge na ""%s""?"
-    IDS_MUI_ASK_REVERT          "Herstel lêer na laaste gestoor toestand? Jou veranderinge sal verlore gaan!"
-    IDS_MUI_ASK_RECODE          "Herkodering vereis herlaai van lêer vanaf skyf, ongestoorde veranderinge sal verlore gaan!"
-    IDS_MUI_ASK_CREATE          """%s"" nie gevind nie.\nWil jy hierdie lêer skep?"
-    IDS_MUI_PRINT_HEADER        "Leêrnaam, Huidige Datum en Tyd|Leêrnaam, Huidige Datum|Leêrnaam|Los leeg"
-    IDS_MUI_PRINT_FOOTER        "Bladsynommer|Los leeg"
-    IDS_MUI_PRINT_COLOR         "Normale|Omkeerlig (donker agtergrond)|Swart op wit|Kleur op wit|Kleur op wit (behalwe lynnommers)|Skermkleure"
-    IDS_MUI_PRINT_PAGENUM       "Bladsy %i"
-    IDS_MUI_PRINT_EMPTY         "Hierdie dokument bevat nie enige teks wat gedruk moet word nie."
-    IDS_MUI_PRINT_ERROR         "Fout tydens druk van ""%s""!"
-    IDS_MUI_FAV_SUCCESS         "'n Kortpad na die huidige lêer is geskep in die gunstelinggids."
-    IDS_MUI_FAV_FAILURE         "Die snelkoppeling na die huidige lêer kon nie geskep word nie.\nMaak seker daar is geen ander lêer met dieselfde naam nie."
-    IDS_MUI_READONLY_MODIFY     "Die eienskappe van ""%s"" kon nie verander word nie."
-    IDS_MUI_SAVEPOS             "&Stoor Posisie\tCtrl+S"
-    IDS_MUI_RESETPOS            "&Herstel Posisie\tCtrl+R"
-    IDS_MUI_PREVIEW             "&Voorskou instellings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE        "Die Wagwoordfrase is verkeerd.\nProbeur 'n ander wagwoordfrase?"
-    IDS_MUI_NOPASS              "Dekripsie gekanselleer!\nLees geïnkripteerde rou data?"
+    IDS_MUI_FILTER_ALL      "Alle lêers (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Uitvoerbare lêers (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Konfigurasie lêers (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Kies die gids met skakels na jou gunsteling programme."
+    IDS_MUI_FAVORITES       "Kies die gids met skakels na jou gunsteling lêers."
+    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_STY_BASESTD         "BASIS (Standaard Styl):"
-    IDS_MUI_STY_BASE2ND         "BASIS (2de Standaard Styl):"
-    IDS_MUI_STY_LEXDEF          "%s - Standaard Styl:"
-    IDS_MUI_STY_LEXSTYLE        "%s's  Styl:"
-    IDS_MUI_TITLE_RELBASE       " +++ BASIS (%s) +++"
-    IDS_MUI_TITLE_FIXBASE       " BASIS (%s)"
-    IDS_MUI_TITLE_RELCUR        " +++ %s: %s Styl +++"
-    IDS_MUI_TITLE_FIXCUR        " %s: %s Styl"
-    IDS_MUI_TITLE_RELARB        " +++ Styl '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB        " Styl '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT      "Geassosieerde lêernaam uitbreidings:"
+    IDS_MUI_ERR_LOADFILE    "Kon nie ""%s"" laai nie."
+    IDS_MUI_ERR_SAVEFILE    "Kon nie ""%s"" stoor nie."
+    IDS_MUI_ERR_BROWSE      "Geen lêerblaaier plugin is gevind nie.\nDie MiniPath-lêerblaaier plugin kan afgelaai word vanaf https://www.rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Geen toegang tot die gekose lêer nie!\nWil jy dit uit die lys verwyder?"
+    IDS_MUI_ERR_CREATELINK  "Kon nie die Desktop skakel skep nie."
+    IDS_MUI_ERR_PREVWINDISABLED
+                            "Bestaande Notepad3-venster is besig of het 'n aktiewe dialoog.\nWil jy 'n ander Notepad3-venster oopmaak?"
+    IDS_MUI_ERR_ENCODINGNA  "Kodeblad-omskakelingstabelle vir die geselekteerde enkodering is nie op u stelsel beskikbaar nie."
+    IDS_MUI_ERR_UNICODE     "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
+    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "[af-ZA] Afrikaanse vertaling deur rizonesoft"
-    IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH      "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
+    IDS_MUI_ERR_UNICODE2    "Sekere karakters in die huidige teks word nie deur die geselekteerde enkodering ondersteun nie, en kan vervang word deur standaard plekhouers wanneer hulle gestoor word. Dit word aanbeveel om 'n ander lêer kodering te kies. Gaan voort?"
+    IDS_MUI_ERR_DROP        "Slegs een lêer kan op dieselfde tyd laat val word!"
+    IDS_MUI_ERR_ACCESSDENIED 
+                            "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nWil u Notepad as Administrateur begin?"
+    IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
+    IDS_MUI_WARN_LOAD_BIG_FILE 
+                            "Is jy seker jy wil hierdie groot lêer oopmaak?"
+    IDS_MUI_WARN_UNKNOWN_EXT 
+                            "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
+    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_SELRECT         "Hierdie operasie kan nie binne 'n reghoekige seleksie uitgevoer word nie."
+    IDS_MUI_BUFFERTOOSMALL  "Hierdie operasie kan nie uitgevoer word nie (lyne te lank)."
+    IDS_MUI_FIND_WRAPFW     "Het die einde van die dokument bereik en begin die soektog weer vanaf die begin."
+    IDS_MUI_FIND_WRAPRE     "Het die begin van die dokument bereik en begin die soektog weer vanaf die einde."
+    IDS_MUI_NOTFOUND        "Die gespesifiseerde teks is nie gevind nie."
+    IDS_MUI_REPLCOUNT       "%i voorkomste van die gespesifiseerde teks is vervang."
+    IDS_MUI_ASK_ENCODING    "As u die lêer kodering van een kodering na 'n ander skuif, kan u nie-ondersteunde teks vervang met verstek karakters, en die ongedaan geskiedenis sal skoongemaak word. Gaan aan?"
+    IDS_MUI_ASK_ENCODING2   "Jy is op die punt om die kodering van 'n leë lêer te verander. Let daarop dat dit die geskiedenis ongedaan maak, aangesien dit nie met die nuwe enkodering gesinkroniseer kan word nie. Gaan aan?"
+    IDS_MUI_READONLY_SAVE   """%s"" is beskermd. Stoor na 'n ander lêer?"
+    IDS_MUI_FILECHANGENOTIFY 
+                            "Die huidige lêer is gewysig deur 'n eksterne program. Herlaai?"
+    IDS_MUI_FILECHANGENOTIFY2 "Die huidige lêer is verwyder. Stoor nou?"
+    IDS_MUI_STICKYWINPOS    "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
+    IDS_MUI_SAVEDSETTINGS   "Die huidige program instellings is gestoor."
+    IDS_MUI_CREATEINI_FAIL  "Kon nie konfigurasielêer skep nie."
+    IDS_MUI_WRITEINI_FAIL   "Kon nie instellings na konfigurasielêer skryf nie."
+    IDS_MUI_SETTINGSNOTSAVED 
+                            "Geen bestaande konfigurasielêer is gevind nie.\nOm jou stylwysigings te hou, stoor instellings nou (F7) of gaan terug na skemakonfigurasie (Ctrl + F12) en voer jou styl uit."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_EXPORT_FAIL     "Kon nie stylinstellings uitvoer na ""%s""."
+    IDS_MUI_REGEX_INVALID   "Kon nie regular expression evalueer nie. Expression is ongeldig!"
+    IDS_MUI_DROP_NO_FILE    "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_ASK_SAVE        "Stoor veranderinge na ""%s""?"
+    IDS_MUI_ASK_REVERT      "Herstel lêer na laaste gestoor toestand? Jou veranderinge sal verlore gaan!"
+    IDS_MUI_ASK_RECODE      "Herkodering vereis herlaai van lêer vanaf skyf, ongestoorde veranderinge sal verlore gaan!"
+    IDS_MUI_ASK_CREATE      """%s"" nie gevind nie.\nWil jy hierdie lêer skep?"
+    IDS_MUI_PRINT_HEADER    "Leêrnaam, Huidige Datum en Tyd|Leêrnaam, Huidige Datum|Leêrnaam|Los leeg"
+    IDS_MUI_PRINT_FOOTER    "Bladsynommer|Los leeg"
+    IDS_MUI_PRINT_COLOR     "Normale|Omkeerlig (donker agtergrond)|Swart op wit|Kleur op wit|Kleur op wit (behalwe lynnommers)|Skermkleure"
+    IDS_MUI_PRINT_PAGENUM   "Bladsy %i"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_PRINT_EMPTY     "Hierdie dokument bevat nie enige teks wat gedruk moet word nie."
+    IDS_MUI_PRINT_ERROR     "Fout tydens druk van ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "'n Kortpad na die huidige lêer is geskep in die gunstelinggids."
+    IDS_MUI_FAV_FAILURE     "Die snelkoppeling na die huidige lêer kon nie geskep word nie.\nMaak seker daar is geen ander lêer met dieselfde naam nie."
+    IDS_MUI_READONLY_MODIFY "Die eienskappe van ""%s"" kon nie verander word nie."
+    IDS_MUI_SAVEPOS         "&Stoor Posisie\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Herstel Posisie\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Voorskou instellings\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Die Wagwoordfrase is verkeerd.\nProbeur 'n ander wagwoordfrase?"
+    IDS_MUI_NOPASS          "Dekripsie gekanselleer!\nLees geïnkripteerde rou data?"
+    IDS_MUI_STY_BASESTD     "BASIS (Standaard Styl):"
+    IDS_MUI_STY_BASE2ND     "BASIS (2de Standaard Styl):"
+    IDS_MUI_STY_LEXDEF      "%s - Standaard Styl:"
+    IDS_MUI_STY_LEXSTYLE    "%s's  Styl:"
+    IDS_MUI_TITLE_RELBASE   " +++ BASIS (%s) +++"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_TRANSL_AUTHOR   "[af-ZA] Afrikaanse vertaling deur rizonesoft"
+    IDS_MUI_TITLE_FIXBASE   " BASIS (%s)"
+    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Styl +++"
+    IDS_MUI_TITLE_FIXCUR    " %s: %s Styl"
+    IDS_MUI_TITLE_RELARB    " +++ Styl '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    " Styl '%s' (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "Geassosieerde lêernaam uitbreidings:"
+    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
+    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
+    IDS_MUI_GOTO_LINE       "Line (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN     "Column (1 - %lli):"
 END
 
 STRINGTABLE
@@ -325,6 +352,7 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
+
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -334,3 +362,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
