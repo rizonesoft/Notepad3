@@ -58,7 +58,7 @@ CAPTION "MiniPath"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,170,90,50,14
-    ICON            EM_FMTLINES,IDC_STATIC,7,7,48,48,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
+    ICON            IDR_MAINWND48,IDC_STATIC,7,7,48,48,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
     LTEXT           "",IDC_VERSION,45,7,175,12
     LTEXT           "",IDC_COPYRIGHT,45,23,175,8
     LTEXT           "",IDC_WEBPAGE2,45,26,175,8,NOT WS_VISIBLE | WS_DISABLED
@@ -66,7 +66,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,45,51,116,8
     LTEXT           "",IDC_EMAIL2,45,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,45,61,116,10
-    LTEXT           "",IDC_TRANSL_AUTH,45,78,200,8
+    LTEXT           "", IDC_TRANSL_AUTH, 45, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 238, 85
@@ -74,7 +74,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Выканаць"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            VK_NUMPAD5,IDC_STATIC,7,7,20,20
+    ICON            IDI_RUN,IDC_STATIC,7,7,20,20
     LTEXT           "Увядзіце імя праграмы, папкі, дакумента ці рэсурса інтэрнэту, якія патрэбна адкрыць.",IDC_STATIC,35,7,196,17
     EDITTEXT        IDC_COMMANDLINE,35,35,179,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,218,35,13,13
@@ -100,7 +100,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Перайсці"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            VK_NUMPAD6,IDC_STATIC,7,7,20,20
+    ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
     LTEXT           "Увядзіце імя файла ці папкі каб іх адкрыць\nальбо выберыце са спісу нядаўна наведаную папку.",IDC_STATIC,35,7,196,17
     COMBOBOX        IDC_GOTO,35,35,196,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,126,64,50,14,WS_DISABLED
@@ -169,9 +169,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Асноўныя"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            VK_NUMPAD7,IDC_STATIC,10,10,20,20
+    ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Асноўныя налады MiniPath.",IDC_STATIC,40,15,94,8
-    CONTROL         "&Адкрываць аб'екты адным клікам",IDC_SINGLECLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,131,10
+    CONTROL         "&Адкрываць аб'екты адным клікам",IDC_SINGLECLICK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,131,10
     CONTROL         "&Вылучэнне ходзіць за курсорам",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,123,10
     CONTROL         "Вылучэнне &на ўсю шырыню",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,110,10
     CONTROL         "&Задзейнічаць мэтавае акно ў час адкрыцця файла",IDC_FOCUSEDIT,
@@ -184,8 +185,7 @@ BEGIN
     CONTROL         "За&дзейнічаць ужо адкрытае акно ў час пуску MiniPath",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "Захоўваць налады &падчас выхаду",IDC_SAVESETTINGS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,134,10
+    CONTROL         "Захоўваць налады &падчас выхаду",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,134,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -193,7 +193,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Пашыраныя"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            VK_NUMPAD8,IDC_STATIC,10,10,20,20
+    ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "Пашыраныя налады MiniPath.",IDC_STATIC,40,15,160,8
     CONTROL         "Па&чатковая папка:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,81,10
     CONTROL         "&Апошняя адкрытая",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,82,10
@@ -218,7 +218,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Аб'екты"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            VK_NUMPAD9,IDC_STATIC,10,10,20,20
+    ICON            IDI_ITEMS,IDC_STATIC,10,10,20,20
     LTEXT           "Адлюстроўванне аб'ектаў у спісе.",IDC_STATIC,40,15,118,8
     GROUPBOX        "Колеры",IDC_STATIC,10,41,205,134
     LTEXT           "Выкарыстоўваць колер, калі НЯМА фільтра:",IDC_STATIC,20,54,152,8
@@ -238,7 +238,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Размяшчэнне"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            VK_MULTIPLY,IDC_STATIC,10,10,20,20
+    ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "Вызначце вонкавыя праграмы і шляхі.",IDC_STATIC,40,15,130,8
     LTEXT           "&Праграма хуткага прагляду (Ctrl+Q):",IDC_STATIC,10,41,128,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
@@ -281,7 +281,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Знайсці акно"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    ICON            VK_ADD,IDC_CROSSCURSOR,7,7,20,20,SS_CENTERIMAGE
+    ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,20,20,SS_CENTERIMAGE
     LTEXT           "Перацягніце скрыжаванне на выбранае мэтавае акно\nальбо націсніце Esc, каб скасаваць дзеянне.",IDC_STATIC,35,7,196,17
     EDITTEXT        IDC_WINTITLE,35,35,196,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE

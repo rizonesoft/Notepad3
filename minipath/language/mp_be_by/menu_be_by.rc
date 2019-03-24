@@ -81,18 +81,18 @@ BEGIN
         MENUITEM "Скін&уць фільтр",             IDM_VIEW_FILTERALL
         POPUP "Паказ&ваць"
         BEGIN
-            MENUITEM "&Папкі",                      IDM_VIEW_FOLDERS
-            MENUITEM "&Файлы",                      IDM_VIEW_FILES
-            MENUITEM "&Сістэмныя аб'екты",          IDM_VIEW_HIDDEN
+            MENUITEM "&Папкі",                  IDM_VIEW_FOLDERS
+            MENUITEM "&Файлы",                  IDM_VIEW_FILES
+            MENUITEM "&Сістэмныя аб'екты",      IDM_VIEW_HIDDEN
         END
         POPUP "&Сартаваць"
         BEGIN
-            MENUITEM "&Імя",                        IDM_SORT_NAME
-            MENUITEM "&Памер",                      IDM_SORT_SIZE
-            MENUITEM "&Тып",                        IDM_SORT_TYPE
-            MENUITEM "&Дата",                       IDM_SORT_DATE
+            MENUITEM "&Імя",                    IDM_SORT_NAME
+            MENUITEM "&Памер",                  IDM_SORT_SIZE
+            MENUITEM "&Тып",                    IDM_SORT_TYPE
+            MENUITEM "&Дата",                   IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "І&нвертаваць",                IDM_SORT_REVERSE
+            MENUITEM "І&нвертаваць",            IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
         MENUITEM "Перайсці ў а&бранае",         IDM_VIEW_FAVORITES
@@ -125,9 +125,9 @@ BEGIN
     END
 END
 
+
 #endif    // Belarusian (Belarus) resources
 /////////////////////////////////////////////////////////////////////////////
-
 
 
 #ifndef APSTUDIO_INVOKED
@@ -139,4 +139,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
