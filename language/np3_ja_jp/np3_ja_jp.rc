@@ -39,7 +39,7 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "#include ""../common_res.rc""\r\n"
     "#include ""menu_ja_jp.rc""\r\n"
@@ -54,7 +54,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Japanisch (Japan) resources
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

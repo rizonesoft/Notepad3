@@ -96,8 +96,8 @@ BEGIN
     CONTROL         "検索後に閉じる(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "単語出現マーカー(&O)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,78,10
     CONTROL         "ワイルドカード(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Transparent mode on losing focus",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "次を検索(&F)",IDOK,211,7,55,14
     PUSHBUTTON      "前へ検索(&P)",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "閉じる",IDCANCEL,211,99,55,14
@@ -129,8 +129,8 @@ BEGIN
     CONTROL         "検索後に閉じる(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "単語出現マーカー(&O)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,80,10
     CONTROL         "ワイルドカード(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
+    CONTROL         "Transparent mode on losing focus",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "次を検索(&F)",IDOK,211,7,55,14
     PUSHBUTTON      "前へ検索(&P)",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "置換し次に(&R)",IDC_REPLACE,211,43,55,14
@@ -185,15 +185,15 @@ BEGIN
     GROUPBOX        "文字コード判別: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "7-bit ASCIIはUTF-8モードで開く(&A)",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+    CONTROL         "Use &reliable detection results only.",IDC_RELIABLE_DETECTION_RES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "8-bit のnfo/dizファイルはDOS-437モードで開く(&N)",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,165,10
     CONTROL         "タグ中の文字コードの指定を解析しない(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,153,10
     CONTROL         "ANSIの判別を省略(&A)",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Unicodeの判別を省略(&U)", IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Unicodeの判別を省略(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,140,151,50,14
 END
@@ -210,7 +210,7 @@ BEGIN
     CONTROL         "保存時に改行コードを統一する(&E)",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
     CONTROL         "保存時に末尾の空白を削除する(&S)",IDC_AUTOSTRIPBLANKS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,64,173,10
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,139,24,50,14
 END
@@ -599,8 +599,8 @@ BEGIN
     CONTROL         "重複行を合併(&M)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,125,10
     CONTROL         "重複行を削除(&R)",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,125,10
     CONTROL         "それしかない行を削除(&U)",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,125,10
-    CONTROL         "空行を削除(&E)", 106, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 86, 125, 10
-    CONTROL         "空白文字の行を削除(&W)", 107, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 98, 125, 10
+    CONTROL         "空行を削除(&E)",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,125,10
+    CONTROL         "空白文字の行を削除(&W)",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,125,10
     CONTROL         "大文字/小文字を区別しない(&C)",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,127,10
     CONTROL         "論理番号で比較(&N)",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
     CONTROL         "列でソート (Altで矩形選択) (&S)",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
@@ -647,7 +647,7 @@ BEGIN
 END
 
 IDD_MUI_CHOOSEFONT DIALOGEX 0, 0, 300, 200
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_CENTER
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "フォントの選択"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
@@ -944,7 +944,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Japanisch (Japan) resources
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

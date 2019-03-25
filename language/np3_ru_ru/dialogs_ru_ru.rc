@@ -96,8 +96,8 @@ BEGIN
     CONTROL         "&Закрыть после поиска",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,92,10
     CONTROL         "Отметить в&хождения",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,89,10
     CONTROL         "&Wildcard поиск",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Transparent mode on losing focus",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "Найти &далее",IDOK,246,7,60,14
     PUSHBUTTON      "&Предыдущее",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "Закрыть",IDCANCEL,246,99,60,14
@@ -129,8 +129,8 @@ BEGIN
     CONTROL         "&Закрыть после замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
     CONTROL         "Отметить в&хождения",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,89,10
     CONTROL         "&Wildcard поиск",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,65,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
+    CONTROL         "Transparent mode on losing focus",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "Найти &далее",IDOK,246,7,60,14
     PUSHBUTTON      "&Предыдущее",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "За&менить",IDC_REPLACE,246,43,60,14

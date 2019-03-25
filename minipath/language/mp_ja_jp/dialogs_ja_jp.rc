@@ -140,7 +140,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "フォルダの作成"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT          "作成するフォルダ名を入力してください:", ,IDC_STATIC,7,7,158,8
+    LTEXT           "作成するフォルダ名を入力してください:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "キャンセル",IDCANCEL,115,45,50,14
@@ -415,7 +415,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Japanisch (Japan) resources
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
