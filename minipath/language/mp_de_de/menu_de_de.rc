@@ -26,19 +26,19 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -59,67 +59,67 @@ BEGIN
         MENUITEM "&Öffnen",                       IDM_FILE_OPEN
         MENUITEM "Öffnen &mit Alternativ-App...", IDM_FILE_OPENWITH
         MENUITEM "Sch&nell-Ansicht",              IDM_FILE_QUICKVIEW
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "&Kopiere Namen",                IDM_POP_COPYNAME
         MENUITEM "Erzeuge &Link...",              IDM_FILE_CREATELINK
         MENUITEM "&Speichern als...",             IDM_FILE_SAVEAS
         MENUITEM "Kopieren/&Bewegen...",          IDM_FILE_COPYMOVE
         MENUITEM "&Löschen...",                   IDM_FILE_DELETE
         MENUITEM "&Umbenennen...",                IDM_FILE_RENAME
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "&Starten",                      IDM_FILE_LAUNCH
         MENUITEM "&Ausführen mit Argumenten...",  IDM_FILE_RUN
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "&Eigenschaften",                IDM_FILE_PROPERTIES
-    END                                           
-    POPUP "+"                                     
-    BEGIN                                         
+    END
+    POPUP "+"
+    BEGIN
         MENUITEM "&Neue Datei...",                IDM_FILE_NEW
         MENUITEM "Neues &Verzeichnis...",         IDM_FILE_NEWDIR
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "&Datei Filter...",              IDM_VIEW_FILTER
         MENUITEM "Filter Zur&ücksetzen",          IDM_VIEW_FILTERALL
-        POPUP "&Zeige"                            
-        BEGIN                                     
+        POPUP "&Zeige"
+        BEGIN
             MENUITEM "&Verzeichnisse",            IDM_VIEW_FOLDERS
             MENUITEM "&Dateien",                  IDM_VIEW_FILES
             MENUITEM "&System Objekte",           IDM_VIEW_HIDDEN
-        END                                       
-        POPUP "S&ortieren"                        
-        BEGIN                                     
+        END
+        POPUP "S&ortieren"
+        BEGIN
             MENUITEM "nach &Name",                IDM_SORT_NAME
             MENUITEM "nach &Größe",               IDM_SORT_SIZE
             MENUITEM "nach &Typ",                 IDM_SORT_TYPE
             MENUITEM "nach &Datum",               IDM_SORT_DATE
-            MENUITEM SEPARATOR                    
+            MENUITEM SEPARATOR
             MENUITEM "&Umgekehrt",                IDM_SORT_REVERSE
-        END                                       
-        MENUITEM SEPARATOR                        
+        END
+        MENUITEM SEPARATOR
         MENUITEM "&Gehe zu Favoriten",            IDM_VIEW_FAVORITES
         MENUITEM "&Bearbeite Favoriten",          IDM_VIEW_EDITFAVORITES
         MENUITEM "&Verzeichnis...",               IDM_FILE_CHANGEDIR
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "&Zeige Laufwerke",              IDM_VIEW_DRIVEBOX
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "Spei&chere Einstellungen",      IDM_VIEW_SAVESETTINGS
         MENUITEM "Z&iel Aussuchen...",            IDM_VIEW_FINDTARGET
         MENUITEM "O&ptionen...",                  IDM_VIEW_OPTIONS
-    END                                           
-    POPUP "+"                                     
-    BEGIN                                         
+    END
+    POPUP "+"
+    BEGIN
         MENUITEM "&Verzeichnis...",               IDM_FILE_CHANGEDIR
         MENUITEM "Laufwerks-&Eigenschaften",      IDM_FILE_DRIVEPROP
-        MENUITEM SEPARATOR                        
+        MENUITEM SEPARATOR
         MENUITEM "Zeige &Laufwerke",              IDM_VIEW_DRIVEBOX
-    END                                           
-    POPUP "+"                                     
-    BEGIN                                         
+    END
+    POPUP "+"
+    BEGIN
         MENUITEM "Zeige &Werkzeugleiste",         IDM_VIEW_TOOLBAR
         MENUITEM "&Bearbeite Werkzeugleiste...",  IDM_VIEW_CUSTOMIZETB
         MENUITEM "Zeige &Statuszeile",            IDM_VIEW_STATUSBAR
-    END                                           
-    POPUP "+"                                     
-    BEGIN                                         
+    END
+    POPUP "+"
+    BEGIN
         MENUITEM "Öffne MiniPath",                IDM_TRAY_RESTORE
         MENUITEM "Verlasse MiniPath",             IDM_TRAY_EXIT
     END
