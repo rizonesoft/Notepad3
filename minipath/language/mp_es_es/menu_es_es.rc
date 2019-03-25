@@ -56,72 +56,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Abrir",                       IDM_FILE_OPEN
-        MENUITEM "Abrir &con alternativa App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Vista rápida",                  IDM_FILE_QUICKVIEW
+        MENUITEM "&Abrir",                           IDM_FILE_OPEN
+        MENUITEM "Abrir &con alternativa App...",    IDM_FILE_OPENWITH
+        MENUITEM "&Vista rápida",                    IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copiar nombre",                  IDM_POP_COPYNAME
-        MENUITEM "Crear en&lace...",             IDM_FILE_CREATELINK
+        MENUITEM "&Copiar nombre",                   IDM_POP_COPYNAME
+        MENUITEM "Crear en&lace...",                 IDM_FILE_CREATELINK
         MENUITEM "&Guardar como...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copiar/&Mover...",               IDM_FILE_COPYMOVE
-        MENUITEM "&Eliminir...",                  IDM_FILE_DELETE
-        MENUITEM "Re&nombrar...",                  IDM_FILE_RENAME
+        MENUITEM "Copiar/&Mover...",                 IDM_FILE_COPYMOVE
+        MENUITEM "&Eliminir...",                     IDM_FILE_DELETE
+        MENUITEM "Re&nombrar...",                    IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Lanzar",                     IDM_FILE_LAUNCH
-        MENUITEM "&Ejecutar con Args...",        IDM_FILE_RUN
+        MENUITEM "&Lanzar",                          IDM_FILE_LAUNCH
+        MENUITEM "&Ejecutar con Args...",            IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Propiedades",                 IDM_FILE_PROPERTIES
+        MENUITEM "&Propiedades",                     IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
         MENUITEM "&Nuevo archivo...",                IDM_FILE_NEW
-        MENUITEM "Nue&va carpeta...",           IDM_FILE_NEWDIR
+        MENUITEM "Nue&va carpeta...",                IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&Filtro de archivo...",             IDM_VIEW_FILTER
-        MENUITEM "&Restablecer filtro",               IDM_VIEW_FILTERALL
+        MENUITEM "&Filtro de archivo...",            IDM_VIEW_FILTER
+        MENUITEM "&Restablecer filtro",              IDM_VIEW_FILTERALL
         POPUP "&Mostrar"
         BEGIN
-            MENUITEM "&Carpetas",            IDM_VIEW_FOLDERS
-            MENUITEM "&Archivos",                  IDM_VIEW_FILES
-            MENUITEM "Objetos &Systema",         IDM_VIEW_HIDDEN
+            MENUITEM "&Carpetas",                    IDM_VIEW_FOLDERS
+            MENUITEM "&Archivos",                    IDM_VIEW_FILES
+            MENUITEM "Objetos &Systema",             IDM_VIEW_HIDDEN
         END
         POPUP "&Ordenar"
         BEGIN
-            MENUITEM "por &Nombre",                IDM_SORT_NAME
-            MENUITEM "por &Tamaño",                IDM_SORT_SIZE
-            MENUITEM "por &Tipo",                IDM_SORT_TYPE
-            MENUITEM "por &Fecha",                IDM_SORT_DATE
+            MENUITEM "por &Nombre",                  IDM_SORT_NAME
+            MENUITEM "por &Tamaño",                  IDM_SORT_SIZE
+            MENUITEM "por &Tipo",                    IDM_SORT_TYPE
+            MENUITEM "por &Fecha",                   IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Inverso",                IDM_SORT_REVERSE
+            MENUITEM "&Inverso",                     IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Ir a Favoritos",             IDM_VIEW_FAVORITES
-        MENUITEM "&Editar Favoritos",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Carpeta...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Ir a Favoritos",                  IDM_VIEW_FAVORITES
+        MENUITEM "&Editar Favoritos",                IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Carpeta...",                      IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Mos&trar discos",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Mos&trar discos",                  IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "Gu&ardar configuraciones",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Configuración de des&tino...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&pciones...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Gu&ardar configuraciones",         IDM_VIEW_SAVESETTINGS
+        MENUITEM "Configuración de des&tino...",     IDM_VIEW_FINDTARGET
+        MENUITEM "O&pciones...",                     IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Carpeta...",               IDM_FILE_CHANGEDIR
-        MENUITEM "&Propiedades disco",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Carpeta...",                      IDM_FILE_CHANGEDIR
+        MENUITEM "&Propiedades disco",               IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Mos&trar discos",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Mos&trar discos",                 IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar barra de herramien&tas",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Editar barra de herramientas...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Mostrar barra de e&stado",             IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar barra de herramien&tas",   IDM_VIEW_TOOLBAR
+        MENUITEM "&Editar barra de herramientas...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Mostrar barra de e&stado",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Salir MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "Abrir MiniPath",                   IDM_TRAY_RESTORE
+        MENUITEM "Salir MiniPath",                   IDM_TRAY_EXIT
     END
 END
 
