@@ -145,10 +145,10 @@ BEGIN
                             "Sei sicuro di voler aprire questo file grande?"
     IDS_MUI_WARN_UNKNOWN_EXT 
                             "Estensione sconosciuta (%s) !\nProseguire con il caricamento?"
-    IDS_MUI_INDENT_CONSISTENT   "Il file ha una indentazione consistente!"
-    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
-    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
+    IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
 END
 
 STRINGTABLE
@@ -270,8 +270,7 @@ Opzioni:\r\n\
 /v\tStampa il file immediatamente ed esci.\r\n\
 /vd\tStampa il file (apri il dialogo di stampa).\r\n\
 /y\tCerca la variabile d'ambiente PATH nel caso di filename relativo.\r\n\
-/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note\r\n\
-\tbasato su Registro).\r\n\r\n\
+/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note\r\n\tbasato su Registro).\r\n\r\n\
 Esempi:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Apri un nuovo file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
