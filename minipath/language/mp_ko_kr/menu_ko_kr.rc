@@ -62,28 +62,28 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "이름 복사(&C)",                  IDM_POP_COPYNAME
         MENUITEM "링크 만들기(&K)...",             IDM_FILE_CREATELINK
-        MENUITEM "다른 이름으로 저장(&S)...",                 IDM_FILE_SAVEAS
+        MENUITEM "다른 이름으로 저장(&S)...",       IDM_FILE_SAVEAS
         MENUITEM "복사/이동(&M)...",               IDM_FILE_COPYMOVE
-        MENUITEM "삭제(D&)...",                  IDM_FILE_DELETE
-        MENUITEM "이름 변경(&N)...",                  IDM_FILE_RENAME
+        MENUITEM "삭제(D&)...",                    IDM_FILE_DELETE
+        MENUITEM "이름 변경(&N)...",               IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "실행(&L)",                     IDM_FILE_LAUNCH
-        MENUITEM "인수 지정 실행(&R)...",        IDM_FILE_RUN
+        MENUITEM "실행(&L)",                      IDM_FILE_LAUNCH
+        MENUITEM "인수 지정 실행(&R)...",          IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "속성(&P)",                 IDM_FILE_PROPERTIES
+        MENUITEM "속성(&P)",                      IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
         MENUITEM "새 문서(&N)...",                IDM_FILE_NEW
-        MENUITEM "새 디렉토리(&W)...",           IDM_FILE_NEWDIR
+        MENUITEM "새 디렉토리(&W)...",            IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "파일 필터(&F)...",             IDM_VIEW_FILTER
+        MENUITEM "파일 필터(&F)...",              IDM_VIEW_FILTER
         MENUITEM "필터 초기화(&R)",               IDM_VIEW_FILTERALL
         POPUP "보기(&S)"
         BEGIN
-            MENUITEM "디렉토리(&D)",            IDM_VIEW_FOLDERS
+            MENUITEM "디렉토리(&D)",              IDM_VIEW_FOLDERS
             MENUITEM "파일(&F)",                  IDM_VIEW_FILES
-            MENUITEM "시스템 파일(&S)",         IDM_VIEW_HIDDEN
+            MENUITEM "시스템 파일(&S)",           IDM_VIEW_HIDDEN
         END
         POPUP "정렬(&O)"
         BEGIN
@@ -92,31 +92,31 @@ BEGIN
             MENUITEM "종류순(&T)",                IDM_SORT_TYPE
             MENUITEM "날짜순(&D)",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "역순(&R)",                IDM_SORT_REVERSE
+            MENUITEM "역순(&R)",                  IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "즐겨찾기로 이동(&G)",             IDM_VIEW_FAVORITES
+        MENUITEM "즐겨찾기로 이동(&G)",           IDM_VIEW_FAVORITES
         MENUITEM "즐겨찾기 편집(&E)",             IDM_VIEW_EDITFAVORITES
         MENUITEM "디렉토리(&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "드라이브 보이기(&V)",                IDM_VIEW_DRIVEBOX
+        MENUITEM "드라이브 보이기(&V)",           IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "설정 저장(&S)",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "프로그램 지정(&T)...",            IDM_VIEW_FINDTARGET
-        MENUITEM "옵션(&P)...",                 IDM_VIEW_OPTIONS
+        MENUITEM "설정 저장(&S)",                IDM_VIEW_SAVESETTINGS
+        MENUITEM "프로그램 지정(&T)...",          IDM_VIEW_FINDTARGET
+        MENUITEM "옵션(&P)...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "디렉토리(&D)...",               IDM_FILE_CHANGEDIR
-        MENUITEM "드라이브 속성(&P)",           IDM_FILE_DRIVEPROP
+        MENUITEM "디렉토리(&D)...",              IDM_FILE_CHANGEDIR
+        MENUITEM "드라이브 속성(&P)",            IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "드라이브 보이기(&V)",                IDM_VIEW_DRIVEBOX
+        MENUITEM "드라이브 보이기(&V)",          IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "도구 모음 보이기(&T)",               IDM_VIEW_TOOLBAR
-        MENUITEM "도구 모음 편집(&E)...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "상태 표시 줄 보이기(&S)",             IDM_VIEW_STATUSBAR
+        MENUITEM "도구 모음 보이기(&T)",         IDM_VIEW_TOOLBAR
+        MENUITEM "도구 모음 편집(&E)...",        IDM_VIEW_CUSTOMIZETB
+        MENUITEM "상태 표시 줄 보이기(&S)",      IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
