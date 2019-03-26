@@ -81,18 +81,18 @@ BEGIN
         MENUITEM "С&бросить фильтр",            IDM_VIEW_FILTERALL
         POPUP "П&оказывать"
         BEGIN
-            MENUITEM "&Папки",                      IDM_VIEW_FOLDERS
-            MENUITEM "&Файлы",                      IDM_VIEW_FILES
-            MENUITEM "&Системные объекты",          IDM_VIEW_HIDDEN
+            MENUITEM "&Папки",                  IDM_VIEW_FOLDERS
+            MENUITEM "&Файлы",                  IDM_VIEW_FILES
+            MENUITEM "&Системные объекты",      IDM_VIEW_HIDDEN
         END
         POPUP "&Сортировка"
         BEGIN
-            MENUITEM "&Имя",                        IDM_SORT_NAME
-            MENUITEM "&Размер",                     IDM_SORT_SIZE
-            MENUITEM "&Тип",                        IDM_SORT_TYPE
-            MENUITEM "&Дата",                       IDM_SORT_DATE
+            MENUITEM "&Имя",                    IDM_SORT_NAME
+            MENUITEM "&Размер",                 IDM_SORT_SIZE
+            MENUITEM "&Тип",                    IDM_SORT_TYPE
+            MENUITEM "&Дата",                   IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "И&нвертировать",              IDM_SORT_REVERSE
+            MENUITEM "И&нвертировать",          IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
         MENUITEM "Перейти в &избранное",        IDM_VIEW_FAVORITES
@@ -114,9 +114,9 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Показать &панель инструментов", IDM_VIEW_TOOLBAR
+        MENUITEM "Показать &панель инструментов",     IDM_VIEW_TOOLBAR
         MENUITEM "&Настроить панель инструментов...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Показать &строку состояния",  IDM_VIEW_STATUSBAR
+        MENUITEM "Показать &строку состояния",        IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
@@ -125,9 +125,9 @@ BEGIN
     END
 END
 
+
 #endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
-
 
 
 #ifndef APSTUDIO_INVOKED
@@ -139,4 +139,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
