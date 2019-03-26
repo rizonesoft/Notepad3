@@ -54,65 +54,65 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW            "Új"
+    IDT_FILE_OPEN           "Megnyitás"
+    IDT_FILE_BROWSE         "Böngészés"
+    IDT_FILE_SAVE           "Mentés"
+    IDT_EDIT_UNDO           "Visszavon"
+    IDT_EDIT_REDO           "Újra"
+    IDT_EDIT_CUT            "Kivágás"
+    IDT_EDIT_COPY           "Másolás"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE          "Beillesztés"
+    IDT_EDIT_FIND           "Keresés"
+    IDT_EDIT_REPLACE        "Csere"
+    IDT_VIEW_WORDWRAP       "Sortörés"
+    IDT_VIEW_ZOOMIN         "Nagyítás"
+    IDT_VIEW_ZOOMOUT        "Kicsinyítés"
+    IDT_VIEW_SCHEME         "Sémaválasztás"
+    IDT_VIEW_SCHEMECONFIG   "Sémák testreszabása"
+    IDT_FILE_EXIT           "Kilépés"
+    IDT_FILE_SAVEAS         "Mentés másként"
+    IDT_FILE_SAVECOPY       "Másolat mentése"
+    IDT_EDIT_CLEAR          "Törlés"
+    IDT_FILE_PRINT          "Nyomtatás"
+    IDT_FILE_OPENFAV        "Kedvencek"
+    IDT_FILE_ADDTOFAV       "Hozzáadás a kedvencekhez"
+    IDT_VIEW_TOGGLEFOLDS    "Kinyit/Becsuk"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
+    IDT_FILE_LAUNCH         "Futattás"
+    IDT_VIEW_TOGGLE_VIEW    "Fókuszált nézet"
+    IDT_VIEW_CHASING_DOCTAIL "Dokumentum követés"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Administrator)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Vágólap"
+    IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_READONLY        "(Csak olvasható)"
+    IDS_MUI_LOADFILE        "Betöltés: ""%s""..."
+    IDS_MUI_SAVEFILE        "Mentés ""%s""..."
+    IDS_MUI_PRINTFILE       "Oldal nyomtatása %i..."
+    IDS_MUI_SAVINGSETTINGS  "Beállítások mentése..."
+    IDS_MUI_LINKDESCRIPTION "Szerkesztés itt: Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
+    IDS_MUI_FILTER_ALL      "AMinden fájl (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Végrehajtható fájlok (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Beállításfájlok (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Válassza ki a mappát, ahol a kedvenc alkamazásaira mutató parancsikonok vannak."
+    IDS_MUI_FAVORITES       "Válassza ki a mappát, ahol a kedvenc fájljaira mutató parancsikonok vannak."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
@@ -227,16 +227,16 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Usage:\r\n\
-Notepad3 \t[/?] [�[Encoding]] [�[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [�[Encoding]] [�[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[�]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[�]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
 Options:\r\n\
 /?\tDispay this help message.\r\n\
-�\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-�\tLine ending mode (/crlf, /cr, /lf).\r\n\
+�\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+�\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
 /g\tJump to specified position (/g -1 end of file).\r\n\
 /m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
@@ -261,9 +261,9 @@ Options:\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t� Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t� Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t� Print the file: ""Test.txt"" immediately.\
+ \t� Print the file: ""Test.txt"" immediately.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
