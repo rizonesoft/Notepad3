@@ -349,7 +349,7 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
-// Chinese (Simplified, PRC) resources
+#endif    // Chinese (Simplified, PRC) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
