@@ -125,7 +125,7 @@ struct SelectionRange {
 		return (anchor < caret) ? caret : anchor;
 	}
 	void Swap();
-	bool Trim(const SelectionRange &range);
+	bool Trim(SelectionRange range);
 	// If range is all virtual collapse to start of virtual space
 	void MinimizeVirtualSpace();
 };
@@ -173,7 +173,7 @@ public:
 	void AddSelectionWithoutTrim(SelectionRange range);
 	void DropSelection(size_t r);
 	void DropAdditionalRanges();
-  void TentativeSelection(const SelectionRange &range);
+	void TentativeSelection(SelectionRange range);
 	void CommitTentative();
 	int CharacterInSelection(Sci::Position posCharacter) const;
 	int InSelectionForEOL(Sci::Position pos) const;

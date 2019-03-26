@@ -83,6 +83,14 @@ protected:
 	void CallTipShow(Point pt, const char *defn);
 	virtual void CreateCallTipWindow(PRectangle rc) = 0;
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if 0
+	virtual void AddToPopUp(const char *label, int cmd=0, bool enabled=true) = 0;
+	bool ShouldDisplayPopup(Point ptInWindowCoordinates) const;
+	void ContextMenu(Point pt);
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	void ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) override;
 	void RightButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) override;
 

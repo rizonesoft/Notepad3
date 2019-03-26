@@ -8,7 +8,9 @@
 #ifndef CELLBUFFER_H
 #define CELLBUFFER_H
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include "Position.h"
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace Scintilla {
 

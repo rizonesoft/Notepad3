@@ -8,7 +8,9 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include "ILoader.h"
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace Scintilla {
 
