@@ -1409,7 +1409,7 @@ void Editor::SetXYScroll(XYScrollPosition newXY) {
 	}
 }
 
-void Editor::ScrollRange(const SelectionRange& range) {
+void Editor::ScrollRange(SelectionRange range) {
 	SetXYScroll(XYScrollToMakeVisible(range, xysDefault));
 }
 

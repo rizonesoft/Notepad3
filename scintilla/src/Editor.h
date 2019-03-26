@@ -360,7 +360,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	XYScrollPosition XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options);
 	void SetXYScroll(XYScrollPosition newXY);
 	void EnsureCaretVisible(bool useMargin=true, bool vert=true, bool horiz=true);
-	void ScrollRange(const SelectionRange& range);
+	void ScrollRange(SelectionRange range);
 	void ShowCaretAtCurrentPosition();
 	void DropCaret();
 	void CaretSetPeriod(int period);

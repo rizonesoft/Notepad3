@@ -1479,7 +1479,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 			// Either SCROLL or ZOOM. We handle the wheel steppings calculation
 			wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
-			if (abs(wheelDelta) >= WHEEL_DELTA && linesPerScroll > 0) {
+			if (std::abs(wheelDelta) >= WHEEL_DELTA && linesPerScroll > 0) {
 				Sci::Line linesToScroll = linesPerScroll;
 				if (linesPerScroll == WHEEL_PAGESCROLL)
 					linesToScroll = LinesOnScreen() - 1;
@@ -2782,7 +2782,7 @@ void ScintillaWin::ImeStartComposition() {
 				deviceHeight = (sizeZoomed * surface->LogPixelsY()) / 72;
 			}
 			// The negative is to allow for leading
-			lf.lfHeight = -(abs(deviceHeight / SC_FONT_SIZE_MULTIPLIER));
+			lf.lfHeight = -(std::abs(deviceHeight / SC_FONT_SIZE_MULTIPLIER));
 			lf.lfWeight = vs.styles[styleHere].weight;
 			lf.lfItalic = static_cast<BYTE>(vs.styles[styleHere].italic ? 1 : 0);
 			lf.lfCharSet = DEFAULT_CHARSET;
