@@ -222,11 +222,11 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "已发现不一致的换行符：",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF：",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "LF：",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "CR：",IDC_STATIC,10,38,34,8,SS_RIGHT
+    LTEXT           "CR：",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "LF：",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s 行",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s 行",IDC_EOL_SUM_LF,48,28,136,8
-    LTEXT           "%s 行",IDC_EOL_SUM_CR,48,38,136,8
+    LTEXT           "%s 行",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s 行",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "是否调整为一致的换行符(&D)？",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "是(&Y)",IDOK,138,63,50,14
@@ -357,8 +357,8 @@ BEGIN
     CONTROL         "空格(&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,49,10
     LTEXT           "%s 行不规则缩进",IDC_INDENT_TAB_MODX,65,72,99,8,SS_RIGHT
     LTEXT           "%s 行不规则缩进",IDC_INDENT_SPC_MODX,65,84,99,8,SS_RIGHT
-    PUSHBUTTON      "否(&N)",IDCANCEL,80,98,50,14
-    PUSHBUTTON      "是(&Y)",IDOK,134,98,50,14
+    PUSHBUTTON      "是(&Y)",IDOK,80,98,50,14
+    PUSHBUTTON      "否(&N)",IDCANCEL,134,98,50,14
     CONTROL         "总是显示这个对话框(&A)", IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END

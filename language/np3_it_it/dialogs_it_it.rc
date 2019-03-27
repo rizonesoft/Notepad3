@@ -222,11 +222,11 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Terminatori di riga inconsistenti trovati nel file:",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s linea/e.",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s linea/e.",IDC_EOL_SUM_LF,48,28,136,8
-    LTEXT           "%s linea/e.",IDC_EOL_SUM_CR,48,38,136,8
+    LTEXT           "%s linea/e.",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s linea/e.",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "&Vuoi normalizzare i terminatori di riga?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Sì",IDOK,138,63,50,14
@@ -357,8 +357,8 @@ BEGIN
     CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
     LTEXT           "%s linea/e con profondità  indentazione irregolare",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
     LTEXT           "%s linea/e con profondità  indentazione irregolare",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
-    PUSHBUTTON      "&No",IDCANCEL,80,98,50,14
-    PUSHBUTTON      "&Sì",IDOK,134,98,50,14
+    PUSHBUTTON      "&Sì",IDOK,80,98,50,14
+    PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
     CONTROL         "&Mostra sempre questa finestra", IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
