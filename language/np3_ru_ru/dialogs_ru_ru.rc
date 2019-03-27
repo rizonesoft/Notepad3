@@ -26,19 +26,19 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -221,9 +221,9 @@ CAPTION "Разные окончания строк"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "В файле обнаружены строки с разными окончаниями:",IDC_STATIC,7,7,183,8
-    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
-    RTEXT           "CR:",IDC_STATIC,10,28,34,8
-    RTEXT           "LF:",IDC_STATIC,10,38,34,8
+    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
+    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s",IDC_EOL_SUM_LF,48,38,136,8
@@ -346,9 +346,9 @@ CAPTION "Разные отступы"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Статистика по строкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
-    RTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8
-    RTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8
-    RTEXT           "Смешанные[x]:",IDC_STATIC,18,42,66,8
+    LTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8,SS_RIGHT
+    LTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8,SS_RIGHT
+    LTEXT           "Смешанные[x]:",IDC_STATIC,18,42,66,8,SS_RIGHT
     LTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     LTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     LTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8

@@ -221,9 +221,9 @@ CAPTION "Розныя канчаткі радкоў"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "У файле знойдзены радкі з рознымі канчаткамі:",IDC_STATIC,7,7,183,8
-    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
-    RTEXT           "CR:",IDC_STATIC,10,28,34,8
-    RTEXT           "LF:",IDC_STATIC,10,38,34,8
+    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
+    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s",IDC_EOL_SUM_LF,48,38,136,8
@@ -346,9 +346,9 @@ CAPTION "Розныя водступы"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Статыстыка па радкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
-    RTEXT           "Табуляцыя[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8
-    RTEXT           "Прабелы[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8
-    RTEXT           "Змешаныя[x]:",IDC_STATIC,18,42,66,8
+    LTEXT           "Табуляцыя[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8,SS_RIGHT
+    LTEXT           "Прабелы[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8,SS_RIGHT
+    LTEXT           "Змешаныя[x]:",IDC_STATIC,18,42,66,8,SS_RIGHT
     LTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     LTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     LTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
