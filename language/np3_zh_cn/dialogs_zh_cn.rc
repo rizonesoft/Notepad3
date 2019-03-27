@@ -217,21 +217,21 @@ END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inconsistent Line Endings"
+CAPTION "不一致的换行符"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inconsistent line endings found in file:",IDC_STATIC,7,7,180,8
-    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,38,34,8,SS_RIGHT
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,28,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,38,136,8
-    LTEXT           "&Do you want to normalize the line endings?",IDC_STATIC,7,52,180,8
+    LTEXT           "已发现不一致的换行符：",IDC_STATIC,7,7,180,8
+    LTEXT           "CR+LF：",IDC_STATIC,10,18,34,8,SS_RIGHT
+    LTEXT           "LF：",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "CR：",IDC_STATIC,10,38,34,8,SS_RIGHT
+    LTEXT           "%s 行",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s 行",IDC_EOL_SUM_LF,48,28,136,8
+    LTEXT           "%s 行",IDC_EOL_SUM_CR,48,38,136,8
+    LTEXT           "是否调整为一致的换行符(&D)？",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Yes",IDOK,138,63,50,14
-    PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_EOLS,
+    PUSHBUTTON      "是(&Y)",IDOK,138,63,50,14
+    PUSHBUTTON      "否(&N)",IDCANCEL,138,80,50,14
+    CONTROL         "总是显示这个对话框(&A)", IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -332,9 +332,9 @@ BEGIN
     CONTROL         "按 Tab 键时重新格式化缩进(&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,155,10
     CONTROL         "按 Backspace 键时重新格式化缩进(&B)",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,155,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "当换行符不一致时显示警告(&W)",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,155,10
-    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "自动检测缩进类型(&A)",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "确定",IDOK,117,7,50,14
     PUSHBUTTON      "取消",IDCANCEL,117,27,50,14
@@ -342,24 +342,24 @@ END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inconsistent Indentation"
+CAPTION "不一致的缩进"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Statistics: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
-    LTEXT           "Blanks[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
-    LTEXT           "Mixed[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
-    LTEXT           "%s line(s)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
-    LTEXT           "%s line(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
-    LTEXT           "%s line(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
-    GROUPBOX        "Re-Indent All ? ",IDC_STATIC,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
-    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
-    PUSHBUTTON      "&No",IDCANCEL,80,98,50,14
-    PUSHBUTTON      "&Yes",IDOK,134,98,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_INDENTS,
+    GROUPBOX        "统计：",IDC_STATIC,7,7,182,48,WS_GROUP
+    LTEXT           "Tab[%i]：",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
+    LTEXT           "空格[%i]：",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
+    LTEXT           "混合[x]：",IDC_STATIC,54,42,30,8,SS_LEFT
+    LTEXT           "%s 行",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
+    LTEXT           "%s 行",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
+    LTEXT           "%s 行",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
+    GROUPBOX        "重排全部缩进：",IDC_STATIC,7,60,182,56,WS_GROUP
+    CONTROL         "Tab(&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,49,10
+    CONTROL         "空格(&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,49,10
+    LTEXT           "%s 行不规则缩进",IDC_INDENT_TAB_MODX,65,72,99,8,SS_RIGHT
+    LTEXT           "%s 行不规则缩进",IDC_INDENT_SPC_MODX,65,84,99,8,SS_RIGHT
+    PUSHBUTTON      "否(&N)",IDCANCEL,80,98,50,14
+    PUSHBUTTON      "是(&Y)",IDOK,134,98,50,14
+    CONTROL         "总是显示这个对话框(&A)", IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
