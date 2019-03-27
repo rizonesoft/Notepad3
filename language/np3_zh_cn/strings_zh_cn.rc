@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "打开"
     IDT_FILE_BROWSE         "浏览"
     IDT_FILE_SAVE           "保存"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "历史"
     IDT_EDIT_UNDO           "撤销"
     IDT_EDIT_REDO           "重做"
     IDT_EDIT_CUT            "剪切"
@@ -131,7 +131,7 @@ BEGIN
                             "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 Notepad3 窗口吗？"
     IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用。"
     IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失。"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "加载位图文件失败“%s”。\n需求尺寸：%i × %i（宽度 ≥ %i × 高度）"
 END
 
 STRINGTABLE
@@ -145,7 +145,7 @@ BEGIN
                             "是否确实要打开一个如此庞大的文件？"
     IDS_MUI_WARN_UNKNOWN_EXT 
                             "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
