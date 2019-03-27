@@ -93,7 +93,7 @@ BEGIN
             MENUITEM "Переоткрыть в ко&дировке по умолчанию\tCtrl-Alt-F",   CMD_RECODEDEFAULT
             MENUITEM "Переоткрыть в A&NSI\tCtrl-Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
-            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",                  CMD_RECODEGB18030
+            MENUITEM "Переоткрыть в &GB18030\tCtrl+Shift+F10",                  CMD_RECODEGB18030
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ASCII &как UTF-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
             MENUITEM "Игнорировать &теги кодировки\tAlt+F8",                CMD_RELOADNOFILEVARS
@@ -110,7 +110,7 @@ BEGIN
             MENUITEM "&По умолчанию...",                IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation..."                CMD_CHECK_INDENTATION
+        MENUITEM "Про&верить отступы..."                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Параметры ст&раницы...",              IDM_FILE_PAGESETUP
         MENUITEM "Пе&чать...\tCtrl+P",                  IDM_FILE_PRINT
@@ -311,9 +311,9 @@ BEGIN
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
         POPUP "Подсвечивать т&екущую строку\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Без подсветки",                      IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Фоновый цвет",                       IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Контур",                             IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "По&дсветка совпадений"
         BEGIN
@@ -344,9 +344,9 @@ BEGIN
         POPUP "Панель инстр&ументов"
         BEGIN
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle панель инструментов",         IDM_VIEW_TOGGLETB
+            MENUITEM "Пе&реключить панель инструментов",    IDM_VIEW_TOGGLETB
             MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
         END
         POPUP "Мас&штаб"
@@ -464,9 +464,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle панель инструментов",         IDM_VIEW_TOGGLETB
+        MENUITEM "Пе&реключить панель инструментов",    IDM_VIEW_TOGGLETB
         MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
     END
     POPUP "+"
