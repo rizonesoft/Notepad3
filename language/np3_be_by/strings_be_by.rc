@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Адкрыць"
     IDT_FILE_BROWSE         "Агляд"
     IDT_FILE_SAVE           "Захаваць"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "Гісторыя"
     IDT_EDIT_UNDO           "Скасаваць"
     IDT_EDIT_REDO           "Паўтор"
     IDT_EDIT_CUT            "Выразать"
@@ -112,7 +112,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "Усе файлы (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Выканальныя файлы (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Усе файлы (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Файлы наладаў (*.ini)|*.ini|Усе файлы (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap файлы (*.bmp)|*.bmp|Усе файлы (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Выберыце папку з цэтлікамі абраных праграмаў."
     IDS_MUI_FAVORITES       "Выберыце папку з цэтлікамі абраных файлаў."
     IDS_MUI_BACKSLASHHELP   "Сімвалы кіравання\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -131,7 +131,7 @@ BEGIN
                             "Існы экзэмпляр Notepad3 альбо заняты, альбо мае адкрытае дыялогавае акно.\nЖадаеце адкрыць новы экзэмпляр Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Табліца пераўтварэння кодавай старонкі не знойдзена для выбранай кадоўкі ў гэтай сістэме."
     IDS_MUI_ERR_UNICODE     "Памылка пераўтварэння Unicode-файла.\nДаныя будуць згублены падчас захавання файла!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Памылка адкрыцця bitmap выявы""%s"".\nНеабходныя памеры: %i x %i (width >= %i x height)."
 END
 
 STRINGTABLE
@@ -145,7 +145,7 @@ BEGIN
                             "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?"
     IDS_MUI_WARN_UNKNOWN_EXT 
                             "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "Файл мае аднолькавага выгляду водступы!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -222,16 +222,16 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "Звязаныя пашырэнні файлаў:"
     IDS_MUI_EXAMPLE_TEXT    "У Іўі худы жвавы чорт у зялёнай камізэльцы пабег пад'есці фаршу з юшкай, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Супадзенне нулявой даўжыні"
-    IDS_MUI_GOTO_LINE       "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %lli):"
+    IDS_MUI_GOTO_LINE       "Радок (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN     "Слупок (1 - %lli):"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Мовы"
-    IDS_MUI_MENU_THEMES     "Themes"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDS_MUI_MENU_LANGUAGE   "Мова"
+    IDS_MUI_MENU_THEMES     "Тэмы"
+    IDM_THEMES_DEFAULT      "Завадскія налады"
+    IDM_THEMES_FILE_ITEM    "Стандартныя налады"
 END
 
 STRINGTABLE
@@ -269,7 +269,7 @@ Notepad3 \t[/?] [...[Кадоўка]] [...[Канчаткі радкоў]] [/e] [/g] [/m] [/l]\r\n\
 /u\tЗапусціць з павышанымі паўнамоцтвамі.\r\n\
 /v\tНадрукаваць файл адразу і выйсці.\r\n\
 /vd\tНадрукаваць файл (адкрыць дыялог друку).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\tШукаць у пераменнай PATH калі выкарыстаны адносны шлях.\r\n\
 /z\tПрапусціць наступны (прыдатна для пошуку з рэгулярным выразам).\r\n\r\n\
 Прыклады:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

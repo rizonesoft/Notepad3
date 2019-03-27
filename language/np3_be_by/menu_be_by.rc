@@ -88,12 +88,12 @@ BEGIN
             MENUITEM "UTF-8 з BO&M",                   IDM_ENCODING_UTF8SIGN
             MENUITEM "Я&шчэ...\tF9",                   IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Прымусіць ўстанаўлення кадоўкі",                    CMD_RELOADFORCEDETECTION
+            MENUITEM "Прымусіць ўстанаўленне кадоўкі",                    CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Пераадкрыць у A&NSI\tCtrl-Shift+A",                 CMD_RECODEANSI
             MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
-            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",                CMD_RECODEGB18030
+            MENUITEM "Пераадкрыць у &GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
             MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
             MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",                  CMD_RELOADNOFILEVARS
@@ -110,7 +110,7 @@ BEGIN
             MENUITEM "&Прадвызначыць...",           IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation..."            CMD_CHECK_INDENTATION
+        MENUITEM "Праверыць &водступы..."           CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Налады ста&ронкі...",             IDM_FILE_PAGESETUP
         MENUITEM "&Друк...\tCtrl+P",                IDM_FILE_PRINT
@@ -311,9 +311,9 @@ BEGIN
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Падсвечваць ак&тыўны радок\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Без падсвечвання",                   IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Фонавы колер",                       IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Контур",                             IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Па&дсвечванне супадзенняў"
         BEGIN
@@ -344,9 +344,9 @@ BEGIN
         POPUP "Паліца пры&ладаў"
         BEGIN
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle паліца прыладаў",       IDM_VIEW_TOGGLETB
+            MENUITEM "Пе&раключыць паліцу прыладаў",  IDM_VIEW_TOGGLETB
             MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",        IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
         END
         POPUP "Ма&штаб"
@@ -464,9 +464,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle паліца прыладаў",       IDM_VIEW_TOGGLETB
+        MENUITEM "Пе&раключыць паліцу прыладаў",  IDM_VIEW_TOGGLETB
         MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",        IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
         MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

@@ -5,7 +5,7 @@ static LNG_MENU_T s_LanguageMenu[] =
 {
     { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),                    L"English (United States)\t\t\t[%s]" },
     { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA),      L"Afrikaans (Suid-Afrika)\t\t\t[%s]" },
-    { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),         L"Беларускі (Беларусь)\t\t\t[%s]" },
+    { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),         L"Беларуская (Беларусь)\t\t\t[%s]" },
     { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                         L"Deutsch (Deutschland)\t\t\t[%s]" },
     { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),                    L"English (United Kingdom)\t\t\t[%s]" },
     { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),                L"Español (España)\t\t\t[%s]" },
