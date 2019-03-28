@@ -6966,12 +6966,12 @@ void LoadSettings()
     int const iARCLset = clampi(IniSectionGetInt(pIniSection, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
     Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
 
-    int const iRCEDCMdef = 51;
+    int const iRCEDCMdef = 85;
     Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
     int const iRCEDCMset = clampi(IniSectionGetInt(pIniSection, L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100);
     Settings2.ReliableCEDConfidenceMapping = (float)iRCEDCMset / 100.0f;
 
-    int const iURCEDCMdef = 51;
+    int const iURCEDCMdef = 20;
     Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
     int const iURCEDCMset = clampi(IniSectionGetInt(pIniSection, L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, iRCEDCMset);
     Settings2.UnReliableCEDConfidenceMapping = (float)iURCEDCMset / 100.0f;
