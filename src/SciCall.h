@@ -467,7 +467,7 @@ DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo)
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value)
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
-
+DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count)
 
 //=============================================================================
 //

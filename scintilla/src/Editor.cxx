@@ -30,6 +30,7 @@
 #include "Scintilla.h"
 
 #include "CharacterSet.h"
+#include "CharacterCategory.h"
 #include "Position.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
@@ -6253,6 +6254,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SETCHARSDEFAULT:
 		pdoc->SetDefaultCharClasses(true);
 		break;
+
+	case SCI_SETCHARACTERCATEGORYOPTIMIZATION:
+		pdoc->SetCharacterCategoryOptimization(static_cast<int>(wParam));
+		break;
+
+	case SCI_GETCHARACTERCATEGORYOPTIMIZATION:
+		return pdoc->CharacterCategoryOptimization();
 
 	case SCI_GETLENGTH:
 		return pdoc->Length();

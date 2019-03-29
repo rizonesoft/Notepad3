@@ -10,6 +10,7 @@
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include "ILoader.h"
+#include "CharacterCategory.h"
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace Scintilla {
@@ -234,6 +235,7 @@ private:
 	int refCount;
 	CellBuffer cb;
 	CharClassify charClass;
+	CharacterCategoryMap charMap;
 	std::unique_ptr<CaseFolder> pcf;
 	Sci::Position endStyled;
 	int styleClock;
@@ -448,6 +450,8 @@ public:
 	void SetDefaultCharClasses(bool includeWordClass);
 	void SetCharClasses(const unsigned char *chars, CharClassify::cc newCharClass);
 	int GetCharsOfClass(CharClassify::cc characterClass, unsigned char *buffer) const;
+	void SetCharacterCategoryOptimization(int countCharacters);
+	int CharacterCategoryOptimization() const noexcept;
 	void SCI_METHOD StartStyling(Sci_Position position) override;
 	bool SCI_METHOD SetStyleFor(Sci_Position length, char style) override;
 	bool SCI_METHOD SetStyles(Sci_Position length, const char *styles) override;

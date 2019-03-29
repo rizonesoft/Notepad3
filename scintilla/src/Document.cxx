@@ -1707,7 +1707,7 @@ CharClassify::cc Document::WordCharacterClass(unsigned int ch) const {
 	if (dbcsCodePage && (!UTF8IsAscii(ch))) {
 		if (SC_CP_UTF8 == dbcsCodePage) {
 			// Use hard coded Unicode class
-			const CharacterCategory cc = CategoriseCharacter(ch);
+			const CharacterCategory cc = charMap.CategoryFor(ch);
 			switch (cc) {
 
 				// Separator, Line/Paragraph
@@ -2164,6 +2164,14 @@ void Document::SetCharClasses(const unsigned char *chars, CharClassify::cc newCh
 
 int Document::GetCharsOfClass(CharClassify::cc characterClass, unsigned char *buffer) const {
     return charClass.GetCharsOfClass(characterClass, buffer);
+}
+
+void Document::SetCharacterCategoryOptimization(int countCharacters) {
+	charMap.Optimize(countCharacters);
+}
+
+int Document::CharacterCategoryOptimization() const noexcept {
+	return charMap.Size();
 }
 
 void SCI_METHOD Document::StartStyling(Sci_Position position) {

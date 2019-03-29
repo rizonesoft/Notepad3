@@ -88,12 +88,13 @@ bool       Encoding_GetFromComboboxEx(HWND hwnd, cpi_enc_t* pidEncoding);
 UINT       Encoding_GetCodePage(const cpi_enc_t iEncoding);
            
 bool       Encoding_IsDefault(const cpi_enc_t iEncoding);
+bool       Encoding_IsASCII(const cpi_enc_t iEncoding);
 bool       Encoding_IsANSI(const cpi_enc_t iEncoding);
 bool       Encoding_IsOEM(const cpi_enc_t iEncoding);
 bool       Encoding_IsUTF8(const cpi_enc_t iEncoding);
 bool       Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding);
 bool       Encoding_IsMBCS(const cpi_enc_t iEncoding);
-bool       Encoding_IsASCII(const cpi_enc_t iEncoding);
+bool       Encoding_IsCJK(const cpi_enc_t iEncoding);
 bool       Encoding_IsUNICODE(const cpi_enc_t iEncoding);
 bool       Encoding_IsUNICODE_BOM(const cpi_enc_t iEncoding);
 bool       Encoding_IsUNICODE_REVERSE(const cpi_enc_t iEncoding);

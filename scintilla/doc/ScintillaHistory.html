@@ -571,6 +571,16 @@
 	Implement high-priority idle on Win32 to make redraw smoother and more efficient.
 	</li>
  	<li>
+	Add SCI_SETCHARACTERCATEGORYOPTIMIZATION API to optimize speed
+	of character category features like determining whether a character is a space or number
+	at the expense of memory.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1259/">Feature #1259</a>.
+	</li>
+ 	<li>
+	Fix flicker when inserting primary selection on GTK.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2087/">Bug #2087</a>.
+	</li>
+ 	<li>
 	Avoid potential long hangs with idle styling for huge documents on Cocoa and GTK.
 	</li>
     <ul>

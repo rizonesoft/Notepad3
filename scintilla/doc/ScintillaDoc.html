@@ -2470,6 +2470,8 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SETPUNCTUATIONCHARS">SCI_SETPUNCTUATIONCHARS(&lt;unused&gt;, const char *characters)</a><br />
      <a class="message" href="#SCI_GETPUNCTUATIONCHARS">SCI_GETPUNCTUATIONCHARS(&lt;unused&gt;, char *characters) &rarr; int</a><br />
      <a class="message" href="#SCI_SETCHARSDEFAULT">SCI_SETCHARSDEFAULT</a><br />
+     <a class="message" href="#SCI_SETCHARACTERCATEGORYOPTIMIZATION">SCI_SETCHARACTERCATEGORYOPTIMIZATION(int countCharacters)</a><br />
+     <a class="message" href="#SCI_GETCHARACTERCATEGORYOPTIMIZATION">SCI_GETCHARACTERCATEGORYOPTIMIZATION &rarr; int</a><br />
 
     <p><b id="SCI_WORDENDPOSITION">SCI_WORDENDPOSITION(int pos, bool onlyWordCharacters) &rarr; int</b><br />
      <b id="SCI_WORDSTARTPOSITION">SCI_WORDSTARTPOSITION(int pos, bool onlyWordCharacters) &rarr; int</b><br />
@@ -2595,6 +2597,15 @@ struct Sci_TextToFind {
     <p><b id="SCI_SETCHARSDEFAULT">SCI_SETCHARSDEFAULT</b><br />
      Use the default sets of word and whitespace characters. This sets whitespace to space, tab and other
      characters with codes less than 0x20, with word characters set to alphanumeric and '_'.
+    </p>
+
+    <p><b id="SCI_SETCHARACTERCATEGORYOPTIMIZATION">SCI_SETCHARACTERCATEGORYOPTIMIZATION(int countCharacters)</b><br />
+    <b id="SCI_GETCHARACTERCATEGORYOPTIMIZATION">SCI_GETCHARACTERCATEGORYOPTIMIZATION &rarr; int</b><br />
+      Optimize speed of character category features like determining whether a character is a space or number at the expense of memory.
+      Mostly used for Unicode documents.
+      The countCharacters parameter determines how many character starting from 0 are added to a look-up table with one byte used for each character.
+      It is reasonable to cover the set of characters likely to be used in a document so 0x100 for simple Roman text,
+      0x1000 to cover most simple alphabets, 0x10000 to cover most of East Asian languages, and 0x110000 to cover all possible characters.
     </p>
 
     <p>Word keyboard commands are:</p>
