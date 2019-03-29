@@ -3139,7 +3139,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
-  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU == 2) ? 1 : 0);
+  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU ? 1 : 0));
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");

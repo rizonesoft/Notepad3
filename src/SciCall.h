@@ -138,7 +138,7 @@ DeclareSciCallV0(Undo, UNDO)
 DeclareSciCallV0(Redo, REDO)
 DeclareSciCallR0(CanUndo, CANUNDO, bool)
 DeclareSciCallR0(CanRedo, CANREDO, bool)
-DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
+DeclareSciCallR0(GetModify, GETMODIFY, bool)
 DeclareSciCallR0(CanPaste, CANPASTE, bool)
 
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
@@ -207,7 +207,8 @@ DeclareSciCallV0(SelectAll, SELECTALL)
 DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, const char*, text)
 DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text)
 DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
-
+DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text)
+DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
 
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
@@ -218,6 +219,7 @@ DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const
 DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text)
 DeclareSciCallV1(SetSearchFlags, SETSEARCHFLAGS, int, flags)
 DeclareSciCallR2(SearchInTarget, SEARCHINTARGET, DocPos, DocPos, length, const char*, text)
+DeclareSciCallV2(DeleteRange, DELETERANGE, DocPos, start, DocPos, length)
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position)
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position)
