@@ -71,6 +71,7 @@ Used by VSCode, Atom etc.
 #ifdef SCI_LEXER
 #include "SciLexer.h"
 #endif
+#include "CharacterCategory.h"
 #ifdef SCI_LEXER
 #include "LexerModule.h"
 #endif

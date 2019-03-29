@@ -267,8 +267,8 @@ get int GetIMEInteraction=2678(,)
 set void SetIMEInteraction=2679(int imeInteraction,)
 
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2719(,)
-get bool IsIMEModeCJK=2720(,)
+get bool IsIMEOpen=2722(,)
+get bool IsIMEModeCJK=2723(,)
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
@@ -614,6 +614,12 @@ set void SetWordChars=2077(, string characters)
 # Get the set of characters making up words for when moving or selecting by word.
 # Returns the number of characters
 get int GetWordChars=2646(, stringresult characters)
+
+# Set the number of characters to have directly indexed categories
+set void SetCharacterCategoryOptimization=2720(int countCharacters,)
+
+# Get the number of characters to have directly indexed categories
+get int GetCharacterCategoryOptimization=2721(,)
 
 # Start a sequence of actions that is undone and redone as a unit.
 # May be nested.

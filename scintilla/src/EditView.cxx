@@ -30,6 +30,7 @@
 #include "Scintilla.h"
 
 #include "CharacterSet.h"
+#include "CharacterCategory.h"
 #include "Position.h"
 #include "IntegerRectangle.h"
 #include "UniqueString.h"

@@ -71,6 +71,9 @@ unreadVariable:scintilla/lexers/LexVisualProlog.cxx
 // bp.itBracket not actually redundant as needed by return statements
 redundantAssignment:scintilla/lexers/LexCPP.cxx
 
+// safety initializations at start of GetCharacterExtents
+redundantAssignment:scintilla/gtk/ScintillaGTKAccessible.cxx
+
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp
 // For now, suppress all test source files as, since Catch 2, cppcheck shows many warnings showing

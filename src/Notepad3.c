@@ -408,31 +408,34 @@ static void  _UpdateToolbarDelayed();
 
 //==============================================================================
 //
-//  Document Modified Flag
+//  Save Needed Flag
 //
 //
-static bool IsDocumentModified = false;
+static bool IsSaveNeeded = false;
 
-static void _SetDocumentModified(bool bModified)
+static void _SetSaveNeededFlag(const bool setSaveNeeded)
 {
-  if (IsDocumentModified != bModified) {
-    IsDocumentModified = bModified;
+  bool const isDocModified = setSaveNeeded || SciCall_GetModify(); // consistency
+
+  // update on change
+  if (IsSaveNeeded != isDocModified) {
+    IsSaveNeeded = isDocModified;
     UpdateToolbar();
     UpdateStatusbar(false);
-    if (!bModified && SciCall_GetModify()) {
-      SciCall_SetSavePoint();
-    }
   }
-  if (bModified) {
-    // Force trigger modified (e.g. ReloadElevated)
-    if (!SciCall_GetModify()) {
+
+  if (setSaveNeeded) {
+    // Force trigger modified (e.g. RelaunchElevated)
+    if (!isDocModified) {
       SciCall_AppendText(1, " "); // trigger dirty flag
       SciCall_DeleteRange(SciCall_GetTextLength() - 1, 1);
     }
+    // notify Search/Replace dialog
     if (IsWindow(Globals.hwndDlgFindReplace)) {
-      SendMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDC_DOC_MODIFIED, 1), 0);
+      PostMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDC_DOC_MODIFIED, 1), 0);
     }
   }
+
 }
 
 //==============================================================================
@@ -1033,7 +1036,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
             Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
           }
 
-          _SetDocumentModified(true);
+          _SetSaveNeededFlag(true);
 
           // check for temp file and delete
           if (s_bIsElevated && PathFileExists(s_wchTmpFilePath)) {
@@ -2659,13 +2662,13 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(wParam);
   UNUSED(lParam);
 
-  if (Settings.FileWatchingMode == 1 || IsDocumentModified || Encoding_HasChanged(CPI_GET)) {
+  if (Settings.FileWatchingMode == 1 || IsSaveNeeded || Encoding_HasChanged(CPI_GET)) {
     SetForegroundWindow(hwnd);
   }
 
   if (PathFileExists(Globals.CurrentFile)) 
   {
-    if ((Settings.FileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
+    if ((Settings.FileWatchingMode == 2 && !IsSaveNeeded && !Encoding_HasChanged(CPI_GET)) ||
       MsgBoxLng(MBYESNOWARN,IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
@@ -3228,7 +3231,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_REVERT) != IDYES) {
+      if ((IsSaveNeeded || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_REVERT) != IDYES) {
         break;
       }
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
@@ -3509,7 +3512,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           cpi_enc_t iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
-          if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO, IDS_MUI_ASK_RECODE) != IDYES) {
+          if ((IsSaveNeeded || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO, IDS_MUI_ASK_RECODE) != IDYES) {
             break;
           }
           if (RecodeDlg(hwnd,&iNewEncoding)) 
@@ -5306,7 +5309,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SETPASS:
       if (GetFileKey(Globals.hwndEdit)) {
-        _SetDocumentModified(true);
+        _SetSaveNeededFlag(true);
       }
       break;
 
@@ -6416,13 +6419,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             RestoreAction(scn->token, REDO);
           }
         }
-        if (bModified) { _SetDocumentModified(true); }
+        if (bModified) { _SetSaveNeededFlag(true); }
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-        _SetDocumentModified(false);
+        _SetSaveNeededFlag(false);
       }
       else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-        _SetDocumentModified(true);
+        _SetSaveNeededFlag(true);
       }
       else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
         if (EditToggleView(Globals.hwndEdit, false)) {
@@ -6466,9 +6469,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (scn->linesAdded != 0) {
               UpdateMarginWidth();
             }
-            _SetDocumentModified(true);
-            UpdateToolbar();
-            UpdateStatusbar(false);
+            _SetSaveNeededFlag(true);
           }
         }
         break;
@@ -6612,12 +6613,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
         case SCN_SAVEPOINTREACHED:
-          _SetDocumentModified(false);
+          _SetSaveNeededFlag(false);
           break;
 
 
         case SCN_SAVEPOINTLEFT:
-          _SetDocumentModified(true);
+          _SetSaveNeededFlag(true);
           break;
 
 
@@ -8376,13 +8377,13 @@ void UpdateToolbar()
 static void  _UpdateToolbarDelayed()
 {
   SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 Settings.PathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
+                 Settings.PathNameFormat, IsSaveNeeded || Encoding_HasChanged(CPI_GET),
                  IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
   if (!Settings.ShowToolbar) { return; }
 
   EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
-  EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_SAVE, (IsSaveNeeded || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
   EnableTool(IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
   CheckTool(IDT_VIEW_WORDWRAP, Settings.WordWrap);
@@ -9576,7 +9577,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     Style_SetDefaultLexer(Globals.hwndEdit);
 
     s_bFileReadOnly = false;
-    _SetDocumentModified(false);
+    _SetSaveNeededFlag(false);
 
     UpdateToolbar();
     UpdateStatusbar(true);
@@ -9725,7 +9726,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     //bReadOnly = false;
-    _SetDocumentModified(false);
+    _SetSaveNeededFlag(false);
     UpdateToolbar();
     UpdateStatusbar(true);
     UpdateMarginWidth();
@@ -9865,7 +9866,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     }
   }
 
-  if (!bSaveAlways && ((!IsDocumentModified && !Encoding_HasChanged(CPI_GET)) || bIsEmptyNewFile) && !bSaveAs) {
+  if (!bSaveAlways && ((!IsSaveNeeded && !Encoding_HasChanged(CPI_GET)) || bIsEmptyNewFile) && !bSaveAs) {
     int idx;
     if (MRU_FindFile(Globals.pFileMRU,Globals.CurrentFile,&idx)) {
       Globals.pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
@@ -9966,7 +9967,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       if (Flags.ShellUseSystemMRU) {
         SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
       }
-      _SetDocumentModified(false);
+
+      _SetSaveNeededFlag(false);
 
       // Install watching of the current file
       if (bSaveAs && Settings.ResetFileWatching) {
@@ -10015,7 +10017,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
             if (RelaunchElevated(szArguments)) {
               // set no change and quit
               Encoding_HasChanged(Encoding_Current(CPI_GET));
-              _SetDocumentModified(false);
+              SciCall_SetSavePoint();
               PostMessage(Globals.hwndMain,WM_CLOSE,0,0);
             }
             else {
@@ -10588,7 +10590,7 @@ void SetNotifyIconTitle(HWND hwnd)
   else {
     GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
   }
-  if (IsDocumentModified || Encoding_HasChanged(CPI_GET))
+  if (IsSaveNeeded || Encoding_HasChanged(CPI_GET))
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"* ");
   else
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"");

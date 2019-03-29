@@ -507,6 +507,11 @@ bool Encoding_IsDefault(const cpi_enc_t iEncoding) {
 }
 // ============================================================================
 
+bool Encoding_IsASCII(const cpi_enc_t iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ASCII_7BIT) : false;
+}
+// ============================================================================
+
 bool Encoding_IsANSI(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : false;
 }
@@ -532,11 +537,35 @@ bool Encoding_IsMBCS(const cpi_enc_t iEncoding) {
 }
 // ============================================================================
 
-bool Encoding_IsASCII(const cpi_enc_t iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ASCII_7BIT) : false;
+bool Encoding_IsCJK(const cpi_enc_t iEncoding) {
+  UINT const codePage = Encoding_GetCodePage(iEncoding);
+  switch (codePage) 
+  {
+  case 932:
+  case 936:
+  case 949:
+  case 950:
+  case 951:
+  case 1361:
+  case 10001:
+  case 10002:
+  case 10003:
+  case 10008:
+  case 20000:
+  case 20932:
+  case 20936:
+  case 50220:
+  case 50225:
+  case 51949:
+  case 52936:
+  case 54936:
+    return true;
+  default:
+    break;
+  }
+  return false;
 }
 // ============================================================================
-
 
 bool Encoding_IsUNICODE(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE) : false;

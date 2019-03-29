@@ -1293,6 +1293,8 @@ bool EditLoadFile(
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
 
+  SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(iAnalyzedEncoding) ? 0x10000 : 0x1000);
+
   return true;
 }
 

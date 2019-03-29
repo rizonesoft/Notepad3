@@ -245,12 +245,24 @@ struct PPDefinition {
 	}
 };
 
+const int inactiveFlag = 0x40;
+
 class LinePPState {
-	int state;
-	int ifTaken;
-	int level;
+	// Track the state of preprocessor conditionals to allow showing active and inactive
+	// code in different styles.
+	// Only works up to 31 levels of conditional nesting.
+
+	// state is a bit mask with 1 bit per level
+	// bit is 1 for level if section inactive, so any bits set = inactive style
+	int state = 0;
+	// ifTaken is a bit mask with 1 bit per level
+	// bit is 1 for level if some branch at this level has been taken
+	int ifTaken = 0;
+	// level is the nesting level of #if constructs
+	int level = -1;
+	static const int maximumNestingLevel = 31;
 	bool ValidLevel() const noexcept {
-		return level >= 0 && level < 32;
+		return level >= 0 && level < maximumNestingLevel;
 	}
 	int maskLevel() const noexcept {
 		if (level >= 0) {
@@ -260,10 +272,16 @@ class LinePPState {
 		}
 	}
 public:
-	LinePPState() noexcept : state(0), ifTaken(0), level(-1) {
+	LinePPState() noexcept {
+	}
+	bool IsActive() const noexcept {
+		return state == 0;
 	}
 	bool IsInactive() const noexcept {
 		return state != 0;
+	}
+	int ActiveState() const noexcept {
+		return state ? inactiveFlag : 0;
 	}
 	bool CurrentIfTaken() const noexcept {
 		return (ifTaken & maskLevel()) != 0;
@@ -521,7 +539,6 @@ class LexerCPP : public ILexer4 {
 	OptionSetCPP osCPP;
 	EscapeSequence escapeSeq;
 	SparseState<std::string> rawStringTerminators;
-	enum { activeFlag = 0x40 };
 	enum { ssIdentifier, ssDocKeyword };
 	SubStyles subStyles;
 	std::string returnBuffer;
@@ -534,7 +551,7 @@ public:
 		setMultOp(CharacterSet::setNone, "*/%"),
 		setRelOp(CharacterSet::setNone, "=!<>"),
 		setLogicalOp(CharacterSet::setNone, "|&"),
-		subStyles(styleSubable, 0x80, 0x40, activeFlag) {
+		subStyles(styleSubable, 0x80, 0x40, inactiveFlag) {
 	}
 	// Deleted so LexerCPP objects can not be copied.
 	LexerCPP(const LexerCPP &) = delete;
@@ -585,8 +602,8 @@ public:
 	}
 	int SCI_METHOD StyleFromSubStyle(int subStyle) override {
 		const int styleBase = subStyles.BaseStyle(MaskActive(subStyle));
-		const int active = subStyle & activeFlag;
-		return styleBase | active;
+		const int inactive = subStyle & inactiveFlag;
+		return styleBase | inactive;
 	}
 	int SCI_METHOD PrimaryStyleFromStyle(int style) noexcept override {
 		return MaskActive(style);
@@ -598,7 +615,7 @@ public:
 		subStyles.SetIdentifiers(style, identifiers);
 	}
 	int SCI_METHOD DistanceToSecondaryStyles() noexcept override {
-		return activeFlag;
+		return inactiveFlag;
 	}
 	const char * SCI_METHOD GetSubStyleBases() noexcept override {
 		return styleSubable;
@@ -606,7 +623,7 @@ public:
 	int SCI_METHOD NamedStyles() override {
 		return std::max(subStyles.LastAllocated() + 1,
 			sizeLexicalClasses) +
-			activeFlag;
+			inactiveFlag;
 	}
 	const char * SCI_METHOD NameOfStyle(int style) override {
 		if (style >= NamedStyles())
@@ -624,11 +641,11 @@ public:
 		if (firstSubStyle >= 0) {
 			const int lastSubStyle = subStyles.LastAllocated();
 			if (((style >= firstSubStyle) && (style <= (lastSubStyle))) ||
-				((style >= firstSubStyle + activeFlag) && (style <= (lastSubStyle + activeFlag)))) {
+				((style >= firstSubStyle + inactiveFlag) && (style <= (lastSubStyle + inactiveFlag)))) {
 				int styleActive = style;
 				if (style > lastSubStyle) {
 					returnBuffer = "inactive ";
-					styleActive -= activeFlag;
+					styleActive -= inactiveFlag;
 				}
 				const int styleMain = StyleFromSubStyle(styleActive);
 				returnBuffer += lexicalClasses[styleMain].tags;
@@ -637,9 +654,9 @@ public:
 		}
 		if (style < sizeLexicalClasses)
 			return lexicalClasses[style].tags;
-		if (style >= activeFlag) {
+		if (style >= inactiveFlag) {
 			returnBuffer = "inactive ";
-			const int styleActive = style - activeFlag;
+			const int styleActive = style - inactiveFlag;
 			if (styleActive < sizeLexicalClasses)
 				returnBuffer += lexicalClasses[styleActive].tags;
 			else
@@ -664,7 +681,7 @@ public:
 		return new LexerCPP(false);
 	}
 	constexpr static int MaskActive(int style) noexcept {
-		return style & ~activeFlag;
+		return style & ~inactiveFlag;
 	}
 	void EvaluateTokens(std::vector<std::string> &tokens, const SymbolTable &preprocessorDefinitions);
 	std::vector<std::string> Tokenize(const std::string &expr) const;
@@ -822,7 +839,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 	std::string rawStringTerminator = rawStringTerminators.ValueAt(lineCurrent-1);
 	SparseState<std::string> rawSTNew(lineCurrent);
 
-	int activitySet = preproc.IsInactive() ? activeFlag : 0;
+	int activitySet = preproc.ActiveState();
 
 	const WordClassifier &classifierIdentifiers = subStyles.Classifier(SCE_C_IDENTIFIER);
 	const WordClassifier &classifierDocKeyWords = subStyles.Classifier(SCE_C_COMMENTDOCKEYWORD);
@@ -849,7 +866,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			isIncludePreprocessor = false;
 			inRERange = false;
 			if (preproc.IsInactive()) {
-				activitySet = activeFlag;
+				activitySet = inactiveFlag;
 				sc.SetState(sc.state | activitySet);
 			}
 		}
@@ -1274,6 +1291,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					isIncludePreprocessor = true;
 				} else {
 					if (options.trackPreprocessor) {
+						// If #if is nested too deeply (>31 levels) the active/inactive appearance
+						// will stop reflecting the code.
 						if (sc.Match("ifdef") || sc.Match("ifndef")) {
 							const bool isIfDef = sc.Match("ifdef");
 							const int startRest = isIfDef ? 5 : 6;
@@ -1285,41 +1304,52 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 							const bool ifGood = EvaluateExpression(restOfLine, preprocessorDefinitions);
 							preproc.StartSection(ifGood);
 						} else if (sc.Match("else")) {
+							// #else is shown as active if either preceding or following section is active
+							// as that means that it contributed to the result.
 							if (!preproc.CurrentIfTaken()) {
+								// Inactive, may become active if parent scope active
+								assert(sc.state == (SCE_C_PREPROCESSOR|inactiveFlag));
 								preproc.InvertCurrentLevel();
-								activitySet = preproc.IsInactive() ? activeFlag : 0;
+								activitySet = preproc.ActiveState();
+								// If following is active then show "else" as active
 								if (!activitySet)
-									sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
-							} else if (!preproc.IsInactive()) {
+									sc.ChangeState(SCE_C_PREPROCESSOR);
+							} else if (preproc.IsActive()) {
+								// Active -> inactive
+								assert(sc.state == SCE_C_PREPROCESSOR);
 								preproc.InvertCurrentLevel();
-								activitySet = preproc.IsInactive() ? activeFlag : 0;
-								if (!activitySet)
-									sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
+								activitySet = preproc.ActiveState();
+								// Continue to show "else" as active as it ends active section.
 							}
 						} else if (sc.Match("elif")) {
 							// Ensure only one chosen out of #if .. #elif .. #elif .. #else .. #endif
+							// #elif is shown as active if either preceding or following section is active
+							// as that means that it contributed to the result.
 							if (!preproc.CurrentIfTaken()) {
+								// Inactive, if expression true then may become active if parent scope active
+								assert(sc.state == (SCE_C_PREPROCESSOR|inactiveFlag));
 								// Similar to #if
 								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 4, true);
 								const bool ifGood = EvaluateExpression(restOfLine, preprocessorDefinitions);
 								if (ifGood) {
 									preproc.InvertCurrentLevel();
-									activitySet = preproc.IsInactive() ? activeFlag : 0;
+									activitySet = preproc.ActiveState();
 									if (!activitySet)
-										sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
+										sc.ChangeState(SCE_C_PREPROCESSOR);
 								}
-							} else if (!preproc.IsInactive()) {
+							} else if (preproc.IsActive()) {
+								// Active -> inactive
+								assert(sc.state == SCE_C_PREPROCESSOR);
 								preproc.InvertCurrentLevel();
-								activitySet = preproc.IsInactive() ? activeFlag : 0;
-								if (!activitySet)
-									sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
+								activitySet = preproc.ActiveState();
+								// Continue to show "elif" as active as it ends active section.
 							}
 						} else if (sc.Match("endif")) {
 							preproc.EndSection();
-							activitySet = preproc.IsInactive() ? activeFlag : 0;
+							activitySet = preproc.ActiveState();
 							sc.ChangeState(SCE_C_PREPROCESSOR|activitySet);
 						} else if (sc.Match("define")) {
-							if (options.updatePreprocessor && !preproc.IsInactive()) {
+							if (options.updatePreprocessor && preproc.IsActive()) {
 								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 6, true);
 								size_t startName = 0;
 								while ((startName < restOfLine.length()) && IsSpaceOrTab(restOfLine[startName]))
@@ -1357,7 +1387,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 								}
 							}
 						} else if (sc.Match("undef")) {
-							if (options.updatePreprocessor && !preproc.IsInactive()) {
+							if (options.updatePreprocessor && preproc.IsActive()) {
 								const std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 5, false);
 								std::vector<std::string> tokens = Tokenize(restOfLine);
 								if (tokens.size() >= 1) {

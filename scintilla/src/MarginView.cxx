@@ -26,6 +26,7 @@
 #include "ILexer.h"
 #include "Scintilla.h"
 
+#include "CharacterCategory.h"
 #include "Position.h"
 #include "IntegerRectangle.h"
 #include "UniqueString.h"
