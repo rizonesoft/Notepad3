@@ -427,24 +427,23 @@ extern SETTINGS_T Settings;
 
 typedef struct _flags_t
 {
+  int  ToolbarLook;
+
   bool bDevDebugMode;
   bool bStickyWindowPosition;
   bool bReuseWindow;
   bool bSingleFileInstance;
-  int fReuseWindow;
-  int fSingleFileInstance;
-  int fNoReuseWindow;
 
-  int MultiFileArg;
-  int RelativeFileMRU;
-  int PortableMyDocs;
-  int NoFadeHidden;
-  int ToolbarLook;
-  int SimpleIndentGuides;
-  int NoHTMLGuess;
-  int NoCGIGuess;
-  int NoFileVariables;
-  int ShellUseSystemMRU;
+  bool MultiFileArg;
+  bool RelativeFileMRU;
+  bool PortableMyDocs;
+  bool NoFadeHidden;
+  bool SimpleIndentGuides;
+  bool NoHTMLGuess;
+  bool NoCGIGuess;
+  bool NoFileVariables;
+  bool ShellUseSystemMRU;
+
   int PrintFileAndLeave;
 
 } FLAGS_T, * PFLAGS_T;

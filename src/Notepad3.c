@@ -101,10 +101,6 @@ static int     s_WinCurrentWidth = 0;
 static LPWSTR    s_lpFileList[FILE_LIST_SIZE] = { NULL };
 static int       s_cFileList = 0;
 static int       s_cchiFileList = 0;
-static LPWSTR    s_lpFileArg = NULL;
-static LPWSTR    s_lpSchemeArg = NULL;
-static LPWSTR    s_lpMatchArg = NULL;
-static LPWSTR    s_lpEncodingArg = NULL;
 
 static WCHAR* const _s_RecentFiles = L"Recent Files";
 static WCHAR* const _s_RecentFind = L"Recent Find";
@@ -114,6 +110,7 @@ static WCHAR     s_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 
 static bool      s_bRunningWatch = false;
 static bool      s_bFileReadOnly = false;
+static bool      s_bIsElevated = false;
 
 static int       s_iToolBarTheme = -1;
 static int       s_iSortOptions = 0;
@@ -122,7 +119,6 @@ static bool      s_bIsAppThemed = true;
 static UINT      s_msgTaskbarCreated = 0;
 static bool      s_dwChangeNotifyTime = 0;
 static HANDLE    s_hChangeHandle = NULL;
-static int       s_fKeepTitleExcerpt = 0;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
 static DWORD     s_dwLastCopyTime = 0;
@@ -373,27 +369,36 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 
 //=============================================================================
 //
-// Static Flags
+// CommandLine Parsing Flags
 //
-static bool      s_flagIsElevated           = false;
-static bool      s_flagStartAsTrayIcon      = false;
-static bool      s_flagPosParam             = false;
-static bool      s_flagNewFromClipboard     = false;
-static bool      s_flagPasteBoard           = false;
-static bool      s_flagJumpTo               = false;
-static bool      s_flagLexerSpecified       = false;
-static bool      s_flagQuietCreate          = false;
-static bool      s_flagRelaunchElevated     = false;
-static bool      s_flagDisplayHelp          = false;
-static bool      s_flagBufferFile           = false;
-static bool      s_flagSearchPathIfRelative = false;
-// multi-state flags
-static int       s_flagAlwaysOnTop  = 0;
-static int       s_flagWindowPos    = 0;
-static cpi_enc_t s_flagSetEncoding  = CPI_NONE;
-static int       s_flagSetEOLMode   = 0;
-static int       s_flagMatchText    = 0;
-static int       s_flagChangeNotify = 0;
+static LPWSTR     s_lpEncodingArg = NULL;
+static LPWSTR     s_lpMatchArg = NULL;
+static LPWSTR     s_lpSchemeArg = NULL;
+static LPWSTR     s_lpFileArg = NULL;
+
+static cpi_enc_t  s_flagSetEncoding = CPI_NONE;
+static int        s_flagMultiFileArg = 0;
+static int        s_flagSetEOLMode = 0;
+static int        s_flagShellUseSystemMRU = 0;
+static bool       s_flagBufferFile = false;
+static int        s_flagReuseWindow = 0;
+static int        s_flagSingleFileInstance = 0;
+static bool       s_flagStartAsTrayIcon = false;
+static int        s_flagAlwaysOnTop = 0;
+static bool       s_flagPosParam = false;
+static int        s_flagWindowPos = 0;
+static bool       s_flagKeepTitleExcerpt = false;
+static bool       s_flagNewFromClipboard = false;
+static bool       s_flagPasteBoard = false;
+static bool       s_flagJumpTo = false;
+static int        s_flagMatchText = 0;
+static int        s_flagChangeNotify = 0;
+static bool       s_flagQuietCreate = false;
+static bool       s_flagLexerSpecified = false;
+static bool       s_flagRelaunchElevated = false;
+static bool       s_flagSearchPathIfRelative = false;
+static bool       s_flagDisplayHelp = false;
+static int        s_flagPrintFileAndLeave = 0;
 
 //==============================================================================
 
@@ -408,14 +413,22 @@ static void  _UpdateToolbarDelayed();
 //
 static bool IsDocumentModified = false;
 
-static void  _SetDocumentModified(bool bModified)
+static void _SetDocumentModified(bool bModified)
 {
   if (IsDocumentModified != bModified) {
     IsDocumentModified = bModified;
     UpdateToolbar();
     UpdateStatusbar(false);
+    if (!bModified && SciCall_GetModify()) {
+      SciCall_SetSavePoint();
+    }
   }
   if (bModified) {
+    // Force trigger modified (e.g. ReloadElevated)
+    if (!SciCall_GetModify()) {
+      SciCall_AppendText(1, " "); // trigger dirty flag
+      SciCall_DeleteRange(SciCall_GetTextLength() - 1, 1);
+    }
     if (IsWindow(Globals.hwndDlgFindReplace)) {
       SendMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDC_DOC_MODIFIED, 1), 0);
     }
@@ -455,25 +468,21 @@ static void _InitGlobals()
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
 
-
-  DefaultFlags.bDevDebugMode = false;
-  DefaultFlags.bStickyWindowPosition = false;
-  DefaultFlags.bReuseWindow = false;
-  DefaultFlags.bSingleFileInstance = true;
-  DefaultFlags.fReuseWindow = 0; Flags.fReuseWindow = 0;
-  DefaultFlags.fNoReuseWindow = 0; Flags.fNoReuseWindow = 0;
-  DefaultFlags.fSingleFileInstance = 1; Flags.fSingleFileInstance = 1;
-  DefaultFlags.MultiFileArg = 0;
-  DefaultFlags.RelativeFileMRU = 1;
-  DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
-  DefaultFlags.NoFadeHidden = 0;
-  DefaultFlags.ToolbarLook = IsXP() ? 1 : 2;
-  DefaultFlags.SimpleIndentGuides = 0;
-  DefaultFlags.NoHTMLGuess = 0;
-  DefaultFlags.NoCGIGuess = 0;
-  DefaultFlags.NoFileVariables = 0;
-  DefaultFlags.ShellUseSystemMRU = 1;
-  DefaultFlags.PrintFileAndLeave = 0;
+  Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
+  Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
+  Flags.bReuseWindow = DefaultFlags.bReuseWindow = false;
+  Flags.bSingleFileInstance = DefaultFlags.bSingleFileInstance = true;
+  Flags.MultiFileArg = DefaultFlags.MultiFileArg = false;
+  Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
+  Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
+  Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
+  Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsXP() ? 1 : 2;
+  Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
+  Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
+  Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
+  Flags.NoFileVariables = DefaultFlags.NoFileVariables = false;
+  Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
+  Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
 }
 
 
@@ -609,7 +618,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
 
   // Check if running with elevated privileges
-  s_flagIsElevated = IsUserAdmin() || IsElevated();
+  s_bIsElevated = IsUserAdmin() || IsElevated();
 
   // Default Encodings (may already be used for command line parsing)
   Encoding_InitDefaults();
@@ -625,7 +634,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
   // Adapt window class name
-  if (s_flagIsElevated) {
+  if (s_bIsElevated) {
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
   }
   if (s_flagPasteBoard) {
@@ -1017,16 +1026,17 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
             StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),s_lpFileArg);
             InstallFileWatching(Globals.CurrentFile);
           }
-          else
-            StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),L"");
-
+          else {
+            StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), L"");
+          }
           if (!s_flagLexerSpecified) {
             Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
           }
+
           _SetDocumentModified(true);
 
           // check for temp file and delete
-          if (s_flagIsElevated && PathFileExists(s_wchTmpFilePath)) {
+          if (s_bIsElevated && PathFileExists(s_wchTmpFilePath)) {
             DeleteFile(s_wchTmpFilePath);
           }
         }
@@ -1067,7 +1077,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   // reset
   Encoding_SrcCmdLn(CPI_NONE);
   s_flagQuietCreate = false;
-  s_fKeepTitleExcerpt = 0;
+  s_flagKeepTitleExcerpt = false;
 
   // undo / redo selections
   if (UndoRedoSelectionUTArray != NULL) {
@@ -1106,18 +1116,15 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // EOL mode
-  if (0 != s_flagSetEOLMode) {
-    SendMessage(
-      Globals.hwndMain,
-      WM_COMMAND,
-      MAKELONG(IDM_LINEENDINGS_CRLF + s_flagSetEOLMode -1,1),
-      0);
+  if (s_flagSetEOLMode != 0) {
+    SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_LINEENDINGS_CRLF + s_flagSetEOLMode -1, 1), 0);
     s_flagSetEOLMode = 0;
   }
 
   // Match Text
-  if (s_flagMatchText && s_lpMatchArg) {
-    if (StrIsNotEmpty(s_lpMatchArg) && SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0)) {
+  if (s_flagMatchText && StrIsNotEmpty(s_lpMatchArg)) 
+  {
+    if (SciCall_GetTextLength() > 0) {
 
       WideCharToMultiByte(Encoding_SciCP,0,s_lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
 
@@ -1175,7 +1182,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   UpdateMarginWidth();
 
   // print file immediately and quit
-  if (Flags.PrintFileAndLeave)
+  if (s_flagPrintFileAndLeave)
   {
     WCHAR *pszTitle;
     WCHAR tchUntitled[32] = { L'\0' };
@@ -2174,9 +2181,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         MRU_Empty(Globals.pFileMRU);
         MRU_Save(Globals.pFileMRU);
       }
-      else
+      else {
         MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
-
+      }
       MRU_Destroy(Globals.pFileMRU);
 
       if (!Settings.SaveFindReplace) {
@@ -2495,12 +2502,12 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (params) {
       CopyMemory(params, pcds->lpData, pcds->cbData);
 
-      if (params->flagLexerSpecified)
+      if (params->flagLexerSpecified) {
         s_flagLexerSpecified = true;
-
-      if (params->flagQuietCreate)
+      }
+      if (params->flagQuietCreate) {
         s_flagQuietCreate = true;
-
+      }
       if (params->flagFileSpecified) {
 
         bool bOpened = false;
@@ -5512,9 +5519,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
         {
-          int _fNoFileVariables = Flags.NoFileVariables;
-          bool _bNoEncodingTags = Settings.NoEncodingTags;
-          Flags.NoFileVariables = 1;
+          bool const _fNoFileVariables = Flags.NoFileVariables;
+          bool const _bNoEncodingTags = Settings.NoEncodingTags;
+          Flags.NoFileVariables = true;
           Settings.NoEncodingTags = true;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
@@ -6423,7 +6430,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
       }
     }
-    return 1;
+    return TRUE;
   }
 
   // --- check ALL events ---
@@ -7633,12 +7640,11 @@ void ParseCommandLine()
       // options
       if (lp1[1] == L'\0') {
         if (!bIsFileArg && (lp1[0] == L'+')) {
-          Flags.MultiFileArg = 2;
+          s_flagMultiFileArg = 2;
           bIsFileArg = true;
         }
-
         else if (!bIsFileArg && (lp1[0] == L'-')) {
-          Flags.MultiFileArg = 1;
+          s_flagMultiFileArg = 1;
           bIsFileArg = true;
         }
       }
@@ -7693,9 +7699,9 @@ void ParseCommandLine()
           StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
           StrTrim(wch, L" ");
           if (*wch == L'1')
-            Flags.ShellUseSystemMRU = 2;
+            s_flagShellUseSystemMRU = 2;
           else
-            Flags.ShellUseSystemMRU = 1;
+            s_flagShellUseSystemMRU = 1;
         }
         // Relaunch elevated
         else if (StrCmpNI(lp1, L"tmpfbuf=", CSTRLEN(L"tmpfbuf=")) == 0) {
@@ -7709,21 +7715,19 @@ void ParseCommandLine()
         else switch (*CharUpper(lp1)) {
 
         case L'N':
-          Flags.fReuseWindow = 0;
-          Flags.fNoReuseWindow = 1;
+          s_flagReuseWindow = 1;
           if (*CharUpper(lp1 + 1) == L'S')
-            Flags.fSingleFileInstance = 1;
+            s_flagSingleFileInstance = 2;
           else
-            Flags.fSingleFileInstance = 0;
+            s_flagSingleFileInstance = 1;
           break;
 
         case L'R':
-          Flags.fReuseWindow = 1;
-          Flags.fNoReuseWindow = 0;
+          s_flagReuseWindow = 2;
           if (*CharUpper(lp1 + 1) == L'S')
-            Flags.fSingleFileInstance = 1;
+            s_flagSingleFileInstance = 2;
           else
-            Flags.fSingleFileInstance = 0;
+            s_flagSingleFileInstance = 1;
           break;
 
         case L'F':
@@ -7824,7 +7828,7 @@ void ParseCommandLine()
         case L'T':
           if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
             StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), lp1, len);
-            s_fKeepTitleExcerpt = 1;
+            s_flagKeepTitleExcerpt = true;
           }
           break;
 
@@ -7838,8 +7842,7 @@ void ParseCommandLine()
 
         case L'E':
           if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-            if (s_lpEncodingArg)
-              LocalFree(s_lpEncodingArg);
+            if (s_lpEncodingArg) { LocalFree(s_lpEncodingArg); }
             s_lpEncodingArg = StrDup(lp1);
           }
           break;
@@ -7944,7 +7947,7 @@ void ParseCommandLine()
 
         case L'Z':
           ExtractFirstArgument(lp2, lp1, lp2, (int)len);
-          Flags.MultiFileArg = 1;
+          s_flagMultiFileArg = 1;
           bIsNotepadReplacement = true;
           break;
 
@@ -7953,9 +7956,10 @@ void ParseCommandLine()
           break;
 
         case L'V':
-          Flags.PrintFileAndLeave = 1;
-          if (*CharUpper(lp1 + 1) == L'D')
-            Flags.PrintFileAndLeave = 2;  // open printer dialog
+          s_flagPrintFileAndLeave = 1;
+          if (*CharUpper(lp1 + 1) == L'D') {
+            s_flagPrintFileAndLeave = 2;  // open printer dialog
+          }
           break;
 
         default:
@@ -8029,58 +8033,50 @@ void LoadFlags()
 
     Flags.bDevDebugMode = IniSectionGetBool(pIniSection, L"DevDebugMode", DefaultFlags.bDevDebugMode);
     Flags.bStickyWindowPosition = IniSectionGetBool(pIniSection, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
-    Flags.bReuseWindow = IniSectionGetBool(pIniSection, L"ReuseWindow", DefaultFlags.bReuseWindow);
-    Flags.bSingleFileInstance = IniSectionGetBool(pIniSection, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
 
-    if (!Flags.fReuseWindow && !Flags.fNoReuseWindow) 
-    {
-      Flags.fReuseWindow = Flags.bReuseWindow ? 1 : 0;
-      Flags.fNoReuseWindow = Flags.bReuseWindow ? 0 : 1;
-      Flags.fSingleFileInstance = Flags.bSingleFileInstance ? 1 : 0;
+    if (s_flagReuseWindow == 0) {
+      Flags.bReuseWindow = IniSectionGetBool(pIniSection, L"ReuseWindow", DefaultFlags.bReuseWindow);
+    }
+    else {
+      Flags.bReuseWindow = (s_flagReuseWindow == 2);
     }
 
-    if (Flags.MultiFileArg == 0) {
-      if (IniSectionGetInt(pIniSection, L"MultiFileArg", DefaultFlags.MultiFileArg))
-        Flags.MultiFileArg = 2;
+    if (s_flagSingleFileInstance == 0) {
+      Flags.bSingleFileInstance = IniSectionGetBool(pIniSection, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
+    }
+    else {
+      Flags.bSingleFileInstance = (s_flagSingleFileInstance == 2);
     }
 
-    if (IniSectionGetInt(pIniSection, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU))
-      Flags.RelativeFileMRU = 1;
+    if (s_flagMultiFileArg == 0) {
+      Flags.MultiFileArg = IniSectionGetBool(pIniSection, L"MultiFileArg", DefaultFlags.MultiFileArg);
+    }
+    else {
+      Flags.MultiFileArg = (s_flagMultiFileArg == 2);
+    }
 
-    if (IniSectionGetInt(pIniSection, L"PortableMyDocs", DefaultFlags.PortableMyDocs))
-      Flags.PortableMyDocs = 1;
+    if (s_flagShellUseSystemMRU == 0) {
+      Flags.ShellUseSystemMRU = IniSectionGetBool(pIniSection, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
+    }
+    else {
+      Flags.ShellUseSystemMRU = (s_flagShellUseSystemMRU == 2);
+    }
 
-    if (IniSectionGetInt(pIniSection, L"NoFadeHidden", DefaultFlags.NoFadeHidden))
-      Flags.NoFadeHidden = 1;
+    Flags.RelativeFileMRU = IniSectionGetBool(pIniSection, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
+    Flags.PortableMyDocs = IniSectionGetBool(pIniSection, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
+    Flags.NoFadeHidden = IniSectionGetBool(pIniSection, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
 
     Flags.ToolbarLook = IniSectionGetInt(pIniSection, L"ToolbarLook", DefaultFlags.ToolbarLook);
     Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
 
-    if (IniSectionGetInt(pIniSection, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides))
-      Flags.SimpleIndentGuides = 1;
+    Flags.SimpleIndentGuides = IniSectionGetBool(pIniSection, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
+    Flags.NoHTMLGuess = IniSectionGetBool(pIniSection, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
+    Flags.NoCGIGuess = IniSectionGetBool(pIniSection, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
+    Flags.NoFileVariables = IniSectionGetInt(pIniSection, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
-    if (IniSectionGetInt(pIniSection, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess))
-      Flags.NoHTMLGuess = 1;
-
-    if (IniSectionGetInt(pIniSection, L"NoCGIGuess", DefaultFlags.NoCGIGuess))
-      Flags.NoCGIGuess = 1;
-
-    if (IniSectionGetInt(pIniSection, L"NoFileVariables", DefaultFlags.NoFileVariables))
-      Flags.NoFileVariables = 1;
-
-    if (Flags.ShellUseSystemMRU == 0) {
-      if (IniSectionGetInt(pIniSection, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU)) {
-        Flags.ShellUseSystemMRU = 2;
-      }
-    }
+    Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
 
     FreeMem(pIniSection);
-
-    // -------------------------
-    // non-settings global flags
-    // -------------------------
-    Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
-
   }
 }
 
@@ -8379,7 +8375,7 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
-  SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_flagIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
+  SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
                  Settings.PathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
@@ -9568,7 +9564,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),L"");
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
-    if (!s_fKeepTitleExcerpt) { StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L""); }
+    if (!s_flagKeepTitleExcerpt) { StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L""); }
     FileVars_Init(NULL,0,&Globals.fvCurFile);
     EditSetNewText(Globals.hwndEdit, "", 0);
 
@@ -9669,12 +9665,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
 
-    if (!s_fKeepTitleExcerpt)
-      StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
-
-    if (!s_flagLexerSpecified) // flag will be cleared
-      Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
-
+    if (!s_flagKeepTitleExcerpt) {
+      StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
+    }
+    if (!s_flagLexerSpecified) { // flag will be cleared
+      Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+    }
     SciCall_SetEOLMode(fioStatus.iEOLMode);
     Encoding_Current(fioStatus.iEncoding); // load may change encoding
     Encoding_HasChanged(fioStatus.iEncoding);
@@ -9691,9 +9687,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
     SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
 
-    if (Flags.ShellUseSystemMRU == 2)
-      SHAddToRecentDocs(SHARD_PATHW,szFileName);
-
+    if (Flags.ShellUseSystemMRU) {
+      SHAddToRecentDocs(SHARD_PATHW, szFileName);
+    }
     // Install watching of the current file
     if (!bReload && Settings.ResetFileWatching) {
       if (Globals.bChasingDocTail) {
@@ -9746,7 +9742,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     // Show inconsistent line endings warning
-    if (fioStatus.bInconsistentEOLs && Settings.WarnInconsistEOLs) 
+    if (fioStatus.bInconsistentEOLs && Settings.WarnInconsistEOLs && !s_flagPrintFileAndLeave)
     {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
@@ -9757,13 +9753,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-    if (Settings.WarnInconsistentIndents)
+    if (Settings.WarnInconsistentIndents && !s_flagPrintFileAndLeave)
     {
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
     }
 
-    if (Settings.AutoDetectIndentSettings) 
+    if (Settings.AutoDetectIndentSettings && !s_flagPrintFileAndLeave)
     {
       if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
       {
@@ -9939,7 +9935,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
           StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),tchFile);
           SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
           SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
-          if (!s_fKeepTitleExcerpt)
+          if (!s_flagKeepTitleExcerpt)
             StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
           Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
         }
@@ -9967,7 +9963,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       MRU_AddFile(Globals.pFileMRU,Globals.CurrentFile,Flags.RelativeFileMRU,Flags.PortableMyDocs,iCurrEnc,iCaretPos,wchBookMarks);
-      if (Flags.ShellUseSystemMRU == 2) {
+      if (Flags.ShellUseSystemMRU) {
         SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
       }
       _SetDocumentModified(false);
@@ -9989,7 +9985,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       StringCchCopy(tchBase,COUNTOF(tchBase),Globals.CurrentFile);
       PathStripPath(tchBase);
     }
-    if (!s_flagIsElevated && Globals.dwLastError == ERROR_ACCESS_DENIED) {
+    if (!s_bIsElevated && Globals.dwLastError == ERROR_ACCESS_DENIED) {
       if (IDYES == MsgBoxLng(MBYESNOWARN,IDS_MUI_ERR_ACCESSDENIED,tchFile)) {
         WCHAR lpTempPathBuffer[MAX_PATH];
         WCHAR szTempFileName[MAX_PATH];
@@ -10214,13 +10210,12 @@ bool ActivatePrevInst()
   HWND hwnd = NULL;
   COPYDATASTRUCT cds;
 
-  if ((Flags.fNoReuseWindow && !Flags.fSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard) {
+  if ((!Flags.bReuseWindow && !Flags.bSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard) {
     return false;
   }
 
-  if (Flags.fSingleFileInstance && s_lpFileArg) 
+  if (Flags.bSingleFileInstance && s_lpFileArg)
   {
-
     NormalizePathEx(s_lpFileArg, (DWORD)SizeOfMem(s_lpFileArg) / sizeof(WCHAR), true, s_flagSearchPathIfRelative);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
@@ -10284,7 +10279,7 @@ bool ActivatePrevInst()
     }
   }
 
-  if (Flags.fNoReuseWindow) {
+  if (!Flags.bReuseWindow) {
     return false;
   }
 
@@ -10374,7 +10369,7 @@ bool ActivatePrevInst()
 //
 bool RelaunchMultiInst() {
 
-  if (Flags.MultiFileArg == 2 && s_cFileList > 1) {
+  if (Flags.MultiFileArg && (s_cFileList > 1)) {
 
     LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
     size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
@@ -10433,9 +10428,9 @@ bool RelaunchElevated(LPWSTR lpArgs) {
 
   bool result = false;
 
-  if (!IsVista() || s_flagIsElevated || !s_flagRelaunchElevated || s_flagDisplayHelp)
+  if (!IsVista() || s_bIsElevated || !s_flagRelaunchElevated || s_flagDisplayHelp) {
     return result;
-
+  }
   STARTUPINFO si;
   si.cb = sizeof(STARTUPINFO);
   GetStartupInfo(&si);
