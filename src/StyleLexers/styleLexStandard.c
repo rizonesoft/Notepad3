@@ -5,7 +5,7 @@
 KEYWORDLIST KeyWords_NULL = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexStandard = { 
-SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", 
+SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; tmp; log; asc; doc; wtx", L"", 
 &KeyWords_NULL, {
     /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default", L"" },
     /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#008080", L"" },
@@ -27,7 +27,7 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", 
 
 
 EDITLEXER lexStandard2nd = { 
-SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", 
+SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; tmp; log; asc; doc; wtx", L"", 
 &KeyWords_NULL,{
     /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New", L"" },
     /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Courier New; size:-2; fore:#008080", L"" },

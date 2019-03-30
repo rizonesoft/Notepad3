@@ -1035,13 +1035,12 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           if (!s_flagLexerSpecified) {
             Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
           }
-
-          _SetSaveNeededFlag(true);
-
           // check for temp file and delete
           if (s_bIsElevated && PathFileExists(s_wchTmpFilePath)) {
             DeleteFile(s_wchTmpFilePath);
           }
+          _SetSaveNeededFlag(true);
+          FileSave(true, false, false, false); // issued from a save failed op
         }
         if (s_flagJumpTo) { // Jump to position
           EditJumpTo(Globals.hwndEdit,s_iInitialLine,s_iInitialColumn);
@@ -9992,8 +9991,10 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
         WCHAR lpTempPathBuffer[MAX_PATH];
         WCHAR szTempFileName[MAX_PATH];
 
-        if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
-            GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
+        if (GetTempPath(MAX_PATH,lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) 
+        {
+          size_t const len = StringCchLen(szTempFileName, MAX_PATH); // replace possible unkown extension
+          StringCchCopy(PathFindExtension(szTempFileName), (MAX_PATH - len), PathFindExtension(Globals.CurrentFile));
           if (FileIO(false,szTempFileName,true,true,false,&fioStatus,true)) {
             //~Encoding_Current(fioStatus.iEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
@@ -10038,7 +10039,6 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       MsgBoxLng(MBWARN,IDS_MUI_ERR_SAVEFILE,tchFile);
     }
   }
-  //???EditEnsureSelectionVisible(Globals.hwndEdit);
   return(fSuccess);
 }
 
