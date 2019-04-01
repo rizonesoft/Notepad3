@@ -619,16 +619,7 @@ const char* Encoding_GetParseNames(const cpi_enc_t iEncoding) {
 // ============================================================================
 
 
-int Encoding_Get1stParseName(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
-{
-  char tmpbuffer[128] = { '\0' };;
-  Encoding_Get1stParseName(iEncoding, tmpbuffer, 128);
-  return MultiByteToWideChar(Encoding_SciCP, 0, tmpbuffer, -1, buffer, cwch);
-}
-// ============================================================================
-
-
-int Encoding_Get1stParseName(const cpi_enc_t iEncoding, char* buffer, size_t cch) {
+int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch) {
   if (iEncoding >= 0) {
     const char* p = Encoding_GetParseNames(iEncoding);
     if (p && *p) {
@@ -641,6 +632,15 @@ int Encoding_Get1stParseName(const cpi_enc_t iEncoding, char* buffer, size_t cch
     }
   }
   return 0;
+}
+// ============================================================================
+
+
+int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
+{
+  char tmpbuffer[256] = { '\0' };
+  Encoding_GetNameA(iEncoding, tmpbuffer, 256);
+  return MultiByteToWideChar(Encoding_SciCP, 0, tmpbuffer, -1, buffer, (int)cwch);
 }
 // ============================================================================
 

@@ -981,6 +981,7 @@ bool EditLoadFile(
     OPEN_EXISTING,
     FILE_ATTRIBUTE_NORMAL,
     NULL);
+
   Globals.dwLastError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
@@ -994,8 +995,8 @@ bool EditLoadFile(
   DWORD dwBufSize = dwFileSize + 16;
 
   // check for unknown extension
-  LPWSTR lpszExt = PathFindExtension(pszFile);
-  if (!Style_HasLexerForExt(lpszExt)) {
+  LPCWSTR lpszExt = PathFindExtension(pszFile);
+  if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
     if (InfoBoxLng(MBYESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
       CloseHandle(hFile);
       status->bUnknownExt = true;

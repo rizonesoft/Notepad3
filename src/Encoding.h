@@ -108,7 +108,8 @@ bool       Encoding_IsRECODE(const cpi_enc_t iEncoding);
 void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding);
 const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding);
 const char* Encoding_GetParseNames(const cpi_enc_t iEncoding);
-void Encoding_Get1stParseName(const cpi_enc_t iEncoding, const char* buffer, size_t cch);
+int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch);
+int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cch);
 
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
