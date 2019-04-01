@@ -323,9 +323,6 @@ DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
 DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
-DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode)
-
-
 //=============================================================================
 //
 //  Style definition
@@ -340,9 +337,18 @@ DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
 
 //=============================================================================
 //
-// Indentation Guides
+// Indentation Guides and Wraping
 //
+DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode)
+DeclareSciCallV1(SetWrapIndentMode, SETWRAPINDENTMODE, int, mode)
+DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode)
+
+DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode)
+DeclareSciCallV1(SetEdgeColumn, SETEDGECOLUMN, int, column)
+
 DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width)
+DeclareSciCallR0(GetTabWidth, GETTABWIDTH, int)
+
 DeclareSciCallV1(SetIndent, SETINDENT, int, width)
 DeclareSciCallR0(GetIndent, GETINDENT, int)
 DeclareSciCallV1(SetUseTabs, SETUSETABS, bool, use)

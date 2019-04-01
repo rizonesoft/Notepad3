@@ -618,18 +618,18 @@ const char* Encoding_GetParseNames(const cpi_enc_t iEncoding) {
 // ============================================================================
 
 
-bool Has_UTF16_LE_BOM(const char* pBuf, int cnt)
+bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
   return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
 }
 // ----------------------------------------------------------------------------
 
-bool Has_UTF16_BE_BOM(const char* pBuf, int cnt)
+bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
   return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
 }
 // ============================================================================

@@ -109,8 +109,8 @@ void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding);
 const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding);
 const char* Encoding_GetParseNames(const cpi_enc_t iEncoding);
 
-bool Has_UTF16_LE_BOM(const char* pBuf, int cnt);
-bool Has_UTF16_BE_BOM(const char* pBuf, int cnt);
+bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
 
 inline bool IsUTF8Signature(const char* p) {
   return ((p[0] == '\xEF') && (p[1] == '\xBB') && (p[2] == '\xBF'));

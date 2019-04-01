@@ -41,7 +41,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; tmp; log; asc; 
     /*  9 */ { {_STYLE_GETSTYLEID(STY_CARET)}, IDS_LEX_2ND_CARET, L"2nd Caret (Color, Size 1-3)", L"size:1; ovrbar", L"" },
     /* 10 */ { {_STYLE_GETSTYLEID(STY_LONG_LN_MRK)}, IDS_LEX_2ND_LONG_LN, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
     /* 11 */ { {_STYLE_GETSTYLEID(STY_X_LN_SPACE)}, IDS_LEX_2ND_X_SPC, L"2nd Extra Line Spacing (Size)", L"", L"" },
-    /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+2; charset:2; fore:#000000; back:#00DC00; case:U; alpha:100", L"" },
+    /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; charset:2; case:U; alpha:100", L"" },
     /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#000000; alpha:100; alpha2:220; indic_box", L"" },
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
     /* 15 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
@@ -51,7 +51,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; tmp; log; asc; 
 EDITLEXER lexANSI = { 
 SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"", 
 &KeyWords_NULL,{
-    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; none; size:11", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; size:11; thin; smoothing:none", L"" },
     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
     { {STYLE_BRACELIGHT}, IDS_LEX_STD_BRACE, L"Matching Braces", L"size:+0", L"" },
     { {STYLE_BRACEBAD}, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"size:+0", L"" },
