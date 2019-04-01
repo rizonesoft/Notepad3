@@ -612,8 +612,35 @@ const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding) {
 }
 // ============================================================================
 
+
 const char* Encoding_GetParseNames(const cpi_enc_t iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].pszParseNames : NULL;
+}
+// ============================================================================
+
+
+int Encoding_Get1stParseName(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
+{
+  char tmpbuffer[128] = { '\0' };;
+  Encoding_Get1stParseName(iEncoding, tmpbuffer, 128);
+  return MultiByteToWideChar(Encoding_SciCP, 0, tmpbuffer, -1, buffer, cwch);
+}
+// ============================================================================
+
+
+int Encoding_Get1stParseName(const cpi_enc_t iEncoding, char* buffer, size_t cch) {
+  if (iEncoding >= 0) {
+    const char* p = Encoding_GetParseNames(iEncoding);
+    if (p && *p) {
+      ++p;
+      const char* q = StrChrA(p, ',');
+      if (q && *q) {
+        StringCchCopyNA(buffer, cch, p, (q - p));
+        return (int)min_s((q - p), cch);
+      }
+    }
+  }
+  return 0;
 }
 // ============================================================================
 

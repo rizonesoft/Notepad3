@@ -6883,7 +6883,7 @@ void LoadSettings()
   if (pIniSection) 
   {
     // prerequisites 
-    int const _ver = StrIsEmpty(Globals.CurrentFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
+    int const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
     s_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", _ver);
 
     Defaults.SaveSettings = true;
@@ -9996,9 +9996,12 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       PathStripPath(tchBase);
     }
     if (!s_bIsElevated && Globals.dwLastError == ERROR_ACCESS_DENIED) {
-      if (IDYES == MsgBoxLng(MBYESNOWARN,IDS_MUI_ERR_ACCESSDENIED,tchFile)) {
+      if (IDYES == MsgBoxLng(MBYESNOWARN,IDS_MUI_ERR_ACCESSDENIED,tchFile)) 
+      {
         WCHAR lpTempPathBuffer[MAX_PATH];
         WCHAR szTempFileName[MAX_PATH];
+        char chEncodingStrg[128];
+        WCHAR wchEncodingStrg[128];
 
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) 
         {
@@ -10015,6 +10018,11 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
             // remove relaunch elevated, we are doing this here already
             lpArgs = StrCutI(lpArgs,L"/u ");
             lpArgs = StrCutI(lpArgs,L"-u ");
+            // preserve encoding
+            
+            Encoding_Get1stParseName(Encoding_Current(CPI_GET), chEncodingStrg, COUNTOF(chEncodingStrg));
+
+
             WININFO wi = GetMyWindowPlacement(Globals.hwndMain,NULL);
             StringCchPrintf(szArguments,COUNTOF(szArguments),
               L"/pos %i,%i,%i,%i,%i /tmpfbuf=\"%s\" %s",wi.x,wi.y,wi.cx,wi.cy,wi.max,szTempFileName,lpArgs);
@@ -10447,31 +10455,31 @@ bool RelaunchElevated(LPWSTR lpArgs) {
   GetStartupInfo(&si);
 
   LPWSTR lpCmdLine = GetCommandLine();
-  size_t wlen = StringCchLenW(lpCmdLine,0) + 2UL;
+  size_t wlen = StringCchLenW(lpCmdLine, 0) + 2UL;
 
   WCHAR lpExe[MAX_PATH] = { L'\0' };
   WCHAR szArgs[2032] = { L'\0' };
   WCHAR szArguments[2032] = { L'\0' };
 
-  ExtractFirstArgument(lpCmdLine,lpExe,szArgs,(int)wlen);
+  ExtractFirstArgument(lpCmdLine, lpExe, szArgs, (int)wlen);
 
   if (lpArgs) {
-    StringCchCopy(szArgs,COUNTOF(szArgs),lpArgs); // override
+    StringCchCopy(szArgs, COUNTOF(szArgs), lpArgs); // override
   }
 
-  if (StrStrI(szArgs,L"/f ") || StrStrI(szArgs,L"-f ")) {
-    StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
+  if (StrStrI(szArgs, L"/f ") || StrStrI(szArgs, L"-f ")) {
+    StringCchCopy(szArguments, COUNTOF(szArguments), szArgs);
   }
   else {
-    if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) > 0)
-      StringCchPrintf(szArguments,COUNTOF(szArguments),L"/f \"%s\" %s",Globals.IniFile,szArgs);
+    if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) > 0)
+      StringCchPrintf(szArguments, COUNTOF(szArguments), L"/f \"%s\" %s", Globals.IniFile, szArgs);
     else
-      StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
+      StringCchCopy(szArguments, COUNTOF(szArguments), szArgs);
   }
 
   if (StrIsNotEmpty(szArguments)) {
     SHELLEXECUTEINFO sei;
-    ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
+    ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
     sei.cbSize = sizeof(SHELLEXECUTEINFO);
     sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
     sei.hwnd = GetForegroundWindow();
