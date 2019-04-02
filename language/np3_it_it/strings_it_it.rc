@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per l'encoding selezionato non sono disponibili nel tuo sistema."
     IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode.\nCi sarà una perdita di dati se salvi il file!"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE

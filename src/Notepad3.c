@@ -375,7 +375,8 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 static LPWSTR     s_lpEncodingArg = NULL;
 static LPWSTR     s_lpMatchArg = NULL;
 static LPWSTR     s_lpSchemeArg = NULL;
-static LPWSTR     s_lpFileArg = NULL;
+static LPWSTR     s_lpOrigFileArg = NULL;
+static WCHAR      s_lpFileArg[MAX_PATH+1];
 
 static cpi_enc_t  s_flagSetEncoding = CPI_NONE;
 static int        s_flagMultiFileArg = 0;
@@ -594,9 +595,9 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   OleUninitialize();
 
-  if (s_lpFileArg) {
-    FreeMem(s_lpFileArg);
-    s_lpFileArg = NULL;
+  if (s_lpOrigFileArg) {
+    FreeMem(s_lpOrigFileArg);
+    s_lpOrigFileArg = NULL;
   }
 }
 
@@ -1024,7 +1025,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     Encoding_SrcCmdLn(Encoding_MatchW(s_lpEncodingArg));
   }
   // Pathname parameter
-  if (s_flagIsElevatedRelaunch || (s_lpFileArg /*&& !g_flagNewFromClipboard*/))
+  if (s_flagIsElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
   {
     bool bOpened = false;
 
@@ -1039,7 +1040,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, lpFileToOpen);
       if (bOpened) {
         if (s_flagIsElevatedRelaunch) {
-          if (s_lpFileArg) {
+          if (StrIsNotEmpty(s_lpFileArg)) {
             InstallFileWatching(NULL); // Terminate file watching
             StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),s_lpFileArg);
             InstallFileWatching(Globals.CurrentFile);
@@ -1063,10 +1064,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         }
       }
     }
-    if (s_lpFileArg) {
-      FreeMem(s_lpFileArg);
-      s_lpFileArg = NULL;
-    }
+
+    s_lpFileArg[0] = L'\0';
+
     if (bOpened) {
       if (s_flagChangeNotify == 1) {
         Settings.FileWatchingMode = 0;
@@ -2236,8 +2236,14 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     bShutdownOK = true;
   }
 
-  if (umsg == WM_DESTROY)
+  if (s_lpOrigFileArg) {
+    FreeMem(s_lpOrigFileArg);
+    s_lpOrigFileArg = NULL;
+  }
+
+  if (umsg == WM_DESTROY) {
     PostQuitMessage(0);
+  }
 
   return FALSE;
 }
@@ -3355,7 +3361,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
         }
         else {
-          MsgBoxLng(MBWARN, IDS_MUI_ERR_SAVEFILE, Globals.IniFile);
+          MsgBoxLng(MBWARN, IDS_MUI_ERR_ELEVATED_RIGHTS, NULL);
         }
       }
       break;
@@ -8022,32 +8028,31 @@ void ParseCommandLine()
         }
 
       }
-
       // pathname
       else {
         LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
         if (lpFileBuf) {
-          s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - StringCchLenW(lp3, len));
+          size_t const fileArgLen = StringCchLenW(lp3, len);
+          s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - fileArgLen);
 
-          if (s_lpFileArg) {
-            FreeMem(s_lpFileArg);
-            //lpFileArg = NULL;
+          if (s_lpOrigFileArg) {
+            FreeMem(s_lpOrigFileArg);
+            //s_lpOrigFileArg = NULL;
           }
-          s_lpFileArg = AllocMem(sizeof(WCHAR)*(MAX_PATH+1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
-          StringCchCopy(s_lpFileArg, MAX_PATH, lp3);
+          s_lpOrigFileArg = AllocMem(sizeof(WCHAR)*(fileArgLen + 1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
+          StringCchCopy(s_lpOrigFileArg, fileArgLen + 1, lp3);
 
+          StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), lp3);
           PathFixBackslashes(s_lpFileArg);
-
           if (!PathIsRelative(s_lpFileArg) && !PathIsUNC(s_lpFileArg) &&
-              PathGetDriveNumber(s_lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) {
-
+              PathGetDriveNumber(s_lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) 
+          {
             WCHAR wchPath[MAX_PATH] = { L'\0' };
             StringCchCopy(wchPath, COUNTOF(wchPath), Globals.WorkingDirectory);
             PathStripToRoot(wchPath);
             PathCchAppend(wchPath, COUNTOF(wchPath), s_lpFileArg);
-            StringCchCopy(s_lpFileArg, MAX_PATH, wchPath);
+            StringCchCopy(s_lpFileArg, COUNTOF(s_lpFileArg), wchPath);
           }
-
           StrTrim(s_lpFileArg, L" \"");
 
           while ((s_cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3, lpFileBuf, lp3, (int)len)) {
@@ -9528,8 +9533,9 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
       Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : 0);
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-      if (Globals.pFileMRU->pszBookMarks[idx])
+      if (Globals.pFileMRU->pszBookMarks[idx]) {
         LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
+      }
       Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
     }
     fSuccess = EditSaveFile(Globals.hwndEdit,pszFileName, status, bSaveCopy);
@@ -9736,8 +9742,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       iCaretPos = Globals.pFileMRU->iCaretPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
-    MRU_AddFile(Globals.pFileMRU,szFileName,Flags.RelativeFileMRU,Flags.PortableMyDocs,fioStatus.iEncoding,iCaretPos,pszBookMarks);
-   
+    if (!(s_flagRelaunchElevated || s_flagIsElevatedRelaunch)) {
+      MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, pszBookMarks);
+    }
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
     SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
 
@@ -9898,6 +9905,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
 {
   WCHAR szArguments[2048] = { L'\0' };
+  s_flagRelaunchElevated = true;
   LPWSTR lpCmdLine = GetCommandLine();
   size_t const wlen = StringCchLenW(lpCmdLine, 0) + 2;
   LPWSTR lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
@@ -9909,19 +9917,22 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
   WCHAR wchFlags[32] = { L'\0' };
   if (s_flagAppIsClosing) { StringCchCopy(wchFlags, COUNTOF(wchFlags), L"/UC"); }
   WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
+
+  if (s_lpOrigFileArg) {
+    lpArgs = StrCutI(lpArgs, s_lpOrigFileArg); // remove file from argument list
+  }
   StringCchPrintf(szArguments, COUNTOF(szArguments),
     L"%s /pos %i,%i,%i,%i,%i %s", wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, lpArgs);
 
   WCHAR lpTempPathBuffer[MAX_PATH] = { L'\0' };
   WCHAR szTempFileName[MAX_PATH] = { L'\0' };
 
-  if (StrIsNotEmpty(Globals.CurrentFile)) {
-
+  if (StrIsNotEmpty(Globals.CurrentFile)) 
+  {
     WCHAR tchBase[MAX_PATH] = { L'\0' };
-      if (StrIsNotEmpty(Globals.CurrentFile)) {
-        StringCchCopy(tchBase, COUNTOF(tchBase), Globals.CurrentFile);
-          PathStripPath(tchBase);
-      }
+    StringCchCopy(tchBase, COUNTOF(tchBase), Globals.CurrentFile);
+    PathStripPath(tchBase);
+
     if (GetTempPath(MAX_PATH, lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer, TEXT("NP3"), 0, szTempFileName))
     {
       size_t const len = StringCchLen(szTempFileName, MAX_PATH); // replace possible unknown extension
@@ -9936,19 +9947,19 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
         // preserve encoding
         WCHAR wchEncoding[80];
         Encoding_GetNameW(Encoding_Current(CPI_GET), wchEncoding, COUNTOF(wchEncoding));
+
         StringCchPrintf(szArguments, COUNTOF(szArguments),
           L"/%s %s /pos %i,%i,%i,%i,%i /tmpfbuf=\"%s\" %s", wchEncoding, wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, szTempFileName, lpArgs);
-        if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
-          if (!StrStrI(szArguments, tchBase)) {
-            StringCchPrintf(szArguments, COUNTOF(szArguments), L"%s \"%s\"", szArguments, Globals.CurrentFile);
-          }
+
+        if (!StrStrI(szArguments, tchBase)) {
+          StringCchPrintf(szArguments, COUNTOF(szArguments), L"%s \"%s\"", szArguments, Globals.CurrentFile);
         }
       }
       FreeMem(lpExe);
       FreeMem(lpArgs);
     }
   }
-  s_flagRelaunchElevated = true;
+
   if (RelaunchElevated(szArguments)) {
     // set no change and quit
     SciCall_SetSavePoint();
@@ -9961,6 +9972,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
       DeleteFile(szTempFileName);
     }
   }
+  s_flagRelaunchElevated = false;
   return false;
 }
 
@@ -10044,7 +10056,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
   }
 
   // Save As...
-  if (bSaveAs || bSaveCopy || StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)) == 0)
+  if (bSaveAs || bSaveCopy || StrIsEmpty(Globals.CurrentFile))
   {
     WCHAR tchFile[MAX_PATH] = { L'\0' };
     WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
@@ -10059,7 +10071,6 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
     if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), tchInitialDir))
     {
       fSuccess = FileIO(false, tchFile, true, true, false, &fioStatus, bSaveCopy);
-      //~if (fSuccess) Encoding_Current(fioStatus.iEncoding); // save should not change encoding
       if (fSuccess)
       {
         if (!bSaveCopy)
@@ -10084,12 +10095,11 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
   }
   else {
     fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, &fioStatus, false);
-    //~if (fSuccess) Encoding_Current(fioStatus.iEncoding); // save should not change encoding
   }
 
   if (fSuccess)
   {
-    if (!bSaveCopy)
+    if (!(bSaveCopy || s_flagRelaunchElevated))
     {
       cpi_enc_t iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
@@ -10115,7 +10125,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
   }
   else if (!fioStatus.bCancelDataLoss)
   {
-    if (!s_bIsElevated && Globals.dwLastError == ERROR_ACCESS_DENIED)
+    if (!s_bIsElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
       if (IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile))
       {
@@ -10132,7 +10142,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
     }
     else {
       UpdateToolbar();
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_ELEVATED_RIGHTS);
+      MsgBoxLng(MBWARN, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
     }
   }
   return fSuccess;
@@ -10303,6 +10313,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
   return bContinue;
 }
 
+
 bool ActivatePrevInst()
 {
   HWND hwnd = NULL;
@@ -10312,9 +10323,9 @@ bool ActivatePrevInst()
     return false;
   }
 
-  if (Flags.bSingleFileInstance && s_lpFileArg)
+  if (Flags.bSingleFileInstance && StrIsNotEmpty(s_lpFileArg))
   {
-    NormalizePathEx(s_lpFileArg, (DWORD)SizeOfMem(s_lpFileArg) / sizeof(WCHAR), true, s_flagSearchPathIfRelative);
+    NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, s_flagSearchPathIfRelative);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -10403,7 +10414,7 @@ bool ActivatePrevInst()
 
       SetForegroundWindow(hwnd);
 
-      if (s_lpFileArg)
+      if (StrIsNotEmpty(s_lpFileArg))
       {
         size_t cb = sizeof(np3params);
         cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
@@ -10449,7 +10460,7 @@ bool ActivatePrevInst()
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
         FreeMem(params);    params = NULL;
-        FreeMem(s_lpFileArg); s_lpFileArg = NULL;
+        s_lpFileArg[0] = L'\0';
       }
       return true;
     }
@@ -10505,7 +10516,7 @@ bool RelaunchMultiInst() {
     LocalFree(lpCmdLineNew); // StrDup()
     FreeMem(lp1);
     FreeMem(lp2);
-    FreeMem(s_lpFileArg); s_lpFileArg = NULL;
+    s_lpFileArg[0] = L'\0';
 
     return true;
   }

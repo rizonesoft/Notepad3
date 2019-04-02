@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 지원하지 않습니다."
     IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 중 오류가 발생하였습니다.\n파일을 저장하면 데이터가 손실됩니다!"
     IDS_MUI_ERR_BITMAP      """%s"" 비트맵을 읽는 도중 오류가 발생하였습니다.\n필요한 크기: %i x %i (너비 >= %i x 높이)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE

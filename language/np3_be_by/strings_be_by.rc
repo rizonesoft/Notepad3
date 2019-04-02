@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "Табліца пераўтварэння кодавай старонкі не знойдзена для выбранай кадоўкі ў гэтай сістэме."
     IDS_MUI_ERR_UNICODE     "Памылка пераўтварэння Unicode-файла.\nДаныя будуць згублены падчас захавання файла!"
     IDS_MUI_ERR_BITMAP      "Памылка адкрыцця bitmap выявы""%s"".\nНеабходныя памеры: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE

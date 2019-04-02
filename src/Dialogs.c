@@ -78,31 +78,35 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 int MsgBoxLng(int iType, UINT uIdMsg, ...)
 {
   WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  WCHAR szBuf[HUGE_BUFFER] = { L'\0' };
+  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
+  WCHAR szErr[HUGE_BUFFER] = { L'\0' };
   WCHAR szTitle[64] = { L'\0' };
 
-  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf))) { return 0; }
-  StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  if (!GetLngString(uIdMsg, szFormat, COUNTOF(szFormat))) { return 0; }
+  const PUINT_PTR argp = (PUINT_PTR)&uIdMsg + 1;
+  if (argp && *argp) {
+    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
+  }
+  else {
+    StringCchCopy(szText, COUNTOF(szText), szFormat);
+  }
 
   if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
     uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
     uIdMsg == IDS_MUI_EXPORT_FAIL    || uIdMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) {
-    LPVOID lpMsgBuf = NULL;
     WCHAR wcht;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       Globals.dwLastError,
       Globals.iPrefLANGID,
-      (LPTSTR)&lpMsgBuf,
-      0,
+      szErr, COUNTOF(szErr),
       NULL);
 
-    if (lpMsgBuf) {
-      StrTrim(lpMsgBuf, L" \a\b\f\n\r\t\v");
+    if (StrIsNotEmpty(szErr)) {
+      StrTrim(szErr, L" \a\b\f\n\r\t\v");
       StringCchCat(szText, COUNTOF(szText), L"\n");
-      StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
-      LocalFree(lpMsgBuf);  // LocalAlloc()
+      StringCchCat(szText, COUNTOF(szText), szErr);
     }
     wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')

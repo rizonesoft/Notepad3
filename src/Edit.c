@@ -1487,7 +1487,7 @@ bool EditSaveFile(
 
   if (bWriteSuccess) {
     if (!bSaveCopy) {
-      SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0);
+      SciCall_SetSavePoint();
     }
     return true;
   }

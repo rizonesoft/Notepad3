@@ -1112,42 +1112,36 @@ bool TrimStringW(LPWSTR lpString)
 //
 bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
 {
-
-  LPWSTR psz;
-  bool bQuoted = false;
-
   StringCchCopy(lpArg1, len, lpArgs);
 
-  if (lpArg2)
-    *lpArg2 = L'\0';
+  if (lpArg2) { *lpArg2 = L'\0'; }
+  if (!TrimStringW(lpArg1)) { return false; }
 
-  if (!TrimStringW(lpArg1))
-    return false;
-
-  if (*lpArg1 == L'\"')
-  {
+  bool bQuoted = false;
+  if (*lpArg1 == L'\"') {
     *lpArg1 = L' ';
     TrimStringW(lpArg1);
     bQuoted = true;
   }
 
-  if (bQuoted)
+  LPWSTR psz;
+  if (bQuoted) {
     psz = StrChr(lpArg1, L'\"');
-  else
-    psz = StrChr(lpArg1, L' ');
-
-  if (psz)
-  {
-    *psz = L'\0';
-    if (lpArg2)
-      StringCchCopy(lpArg2, len, psz + 1);
   }
-
+  else {
+    psz = StrChr(lpArg1, L' ');
+  }
+  if (psz) {
+    *psz = L'\0';
+    if (lpArg2) {
+      StringCchCopy(lpArg2, len, psz + 1);
+    }
+  }
   TrimStringW(lpArg1);
 
-  if (lpArg2)
+  if (lpArg2) {
     TrimStringW(lpArg2);
-
+  }
   return true;
 }
 

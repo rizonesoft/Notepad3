@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "Kodeblad-omskakelingstabelle vir die geselekteerde enkodering is nie op u stelsel beskikbaar nie."
     IDS_MUI_ERR_UNICODE     "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE

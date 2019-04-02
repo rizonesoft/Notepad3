@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用。"
     IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失。"
     IDS_MUI_ERR_BITMAP      "加载位图文件失败“%s”。\n需求尺寸：%i × %i（宽度 ≥ %i × 高度）"
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE

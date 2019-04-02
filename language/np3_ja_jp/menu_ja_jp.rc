@@ -62,14 +62,16 @@ BEGIN
         MENUITEM "上書き保存(&S)\tCtrl+S",                     IDM_FILE_SAVE
         MENUITEM "名前を付けて保存(&A)...\tF6",                 IDM_FILE_SAVEAS
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",               IDM_FILE_SAVECOPY
-        MENUITEM "読み取り専用(&R)",                            IDM_FILE_READONLY
+        MENUITEM "読み取り専用(&R)",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "暗号化パスワードの設定(&Y)...",                 IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "起動(&L)"
         BEGIN
             MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
-            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
+            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM SEPARATOR
+            MENUITEM "&Relaunch Elevated",                   IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "開いている文書を実行(&D)\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
