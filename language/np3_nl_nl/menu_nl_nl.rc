@@ -88,18 +88,18 @@ BEGIN
             MENUITEM "UTF-8 met &signatuur",                    IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                            IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Forceren encodering detectie",           CMD_RELOADFORCEDETECTION
+            MENUITEM "Forceren encodering detectie",            CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Hercoderen naar &Standaard\tCtrl-Alt-F",    CMD_RECODEDEFAULT
             MENUITEM "Hercoderen naar &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
             MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Hercoderen naar &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
             MENUITEM SEPARATOR
-            MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",         CMD_RELOADASCIIASUTF8
-            MENUITEM "Encoderingst&ags negeren\tAlt+F8",        CMD_RELOADNOFILEVARS
-            MENUITEM "&Hercoderen...\tF8",                      IDM_ENCODING_RECODE
+            MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
+            MENUITEM "Encoderingst&ags negeren\tAlt+F8",          CMD_RELOADNOFILEVARS
+            MENUITEM "&Hercoderen...\tF8",                        IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "Instellen &standaard...",                 IDM_ENCODING_SETDEFAULT
+            MENUITEM "Instellen &standaard...",                   IDM_ENCODING_SETDEFAULT
         END
         POPUP "Lijn e&indes"
         BEGIN
@@ -110,7 +110,7 @@ BEGIN
             MENUITEM "&Standaard...",                       IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM "Controleer &inspringen..."                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Pagina-inst&eling...",                    IDM_FILE_PAGESETUP
         MENUITEM "&Afdrukken...\tCtrl+P",                   IDM_FILE_PRINT
@@ -311,9 +311,9 @@ BEGIN
         MENUITEM "&Visuele Brace Matching\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "Mar&keer actueel lijn\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Geen markering",                     IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Achtergrond&kleur",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Contour kader",                      IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mar&keer voorvallen"
         BEGIN
