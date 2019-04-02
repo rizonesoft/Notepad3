@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&Défaut...",                          IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation..."                    CMD_CHECK_INDENTATION
+        MENUITEM "Vér&ifier retrait..."                     CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Mise en &page...",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer...\tCtrl+P",                    IDM_FILE_PRINT
@@ -127,7 +127,7 @@ BEGIN
             MENUITEM "&Ajouter le fichier actuel...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Gérer...\tAlt+F9",                   IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Récents (&Historique)...\tCtrl+Alt+H",    IDM_FILE_RECENT
+        MENUITEM "Récent (&Historique)...\tCtrl+Alt+H",    IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "Quitt&er\tAlt+F4",                        IDM_FILE_EXIT
     END
@@ -313,9 +313,9 @@ BEGIN
         MENUITEM "Correspondence &visuelle des accolades\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Mise en b&rillance de la ligne actuelle\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Pas de surbrillance ",              IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Couleur de fond",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Cadre de con&tour",                  IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mar&quer occurrences"
         BEGIN
@@ -348,7 +348,7 @@ BEGIN
             MENUITEM "A&fficher la barre à outils",         IDM_VIEW_TOOLBAR
             MENUITEM "Al&terner la barre à outils",         IDM_VIEW_TOGGLETB
             MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Charger un thème d'outils...",        IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Charger un thème d'outils...",       IDM_VIEW_LOADTHEMETB
             MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -362,7 +362,7 @@ BEGIN
             MENUITEM "Copier les arguments de position\tCtrl+Shift+K",  CMD_COPYWINPOS
             MENUITEM "Rétablir la Position de Défaut\tCtrl+Shift+P",    CMD_DEFAULTWINPOS
             MENUITEM "Enregistrer comme Position par Défaut",           CMD_SAVEASDEFWINPOS
-            MENUITEM "Effacer enregistré comme Position par dDfaut",  CMD_CLEARSAVEDWINPOS
+            MENUITEM "Effacer enregistré comme Position par Défaut",    CMD_CLEARSAVEDWINPOS
             MENUITEM "Rétablir la Position Initiale\tCtrl+F11",         CMD_INITIALWINPOS
             MENUITEM "Alterner position de zone complète\tF11",         CMD_FULLSCRWINPOS
             MENUITEM "Figer la &position de la fenêtre",                IDM_VIEW_STICKYWINPOS

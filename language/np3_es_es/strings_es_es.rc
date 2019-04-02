@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Abrir"
     IDT_FILE_BROWSE         "Examinar"
     IDT_FILE_SAVE           "Guardar"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "Historial"
     IDT_EDIT_UNDO           "Deshacer"
     IDT_EDIT_REDO           "Rehacer"
     IDT_EDIT_CUT            "Cortar"
@@ -232,8 +232,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_MUI_MENU_THEMES     "&Temas"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDM_THEMES_DEFAULT      "Defecto de fábrica"
+    IDM_THEMES_FILE_ITEM    "Ajustes estandar"
 END
 
 STRINGTABLE
@@ -271,7 +271,7 @@ Opciones:\r\n\
 /u\tLanzar con privilegios elevados.\r\n\
 /v\tImprimir el archivo inmediatamente y salir.\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora).\r\n\
-/y\tBuscar variable de entorno PATH en caso de nombre de archivo relativo.\r\n\
+/y\tEntorno de búsqueda CAMINO en caso de nombre de archivo relativo..\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\ten el registro).\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
