@@ -81,14 +81,12 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
   WCHAR szBuf[HUGE_BUFFER] = { L'\0' };
   WCHAR szTitle[64] = { L'\0' };
 
-  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf)))
-    return(0);
-
+  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf))) { return 0; }
   StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
 
   if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
     uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
-    uIdMsg == IDS_MUI_EXPORT_FAIL) {
+    uIdMsg == IDS_MUI_EXPORT_FAIL    || uIdMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) {
     LPVOID lpMsgBuf = NULL;
     WCHAR wcht;
     FormatMessage(

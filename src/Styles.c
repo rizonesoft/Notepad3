@@ -651,17 +651,17 @@ bool Style_Export(HWND hwnd)
   ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
             | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
 
-  DWORD dwError = ERROR_SUCCESS;
+  Globals.dwLastError = ERROR_SUCCESS;
 
   if (GetSaveFileName(&ofn)) 
   {
-    dwError = Style_ExportToFile(szFile, true);
-    
-    if (dwError != ERROR_SUCCESS) {
+    Globals.dwLastError = Style_ExportToFile(szFile, true);
+
+    if (Globals.dwLastError != ERROR_SUCCESS) {
       MsgBoxLng(MBINFO, IDS_MUI_EXPORT_FAIL, szFile);
     }
   }
-  return (dwError == ERROR_SUCCESS);
+  return (Globals.dwLastError == ERROR_SUCCESS);
 }
 
 

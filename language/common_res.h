@@ -73,12 +73,13 @@
 #define IDS_MUI_ERR_ACCESSDENIED        13010
 #define IDS_MUI_ERR_ADMINEXE            13011
 #define IDS_MUI_ERR_BITMAP              13012
-#define IDS_MUI_WARN_LOAD_BIG_FILE      13013
-#define IDS_MUI_WARN_UNKNOWN_EXT        13014
+#define IDS_MUI_ERR_ELEVATED_RIGHTS     13013
+#define IDS_MUI_WARN_LOAD_BIG_FILE      13014
+#define IDS_MUI_WARN_UNKNOWN_EXT        13015
 // keep order (CRLF(0),  CR(1),  LF(2))
-#define IDS_MUI_EOLMODENAME_CRLF        13016
-#define IDS_MUI_EOLMODENAME_CR          13017
-#define IDS_MUI_EOLMODENAME_LF          13018
+#define IDS_MUI_EOLMODENAME_CRLF        13017
+#define IDS_MUI_EOLMODENAME_CR          13018
+#define IDS_MUI_EOLMODENAME_LF          13019
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001
@@ -424,19 +425,20 @@
 #define IDM_FILE_SAVECOPY               40006
 #define IDM_FILE_READONLY               40007
 #define IDM_FILE_LAUNCH                 40008
-#define IDM_FILE_OPENWITH               40009
-#define IDM_FILE_RUN                    40010
-#define IDM_FILE_NEWWINDOW              40011
-#define IDM_FILE_NEWWINDOW2             40012
-#define IDM_FILE_PAGESETUP              40013
-#define IDM_FILE_PRINT                  40014
-#define IDM_FILE_PROPERTIES             40015
-#define IDM_FILE_CREATELINK             40016
-#define IDM_FILE_OPENFAV                40017
-#define IDM_FILE_ADDTOFAV               40018
-#define IDM_FILE_MANAGEFAV              40019
-#define IDM_FILE_RECENT                 40020
-#define IDM_FILE_EXIT                   40021
+#define IDM_FILE_LAUNCH_ELEVATED        40009
+#define IDM_FILE_OPENWITH               40010
+#define IDM_FILE_RUN                    40011
+#define IDM_FILE_NEWWINDOW              40012
+#define IDM_FILE_NEWWINDOW2             40013
+#define IDM_FILE_PAGESETUP              40014
+#define IDM_FILE_PRINT                  40015
+#define IDM_FILE_PROPERTIES             40016
+#define IDM_FILE_CREATELINK             40017
+#define IDM_FILE_OPENFAV                40018
+#define IDM_FILE_ADDTOFAV               40019
+#define IDM_FILE_MANAGEFAV              40020
+#define IDM_FILE_RECENT                 40021
+#define IDM_FILE_EXIT                   40022
 
 #define IDM_ENCODING_ANSI               40100
 #define IDM_ENCODING_UNICODE            40101
