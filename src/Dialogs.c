@@ -78,33 +78,35 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 int MsgBoxLng(int iType, UINT uIdMsg, ...)
 {
   WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  WCHAR szBuf[HUGE_BUFFER] = { L'\0' };
+  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
+  WCHAR szErr[HUGE_BUFFER] = { L'\0' };
   WCHAR szTitle[64] = { L'\0' };
 
-  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf)))
-    return(0);
-
-  StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  if (!GetLngString(uIdMsg, szFormat, COUNTOF(szFormat))) { return 0; }
+  const PUINT_PTR argp = (PUINT_PTR)&uIdMsg + 1;
+  if (argp && *argp) {
+    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
+  }
+  else {
+    StringCchCopy(szText, COUNTOF(szText), szFormat);
+  }
 
   if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
     uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
-    uIdMsg == IDS_MUI_EXPORT_FAIL) {
-    LPVOID lpMsgBuf = NULL;
+    uIdMsg == IDS_MUI_EXPORT_FAIL    || uIdMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) {
     WCHAR wcht;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       Globals.dwLastError,
       Globals.iPrefLANGID,
-      (LPTSTR)&lpMsgBuf,
-      0,
+      szErr, COUNTOF(szErr),
       NULL);
 
-    if (lpMsgBuf) {
-      StrTrim(lpMsgBuf, L" \a\b\f\n\r\t\v");
+    if (StrIsNotEmpty(szErr)) {
+      StrTrim(szErr, L" \a\b\f\n\r\t\v");
       StringCchCat(szText, COUNTOF(szText), L"\n");
-      StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
-      LocalFree(lpMsgBuf);  // LocalAlloc()
+      StringCchCat(szText, COUNTOF(szText), szErr);
     }
     wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
@@ -2212,14 +2214,14 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Settings.TabWidth,false);
+        SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Globals.fvCurFile.iTabWidth,false);
         SendDlgItemMessage(hwnd,IDC_TAB_WIDTH,EM_LIMITTEXT,15,0);
 
-        SetDlgItemInt(hwnd,IDC_INDENT_DEPTH,Settings.IndentWidth,false);
+        SetDlgItemInt(hwnd,IDC_INDENT_DEPTH, Globals.fvCurFile.iIndentWidth,false);
         SendDlgItemMessage(hwnd,IDC_INDENT_DEPTH,EM_LIMITTEXT,15,0);
 
-        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, SetBtn(Settings.TabsAsSpaces));
-        CheckDlgButton(hwnd,IDC_TAB_INDENTS, SetBtn(Settings.TabIndents));
+        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, SetBtn(Globals.fvCurFile.bTabsAsSpaces));
+        CheckDlgButton(hwnd,IDC_TAB_INDENTS, SetBtn(Globals.fvCurFile.bTabIndents));
         CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, SetBtn(Settings.BackspaceUnindents));
         CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
         CheckDlgButton(hwnd,IDC_AUTO_DETECT_INDENTS, SetBtn(Settings.AutoDetectIndentSettings));
@@ -2241,14 +2243,29 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         case IDOK: 
           {
             BOOL fTranslated1, fTranslated2;
-            UINT const iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
-            UINT const iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
+            int const _iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
+            int const _iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
 
-            if (fTranslated1 && fTranslated2) {
-              Settings.TabWidth = iNewTabWidth;
-              Settings.IndentWidth = iNewIndentWidth;
-              Settings.TabsAsSpaces = IsButtonChecked(hwnd, IDC_TAB_AS_SPC);
-              Settings.TabIndents = IsButtonChecked(hwnd, IDC_TAB_INDENTS);
+            if (fTranslated1 && fTranslated2) 
+            {
+              if (_iNewTabWidth != Globals.fvCurFile.iTabWidth) {
+                Globals.fvCurFile.iTabWidth = _iNewTabWidth;
+                Settings.TabWidth = _iNewTabWidth;
+              }
+              if (_iNewIndentWidth != Globals.fvCurFile.iIndentWidth) {
+                Globals.fvCurFile.iIndentWidth = _iNewIndentWidth;
+                Settings.IndentWidth = _iNewIndentWidth;
+              }
+              bool const _bTabsAsSpaces = IsButtonChecked(hwnd, IDC_TAB_AS_SPC);
+              if (_bTabsAsSpaces != Globals.fvCurFile.bTabsAsSpaces) {
+                Globals.fvCurFile.bTabsAsSpaces = _bTabsAsSpaces;
+                Settings.TabsAsSpaces = _bTabsAsSpaces;
+              }
+              bool const _bTabIndents = IsButtonChecked(hwnd, IDC_TAB_INDENTS);
+              if (_bTabIndents != Globals.fvCurFile.bTabIndents) {
+                Globals.fvCurFile.bTabIndents = _bTabIndents;
+                Settings.TabIndents = _bTabIndents;
+              }
               Settings.BackspaceUnindents = IsButtonChecked(hwnd, IDC_BACKTAB_INDENTS);
               Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
               Settings.AutoDetectIndentSettings = IsButtonChecked(hwnd, IDC_AUTO_DETECT_INDENTS);
@@ -2869,11 +2886,11 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     WCHAR tchCnt[32];
 
     GetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, tchFmt, COUNTOF(tchFmt));
-    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.TabWidth);
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iTabWidth);
     SetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, wch);
 
     GetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, tchFmt, COUNTOF(tchFmt));
-    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Settings.IndentWidth);
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iIndentWidth);
     SetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, wch);
 
     StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_LN]);
@@ -2906,7 +2923,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, wch);
 
-    CheckDlgButton(hwnd, Settings.TabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
+    CheckDlgButton(hwnd, Globals.fvCurFile.bTabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
     CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
     CenterDlgInParent(hwnd);
   }

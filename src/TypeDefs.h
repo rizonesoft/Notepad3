@@ -160,13 +160,13 @@ typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO } CALLTIPTYPE
 
 typedef struct _filevars
 {
-
   int        mask;
-  int        iTabWidth;
-  int        iIndentWidth;
   bool       bTabsAsSpaces;
   bool       bTabIndents;
-  bool       fWordWrap;
+  bool       bWordWrap;
+  int        iTabWidth;
+  int        iIndentWidth;
+  int        iWrapColumn;
   int        iLongLinesLimit;
   char       tchEncoding[64];
   cpi_enc_t  iEncoding;
@@ -293,14 +293,14 @@ typedef struct _globals_t
   LPMRULIST pMRUreplace;
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
-  bool      bWordWrap;
-  bool      bTabsAsSpaces;
-  bool      bTabIndents;
-  int       iTabWidth;
-  int       iIndentWidth;
-  int       iLongLinesLimit;
+  FILEVARS  fvBackup;
+  //bool      bWordWrap;
+  //bool      bTabsAsSpaces;
+  //bool      bTabIndents;
+  //int       iTabWidth;
+  //int       iIndentWidth;
+  //int       iLongLinesLimit;
   int       iWrapCol;
-
   bool      bCodeFoldingAvailable;
   bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
@@ -421,6 +421,7 @@ typedef struct _settings_t
 
 } SETTINGS_T, *PSETTINGS_T;
 
+extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
 // ------------------------------------

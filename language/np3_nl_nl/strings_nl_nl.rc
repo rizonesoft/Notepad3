@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "Codepage conversietabellen voor de geselecteerde codering zijn niet beschikbaar op uw systeem."
     IDS_MUI_ERR_UNICODE     "Fout bij het converteren van dit Unicode bestand.\nGegevens gaan verloren als het bestand wordt opgeslagen!"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE

@@ -116,6 +116,7 @@ void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR lpArgs);
+bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus);
 void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);

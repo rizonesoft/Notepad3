@@ -509,7 +509,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       {
         BOOL bError = FALSE;
         int const iZoom = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
-        Settings.PrintZoom = bError ? 100 : iZoom;
+        Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;
         int const iFontSize = (int)SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
         Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
         Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);

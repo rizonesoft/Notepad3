@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "Копі&ю акна\tAlt+N",             IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое акно\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "&Relaunch Elevated",             IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "&Выканаць дакумент\tCtrl+L",     IDM_FILE_LAUNCH
             MENUITEM "&Адкрыць з дапамогай...\tAlt+L", IDM_FILE_OPENWITH
             MENUITEM "&Каманда...\tCtrl+R",            IDM_FILE_RUN

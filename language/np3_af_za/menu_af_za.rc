@@ -62,18 +62,20 @@ BEGIN
         MENUITEM "S&toor\tCtrl+S",                          IDM_FILE_SAVE
         MENUITEM "Stoor &As...\tF6",                        IDM_FILE_SAVEAS
         MENUITEM "Stoor &Kopie...\tCtrl+F6",                IDM_FILE_SAVECOPY
-        MENUITEM "&Lees net",                            	IDM_FILE_READONLY
+        MENUITEM "&Lees net",                               IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Stel Enkripsie &Wagwoordfrase...",        IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Begin"
         BEGIN
             MENUITEM "&Nuwe Venster\tAlt+N",                IDM_FILE_NEWWINDOW
-            MENUITEM "Lê&er Venster\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
+            MENUITEM "Lê&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM SEPARATOR
+            MENUITEM "&Relaunch Elevated",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Voer &Dokument Uit\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "Maak &Oop Met...\tAlt+L",             IDM_FILE_OPENWITH
-            MENUITEM "&Bevel...\tCtrl+R",                 IDM_FILE_RUN
+            MENUITEM "&Bevel...\tCtrl+R",                   IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Web Template &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Template &2\tCtrl+Shift+2",       CMD_WEBACTION2

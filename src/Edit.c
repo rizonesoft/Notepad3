@@ -362,7 +362,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 
   _ClearTextBuffer(hwnd);
 
-  FileVars_Apply(hwnd,&Globals.fvCurFile);
+  FileVars_Apply(&Globals.fvCurFile);
 
   _InitTextBuffer(hwnd, lpstrText, cbText, true);
 
@@ -899,8 +899,8 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status)
 {
   UNUSED(hwnd);
 
-  int const tabWidth = Settings.TabWidth;
-  int const indentWidth = Settings.IndentWidth;
+  int const tabWidth = Globals.fvCurFile.iTabWidth;
+  int const indentWidth = Globals.fvCurFile.iIndentWidth;
   DocLn const lineCount = SciCall_GetLineCount();
 
   status->indentCount[I_TAB_LN] = 0;
@@ -981,6 +981,7 @@ bool EditLoadFile(
     OPEN_EXISTING,
     FILE_ATTRIBUTE_NORMAL,
     NULL);
+
   Globals.dwLastError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
@@ -994,8 +995,8 @@ bool EditLoadFile(
   DWORD dwBufSize = dwFileSize + 16;
 
   // check for unknown extension
-  LPWSTR lpszExt = PathFindExtension(pszFile);
-  if (!Style_HasLexerForExt(lpszExt)) {
+  LPCWSTR lpszExt = PathFindExtension(pszFile);
+  if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
     if (InfoBoxLng(MBYESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
       CloseHandle(hFile);
       status->bUnknownExt = true;
@@ -1486,7 +1487,7 @@ bool EditSaveFile(
 
   if (bWriteSuccess) {
     if (!bSaveCopy) {
-      SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0);
+      SciCall_SetSavePoint();
     }
     return true;
   }
@@ -4161,12 +4162,6 @@ int CmpLogicalRev(const void *s1, const void *s2) {
 void EditSortLines(HWND hwnd, int iSortFlags)
 {
 
-  DocPos cchTotal = 0;
-  DocPos ichlMax = 3;
-
-  int iTabWidth = 0;
-  bool bLastDup = false;
-
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
   
   FNSTRCMP pfnStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpIW : StrCmpW;
@@ -4206,7 +4201,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     mszEOL[1] = '\0';
   }
 
-  iTabWidth = (int)SendMessage(hwnd, SCI_GETTABWIDTH, 0, 0);
+  int const _iTabWidth = SciCall_GetTabWidth();
 
   if (bIsRectSel)
   {
@@ -4224,6 +4219,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
   char* pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
 
+  DocPos cchTotal = 0;
+  DocPos ichlMax = 3;
   DocLn iZeroLenLineCount = 0;
   for (DocLn i = 0, iLn = iLineStart; iLn <= iLineEnd; ++iLn, ++i) {
 
@@ -4244,7 +4241,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
     if (cchw > 0) {
-      int tabs = iTabWidth;
+      int tabs = _iTabWidth;
       int const lnLen = (MBWC_DocPos_Cast)(sizeof(WCHAR) * (cchw + 1));
       pLines[i].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
       MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, lnLen / (int)sizeof(WCHAR));
@@ -4255,7 +4252,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
           if (*(pLines[i].pwszSortEntry) == L'\t') {
             if (col + tabs <= iSortColumn) {
               col += tabs;
-              tabs = iTabWidth;
+              tabs = _iTabWidth;
               pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
             }
             else
@@ -4264,7 +4261,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
           else if (col < iSortColumn) {
             col++;
             if (--tabs == 0)
-              tabs = iTabWidth;
+              tabs = _iTabWidth;
             pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
           }
           else
@@ -4308,6 +4305,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   char* pmszResOffset = pmszResult;
   char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
 
+  bool bLastDup = false;
   for (DocLn i = 0; i < iLineCount; ++i) {
     if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || StrIsNotEmpty(pLines[i].pwszLine))) {
       bool bDropLine = false;
@@ -7100,7 +7098,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
         FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, iMaxLnNum);
         FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN, 
-          max_p(iLineEndPos, (DocPos)Globals.iLongLinesLimit));
+          max_p(iLineEndPos, (DocPos)Globals.fvCurFile.iLongLinesLimit));
         SetDlgItemText(hwnd, IDC_LINE_TEXT, wchLineCaption);
         SetDlgItemText(hwnd, IDC_COLUMN_TEXT, wchColumnCaption);
 
@@ -7952,62 +7950,68 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //
 //  _SetFileVars()
 //
-static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
+static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 {
-  int i;
   bool bDisableFileVar = false;
 
-  if (!Flags.NoFileVariables) {
-
-    if (FileVars_ParseInt(tch, "enable-local-variables", &i) && (!i))
+  if (!Flags.NoFileVariables) 
+  {
+    int i;
+    if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i)) {
       bDisableFileVar = true;
-
+    }
     if (!bDisableFileVar) {
 
-      if (FileVars_ParseInt(tch, "tab-width", &i)) {
+      if (FileVars_ParseInt(buffer, "tab-width", &i)) {
         lpfv->iTabWidth = clampi(i, 1, 256);
         lpfv->mask |= FV_TABWIDTH;
       }
 
-      if (FileVars_ParseInt(tch, "c-basic-indent", &i)) {
+      if (FileVars_ParseInt(buffer, "c-basic-indent", &i)) {
         lpfv->iIndentWidth = clampi(i, 0, 256);
         lpfv->mask |= FV_INDENTWIDTH;
       }
 
-      if (FileVars_ParseInt(tch, "indent-tabs-mode", &i)) {
+      if (FileVars_ParseInt(buffer, "indent-tabs-mode", &i)) {
         lpfv->bTabsAsSpaces = (i) ? false : true;
         lpfv->mask |= FV_TABSASSPACES;
       }
 
-      if (FileVars_ParseInt(tch, "c-tab-always-indent", &i)) {
+      if (FileVars_ParseInt(buffer, "c-tab-always-indent", &i)) {
         lpfv->bTabIndents = (i) ? true : false;
         lpfv->mask |= FV_TABINDENTS;
       }
 
-      if (FileVars_ParseInt(tch, "truncate-lines", &i)) {
-        lpfv->fWordWrap = (i) ? false : true;
+      if (FileVars_ParseInt(buffer, "truncate-lines", &i)) {
+        lpfv->bWordWrap = (i) ? false : true;
         lpfv->mask |= FV_WORDWRAP;
       }
 
-      if (FileVars_ParseInt(tch, "fill-column", &i)) {
+      if (FileVars_ParseInt(buffer, "fill-column", &i)) {
         lpfv->iLongLinesLimit = clampi(i, 0, LONG_LINES_MARKER_LIMIT);
         lpfv->mask |= FV_LONGLINESLIMIT;
       }
     }
   }
 
-  if (!IsUTF8Signature(lpData) && !Settings.NoEncodingTags && !bDisableFileVar) {
+  // Unicode Sig
+  bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
 
-    if (FileVars_ParseStr(tch, "encoding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
+  if (!bHasSignature && !Settings.NoEncodingTags && !bDisableFileVar) {
+
+    if (FileVars_ParseStr(buffer, "encoding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
-    else if (FileVars_ParseStr(tch, "charset", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
+    else if (FileVars_ParseStr(buffer, "charset", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
-    else if (FileVars_ParseStr(tch, "coding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
+    else if (FileVars_ParseStr(buffer, "coding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
+  }
+  if (lpfv->mask & FV_ENCODING) {
+    lpfv->iEncoding = Encoding_MatchA(lpfv->tchEncoding);
   }
 
   if (!Flags.NoFileVariables && !bDisableFileVar) {
-    if (FileVars_ParseStr(tch, "mode", lpfv->tchMode, COUNTOF(lpfv->tchMode)))
+    if (FileVars_ParseStr(buffer, "mode", lpfv->tchMode, COUNTOF(lpfv->tchMode)))
       lpfv->mask |= FV_MODE;
   }
 }
@@ -8016,24 +8020,31 @@ static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
 //
 //  FileVars_Init()
 //
-bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
+bool FileVars_Init(char* lpData, DWORD cbData, LPFILEVARS lpfv) 
+{
+  ZeroMemory(lpfv, sizeof(FILEVARS));
+  lpfv->bTabIndents     = Settings.TabIndents;
+  lpfv->bTabsAsSpaces   = Settings.TabsAsSpaces;
+  lpfv->bWordWrap       = Settings.WordWrap;
+  lpfv->iTabWidth       = Settings.TabWidth;
+  lpfv->iIndentWidth    = Settings.IndentWidth;
+  lpfv->iLongLinesLimit = Settings.LongLinesLimit;
+  lpfv->iEncoding       = Settings.DefaultEncoding;
 
-  char tch[LARGE_BUFFER];
-
-  ZeroMemory(lpfv,sizeof(FILEVARS));
   if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData) {
     return true;
   }
-  StringCchCopyNA(tch,COUNTOF(tch),lpData,min_s(cbData + 1,COUNTOF(tch)));
-  _SetFileVars(lpData, tch, lpfv);
 
-  if (lpfv->mask == 0 && cbData > COUNTOF(tch)) {
-    StringCchCopyNA(tch,COUNTOF(tch),lpData + cbData - COUNTOF(tch) + 1,COUNTOF(tch));
-    _SetFileVars(lpData, tch, lpfv);
-  }
+  char tmpbuf[LARGE_BUFFER];
+  size_t const cch = min_s(cbData + 1, COUNTOF(tmpbuf));
 
-  if (lpfv->mask & FV_ENCODING) {
-    lpfv->iEncoding = Encoding_MatchA(lpfv->tchEncoding);
+  StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData, cch);
+  _SetFileVars(tmpbuf, cch, lpfv);
+
+  // if no file vars found, look at EOF
+  if ((lpfv->mask == 0) && (cbData > COUNTOF(tmpbuf))) {
+    StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData + cbData - COUNTOF(tmpbuf) + 1, COUNTOF(tmpbuf));
+    _SetFileVars(tmpbuf, cch, lpfv);
   }
 
   return true;
@@ -8044,52 +8055,28 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
 //
 //  FileVars_Apply()
 //
-bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
+bool FileVars_Apply(LPFILEVARS lpfv) {
 
-  if (lpfv->mask & FV_TABWIDTH)
-    Settings.TabWidth = lpfv->iTabWidth;
-  else
-    Settings.TabWidth = Globals.iTabWidth;
-  SendMessage(hwnd,SCI_SETTABWIDTH,Settings.TabWidth,0);
+  int const _iTabWidth = (lpfv->mask & FV_TABWIDTH) ? lpfv->iTabWidth : Settings.TabWidth;
+  SciCall_SetTabWidth(_iTabWidth);
 
-  if (lpfv->mask & FV_INDENTWIDTH)
-    Settings.IndentWidth = lpfv->iIndentWidth;
-  else if (lpfv->mask & FV_TABWIDTH)
-    Settings.IndentWidth = 0;
-  else
-    Settings.IndentWidth = Globals.iIndentWidth;
-  SendMessage(hwnd,SCI_SETINDENT,Settings.IndentWidth,0);
+  int const _iIndentWidth = (lpfv->mask & FV_INDENTWIDTH) ? lpfv->iIndentWidth : ((lpfv->mask & FV_TABWIDTH) ? 0 : Settings.IndentWidth);
+  SciCall_SetIndent(_iIndentWidth);
 
-  if (lpfv->mask & FV_TABSASSPACES)
-    Settings.TabsAsSpaces = lpfv->bTabsAsSpaces;
-  else
-    Settings.TabsAsSpaces = Globals.bTabsAsSpaces;
-  SendMessage(hwnd,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
+  bool const _bTabsAsSpaces = (lpfv->mask & FV_TABSASSPACES) ? lpfv->bTabsAsSpaces : Settings.TabsAsSpaces;
+  SciCall_SetUseTabs(!_bTabsAsSpaces);
 
-  if (lpfv->mask & FV_TABINDENTS)
-    Settings.TabIndents = lpfv->bTabIndents;
-  else
-    Settings.TabIndents = Globals.bTabIndents;
-  SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,Settings.TabIndents,0);
+  bool const _bTabIndents = (lpfv->mask & FV_TABINDENTS) ? lpfv->bTabIndents : Settings.TabIndents;
+  SciCall_SetTabIndents(_bTabIndents);
+  SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
 
-  if (lpfv->mask & FV_WORDWRAP)
-    Settings.WordWrap = lpfv->fWordWrap;
-  else
-    Settings.WordWrap = Globals.bWordWrap;
+  bool const _bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
+  int const  _iWrapMode = _bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
+  SciCall_SetWrapMode(_iWrapMode);
 
-  if (!Settings.WordWrap)
-    SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
-  else
-    SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,(Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
-
-  if (lpfv->mask & FV_LONGLINESLIMIT)
-    Settings.LongLinesLimit = lpfv->iLongLinesLimit;
-  else
-    Settings.LongLinesLimit = Globals.iLongLinesLimit;
-
-  SendMessage(hwnd,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
-
-  Globals.iWrapCol = 0;
+  int const _iLongLinesLimit = (lpfv->mask & FV_LONGLINESLIMIT) ? lpfv->iLongLinesLimit : Settings.LongLinesLimit;
+  SciCall_SetEdgeColumn(_iLongLinesLimit);
+  Globals.iWrapCol = _iLongLinesLimit;
 
   return true;
 }
@@ -8106,40 +8093,40 @@ bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
     char chPrev = (pvStart > pszData) ? *(pvStart-1) : 0;
     if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
       pvStart += StringCchLenA(pszName,0);
-      while (*pvStart == ' ')
+      while (*pvStart == ' ') {
         pvStart++;
-      if (*pvStart == ':' || *pvStart == '=')
-        break;
+      }
+      if (*pvStart == ':' || *pvStart == '=') { break; }
     }
-    else
-      pvStart += StringCchLenA(pszName,0);
-
+    else {
+      pvStart += StringCchLenA(pszName, 0);
+    }
     pvStart = StrStrIA(pvStart, pszName); // next
   }
 
   if (pvStart) {
 
-    while (*pvStart && StrChrIA(":=\"' \t",*pvStart))
+    while (*pvStart && StrChrIA(":=\"' \t", *pvStart)) {
       pvStart++;
-
+    }
     char tch[32] = { L'\0' };
     StringCchCopyNA(tch,COUNTOF(tch),pvStart,COUNTOF(tch));
 
     char* pvEnd = tch;
-    while (*pvEnd && IsCharAlphaNumericA(*pvEnd))
+    while (*pvEnd && IsCharAlphaNumericA(*pvEnd)) {
       pvEnd++;
+    }
     *pvEnd = 0;
     StrTrimA(tch," \t:=\"'");
 
     int itok = sscanf_s(tch,"%i",piValue);
-    if (itok == 1)
+    if (itok == 1) {
       return true;
-
+    }
     if (tch[0] == 't') {
       *piValue = 1;
       return true;
     }
-
     if (tch[0] == 'n' || tch[0] == 'f') {
       *piValue = 0;
       return true;
@@ -8160,14 +8147,16 @@ bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
     char chPrev = (pvStart > pszData) ? *(pvStart-1) : 0;
     if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
       pvStart += StringCchLenA(pszName,0);
-      while (*pvStart == ' ')
+      while (*pvStart == ' ') {
         pvStart++;
-      if (*pvStart == ':' || *pvStart == '=')
+      }
+      if (*pvStart == ':' || *pvStart == '=') {
         break;
+      }
     }
-    else
-      pvStart += StringCchLenA(pszName,0);
-
+    else {
+      pvStart += StringCchLenA(pszName, 0);
+    }
     pvStart = StrStrIA(pvStart, pszName);  // next
   }
 
@@ -8184,9 +8173,11 @@ bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
     StringCchCopyNA(tch,COUNTOF(tch),pvStart,COUNTOF(tch));
 
     char* pvEnd = tch;
-    while (*pvEnd && (IsCharAlphaNumericA(*pvEnd) || StrChrIA("+-/_",*pvEnd) || (bQuoted && *pvEnd == ' ')))
+    while (*pvEnd && (IsCharAlphaNumericA(*pvEnd) || StrChrIA("+-/_", *pvEnd) || (bQuoted && *pvEnd == ' '))) {
       pvEnd++;
+    }
     *pvEnd = 0;
+
     StrTrimA(tch," \t:=\"'");
 
     StringCchCopyNA(pszValue,cchValue,tch,COUNTOF(tch));

@@ -612,24 +612,51 @@ const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding) {
 }
 // ============================================================================
 
+
 const char* Encoding_GetParseNames(const cpi_enc_t iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].pszParseNames : NULL;
 }
 // ============================================================================
 
 
-bool Has_UTF16_LE_BOM(const char* pBuf, int cnt)
+int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch) {
+  if (iEncoding >= 0) {
+    const char* p = Encoding_GetParseNames(iEncoding);
+    if (p && *p) {
+      ++p;
+      const char* q = StrChrA(p, ',');
+      if (q && *q) {
+        StringCchCopyNA(buffer, cch, p, (q - p));
+        return (int)min_s((q - p), cch);
+      }
+    }
+  }
+  return 0;
+}
+// ============================================================================
+
+
+int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
+{
+  char tmpbuffer[256] = { '\0' };
+  Encoding_GetNameA(iEncoding, tmpbuffer, 256);
+  return MultiByteToWideChar(Encoding_SciCP, 0, tmpbuffer, -1, buffer, (int)cwch);
+}
+// ============================================================================
+
+
+bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
   return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
 }
 // ----------------------------------------------------------------------------
 
-bool Has_UTF16_BE_BOM(const char* pBuf, int cnt)
+bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
   return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
 }
 // ============================================================================

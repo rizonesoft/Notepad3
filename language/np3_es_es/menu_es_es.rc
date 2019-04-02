@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "&Relaunch Elevated",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "Ejecutar &documento\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Abrir con...\tAlt+L",                IDM_FILE_OPENWITH
             MENUITEM "&Comando...\tCtrl+R",                 IDM_FILE_RUN

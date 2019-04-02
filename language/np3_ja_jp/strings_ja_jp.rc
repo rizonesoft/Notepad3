@@ -132,6 +132,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "このコンピュータでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
     IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error while elevating user rights!"                         
 END
 
 STRINGTABLE
