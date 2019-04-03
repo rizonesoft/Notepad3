@@ -313,9 +313,9 @@ BEGIN
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&No resaltar",                        IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Color de fondo",                     IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Marco de esquema",                   IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Marcar &ocurrencias"
         BEGIN
