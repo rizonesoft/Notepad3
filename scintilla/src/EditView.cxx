@@ -1221,7 +1221,6 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 	rcSegment.right = rcSegment.left + static_cast<XYPOSITION>(widthFoldDisplayText);
 
 	const ColourOptional background = vsDraw.Background(model.pdoc->GetMark(line), model.caret.active, ll->containsCaret);
-	FontAlias textFont = vsDraw.styles[STYLE_FOLDDISPLAYTEXT].font;
 	ColourDesired textFore = vsDraw.styles[STYLE_FOLDDISPLAYTEXT].fore;
 	if (eolInSelection && (vsDraw.selColours.fore.isSet)) {
 		textFore = (eolInSelection == 1) ? vsDraw.selColours.fore : vsDraw.selAdditionalForeground;
@@ -1250,11 +1249,11 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 
 	if (phase & drawText) {
 		if (phasesDraw != phasesOne) {
-			surface->DrawTextTransparent(rcSegment, textFont,
+			surface->DrawTextTransparent(rcSegment, fontText,
 				rcSegment.top + vsDraw.maxAscent, foldDisplayText,
 				textFore);
 		} else {
-			surface->DrawTextNoClip(rcSegment, textFont,
+			surface->DrawTextNoClip(rcSegment, fontText,
 				rcSegment.top + vsDraw.maxAscent, foldDisplayText,
 				textFore, textBack);
 		}

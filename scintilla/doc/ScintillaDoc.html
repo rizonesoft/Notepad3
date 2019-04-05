@@ -6013,6 +6013,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <a class="message" href="#SCI_TOGGLEFOLD">SCI_TOGGLEFOLD(int line)</a><br />
      <a class="message" href="#SCI_TOGGLEFOLDSHOWTEXT">SCI_TOGGLEFOLDSHOWTEXT(int line, const char *text)</a><br />
      <a class="message" href="#SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</a><br />
+     <a class="message" href="#SCI_FOLDDISPLAYTEXTGETSTYLE">SCI_FOLDDISPLAYTEXTGETSTYLE &rarr; int</a><br />
      <a class="message" href="#SCI_FOLDLINE">SCI_FOLDLINE(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDCHILDREN">SCI_FOLDCHILDREN(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDALL">SCI_FOLDALL(int action)</a><br />
@@ -6176,7 +6177,8 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <code><a class="message" href="#StyleDefinition">STYLE_FOLDDISPLAYTEXT</a></code> style.</p>
 
     <p><b id="SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</b><br />
-    This message changes the appearance of fold text tags.</p>
+    <b id="SCI_FOLDDISPLAYTEXTGETSTYLE">SCI_FOLDDISPLAYTEXTGETSTYLE &rarr; int</b><br />
+    These message changes the appearance of fold text tags.</p>
     <table class="standard" summary="Fold flags">
       <tbody>
         <tr>

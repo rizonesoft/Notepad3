@@ -14,6 +14,12 @@ from FileGenerator import Regenerate, UpdateLineInFile, \
 import ScintillaData
 import HFacer
 import uuid
+import sys
+
+sys.path.append("../")
+
+import win32.DepGen
+import gtk.DepGen
 
 def UpdateVersionNumbers(sci, root):
     UpdateLineInFile(root + "win32/ScintRes.rc", "#define VERSION_SCINTILLA",
@@ -114,6 +120,9 @@ def RegenerateAll(root):
 
     Regenerate(root + "src/Catalogue.cxx", "//", sci.lexerModules)
     #Regenerate(root + "win32/scintilla.mak", "#", sci.lexFiles)    #commented out
+
+    win32.DepGen.Generate()
+    gtk.DepGen.Generate()
 
     RegenerateXcodeProject(root + "cocoa/ScintillaFramework/ScintillaFramework.xcodeproj/project.pbxproj",
         sci.lexFiles, sci.lexersXcode)
