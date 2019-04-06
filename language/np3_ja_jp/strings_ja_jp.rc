@@ -112,7 +112,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "すべてのファイル(*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "実行ファイル(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|すべてのファイル(*.*)|*.*|"
     IDS_MUI_FILTER_INI      "設定ファイル(*.ini)|*.ini|すべてのファイル(*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "ビットマップファイル (*.bmp)|*.bmp|すべてのファイル (*.*)|*.*|"
     IDS_MUI_OPENWITH        "開きたいプログラムがあるフォルダを指定してください。"
     IDS_MUI_FAVORITES       "お気に入りのフォルダを指定してください。" 
     IDS_MUI_BACKSLASHHELP   "バックスラッシュ変換\n\n\\a\tアラート (BEL, Ascii 7, ベル)\n\\b\tバックスペース (BS, Ascii 8)\n\\f\t改ページ (FF, Ascii 12)\n\\n\t改行文字 (LF, Ascii 10)\n\\r\t復帰文字 (CR, Ascii 13, キャリッジリターン)\n\\t\tタブ (HT, Ascii 9, 水平タブ)\n\\v\t垂直タブ (VT, Ascii 11)\n\\0oo\t8進数表記\n\\u####\t16進数表記\n\\xhh\t16進数表記\n\\\\\tバックスラッシュ自体"
@@ -131,9 +131,7 @@ BEGIN
                             "現在 Notepad3のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3のウィンドウを新たに開きますか？"
     IDS_MUI_ERR_ENCODINGNA  "このコンピュータでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
     IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
-    IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+    IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
 END
 
 STRINGTABLE
@@ -147,7 +145,7 @@ BEGIN
                             "大容量のファイルです。このファイルを開きますか？"
     IDS_MUI_WARN_UNKNOWN_EXT 
                             "%s は設定のない拡張子です。\n読み込みますか？"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -224,16 +222,16 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "関連付けるファイル拡張子:"
     IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\nいろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて あさきゆめみし ゑひもせす。\nとても綺麗な夕日、今日もたくさん動いて、ご飯もおいしい。よく眠れそうだ。"
     IDS_MUI_ZERO_LEN_MATCH  "^ 空文字列に一致"
-    IDS_MUI_GOTO_LINE       "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %lli):"
+    IDS_MUI_GOTO_LINE       "行 (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN     "列 (1 - %lli):"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語"
-    IDS_MUI_MENU_THEMES     "Themes"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDS_MUI_MENU_THEMES     "テーマ"
+    IDM_THEMES_DEFAULT      "初期設定"
+    IDM_THEMES_FILE_ITEM    "標準設定"
 END
 
 STRINGTABLE
