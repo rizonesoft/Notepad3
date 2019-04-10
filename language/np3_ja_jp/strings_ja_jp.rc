@@ -269,7 +269,7 @@ Notepad3 \t[/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\r\n\
 /u\t管理者権限で実行\r\n\
 /v\tすぐに印刷して終了する\r\n\
 /vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\t相対パスの場合に environment PATH を探す\r\n\
 /z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
 例:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
