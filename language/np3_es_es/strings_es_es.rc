@@ -133,7 +133,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Error al convertir este archivo Unicode.\n¡Los datos se perderán si se guarda el archivo!"
     IDS_MUI_ERR_BITMAP      "Error cargando bitmap ""%s"".\nDimensiones necesarias: %i x %i (ancho >= %i x alto)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+                            "¡Error al elevar los derechos de usuario!"                         
 END
 
 STRINGTABLE

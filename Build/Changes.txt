@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.318.build (2019-Mar-18)
+Current Version 5.19.402.build (2019-Apr 02)
 ==================================================
 
 --------------------------------------------------
@@ -62,7 +62,7 @@ NEW:
 CHANGES:
 --------------------------------------------------
 
-- Add here items for later review...
+- Auto-Save after elevating user right
 
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
