@@ -127,7 +127,7 @@ BEGIN
             MENUITEM "&Huidig bestand toevoegen...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Beheren...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recente (&Historiek)...\tCtrl+Alt+H",     IDM_FILE_RECENT     
+        MENUITEM "Recente (&Historiek)...\tCtrl+Alt+H",     IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "Af&sluiten\tAlt+F4",                      IDM_FILE_EXIT
     END

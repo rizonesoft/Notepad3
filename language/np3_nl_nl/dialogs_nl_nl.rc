@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparante modus bij verlies van focus", IDC_TRANSPARENT, 
+    CONTROL         "Transparante modus bij verlies van focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 134, 10
     DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
     PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,23,55,14

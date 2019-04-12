@@ -127,25 +127,25 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "No se encontró plug-in para el navegador de archivos.\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "¡No hay acceso al archivo seleccionado!\n¿Desea eliminarlo de la lista?"
     IDS_MUI_ERR_CREATELINK  "Error al crear el enlace de escritorio."
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "La ventana de Notepad3 existente está ocupada o tiene un cuadro de diálogo activo.\n¿Quiere abrir otra ventana de Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Las tablas de conversión de páginas de códigos para la codificación seleccionada no están disponibles en su sistema."
     IDS_MUI_ERR_UNICODE     "Error al convertir este archivo Unicode.\n¡Los datos se perderán si se guarda el archivo!"
     IDS_MUI_ERR_BITMAP      "Error cargando bitmap ""%s"".\nDimensiones necesarias: %i x %i (ancho >= %i x alto)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "¡Error al elevar los derechos de usuario!"                         
+                            "¡Error al elevar los derechos de usuario!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Ciertos caracteres en el texto actual no son compatibles con la codificación seleccionada, y pueden ser reemplazados por marcadores de posición predeterminados al guardar. Se recomienda elegir otra codificación de archivo. ¿Continuar?"
     IDS_MUI_ERR_DROP        "¡Sólo se puede eliminar un archivo al mismo tiempo!"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¿Quiere lanzar Notepad3 como administrador?"
     IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable .\n¿Consultar website https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "¿¿Seguro que quiere abrir este archivo grande??"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
     IDS_MUI_INDENT_CONSISTENT  "¡El archivo tiene una sangría consistente!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
@@ -164,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "Cambiar la codificación del archivo de una codificación a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrará. ¿Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está a punto de cambiar la codificación de un archivo vacío. Tenga en cuenta que esto borrará el historial de deshacer, ya que no se puede sincronizar con la nueva codificación. ¿Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "El archivo actual ha sido modificado por un programa externo. ¿Recargar?"
     IDS_MUI_FILECHANGENOTIFY2 "El archivo actual ha sido eliminado. ¿Guardar ahora?"
     IDS_MUI_STICKYWINPOS    "La posición de la ventana fija está activada. Cualquier nueva ventana de Notepad3 utilizará la configuración de ubicación de la ventana actual."
     IDS_MUI_SAVEDSETTINGS   "Los parámetros actuales del programa se han guardado."
     IDS_MUI_CREATEINI_FAIL  "Error al crear el archivo de configuración."
     IDS_MUI_WRITEINI_FAIL   "Error al escribir los parámetros en el archivo de configuración."
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "Ningún archivo de configuración existente encontrado.\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl+F12) y exportar sus estilos."
 END
 

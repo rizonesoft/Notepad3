@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "&Fermer après trouver",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "Marquer &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT, 
+    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,23,55,14
@@ -933,7 +933,7 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 67
     END
- 
+
     IDD_MUI_CHOOSEFONT, DIALOG
     BEGIN
         LEFTMARGIN, 7

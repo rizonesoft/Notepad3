@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Ce&rrar tras reemplazar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,80,77,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT, 
+    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14

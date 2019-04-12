@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,77,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,73,10
     CONTROL         "W&isselkarakterd Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,73,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,23,55,14

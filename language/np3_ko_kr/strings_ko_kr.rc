@@ -127,7 +127,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다. \nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\nNotepad3 창을 새로 열겠습니까?"
     IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 지원하지 않습니다."
     IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 중 오류가 발생하였습니다.\n파일을 저장하면 데이터가 손실됩니다!"
@@ -140,12 +140,12 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자를 현재 인코딩에서 지원하지 않기 때문에 저장시에는 기본 문자로 대체될 것입니다. 다른 인코딩을 선택하는게 좋습니다. 계속 할까요?"
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다. \n\n관리자 권한으로 Notepad3을 시작 하시겠습니까?"
     IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 대용량 파일을 열겠습니까?"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "알 수 없는 확장자 (%s)!\n데이터를 로딩 하시겠습니까?"
     IDS_MUI_INDENT_CONSISTENT   "들여쓰기가 일관적입니다!"
     IDS_MUI_EOLMODENAME_CRLF    "윈도우 (CR+LF)"
@@ -164,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "한 인코딩에서 다른 인코딩으로 파일 인코딩을 전환하면 지원되지 않는 텍스트가 기본 문자로 바뀔 수 있으며 실행 취소 기록이 지워집니다. 계속할까요?"
     IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고합니다. 새 인코딩과 동기화 할 수 없으므로 실행 취소 기록이 지워집니다. 계속할까요?"
     IDS_MUI_READONLY_SAVE   """%s""은(는) 읽기 전용입니다. 다른 파일로 저장 하시겠습니까?"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "현재 파일은 외부 프로그램에 의해 변경 되었습니다. 다시 로드 하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장할까요?"
     IDS_MUI_STICKYWINPOS    "창 위치 고정 기능이 활성화 되었습니다. 모든 새로운 Notepad3 창은 현재 위치 설정을 사용하게 됩니다."
     IDS_MUI_SAVEDSETTINGS   "현재 프로그램 설정이 저장되었습니다."
     IDS_MUI_CREATEINI_FAIL  "설정 파일을 만드는 중 오류가 발생하였습니다."
     IDS_MUI_WRITEINI_FAIL   "설정을 저장 하는 중 오류가 발생하였습니다."
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "기존 설정 파일이 없습니다. \n스타일 설정을 유지하려면 저장(F7) 하거나 스키마 편집(Ctrl+F12) 에서 스타일을 내보내기 하면 됩니다."
 END
 
