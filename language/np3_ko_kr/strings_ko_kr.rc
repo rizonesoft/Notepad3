@@ -96,7 +96,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (관리자)"
-    IDS_MUI_APPTITLE_PASTEBOARD "메모장3 : 클립 보드"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 클립 보드"
     IDS_MUI_UNTITLED        "제목 없음"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(읽기 전용)"
@@ -104,7 +104,7 @@ BEGIN
     IDS_MUI_SAVEFILE        "저장 ""%s""..."
     IDS_MUI_PRINTFILE       "인쇄 페이지 %i..."
     IDS_MUI_SAVINGSETTINGS  "설정 저장..."
-    IDS_MUI_LINKDESCRIPTION "메모장 3으로 편집"
+    IDS_MUI_LINKDESCRIPTION "Notepad3으로 편집"
 END
 
 STRINGTABLE
@@ -128,12 +128,12 @@ BEGIN
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED 
-                            "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\n메모장 3 창을 새로 열겠습니까?"
+                            "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\nNotepad3 창을 새로 열겠습니까?"
     IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 지원하지 않습니다."
     IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 중 오류가 발생하였습니다.\n파일을 저장하면 데이터가 손실됩니다!"
     IDS_MUI_ERR_BITMAP      """%s"" 비트맵을 읽는 도중 오류가 발생하였습니다.\n필요한 크기: %i x %i (너비 >= %i x 높이)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+                            "사용자 권한 상승 중 오류가 발생하였습니다!"
 END
 
 STRINGTABLE
@@ -141,13 +141,13 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자를 현재 인코딩에서 지원하지 않기 때문에 저장시에는 기본 문자로 대체될 것입니다. 다른 인코딩을 선택하는게 좋습니다. 계속 할까요?"
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
     IDS_MUI_ERR_ACCESSDENIED 
-                            """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다. \n\n관리자 권한으로 메모장 3을 시작 하시겠습니까?"
+                            """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다. \n\n관리자 권한으로 Notepad3을 시작 하시겠습니까?"
     IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE 
                             "이 대용량 파일을 열겠습니까?"
     IDS_MUI_WARN_UNKNOWN_EXT 
                             "알 수 없는 확장자 (%s)!\n데이터를 로딩 하시겠습니까?"
-    IDS_MUI_INDENT_CONSISTENT   "일관된 들여 쓰기를 가진 파일입니다!"
+    IDS_MUI_INDENT_CONSISTENT   "들여쓰기가 일관적입니다!"
     IDS_MUI_EOLMODENAME_CRLF    "윈도우 (CR+LF)"
     IDS_MUI_EOLMODENAME_LF      "유닉스/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR      "구형 Mac (CR)"
@@ -167,7 +167,7 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY 
                             "현재 파일은 외부 프로그램에 의해 변경 되었습니다. 다시 로드 하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장할까요?"
-    IDS_MUI_STICKYWINPOS    "창 위치 고정 기능이 활성화 되었습니다. 모든 새로운 메모장3 창은 현재 위치 설정을 사용하게 됩니다."
+    IDS_MUI_STICKYWINPOS    "창 위치 고정 기능이 활성화 되었습니다. 모든 새로운 Notepad3 창은 현재 위치 설정을 사용하게 됩니다."
     IDS_MUI_SAVEDSETTINGS   "현재 프로그램 설정이 저장되었습니다."
     IDS_MUI_CREATEINI_FAIL  "설정 파일을 만드는 중 오류가 발생하였습니다."
     IDS_MUI_WRITEINI_FAIL   "설정을 저장 하는 중 오류가 발생하였습니다."
@@ -179,7 +179,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_EXPORT_FAIL     "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
     IDS_MUI_REGEX_INVALID   "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
-    IDS_MUI_DROP_NO_FILE    "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\n메모장 3의 도구 모음에 드래그 앤 드롭하십시오."
+    IDS_MUI_DROP_NO_FILE    "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
 END
 
 STRINGTABLE
@@ -205,7 +205,7 @@ BEGIN
     IDS_MUI_RESETPOS        "위치 재설정(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "미리 보기 설정(&P)\tCtrl+P"
     IDS_MUI_PASS_FAILURE    "암호가 올바르지 않습니다.\n다른 암호 문구를 다시 입력 하시겠습니까?"
-    IDS_MUI_NOPASS          "해독 취소됨!\n암호화된 원시 데이터 읽기?"
+    IDS_MUI_NOPASS          "해독 취소됨!\n암호화 된 원시 데이터 읽기?"
     IDS_MUI_STY_BASESTD     "BASE (기본 스타일):"
     IDS_MUI_STY_BASE2ND     "BASE (2nd 기본 스타일):"
     IDS_MUI_STY_LEXDEF      "%s - 기본 스타일:"
