@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Stile '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
-    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga! 0123456789,."
+    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga!, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Riga (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Colonna (1 - %lli):"

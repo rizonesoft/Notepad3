@@ -113,7 +113,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filtro file"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Specifica un nuovo &filtro file. Separa più filtri con ;",IDC_STATIC,7,7,170,8
+    LTEXT           "Specifica un nuovo &filtro file. Separa più filtri con ';'",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
     CONTROL         "&Escludi i file in base al filtro.",IDC_NEGFILTER,

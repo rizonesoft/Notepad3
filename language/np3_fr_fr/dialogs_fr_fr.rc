@@ -353,7 +353,7 @@ BEGIN
     LTEXT           "%s ligne(s)",IDC_INDENT_SUM_SPC,90,30,52,8,SS_RIGHT
     LTEXT           "%s ligne(s)",IDC_INDENT_SUM_MIX,90,42,52,8,SS_RIGHT
     GROUPBOX        "Re-retrait tout? ",IDC_STATIC,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
+    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,28,10
     CONTROL         "&Blancs",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,30,10
     LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_TAB_MODX,45,72,124,8,SS_RIGHT
     LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_SPC_MODX,45,84,124,8,SS_RIGHT
