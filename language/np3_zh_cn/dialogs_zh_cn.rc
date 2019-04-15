@@ -332,7 +332,7 @@ BEGIN
     CONTROL         "按 Tab 键时重新格式化缩进(&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,155,10
     CONTROL         "按 Backspace 键时重新格式化缩进(&B)",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,155,10
-    CONTROL         "当换行符不一致时显示警告(&W)",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "当缩进不一致时显示警告(&W)",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,155,10
     CONTROL         "自动检测缩进类型(&A)",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
