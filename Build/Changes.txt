@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.402.build (2019-Apr 02)
+Current Version 5.19.418.build (2019-Apr 18)
 ==================================================
 
 --------------------------------------------------
@@ -62,6 +62,7 @@ NEW:
 CHANGES:
 --------------------------------------------------
 
+- BOOKMARK (margin flag) style changed to vertical flavor
 - Auto-Save after elevating user right
 
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
@@ -75,13 +76,13 @@ CHANGES:
 - Train Africaans (CP-1252) for UCD language detection models
 - Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
 - Menu Languange Selector to Dynamic Language Selector
-- Up-to-Date SCI (GitHub Mirror 2019-Feb-07)
+- Up-to-Date SCI (GitHub Mirror 2019-Apr-17)
 - Update of CED (2019-Feb-01)
 - SpeedUp of RegEx Replace (in case of const replace pattern)
 - Update of Onigmo RegEx engine (2019-Jan-24)
 - Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
-- Scintilla Library (SCI) version 4.1.4 (2019-Mar-07)
+- Scintilla Library (SCI) version 4.1.5 (2019-Apr-17)
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
 
 --------------------------------------------------
@@ -119,7 +120,7 @@ TRANSLATIONS (MUI):
 --------------------------------------------------
 - Polish (it-IT) Translation (In progress)
 - Hungarian (hu-HU) Translation (In progress)
-- Italian (it-IT) Translation (Partial)
+- Italian (it-IT) Translation
 - Korean (UHC) Translation
 
 
