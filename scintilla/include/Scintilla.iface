@@ -267,8 +267,8 @@ get int GetIMEInteraction=2678(,)
 set void SetIMEInteraction=2679(int imeInteraction,)
 
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2722(,)
-get bool IsIMEModeCJK=2723(,)
+get bool IsIMEOpen=2724(,)
+get bool IsIMEModeCJK=2725(,)
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
@@ -309,6 +309,7 @@ val SC_MARK_AVAILABLE=28
 val SC_MARK_UNDERLINE=29
 val SC_MARK_RGBAIMAGE=30
 val SC_MARK_BOOKMARK=31
+val SC_MARK_VERTICALBOOKMARK=32
 
 val SC_MARK_CHARACTER=10000
 
@@ -1241,8 +1242,17 @@ val SC_FOLDDISPLAYTEXT_HIDDEN=0
 val SC_FOLDDISPLAYTEXT_STANDARD=1
 val SC_FOLDDISPLAYTEXT_BOXED=2
 
-# Set the style of fold display text
+# Set the style of fold display text.
 set void FoldDisplayTextSetStyle=2701(int style,)
+
+# Get the style of fold display text.
+get int FoldDisplayTextGetStyle=2707(,)
+
+# Set the default fold display text.
+fun void SetDefaultFoldDisplayText=2722(, string text)
+
+# Get the default fold display text.
+fun int GetDefaultFoldDisplayText=2723(, stringresult text)
 
 enu FoldAction=SC_FOLDACTION_
 val SC_FOLDACTION_CONTRACT=0

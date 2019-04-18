@@ -106,8 +106,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETIMEINTERACTION 2678
 #define SCI_SETIMEINTERACTION 2679
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#define SCI_ISIMEOPEN 2722
-#define SCI_ISIMEMODECJK 2723
+#define SCI_ISIMEOPEN 2724
+#define SCI_ISIMEMODECJK 2725
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define MARKER_MAX 31
 #define SC_MARK_CIRCLE 0
@@ -142,6 +142,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARK_UNDERLINE 29
 #define SC_MARK_RGBAIMAGE 30
 #define SC_MARK_BOOKMARK 31
+#define SC_MARK_VERTICALBOOKMARK 32
 #define SC_MARK_CHARACTER 10000
 #define SC_MARKNUM_FOLDEREND 25
 #define SC_MARKNUM_FOLDEROPENMID 26
@@ -502,6 +503,9 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_FOLDDISPLAYTEXT_STANDARD 1
 #define SC_FOLDDISPLAYTEXT_BOXED 2
 #define SCI_FOLDDISPLAYTEXTSETSTYLE 2701
+#define SCI_FOLDDISPLAYTEXTGETSTYLE 2707
+#define SCI_SETDEFAULTFOLDDISPLAYTEXT 2722
+#define SCI_GETDEFAULTFOLDDISPLAYTEXT 2723
 #define SC_FOLDACTION_CONTRACT 0
 #define SC_FOLDACTION_EXPAND 1
 #define SC_FOLDACTION_TOGGLE 2

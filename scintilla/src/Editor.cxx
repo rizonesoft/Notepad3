@@ -1903,6 +1903,9 @@ void Editor::FilterSelections() {
 
 // AddCharUTF inserts an array of bytes which may or may not be in UTF-8.
 void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
+	if (len == 0) {
+		return;
+	}
 	FilterSelections();
 	{
 		UndoGroup ug(pdoc, (sel.Count() > 1) || !sel.Empty() || inOverstrike);
@@ -1973,12 +1976,14 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 		SetLastXChosen();
 	}
 
-	if (treatAsDBCS) {
-		NotifyChar((static_cast<unsigned char>(s[0]) << 8) |
-		        static_cast<unsigned char>(s[1]));
-	} else if (len > 0) {
-		int byte = static_cast<unsigned char>(s[0]);
-		if ((byte < 0xC0) || (1 == len)) {
+	int ch = static_cast<unsigned char>(s[0]);
+	if (treatAsDBCS || pdoc->dbcsCodePage != SC_CP_UTF8) {
+		if (len > 1) {
+			// DBCS code page or DBCS font character set.
+			ch = (ch << 8) | static_cast<unsigned char>(s[1]);
+		}
+	} else {
+		if ((ch < 0xC0) || (1 == len)) {
 			// Handles UTF-8 characters between 0x01 and 0x7F and single byte
 			// characters when not in UTF-8 mode.
 			// Also treats \0 and naked trail bytes 0x80 to 0xBF as valid
@@ -1986,10 +1991,10 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 		} else {
 			unsigned int utf32[1] = { 0 };
 			UTF32FromUTF8(std::string_view(s, len), utf32, std::size(utf32));
-			byte = utf32[0];
+			ch = utf32[0];
 		}
-		NotifyChar(byte);
 	}
+	NotifyChar(ch);
 
 	if (recordingMacro) {
 		NotifyMacroRecord(SCI_REPLACESEL, 0, reinterpret_cast<sptr_t>(s));
@@ -7212,6 +7217,17 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		foldDisplayTextStyle = static_cast<int>(wParam);
 		Redraw();
 		break;
+
+	case SCI_FOLDDISPLAYTEXTGETSTYLE:
+		return foldDisplayTextStyle;
+
+	case SCI_SETDEFAULTFOLDDISPLAYTEXT:
+		SetDefaultFoldDisplayText(CharPtrFromSPtr(lParam));
+		Redraw();
+		break;
+
+	case SCI_GETDEFAULTFOLDDISPLAYTEXT:
+		return StringResult(lParam, GetDefaultFoldDisplayText());
 
 	case SCI_TOGGLEFOLD:
 		FoldLine(static_cast<Sci::Line>(wParam), SC_FOLDACTION_TOGGLE);

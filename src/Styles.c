@@ -1544,8 +1544,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bckgrnd);
   bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, min_i(0xFF, alpha));
 
-  SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
+  //SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
   //SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_SHORTARROW);
+  SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_VERTICALBOOKMARK);
   SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
   SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);

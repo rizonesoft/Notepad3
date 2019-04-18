@@ -309,6 +309,7 @@
     <ClCompile Include="src\Selection.cxx" />
     <ClCompile Include="src\Style.cxx" />
     <ClCompile Include="src\UniConversion.cxx" />
+    <ClCompile Include="src\UniqueString.cxx" />
     <ClCompile Include="src\ViewStyle.cxx" />
     <ClCompile Include="src\XPM.cxx" />
     <ClCompile Include="win32\HanjaDic.cxx" />
