@@ -558,17 +558,21 @@
     </h3>
     <ul>
 	<li>
-	Released 7 March 2019.
-	</li>
- 	<li>
-	Improve the styling of numbers in Nim.
-	<a href="https://sourceforge.net/p/scintilla/feature-requests/1268/">Feature #1268</a>.
+	Released 17 April 2019.
 	</li>
  	<li>
 	On Win32, removed special handling of non-0 wParam to WM_PAINT.
 	</li>
  	<li>
 	Implement high-priority idle on Win32 to make redraw smoother and more efficient.
+	</li>
+	<li>
+	Add vertical bookmark symbol SC_MARK_VERTICALBOOKMARK.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1276/">Feature #1276</a>.
+	</li>
+ 	<li>
+	Set default fold display text SCI_SETDEFAULTFOLDDISPLAYTEXT(text).
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1272/">Feature #1272</a>.
 	</li>
  	<li>
 	Add SCI_SETCHARACTERCATEGORYOPTIMIZATION API to optimize speed
@@ -577,13 +581,33 @@
 	<a href="https://sourceforge.net/p/scintilla/feature-requests/1259/">Feature #1259</a>.
 	</li>
  	<li>
+	Improve the styling of numbers in Nim.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1268/">Feature #1268</a>.
+	</li>
+ 	<li>
+	Fix exception when inserting DBCS text.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2093/">Bug #2093</a>.
+	</li>
+	<li>
+	Improve performance of accessibility on GTK.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2094/">Bug #2094</a>.
+	</li>
+ 	<li>
+	Fix text reported for deletion with accessibility on GTK.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2095/">Bug #2095</a>.
+	</li>
+ 	<li>
 	Fix flicker when inserting primary selection on GTK.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2087/">Bug #2087</a>.
 	</li>
  	<li>
+	Support coloured text in Windows 8.1+.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1277/">Feature #1277</a>.
+	</li>
+ 	<li>
 	Avoid potential long hangs with idle styling for huge documents on Cocoa and GTK.
 	</li>
-    <ul>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scite414.zip">Release 4.1.4</a>
     </h3>
@@ -1249,7 +1273,7 @@
 	</li>
 	<li>
 	This is the first release of the
-	<a href="https://www.scintilla.org/LongTermDownload.html">long term branch</a>
+	<a href="https://scintilla.sourceforge.io/LongTermDownload.html">long term branch</a>
 	which avoids using features from C++14 or later in order to support older systems.
 	</li>
 	<li>

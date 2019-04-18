@@ -32,8 +32,6 @@ protected:
 		idcmdSelectAll=16
 	};
 
-	enum { maxLenInputIME = 200 };
-
 	int displayPopupMenu;
 	Menu popup;
 	AutoComplete ac;

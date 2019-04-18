@@ -75,7 +75,6 @@ public:
 	bool HiddenLines() const override;
 
 	const char *GetFoldDisplayText(Sci::Line lineDoc) const override;
-	bool GetFoldDisplayTextShown(Sci::Line lineDoc) const override;
 	bool SetFoldDisplayText(Sci::Line lineDoc, const char *text) override;
 
 	bool GetExpanded(Sci::Line lineDoc) const override;
@@ -278,16 +277,11 @@ const char *ContractionState<LINE>::GetFoldDisplayText(Sci::Line lineDoc) const 
 }
 
 template <typename LINE>
-bool ContractionState<LINE>::GetFoldDisplayTextShown(Sci::Line lineDoc) const {
-	return !GetExpanded(lineDoc) && GetFoldDisplayText(lineDoc);
-}
-
-template <typename LINE>
 bool ContractionState<LINE>::SetFoldDisplayText(Sci::Line lineDoc, const char *text) {
 	EnsureData();
 	const char *foldText = foldDisplayTexts->ValueAt(lineDoc).get();
 	if (!foldText || !text || 0 != strcmp(text, foldText)) {
-		UniqueString uns = UniqueStringCopy(text);
+		UniqueString uns = IsNullOrEmpty(text) ? UniqueString() : UniqueStringCopy(text);
 		foldDisplayTexts->SetValueAt(lineDoc, std::move(uns));
 		Check();
 		return true;
