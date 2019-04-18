@@ -115,8 +115,8 @@ BEGIN
     IDS_NEWFILE             "Nuovo file"
     IDS_FILTER_ALL          "Tutti i file (*.*)\n*.*\n"
     IDS_FILTER_EXE          "File eseguibili (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nTutti i file (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Seleziona una nuova cartella"
-    IDS_FAVORITES           "Specifica la cartella ""Preferiti"""
+    IDS_GETDIRECTORY        "Seleziona una nuova cartella."
+    IDS_FAVORITES           "Specifica la cartella ""Preferiti."""
 END
 
 STRINGTABLE

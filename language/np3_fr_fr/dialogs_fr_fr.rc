@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "&Fermer après trouver",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "Marquer &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT, 
+    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,23,55,14
@@ -340,25 +340,25 @@ BEGIN
     PUSHBUTTON      "Annuler",IDCANCEL,117,27,50,14
 END
 
-IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 206, 138
+IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Retrait incohérent"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Statistiques: ",IDC_STATIC,7,7,192,48,WS_GROUP
+    GROUPBOX        "Statistiques: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabul.[%i]:",IDC_INDENT_WIDTH_TAB,54,18,40,8,SS_LEFT
     LTEXT           "Blancs[%i]:",IDC_INDENT_WIDTH_SPC,54,30,40,8,SS_LEFT
     LTEXT           "Mixte[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
     LTEXT           "%s ligne(s)",IDC_INDENT_SUM_TAB,90,18,52,8,SS_RIGHT
     LTEXT           "%s ligne(s)",IDC_INDENT_SUM_SPC,90,30,52,8,SS_RIGHT
     LTEXT           "%s ligne(s)",IDC_INDENT_SUM_MIX,90,42,52,8,SS_RIGHT
-    GROUPBOX        "Re-retrait tout? ",IDC_STATIC,7,60,192,56,WS_GROUP
-    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
+    GROUPBOX        "Re-retrait tout? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,28,10
     CONTROL         "&Blancs",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,30,10
-    LTEXT           "%s ligne(s) avec profondeur de retrait irrégulière",IDC_INDENT_TAB_MODX,45,72,150,8,SS_RIGHT
-    LTEXT           "%s ligne(s) avec profondeur de retrait irrégulière",IDC_INDENT_SPC_MODX,45,84,150,8,SS_RIGHT
-    PUSHBUTTON      "&Oui",IDOK,90,98,50,14
-    PUSHBUTTON      "&Non",IDCANCEL,144,98,50,14
+    LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_TAB_MODX,45,72,124,8,SS_RIGHT
+    LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_SPC_MODX,45,84,124,8,SS_RIGHT
+    PUSHBUTTON      "&Oui",IDOK,80,98,50,14
+    PUSHBUTTON      "&Non",IDCANCEL,134,98,50,14
     CONTROL         "&Toujours afficher ce dialogue.", IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
@@ -933,7 +933,7 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 67
     END
- 
+
     IDD_MUI_CHOOSEFONT, DIALOG
     BEGIN
         LEFTMARGIN, 7

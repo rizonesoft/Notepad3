@@ -127,25 +127,25 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载。"
     IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
     IDS_MUI_ERR_CREATELINK  "创建桌面快捷方式时遇到错误。"
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 Notepad3 窗口吗？"
     IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用。"
     IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失。"
     IDS_MUI_ERR_BITMAP      "加载位图文件失败“%s”。\n需求尺寸：%i × %i（宽度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+                            "提升用户权限时出错。"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
     IDS_MUI_ERR_DROP        "一次只能拖放一个文件。"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             "文件“%s”不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否确实要打开一个如此庞大的文件？"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
     IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
@@ -164,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "切换文件编码可能导致部分无法表示的字符被替换为其它字符，并且该操作会清空撤销历史。是否继续？"
     IDS_MUI_ASK_ENCODING2   "切换文件编码会清空撤销历史。是否继续？"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "当前文件已被其它程序修改。是否重新加载？"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
     IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置。"
     IDS_MUI_SAVEDSETTINGS   "当前设置已保存。"
     IDS_MUI_CREATEINI_FAIL  "创建配置文件失败。"
     IDS_MUI_WRITEINI_FAIL   "将设置写入配置文件失败。"
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "当前无配置文件可用。\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式。"
 END
 

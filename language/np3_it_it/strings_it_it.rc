@@ -127,25 +127,25 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato.\nMiniPath può essere scaricato su https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dalla lista?"
     IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop."
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "La finestra Notepad3 è impegnata oppure ha una dialog box in attesa di input.\nVuoi aprire una nuova finestra Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per l'encoding selezionato non sono disponibili nel tuo sistema."
     IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode.\nCi sarà una perdita di dati se salvi il file!"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+                            "Errore durante l'aumento dei diritti utente!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dall'encoding selezionato, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare un encoding differente. Continuare?"
     IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi avviare Notepad3 come Administrator?"
     IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "Sei sicuro di voler aprire questo file grande?"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "Estensione sconosciuta (%s) !\nProseguire con il caricamento?"
     IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
@@ -164,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "Cambiare l'encoding del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
     IDS_MUI_ASK_ENCODING2   "Stai per cambiare l'encoding di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con il nuovo encoding. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "Il file corrente è stato modificato da un programma esterno. Ricaricare?"
     IDS_MUI_FILECHANGENOTIFY2 "Il file corrente è stato cancellato. Salvarlo adesso?"
     IDS_MUI_STICKYWINPOS    "La posizione della finestra ""sticky"" è abilitata. Qualunque finestra Notepad3 userà le attuali impostazioni di posizione finestra."
     IDS_MUI_SAVEDSETTINGS   "Le impostazioni correnti di Notepad3 sono state salvate."
     IDS_MUI_CREATEINI_FAIL  "Errore nella creazione del file delle impostazioni."
     IDS_MUI_WRITEINI_FAIL   "Errore nella scrittura del file delle impostazioni."
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "Non è stato trovato un file delle impostazioni.\nPer conservare le modifiche agli Stili, salva le impostazioni adesso (F7) oppure ritorna alla configurazione degli Schemi (Ctrl+F12) ed esporta i tuoi Stili."
 END
 
@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Stile '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
-    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga! 0123456789,."
+    IDS_MUI_EXAMPLE_TEXT    "Nel Quebec zio John postava: W Eddy Merckx in fuga!, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Riga (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Colonna (1 - %lli):"

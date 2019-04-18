@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "&Nouvelle fenêtre\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Fenêtre vide\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Relancer avec des droits élevés",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Exécuter &document\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "&Ouvrir avec...\tAlt+L",              IDM_FILE_OPENWITH
@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&Défaut...",                          IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Vér&ifier retrait..."                     CMD_CHECK_INDENTATION
+        MENUITEM "Con&trôle de retrait..."                     CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Mise en &page...",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer...\tCtrl+P",                    IDM_FILE_PRINT

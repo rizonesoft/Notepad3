@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparante modus bij verlies van focus", IDC_TRANSPARENT, 
+    CONTROL         "Transparante modus bij verlies van focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 134, 10
     DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
     PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,23,55,14
@@ -355,8 +355,8 @@ BEGIN
     GROUPBOX        "Opnieuw inspringen alles ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "&Blancos",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,33,10
-    LTEXT           "%s lijn(en) met onregelmatige inspringen diepte",IDC_INDENT_TAB_MODX,50,72,130,8,SS_RIGHT
-    LTEXT           "%s lijn(en) met onregelmatige inspringen diepte",IDC_INDENT_SPC_MODX,50,84,130,8,SS_RIGHT
+    LTEXT           "%s lijn(en) met onregelmatige inspringen",IDC_INDENT_TAB_MODX,50,72,130,8,SS_RIGHT
+    LTEXT           "%s lijn(en) met onregelmatige inspringen",IDC_INDENT_SPC_MODX,50,84,130,8,SS_RIGHT
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,134,98,50,14
     CONTROL         "&Dit dialoogvenster altijd tonen.", IDC_WARN_INCONSISTENT_INDENTS,

@@ -127,25 +127,25 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Aucun plugin de navigateur de fichiers n'a été trouvé.\nLe plugin du navigateur de fichiers MiniPath peut être téléchargé à partir de https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Pas d'accès au fichier sélectionné!\nVoulez-vous le supprimer de la liste?"
     IDS_MUI_ERR_CREATELINK  "Erreur lors de la création du lien du bureau."
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "La fenêtre Notepad3 existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une autre fenêtre Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Les tables de conversion des pages de codes pour l'encodage sélectionné ne sont pas disponibles sur votre système."
     IDS_MUI_ERR_UNICODE     "Erreur lors de la conversion de ce fichier Unicode.\nLes données seront perdues si le fichier est sauvegardé!"
     IDS_MUI_ERR_BITMAP      "Erreur chargement bitmap ""%s"".\nDimensions nécessaires: %i x %i (largeur >= %i x hauteur)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+                            "Erreur lors de l'élévation des droits de l'utilisateur!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Certains caractères dans le texte courant ne sont pas supportés par le codage sélectionné et peuvent être remplacés par des espaces réservés par défaut lors de la sauvegarde. Il est recommandé de choisir un autre encodage de fichier. Continuer?"
     IDS_MUI_ERR_DROP        "Un seul fichier peut être déposé en même temps!"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             "Le fichier ""% s "" ne peut pas être sauvegardé et est peut-être protégé.\n\nVoulez-vous lancer Notepad3 en tant qu'administrateur?"
     IDS_MUI_ERR_ADMINEXE    "Aucun fichier exécutable d'administration trouvé.\nCheck website https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "Etes-vous sûr de vouloir ouvrir ce gros fichier?"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "Extension de nom de fichier inconnue (%s) !\nChargement des données quand même?"
     IDS_MUI_INDENT_CONSISTENT  "Le fichier a un retrait cohérent!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
@@ -164,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "Le passage du codage de fichier d'un codage à un autre peut remplacer le texte non pris en charge par des caractères par défaut et l'historique des annulations sera effacé. Continuer?"
     IDS_MUI_ASK_ENCODING2   "Vous êtes sur le point de changer l'encodage d'un fichier vide. Notez que cela effacera l'historique d'annulation, car il ne peut pas être synchronisé avec le nouvel encodage. Continuer?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Enregistrer dans un fichier différent?"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "Le fichier actuel a été modifié par un programme externe. Recharger?"
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant?"
     IDS_MUI_STICKYWINPOS    "La position de la fenêtre fixée est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours."
     IDS_MUI_SAVEDSETTINGS   "Les paramètres du programme en cours ont été sauvegardés."
     IDS_MUI_CREATEINI_FAIL  "Erreur de création du fichier de configuration."
     IDS_MUI_WRITEINI_FAIL   "Erreur d'écriture des paramètres dans le fichier de configuration."
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "Aucun fichier de configuration existant n'a été trouvé.\nPour conserver vos modifications de style, enregistrer les paramètres maintenant (F7) ou revener à la configuration du schème (Ctrl+F12) et exporter vos styles."
 END
 

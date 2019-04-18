@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "&Nuova finestra\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Finestra vuota\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",          IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Rilancio con diritti elevati",          IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Esegui &documento\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Apri con...\tAlt+L",               IDM_FILE_OPENWITH

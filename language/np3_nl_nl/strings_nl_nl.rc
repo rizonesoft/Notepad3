@@ -127,25 +127,25 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Geen plugin voor bestandsbrowser gevonden.\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWilt u het uit de lijst verwijderen?"
     IDS_MUI_ERR_CREATELINK  "Fout bij het maken van de bureaubladkoppeling."
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "Het bestaande venster Notepad3 is bezet of heeft een actief dialoogvenster.\nWilt u een ander Notepad3 venster openen?"
     IDS_MUI_ERR_ENCODINGNA  "Codepage conversietabellen voor de geselecteerde codering zijn niet beschikbaar op uw systeem."
     IDS_MUI_ERR_UNICODE     "Fout bij het converteren van dit Unicode bestand.\nGegevens gaan verloren als het bestand wordt opgeslagen!"
     IDS_MUI_ERR_BITMAP      "Fout bij laden van bitmap ""%s"".\nDimensies nodig: %i x %i (breedte >= %i x hoogte)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+                            "Fout tijdens het verhogen van gebruikersrechten!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Bepaalde tekens in de huidige tekst worden niet ondersteund door de geselecteerde codering, en kunnen worden vervangen door standaardplaatshouders bij het opslaan. Het wordt aanbevolen om een andere bestandscodering te kiezen. Doorgaan?"
     IDS_MUI_ERR_DROP        "Er kan slechts één bestand tegelijkertijd worden gedeponeerd!"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             "Het bestand ""%s"" kan niet worden opgeslagen en kan worden beveiligd.\n\nWilt u Notepad3 als Administrator starten?"
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "Weet je zeker dat je dit grote bestand wilt openen?"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende bestandsnaamextensie (%s) !\nGegevens toch laden?"
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
@@ -164,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "Het omschakelen van de bestandscodering van de ene naar de andere codering kan de niet-ondersteunde tekst vervangen door standaardtekens en de geschiedenis van het ongedaan maken zal worden gewist. Doorgaan?"
     IDS_MUI_ASK_ENCODING2   "U staat op het punt de codering van een leeg bestand te wijzigen. Merk op dat dit de geschiedenis van het ongedaan maken zal wissen, omdat deze niet kan worden gesynchroniseerd met de nieuwe codering. Doorgaan?"
     IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Sla op in een ander bestand?"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                            "Het huidige bestand is gewijzigd door een extern programma. Herladen?"
     IDS_MUI_FILECHANGENOTIFY2 "Het huidige bestand is verwijderd. Nu opslaan?"
     IDS_MUI_STICKYWINPOS    "Kleverige vensterpositie is ingeschakeld. Alle nieuwe Notepad3 vensters gebruiken de huidige instellingen voor vensterplaatsing."
     IDS_MUI_SAVEDSETTINGS   "De huidige programma instellingen zijn opgeslagen."
     IDS_MUI_CREATEINI_FAIL  "Fout bij het maken van het configuratiebestand."
     IDS_MUI_WRITEINI_FAIL   "Fout bij het schrijven van instellingen naar het configuratiebestand."
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
 END
 

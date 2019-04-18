@@ -263,7 +263,7 @@ BEGIN
     LTEXT           "Mensaje:",IDC_STATIC,20,120,40,8
     CONTROL         "Ninguno, ejecutar la aplicación de destino cada vez que se abre un archivo.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,250,10
-    CONTROL         "Mensaje 'Archivo abierto' en la ventana de destino:",IDC_SENDDROPMSG,
+    CONTROL         "Enviar mensaje 'Archivo abierto' en la ventana de destino:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "Ejecute el siguiente comando DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Aplicación:",IDC_STATIC,128,120,40,8

@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "開く"
     IDT_FILE_BROWSE         "ファイラでブラウズ"
     IDT_FILE_SAVE           "保存"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "閲覧履歴"
     IDT_EDIT_UNDO           "元に戻す"
     IDT_EDIT_REDO           "やり直し"
     IDT_EDIT_CUT            "切り取り"
@@ -112,9 +112,9 @@ BEGIN
     IDS_MUI_FILTER_ALL      "すべてのファイル(*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "実行ファイル(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|すべてのファイル(*.*)|*.*|"
     IDS_MUI_FILTER_INI      "設定ファイル(*.ini)|*.ini|すべてのファイル(*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "ビットマップファイル (*.bmp)|*.bmp|すべてのファイル (*.*)|*.*|"
     IDS_MUI_OPENWITH        "開きたいプログラムがあるフォルダを指定してください。"
-    IDS_MUI_FAVORITES       "お気に入りのフォルダを指定してください。" 
+    IDS_MUI_FAVORITES       "お気に入りのフォルダを指定してください。"
     IDS_MUI_BACKSLASHHELP   "バックスラッシュ変換\n\n\\a\tアラート (BEL, Ascii 7, ベル)\n\\b\tバックスペース (BS, Ascii 8)\n\\f\t改ページ (FF, Ascii 12)\n\\n\t改行文字 (LF, Ascii 10)\n\\r\t復帰文字 (CR, Ascii 13, キャリッジリターン)\n\\t\tタブ (HT, Ascii 9, 水平タブ)\n\\v\t垂直タブ (VT, Ascii 11)\n\\0oo\t8進数表記\n\\u####\t16進数表記\n\\xhh\t16進数表記\n\\\\\tバックスラッシュ自体"
     IDS_MUI_REGEXPHELP      "正規表現の構文 (複数行)\n\n.\t何らかの1文字\n^\t行の先頭\n$\t行の末尾\n\\<\t単語の先頭\n\\>\t単語の末尾\n\\b\t単語の区切り(アルファベットの単語)\n[...]\t指定した文字群 ([abc]) または - で範囲 ([a-z])\n[^...]\t上記で指定した文字ではない(^で除外)\n\\d\t10進数1文字(半角数字)\n\\D\t10進数ではない(上記以外)\n\\s\t空白文字(何らか)\n\\S\t空白文字ではない(上記以外)\n\\w\t言葉の1文字(日本語含む)\n\\W\t非言語文字(上記以外)\n\\x\t下記用のエスケープ文字\n\\xHH\t16進コードHHで1文字\n?\t直前の指定があるかないかに一致(0回か1回)\n*\t直前の指定の0回以上の繰り返しに合致\n+\t直前の指定の1回以上の繰り返しに合致\n*? か +?\t上記記号 ""?"" と ""+"" を最長マッチではなくする\n{n}\t繰り返し回数を指定 , 区切りで上限も\n(\t範囲指定の括弧開始\n)\t範囲指定の閉じ括弧\n|\tor 範囲括弧内でも使用可能\n\\n\t上記の括弧内を記憶し置換時に参照する\n\t\\1から\\9まで順に対応括弧内の文字列を呼び出す\n"
     IDS_MUI_WILDCARDHELP    "ワイルドカード検索\n\n*\t0文字以上の文字列に合致\n?\tちょうど1文字に合致"
@@ -127,27 +127,25 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は https://rizonesoft.com からダウンロードできます。"
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか？"
     IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "現在 Notepad3のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3のウィンドウを新たに開きますか？"
     IDS_MUI_ERR_ENCODINGNA  "このコンピュータでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
     IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
-    IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"                         
+    IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します。\n変換を続行しますか？"
     IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません。"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             """%s"" を保存できませんでした。保護されている可能性があります。\n\n管理者権限でNotepad3を起動しますか？"
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "%s は設定のない拡張子です。\n読み込みますか？"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -164,7 +162,7 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴もリセットされます。\n変換を続行しますか？"
     IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか？"
     IDS_MUI_READONLY_SAVE   """%s"" は読み取り専用です。別のファイル名で保存しますか？"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "ファイルが他のプログラムによって変更されました。再読み込みしますか？"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか？"
     IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
@@ -224,16 +222,16 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "関連付けるファイル拡張子:"
     IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\nいろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて あさきゆめみし ゑひもせす。\nとても綺麗な夕日、今日もたくさん動いて、ご飯もおいしい。よく眠れそうだ。"
     IDS_MUI_ZERO_LEN_MATCH  "^ 空文字列に一致"
-    IDS_MUI_GOTO_LINE       "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %lli):"
+    IDS_MUI_GOTO_LINE       "行 (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN     "列 (1 - %lli):"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語"
-    IDS_MUI_MENU_THEMES     "Themes"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDS_MUI_MENU_THEMES     "テーマ"
+    IDM_THEMES_DEFAULT      "初期設定"
+    IDM_THEMES_FILE_ITEM    "標準設定"
 END
 
 STRINGTABLE
@@ -271,7 +269,7 @@ Notepad3 \t[/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\r\n\
 /u\t管理者権限で実行\r\n\
 /v\tすぐに印刷して終了する\r\n\
 /vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\t相対パスの場合に environment PATH を探す\r\n\
 /z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
 例:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

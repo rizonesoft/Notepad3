@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "&Nieuw venster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeg venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "He&rlancering met hoge rechten",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Uitvoeren &Document\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Opslaan als...\tAlt+L",              IDM_FILE_OPENWITH
@@ -127,7 +127,7 @@ BEGIN
             MENUITEM "&Huidig bestand toevoegen...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Beheren...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recente (&Historiek)...\tCtrl+Alt+H",     IDM_FILE_RECENT     
+        MENUITEM "Recente (&Historiek)...\tCtrl+Alt+H",     IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "Af&sluiten\tAlt+F4",                      IDM_FILE_EXIT
     END

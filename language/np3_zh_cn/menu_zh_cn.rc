@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                    IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "以管理员权限重启(&R)",                    IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "运行文档(&D)\tCtrl+L",                   IDM_FILE_LAUNCH
             MENUITEM "打开方式(&O)...\tAlt+L",                 IDM_FILE_OPENWITH

@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "새 창에 열기(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "빈 창 열기(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "관리자 권한으로 다시 열기(&R)",          IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "문서 실행(&D)\tCtrl+L",                IDM_FILE_LAUNCH
             MENUITEM "다른 프로그램으로 열기(&O)...\tAlt+L",  IDM_FILE_OPENWITH

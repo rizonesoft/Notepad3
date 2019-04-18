@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Ce&rrar tras reemplazar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,80,77,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT, 
+    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14
@@ -220,14 +220,14 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Fines de línea inconsistentes"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Finales de línea inconsistentes encontrados en el archivo.",IDC_STATIC,7,7,180,8
+    LTEXT           "Finales de línea inconsistentes encontrados en el archivo:",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s línea(s).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s línea(s).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s línea(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&¿Quieres normalizar los finales de línea?",IDC_STATIC,7,52,180,8
+    LTEXT           "¿Quie&res normalizar los finales de línea?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Sí",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
@@ -353,10 +353,10 @@ BEGIN
     LTEXT           "%s línea(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
     LTEXT           "%s línea(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
     GROUPBOX        "Re-sangría todo ? ",IDC_STATIC,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
+    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,30,10
     CONTROL         "&Blancos",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,33,10
-    LTEXT           "%s línea(s) con profundidad de sangría irregular",IDC_INDENT_TAB_MODX,50,72,124,8,SS_RIGHT
-    LTEXT           "%s línea(s) con profundidad de sangría irregular",IDC_INDENT_SPC_MODX,50,84,124,8,SS_RIGHT
+    LTEXT           "%s línea(s) con sangría irregular",IDC_INDENT_TAB_MODX,50,72,124,8,SS_RIGHT
+    LTEXT           "%s línea(s) con sangría irregular",IDC_INDENT_SPC_MODX,50,84,124,8,SS_RIGHT
     PUSHBUTTON      "&Sí",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
     CONTROL         "&Mostrar siempre este diálogo.", IDC_WARN_INCONSISTENT_INDENTS,
