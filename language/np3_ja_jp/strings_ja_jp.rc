@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "開く"
     IDT_FILE_BROWSE         "ファイラでブラウズ"
     IDT_FILE_SAVE           "保存"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "閲覧履歴"
     IDT_EDIT_UNDO           "元に戻す"
     IDT_EDIT_REDO           "やり直し"
     IDT_EDIT_CUT            "切り取り"
