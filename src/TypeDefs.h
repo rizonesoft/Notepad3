@@ -101,8 +101,10 @@ typedef enum
 {
   CFG_VER_NONE = 0, /// old version
   CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
+  CFG_VER_0002 = 2,  /// LongLine Marker Off by default
 
-  CFG_VER_CURRENT = CFG_VER_0001
+  CFG_VER_CURRENT = CFG_VER_0002
+
 } CFG_VERSION;
 
 // --------------------------------------------------------------------------
@@ -294,12 +296,6 @@ typedef struct _globals_t
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
   FILEVARS  fvBackup;
-  //bool      bWordWrap;
-  //bool      bTabsAsSpaces;
-  //bool      bTabIndents;
-  //int       iTabWidth;
-  //int       iIndentWidth;
-  //int       iLongLinesLimit;
   int       iWrapCol;
   bool      bCodeFoldingAvailable;
   bool      bForceReLoadAsUTF8;

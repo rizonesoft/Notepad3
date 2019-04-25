@@ -2259,24 +2259,20 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
             if (fTranslated1 && fTranslated2) 
             {
-              if (_iNewTabWidth != Globals.fvCurFile.iTabWidth) {
-                Globals.fvCurFile.iTabWidth = _iNewTabWidth;
-                Settings.TabWidth = _iNewTabWidth;
-              }
-              if (_iNewIndentWidth != Globals.fvCurFile.iIndentWidth) {
-                Globals.fvCurFile.iIndentWidth = _iNewIndentWidth;
-                Settings.IndentWidth = _iNewIndentWidth;
-              }
+              Settings.TabWidth = _iNewTabWidth;
+              Globals.fvCurFile.iTabWidth = _iNewTabWidth;
+
+              Settings.IndentWidth = _iNewIndentWidth;
+              Globals.fvCurFile.iIndentWidth = _iNewIndentWidth;
+
               bool const _bTabsAsSpaces = IsButtonChecked(hwnd, IDC_TAB_AS_SPC);
-              if (_bTabsAsSpaces != Globals.fvCurFile.bTabsAsSpaces) {
-                Globals.fvCurFile.bTabsAsSpaces = _bTabsAsSpaces;
-                Settings.TabsAsSpaces = _bTabsAsSpaces;
-              }
+              Settings.TabsAsSpaces = _bTabsAsSpaces;
+              Globals.fvCurFile.bTabsAsSpaces = _bTabsAsSpaces;
+
               bool const _bTabIndents = IsButtonChecked(hwnd, IDC_TAB_INDENTS);
-              if (_bTabIndents != Globals.fvCurFile.bTabIndents) {
-                Globals.fvCurFile.bTabIndents = _bTabIndents;
-                Settings.TabIndents = _bTabIndents;
-              }
+              Settings.TabIndents = _bTabIndents;
+              Globals.fvCurFile.bTabIndents = _bTabIndents;
+
               Settings.BackspaceUnindents = IsButtonChecked(hwnd, IDC_BACKTAB_INDENTS);
               Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
               Settings.AutoDetectIndentSettings = IsButtonChecked(hwnd, IDC_AUTO_DETECT_INDENTS);

@@ -2204,7 +2204,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     // call SaveSettings() when s_hwndToolbar is still valid
     SaveSettings(false);
 
-    if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) != 0) 
+    if (StrIsNotEmpty(Globals.IniFile))
     {
       // Cleanup unwanted MRU's
       if (!Settings.SaveRecentFiles) {
@@ -5318,7 +5318,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         bool bCreateFailure = false;
 
-        if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) == 0) {
+        if (StrIsEmpty(Globals.IniFile)) {
 
           if (StringCchLenW(Globals.IniFileDefault,COUNTOF(Globals.IniFileDefault)) > 0) {
             if (CreateIniFileEx(Globals.IniFileDefault)) {
@@ -5876,7 +5876,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     break;
 
     case CMD_OPENINIFILE:
-      if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile))) {
+      if (StrIsNotEmpty(Globals.IniFile)) {
         SaveSettings(false);
         FileLoad(false,false,false,false,true, false, Globals.IniFile);
       }
@@ -6940,7 +6940,7 @@ void LoadSettings()
     int const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
     s_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", _ver);
 
-    Defaults.SaveSettings = true;
+    Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
     Settings.SaveSettings = IniGetBool(L"Settings", L"SaveSettings", Defaults.SaveSettings);
 
     // first load "hard coded" .ini-Settings
@@ -7173,7 +7173,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (_ver < CFG_VER_0002));
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
@@ -7445,9 +7445,7 @@ void LoadSettings()
 
 void SaveSettings(bool bSaveSettingsNow) 
 {
-  if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) { return; }
-
-  if (!s_bEnableSaveSettings) { return; }
+  if (StrIsEmpty(Globals.IniFile) || !s_bEnableSaveSettings) { return; }
 
   CreateIniFile();
 
@@ -7516,28 +7514,13 @@ void SaveSettings(bool bSaveSettingsNow)
     }
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PathNameFormat);
-
-    if (Globals.fvBackup.bWordWrap != Settings.WordWrap) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WordWrap);
-    }
-    if (Globals.fvBackup.bTabsAsSpaces != Settings.TabsAsSpaces) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
-    }
-    if (Globals.fvBackup.bTabIndents != Settings.TabIndents) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabIndents);
-    }
-    if (Globals.fvBackup.iTabWidth != Settings.TabWidth) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
-    }
-    if (Globals.fvBackup.iIndentWidth != Settings.IndentWidth) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
-    }
-    if (Globals.fvBackup.iWrapColumn != Settings.WordWrapIndent) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
-    }
-    if (Globals.fvBackup.iLongLinesLimit != Settings.LongLinesLimit) {
-      SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
-    }
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WordWrap);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabIndents);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapIndent);
@@ -9838,10 +9821,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       {
         EditIndentationStatistic(Globals.hwndMain, &fioStatus);  // new statistic needed
       }
-      if (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) {
-        Globals.fvCurFile.bTabsAsSpaces = true;
-        SciCall_SetUseTabs(false);
-      }
+      Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
+      SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
     }
 
   }
