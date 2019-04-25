@@ -30,13 +30,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.418.build (2019-Apr 18)
+Current Version 5.19.425.build (2019-Apr 25)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
 
+- Add: Menu entry to mute MessageBox beeps
 - Add Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
 - Add: Factory Default, Standard Settings, Dark Theme mode
 - Add a timer of 3.2 second to the Zoom Info Bubble
