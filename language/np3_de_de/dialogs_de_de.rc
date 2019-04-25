@@ -217,21 +217,21 @@ END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inconsistent Line Endings"
+CAPTION "Inkonsistente Zeilenumbrüche"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inconsistent line endings found in file:",IDC_STATIC,7,7,180,8
+    LTEXT           "Inkonsistente Zeilenumbrüche gefunden:",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Do you want to normalize the line endings?",IDC_STATIC,7,52,180,8
+    LTEXT           "%s Zeile(n).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s Zeile(n).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s Zeile(n).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "&Zeilenumbrüche angleichen?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Ja",IDOK,138,63,50,14
     PUSHBUTTON      "&Nein",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Diesen Dialog wieder anzeigen.", IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -319,7 +319,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 184, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Tabulator Einstellungen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -328,16 +328,16 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "&Einrückung Tiefe:",IDC_STATIC,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Tabulatoren als &Leerzeichenfolge einfügen.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab-Taste formatiert die Einrückung.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tabulatoren als &Leerzeichenfolge einfügen.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,160,10
+    CONTROL         "Tab-Taste formatiert die Einrückung.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,160,10
     CONTROL         "&Rück-Taste formatiert die Einrückung.",IDC_BACKTAB_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,160,10
     CONTROL         "&Warnung bei inkonsistenten Einrückungen.",IDC_WARN_INCONSISTENT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
-    DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
-    PUSHBUTTON      "Abbrechen",IDCANCEL,117,27,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,160,10
+    CONTROL         "&Auto-Erkennung von Tab/Leerzeichen Einrückungen.",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,160,10
+    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,127,27,50,14
 END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
@@ -781,7 +781,7 @@ BEGIN
     IDD_MUI_TABSETTINGS, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 167
+        RIGHTMARGIN, 177
         TOPMARGIN, 7
         BOTTOMMARGIN, 107
     END
