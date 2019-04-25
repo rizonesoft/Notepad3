@@ -382,7 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Ins&tancia de archivo único",                         IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Mute Message &Beeps",                                 IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Mudo Mesaje &Bips",                                 IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Función de la tecla 'Esc'"
         BEGIN
             MENUITEM "&Ninguna",                            IDM_VIEW_NOESCFUNC
