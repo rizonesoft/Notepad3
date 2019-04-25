@@ -6528,13 +6528,15 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         break;
 
 
-        //case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-        //  {
-        //    int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
-        //    EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
-        //    EditUpdateHiddenLineRange(hwnd, &Settings.EFR_Data, 0, SciCall_GetLineCount());
-        //  }
-        //  break;
+        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+          {
+            DocLn const lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
+            EditFinalizeStyling(Globals.hwndEdit, -1);
+            EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, Settings.HyperlinkHotspot);
+            //EditUpdateHiddenLineRange(hwnd, &Settings.EFR_Data, 0, SciCall_GetLineCount());
+          }
+          break;
+
 
         case SCN_UPDATEUI:
         {

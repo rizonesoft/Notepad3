@@ -109,6 +109,7 @@ void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
+void  EditApplyVisibleLexerStyle(HWND hwnd);
 void  EditUpdateVisibleUrlHotspot(bool);
 void  EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, bool);
 
