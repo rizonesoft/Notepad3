@@ -390,8 +390,6 @@
 #define CMD_SAVEASDEFWINPOS             20053
 #define CMD_CLEARSAVEDWINPOS            20054
 #define CMD_CHECK_INDENTATION           20055
-//#define CMD_LEFT                        20056
-//#define CMD_RIGHT                       20057
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501
@@ -608,6 +606,7 @@
 #define IDM_VIEW_TOGGLE_VIEW            40465
 #define IDM_VIEW_CHASING_DOCTAIL        40466
 #define IDM_VIEW_TOGGLETB               40467
+#define IDM_VIEW_MUTE_MESSAGEBEEP       40468
 
 #define IDM_SET_RENDER_TECH_DEFAULT     40500
 #define IDM_SET_RENDER_TECH_D2D         40501

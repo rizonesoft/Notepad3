@@ -15,6 +15,7 @@
 #include "Helpers.h"
 
 #include <commctrl.h>
+#include <mmsystem.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
@@ -133,9 +134,19 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
   HWND hwnd = focus ? focus : Globals.hwndMain;
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
-  //return  MessageBox(hwnd, szText, szTitle, iIcon);
-  //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, Globals.iPrefLANGID);
+  DWORD volume = 0;
+  if (Settings.MuteMessageBeep) {
+    waveOutGetVolume(NULL, &volume);
+    waveOutSetVolume(NULL, 0);
+  }
+
+  int const res = MessageBoxEx(hwnd, szText, szTitle, iIcon, Globals.iPrefLANGID);
+
+  if (Settings.MuteMessageBeep) {
+    waveOutSetVolume(NULL, volume);
+  }
+
+  return res;
 }
 
 
@@ -161,10 +172,9 @@ static INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       lpib = (LPINFOBOX)lParam;
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_EXCLAMATION), 0);
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_INFORMATION), 0);
       SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
-      if (lpib->bDisableCheckBox)
-        DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
+      if (lpib->bDisableCheckBox) { DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false); }
       FreeMem(lpib->lpstrMessage);
       CenterDlgInParent(hwnd);
     }
@@ -213,8 +223,9 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 
   INFOBOX ib;
   ib.lpstrMessage = AllocMem(HUGE_BUFFER * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (ib.lpstrMessage)
+  if (ib.lpstrMessage) {
     StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
+  }
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
   ib.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
 
@@ -231,7 +242,7 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
     break;
   }
 
-  MessageBeep(MB_ICONEXCLAMATION);
+  AttentionBeep(MB_ICONINFORMATION);
 
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : Globals.hwndMain;
@@ -1051,7 +1062,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
             if (lpdli->ntype != DLE_NONE)
               EndDialog(hwnd,IDOK);
             else
-              MessageBeep(0);
+              AttentionBeep(0);
           }
           break;
 
@@ -1248,7 +1259,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             if (lpdli->ntype != DLE_NONE)
               EndDialog(hwnd,IDOK);
             else
-              MessageBeep(0);
+              AttentionBeep(0);
           }
           break;
 
@@ -2813,7 +2824,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
     WCHAR tchFmt[128];
     for (int i = 0; i < 3; ++i) {
       WCHAR tchLn[32];
-      StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", fioStatus->eolCount[i]);
+      StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, fioStatus->eolCount[i]);
       FormatNumberStr(tchLn, COUNTOF(tchLn), 0);
       GetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, tchFmt, COUNTOF(tchFmt));
       StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchLn);
@@ -2822,6 +2833,8 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 
     CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
     CenterDlgInParent(hwnd);
+
+    AttentionBeep(MB_ICONEXCLAMATION);
   }
   return true;
 
@@ -2856,7 +2869,6 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 //
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus) 
 {
-  MessageBeep(MB_ICONEXCLAMATION);
   const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer, 
                                                MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS), 
                                                hwnd, 
@@ -2893,31 +2905,31 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iIndentWidth);
     SetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, wch);
 
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_LN]);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_TAB_LN]);
     FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, wch);
 
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_SPC_LN]);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_SPC_LN]);
     FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, wch);
 
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_MIX_LN]);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_MIX_LN]);
     FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, wch);
 
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_TAB_MOD_X]);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_TAB_MOD_X]);
     FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
     SetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, wch);
 
-    StringCchPrintf(tchCnt, COUNTOF(tchCnt), L"%i", fioStatus->indentCount[I_SPC_MOD_X]);
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_SPC_MOD_X]);
     FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
     GetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, tchFmt, COUNTOF(tchFmt));
     StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
@@ -2926,6 +2938,8 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     CheckDlgButton(hwnd, Globals.fvCurFile.bTabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
     CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
     CenterDlgInParent(hwnd);
+
+    AttentionBeep(MB_ICONEXCLAMATION);
   }
   return true;
 
@@ -2961,7 +2975,6 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 //
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 {
-  MessageBeep(MB_ICONEXCLAMATION);
   const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
                                                MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
                                                hwnd,

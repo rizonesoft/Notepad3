@@ -412,6 +412,7 @@ typedef struct _settings_t
   int FindReplaceDlgPosY;
   int CustomSchemesDlgPosX;
   int CustomSchemesDlgPosY;
+  bool MuteMessageBeep;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;

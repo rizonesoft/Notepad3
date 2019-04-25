@@ -382,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Single &File Instance",                    IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Mute Message &Beeps",                      IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &Key Function"
         BEGIN
             MENUITEM "&None",                       IDM_VIEW_NOESCFUNC

@@ -382,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "단일 파일 인스턴스(&F)",                 IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Mute Message &Beeps",                   IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "ESC 키 기능(&K)"
         BEGIN
             MENUITEM "동작 없음(&N)",                      IDM_VIEW_NOESCFUNC
