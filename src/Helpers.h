@@ -177,6 +177,9 @@ inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos p
 
 inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
 
+// ----------------------------------------------------------------------------
+
+inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { MessageBeep(uType); } }
 DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 // ----------------------------------------------------------------------------
@@ -205,6 +208,8 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 #define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
+
+// ----------------------------------------------------------------------------
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 

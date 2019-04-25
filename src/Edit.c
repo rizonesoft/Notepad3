@@ -4423,6 +4423,8 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
+  EditApplyVisibleLexerStyle(hwnd);
+  EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
   UpdateToolbar();
   UpdateStatusbar(false);
 }
@@ -5992,6 +5994,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (start == end) {
     EditShowZeroLengthCallTip(hwnd, start);
   }
+  
   return true;
 }
 
@@ -6122,6 +6125,30 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 }
 
 
+static void _GetVisibleRange(DocPos* piPosStart, DocPos* piPosEnd)
+{
+  DocLn const iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+
+  DocLn const iStartLine = max_ln(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+  DocLn const iEndLine = min_ln((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+  *piPosStart = SciCall_PositionFromLine(iStartLine);
+  *piPosEnd = SciCall_GetLineEndPosition(iEndLine);
+}
+
+//=============================================================================
+//
+//  EditApplyVisibleLexerStyle()
+// 
+void EditApplyVisibleLexerStyle(HWND hwnd)
+{
+  DocPos iPosStart = 0;
+  DocPos iPosEnd = -1;
+  _GetVisibleRange(&iPosStart, &iPosEnd);
+
+  EditApplyLexerStyle(hwnd, iPosStart, iPosEnd);
+}
+
 //=============================================================================
 //
 //  EditUpdateVisibleUrlHotspot()
@@ -6132,17 +6159,12 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
   {
     if (_IsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
+    DocPos iPosStart = 0;
+    DocPos iPosEnd = -1;
+    _GetVisibleRange(&iPosStart, &iPosEnd);
+
     _IGNORE_NOTIFY_CHANGE_;
     _ENTER_TARGET_TRANSACTION_;
-
-    // get visible lines for update
-    DocLn iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-
-    DocLn iStartLine = max_ln(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-    DocLn iEndLine = min_ln((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
-
-    DocPos iPosStart = SciCall_PositionFromLine(iStartLine);
-    DocPos iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
     EditUpdateUrlHotspots(Globals.hwndEdit, iPosStart, iPosEnd, bEnabled);
 
@@ -6872,7 +6894,6 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   } while (start < end);
 
   SciCall_StartStyling(endPos);
-
 }
 
 
@@ -7031,25 +7052,6 @@ void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
     EditApplyLexerStyle(hwnd, iEndStyled, iEndPos);
   }
 }
-
-//void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
-//{
-//  if (iEndPos <= 0) {
-//    iEndPos = Sci_GetDocEndPosition();
-//  }
-//
-//  DocPos const iEndStyled = SciCall_GetEndStyled();
-//
-//  if (iEndStyled < iEndPos)
-//  {
-//    DocLn const iStartLine = SciCall_LineFromPosition(iEndStyled) + 1;
-//    DocPos const iStartStyling = SciCall_PositionFromLine(iStartLine);
-//    EditApplyLexerStyle(hwnd, iStartStyling, iEndPos);
-//  }
-//}
-//
-
-
 
 
 //=============================================================================

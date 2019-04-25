@@ -2480,6 +2480,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   int  iValue;
   COLORREF dColor;
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR wchDefFontName[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   // ---------   Font settings   ---------
@@ -2487,8 +2488,14 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   {
     if (!StrStrI(lpszStyleDest, L"font:")) {
       if (Style_StrGetFont(lpszStyleSrc, tch, COUNTOF(tch))) {
-        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:");
-        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+        Style_StrGetFont(L"font:Default", wchDefFontName, COUNTOF(wchDefFontName));
+        if (StringCchCompareXI(tch, wchDefFontName) == 0) {
+          StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:Default");
+        }
+        else {
+          StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:");
+          StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+        }
       }
     }
 

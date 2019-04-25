@@ -265,7 +265,6 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
 }
 
 
-
 //=============================================================================
 //
 //  GetLastErrorToMsgBox()
@@ -727,7 +726,7 @@ void PathRelativeToApp(
   GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
   PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
-  GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
+  (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
   if (bUnexpandMyDocs &&
