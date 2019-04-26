@@ -18,7 +18,6 @@
 
 #include "TypeDefs.h"
 
-int  MsgBoxLng(int iType, UINT uIdMsg, ...);
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
 bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);
@@ -48,7 +47,10 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo);
 void DialogNewWindow(HWND hwnd,bool,bool);
 void DialogFileBrowse(HWND hwnd);
 void DialogAdminExe(HWND hwnd,bool);
-INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...);
+
+int  MessageBoxLng(UINT uType, UINT uIdMsg, ...);
+INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMessage, ...);
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, int iFormat, bool, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
@@ -76,8 +78,20 @@ int Toolbar_SetButtons(HWND, int, LPCWSTR, void*, int);
 
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
+// ----------------------------------------------------------------------------
 
-//==== Themed Dialogs =========================================================
+inline void SimpleBeep() { if (!Settings.MuteMessageBeep) { MessageBeep(0xFFFFFFFF); } }
+inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { MessageBeep(uType & MB_ICONMASK); } }
+
+#define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
+  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
+
+#define DialogHideWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
+  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; ShowWindow(hctrl, (b)?SW_HIDE:SW_SHOW); }
+
+
+// --- Themed Dialogs ---------------------------------------------------------
+
 #ifndef DLGTEMPLATEEX
 #pragma pack(push, 1)
 typedef struct {
@@ -97,10 +111,10 @@ typedef struct {
 
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize);
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance);
-#define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) \
-  ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
+#define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 HWND    CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 
+// ----------------------------------------------------------------------------
 
 #endif //_NP3_DIALOGS_H_

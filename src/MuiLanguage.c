@@ -17,6 +17,7 @@
 #include <muiload.h>
 
 #include "resource.h"
+#include "Dialogs.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
 

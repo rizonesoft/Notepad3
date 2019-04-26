@@ -658,7 +658,7 @@ bool Style_Export(HWND hwnd)
     Globals.dwLastError = Style_ExportToFile(szFile, true);
 
     if (Globals.dwLastError != ERROR_SUCCESS) {
-      MsgBoxLng(MBINFO, IDS_MUI_EXPORT_FAIL, szFile);
+      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, szFile);
     }
   }
   return (Globals.dwLastError == ERROR_SUCCESS);
@@ -673,7 +673,7 @@ DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
 
   if (StrIsEmpty(szFile)) {
-    MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
     return false;
   }
 
@@ -3524,11 +3524,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
     case WM_ACTIVATE:
       DialogEnableWindow(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
-      break;
+      return true;
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
     case WM_DESTROY:
       {
@@ -3961,7 +3961,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
             if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[s_idxSelectedTheme].szFilePath)) && (s_idxSelectedTheme > 0)) 
             {
-              MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
+              InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
               bWarnedNoIniFile = true;
             }
             //EndDialog(hwnd,IDOK);
@@ -4154,7 +4154,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_DESTROY:

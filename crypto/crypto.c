@@ -124,11 +124,10 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT1));
     }
     return true;
-    break;
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
-      break;
+      return true;
 
     case WM_COMMAND:
 
@@ -252,11 +251,10 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT3));
       }
       return true;
-      break;
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
-      break;
+      return true;;
 
     case WM_COMMAND:
 
@@ -425,7 +423,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
                   *resultlen = (DWORD)nb;
                 }
                 else {
-                  bRetryPassPhrase = (MsgBoxLng(MBRETRYCANCEL, IDS_MUI_PASS_FAILURE) == IDRETRY);
+                  bRetryPassPhrase = (MessageBoxLng(MB_RETRYCANCEL, IDS_MUI_PASS_FAILURE) == IDRETRY);
                   if (!bRetryPassPhrase) {
                     // enable raw encryption read
                     *resultlen = readsize;

@@ -15,12 +15,12 @@
 #include "Helpers.h"
 
 #include <commctrl.h>
-#include <mmsystem.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <uxtheme.h>
 #include <commdlg.h>
+
 #include <string.h>
 
 #pragma warning( push )
@@ -44,7 +44,7 @@
 //
 //  MsgBoxLng()
 //
-static HHOOK hhkMsgBox = NULL;
+static HHOOK s_hhkMsgBox = NULL;
 
 static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -65,26 +65,77 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
     PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
 
     // exit _MsgBoxProc hook
-    UnhookWindowsHookEx(hhkMsgBox);
+    UnhookWindowsHookEx(s_hhkMsgBox);
   }
   else // otherwise, continue with any possible chained hooks
   {
-    CallNextHookEx(hhkMsgBox, nCode, wParam, lParam);
+    CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam);
   }
   return 0;
 }
 // -----------------------------------------------------------------------------
 
 
-int MsgBoxLng(int iType, UINT uIdMsg, ...)
+//=============================================================================
+//
+//  GetLastErrorToMsgBox()
+//
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 {
-  WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
-  WCHAR szErr[HUGE_BUFFER] = { L'\0' };
-  WCHAR szTitle[64] = { L'\0' };
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
 
-  if (!GetLngString(uIdMsg, szFormat, COUNTOF(szFormat))) { return 0; }
-  const PUINT_PTR argp = (PUINT_PTR)&uIdMsg + 1;
+  LPVOID lpMsgBuf = NULL;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    Globals.iPrefLANGID,
+    (LPTSTR)& lpMsgBuf,
+    0, NULL);
+
+  if (lpMsgBuf) {
+    // Display the error message and exit the process
+    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
+    LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+    if (lpDisplayBuf) {
+      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
+        lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
+
+      // center message box to main
+      HWND focus = GetFocus();
+      HWND hwnd = focus ? focus : Globals.hwndMain;
+      s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
+      MessageBoxEx(hwnd, lpDisplayBuf, L"Notepad3 - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
+
+      FreeMem(lpDisplayBuf);
+    }
+    LocalFree(lpMsgBuf); // LocalAlloc()
+  }
+  return dwErrID;
+}
+
+
+//=============================================================================
+//
+//  MessageBoxLng()
+//
+int MessageBoxLng(UINT uType, UINT uidMsg, ...)
+{
+  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
+  if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) { return -1; }
+
+  WCHAR szTitle[64] = { L'\0' };
+  GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+
+  WCHAR szText[HUGE_BUFFER] = { L'\0' };
+  const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
   if (argp && *argp) {
     StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
   }
@@ -92,32 +143,11 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
     StringCchCopy(szText, COUNTOF(szText), szFormat);
   }
 
-  if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
-    uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
-    uIdMsg == IDS_MUI_EXPORT_FAIL    || uIdMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) {
-    WCHAR wcht;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      Globals.dwLastError,
-      Globals.iPrefLANGID,
-      szErr, COUNTOF(szErr),
-      NULL);
 
-    if (StrIsNotEmpty(szErr)) {
-      StrTrim(szErr, L" \a\b\f\n\r\t\v");
-      StringCchCat(szText, COUNTOF(szText), L"\n");
-      StringCchCat(szText, COUNTOF(szText), szErr);
-    }
-    wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
-    if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
-      StringCchCat(szText, COUNTOF(szText), L".");
-  }
-
-  GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
-
+#if 0
   int iIcon = MB_ICONHAND;
   switch (iType) {
+
   case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
   case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
   case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
@@ -127,75 +157,107 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
   case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
   default: iIcon = MB_ICONSTOP | MB_OK; break;
   }
-  iIcon |= (MB_TOPMOST | MB_SETFOREGROUND);
+#endif
+
+  uType |= (MB_TOPMOST | MB_SETFOREGROUND);
 
   // center message box to main
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : Globals.hwndMain;
-  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+  s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
-  DWORD volume = 0;
-  if (Settings.MuteMessageBeep) {
-    waveOutGetVolume(NULL, &volume);
-    waveOutSetVolume(NULL, 0);
-  }
-
-  int const res = MessageBoxEx(hwnd, szText, szTitle, iIcon, Globals.iPrefLANGID);
-
-  if (Settings.MuteMessageBeep) {
-    waveOutSetVolume(NULL, volume);
-  }
-
-  return res;
+  return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
 
 
 //=============================================================================
 //
-//  InfoBoxDlgProc()
+//  _InfoBoxLngDlgProc()
 //
 //
-typedef struct _infobox {
+
+typedef struct _infbox {
+  UINT   uType;
   LPWSTR lpstrMessage;
   LPWSTR lpstrSetting;
   bool   bDisableCheckBox;
-} INFOBOX, *LPINFOBOX;
+} INFOBOXLNG, *LPINFOBOXLNG;
 
-static INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+
+static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  LPINFOBOX lpib;
+  LPINFOBOXLNG lpMsgBox = NULL;
 
   switch (umsg)
   {
   case WM_INITDIALOG:
+  {
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    lpMsgBox = (LPINFOBOXLNG)lParam;
+
+    switch (lpMsgBox->uType & MB_ICONMASK) 
     {
-      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      lpib = (LPINFOBOX)lParam;
+    case MB_ICONINFORMATION:  // = MB_ICONASTERISK
       SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_INFORMATION), 0);
-      SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
-      if (lpib->bDisableCheckBox) { DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false); }
-      FreeMem(lpib->lpstrMessage);
-      CenterDlgInParent(hwnd);
+      break;
+    case MB_ICONQUESTION:
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_QUESTION), 0);
+      break;
+    case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_WARNING), 0);
+      break;
+    case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_ERROR), 0);
+      break;
+    case MB_USERICON:
+    default:
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_APPLICATION), 0);
+      break;
     }
-    return true;
+    
+    SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
+
+    if (lpMsgBox->bDisableCheckBox) {
+      DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
+      DialogHideWindow(hwnd, IDC_INFOBOXCHECK, true);
+    }
+
+    CenterDlgInParent(hwnd);
+    AttentionBeep(lpMsgBox->uType);
+
+    FreeMem(lpMsgBox->lpstrMessage);
+  }
+  return true;
+
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
+
 
   case WM_COMMAND:
+    lpMsgBox = (LPINFOBOXLNG)GetWindowLongPtr(hwnd, DWLP_USER);
     switch (LOWORD(wParam))
     {
     case IDOK:
     case IDCANCEL:
     case IDYES:
     case IDNO:
-      lpib = (LPINFOBOX)GetWindowLongPtr(hwnd, DWLP_USER);
-      if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK)) {
-        IniSetInt(L"Suppressed Messages", lpib->lpstrSetting, 1);
+      if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
+        IniSetInt(L"Suppressed Messages", lpMsgBox->lpstrSetting, LOWORD(wParam));
       }
+    case IDABORT:
+    case IDRETRY:
+    case IDIGNORE:
+    case IDCLOSE:
+    case IDTRYAGAIN:
+    case IDCONTINUE:
       EndDialog(hwnd, LOWORD(wParam));
+      return true;
+
+    default:
       break;
     }
     return true;
@@ -209,45 +271,79 @@ static INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 //  InfoBoxLng()
 //
 //
-
-INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
+INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-  int iMode = IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+  int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+  if (iMode) { return iMode; }
 
-  if (StrIsNotEmpty(lpstrSetting) && iMode == 1) {
-    return (iType == MBYESNO) ? IDYES : IDOK;
-  }
-  WCHAR wchFormat[LARGE_BUFFER];
-  if (!GetLngString(uidMessage, wchFormat, COUNTOF(wchFormat)))
-    return(-1);
+  WCHAR wchMessage[LARGE_BUFFER];
+  if (!GetLngString(uidMsg, wchMessage, COUNTOF(wchMessage))) { return -1LL; }
 
-  INFOBOX ib;
-  ib.lpstrMessage = AllocMem(HUGE_BUFFER * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (ib.lpstrMessage) {
-    StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
+  INFOBOXLNG msgBox;
+  msgBox.uType = uType;
+  msgBox.lpstrMessage = AllocMem((COUNTOF(wchMessage)+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+  const PUINT_PTR argp = (PUINT_PTR)& uidMsg + 1;
+  if (argp && *argp) {
+    StringCchVPrintfW(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage, (LPVOID)argp);
   }
-  ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
+  else {
+    StringCchCopy(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage);
+  }
+
+  if (uidMsg == IDS_MUI_ERR_LOADFILE || uidMsg == IDS_MUI_ERR_SAVEFILE ||
+    uidMsg == IDS_MUI_CREATEINI_FAIL || uidMsg == IDS_MUI_WRITEINI_FAIL ||
+    uidMsg == IDS_MUI_EXPORT_FAIL || uidMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) 
+  {
+    WCHAR wchErr[MIDSZ_BUFFER] = { L'\0' };
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      Globals.dwLastError,
+      Globals.iPrefLANGID,
+      wchErr, COUNTOF(wchErr),
+      NULL);
+
+    if (StrIsNotEmpty(wchErr)) {
+      StrTrim(wchErr, L" \a\b\f\n\r\t\v");
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L"\n\n");
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), wchErr);
+    }
+    WCHAR wcht = *CharPrev(msgBox.lpstrMessage, StrEnd(msgBox.lpstrMessage, COUNTOF(wchMessage)));
+    if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L".");
+  }
+
+  msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
+  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting)) ? true : false;
+
 
   int idDlg;
-  switch (iType) {
-  case MBYESNO:
+  switch (uType & MB_TYPEMASK) {
+
+  case MB_YESNO:  // contains two push buttons : Yes and No.
     idDlg = IDD_MUI_INFOBOX2;
     break;
-  case MBOKCANCEL:
+
+  case MB_OKCANCEL:  // contains two push buttons : OK and Cancel.
     idDlg = IDD_MUI_INFOBOX3;
     break;
+
+  case MB_RETRYCANCEL:  // contains two push buttons : Retry and Cancel.
+  case MB_ABORTRETRYIGNORE:   // three push buttons : Abort, Retry, and Ignore.
+  case MB_CANCELTRYCONTINUE:  // three push buttons : Cancel, Try Again, Continue.Use this message box type instead of MB_ABORTRETRYIGNORE.
+  case MB_YESNOCANCEL:  // contains three push buttons : Yes, No, and Cancel.
+
+  case MB_OK:  // one push button : OK. This is the default.
   default:
     idDlg = IDD_MUI_INFOBOX;
     break;
   }
 
-  AttentionBeep(MB_ICONINFORMATION);
-
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : Globals.hwndMain;
 
-  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
+  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
 }
 
 
@@ -292,19 +388,16 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
   case WM_INITDIALOG:
     {
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      //WCHAR szTitle[80] = { L'\0' };
-      //GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
-      //SetWindowText(hwnd, szTitle);
       WCHAR szText[4096] = { L'\0' };
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
       CenterDlgInParent(hwnd);
     }
-    break;
+    return true;
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
@@ -661,7 +754,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
 
   case WM_PAINT:
@@ -672,7 +765,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       DrawIconEx(hdc, 16, 32, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
       ReleaseDC(hwnd, hdc);
     }
-    return 0;
+    return false;
 
 
   case WM_NOTIFY:
@@ -783,7 +876,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_DESTROY:
@@ -964,7 +1057,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_DESTROY:
@@ -1062,7 +1155,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
             if (lpdli->ntype != DLE_NONE)
               EndDialog(hwnd,IDOK);
             else
-              AttentionBeep(0);
+              SimpleBeep();
           }
           break;
 
@@ -1162,7 +1255,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_DESTROY:
@@ -1259,7 +1352,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             if (lpdli->ntype != DLE_NONE)
               EndDialog(hwnd,IDOK);
             else
-              AttentionBeep(0);
+              SimpleBeep();
           }
           break;
 
@@ -1374,10 +1467,10 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
   if (iResult == IDOK)
   {
     if (!PathCreateFavLnk(pszName,lpszTarget,Settings.FavoritesDir)) {
-      MsgBoxLng(MBWARN,IDS_MUI_FAV_FAILURE);
+      InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
       return false;
     }
-    MsgBoxLng(MBINFO,IDS_MUI_FAV_SUCCESS);
+    InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_FAV_SUCCESS);
     return true;
   }
   return false;
@@ -1541,7 +1634,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_DESTROY:
@@ -1785,7 +1878,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
                 }
 
                 // Ask...
-                int answ = (LOWORD(wParam) == IDOK) ? MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_MRUDLG) 
+                int answ = (LOWORD(wParam) == IDOK) ? (int)InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                                     : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                 if (IDYES == answ) {
@@ -1873,7 +1966,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
@@ -1948,7 +2041,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
 
   case WM_COMMAND:
@@ -2050,7 +2143,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
 
   case WM_COMMAND:
@@ -2147,7 +2240,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
 
   case WM_COMMAND:
@@ -2244,7 +2337,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_COMMAND:
@@ -2377,7 +2470,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
   case WM_DPICHANGED:
     UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-    break;
+    return true;
 
 
   case WM_COMMAND:
@@ -2441,7 +2534,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
       PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
       if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &pdd->idEncoding)) {
         if (pdd->idEncoding < 0) {
-          MsgBoxLng(MBWARN, IDS_MUI_ERR_ENCODINGNA);
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ENCODINGNA);
           EndDialog(hwnd, IDCANCEL);
         }
         else {
@@ -2548,7 +2641,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_DESTROY: 
@@ -2611,7 +2704,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
           PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
           if (Encoding_GetFromListView(hwndLV, &pdd->idEncoding)) {
             if (pdd->idEncoding < 0) {
-              MsgBoxLng(MBWARN, IDS_MUI_ERR_ENCODINGNA);
+              InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ENCODINGNA);
               EndDialog(hwnd, IDCANCEL);
             }
             else {
@@ -2706,10 +2799,6 @@ bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 }
 
 
-
-
-
-
 //=============================================================================
 //
 //  SelectDefLineEndingDlgProc()
@@ -2747,7 +2836,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
 
     case WM_COMMAND:
@@ -3266,9 +3355,9 @@ void DialogFileBrowse(HWND hwnd)
   sei.nShow = SW_SHOWNORMAL;
   ShellExecuteEx(&sei);
 
-  if ((INT_PTR)sei.hInstApp < 32)
-    MsgBoxLng(MBWARN, IDS_MUI_ERR_BROWSE);
-
+  if ((INT_PTR)sei.hInstApp < 32) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BROWSE);
+  }
 }
 
 
@@ -3308,7 +3397,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     ShellExecuteEx(&sei);
     if ((INT_PTR)sei.hInstApp < 32)
     {
-      if (IDOK == InfoBoxLng(MBOKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
+      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
       {
         sei.lpFile = VERSION_UPDATE_CHECK;
         ShellExecuteEx(&sei);
