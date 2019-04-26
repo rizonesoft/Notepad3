@@ -179,11 +179,6 @@ inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); 
 
 // ----------------------------------------------------------------------------
 
-inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { MessageBeep(uType); } }
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
-
-// ----------------------------------------------------------------------------
-
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
 #define IsXP1()    IsWindowsXPSP1OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 1 (SP1)version.
@@ -281,10 +276,6 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 
 #define EnableCmdPos(hmenu,pos,b) EnableMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_ENABLED:MF_BYPOSITION|MF_GRAYED)
 #define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
-
-
-#define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
-  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);

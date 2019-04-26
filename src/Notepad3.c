@@ -757,7 +757,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
   if (Globals.bPrefLngNotAvail) {
-    InfoBoxLng(MBWARN, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
+    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
   }
 
   MSG msg;
@@ -1219,7 +1219,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     GetLngString(IDS_MUI_PRINT_PAGENUM, tchPageFmt, COUNTOF(tchPageFmt));
 
     if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
-      MsgBoxLng(MBWARN, IDS_MUI_PRINT_ERROR, pszTitle);
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
     }
   }
 
@@ -1915,7 +1915,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
 
     if (!dimOk) {
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
       DeleteObject(hbmp);
@@ -1968,7 +1968,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
 
     if (!dimOk) {
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapHot,
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapHot,
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
       DeleteObject(hbmp);
@@ -2014,7 +2014,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
 
     if (!dimOk) {
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapDisabled,
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapDisabled,
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
       DeleteObject(hbmp);
@@ -2459,13 +2459,13 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   else {
 #ifndef _EXTRA_DRAG_N_DROP_HANDLER_
     // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
-    MsgBoxLng(MBWARN, IDS_MUI_DROP_NO_FILE);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
 #endif
     // delegated to SCN_URIDROPPED
   }
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
-    MsgBoxLng(MBWARN, IDS_MUI_ERR_DROP);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
 
   DragFinish(hDrop);
 
@@ -2504,7 +2504,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
       FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
 
     if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_DROP);
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
 
     dwEffect = DROPEFFECT_COPY;
   }
@@ -2702,7 +2702,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (PathFileExists(Globals.CurrentFile)) 
   {
     if ((Settings.FileWatchingMode == 2 && !IsSaveNeeded(ISN_GET)) ||
-      MsgBoxLng(MBYESNOWARN,IDS_MUI_FILECHANGENOTIFY) == IDYES)
+      InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       
@@ -2715,7 +2715,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
   }
   else {
-    if (MsgBoxLng(MBYESNOWARN, IDS_MUI_FILECHANGENOTIFY2) == IDYES) {
+    if (InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2) == IDYES) {
       FileSave(true, false, false, false);
     }
   }
@@ -3267,7 +3267,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      if (IsSaveNeeded(ISN_GET) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_REVERT) != IDYES) {
+      if (IsSaveNeeded(ISN_GET) && InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT) != IDYES) {
         break;
       }
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
@@ -3299,11 +3299,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           else
             dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
           if (!SetFileAttributes(Globals.CurrentFile,dwFileAttributes))
-            MsgBoxLng(MBWARN,IDS_MUI_READONLY_MODIFY,Globals.CurrentFile);
+            InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_READONLY_MODIFY,Globals.CurrentFile);
         }
-        else
-          MsgBoxLng(MBWARN,IDS_MUI_READONLY_MODIFY,Globals.CurrentFile);
-
+        else {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, Globals.CurrentFile);
+        }
         dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
           s_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
@@ -3363,7 +3363,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
         }
         else {
-          MsgBoxLng(MBWARN, IDS_MUI_ERR_ELEVATED_RIGHTS, NULL);
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
         }
       }
       break;
@@ -3412,7 +3412,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         GetLngString(IDS_MUI_PRINT_PAGENUM,tchPageFmt,COUNTOF(tchPageFmt));
 
         if (!EditPrint(Globals.hwndEdit,pszTitle,tchPageFmt))
-          MsgBoxLng(MBWARN,IDS_MUI_PRINT_ERROR,pszTitle);
+          InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_PRINT_ERROR,pszTitle);
       }
       break;
 
@@ -3440,7 +3440,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
 
         if (!PathCreateDeskLnk(Globals.CurrentFile))
-          MsgBoxLng(MBWARN,IDS_MUI_ERR_CREATELINK);
+          InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_ERR_CREATELINK);
       }
       break;
 
@@ -3563,7 +3563,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           cpi_enc_t iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
-          if (IsSaveNeeded(ISN_GET) && MsgBoxLng(MBYESNO, IDS_MUI_ASK_RECODE) != IDYES) {
+          if (IsSaveNeeded(ISN_GET) && InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE) != IDYES) {
             break;
           }
           if (RecodeDlg(hwnd,&iNewEncoding)) 
@@ -3888,7 +3888,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditFileIOStatus status = INIT_FILEIO_STATUS;
         EditIndentationStatistic(Globals.hwndEdit, &status);
         if (ConsistentIndentationCheck(&status)) {
-          MsgBoxLng(MBINFO, IDS_MUI_INDENT_CONSISTENT);
+          InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_INDENT_CONSISTENT);
         }
       }
     break;
@@ -5165,7 +5165,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           IniSetBool(L"Window", tchMaximized, wi.max);
           IniSetInt(L"Window", tchZoom, wi.zoom);
 
-          InfoBoxLng(0, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
+          InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
         }
         else { // clear entries
 
@@ -5338,15 +5338,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           if (WritePrivateProfileString(L"Settings", L"WriteTest", L"ok", Globals.IniFile)) {
             SaveSettings(true);
-            MsgBoxLng(MBINFO,IDS_MUI_SAVEDSETTINGS);
+            InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_SAVEDSETTINGS);
           }
           else {
             Globals.dwLastError = GetLastError();
-            MsgBoxLng(MBWARN,IDS_MUI_WRITEINI_FAIL);
+            InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_WRITEINI_FAIL);
           }
         }
-        else
-          MsgBoxLng(MBWARN,IDS_MUI_CREATEINI_FAIL);
+        else {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
+        }
       }
       break;
 
@@ -5909,7 +5910,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_NEW))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_NEW,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5917,7 +5918,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_OPEN))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5925,7 +5926,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_BROWSE))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_BROWSE,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5933,14 +5934,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd, IDM_FILE_RECENT))
         SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_FILE_RECENT, 1), 0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
     case IDT_FILE_SAVE:
       if (IsCmdEnabled(hwnd,IDM_FILE_SAVE))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_SAVE,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5948,7 +5949,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_UNDO))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_UNDO,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5956,7 +5957,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_REDO))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REDO,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5964,7 +5965,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_CUT))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CUT,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
         //SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CUTLINE,1),0);
       break;
 
@@ -5981,7 +5982,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_PASTE))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_PASTE,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5989,7 +5990,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_FIND))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -5997,7 +5998,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_REPLACE))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REPLACE,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6005,7 +6006,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_VIEW_WORDWRAP))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_WORDWRAP,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6013,7 +6014,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMIN))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_ZOOMIN,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6021,7 +6022,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMOUT))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_ZOOMOUT,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6029,7 +6030,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd, IDM_VIEW_CHASING_DOCTAIL))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_CHASING_DOCTAIL,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6037,7 +6038,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEME))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_SCHEME,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6045,7 +6046,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEMECONFIG))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_SCHEMECONFIG,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6058,7 +6059,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_SAVEAS))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_SAVEAS,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6066,7 +6067,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_SAVECOPY))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_SAVECOPY,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6082,7 +6083,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_PRINT))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PRINT,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6090,7 +6091,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_OPENFAV))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENFAV,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6098,7 +6099,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_ADDTOFAV))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_ADDTOFAV,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6106,7 +6107,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_VIEW_TOGGLEFOLDS))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_TOGGLEFOLDS,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
       
@@ -6114,7 +6115,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd, IDM_VIEW_TOGGLE_VIEW))
         SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_TOGGLE_VIEW, 1), 0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
 
@@ -6122,7 +6123,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_FILE_LAUNCH))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_LAUNCH,1),0);
       else
-        AttentionBeep(0);
+        SimpleBeep();
       break;
 
     default:
@@ -7518,7 +7519,6 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabIndents);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
@@ -9673,7 +9673,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   // Ask to create a new file...
   if (!bReload && !PathFileExists(szFileName))
   {
-    if (s_flagQuietCreate || MsgBoxLng(MBYESNO,IDS_MUI_ASK_CREATE,szFileName) == IDYES) {
+    if (s_flagQuietCreate || InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szFileName) == IDYES) {
       HANDLE hFile = CreateFile(szFileName,
                       GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -9794,7 +9794,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     // Show warning: Unicode file loaded as ANSI
     if (fioStatus.bUnicodeErr) {
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_UNICODE);
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_UNICODE);
     }
 
     // Show inconsistent line endings warning
@@ -9827,7 +9827,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   }
   else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
-    MsgBoxLng(MBWARN, IDS_MUI_ERR_LOADFILE, szFileName);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, szFileName);
   }
   return(fSuccess);
 }
@@ -10023,7 +10023,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
     else {
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
-    switch (MsgBoxLng(MBYESNOCANCEL, IDS_MUI_ASK_SAVE, tch)) {
+    switch (MessageBoxLng(MB_YESNOCANCEL | MB_ICONINFORMATION, IDS_MUI_ASK_SAVE, tch)) {
     case IDCANCEL:
       return false;
     case IDNO:
@@ -10039,7 +10039,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
       s_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (s_bFileReadOnly) {
       UpdateToolbar();
-      if (MsgBoxLng(MBYESNOWARN, IDS_MUI_READONLY_SAVE, Globals.CurrentFile) == IDYES) {
+      if (InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Globals.CurrentFile) == IDYES) {
         bSaveAs = true;
       }
       else {
@@ -10120,7 +10120,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
   {
     if (!s_bIsElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      if (IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile))
+      if (IDYES == InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile))
       {
         if (DoElevatedRelaunch(&fioStatus))
         {
@@ -10129,13 +10129,13 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
         else {
           s_flagAppIsClosing = false;
           UpdateToolbar();
-          MsgBoxLng(MBWARN, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
         }
       }
     }
     else {
       UpdateToolbar();
-      MsgBoxLng(MBWARN, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, Globals.CurrentFile);
     }
   }
   return fSuccess;
@@ -10374,7 +10374,7 @@ bool ActivatePrevInst()
         return true;
       }
       // IsWindowEnabled()
-      if (IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) {
+      if (IDYES == InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED)) {
         return false;
       }
       return true;
@@ -10458,7 +10458,7 @@ bool ActivatePrevInst()
       return true;
     }
     // IsWindowEnabled()
-    return ((IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) ? false : true);
+    return ((IDYES == InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED)) ? false : true);
   }
   return false;
 }

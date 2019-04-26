@@ -69,7 +69,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 {
   // Don't print empty documents
   if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
-    MsgBoxLng(MBWARN,IDS_MUI_PRINT_EMPTY);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_EMPTY);
     return true;
   }
 
@@ -498,11 +498,11 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,1137,CB_SETEXTENDEDUI,true,0);
         SendDlgItemMessage(hwnd,1138,CB_SETEXTENDEDUI,true,0);
       }
-      break;
+      return true;
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      break;
+      return true;
 
     case WM_COMMAND:
       if (LOWORD(wParam) == IDOK)
@@ -519,12 +519,12 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(1026, 1), 0);
       }
-      break;
+      return true;
 
     default:
       break;
   }
-  return 0;
+  return false;
 }
 
 

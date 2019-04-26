@@ -17,7 +17,6 @@
 
 #include "Helpers.h"
 
-//#include <uxtheme.h>
 #include <shlobj.h>
 #include <shellapi.h>
 //#include <pathcch.h>
@@ -263,48 +262,6 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
   }
   return false;
 }
-
-
-//=============================================================================
-//
-//  GetLastErrorToMsgBox()
-//
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
-{
-  // Retrieve the system error message for the last-error code
-  if (!dwErrID) {
-    dwErrID = GetLastError();
-  }
-
-  LPVOID lpMsgBuf = NULL;
-  FormatMessage(
-    FORMAT_MESSAGE_ALLOCATE_BUFFER |
-    FORMAT_MESSAGE_FROM_SYSTEM |
-    FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL,
-    dwErrID,
-    Globals.iPrefLANGID,
-    (LPTSTR)&lpMsgBuf,
-    0, NULL);
-
-  if (lpMsgBuf) {
-    // Display the error message and exit the process
-    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
-    LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-
-    if (lpDisplayBuf) {
-      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
-                      lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
-
-      MessageBox(NULL, lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
-
-      FreeMem(lpDisplayBuf);
-    }
-    LocalFree(lpMsgBuf); // LocalAlloc()
-  }
-  return dwErrID;
-}
-
 
 
 //=============================================================================
