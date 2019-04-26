@@ -519,6 +519,10 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 
+//  if iRangeEnd == -1 : apply style from iRangeStart to document end
+#define Sci_ApplyStyle(B, E) SciCall_Colourise((B), (E));
+
+
 //=============================================================================
 
 #endif //_NP3_SCICALL_H_

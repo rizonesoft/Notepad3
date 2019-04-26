@@ -1311,14 +1311,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
   // apply lexer styles
-  Style_SetUrlHotSpot(hwnd, false);
-  EditApplyLexerStyle(hwnd, 0, -1);
-
-  // update UI for hotspots
-  if (Settings.HyperlinkHotspot) {
-    Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, Sci_GetDocEndPosition(), Settings.HyperlinkHotspot);
-  }
+  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
+  Sci_ApplyStyle(0, -1);
+  EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
 
   UpdateToolbar();
   UpdateStatusbar(false);

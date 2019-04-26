@@ -315,7 +315,7 @@ void  _ClearTextBuffer(HWND hwnd)
   
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
-  EditClearAllOccurrenceMarkers(hwnd);
+  EditClearAllOccurrenceMarkers();
   if (EditToggleView(Globals.hwndEdit, false)) {
     EditToggleView(Globals.hwndEdit, true);
   }
@@ -4376,10 +4376,12 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   _LEAVE_TARGET_TRANSACTION_;
   FreeMem(pmszResult);
 
-  if (bIsRectSel)
+  if (bIsRectSel) {
     EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
-  else
+  }
+  else {
     EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+  }
 }
 
 
@@ -4411,22 +4413,23 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
 
   if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
     SciCall_SetRectangularSelectionAnchor(iAnchorPos);
-    if (vSpcAnchor > 0)
+    if (vSpcAnchor > 0) {
       SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchor);
+    }
     SciCall_SetRectangularSelectionCaret(iCurrentPos);
-    if (vSpcCurrent > 0)
+    if (vSpcCurrent > 0) {
       SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
-
+    }
     SciCall_ScrollRange(iAnchorPos, iCurrentPos);
   }
-  else
+  else {
     SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
-
+  }
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
-  EditApplyVisibleLexerStyle(hwnd);
-  EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
+  EditApplyVisibleStyle();
+
   UpdateToolbar();
   UpdateStatusbar(false);
 }
@@ -4988,7 +4991,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
   else // mark all matches
   {
     if (bMarkAll && (iPos >= 0)) {
-      EditClearAllOccurrenceMarkers(hwnd);
+      EditClearAllOccurrenceMarkers();
       EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false, false);
     }
   }
@@ -5151,7 +5154,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-        EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+        EditClearAllOccurrenceMarkers();
       }
       EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
 
@@ -5468,16 +5471,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
               sg_pefrData->bStateChanged = false;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
               if (match != MATCH) { 
-                EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+                EditClearAllOccurrenceMarkers();
                 if (s_InitialTopLine >= 0) { 
-                  SciCall_SetFirstVisibleLine(s_InitialTopLine); 
+                  SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
                 else {
                   EditSetSelectionEx(Globals.hwndEdit, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 }
               }
-              if (EditToggleView(Globals.hwndEdit, false)) { EditHideNotMarkedLineRange(Globals.hwndEdit, -1, -1, true); }
               _OBSERVE_NOTIFY_CHANGE_;
+              if (EditToggleView(Globals.hwndEdit, false)) { EditHideNotMarkedLineRange(Globals.hwndEdit, -1, -1, true); }
             }
           }
           else {
@@ -5528,7 +5531,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           EditToggleView(Globals.hwndEdit, true);
           sg_pefrData->bStateChanged = true;
           s_InitialTopLine = -1;
-          EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+          EditClearAllOccurrenceMarkers();
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
         else {
@@ -6097,7 +6100,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   if (_IsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
   if (bForceClear) {
-    EditClearAllOccurrenceMarkers(hwnd);
+    EditClearAllOccurrenceMarkers();
   }
 
   if (Settings.MarkOccurrences <= 0) {
@@ -6111,12 +6114,10 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   _ENTER_TARGET_TRANSACTION_;
 
   if (Settings.MarkOccurrencesMatchVisible) {
+
     // get visible lines for update
-    DocLn const iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-
-    DocLn const iStartLine = max_ln(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-    DocLn const iEndLine = min_ln((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
-
+    DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+    DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
     DocPos const iPosStart = SciCall_PositionFromLine(iStartLine);
     DocPos const iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
@@ -6133,18 +6134,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   if (bWaitCursor) { EndWaitCursor(); } 
 }
 
-
-//=============================================================================
-//
-//  EditApplyVisibleLexerStyle()
-// 
-void EditApplyVisibleLexerStyle(HWND hwnd)
-{
-  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
-
-  EditApplyLexerStyle(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
-}
 
 //=============================================================================
 //
@@ -6168,6 +6157,18 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
     _OBSERVE_NOTIFY_CHANGE_;
   }
 }
+
+//=============================================================================
+//
+//  EditApplyVisibleStyle()
+// 
+void EditApplyVisibleStyle()
+{
+  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+  Sci_ApplyStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
+}
+
 
 
 //=============================================================================
@@ -6445,7 +6446,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 //
 //  EditClearAllOccurrenceMarkers()
 //
-void EditClearAllOccurrenceMarkers(HWND hwnd)
+void EditClearAllOccurrenceMarkers()
 {
   if (Globals.iMarkOccurrencesCount > 0) 
   {
@@ -6454,7 +6455,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     SciCall_IndicatorClearRange(0, SciCall_GetTextLength());
     _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
-    EditFinalizeStyling(hwnd, -1);
+    EditFinalizeStyling(-1);
 
     _OBSERVE_NOTIFY_CHANGE_;
 
@@ -6847,19 +6848,12 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 //
 void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
 {
-  if (endPos < startPos) {
+  if (endPos < 0) { 
+    endPos = Sci_GetDocEndPosition(); 
+  }
+  else if (endPos < startPos) {
     swapos(&startPos, &endPos);
   }
-
-  // 1st apply current lexer style
-  EditFinalizeStyling(hwnd,startPos);
-
-  const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
-    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
-
-  int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
-
   if (startPos < 0) { // current line only
     DocPos const currPos = SciCall_GetCurrentPos();
     DocLn const lineNo = SciCall_LineFromPosition(currPos);
@@ -6867,6 +6861,15 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     endPos = SciCall_GetLineEndPosition(lineNo);
   }
   if (endPos == startPos) { return; }
+
+  const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
+    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
+
+  int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
+
+  // 1st apply current lexer style
+  EditFinalizeStyling(startPos);
 
   DocPos start = startPos;
   DocPos end = endPos;
@@ -6877,16 +6880,17 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
       break; // not found
     }
     DocPos mlen = end - start;
-    if ((mlen <= 0) || ((iPos + mlen) > endPos))
+    if ((mlen <= 0) || ((iPos + mlen) > endPos)) {
       break; // wrong match
-
+    }
     // mark this match
     SciCall_StartStyling(iPos);
-    if (bActiveHotspot)
+    if (bActiveHotspot) {
       SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
-    else
-      EditFinalizeStyling(hwnd, endPos);
-
+    }
+    else {
+      EditFinalizeStyling(end);
+    }
     // next occurrence
     start = end;
     end = endPos;
@@ -6923,14 +6927,14 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE); }
     SciCall_SetFoldFlags(0);
     Style_SetFolding(hwnd, Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding);
-    EditApplyLexerStyle(hwnd, 0, -1);
+    Sci_ApplyStyle(0, -1);
     SciCall_FoldAll(EXPAND);
   }
   else // =====   hide lines without marker   =====
   {
     // !!! do not apply LexerStyles here, 
     // cause some Lexers destroy/reset LineState of Occurrences marker
-    //~EditApplyLexerStyle(hwnd, 0, -1); // reset
+    //~Sci_ApplyStyle(0, -1); // reset
 
     // prepare hidden (folding) settings
     Globals.bCodeFoldingAvailable = true; // saved before
@@ -6995,7 +6999,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
       DocPos const iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
       if ((iStartStyling >= 0) && (iStartStyling < iTextLength)) {
         SciCall_StartStyling(iStartStyling);
-        EditFinalizeStyling(hwnd, -1);
+        EditFinalizeStyling(-1);
       }
     }
 
@@ -7043,13 +7047,13 @@ static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
 //
 //  EditFinalizeStyling()
 //
-void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
+void EditFinalizeStyling(DocPos iEndPos)
 {
   DocPos const iEndStyled = SciCall_GetEndStyled();
 
   if ((iEndPos < 0) || (iEndStyled < iEndPos))
   {
-    EditApplyLexerStyle(hwnd, iEndStyled, iEndPos);
+    Sci_ApplyStyle(iEndStyled, iEndPos);
   }
 }
 
@@ -7062,7 +7066,7 @@ void EditMatchBrace(HWND hwnd)
 {
   DocPos iPos = SciCall_GetCurrentPos();
 
-  EditFinalizeStyling(hwnd, iPos);
+  EditFinalizeStyling(iPos);
 
   if (!_HighlightIfBrace(hwnd, iPos)) {
     // try one before

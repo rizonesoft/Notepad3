@@ -1551,8 +1551,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
   // Idle Styling (very large text)
-  //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
   SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
+  //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
 
@@ -2343,14 +2343,12 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   SendWMSize(hwnd, NULL);
 
-  EditFinalizeStyling(Globals.hwndEdit, -1);
-
   if (EditToggleView(Globals.hwndEdit, false)) {
     EditToggleView(Globals.hwndEdit, true);
   }
   MarkAllOccurrences(0, true);
-  EditUpdateUrlHotspots(Globals.hwndEdit, 0, Sci_GetDocEndPosition(), Settings.HyperlinkHotspot);
-
+  EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  
   UpdateUI();
   UpdateToolbar();
   UpdateStatusbar(true);
@@ -2417,6 +2415,8 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   s_WinCurrentWidth = cx;
+
+  EditEnsureSelectionVisible(Globals.hwndEdit);
 
   UpdateToolbar();
   UpdateStatusbar(false);
@@ -6531,9 +6531,8 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
           {
-            DocLn const lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
-            EditFinalizeStyling(Globals.hwndEdit, -1);
-            EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, Settings.HyperlinkHotspot);
+            EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_GetEndStyled(), (int)scn->position, Settings.HyperlinkHotspot);
+            EditFinalizeStyling(-1);
             //EditUpdateHiddenLineRange(hwnd, &Settings.EFR_Data, 0, SciCall_GetLineCount());
           }
           break;

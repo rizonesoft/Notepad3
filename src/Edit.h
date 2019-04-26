@@ -98,7 +98,7 @@ bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND hwnd);
-void  EditClearAllOccurrenceMarkers(HWND hwnd);
+void  EditClearAllOccurrenceMarkers();
 bool  EditToggleView(HWND hwnd, bool bToggleView);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool, bool);
 void  EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool);
@@ -106,17 +106,12 @@ void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
-void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 
+void  EditFinalizeStyling(DocPos iEndPos);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
-void  EditApplyVisibleLexerStyle(HWND hwnd);
 void  EditUpdateVisibleUrlHotspot(bool);
+void  EditApplyVisibleStyle();
 void  EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, bool);
-
-//  if iRangeEnd == -1 : apply style from iRangeStart to document end
-inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPos iRangeEnd) {
-  (void)(hwnd); SciCall_Colourise(iRangeStart, iRangeEnd);
-}
 
 
 #define FV_TABWIDTH        1
