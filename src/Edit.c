@@ -5271,7 +5271,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             if (s_fwrdMatch == NO_MATCH) {
               EditSetSelectionEx(Globals.hwndEdit, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
             }
-            EditEnsureSelectionVisible(Globals.hwndEdit);
+            else {
+              EditEnsureSelectionVisible(Globals.hwndEdit);
+            }
           }
 
           CmdMessageQueue_t* pmqc = NULL;
@@ -5305,7 +5307,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           // mouse click activation
         case WA_ACTIVE:
           SetWindowTransparentMode(hwnd, false, 100);
-        default:
+
           s_fwrdMatch = NO_MATCH;
           s_InitialSearchStart = SciCall_GetSelectionStart();
 
@@ -5315,11 +5317,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             s_InitialTopLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
           }
 
-          EditEnsureSelectionVisible(Globals.hwndEdit);
+          if (!SciCall_IsSelectionEmpty()) {
+            EditEnsureSelectionVisible(Globals.hwndEdit);
+          }
 
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || SciCall_IsSelectionRectangle());
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
+          break;
 
+        default:
           break;
         }
       }
@@ -5468,7 +5474,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                 }
                 else {
                   EditSetSelectionEx(Globals.hwndEdit, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
-                  EditEnsureSelectionVisible(Globals.hwndEdit);
                 }
               }
               if (EditToggleView(Globals.hwndEdit, false)) { EditHideNotMarkedLineRange(Globals.hwndEdit, -1, -1, true); }
@@ -6129,28 +6134,16 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 }
 
 
-static void _GetVisibleRange(DocPos* piPosStart, DocPos* piPosEnd)
-{
-  DocLn const iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-
-  DocLn const iStartLine = max_ln(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-  DocLn const iEndLine = min_ln((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
-
-  *piPosStart = SciCall_PositionFromLine(iStartLine);
-  *piPosEnd = SciCall_GetLineEndPosition(iEndLine);
-}
-
 //=============================================================================
 //
 //  EditApplyVisibleLexerStyle()
 // 
 void EditApplyVisibleLexerStyle(HWND hwnd)
 {
-  DocPos iPosStart = 0;
-  DocPos iPosEnd = -1;
-  _GetVisibleRange(&iPosStart, &iPosEnd);
+  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
 
-  EditApplyLexerStyle(hwnd, iPosStart, iPosEnd);
+  EditApplyLexerStyle(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
 }
 
 //=============================================================================
@@ -6163,14 +6156,13 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
   {
     if (_IsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
-    DocPos iPosStart = 0;
-    DocPos iPosEnd = -1;
-    _GetVisibleRange(&iPosStart, &iPosEnd);
+    DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+    DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
 
     _IGNORE_NOTIFY_CHANGE_;
     _ENTER_TARGET_TRANSACTION_;
 
-    EditUpdateUrlHotspots(Globals.hwndEdit, iPosStart, iPosEnd, bEnabled);
+    EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), bEnabled);
 
     _LEAVE_TARGET_TRANSACTION_;
     _OBSERVE_NOTIFY_CHANGE_;

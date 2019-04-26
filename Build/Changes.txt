@@ -57,7 +57,7 @@ NEW:
 - Add CED reliability option (NLS: dialogs)
 - Indentation consistency check on file open (NLS: dialogs)
 - End-of-Line (EOL) consistency check on file open (NLS: dialogs)
-- Checkbox for transparent Find/Replace Dialogbox on loosing focus
+- Checkbox for transparent Find/Replace Dialogbox on losing focus
 
 --------------------------------------------------
 CHANGES:
@@ -681,7 +681,7 @@ FIXES:
 - Update view on style change in "Customize schemes..."
 - Bug regarding "Reset" button in "Customizing Schemes..." dialog.
 - Bug in detect and style Hyperlink Hotspot.
-- Loosing state of "Transform Backslashes" while switching regex/wildcard search.
+- Losing state of "Transform Backslashes" while switching regex/wildcard search.
 - Block "mark occurrences" event on transaction pair: 
     (SCI_TARGETFROMSELECTIO, SCI_REPLACETARGET).
 - protect SCI target transactions by a guard to break recursion of 
