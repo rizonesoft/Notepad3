@@ -308,6 +308,7 @@ typedef struct _globals_t
   bool      bIniFileFromScratch;
   bool      bFindReplCopySelOrClip;
   bool      bReplaceInitialized;
+  bool      bHideNonMatchedLines;
 
   FR_STATES FindReplaceMatchFoundState;
 

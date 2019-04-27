@@ -1308,9 +1308,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
+  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
 
   // apply lexer styles
-  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
+  Sci_ApplyStyle(0, -1);
   EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
   EditFinalizeStyling(-1);
   
@@ -1861,14 +1862,17 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 void Style_SetLexerFromName(HWND hwnd,LPCWSTR lpszFile,LPCWSTR lpszName)
 {
   PEDITLEXER pLexNew = Style_MatchLexer(lpszName, false);
-  if (pLexNew)
-    Style_SetLexer(hwnd,pLexNew);
+  if (pLexNew) {
+    Style_SetLexer(hwnd, pLexNew);
+  }
   else {
     pLexNew = Style_MatchLexer(lpszName, true);
-    if (pLexNew)
+    if (pLexNew) {
       Style_SetLexer(hwnd, pLexNew);
-    else
+    }
+    else {
       Style_SetLexerFromFile(hwnd, lpszFile);
+    }
   }
 }
 
@@ -1899,7 +1903,7 @@ void Style_SetDefaultLexer(HWND hwnd)
 //
 void Style_SetHTMLLexer(HWND hwnd)
 {
-  Style_SetLexer(hwnd,Style_MatchLexer(L"Web Source Code",true));
+  Style_SetLexer(hwnd,&lexHTML);
 }
 
 
@@ -1909,7 +1913,7 @@ void Style_SetHTMLLexer(HWND hwnd)
 //
 void Style_SetXMLLexer(HWND hwnd)
 {
-  Style_SetLexer(hwnd,Style_MatchLexer(L"XML Document",true));
+  Style_SetLexer(hwnd,&lexXML);
 }
 
 

@@ -484,6 +484,7 @@ static void _InitGlobals()
   Globals.bIniFileFromScratch = false;
   Globals.bFindReplCopySelOrClip = true;
   Globals.bReplaceInitialized = false;
+  Globals.bHideNonMatchedLines = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
 
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -2341,9 +2342,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   SendWMSize(hwnd, NULL);
 
-  if (EditToggleView(Globals.hwndEdit, false)) {
-    EditToggleView(Globals.hwndEdit, true);
-  }
+  if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   MarkAllOccurrences(0, true);
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   EditFinalizeStyling(-1);
@@ -3019,7 +3018,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
-  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, EditToggleView(Globals.hwndEdit, false));
+  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, Globals.bHideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
@@ -4939,14 +4938,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
-      if (EditToggleView(Globals.hwndEdit, false)) {
-        EditToggleView(Globals.hwndEdit, true);
+      if (Globals.bHideNonMatchedLines) { 
+        EditToggleView(Globals.hwndEdit);
         MarkAllOccurrences(0, true);
       }
       else {
-        EditToggleView(Globals.hwndEdit, true);
+        EditToggleView(Globals.hwndEdit);
       }
-      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, EditToggleView(Globals.hwndEdit, false));
+      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, Globals.bHideNonMatchedLines);
       UpdateToolbar();
       break;
 
@@ -6465,9 +6464,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         _SetSaveNeededFlag(true);
       }
       else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
-        if (EditToggleView(Globals.hwndEdit, false)) {
-          EditToggleView(Globals.hwndEdit, true);
-        }
+        if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
       }
     }
     return TRUE;
@@ -6569,7 +6566,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (Settings.HyperlinkHotspot) {
               UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
             }
-            EditApplyVisibleStyle();
+            //@@@~EditApplyVisibleStyle(Globals.hwndEdit);
           }
         }
         break;
@@ -8427,7 +8424,7 @@ static void  _UpdateToolbarDelayed()
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
   bool ro = SciCall_GetReadOnly();
-  bool tv = EditToggleView(Globals.hwndEdit, false);
+  bool tv = Globals.bHideNonMatchedLines;
 
   EnableTool(IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
   EnableTool(IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
@@ -9169,7 +9166,7 @@ void UpdateMarginWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  if (!EditToggleView(Globals.hwndEdit, false)) {
+  if (!Globals.bHideNonMatchedLines) {
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
     Style_SetFolding(Globals.hwndEdit, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
   }
@@ -9585,9 +9582,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
   if (bNew || bReload) {
-    if (EditToggleView(Globals.hwndEdit, false)) {
-      EditToggleView(Globals.hwndEdit, true);
-    }
+    if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   }
 
   if (!bDontSave)
@@ -9763,7 +9758,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(false);
-    Sci_ApplyStyle(0, -1);
     UpdateVisibleUrlHotspot(0);
     UpdateAllBars(true);
 

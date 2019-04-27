@@ -316,9 +316,7 @@ void  _ClearTextBuffer(HWND hwnd)
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
   EditClearAllOccurrenceMarkers();
-  if (EditToggleView(Globals.hwndEdit, false)) {
-    EditToggleView(Globals.hwndEdit, true);
-  }
+  if (Globals.bHideNonMatchedLines) { EditToggleView(hwnd); }
 
   SendMessage(hwnd, SCI_CLEARALL, 0, 0);
   SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
@@ -4428,7 +4426,7 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
-  EditApplyVisibleStyle();
+  EditApplyVisibleStyle(hwnd);
 
   UpdateToolbar();
   UpdateStatusbar(false);
@@ -5261,9 +5259,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
 
-          if (EditToggleView(Globals.hwndEdit, false)) {
-            EditToggleView(Globals.hwndEdit, true);
-          }
+          if (Globals.bHideNonMatchedLines) { EditToggleView(hwnd); }
           MarkAllOccurrences(50, true);
 
           if (s_InitialTopLine >= 0) { 
@@ -5456,7 +5452,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
               _IGNORE_NOTIFY_CHANGE_;
-              if (EditToggleView(Globals.hwndEdit, false)) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
+              if (Globals.bHideNonMatchedLines) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
               StringCchCopyA(s_lastFind, COUNTOF(s_lastFind), sg_pefrData->szFind);
               RegExResult_t match = _FindHasMatch(Globals.hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
               if (s_anyMatch != match) { s_anyMatch = match; }
@@ -5480,7 +5476,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                 }
               }
               _OBSERVE_NOTIFY_CHANGE_;
-              if (EditToggleView(Globals.hwndEdit, false)) { EditHideNotMarkedLineRange(Globals.hwndEdit, -1, -1, true); }
+              if (Globals.bHideNonMatchedLines) { EditHideNotMarkedLineRange(Globals.hwndEdit, 0, -1, true); }
             }
           }
           else {
@@ -5512,7 +5508,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
             //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-            if (EditToggleView(Globals.hwndEdit, false)) {
+            if (Globals.bHideNonMatchedLines) {
               PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
             }
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
@@ -5527,15 +5523,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
 
       case IDC_TOGGLE_VISIBILITY:
-        if (EditToggleView(Globals.hwndEdit, false)) {
-          EditToggleView(Globals.hwndEdit, true);
+        if (Globals.bHideNonMatchedLines) { 
+          EditToggleView(hwnd);
           sg_pefrData->bStateChanged = true;
           s_InitialTopLine = -1;
           EditClearAllOccurrenceMarkers();
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
         else {
-          EditToggleView(Globals.hwndEdit, true);
+          EditToggleView(hwnd);
         }
         break;
 
@@ -6158,18 +6154,17 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
 //
 //  EditApplyVisibleStyle()
 // 
-void EditApplyVisibleStyle()
+void EditApplyVisibleStyle(HWND hwnd)
 {
   DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
   DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
   if (Settings.HyperlinkHotspot && !_IsInTargetTransaction()) {
-    EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
+    EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
   }
-  else {
+  else if (!Globals.bHideNonMatchedLines) {
     Sci_ApplyStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
   }
 }
-
 
 
 //=============================================================================
@@ -6469,50 +6464,40 @@ void EditClearAllOccurrenceMarkers()
 //
 //  EditToggleView()
 //
-bool EditToggleView(HWND hwnd, bool bToggleView)
+void EditToggleView(HWND hwnd)
 {
-  UNUSED(hwnd);
-  static bool bHideNonMatchedLines = false;
-  if (bToggleView) 
-  {
-    bool const bWaitCursor = ((Globals.iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
-    static bool bSaveHyperlinkHotspots = false;
-    static bool bSaveFoldingAvailable = false;
-    static bool bSaveShowFolding = false;
-    if (bWaitCursor) { BeginWaitCursor(NULL); }
-    _IGNORE_NOTIFY_CHANGE_;
-    if (!bHideNonMatchedLines) {
-      bSaveFoldingAvailable = Globals.bCodeFoldingAvailable;
-      bSaveShowFolding = Settings.ShowCodeFolding;
-      bSaveHyperlinkHotspots = Settings.HyperlinkHotspot;
-      Settings.HyperlinkHotspot = false;
-    }
-    else {
-      Globals.bCodeFoldingAvailable = bSaveFoldingAvailable;
-      Settings.ShowCodeFolding = bSaveShowFolding;
-      Settings.HyperlinkHotspot = bSaveHyperlinkHotspots;
-    }
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
+  static bool bSaveFoldingAvailable = false;
+  static bool bSaveShowFolding = false;
 
-    bHideNonMatchedLines = bHideNonMatchedLines ? false : true; // toggle
+  bool const bWaitCursor = ((Globals.iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
+  if (bWaitCursor) { BeginWaitCursor(NULL); }
+  _IGNORE_NOTIFY_CHANGE_;
 
-    EditHideNotMarkedLineRange(hwnd, -1, -1, bHideNonMatchedLines);
-
-    if (bHideNonMatchedLines) {
-      EditScrollTo(hwnd, 0, false);
-      SciCall_SetReadOnly(true);
-    }
-    else {
-      EditScrollTo(hwnd, Sci_GetCurrentLineNumber(), true);
-      SciCall_SetReadOnly(false);
-    }
-
-    _OBSERVE_NOTIFY_CHANGE_;
-    if (bWaitCursor) { EndWaitCursor(); }  
+  if (!Globals.bHideNonMatchedLines) {
+    bSaveFoldingAvailable = Globals.bCodeFoldingAvailable;
+    bSaveShowFolding = Settings.ShowCodeFolding;
   }
-  return bHideNonMatchedLines;
-}
+  else {
+    Globals.bCodeFoldingAvailable = bSaveFoldingAvailable;
+    Settings.ShowCodeFolding = bSaveShowFolding;
+  }
 
+  Globals.bHideNonMatchedLines = !Globals.bHideNonMatchedLines; // toggle
+
+  EditHideNotMarkedLineRange(hwnd, 0, -1, Globals.bHideNonMatchedLines);
+
+  if (Globals.bHideNonMatchedLines) {
+    EditScrollTo(hwnd, 0, false);
+    SciCall_SetReadOnly(true);
+  }
+  else {
+    EditScrollTo(hwnd, Sci_GetCurrentLineNumber(), true);
+    SciCall_SetReadOnly(false);
+  }
+
+  _OBSERVE_NOTIFY_CHANGE_;
+  if (bWaitCursor) { EndWaitCursor(); }
+}
 
 
 //=============================================================================
@@ -6906,6 +6891,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 }
 
 
+
 //=============================================================================
 //
 //  EditHideNotMarkedLineRange()
@@ -6932,8 +6918,10 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE); }
     SciCall_SetFoldFlags(0);
     Style_SetFolding(hwnd, Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding);
-    Sci_ApplyStyle(0, -1);
     SciCall_FoldAll(EXPAND);
+    Sci_ApplyStyle(0, -1);
+    EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
+    EditFinalizeStyling(-1);
   }
   else // =====   hide lines without marker   =====
   {
