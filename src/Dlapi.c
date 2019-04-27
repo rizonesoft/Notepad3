@@ -12,25 +12,14 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <string.h>
-#include "Helpers.h"
+
 #include "Dlapi.h"
 
 
@@ -884,13 +873,13 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
   int i = -1;
 
-  if (!lpszFullPath || !StringCchLen(lpszFullPath, MAX_PATH)) {
+  if (StrIsEmpty(lpszFullPath)) {
     return false;
   }
 
   GetShortPathName(lpszFullPath,szShortPath,MAX_PATH);
 
-  if (!lpszDisplayName || !StringCchLen(lpszDisplayName, MAX_PATH)) {
+  if (StrIsEmpty(lpszDisplayName)) {
     SHGetFileInfo(lpszFullPath, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
   }
   else {
@@ -939,8 +928,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
   StringCchCopyN(pdlf->tFilterBuf,COUNTOF(pdlf->tFilterBuf),lpszFileSpec,DL_FILTER_BUFSIZE);
   pdlf->bExcludeFilter = bExcludeFilter;
 
-  if (!StringCchCompareX(lpszFileSpec,L"*.*") || !StringCchLen(lpszFileSpec,DL_FILTER_BUFSIZE))
-    return;
+  if (!StringCchCompareX(lpszFileSpec, L"*.*") || StrIsEmpty(lpszFileSpec)) { return; }
 
   pdlf->nCount = 1;
   pdlf->pFilter[0] = &pdlf->tFilterBuf[0];    // Zeile zum Ausprobieren

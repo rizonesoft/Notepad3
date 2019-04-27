@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1250
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Hungarian (Hungary) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
-LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
-#pragma code_page(1250)
+LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
+#pragma code_page(1250) // Central European (Windows-1250)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Hungarian translation by XXX"
+    IDS_MUI_TRANSL_AUTHOR   "[hu-HU] Hungarian translation by xsak"
 END
 
 

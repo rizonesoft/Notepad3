@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Afrikaans (South Africa) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_AFK)
-LANGUAGE LANG_AFRIKAANS, SUBLANG_DEFAULT
-#pragma code_page(1252)  // Western European (Win-1252)
+LANGUAGE LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_AFRIKAANS, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -54,305 +54,301 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_EOL_WIN                    "Windows (CR+LF)"
-    IDS_EOL_MAC                    "Mac (CR)"
-    IDS_EOL_UNIX                   "Unix (LF)"
+    IDS_EOL_WIN             "Windows (CR+LF)"
+    IDS_EOL_MAC             "Mac (CR)"
+    IDS_EOL_UNIX            "Unix (LF)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT                "Verstek teks"
-    IDS_LEX_WEB_SRC                "Webbronkode"
-    IDS_LEX_XML_DOC                "XML Dokument"
-    IDS_LEX_CSS_STYLE              "CSS Stylblad"
-    IDS_LEX_CPP_SRC                "C/C++ Bronkode"
-    IDS_LEX_CSHARP_SRC             "C# Bronkode"
-    IDS_LEX_RESOURCE_SCR           "Hulpbron Skrip"
-    IDS_LEX_MAKEFILES              "Makefiles"
+    IDS_LEX_DEF_TXT         "Verstek teks"
+    IDS_LEX_WEB_SRC         "Webbronkode"
+    IDS_LEX_XML_DOC         "XML Dokument"
+    IDS_LEX_CSS_STYLE       "CSS Stylblad"
+    IDS_LEX_CPP_SRC         "C/C++ Bronkode"
+    IDS_LEX_CSHARP_SRC      "C# Bronkode"
+    IDS_LEX_RESOURCE_SCR    "Hulpbron Skrip"
+    IDS_LEX_MAKEFILES       "Makefiles"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_VB_SCR                 "VBSkrip"
-    IDS_LEX_VIS_BAS                "Visual Basic"
-    IDS_LEX_J_SCR                  "JavaSkrip"
-    IDS_LEX_JAVA_SRC               "Java Bronkode"
-    IDS_LEX_PASCAL_SRC             "Pascal Bronkode"
-    IDS_LEX_ASM_SCR                "Assembly Skrip"
-    IDS_LEX_PERL_SCR               "Perl Skrip"
-    IDS_LEX_CONF                   "Konfigurasie Lêers"
-    IDS_LEX_BATCH                  "Batch Lêers"
-    IDS_LEX_DIFF                   "Diff Lêers"
-    IDS_LEX_SQL                    "SQL Query"
-    IDS_LEX_PYTHON                 "Python Skrip"
-    IDS_LEX_APC_CFG                "Apache Konfig Lêers"
-    IDS_LEX_PWRSHELL               "PowerShell Skrip"
-    IDS_LEX_D_SRC                  "D Bronkode"
-    IDS_LEX_GO_SRC                 "Go Bronkode"
+    IDS_LEX_VB_SCR          "VBSkrip"
+    IDS_LEX_VIS_BAS         "Visual Basic"
+    IDS_LEX_J_SCR           "JavaSkrip"
+    IDS_LEX_JAVA_SRC        "Java Bronkode"
+    IDS_LEX_PASCAL_SRC      "Pascal Bronkode"
+    IDS_LEX_ASM_SCR         "Assembly Skrip"
+    IDS_LEX_PERL_SCR        "Perl Skrip"
+    IDS_LEX_CONF            "Konfigurasie Lêers"
+    IDS_LEX_BATCH           "Batch Lêers"
+    IDS_LEX_DIFF            "Diff Lêers"
+    IDS_LEX_SQL             "SQL Query"
+    IDS_LEX_PYTHON          "Python Skrip"
+    IDS_LEX_APC_CFG         "Apache Konfig Lêers"
+    IDS_LEX_PWRSHELL        "PowerShell Skrip"
+    IDS_LEX_D_SRC           "D Bronkode"
+    IDS_LEX_GO_SRC          "Go Bronkode"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_AWK_SCR                "Awk Skrip"
-    IDS_LEX_ANSI_ART               "ANSI Kuns"
-    IDS_LEX_SHELL_SCR              "Shell Skrip"
-    IDS_LEX_REG_FILES              "Registry Lêers"
-    IDS_LEX_VHDL                   "VHDL"
-    IDS_LEX_JSON                   "JSON"
-    IDS_LEX_NSIS                   "NSIS"
-    IDS_LEX_INNO                   "Inno Setup Skrip"
-    IDS_LEX_RUBY                   "Ruby Skrip"
-    IDS_LEX_LUA                    "Lua Skrip"
-    IDS_LEX_TCL                    "Tcl Skrip"
-    IDS_LEX_AUTOIT3                "AutoIt3 Skrip"
-    IDS_LEX_LATEX                  "LaTeX Lêers"
-    IDS_LEX_AHK                    "AutoHotkey Skrip"
-    IDS_LEX_CMAKE                  "Cmake Skrip"
-    IDS_LEX_AVI_SYNTH              "AviSynth Skrip"
+    IDS_LEX_AWK_SCR         "Awk Skrip"
+    IDS_LEX_ANSI_ART        "ANSI Kuns"
+    IDS_LEX_SHELL_SCR       "Shell Skrip"
+    IDS_LEX_REG_FILES       "Registry Lêers"
+    IDS_LEX_VHDL            "VHDL"
+    IDS_LEX_JSON            "JSON"
+    IDS_LEX_NSIS            "NSIS"
+    IDS_LEX_INNO            "Inno Setup Skrip"
+    IDS_LEX_RUBY            "Ruby Skrip"
+    IDS_LEX_LUA             "Lua Skrip"
+    IDS_LEX_TCL             "Tcl Skrip"
+    IDS_LEX_AUTOIT3         "AutoIt3 Skrip"
+    IDS_LEX_LATEX           "LaTeX Lêers"
+    IDS_LEX_AHK             "AutoHotkey Skrip"
+    IDS_LEX_CMAKE           "Cmake Skrip"
+    IDS_LEX_AVI_SYNTH       "AviSynth Skrip"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_MARKDOWN               "Markdown"
-    IDS_LEX_YAML                   "YAML"
-    IDS_LEX_COFFEE_SCR             "Coffeeskrip"
-    IDS_LEX_MATLAB                 "MATLAB"
-    IDS_LEX_NIM_SRC                "Nim Bronkode"
-    IDS_LEX_R_STAT                 "R-S-SPlus Statistiek Kode"
-    IDS_LEX_RUST_SRC               "Rust Bronkode"
-    IDS_LEX_AHKL                   "AutoHotkey_L Skrip"
+    IDS_LEX_MARKDOWN        "Markdown"
+    IDS_LEX_YAML            "YAML"
+    IDS_LEX_COFFEE_SCR      "Coffeeskrip"
+    IDS_LEX_MATLAB          "MATLAB"
+    IDS_LEX_NIM_SRC         "Nim Bronkode"
+    IDS_LEX_R_STAT          "R-S-SPlus Statistiek Kode"
+    IDS_LEX_RUST_SRC        "Rust Bronkode"
+    IDS_LEX_AHKL            "AutoHotkey_L Skrip"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE              "Verstek Styl"
-    IDS_LEX_STD_MARGIN             "Kantlyne and Lyn Nommers"
-    IDS_LEX_STD_BRACE              "Bypassende Hakies (Aanwyser)"
-    IDS_LEX_STD_BRACE_FAIL         "Bypassende Hakies Fout (Aanwyser)"
+    IDS_LEX_STD_STYLE       "Verstek Styl"
+    IDS_LEX_STD_MARGIN      "Kantlyne and Lyn Nommers"
+    IDS_LEX_STD_BRACE       "Bypassende Hakies (Aanwyser)"
+    IDS_LEX_STD_BRACE_FAIL  "Bypassende Hakies Fout (Aanwyser)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CTRL_CHAR          "Beheer Karakters (Font)"
-    IDS_LEX_STD_INDENT             "Indentasiegids (Kleur)"
-    IDS_LEX_STD_SEL                "Geselekteerde Teks (Kleure)"
-    IDS_LEX_STD_WSPC               "Wit spasie (Kleure, Grootte 0-12)"
-    IDS_LEX_STD_LN_BACKGR          "Merk Huidige Lyn"
-    IDS_LEX_STD_CARET              "Caret (Kleur, Grootte 1-3)"
-    IDS_LEX_STD_LONG_LN            "Lang Lyn Merker (Kleure)"
-    IDS_LEX_STD_X_SPC              "Ekstra Lynspasie (Grootte)"
-    IDS_LEX_2ND_STYLE              "2de Verstek Styl"
-    IDS_LEX_2ND_MARGIN             "2de Kantlyne en Lyn Nommers"
-    IDS_LEX_2ND_BRACE              "2de Bypassende Hakies (Aanwyser)"
-    IDS_LEX_2ND_BRACE_FAIL         "2de Bypassende Hakies Fout (Aanwyser)"
-    IDS_LEX_2ND_CTRL_CHAR          "2de Beheer Karakters (Font)"
-    IDS_LEX_2ND_INDENT             "2de Indentasiegids (Kleur)"
-    IDS_LEX_2ND_SEL                "2de Geselekteerde Teks (Kleure)"
-    IDS_LEX_2ND_WSPC               "2de Wit spasie (Kleure, Grootte 0-12)"
+    IDS_LEX_STD_CTRL_CHAR   "Beheer Karakters (Font)"
+    IDS_LEX_STD_INDENT      "Indentasiegids (Kleur)"
+    IDS_LEX_STD_SEL         "Geselekteerde Teks (Kleure)"
+    IDS_LEX_STD_WSPC        "Wit spasie (Kleure, Grootte 0-12)"
+    IDS_LEX_STD_LN_BACKGR   "Merk Huidige Lyn"
+    IDS_LEX_STD_CARET       "Caret (Kleur, Grootte 1-3)"
+    IDS_LEX_STD_LONG_LN     "Lang Lyn Merker (Kleure)"
+    IDS_LEX_STD_X_SPC       "Ekstra Lynspasie (Grootte)"
+    IDS_LEX_2ND_STYLE       "2de Verstek Styl"
+    IDS_LEX_2ND_MARGIN      "2de Kantlyne en Lyn Nommers"
+    IDS_LEX_2ND_BRACE       "2de Bypassende Hakies (Aanwyser)"
+    IDS_LEX_2ND_BRACE_FAIL  "2de Bypassende Hakies Fout (Aanwyser)"
+    IDS_LEX_2ND_CTRL_CHAR   "2de Beheer Karakters (Font)"
+    IDS_LEX_2ND_INDENT      "2de Indentasiegids (Kleur)"
+    IDS_LEX_2ND_SEL         "2de Geselekteerde Teks (Kleure)"
+    IDS_LEX_2ND_WSPC        "2de Wit spasie (Kleure, Grootte 0-12)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_2ND_LN_BACKGR          "2de Huidige Lyn"
-    IDS_LEX_2ND_CARET              "2de Caret (Kleur, Grootte 1-3)"
-    IDS_LEX_2ND_LONG_LN            "2de Lang Lyn Merker (Kleure)"
-    IDS_LEX_2ND_X_SPC              "2de Ekstra Lynspasie (Grootte)"
-    IDS_LEX_STD_BKMRK              "Boekmerke en Voue (Kleure, Grootte)"
-    IDS_LEX_2ND_BKMRK              "2de Boekmerke en Voue (Kleure, Grootte)"
-END
-    
-STRINGTABLE
-BEGIN
-    IDS_LEX_STR_63126              "Verstek"
-    IDS_LEX_STR_63127              "Kommentaar"
-    IDS_LEX_STR_63128              "Trefwoord"
-    IDS_LEX_STR_63129              "Identifiseerder"
-    IDS_LEX_STR_63130              "Nommer"
-    IDS_LEX_STR_63131              "String"
-    IDS_LEX_STR_63132              "Operateur"
-    IDS_LEX_STR_63133              "Voorverwerker"
-    IDS_LEX_STR_63134              "Verbatim String"
-    IDS_LEX_STR_63135              "Regex"
+    IDS_LEX_2ND_LN_BACKGR   "2de Huidige Lyn"
+    IDS_LEX_2ND_CARET       "2de Caret (Kleur, Grootte 1-3)"
+    IDS_LEX_2ND_LONG_LN     "2de Lang Lyn Merker (Kleure)"
+    IDS_LEX_2ND_X_SPC       "2de Ekstra Lynspasie (Grootte)"
+    IDS_LEX_STD_BKMRK       "Boekmerke en Voue (Kleure, Grootte)"
+    IDS_LEX_2ND_BKMRK       "2de Boekmerke en Voue (Kleure, Grootte)"
+    IDS_LEX_STR_63126       "Verstek"
+    IDS_LEX_STR_63127       "Kommentaar"
+    IDS_LEX_STR_63128       "Trefwoord"
+    IDS_LEX_STR_63129       "Identifiseerder"
+    IDS_LEX_STR_63130       "Nommer"
+    IDS_LEX_STR_63131       "String"
+    IDS_LEX_STR_63132       "Operateur"
+    IDS_LEX_STR_63133       "Voorverwerker"
+    IDS_LEX_STR_63134       "Verbatim String"
+    IDS_LEX_STR_63135       "Regex"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63136              "HTML Merker"
-    IDS_LEX_STR_63137              "HTML Onbekend Merker"
-    IDS_LEX_STR_63138              "HTML Eienskap"
-    IDS_LEX_STR_63139              "HTML Onbekend Eienskap"
-    IDS_LEX_STR_63140              "HTML Waarde"
-    IDS_LEX_STR_63141              "HTML String"
-    IDS_LEX_STR_63142              "HTML Ander Binne Merker"
-    IDS_LEX_STR_63143              "HTML Kommentaar"
-    IDS_LEX_STR_63144              "HTML Entiteit"
-    IDS_LEX_STR_63145              "XML Identifiseerder"
-    IDS_LEX_STR_63146              "ASP Begin Merker"
-    IDS_LEX_STR_63147              "CDATA"
-    IDS_LEX_STR_63148              "PHP Begin Merker"
-    IDS_LEX_STR_63149              "PHP Verstek"
-    IDS_LEX_STR_63150              "PHP String"
-    IDS_LEX_STR_63151              "PHP Eenvoudige String"
+    IDS_LEX_STR_63136       "HTML Merker"
+    IDS_LEX_STR_63137       "HTML Onbekend Merker"
+    IDS_LEX_STR_63138       "HTML Eienskap"
+    IDS_LEX_STR_63139       "HTML Onbekend Eienskap"
+    IDS_LEX_STR_63140       "HTML Waarde"
+    IDS_LEX_STR_63141       "HTML String"
+    IDS_LEX_STR_63142       "HTML Ander Binne Merker"
+    IDS_LEX_STR_63143       "HTML Kommentaar"
+    IDS_LEX_STR_63144       "HTML Entiteit"
+    IDS_LEX_STR_63145       "XML Identifiseerder"
+    IDS_LEX_STR_63146       "ASP Begin Merker"
+    IDS_LEX_STR_63147       "CDATA"
+    IDS_LEX_STR_63148       "PHP Begin Merker"
+    IDS_LEX_STR_63149       "PHP Verstek"
+    IDS_LEX_STR_63150       "PHP String"
+    IDS_LEX_STR_63151       "PHP Eenvoudige String"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63152              "PHP Trefwoord"
-    IDS_LEX_STR_63153              "PHP Nommer"
-    IDS_LEX_STR_63154              "PHP Veranderlike"
-    IDS_LEX_STR_63155              "PHP String Veranderlike"
-    IDS_LEX_STR_63156              "PHP Komplekse Veranderlike"
-    IDS_LEX_STR_63157              "PHP Kommentaar"
-    IDS_LEX_STR_63158              "PHP Operateur"
-    IDS_LEX_STR_63159              "JS Verstek"
-    IDS_LEX_STR_63160              "JS Kommentaar"
-    IDS_LEX_STR_63161              "JS Nommer"
-    IDS_LEX_STR_63162              "JS Identifiseerder"
-    IDS_LEX_STR_63163              "JS Trefwoord"
-    IDS_LEX_STR_63164              "JS String"
-    IDS_LEX_STR_63165              "JS Simbole"
-    IDS_LEX_STR_63166              "JS Regex"
-    IDS_LEX_STR_63167              "ASP JS Verstek"
+    IDS_LEX_STR_63152       "PHP Trefwoord"
+    IDS_LEX_STR_63153       "PHP Nommer"
+    IDS_LEX_STR_63154       "PHP Veranderlike"
+    IDS_LEX_STR_63155       "PHP String Veranderlike"
+    IDS_LEX_STR_63156       "PHP Komplekse Veranderlike"
+    IDS_LEX_STR_63157       "PHP Kommentaar"
+    IDS_LEX_STR_63158       "PHP Operateur"
+    IDS_LEX_STR_63159       "JS Verstek"
+    IDS_LEX_STR_63160       "JS Kommentaar"
+    IDS_LEX_STR_63161       "JS Nommer"
+    IDS_LEX_STR_63162       "JS Identifiseerder"
+    IDS_LEX_STR_63163       "JS Trefwoord"
+    IDS_LEX_STR_63164       "JS String"
+    IDS_LEX_STR_63165       "JS Simbole"
+    IDS_LEX_STR_63166       "JS Regex"
+    IDS_LEX_STR_63167       "ASP JS Verstek"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63168              "ASP JS Kommentaar"
-    IDS_LEX_STR_63169              "ASP JS Nommer"
-    IDS_LEX_STR_63170              "ASP JS Identifiseerder"
-    IDS_LEX_STR_63171              "ASP JS Trefwoord"
-    IDS_LEX_STR_63172              "ASP JS String"
-    IDS_LEX_STR_63173              "ASP JS Simbole"
-    IDS_LEX_STR_63174              "ASP JS Regex"
-    IDS_LEX_STR_63175              "VBS Verstek"
-    IDS_LEX_STR_63176              "VBS Kommentaar"
-    IDS_LEX_STR_63177              "VBS Nommer"
-    IDS_LEX_STR_63178              "VBS Trefwoord"
-    IDS_LEX_STR_63179              "VBS String"
-    IDS_LEX_STR_63180              "VBS Identifiseerder"
-    IDS_LEX_STR_63181              "ASP VBS Verstek"
-    IDS_LEX_STR_63182              "ASP VBS Kommentaar"
-    IDS_LEX_STR_63183              "ASP VBS Nommer"
+    IDS_LEX_STR_63168       "ASP JS Kommentaar"
+    IDS_LEX_STR_63169       "ASP JS Nommer"
+    IDS_LEX_STR_63170       "ASP JS Identifiseerder"
+    IDS_LEX_STR_63171       "ASP JS Trefwoord"
+    IDS_LEX_STR_63172       "ASP JS String"
+    IDS_LEX_STR_63173       "ASP JS Simbole"
+    IDS_LEX_STR_63174       "ASP JS Regex"
+    IDS_LEX_STR_63175       "VBS Verstek"
+    IDS_LEX_STR_63176       "VBS Kommentaar"
+    IDS_LEX_STR_63177       "VBS Nommer"
+    IDS_LEX_STR_63178       "VBS Trefwoord"
+    IDS_LEX_STR_63179       "VBS String"
+    IDS_LEX_STR_63180       "VBS Identifiseerder"
+    IDS_LEX_STR_63181       "ASP VBS Verstek"
+    IDS_LEX_STR_63182       "ASP VBS Kommentaar"
+    IDS_LEX_STR_63183       "ASP VBS Nommer"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63184              "ASP VBS Trefwoord"
-    IDS_LEX_STR_63185              "ASP VBS String"
-    IDS_LEX_STR_63186              "ASP VBS Identifiseerder"
-    IDS_LEX_STR_63187              "XML Merker"
-    IDS_LEX_STR_63188              "XML Kenmerk"
-    IDS_LEX_STR_63189              "XML Waarde"
-    IDS_LEX_STR_63190              "XML String"
-    IDS_LEX_STR_63191              "XML Ander Binne Merker"
-    IDS_LEX_STR_63192              "XML Kommentaar"
-    IDS_LEX_STR_63193              "XML Entiteit"
-    IDS_LEX_STR_63194              "Merker-Klas"
-    IDS_LEX_STR_63195              "Merker-ID"
-    IDS_LEX_STR_63196              "Merker-Kenmerk"
-    IDS_LEX_STR_63197              "Pseudo-Klas"
-    IDS_LEX_STR_63198              "Onbekend Pseudo-Klas"
-    IDS_LEX_STR_63199              "CSS Eienskap"
+    IDS_LEX_STR_63184       "ASP VBS Trefwoord"
+    IDS_LEX_STR_63185       "ASP VBS String"
+    IDS_LEX_STR_63186       "ASP VBS Identifiseerder"
+    IDS_LEX_STR_63187       "XML Merker"
+    IDS_LEX_STR_63188       "XML Kenmerk"
+    IDS_LEX_STR_63189       "XML Waarde"
+    IDS_LEX_STR_63190       "XML String"
+    IDS_LEX_STR_63191       "XML Ander Binne Merker"
+    IDS_LEX_STR_63192       "XML Kommentaar"
+    IDS_LEX_STR_63193       "XML Entiteit"
+    IDS_LEX_STR_63194       "Merker-Klas"
+    IDS_LEX_STR_63195       "Merker-ID"
+    IDS_LEX_STR_63196       "Merker-Kenmerk"
+    IDS_LEX_STR_63197       "Pseudo-Klas"
+    IDS_LEX_STR_63198       "Onbekend Pseudo-Klas"
+    IDS_LEX_STR_63199       "CSS Eienskap"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63200              "Onbekend Eienskap"
-    IDS_LEX_STR_63201              "Waarde"
-    IDS_LEX_STR_63202              "Belangrik"
-    IDS_LEX_STR_63203              "Richtlijn"
-    IDS_LEX_STR_63204              "Teiken"
-    IDS_LEX_STR_63205              "Inlyn Asm"
-    IDS_LEX_STR_63206              "CPU Opdrag"
-    IDS_LEX_STR_63207              "FPU Opdrag"
-    IDS_LEX_STR_63208              "Registreer"
-    IDS_LEX_STR_63209              "Richtlijn Operand"
-    IDS_LEX_STR_63210              "Uitgebrei Opdrag"
-    IDS_LEX_STR_63211              "String Dubbelle Aanhaling"
-    IDS_LEX_STR_63212              "String Enkel Aanhaling"
-    IDS_LEX_STR_63213              "POD (Gewone)"
-    IDS_LEX_STR_63214              "POD (Verbatim)"
-    IDS_LEX_STR_63215              "Scalar $var"
+    IDS_LEX_STR_63200       "Onbekend Eienskap"
+    IDS_LEX_STR_63201       "Waarde"
+    IDS_LEX_STR_63202       "Belangrik"
+    IDS_LEX_STR_63203       "Richtlijn"
+    IDS_LEX_STR_63204       "Teiken"
+    IDS_LEX_STR_63205       "Inlyn Asm"
+    IDS_LEX_STR_63206       "CPU Opdrag"
+    IDS_LEX_STR_63207       "FPU Opdrag"
+    IDS_LEX_STR_63208       "Registreer"
+    IDS_LEX_STR_63209       "Richtlijn Operand"
+    IDS_LEX_STR_63210       "Uitgebrei Opdrag"
+    IDS_LEX_STR_63211       "String Dubbelle Aanhaling"
+    IDS_LEX_STR_63212       "String Enkel Aanhaling"
+    IDS_LEX_STR_63213       "POD (Gewone)"
+    IDS_LEX_STR_63214       "POD (Verbatim)"
+    IDS_LEX_STR_63215       "Scalar $var"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63216              "Versameling @var"
-    IDS_LEX_STR_63217              "Hash %var"
-    IDS_LEX_STR_63218              "Simbool Tabel *var"
-    IDS_LEX_STR_63219              "Regex /re/ or m{re}"
-    IDS_LEX_STR_63220              "Vervanging s/re/ore/"
-    IDS_LEX_STR_63221              "Back Ticks"
-    IDS_LEX_STR_63222              "Data-afdeling"
-    IDS_LEX_STR_63223              "Here-Doc (Skeier)"
-    IDS_LEX_STR_63224              "Here-Doc (Enkel Aanhaling, q)"
-    IDS_LEX_STR_63225              "Here-Doc (Dubbelle Aanhaling, qq)"
-    IDS_LEX_STR_63226              "Here-Doc (Back Ticks, qx)"
-    IDS_LEX_STR_63227              "Enkel Aanhalings String (Generic, q)"
-    IDS_LEX_STR_63228              "Dubbelle Aanhalings String (qq)"
-    IDS_LEX_STR_63229              "Back Ticks (qx)"
-    IDS_LEX_STR_63230              "Regex (qr)"
-    IDS_LEX_STR_63231              "Versameling (qw)"
+    IDS_LEX_STR_63216       "Versameling @var"
+    IDS_LEX_STR_63217       "Hash %var"
+    IDS_LEX_STR_63218       "Simbool Tabel *var"
+    IDS_LEX_STR_63219       "Regex /re/ or m{re}"
+    IDS_LEX_STR_63220       "Vervanging s/re/ore/"
+    IDS_LEX_STR_63221       "Back Ticks"
+    IDS_LEX_STR_63222       "Data-afdeling"
+    IDS_LEX_STR_63223       "Here-Doc (Skeier)"
+    IDS_LEX_STR_63224       "Here-Doc (Enkel Aanhaling, q)"
+    IDS_LEX_STR_63225       "Here-Doc (Dubbelle Aanhaling, qq)"
+    IDS_LEX_STR_63226       "Here-Doc (Back Ticks, qx)"
+    IDS_LEX_STR_63227       "Enkel Aanhalings String (Generic, q)"
+    IDS_LEX_STR_63228       "Dubbelle Aanhalings String (qq)"
+    IDS_LEX_STR_63229       "Back Ticks (qx)"
+    IDS_LEX_STR_63230       "Regex (qr)"
+    IDS_LEX_STR_63231       "Versameling (qw)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63232              "Seksie"
-    IDS_LEX_STR_63233              "Toewysing"
-    IDS_LEX_STR_63234              "Verstek Waarde"
-    IDS_LEX_STR_63235              "Etiket"
-    IDS_LEX_STR_63236              "Opdrag"
-    IDS_LEX_STR_63237              "SGML"
-    IDS_LEX_STR_63238              "Bron en Bestemming"
-    IDS_LEX_STR_63239              "Posisie Instelling"
-    IDS_LEX_STR_63240              "Lyn Benewens"
-    IDS_LEX_STR_63241              "Lyn Verwydering"
-    IDS_LEX_STR_63242              "Lyn Verandering"
-    IDS_LEX_STR_63243              "Aanhalings Identifiseerder"
-    IDS_LEX_STR_63244              "String Driedubbele Dubbelle Aanhaling"
-    IDS_LEX_STR_63245              "String Driedubbele Enkel Aanhaling"
-    IDS_LEX_STR_63246              "Klas Naam"
-    IDS_LEX_STR_63247              "Funksie Naam"
+    IDS_LEX_STR_63232       "Seksie"
+    IDS_LEX_STR_63233       "Toewysing"
+    IDS_LEX_STR_63234       "Verstek Waarde"
+    IDS_LEX_STR_63235       "Etiket"
+    IDS_LEX_STR_63236       "Opdrag"
+    IDS_LEX_STR_63237       "SGML"
+    IDS_LEX_STR_63238       "Bron en Bestemming"
+    IDS_LEX_STR_63239       "Posisie Instelling"
+    IDS_LEX_STR_63240       "Lyn Benewens"
+    IDS_LEX_STR_63241       "Lyn Verwydering"
+    IDS_LEX_STR_63242       "Lyn Verandering"
+    IDS_LEX_STR_63243       "Aanhalings Identifiseerder"
+    IDS_LEX_STR_63244       "String Driedubbele Dubbelle Aanhaling"
+    IDS_LEX_STR_63245       "String Driedubbele Enkel Aanhaling"
+    IDS_LEX_STR_63246       "Klas Naam"
+    IDS_LEX_STR_63247       "Funksie Naam"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63248              "IP Adres"
-    IDS_LEX_STR_63249              "Veranderlike"
-    IDS_LEX_STR_63250              "Cmdlet"
-    IDS_LEX_STR_63251              "Bynaam"
-    IDS_LEX_STR_63252              "Parseerfout"
-    IDS_LEX_STR_63253              "Prototipe"
-    IDS_LEX_STR_63254              "Formaat Identifiseerder"
-    IDS_LEX_STR_63255              "Formaat Liggaam"
-    IDS_LEX_STR_63256              "HTML Element Text"
-    IDS_LEX_STR_63257              "XML Element Text"
-    IDS_LEX_STR_63258              "Typedefs/Klasse"
-    IDS_LEX_STR_63259              "Kommentaar Doc"
-    IDS_LEX_STR_63260              "Trefwoord 2de"
-    IDS_LEX_STR_63261              "Fout"
-    IDS_LEX_STR_63262              "Merk Voorvalle (Aanwyser)"
-    IDS_LEX_STR_63263              "2de Merk Voorvalle (Aanwyser)"
+    IDS_LEX_STR_63248       "IP Adres"
+    IDS_LEX_STR_63249       "Veranderlike"
+    IDS_LEX_STR_63250       "Cmdlet"
+    IDS_LEX_STR_63251       "Bynaam"
+    IDS_LEX_STR_63252       "Parseerfout"
+    IDS_LEX_STR_63253       "Prototipe"
+    IDS_LEX_STR_63254       "Formaat Identifiseerder"
+    IDS_LEX_STR_63255       "Formaat Liggaam"
+    IDS_LEX_STR_63256       "HTML Element Text"
+    IDS_LEX_STR_63257       "XML Element Text"
+    IDS_LEX_STR_63258       "Typedefs/Klasse"
+    IDS_LEX_STR_63259       "Kommentaar Doc"
+    IDS_LEX_STR_63260       "Trefwoord 2de"
+    IDS_LEX_STR_63261       "Fout"
+    IDS_LEX_STR_63262       "Merk Voorvalle (Aanwyser)"
+    IDS_LEX_STR_63263       "2de Merk Voorvalle (Aanwyser)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63264              "Skakelk Hotspots"
-    IDS_LEX_STR_63265              "2de Skakel Hotspots"
-    IDS_LEX_STR_63266              "2de Verstek Text"
-    IDS_LEX_STR_63267              "Veranderlike binne String"
-    IDS_LEX_STR_63268              "Geordende Lys"
-    IDS_LEX_STR_63269              "Infix"
-    IDS_LEX_STR_63270              "Infix EOL"
-    IDS_LEX_STR_63271              "Basispakketfunksies"
-    IDS_LEX_STR_63272              "Ander Pakket Funksies"
-    IDS_LEX_STR_63273              "Funksie"
-    IDS_LEX_STR_63274              "Konstante"
-    IDS_LEX_STR_63275              "Subafdeling"
-    IDS_LEX_STR_63276              "Afdeling Groep"
-    IDS_LEX_STR_63277              "Funksie Definisie"
-    IDS_LEX_STR_63278              "PageEx"
-    IDS_LEX_STR_63279              "If Definisie"
+    IDS_LEX_STR_63264       "Skakelk Hotspots"
+    IDS_LEX_STR_63265       "2de Skakel Hotspots"
+    IDS_LEX_STR_63266       "2de Verstek Text"
+    IDS_LEX_STR_63267       "Veranderlike binne String"
+    IDS_LEX_STR_63268       "Geordende Lys"
+    IDS_LEX_STR_63269       "Infix"
+    IDS_LEX_STR_63270       "Infix EOL"
+    IDS_LEX_STR_63271       "Basispakketfunksies"
+    IDS_LEX_STR_63272       "Ander Pakket Funksies"
+    IDS_LEX_STR_63273       "Funksie"
+    IDS_LEX_STR_63274       "Konstante"
+    IDS_LEX_STR_63275       "Subafdeling"
+    IDS_LEX_STR_63276       "Afdeling Groep"
+    IDS_LEX_STR_63277       "Funksie Definisie"
+    IDS_LEX_STR_63278       "PageEx"
+    IDS_LEX_STR_63279       "If Definisie"
 END
 
 STRINGTABLE
@@ -432,11 +428,11 @@ BEGIN
     IDS_LEX_STR_63340       "Standaard Tipe"
     IDS_LEX_STR_63341       "Woord"
     IDS_LEX_STR_63342       "Verbatim"
+    IDS_LEX_STR_63343       "Ingeboude Tipe"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63343       "Ingeboude Tipe"
     IDS_LEX_STR_63344       "Byte String"
     IDS_LEX_STR_63345       "Ander Trefwoord"
     IDS_LEX_STR_63346       "Rust Lewensduur"
@@ -453,6 +449,7 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
+
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -462,3 +459,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+

@@ -28,7 +28,7 @@ setlocal enableextensions
 
 :: ====================================================================================================================
 
-set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR ja-JP nl-NL ru-RU zh-CN
+set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pl-PL pt-BR ru-RU zh-CN
 
 :: ====================================================================================================================
 
@@ -41,7 +41,9 @@ set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\Portabl
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
-set NP3_DOC_DIR=%SCRIPT_DIR%..\DOC
+set NP3_DOC_DIR=%SCRIPT_DIR%..\doc
+set NP3_THEMES_DIR=%SCRIPT_DIR%..\themes
+set NP3_STYLE_SCHEME_DIR=%SCRIPT_DIR%..\themes\style_schemata
 ::set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
 ::set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v142
@@ -80,6 +82,8 @@ if defined FILEVER set VERSION=%FILEVER%
 
 :: --- Prepare Build ---
 
+if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
+
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Help\Changes.txt" /Y /V
@@ -105,6 +109,13 @@ copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" 
 
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+
+del /s /f /q "%NP3_PORTAPP_DIR%\App\themes\*.*"
+for /f "delims=" %%d in ('dir /ad /b "%NP3_PORTAPP_DIR%\App\themes\"') do rmdir /s /q "%NP3_PORTAPP_DIR%\App\themes\%%d"
+xcopy "%NP3_THEMES_DIR%" "%NP3_PORTAPP_DIR%\App\themes" /C /V /I /S /Y
+
+del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes\*.*"
+xcopy "%NP3_STYLE_SCHEME_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes" /C /V /I /S /Y
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d"

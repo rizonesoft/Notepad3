@@ -267,8 +267,8 @@ get int GetIMEInteraction=2678(,)
 set void SetIMEInteraction=2679(int imeInteraction,)
 
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2719(,)
-get bool IsIMEModeCJK=2720(,)
+get bool IsIMEOpen=2724(,)
+get bool IsIMEModeCJK=2725(,)
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
@@ -309,6 +309,7 @@ val SC_MARK_AVAILABLE=28
 val SC_MARK_UNDERLINE=29
 val SC_MARK_RGBAIMAGE=30
 val SC_MARK_BOOKMARK=31
+val SC_MARK_VERTICALBOOKMARK=32
 
 val SC_MARK_CHARACTER=10000
 
@@ -614,6 +615,12 @@ set void SetWordChars=2077(, string characters)
 # Get the set of characters making up words for when moving or selecting by word.
 # Returns the number of characters
 get int GetWordChars=2646(, stringresult characters)
+
+# Set the number of characters to have directly indexed categories
+set void SetCharacterCategoryOptimization=2720(int countCharacters,)
+
+# Get the number of characters to have directly indexed categories
+get int GetCharacterCategoryOptimization=2721(,)
 
 # Start a sequence of actions that is undone and redone as a unit.
 # May be nested.
@@ -1235,8 +1242,17 @@ val SC_FOLDDISPLAYTEXT_HIDDEN=0
 val SC_FOLDDISPLAYTEXT_STANDARD=1
 val SC_FOLDDISPLAYTEXT_BOXED=2
 
-# Set the style of fold display text
+# Set the style of fold display text.
 set void FoldDisplayTextSetStyle=2701(int style,)
+
+# Get the style of fold display text.
+get int FoldDisplayTextGetStyle=2707(,)
+
+# Set the default fold display text.
+fun void SetDefaultFoldDisplayText=2722(, string text)
+
+# Get the default fold display text.
+fun int GetDefaultFoldDisplayText=2723(, stringresult text)
 
 enu FoldAction=SC_FOLDACTION_
 val SC_FOLDACTION_CONTRACT=0
@@ -2966,6 +2982,7 @@ val SCLEX_MAXIMA=123
 val SCLEX_STATA=124
 val SCLEX_SAS=125
 val SCLEX_NIM=126
+val SCLEX_CIL=127
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -4938,6 +4955,19 @@ val SCE_NIM_STRINGEOL=13
 val SCE_NIM_NUMERROR=14
 val SCE_NIM_OPERATOR=15
 val SCE_NIM_IDENTIFIER=16
+# Lexical states for SCLEX_CIL
+lex CIL=SCLEX_CIL SCE_CIL_
+val SCE_CIL_DEFAULT=0
+val SCE_CIL_COMMENT=1
+val SCE_CIL_COMMENTLINE=2
+val SCE_CIL_WORD=3
+val SCE_CIL_WORD2=4
+val SCE_CIL_WORD3=5
+val SCE_CIL_STRING=6
+val SCE_CIL_LABEL=7
+val SCE_CIL_OPERATOR=8
+val SCE_CIL_IDENTIFIER=9
+val SCE_CIL_STRINGEOL=10
 
 # Events
 

@@ -161,7 +161,7 @@ HMODULE              g_hLngResContainer = NULL;
 WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 // 'en-US' internal default
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE es-ES en-GB fr-FR hu-HU ja-JP nl-NL pt-BR ru-RU zh-CN";
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pl-PL pt-BR ru-RU zh-CN";
 
 
 //=============================================================================
@@ -304,7 +304,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   LoadFlags();
 
   // Try to activate another window
-  if (ActivatePrevInst()) { return(0); }
+  if (ActivatePrevInst()) { return 0; }
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -3603,6 +3603,7 @@ BOOL DisplayPath(LPCWSTR lpPath,UINT uIdError)
       lstrcpy(szTmp,szPath);
 
       SHFILEINFO shfi;
+      ZeroMemory(&shfi, sizeof(SHFILEINFO));
       SHGetFileInfo(szPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
 
       WCHAR *p = StrRChr(szPath, NULL, L'\\');
@@ -3926,7 +3927,7 @@ void LoadTargetParamsOnce(void)
     return;
 
   pIniSection  = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  cbIniSection = pIniSection ? (int)LocalSize(pIniSection)/sizeof(WCHAR) : 0;
 
   LoadIniSection(L"Target Application",pIniSection,cbIniSection);
 

@@ -138,7 +138,7 @@ DeclareSciCallV0(Undo, UNDO)
 DeclareSciCallV0(Redo, REDO)
 DeclareSciCallR0(CanUndo, CANUNDO, bool)
 DeclareSciCallR0(CanRedo, CANREDO, bool)
-DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
+DeclareSciCallR0(GetModify, GETMODIFY, bool)
 DeclareSciCallR0(CanPaste, CANPASTE, bool)
 
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
@@ -207,7 +207,8 @@ DeclareSciCallV0(SelectAll, SELECTALL)
 DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, const char*, text)
 DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text)
 DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
-
+DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text)
+DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
 
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
@@ -218,6 +219,7 @@ DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const
 DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text)
 DeclareSciCallV1(SetSearchFlags, SETSEARCHFLAGS, int, flags)
 DeclareSciCallR2(SearchInTarget, SEARCHINTARGET, DocPos, DocPos, length, const char*, text)
+DeclareSciCallV2(DeleteRange, DELETERANGE, DocPos, start, DocPos, length)
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position)
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position)
@@ -245,8 +247,6 @@ DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line)
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line)
 DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position)
 DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column)
-DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
-DeclareSciCallR1(GetLineIndentation, GETLINEINDENTATION, int, DocLn, line)
 DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos)
 DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative)
 
@@ -323,9 +323,6 @@ DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
 DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
-DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode)
-
-
 //=============================================================================
 //
 //  Style definition
@@ -340,23 +337,39 @@ DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
 
 //=============================================================================
 //
-// Indentation Guides
+// Indentation Guides and Wraping
 //
-DeclareSciCallV1(SetIndent, SETINDENT, int, width)
+DeclareSciCallV1(SetWrapMode, SETWRAPMODE, int, mode)
+DeclareSciCallV1(SetWrapIndentMode, SETWRAPINDENTMODE, int, mode)
+DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode)
+
+DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode)
+DeclareSciCallV1(SetEdgeColumn, SETEDGECOLUMN, int, column)
+
 DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width)
-DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool)
-DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool)
+DeclareSciCallR0(GetTabWidth, GETTABWIDTH, int)
+
+DeclareSciCallV1(SetIndent, SETINDENT, int, width)
+DeclareSciCallR0(GetIndent, GETINDENT, int)
 DeclareSciCallV1(SetUseTabs, SETUSETABS, bool, use)
+DeclareSciCallR0(GetUseTabs, GETUSETABS, bool)
 DeclareSciCallV1(SetTabIndents, SETTABINDENTS, bool, indents)
+DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool)
 DeclareSciCallV1(SetBackSpaceUnIndents, SETBACKSPACEUNINDENTS, bool, unindents)
+DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool)
+
+DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
+DeclareSciCallR1(GetLineIndentation, GETLINEINDENTATION, int, DocLn, line)
+DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
+
+DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
+DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
+
 DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
 DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2)
 DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos)
 DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, int, indic)
 DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic)
-DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
-DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
-DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
 
 
 //=============================================================================
@@ -460,7 +473,7 @@ DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo)
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value)
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
-
+DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count)
 
 //=============================================================================
 //
@@ -505,6 +518,10 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 }
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
+
+//  if iRangeEnd == -1 : apply style from iRangeStart to document end
+#define Sci_ApplyStyle(B, E) SciCall_Colourise((B), (E));
+
 
 //=============================================================================
 

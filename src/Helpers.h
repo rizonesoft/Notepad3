@@ -16,15 +16,11 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
-#define STRSAFE_NO_CB_FUNCTIONS
-#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
+#include "TypeDefs.h"
 
 #include <math.h>
-#include <strsafe.h>
 #include <shlwapi.h>
 #include <versionhelpers.h>
-
-#include "TypeDefs.h"
 
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
@@ -36,16 +32,15 @@
 
 // ============================================================================
 
-#ifndef _MKWCS
-#define _DO_STRINGIFYA(s) #s
-#define _DO_STRINGIFYW(s) L ## #s
-#define STRG(s)  _DO_STRINGIFYA(s)
-#define STRGW(s) _DO_STRINGIFYW(s)
-
-#define _MKWCS(s) L ## s
-#define MKWCS(s)  _MKWCS(s)
+#ifndef _W
+#define __CC(p,s) p ## s
+#define _W(s)  __CC(L,s)
 #endif
 
+#ifndef _STRG
+#define _STRINGIFY(s) #s
+#define _STRG(s)  _STRINGIFY(s)
+#endif
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
@@ -64,17 +59,17 @@
   #define DEFAULT_ALLOC_FLAGS (0)
 #endif
 
-__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
+inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
   return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-__forceinline bool FreeMem(LPVOID lpMemory)
+inline bool FreeMem(LPVOID lpMemory)
 {
   return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
 }
 
-__forceinline size_t SizeOfMem(LPCVOID lpMemory)
+inline size_t SizeOfMem(LPCVOID lpMemory)
 {
   return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
 }
@@ -182,8 +177,6 @@ inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos p
 
 inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
 
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
-
 // ----------------------------------------------------------------------------
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
@@ -211,27 +204,48 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
 
+// ----------------------------------------------------------------------------
+
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
+
+// ----------------------------------------------------------------------------
 
 DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
+
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-#define ScaleIntToCurrentDPI(val) MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI)
+inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-#define ScaleIntFontSize(val) MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y)
+inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y); }
 inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
+
 int GetSystemMetricsEx(int nValue);
 
 // ----------------------------------------------------------------------------
 
-inline bool IsFullHDOrHigher(int resX, int resY) {
-  if (resX <= 0) { resX = GetSystemMetrics(SM_CXSCREEN); }
-  if (resY <= 0) { resY = GetSystemMetrics(SM_CYSCREEN); }
+inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
+{
+  HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+  MONITORINFO mi;
+  ZeroMemory(&mi, sizeof(MONITORINFO));
+  mi.cbSize = sizeof(mi);
+  GetMonitorInfo(hMonitor, &mi);
+  *pCXScreen = (mi.rcMonitor.right - mi.rcMonitor.left);
+  *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);
+}
+
+inline bool IsFullHDOrHigher(HWND hwnd, int resX, int resY) 
+{
+  int cxScreen, cyScreen;
+  GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
+  if (resX <= 0) { resX = cxScreen; }
+  if (resY <= 0) { resY = cxScreen; }
   return ((resX >= 1920) && (resY >= 1080));
 }
 
-#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
+inline float GetBaseFontSize(HWND hwnd) { return (IsFullHDOrHigher(hwnd, -1, -1) ? 11.0f : 10.0f); }
 
 // ----------------------------------------------------------------------------
 
@@ -250,7 +264,12 @@ bool IsFontAvailable(LPCWSTR lpszFontName);
 bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 
-#define DlgBtnChk(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
+#define SetBtn(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
+
+inline bool IsButtonChecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_CHECKED); }
+inline bool IsButtonIntermediate(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_INDETERMINATE); }
+inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED); }
+
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
@@ -259,31 +278,21 @@ bool IsCmdEnabled(HWND hwnd, UINT uId);
 #define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
 
 
-#define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
-  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
-
-
-int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
-int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
-int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
-
-#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
-#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
-#define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
-
-
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
-
 
 bool PathIsLnkFile(LPCWSTR pszPath);
 bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath);
 bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath);
 bool PathCreateDeskLnk(LPCWSTR pszDocument);
 bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
+
+void  ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc);
+void  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
+DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
+void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
+DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 
 
 bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars);
@@ -314,13 +323,7 @@ void StrTab2Space(LPWSTR lpsz);
 void PathFixBackslashes(LPWSTR lpsz);
 
 
-void  ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc);
-void  PathCanonicalizeEx(LPWSTR lpszPath,int len);
-DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer);
-DWORD NormalizePathEx(LPWSTR lpszPath,int len);
-DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,SHFILEINFO* psfi,UINT cbFileInfo,UINT uFlags);
-
-size_t FormatNumberStr(LPWSTR lpNumberStr);
+size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
 
@@ -337,9 +340,9 @@ UINT CharSetFromCodePage(UINT uCodePage);
 
 LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
-bool      MRU_Add(LPMRULIST pmru,LPCWSTR pszNew,int iEnc,DocPos iPos,LPCWSTR pszBookMarks);
+bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
 bool      MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex);
-bool      MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool,bool,int iEnc,DocPos iPos,LPCWSTR pszBookMarks);
+bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
 bool      MRU_Delete(LPMRULIST pmru,int iIndex);
 bool      MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile);
 bool      MRU_Empty(LPMRULIST pmru);
@@ -455,8 +458,8 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 
 //==== StrIs(Not)Empty() =============================================
 
-inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
-inline bool StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+inline bool StrIsEmptyA(LPCSTR s)  { return (!s || (*s == '\0')); }
+inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)

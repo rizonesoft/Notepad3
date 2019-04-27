@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
 LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "&New Window\tAlt+N",          IDM_FILE_NEWWINDOW
             MENUITEM "&Empty Window\tAlt+Shift+N",  IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "&Relaunch Elevated",          IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "Execute &Document\tCtrl+L",   IDM_FILE_LAUNCH
             MENUITEM "&Open with...\tAlt+L",        IDM_FILE_OPENWITH
             MENUITEM "&Command...\tCtrl+R",         IDM_FILE_RUN
@@ -88,11 +90,13 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",       IDM_ENCODING_UTF8SIGN
             MENUITEM "&More...\tF9",                IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Force Compact Encoding Detection", CMD_RELOADFORCEDETECTION
+            MENUITEM "Force Encoding Detection",    CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "Recode to &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "Recode to &ANSI\tCtrl-Shift+A", CMD_RECODEANSI
-            MENUITEM "Recode to &OEM\tCtrl+Shift+O", CMD_RECODEOEM
+            MENUITEM "Recode to &Default\tCtrl-Alt-F",      CMD_RECODEDEFAULT
+            MENUITEM "Recode to &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
+            MENUITEM "Recode to &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
+            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "ASCII as UTF-&8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
             MENUITEM "Ignore Encoding &Tags\tAlt+F8", CMD_RELOADNOFILEVARS
             MENUITEM "&Recode...\tF8",              IDM_ENCODING_RECODE
@@ -107,6 +111,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT
         END
+        MENUITEM SEPARATOR
+        MENUITEM "Check &Indentation..."        CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Page Se&tup...",              IDM_FILE_PAGESETUP
         MENUITEM "&Print...\tCtrl+P",           IDM_FILE_PRINT
@@ -299,9 +305,9 @@ BEGIN
         MENUITEM "&Long Line Marker\tCtrl+Shift+L", IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&ation Guides\tCtrl+Shift+G", IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Show &Blanks\tCtrl+Shift+8",  IDM_VIEW_SHOWBLANKS
         MENUITEM "Show Line &Endings\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
-        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
@@ -340,8 +346,9 @@ BEGIN
         POPUP "&Toolbar"
         BEGIN
             MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
-            MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
             MENUITEM "C&ustomise Toolbar...",       IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
             MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -375,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Single &File Instance",       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Mute Message &Beeps",                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &Key Function"
         BEGIN
             MENUITEM "&None",                       IDM_VIEW_NOESCFUNC
@@ -459,8 +467,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
+        MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
         MENUITEM "&Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"

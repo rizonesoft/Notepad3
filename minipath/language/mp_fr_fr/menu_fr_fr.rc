@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -56,72 +56,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Ouvrir",                     IDM_FILE_OPEN
+        MENUITEM "&Ouvrir",                         IDM_FILE_OPEN
         MENUITEM "Ouvrir &avec alternative App...", IDM_FILE_OPENWITH
-        MENUITEM "&Aperçu rapide",              IDM_FILE_QUICKVIEW
+        MENUITEM "&Aperçu rapide",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copier nom",                 IDM_POP_COPYNAME
-        MENUITEM "Créer lin&k...",              IDM_FILE_CREATELINK
-        MENUITEM "&Enregitrer sous...",         IDM_FILE_SAVEAS
-        MENUITEM "Copier/&Déplacer...",         IDM_FILE_COPYMOVE
-        MENUITEM "S&upprimer...",               IDM_FILE_DELETE
-        MENUITEM "Re&nommer...",                IDM_FILE_RENAME
+        MENUITEM "&Copier nom",                     IDM_POP_COPYNAME
+        MENUITEM "Créer lin&k...",                  IDM_FILE_CREATELINK
+        MENUITEM "&Enregitrer sous...",             IDM_FILE_SAVEAS
+        MENUITEM "Copier/&Déplacer...",             IDM_FILE_COPYMOVE
+        MENUITEM "S&upprimer...",                   IDM_FILE_DELETE
+        MENUITEM "Re&nommer...",                    IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Lancer",                     IDM_FILE_LAUNCH
-        MENUITEM "&Exécuter avec Arg...",       IDM_FILE_RUN
+        MENUITEM "&Lancer",                         IDM_FILE_LAUNCH
+        MENUITEM "&Exécuter avec Arg...",           IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Propriétés",                 IDM_FILE_PROPERTIES
+        MENUITEM "&Propriétés",                     IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Nouveau fichier...",        IDM_FILE_NEW
-        MENUITEM "Nou&veau dossier...",           IDM_FILE_NEWDIR
+        MENUITEM "&Nouveau fichier...",             IDM_FILE_NEW
+        MENUITEM "Nou&veau dossier...",             IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&Fichier filtre...",             IDM_VIEW_FILTER
+        MENUITEM "&Fichier filtre...",              IDM_VIEW_FILTER
         MENUITEM "&Restaurer filtre",               IDM_VIEW_FILTERALL
         POPUP "&Afficher"
         BEGIN
-            MENUITEM "&Dossiers",            IDM_VIEW_FOLDERS
-            MENUITEM "&Fichiers",                  IDM_VIEW_FILES
-            MENUITEM "Objets &Système",         IDM_VIEW_HIDDEN
+            MENUITEM "&Dossiers",                   IDM_VIEW_FOLDERS
+            MENUITEM "&Fichiers",                   IDM_VIEW_FILES
+            MENUITEM "Objets &Système",             IDM_VIEW_HIDDEN
         END
         POPUP "T&rier"
         BEGIN
-            MENUITEM "par &Nom",                IDM_SORT_NAME
-            MENUITEM "par &Taille",                IDM_SORT_SIZE
-            MENUITEM "par &Type",                IDM_SORT_TYPE
-            MENUITEM "par &Date",                IDM_SORT_DATE
+            MENUITEM "par &Nom",                    IDM_SORT_NAME
+            MENUITEM "par &Taille",                 IDM_SORT_SIZE
+            MENUITEM "par &Type",                   IDM_SORT_TYPE
+            MENUITEM "par &Date",                   IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Inversé",                IDM_SORT_REVERSE
+            MENUITEM "&Inversé",                    IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Aller à favoris",             IDM_VIEW_FAVORITES
-        MENUITEM "&Editer favoris",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Dossiers...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Aller à favoris",                IDM_VIEW_FAVORITES
+        MENUITEM "&Editer favoris",                 IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Dossiers...",                    IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Afficher lecteurs",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Afficher lecteurs",               IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "Enre&gistrer paramètres",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Cible d'installation...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Enre&gistrer paramètres",         IDM_VIEW_SAVESETTINGS
+        MENUITEM "Cible d'installation...",         IDM_VIEW_FINDTARGET
+        MENUITEM "O&ptions...",                     IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Dossier...",       IDM_FILE_CHANGEDIR
-        MENUITEM "&Propriétés lecteur",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Dossier...",                     IDM_FILE_CHANGEDIR
+        MENUITEM "&Propriétés lecteur",             IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Afficher lec&teurs",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Afficher lec&teurs",              IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Afficher la &barre à outils",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Editer la barre à outils...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Afficher &la barre de Statut",             IDM_VIEW_STATUSBAR
+        MENUITEM "Afficher la &barre à outils",     IDM_VIEW_TOOLBAR
+        MENUITEM "&Editer la barre à outils...",    IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Afficher &la barre de Statut",    IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Ouvrir MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Quitter MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "Ouvrir MiniPath",                 IDM_TRAY_RESTORE
+        MENUITEM "Quitter MiniPath",                IDM_TRAY_EXIT
     END
 END
 

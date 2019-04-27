@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -58,6 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Open"
     IDT_FILE_BROWSE         "Browse"
     IDT_FILE_SAVE           "Save"
+    IDT_FILE_RECENT         "History"
     IDT_EDIT_UNDO           "Undo"
     IDT_EDIT_REDO           "Redo"
     IDT_EDIT_CUT            "Cut"
@@ -111,6 +112,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Select the directory with links to your favorite applications."
     IDS_MUI_FAVORITES       "Select the directory with links to your favorite files."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -125,27 +127,30 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
     IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
-    IDS_MUI_ERR_PREVWINDISABLED 
+    IDS_MUI_ERR_PREVWINDISABLED
                             "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
     IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
     IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
+    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error elevating user rights!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
     IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
-    IDS_MUI_ERR_ACCESSDENIED 
+    IDS_MUI_ERR_ACCESSDENIED
                             "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch Notepad3 as Administrator?"
     IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
+    IDS_MUI_WARN_LOAD_BIG_FILE
                             "Are you sure you want to open this large file?"
-    IDS_MUI_WARN_UNKNOWN_EXT 
+    IDS_MUI_WARN_UNKNOWN_EXT
                             "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_WARN_INCONSIST_EOLS 
-                            "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
-    IDS_MUI_WARN_INCONS_INDENTS 
-                            "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
+    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
 END
 
 STRINGTABLE
@@ -159,14 +164,14 @@ BEGIN
     IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
     IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronized with the new encoding. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
-    IDS_MUI_FILECHANGENOTIFY 
+    IDS_MUI_FILECHANGENOTIFY
                             "The current file has been modified by an external program. Reload?"
     IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
     IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
     IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
     IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
     IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
-    IDS_MUI_SETTINGSNOTSAVED 
+    IDS_MUI_SETTINGSNOTSAVED
                             "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
 END
 
@@ -210,7 +215,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(en-US) English(amer.) text by Flo Balmer et al."
+    IDS_MUI_TRANSL_AUTHOR   "[en-US] English(amer.) text by Flo Balmer et al."
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
@@ -225,18 +230,26 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_MENU_LANGUAGE   "Language"
+    IDS_MUI_MENU_THEMES     "Themes"
+    IDM_THEMES_DEFAULT      "Factory Default"
+    IDM_THEMES_FILE_ITEM    "Standard Settings"
+END
+
+STRINGTABLE
+BEGIN
 IDS_MUI_CMDLINEHELP "\
 Usage:\r\n\
-Notepad3 \t[/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
 Options:\r\n\
 /?\tDispay this help message.\r\n\
-…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tLine ending mode (/crlf, /cr, /lf).\r\n\
+...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
 /g\tJump to specified position (/g -1 end of file).\r\n\
 /m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
@@ -258,12 +271,13 @@ Options:\r\n\
 /u\tLaunch with elevated privileges.\r\n\
 /v\tPrint file immediately and quit.\r\n\
 /vd\tPrint file (open printer dialog).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Print the file: ""Test.txt"" immediately.\
+ \t... Print the file: ""Test.txt"" immediately.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
@@ -301,7 +315,7 @@ IDS_MUI_ABOUT_RTF_5  "\
 \\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
 "
 
-IDS_MUI_ABOUT_RTF_6 "\
+IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 Licence:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2015-2019 Rizonesoft, All rights reserved.\\par\

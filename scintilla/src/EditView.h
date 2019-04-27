@@ -14,7 +14,7 @@ struct PrintParameters {
 	int magnification;     /// @ 2018-09-06 Changed to a percent value
 	int colourMode;
 	WrapMode wrapState;
-	PrintParameters();
+	PrintParameters() noexcept;
 };
 
 /**
@@ -97,11 +97,11 @@ public:
 	void operator=(EditView &&) = delete;
 	virtual ~EditView();
 
-	bool SetTwoPhaseDraw(bool twoPhaseDraw);
-	bool SetPhasesDraw(int phases);
-	bool LinesOverlap() const;
+	bool SetTwoPhaseDraw(bool twoPhaseDraw) noexcept;
+	bool SetPhasesDraw(int phases) noexcept;
+	bool LinesOverlap() const noexcept;
 
-	void ClearAllTabstops();
+	void ClearAllTabstops() noexcept;
 	XYPOSITION NextTabstopPos(Sci::Line line, XYPOSITION x, XYPOSITION tabWidth) const;
 	bool ClearTabstops(Sci::Line line);
 	bool AddTabstop(Sci::Line line, int x);
@@ -167,7 +167,7 @@ public:
 	AutoLineLayout(AutoLineLayout &&) = delete;
 	AutoLineLayout &operator=(const AutoLineLayout &) = delete;
 	AutoLineLayout &operator=(AutoLineLayout &&) = delete;
-	~AutoLineLayout() {
+	~AutoLineLayout() noexcept {
 		llc.Dispose(ll);
 		ll = nullptr;
 	}
@@ -177,7 +177,7 @@ public:
 	operator LineLayout *() const noexcept {
 		return ll;
 	}
-	void Set(LineLayout *ll_) {
+	void Set(LineLayout *ll_) noexcept {
 		llc.Dispose(ll);
 		ll = ll_;
 	}

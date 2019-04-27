@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: Shift_JIS
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)  // Japanese (Shift-JIS)
+LANGUAGE LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN
+#pragma code_page(932) // Japanese (Shift-JIS)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "管理者権限で再起動(&R)",          IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "開いている文書を実行(&D)\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
             MENUITEM "ファイル名を指定して実行(&C)...\tCtrl+R",    IDM_FILE_RUN
@@ -88,11 +90,13 @@ BEGIN
             MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
             MENUITEM "その他の文字コードを指定(&M)...\tF9",        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Compact文字コード判別を実行(文字化け時)",    CMD_RELOADFORCEDETECTION
+            MENUITEM "文字コード判別を実行(文字化け時)",           CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "デフォルトで読み直し(&D)\tCtrl-Alt-F",        CMD_RECODEDEFAULT
             MENUITEM "ANSIで読み直し(&A)\tCtrl-Shift+A",         CMD_RECODEANSI
             MENUITEM "OEMで読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
+            MENUITEM "GB18030で読み直し(&G)\tCtrl+Shift+F10",     CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "ASCIIをUTF-8として開く(&8)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
             MENUITEM "文字コードを無視(&T)\tAlt+F8",              CMD_RELOADNOFILEVARS
             MENUITEM "文字コードを指定して読み直し(&R)...\tF8",     IDM_ENCODING_RECODE
@@ -107,6 +111,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "デフォルトを設定する(&D)...",               IDM_LINEENDINGS_SETDEFAULT
         END
+        MENUITEM SEPARATOR
+        MENUITEM "インデントの検査(&I)..."                    CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "ページ設定(&T)...",                          IDM_FILE_PAGESETUP
         MENUITEM "印刷(&P)...\tCtrl+P",                       IDM_FILE_PRINT
@@ -299,17 +305,17 @@ BEGIN
         MENUITEM "行の長さのガイド(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "空白(&W)\tCtrl+Shift+8",                    IDM_VIEW_SHOWBLANKS
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",                IDM_VIEW_SHOWEOLS
-        MENUITEM "折り返し記号(&P)\tCtrl+Shift+0",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "無し(&N)",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "背景色を変える(&C)",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "枠線(&F)",                      IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "単語出現マーカー(&k)"
         BEGIN
@@ -340,8 +346,9 @@ BEGIN
         POPUP "ツールバー(&T)"
         BEGIN
             MENUITEM "ツールバーを表示(&B)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "高解像度ツールバー",                          IDM_VIEW_TOGGLETB
-            MENUITEM "ツールバーの編集(&U)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "アイコン大小の切り替え(&G)",                          IDM_VIEW_TOGGLETB
+            MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "ツールバー用独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
             MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
         END
         POPUP "拡大縮小(&Z)"
@@ -363,7 +370,7 @@ BEGIN
     END
     POPUP "設定(&S)"
     BEGIN
-        MENUITEM "タブの替わりに空白を入力する(&S)",                  IDM_VIEW_TABSASSPACES
+        MENUITEM "タブキーで空白を入力(&S)",                  IDM_VIEW_TABSASSPACES
         MENUITEM "タブキーの設定(&T)...\tCtrl+T",                  IDM_VIEW_TABSETTINGS
         MENUITEM "折り返し方の設定(&W)...",                        IDM_VIEW_WORDWRAPSETTINGS
         MENUITEM "行の長さのガイド設定(&L)...",                     IDM_VIEW_LONGLINESETTINGS
@@ -375,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "単一のインスタンスでファイルを開く(&F)",               IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知する(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Mute Message &Beeps",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
             MENUITEM "何もしない(&N)",                          IDM_VIEW_NOESCFUNC
@@ -459,8 +467,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "高解像度ツールバー",                           IDM_VIEW_TOGGLETB
+        MENUITEM "アイコン大小の切り替え(&G)",                           IDM_VIEW_TOGGLETB
         MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
+        MENUITEM "ツールバー用独自アイコンを設定(&L)...",                    IDM_VIEW_LOADTHEMETB
         MENUITEM "ステータスバーの表示(&S)",                       IDM_VIEW_STATUSBAR
     END
     POPUP "+"

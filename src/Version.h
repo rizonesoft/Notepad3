@@ -15,48 +15,45 @@
 #ifndef NOTEPAD3_VERSION_H
 #define NOTEPAD3_VERSION_H
 
-#define _DO_STRINGIFYA(s) #s
-#define _DO_STRINGIFYW(s) L ## #s
-#define STRG(s)  _DO_STRINGIFYA(s)
-#define STRGW(s) _DO_STRINGIFYW(s)
+#define __CC(p,s) p ## s
+#define _V(s)  __CC(v,s)
+#define _W(s)  __CC(L,s)
 
-#define _MKWCS(s) L ## s
-#define MKWCS(s)  _MKWCS(s)
-
+#define _STRINGIFY(s) #s
+#define _STRG(s)  _STRINGIFY(s)
 
 #include "VersionEx.h"
 
 // ----------------------------------------------------------------------------
-
+#define VERSION_FILEVERSION          VERSION_MAJOR.VERSION_MINOR.VERSION_REV.VERSION_BUILD
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
-#define VERSION_FILEVERSION          STRG(VERSION_MAJOR.VERSION_MINOR.VERSION_REV.VERSION_BUILD)
 
 #if defined(_WIN64)
-#define  VERSION_FILEVERSION_LONG    APPNAME " (64-bit) v" VERSION_FILEVERSION " " VERSION_PATCH
+#define  VERSION_FILEVERSION_LONG    APPNAME (64-bit)  _V(VERSION_FILEVERSION)  VERSION_PATCH
 #else
-#define  VERSION_FILEVERSION_LONG    APPNAME " v" VERSION_FILEVERSION " " VERSION_PATCH
+#define  VERSION_FILEVERSION_LONG    APPNAME  _V(VERSION_FILEVERSION)  VERSION_PATCH
 #endif
 
 
 #if defined(_DEBUG) || defined(DEBUG)
-#pragma message("Debug Build: " VERSION_FILEVERSION_LONG)
+#pragma message("Debug Build: " _STRG(VERSION_FILEVERSION_LONG))
 #else
-#pragma message("Release Build: " VERSION_FILEVERSION_LONG)
+#pragma message("Release Build: " _STRG(VERSION_FILEVERSION_LONG))
 #endif
 
-#define VERSION_LEGALCOPYRIGHT         L"Copyright © 2015-2019 Rizonesoft"
-//#define VERSION_LEGALCOPYRIGHT_LONG  L"© Rizonesoft 2015-2019"
-#define VERSION_AUTHORNAME             L"© Rizonesoft"
-#define VERSION_WEBPAGEDISPLAY         L"https://www.rizonesoft.com"
-#define VERSION_COMPANYNAME            L"© Rizonesoft"
-//#define VERSION_MODPAGEDISPLAY       L"https://xhmikosr.github.io/notepad2-mod/"
-//#define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
+#define VERSION_LEGALCOPYRIGHT         "Copyright © 2015-2019 Rizonesoft"
+//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2015-2019"
+#define VERSION_AUTHORNAME             "© Rizonesoft"
+#define VERSION_WEBPAGEDISPLAY         "https://www.rizonesoft.com"
+#define VERSION_COMPANYNAME            "© Rizonesoft"
+//#define VERSION_MODPAGEDISPLAY       "https://xhmikosr.github.io/notepad2-mod/"
+//#define VERSION_WEBPAGE2DISPLAY      "http://www.flos-freeware.ch"
 
-#define VERSION_SCIVERSION             L"Scintilla v" STRGW(SCINTILLA_VER) L"  (RegEx: Onigmo v" STRGW(ONIGMO_REGEX_VER) L")"
+#define VERSION_SCIVERSION             L"Scintilla " _W(_STRG(_V(SCINTILLA_VER))) L"  (RegEx: Onigmo v" _W(_STRG(ONIGMO_REGEX_VER)) L")"
 
 // ============================================================================
 
-#define VERSION_UPDATE_CHECK           L"https://www.rizonesoft.com/downloads/notepad3/update/?version=" MKWCS(VERSION_FILEVERSION)
+#define VERSION_UPDATE_CHECK           L"https://www.rizonesoft.com/downloads/notepad3/update/?version=" _W(_STRG(VERSION_FILEVERSION))
 
 // ============================================================================
 
@@ -64,13 +61,15 @@
 
 #if defined(_MSC_VER)
     #if (_MSC_VER >= 1920)
-        #if(_MSC_FULL_VER >= 192027305)
-            #define VER_CPL     MS Visual C++ 2019 16.0.0 Prev 2.(0-1)
+        #if(_MSC_FULL_VER >= 192027508)
+            #define VER_CPL     MS Visual C++ 2019 v16.0.(0-2)
         #elif(_MSC_FULL_VER >= 192027027)
-            #define VER_CPL     MS Visual C++ 2019 16.0.0 Prev 1.0
+            #define VER_CPL     MS Visual C++ 2019 v16.0.Prev(1-4)
         #endif
     #elif (_MSC_VER >= 1916)
-        #if(_MSC_FULL_VER >= 191627026) 
+        #if(_MSC_FULL_VER >= 191627027) 
+            #define VER_CPL     MS Visual C++ 2017 v15.9.(7-10)
+        #elif(_MSC_FULL_VER >= 191627026) 
             #define VER_CPL     MS Visual C++ 2017 v15.9.(5-6)
         #elif(_MSC_FULL_VER >= 191627025) 
             #define VER_CPL     MS Visual C++ 2017 v15.9.4
@@ -156,9 +155,9 @@
     #define VER_CPL            (Unknown Compiler)
 #endif
 
-#pragma message("Compiler " STRG(VER_CPL) "  (v" STRG(_MSC_FULL_VER) ")")
+#pragma message("Compiler " _STRG(VER_CPL) "  (v" _STRG(_MSC_FULL_VER) ")")
 
-#define VERSION_COMPILER  L"Compiler: " STRGW(VER_CPL) L" (VC v" STRGW(_MSC_VER) L")"
+#define VERSION_COMPILER  L"Compiler: " _W(_STRG(VER_CPL)) L" (VC v" _W(_STRG(_MSC_VER)) L")"
 
 
 #endif // NOTEPAD3_VERSION_H

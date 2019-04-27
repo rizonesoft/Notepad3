@@ -1,15 +1,13 @@
-﻿/******************************************************************************
-*                                                                             *
+/******************************************************************************
 *                                                                             *
 * Notepad3                                                                    *
 *                                                                             *
 * Notepad3.ver                                                                *
-*   Notepad2 version information                                              *
+*   Notepad3 version information                                              *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2016   *
+*                                                  (c) Rizonesoft 2008-2019   *
 *                                                    https://rizonesoft.com   *
-*                                                                             *
 *                                                                             *
 *******************************************************************************/
 
@@ -37,15 +35,15 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "Comments",         APPNAME
-      VALUE "FileDescription",  APPNAME
-      VALUE "InternalName",     APPNAME
-      VALUE "ProductName",      APPNAME
+      VALUE "Comments",         SAPPNAME
+      VALUE "FileDescription",  SAPPNAME
+      VALUE "InternalName",     SAPPNAME
+      VALUE "ProductName",      SAPPNAME
       VALUE "CompanyName",      VERSION_COMPANYNAME
-      VALUE "FileVersion",      VERSION_FILEVERSION
-      VALUE "ProductVersion",   VERSION_FILEVERSION
+      VALUE "FileVersion",      _STRG(VERSION_FILEVERSION)
+      VALUE "ProductVersion",   _STRG(VERSION_FILEVERSION)
       VALUE "LegalCopyright",   VERSION_LEGALCOPYRIGHT
-      VALUE "OriginalFilename", APPNAME ".exe"
+      VALUE "OriginalFilename", SAPPNAME ".exe"
     END
   END
   BLOCK "VarFileInfo"

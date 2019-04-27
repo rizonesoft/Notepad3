@@ -29,6 +29,7 @@
 #endif
 
 #include "PropSetSimple.h"
+#include "CharacterCategory.h"
 
 #ifdef SCI_LEXER
 #include "LexerModule.h"
@@ -276,9 +277,7 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 		pt = PointMainCaret();
 	}
 	if (wMargin.Created()) {
-		const Point ptOrigin = GetVisibleOriginInMain();
-		pt.x += ptOrigin.x;
-		pt.y += ptOrigin.y;
+		pt = pt + GetVisibleOriginInMain();
 	}
 	PRectangle rcac;
 	rcac.left = pt.x - ac.lb->CaretFromEdge();
@@ -463,9 +462,7 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 		ct.SetForeBack(vs.styles[STYLE_CALLTIP].fore, vs.styles[STYLE_CALLTIP].back);
 	}
 	if (wMargin.Created()) {
-		const Point ptOrigin = GetVisibleOriginInMain();
-		pt.x += ptOrigin.x;
-		pt.y += ptOrigin.y;
+		pt = pt + GetVisibleOriginInMain();
 	}
 	PRectangle rc = ct.CallTipStart(sel.MainCaret(), pt,
 		vs.lineHeight,
@@ -502,6 +499,32 @@ void ScintillaBase::CallTipClick() {
 	scn.position = ct.clickPlace;
 	NotifyParent(scn);
 }
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if 0
+bool ScintillaBase::ShouldDisplayPopup(Point ptInWindowCoordinates) const {
+	return (displayPopupMenu == SC_POPUP_ALL ||
+		(displayPopupMenu == SC_POPUP_TEXT && !PointInSelMargin(ptInWindowCoordinates)));
+}
+
+void ScintillaBase::ContextMenu(Point pt) {
+	if (displayPopupMenu) {
+		const bool writable = !WndProc(SCI_GETREADONLY, 0, 0);
+		popup.CreatePopUp();
+		AddToPopUp("Undo", idcmdUndo, writable && pdoc->CanUndo());
+		AddToPopUp("Redo", idcmdRedo, writable && pdoc->CanRedo());
+		AddToPopUp("");
+		AddToPopUp("Cut", idcmdCut, writable && !sel.Empty());
+		AddToPopUp("Copy", idcmdCopy, !sel.Empty());
+		AddToPopUp("Paste", idcmdPaste, writable && WndProc(SCI_CANPASTE, 0, 0));
+		AddToPopUp("Delete", idcmdDelete, writable && !sel.Empty());
+		AddToPopUp("");
+		AddToPopUp("Select All", idcmdSelectAll);
+		popup.Show(pt, wMain);
+	}
+}
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ScintillaBase::CancelModes() {
 	AutoCompleteCancel();

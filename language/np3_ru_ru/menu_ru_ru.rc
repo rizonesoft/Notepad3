@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1251
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Russian (Russia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)  // Cyrillic (Win-1251)
+LANGUAGE LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA
+#pragma code_page(1251) // Cyrillic (Windows-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "Копи&ю окна\tAlt+N",          IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое окно\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "Переоткрыть &с повышенными правами", IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "&Выполнить документ\tCtrl+L", IDM_FILE_LAUNCH
             MENUITEM "&Открыть с помощью...\tAlt+L", IDM_FILE_OPENWITH
             MENUITEM "&Команда...\tCtrl+R",         IDM_FILE_RUN
@@ -88,11 +90,13 @@ BEGIN
             MENUITEM "UTF-8 с BO&M",                IDM_ENCODING_UTF8SIGN
             MENUITEM "Е&щё...\tF9",                 IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Форсировать компактное определение кодировки",        CMD_RELOADFORCEDETECTION
+            MENUITEM "Форсировать определение кодировки",        CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ко&дировке по умолчанию\tCtrl-Alt-F",   CMD_RECODEDEFAULT
             MENUITEM "Переоткрыть в A&NSI\tCtrl-Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
+            MENUITEM "Переоткрыть в &GB18030\tCtrl+Shift+F10",                  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ASCII &как UTF-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
             MENUITEM "Игнорировать &теги кодировки\tAlt+F8",                CMD_RELOADNOFILEVARS
             MENUITEM "&Переоткрыть в...\tF8",                               IDM_ENCODING_RECODE
@@ -107,6 +111,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&По умолчанию...",                IDM_LINEENDINGS_SETDEFAULT
         END
+        MENUITEM SEPARATOR
+        MENUITEM "Про&верить отступы..."                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Параметры ст&раницы...",              IDM_FILE_PAGESETUP
         MENUITEM "Пе&чать...\tCtrl+P",                  IDM_FILE_PRINT
@@ -299,17 +305,17 @@ BEGIN
         MENUITEM "&Метка длинных строк\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Линия отступа\tCtrl+Shift+G",                    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Отображать &символы переноса\tCtrl+Shift+7",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Отображать про&бельные символы\tCtrl+Shift+8",    IDM_VIEW_SHOWBLANKS
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
-        MENUITEM "Отображать &символы переноса\tCtrl+Shift+0",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Отображать &гиперссылки\tCtrl+Alt+W",             IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
         POPUP "Подсвечивать т&екущую строку\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Без подсветки",                      IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Фоновый цвет",                       IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Контур",                             IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "По&дсветка совпадений"
         BEGIN
@@ -340,8 +346,9 @@ BEGIN
         POPUP "Панель инстр&ументов"
         BEGIN
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-            MENUITEM "HighDPI панель &инструментов",        IDM_VIEW_TOGGLETB
+            MENUITEM "Пе&реключить панель инструментов",    IDM_VIEW_TOGGLETB
             MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
         END
         POPUP "Мас&штаб"
@@ -375,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Один &экземпляр файла",                       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Mute Message &Beeps",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Функция клавиши Esc"
         BEGIN
             MENUITEM "&Нет",                                IDM_VIEW_NOESCFUNC
@@ -393,15 +401,15 @@ BEGIN
         BEGIN
             POPUP "Отобра&жение заголовка окна"
             BEGIN
-                MENUITEM "&Только имя файла",           IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Имя файла и &папка",          IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Полный п&уть",                IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Отрывок текста\tCtrl+9",     IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Только имя файла",             IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "Имя файла и &папка",            IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Полный п&уть",                  IDM_VIEW_SHOWFULLPATH
+                MENUITEM "&Отрывок текста\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Переиспользовать окно",          IDM_VIEW_REUSEWINDOW
-            MENUITEM "П&оверх других окон\tAlt+T",      IDM_VIEW_ALWAYSONTOP
+            MENUITEM "&Переиспользовать окно",            IDM_VIEW_REUSEWINDOW
+            MENUITEM "П&оверх других окон\tAlt+T",        IDM_VIEW_ALWAYSONTOP
             MENUITEM "&Сворачивать в панель уведомлений", IDM_VIEW_MINTOTRAY
-            MENUITEM "Полупрозрачный &режим\tAlt+G",    IDM_VIEW_TRANSPARENT
+            MENUITEM "Полупрозрачный &режим\tAlt+G",      IDM_VIEW_TRANSPARENT
         END
         POPUP "&Технологии"
         BEGIN
@@ -409,7 +417,7 @@ BEGIN
             BEGIN
                 MENUITEM "Стандартный &GDI",            IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Направление письма"
@@ -459,8 +467,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI панель &инструментов",        IDM_VIEW_TOGGLETB
+        MENUITEM "Пе&реключить панель инструментов",    IDM_VIEW_TOGGLETB
         MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
     END
     POPUP "+"

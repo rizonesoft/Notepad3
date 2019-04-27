@@ -43,7 +43,7 @@ try
 		$Build = [int](Get-Content "Versions\build.txt") + 1
 	}
 	if (!$Build) { $Build = 0 }
-	$SciVer = [int](Get-Content "scintilla\version.txt")
+	$SciVer = [string](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
 	$OnigmoVer = [string](Get-Content "onigmo\version.txt")
 	if (!$OnigmoVer) { $OnigmoVer = "0.0.0" }

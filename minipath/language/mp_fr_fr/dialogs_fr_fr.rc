@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -129,7 +129,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Actuel:",IDC_STATIC,7,9,28,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&Nouveau:",IDC_STATIC,7,26,28,8
+    LTEXT           "&Nouveau:",IDC_STATIC,7,26,30,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,53,50,14,WS_DISABLED
     PUSHBUTTON      "Annuler",IDCANCEL,115,53,50,14
@@ -226,7 +226,7 @@ BEGIN
     CONTROL         "&Couleur person.:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Choisir...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Utiliser cette couleur de texte lorsqu'un FILTRE EST ACTIF:",IDC_STATIC,20,105,20,8
+    LTEXT           "Utiliser cette couleur de texte lorsqu'un FILTRE EST ACTIF:",IDC_STATIC,20,105,200,8
     CONTROL         "D&éfaut couleur Windows.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Co&uleur person.:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
@@ -263,7 +263,7 @@ BEGIN
     LTEXT           "Message:",IDC_STATIC,20,120,32,8
     CONTROL         "Aucun, exécuter l'application cible chaque fois qu'un fichier est ouvert.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,245,10
-    CONTROL         "Message 'Fichier Ouvert' à la fenêtre de destination:",IDC_SENDDROPMSG,
+    CONTROL         "Envoyer message 'Fichier Ouvert' à la fenêtre de destination:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "Exécuter la commande DDE suivante:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Application:",IDC_STATIC,128,120,38,8
@@ -283,7 +283,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
     LTEXT           "Faites glisser le pointeur en croix sur la fenêtre que vous souhaiter sélectionner comme nouvelle cible, ou appuyer sur Esc pour annuler.",IDC_STATIC,35,7,168,26
-    EDITTEXT        IDC_WINTITLE,35,36,168,20,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
+    EDITTEXT        IDC_WINTITLE,35,36,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
     DEFPUSHBUTTON   "OK",IDOK,99,64,50,14,WS_DISABLED

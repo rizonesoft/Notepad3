@@ -15,19 +15,11 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+extern "C" {
+#include "Helpers.h"
+#include "MuiLanguage.h"
+}
+
 #include <commctrl.h>
 #include <shellapi.h>
 #include <shlwapi.h>
@@ -44,8 +36,6 @@
 
 extern "C" {
 #include "Dialogs.h"
-#include "Helpers.h"
-#include "TypeDefs.h"
 #include "SciCall.h"
 }
 
@@ -79,7 +69,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 {
   // Don't print empty documents
   if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
-    MsgBoxLng(MBWARN,IDS_MUI_PRINT_EMPTY);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_EMPTY);
     return true;
   }
 
@@ -508,14 +498,18 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,1137,CB_SETEXTENDEDUI,true,0);
         SendDlgItemMessage(hwnd,1138,CB_SETEXTENDEDUI,true,0);
       }
-      break;
+      return true;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      return true;
 
     case WM_COMMAND:
       if (LOWORD(wParam) == IDOK)
       {
         BOOL bError = FALSE;
         int const iZoom = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
-        Settings.PrintZoom = bError ? 100 : iZoom;
+        Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;
         int const iFontSize = (int)SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
         Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
         Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
@@ -525,12 +519,12 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(1026, 1), 0);
       }
-      break;
+      return true;
 
     default:
       break;
   }
-  return 0;
+  return false;
 }
 
 

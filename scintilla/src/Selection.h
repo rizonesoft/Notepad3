@@ -14,7 +14,7 @@ class SelectionPosition {
 	Sci::Position position;
 	Sci::Position virtualSpace;
 public:
-	explicit SelectionPosition(Sci::Position position_=INVALID_POSITION, Sci::Position virtualSpace_=0) : position(position_), virtualSpace(virtualSpace_) {
+	explicit SelectionPosition(Sci::Position position_=INVALID_POSITION, Sci::Position virtualSpace_=0) noexcept : position(position_), virtualSpace(virtualSpace_) {
 		PLATFORM_ASSERT(virtualSpace < 800000);
 		if (virtualSpace < 0)
 			virtualSpace = 0;
@@ -84,15 +84,15 @@ struct SelectionRange {
 	SelectionPosition caret;
 	SelectionPosition anchor;
 
-	SelectionRange() : caret(), anchor() {
+	SelectionRange() noexcept : caret(), anchor() {
 	}
-	explicit SelectionRange(SelectionPosition single) : caret(single), anchor(single) {
+	explicit SelectionRange(SelectionPosition single) noexcept : caret(single), anchor(single) {
 	}
-	explicit SelectionRange(Sci::Position single) : caret(single), anchor(single) {
+	explicit SelectionRange(Sci::Position single) noexcept : caret(single), anchor(single) {
 	}
-	SelectionRange(SelectionPosition caret_, SelectionPosition anchor_) : caret(caret_), anchor(anchor_) {
+	SelectionRange(SelectionPosition caret_, SelectionPosition anchor_) noexcept : caret(caret_), anchor(anchor_) {
 	}
-	SelectionRange(Sci::Position caret_, Sci::Position anchor_) : caret(caret_), anchor(anchor_) {
+	SelectionRange(Sci::Position caret_, Sci::Position anchor_) noexcept : caret(caret_), anchor(anchor_) {
 	}
 	bool Empty() const {
 		return anchor == caret;
@@ -125,7 +125,7 @@ struct SelectionRange {
 		return (anchor < caret) ? caret : anchor;
 	}
 	void Swap();
-	bool Trim(const SelectionRange &range);
+	bool Trim(SelectionRange range);
 	// If range is all virtual collapse to start of virtual space
 	void MinimizeVirtualSpace();
 };
@@ -141,7 +141,7 @@ public:
 	enum selTypes { noSel, selStream, selRectangle, selLines, selThin };
 	selTypes selType;
 
-	Selection();
+	Selection() noexcept;
 	~Selection();
 	bool IsRectangular() const;
 	Sci::Position MainCaret() const;
@@ -173,7 +173,7 @@ public:
 	void AddSelectionWithoutTrim(SelectionRange range);
 	void DropSelection(size_t r);
 	void DropAdditionalRanges();
-  void TentativeSelection(const SelectionRange &range);
+	void TentativeSelection(SelectionRange range);
 	void CommitTentative();
 	int CharacterInSelection(Sci::Position posCharacter) const;
 	int InSelectionForEOL(Sci::Position pos) const;

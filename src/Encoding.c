@@ -15,19 +15,8 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <shellapi.h>
 #include <commctrl.h>
 #include <stdlib.h>
@@ -35,18 +24,11 @@
 
 #include "../uthash/utarray.h"
 
-#include "Scintilla.h"
-#include "Helpers.h"
 #include "resource.h"
 #include "Encoding.h"
+#include "MuiLanguage.h"
 
-//=============================================================================
-//
-//  Encoding Helper Functions
-//
-
-int g_DOSEncoding = CPI_NONE;
-bool g_bForceCompEncDetection = false;
+#include "Scintilla.h"
 
 
 // ============================================================================
@@ -57,9 +39,9 @@ WCHAR wchOEM[16] = { L'\0' };
 
 // ============================================================================
 
-int Encoding_Current(int iEncoding) 
+cpi_enc_t Encoding_Current(cpi_enc_t iEncoding)
 {
-  static int CurrentEncoding = CPI_NONE;
+  static cpi_enc_t CurrentEncoding = CPI_NONE;
 
   if (iEncoding >= 0) {
     if (Encoding_IsValid(iEncoding))
@@ -72,9 +54,9 @@ int Encoding_Current(int iEncoding)
 // ============================================================================
 
 
-int Encoding_SrcCmdLn(int iSrcEncoding) 
+cpi_enc_t Encoding_SrcCmdLn(cpi_enc_t iSrcEncoding)
 {
-  static int SourceEncoding = CPI_NONE;
+  static cpi_enc_t SourceEncoding = CPI_NONE;
 
   if (iSrcEncoding >= 0) {
     if (Encoding_IsValid(iSrcEncoding))
@@ -90,9 +72,9 @@ int Encoding_SrcCmdLn(int iSrcEncoding)
 // ============================================================================
 
 
-int  Encoding_SrcWeak(int iSrcWeakEnc) 
+cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc)
 {
-  static int SourceWeakEncoding = CPI_NONE;
+  static cpi_enc_t SourceWeakEncoding = CPI_NONE;
 
   if (iSrcWeakEnc >= 0) {
     if (Encoding_IsValid(iSrcWeakEnc))
@@ -108,9 +90,9 @@ int  Encoding_SrcWeak(int iSrcWeakEnc)
 // ============================================================================
 
 
-bool Encoding_HasChanged(int iOriginalEncoding) 
+bool Encoding_HasChanged(cpi_enc_t iOriginalEncoding)
 {
-  static int OriginalEncoding = CPI_NONE;
+  static cpi_enc_t OriginalEncoding = CPI_NONE;
 
   if (iOriginalEncoding >= CPI_NONE) {
     OriginalEncoding = iOriginalEncoding;
@@ -137,7 +119,7 @@ void Encoding_InitDefaults()
 
   Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
 
-  for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
+  for (cpi_enc_t i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
     if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {
       g_Encodings[i].uFlags |= NCP_ANSI;
       if (g_Encodings[i].uFlags & NCP_EXTERNAL_8BIT)
@@ -149,7 +131,7 @@ void Encoding_InitDefaults()
   ChangeEncodingCodePage(CPI_OEM, GetOEMCP()); // set OEM system CP
   StringCchPrintf(wchOEM, COUNTOF(wchOEM), L" (CP-%u)", g_Encodings[CPI_OEM].uCodePage);
 
-  for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
+  for (cpi_enc_t i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
     if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_OEM].uCodePage)) {
       g_Encodings[i].uFlags |= NCP_OEM;
       if (g_Encodings[i].uFlags & NCP_EXTERNAL_8BIT)
@@ -159,7 +141,7 @@ void Encoding_InitDefaults()
   }
 
   // multi byte character sets
-  for (int i = 0; i < Encoding_CountOf(); ++i) {
+  for (cpi_enc_t i = 0; i < Encoding_CountOf(); ++i) {
     for (int k = 0; k < COUNTOF(uCodePageMBCS); k++) {
       if (g_Encodings[i].uCodePage == uCodePageMBCS[k]) {
         g_Encodings[i].uFlags |= NCP_MBCS;
@@ -167,12 +149,12 @@ void Encoding_InitDefaults()
     }
   }
 
-  g_DOSEncoding = CPI_OEM;
+  Globals.DOSEncoding = CPI_OEM;
   // Try to set the DOS encoding to DOS-437 if the default OEMCP is not DOS-437
-  if (g_Encodings[g_DOSEncoding].uCodePage != 437) {
-    for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
-      if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == 437)) {
-        g_DOSEncoding = i;
+  if (g_Encodings[Globals.DOSEncoding].uCodePage != 437) {
+    for (cpi_enc_t cpi = CPI_UTF7 + 1; cpi < Encoding_CountOf(); ++cpi) {
+      if (Encoding_IsValid(cpi) && (g_Encodings[cpi].uCodePage == 437)) {
+        Globals.DOSEncoding = cpi;
         break;
       }
     }
@@ -182,7 +164,8 @@ void Encoding_InitDefaults()
 // ============================================================================
 
 
-int Encoding_MapIniSetting(bool bLoad, int iSetting) {
+int Encoding_MapIniSetting(bool bLoad, int iSetting)
+{
   if (bLoad) {
     switch (iSetting) {
     case -1: return CPI_NONE;
@@ -196,9 +179,9 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting) {
     case  7: return CPI_UNICODEBE;
     case  8: return CPI_UTF7;
     default: {
-      for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); i++) {
+      for (cpi_enc_t i = CPI_UTF7 + 1; i < Encoding_CountOf(); i++) {
         if ((g_Encodings[i].uCodePage == (UINT)iSetting) && Encoding_IsValid(i))
-          return(i);
+          return (int)i;
       }
       return CPI_ANSI_DEFAULT;
     }
@@ -217,8 +200,8 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting) {
     case CPI_UNICODEBE:    return  7;
     case CPI_UTF7:         return  8;
     default:
-      if (Encoding_IsValid(iSetting)) {
-        return(g_Encodings[iSetting].uCodePage);
+      if (Encoding_IsValid((cpi_enc_t)iSetting)) {
+        return (int)g_Encodings[iSetting].uCodePage;
       }
       return CPI_ANSI_DEFAULT;
     }
@@ -227,7 +210,7 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting) {
 // ============================================================================
 
 
-int Encoding_MapUnicode(int iUni) 
+cpi_enc_t Encoding_MapUnicode(cpi_enc_t iUni)
 {
   if (iUni == CPI_UNICODEBOM) {
     return CPI_UNICODE;
@@ -243,79 +226,76 @@ int Encoding_MapUnicode(int iUni)
 // ============================================================================
 
 
-void Encoding_SetLabel(int iEncoding) 
+void Encoding_SetLabel(cpi_enc_t iEncoding)
 {
-  if (g_Encodings[iEncoding].wchLabel[0] == L'\0') {
-    WCHAR wch1[128] = { L'\0' };
-    WCHAR wch2[128] = { L'\0' };
-    GetLngString(g_Encodings[iEncoding].idsName, wch1, COUNTOF(wch1));
-    WCHAR *pwsz = StrChr(wch1, L';');
+  WCHAR wch1[128] = { L'\0' };
+  GetLngString(g_Encodings[iEncoding].idsName, wch1, COUNTOF(wch1));
+
+  // point to correct label in list
+  WCHAR* pwsz = StrChr(wch1, L';');
+  if (pwsz) {
+    pwsz = StrChr(CharNext(pwsz), L';');
     if (pwsz) {
-      pwsz = StrChr(CharNext(pwsz), L';');
-      if (pwsz) {
-        pwsz = CharNext(pwsz);
-      }
+      pwsz = CharNext(pwsz);
     }
-    if (!pwsz)
-      pwsz = wch1;
-
-    StringCchCopyN(wch2, COUNTOF(wch2), pwsz, COUNTOF(wch1));
-
-    if (Encoding_IsANSI(iEncoding))
-      StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
-    else if (Encoding_IsOEM(iEncoding))
-      StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
-
-    StringCchCopyN(g_Encodings[iEncoding].wchLabel, COUNTOF(g_Encodings[iEncoding].wchLabel),
-      wch2, COUNTOF(g_Encodings[iEncoding].wchLabel));
   }
+  if (!pwsz)
+    pwsz = wch1;
+
+  WCHAR wch2[128] = { L'\0' };
+  StringCchCopyN(wch2, COUNTOF(wch2), pwsz, COUNTOF(wch1));
+
+  if (Encoding_IsANSI(iEncoding)) {
+    StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
+  }
+  else if (Encoding_IsOEM(iEncoding)) {
+    StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
+  }
+
+  StringCchCopyN(g_Encodings[iEncoding].wchLabel, COUNTOF(g_Encodings[iEncoding].wchLabel), wch2, COUNTOF(wch2));
 }
 // ============================================================================
 
 
-int Encoding_MatchW(LPCWSTR pwszTest) 
+cpi_enc_t Encoding_MatchW(LPCWSTR pwszTest)
 {
   char tchTest[256] = { '\0' };
   WideCharToMultiByte(CP_ACP, 0, pwszTest, -1, tchTest, COUNTOF(tchTest), NULL, NULL);
-  return(Encoding_MatchA(tchTest));
+  return Encoding_MatchA(tchTest);
 }
 // ============================================================================
 
 
-int Encoding_MatchA(char *pchTest) 
+cpi_enc_t Encoding_MatchA(const char *pchTest)
 {
-  char  chTest[256] = { '\0' };
-  char *pchSrc = pchTest;
-  char *pchDst = chTest;
-  *pchDst++ = ',';
-  while (*pchSrc) {
-    if (IsCharAlphaNumericA(*pchSrc)) {
-      *pchDst++ = *CharLowerA(pchSrc);
-    }
-    ++pchSrc;
-  }
-  *pchDst++ = ',';
-  *pchDst = 0;
-  for (int i = 0; i < Encoding_CountOf(); i++) {
-    if (StrStrIA(g_Encodings[i].pszParseNames, chTest)) {
+  char chTestLC[256];
+  chTestLC[0] = ',';
+  chTestLC[1] = '\0';
+  StringCchCatA(chTestLC, 256, pchTest);
+  CharLowerA(chTestLC);
+  StringCchCatA(chTestLC, 256, ","); // parsing incl. comma
+  for (cpi_enc_t cpiEncId = 0; cpiEncId < Encoding_CountOf(); cpiEncId++) {
+    if (StrStrIA(g_Encodings[cpiEncId].pszParseNames, chTestLC)) {
       CPINFO cpi;
-      if ((g_Encodings[i].uFlags & NCP_INTERNAL) ||
-        (IsValidCodePage(g_Encodings[i].uCodePage) &&
-         GetCPInfo(g_Encodings[i].uCodePage, &cpi))) {
-        return(i);
+      if ((g_Encodings[cpiEncId].uFlags & NCP_INTERNAL) ||
+        (IsValidCodePage(g_Encodings[cpiEncId].uCodePage) &&
+         GetCPInfo(g_Encodings[cpiEncId].uCodePage, &cpi))) {
+        return cpiEncId;
       }
-      return(-1);
+      return CPI_NONE;
     }
   }
-  return(-1);
+  return CPI_NONE;
 }
 // ============================================================================
 
 
-int Encoding_GetByCodePage(UINT cp) {
-  for (int i = 0; i < Encoding_CountOf(); i++) {
-    if (cp == g_Encodings[i].uCodePage) {
-      return i;
+
+cpi_enc_t Encoding_GetByCodePage(const UINT codepage) 
+{
+  for (cpi_enc_t cpi = 0; cpi < Encoding_CountOf(); cpi++) {
+    if (codepage == g_Encodings[cpi].uCodePage) {
+      return cpi;
     }
   }
   return CPI_ANSI_DEFAULT;
@@ -323,9 +303,9 @@ int Encoding_GetByCodePage(UINT cp) {
 // ============================================================================
 
 
-bool Encoding_IsValid(int iTestEncoding) {
+bool Encoding_IsValid(cpi_enc_t iTestEncoding) {
   CPINFO cpi;
-  if ((iTestEncoding >= 0) && (iTestEncoding < Encoding_CountOf())) {
+  if (Encoding_IsValidIdx(iTestEncoding)) {
     if ((g_Encodings[iTestEncoding].uFlags & NCP_INTERNAL) ||
       (IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
        GetCPInfo(g_Encodings[iTestEncoding].uCodePage, &cpi))) {
@@ -338,9 +318,10 @@ bool Encoding_IsValid(int iTestEncoding) {
 
 
 typedef struct _ee {
-  int    id;
-  WCHAR  wch[256];
-} ENCODINGENTRY, *PENCODINGENTRY;
+  cpi_enc_t id;
+  WCHAR     wch[256];
+} 
+ENCODINGENTRY, *PENCODINGENTRY;
 
 int CmpEncoding(const void *s1, const void *s2) {
   return StrCmp(((const PENCODINGENTRY)s1)->wch, ((const PENCODINGENTRY)s2)->wch);
@@ -348,14 +329,14 @@ int CmpEncoding(const void *s1, const void *s2) {
 // ============================================================================
 
 
-void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
+void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly) {
   int iSelItem = -1;
   LVITEM lvi;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (int i = 0; i < Encoding_CountOf(); i++) {
+    for (cpi_enc_t i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -367,7 +348,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
 
     for (int i = 0; i < Encoding_CountOf(); i++) {
 
-      int id = pEE[i].id;
+      cpi_enc_t id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
 
         lvi.iItem = ListView_GetItemCount(hwnd);
@@ -413,34 +394,37 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
 // ============================================================================
 
 
-bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
+bool Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding) 
+{
   LVITEM lvi;
-
+  ZeroMemory(&lvi, sizeof(LVITEM));
   lvi.iItem = ListView_GetNextItem(hwnd, -1, LVNI_ALL | LVNI_SELECTED);
   lvi.iSubItem = 0;
   lvi.mask = LVIF_PARAM;
 
   if (ListView_GetItem(hwnd, &lvi)) {
-    if (Encoding_IsValid((int)lvi.lParam))
-      *pidEncoding = (int)lvi.lParam;
-    else
-      *pidEncoding = -1;
-
-    return (true);
+    if (Encoding_IsValid((cpi_enc_t)lvi.lParam)) {
+      *pidEncoding = (cpi_enc_t)lvi.lParam;
+    }
+    else {
+      *pidEncoding = CPI_NONE;
+    }
+    return true;
   }
   return false;
 }
 // ============================================================================
 
 
-void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
+void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
+{
   int iSelItem = -1;
   COMBOBOXEXITEM cbei;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (int i = 0; i < Encoding_CountOf(); i++) {
+    for (cpi_enc_t i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -455,7 +439,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
 
     for (int i = 0; i < Encoding_CountOf(); i++) {
 
-      int id = pEE[i].id;
+      cpi_enc_t id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
 
         cbei.iItem = SendMessage(hwnd, CB_GETCOUNT, 0, 0);
@@ -492,135 +476,197 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
 // ============================================================================
 
 
-bool Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
+bool Encoding_GetFromComboboxEx(HWND hwnd, cpi_enc_t* pidEncoding) 
+{
   COMBOBOXEXITEM cbei;
-
+  ZeroMemory(&cbei, sizeof(COMBOBOXEXITEM));
   cbei.iItem = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
   cbei.mask = CBEIF_LPARAM;
 
   if (SendMessage(hwnd, CBEM_GETITEM, 0, (LPARAM)&cbei)) {
-    if (Encoding_IsValid((int)cbei.lParam))
-      *pidEncoding = (int)cbei.lParam;
-    else
+    if (Encoding_IsValid((cpi_enc_t)cbei.lParam)) {
+      *pidEncoding = (cpi_enc_t)cbei.lParam;
+    }
+    else {
       *pidEncoding = -1;
-
-    return (true);
+    }
+    return true;
   }
   return false;
 }
 // ============================================================================
 
 
-UINT Encoding_GetCodePage(const int iEncoding) {
+UINT Encoding_GetCodePage(const cpi_enc_t iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].uCodePage : CP_ACP;
 }
 // ============================================================================
 
-bool Encoding_IsDefault(const int iEncoding) {
+bool Encoding_IsDefault(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_DEFAULT) : false;
 }
 // ============================================================================
 
-bool Encoding_IsANSI(const int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : false;
-}
-// ============================================================================
-
-bool Encoding_IsOEM(const int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_OEM) : false;
-}
-// ============================================================================
-
-bool Encoding_IsUTF8(const int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8) : false;
-}
-// ============================================================================
-
-bool Encoding_IsUTF8_SIGN(const int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) : false;
-}
-// ============================================================================
-
-bool Encoding_IsMBCS(const int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : false;
-}
-// ============================================================================
-
-bool Encoding_IsASCII(const int iEncoding) {
+bool Encoding_IsASCII(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ASCII_7BIT) : false;
 }
 // ============================================================================
 
+bool Encoding_IsANSI(const cpi_enc_t iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : false;
+}
+// ============================================================================
 
-bool Encoding_IsUNICODE(const int iEncoding) {
+bool Encoding_IsOEM(const cpi_enc_t iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_OEM) : false;
+}
+// ============================================================================
+
+bool Encoding_IsUTF8(const cpi_enc_t iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8) : false;
+}
+// ============================================================================
+
+bool Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) : false;
+}
+// ============================================================================
+
+bool Encoding_IsMBCS(const cpi_enc_t iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : false;
+}
+// ============================================================================
+
+bool Encoding_IsCJK(const cpi_enc_t iEncoding) {
+  UINT const codePage = Encoding_GetCodePage(iEncoding);
+  switch (codePage) 
+  {
+  case 932:
+  case 936:
+  case 949:
+  case 950:
+  case 951:
+  case 1361:
+  case 10001:
+  case 10002:
+  case 10003:
+  case 10008:
+  case 20000:
+  case 20932:
+  case 20936:
+  case 50220:
+  case 50225:
+  case 51949:
+  case 52936:
+  case 54936:
+    return true;
+  default:
+    break;
+  }
+  return false;
+}
+// ============================================================================
+
+bool Encoding_IsUNICODE(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUNICODE_BOM(const int iEncoding) {
+bool Encoding_IsUNICODE_BOM(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUNICODE_REVERSE(const int iEncoding) {
+bool Encoding_IsUNICODE_REVERSE(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) : false;
 }
 // ============================================================================
 
 
-bool Encoding_IsINTERNAL(const int iEncoding) {
+bool Encoding_IsINTERNAL(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_INTERNAL) : false;
 }
 // ============================================================================
 
-bool Encoding_IsEXTERNAL_8BIT(const int iEncoding) {
+bool Encoding_IsEXTERNAL_8BIT(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) : false;
 }
 // ============================================================================
 
-bool Encoding_IsRECODE(const int iEncoding) {
+bool Encoding_IsRECODE(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_RECODE) : false;
 }
 // ============================================================================
 
 
-void Encoding_SetDefaultFlag(const int iEncoding) {
-  if (iEncoding >= 0)
+void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding) {
+  if (iEncoding >= 0) {
     g_Encodings[iEncoding].uFlags |= NCP_DEFAULT;
+  }
 }
 // ============================================================================
 
 
-const WCHAR* Encoding_GetLabel(const int iEncoding) {
+const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].wchLabel : NULL;
 }
 // ============================================================================
 
-const char* Encoding_GetParseNames(const int iEncoding) {
+
+const char* Encoding_GetParseNames(const cpi_enc_t iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].pszParseNames : NULL;
 }
 // ============================================================================
 
 
-bool Has_UTF16_LE_BOM(const char* pBuf, int cnt)
+int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch) {
+  if (iEncoding >= 0) {
+    const char* p = Encoding_GetParseNames(iEncoding);
+    if (p && *p) {
+      ++p;
+      const char* q = StrChrA(p, ',');
+      if (q && *q) {
+        StringCchCopyNA(buffer, cch, p, (q - p));
+        return (int)min_s((q - p), cch);
+      }
+    }
+  }
+  return 0;
+}
+// ============================================================================
+
+
+int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
+{
+  char tmpbuffer[256] = { '\0' };
+  Encoding_GetNameA(iEncoding, tmpbuffer, 256);
+  return MultiByteToWideChar(Encoding_SciCP, 0, tmpbuffer, -1, buffer, (int)cwch);
+}
+// ============================================================================
+
+
+bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
   return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
 }
 // ----------------------------------------------------------------------------
 
-bool Has_UTF16_BE_BOM(const char* pBuf, int cnt)
+bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
   return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
 }
 // ============================================================================
 
 
-bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) 
+bool IsValidUnicode(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse) 
 {
+  size_t const enoughData = 2048LL;
+  size_t const cb = (len < enoughData) ? len : enoughData;
+
   if (!pBuffer || cb < 2) { return false; }
 
   // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
@@ -656,7 +702,6 @@ bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbRever
     }
     return true;
   }
-
   return false;
 }
 // ============================================================================

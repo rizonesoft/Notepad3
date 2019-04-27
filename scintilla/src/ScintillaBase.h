@@ -32,8 +32,6 @@ protected:
 		idcmdSelectAll=16
 	};
 
-	enum { maxLenInputIME = 200 };
-
 	int displayPopupMenu;
 	Menu popup;
 	AutoComplete ac;
@@ -57,7 +55,7 @@ protected:
 	ScintillaBase(ScintillaBase &&) = delete;
 	ScintillaBase &operator=(const ScintillaBase &) = delete;
 	ScintillaBase &operator=(ScintillaBase &&) = delete;
-	~ScintillaBase() override;
+	// ~ScintillaBase() in public section
 	void Initialise() override {}
 	void Finalise() override;
 
@@ -83,6 +81,14 @@ protected:
 	void CallTipShow(Point pt, const char *defn);
 	virtual void CreateCallTipWindow(PRectangle rc) = 0;
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if 0
+	virtual void AddToPopUp(const char *label, int cmd=0, bool enabled=true) = 0;
+	bool ShouldDisplayPopup(Point ptInWindowCoordinates) const;
+	void ContextMenu(Point pt);
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 	void ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) override;
 	void RightButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) override;
 
@@ -90,6 +96,8 @@ protected:
 	void NotifyLexerChanged(Document *doc, void *userData) override;
 
 public:
+	~ScintillaBase() override;
+
 	// Public so scintilla_send_message can use it
 	sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
 };

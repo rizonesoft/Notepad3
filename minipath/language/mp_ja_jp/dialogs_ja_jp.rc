@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: Shift_JIS
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Japanisch (Japan) resources
+// Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)  // Japanese (Shift-JIS)
+LANGUAGE LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN
+#pragma code_page(932) // Japanese (Shift-JIS)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -140,7 +140,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "フォルダの作成"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT          "作成するフォルダ名を入力してください:", ,IDC_STATIC,7,7,158,8
+    LTEXT           "作成するフォルダ名を入力してください:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "キャンセル",IDCANCEL,115,45,50,14
@@ -415,7 +415,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Japanisch (Japan) resources
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

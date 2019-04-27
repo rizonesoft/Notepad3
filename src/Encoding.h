@@ -19,8 +19,7 @@
 #ifndef _NP3_ENCODING_H_
 #define _NP3_ENCODING_H_
 
-extern int g_DOSEncoding;
-extern bool g_bForceCompEncDetection;
+#include "TypeDefs.h"
 
 #define NCP_DEFAULT            1
 #define NCP_UTF8               2
@@ -36,10 +35,10 @@ extern bool g_bForceCompEncDetection;
 #define NCP_EXTERNAL_8BIT   1024
 #define NCP_RECODE          2048
 
-#define CED_NO_MAPPING       (-4)
 #define CPI_ASCII_7BIT       (-3)
 #define CPI_GET              (-2)
 #define CPI_NONE             (-1)
+// following IDs must match with : NP2ENCODING g_Encodings[]
 #define CPI_ANSI_DEFAULT       0
 #define CPI_OEM                1
 #define CPI_UNICODEBOM         2
@@ -58,77 +57,97 @@ extern bool g_bForceCompEncDetection;
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
 typedef struct _np2encoding {
-  UINT    uFlags;
-  UINT    uCodePage;
+
+  UINT        uFlags;
+  UINT        uCodePage;
   const char* pszParseNames;
-  int     idsName;
-  int     iCEDEncoding;
-  WCHAR   wchLabel[64];
+  int         idsName;
+  WCHAR       wchLabel[64];
+
 } NP2ENCODING;
 
-int  Encoding_CountOf();
-int  Encoding_Current(int iEncoding);            // getter/setter
-int  Encoding_SrcCmdLn(int iSrcEncoding);        // getter/setter
-int  Encoding_SrcWeak(int iSrcWeakEnc);          // getter/setter
-bool Encoding_HasChanged(int iOriginalEncoding); // query/setter
+cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);            // getter/setter
+cpi_enc_t  Encoding_SrcCmdLn(cpi_enc_t iSrcEncoding);        // getter/setter
+cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc);          // getter/setter
+bool       Encoding_HasChanged(cpi_enc_t iOriginalEncoding); // query/setter
+           
+void       Encoding_InitDefaults();
+int        Encoding_MapIniSetting(bool, int iSetting);
 
-void Encoding_InitDefaults();
-int  Encoding_MapIniSetting(bool, int iSetting);
-int  Encoding_MapUnicode(int iUni);
-void Encoding_SetLabel(int iEncoding);
-int  Encoding_MatchW(LPCWSTR pwszTest);
-int  Encoding_MatchA(char* pchTest);
-bool Encoding_IsValid(int iTestEncoding);
-int  Encoding_GetByCodePage(UINT cp);
-void Encoding_AddToListView(HWND hwnd, int idSel, bool);
-bool Encoding_GetFromListView(HWND hwnd, int * pidEncoding);
-void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool);
-bool Encoding_GetFromComboboxEx(HWND hwnd, int * pidEncoding);
-
-UINT Encoding_GetCodePage(const int iEncoding);
-
-bool Encoding_IsDefault(const int iEncoding);
-bool Encoding_IsANSI(const int iEncoding);
-bool Encoding_IsOEM(const int iEncoding);
-bool Encoding_IsUTF8(const int iEncoding);
-bool Encoding_IsUTF8_SIGN(const int iEncoding);
-bool Encoding_IsMBCS(const int iEncoding);
-bool Encoding_IsASCII(const int iEncoding);
-bool Encoding_IsUNICODE(const int iEncoding);
-bool Encoding_IsUNICODE_BOM(const int iEncoding);
-bool Encoding_IsUNICODE_REVERSE(const int iEncoding);
-bool Encoding_IsINTERNAL(const int iEncoding);
-bool Encoding_IsEXTERNAL_8BIT(const int iEncoding);
-bool Encoding_IsRECODE(const int iEncoding);
+cpi_enc_t  Encoding_MapUnicode(cpi_enc_t iUni);
+void       Encoding_SetLabel(cpi_enc_t iEncoding);
+cpi_enc_t  Encoding_MatchW(LPCWSTR pwszTest);
+cpi_enc_t  Encoding_MatchA(const char* pchTest);
+bool       Encoding_IsValid(cpi_enc_t iTestEncoding);
+cpi_enc_t  Encoding_GetByCodePage(const UINT codepage);
+void       Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool);
+bool       Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding);
+void       Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool);
+bool       Encoding_GetFromComboboxEx(HWND hwnd, cpi_enc_t* pidEncoding);
+           
+UINT       Encoding_GetCodePage(const cpi_enc_t iEncoding);
+           
+bool       Encoding_IsDefault(const cpi_enc_t iEncoding);
+bool       Encoding_IsASCII(const cpi_enc_t iEncoding);
+bool       Encoding_IsANSI(const cpi_enc_t iEncoding);
+bool       Encoding_IsOEM(const cpi_enc_t iEncoding);
+bool       Encoding_IsUTF8(const cpi_enc_t iEncoding);
+bool       Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding);
+bool       Encoding_IsMBCS(const cpi_enc_t iEncoding);
+bool       Encoding_IsCJK(const cpi_enc_t iEncoding);
+bool       Encoding_IsUNICODE(const cpi_enc_t iEncoding);
+bool       Encoding_IsUNICODE_BOM(const cpi_enc_t iEncoding);
+bool       Encoding_IsUNICODE_REVERSE(const cpi_enc_t iEncoding);
+bool       Encoding_IsINTERNAL(const cpi_enc_t iEncoding);
+bool       Encoding_IsEXTERNAL_8BIT(const cpi_enc_t iEncoding);
+bool       Encoding_IsRECODE(const cpi_enc_t iEncoding);
 
 // Scintilla related
 #define Encoding_SciCP  CP_UTF8
 
-void Encoding_SetDefaultFlag(const int iEncoding);
-const WCHAR* Encoding_GetLabel(const int iEncoding);
-const char* Encoding_GetParseNames(const int iEncoding);
+void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding);
+const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding);
+const char* Encoding_GetParseNames(const cpi_enc_t iEncoding);
+int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch);
+int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cch);
 
-bool Has_UTF16_LE_BOM(const char* pBuf, int cnt);
-bool Has_UTF16_BE_BOM(const char* pBuf, int cnt);
+bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
 
 inline bool IsUTF8Signature(const char* p) {
   return ((p[0] == '\xEF') && (p[1] == '\xBB') && (p[2] == '\xBF'));
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsValidUnicode(const char* pBuffer, size_t cb, bool*, bool*);
 bool IsValidUTF7(const char* pTest, size_t nLength);
 bool IsValidUTF8(const char* pTest, size_t nLength);
+bool IsValidUnicode(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse);
 
-// Google's "Compact Encoding Detection" 
+//////////////////////////////////////////////////////
+// Google's   CED       "Compact Encoding Detection" 
+// Mozilla's  UCHARDET  "Universal Charset Detection"
+//////////////////////////////////////////////////////
+
 extern NP2ENCODING g_Encodings[];
-void ChangeEncodingCodePage(int cpi, UINT newCP);
-int Encoding_Analyze(const char* text, size_t len, int encodingHint, bool* pIsReliable);
 
-// 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
-inline bool IsDBCSCodePage(UINT cp) {
-  return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 1361));
+cpi_enc_t Encoding_CountOf();
+
+void ChangeEncodingCodePage(const cpi_enc_t cpi, UINT newCP);
+
+inline bool Encoding_IsValidIdx(const cpi_enc_t cpi)
+{
+  return ((cpi >= 0) && (cpi < Encoding_CountOf()));
 }
+
+// 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 951 Big5-hkscs, 1361 Johab
+inline bool IsDBCSCodePage(UINT cp) {
+  return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 951) || (cp == 1361));
+}
+
+cpi_enc_t Encoding_AnalyzeText(const char* const text, const size_t len, float* confidence_io, const cpi_enc_t encodingHint);
+
+const char*  Encoding_GetTitleInfoA();
+const WCHAR* Encoding_GetTitleInfoW();
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

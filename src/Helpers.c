@@ -15,30 +15,19 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
-//#include <uxtheme.h>
+#include "Helpers.h"
+
 #include <shlobj.h>
 #include <shellapi.h>
 //#include <pathcch.h>
-#include "Scintilla.h"
+
 #include "resource.h"
 #include "Edit.h"
 #include "Encoding.h"
+#include "MuiLanguage.h"
 #include "Notepad3.h"
 
-#include "Helpers.h"
+#include "Scintilla.h"
 
 //=============================================================================
 
@@ -167,7 +156,6 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
     return true; 
   }
   CloseClipboard();
-  // cppcheck-suppress memleak // ClipBoard is owner now
   return false;
 }
 
@@ -203,7 +191,7 @@ int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
 {
   LPWSTR p = (LPWSTR)lpCachedIniSection;
   if (p) {
-    int ich = (int)StringCchLen(lpName,0);
+    int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         int i = 0;
@@ -276,68 +264,25 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
 }
 
 
-
-//=============================================================================
-//
-//  GetLastErrorToMsgBox()
-//
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
-{
-  // Retrieve the system error message for the last-error code
-  if (!dwErrID) {
-    dwErrID = GetLastError();
-  }
-
-  LPVOID lpMsgBuf = NULL;
-  FormatMessage(
-    FORMAT_MESSAGE_ALLOCATE_BUFFER |
-    FORMAT_MESSAGE_FROM_SYSTEM |
-    FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL,
-    dwErrID,
-    Globals.iPrefLANGID,
-    (LPTSTR)&lpMsgBuf,
-    0, NULL);
-
-  if (lpMsgBuf) {
-    // Display the error message and exit the process
-    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
-    LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-
-    if (lpDisplayBuf) {
-      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
-                      lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
-
-      MessageBox(NULL, lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
-
-      FreeMem(lpDisplayBuf);
-    }
-    LocalFree(lpMsgBuf); // LocalAlloc()
-  }
-  return dwErrID;
-}
-
-
-
 //=============================================================================
 //
 //  GetCurrentDPI()
 //
 DPI_T GetCurrentDPI(HWND hwnd) {
 
-  DPI_T CurDPI = { 0, 0 };
+  DPI_T curDPI = { 0, 0 };
 
   if (IsWin10()) {
-    HMODULE const hModule = GetModuleHandle(MKWCS("user32.dll"));
+    HMODULE const hModule = GetModuleHandle(L"user32.dll");
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
       if (pfnGetDpiForWindow) {
-        CurDPI.x = CurDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
+        curDPI.x = curDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
       }
     }
   }
 
-  if ((CurDPI.x == 0) && IsWin81()) {
+  if ((curDPI.x == 0) && IsWin81()) {
     HMODULE hShcore = LoadLibrary(L"shcore.dll");
     if (hShcore) {
       FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
@@ -345,24 +290,24 @@ DPI_T GetCurrentDPI(HWND hwnd) {
         HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
         UINT dpiX = 0, dpiY = 0;
         if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
-          CurDPI.x = dpiX;
-          CurDPI.y = dpiY;
+          curDPI.x = dpiX;
+          curDPI.y = dpiY;
         }
       }
       FreeLibrary(hShcore);
     }
   }
 
-  if (CurDPI.x == 0) {
+  if (curDPI.x == 0) {
     HDC hDC = GetDC(hwnd);
-    CurDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
-    CurDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
+    curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
+    curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
     ReleaseDC(hwnd, hDC);
   }
 
-  CurDPI.x = max_u(CurDPI.x, USER_DEFAULT_SCREEN_DPI);
-  CurDPI.y = max_u(CurDPI.y, USER_DEFAULT_SCREEN_DPI);
-  return CurDPI;
+  curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
+  curDPI.y = max_u(curDPI.y, USER_DEFAULT_SCREEN_DPI);
+  return curDPI;
 }
 
 
@@ -402,6 +347,31 @@ if (!bSucceed) {
 int GetSystemMetricsEx(int nValue) {
 
   return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+}
+
+
+//=============================================================================
+//
+//  UpdateWindowLayoutForDPI()
+//
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi)
+{
+  // only update yet
+  SetWindowPos(hWnd, hWnd, x_96dpi, y_96dpi, w_96dpi, h_96dpi,
+    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION );
+
+  // TODO: ...
+#if 0
+  DPI_T const wndDPI = GetCurrentDPI(hWnd);
+
+  int dpiScaledX = MulDiv(x_96dpi, wndDPI.x, 96);
+  int dpiScaledY = MulDiv(y_96dpi, wndDPI.y, 96);
+  int dpiScaledWidth = MulDiv(w_96dpi, wndDPI.y, 96);
+  int dpiScaledHeight = MulDiv(h_96dpi, wndDPI.y, 96);
+
+  SetWindowPos(hWnd, hWnd, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledY, SWP_NOZORDER | SWP_NOACTIVATE);
+#endif
+
 }
 
 
@@ -678,75 +648,6 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
 //=============================================================================
 //
-//  LoadLngStringW()
-//
-int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax) 
-{
-  const int nLen = LoadStringW(Globals.hLngResContainer, uID, lpBuffer, nBufferMax);
-  return (nLen != 0) ? nLen : LoadStringW(Globals.hInstance, uID, lpBuffer, nBufferMax);
-}
-
-//=============================================================================
-//
-//  LoadLngStringW2MB()
-//
-static WCHAR s_tmpStringBuffer[512];
-
-int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
-{
-  const int nLen = LoadStringW(Globals.hLngResContainer, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer));
-  if (nLen == 0) { LoadStringW(Globals.hInstance, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer)); }
-  return WideCharToMultiByte(CP_UTF8, 0, s_tmpStringBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
-}
-
-//=============================================================================
-//
-//  LoadLngStringA()
-//
-int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
-{
-  const int nLen = LoadStringA(Globals.hLngResContainer, uID, lpBuffer, nBufferMax);
-  return (nLen != 0) ? nLen : LoadStringA(Globals.hInstance, uID, lpBuffer, nBufferMax);
-}
-
-
-//=============================================================================
-//
-//  FormatLngStringW()
-//
-int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
-{
-  WCHAR* pBuffer = AllocMem(sizeof(WCHAR)*nOutput, HEAP_ZERO_MEMORY);
-  if (pBuffer) {
-    if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
-      StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
-    }
-    FreeMem(pBuffer);
-    return (int)StringCchLenW(lpOutput, nOutput);
-  }
-  return 0;
-}
-
-//=============================================================================
-//
-//  FormatLngStringA()
-//
-int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
-{
-  CHAR* pBuffer = AllocMem(sizeof(CHAR)*nOutput, HEAP_ZERO_MEMORY);
-  if (pBuffer) {
-    if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
-      StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
-    }
-    FreeMem(pBuffer);
-    return (int)StringCchLenA(lpOutput, nOutput);
-  }
-  return 0;
-}
-
-
-//=============================================================================
-//
 //  GetKnownFolderPath()
 //
 bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount)
@@ -763,7 +664,6 @@ bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount
   }
   return false;
 }
-
 
 //=============================================================================
 //
@@ -783,7 +683,7 @@ void PathRelativeToApp(
   GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
   PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
-  GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
+  (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
   if (bUnexpandMyDocs &&
@@ -846,8 +746,8 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
 
   if (PathIsRelative(wchPath)) {
     GetModuleFileName(NULL,wchResult,COUNTOF(wchResult));
-    PathCanonicalizeEx(wchResult,MAX_PATH);
-    PathRemoveFileSpec(wchResult);
+    PathCanonicalizeEx(wchResult, COUNTOF(wchResult));
+    PathCchRemoveFileSpec(wchResult, COUNTOF(wchResult));
     PathCchAppend(wchResult,COUNTOF(wchResult),wchPath);
   }
   else
@@ -929,8 +829,9 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
   }
 
   // This additional check seems reasonable
-  if (!StringCchLen(pszResPath,cchResPath))
+  if (StrIsEmpty(pszResPath)) {
     bSucceeded = false;
+  }
 
   if (bSucceeded) {
     ExpandEnvironmentStringsEx(pszResPath,cchResPath);
@@ -991,8 +892,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
   bool bSucceeded = false;
   BOOL fMustCopy;
 
-  if (!pszDocument || StringCchLen(pszDocument,MAX_PATH) == 0)
-    return true;
+  if (StrIsEmpty(pszDocument)) { return true; }
 
   // init strings
   GetModuleFileName(NULL,tchExeFile,COUNTOF(tchExeFile));
@@ -1058,8 +958,7 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
   IShellLink *psl;
   bool bSucceeded = false;
 
-  if (!pszName || StringCchLen(pszName,MAX_PATH) == 0)
-    return true;
+  if (StrIsEmpty(pszName)) { return true; }
 
   StringCchCopy(tchLnkFileName,COUNTOF(tchLnkFileName),pszDir);
   PathCchAppend(tchLnkFileName,COUNTOF(tchLnkFileName),pszName);
@@ -1169,42 +1068,36 @@ bool TrimStringW(LPWSTR lpString)
 //
 bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
 {
-
-  LPWSTR psz;
-  bool bQuoted = false;
-
   StringCchCopy(lpArg1, len, lpArgs);
 
-  if (lpArg2)
-    *lpArg2 = L'\0';
+  if (lpArg2) { *lpArg2 = L'\0'; }
+  if (!TrimStringW(lpArg1)) { return false; }
 
-  if (!TrimStringW(lpArg1))
-    return false;
-
-  if (*lpArg1 == L'\"')
-  {
+  bool bQuoted = false;
+  if (*lpArg1 == L'\"') {
     *lpArg1 = L' ';
     TrimStringW(lpArg1);
     bQuoted = true;
   }
 
-  if (bQuoted)
+  LPWSTR psz;
+  if (bQuoted) {
     psz = StrChr(lpArg1, L'\"');
-  else
-    psz = StrChr(lpArg1, L' ');
-
-  if (psz)
-  {
-    *psz = L'\0';
-    if (lpArg2)
-      StringCchCopy(lpArg2, len, psz + 1);
   }
-
+  else {
+    psz = StrChr(lpArg1, L' ');
+  }
+  if (psz) {
+    *psz = L'\0';
+    if (lpArg2) {
+      StringCchCopy(lpArg2, len, psz + 1);
+    }
+  }
   TrimStringW(lpArg1);
 
-  if (lpArg2)
+  if (lpArg2) {
     TrimStringW(lpArg2);
-
+  }
   return true;
 }
 
@@ -1262,10 +1155,9 @@ void PathFixBackslashes(LPWSTR lpsz)
 //
 //  Adjusted for Windows 95
 //
-void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
+void ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc)
 {
-  WCHAR szBuf[LARGE_BUFFER];
-
+  WCHAR szBuf[HUGE_BUFFER];
   if (ExpandEnvironmentStrings(lpSrc, szBuf, COUNTOF(szBuf))) {
     StringCchCopyN(lpSrc, dwSrc, szBuf, COUNTOF(szBuf));
   }
@@ -1277,11 +1169,12 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 //  PathCanonicalizeEx()
 //
 //
-void PathCanonicalizeEx(LPWSTR lpszPath,int len)
+void PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer)
 {
-  WCHAR szDst[(MAX_PATH+1)] = { L'\0' };
-  if (PathCchCanonicalize(szDst,len,lpszPath) == S_OK)
-    StringCchCopy(lpszPath,len,szDst);
+  WCHAR szDst[MAX_PATH] = { L'\0' };
+  if (PathCchCanonicalize(szDst, MAX_PATH, lpszPath) == S_OK) {
+    StringCchCopy(lpszPath, cchBuffer, szDst);
+  }
 }
 
 
@@ -1290,42 +1183,29 @@ void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 //  GetLongPathNameEx()
 //
 //
-DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer)
+DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer)
 {
-  DWORD dwRet = GetLongPathName(lpszPath,lpszPath,cchBuffer);
+  DWORD const dwRet = GetLongPathName(lpszPath, lpszPath, cchBuffer);
   if (dwRet) {
-    if (PathGetDriveNumber(lpszPath) != -1)
-      CharUpperBuff(lpszPath,1);
-    return(dwRet);
+    if (PathGetDriveNumber(lpszPath) != -1) {
+      CharUpperBuff(lpszPath, 1);
+    }
   }
-  return(0);
+  return dwRet;
 }
 
 
 //=============================================================================
 //
-//  NormalizePathEx()
-//
-//
-DWORD NormalizePathEx(LPWSTR lpszPath,int len)
-{
-  PathCanonicalizeEx(lpszPath,len);
-  return GetLongPathNameEx(lpszPath,(DWORD)len);
-}
-
-
-
-//=============================================================================
-//
-//  SHGetFileInfo2()
+//  _SHGetFileInfoEx()
 //
 //  Return a default name when the file has been removed, and always append
 //  a filename extension
 //
-DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath, DWORD dwFileAttributes,
-                         SHFILEINFO *psfi, UINT cbFileInfo, UINT uFlags)
+static DWORD_PTR _SHGetFileInfoEx(LPCWSTR pszPath, DWORD dwFileAttributes,
+  SHFILEINFO* psfi, UINT cbFileInfo, UINT uFlags)
 {
-  if (PathFileExists(pszPath)) 
+  if (PathFileExists(pszPath))
   {
     DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
     if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH))
@@ -1343,9 +1223,95 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath, DWORD dwFileAttributes,
 
 //=============================================================================
 //
+//  PathResolveDisplayName()
+//
+void PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath)
+{
+  SHFILEINFO shfi;
+  UINT const shfi_size = (UINT)sizeof(SHFILEINFO);
+  ZeroMemory(&shfi, shfi_size);
+  if (_SHGetFileInfoEx(lpszSourcePath, FILE_ATTRIBUTE_NORMAL, &shfi, shfi_size, SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES)) {
+    StringCchCopy(lpszDestPath, cchDestBuffer, shfi.szDisplayName);
+  }
+  else {
+    StringCchCopy(lpszDestPath, cchDestBuffer, PathFindFileName(lpszSourcePath));
+  }
+}
+
+
+//=============================================================================
+//
+//  NormalizePathEx()
+//
+DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative)
+{
+  WCHAR tmpFilePath[MAX_PATH] = { L'\0' };
+
+  StringCchCopyN(tmpFilePath, COUNTOF(tmpFilePath), lpszPath, cchBuffer);
+  ExpandEnvironmentStringsEx(tmpFilePath, COUNTOF(tmpFilePath));
+  
+  PathUnquoteSpaces(tmpFilePath);
+
+  if (PathIsRelative(tmpFilePath)) 
+  {
+    StringCchCopyN(lpszPath, cchBuffer, Globals.WorkingDirectory, COUNTOF(Globals.WorkingDirectory));
+    PathCchAppend(lpszPath, cchBuffer, tmpFilePath);
+    if (bSearchPathIfRelative) {
+      if (!PathFileExists(lpszPath)) {
+        PathStripPath(tmpFilePath);
+        if (SearchPath(NULL, tmpFilePath, NULL, cchBuffer, lpszPath, NULL) == 0) {
+          StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
+        }
+      }
+    }
+  }
+  else {
+    StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
+  }
+
+  PathCanonicalizeEx(lpszPath, cchBuffer);
+  GetLongPathNameEx(lpszPath, cchBuffer);
+
+  if (PathIsLnkFile(lpszPath)) {
+    PathGetLnkPath(lpszPath, lpszPath, cchBuffer);
+  }
+
+  if (bRealPath) {
+    // get real path name (by zufuliu)
+    HANDLE hFile = CreateFile(lpszPath, // file to open
+      GENERIC_READ,                     // open for reading
+      FILE_SHARE_READ,                  // share for reading
+      NULL,                             // default security
+      OPEN_EXISTING,                    // existing file only
+      FILE_ATTRIBUTE_NORMAL,            // normal file
+      NULL);                            // no attr. template
+
+    if (hFile != INVALID_HANDLE_VALUE) {
+      if (GetFinalPathNameByHandleW(hFile, tmpFilePath,
+        COUNTOF(tmpFilePath), FILE_NAME_OPENED) > 0)
+      {
+        if (StrCmpN(tmpFilePath, L"\\\\?\\", 4) == 0) {
+          WCHAR* p = tmpFilePath + 4;
+          if (StrCmpN(p, L"UNC\\", 4) == 0) {
+            p += 2;
+            *p = L'\\';
+          }
+          StringCchCopy(lpszPath, cchBuffer, p);
+        }
+      }
+    }
+    CloseHandle(hFile);
+  }
+
+  return (DWORD)StringCchLen(lpszPath, cchBuffer);
+}
+
+
+//=============================================================================
+//
 //  FormatNumberStr()
 //
-size_t FormatNumberStr(LPWSTR lpNumberStr)
+size_t FormatNumberStr(LPWSTR lpNumberStr, size_t cch, int fixedWidth)
 {
   static WCHAR szSep[5] = { L'\0' };
   static WCHAR szGrp[11] = { L'\0' };
@@ -1390,6 +1356,13 @@ size_t FormatNumberStr(LPWSTR lpNumberStr)
       }
     }
   }
+
+  if (fixedWidth > 0) {
+    static WCHAR szCrop[256] = { L'\0' };
+    StringCchPrintf(szCrop, COUNTOF(szCrop), L"%*s", fixedWidth, lpNumberStr);
+    StringCchCopy(lpNumberStr, cch, szCrop);
+  }
+
   return StringCchLen(lpNumberStr,0);
 }
 
@@ -1403,7 +1376,7 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
   WCHAR szBuf[64] = { L'\0' };
 
   StringCchPrintf(szBuf,COUNTOF(szBuf),L"%u",uValue);
-  FormatNumberStr(szBuf);
+  FormatNumberStr(szBuf, COUNTOF(szBuf), 0);
 
   return(SetDlgItemText(hwnd,nIdItem,szBuf));
 }
@@ -1502,7 +1475,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
   return(StringCchCompareX(psz1,psz2));
 }
 
-bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBookMarks)
+bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
@@ -1548,7 +1521,7 @@ bool MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
 }
 
 bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpandMyDocs,
-                 int iEnc, DocPos iPos, LPCWSTR pszBookMarks) {
+                 cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks) {
 
   int i = 0;
   if (MRU_FindFile(pmru,pszFile,&i)) {
@@ -1680,8 +1653,8 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->pszItems[n] = StrDup(tchItem);
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-        int iCP = IniSectionGetInt(pIniSection, tchName, 0);
-        pmru->iEncoding[n] = Encoding_MapIniSetting(true, iCP);
+        int const iCP = (cpi_enc_t)IniSectionGetInt(pIniSection, tchName, 0);
+        pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
         pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
@@ -1724,7 +1697,7 @@ bool MRU_Save(LPMRULIST pmru)
 
         if (pmru->iEncoding[i] > 0) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-          int iCP = Encoding_MapIniSetting(false, pmru->iEncoding[i]);
+          int const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
           IniSectionSetInt(pIniSection, tchName, iCP);
         }
         if (pmru->iCaretPos[i] > 0) {

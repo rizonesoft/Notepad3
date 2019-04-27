@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "common_res.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -12,27 +12,25 @@
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
-//~~~#pragma code_page(65001)  // UTF-8
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "common_res.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -93,7 +91,7 @@ IDS_MUI_ABOUT_CONTRIBS  "\
 IDS_MUI_ABOUT_LIBS  "\
 \\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
 \\cf0 K.Takata (Onigmo Regex)\\tab https://github.com/k-takata/Onigmo\\par\
-\\cf0 D.Dyer (NotepadCrypt)\\tab http://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
+\\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash\\par\
 \\cf0 Jinsuk Kim (CED EncDet)\\tab https://github.com/google/compact_enc_det\\par\
 \\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr\\par\
@@ -102,18 +100,25 @@ IDS_MUI_ABOUT_LIBS  "\
 
 //
 // For "craigo-": to access the right site "https://github.com/craigo-",
-//   a slash "/" is voluntarily added after the "craigo-" !
+// a slash "/" is voluntarily added after the "craigo-" !
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
-\\cf0 craigo-\\tab https://github.com/craigo-/\\par\
-\\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
-\\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
-\\cf0 engelhro\\tab https://github.com/engelhro\\par\
-\\cf0 AlexIljin\\tab https://github.com/AlexIljin\\par\
-\\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
-\\cf0 zufuliu\\tab https://github.com/zufuliu\\par\
 \\cf0 alexantr\\tab https://github.com/alexantr\\par\
+\\cf0 AlexIljin\\tab https://github.com/AlexIljin\\par\
+\\cf0 craigo-\\tab https://github.com/craigo-/\\par\
+\\cf0 Crane70\\tab https://github.com/Crane70\\par\
+\\cf0 engelhro\\tab https://github.com/engelhro\\par\
+\\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
+\\cf0 jczanfona\\tab https://github.com/jczanfona\\par\
+\\cf0 lenny20\\tab https://github.com/lenny20\\par\
+\\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
+\\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
+\\cf0 RaffaeleBianc0\\tab https://github.com/RaffaeleBianc0\\par\
+\\cf0 rizonesoft\\tab https://github.com/rizonesoft\\par\
+\\cf0 testinsovr\\tab https://github.com/testinsovr\\par\
+\\cf0 xsak\\tab https://github.com/xsak\\par\
+\\cf0 zufuliu\\tab https://github.com/zufuliu\\par\
 \\cf0 \\par\
 "
 

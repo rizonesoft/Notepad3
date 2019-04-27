@@ -131,7 +131,7 @@ void SelectionRange::Swap() {
 	std::swap(caret, anchor);
 }
 
-bool SelectionRange::Trim(const SelectionRange& range) {
+bool SelectionRange::Trim(SelectionRange range) {
 	const SelectionPosition startRange = range.Start();
 	const SelectionPosition endRange = range.End();
 	SelectionPosition start = Start();
@@ -177,7 +177,7 @@ void SelectionRange::MinimizeVirtualSpace() {
 	}
 }
 
-Selection::Selection() : mainRange(0), moveExtends(false), tentativeMain(false), selType(selStream) {
+Selection::Selection() noexcept : mainRange(0), moveExtends(false), tentativeMain(false), selType(selStream) {
 	AddSelection(SelectionRange(SelectionPosition(0)));
 }
 
@@ -362,7 +362,7 @@ void Selection::DropAdditionalRanges() {
 	SetSelection(RangeMain());
 }
 
-void Selection::TentativeSelection(const SelectionRange& range) {
+void Selection::TentativeSelection(SelectionRange range) {
 	if (!tentativeMain) {
 		rangesSaved = ranges;
 	}

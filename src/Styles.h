@@ -17,6 +17,7 @@
 #define _NP3_STYLES_H_
 
 #include "Scintilla.h"
+#include "TypeDefs.h"
 #include "StyleLexers/EditLexer.h"
 
 
@@ -28,11 +29,18 @@
 #define NUMLEXERS 49
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
-
 void   Style_Load();
-void   Style_Save();
 bool   Style_Import(HWND hwnd);
+bool   Style_ImportFromFile(const WCHAR* szFile);
+void   Style_Save();
 bool   Style_Export(HWND hwnd);
+DWORD  Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
+
+unsigned ThemeItems_CountOf();
+void     Style_SetIniFile(LPCWSTR szIniFile);
+bool     Style_InsertThemesMenu(HMENU hMenuBar);
+void     Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings);
+
 float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
 void   Style_SetUrlHotSpot(HWND hwnd, bool);
@@ -63,11 +71,11 @@ bool   Style_StrGetCharSet(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i);
 bool   Style_StrGetSize(LPCWSTR lpszStyle,float* f);
 bool   Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize);
-bool   Style_StrGetColor(bool,LPCWSTR lpszStyle, COLORREF* rgb);
+bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb);
 bool   Style_StrGetCase(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle,int* i,bool);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);
-void   Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest,bool,bool);
+void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest,bool,bool);
 bool   Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,LPCWSTR sLexerName,LPCWSTR sStyleName,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND hwnd,bool,LPWSTR lpszStyle,int cchStyle,bool);
 void   Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle,bool);

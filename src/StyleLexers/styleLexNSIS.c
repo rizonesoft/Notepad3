@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_NSIS = {
 "!addincludedir !addplugindir !appendfile !cd !define !delfile !echo !else !endif !error "
 "!execute !finalize !getdllversion !if !ifdef !ifmacrodef !ifmacrondef !ifndef !include !insertmacro !macro "
@@ -66,7 +58,6 @@ KEYWORDLIST KeyWords_NSIS = {
 
 EDITLEXER lexNSIS = { 
 SCLEX_NSIS, IDS_LEX_NSIS, L"NSIS Script", L"nsi; nsh", L"", 
-&LexFunction, // static
 &KeyWords_NSIS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //,{ {SCE_NSIS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

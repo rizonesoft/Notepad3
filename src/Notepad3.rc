@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -11,8 +11,6 @@
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
-
-//~~~#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -60,7 +58,11 @@ IDR_MAINWND             ICON                    "Notepad3.ico"
 //
 
 IDR_MAINWNDTB           BITMAP                  "Toolbar.bmp"
+IDR_MAINWNDTBHOT        BITMAP                  "ToolbarHot.bmp"
+IDR_MAINWNDTBDIS        BITMAP                  "ToolbarDisabled.bmp"
 IDR_MAINWNDTB2          BITMAP                  "Toolbar2.bmp"
+IDR_MAINWNDTB2HOT       BITMAP                  "Toolbar2Hot.bmp"
+IDR_MAINWNDTB2DIS       BITMAP                  "Toolbar2Disabled.bmp"
 IDB_OPEN                BITMAP                  "Open.bmp"
 IDB_NEXT                BITMAP                  "Next.bmp"
 IDB_PREV                BITMAP                  "Prev.bmp"
@@ -73,7 +75,7 @@ IDB_ENCODING            BITMAP                  "Encoding.bmp"
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(65001)  // UTF-8 (no SIG/BOM)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -83,7 +85,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 IDR_MAINWND ACCELERATORS
 BEGIN
     "0",            IDM_VIEW_RESETZOOM,     VIRTKEY, CONTROL, NOINVERT
-    "0",            IDM_VIEW_WORDWRAPSYMBOLS, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "1",            CMD_STRINGIFY,          VIRTKEY, CONTROL, NOINVERT
     "1",            CMD_WEBACTION1,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "2",            CMD_STRINGIFY2,         VIRTKEY, CONTROL, NOINVERT
@@ -92,7 +93,8 @@ BEGIN
     "4",            CMD_EMBRACE2,           VIRTKEY, CONTROL, NOINVERT
     "5",            CMD_EMBRACE3,           VIRTKEY, CONTROL, NOINVERT
     "6",            CMD_EMBRACE4,           VIRTKEY, CONTROL, NOINVERT
-    "8",            IDM_VIEW_SHOWBLANKS, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "7",            IDM_VIEW_WORDWRAPSYMBOLS, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "8",            IDM_VIEW_SHOWBLANKS,    VIRTKEY, SHIFT, CONTROL, NOINVERT
     "9",            CMD_TOGGLETITLE,        VIRTKEY, CONTROL, NOINVERT
     "9",            IDM_VIEW_SHOWEOLS,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_EDIT_SELECTALL,     VIRTKEY, CONTROL, NOINVERT
@@ -211,6 +213,7 @@ BEGIN
     VK_ESCAPE,      CMD_SHIFTESC,           VIRTKEY, SHIFT, NOINVERT
     VK_F1,          IDM_HELP_ONLINEDOCUMENTATION, VIRTKEY, NOINVERT
     VK_F1,          IDM_HELP_ABOUT,         VIRTKEY, SHIFT, NOINVERT
+    VK_F10,         CMD_RECODEGB18030,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_F11,         CMD_FULLSCRWINPOS,      VIRTKEY, NOINVERT
     VK_F11,         CMD_INITIALWINPOS,      VIRTKEY, CONTROL, NOINVERT
     //VK_F11,         CMD_LEXHTML,            VIRTKEY, CONTROL, NOINVERT

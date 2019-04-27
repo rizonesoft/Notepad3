@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_HTML = {
 "!doctype ^aria- ^data- a abbr accept accept-charset accesskey acronym action address align alink "
 "alt and applet archive area article aside async audio autocomplete autofocus autoplay axis b "
@@ -33,12 +25,12 @@ KEYWORDLIST KeyWords_HTML = {
 "onoffline ononline onpagehide onpageshow onpause onplay onplaying onpopstate onprogress "
 "onratechange onreadystatechange onredo onreset onresize onscroll onseeked onseeking onselect "
 "onshow onstalled onstorage onsubmit onsuspend ontimeupdate onundo onunload onvolumechange "
-"onwaiting open optgroup optimum option output p param password pattern ping placeholder poster "
+"onwaiting open optgroup optimum option output p param password pattern picture ping placeholder poster "
 "pre prefix preload profile progress prompt property pubdate public q radio radiogroup readonly rel "
 "required reset rev reversed role rows rowspan rp rt ruby rules s samp sandbox scheme scope scoped script "
-"scrolling seamless section select selected shape size sizes small source span spellcheck src "
+"scrolling seamless section select selected shape size sizes slot small source span spellcheck src "
 "srcdoc srclang standby start step strike strong style sub submit summary sup tabindex table "
-"target tbody td text textarea tfoot th thead time title topmargin tr track translate tt type "
+"target tbody td template text textarea tfoot th thead time title topmargin tr track translate tt type "
 "typemustmatch u ul usemap valign value valuetype var version video vlink vspace wbr width wrap xml "
 "xmlns",
 "abstract boolean break byte case catch char class const continue debugger default delete do "
@@ -69,7 +61,6 @@ KEYWORDLIST KeyWords_HTML = {
 
 EDITLEXER lexHTML = { 
 SCLEX_HTML, IDS_LEX_WEB_SRC, L"Web Source Code", L"html; htm; asp; aspx; shtml; htd; xhtml; php; php3; phtml; htt; cfm; tpl; dtd; hta; htc", L"", 
-&LexFunction, // static
 &KeyWords_HTML, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_H_TAG,SCE_H_TAGEND,0,0)}, IDS_LEX_STR_63136, L"HTML Tag", L"fore:#648000", L"" },
@@ -126,31 +117,5 @@ SCLEX_HTML, IDS_LEX_WEB_SRC, L"Web Source Code", L"html; htm; asp; aspx; shtml; 
     { {SCE_HBA_IDENTIFIER}, IDS_LEX_STR_63186, L"ASP VBS Identifier", L"", L"" },
     { {MULTI_STYLE(SCE_HBA_STRING,SCE_HBA_STRINGEOL,0,0)}, IDS_LEX_STR_63185, L"ASP VBS String", L"fore:#008000", L"" },
     { {SCE_HBA_NUMBER}, IDS_LEX_STR_63183, L"ASP VBS Number", L"fore:#FF0000", L"" },
-    //{ {SCE_HP_START}, L"Phyton Start", L"", L"" },
-    //{ {SCE_HP_DEFAULT}, L"Phyton Default", L"", L"" },
-    //{ {SCE_HP_COMMENTLINE}, L"Phyton Comment Line", L"", L"" },
-    //{ {SCE_HP_NUMBER}, L"Phyton Number", L"", L"" },
-    //{ {SCE_HP_STRING}, L"Phyton String", L"", L"" },
-    //{ {SCE_HP_CHARACTER}, L"Phyton Character", L"", L"" },
-    //{ {SCE_HP_WORD}, L"Phyton Keyword", L"", L"" },
-    //{ {SCE_HP_TRIPLE}, L"Phyton Triple", L"", L"" },
-    //{ {SCE_HP_TRIPLEDOUBLE}, L"Phyton Triple Double", L"", L"" },
-    //{ {SCE_HP_CLASSNAME}, L"Phyton Class Name", L"", L"" },
-    //{ {SCE_HP_DEFNAME}, L"Phyton Def Name", L"", L"" },
-    //{ {SCE_HP_OPERATOR}, L"Phyton Operator", L"", L"" },
-    //{ {SCE_HP_IDENTIFIER}, L"Phyton Identifier", L"", L"" },
-    //{ {SCE_HPA_START}, L"ASP Phyton Start", L"", L"" },
-    //{ {SCE_HPA_DEFAULT}, L"ASP Phyton Default", L"", L"" },
-    //{ {SCE_HPA_COMMENTLINE}, L"ASP Phyton Comment Line", L"", L"" },
-    //{ {SCE_HPA_NUMBER}, L"ASP Phyton Number", L"", L"" },
-    //{ {SCE_HPA_STRING}, L"ASP Phyton String", L"", L"" },
-    //{ {SCE_HPA_CHARACTER}, L"ASP Phyton Character", L"", L"" },
-    //{ {SCE_HPA_WORD}, L"ASP Phyton Keyword", L"", L"" },
-    //{ {SCE_HPA_TRIPLE}, L"ASP Phyton Triple", L"", L"" },
-    //{ {SCE_HPA_TRIPLEDOUBLE}, L"ASP Phyton Triple Double", L"", L"" },
-    //{ {SCE_HPA_CLASSNAME}, L"ASP Phyton Class Name", L"", L"" },
-    //{ {SCE_HPA_DEFNAME}, L"ASP Phyton Def Name", L"", L"" },
-    //{ {SCE_HPA_OPERATOR}, L"ASP Phyton Operator", L"", L"" },
-    //{ {SCE_HPA_IDENTIFIER}, L"ASP Phyton Identifier", L"", L"" },
     EDITLEXER_SENTINEL } };
 

@@ -1,0 +1,141 @@
+// Microsoft Visual C++ generated resource script.
+// encoding: CP-1252
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+#include "../common_res.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Italian (Italy) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ITA)
+LANGUAGE LANG_ITALIAN, SUBLANG_ITALIAN
+#pragma code_page(1252) // Western European (Windows-1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#include ""../common_res.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINWND MENU
+BEGIN
+    POPUP "+"
+    BEGIN
+        MENUITEM "&Apri",                       IDM_FILE_OPEN
+        MENUITEM "Apri &con...",   IDM_FILE_OPENWITH
+        MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
+        MENUITEM SEPARATOR
+        MENUITEM "&Copia nome",                  IDM_POP_COPYNAME
+        MENUITEM "Crea Lin&k...",             IDM_FILE_CREATELINK
+        MENUITEM "&Salva con nome...",                 IDM_FILE_SAVEAS
+        MENUITEM "Copia/&Sposta...",               IDM_FILE_COPYMOVE
+        MENUITEM "&Elimina...",                  IDM_FILE_DELETE
+        MENUITEM "Ri&nomina...",                  IDM_FILE_RENAME
+        MENUITEM SEPARATOR
+        MENUITEM "&Esegui",                     IDM_FILE_LAUNCH
+        MENUITEM "&Esegui con argomenti...",        IDM_FILE_RUN
+        MENUITEM SEPARATOR
+        MENUITEM "&Proprietà",                 IDM_FILE_PROPERTIES
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "&Nuovo file...",                IDM_FILE_NEW
+        MENUITEM "Nuova &cartella...",           IDM_FILE_NEWDIR
+        MENUITEM SEPARATOR
+        MENUITEM "&Filtro file...",             IDM_VIEW_FILTER
+        MENUITEM "&Azzera filtro",               IDM_VIEW_FILTERALL
+        POPUP "&Mostra"
+        BEGIN
+            MENUITEM "&Cartelle",            IDM_VIEW_FOLDERS
+            MENUITEM "&File",                  IDM_VIEW_FILES
+            MENUITEM "&Oggetti di sistema",         IDM_VIEW_HIDDEN
+        END
+        POPUP "&Ordina"
+        BEGIN
+            MENUITEM "per &Nome",                IDM_SORT_NAME
+            MENUITEM "per Dimen&sione",                IDM_SORT_SIZE
+            MENUITEM "per &Tipo",                IDM_SORT_TYPE
+            MENUITEM "per &Data",                IDM_SORT_DATE
+            MENUITEM SEPARATOR
+            MENUITEM "&Inverti",                IDM_SORT_REVERSE
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Vai ai Preferiti",             IDM_VIEW_FAVORITES
+        MENUITEM "&Modifica Preferiti",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Cartella...",               IDM_FILE_CHANGEDIR
+        MENUITEM SEPARATOR
+        MENUITEM "Mostra unità disco",                IDM_VIEW_DRIVEBOX
+        MENUITEM SEPARATOR
+        MENUITEM "S&alva impostazioni",              IDM_VIEW_SAVESETTINGS
+        MENUITEM "Imposta &destinazione...",            IDM_VIEW_FINDTARGET
+        MENUITEM "O&pzioni...",                 IDM_VIEW_OPTIONS
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "&Cartella...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Proprietà disco",           IDM_FILE_DRIVEPROP
+        MENUITEM SEPARATOR
+        MENUITEM "Mostra unità disco",                IDM_VIEW_DRIVEBOX
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
+        MENUITEM "&Personalizza Toolbar...",            IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Mostra &Statusbar",             IDM_VIEW_STATUSBAR
+    END
+    POPUP "+"
+    BEGIN
+        MENUITEM "Apri MiniPath",               IDM_TRAY_RESTORE
+        MENUITEM "Esci da MiniPath",               IDM_TRAY_EXIT
+    END
+END
+
+
+#endif    // Italian (Italy) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED

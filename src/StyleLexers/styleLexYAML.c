@@ -2,19 +2,10 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_YAML = { "y n yes no on off true false", "", "", "", "", "", "", "", "" };
 
 EDITLEXER lexYAML = { 
 SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"", 
-&LexFunction, // static
 &KeyWords_YAML, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_YAML_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -23,8 +14,8 @@ SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"",
     { {SCE_YAML_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#880088", L"" },
     { {SCE_YAML_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF8000", L"" },
     { {SCE_YAML_REFERENCE}, IDS_LEX_STR_63333, L"Reference", L"fore:#008888", L"" },
-    { {SCE_YAML_DOCUMENT}, IDS_LEX_STR_63334, L"Document", L"fore:#FFFFFF; bold; back:#000088; eolfilled", L"" },
+    { {SCE_YAML_DOCUMENT}, IDS_LEX_STR_63334, L"Document", L"bold; fore:#FFFFFF; back:#000088; eolfilled", L"" },
     { {SCE_YAML_TEXT}, IDS_LEX_STR_63335, L"Text", L"fore:#404040", L"" },
-    { {SCE_YAML_ERROR}, IDS_LEX_STR_63261, L"Error", L"fore:#FFFFFF; bold; italic; back:#FF0000; eolfilled", L"" },
+    { {SCE_YAML_ERROR}, IDS_LEX_STR_63261, L"Error", L"bold; italic; fore:#FFFFFF; back:#FF0000; eolfilled", L"" },
     { {SCE_YAML_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#333366", L"" },
     EDITLEXER_SENTINEL } };

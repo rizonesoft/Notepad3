@@ -23,8 +23,8 @@
 void  EditInitializeSciCtrl(HWND);
 void  EditInitWordDelimiter(HWND hwnd);
 void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText);
-bool  EditConvertText(HWND hwnd,int encSource,int encDest,bool);
-bool  EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool,bool);
+bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
+bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
@@ -32,9 +32,9 @@ bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
 void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
-void  EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status);
-bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool, bool, EditFileIOStatus* status);
-bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
+void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
+bool EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, EditFileIOStatus* status);
+bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 
 void  EditInvertCase(HWND hwnd);
 void  EditTitleCase(HWND hwnd);
@@ -98,7 +98,7 @@ bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND hwnd);
-void  EditClearAllOccurrenceMarkers(HWND hwnd);
+void  EditClearAllOccurrenceMarkers();
 bool  EditToggleView(HWND hwnd, bool bToggleView);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool, bool);
 void  EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool);
@@ -106,16 +106,12 @@ void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
-void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 
+void  EditFinalizeStyling(DocPos iEndPos);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditUpdateVisibleUrlHotspot(bool);
+void  EditApplyVisibleStyle();
 void  EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, bool);
-
-//  if iRangeEnd == -1 : apply style from iRangeStart to document end
-inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPos iRangeEnd) {
-  (void)(hwnd); SciCall_Colourise(iRangeStart, iRangeEnd);
-}
 
 
 #define FV_TABWIDTH        1
@@ -127,13 +123,13 @@ inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPo
 #define FV_ENCODING       64
 #define FV_MODE          128
 
-bool FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
-bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);
-bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
-bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
-bool FileVars_IsUTF8(LPFILEVARS lpfv);
-bool FileVars_IsValidEncoding(LPFILEVARS lpfv);
-int  FileVars_GetEncoding(LPFILEVARS lpfv);
+bool       FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
+bool       FileVars_Apply(LPFILEVARS lpfv);
+bool       FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
+bool       FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
+bool       FileVars_IsUTF8(LPFILEVARS lpfv);
+bool       FileVars_IsValidEncoding(LPFILEVARS lpfv);
+cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
 
 
 //
@@ -155,7 +151,6 @@ void EditToggleFolds(FOLD_ACTION action,bool);
 void EditFoldClick(DocLn ln, int mode);
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
 
-void EditShowZoomCallTip(HWND hwnd);
 void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 
 #define NP3_BRACES_TO_MATCH "()[]{}"

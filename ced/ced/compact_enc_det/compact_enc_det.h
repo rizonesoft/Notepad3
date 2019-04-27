@@ -78,6 +78,6 @@ namespace CompactEncDet {
   Encoding TopEncodingOfTLDHint(const char* name);
   Encoding TopEncodingOfCharsetHint(const char* name);
   const char* Version();
-};      // End namespace CompactEncDet
+}      // End namespace CompactEncDet
 
 #endif  // COMPACT_ENC_DET_COMPACT_ENC_DET_H_

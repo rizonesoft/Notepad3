@@ -12,25 +12,15 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <uxtheme.h>
 #include <commdlg.h>
+
 #include <string.h>
 
 #pragma warning( push )
@@ -43,9 +33,9 @@
 #include "Dlapi.h"
 #include "resource.h"
 #include "Version.h"
-#include "Helpers.h"
 #include "Encoding.h"
-#include "TypeDefs.h"
+#include "MuiLanguage.h"
+
 #include "SciCall.h"
 
 #include "Dialogs.h"
@@ -54,19 +44,17 @@
 //
 //  MsgBoxLng()
 //
-static HHOOK hhkMsgBox = NULL;
+static HHOOK s_hhkMsgBox = NULL;
 
 static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 {
-  HWND  hParentWnd, hChildWnd;    // msgbox is "child"
-  RECT  rParent, rChild, rDesktop;
-
   // notification that a window is about to be activated  
   if (nCode == HCBT_ACTIVATE) {
     // set window handles
-    hParentWnd = GetForegroundWindow();
-    hChildWnd = (HWND)wParam; // window handle is wParam
+    HWND hParentWnd = GetForegroundWindow();
+    HWND hChildWnd = (HWND)wParam; // window handle is wParam
 
+    RECT  rParent, rChild, rDesktop;
     if ((hParentWnd != NULL) && (hChildWnd != NULL) &&
         (GetWindowRect(GetDesktopWindow(), &rDesktop) != 0) &&
         (GetWindowRect(hParentWnd, &rParent) != 0) &&
@@ -77,57 +65,89 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
     PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
 
     // exit _MsgBoxProc hook
-    UnhookWindowsHookEx(hhkMsgBox);
+    UnhookWindowsHookEx(s_hhkMsgBox);
   }
   else // otherwise, continue with any possible chained hooks
   {
-    CallNextHookEx(hhkMsgBox, nCode, wParam, lParam);
+    CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam);
   }
   return 0;
 }
 // -----------------------------------------------------------------------------
 
 
-int MsgBoxLng(int iType, UINT uIdMsg, ...)
+//=============================================================================
+//
+//  GetLastErrorToMsgBox()
+//
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 {
-  WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  WCHAR szBuf[HUGE_BUFFER] = { L'\0' };
-  WCHAR szTitle[64] = { L'\0' };
-
-  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf)))
-    return(0);
-
-  StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
-
-  if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
-    uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
-    uIdMsg == IDS_MUI_EXPORT_FAIL) {
-    LPVOID lpMsgBuf = NULL;
-    WCHAR wcht;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      Globals.dwLastError,
-      Globals.iPrefLANGID,
-      (LPTSTR)&lpMsgBuf,
-      0,
-      NULL);
-
-    if (lpMsgBuf) {
-      StrTrim(lpMsgBuf, L" \a\b\f\n\r\t\v");
-      StringCchCat(szText, COUNTOF(szText), L"\n");
-      StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
-      LocalFree(lpMsgBuf);  // LocalAlloc()
-    }
-    wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
-    if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
-      StringCchCat(szText, COUNTOF(szText), L".");
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
   }
 
+  LPVOID lpMsgBuf = NULL;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    Globals.iPrefLANGID,
+    (LPTSTR)& lpMsgBuf,
+    0, NULL);
+
+  if (lpMsgBuf) {
+    // Display the error message and exit the process
+    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
+    LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+    if (lpDisplayBuf) {
+      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
+        lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
+
+      // center message box to main
+      HWND focus = GetFocus();
+      HWND hwnd = focus ? focus : Globals.hwndMain;
+      s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
+      MessageBoxEx(hwnd, lpDisplayBuf, L"Notepad3 - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
+
+      FreeMem(lpDisplayBuf);
+    }
+    LocalFree(lpMsgBuf); // LocalAlloc()
+  }
+  return dwErrID;
+}
+
+
+//=============================================================================
+//
+//  MessageBoxLng()
+//
+int MessageBoxLng(UINT uType, UINT uidMsg, ...)
+{
+  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
+  if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) { return -1; }
+
+  WCHAR szTitle[64] = { L'\0' };
   GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
 
+  WCHAR szText[HUGE_BUFFER] = { L'\0' };
+  const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
+  if (argp && *argp) {
+    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
+  }
+  else {
+    StringCchCopy(szText, COUNTOF(szText), szFormat);
+  }
+
+
+#if 0
   int iIcon = MB_ICONHAND;
   switch (iType) {
+
   case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
   case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
   case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
@@ -137,61 +157,107 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
   case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
   default: iIcon = MB_ICONSTOP | MB_OK; break;
   }
-  iIcon |= (MB_TOPMOST | MB_SETFOREGROUND);
+#endif
+
+  uType |= (MB_TOPMOST | MB_SETFOREGROUND);
 
   // center message box to main
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : Globals.hwndMain;
-  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+  s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
-  //return  MessageBox(hwnd, szText, szTitle, iIcon);
-  //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, Globals.iPrefLANGID);
+  return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
 
 
 //=============================================================================
 //
-//  InfoBoxDlgProc()
+//  _InfoBoxLngDlgProc()
 //
 //
-typedef struct _infobox {
+
+typedef struct _infbox {
+  UINT   uType;
   LPWSTR lpstrMessage;
   LPWSTR lpstrSetting;
   bool   bDisableCheckBox;
-} INFOBOX, *LPINFOBOX;
+} INFOBOXLNG, *LPINFOBOXLNG;
 
-INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+
+static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  LPINFOBOX lpib;
+  LPINFOBOXLNG lpMsgBox = NULL;
 
   switch (umsg)
   {
   case WM_INITDIALOG:
+  {
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    lpMsgBox = (LPINFOBOXLNG)lParam;
+
+    switch (lpMsgBox->uType & MB_ICONMASK) 
     {
-      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      lpib = (LPINFOBOX)lParam;
-      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_EXCLAMATION), 0);
-      SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
-      if (lpib->bDisableCheckBox)
-        DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
-      FreeMem(lpib->lpstrMessage);
-      CenterDlgInParent(hwnd);
+    case MB_ICONINFORMATION:  // = MB_ICONASTERISK
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_INFORMATION), 0);
+      break;
+    case MB_ICONQUESTION:
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_QUESTION), 0);
+      break;
+    case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_WARNING), 0);
+      break;
+    case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_ERROR), 0);
+      break;
+    case MB_USERICON:
+    default:
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_APPLICATION), 0);
+      break;
     }
+    
+    SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
+
+    if (lpMsgBox->bDisableCheckBox) {
+      DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
+      DialogHideWindow(hwnd, IDC_INFOBOXCHECK, true);
+    }
+
+    CenterDlgInParent(hwnd);
+    AttentionBeep(lpMsgBox->uType);
+
+    FreeMem(lpMsgBox->lpstrMessage);
+  }
+  return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
     return true;
 
+
   case WM_COMMAND:
+    lpMsgBox = (LPINFOBOXLNG)GetWindowLongPtr(hwnd, DWLP_USER);
     switch (LOWORD(wParam))
     {
     case IDOK:
     case IDCANCEL:
     case IDYES:
     case IDNO:
-      lpib = (LPINFOBOX)GetWindowLongPtr(hwnd, DWLP_USER);
-      if (IsDlgButtonChecked(hwnd, IDC_INFOBOXCHECK))
-        IniSetInt(L"Suppressed Messages", lpib->lpstrSetting, 1);
+      if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
+        IniSetInt(L"Suppressed Messages", lpMsgBox->lpstrSetting, LOWORD(wParam));
+      }
+    case IDABORT:
+    case IDRETRY:
+    case IDIGNORE:
+    case IDCLOSE:
+    case IDTRYAGAIN:
+    case IDCONTINUE:
       EndDialog(hwnd, LOWORD(wParam));
+      return true;
+
+    default:
       break;
     }
     return true;
@@ -205,44 +271,79 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
 //  InfoBoxLng()
 //
 //
-
-INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
+INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-  int iMode = IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+  int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+  if (iMode) { return iMode; }
 
-  if (StrIsNotEmpty(lpstrSetting) && iMode == 1) {
-    return (iType == MBYESNO) ? IDYES : IDOK;
+  WCHAR wchMessage[LARGE_BUFFER];
+  if (!GetLngString(uidMsg, wchMessage, COUNTOF(wchMessage))) { return -1LL; }
+
+  INFOBOXLNG msgBox;
+  msgBox.uType = uType;
+  msgBox.lpstrMessage = AllocMem((COUNTOF(wchMessage)+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+  const PUINT_PTR argp = (PUINT_PTR)& uidMsg + 1;
+  if (argp && *argp) {
+    StringCchVPrintfW(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage, (LPVOID)argp);
   }
-  WCHAR wchFormat[LARGE_BUFFER];
-  if (!GetLngString(uidMessage, wchFormat, COUNTOF(wchFormat)))
-    return(-1);
+  else {
+    StringCchCopy(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage);
+  }
 
-  INFOBOX ib;
-  ib.lpstrMessage = AllocMem(HUGE_BUFFER * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (ib.lpstrMessage)
-    StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
-  ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
+  if (uidMsg == IDS_MUI_ERR_LOADFILE || uidMsg == IDS_MUI_ERR_SAVEFILE ||
+    uidMsg == IDS_MUI_CREATEINI_FAIL || uidMsg == IDS_MUI_WRITEINI_FAIL ||
+    uidMsg == IDS_MUI_EXPORT_FAIL || uidMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) 
+  {
+    WCHAR wchErr[MIDSZ_BUFFER] = { L'\0' };
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      Globals.dwLastError,
+      Globals.iPrefLANGID,
+      wchErr, COUNTOF(wchErr),
+      NULL);
+
+    if (StrIsNotEmpty(wchErr)) {
+      StrTrim(wchErr, L" \a\b\f\n\r\t\v");
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L"\n\n");
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), wchErr);
+    }
+    WCHAR wcht = *CharPrev(msgBox.lpstrMessage, StrEnd(msgBox.lpstrMessage, COUNTOF(wchMessage)));
+    if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L".");
+  }
+
+  msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
+  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting)) ? true : false;
+
 
   int idDlg;
-  switch (iType) {
-  case MBYESNO:
+  switch (uType & MB_TYPEMASK) {
+
+  case MB_YESNO:  // contains two push buttons : Yes and No.
     idDlg = IDD_MUI_INFOBOX2;
     break;
-  case MBOKCANCEL:
+
+  case MB_OKCANCEL:  // contains two push buttons : OK and Cancel.
     idDlg = IDD_MUI_INFOBOX3;
     break;
+
+  case MB_RETRYCANCEL:  // contains two push buttons : Retry and Cancel.
+  case MB_ABORTRETRYIGNORE:   // three push buttons : Abort, Retry, and Ignore.
+  case MB_CANCELTRYCONTINUE:  // three push buttons : Cancel, Try Again, Continue.Use this message box type instead of MB_ABORTRETRYIGNORE.
+  case MB_YESNOCANCEL:  // contains three push buttons : Yes, No, and Cancel.
+
+  case MB_OK:  // one push button : OK. This is the default.
   default:
     idDlg = IDD_MUI_INFOBOX;
     break;
   }
 
-  MessageBeep(MB_ICONEXCLAMATION);
-
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : Globals.hwndMain;
 
-  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
+  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
 }
 
 
@@ -279,7 +380,7 @@ void DisplayCmdLineHelp(HWND hwnd)
 }
 #else
 
-INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
@@ -287,15 +388,16 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
   case WM_INITDIALOG:
     {
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      //WCHAR szTitle[80] = { L'\0' };
-      //GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
-      //SetWindowText(hwnd, szTitle);
       WCHAR szText[4096] = { L'\0' };
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
       CenterDlgInParent(hwnd);
     }
-    break;
+    return true;
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    return true;
 
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
@@ -501,23 +603,21 @@ static DWORD CALLBACK _LoadRtfCallbackW(
 //
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  WCHAR wch[256] = { L'\0' };
-  static HFONT hFontTitle;
-
   switch (umsg)
   {
   case WM_INITDIALOG:
   {
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-    SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
+    SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
 
+    static HFONT hFontTitle = NULL;
     if (hFontTitle) { DeleteObject(hFontTitle); }
-
     if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
       hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
     }
-
     LOGFONT lf;
     GetObject(hFontTitle, sizeof(LOGFONT), &lf);
     lf.lfWeight = FW_BOLD;
@@ -529,22 +629,21 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
-    SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
-    SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
+    SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
+    SetDlgItemText(hwnd, IDC_AUTHORNAME, _W(VERSION_AUTHORNAME));
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
 
+    WCHAR wch[256] = { L'\0' };
     if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
-      SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
+      SetDlgItemText(hwnd, IDC_WEBPAGE2, _W(VERSION_WEBPAGEDISPLAY));
       ShowWindow(GetDlgItem(hwnd, IDC_WEBPAGE2), SW_SHOWNORMAL);
     }
     else {
-      StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", VERSION_WEBPAGEDISPLAY);
+      StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", _W(VERSION_WEBPAGEDISPLAY));
       SetDlgItemText(hwnd, IDC_WEBPAGE, wch);
     }
-
     GetLngString(IDS_MUI_TRANSL_AUTHOR, wch, COUNTOF(wch));
     SetDlgItemText(hwnd, IDC_TRANSL_AUTH, wch);
-
 
     // --- Rich Edit Control ---
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
@@ -653,6 +752,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   return true;
 
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    return true;
+
+
   case WM_PAINT:
     if (Globals.hIcon128) {
       RECT rt;
@@ -661,7 +765,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       DrawIconEx(hdc, 16, 32, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
       ReleaseDC(hwnd, hdc);
     }
-    return 0;
+    return false;
 
 
   case WM_NOTIFY:
@@ -708,7 +812,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
           (GetDlgCtrlID((HWND)wParam) == IDC_RIZONEBMP))
       {
         SetCursor(LoadCursor(NULL, IDC_HAND));
-        SetWindowLongPtr(hwnd, DWLP_MSGRESULT, true);
+        SetWindowLongPtr(hwnd, DWLP_MSGRESULT, (LONG_PTR)true);
         return true;
       }
     }
@@ -719,14 +823,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     switch (LOWORD(wParam))
     {
     case IDC_RIZONEBMP:
-      ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+      ShellExecute(hwnd, L"open", _W(VERSION_WEBPAGEDISPLAY), NULL, NULL, SW_SHOWNORMAL);
       break;
 
     case IDC_COPYVERSTRG:
       {
         WCHAR wchVerInfo[1024] = { L'\0' };
         WCHAR wchAuthInfo[128] = { L'\0' };
-        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), MKWCS(VERSION_FILEVERSION_LONG));
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), _W(_STRG(VERSION_FILEVERSION_LONG)));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
@@ -752,13 +856,13 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 //
 //  RunDlgProc()
 //
-INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         // MakeBitmapButton(hwnd,IDC_SEARCHEXE,Globals.hInstance,IDB_OPEN);
         SendDlgItemMessage(hwnd,IDC_COMMANDLINE,EM_LIMITTEXT,MAX_PATH - 1,0);
@@ -767,6 +871,11 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         CenterDlgInParent(hwnd);
       }
+      return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
       return true;
 
 
@@ -784,8 +893,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           {
             WCHAR szArgs[MAX_PATH] = { L'\0' };
             WCHAR szArg2[MAX_PATH] = { L'\0' };
-            WCHAR szFile[MAX_PATH * 2] = { L'\0' };
-            WCHAR szFilter[256] = { L'\0' };
+            WCHAR szFile[MAX_PATH] = { L'\0' };
+            WCHAR szFilter[MAX_PATH] = { L'\0' };
             OPENFILENAME ofn;
             ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -806,14 +915,13 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             if (GetOpenFileName(&ofn)) {
               PathQuoteSpaces(szFile);
-              if (StringCchLen(szArg2,COUNTOF(szArg2)))
+              if (StrIsNotEmpty(szArg2))
               {
                 StringCchCat(szFile,COUNTOF(szFile),L" ");
                 StringCchCat(szFile,COUNTOF(szFile),szArg2);
               }
               SetDlgItemText(hwnd,IDC_COMMANDLINE,szFile);
             }
-
             PostMessage(hwnd,WM_NEXTDLGCTL,1,0);
           }
           break;
@@ -824,11 +932,13 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             bool bEnableOK = false;
             WCHAR args[MAX_PATH] = { L'\0' };
 
-            if (GetDlgItemText(hwnd,IDC_COMMANDLINE,args,MAX_PATH))
-              if (ExtractFirstArgument(args,args,NULL,MAX_PATH))
-                if (StringCchLenW(args,COUNTOF(args)))
+            if (GetDlgItemText(hwnd, IDC_COMMANDLINE, args, MAX_PATH)) {
+              if (ExtractFirstArgument(args, args, NULL, MAX_PATH)) {
+                if (StrIsNotEmpty(args)) {
                   bEnableOK = true;
-
+                }
+              }
+            }
             DialogEnableWindow(hwnd,IDOK,bEnableOK);
           }
           break;
@@ -847,15 +957,15 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (StringCchCompareNI(arg1,COUNTOF(arg1), STRGW(APPNAME),CSTRLEN(STRGW(APPNAME))) == 0 ||
+              if (StringCchCompareNI(arg1,COUNTOF(arg1), _W(SAPPNAME),CSTRLEN(_W(SAPPNAME))) == 0 ||
                   StringCchCompareNI(arg1,COUNTOF(arg1),L"notepad3.exe", CSTRLEN(L"notepad3.exe")) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = true;
               }
 
-              if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+              if (StrIsNotEmpty(Globals.CurrentFile)) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-                PathRemoveFileSpec(wchDirectory);
+                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
               }
 
               SHELLEXECUTEINFO sei;
@@ -917,21 +1027,18 @@ INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 //
 //  OpenWithDlgProc()
 //
-INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   switch(umsg)
   {
 
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-
         ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP3);
 
-        SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         //SetExplorerTheme(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_OPENWITHDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
@@ -945,6 +1052,11 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         CenterDlgInParent(hwnd);
       }
+      return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
       return true;
 
 
@@ -1043,7 +1155,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
             if (lpdli->ntype != DLE_NONE)
               EndDialog(hwnd,IDOK);
             else
-              MessageBeep(0);
+              SimpleBeep();
           }
           break;
 
@@ -1080,9 +1192,9 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+    if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-      PathRemoveFileSpec(wchDirectory);
+      PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
     }
 
     SHELLEXECUTEINFO sei;
@@ -1113,20 +1225,18 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //
 //  FavoritesDlgProc()
 //
-INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
   {
 
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-
         ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP3);
 
-        SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         //SetExplorerTheme(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_FAVORITESDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
@@ -1140,6 +1250,11 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         CenterDlgInParent(hwnd);
       }
+      return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
       return true;
 
 
@@ -1237,7 +1352,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
             if (lpdli->ntype != DLE_NONE)
               EndDialog(hwnd,IDOK);
             else
-              MessageBeep(0);
+              SimpleBeep();
           }
           break;
 
@@ -1284,15 +1399,14 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
 //
 //  Controls: 100 Edit
 //
-INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch (umsg) {
-    WCHAR *pszName;
 
   case WM_INITDIALOG:
     {
-      pszName = (LPWSTR)lParam;
-      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)pszName);
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      LPCWSTR const pszName = (LPCWSTR)lParam;
 
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, MAX_PATH - 1, 0);
@@ -1303,6 +1417,11 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
     return true;
 
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
+
+
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case 100:
@@ -1310,10 +1429,11 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       break;
 
     case IDOK:
-      pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
-      GetDlgItemText(hwnd, 100, pszName,
-                     MAX_PATH - 1);
-      EndDialog(hwnd, IDOK);
+      {
+        LPWSTR pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
+        GetDlgItemText(hwnd, 100, pszName, MAX_PATH - 1);
+        EndDialog(hwnd, IDOK);
+      }
       break;
 
     case IDCANCEL:
@@ -1347,10 +1467,10 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
   if (iResult == IDOK)
   {
     if (!PathCreateFavLnk(pszName,lpszTarget,Settings.FavoritesDir)) {
-      MsgBoxLng(MBWARN,IDS_MUI_FAV_FAILURE);
+      InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
       return false;
     }
-    MsgBoxLng(MBINFO,IDS_MUI_FAV_SUCCESS);
+    InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_FAV_SUCCESS);
     return true;
   }
   return false;
@@ -1398,10 +1518,9 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
     SHFILEINFO shfi;
     ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-    DWORD dwAttr = 0;
-
-    if (ListView_GetItem(hwnd,&lvi)) {
-
+    if (ListView_GetItem(hwnd,&lvi)) 
+    {
+      DWORD dwAttr = 0;
       if (PathIsUNC(tch) || !PathFileExists(tch)) {
         dwFlags |= SHGFI_USEFILEATTRIBUTES;
         dwAttr = FILE_ATTRIBUTE_NORMAL;
@@ -1458,12 +1577,14 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
   //return(0);
 }
 
-INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
@@ -1478,8 +1599,6 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
           lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
         }
-        SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
-
         ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
@@ -1499,9 +1618,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        CheckDlgButton(hwnd, IDC_SAVEMRU, DlgBtnChk(Settings.SaveRecentFiles));
-        CheckDlgButton(hwnd, IDC_PRESERVECARET, DlgBtnChk(Settings.PreserveCaretPos));
-        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, DlgBtnChk(Settings.SaveFindReplace));
+        CheckDlgButton(hwnd, IDC_SAVEMRU, SetBtn(Settings.SaveRecentFiles));
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, SetBtn(Settings.SaveFindReplace));
 
         //if (!Settings.SaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
@@ -1510,6 +1629,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         CenterDlgInParent(hwnd);
       }
+      return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
       return true;
 
 
@@ -1530,9 +1654,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RemoveProp(hwnd,L"it");
         FreeMem(lpit);
 
-        Settings.SaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
-        Settings.PreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
-        Settings.SaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
+        Settings.SaveFindReplace = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
+        Settings.PreserveCaretPos = IsButtonChecked(hwnd, IDC_PRESERVECARET);
+        Settings.SaveRecentFiles  = IsButtonChecked(hwnd, IDC_SAVEMRU);
 
         ResizeDlg_Destroy(hwnd,&Settings.FileMRUDlgSizeX,&Settings.FileMRUDlgSizeY);
       }
@@ -1754,7 +1878,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 }
 
                 // Ask...
-                int answ = (LOWORD(wParam) == IDOK) ? MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_MRUDLG) 
+                int answ = (LOWORD(wParam) == IDOK) ? (int)InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                                     : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                 if (IDYES == answ) {
@@ -1825,30 +1949,36 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            103 Check Box    (Reset on New)
 //
 
-INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch (umsg) {
   case WM_INITDIALOG:
     {
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       CheckRadioButton(hwnd, 100, 102, 100 + Settings.FileWatchingMode);
-      if (Settings.ResetFileWatching)
+      if (Settings.ResetFileWatching) {
         CheckDlgButton(hwnd, 103, BST_CHECKED);
+      }
       CenterDlgInParent(hwnd);
     }
+    return true;
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
     return true;
 
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case IDOK:
-      if (IsDlgButtonChecked(hwnd, 100) == BST_CHECKED)
+      if (IsButtonChecked(hwnd, 100))
         Settings.FileWatchingMode = 0;
-      else if (IsDlgButtonChecked(hwnd, 101) == BST_CHECKED)
+      else if (IsButtonChecked(hwnd, 101))
         Settings.FileWatchingMode = 1;
       else
         Settings.FileWatchingMode = 2;
 
-      Settings.ResetFileWatching = (IsDlgButtonChecked(hwnd, 103) == BST_CHECKED) ? true : false;
+      Settings.ResetFileWatching = IsButtonChecked(hwnd, 103);
 
       if (Globals.bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
 
@@ -1861,7 +1991,6 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
     }
     return true;
   }
-  UNUSED(lParam);
 
   return false;
 }
@@ -1894,20 +2023,24 @@ bool ChangeNotifyDlg(HWND hwnd)
 //
 //  Controls: Edit IDC_COLUMNWRAP
 //
-INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-
-  static UINT *piNumber;
-
   switch (umsg) {
   case WM_INITDIALOG:
     {
-      piNumber = (UINT*)lParam;
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      UINT const uiNumber = *((UINT*)lParam);
+
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      SetDlgItemInt(hwnd, IDC_COLUMNWRAP, *piNumber, false);
+      SetDlgItemInt(hwnd, IDC_COLUMNWRAP, uiNumber, false);
       SendDlgItemMessage(hwnd, IDC_COLUMNWRAP, EM_LIMITTEXT, 15, 0);
       CenterDlgInParent(hwnd);
     }
+    return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
     return true;
 
 
@@ -1918,9 +2051,11 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
     case IDOK:
       {
         BOOL fTranslated;
-        UINT iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP, &fTranslated, FALSE);
+        UINT const iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP, &fTranslated, FALSE);
         if (fTranslated) {
+          UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
           *piNumber = iNewNumber;
+
           EndDialog(hwnd, IDOK);
         }
         else
@@ -1973,14 +2108,13 @@ bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
 //            202 Text
 //            203 Text
 //
-INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(lParam);
-
   switch (umsg) {
 
   case WM_INITDIALOG:
     {
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       WCHAR tch[512];
       for (int i = 0; i < 4; i++) {
@@ -2004,6 +2138,11 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
       CenterDlgInParent(hwnd);
     }
+    return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
     return true;
 
 
@@ -2073,27 +2212,34 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            101 Radio1
 //            102 Radio2
 //
-INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static int *piNumber;
-
   switch (umsg) {
 
   case WM_INITDIALOG:
     {
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      UINT const iNumber = *((UINT*)lParam);
+
+      // TODO: @@@  set GUI IDS for hard coded numbers
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      piNumber = (int*)lParam;
-      SetDlgItemInt(hwnd, 100, *piNumber, false);
+      SetDlgItemInt(hwnd, 100, iNumber, false);
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 15, 0);
 
-      if (Settings.LongLineMode == EDGE_LINE)
+      if (Settings.LongLineMode == EDGE_LINE) {
         CheckRadioButton(hwnd, 101, 102, 101);
-      else
+      }
+      else {
         CheckRadioButton(hwnd, 101, 102, 102);
-
+      }
       CenterDlgInParent(hwnd);
 
     }
+    return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
     return true;
 
 
@@ -2103,22 +2249,20 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
     case IDOK:
       {
-
         BOOL fTranslated;
-
-        UINT iNewNumber = GetDlgItemInt(hwnd, 100, &fTranslated, FALSE);
+        UINT const iNewNumber = GetDlgItemInt(hwnd, 100, &fTranslated, FALSE);
 
         if (fTranslated) {
+          UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
           *piNumber = iNewNumber;
-
-          Settings.LongLineMode = (IsDlgButtonChecked(hwnd, 101)) ? EDGE_LINE : EDGE_BACKGROUND;
+          Settings.LongLineMode = IsButtonChecked(hwnd, 101) ? EDGE_LINE : EDGE_BACKGROUND;
 
           EndDialog(hwnd, IDOK);
         }
 
-        else
+        else {
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, 100)), 1);
-
+        }
       }
       break;
 
@@ -2165,29 +2309,34 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            104 Check
 //
 
-INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  UNUSED(lParam);
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Settings.TabWidth,false);
+        SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Globals.fvCurFile.iTabWidth,false);
         SendDlgItemMessage(hwnd,IDC_TAB_WIDTH,EM_LIMITTEXT,15,0);
 
-        SetDlgItemInt(hwnd,IDC_INDENT_DEPTH,Settings.IndentWidth,false);
+        SetDlgItemInt(hwnd,IDC_INDENT_DEPTH, Globals.fvCurFile.iIndentWidth,false);
         SendDlgItemMessage(hwnd,IDC_INDENT_DEPTH,EM_LIMITTEXT,15,0);
 
-        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, Settings.TabsAsSpaces ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd,IDC_TAB_INDENTS, Settings.TabIndents ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, Settings.BackspaceUnindents ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, Settings.WarnInconsistentIndents ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, SetBtn(Globals.fvCurFile.bTabsAsSpaces));
+        CheckDlgButton(hwnd,IDC_TAB_INDENTS, SetBtn(Globals.fvCurFile.bTabIndents));
+        CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, SetBtn(Settings.BackspaceUnindents));
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
+        CheckDlgButton(hwnd,IDC_AUTO_DETECT_INDENTS, SetBtn(Settings.AutoDetectIndentSettings));
 
         CenterDlgInParent(hwnd);
       }
+      return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
       return true;
 
 
@@ -2198,16 +2347,28 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
         case IDOK: 
           {
             BOOL fTranslated1, fTranslated2;
-            UINT const iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
-            UINT const iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
+            int const _iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
+            int const _iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
 
-            if (fTranslated1 && fTranslated2) {
-              Settings.TabWidth = iNewTabWidth;
-              Settings.IndentWidth = iNewIndentWidth;
-              Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd, IDC_TAB_AS_SPC)) ? true : false;
-              Settings.TabIndents = (IsDlgButtonChecked(hwnd, IDC_TAB_INDENTS)) ? true : false;
-              Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd, IDC_BACKTAB_INDENTS)) ? true : false;
-              Settings.WarnInconsistentIndents = (IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS)) ? true : false;
+            if (fTranslated1 && fTranslated2) 
+            {
+              Settings.TabWidth = _iNewTabWidth;
+              Globals.fvCurFile.iTabWidth = _iNewTabWidth;
+
+              Settings.IndentWidth = _iNewIndentWidth;
+              Globals.fvCurFile.iIndentWidth = _iNewIndentWidth;
+
+              bool const _bTabsAsSpaces = IsButtonChecked(hwnd, IDC_TAB_AS_SPC);
+              Settings.TabsAsSpaces = _bTabsAsSpaces;
+              Globals.fvCurFile.bTabsAsSpaces = _bTabsAsSpaces;
+
+              bool const _bTabIndents = IsButtonChecked(hwnd, IDC_TAB_INDENTS);
+              Settings.TabIndents = _bTabIndents;
+              Globals.fvCurFile.bTabIndents = _bTabIndents;
+
+              Settings.BackspaceUnindents = IsButtonChecked(hwnd, IDC_BACKTAB_INDENTS);
+              Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+              Settings.AutoDetectIndentSettings = IsButtonChecked(hwnd, IDC_AUTO_DETECT_INDENTS);
               EndDialog(hwnd, IDOK);
             }
             else {
@@ -2255,17 +2416,16 @@ bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //
 //
 typedef struct encodedlg {
-  bool bRecodeOnly;
-  int  idEncoding;
-  int  cxDlg;
-  int  cyDlg;
-} ENCODEDLG, *PENCODEDLG;
+  bool       bRecodeOnly;
+  cpi_enc_t  idEncoding;
+  int        cxDlg;
+  int        cyDlg;
+} 
+ENCODEDLG, *PENCODEDLG;
 
-INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static PENCODEDLG pdd;
-
-  static int s_iEnc;
+  static cpi_enc_t s_iEnc;
   static bool s_bUseAsFallback;
   static bool s_bLoadASCIIasUTF8;
 
@@ -2273,17 +2433,15 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
   {
   case WM_INITDIALOG:
   {
-    HBITMAP hbmp;
-    HIMAGELIST himl;
-
-    pdd = (PENCODEDLG)lParam;
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    PENCODEDLG const pdd = (PENCODEDLG)lParam;
 
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-    hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     hbmp = ResizeImageForCurrentDPI(hbmp);
 
-    himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
+    HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
     ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
     DeleteObject(hbmp);
     SendDlgItemMessage(hwnd, IDC_ENCODINGLIST, CBEM_SETIMAGELIST, 0, (LPARAM)himl);
@@ -2295,13 +2453,13 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
     s_bLoadASCIIasUTF8 = Settings.LoadASCIIasUTF8;
     s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
 
-    CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
-    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
-    CheckDlgButton(hwnd, IDC_RELIABLE_DETECTION_RES, DlgBtnChk(Settings.UseReliableCEDonly));
-    CheckDlgButton(hwnd, IDC_NFOASOEM, DlgBtnChk(Settings.LoadNFOasOEM));
-    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, DlgBtnChk(Settings.NoEncodingTags));
-    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, DlgBtnChk(Settings.SkipUnicodeDetection));
-    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(Settings.SkipANSICodePageDetection));
+    CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
+    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
+    CheckDlgButton(hwnd, IDC_RELIABLE_DETECTION_RES, SetBtn(Settings.UseReliableCEDonly));
+    CheckDlgButton(hwnd, IDC_NFOASOEM, SetBtn(Settings.LoadNFOasOEM));
+    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, SetBtn(Settings.NoEncodingTags));
+    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(Settings.SkipUnicodeDetection));
+    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(Settings.SkipANSICodePageDetection));
 
     DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
 
@@ -2310,28 +2468,33 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
   return true;
 
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    return true;
+
+
   case WM_COMMAND:
     switch (LOWORD(wParam))
     {
     case IDC_ASCIIASUTF8:
       if (s_iEnc != CPI_UTF8) {
-        s_bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd, IDC_ASCIIASUTF8) == BST_CHECKED);
+        s_bLoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
       }
       break;
 
     case IDC_USEASREADINGFALLBACK:
       if (s_iEnc != CPI_ANSI_DEFAULT) {
-        s_bUseAsFallback = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
+        s_bUseAsFallback = IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK);
       }
       if (s_iEnc == CPI_UTF8) {
         if (s_bUseAsFallback) {
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
         }
         else
         {
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         }
       }
       break;
@@ -2345,47 +2508,49 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
       if (s_iEnc == CPI_UTF8) {
         if (s_bUseAsFallback) {
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
         }
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
       else if (s_iEnc == CPI_ANSI_DEFAULT) {
         DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
-        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         s_bUseAsFallback = true;
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, false);
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
       else {
         s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
         DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
-        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
     }
     break;
 
     case IDOK: {
+      PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
       if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &pdd->idEncoding)) {
         if (pdd->idEncoding < 0) {
-          MsgBoxLng(MBWARN, IDS_MUI_ERR_ENCODINGNA);
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ENCODINGNA);
           EndDialog(hwnd, IDCANCEL);
         }
         else {
-          Settings.UseDefaultForFileEncoding = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
-          Settings.LoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd, IDC_ASCIIASUTF8) == BST_CHECKED);
-          Settings.UseReliableCEDonly = (IsDlgButtonChecked(hwnd, IDC_RELIABLE_DETECTION_RES) == BST_CHECKED);
-          Settings.LoadNFOasOEM = (IsDlgButtonChecked(hwnd, IDC_NFOASOEM) == BST_CHECKED);
-          Settings.NoEncodingTags = (IsDlgButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS) == BST_CHECKED);
-          Settings.SkipUnicodeDetection = (IsDlgButtonChecked(hwnd, IDC_NOUNICODEDETECTION) == BST_CHECKED);
-          Settings.SkipANSICodePageDetection = (IsDlgButtonChecked(hwnd, IDC_NOANSICPDETECTION) == BST_CHECKED);
+          Settings.UseDefaultForFileEncoding = IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK);
+          Settings.LoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
+          Settings.UseReliableCEDonly = IsButtonChecked(hwnd, IDC_RELIABLE_DETECTION_RES);
+          Settings.LoadNFOasOEM = IsButtonChecked(hwnd, IDC_NFOASOEM);
+          Settings.NoEncodingTags = IsButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS);
+          Settings.SkipUnicodeDetection = IsButtonChecked(hwnd, IDC_NOUNICODEDETECTION);
+          Settings.SkipANSICodePageDetection = IsButtonChecked(hwnd, IDC_NOANSICPDETECTION);
           EndDialog(hwnd, IDOK);
         }
       }
-      else
+      else {
         PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_ENCODINGLIST)), 1);
+      }
     }
     break;
 
@@ -2403,7 +2568,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 //
 //  SelectDefEncodingDlg()
 //
-bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
+bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
   INT_PTR iResult;
@@ -2432,10 +2597,9 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
 //  SelectEncodingDlgProc()
 //
 //
-INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
-  static PENCODEDLG pdd;
   static HWND hwndLV;
 
   switch(umsg)
@@ -2443,11 +2607,10 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
     case WM_INITDIALOG:
       {
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        HBITMAP hbmp;
-        HIMAGELIST himl;
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+        PENCODEDLG const pdd = (PENCODEDLG)lParam;
 
-        pdd = (PENCODEDLG)lParam;
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
@@ -2455,10 +2618,10 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
-        hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+        HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
         hbmp = ResizeImageForCurrentDPI(hbmp);
 
-        himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
+        HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
         DeleteObject(hbmp);
         ListView_SetImageList(GetDlgItem(hwnd,IDC_ENCODINGLIST),himl,LVSIL_SMALL);
@@ -2476,20 +2639,25 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
       return true;
 
 
-    case WM_DESTROY:
-      ResizeDlg_Destroy(hwnd,&pdd->cxDlg,&pdd->cyDlg);
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      return true;
+
+
+    case WM_DESTROY: 
+      {
+        PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
+        ResizeDlg_Destroy(hwnd, &pdd->cxDlg, &pdd->cyDlg);
+      }
       return false;
 
 
     case WM_SIZE:
       {
-        int dx;
-        int dy;
-        HDWP hdwp;
-
+        int dx, dy;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
-        hdwp = BeginDeferWindowPos(4);
+        HDWP hdwp = BeginDeferWindowPos(4);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP4,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
@@ -2532,17 +2700,21 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
       {
 
         case IDOK:
-          if (Encoding_GetFromListView(hwndLV,&pdd->idEncoding)) {
+        {
+          PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
+          if (Encoding_GetFromListView(hwndLV, &pdd->idEncoding)) {
             if (pdd->idEncoding < 0) {
-              MsgBoxLng(MBWARN,IDS_MUI_ERR_ENCODINGNA);
-              EndDialog(hwnd,IDCANCEL);
+              InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ENCODINGNA);
+              EndDialog(hwnd, IDCANCEL);
             }
-            else
-              EndDialog(hwnd,IDOK);
+            else {
+              EndDialog(hwnd, IDOK);
+            }
           }
-          else
-            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_ENCODINGLIST)),1);
-          
+          else {
+            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_ENCODINGLIST)), 1);
+          }
+        }
           break;
 
 
@@ -2565,7 +2737,7 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 //
 //  SelectEncodingDlg()
 //
-bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
+bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
   INT_PTR iResult;
@@ -2598,7 +2770,7 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 //
 //  RecodeDlg()
 //
-bool RecodeDlg(HWND hwnd,int *pidREncoding)
+bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
 
   INT_PTR iResult;
@@ -2632,36 +2804,38 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
 //  SelectDefLineEndingDlgProc()
 //
 //
-INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  static int* piOption;
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
-        int i;
-        WCHAR wch[256] = { L'\0' };
-
-        piOption = (int*)lParam;
+        SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+        int const iOption = *((int*)lParam);
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         // Load options
-        for (i = 0; i < 3; i++) {
+        WCHAR wch[256] = { L'\0' };
+        for (int i = 0; i < 3; i++) {
           GetLngString(IDS_EOL_WIN+i,wch,COUNTOF(wch));
           SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_ADDSTRING,0,(LPARAM)wch);
         }
 
-        SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,(WPARAM)*piOption,0);
+        SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,iOption,0);
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETEXTENDEDUI,true,0);
 
-        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
-        CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, DlgBtnChk(Settings.FixLineEndings));
-        CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, DlgBtnChk(Settings.FixTrailingBlanks));
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
+        CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, SetBtn(Settings.FixLineEndings));
+        CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, SetBtn(Settings.FixTrailingBlanks));
 
         CenterDlgInParent(hwnd);
       }
+      return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
       return true;
 
 
@@ -2669,10 +2843,11 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
       switch(LOWORD(wParam))
       {
         case IDOK: {
+            int* piOption = (int*)GetWindowLongPtr(hwnd, DWLP_USER);
             *piOption = (int)SendDlgItemMessage(hwnd,IDC_EOLMODELIST,CB_GETCURSEL,0,0);
-            Settings.WarnInconsistEOLs = (IsDlgButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS) == BST_CHECKED);
-            Settings.FixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENT_EOLS) == BST_CHECKED);
-            Settings.FixTrailingBlanks = (IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS) == BST_CHECKED);
+            Settings.WarnInconsistEOLs = IsButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS);
+            Settings.FixLineEndings = IsButtonChecked(hwnd,IDC_CONSISTENT_EOLS);
+            Settings.FixTrailingBlanks = IsButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS);
             EndDialog(hwnd,IDOK);
           }
           break;
@@ -2701,6 +2876,198 @@ bool SelectDefLineEndingDlg(HWND hwnd, LPARAM piOption)
 
   return (iResult == IDOK);
 }
+
+
+
+//=============================================================================
+//
+//  WarnLineEndingDlgProc()
+//
+//
+static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam) 
+{
+  switch (umsg) 
+  {
+  case WM_INITDIALOG: {
+    SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+    const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
+
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    int const iEOLMode = fioStatus->iEOLMode;
+
+    // Load options
+    WCHAR wch[128];
+    for (int i = 0; i < 3; i++) {
+      GetLngString(IDS_MUI_EOLMODENAME_CRLF + i, wch, COUNTOF(wch));
+      SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_ADDSTRING, 0, (LPARAM)wch);
+    }
+
+    SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_SETCURSEL, iEOLMode, 0);
+    SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_SETEXTENDEDUI, TRUE, 0);
+
+    WCHAR tchFmt[128];
+    for (int i = 0; i < 3; ++i) {
+      WCHAR tchLn[32];
+      StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, fioStatus->eolCount[i]);
+      FormatNumberStr(tchLn, COUNTOF(tchLn), 0);
+      GetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, tchFmt, COUNTOF(tchFmt));
+      StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchLn);
+      SetDlgItemText(hwnd, IDC_EOL_SUM_CRLF + i, wch);
+    }
+
+    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
+    CenterDlgInParent(hwnd);
+
+    AttentionBeep(MB_ICONEXCLAMATION);
+  }
+  return true;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
+    case IDOK: 
+      {
+        EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
+        status->iEOLMode = iEOLMode;
+        Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+        EndDialog(hwnd, IDOK);
+      }
+      break;
+
+    case IDCANCEL:
+      {
+        Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
+        EndDialog(hwnd, IDCANCEL);
+      }
+      break;
+    }
+    return true;
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  SelectDefLineEndingDlg()
+//
+bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus) 
+{
+  const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer, 
+                                               MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS), 
+                                               hwnd, 
+                                               WarnLineEndingDlgProc, 
+                                               (LPARAM)fioStatus);
+  return (iResult == IDOK);
+}
+
+
+//=============================================================================
+//
+//  WarnIndentationDlgProc()
+//
+//
+static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (umsg) 
+  {
+  case WM_INITDIALOG: {
+    SetWindowLongPtr(hwnd, DWLP_USER, lParam);
+    const EditFileIOStatus* const fioStatus = (EditFileIOStatus*)lParam;
+    
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    WCHAR wch[128];
+    WCHAR tchFmt[128];
+    WCHAR tchCnt[32];
+
+    GetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iTabWidth);
+    SetDlgItemText(hwnd, IDC_INDENT_WIDTH_TAB, wch);
+
+    GetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, Globals.fvCurFile.iIndentWidth);
+    SetDlgItemText(hwnd, IDC_INDENT_WIDTH_SPC, wch);
+
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_TAB_LN]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
+    GetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_SUM_TAB, wch);
+
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_SPC_LN]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
+    GetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_SUM_SPC, wch);
+
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_MIX_LN]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
+    GetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_SUM_MIX, wch);
+
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_TAB_MOD_X]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
+    GetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_TAB_MODX, wch);
+
+    StringCchPrintf(tchCnt, COUNTOF(tchCnt), DOCPOSFMTW, fioStatus->indentCount[I_SPC_MOD_X]);
+    FormatNumberStr(tchCnt, COUNTOF(tchCnt), 0);
+    GetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, tchFmt, COUNTOF(tchFmt));
+    StringCchPrintf(wch, COUNTOF(wch), tchFmt, tchCnt);
+    SetDlgItemText(hwnd, IDC_INDENT_SPC_MODX, wch);
+
+    CheckDlgButton(hwnd, Globals.fvCurFile.bTabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
+    CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
+    CenterDlgInParent(hwnd);
+
+    AttentionBeep(MB_ICONEXCLAMATION);
+  }
+  return true;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
+    case IDOK: 
+      {
+        EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        fioStatus->iGlobalIndent = IsButtonChecked(hwnd, IDC_INDENT_BY_TABS) ? I_TAB_LN : I_SPC_LN;
+        Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+        EndDialog(hwnd, IDOK);
+      }
+      break;
+
+    case IDCANCEL: 
+      {
+        EditFileIOStatus* fioStatus = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
+        fioStatus->iGlobalIndent = I_MIX_LN;
+        Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
+        EndDialog(hwnd, IDCANCEL);
+      }
+      break;
+    }
+    return true;
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  SelectDefLineEndingDlg()
+//
+bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
+{
+  const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                               MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
+                                               hwnd,
+                                               WarnIndentationDlgProc,
+                                               (LPARAM)fioStatus);
+  return (iResult == IDOK);
+}
+
 
 
 //=============================================================================
@@ -2876,24 +3243,22 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 {
-  WCHAR szModuleName[MAX_PATH] = { L'\0' };
-  WCHAR szFileName[MAX_PATH] = { L'\0' };
-  WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
-  WCHAR tch[64] = { L'\0' };
-
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
+  WCHAR szModuleName[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
-  NormalizePathEx(szModuleName, COUNTOF(szModuleName));
+  PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));
 
+  WCHAR tch[64] = { L'\0' };
+  WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
-  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU == 2) ? 1 : 0);
+  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU ? 1 : 0));
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
-  if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile))) {
+  if (StrIsNotEmpty(Globals.IniFile)) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
     StringCchCat(szParameters, COUNTOF(szParameters), Globals.IniFile);
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
@@ -2918,8 +3283,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) 
+  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, MAX_PATH)) 
   {
+    WCHAR szFileName[MAX_PATH] = { L'\0' };
     StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
     PathQuoteSpaces(szFileName);
     StringCchCat(szParameters, COUNTOF(szParameters), L" ");
@@ -2947,13 +3313,13 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 //
 void DialogFileBrowse(HWND hwnd)
 {
-  WCHAR tchParam[MAX_PATH+1] = L"";
-  WCHAR tchExeFile[MAX_PATH+1] = L"";
-  WCHAR tchTemp[MAX_PATH+1];
+  WCHAR tchParam[MAX_PATH] = L"";
+  WCHAR tchExeFile[MAX_PATH] = L"";
+  WCHAR tchTemp[MAX_PATH];
 
   StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
 
-  if (StringCchLenW(Settings2.FileBrowserPath, 0) > 0)
+  if (StrIsNotEmpty(Settings2.FileBrowserPath))
   {
     ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
   }
@@ -2962,16 +3328,16 @@ void DialogFileBrowse(HWND hwnd)
   }
   if (PathIsRelative(tchExeFile)) {
     GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
-    PathRemoveFileSpec(tchTemp);
+    PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
     PathAppend(tchTemp, tchExeFile);
     if (PathFileExists(tchTemp)) {
       StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
     }
   }
-  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, COUNTOF(tchParam))) {
+  if (StrIsNotEmpty(tchParam) && StrIsNotEmpty(Globals.CurrentFile)) {
     StringCchCat(tchParam, COUNTOF(tchParam), L" ");
   }
-  if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+  if (StrIsNotEmpty(Globals.CurrentFile)) {
     StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
     PathQuoteSpaces(tchTemp);
     StringCchCat(tchParam, COUNTOF(tchParam), tchTemp);
@@ -2989,9 +3355,9 @@ void DialogFileBrowse(HWND hwnd)
   sei.nShow = SW_SHOWNORMAL;
   ShellExecuteEx(&sei);
 
-  if ((INT_PTR)sei.hInstApp < 32)
-    MsgBoxLng(MBWARN, IDS_MUI_ERR_BROWSE);
-
+  if ((INT_PTR)sei.hInstApp < 32) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BROWSE);
+  }
 }
 
 
@@ -3003,16 +3369,16 @@ void DialogFileBrowse(HWND hwnd)
 
 void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
-  WCHAR tchExe[MAX_PATH+2];
+  WCHAR tchExe[MAX_PATH];
 
   StringCchCopyW(tchExe, COUNTOF(tchExe), Settings2.AdministrationTool);
-  if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
+  if (bExecInstaller && StrIsEmpty(tchExe)) { return; }
 
-  WCHAR tchExePath[MAX_PATH + 2];
+  WCHAR tchExePath[MAX_PATH];
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
     // try Notepad3's dir path
     GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
-    PathRemoveFileSpec(tchExePath);
+    PathCchRemoveFileSpec(tchExePath, COUNTOF(tchExePath));
     PathCchAppend(tchExePath, COUNTOF(tchExePath), tchExe);
   }
 
@@ -3031,7 +3397,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     ShellExecuteEx(&sei);
     if ((INT_PTR)sei.hInstApp < 32)
     {
-      if (IDOK == InfoBoxLng(MBOKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
+      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
       {
         sei.lpFile = VERSION_UPDATE_CHECK;
         ShellExecuteEx(&sei);
@@ -3059,61 +3425,55 @@ static const WCHAR *pszSep = L" - ";
 static const WCHAR *pszMod = L"* ";
 static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
+static WCHAR szAdditionalTitleInfo[MAX_PATH] = { L'\0' };
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
   LPCWSTR lpszFile, int iFormat, bool bModified,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
-
-  WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szExcrptFmt[32] = { L'\0' };
-  WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szReadOnly[32] = { L'\0' };
-  WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
-
   if (bFreezeAppTitle)
     return false;
 
+  WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
+  WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
   if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
     !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
   }
-
   if (bIsElevated) {
+    WCHAR szElevatedAppName[SMALL_BUFFER] = { L'\0' };
     FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, szAppName);
     StringCchCopyN(szAppName, COUNTOF(szAppName), szElevatedAppName, COUNTOF(szElevatedAppName));
   }
 
+  WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
+  
   if (bModified)
     StringCchCopy(szTitle, COUNTOF(szTitle), pszMod);
   else
     StringCchCopy(szTitle, COUNTOF(szTitle), L"");
 
   if (StrIsNotEmpty(lpszExcerpt)) {
+    WCHAR szExcrptFmt[32] = { L'\0' };
+    WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
     GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
     StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
   }
-
-  else if (StringCchLen(lpszFile, MAX_PATH))
+  else if (StrIsNotEmpty(lpszFile))
   {
     if (iFormat < 2 && !PathIsRoot(lpszFile))
     {
-      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) {
-        SHFILEINFO shfi;
+      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) 
+      {
         StringCchCopy(szCachedFile, COUNTOF(szCachedFile), lpszFile);
-        if (SHGetFileInfo2(lpszFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES))
-          StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), shfi.szDisplayName);
-        else
-          StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), PathFindFileName(lpszFile));
+        PathGetDisplayName(szCachedDisplayName, COUNTOF(szCachedDisplayName), szCachedFile);
       }
       StringCchCat(szTitle, COUNTOF(szTitle), szCachedDisplayName);
       if (iFormat == 1) {
         WCHAR tchPath[MAX_PATH] = { L'\0' };
-        StringCchCopyN(tchPath, COUNTOF(tchPath), lpszFile, StringCchLen(lpszFile, MAX_PATH));
-        PathRemoveFileSpec(tchPath);
+        StringCchCopy(tchPath, COUNTOF(tchPath), lpszFile);
+        PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
         StringCchCat(szTitle, COUNTOF(szTitle), L" [");
         StringCchCat(szTitle, COUNTOF(szTitle), tchPath);
         StringCchCat(szTitle, COUNTOF(szTitle), L"]");
@@ -3128,6 +3488,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
     StringCchCat(szTitle, COUNTOF(szTitle), szUntitled);
   }
 
+  WCHAR szReadOnly[32] = { L'\0' };
   if (bReadOnly && GetLngString(uIDReadOnly, szReadOnly, COUNTOF(szReadOnly)))
   {
     StringCchCat(szTitle, COUNTOF(szTitle), L" ");
@@ -3137,8 +3498,19 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
   StringCchCat(szTitle, COUNTOF(szTitle), szAppName);
 
+  // UCHARDET
+  if (StrIsNotEmpty(szAdditionalTitleInfo)) {
+    StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
+    StringCchCat(szTitle, COUNTOF(szTitle), szAdditionalTitleInfo);
+  }
+
   return SetWindowText(hwnd, szTitle);
 
+}
+
+void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
+{
+  StringCchCopy(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
 
@@ -3310,6 +3682,7 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
 
     SetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE,
                      GetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+    
     int const cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
     SetWindowPos(GetDlgItem(hwnd, nIdGrip), NULL, pResizeDlg->cxClient - cGrip, pResizeDlg->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
   }
@@ -3430,8 +3803,9 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
   SendMessage(hwndCtl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
   InvalidateRect(hwndCtl, NULL, true);
 
-  if (himlOld)
+  if (himlOld) {
     ImageList_Destroy(himlOld);
+  }
 }
 
 
@@ -3443,8 +3817,9 @@ void DeleteBitmapButton(HWND hwnd, int nCtlId)
 {
   HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   BUTTON_IMAGELIST bi;
-  if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi))
+  if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)& bi)) {
     ImageList_Destroy(bi.himl);
+  }
 }
 
 
@@ -3645,7 +4020,6 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
     if ((dwTemplateSize == 0) || (pTemplate = AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY)) == NULL) {
       UnlockResource(hRsrcMem);
       FreeResource(hRsrcMem);
-      // cppcheck-suppress memleak // pTemplate is not allocated here!
       return NULL;
     }
     CopyMemory((BYTE*)pTemplate, pRsrcMem, dwTemplateSize);

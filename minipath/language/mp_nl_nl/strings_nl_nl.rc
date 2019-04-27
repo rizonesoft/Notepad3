@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Selecteer een doelmap."
     IDS_CREATELINK          "Selecteer een doelmap voor de nieuwe link."
     IDS_SAVESETTINGS        "Instellingen opslaan\nDe huidige programma-instellingen zijn opgeslagen."
-    IDS_MUI_TRANSL_AUTHOR   "(nl-NL) Nederlandse vertaling door hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "[nl-NL] Nederlandse vertaling door hpwamr"
 END
 
 

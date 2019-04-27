@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "&Neues Fenster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeres Fenster\tAlt+Shift+N",        IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "Mit erhöhten &Rechten starten",       IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "Führe &Document aus\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Öffne mit...\tAlt+L",                IDM_FILE_OPENWITH
             MENUITEM "&Kommando...\tCtrl+R",                IDM_FILE_RUN
@@ -88,11 +90,13 @@ BEGIN
             MENUITEM "UTF-8 mit &Signatur",                 IDM_ENCODING_UTF8SIGN
             MENUITEM "&Mehr Codierungen...\tF9",            IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Force Compact Encoding Detection",    CMD_RELOADFORCEDETECTION
+            MENUITEM "Erzwinge Encoding Detection",         CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "Recodiere als &Default\tCtrl-Alt-F",  CMD_RECODEDEFAULT
-            MENUITEM "Recodiere als &ANSI\tCtrl-Shift+A",   CMD_RECODEANSI
-            MENUITEM "Recodiere als &OEM\tCtrl+Shift+O",    CMD_RECODEOEM
+            MENUITEM "Recodiere als &Default\tCtrl-Alt-F",      CMD_RECODEDEFAULT
+            MENUITEM "Recodiere als &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
+            MENUITEM "Recodiere als &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
+            MENUITEM "Recodiere als &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",     CMD_RELOADASCIIASUTF8
             MENUITEM "Ignoriere Codierungs &Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
             MENUITEM "&Re-Codierung...\tF8",                IDM_ENCODING_RECODE
@@ -107,6 +111,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Voreinstellung...",                  IDM_LINEENDINGS_SETDEFAULT
         END
+        MENUITEM SEPARATOR
+        MENUITEM "Prüfe &Einrückungen..."                   CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "&Druckseiteneinstellung...",              IDM_FILE_PAGESETUP
         MENUITEM "&Drucke...\tCtrl+P",                      IDM_FILE_PRINT
@@ -185,40 +191,40 @@ BEGIN
                 MENUITEM "&Einfache Anführungszeichen\tCtrl+1", CMD_STRINGIFY
                 MENUITEM "&Doppelte Anführungszeichen\tCtrl+2", CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                         CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                         CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                         CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "&Backticks\tCtrl+6",                  CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "Umschließe &mit...\tAlt+Q",       IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "Umschließe &mit...\tAlt+Q",           IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Dupliziere Auswahl/Zeile\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Dupliziere Auswahl/Zeile\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Fülle mit Leerzeichen\tAlt+B",       IDM_EDIT_PADWITHSPACES
-            MENUITEM "&Entferne ersten Buchstaben\tAlt+Z",  IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Entferne letzten &Buchstaben\tAlt+U", IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "&Fülle mit Leerzeichen\tAlt+B",           IDM_EDIT_PADWITHSPACES
+            MENUITEM "&Entferne ersten Buchstaben\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Entferne letzten &Buchstaben\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Entferne &anhängende Leerzeichen\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Vereinige &Leerzeichen\tAlt+P",       IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Vereinige &Leerzeichen\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Numeriere Zeilen...\tAlt+M",         IDM_EDIT_MODIFYLINES
-            MENUITEM "&Zeilen &ausrichten...\tAlt+J",       IDM_EDIT_ALIGN
-            MENUITEM "&Sortiere Zeilen...\tAlt+O",          IDM_EDIT_SORTLINES
+            MENUITEM "&Numeriere Zeilen...\tAlt+M",             IDM_EDIT_MODIFYLINES
+            MENUITEM "&Zeilen &ausrichten...\tAlt+J",           IDM_EDIT_ALIGN
+            MENUITEM "&Sortiere Zeilen...\tAlt+O",              IDM_EDIT_SORTLINES
         END
         POPUP "&Konvertiere"
         BEGIN
-            MENUITEM "&Großbuchstaben\tCtrl+Shift+U",       IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Kleinbuchstaben\tCtrl+U",            IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "&Großbuchstaben\tCtrl+Shift+U",           IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&Kleinbuchstaben\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
             MENUITEM "&Inveriere Groß- und Kleinbuchstaben\tCtrl+Alt+U", IDM_EDIT_INVERTCASE
-            MENUITEM "&Nur Großbuchstaben\tCtrl+Alt+I",     IDM_EDIT_TITLECASE
-            MENUITEM "&Satz Großschreibung\tCtrl+Alt+O",    IDM_EDIT_SENTENCECASE
+            MENUITEM "&Nur Großbuchstaben\tCtrl+Alt+I",                  IDM_EDIT_TITLECASE
+            MENUITEM "&Satz Großschreibung\tCtrl+Alt+O",                 IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "Leerzeichen zu &Tabulatoren\tCtrl+Shift+T",       IDM_EDIT_CONVERTSPACES
-            MENUITEM "Tabulatoren zu &Leerzeichen\tCtrl+Shift+S",       IDM_EDIT_CONVERTTABS
+            MENUITEM "Leerzeichen zu &Tabulatoren\tCtrl+Shift+T",        IDM_EDIT_CONVERTSPACES
+            MENUITEM "Tabulatoren zu &Leerzeichen\tCtrl+Shift+S",        IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Mittels Tabulatoren einrücken\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Mittels Leerzeichen einrücken\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "Mittels Tabulatoren einrücken\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Mittels Leerzeichen einrücken\tCtrl+Alt+S",       IDM_EDIT_CONVERTTABS2
         END
         POPUP "&Einfügen"
         BEGIN
@@ -299,9 +305,9 @@ BEGIN
         MENUITEM "&Langzeilen Markierung\tCtrl+Shift+L",    IDM_VIEW_LONGLINEMARKER
         MENUITEM "Leitlinien Einrückung\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Zeige Umbruchsymbole\tCtrl+Shift+7",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Zeige Leerzeichen\tCtrl+Shift+8",         IDM_VIEW_SHOWBLANKS
         MENUITEM "Zeige Zeilenumbrüche\tCtrl+Shift+9",      IDM_VIEW_SHOWEOLS
-        MENUITEM "Zeige Umbruchsymbole\tCtrl+Shift+0",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
@@ -340,8 +346,9 @@ BEGIN
         POPUP "&Werkzeugleiste"
         BEGIN
             MENUITEM "Zeige &Werkzeugleiste",                   IDM_VIEW_TOOLBAR
-            MENUITEM "&HighDPI Werkzeugleiste",                 IDM_VIEW_TOGGLETB
+            MENUITEM "Werkzeugleiste &Umschalten",              IDM_VIEW_TOGGLETB
             MENUITEM "Werkzeugleiste &anpassen...",             IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Lade andere Toolbar...",                 IDM_VIEW_LOADTHEMETB
             MENUITEM "Zeige &Statusleiste",                     IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -373,8 +380,9 @@ BEGIN
         MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Beschleunigte Wort Navigation\tCtrl+Alt+A",  IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Eine Instanz per Datei",                      IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Nachricht bei Dateiänderung...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Eine &Instanz per Datei",                     IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Keine Nachrichten &Beeps",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-&Key Funktion"
         BEGIN
             MENUITEM "&Keine",                                  IDM_VIEW_NOESCFUNC
@@ -459,8 +467,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Zeige &Werkzeugleiste",       IDM_VIEW_TOOLBAR
-        MENUITEM "&HighDPI Werkzeugleiste",     IDM_VIEW_TOGGLETB
+        MENUITEM "Werkzeugleiste &Umschalten",  IDM_VIEW_TOGGLETB
         MENUITEM "&Werkzeugleiste anpassen...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Lade andere Toolbar...",     IDM_VIEW_LOADTHEMETB
         MENUITEM "Zeige &Statusleiste",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

@@ -19,7 +19,9 @@ extern "C" {
 /* Return false on failure: */
 int Scintilla_RegisterClasses(void *hInstance);
 int Scintilla_ReleaseResources(void);
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 int Scintilla_InputCodePage(void);
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
 int Scintilla_LinkLexers(void);
 
@@ -103,8 +105,10 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_IME_INLINE 1
 #define SCI_GETIMEINTERACTION 2678
 #define SCI_SETIMEINTERACTION 2679
-#define SCI_ISIMEOPEN 2719
-#define SCI_ISIMEMODECJK 2720
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#define SCI_ISIMEOPEN 2724
+#define SCI_ISIMEMODECJK 2725
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define MARKER_MAX 31
 #define SC_MARK_CIRCLE 0
 #define SC_MARK_ROUNDRECT 1
@@ -138,6 +142,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARK_UNDERLINE 29
 #define SC_MARK_RGBAIMAGE 30
 #define SC_MARK_BOOKMARK 31
+#define SC_MARK_VERTICALBOOKMARK 32
 #define SC_MARK_CHARACTER 10000
 #define SC_MARKNUM_FOLDEREND 25
 #define SC_MARKNUM_FOLDEROPENMID 26
@@ -269,6 +274,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_SETCARETPERIOD 2076
 #define SCI_SETWORDCHARS 2077
 #define SCI_GETWORDCHARS 2646
+#define SCI_SETCHARACTERCATEGORYOPTIMIZATION 2720
+#define SCI_GETCHARACTERCATEGORYOPTIMIZATION 2721
 #define SCI_BEGINUNDOACTION 2078
 #define SCI_ENDUNDOACTION 2079
 #define INDIC_PLAIN 0
@@ -401,7 +408,9 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETPRINTCOLOURMODE 2149
 #define SCFIND_WHOLEWORD 0x2
 #define SCFIND_MATCHCASE 0x4
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCFIND_DOT_MATCH_ALL 0x1000
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCFIND_WORDSTART 0x00100000
 #define SCFIND_REGEXP 0x00200000
 #define SCFIND_POSIX 0x00400000
@@ -494,6 +503,9 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_FOLDDISPLAYTEXT_STANDARD 1
 #define SC_FOLDDISPLAYTEXT_BOXED 2
 #define SCI_FOLDDISPLAYTEXTSETSTYLE 2701
+#define SCI_FOLDDISPLAYTEXTGETSTYLE 2707
+#define SCI_SETDEFAULTFOLDDISPLAYTEXT 2722
+#define SCI_GETDEFAULTFOLDDISPLAYTEXT 2723
 #define SC_FOLDACTION_CONTRACT 0
 #define SC_FOLDACTION_EXPAND 1
 #define SC_FOLDACTION_TOGGLE 2
@@ -691,8 +703,10 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_POPUP_TEXT 2
 #define SCI_USEPOPUP 2371
 #define SCI_SELECTIONISRECTANGLE 2372
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SC_MIN_ZOOM_LEVEL 10
 #define SC_MAX_ZOOM_LEVEL 500
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCI_SETZOOM 2373
 #define SCI_GETZOOM 2374
 #define SC_DOCUMENTOPTION_DEFAULT 0

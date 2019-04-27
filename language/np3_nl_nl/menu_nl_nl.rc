@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "&Nieuw venster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeg venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "He&rlancering met hoge rechten",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "Uitvoeren &Document\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Opslaan als...\tAlt+L",              IDM_FILE_OPENWITH
             MENUITEM "&Commando...\tCtrl+R",                IDM_FILE_RUN
@@ -88,16 +90,18 @@ BEGIN
             MENUITEM "UTF-8 met &signatuur",                    IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                            IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Forceren compacte encodering detectie",   CMD_RELOADFORCEDETECTION
+            MENUITEM "Forceren encodering detectie",            CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "Hercoderen naar &Standaard\tCtrl-Alt-F",  CMD_RECODEDEFAULT
-            MENUITEM "Hercoderen naar &ANSI\tCtrl-Shift+A",     CMD_RECODEANSI
-            MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",      CMD_RECODEOEM
-            MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",         CMD_RELOADASCIIASUTF8
-            MENUITEM "Encoderingst&ags negeren\tAlt+F8",        CMD_RELOADNOFILEVARS
-            MENUITEM "&Hercoderen...\tF8",                      IDM_ENCODING_RECODE
+            MENUITEM "Hercoderen naar &Standaard\tCtrl-Alt-F",    CMD_RECODEDEFAULT
+            MENUITEM "Hercoderen naar &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
+            MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
+            MENUITEM "Hercoderen naar &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
             MENUITEM SEPARATOR
-            MENUITEM "Instellen &standaard...",                 IDM_ENCODING_SETDEFAULT
+            MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
+            MENUITEM "Encoderingst&ags negeren\tAlt+F8",          CMD_RELOADNOFILEVARS
+            MENUITEM "&Hercoderen...\tF8",                        IDM_ENCODING_RECODE
+            MENUITEM SEPARATOR
+            MENUITEM "Instellen &standaard...",                   IDM_ENCODING_SETDEFAULT
         END
         POPUP "Lijn e&indes"
         BEGIN
@@ -107,6 +111,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Standaard...",                       IDM_LINEENDINGS_SETDEFAULT
         END
+        MENUITEM SEPARATOR
+        MENUITEM "Controleer &inspringen..."                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Pagina-inst&eling...",                    IDM_FILE_PAGESETUP
         MENUITEM "&Afdrukken...\tCtrl+P",                   IDM_FILE_PRINT
@@ -121,7 +127,7 @@ BEGIN
             MENUITEM "&Huidig bestand toevoegen...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Beheren...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recente (&Historiek)...\tCtrl+Alt+H",     IDM_FILE_RECENT     
+        MENUITEM "Recente (&Historiek)...\tCtrl+Alt+H",     IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "Af&sluiten\tAlt+F4",                      IDM_FILE_EXIT
     END
@@ -299,17 +305,17 @@ BEGIN
         MENUITEM "&Lange lijnmarkering\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
         MENUITEM "Inspringen gidsen\tCtrl+Shift+G",         IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Tonen de terugloo&p symbolen\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Tonen de &blancos\tCtrl+Shift+8",         IDM_VIEW_SHOWBLANKS
         MENUITEM "Tonen de lijn &eindes\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "Tonen de terugloo&p symbolen\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indicatoren\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visuele Brace Matching\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "Mar&keer actueel lijn\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Geen markering",                     IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Achtergrond&kleur",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Contour kader",                      IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mar&keer voorvallen"
         BEGIN
@@ -340,8 +346,9 @@ BEGIN
         POPUP "&Werkbalk"
         BEGIN
             MENUITEM "Werk&balk tonen",                                 IDM_VIEW_TOOLBAR
-            MENUITEM "Grote pictogrammen",                              IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle werkbalk",                                IDM_VIEW_TOGGLETB
             MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Laden een werkbalk thema...",                    IDM_VIEW_LOADTHEMETB
             MENUITEM "Toon &statusbalk",                                IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -375,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "En&kel bestand instantie",                            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Bestandswijziging notifi&catie...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY
+        MENUITEM " Dempen Bericht &Beeps",                                 IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &toest functie"
         BEGIN
             MENUITEM "&Geen",                               IDM_VIEW_NOESCFUNC
@@ -459,8 +467,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Werk&balk tonen",                         IDM_VIEW_TOOLBAR
-        MENUITEM "Grote pictogrammen",                      IDM_VIEW_TOGGLETB
-        MENUITEM "&Werkbal&k aanpassen...",                 IDM_VIEW_CUSTOMIZETB
+        MENUITEM "To&ggle werkbalk",                        IDM_VIEW_TOGGLETB
+        MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Laden een werkbalk thema...",            IDM_VIEW_LOADTHEMETB
         MENUITEM "Toon &statusbalk",                        IDM_VIEW_STATUSBAR
     END
     POPUP "+"

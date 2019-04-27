@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1251
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Russian (Russia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)  // Cyrillic (Win-1251)
+LANGUAGE LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA
+#pragma code_page(1251) // Cyrillic (Windows-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -81,18 +81,18 @@ BEGIN
         MENUITEM "С&бросить фильтр",            IDM_VIEW_FILTERALL
         POPUP "П&оказывать"
         BEGIN
-            MENUITEM "&Папки",                      IDM_VIEW_FOLDERS
-            MENUITEM "&Файлы",                      IDM_VIEW_FILES
-            MENUITEM "&Системные объекты",          IDM_VIEW_HIDDEN
+            MENUITEM "&Папки",                  IDM_VIEW_FOLDERS
+            MENUITEM "&Файлы",                  IDM_VIEW_FILES
+            MENUITEM "&Системные объекты",      IDM_VIEW_HIDDEN
         END
         POPUP "&Сортировка"
         BEGIN
-            MENUITEM "&Имя",                        IDM_SORT_NAME
-            MENUITEM "&Размер",                     IDM_SORT_SIZE
-            MENUITEM "&Тип",                        IDM_SORT_TYPE
-            MENUITEM "&Дата",                       IDM_SORT_DATE
+            MENUITEM "&Имя",                    IDM_SORT_NAME
+            MENUITEM "&Размер",                 IDM_SORT_SIZE
+            MENUITEM "&Тип",                    IDM_SORT_TYPE
+            MENUITEM "&Дата",                   IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "И&нвертировать",              IDM_SORT_REVERSE
+            MENUITEM "И&нвертировать",          IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
         MENUITEM "Перейти в &избранное",        IDM_VIEW_FAVORITES
@@ -114,9 +114,9 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Показать &панель инструментов", IDM_VIEW_TOOLBAR
+        MENUITEM "Показать &панель инструментов",     IDM_VIEW_TOOLBAR
         MENUITEM "&Настроить панель инструментов...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Показать &строку состояния",  IDM_VIEW_STATUSBAR
+        MENUITEM "Показать &строку состояния",        IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
@@ -125,9 +125,9 @@ BEGIN
     END
 END
 
+
 #endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
-
 
 
 #ifndef APSTUDIO_INVOKED
@@ -139,4 +139,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

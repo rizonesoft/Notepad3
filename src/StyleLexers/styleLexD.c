@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_D = {
   // Primary keywords and identifiers
   "abstract alias align asm assert auto body break case cast catch class const continue "
@@ -40,12 +32,11 @@ KEYWORDLIST KeyWords_D = {
 
 EDITLEXER lexD = { 
 SCLEX_D, IDS_LEX_D_SRC, L"D Source Code", L"d; dd; di", L"", 
-&LexFunction, // static
 &KeyWords_D, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_D_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-    { {SCE_D_COMMENTDOC}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#040A0", L"" },
+    { {SCE_D_COMMENTDOC}, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#0040A0", L"" },
     { {SCE_D_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
     { {SCE_D_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
     { {SCE_D_WORD}, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },

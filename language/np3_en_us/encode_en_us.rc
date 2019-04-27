@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -78,7 +78,9 @@ BEGIN
     IDS_ENC_ISO_8859_2             "C;Central European (ISO-8859-2);ISO-8859-2"
     IDS_ENC_MAC_CENTRAL_EUROP      "C;Central European (Mac);Mac (Central)"
     IDS_ENC_WIN_1250               "C;Central European (Windows-1250);Windows-1250"
-    IDS_ENC_GBK_2312               "C;Chinese Simplified (GBK-2312);GBK-2312"
+    IDS_ENC_GB18030                "C;Chinese (GB18030);GB-18030"
+    IDS_ENC_GB2312_80              "C;Chinese Simplified (GB2312-80);GB-2312-80"
+    IDS_ENC_GBK_936                "C;Chinese Simplified (GBK-936);GBK-936"
     IDS_ENC_MAC_ZH_CN              "C;Chinese Simplified (Mac);Mac (zh-cn)"
     IDS_ENC_BIG5                   "C;Chinese Traditional (Big5);Big5"
     IDS_ENC_MAC_ZH_TW              "C;Chinese Traditional (Mac);Mac (zh-tw)"
@@ -146,7 +148,6 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_GB18030                "C;Chinese Simplified (GB18030);GB18030"
     IDS_ENC_EUC_JAPANESE           "C;Japanese (EUC);Japanese (EUC)"
     IDS_ENC_EUC_KOREAN             "C;Korean (EUC);Korean (EUC)"
     IDS_ENC_ISO_2022_CN            "C;Chinese Traditional (ISO-2022);ISO-2022-CN"

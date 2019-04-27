@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: Shift_JIS
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Japanisch (Japan) resources
+// Japanese (Japan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
-LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)  // Japanese (Shift-JIS)
+LANGUAGE LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN
+#pragma code_page(932) // Japanese (Shift-JIS)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,12 +26,12 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
@@ -39,7 +39,7 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "#include ""../common_res.rc""\r\n"
     "#include ""menu_ja_jp.rc""\r\n"
@@ -54,7 +54,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Japanisch (Japan) resources
+#endif    // Japanese (Japan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

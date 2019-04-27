@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Sélectionner un dossier de destination."
     IDS_CREATELINK          "Sélectionner un dossier de destination pour le nouveau lien."
     IDS_SAVESETTINGS        "Enregistrer les paramètres\nLes paramètres du programme en cours ont été sauvegardés."
-    IDS_MUI_TRANSL_AUTHOR   "(fr-FR) Traduction française par hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "[fr-FR] Traduction française par hpwamr"
 END
 
 

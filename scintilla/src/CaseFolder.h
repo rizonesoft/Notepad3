@@ -24,7 +24,7 @@ public:
 	~CaseFolderTable() override;
 	size_t Fold(char *folded, size_t sizeFolded, const char *mixed, size_t lenMixed) override;
 	void SetTranslation(char ch, char chTranslation);
-	void StandardASCII();
+	void StandardASCII() noexcept;
 };
 
 class ICaseConverter;

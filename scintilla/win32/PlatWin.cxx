@@ -62,17 +62,12 @@ namespace Scintilla {
 
 UINT CodePageFromCharSet(DWORD characterSet, UINT documentCodePage);
 
-RECT RectFromPRectangle(PRectangle prc) noexcept {
-	RECT rc = {static_cast<LONG>(prc.left), static_cast<LONG>(prc.top),
-		static_cast<LONG>(prc.right), static_cast<LONG>(prc.bottom)};
-	return rc;
-}
-
 #if defined(USE_D2D)
 IDWriteFactory *pIDWriteFactory = nullptr;
 ID2D1Factory *pD2DFactory = nullptr;
 IDWriteRenderingParams *defaultRenderingParams = nullptr;
 IDWriteRenderingParams *customClearTypeRenderingParams = nullptr;
+D2D1_DRAW_TEXT_OPTIONS d2dDrawTextOptions = D2D1_DRAW_TEXT_OPTIONS_NONE;
 
 static HMODULE hDLLD2D {};
 static HMODULE hDLLDWrite {};
@@ -111,9 +106,20 @@ bool LoadD2D() {
 		if (hDLLDWrite) {
 			DWriteCFSig fnDWCF = reinterpret_cast<DWriteCFSig>(::GetProcAddress(hDLLDWrite, "DWriteCreateFactory"));
 			if (fnDWCF) {
-				fnDWCF(DWRITE_FACTORY_TYPE_SHARED,
-					__uuidof(IDWriteFactory),
+				const GUID IID_IDWriteFactory2 = // 0439fc60-ca44-4994-8dee-3a9af7b732ec
+				{ 0x0439fc60, 0xca44, 0x4994, { 0x8d, 0xee, 0x3a, 0x9a, 0xf7, 0xb7, 0x32, 0xec } };
+
+				const HRESULT hr = fnDWCF(DWRITE_FACTORY_TYPE_SHARED,
+					IID_IDWriteFactory2,
 					reinterpret_cast<IUnknown**>(&pIDWriteFactory));
+				if (SUCCEEDED(hr)) {
+					// D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT
+					d2dDrawTextOptions = static_cast<D2D1_DRAW_TEXT_OPTIONS>(0x00000004);
+				} else {
+					fnDWCF(DWRITE_FACTORY_TYPE_SHARED,
+						__uuidof(IDWriteFactory),
+						reinterpret_cast<IUnknown**>(&pIDWriteFactory));
+				}
 			}
 		}
 
@@ -152,7 +158,7 @@ struct FormatAndMetrics {
 	FLOAT yAscent;
 	FLOAT yDescent;
 	FLOAT yInternalLeading;
-	FormatAndMetrics(HFONT hfont_, int extraFontFlag_, int characterSet_) :
+	FormatAndMetrics(HFONT hfont_, int extraFontFlag_, int characterSet_) noexcept :
 		technology(SCWIN_TECH_GDI), hfont(hfont_),
 #if defined(USE_D2D)
 		pTextFormat(nullptr),
@@ -165,7 +171,7 @@ struct FormatAndMetrics {
 	        int characterSet_,
 	        FLOAT yAscent_,
 	        FLOAT yDescent_,
-	        FLOAT yInternalLeading_) :
+	        FLOAT yInternalLeading_) noexcept :
 		technology(SCWIN_TECH_DIRECTWRITE),
 		hfont{},
 		pTextFormat(pTextFormat_),
@@ -228,11 +234,11 @@ HFONT FormatAndMetrics::HFont() {
 
 namespace {
 
-void *PointerFromWindow(HWND hWnd) {
+void *PointerFromWindow(HWND hWnd) noexcept {
 	return reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, 0));
 }
 
-void SetWindowPointer(HWND hWnd, void *ptr) {
+void SetWindowPointer(HWND hWnd, void *ptr) noexcept {
 	::SetWindowLongPtr(hWnd, 0, reinterpret_cast<LONG_PTR>(ptr));
 }
 
@@ -241,11 +247,11 @@ HINSTANCE hinstPlatformRes {};
 
 HCURSOR reverseArrowCursor {};
 
-FormatAndMetrics *FamFromFontID(void *fid) {
+FormatAndMetrics *FamFromFontID(void *fid) noexcept {
 	return static_cast<FormatAndMetrics *>(fid);
 }
 
-BYTE Win32MapFontQuality(int extraFontFlag) {
+constexpr BYTE Win32MapFontQuality(int extraFontFlag) noexcept {
 	switch (extraFontFlag & SC_EFF_QUALITY_MASK) {
 
 		case SC_EFF_QUALITY_NON_ANTIALIASED:
@@ -263,7 +269,7 @@ BYTE Win32MapFontQuality(int extraFontFlag) {
 }
 
 #if defined(USE_D2D)
-D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(int extraFontFlag) {
+constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(int extraFontFlag) noexcept {
 	switch (extraFontFlag & SC_EFF_QUALITY_MASK) {
 
 		case SC_EFF_QUALITY_NON_ANTIALIASED:
@@ -284,7 +290,7 @@ D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(int extraFontFlag) {
 void SetLogFont(LOGFONTW &lf, const char *faceName, int characterSet, float size, int weight, bool italic, int extraFontFlag) {
 	lf = LOGFONTW();
 	// The negative is to allow for leading
-	lf.lfHeight = -(abs(lround(size)));
+	lf.lfHeight = -(std::abs(std::lround(size)));
 	lf.lfWeight = weight;
 	lf.lfItalic = italic ? 1 : 0;
 	lf.lfCharSet = static_cast<BYTE>(characterSet);
@@ -292,73 +298,24 @@ void SetLogFont(LOGFONTW &lf, const char *faceName, int characterSet, float size
 	UTF16FromUTF8(faceName, lf.lfFaceName, LF_FACESIZE);
 }
 
-/**
- * Create a hash from the parameters for a font to allow easy checking for identity.
- * If one font is the same as another, its hash will be the same, but if the hash is the
- * same then they may still be different.
- */
-int HashFont(const FontParameters &fp) noexcept {
-	return
-		static_cast<int>(fp.size) ^
-		(fp.characterSet << 10) ^
-		((fp.extraFontFlag & SC_EFF_QUALITY_MASK) << 9) ^
-		((fp.weight/100) << 12) ^
-		(fp.italic ? 0x20000000 : 0) ^
-		(fp.technology << 15) ^
-		fp.faceName[0];
-}
-
-}
-
-class FontCached : Font {
-	FontCached *next;
-	int usage;
-	float size;
+FontID CreateFontFromParameters(const FontParameters &fp) {
 	LOGFONTW lf;
-	int technology;
-	int hash;
-	explicit FontCached(const FontParameters &fp);
-	bool SameAs(const FontParameters &fp);
-	void Release() override;
-
-	static FontCached *first;
-public:
-	~FontCached() override {}
-	static FontID FindOrCreate(const FontParameters &fp);
-	static void ReleaseId(FontID fid_);
-};
-
-FontCached *FontCached::first = nullptr;
-
-FontCached::FontCached(const FontParameters &fp) :
-	next(nullptr), usage(0), size(1.0), hash(0) {
 	SetLogFont(lf, fp.faceName, fp.characterSet, fp.size, fp.weight, fp.italic, fp.extraFontFlag);
-	technology = fp.technology;
-	hash = HashFont(fp);
-	fid = 0;
-	if (technology == SCWIN_TECH_GDI) {
+	FontID fid = nullptr;
+	if (fp.technology == SCWIN_TECH_GDI) {
 		HFONT hfont = ::CreateFontIndirectW(&lf);
 		fid = new FormatAndMetrics(hfont, fp.extraFontFlag, fp.characterSet);
 	} else {
 #if defined(USE_D2D)
 		IDWriteTextFormat *pTextFormat = nullptr;
-		const int faceSize = 200;
-		WCHAR wszFace[faceSize] = L"";
-		UTF16FromUTF8(fp.faceName, wszFace, faceSize);
+		const std::wstring wsFace = WStringFromUTF8(fp.faceName);
 		const FLOAT fHeight = fp.size;
 		const DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
-
-    //HRESULT hr = pIDWriteFactory->CreateTextFormat(wszFace, nullptr,
-		//	static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
-		//	style,
-		//	DWRITE_FONT_STRETCH_NORMAL, fHeight, L"en-us", &pTextFormat);
-    // patch for rendering chineese fonts: (https://sourceforge.net/p/scintilla/bugs/2027/)
-    HRESULT hr = pIDWriteFactory->CreateTextFormat(wszFace, nullptr,
-      static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
-      style,
-      DWRITE_FONT_STRETCH_NORMAL, fHeight, L"", &pTextFormat);
-
-    if (SUCCEEDED(hr)) {
+		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
+			static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+			style,
+			DWRITE_FONT_STRETCH_NORMAL, fHeight, L"en-us", &pTextFormat);
+		if (SUCCEEDED(hr)) {
 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
 			FLOAT yAscent = 1.0f;
@@ -389,67 +346,9 @@ FontCached::FontCached(const FontParameters &fp) :
 		}
 #endif
 	}
-	usage = 1;
+	return fid;
 }
 
-bool FontCached::SameAs(const FontParameters &fp) {
-	if (
-		(size == fp.size) &&
-		(lf.lfWeight == fp.weight) &&
-		(lf.lfItalic == (fp.italic ? 1 : 0)) &&
-		(lf.lfCharSet == fp.characterSet) &&
-		(lf.lfQuality == Win32MapFontQuality(fp.extraFontFlag)) &&
-		(technology == fp.technology)) {
-			wchar_t wszFace[LF_FACESIZE] = L"";
-			UTF16FromUTF8(fp.faceName, wszFace, LF_FACESIZE);
-			return 0 == wcscmp(lf.lfFaceName,wszFace);
-	}
-	return false;
-}
-
-void FontCached::Release() {
-	delete FamFromFontID(fid);
-	fid = nullptr;
-}
-
-FontID FontCached::FindOrCreate(const FontParameters &fp) {
-	FontID ret {};
-	::EnterCriticalSection(&crPlatformLock);
-	const int hashFind = HashFont(fp);
-	for (FontCached *cur=first; cur; cur=cur->next) {
-		if ((cur->hash == hashFind) &&
-			cur->SameAs(fp)) {
-			cur->usage++;
-			ret = cur->fid;
-		}
-	}
-	if (!ret) {
-		FontCached *fc = new FontCached(fp);
-		fc->next = first;
-		first = fc;
-		ret = fc->fid;
-	}
-	::LeaveCriticalSection(&crPlatformLock);
-	return ret;
-}
-
-void FontCached::ReleaseId(FontID fid_) {
-	::EnterCriticalSection(&crPlatformLock);
-	FontCached **pcur=&first;
-	for (FontCached *cur=first; cur; cur=cur->next) {
-		if (cur->fid == fid_) {
-			cur->usage--;
-			if (cur->usage == 0) {
-				*pcur = cur->next;
-				cur->Release();
-				cur->next = nullptr;
-				delete cur;
-			}
-			break;
-		}
-		pcur=&cur->next;
-	}
-	::LeaveCriticalSection(&crPlatformLock);
 }
 
 Font::Font() noexcept : fid{} {
@@ -458,18 +357,16 @@ Font::Font() noexcept : fid{} {
 Font::~Font() {
 }
 
-#define FONTS_CACHED
-
 void Font::Create(const FontParameters &fp) {
 	Release();
 	if (fp.faceName)
-		fid = FontCached::FindOrCreate(fp);
+		fid = CreateFontFromParameters(fp);
 }
 
 void Font::Release() {
 	if (fid)
-		FontCached::ReleaseId(fid);
-	fid = 0;
+		delete FamFromFontID(fid);
+	fid = nullptr;
 }
 
 // Buffer to hold strings and string position arrays without always allocating on heap.
@@ -538,17 +435,17 @@ class SurfaceGDI : public Surface {
 
 	void BrushColor(ColourDesired back);
 	void SetFont(Font &font_);
-	void Clear();
+	void Clear() noexcept;
 
 public:
-	SurfaceGDI();
+	SurfaceGDI() noexcept;
 	// Deleted so SurfaceGDI objects can not be copied.
 	SurfaceGDI(const SurfaceGDI &) = delete;
 	SurfaceGDI(SurfaceGDI &&) = delete;
 	SurfaceGDI &operator=(const SurfaceGDI &) = delete;
 	SurfaceGDI &operator=(SurfaceGDI &&) = delete;
 
-	~SurfaceGDI() override;
+	~SurfaceGDI() noexcept override;
 
 	void Init(WindowID wid) override;
 	void Init(SurfaceID sid, WindowID wid) override;
@@ -595,14 +492,14 @@ public:
 	void SetBidiR2L(bool bidiR2L_) override;
 };
 
-SurfaceGDI::SurfaceGDI() {
+SurfaceGDI::SurfaceGDI() noexcept {
 }
 
-SurfaceGDI::~SurfaceGDI() {
+SurfaceGDI::~SurfaceGDI() noexcept {
 	Clear();
 }
 
-void SurfaceGDI::Clear() {
+void SurfaceGDI::Clear() noexcept {
 	if (penOld) {
 		::SelectObject(hdc, penOld);
 		::DeleteObject(pen);
@@ -769,7 +666,7 @@ void SurfaceGDI::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesir
 namespace {
 
 // Plot a point into a DWORD buffer symmetrically to all 4 quadrants
-void __forceinline AllFour(DWORD *pixels, int width, int height, int x, int y, DWORD val) {
+void AllFour(DWORD *pixels, int width, int height, int x, int y, DWORD val) noexcept {
 	pixels[y*width+x] = val;
 	pixels[y*width+width-1-x] = val;
 	pixels[(height-1-y)*width+x] = val;
@@ -788,7 +685,7 @@ DWORD dwordFromBGRA(byte b, byte g, byte r, byte a) noexcept {
 	return converter.val;
 }
 
-DWORD dwordMultiplied(ColourDesired colour, unsigned int alpha) {
+DWORD dwordMultiplied(ColourDesired colour, unsigned int alpha) noexcept {
 	return dwordFromBGRA(
 		static_cast<byte>(colour.GetBlue() * alpha / 255),
 		static_cast<byte>(colour.GetGreen() * alpha / 255),
@@ -841,7 +738,9 @@ void SurfaceGDI::AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fil
 
 			const BLENDFUNCTION merge = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
 
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			GdiAlphaBlend(hdc, rcw.left, rcw.top, width, height, hMemDC, 0, 0, width, height, merge);
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 			SelectBitmap(hMemDC, hbmOld);
 			::DeleteObject(hbmMem);
@@ -864,10 +763,10 @@ void SurfaceGDI::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 	if (rc.Width() > 0) {
 		HDC hMemDC = ::CreateCompatibleDC(hdc);
 		if (rc.Width() > width)
-			rc.left += floor((rc.Width() - width) / 2);
+			rc.left += std::floor((rc.Width() - width) / 2);
 		rc.right = rc.left + width;
 		if (rc.Height() > height)
-			rc.top += floor((rc.Height() - height) / 2);
+			rc.top += std::floor((rc.Height() - height) / 2);
 		rc.bottom = rc.top + height;
 
 		const BITMAPINFO bpih = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, 0, 0, 0, 0, 0},
@@ -892,8 +791,10 @@ void SurfaceGDI::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 
 			const BLENDFUNCTION merge = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
 
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			GdiAlphaBlend(hdc, static_cast<int>(rc.left), static_cast<int>(rc.top),
 				static_cast<int>(rc.Width()), static_cast<int>(rc.Height()), hMemDC, 0, 0, width, height, merge);
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 			SelectBitmap(hMemDC, hbmOld);
 			::DeleteObject(hbmMem);
@@ -1104,11 +1005,11 @@ class SurfaceD2D : public Surface {
 	float dpiScaleX;
 	float dpiScaleY;
 
-	void Clear();
+	void Clear() noexcept;
 	void SetFont(Font &font_);
 
 public:
-	SurfaceD2D();
+	SurfaceD2D() noexcept;
 	// Deleted so SurfaceD2D objects can not be copied.
 	SurfaceD2D(const SurfaceD2D &) = delete;
 	SurfaceD2D(SurfaceD2D &&) = delete;
@@ -1166,7 +1067,7 @@ public:
 	void SetBidiR2L(bool bidiR2L_) override;
 };
 
-SurfaceD2D::SurfaceD2D() :
+SurfaceD2D::SurfaceD2D() noexcept :
 	unicodeMode(false),
 	x(0), y(0) {
 
@@ -1194,7 +1095,7 @@ SurfaceD2D::~SurfaceD2D() {
 	Clear();
 }
 
-void SurfaceD2D::Clear() {
+void SurfaceD2D::Clear() noexcept {
 	if (pBrush) {
 		pBrush->Release();
 		pBrush = nullptr;
@@ -1297,7 +1198,7 @@ void SurfaceD2D::SetFont(Font &font_) {
 	yDescent = pfm->yDescent;
 	yInternalLeading = pfm->yInternalLeading;
 	codePageText = codePage;
-	if (pfm->characterSet) {
+	if (!unicodeMode && pfm->characterSet) {
 		codePageText = Scintilla::CodePageFromCharSet(pfm->characterSet, codePage);
 	}
 	if (pRenderTarget) {
@@ -1326,7 +1227,7 @@ void SurfaceD2D::MoveTo(int x_, int y_) {
 	y = y_;
 }
 
-static int Delta(int difference) {
+static constexpr int Delta(int difference) noexcept {
 	if (difference < 0)
 		return -1;
 	else if (difference > 0)
@@ -1345,14 +1246,14 @@ void SurfaceD2D::LineTo(int x_, int y_) {
 			// Horizontal or vertical lines can be more precisely drawn as a filled rectangle
 			const int xEnd = x_ - xDelta;
 			const int left = std::min(x, xEnd);
-			const int width = abs(x - xEnd) + 1;
+			const int width = std::abs(x - xEnd) + 1;
 			const int yEnd = y_ - yDelta;
 			const int top = std::min(y, yEnd);
-			const int height = abs(y - yEnd) + 1;
+			const int height = std::abs(y - yEnd) + 1;
 			const D2D1_RECT_F rectangle1 = D2D1::RectF(static_cast<float>(left), static_cast<float>(top),
 				static_cast<float>(left+width), static_cast<float>(top+height));
 			pRenderTarget->FillRectangle(&rectangle1, pBrush);
-		} else if ((abs(xDiff) == abs(yDiff))) {
+		} else if ((std::abs(xDiff) == std::abs(yDiff))) {
 			// 45 degree slope
 			pRenderTarget->DrawLine(D2D1::Point2F(x + 0.5f, y + 0.5f),
 				D2D1::Point2F(x_ + 0.5f - xDelta, y_ + 0.5f - yDelta), pBrush);
@@ -1397,7 +1298,7 @@ void SurfaceD2D::Polygon(Point *pts, size_t npts, ColourDesired fore, ColourDesi
 
 void SurfaceD2D::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back) {
 	if (pRenderTarget) {
-		const D2D1_RECT_F rectangle1 = D2D1::RectF(round(rc.left) + 0.5f, rc.top+0.5f, round(rc.right) - 0.5f, rc.bottom-0.5f);
+		const D2D1_RECT_F rectangle1 = D2D1::RectF(std::round(rc.left) + 0.5f, rc.top+0.5f, std::round(rc.right) - 0.5f, rc.bottom-0.5f);
 		D2DPenColour(back);
 		pRenderTarget->FillRectangle(&rectangle1, pBrush);
 		D2DPenColour(fore);
@@ -1408,7 +1309,7 @@ void SurfaceD2D::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired 
 void SurfaceD2D::FillRectangle(PRectangle rc, ColourDesired back) {
 	if (pRenderTarget) {
 		D2DPenColour(back);
-        const D2D1_RECT_F rectangle1 = D2D1::RectF(round(rc.left), rc.top, round(rc.right), rc.bottom);
+        const D2D1_RECT_F rectangle1 = D2D1::RectF(std::round(rc.left), rc.top, std::round(rc.right), rc.bottom);
         pRenderTarget->FillRectangle(&rectangle1, pBrush);
 	}
 }
@@ -1458,23 +1359,23 @@ void SurfaceD2D::AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fil
 	if (pRenderTarget) {
 		if (cornerSize == 0) {
 			// When corner size is zero, draw square rectangle to prevent blurry pixels at corners
-			const D2D1_RECT_F rectFill = D2D1::RectF(round(rc.left) + 1.0f, rc.top + 1.0f, round(rc.right) - 1.0f, rc.bottom - 1.0f);
+			const D2D1_RECT_F rectFill = D2D1::RectF(std::round(rc.left) + 1.0f, rc.top + 1.0f, std::round(rc.right) - 1.0f, rc.bottom - 1.0f);
 			D2DPenColour(fill, alphaFill);
 			pRenderTarget->FillRectangle(rectFill, pBrush);
 
-			const D2D1_RECT_F rectOutline = D2D1::RectF(round(rc.left) + 0.5f, rc.top + 0.5f, round(rc.right) - 0.5f, rc.bottom - 0.5f);
+			const D2D1_RECT_F rectOutline = D2D1::RectF(std::round(rc.left) + 0.5f, rc.top + 0.5f, std::round(rc.right) - 0.5f, rc.bottom - 0.5f);
 			D2DPenColour(outline, alphaOutline);
 			pRenderTarget->DrawRectangle(rectOutline, pBrush);
 		} else {
 			const float cornerSizeF = static_cast<float>(cornerSize);
 			D2D1_ROUNDED_RECT roundedRectFill = {
-				D2D1::RectF(round(rc.left) + 1.0f, rc.top + 1.0f, round(rc.right) - 1.0f, rc.bottom - 1.0f),
+				D2D1::RectF(std::round(rc.left) + 1.0f, rc.top + 1.0f, std::round(rc.right) - 1.0f, rc.bottom - 1.0f),
 				cornerSizeF, cornerSizeF};
 			D2DPenColour(fill, alphaFill);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
 			D2D1_ROUNDED_RECT roundedRect = {
-				D2D1::RectF(round(rc.left) + 0.5f, rc.top + 0.5f, round(rc.right) - 0.5f, rc.bottom - 0.5f),
+				D2D1::RectF(std::round(rc.left) + 0.5f, rc.top + 0.5f, std::round(rc.right) - 0.5f, rc.bottom - 0.5f),
 				cornerSizeF, cornerSizeF};
 			D2DPenColour(outline, alphaOutline);
 			pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush);
@@ -1523,7 +1424,7 @@ void SurfaceD2D::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 		hr = pRenderTarget->CreateLinearGradientBrush(
 			lgbp, pGradientStops, &pBrushLinear);
 		if (SUCCEEDED(hr)) {
-			const D2D1_RECT_F rectangle = D2D1::RectF(round(rc.left), rc.top, round(rc.right), rc.bottom);
+			const D2D1_RECT_F rectangle = D2D1::RectF(std::round(rc.left), rc.top, std::round(rc.right), rc.bottom);
 			pRenderTarget->FillRectangle(&rectangle, pBrushLinear);
 			pBrushLinear->Release();
 		}
@@ -1534,10 +1435,10 @@ void SurfaceD2D::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) {
 	if (pRenderTarget) {
 		if (rc.Width() > width)
-			rc.left += floor((rc.Width() - width) / 2);
+			rc.left += std::floor((rc.Width() - width) / 2);
 		rc.right = rc.left + width;
 		if (rc.Height() > height)
-			rc.top += floor((rc.Height() - height) / 2);
+			rc.top += std::floor((rc.Height() - height) / 2);
 		rc.bottom = rc.top + height;
 
 		std::vector<unsigned char> image(height * width * 4);
@@ -2009,7 +1910,7 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, Font &font_, XYPOSITION ybase, st
 				rc.Width(), rc.Height(), &pTextLayout);
 		if (SUCCEEDED(hr)) {
 			D2D1_POINT_2F origin = {rc.left, ybase-yAscent};
-			pRenderTarget->DrawTextLayout(origin, pTextLayout, pBrush, D2D1_DRAW_TEXT_OPTIONS_NONE);
+			pRenderTarget->DrawTextLayout(origin, pTextLayout, pBrush, d2dDrawTextOptions);
 			pTextLayout->Release();
 		}
 
@@ -2124,7 +2025,7 @@ void SurfaceD2D::MeasureWidths(Font &font_, std::string_view text, XYPOSITION *p
 		while (i<text.length()) {
 			positions[i++] = lastPos;
 		}
-	} else if (codePageText == 0) {
+	} else if (!IsDBCSCodePage(codePageText)) {
 
 		// One char per position
 		PLATFORM_ASSERT(text.length() == static_cast<size_t>(tbuf.tlen));
@@ -2152,17 +2053,17 @@ void SurfaceD2D::MeasureWidths(Font &font_, std::string_view text, XYPOSITION *p
 
 XYPOSITION SurfaceD2D::Ascent(Font &font_) {
 	SetFont(font_);
-	return ceil(yAscent);
+	return std::ceil(yAscent);
 }
 
 XYPOSITION SurfaceD2D::Descent(Font &font_) {
 	SetFont(font_);
-	return ceil(yDescent);
+	return std::ceil(yDescent);
 }
 
 XYPOSITION SurfaceD2D::InternalLeading(Font &font_) {
 	SetFont(font_);
-	return floor(yInternalLeading);
+	return std::floor(yInternalLeading);
 }
 
 XYPOSITION SurfaceD2D::Height(Font &font_) {
@@ -2227,7 +2128,7 @@ Surface *Surface::Allocate(int technology) {
 
 namespace {
 
-HWND HwndFromWindowID(WindowID wid) {
+HWND HwndFromWindowID(WindowID wid) noexcept {
 	return static_cast<HWND>(wid);
 }
 
@@ -2256,14 +2157,14 @@ void Window::SetPosition(PRectangle rc) {
 
 namespace {
 
-static RECT RectFromMonitor(HMONITOR hMonitor) {
+static RECT RectFromMonitor(HMONITOR hMonitor) noexcept {
 	MONITORINFO mi = {};
 	mi.cbSize = sizeof(mi);
 	if (GetMonitorInfo(hMonitor, &mi)) {
 		return mi.rcWork;
 	}
 	RECT rc = {0, 0, 0, 0};
-	if (::SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0) == 0) {
+	if (::SystemParametersInfoA(SPI_GETWORKAREA, 0, &rc, 0) == 0) {
 		rc.left = 0;
 		rc.top = 0;
 		rc.right = 0;
@@ -2335,7 +2236,7 @@ void Window::SetFont(Font &font) {
 
 namespace {
 
-void FlipBitmap(HBITMAP bitmap, int width, int height) {
+void FlipBitmap(HBITMAP bitmap, int width, int height) noexcept {
 	HDC hdc = ::CreateCompatibleDC(NULL);
 	if (hdc) {
 		HBITMAP prevBmp = SelectBitmap(hdc, bitmap);
@@ -2345,7 +2246,7 @@ void FlipBitmap(HBITMAP bitmap, int width, int height) {
 	}
 }
 
-HCURSOR GetReverseArrowCursor() {
+HCURSOR GetReverseArrowCursor() noexcept {
 	if (reverseArrowCursor)
 		return reverseArrowCursor;
 
@@ -2440,7 +2341,7 @@ class LineToItem {
 	std::vector<ListItemData> data;
 
 public:
-	void Clear() {
+	void Clear() noexcept {
 		words.clear();
 		data.clear();
 	}
@@ -2453,7 +2354,7 @@ public:
 			return missing;
 		}
 	}
-	int Count() const {
+	int Count() const noexcept {
 		return static_cast<int>(data.size());
 	}
 
@@ -2910,9 +2811,7 @@ void ListBoxX::ResizeToCursor() {
 	PRectangle rc = GetPosition();
 	POINT ptw;
 	::GetCursorPos(&ptw);
-	Point pt = Point::FromInts(ptw.x, ptw.y);
-	pt.x += dragOffset.x;
-	pt.y += dragOffset.y;
+	const Point pt = Point::FromInts(ptw.x, ptw.y) + dragOffset;
 
 	switch (resizeHit) {
 		case HTLEFT:
@@ -3256,7 +3155,7 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 		return ::DefWindowProc(hWnd, iMessage, wParam, lParam);
 	case WM_MOUSEWHEEL:
 		wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
-		if (abs(wheelDelta) >= WHEEL_DELTA) {
+		if (std::abs(wheelDelta) >= WHEEL_DELTA) {
 			const int nRows = GetVisibleRows();
 			int linesToScroll = 1;
 			if (nRows > 1) {
@@ -3303,7 +3202,7 @@ LRESULT PASCAL ListBoxX::StaticWndProc(
 
 namespace {
 
-bool ListBoxX_Register() {
+bool ListBoxX_Register() noexcept {
 	WNDCLASSEX wndclassc;
 	wndclassc.cbSize = sizeof(wndclassc);
 	// We need CS_HREDRAW and CS_VREDRAW because of the ellipsis that might be drawn for
@@ -3324,7 +3223,7 @@ bool ListBoxX_Register() {
 	return ::RegisterClassEx(&wndclassc) != 0;
 }
 
-bool ListBoxX_Unregister() {
+bool ListBoxX_Unregister() noexcept {
 	return ::UnregisterClass(ListBoxX_ClassName, hinstPlatformRes) != 0;
 }
 
@@ -3355,7 +3254,7 @@ class DynamicLibraryImpl : public DynamicLibrary {
 protected:
 	HMODULE h;
 public:
-	explicit DynamicLibraryImpl(const char *modulePath) {
+	explicit DynamicLibraryImpl(const char *modulePath) noexcept {
 		h = ::LoadLibraryA(modulePath);
 	}
 
@@ -3365,7 +3264,7 @@ public:
 	}
 
 	// Use GetProcAddress to get a pointer to the relevant function.
-	Function FindFunction(const char *name) override {
+	Function FindFunction(const char *name) noexcept override {
 		if (h) {
 			// C++ standard doesn't like casts between function pointers and void pointers so use a union
 			union {
@@ -3379,7 +3278,7 @@ public:
 		}
 	}
 
-	bool IsValid() override {
+	bool IsValid() noexcept override {
 		return h != NULL;
 	}
 };

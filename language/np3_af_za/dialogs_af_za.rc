@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Afrikaans (South Africa) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_AFK)
-LANGUAGE LANG_AFRIKAANS, SUBLANG_DEFAULT
-#pragma code_page(1252)  // Western European (Win-1252)
+LANGUAGE LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_AFRIKAANS, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -75,8 +75,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Command Line Help"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK", IDOK, 239, 187, 55, 16
-    EDITTEXT        IDC_CMDLINEHELP, 15, 7, 278, 176, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
+    DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
+    EDITTEXT        IDC_CMDLINEHELP,15,7,278,176,ES_MULTILINE | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 283, 142
@@ -96,10 +96,11 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,65,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,73,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
-    PUSHBUTTON      "Maak toe",IDCANCEL,222,99,55,14
+    PUSHBUTTON      "Maak toe",IDCANCEL,221,99,55,14
     CONTROL         "<a>Gaan na vervang (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,135,103,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,116,85,14,10
@@ -128,7 +129,7 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,77,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,73,10
     CONTROL         "W&isselkarakterd Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,73,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,23,55,14
@@ -192,8 +193,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
     CONTROL         "Slaan &ANSI-kode opsporing oor.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
-    CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
+    CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,140,151,50,14
 END
@@ -213,6 +213,26 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,139,24,50,14
+END
+
+IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Inconsistent Line Endings"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Inconsistent line endings found in file:",IDC_STATIC,7,7,180,8
+    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
+    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "&Do you want to normalize the line endings?",IDC_STATIC,7,52,180,8
+    COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Yes",IDOK,138,63,50,14
+    PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
+    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_EOLS,
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
@@ -296,10 +316,10 @@ BEGIN
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Pas skemas aan",IDC_TITLE,220,25,200,12
-    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 102
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Tab Instellings"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -314,8 +334,33 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,117,24,50,14
+END
+
+IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Inconsistent Indentation"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Statistics: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
+    LTEXT           "Blanks[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
+    LTEXT           "Mixed[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
+    LTEXT           "%s line(s)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
+    LTEXT           "%s line(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
+    LTEXT           "%s line(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
+    GROUPBOX        "Re-Indent All ? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
+    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
+    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
+    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
+    PUSHBUTTON      "&Yes",IDOK,80,98,50,14
+    PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
+    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
@@ -606,16 +651,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTI
 CAPTION "Font Kieser"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    LTEXT           "&Font:", IDC_STATIC, 7, 7, 127, 8
-    COMBOBOX        IDC_FONT_FAMILY_NAMES, 7, 16, 138, 84, CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "F&ont Styl:", IDC_STATIC, 154, 7, 72, 8
-    COMBOBOX        IDC_FONT_FACE_NAMES, 154, 16, 84, 84, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Grootte:", IDC_STATIC, 247, 7, 40, 8
-    COMBOBOX        IDC_FONT_SIZE, 247, 16, 44, 84, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Voorbeeld", IDC_STATIC, 7, 102, 284, 68, BS_BITMAP
-    CONTROL         "", IDC_SAMPLE_BOX, "Static", SS_OWNERDRAW, 10, 112, 276, 54
-    DEFPUSHBUTTON   "OK", IDOK, 182, 178, 50, 14
-    PUSHBUTTON      "Kanselleer", IDCANCEL, 240, 178, 50, 14
+    LTEXT           "&Font:",IDC_STATIC,7,7,127,8
+    COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "F&ont Styl:",IDC_STATIC,154,7,72,8
+    COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Grootte:",IDC_STATIC,247,7,40,8
+    COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Voorbeeld",IDC_STATIC,7,102,284,68,BS_BITMAP
+    CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
+    DEFPUSHBUTTON   "OK",IDOK,182,178,50,14
+    PUSHBUTTON      "Kanselleer",IDCANCEL,240,178,50,14
 END
 
 
@@ -627,7 +672,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
-
     IDD_MUI_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 4
@@ -686,6 +730,14 @@ BEGIN
         BOTTOMMARGIN, 73
     END
 
+    IDD_MUI_WARNLINEENDS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 93
+    END
+
     IDD_MUI_LINENUM, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -731,7 +783,15 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 167
         TOPMARGIN, 7
-        BOTTOMMARGIN, 95
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_MUI_WARNINDENTATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 131
     END
 
     IDD_MUI_LONGLINES, DIALOG
@@ -881,13 +941,12 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 193
     END
-
 END
 #endif    // APSTUDIO_INVOKED
 
-
 #endif    // Afrikaans (South Africa) resources
 /////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef APSTUDIO_INVOKED
@@ -899,5 +958,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
 

@@ -14,6 +14,23 @@
 #ifndef _NP3_TYPEDEFS_H_
 #define _NP3_TYPEDEFS_H_
 
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#endif
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
+#include <windows.h>
+
+#define STRSAFE_NO_CB_FUNCTIONS
+#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
+#include <strsafe.h>
 #include <intsafe.h>
 
 #ifndef __cplusplus
@@ -42,11 +59,14 @@ typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
 
-// TODO(rkotten): refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
+// TODO: refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
 typedef int MBWC_DocPos_Cast; 
 
 // --------------------------------------------------------------------------
-    
+
+//typedef intptr_t cpi_enc_t;
+typedef int cpi_enc_t;
+
 typedef struct _dpi_t
 {
   UINT x;
@@ -65,10 +85,14 @@ typedef struct _wi
 
 #define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100 }
 
-
 inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
   RECT rc; SetRect(&rc, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy); return rc;
 }
+
+// ----------------------------------------------------------------------------
+
+typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
+typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4 } HYPERLINK_OPS;  // Hyperlink Operations
 
 // ----------------------------------------------------------------------------
 
@@ -77,8 +101,10 @@ typedef enum
 {
   CFG_VER_NONE = 0, /// old version
   CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
+  CFG_VER_0002 = 2,  /// LongLine Marker Off by default
 
-  CFG_VER_CURRENT = CFG_VER_0001
+  CFG_VER_CURRENT = CFG_VER_0002
+
 } CFG_VERSION;
 
 // --------------------------------------------------------------------------
@@ -103,7 +129,6 @@ typedef enum
 
 typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
 typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
-typedef enum { MBINFO = 0, MBWARN, MBYESNO, MBYESNOWARN, MBYESNOCANCEL, MBOKCANCEL, MBRETRYCANCEL } MBTYPES;
 
 //==== Statusbar ==============================================================
 
@@ -122,30 +147,31 @@ typedef enum {
 #define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11, 12, 13, 14 }
 
 #define STATUSBAR_SECTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-#define STATUSBAR_SECTION_POSTFIXES L",,, [UTF-8],,, [UTF-8],,,,,,,,,"
+//#define STATUSBAR_SECTION_POSTFIXES L",,, [UTF-8],,, [UTF-8],,,,,,,,,"
+#define STATUSBAR_SECTION_POSTFIXES L",,,,,,,,,,,,,,,"
 #define STATUSBAR_DEFAULT_IDS  L"0 1 12 14 2 4 5 6 7 8 9 10 11"
 #define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0 20 20 20"
 #define STAUSBAR_RIGHT_MARGIN 20
 
 // --------------------------------------------------------------------------
 
-typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH } CALLTIPTYPE;
+typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO } CALLTIPTYPE;
 
 // --------------------------------------------------------------------------
 
 typedef struct _filevars
 {
-
-  int mask;
-  int iTabWidth;
-  int iIndentWidth;
-  bool bTabsAsSpaces;
-  bool bTabIndents;
-  bool fWordWrap;
-  int iLongLinesLimit;
-  char tchEncoding[32];
-  int  iEncoding;
-  char tchMode[32];
+  int        mask;
+  bool       bTabsAsSpaces;
+  bool       bTabIndents;
+  bool       bWordWrap;
+  int        iTabWidth;
+  int        iIndentWidth;
+  int        iWrapColumn;
+  int        iLongLinesLimit;
+  char       tchEncoding[64];
+  cpi_enc_t  iEncoding;
+  char       tchMode[32];
 
 } FILEVARS, *LPFILEVARS;
 
@@ -185,13 +211,13 @@ typedef struct _editfindreplace
 
 typedef struct _mrulist
 {
-  LPCWSTR szRegKey;
-  int     iFlags;
-  int     iSize;
-  LPWSTR  pszItems[MRU_MAXITEMS];
-  int     iEncoding[MRU_MAXITEMS];
-  DocPos  iCaretPos[MRU_MAXITEMS];
-  LPWSTR  pszBookMarks[MRU_MAXITEMS];
+  LPCWSTR   szRegKey;
+  int       iFlags;
+  int       iSize;
+  LPWSTR    pszItems[MRU_MAXITEMS];
+  cpi_enc_t iEncoding[MRU_MAXITEMS];
+  DocPos    iCaretPos[MRU_MAXITEMS];
+  LPWSTR    pszBookMarks[MRU_MAXITEMS];
 }
 MRULIST, *PMRULIST, *LPMRULIST;
 
@@ -221,7 +247,7 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define LINESTATE_OCCURRENCE_MARK 0x4
+#define LINESTATE_OCCURRENCE_MARK (1 << 13) 
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2
@@ -244,7 +270,9 @@ typedef struct _globals_t
 {
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
-  HMODULE   hLngResContainer;
+  HINSTANCE hLngResContainer;
+  int       iAvailLngCount;
+  bool      bPrefLngNotAvail;
   HWND      hwndMain;
   HANDLE    hndlProcessHeap;
   HWND      hwndEdit;
@@ -257,6 +285,7 @@ typedef struct _globals_t
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
+  cpi_enc_t DOSEncoding;
   DPI_T     CurrentDPI;
   DPI_T     CurrentPPI;
   LANGID    iPrefLANGID;
@@ -265,16 +294,10 @@ typedef struct _globals_t
   LPMRULIST pMRUreplace;
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
-  bool      bWordWrap;
-  bool      bTabsAsSpaces;
-  bool      bTabIndents;
-  int       iTabWidth;
-  int       iIndentWidth;
-  int       iLongLinesLimit;
+  FILEVARS  fvBackup;
   int       iWrapCol;
-
   bool      bCodeFoldingAvailable;
-  bool      bForceLoadASCIIasUTF8;
+  bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
@@ -288,9 +311,11 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
-  WCHAR     WorkingDirectory[MAX_PATH + 1];
-  WCHAR     IniFile[MAX_PATH + 1];
-  WCHAR     CurrentFile[MAX_PATH + 1];
+  WCHAR     WorkingDirectory[MAX_PATH];
+  WCHAR     IniFile[MAX_PATH];
+  WCHAR     IniFileDefault[MAX_PATH];
+
+  WCHAR     CurrentFile[MAX_PATH];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -326,6 +351,7 @@ typedef struct _settings_t
   int TabWidth;
   int IndentWidth;
   bool WarnInconsistentIndents;
+  bool AutoDetectIndentSettings;
   bool MarkLongLines;
   int LongLinesLimit;
   int LongLineMode;
@@ -339,7 +365,7 @@ typedef struct _settings_t
   bool MarkOccurrencesCurrentWord;
   bool ViewWhiteSpace;
   bool ViewEOLs;
-  int DefaultEncoding; // default new file encoding
+  cpi_enc_t DefaultEncoding; // default new file encoding
   bool UseDefaultForFileEncoding;
   bool LoadASCIIasUTF8;
   bool UseReliableCEDonly;
@@ -381,39 +407,40 @@ typedef struct _settings_t
   int FindReplaceDlgPosY;
   int CustomSchemesDlgPosX;
   int CustomSchemesDlgPosY;
+  bool MuteMessageBeep;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
-  WCHAR OpenWithDir[MAX_PATH + 1];
-  WCHAR FavoritesDir[MAX_PATH + 1];
+  WCHAR OpenWithDir[MAX_PATH];
+  WCHAR FavoritesDir[MAX_PATH];
   WCHAR ToolbarButtons[MIDSZ_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 
+extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
 // ------------------------------------
 
 typedef struct _flags_t
 {
+  int  ToolbarLook;
+
+  bool bDevDebugMode;
   bool bStickyWindowPosition;
   bool bReuseWindow;
   bool bSingleFileInstance;
-  int fStickyWindowPosition;
-  int fReuseWindow;
-  int fSingleFileInstance;
-  int fNoReuseWindow;
 
-  int MultiFileArg;
-  int RelativeFileMRU;
-  int PortableMyDocs;
-  int NoFadeHidden;
-  int ToolbarLook;
-  int SimpleIndentGuides;
-  int NoHTMLGuess;
-  int NoCGIGuess;
-  int NoFileVariables;
-  int ShellUseSystemMRU;
+  bool MultiFileArg;
+  bool RelativeFileMRU;
+  bool PortableMyDocs;
+  bool NoFadeHidden;
+  bool SimpleIndentGuides;
+  bool NoHTMLGuess;
+  bool NoCGIGuess;
+  bool NoFileVariables;
+  bool ShellUseSystemMRU;
+
   int PrintFileAndLeave;
 
 } FLAGS_T, * PFLAGS_T;
@@ -431,6 +458,7 @@ typedef struct _settings2_t
   DWORD  AutoReloadTimeout;
   int    IMEInteraction;
   int    SciFontQuality;
+
   int    MarkOccurrencesMaxCount;
   int    UpdateDelayHyperlinkStyling;
   int    UpdateDelayMarkAllOccurrences;
@@ -439,21 +467,25 @@ typedef struct _settings2_t
   int    CurrentLineHorizontalSlop;
   int    CurrentLineVerticalSlop;
 
+  float  AnalyzeReliableConfidenceLevel;
+  float  ReliableCEDConfidenceMapping;   // = 0.85f;
+  float  UnReliableCEDConfidenceMapping; //= 0.20f;
+
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
   WCHAR DefaultExtension[64];
-  WCHAR DefaultDirectory[MAX_PATH + 1];
+  WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
-  WCHAR FileBrowserPath[MAX_PATH + 1];
+  WCHAR FileBrowserPath[MAX_PATH];
   WCHAR AppUserModelID[32];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
   WCHAR TimeStamp[128];
   WCHAR DateTimeShort[128];
   WCHAR DateTimeLong[128];
-  WCHAR WebTemplate1[MAX_PATH + 1];
-  WCHAR WebTemplate2[MAX_PATH + 1];
-  WCHAR AdministrationTool[MAX_PATH + 1];
+  WCHAR WebTemplate1[MAX_PATH];
+  WCHAR WebTemplate2[MAX_PATH];
+  WCHAR AdministrationTool[MAX_PATH];
   WCHAR DefaultWindowPosition[64];
 
 } SETTINGS2_T, *PSETTINGS2_T;
@@ -462,9 +494,11 @@ extern SETTINGS2_T Settings2;
 
 //=============================================================================
 
+typedef enum { I_TAB_LN = 0, I_SPC_LN = 1, I_MIX_LN = 2, I_TAB_MOD_X = 3, I_SPC_MOD_X = 4 } INDENT_TYPE;
+
 typedef struct _editfileiostatus
 {
-  int iEncoding;
+  cpi_enc_t iEncoding;
   int iEOLMode;
 
   bool bFileTooBig;
@@ -478,11 +512,18 @@ typedef struct _editfileiostatus
   bool bUnknownExt;
 
   // inconsistent indentation
-  DocLn indentCount[2];
+  INDENT_TYPE iGlobalIndent;
+  DocLn indentCount[5];
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, {0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, I_MIX_LN, {0,0,0,0,0} }
+
+
+// ---------   common defines   --------
+
+#define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
+
 
 //=============================================================================
 

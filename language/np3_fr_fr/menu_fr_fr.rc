@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -71,6 +71,8 @@ BEGIN
             MENUITEM "&Nouvelle fenêtre\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Fenêtre vide\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
+            MENUITEM "&Relancer avec des droits élevés",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
             MENUITEM "Exécuter &document\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "&Ouvrir avec...\tAlt+L",              IDM_FILE_OPENWITH
             MENUITEM "&Commande...\tCtrl+R",                IDM_FILE_RUN
@@ -88,11 +90,13 @@ BEGIN
             MENUITEM "UTF-8 avec &Signature",               IDM_ENCODING_UTF8SIGN
             MENUITEM "&Plus...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Forcer la détection d'encodage compact", CMD_RELOADFORCEDETECTION
+            MENUITEM "Forcer la détection d'encodage",      CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "Réencoder vers &Défaut\tCtrl-Alt-F",  CMD_RECODEDEFAULT
-            MENUITEM "Réencoder vers &ANSI\tCtrl-Shift+A",  CMD_RECODEANSI
-            MENUITEM "Réencoder vers &OEM\tCtrl+Shift+O",   CMD_RECODEOEM
+            MENUITEM "Réencoder vers &Défaut\tCtrl-Alt-F",       CMD_RECODEDEFAULT
+            MENUITEM "Réencoder vers &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
+            MENUITEM "Réencoder vers &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
+            MENUITEM "Réencoder vers &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM SEPARATOR
             MENUITEM "ASCII comme UTF-&8\tCtrl+Shift+F8",   CMD_RELOADASCIIASUTF8
             MENUITEM "Ignorer Encodage &Tags\tAlt+F8",      CMD_RELOADNOFILEVARS
             MENUITEM "&Réencoder...\tF8",                   IDM_ENCODING_RECODE
@@ -108,6 +112,8 @@ BEGIN
             MENUITEM "&Défaut...",                          IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
+        MENUITEM "Con&trôle de retrait..."                     CMD_CHECK_INDENTATION
+        MENUITEM SEPARATOR
         MENUITEM "Mise en &page...",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
@@ -121,7 +127,7 @@ BEGIN
             MENUITEM "&Ajouter le fichier actuel...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Gérer...\tAlt+F9",                   IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Récents (&Historique)...\tCtrl+Alt+H",    IDM_FILE_RECENT
+        MENUITEM "Récent (&Historique)...\tCtrl+Alt+H",    IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "Quitt&er\tAlt+F4",                        IDM_FILE_EXIT
     END
@@ -299,17 +305,17 @@ BEGIN
         MENUITEM "Marqueur de &longue ligne\tCtrl+Shift+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "Guides de retra&it\tCtrl+Shift+G",                    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Afficher le retour automatique à la ligne\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Afficher les &blancs\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "Afficher les fins de lign&e\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
-        MENUITEM "Afficher le retour automatique à la ligne\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicateurs H&yperlink\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Correspondence &visuelle des accolades\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Mise en b&rillance de la ligne actuelle\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Pas de surbrillance ",              IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Couleur de fond",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Cadre de con&tour",                  IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mar&quer occurrences"
         BEGIN
@@ -339,10 +345,11 @@ BEGIN
         END
         POPUP "&Barre à outils"
         BEGIN
-            MENUITEM "Afficher la &barre à outils",         IDM_VIEW_TOOLBAR
-            MENUITEM "Barre à outils avec grandes Icônes",  IDM_VIEW_TOGGLETB
+            MENUITEM "A&fficher la barre à outils",         IDM_VIEW_TOOLBAR
+            MENUITEM "Al&terner la barre à outils",         IDM_VIEW_TOGGLETB
             MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Afficher la barre d'ét&at",           IDM_VIEW_STATUSBAR
+            MENUITEM "&Charger un thème d'outils...",       IDM_VIEW_LOADTHEMETB
+            MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
         BEGIN
@@ -355,7 +362,7 @@ BEGIN
             MENUITEM "Copier les arguments de position\tCtrl+Shift+K",  CMD_COPYWINPOS
             MENUITEM "Rétablir la Position de Défaut\tCtrl+Shift+P",    CMD_DEFAULTWINPOS
             MENUITEM "Enregistrer comme Position par Défaut",           CMD_SAVEASDEFWINPOS
-            MENUITEM "Effacer enregistré comme Position par dDfaut",  CMD_CLEARSAVEDWINPOS
+            MENUITEM "Effacer enregistré comme Position par Défaut",    CMD_CLEARSAVEDWINPOS
             MENUITEM "Rétablir la Position Initiale\tCtrl+F11",         CMD_INITIALWINPOS
             MENUITEM "Alterner position de zone complète\tF11",         CMD_FULLSCRWINPOS
             MENUITEM "Figer la &position de la fenêtre",                IDM_VIEW_STICKYWINPOS
@@ -375,6 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Instance de f&ichier unique",                         IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notification de modifi&cation de fichier...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Muet Message &Bips",                                 IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Fo&nction de la touche 'Esc'"
         BEGIN
             MENUITEM "&Aucune",                                         IDM_VIEW_NOESCFUNC
@@ -458,10 +466,11 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Afficher la barre à ou&tils",             IDM_VIEW_TOOLBAR
-        MENUITEM "Barre à outils avec grandes Icônes",      IDM_VIEW_TOGGLETB
+        MENUITEM "A&fficher la barre à outils",             IDM_VIEW_TOOLBAR
+        MENUITEM "Al&terner la barre à outils",             IDM_VIEW_TOGGLETB
         MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Afficher la barre d'ét&at",               IDM_VIEW_STATUSBAR
+        MENUITEM "&Charger un thème d'outils...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "Affi&cher la barre d'état",               IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN

@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(1252)  // Western European (Win-1252)
+#pragma code_page(1252) // Western European (Windows-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "#include ""../common_res.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -61,8 +61,8 @@ BEGIN
     EDITTEXT        IDC_VERSION,77,7,220,14,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
     LTEXT           "Scintilla Version Bibliothèque:",IDC_SCI_VERSION,80,24,219,8
     LTEXT           "Compilé avec:",IDC_COMPILER,80,35,218,8
-    LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,55,218,8
-    LTEXT           "IDC_TRANSL_AUTH", IDC_TRANSL_AUTH, 80, 64, 218, 8
+    LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,52,218,8
+    LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,80,64,218,8
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
@@ -75,8 +75,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Aide de la ligne de commande"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK", IDOK, 239, 187, 55, 16
-    EDITTEXT        IDC_CMDLINEHELP, 15, 7, 278, 176, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
+    DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
+    EDITTEXT        IDC_CMDLINEHELP,15,7,278,176,ES_MULTILINE | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 273, 142
@@ -96,11 +96,11 @@ BEGIN
     CONTROL         "&Fermer après trouver",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "Marquer &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Fermer",IDCANCEL,212,99,54,14
+    PUSHBUTTON      "Fermer",IDCANCEL,211,99,55,14
     CONTROL         "<a>Aller à Remplacer (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,120,103,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "&Fermer après trouver",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "Marquer &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,23,55,14
@@ -184,17 +184,16 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,168,10
     GROUPBOX        "Détection d'encodage: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Ouvrir fichiers 7-bit &ASCII en mode UTF-8.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
+    CONTROL         "Utiliser uniquement des &résultats de détection fiables.", IDC_RELIABLE_DETECTION_RES,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
     CONTROL         "Ouvrir fichiers 8-bit *.&nfo/diz en mode DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "Pas analyser les balises de codage de &fichier.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,168,10
     CONTROL         "Sauter &ANSI Code Page détection.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Sauter &UNICODE détection.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Sauter &UNICODE détection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,140,151,50,14
 END
@@ -206,7 +205,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Mode de fin de ligne par &défaut:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Show inconsistent line-breaks warning.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Afficher un avertissement de sauts de ligne incohérents.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
     CONTROL         "Assur&er des fins de ligne cohérentes.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
@@ -214,6 +213,26 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,139,24,50,14
+END
+
+IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Fins de ligne incohérentes"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Fins de ligne incohérentes trouvées dans le fichier:",IDC_STATIC,7,7,180,8
+    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
+    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
+    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    LTEXT           "%s ligne(s).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s ligne(s).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s ligne(s).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "&Voulez-vous normaliser les fins de ligne?",IDC_STATIC,7,52,180,8
+    COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Oui",IDOK,138,63,50,14
+    PUSHBUTTON      "&Non",IDCANCEL,138,80,50,14
+    CONTROL         "&Toujours afficher ce dialogue.", IDC_WARN_INCONSISTENT_EOLS,
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
@@ -266,7 +285,8 @@ BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
     CONTROL         "Définir le schème sélectionné par &défaut.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,148,10
-    CONTROL         "Sélection &automatique par extension fichier.",IDC_AUTOSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,148,10
+    CONTROL         "Sélection &automatique par extension fichier.",IDC_AUTOSELECT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,148,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Annuler",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,117,10,10
@@ -296,10 +316,10 @@ BEGIN
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Personnaliser les Schèmes",IDC_TITLE,220,25,200,12
-    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 102
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Paramètres de tabulation"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -310,10 +330,37 @@ BEGIN
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Insérer tabulation comme e&spaces.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Touche &Tab reformate retrait.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Touche &Retour arrière reformate retrait.",IDC_BACKTAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "Touche &Retour arrière reformate retrait.",IDC_BACKTAB_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
+    CONTROL         "&Avertissement de retrait incohérent.",IDC_WARN_INCONSISTENT_INDENTS,
+                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "&Détection automatique de tabulation ou de retrait.",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,160,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,117,27,50,14
+END
+
+IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Retrait incohérent"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Statistiques: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    LTEXT           "Tabul.[%i]:",IDC_INDENT_WIDTH_TAB,54,18,40,8,SS_LEFT
+    LTEXT           "Blancs[%i]:",IDC_INDENT_WIDTH_SPC,54,30,40,8,SS_LEFT
+    LTEXT           "Mixte[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
+    LTEXT           "%s ligne(s)",IDC_INDENT_SUM_TAB,90,18,52,8,SS_RIGHT
+    LTEXT           "%s ligne(s)",IDC_INDENT_SUM_SPC,90,30,52,8,SS_RIGHT
+    LTEXT           "%s ligne(s)",IDC_INDENT_SUM_MIX,90,42,52,8,SS_RIGHT
+    GROUPBOX        "Re-retrait tout? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,28,10
+    CONTROL         "&Blancs",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,30,10
+    LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_TAB_MODX,45,72,124,8,SS_RIGHT
+    LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_SPC_MODX,45,84,124,8,SS_RIGHT
+    PUSHBUTTON      "&Oui",IDOK,80,98,50,14
+    PUSHBUTTON      "&Non",IDCANCEL,134,98,50,14
+    CONTROL         "&Toujours afficher ce dialogue.", IDC_WARN_INCONSISTENT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
@@ -604,16 +651,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Font Chooser"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    LTEXT           "&Police:", IDC_STATIC, 7, 7, 127, 8
-    COMBOBOX        IDC_FONT_FAMILY_NAMES, 7, 16, 138, 84, CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Style:", IDC_STATIC, 154, 7, 72, 8
-    COMBOBOX        IDC_FONT_FACE_NAMES, 154, 16, 84, 84, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Taille:", IDC_STATIC, 247, 7, 40, 8
-    COMBOBOX        IDC_FONT_SIZE, 247, 16, 44, 84, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "&Aperçu", IDC_STATIC, 7, 102, 284, 68, BS_BITMAP
-    CONTROL         "", IDC_SAMPLE_BOX, "Static", SS_OWNERDRAW, 10, 112, 276, 54
-    DEFPUSHBUTTON   "OK", IDOK, 182, 178, 50, 14
-    PUSHBUTTON      "Annuler", IDCANCEL, 240, 178, 50, 14
+    LTEXT           "&Police:",IDC_STATIC,7,7,127,8
+    COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Style:",IDC_STATIC,154,7,72,8
+    COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Taille:",IDC_STATIC,247,7,40,8
+    COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "&Aperçu",IDC_STATIC,7,102,284,68,BS_BITMAP
+    CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
+    DEFPUSHBUTTON   "OK",IDOK,182,178,50,14
+    PUSHBUTTON      "Annuler",IDCANCEL,240,178,50,14
 END
 
 
@@ -625,7 +672,6 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
-
     IDD_MUI_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 4
@@ -684,6 +730,14 @@ BEGIN
         BOTTOMMARGIN, 73
     END
 
+    IDD_MUI_WARNLINEENDS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 93
+    END
+
     IDD_MUI_LINENUM, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -729,7 +783,15 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 167
         TOPMARGIN, 7
-        BOTTOMMARGIN, 95
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_MUI_WARNINDENTATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 131
     END
 
     IDD_MUI_LONGLINES, DIALOG
@@ -871,7 +933,7 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 67
     END
- 
+
     IDD_MUI_CHOOSEFONT, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -879,13 +941,12 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 193
     END
-
 END
 #endif    // APSTUDIO_INVOKED
 
-
 #endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef APSTUDIO_INVOKED
@@ -897,5 +958,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
 

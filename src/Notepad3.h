@@ -17,6 +17,7 @@
 #define _NP3_NOTEPAD3_H_
 
 #include "TypeDefs.h"
+#include "SciCall.h"
 
 //==== Main Window ============================================================
 
@@ -26,21 +27,21 @@
 #define DATA_NOTEPAD3_PARAMS 0xFB10
 typedef struct np3params {
 
-  int   flagFileSpecified;
-  int   flagChangeNotify;
-  int   flagLexerSpecified;
-  int   iInitialLexer;
-  int   flagQuietCreate;
-  int   flagJumpTo;
-  int   iInitialLine;
-  int   iInitialColumn;
-  int   iSrcEncoding;
-  int   flagSetEncoding;
-  int   flagSetEOLMode;
-  int   flagTitleExcerpt;
-  WCHAR wchData;
-
-} np3params, *LPnp3params;
+  int        flagFileSpecified;
+  int        flagChangeNotify;
+  int        flagLexerSpecified;
+  int        iInitialLexer;
+  int        flagQuietCreate;
+  int        flagJumpTo;
+  int        iInitialLine;
+  int        iInitialColumn;
+  cpi_enc_t  iSrcEncoding;
+  cpi_enc_t  flagSetEncoding;
+  int        flagSetEOLMode;
+  int        flagTitleExcerpt;
+  WCHAR      wchData;
+} 
+np3params, *LPnp3params;
 
 
 typedef struct _undoSel
@@ -116,6 +117,7 @@ void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR lpArgs);
+bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus);
 void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
@@ -128,19 +130,21 @@ void LoadSettings();
 void SaveSettings(bool);
 void ParseCommandLine();
 void LoadFlags();
-int  FindIniFile();
+bool FindIniFile();
 int  TestIniFile();
-int  CreateIniFile();
-int  CreateIniFileEx(LPCWSTR lpszIniFile);
-
+bool  CreateIniFile();
+bool CreateIniFileEx(LPCWSTR lpszIniFile);
+void ShowZoomCallTip();
+void CancelCallTip();
 
 void MarkAllOccurrences(int delay, bool bForceClear);
+void UpdateUI();
 void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int delay);
-void UpdateUI();
+inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); Sci_ApplyStyle(0,-1); }
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
@@ -152,7 +156,7 @@ void RestoreAction(int token, DoAction doAct);
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
 
 
-void OpenHotSpotURL(DocPos position, bool bForceBrowser);
+bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation);
 
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
@@ -160,9 +164,14 @@ void SetFindPatternMB(LPCSTR chFindPattern);
 void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize);
 void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize);
 
-bool FileIO(bool, LPWSTR pszFileName, bool, bool, EditFileIOStatus* status, bool);
-bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR lpszFile);
-bool FileRevert(LPCWSTR szFileName,bool);
+bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
+
+bool FileIO(bool fLoad, LPWSTR pszFileName,
+            bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection,
+            EditFileIOStatus* status, bool bSaveCopy);
+bool FileLoad(bool bDontSave, bool bNew, bool bReload,
+              bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile);
+bool FileRevert(LPCWSTR szFileName, bool);
 bool FileSave(bool,bool,bool,bool);
 bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
 bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
@@ -193,6 +202,7 @@ bool CheckNotifyChangeEvent();
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
 
+#define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   ///

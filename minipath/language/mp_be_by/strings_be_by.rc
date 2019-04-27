@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1251
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,8 +17,8 @@
 // Belarusian (Belarus) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
-LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
-#pragma code_page(1251)  // Cyrillic (Win-1251)
+LANGUAGE LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS
+#pragma code_page(1251) // Cyrillic (Windows-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Вызначце мэтавую папку."
     IDS_CREATELINK          "Вызначце мэтавую папку для новага цэтліка."
     IDS_SAVESETTINGS        "Захаванне наладаў\nДзейныя налады праграмы захаваны."
-    IDS_MUI_TRANSL_AUTHOR   "(be-BY) Пераклад: alexantr"
+    IDS_MUI_TRANSL_AUTHOR   "[be-BY] Пераклад: alexantr"
 END
 
 

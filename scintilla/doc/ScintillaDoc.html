@@ -2470,6 +2470,8 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SETPUNCTUATIONCHARS">SCI_SETPUNCTUATIONCHARS(&lt;unused&gt;, const char *characters)</a><br />
      <a class="message" href="#SCI_GETPUNCTUATIONCHARS">SCI_GETPUNCTUATIONCHARS(&lt;unused&gt;, char *characters) &rarr; int</a><br />
      <a class="message" href="#SCI_SETCHARSDEFAULT">SCI_SETCHARSDEFAULT</a><br />
+     <a class="message" href="#SCI_SETCHARACTERCATEGORYOPTIMIZATION">SCI_SETCHARACTERCATEGORYOPTIMIZATION(int countCharacters)</a><br />
+     <a class="message" href="#SCI_GETCHARACTERCATEGORYOPTIMIZATION">SCI_GETCHARACTERCATEGORYOPTIMIZATION &rarr; int</a><br />
 
     <p><b id="SCI_WORDENDPOSITION">SCI_WORDENDPOSITION(int pos, bool onlyWordCharacters) &rarr; int</b><br />
      <b id="SCI_WORDSTARTPOSITION">SCI_WORDSTARTPOSITION(int pos, bool onlyWordCharacters) &rarr; int</b><br />
@@ -2595,6 +2597,15 @@ struct Sci_TextToFind {
     <p><b id="SCI_SETCHARSDEFAULT">SCI_SETCHARSDEFAULT</b><br />
      Use the default sets of word and whitespace characters. This sets whitespace to space, tab and other
      characters with codes less than 0x20, with word characters set to alphanumeric and '_'.
+    </p>
+
+    <p><b id="SCI_SETCHARACTERCATEGORYOPTIMIZATION">SCI_SETCHARACTERCATEGORYOPTIMIZATION(int countCharacters)</b><br />
+    <b id="SCI_GETCHARACTERCATEGORYOPTIMIZATION">SCI_GETCHARACTERCATEGORYOPTIMIZATION &rarr; int</b><br />
+      Optimize speed of character category features like determining whether a character is a space or number at the expense of memory.
+      Mostly used for Unicode documents.
+      The countCharacters parameter determines how many character starting from 0 are added to a look-up table with one byte used for each character.
+      It is reasonable to cover the set of characters likely to be used in a document so 0x100 for simple Roman text,
+      0x1000 to cover most simple alphabets, 0x10000 to cover most of East Asian languages, and 0x110000 to cover all possible characters.
     </p>
 
     <p>Word keyboard commands are:</p>
@@ -3214,8 +3225,8 @@ struct Sci_TextToFind {
     <p><b id="SCI_SETCARETSTYLE">SCI_SETCARETSTYLE(int caretStyle)</b><br />
      <b id="SCI_GETCARETSTYLE">SCI_GETCARETSTYLE &rarr; int</b><br />
      The style of the caret can be set with <code>SCI_SETCARETSTYLE</code> to be a line caret
-    (CARETSTYLE_LINE=1) or a block caret (CARETSTYLE_BLOCK=2) for insert mode combined with
-    a bar caret (CARETSTYLE_OVERSTRIKE_BAR=0) or a block caret (CARETSTYLE_OVERSTRIKE_BLOCK=16) for overtype mode,
+    (CARETSTYLE_LINE=1) or a block caret (CARETSTYLE_BLOCK=2) for insert mode (lower 4-bits, CARETSTYLE_INS_MASK) combined with
+    a bar caret (CARETSTYLE_OVERSTRIKE_BAR=0) or a block caret (CARETSTYLE_OVERSTRIKE_BLOCK=16) for overtype mode (bit 4),
     or to not draw at all (CARETSTYLE_INVISIBLE=0). The default value for insert mode is the line caret (CARETSTYLE_LINE=1),
     for overtype mode is the bar caret (CARETSTYLE_OVERSTRIKE_BAR=0).
     You can determine the current caret style setting using <code>SCI_GETCARETSTYLE</code>.</p>
@@ -4061,7 +4072,8 @@ struct Sci_TextToFind {
     <code>SC_MARK_BACKGROUND</code>,
     <code>SC_MARK_LEFTRECT</code>,
     <code>SC_MARK_FULLRECT</code>,
-    <code>SC_MARK_BOOKMARK</code>, and
+    <code>SC_MARK_BOOKMARK</code>,
+    <code>SC_MARK_VERTICALBOOKMARK</code>, and
     <code>SC_MARK_UNDERLINE</code>.
     </p>
 
@@ -6002,6 +6014,9 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <a class="message" href="#SCI_TOGGLEFOLD">SCI_TOGGLEFOLD(int line)</a><br />
      <a class="message" href="#SCI_TOGGLEFOLDSHOWTEXT">SCI_TOGGLEFOLDSHOWTEXT(int line, const char *text)</a><br />
      <a class="message" href="#SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</a><br />
+     <a class="message" href="#SCI_FOLDDISPLAYTEXTGETSTYLE">SCI_FOLDDISPLAYTEXTGETSTYLE &rarr; int</a><br />
+     <a class="message" href="#SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT(const char *text)</a><br />
+     <a class="message" href="#SCI_GETDEFAULTFOLDDISPLAYTEXT">SCI_GETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, char *text)</a><br />
      <a class="message" href="#SCI_FOLDLINE">SCI_FOLDLINE(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDCHILDREN">SCI_FOLDCHILDREN(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDALL">SCI_FOLDALL(int action)</a><br />
@@ -6161,11 +6176,13 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p>An optional text tag may be shown to the right of the folded text with the
     <code class="parameter">text</code> argument to
     <code>SCI_TOGGLEFOLDSHOWTEXT</code>.
+    The default text for all header lines can be set with <code><a class="message" href="#SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT</a></code>.
     The text is drawn with the
     <code><a class="message" href="#StyleDefinition">STYLE_FOLDDISPLAYTEXT</a></code> style.</p>
 
     <p><b id="SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</b><br />
-    This message changes the appearance of fold text tags.</p>
+    <b id="SCI_FOLDDISPLAYTEXTGETSTYLE">SCI_FOLDDISPLAYTEXTGETSTYLE &rarr; int</b><br />
+    These message changes the appearance of fold text tags.</p>
     <table class="standard" summary="Fold flags">
       <tbody>
         <tr>
@@ -6196,6 +6213,10 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
       </tbody>
     </table>
+
+    <p><b id="SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT(const char *text)</b><br />
+     <b id="SCI_GETDEFAULTFOLDDISPLAYTEXT">SCI_GETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, char *text) &rarr; int</b><br />
+     These messages set and get the default text displayed at the right of the folded text.</p>
 
     <p><b id="SCI_SETFOLDEXPANDED">SCI_SETFOLDEXPANDED(int line, bool expanded)</b><br />
      <b id="SCI_GETFOLDEXPANDED">SCI_GETFOLDEXPANDED(int line) &rarr; bool</b><br />
@@ -7317,7 +7338,10 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
      This is sent when the user types an ordinary text character (as opposed to a command
     character) that is entered into the text. The container can use this to decide to display a <a
     class="jump" href="#CallTips">call tip</a> or an <a class="jump" href="#Autocompletion">auto
-    completion list</a>. The character is in <code>SCNotification.ch</code>.
+    completion list</a>. The character is in <code>SCNotification::ch</code>.
+        For single byte character sets, this is the byte value of the character;
+        for UTF-8, it is the Unicode code point;
+        for DBCS, it is (first byte * 256 + second byte) for 2 byte characters and the byte value for 1 byte characters.
         This notification is sent before the character has been styled so processing that depends on
         styling should instead be performed in the SCN_UPDATEUI notification.</p>
 
@@ -7336,7 +7360,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
 
     <p><b id="SCN_KEY">SCN_KEY</b><br />
      Reports all keys pressed but not consumed by Scintilla. Used on GTK+ because of
-     some problems with keyboard focus and is not sent by the Windows version. <code>SCNotification.ch</code> holds the key code and
+     some problems with keyboard focus and is not sent by the Windows version. <code>SCNotification::ch</code> holds the key code and
     <code>SCNotification.modifiers</code> holds the modifiers. This notification is sent if the
     modifiers include <code>SCMOD_ALT</code> or <code>SCMOD_CTRL</code> and the key code is less
     than 256.</p>
@@ -8424,6 +8448,9 @@ EM_SETTARGETDEVICE
     supported with glib 2.22+. The version of GTK+ installed should be detected automatically.
     When both GTK+ 2 and GTK+ 3 are present, building for GTK+ 3.x requires defining GTK3
     on the command line.</p>
+
+    <p>Adding and removing source files from Scintilla may require modifying build files.
+    This is addressed in <a class="jump" href="AddSource.txt">AddSource.txt</a>.</p>
 
     <h3>Static linking</h3>
 

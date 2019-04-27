@@ -2,14 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-static __int64 LexFunction(LexFunctionType type, int value)
-{
-  LEX_FUNCTION_BODY(type, value);
-  return 0LL;
-};
-
-// ----------------------------------------------------------------------------
-
 KEYWORDLIST KeyWords_TCL = {
 // TCL Keywords
 "after append array auto_execok auto_import auto_load auto_load_index auto_qualify beep "
@@ -42,7 +34,6 @@ KEYWORDLIST KeyWords_TCL = {
 
 EDITLEXER lexTCL = { 
 SCLEX_TCL, IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl", L"", 
-&LexFunction, // static
 &KeyWords_TCL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_TCL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -26,47 +26,103 @@ CED - (C)ompact (E)ncoding (D)etection (by Google)
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 SCI - (SCI)ntilla Library
+UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.201.build (2019-Feb-01)
+Current Version 5.19.425.build (2019-Apr 25)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Customize Schemes: Caret style 'ovrbar' (default) to switch caret style 
-    between BAR and BLOCK 
+
+- Add: Menu entry to mute MessageBox beeps
+- Add Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
+- Add: Factory Default, Standard Settings, Dark Theme mode
+- Add a timer of 3.2 second to the Zoom Info Bubble
+
+- Add (internal) [Settings2] to control encoding detection
+- Add Recent History button in Toolbar
+- Add support for external and internal Hot- and Disabled- Toolbar icons 
+- Add menu to load other toolbar themes (bitmaps)
+- Add 2nd Encoding-Detector "Mozilla's UCHARDET" in parallel with CED
+- Add Menu "Language" for Language Selector
+- Add a Languages Selection in UI Main Menu
+- Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
+- Customize Schemes: Caret style 'ovrbar' (default) 
+    to switch caret style between BAR and BLOCK 
 - Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings)
 - Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
 - Add CED reliability option (NLS: dialogs)
 - Indentation consistency check on file open (NLS: dialogs)
 - End-of-Line (EOL) consistency check on file open (NLS: dialogs)
-- Checkbox for transparent Find/Replace Dialogbox on loosing focus
+- Checkbox for transparent Find/Replace Dialogbox on losing focus
 
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Up-to-Date SCI (GitHub Mirror 2019-Feb-07)
+
+- BOOKMARK (margin flag) style changed to vertical flavor
+- Auto-Save after elevating user right
+
+- Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
+- Make international language menu (language independent)
+- Start dual encoding detectors in (thread) parallel for large files
+    (disabled, due to lack of performance profiling)
+- Support (internal) DevDebugMode
+- Menu item "HighDPI Toolbar" -> "Toggle Toolbar"
+- Train Dutch (CP-1252) for UCD language detection models
+- Train Belarusian (CP-1251) for UCD language detection models
+- Train Africaans (CP-1252) for UCD language detection models
+- Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
+- Menu Languange Selector to Dynamic Language Selector
+- Up-to-Date SCI (GitHub Mirror 2019-Apr-17)
 - Update of CED (2019-Feb-01)
 - SpeedUp of RegEx Replace (in case of const replace pattern)
 - Update of Onigmo RegEx engine (2019-Jan-24)
 - Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
-- Scintilla Library (SCI) version 4.1.3 (2019-Jan-10)
+- Scintilla Library (SCI) version 4.1.5 (2019-Apr-17)
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+
+- Enh: rework EOL and Indentation check with dialogs
 
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- minor issue on UTF-8 encoding detection
-- high quality icon for Taskbar (big icons)
-- support high-definition icon for taskbar
+
+- Indentation warning dialog
+- Reworked: Consistent EOL and Indentation checks
+
+- Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
+- MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
+- Write Language change to Settings2 on change immediately
+- Focused View not working for some Lexers
+- Find correct window for "Single File Instance"
+- Single file instance: find correct window for real paths
+- Minor issue on UTF-8 encoding detection
+- High quality icon for Taskbar (big icons)
+- Support high-definition icon for taskbar
 - .vcxproj files supporting VS2019_Prev_2 (vc142)
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+
+- Add here items for later review...
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
+- Polish (it-IT) Translation (In progress)
+- Hungarian (hu-HU) Translation (In progress)
+- Italian (it-IT) Translation
+- Korean (UHC) Translation
 
 
 ==================================================
@@ -625,7 +681,7 @@ FIXES:
 - Update view on style change in "Customize schemes..."
 - Bug regarding "Reset" button in "Customizing Schemes..." dialog.
 - Bug in detect and style Hyperlink Hotspot.
-- Loosing state of "Transform Backslashes" while switching regex/wildcard search.
+- Losing state of "Transform Backslashes" while switching regex/wildcard search.
 - Block "mark occurrences" event on transaction pair: 
     (SCI_TARGETFROMSELECTIO, SCI_REPLACETARGET).
 - protect SCI target transactions by a guard to break recursion of 
