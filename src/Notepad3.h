@@ -144,7 +144,7 @@ void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int delay);
-inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); Sci_ApplyStyle(0,-1); }
+inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
