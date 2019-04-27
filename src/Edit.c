@@ -6149,11 +6149,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
     DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
 
     _IGNORE_NOTIFY_CHANGE_;
-    _ENTER_TARGET_TRANSACTION_;
-
     EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), bEnabled);
-
-    _LEAVE_TARGET_TRANSACTION_;
     _OBSERVE_NOTIFY_CHANGE_;
   }
 }
@@ -6166,7 +6162,12 @@ void EditApplyVisibleStyle()
 {
   DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
   DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
-  Sci_ApplyStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
+  if (Settings.HyperlinkHotspot && !_IsInTargetTransaction()) {
+    EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
+  }
+  else {
+    Sci_ApplyStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
+  }
 }
 
 
@@ -6871,6 +6872,8 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   // 1st apply current lexer style
   EditFinalizeStyling(startPos);
 
+  _ENTER_TARGET_TRANSACTION_;
+
   DocPos start = startPos;
   DocPos end = endPos;
   do {
@@ -6896,6 +6899,8 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     end = endPos;
 
   } while (start < end);
+
+  _LEAVE_TARGET_TRANSACTION_;
 
   SciCall_StartStyling(endPos);
 }

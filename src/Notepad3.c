@@ -260,8 +260,8 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    EditApplyVisibleStyle();
-    //~!recursion!~EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
+    EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+    EditFinalizeStyling(-1);
     UpdateAllBars(false);
   }
 }
@@ -1324,9 +1324,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      Sci_ApplyStyle(0, -1);
       MarkAllOccurrences(0, true);
-      UpdateVisibleUrlHotspot(0);
+      EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+      EditFinalizeStyling(-1);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -2279,7 +2279,8 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  Sci_ApplyStyle(0, -1);
+  EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  EditFinalizeStyling(-1);
   UpdateAllBars(false);
   
   return 0;
@@ -2345,9 +2346,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   }
   MarkAllOccurrences(0, true);
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
-  
+  EditFinalizeStyling(-1);
   UpdateUI();
-  Sci_ApplyStyle(0, -1);
   UpdateAllBars(false);
 
   return 0;
@@ -9205,7 +9205,6 @@ void UpdateUI()
   scn.updated = (SC_UPDATE_CONTENT/* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
   SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   //PostMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  Sci_ApplyStyle(0, -1);
   COND_SHOW_ZOOM_CALLTIP();
 }
 
