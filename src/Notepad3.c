@@ -260,6 +260,8 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
+    EditApplyVisibleStyle();
+    //~!recursion!~EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
     UpdateAllBars(false);
   }
 }
@@ -1322,6 +1324,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
+      Sci_ApplyStyle(0, -1);
       MarkAllOccurrences(0, true);
       UpdateVisibleUrlHotspot(0);
       UpdateAllBars(false);
@@ -2276,6 +2279,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
+  Sci_ApplyStyle(0, -1);
   UpdateAllBars(false);
   
   return 0;
@@ -2343,6 +2347,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   
   UpdateUI();
+  Sci_ApplyStyle(0, -1);
   UpdateAllBars(false);
 
   return 0;
@@ -9197,7 +9202,7 @@ void UpdateUI()
   scn.nmhdr.hwndFrom = Globals.hwndEdit;
   scn.nmhdr.idFrom = IDC_EDIT;
   scn.nmhdr.code = SCN_UPDATEUI;
-  scn.updated = (SC_UPDATE_CONTENT | SC_UPDATE_NP3_INTERNAL_NOTIFY);
+  scn.updated = (SC_UPDATE_CONTENT/* | SC_UPDATE_NP3_INTERNAL_NOTIFY */);
   SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   //PostMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   Sci_ApplyStyle(0, -1);
@@ -9759,8 +9764,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(false);
+    Sci_ApplyStyle(0, -1);
     UpdateVisibleUrlHotspot(0);
-    UpdateAllBars(false);
+    UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
     s_bEnableSaveSettings = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) ? false : true;

@@ -1310,6 +1310,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
   // apply lexer styles
+  Sci_ApplyStyle(0, -1);
   Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
   EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
   
