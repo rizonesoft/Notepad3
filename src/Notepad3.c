@@ -36,7 +36,6 @@
 #include "../tinyexpr/tinyexpr.h"
 #include "Encoding.h"
 #include "VersionEx.h"
-#include "SciCall.h"
 
 #include "SciLexer.h"
 #include "SciXLexer.h"
@@ -261,9 +260,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateMarginWidth();
+    UpdateAllBars(false);
   }
 }
 
@@ -1195,9 +1192,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   Globals.iReplacedOccurrences = 0;
   Globals.iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
 
-  UpdateToolbar();
-  UpdateStatusbar(false);
-  UpdateMarginWidth();
+  UpdateAllBars(false);
 
   // print file immediately and quit
   if (s_flagPrintFileAndLeave)
@@ -1329,7 +1324,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSCOLORCHANGE:
       MarkAllOccurrences(0, true);
       UpdateVisibleUrlHotspot(0);
-      UpdateMarginWidth();
+      UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
@@ -2281,9 +2276,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
+  UpdateAllBars(false);
   
   return 0;
 }
@@ -2350,9 +2343,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   
   UpdateUI();
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
+  UpdateAllBars(false);
 
   return 0;
 }
@@ -2418,9 +2409,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EditEnsureSelectionVisible(Globals.hwndEdit);
 
-  UpdateToolbar();
-  UpdateStatusbar(false);
-  UpdateMarginWidth();
+  UpdateAllBars(false);
 
   return 0;
 }
@@ -2618,9 +2607,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       FreeMem(params);
     }
 
-    UpdateToolbar();
-    UpdateStatusbar(false);
-    UpdateMarginWidth();
+    UpdateAllBars(false);
   }
 
   return 0;
@@ -3684,7 +3671,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
         UpdateToolbar();
         UpdateStatusbar(false);
-        UpdateMarginWidth();
       }
       break;
 
@@ -3699,7 +3685,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
         UpdateToolbar();
         UpdateStatusbar(false);
-        UpdateMarginWidth();
       }
       break;
 
@@ -4799,26 +4784,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
       }
       PostMessage(Globals.hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateMarginWidth();
+      UpdateAllBars(false);
       break;
 
 
     case IDM_VIEW_FONT:
-      if (!IsWindow(Globals.hwndDlgCustomizeSchemes))
+      if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, true);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateMarginWidth();
+      }
+      UpdateAllBars(false);
       break;
 
     case IDM_VIEW_CURRENTSCHEME:
-      if (!IsWindow(Globals.hwndDlgCustomizeSchemes))
+      if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, false);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateMarginWidth();
+      }
+      UpdateAllBars(false);
       break;
 
 
@@ -5051,7 +5032,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ZOOMIN:
       {
         SciCall_ZoomIn();
-        UpdateMarginWidth();
         ShowZoomCallTip();
       }
       break;
@@ -5059,7 +5039,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ZOOMOUT:
       {
         SciCall_ZoomOut();
-        UpdateMarginWidth();
         ShowZoomCallTip();
     }
       break;
@@ -5067,7 +5046,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_RESETZOOM:
       {
         SciCall_SetZoom(100);
-        UpdateMarginWidth();
         ShowZoomCallTip();
     }
       break;
@@ -6548,7 +6526,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
           {
-            //~InvalidateSelections(); // fixed in SCI ?
 
             // Brace Match
             if (Settings.MatchBraces) {
@@ -6587,6 +6564,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (Settings.HyperlinkHotspot) {
               UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
             }
+            EditApplyVisibleStyle();
           }
         }
         break;
@@ -7173,7 +7151,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (_ver < CFG_VER_0002));
+    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (s_iSettingsVersion < CFG_VER_0002));
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
@@ -9169,13 +9147,14 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateMarginWidth()
 {
+  static char chLines[32] = { '\0' };
+
   if (Settings.ShowLineNumbers)
   {
-    char chLines[32] = { '\0' };
     StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
 
-    int iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
-    int iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
+    int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
+    int const iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
       SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
@@ -9221,6 +9200,7 @@ void UpdateUI()
   scn.updated = (SC_UPDATE_CONTENT | SC_UPDATE_NP3_INTERNAL_NOTIFY);
   SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   //PostMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+  Sci_ApplyStyle(0, -1);
   COND_SHOW_ZOOM_CALLTIP();
 }
 
@@ -9271,7 +9251,7 @@ void UndoRedoRecordingStop()
 //  _SaveUndoSelection()
 //
 //
-static int  _SaveUndoSelection()
+static int _SaveUndoSelection()
 {
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   sel.selMode_undo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
@@ -9632,9 +9612,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     s_bFileReadOnly = false;
     _SetSaveNeededFlag(false);
 
-    UpdateToolbar();
-    UpdateStatusbar(true);
-    UpdateMarginWidth();
+    UpdateAllBars(false);
 
     // Terminate file watching
     if (Settings.ResetFileWatching) {
@@ -9781,10 +9759,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(false);
-    UpdateToolbar();
-    UpdateStatusbar(true);
-    UpdateMarginWidth();
     UpdateVisibleUrlHotspot(0);
+    UpdateAllBars(false);
 
     // consistent settings file handling (if loaded in editor)
     s_bEnableSaveSettings = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) ? false : true;
@@ -10624,9 +10600,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
   SetWindowPlacement(hwnd, &wndpl);
   SciCall_SetZoom(pWinInfo->zoom);
 
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
+  UpdateAllBars(false);
 }
 
 

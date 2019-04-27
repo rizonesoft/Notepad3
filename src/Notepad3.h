@@ -17,6 +17,7 @@
 #define _NP3_NOTEPAD3_H_
 
 #include "TypeDefs.h"
+#include "SciCall.h"
 
 //==== Main Window ============================================================
 
@@ -137,12 +138,13 @@ void ShowZoomCallTip();
 void CancelCallTip();
 
 void MarkAllOccurrences(int delay, bool bForceClear);
+void UpdateUI();
 void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int delay);
-void UpdateUI();
+inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); Sci_ApplyStyle(0,-1); }
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();

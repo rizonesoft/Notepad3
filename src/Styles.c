@@ -347,8 +347,7 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
     Style_ResetCurrentLexer(Globals.hwndEdit);
     SendWMSize(Globals.hwndMain, NULL);
     UpdateUI();
-    UpdateToolbar();
-    UpdateStatusbar(true);
+    UpdateAllBars(true);
   }
 
   CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, true);
@@ -1312,12 +1311,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // apply lexer styles
   Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
-  Sci_ApplyStyle(0, -1);
   EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
-
-  UpdateToolbar();
-  UpdateStatusbar(false);
-  UpdateMarginWidth();
+  
+  UpdateAllBars(false);
 }
 
 
