@@ -382,7 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Impedisci di riaprire lo stesso &file",            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Mute Message &Beeps",                              IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Muto Messaggio &Bips",                             IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Azione su tasto '&Esc'"
         BEGIN
             MENUITEM "&Nessuna",                          IDM_VIEW_NOESCFUNC
