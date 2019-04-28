@@ -7153,7 +7153,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (s_iSettingsVersion < CFG_VER_0002));
+    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (s_iSettingsVersion < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
