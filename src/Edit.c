@@ -6341,13 +6341,13 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
       start = pPosPair->beg + totalReplLength;
       end = pPosPair->end + totalReplLength;
     }
+    DocPos const _move = (start != end) ? 0 : 1;  // zero-find-length
 
     _ENTER_TARGET_TRANSACTION_;
-
     SciCall_SetTargetRange(start, end);
     DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
     totalReplLength += replLen + pPosPair->beg - pPosPair->end;
-    searchStart = SciCall_GetTargetEnd();
+    searchStart = SciCall_GetTargetEnd() + _move;
 
     _LEAVE_TARGET_TRANSACTION_;
   }
