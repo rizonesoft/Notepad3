@@ -139,11 +139,33 @@ inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0x
 
 // ----------------------------------------------------------------------------
 
+//==== StrIs(Not)Empty() =============================================
+
+inline bool StrIsEmptyA(LPCSTR s) { return (!s || (*s == '\0')); }
+inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
+
+#if defined(UNICODE) || defined(_UNICODE)
+#define StrIsEmpty(s)     StrIsEmptyW(s)
+#define StrIsNotEmpty(s)  (!StrIsEmptyW(s))
+#else
+#define StrIsEmpty(s)     StrIsEmptyA(s)
+#define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
+#endif
+
+//==== Ini-File Handling =============================================
+
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),Globals.IniFile)
 #define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,(nDefault),Globals.IniFile)
 #define IniGetBool(lpSection,lpName,nDefault)                        (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),Globals.IniFile) ? true : false)
 #define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,(lpString),Globals.IniFile)
-#define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,Globals.IniFile)
+
+inline void IniClearSection(LPCWSTR lpSection, bool bDelete) {
+  if (StrIsEmpty(Globals.IniFile)) { return; }
+  WritePrivateProfileSection(lpSection, (bDelete ? NULL : L""), Globals.IniFile);
+}
+void IniClearAllSections(LPCWSTR lpszPrefix, LPCWSTR lpszIniFile, bool bDelete);
+
+// ----------------------------------------------------------------------------
 
 inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
@@ -454,19 +476,6 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 #ifdef __cplusplus
 #undef NULL
 #define NULL nullptr
-#endif
-
-//==== StrIs(Not)Empty() =============================================
-
-inline bool StrIsEmptyA(LPCSTR s)  { return (!s || (*s == '\0')); }
-inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
-
-#if defined(UNICODE) || defined(_UNICODE)
-#define StrIsEmpty(s)     StrIsEmptyW(s)
-#define StrIsNotEmpty(s)  (!StrIsEmptyW(s))
-#else
-#define StrIsEmpty(s)     StrIsEmptyA(s)
-#define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
 #endif
 
 // ----------------------------------------------------------------------------

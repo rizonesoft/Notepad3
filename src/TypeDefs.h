@@ -281,6 +281,7 @@ typedef struct _globals_t
   DWORD     dwLastError;
   HMENU     hMainMenu;
   HICON     hDlgIcon;
+  HICON     hIcon48;
   HICON     hIcon128;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;

@@ -701,6 +701,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
 
+  if (!Globals.hIcon48) {
+    Globals.hIcon48 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR);
+  }
+
   if (!Globals.hIcon128) {
     Globals.hIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
   }
@@ -7404,6 +7408,10 @@ void LoadSettings()
   // Scintilla Styles
   Style_Load();
 
+  // finally clear [Suppressed Messages] (old InfoBox() version)
+  if (s_iSettingsVersion < CFG_VER_0002) {
+    IniClearSection(L"Suppressed Messages", false);
+  }
 }
 
 
