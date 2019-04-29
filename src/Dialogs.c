@@ -1036,7 +1036,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP3);
+        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1077,7 +1077,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP3,dx,dy,SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_OPENWITHDIR,dx,dy,SWP_NOMOVE);
@@ -1234,7 +1234,8 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP3);
+
+        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1275,7 +1276,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP3,dx,dy,SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FAVORITESDIR,dx,dy,SWP_NOMOVE);
@@ -1397,7 +1398,7 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
 //
 //  AddToFavDlgProc()
 //
-//  Controls: 100 Edit
+//  Controls: IDC_ADDFAV_FILES Edit
 //
 static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -1406,11 +1407,13 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
   case WM_INITDIALOG:
     {
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-      LPCWSTR const pszName = (LPCWSTR)lParam;
-
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-      SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, MAX_PATH - 1, 0);
-      SetDlgItemText(hwnd, 100, pszName);
+
+      ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
+
+      LPCWSTR const pszName = (LPCWSTR)lParam;
+      SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
+      SetDlgItemText(hwnd, IDC_ADDFAV_FILES, pszName);
 
       CenterDlgInParent(hwnd);
     }
@@ -1422,16 +1425,43 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     break;
 
 
+  case WM_DESTROY:
+    ResizeDlg_Destroy(hwnd, &Settings.AddToFavDlgSizeX, NULL);
+    return FALSE;
+
+
+  case WM_SIZE: {
+    int dx;
+
+    ResizeDlg_Size(hwnd, lParam, &dx, NULL);
+    HDWP hdwp = BeginDeferWindowPos(5);
+    hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, 0, SWP_NOSIZE);
+    hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, 0, SWP_NOSIZE);
+    hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, 0, SWP_NOSIZE);
+    hdwp = DeferCtlPos(hdwp, hwnd, IDC_FAVORITESDESCR, dx, 0, SWP_NOMOVE);
+    hdwp = DeferCtlPos(hdwp, hwnd, IDC_ADDFAV_FILES, dx, 0, SWP_NOMOVE);
+    EndDeferWindowPos(hdwp);
+    InvalidateRect(GetDlgItem(hwnd, IDC_FAVORITESDESCR), NULL, TRUE);
+  }
+  return TRUE;
+
+
+  case WM_GETMINMAXINFO:
+    ResizeDlg_GetMinMaxInfo(hwnd, lParam);
+    return TRUE;
+
+
   case WM_COMMAND:
-    switch (LOWORD(wParam)) {
-    case 100:
-      DialogEnableWindow(hwnd, IDOK, GetWindowTextLength(GetDlgItem(hwnd, 100)));
+    switch (LOWORD(wParam)) 
+    {
+    case IDC_ADDFAV_FILES:
+      DialogEnableWindow(hwnd, IDOK, GetWindowTextLength(GetDlgItem(hwnd, IDC_ADDFAV_FILES)));
       break;
 
     case IDOK:
       {
         LPWSTR pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
-        GetDlgItemText(hwnd, 100, pszName, MAX_PATH - 1);
+        GetDlgItemText(hwnd, IDC_ADDFAV_FILES, pszName, MAX_PATH - 1);
         EndDialog(hwnd, IDOK);
       }
       break;
@@ -2614,7 +2644,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP4);
+        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP);
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
@@ -2658,7 +2688,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         HDWP hdwp = BeginDeferWindowPos(4);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP4,dx,dy,SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_ENCODINGLIST,dx,dy,SWP_NOMOVE);
@@ -3633,6 +3663,196 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 
 //=============================================================================
 //
+// Resize Dialog Helpers()
+//
+#define RESIZEDLG_PROP_KEY	L"ResizeDlg"
+typedef struct _resizeDlg {
+  int direction;
+  int cxClient;
+  int cyClient;
+  int mmiPtMinX;
+  int mmiPtMinY;
+  int mmiPtMaxX;	// only Y direction
+  int mmiPtMaxY;	// only X direction
+  int attrs[MAX_RESIZEDLG_ATTR_COUNT];
+} RESIZEDLG, * PRESIZEDLG;
+
+typedef const RESIZEDLG* LPCRESIZEDLG;
+
+void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection) 
+{
+  RESIZEDLG* pm = (RESIZEDLG*)AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
+  pm->direction = iDirection;
+
+  RECT rc;
+  GetClientRect(hwnd, &rc);
+  pm->cxClient = rc.right - rc.left;
+  pm->cyClient = rc.bottom - rc.top;
+
+  AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, FALSE, 0);
+  pm->mmiPtMinX = rc.right - rc.left;
+  pm->mmiPtMinY = rc.bottom - rc.top;
+  // only one direction
+  switch (iDirection) {
+  case ResizeDlgDirection_OnlyX:
+    pm->mmiPtMaxY = pm->mmiPtMinY;
+    break;
+
+  case ResizeDlgDirection_OnlyY:
+    pm->mmiPtMaxX = pm->mmiPtMinX;
+    break;
+  }
+
+  cxFrame = max_i(cxFrame, pm->mmiPtMinX);
+  cyFrame = max_i(cyFrame, pm->mmiPtMinY);
+
+  SetProp(hwnd, RESIZEDLG_PROP_KEY, (HANDLE)pm);
+
+  SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
+
+  SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
+  SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+  WCHAR wch[64];
+  GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
+  InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
+  InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
+
+  HWND hwndCtl = GetDlgItem(hwnd, nIdGrip);
+  SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+  /// TODO: per-window DPI
+  const int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
+  SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+}
+
+void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame) {
+  PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+
+  RECT rc;
+  GetWindowRect(hwnd, &rc);
+  if (cxFrame) {
+    *cxFrame = rc.right - rc.left;
+  }
+  if (cyFrame) {
+    *cyFrame = rc.bottom - rc.top;
+  }
+
+  RemoveProp(hwnd, RESIZEDLG_PROP_KEY);
+  FreeMem(pm);
+}
+
+void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy) {
+  PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+  const int cxClient = LOWORD(lParam);
+  const int cyClient = HIWORD(lParam);
+  if (cx) {
+    *cx = cxClient - pm->cxClient;
+  }
+  if (cy) {
+    *cy = cyClient - pm->cyClient;
+  }
+  pm->cxClient = cxClient;
+  pm->cyClient = cyClient;
+}
+
+void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam) {
+  LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+
+  LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
+  lpmmi->ptMinTrackSize.x = pm->mmiPtMinX;
+  lpmmi->ptMinTrackSize.y = pm->mmiPtMinY;
+
+  // only one direction
+  switch (pm->direction) {
+  case ResizeDlgDirection_OnlyX:
+    lpmmi->ptMaxTrackSize.y = pm->mmiPtMaxY;
+    break;
+
+  case ResizeDlgDirection_OnlyY:
+    lpmmi->ptMaxTrackSize.x = pm->mmiPtMaxX;
+    break;
+  }
+}
+
+void ResizeDlg_SetAttr(HWND hwnd, int index, int value) {
+  if (index < MAX_RESIZEDLG_ATTR_COUNT) {
+    PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+    pm->attrs[index] = value;
+  }
+}
+
+int ResizeDlg_GetAttr(HWND hwnd, int index) {
+  if (index < MAX_RESIZEDLG_ATTR_COUNT) {
+    const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+    return pm->attrs[index];
+  }
+
+  return 0;
+}
+
+static inline int GetDlgCtlHeight(HWND hwndDlg, int nCtlId) {
+  RECT rc;
+  GetWindowRect(GetDlgItem(hwndDlg, nCtlId), &rc);
+  const int height = rc.bottom - rc.top;
+  return height;
+}
+
+void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection, int nCtlId1, int nCtlId2) {
+  const int hMin1 = GetDlgCtlHeight(hwnd, nCtlId1);
+  const int hMin2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, iDirection);
+  PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+  pm->attrs[0] = hMin1;
+  pm->attrs[1] = hMin2;
+}
+
+int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2) {
+  if (dy == 0) {
+    return 0;
+  }
+  if (dy > 0) {
+    return MulDiv(dy, cy, 100);
+  }
+
+  const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+  const int hMin1 = pm->attrs[0];
+  const int hMin2 = pm->attrs[1];
+  const int h1 = GetDlgCtlHeight(hwnd, nCtlId1);
+  const int h2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  // cy + h1 >= hMin1			cy >= hMin1 - h1
+  // dy - cy + h2 >= hMin2	cy <= dy + h2 - hMin2
+  const int cyMin = hMin1 - h1;
+  const int cyMax = dy + h2 - hMin2;
+  cy = dy - MulDiv(dy, 100 - cy, 100);
+  cy = clampi(cy, cyMin, cyMax);
+  return cy;
+}
+
+void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
+  HWND hwndCtl = GetDlgItem(hwndDlg, nCtlId);
+  RECT rc;
+  GetWindowRect(hwndCtl, &rc);
+  MapWindowPoints(NULL, hwndDlg, (LPPOINT)& rc, 2);
+  SetWindowPos(hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE);
+  InvalidateRect(hwndCtl, NULL, TRUE);
+}
+
+
+HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlags) {
+  HWND hwndCtl = GetDlgItem(hwndDlg, nCtlId);
+  RECT rc;
+  GetWindowRect(hwndCtl, &rc);
+  MapWindowPoints(NULL, hwndDlg, (LPPOINT)& rc, 2);
+  if (uFlags & SWP_NOSIZE) {
+    return DeferWindowPos(hdwp, hwndCtl, NULL, rc.left + dx, rc.top + dy, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  }
+  return DeferWindowPos(hdwp, hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE);
+}
+
+
+#if 0
+//=============================================================================
+//
 //  Resize Dialog Helpers()
 //
 #define _RESISIZEDLG_PROP_NAME L"ResizeDlg"
@@ -3731,7 +3951,7 @@ HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlag
   }
   return(DeferWindowPos(hdwp, hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE));
 }
-
+#endif
 
 //=============================================================================
 //

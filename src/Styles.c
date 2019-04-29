@@ -4092,11 +4092,11 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         InsertMenu(GetSystemMenu(hwnd,false),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
         InsertMenu(GetSystemMenu(hwnd,false),SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
 
-        SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE,
-          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
+        SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
+          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
         int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
-        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,cxClient-cGrip,
+        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
@@ -4172,10 +4172,10 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         cxClient = LOWORD(lParam);
         cyClient = HIWORD(lParam);
 
-        GetWindowRect(GetDlgItem(hwnd,IDC_RESIZEGRIP3),&rc);
+        GetWindowRect(GetDlgItem(hwnd,IDC_RESIZEGRIP),&rc);
         MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,true);
+        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
+        InvalidateRect(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,true);
 
         GetWindowRect(GetDlgItem(hwnd,IDOK),&rc);
         MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);

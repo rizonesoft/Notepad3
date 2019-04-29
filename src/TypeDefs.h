@@ -405,6 +405,7 @@ typedef struct _settings_t
   int OpenWithDlgSizeY;
   int FavoritesDlgSizeX;
   int FavoritesDlgSizeY;
+  int AddToFavDlgSizeX;
   int FindReplaceDlgPosX;
   int FindReplaceDlgPosY;
   int CustomSchemesDlgPosX;
