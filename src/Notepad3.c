@@ -7404,6 +7404,10 @@ void LoadSettings()
   // Scintilla Styles
   Style_Load();
 
+  // finally clear [Suppressed Messages] (old InfoBox() version)
+  if (s_iSettingsVersion < CFG_VER_0002) {
+    IniClearSection(L"Suppressed Messages", false);
+  }
 }
 
 

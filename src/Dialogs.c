@@ -199,9 +199,6 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
     switch (lpMsgBox->uType & MB_ICONMASK) 
     {
-    case MB_ICONINFORMATION:  // = MB_ICONASTERISK
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_INFORMATION), 0);
-      break;
     case MB_ICONQUESTION:
       SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_QUESTION), 0);
       break;
@@ -212,8 +209,11 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_ERROR), 0);
       break;
     case MB_USERICON:
-    default:
       SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_APPLICATION), 0);
+      break;
+    case MB_ICONINFORMATION:  // = MB_ICONASTERISK
+    default:
+      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_INFORMATION), 0);
       break;
     }
     
