@@ -5217,6 +5217,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       hBrushRed = CreateSolidBrush(rgbRedColorRef);
       hBrushGreen = CreateSolidBrush(rgbGreenColorRef);
       hBrushBlue = CreateSolidBrush(rgbBlueColorRef);
+      
+      s_InitialAnchorPos = SciCall_GetAnchor();
+      s_InitialCaretPos = SciCall_GetCurrentPos();
+      s_InitialTopLine = SciCall_GetFirstVisibleLine();
 
       // find first occurrence of clip-board text
       //if (!SciCall_IsSelectionRectangle() && SciCall_IsSelectionEmpty()) {
@@ -5264,7 +5268,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
           if (s_InitialTopLine >= 0) { 
             SciCall_SetFirstVisibleLine(s_InitialTopLine); 
-            s_InitialTopLine = -1;
+            s_InitialTopLine = -1;  // reset
           }
           else {
             if (s_fwrdMatch == NO_MATCH) {
@@ -5297,7 +5301,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         switch (LOWORD(wParam)) 
         {
         case WA_INACTIVE:
-          //~s_InitialTopLine = -1;
+          //~s_InitialTopLine = -1;  // reset
           //~Globals.bFindReplCopySelOrClip = true;
           SetWindowTransparentMode(hwnd, Settings.FindReplaceTransparentMode, Settings2.FindReplaceOpacityLevel);
           break;
@@ -5313,7 +5317,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (s_InitialTopLine < 0) {
             s_InitialAnchorPos = SciCall_GetAnchor();
             s_InitialCaretPos = SciCall_GetCurrentPos();
-            s_InitialTopLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+            s_InitialTopLine = SciCall_GetFirstVisibleLine();
           }
 
           if (!SciCall_IsSelectionEmpty()) {
@@ -5339,7 +5343,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       case IDC_DOC_MODIFIED:
         sg_pefrData->bStateChanged = true;
         s_InitialSearchStart = SciCall_GetSelectionStart();
-        s_InitialTopLine = -1;
+        s_InitialTopLine = -1;  // reset
         break;
 
       case IDC_FINDTEXT:
@@ -5413,7 +5417,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
         GetDlgItemTextW2MB(hwnd, IDC_FINDTEXT, szCmpBuf, FNDRPL_BUFFER);
         if ((StringCchCompareXA(szCmpBuf, szFind) != 0)) {
-          s_InitialTopLine = -1;
+          s_InitialTopLine = -1;  // reset
           StringCchCopyNA(szFind, FNDRPL_BUFFER, szCmpBuf, FNDRPL_BUFFER);
         }
 
@@ -5526,7 +5530,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         if (Globals.bHideNonMatchedLines) { 
           EditToggleView(hwnd);
           sg_pefrData->bStateChanged = true;
-          s_InitialTopLine = -1;
+          s_InitialTopLine = -1;  // reset
           EditClearAllOccurrenceMarkers();
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
@@ -5691,7 +5695,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();
-          s_InitialTopLine = -1;
+          s_InitialTopLine = -1;  // reset
           break;
 
         case IDC_FINDPREV: // find previous
@@ -5702,7 +5706,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();
-          s_InitialTopLine = -1;
+          s_InitialTopLine = -1;  // reset
           break;
 
         case IDC_REPLACE:
