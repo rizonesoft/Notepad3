@@ -3600,18 +3600,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_UNDO:
       if (SciCall_CanUndo()) {
-        _IGNORE_NOTIFY_CHANGE_;
         SciCall_Undo();
-        _OBSERVE_NOTIFY_CHANGE_;
         UpdateToolbar();
       }
       break;
 
     case IDM_EDIT_REDO:
       if (SciCall_CanRedo()) {
-        _IGNORE_NOTIFY_CHANGE_;
         SciCall_Redo();
-        _OBSERVE_NOTIFY_CHANGE_;
         UpdateToolbar();
       }
       break;
@@ -3673,9 +3669,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard)
           s_bLastCopyFromMe = true;
         _BEGIN_UNDO_ACTION_;
-        _IGNORE_NOTIFY_CHANGE_;
         SciCall_Paste();
-        _OBSERVE_NOTIFY_CHANGE_;
         _END_UNDO_ACTION_;
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -3687,9 +3681,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard)
           s_bLastCopyFromMe = true;
         _BEGIN_UNDO_ACTION_;
-        _IGNORE_NOTIFY_CHANGE_;
         EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
-        _OBSERVE_NOTIFY_CHANGE_;
         _END_UNDO_ACTION_;
         UpdateToolbar();
         UpdateStatusbar(false);
