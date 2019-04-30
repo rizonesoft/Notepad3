@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.425.build (2019-Apr 25)
+Current Version 5.19.430.build (2019-Apr 30)
 ==================================================
 
 --------------------------------------------------
@@ -63,6 +63,9 @@ NEW:
 CHANGES:
 --------------------------------------------------
 
+- Make "Add to Favorites" dialog resizable
+- Make Custom.Schemes and Find/Replace dialog resizable
+- Allow Hyperlink Hotspots to be activated in "Focused View"
 - BOOKMARK (margin flag) style changed to vertical flavor
 - Auto-Save after elevating user right
 
@@ -96,6 +99,8 @@ ENHANCEMENT:
 FIXES:
 --------------------------------------------------
 
+- Do not ignore notify change for Paste/Swap/Undo/Redo
+- Colourise bug on find next (w/ mark occurrences)
 - Indentation warning dialog
 - Reworked: Consistent EOL and Indentation checks
 
@@ -108,7 +113,7 @@ FIXES:
 - Minor issue on UTF-8 encoding detection
 - High quality icon for Taskbar (big icons)
 - Support high-definition icon for taskbar
-- .vcxproj files supporting VS2019_Prev_2 (vc142)
+- .vcxproj files supporting VS2019 (vc142)
 
 --------------------------------------------------
 REMOVED:
