@@ -260,7 +260,6 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    Sci_ApplyStyle(0, -1);
     EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
     EditFinalizeStyling(-1);
     UpdateAllBars(false);
