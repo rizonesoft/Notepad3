@@ -3425,6 +3425,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_INITDIALOG:
       {
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+        ResizeDlg_Init(hwnd, Settings.CustomSchemesDlgSizeX, Settings.CustomSchemesDlgSizeY, IDC_RESIZEGRIP);
+
         GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
 
@@ -3500,10 +3503,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         SendDlgItemMessage(hwnd,IDC_TITLE,WM_SETFONT,(WPARAM)hFontTitle,true);
 
         if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
+        {
           CenterDlgInParent(hwnd);
-        else
+        }
+        else {
           SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
-
+        }
         HMENU hmenu = GetSystemMenu(hwnd, false);
         GetLngString(IDS_MUI_PREVIEW, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchTmpBuffer);
@@ -3532,6 +3537,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         DeleteBitmapButton(hwnd, IDC_STYLEBACK);
         DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
         DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
+        ResizeDlg_Destroy(hwnd, &Settings.CustomSchemesDlgSizeX, &Settings.CustomSchemesDlgSizeY);
+
         // free old backup
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -3568,6 +3575,38 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       }
       else
         return false;
+
+    case WM_SIZE: 
+      {
+        int dx;
+        int dy;
+        ResizeDlg_Size(hwnd, lParam, &dx, &dy);
+        HDWP hdwp = BeginDeferWindowPos(18);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, dy, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, 0, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL_ROOT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_ROOT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEFORE, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEBACK, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEFONT, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PREVIEW, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEDEFAULT, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PREVSTYLE, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_NEXTSTYLE, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_IMPORT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_EXPORT, 0, dy, SWP_NOSIZE);
+        EndDeferWindowPos(hdwp);
+      }
+      return TRUE;
+
+    case WM_GETMINMAXINFO:
+      ResizeDlg_GetMinMaxInfo(hwnd, lParam);
+      return TRUE;
 
 
     case WM_NOTIFY:

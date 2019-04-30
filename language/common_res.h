@@ -331,9 +331,8 @@
 #define IDC_INDENT_BY_SPCS              18113
 #define IDC_INDENT_TAB_MODX             18114
 #define IDC_INDENT_SPC_MODX             18115
-
 #define IDC_ADDFAV_FILES                18116
-
+#define IDC_INFO_GROUPBOX               18117
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

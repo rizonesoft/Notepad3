@@ -5061,8 +5061,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
     {
       // the global static Find/Replace data structure
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+      ResizeDlg_InitX(hwnd, Settings.FindReplaceDlgSizeX, IDC_RESIZEGRIP);
 
       //sg_pefrData = (LPEDITFINDREPLACE)lParam;
       sg_pefrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
@@ -5292,11 +5292,42 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
+        ResizeDlg_Destroy(hwnd, &Settings.FindReplaceDlgSizeX, NULL);
       }
       return false;
 
 
-    case WM_ACTIVATE:
+  case WM_SIZE: {
+      int dx;
+      bool const isReplace = (GetDlgItem(hwnd, IDC_REPLACETEXT) != NULL);
+      ResizeDlg_Size(hwnd, lParam, &dx, NULL);
+      HDWP hdwp = BeginDeferWindowPos(isReplace ? 15 : 12);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, 0, SWP_NOSIZE);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, 0, SWP_NOSIZE);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, 0, SWP_NOSIZE);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDC_FINDTEXT, dx, 0, SWP_NOMOVE);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDC_FINDPREV, dx, 0, SWP_NOSIZE);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDC_TOGGLE_VISIBILITY, dx, 0, SWP_NOSIZE);
+      hdwp = DeferCtlPos(hdwp, hwnd, IDS_FR_STATUS_TEXT, dx, 0, SWP_NOMOVE);
+      if (isReplace) {
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACETEXT, dx, 0, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_SWAPSTRG, dx, 0, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACE, dx, 0, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACEINSEL, dx, 0, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACEALL, dx, 0, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACEINSEL, dx, 0, SWP_NOSIZE);
+      }
+      EndDeferWindowPos(hdwp);
+    }
+    return true;
+
+
+  case WM_GETMINMAXINFO:
+    ResizeDlg_GetMinMaxInfo(hwnd, lParam);
+    return true;
+  
+
+  case WM_ACTIVATE:
       {
         switch (LOWORD(wParam)) 
         {

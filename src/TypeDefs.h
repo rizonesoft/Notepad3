@@ -406,8 +406,11 @@ typedef struct _settings_t
   int FavoritesDlgSizeX;
   int FavoritesDlgSizeY;
   int AddToFavDlgSizeX;
+  int FindReplaceDlgSizeX;
   int FindReplaceDlgPosX;
   int FindReplaceDlgPosY;
+  int CustomSchemesDlgSizeX;
+  int CustomSchemesDlgSizeY;
   int CustomSchemesDlgPosX;
   int CustomSchemesDlgPosY;
   bool MuteMessageBeep;

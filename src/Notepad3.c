@@ -260,6 +260,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
+    Sci_ApplyStyle(0, -1);
     EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
     EditFinalizeStyling(-1);
     UpdateAllBars(false);
@@ -3647,8 +3648,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPYALL:
       {
-        if (s_flagPasteBoard)
+        if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
+        }
         SciCall_CopyRange(0, Sci_GetDocEndPosition());
         UpdateToolbar();
       }
@@ -3657,17 +3659,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPYADD:
       {
-        if (s_flagPasteBoard)
+        if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
-        EditCopyAppend(Globals.hwndEdit,true);
+        }
+        EditCopyAppend(Globals.hwndEdit, true);
         UpdateToolbar();
       }
       break;
 
     case IDM_EDIT_PASTE:
       {
-        if (s_flagPasteBoard)
+        if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
+        }
         _BEGIN_UNDO_ACTION_;
         SciCall_Paste();
         _END_UNDO_ACTION_;
@@ -3678,8 +3682,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SWAP:
       {
-        if (s_flagPasteBoard)
+        if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
+        }
         _BEGIN_UNDO_ACTION_;
         EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
         _END_UNDO_ACTION_;
@@ -7227,15 +7232,20 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeY, 292, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeX, 340, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeY, 292, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeX, 412, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeY, 376, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 384, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeY, 384, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 334, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeY, 334, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(AddToFavDlgSizeX, 172, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeX, 487, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeY, 339, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 305, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeY, 281, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 305, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeY, 281, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(AddToFavDlgSizeX, 317, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgSizeX, 494, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeX, 833, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeY, 515, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
 
@@ -7597,8 +7607,13 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeX);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeY);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AddToFavDlgSizeX);
+
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgSizeX);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosX);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosY);
+
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeX);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeY);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
