@@ -49,7 +49,13 @@
 //#define VERSION_MODPAGEDISPLAY       "https://xhmikosr.github.io/notepad2-mod/"
 //#define VERSION_WEBPAGE2DISPLAY      "http://www.flos-freeware.ch"
 
-#define VERSION_SCIVERSION             L"Scintilla " _W(_STRG(_V(SCINTILLA_VER))) L"  (RegEx: Onigmo v" _W(_STRG(ONIGMO_REGEX_VER)) L")"
+#ifdef _DLL
+#define _SCI_BUILD                     L"Scintilla(dll) "
+#else
+#define _SCI_BUILD                     L"Scintilla "
+#endif
+
+#define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER))) L"  (RegEx: Onigmo v" _W(_STRG(ONIGMO_REGEX_VER)) L")"
 
 // ============================================================================
 

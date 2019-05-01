@@ -3638,11 +3638,19 @@ sptr_t ScintillaWin::DirectFunction(
 	return reinterpret_cast<ScintillaWin *>(ptr)->WndProc(iMessage, wParam, lParam);
 }
 
+#ifdef SCINTILLA_DLL
+namespace Scintilla {
+	sptr_t DirectFunction(ScintillaWin* sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
+		return sci->WndProc(iMessage, wParam, lParam);
+	}
+}
+#else
 extern "C"
 sptr_t __stdcall Scintilla_DirectFunction(
-	ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
+	ScintillaWin* sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return sci->WndProc(iMessage, wParam, lParam);
 }
+#endif
 
 LRESULT PASCAL ScintillaWin::SWndProc(
 	HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
@@ -3677,8 +3685,19 @@ LRESULT PASCAL ScintillaWin::SWndProc(
 	}
 }
 
+namespace Scintilla {
+
+	int ResourcesRelease(bool fromDllMain) noexcept {
+		const bool result = ScintillaWin::Unregister();
+		Platform_Finalise(fromDllMain);
+		return result;
+	}
+
+}
+
 // This function is externally visible so it can be called from container when building statically.
 // Must be called once only.
+extern "C" __declspec(dllexport)
 int Scintilla_RegisterClasses(void *hInstance) {
 	Platform_Initialise(hInstance);
 	const bool result = ScintillaWin::Register(static_cast<HINSTANCE>(hInstance));
@@ -3688,21 +3707,13 @@ int Scintilla_RegisterClasses(void *hInstance) {
 	return result;
 }
 
-namespace Scintilla {
-
-int ResourcesRelease(bool fromDllMain) noexcept {
-	const bool result = ScintillaWin::Unregister();
-	Platform_Finalise(fromDllMain);
-	return result;
-}
-
-}
-
 // This function is externally visible so it can be called from container when building statically.
+extern "C" __declspec(dllexport)
 int Scintilla_ReleaseResources(void) {
 	return Scintilla::ResourcesRelease(false);
 }
 
+extern "C" __declspec(dllexport)
 int Scintilla_InputCodePage(void) {
 	return InputCodePage();
 }
