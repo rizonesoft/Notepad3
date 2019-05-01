@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   reggnu.c -  Onigmo (Oniguruma-mod) (regular expression library)
 **********************************************************************/
 /*-
@@ -128,6 +128,11 @@ re_mbcinit(int mb_code)
   case RE_MBCTYPE_ASCII:
     enc = ONIG_ENCODING_ASCII;
     break;
+#ifdef NP3
+  case RE_MBCTYPE_UTF8:
+    enc = ONIG_ENCODING_UTF8;
+    break;
+#else
   case RE_MBCTYPE_EUC:
     enc = ONIG_ENCODING_EUC_JP;
     break;
@@ -137,6 +142,7 @@ re_mbcinit(int mb_code)
   case RE_MBCTYPE_UTF8:
     enc = ONIG_ENCODING_UTF8;
     break;
+#endif
   default:
     return ;
     break;

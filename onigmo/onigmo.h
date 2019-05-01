@@ -1,4 +1,4 @@
-#ifndef ONIGMO_H
+﻿#ifndef ONIGMO_H
 #define ONIGMO_H
 /**********************************************************************
   onigmo.h - Onigmo (Oniguruma-mod) (regular expression library)
@@ -182,7 +182,11 @@ typedef struct OnigEncodingTypeST {
 typedef const OnigEncodingType* OnigEncoding;
 
 ONIG_EXTERN const OnigEncodingType OnigEncodingASCII;
-#ifndef RUBY
+#ifdef NP3
+ONIG_EXTERN const OnigEncodingType OnigEncodingUTF_8;
+#endif // NP3
+
+#if !(defined(RUBY) || defined(NP3))
 ONIG_EXTERN const OnigEncodingType OnigEncodingISO_8859_1;
 ONIG_EXTERN const OnigEncodingType OnigEncodingISO_8859_2;
 ONIG_EXTERN const OnigEncodingType OnigEncodingISO_8859_3;
@@ -223,7 +227,12 @@ ONIG_EXTERN const OnigEncodingType OnigEncodingGB18030;
 #endif /* RUBY */
 
 #define ONIG_ENCODING_ASCII        (&OnigEncodingASCII)
-#ifndef RUBY
+#ifdef NP3
+#define ONIG_ENCODING_UTF_8        (&OnigEncodingUTF_8)
+#define ONIG_ENCODING_UTF8         ONIG_ENCODING_UTF_8
+#endif // NP3
+
+#if !(defined(RUBY) || defined(NP3))
 # define ONIG_ENCODING_ISO_8859_1   (&OnigEncodingISO_8859_1)
 # define ONIG_ENCODING_ISO_8859_2   (&OnigEncodingISO_8859_2)
 # define ONIG_ENCODING_ISO_8859_3   (&OnigEncodingISO_8859_3)
