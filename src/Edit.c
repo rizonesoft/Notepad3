@@ -6168,25 +6168,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
 //=============================================================================
 //
-//  EditUpdateVisibleUrlHotspot()
-// 
-void EditUpdateVisibleUrlHotspot(bool bEnabled)
-{
-  if (bEnabled)
-  {
-    if (_IsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
-
-    DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-    DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
-
-    _IGNORE_NOTIFY_CHANGE_;
-    EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), bEnabled);
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
-}
-
-//=============================================================================
-//
 //  EditApplyVisibleStyle()
 // 
 void EditApplyVisibleStyle(HWND hwnd)
@@ -6194,10 +6175,12 @@ void EditApplyVisibleStyle(HWND hwnd)
   DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
   DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
   if (Settings.HyperlinkHotspot && !_IsInTargetTransaction()) {
+    _IGNORE_NOTIFY_CHANGE_;
     EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
+    _OBSERVE_NOTIFY_CHANGE_;
   }
   else if (!Globals.bHideNonMatchedLines) {
-    Sci_ApplyStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
+    Sci_ApplyLexerStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
   }
 }
 
@@ -6868,8 +6851,10 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 //
 void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
 {
+  if (Globals.bHideNonMatchedLines) { return; }
+
   if (endPos < 0) { 
-    endPos = Sci_GetDocEndPosition(); 
+    endPos = Sci_GetDocEndPosition() - 1; 
   }
   else if (endPos < startPos) {
     swapos(&startPos, &endPos);
@@ -6890,12 +6875,15 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   // 1st apply current lexer style
   EditFinalizeStyling(startPos);
+  SciCall_StartStyling(startPos);
 
   _ENTER_TARGET_TRANSACTION_;
 
   DocPos start = startPos;
   DocPos end = endPos;
   do {
+    SciCall_StartStyling(start);
+
     DocPos const iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
 
     if (iPos < 0) {
@@ -6906,6 +6894,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
       break; // wrong match
     }
     // mark this match
+    EditFinalizeStyling(iPos);
     SciCall_StartStyling(iPos);
     if (bActiveHotspot) {
       SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
@@ -6913,15 +6902,17 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     else {
       EditFinalizeStyling(end);
     }
+
     // next occurrence
-    start = end;
+    start = end + 1;
     end = endPos;
 
   } while (start < end);
 
   _LEAVE_TARGET_TRANSACTION_;
 
-  SciCall_StartStyling(endPos);
+  EditFinalizeStyling(endPos);
+  SciCall_StartStyling(endPos + 1);
 }
 
 
@@ -6953,7 +6944,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     SciCall_SetFoldFlags(0);
     Style_SetFolding(hwnd, Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
-    Sci_ApplyStyle(0, -1);
+    Sci_ApplyLexerStyle(0, -1);
     EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
     EditFinalizeStyling(-1);
   }
@@ -7077,10 +7068,8 @@ static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
 void EditFinalizeStyling(DocPos iEndPos)
 {
   DocPos const iEndStyled = SciCall_GetEndStyled();
-
-  if ((iEndPos < 0) || (iEndStyled < iEndPos))
-  {
-    Sci_ApplyStyle(iEndStyled, iEndPos);
+  if ((iEndPos < 0) || (iEndStyled < iEndPos)) {
+    Sci_ApplyLexerStyle(iEndStyled, iEndPos);
   }
 }
 

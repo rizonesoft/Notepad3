@@ -2414,9 +2414,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   s_WinCurrentWidth = cx;
-
-  EditEnsureSelectionVisible(Globals.hwndEdit);
-
   UpdateAllBars(false);
 
   return 0;
@@ -3242,7 +3239,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDT_TIMER_UPDATE_HOTSPOT:
-      EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
+      EditApplyVisibleStyle(Globals.hwndEdit);
       break;
 
 
@@ -3534,7 +3531,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE),
                                StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) == 0)) {
 
-          if (SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0) == 0) {
+          if (SciCall_GetTextLength() == 0) {
             Encoding_Current(iNewEncoding);
             Encoding_HasChanged(iNewEncoding);
           }
@@ -3547,6 +3544,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
+        Sci_ApplyLexerStyle(0, -1);
+        EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+        EditFinalizeStyling(-1);
         UpdateStatusbar(false);
       }
       break;
@@ -3554,7 +3554,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_ENCODING_RECODE:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
+        if (StrIsNotEmpty(Globals.CurrentFile))
         {
           cpi_enc_t iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
@@ -6548,7 +6548,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               else if (iUpd & SC_UPDATE_CONTENT) {
                 // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
                 // using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+                //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
               }
             }
 
@@ -6566,7 +6566,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (Settings.HyperlinkHotspot) {
               UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
             }
-            //@@@~EditApplyVisibleStyle(Globals.hwndEdit);
+            //~~~EditApplyVisibleStyle(Globals.hwndEdit);
           }
         }
         break;

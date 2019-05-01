@@ -1311,7 +1311,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
 
   // apply lexer styles
-  Sci_ApplyStyle(0, -1);
+  Sci_ApplyLexerStyle(0, -1);
   EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
   EditFinalizeStyling(-1);
   
