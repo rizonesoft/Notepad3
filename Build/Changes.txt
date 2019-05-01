@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.430.build (2019-Apr 30)
+Current Version 5.19.501.build (2019-May 1)
 ==================================================
 
 --------------------------------------------------
@@ -68,6 +68,8 @@ CHANGES:
 - Allow Hyperlink Hotspots to be activated in "Focused View"
 - BOOKMARK (margin flag) style changed to vertical flavor
 - Auto-Save after elevating user right
+- Compiler version 192027508 (VS2019 v16.0.(0-3)
+
 
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
