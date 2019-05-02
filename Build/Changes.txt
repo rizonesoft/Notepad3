@@ -30,28 +30,25 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.501.build (2019-May 1)
+Current Version 5.19.502.build (2019-May 2)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
 
-- Add: Menu entry to mute MessageBox beeps
-- Add Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
-- Add: Factory Default, Standard Settings, Dark Theme mode
-- Add a timer of 3.2 second to the Zoom Info Bubble
-
-- Add (internal) [Settings2] to control encoding detection
-- Add Recent History button in Toolbar
-- Add support for external and internal Hot- and Disabled- Toolbar icons 
-- Add menu to load other toolbar themes (bitmaps)
-- Add 2nd Encoding-Detector "Mozilla's UCHARDET" in parallel with CED
-- Add Menu "Language" for Language Selector
-- Add a Languages Selection in UI Main Menu
+- 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
+- Menu entry to mute MessageBox beeps
+- Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
+  Factory Default, Standard Settings, Dark Theme mode
+- Close Zoom Info Bubble after ~3 sec.
+- Recent History button in Toolbar
+- [Settings2] key-values (internal) to control concurrent encoding detection
+- 2nd Encoding-Detector "Mozilla's UCHARDET" concurrent to 
+    CED (Google's Compact Encoding Detection)
+- Language selection in Main Menu 
 - Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
-- Customize Schemes: Caret style 'ovrbar' (default) 
-    to switch caret style between BAR and BLOCK 
+- Customize Schemes: Caret style 'ovrbar' (default) to switch caret style between BAR and BLOCK 
 - Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings)
 - Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
 - Add CED reliability option (NLS: dialogs)
@@ -65,12 +62,10 @@ CHANGES:
 
 - Make "Add to Favorites" dialog resizable
 - Make Custom.Schemes and Find/Replace dialog resizable
-- Allow Hyperlink Hotspots to be activated in "Focused View"
+- Allow Hyperlink Hotspots also in "Focused View"
 - BOOKMARK (margin flag) style changed to vertical flavor
 - Auto-Save after elevating user right
-- Compiler version 192027508 (VS2019 v16.0.(0-3)
-
-
+- Support Compiler version 192027508 (VS2019 v16.0.(0-3)
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
 - Start dual encoding detectors in (thread) parallel for large files
@@ -95,7 +90,7 @@ CHANGES:
 ENHANCEMENT:
 --------------------------------------------------
 
-- Enh: rework EOL and Indentation check with dialogs
+- Rework EOL and Indentation check with dialogs
 
 --------------------------------------------------
 FIXES:
@@ -105,7 +100,7 @@ FIXES:
 - Colourise bug on find next (w/ mark occurrences)
 - Indentation warning dialog
 - Reworked: Consistent EOL and Indentation checks
-
+- Fix to support external Hot- and Disabled- Toolbar icons 
 - Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
 - MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
 - Write Language change to Settings2 on change immediately
