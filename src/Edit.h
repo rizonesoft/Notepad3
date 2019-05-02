@@ -110,7 +110,7 @@ void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 void  EditFinalizeStyling(DocPos iEndPos);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditApplyVisibleStyle(HWND hwnd);
-void  EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, bool);
+void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
 
 
 #define FV_TABWIDTH        1

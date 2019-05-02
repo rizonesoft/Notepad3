@@ -1313,7 +1313,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
   EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
-  EditFinalizeStyling(-1);
   
   UpdateAllBars(false);
 }
