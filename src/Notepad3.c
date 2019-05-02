@@ -261,7 +261,6 @@ void ObserveNotifyChangeEvent()
   }
   if (CheckNotifyChangeEvent()) {
     EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
-    EditFinalizeStyling(-1);
     UpdateAllBars(false);
   }
 }
@@ -1331,7 +1330,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSCOLORCHANGE:
       MarkAllOccurrences(0, true);
       EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
-      EditFinalizeStyling(-1);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -2285,7 +2283,6 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   UpdateUI();
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
-  EditFinalizeStyling(-1);
   UpdateAllBars(false);
   
   return 0;
@@ -2349,7 +2346,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   MarkAllOccurrences(0, true);
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
-  EditFinalizeStyling(-1);
   UpdateUI();
   UpdateAllBars(false);
 
@@ -3546,7 +3542,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EndWaitCursor();
         Sci_ApplyLexerStyle(0, -1);
         EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
-        EditFinalizeStyling(-1);
         UpdateStatusbar(false);
       }
       break;
