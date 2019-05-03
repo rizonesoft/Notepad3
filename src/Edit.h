@@ -107,7 +107,6 @@ bool  EditAutoCompleteWord(HWND hwnd,bool);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 
-void  EditFinalizeStyling(DocPos iEndPos);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditApplyVisibleStyle(HWND hwnd);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);

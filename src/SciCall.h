@@ -414,10 +414,11 @@ DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
 //  Indicators
 //
 DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicatorID)
-DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
 DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length)
 DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length)
-
+DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
+DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicatorID, DocPos, position)
+DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicatorID, DocPos, position)
 
 //=============================================================================
 //
@@ -500,6 +501,8 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 
 #define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
+
+#define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
 
 // length of line w/o line-end chars (full use SciCall_LineLength()
 #define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))

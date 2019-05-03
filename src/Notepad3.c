@@ -1540,8 +1540,10 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
-
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
+  SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
+  //SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
+  //SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0); // default: SC_PHASES_TWO
 
   SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
@@ -1558,7 +1560,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // Idle Styling (very large text)
   SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
-  SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
 
   // assign command keys
@@ -1572,11 +1573,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (SCMOD_SHIFT << 16)), SCI_LINEENDWRAPEXTEND);
 
   // set indicator styles (foreground and alpha maybe overridden by style settings)
-  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
-  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
-  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
-  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
-
+  
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
   SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
@@ -1591,6 +1588,14 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SendMessage(hwndEditCtrl, SCI_BRACEBADLIGHTINDICATOR, true, INDIC_NP3_BAD_BRACE);
   }
 
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+
+  //SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_FOCUS_VIEW, INDIC_POINT);
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_FOCUS_VIEW, INDIC_HIDDEN); // invisible
+  
   // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
 
@@ -6512,8 +6517,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
           {
             EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_GetEndStyled(), (int)scn->position, Settings.HyperlinkHotspot);
-            EditFinalizeStyling(-1);
-            //EditUpdateHiddenLineRange(hwnd, &Settings.EFR_Data, 0, SciCall_GetLineCount());
           }
           break;
 

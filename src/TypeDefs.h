@@ -247,11 +247,10 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define LINESTATE_OCCURRENCE_MARK (1 << 17) 
-
 #define INDIC_NP3_MARK_OCCURANCE (INDIC_CONTAINER + 1)
 #define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
 #define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
+#define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
 
 
 //=============================================================================

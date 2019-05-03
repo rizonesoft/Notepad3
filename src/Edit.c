@@ -4389,8 +4389,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 //
 void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
 {
-  UNUSED(hwnd);
-
   if ((iAnchorPos < 0) && (iCurrentPos < 0)) {
     SciCall_SelectAll();
   }
@@ -4439,8 +4437,6 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
 //
 void EditEnsureSelectionVisible(HWND hwnd)
 {
-  UNUSED(hwnd);
-
   DocPos iAnchorPos = 0;
   DocPos iCurrentPos = 0;
   DocPos iAnchorPosVS = -1;
@@ -4999,22 +4995,6 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
 
 //=============================================================================
 //
-//  _DeleteLineStateAll()
-//
-static void  _DeleteLineStateAll(int const iLineStateBit)
-{
-  DocLn const iLastLine = SciCall_GetMaxLineState();
-  for (DocLn iLine = 0; iLine <= iLastLine; ++iLine) {
-    int const iLnSt = SciCall_GetLineState(iLine);
-    if (iLnSt & iLineStateBit) {
-      SciCall_SetLineState(iLine, (iLnSt & ~iLineStateBit));
-    }
-  }
-}
-
-
-//=============================================================================
-//
 //  _DelayMarkAll()
 //  
 //
@@ -5487,7 +5467,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
               _IGNORE_NOTIFY_CHANGE_;
-              if (FocusedView.bHideNonMatchedLines) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
               StringCchCopyA(s_lastFind, COUNTOF(s_lastFind), sg_pefrData->szFind);
               RegExResult_t match = _FindHasMatch(Globals.hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
               if (s_anyMatch != match) { s_anyMatch = match; }
@@ -6467,8 +6446,8 @@ void EditClearAllOccurrenceMarkers()
 
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     SciCall_IndicatorClearRange(0, SciCall_GetTextLength());
-    _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
-    EditFinalizeStyling(-1);
+    SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
+    SciCall_IndicatorClearRange(0, SciCall_GetTextLength());
 
     _OBSERVE_NOTIFY_CHANGE_;
 
@@ -6580,10 +6559,9 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     DocPos start = rangeStart;
     DocPos end = rangeEnd;
 
-    SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
-    
     Globals.iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
+    bool const bMarkLine = FocusedView.bHideNonMatchedLines;
     do {
 
       iPos = _FindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos), FRMOD_IGNORE);
@@ -6592,11 +6570,13 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
         break; // not found
 
       // mark this match if not done before
+      SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
       SciCall_IndicatorFillRange(iPos, (end - start));
 
-      DocLn const iLine = SciCall_LineFromPosition(iPos);
-      int const iLnState = SciCall_GetLineState(iLine);
-      SciCall_SetLineState(iLine, (iLnState | LINESTATE_OCCURRENCE_MARK));
+      if (bMarkLine) {
+        SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
+        SciCall_IndicatorFillRange(Sci_GetLineStartPosition(iPos), 1);
+      }
 
       start = end;
       end = rangeEnd;
@@ -6832,14 +6812,25 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
 //=============================================================================
 //
+//  _FinalizeStyling()
+//
+static void _FinalizeStyling(DocPos iEndPos)
+{
+  DocPos const iEndStyled = SciCall_GetEndStyled();
+  if ((iEndPos < 0) || (iEndStyled < iEndPos)) {
+    Sci_ApplyLexerStyle(iEndStyled, iEndPos);
+  }
+}
+
+
+//=============================================================================
+//
 //  EditUpdateUrlHotspots()
 //  Find and mark all URL hot-spots
 //
 void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
 {
-  if (FocusedView.bHideNonMatchedLines) { return; }
-
-  if (endPos < 0) { 
+  if (endPos < 0) {
     endPos = Sci_GetDocEndPosition() - 1; 
   }
   else if (endPos < startPos) {
@@ -6859,8 +6850,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
 
-  // 1st apply current lexer style
-  EditFinalizeStyling(startPos);
+  if (!bActiveHotspot) { _FinalizeStyling(startPos); }
   SciCall_StartStyling(startPos);
 
   _ENTER_TARGET_TRANSACTION_;
@@ -6880,13 +6870,13 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
       break; // wrong match
     }
     // mark this match
-    EditFinalizeStyling(iPos);
+    if (!bActiveHotspot) { _FinalizeStyling(iPos); }
     SciCall_StartStyling(iPos);
     if (bActiveHotspot) {
       SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
     }
     else {
-      EditFinalizeStyling(end);
+      _FinalizeStyling(end);
     }
 
     // next occurrence
@@ -6897,10 +6887,10 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   _LEAVE_TARGET_TRANSACTION_;
 
-  EditFinalizeStyling(endPos);
-  SciCall_StartStyling(endPos + 1);
+  if (!bActiveHotspot) { _FinalizeStyling(endPos); }
+  //SciCall_StartStyling(endPos + 1);
+  SciCall_StartStyling(Sci_GetDocEndPosition() - 1);
 }
-
 
 
 //=============================================================================
@@ -6916,11 +6906,11 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     // reset
     Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
     FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
-    _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
     Sci_ApplyLexerStyle(0, -1);
+    EditMarkAllOccurrences(hwnd, true);
     EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
   }
   else // =====   hide lines without marker   =====
@@ -6933,7 +6923,9 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFolding(hwnd, true);
 
     Sci_ApplyLexerStyle(0, -1);
-    EditMarkAllOccurrences(hwnd, false); // restore - Lexers destroy the LineState bitset
+    EditMarkAllOccurrences(hwnd, false);
+    EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
+
 
     DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
     DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);
@@ -6949,14 +6941,16 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     // 1st line
     int level = baseLevel;
 
-    if ((SciCall_GetLineState(iStartLine) & LINESTATE_OCCURRENCE_MARK) != 0)
-    { 
+    DocPos const _begOfLine = SciCall_PositionFromLine(iStartLine);
+    if (_begOfLine == SciCall_IndicatorStart(INDIC_NP3_FOCUS_VIEW, _begOfLine))
+    {
       SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELWHITEFLAG | level); // hide
     }
 
     for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
     {
-      if ((SciCall_GetLineState(iLine) & LINESTATE_OCCURRENCE_MARK) != 0) // visible
+      DocPos const begOfLine = SciCall_PositionFromLine(iLine);
+      if (begOfLine == SciCall_IndicatorStart(INDIC_NP3_FOCUS_VIEW, begOfLine)) // visible
       {
         level = baseLevel;
         SciCall_SetFoldLevel(iLine, level);
@@ -6976,9 +6970,9 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
 
 //=============================================================================
 //
-//  EditHighlightIfBrace()
+//  _HighlightIfBrace()
 //
-static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
+static bool _HighlightIfBrace(HWND hwnd, DocPos iPos)
 {
   UNUSED(hwnd);
   if (iPos < 0) {
@@ -7010,27 +7004,11 @@ static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
 
 //=============================================================================
 //
-//  EditFinalizeStyling()
-//
-void EditFinalizeStyling(DocPos iEndPos)
-{
-  DocPos const iEndStyled = SciCall_GetEndStyled();
-  if ((iEndPos < 0) || (iEndStyled < iEndPos)) {
-    Sci_ApplyLexerStyle(iEndStyled, iEndPos);
-  }
-}
-
-
-//=============================================================================
-//
 //  EditMatchBrace()
 //
 void EditMatchBrace(HWND hwnd) 
 {
   DocPos iPos = SciCall_GetCurrentPos();
-
-  EditFinalizeStyling(iPos);
-
   if (!_HighlightIfBrace(hwnd, iPos)) {
     // try one before
     iPos = SciCall_PositionBefore(iPos);
