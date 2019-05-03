@@ -443,7 +443,7 @@ static void _SetSaveNeededFlag(const bool setSaveNeeded)
     // Force trigger modified (e.g. RelaunchElevated)
     if (!SciCall_GetModify()) {
       SciCall_AppendText(1, " "); // trigger dirty flag
-      SciCall_DeleteRange(SciCall_GetTextLength() - 1, 1);
+      SciCall_DeleteRange(Sci_GetDocEndPosition(), 1);
     }
     // notify Search/Replace dialog
     if (IsWindow(Globals.hwndDlgFindReplace)) {
@@ -4649,8 +4649,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELTONEXT:
     case IDM_EDIT_SELTOPREV:
 
-      if (SciCall_GetTextLength() == 0)
-        break;
+      if (SciCall_GetTextLength() == 0) { break; }
 
       if (IsFindPatternEmpty() && !StringCchLenA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind)))
       {
@@ -6172,13 +6171,13 @@ bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
   while ((cNewStyle == cStyle) && (--pos > 0)) {
     cNewStyle = SciCall_GetStyleAt(pos);
   }
-  DocPos firstPos = (pos != 0) ? (pos + 1) : 0;
+  DocPos const firstPos = (pos != 0) ? (pos + 1) : 0;
 
   // get right most position of style
   pos = position;
   cNewStyle = cStyle;
-  DocPos posTextLength = SciCall_GetTextLength();
-  while ((cNewStyle == cStyle) && (++pos < posTextLength)) {
+  DocPos const docEndPos = Sci_GetDocEndPosition();
+  while ((cNewStyle == cStyle) && (++pos <= docEndPos)) {
     cNewStyle = SciCall_GetStyleAt(pos);
   }
   DocPos lastPos = pos;
