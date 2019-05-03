@@ -36,7 +36,6 @@ Current Version 5.19.503.build (2019-May 3)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-
 - 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
 - Menu entry to mute MessageBox beeps
 - Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
@@ -59,7 +58,6 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-
 - Make "Add to Favorites" dialog resizable
 - Make Custom.Schemes and Find/Replace dialog resizable
 - BOOKMARK (margin flag) style changed to vertical flavor
@@ -88,13 +86,11 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
-
 - Rework EOL and Indentation check with dialogs
 
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-
 - Do not ignore notify change for Paste/Swap/Undo/Redo
 - Colourise bug on find next (w/ mark occurrences)
 - Indentation warning dialog
@@ -114,7 +110,6 @@ FIXES:
 --------------------------------------------------
 REMOVED:
 --------------------------------------------------
-
 - Add here items for later review...
 
 --------------------------------------------------
