@@ -316,7 +316,7 @@ void  _ClearTextBuffer(HWND hwnd)
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
   EditClearAllOccurrenceMarkers();
-  if (Globals.bHideNonMatchedLines) { EditToggleView(hwnd); }
+  if (FocusedView.bHideNonMatchedLines) { EditToggleView(hwnd); }
 
   SendMessage(hwnd, SCI_CLEARALL, 0, 0);
   SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
@@ -5263,7 +5263,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
 
-          if (Globals.bHideNonMatchedLines) { EditToggleView(hwnd); }
+          if (FocusedView.bHideNonMatchedLines) { EditToggleView(hwnd); }
           MarkAllOccurrences(50, true);
 
           if (s_InitialTopLine >= 0) { 
@@ -5487,7 +5487,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
               _IGNORE_NOTIFY_CHANGE_;
-              if (Globals.bHideNonMatchedLines) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
+              if (FocusedView.bHideNonMatchedLines) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
               StringCchCopyA(s_lastFind, COUNTOF(s_lastFind), sg_pefrData->szFind);
               RegExResult_t match = _FindHasMatch(Globals.hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
               if (s_anyMatch != match) { s_anyMatch = match; }
@@ -5510,7 +5510,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                   EditSetSelectionEx(Globals.hwndEdit, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 }
               }
-              if (Globals.bHideNonMatchedLines) { EditHideNotMarkedLineRange(Globals.hwndEdit, true); }
+              if (FocusedView.bHideNonMatchedLines) { EditHideNotMarkedLineRange(Globals.hwndEdit, true); }
               _OBSERVE_NOTIFY_CHANGE_;
             }
           }
@@ -5543,7 +5543,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
             //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-            if (Globals.bHideNonMatchedLines) {
+            if (FocusedView.bHideNonMatchedLines) {
               PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
             }
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
@@ -5558,7 +5558,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
 
       case IDC_TOGGLE_VISIBILITY:
-        if (Globals.bHideNonMatchedLines) { 
+        if (FocusedView.bHideNonMatchedLines) {
           EditToggleView(hwnd);
           sg_pefrData->bStateChanged = true;
           s_InitialTopLine = -1;  // reset
@@ -6179,7 +6179,7 @@ void EditApplyVisibleStyle(HWND hwnd)
     EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
     _OBSERVE_NOTIFY_CHANGE_;
   }
-  else if (!Globals.bHideNonMatchedLines) {
+  else if (!FocusedView.bHideNonMatchedLines) {
     Sci_ApplyLexerStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
   }
 }
@@ -6483,26 +6483,14 @@ void EditClearAllOccurrenceMarkers()
 //
 void EditToggleView(HWND hwnd)
 {
-  static bool bSaveFoldingAvailable = false;
-  static bool bSaveShowFolding = false;
-
   bool const bWaitCursor = ((Globals.iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
 
-  if (!Globals.bHideNonMatchedLines) {
-    bSaveFoldingAvailable = Globals.bCodeFoldingAvailable;
-    bSaveShowFolding = Settings.ShowCodeFolding;
-  }
-  else {
-    Globals.bCodeFoldingAvailable = bSaveFoldingAvailable;
-    Settings.ShowCodeFolding = bSaveShowFolding;
-  }
+  FocusedView.bHideNonMatchedLines = !FocusedView.bHideNonMatchedLines; // toggle
 
-  Globals.bHideNonMatchedLines = !Globals.bHideNonMatchedLines; // toggle
+  EditHideNotMarkedLineRange(hwnd, FocusedView.bHideNonMatchedLines);
 
-  EditHideNotMarkedLineRange(hwnd, Globals.bHideNonMatchedLines);
-
-  if (Globals.bHideNonMatchedLines) {
+  if (FocusedView.bHideNonMatchedLines) {
     EditScrollTo(hwnd, 0, false);
     SciCall_SetReadOnly(true);
   }
@@ -6849,7 +6837,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 //
 void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
 {
-  if (Globals.bHideNonMatchedLines) { return; }
+  if (FocusedView.bHideNonMatchedLines) { return; }
 
   if (endPos < 0) { 
     endPos = Sci_GetDocEndPosition() - 1; 
@@ -6925,10 +6913,12 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
   DocPos const iEndPos = Sci_GetDocEndPosition();
 
   if (!bHideLines) {
+    // reset
+    Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
+    FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
     _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
-    if (!Globals.bCodeFoldingAvailable) { SciCall_SetProperty("fold", "0"); }
-    SciCall_SetFoldFlags(0);
-    Style_SetFolding(hwnd, Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding);
+    Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+    Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
     Sci_ApplyLexerStyle(0, -1);
     EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
@@ -6936,20 +6926,14 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
   else // =====   hide lines without marker   =====
   {
     // prepare hidden (folding) settings
-    Globals.bCodeFoldingAvailable = true; // saved before
-    Settings.ShowCodeFolding = true;      // saved before
-    SciCall_SetProperty("fold", "1");
-    SciCall_SetProperty("fold.foldsyntaxbased", "1");
-    SciCall_SetProperty("fold.comment", "1");
-    SciCall_SetProperty("fold.preprocessor", "1");
-    SciCall_SetProperty("fold.compact", "0");
+    FocusedView.CodeFoldingAvailable = true;
+    FocusedView.ShowCodeFolding = true;
+    Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+    SciCall_SetProperty("fold.foldsyntaxbased", "0");
     Style_SetFolding(hwnd, true);
-    SciCall_SetFoldFlags(0);
-    //SciCall_SetFoldFlags(SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // Debug
 
     Sci_ApplyLexerStyle(0, -1);
     EditMarkAllOccurrences(hwnd, false); // restore - Lexers destroy the LineState bitset
-    EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
 
     DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
     DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);
@@ -8355,7 +8339,7 @@ void EditFoldClick(DocLn ln, int mode)
 
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 {
-  if (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding)
+  if (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding)
   {
     DocLn ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 

@@ -61,6 +61,8 @@ SETTINGS_T  Defaults;
 SETTINGS2_T Settings2;
 static SETTINGS2_T Defaults2;
 
+FOCUSEDVIEW_T FocusedView;
+
 // ------------------------------------
 
 static WCHAR     s_wchWndClass[16] = _W(SAPPNAME);
@@ -470,7 +472,6 @@ static void _InitGlobals()
   Globals.CallTipType = CT_NONE;
   Globals.iAvailLngCount = 1;
   Globals.iWrapCol = 0;
-  Globals.bCodeFoldingAvailable = false;
   Globals.bForceReLoadAsUTF8 = false;
   Globals.DOSEncoding = CPI_NONE;
   Globals.bZeroBasedColumnIndex = false;
@@ -483,7 +484,6 @@ static void _InitGlobals()
   Globals.bIniFileFromScratch = false;
   Globals.bFindReplCopySelOrClip = true;
   Globals.bReplaceInitialized = false;
-  Globals.bHideNonMatchedLines = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
 
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
@@ -501,6 +501,10 @@ static void _InitGlobals()
   Flags.NoFileVariables = DefaultFlags.NoFileVariables = false;
   Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
   Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
+
+  FocusedView.bHideNonMatchedLines = false;
+  FocusedView.CodeFoldingAvailable = false;
+  FocusedView.ShowCodeFolding = true;
 }
 
 
@@ -2343,7 +2347,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   SendWMSize(hwnd, NULL);
 
-  if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  if (FocusedView.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   MarkAllOccurrences(0, true);
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   UpdateUI();
@@ -2985,13 +2989,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(Globals.hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu, IDM_VIEW_FOLDING, Globals.bCodeFoldingAvailable);
-  CheckCmd(hmenu, IDM_VIEW_FOLDING, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.bHideNonMatchedLines);
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding) && (bF || bH));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding) && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -3015,7 +3019,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
-  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, Globals.bHideNonMatchedLines);
+  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.bHideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
@@ -4933,14 +4937,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
-      if (Globals.bHideNonMatchedLines) { 
+      if (FocusedView.bHideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
         MarkAllOccurrences(0, true);
       }
       else {
         EditToggleView(Globals.hwndEdit);
       }
-      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, Globals.bHideNonMatchedLines);
+      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, FocusedView.bHideNonMatchedLines);
       UpdateToolbar();
       break;
 
@@ -4969,8 +4973,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_FOLDING:
       Settings.ShowCodeFolding = !Settings.ShowCodeFolding;
-      Style_SetFolding(Globals.hwndEdit, Settings.ShowCodeFolding);
-      if (!Settings.ShowCodeFolding) { EditToggleFolds(EXPAND, true); }
+      FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
+      Style_SetFolding(Globals.hwndEdit, FocusedView.ShowCodeFolding);
+      if (!FocusedView.ShowCodeFolding) { EditToggleFolds(EXPAND, true); }
       UpdateToolbar();
       break;
 
@@ -6459,7 +6464,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         _SetSaveNeededFlag(true);
       }
       else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
-        if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+        if (FocusedView.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
       }
     }
     return TRUE;
@@ -7152,7 +7157,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
-    GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
     GET_INT_VALUE_FROM_INISECTION(MarkOccurrences, 1, 0, 3);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
@@ -8435,7 +8440,7 @@ static void  _UpdateToolbarDelayed()
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
   bool ro = SciCall_GetReadOnly();
-  bool tv = Globals.bHideNonMatchedLines;
+  bool tv = FocusedView.bHideNonMatchedLines;
 
   EnableTool(IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
   EnableTool(IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
@@ -8453,7 +8458,7 @@ static void  _UpdateToolbarDelayed()
   EnableTool(IDT_EDIT_COPY, !b1 && !ro);
   EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
   EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible));
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
@@ -9177,10 +9182,8 @@ void UpdateMarginWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  if (!Globals.bHideNonMatchedLines) {
-    Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
-    Style_SetFolding(Globals.hwndEdit, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
-  }
+  Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
+  Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
 
@@ -9593,7 +9596,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
   if (bNew || bReload) {
-    if (Globals.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+    if (FocusedView.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   }
 
   if (!bDontSave)

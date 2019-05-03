@@ -247,11 +247,11 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define LINESTATE_OCCURRENCE_MARK (1 << 13) 
+#define LINESTATE_OCCURRENCE_MARK (1 << 17) 
 
-#define INDIC_NP3_MARK_OCCURANCE 1
-#define INDIC_NP3_MATCH_BRACE    2
-#define INDIC_NP3_BAD_BRACE      3
+#define INDIC_NP3_MARK_OCCURANCE (INDIC_CONTAINER + 1)
+#define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
+#define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
 
 
 //=============================================================================
@@ -297,7 +297,6 @@ typedef struct _globals_t
   FILEVARS  fvCurFile;
   FILEVARS  fvBackup;
   int       iWrapCol;
-  bool      bCodeFoldingAvailable;
   bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
@@ -309,7 +308,6 @@ typedef struct _globals_t
   bool      bIniFileFromScratch;
   bool      bFindReplCopySelOrClip;
   bool      bReplaceInitialized;
-  bool      bHideNonMatchedLines;
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -497,6 +495,18 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
+
+//=============================================================================
+
+typedef struct _focusedview_t
+{
+  bool bHideNonMatchedLines;
+  bool CodeFoldingAvailable; // = true; // saved before
+  bool ShowCodeFolding;      // = true;      // saved before
+
+} FOCUSEDVIEW_T, * PFOCUSEDVIEW_T;
+
+extern FOCUSEDVIEW_T FocusedView;
 
 //=============================================================================
 

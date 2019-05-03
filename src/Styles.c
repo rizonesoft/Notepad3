@@ -776,6 +776,50 @@ DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
 //=============================================================================
 //
+//  Style_SetFoldingAvailability()
+//
+void Style_SetFoldingAvailability(PEDITLEXER pLexer)
+{
+  switch (pLexer->lexerID)
+  {
+    case SCLEX_NULL:
+    case SCLEX_CONTAINER:
+    case SCLEX_BATCH:
+    case SCLEX_CONF:
+    case SCLEX_MAKEFILE:
+    case SCLEX_MARKDOWN:
+      FocusedView.CodeFoldingAvailable = false;
+      break;
+    default:
+      FocusedView.CodeFoldingAvailable = true;
+      break;
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_SetFoldingProperties()
+//
+void Style_SetFoldingProperties(bool active)
+{
+  if (active) {
+    SciCall_SetProperty("fold", "1");
+    SciCall_SetProperty("fold.foldsyntaxbased", "1");
+    SciCall_SetProperty("fold.compact", "0");
+    SciCall_SetProperty("fold.comment", "1");
+    SciCall_SetProperty("fold.html", "1");
+    SciCall_SetProperty("fold.preprocessor", "1");
+    SciCall_SetProperty("fold.cpp.comment.explicit", "0");
+  }
+  else {
+    SciCall_SetProperty("fold", "0");
+  }
+}
+
+
+//=============================================================================
+//
 //  Style_SetLexer()
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) 
@@ -832,29 +876,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetProperty("json.allow.comments", "1");
     SciCall_SetProperty("json.escape.sequence", "1");
   }
-
-  // Code folding
-  switch (pLexNew->lexerID)
-  {
-  case SCLEX_NULL:
-  case SCLEX_CONTAINER:
-  case SCLEX_BATCH:
-  case SCLEX_CONF:
-  case SCLEX_MAKEFILE:
-  case SCLEX_MARKDOWN:
-    Globals.bCodeFoldingAvailable = false;
-    SciCall_SetProperty("fold", "0");
-    break;
-  default:
-    Globals.bCodeFoldingAvailable = true;
-    SciCall_SetProperty("fold", "1");
-    SciCall_SetProperty("fold.compact", "0");
-    SciCall_SetProperty("fold.comment", "1");
-    SciCall_SetProperty("fold.html", "1");
-    SciCall_SetProperty("fold.preprocessor", "1");
-    SciCall_SetProperty("fold.cpp.comment.explicit", "0");
-    break;
+  else if (pLexNew->lexerID == SCLEX_PYTHON) {
+    SciCall_SetProperty("tab.timmy.whinge.level", "1");
   }
+
+  
+  // Code folding
+  Style_SetFoldingAvailability(pLexNew);
+  Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+
 
   // Add KeyWord Lists
   for (int i = 0; i < (KEYWORDSET_MAX + 1); i++) {
@@ -1009,7 +1039,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
   }
 
-  // More default values...
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_INPUT, dColor);
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_TARGET, dColor);
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_CONVERTED, dColor);
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
 
   if (pLexNew != &lexANSI) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
@@ -1307,6 +1340,29 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
   }
 
+  // Lexer reserved indicator styles
+  switch (s_pLexCurrent->lexerID)
+  {
+    case SCLEX_PYTHON:
+      SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
+      SendMessage(hwnd, SCI_INDICSETFORE, 1, (LPARAM)RGB(255, 0, 0)); // (light red)
+      //SendMessage(hwnd, SCI_INDICSETALPHA, 1, 40);                  
+      //SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, 1, 100);
+      break;
+
+    default:
+      //SendMessage(hwnd, SCI_INDICSETSTYLE, 0, INDIC_SQUIGGLE);
+      //SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_TT);
+      //SendMessage(hwnd, SCI_INDICSETSTYLE, 2, INDIC_PLAIN);
+      //SendMessage(hwnd, SCI_INDICSETFORE, 0, (LPARAM)RGB(0, 0x7f, 0)); // (dark green)
+      //SendMessage(hwnd, SCI_INDICSETFORE, 1, (LPARAM)RGB(0, 0, 0xff)); // (light blue)
+      //SendMessage(hwnd, SCI_INDICSETFORE, 2, (LPARAM)RGB(0xff, 0, 0)); // (light red)
+      //for (int sty = 3; sty < INDIC_CONTAINER; ++sty) {
+      //  SendMessage(hwnd, SCI_INDICSETSTYLE, sty, INDIC_ROUNDBOX);
+      //}
+      break;
+  }
+
   Style_SetInvisible(hwnd, false); // set fixed invisible style
   Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
 
@@ -1602,22 +1658,26 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   int fldStyleLn = 0;
   Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
+
+  int const _debug_flags = 0; 
+  //int const _debug_flags = (SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // !extend margin width
+
   switch (fldStyleLn)
   {
   case 1:
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | _debug_flags);
     break;
   case 2:
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED | _debug_flags);
     break;
   default:
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED | _debug_flags);
     break;
   }
 
   // set width
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
-  Style_SetFolding(hwnd, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  Style_SetFolding(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
 
