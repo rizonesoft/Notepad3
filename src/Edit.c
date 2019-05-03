@@ -3610,7 +3610,6 @@ void EditCompressBlanks(HWND hwnd)
     const DocPos iCurPos = SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_GetAnchor();
     const DocPos iSelLength = (iSelEndPos - iSelStartPos);
-    const DocPos iTxtLength = SciCall_GetTextLength();
 
     bool bIsLineStart = true;
     bool bIsLineEnd = true;
@@ -3620,7 +3619,7 @@ void EditCompressBlanks(HWND hwnd)
     DocPos cch = 0;
     if (bIsSelEmpty) {
       pszIn = (const char*)SciCall_GetCharacterPointer();
-      cch = iTxtLength;
+      cch = SciCall_GetTextLength();
       pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
     }
     else {
@@ -3670,7 +3669,7 @@ void EditCompressBlanks(HWND hwnd)
           SciCall_TargetFromSelection();
         }
         else {
-          SciCall_SetTargetRange(0, iTxtLength-1);
+          SciCall_SetTargetRange(0, Sci_GetDocEndPosition());
         }
         SciCall_ReplaceTarget(-1, pszOut);
 
@@ -3712,7 +3711,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
   }
 
   const DocPos iSelStart = (SciCall_IsSelectionEmpty() ? 0 : SciCall_GetSelectionStart());
-  const DocPos iSelEnd = (SciCall_IsSelectionEmpty() ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd());
+  const DocPos iSelEnd = (SciCall_IsSelectionEmpty() ? (Sci_GetDocEndPosition()-1) : SciCall_GetSelectionEnd());
 
   DocLn iBegLine = SciCall_LineFromPosition(iSelStart);
   DocLn iEndLine = SciCall_LineFromPosition(iSelEnd);
@@ -3858,7 +3857,7 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 
   DocPos iSelStart = 0;
   DocPos iSelEnd = Sci_GetDocEndPosition();
-  DocPos iSelCount = Sci_GetDocEndPosition();
+  DocPos iSelCount = iSelEnd;
 
   if (!SciCall_IsSelectionEmpty()) {
     iSelStart = SciCall_GetSelectionStart();
@@ -4529,7 +4528,7 @@ void EditFixPositions(HWND hwnd)
   
   DocPos iNewPos = iCurrentPos;
 
-  if ((iCurrentPos > 0) && (iCurrentPos < iMaxPos)) 
+  if ((iCurrentPos > 0) && (iCurrentPos <= iMaxPos)) 
   {
     iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iCurrentPos));
 
@@ -4538,7 +4537,7 @@ void EditFixPositions(HWND hwnd)
     }
   }
 
-  if ((iAnchorPos != iNewPos) && (iAnchorPos > 0) && (iAnchorPos < iMaxPos))
+  if ((iAnchorPos != iNewPos) && (iAnchorPos > 0) && (iAnchorPos <= iMaxPos))
   {
     iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iAnchorPos));
     if (iNewPos != iAnchorPos) { 
@@ -5956,14 +5955,14 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (bFocusWnd)
     SetFocus(hwnd);
 
-  DocPos iTextLength = SciCall_GetTextLength();
+  DocPos const iDocEndPos = Sci_GetDocEndPosition();
 
   DocPos start = SciCall_GetCurrentPos();
-  DocPos end = iTextLength;
+  DocPos end = iDocEndPos;
 
   if (start >= end) {
     if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
-      end = min_p(start, iTextLength);  start = 0;
+      end = min_p(start, iDocEndPos);  start = 0;
     }
     else
       bSuppressNotFound = true;
@@ -5982,7 +5981,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
       if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) {
-        end = min_p(start, iTextLength);  start = 0;
+        end = min_p(start, iDocEndPos);  start = 0;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
 
@@ -6036,8 +6035,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (slen <= 0)
     return false;
 
-  const DocPos iTextLength = SciCall_GetTextLength();
-
+  DocPos const iTextLength = Sci_GetDocEndPosition() + 1;
   DocPos start = SciCall_GetCurrentPos();
   DocPos end = 0;
 
@@ -6204,7 +6202,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
 
   // redo find to get group ranges filled
   DocPos start = (SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : selBeg);
-  DocPos end = SciCall_GetTextLength();
+  DocPos end = Sci_GetDocEndPosition();
   DocPos _start = start;
   Globals.iReplacedOccurrences = 0;
 
@@ -6366,8 +6364,8 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
 //
 bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 {
-  const DocPos start = 0;
-  const DocPos end = SciCall_GetTextLength();
+  DocPos const start = 0;
+  DocPos const end = Sci_GetDocEndPosition();
   DocPos enlargement = 0;
 
   BeginWaitCursor(NULL);
@@ -6445,9 +6443,9 @@ void EditClearAllOccurrenceMarkers()
     _IGNORE_NOTIFY_CHANGE_;
 
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
-    SciCall_IndicatorClearRange(0, SciCall_GetTextLength());
+    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
     SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
-    SciCall_IndicatorClearRange(0, SciCall_GetTextLength());
+    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
     _OBSERVE_NOTIFY_CHANGE_;
 
@@ -6669,7 +6667,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
   DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
-  while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos != iDocEndPos)) {
+  while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
     char const ch = SciCall_GetCharAt(iPos);
     if (ch < '0' || ch > '9') {
       bWordAllNumbers = false;
@@ -6831,7 +6829,7 @@ static void _FinalizeStyling(DocPos iEndPos)
 void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
 {
   if (endPos < 0) {
-    endPos = Sci_GetDocEndPosition() - 1; 
+    endPos = Sci_GetDocEndPosition(); 
   }
   else if (endPos < startPos) {
     swapos(&startPos, &endPos);
@@ -6844,13 +6842,18 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   }
   if (endPos == startPos) { return; }
 
+  if (!bActiveHotspot) {
+    SciCall_StartStyling(startPos);
+    Sci_ApplyLexerStyle(startPos, endPos);
+    return;
+  }
+
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
 
   int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
 
-  if (!bActiveHotspot) { _FinalizeStyling(startPos); }
   SciCall_StartStyling(startPos);
 
   _ENTER_TARGET_TRANSACTION_;
@@ -6870,14 +6873,8 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
       break; // wrong match
     }
     // mark this match
-    if (!bActiveHotspot) { _FinalizeStyling(iPos); }
     SciCall_StartStyling(iPos);
-    if (bActiveHotspot) {
-      SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
-    }
-    else {
-      _FinalizeStyling(end);
-    }
+    SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
 
     // next occurrence
     start = end + 1;
@@ -6887,9 +6884,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   _LEAVE_TARGET_TRANSACTION_;
 
-  if (!bActiveHotspot) { _FinalizeStyling(endPos); }
-  //SciCall_StartStyling(endPos + 1);
-  SciCall_StartStyling(Sci_GetDocEndPosition() - 1);
+  SciCall_StartStyling(Sci_GetDocEndPosition());
 }
 
 
@@ -6910,8 +6905,8 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
     Sci_ApplyLexerStyle(0, -1);
-    EditMarkAllOccurrences(hwnd, true);
     EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
+    EditMarkAllOccurrences(hwnd, true);
   }
   else // =====   hide lines without marker   =====
   {
@@ -6923,9 +6918,8 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFolding(hwnd, true);
 
     Sci_ApplyLexerStyle(0, -1);
-    EditMarkAllOccurrences(hwnd, false);
     EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
-
+    EditMarkAllOccurrences(hwnd, false);
 
     DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
     DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);

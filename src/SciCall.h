@@ -505,10 +505,10 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
 
 // length of line w/o line-end chars (full use SciCall_LineLength()
-#define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
+#define Sci_GetNetLineLength(line) (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
-///~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
-#define Sci_GetDocEndPosition() SciCall_GetTextLength()
+//~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
+#define Sci_GetDocEndPosition() SciCall_GetLineEndPosition(SciCall_GetLineCount() - 1)
 
 // max. line length in range (incl. line-breaks)
 inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
