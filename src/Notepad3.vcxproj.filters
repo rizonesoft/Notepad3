@@ -25,21 +25,6 @@
     <Filter Include="Source Files\ChooseFont">
       <UniqueIdentifier>{a6270a0b-5c38-4e68-b38c-5795ccb57302}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\CED">
-      <UniqueIdentifier>{91d2fb70-4067-4692-b746-9a02db63f461}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CED\compact_enc_det">
-      <UniqueIdentifier>{8d78b8ca-ff0f-46cb-8da2-83c4bde259b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CED\util">
-      <UniqueIdentifier>{dbeb3dd1-1f65-45ec-a526-dc0e84e4c350}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CED\util\encodings">
-      <UniqueIdentifier>{1d7878c8-36e3-4bae-91d9-fda61101aa81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CED\util\languages">
-      <UniqueIdentifier>{fd5165c7-e622-408b-95f0-666d494aa8f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\tinyexpr">
       <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
     </Filter>
@@ -92,18 +77,6 @@
     </ClCompile>
     <ClCompile Include="Encoding.c">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ced\ced\util\languages\languages.cc">
-      <Filter>Source Files\CED\util\languages</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ced\ced\util\encodings\encodings.cc">
-      <Filter>Source Files\CED\util\encodings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det.cc">
-      <Filter>Source Files\CED\compact_enc_det</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.cc">
-      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClCompile>
     <ClCompile Include="..\tinyexpr\tinyexpr.c">
       <Filter>Source Files\tinyexpr</Filter>
@@ -472,51 +445,6 @@
     </ClInclude>
     <ClInclude Include="Encoding.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\basictypes.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\case_insensitive_hash.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\commandlineflags.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\logging.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\port.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\string_util.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\varsetter.h">
-      <Filter>Source Files\CED\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\languages\languages.h">
-      <Filter>Source Files\CED\util\languages</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\languages\languages.pb.h">
-      <Filter>Source Files\CED\util\languages</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\encodings\encodings.h">
-      <Filter>Source Files\CED\util\encodings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\util\encodings\encodings.pb.h">
-      <Filter>Source Files\CED\util\encodings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det.h">
-      <Filter>Source Files\CED\compact_enc_det</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables.h">
-      <Filter>Source Files\CED\compact_enc_det</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables2.h">
-      <Filter>Source Files\CED\compact_enc_det</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.h">
-      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClInclude>
     <ClInclude Include="..\language\common_res.h">
       <Filter>Header Files</Filter>

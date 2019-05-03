@@ -7006,11 +7006,12 @@ void LoadSettings()
     Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
 
 
-    int const iARCLdef = 51;
+    int const iARCLdef = 67;
     Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
     int const iARCLset = clampi(IniSectionGetInt(pIniSection, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
     Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
 
+    /* ~~~ 
     int const iRCEDCMdef = 85;
     Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
     int const iRCEDCMset = clampi(IniSectionGetInt(pIniSection, L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100);
@@ -7020,7 +7021,7 @@ void LoadSettings()
     Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
     int const iURCEDCMset = clampi(IniSectionGetInt(pIniSection, L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, iRCEDCMset);
     Settings2.UnReliableCEDConfidenceMapping = (float)iURCEDCMset / 100.0f;
-
+    ~~~ */
 
     Defaults2.AdministrationTool[0] = L'\0';
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", Defaults2.AdministrationTool,

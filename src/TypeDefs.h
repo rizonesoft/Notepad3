@@ -471,8 +471,8 @@ typedef struct _settings2_t
   int    CurrentLineVerticalSlop;
 
   float  AnalyzeReliableConfidenceLevel;
-  float  ReliableCEDConfidenceMapping;   // = 0.85f;
-  float  UnReliableCEDConfidenceMapping; //= 0.20f;
+  //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
+  //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
   WCHAR DefaultExtension[64];

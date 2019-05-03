@@ -364,10 +364,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det.cc" />
-    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.cc" />
-    <ClCompile Include="..\ced\ced\util\encodings\encodings.cc" />
-    <ClCompile Include="..\ced\ced\util\languages\languages.cc" />
     <ClCompile Include="..\crypto\crypto.c" />
     <ClCompile Include="..\crypto\rijndael-alg-fst.c" />
     <ClCompile Include="..\crypto\rijndael-api-fst.c" />
@@ -493,21 +489,6 @@
     <ClCompile Include="Styles.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det.h" />
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables.h" />
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables2.h" />
-    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.h" />
-    <ClInclude Include="..\ced\ced\util\basictypes.h" />
-    <ClInclude Include="..\ced\ced\util\case_insensitive_hash.h" />
-    <ClInclude Include="..\ced\ced\util\commandlineflags.h" />
-    <ClInclude Include="..\ced\ced\util\encodings\encodings.h" />
-    <ClInclude Include="..\ced\ced\util\encodings\encodings.pb.h" />
-    <ClInclude Include="..\ced\ced\util\languages\languages.h" />
-    <ClInclude Include="..\ced\ced\util\languages\languages.pb.h" />
-    <ClInclude Include="..\ced\ced\util\logging.h" />
-    <ClInclude Include="..\ced\ced\util\port.h" />
-    <ClInclude Include="..\ced\ced\util\string_util.h" />
-    <ClInclude Include="..\ced\ced\util\varsetter.h" />
     <ClInclude Include="..\crypto\crypto.h" />
     <ClInclude Include="..\crypto\rijndael-alg-fst.h" />
     <ClInclude Include="..\crypto\rijndael-api-fst.h" />
