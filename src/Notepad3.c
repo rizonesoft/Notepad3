@@ -9016,6 +9016,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
+  const WCHAR* const _LF_f    = L"%sLF%s";
+  const WCHAR* const _LFi_f   = L"%sLF*%s";
+  const WCHAR* const _CR_f    = L"%sCR%s";
+  const WCHAR* const _CRi_f   = L"%sCR*%s";
+  const WCHAR* const _CRLF_f  = L"%sCR+LF%s";
+  const WCHAR* const _CRLFi_f = L"%sCR+LF*%s";
+
   if (s_iStatusbarVisible[STATUS_EOLMODE]) 
   {
     static int s_iEOLMode = -1;
@@ -9026,18 +9033,18 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       static WCHAR tchEOL[16] = { L'\0' };
       if (_eol_mode == SC_EOL_LF) 
       {
-        StringCchCopy(tchEOL, COUNTOF(tchEOL), Globals.bInconsistentLineBreaks ? L"%sLF*%s" : L"%sLF%s");
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _LFi_f : _LF_f),
+          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else if (_eol_mode == SC_EOL_CR) 
       {
-        StringCchCopy(tchEOL, COUNTOF(tchEOL), Globals.bInconsistentLineBreaks ? L"%sCR*%s" : L"%sCR%s");
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRi_f : _CR_f),
+          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else {
-        StringCchCopy(tchEOL, COUNTOF(tchEOL), Globals.bInconsistentLineBreaks ? L"%sCR+LF*%s" : L"%sCR+LF%s");
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRLFi_f : _CRLF_f),
+          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, tchEOL,
-        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
-
       s_iEOLMode = _eol_mode;
       bIsUpdateNeeded = true;
     }
