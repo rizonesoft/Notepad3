@@ -485,6 +485,7 @@ static void _InitGlobals()
   Globals.bFindReplCopySelOrClip = true;
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
+  Globals.bInconsistentLineBreaks = false;
 
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
   Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
@@ -3592,7 +3593,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        UpdateStatusbar(false);
+        UpdateStatusbar(true);
       }
       break;
 
@@ -9015,6 +9016,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
+  const WCHAR* const _LF_f    = L"%sLF%s";
+  const WCHAR* const _LFi_f   = L"%sLF*%s";
+  const WCHAR* const _CR_f    = L"%sCR%s";
+  const WCHAR* const _CRi_f   = L"%sCR*%s";
+  const WCHAR* const _CRLF_f  = L"%sCR+LF%s";
+  const WCHAR* const _CRLFi_f = L"%sCR+LF*%s";
+
   if (s_iStatusbarVisible[STATUS_EOLMODE]) 
   {
     static int s_iEOLMode = -1;
@@ -9022,17 +9030,20 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bForceRedraw || (s_iEOLMode != _eol_mode))
     {
-      if (_eol_mode == SC_EOL_LF) {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
-                        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+      static WCHAR tchEOL[16] = { L'\0' };
+      if (_eol_mode == SC_EOL_LF) 
+      {
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _LFi_f : _LF_f),
+          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      else if (_eol_mode == SC_EOL_CR) {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
-                        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+      else if (_eol_mode == SC_EOL_CR) 
+      {
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRi_f : _CR_f),
+          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF%s",
-                        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRLFi_f : _CRLF_f),
+          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       s_iEOLMode = _eol_mode;
       bIsUpdateNeeded = true;
@@ -9789,11 +9800,16 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     // Show inconsistent line endings warning
-    if (fioStatus.bInconsistentEOLs && Settings.WarnInconsistEOLs && !s_flagPrintFileAndLeave)
+    Globals.bInconsistentLineBreaks = fioStatus.bInconsistentEOLs;
+    _UpdateStatusbarDelayed(true);
+
+    if (Globals.bInconsistentLineBreaks && Settings.WarnInconsistEOLs && !s_flagPrintFileAndLeave)
     {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
+        Globals.bInconsistentLineBreaks = false;
       }
+      _UpdateStatusbarDelayed(true);
     }
 
     // Show inconsistent indentation 
@@ -9805,7 +9821,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
     }
-
     if (Settings.AutoDetectIndentSettings && !s_flagPrintFileAndLeave)
     {
       if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
@@ -9820,6 +9835,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, szFileName);
   }
+
+  UpdateAllBars(true);
+
   return(fSuccess);
 }
 
