@@ -2980,7 +2980,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
 
 //=============================================================================
 //
-//  SelectDefLineEndingDlg()
+//  WarnLineEndingDlg()
 //
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus) 
 {
@@ -3086,7 +3086,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 //=============================================================================
 //
-//  SelectDefLineEndingDlg()
+//  WarnIndentationDlg()
 //
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 {

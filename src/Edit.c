@@ -4462,6 +4462,7 @@ void EditEnsureSelectionVisible(HWND hwnd)
 //
 void EditEnsureConsistentLineEndings(HWND hwnd)
 {
+  Globals.bInconsistentLineBreaks = false;
   SciCall_ConvertEOLs(SciCall_GetEOLMode());
   EditFixPositions(hwnd);
 }
