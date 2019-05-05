@@ -423,7 +423,10 @@ typedef struct _settings_t
 extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
-// ------------------------------------
+#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences > 0)
+
+
+//=============================================================================
 
 typedef struct _flags_t
 {
@@ -450,7 +453,7 @@ typedef struct _flags_t
 
 extern FLAGS_T Flags;
 
-// ------------------------------------
+//=============================================================================
 
 typedef struct _settings2_t
 {
@@ -499,7 +502,7 @@ extern SETTINGS2_T Settings2;
 
 typedef struct _focusedview_t
 {
-  bool bHideNonMatchedLines;
+  bool HideNonMatchedLines;
   bool CodeFoldingAvailable;
   bool ShowCodeFolding;       // <-> Settings.ShowCodeFolding
 

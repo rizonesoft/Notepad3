@@ -315,8 +315,8 @@ void  _ClearTextBuffer(HWND hwnd)
   
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
-  EditClearAllOccurrenceMarkers();
-  if (FocusedView.bHideNonMatchedLines) { EditToggleView(hwnd); }
+  EditClearAllOccurrenceMarkers(hwnd);
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
 
   SendMessage(hwnd, SCI_CLEARALL, 0, 0);
   SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
@@ -4985,7 +4985,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
   else // mark all matches
   {
     if (bMarkAll && (iPos >= 0)) {
-      EditClearAllOccurrenceMarkers();
+      EditClearAllOccurrenceMarkers(hwnd);
       EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false, false);
     }
   }
@@ -5016,6 +5016,14 @@ static char s_lastFind[FNDRPL_BUFFER] = { L'\0' };
 static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' };
 static WCHAR s_tchBuf2[FNDRPL_BUFFER] = { L'\0' };
 
+static int  s_SaveMarkOccurrences = 0;
+static bool s_SaveMarkMatchVisible = false;
+static bool s_SaveTFBackSlashes = false;
+
+static inline void SwitchMarkOccurrences_ON()  { Settings.MarkOccurrences = max_i(1, s_SaveMarkOccurrences); }
+static inline void SwitchMarkOccurrences_OFF() { Settings.MarkOccurrences = 0; }
+
+
 static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static LPEDITFINDREPLACE sg_pefrData = NULL;
@@ -5030,10 +5038,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
   static HBRUSH hBrushRed;
   static HBRUSH hBrushGreen;
   static HBRUSH hBrushBlue;
-
-  static int  iSaveMarkOcc = -1;
-  static bool bSaveOccVisible = false;
-  static bool bSaveTFBackSlashes = false;
 
   switch (umsg)
   {
@@ -5050,11 +5054,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       Globals.iReplacedOccurrences = 0;
       Globals.FindReplaceMatchFoundState = FND_NOP;
 
-      iSaveMarkOcc = s_bSwitchedFindReplace ? iSaveMarkOcc : Settings.MarkOccurrences;
-      bSaveOccVisible = s_bSwitchedFindReplace ? bSaveOccVisible : Settings.MarkOccurrencesMatchVisible;
-
-      //const WORD wTabSpacing = (WORD)SendMessage(sg_pefrData->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
-      //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
+      s_SaveMarkOccurrences = s_bSwitchedFindReplace ? s_SaveMarkOccurrences : Settings.MarkOccurrences;
+      s_SaveMarkMatchVisible = s_bSwitchedFindReplace ? s_SaveMarkMatchVisible : Settings.MarkOccurrencesMatchVisible;
+      // switch off normal mark occurrences
+      Settings.MarkOccurrences = 0;
+      Settings.MarkOccurrencesMatchVisible = false;
 
       // Load MRUs
       for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
@@ -5103,7 +5107,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       if (sg_pefrData->bTransformBS) {
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
       }
-      bSaveTFBackSlashes = sg_pefrData->bTransformBS;
+      s_SaveTFBackSlashes = sg_pefrData->bTransformBS;
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_CHECKED);
@@ -5122,17 +5126,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       }
 
       if (sg_pefrData->bMarkOccurences) {
-        Settings.MarkOccurrences = 0;
-        Settings.MarkOccurrencesMatchVisible = false;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
+        EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
       }
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-        EditClearAllOccurrenceMarkers();
+        EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
       }
       EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
 
@@ -5233,9 +5236,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
           sg_pefrData->szFind[0] = '\0';
 
-          Settings.MarkOccurrences = iSaveMarkOcc;
-          Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
-
+          Settings.MarkOccurrences = s_SaveMarkOccurrences;
+          Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
@@ -5243,7 +5245,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
 
-          if (FocusedView.bHideNonMatchedLines) { EditToggleView(hwnd); }
+          if (FocusedView.HideNonMatchedLines) { EditToggleView(sg_pefrData->hwnd); }
           MarkAllOccurrences(50, true);
 
           if (s_InitialTopLine >= 0) { 
@@ -5252,10 +5254,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
           else {
             if (s_fwrdMatch == NO_MATCH) {
-              EditSetSelectionEx(Globals.hwndEdit, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+              EditSetSelectionEx(sg_pefrData->hwnd, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
             }
             else {
-              EditEnsureSelectionVisible(Globals.hwndEdit);
+              EditEnsureSelectionVisible(sg_pefrData->hwnd);
             }
           }
 
@@ -5312,8 +5314,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         switch (LOWORD(wParam)) 
         {
         case WA_INACTIVE:
-          //~s_InitialTopLine = -1;  // reset
-          //~Globals.bFindReplCopySelOrClip = true;
           SetWindowTransparentMode(hwnd, Settings.FindReplaceTransparentMode, Settings2.FindReplaceOpacityLevel);
           break;
 
@@ -5383,7 +5383,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             }
             // no recent find pattern: copy content clipboard to find box
             if (s_tchBuf[0] == L'\0') {
-              char* pClip = EditGetClipboardText(hwnd, false, NULL, NULL);
+              char* pClip = EditGetClipboardText(Globals.hwndEdit, false, NULL, NULL);
               if (pClip) {
                 size_t const len = StringCchLenA(pClip, 0);
                 if (len) {
@@ -5467,35 +5467,39 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
               _IGNORE_NOTIFY_CHANGE_;
+              if (FocusedView.HideNonMatchedLines) { EditClearAllOccurrenceMarkers(sg_pefrData->hwnd); }
               StringCchCopyA(s_lastFind, COUNTOF(s_lastFind), sg_pefrData->szFind);
-              RegExResult_t match = _FindHasMatch(Globals.hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
+              RegExResult_t match = _FindHasMatch(sg_pefrData->hwnd, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
               if (s_anyMatch != match) { s_anyMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
               DocPos const iStartPos = (DocPos)lParam;
               if (!GetDlgItem(hwnd, IDC_REPLACE) || !Sci_IsMultiLineSelection()) {
-                s_fwrdMatch = _FindHasMatch(Globals.hwndEdit, sg_pefrData, iStartPos, false, true);
+                s_fwrdMatch = _FindHasMatch(sg_pefrData->hwnd, sg_pefrData, iStartPos, false, true);
               }
               else {
                 s_fwrdMatch = match;
               }
               sg_pefrData->bStateChanged = false;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-              if (match != MATCH) { 
-                EditClearAllOccurrenceMarkers();
+              if (match != MATCH) {
+                EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
                 if (s_InitialTopLine >= 0) { 
                   SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
                 else {
-                  EditSetSelectionEx(Globals.hwndEdit, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+                  EditSetSelectionEx(sg_pefrData->hwnd, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 }
               }
-              if (FocusedView.bHideNonMatchedLines) { EditHideNotMarkedLineRange(Globals.hwndEdit, true); }
               _OBSERVE_NOTIFY_CHANGE_;
             }
+            SwitchMarkOccurrences_ON();
+            EditMarkAllOccurrences(sg_pefrData->hwnd, false);
+            if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(sg_pefrData->hwnd, false); }
+            SwitchMarkOccurrences_OFF();
           }
-          else {
-            MarkAllOccurrences(50, true);
-          }
+          //else {
+          //  MarkAllOccurrences(50, false);
+          //}
         }
         return false;
 
@@ -5506,23 +5510,18 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
           if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES))
           {
-            iSaveMarkOcc = Settings.MarkOccurrences;
-            bSaveOccVisible = Settings.MarkOccurrencesMatchVisible;
-
-            Settings.MarkOccurrences = 0;
-            Settings.MarkOccurrencesMatchVisible = false;
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
 
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
+            _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           }
           else {  // switched OFF
-            Settings.MarkOccurrences = iSaveMarkOcc;
-            Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
-            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
+            EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
+            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-            if (FocusedView.bHideNonMatchedLines) {
+            if (FocusedView.HideNonMatchedLines) {
               PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
             }
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
@@ -5531,21 +5530,19 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
           }
-          _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
         break;
 
 
       case IDC_TOGGLE_VISIBILITY:
-        if (FocusedView.bHideNonMatchedLines) {
-          EditToggleView(hwnd);
+        SwitchMarkOccurrences_ON();
+        EditToggleView(sg_pefrData->hwnd);
+        SwitchMarkOccurrences_OFF();
+        if (!FocusedView.HideNonMatchedLines) {
           sg_pefrData->bStateChanged = true;
           s_InitialTopLine = -1;  // reset
-          EditClearAllOccurrenceMarkers();
+          EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
-        }
-        else {
-          EditToggleView(hwnd);
         }
         break;
 
@@ -5555,14 +5552,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         {
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, true);
           CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED); // Can not use wildcard search together with regexp
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED); // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
@@ -5578,20 +5575,20 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         {
           CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);  // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(bSaveTFBackSlashes));
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         break;
 
       case IDC_FINDTRANSFORMBS:
-        bSaveTFBackSlashes = IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS);
+        s_SaveTFBackSlashes = IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS);
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         break;
@@ -5700,7 +5697,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case IDOK: // find next
         case IDACC_SELTONEXT:
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
-          if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(hwnd); }
+          if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(sg_pefrData->hwnd); }
           EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), IsKeyDown(VK_F3));
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
@@ -5711,7 +5708,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case IDC_FINDPREV: // find previous
         case IDACC_SELTOPREV:
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
-          if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(hwnd);  }
+          if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(sg_pefrData->hwnd);  }
           EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), IsKeyDown(VK_F3));
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
@@ -6109,10 +6106,11 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   if (_IsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
   if (bForceClear) {
-    EditClearAllOccurrenceMarkers();
+    EditClearAllOccurrenceMarkers(hwnd);
   }
-
-  if (Settings.MarkOccurrences <= 0) {
+  
+  if (!IsMarkOccurrencesEnabled()) {
+    EditClearAllOccurrenceMarkers(hwnd);
     Globals.iMarkOccurrencesCount = -1;
     return;
   }
@@ -6157,7 +6155,7 @@ void EditApplyVisibleStyle(HWND hwnd)
     EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
     _OBSERVE_NOTIFY_CHANGE_;
   }
-  else if (!FocusedView.bHideNonMatchedLines) {
+  else if (!FocusedView.HideNonMatchedLines) {
     Sci_ApplyLexerStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
   }
 }
@@ -6437,20 +6435,21 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 //
 //  EditClearAllOccurrenceMarkers()
 //
-void EditClearAllOccurrenceMarkers()
+void EditClearAllOccurrenceMarkers(HWND hwnd)
 {
+  UNUSED(hwnd);
   if (Globals.iMarkOccurrencesCount > 0) 
   {
+    Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
+
     _IGNORE_NOTIFY_CHANGE_;
 
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
     SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
     SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-
+    
     _OBSERVE_NOTIFY_CHANGE_;
-
-    Globals.iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
   }
 }
 
@@ -6464,11 +6463,11 @@ void EditToggleView(HWND hwnd)
   bool const bWaitCursor = ((Globals.iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
 
-  FocusedView.bHideNonMatchedLines = !FocusedView.bHideNonMatchedLines; // toggle
+  FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
-  EditHideNotMarkedLineRange(hwnd, FocusedView.bHideNonMatchedLines);
+  EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
-  if (FocusedView.bHideNonMatchedLines) {
+  if (FocusedView.HideNonMatchedLines) {
     EditScrollTo(hwnd, 0, false);
     SciCall_SetReadOnly(true);
   }
@@ -6560,7 +6559,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
     Globals.iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
-    bool const bMarkLine = FocusedView.bHideNonMatchedLines;
+    bool const bMarkLine = FocusedView.HideNonMatchedLines;
     do {
 
       iPos = _FindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos), FRMOD_IGNORE);

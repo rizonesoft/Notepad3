@@ -2961,19 +2961,13 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case IDOK: 
+    case IDCANCEL:
       {
         EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
         const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
         status->iEOLMode = iEOLMode;
         Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
-        EndDialog(hwnd, IDOK);
-      }
-      break;
-
-    case IDCANCEL:
-      {
-        Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
-        EndDialog(hwnd, IDCANCEL);
+        EndDialog(hwnd, LOWORD(wParam));
       }
       break;
     }
