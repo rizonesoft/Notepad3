@@ -62,6 +62,7 @@ SETTINGS2_T Settings2;
 static SETTINGS2_T Defaults2;
 
 FOCUSEDVIEW_T FocusedView;
+FILEWATCHING_T FileWatching;
 
 // ------------------------------------
 
@@ -478,7 +479,6 @@ static void _InitGlobals()
   Globals.bZeroBasedCharacterCount = false;
   Globals.iReplacedOccurrences = 0;
   Globals.iMarkOccurrencesCount = 0;
-  Globals.bChasingDocTail = false;
   Globals.bUseLimitedAutoCCharSet = false;
   Globals.bIsCJKInputCodePage = false;
   Globals.bIniFileFromScratch = false;
@@ -503,9 +503,15 @@ static void _InitGlobals()
   Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
   Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
 
-  FocusedView.bHideNonMatchedLines = false;
+  FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
   FocusedView.ShowCodeFolding = true;
+
+  FileWatching.flagChangeNotify = 0;
+  FileWatching.FileWatchingMode = 0;
+  FileWatching.ResetFileWatching = true;
+  FileWatching.ChasingDocTail = false;
+
 }
 
 
@@ -1077,17 +1083,17 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 
     if (bOpened) {
       if (s_flagChangeNotify == 1) {
-        Settings.FileWatchingMode = 0;
-        Settings.ResetFileWatching = true;
+        FileWatching.FileWatchingMode = 0;
+        FileWatching.ResetFileWatching = true;
         InstallFileWatching(Globals.CurrentFile);
       }
       else if (s_flagChangeNotify == 2) {
-        if (!Globals.bChasingDocTail) { 
+        if (!FileWatching.ChasingDocTail) {
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); 
         }
         else {
-          Settings.FileWatchingMode = 2;
-          Settings.ResetFileWatching = true;
+          FileWatching.FileWatchingMode = 2;
+          FileWatching.ResetFileWatching = true;
           InstallFileWatching(Globals.CurrentFile);
         }
       }
@@ -1201,7 +1207,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SetNotifyIconTitle(Globals.hwndMain);
   }
   Globals.iReplacedOccurrences = 0;
-  Globals.iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
+  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
 
   UpdateAllBars(false);
 
@@ -2353,7 +2359,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   SendWMSize(hwnd, NULL);
 
-  if (FocusedView.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   MarkAllOccurrences(0, true);
   EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   UpdateUI();
@@ -2559,19 +2565,18 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, &params->wchData);
 
         if (bOpened) {
-
           if (params->flagChangeNotify == 1) {
-            Settings.FileWatchingMode = 0;
-            Settings.ResetFileWatching = true;
+            FileWatching.FileWatchingMode = 0;
+            FileWatching.ResetFileWatching = true;
             InstallFileWatching(Globals.CurrentFile);
           }
           else if (params->flagChangeNotify == 2) {
-            if (!Globals.bChasingDocTail) {
+            if (!FileWatching.ChasingDocTail) {
               SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
             }
             else {
-              Settings.FileWatchingMode = 2;
-              Settings.ResetFileWatching = true;
+              FileWatching.FileWatchingMode = 2;
+              FileWatching.ResetFileWatching = true;
               InstallFileWatching(Globals.CurrentFile);
             }
           }
@@ -2693,20 +2698,20 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(wParam);
   UNUSED(lParam);
 
-  if (Settings.FileWatchingMode == 1 || IsSaveNeeded(ISN_GET)) {
+  if (FileWatching.FileWatchingMode == 1 || IsSaveNeeded(ISN_GET)) {
     SetForegroundWindow(hwnd);
   }
 
   if (PathFileExists(Globals.CurrentFile)) 
   {
-    if ((Settings.FileWatchingMode == 2 && !IsSaveNeeded(ISN_GET)) ||
+    if ((FileWatching.FileWatchingMode == 2 && !IsSaveNeeded(ISN_GET)) ||
       InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       
-      if (Globals.bChasingDocTail) 
+      if (FileWatching.ChasingDocTail) 
       {
-        SciCall_SetReadOnly(Globals.bChasingDocTail);
+        SciCall_SetReadOnly(FileWatching.ChasingDocTail);
         //SetForegroundWindow(hwnd);
         SciCall_ScrollToEnd(); 
       }
@@ -2995,7 +3000,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(Globals.hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.bHideNonMatchedLines);
+  EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.HideNonMatchedLines);
   CheckCmd(hmenu, IDM_VIEW_FOLDING, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
   EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
@@ -3012,7 +3017,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,Settings.AutoIndent);
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,Settings.ShowLineNumbers);
   CheckCmd(hmenu,IDM_VIEW_MARGIN,Settings.ShowSelectionMargin);
-  CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
+  CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, FileWatching.ChasingDocTail);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,Settings.AutoCompleteWords && !ro);
@@ -3025,7 +3030,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
-  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.bHideNonMatchedLines);
+  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
@@ -4931,8 +4936,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       Settings.MarkOccurrences = (Settings.MarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      MarkAllOccurrences(0, true);
       EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
+      MarkAllOccurrences(0, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
@@ -4942,14 +4947,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
-      if (FocusedView.bHideNonMatchedLines) {
+      if (FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
         MarkAllOccurrences(0, true);
       }
       else {
         EditToggleView(Globals.hwndEdit);
       }
-      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, FocusedView.bHideNonMatchedLines);
+      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
       UpdateToolbar();
       break;
 
@@ -5061,31 +5066,30 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_CHASING_DOCTAIL: 
       {
-        static int flagPrevChangeNotify = 0;
-        static int iPrevFileWatchingMode = 0;
-        static bool bPrevResetFileWatching = false;
+        FileWatching.ChasingDocTail = !FileWatching.ChasingDocTail; // toggle
+        SciCall_SetReadOnly(FileWatching.ChasingDocTail);
 
-        Globals.bChasingDocTail = !Globals.bChasingDocTail;
-        SciCall_SetReadOnly(Globals.bChasingDocTail);
-
-        if (Globals.bChasingDocTail) 
+        if (FileWatching.ChasingDocTail)
         {
           SetForegroundWindow(hwnd);
-          flagPrevChangeNotify = s_flagChangeNotify;
-          iPrevFileWatchingMode = Settings.FileWatchingMode;
-          bPrevResetFileWatching = Settings.ResetFileWatching;
+          FileWatching.flagChangeNotify = s_flagChangeNotify;
           s_flagChangeNotify = 2;
-          Settings.FileWatchingMode = 2;
-          Settings.ResetFileWatching = true;
+          FileWatching.FileWatchingMode = 2;
+          FileWatching.ResetFileWatching = true;
+          FileWatching.FileCheckInverval = 250UL;
+          FileWatching.AutoReloadTimeout = 250UL;
         }
         else {
-          s_flagChangeNotify = flagPrevChangeNotify;
-          Settings.FileWatchingMode = iPrevFileWatchingMode;
-          Settings.ResetFileWatching = bPrevResetFileWatching;
+          s_flagChangeNotify = FileWatching.flagChangeNotify;
+          FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+          FileWatching.ResetFileWatching = Settings.ResetFileWatching;
+          FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
+          FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
         }
-        if (!s_bRunningWatch) { InstallFileWatching(Globals.CurrentFile); }
 
-        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
+        InstallFileWatching(Globals.CurrentFile); // force
+
+        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.ChasingDocTail);
         UpdateToolbar();
       }
       break;
@@ -6469,7 +6473,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         _SetSaveNeededFlag(true);
       }
       else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
-        if (FocusedView.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+        if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
       }
     }
     return TRUE;
@@ -6502,7 +6506,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
           }
           if (bModified) {
-            if (Settings.MarkOccurrences > 0) {
+            if (IsMarkOccurrencesEnabled()) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
             }
             if (scn->linesAdded != 0) {
@@ -6537,7 +6541,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               EditMatchBrace(Globals.hwndEdit);
             }
 
-            if (Settings.MarkOccurrences > 0) {
+            if (IsMarkOccurrencesEnabled()) {
               // clear marks only, if selection changed
               if (iUpd & SC_UPDATE_SELECTION)
               {
@@ -6563,7 +6567,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           else if (iUpd & SC_UPDATE_V_SCROLL)
           {
-            if ((Settings.MarkOccurrences > 0) && Settings.MarkOccurrencesMatchVisible) {
+            if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
             if (Settings.HyperlinkHotspot) {
@@ -6691,7 +6695,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           return FALSE;
       }
       // in any case 
-      if (Settings.MarkOccurrencesCurrentWord && (Settings.MarkOccurrences > 0)) {
+      if (Settings.MarkOccurrencesCurrentWord && IsMarkOccurrencesEnabled()) {
         MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       }
       return -1LL;
@@ -6951,9 +6955,12 @@ void LoadSettings()
     Defaults2.FileCheckInverval = 2000UL;
     Settings2.FileCheckInverval = clampul(IniSectionGetInt(pIniSection, L"FileCheckInverval",
                                                            Defaults2.FileCheckInverval), 250UL, 300000UL);
+    FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
+
     Defaults2.AutoReloadTimeout = 2000UL;
     Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(pIniSection, L"AutoReloadTimeout",
                                                            Defaults2.AutoReloadTimeout), 250UL, 300000UL);
+    FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
 
     // deprecated
     Defaults.RenderingTechnology = IniSectionGetInt(pIniSection, L"SciDirectWriteTech", -111);
@@ -7211,8 +7218,8 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(pIniSection, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-    GET_INT_VALUE_FROM_INISECTION(FileWatchingMode, 0, 0, 2);
-    GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);
+    GET_INT_VALUE_FROM_INISECTION(FileWatchingMode, 0, 0, 2);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
     GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
@@ -8439,12 +8446,12 @@ static void  _UpdateToolbarDelayed()
   EnableTool(IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
   CheckTool(IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
-  CheckTool(IDT_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
+  CheckTool(IDT_VIEW_CHASING_DOCTAIL, FileWatching.ChasingDocTail);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
   bool ro = SciCall_GetReadOnly();
-  bool tv = FocusedView.bHideNonMatchedLines;
+  bool tv = FocusedView.HideNonMatchedLines;
 
   EnableTool(IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
   EnableTool(IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
@@ -9610,7 +9617,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
   if (bNew || bReload) {
-    if (FocusedView.bHideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+    if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   }
 
   if (!bDontSave)
@@ -9642,11 +9649,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     UpdateAllBars(false);
 
     // Terminate file watching
-    if (Settings.ResetFileWatching) {
-      if (Globals.bChasingDocTail) {
+    if (FileWatching.ResetFileWatching) {
+      if (FileWatching.ChasingDocTail) {
         SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
       }
-      Settings.FileWatchingMode = 0;
+      FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
     InstallFileWatching(NULL);
     s_bEnableSaveSettings = true;
@@ -9751,11 +9758,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       SHAddToRecentDocs(SHARD_PATHW, szFileName);
     }
     // Install watching of the current file
-    if (!bReload && Settings.ResetFileWatching) {
-      if (Globals.bChasingDocTail) {
+    if (!bReload && FileWatching.ResetFileWatching) {
+      if (FileWatching.ChasingDocTail) {
         SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
       }
-      Settings.FileWatchingMode = 0;
+      FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
     InstallFileWatching(Globals.CurrentFile);
 
@@ -9809,6 +9816,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
         Globals.bInconsistentLineBreaks = false;
       }
+      SciCall_SetEOLMode(fioStatus.iEOLMode);
       _UpdateStatusbarDelayed(true);
     }
 
@@ -9874,7 +9882,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 
     if (FileLoad(true,false,true,false,true,false,tchFileName2))
     {
-      if (bIsTail && Settings.FileWatchingMode == 2) {
+      if (bIsTail && FileWatching.FileWatchingMode == 2) {
         SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
@@ -10117,10 +10125,10 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
 
       // Install watching of the current file
       if (bSaveAs && Settings.ResetFileWatching) {
-        if (Globals.bChasingDocTail) {
+        if (FileWatching.ChasingDocTail) {
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
         }
-        Settings.FileWatchingMode = 0;
+        FileWatching.FileWatchingMode = Settings.FileWatchingMode;
       }
       InstallFileWatching(Globals.CurrentFile);
     }
@@ -10751,7 +10759,7 @@ void CancelCallTip()
 void InstallFileWatching(LPCWSTR lpszFile)
 {
   // Terminate
-  if (!Settings.FileWatchingMode || StrIsEmpty(lpszFile))
+  if (!FileWatching.FileWatchingMode || StrIsEmpty(lpszFile))
   {
     if (s_bRunningWatch)
     {
@@ -10774,11 +10782,10 @@ void InstallFileWatching(LPCWSTR lpszFile)
       }
       s_dwChangeNotifyTime = 0;
     }
-
     // No previous watching installed, so launch the timer first
-    else
-      SetTimer(NULL,ID_WATCHTIMER,Settings2.FileCheckInverval,WatchTimerProc);
-
+    else {
+      SetTimer(NULL, ID_WATCHTIMER, FileWatching.FileCheckInverval, WatchTimerProc);
+    }
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory,COUNTOF(tchDirectory),lpszFile);
     PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
@@ -10811,9 +10818,14 @@ void InstallFileWatching(LPCWSTR lpszFile)
 //
 void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
+  UNUSED(dwTime);
+  UNUSED(idEvent);
+  UNUSED(uMsg);
+  UNUSED(hwnd);
+  
   if (s_bRunningWatch)
   {
-    if (s_dwChangeNotifyTime > 0 && GetTickCount() - s_dwChangeNotifyTime > Settings2.AutoReloadTimeout)
+    if ((s_dwChangeNotifyTime > 0) && ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout))
     {
       if (s_hChangeHandle) {
         FindCloseChangeNotification(s_hChangeHandle);
@@ -10831,12 +10843,13 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       // Check if the changes affect the current file
       WIN32_FIND_DATA fdUpdated;
       HANDLE hFind = FindFirstFile(Globals.CurrentFile,&fdUpdated);
-      if (INVALID_HANDLE_VALUE != hFind)
+      if (INVALID_HANDLE_VALUE != hFind) {
         FindClose(hFind);
-      else
+      }
+      else {
         // The current file has been removed
-        ZeroMemory(&fdUpdated,sizeof(WIN32_FIND_DATA));
-
+        ZeroMemory(&fdUpdated, sizeof(WIN32_FIND_DATA));
+      }
       // Check if the file has been changed
       if (CompareFileTime(&s_fdCurFile.ftLastWriteTime,&fdUpdated.ftLastWriteTime) != 0 ||
             s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow ||
@@ -10847,7 +10860,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           FindCloseChangeNotification(s_hChangeHandle);
           s_hChangeHandle = NULL;
         }
-        if (Settings.FileWatchingMode == 2) {
+        if (FileWatching.FileWatchingMode == 2) {
           s_bRunningWatch = true; /* ! */
           s_dwChangeNotifyTime = GetTickCount();
         }
@@ -10858,16 +10871,11 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
         }
       }
-
-      else
+      else {
         FindNextChangeNotification(s_hChangeHandle);
+      }
     }
   }
-
-  UNUSED(dwTime);
-  UNUSED(idEvent);
-  UNUSED(uMsg);
-  UNUSED(hwnd);
 }
 
 

@@ -2001,16 +2001,21 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case IDOK:
-      if (IsButtonChecked(hwnd, 100))
+      if (IsButtonChecked(hwnd, 100)) {
         Settings.FileWatchingMode = 0;
-      else if (IsButtonChecked(hwnd, 101))
+      }
+      else if (IsButtonChecked(hwnd, 101)) {
         Settings.FileWatchingMode = 1;
-      else
+      }
+      else {
         Settings.FileWatchingMode = 2;
+      }
+      if (!FileWatching.ChasingDocTail) { FileWatching.FileWatchingMode = Settings.FileWatchingMode; }
 
       Settings.ResetFileWatching = IsButtonChecked(hwnd, 103);
+      if (!FileWatching.ChasingDocTail) { FileWatching.ResetFileWatching = Settings.ResetFileWatching; }
 
-      if (Globals.bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+      if (FileWatching.ChasingDocTail) { PostMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
 
       EndDialog(hwnd, IDOK);
       break;
@@ -2956,19 +2961,13 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case IDOK: 
+    case IDCANCEL:
       {
         EditFileIOStatus* status = (EditFileIOStatus*)GetWindowLongPtr(hwnd, DWLP_USER);
         const int iEOLMode = (int)SendDlgItemMessage(hwnd, IDC_EOLMODELIST, CB_GETCURSEL, 0, 0);
         status->iEOLMode = iEOLMode;
         Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
-        EndDialog(hwnd, IDOK);
-      }
-      break;
-
-    case IDCANCEL:
-      {
-        Settings.WarnInconsistEOLs = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_EOLS);
-        EndDialog(hwnd, IDCANCEL);
+        EndDialog(hwnd, LOWORD(wParam));
       }
       break;
     }

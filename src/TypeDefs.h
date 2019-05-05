@@ -301,7 +301,6 @@ typedef struct _globals_t
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
   int       iMarkOccurrencesCount;
-  bool      bChasingDocTail;
   bool      bUseLimitedAutoCCharSet;
   bool      bIsCJKInputCodePage;
   bool      bIniFileFromScratch;
@@ -424,7 +423,10 @@ typedef struct _settings_t
 extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
-// ------------------------------------
+#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences > 0)
+
+
+//=============================================================================
 
 typedef struct _flags_t
 {
@@ -447,11 +449,11 @@ typedef struct _flags_t
 
   int PrintFileAndLeave;
 
-} FLAGS_T, * PFLAGS_T;
+} FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;
 
-// ------------------------------------
+//=============================================================================
 
 typedef struct _settings2_t
 {
@@ -500,13 +502,28 @@ extern SETTINGS2_T Settings2;
 
 typedef struct _focusedview_t
 {
-  bool bHideNonMatchedLines;
-  bool CodeFoldingAvailable; // = true; // saved before
-  bool ShowCodeFolding;      // = true;      // saved before
+  bool HideNonMatchedLines;
+  bool CodeFoldingAvailable;
+  bool ShowCodeFolding;       // <-> Settings.ShowCodeFolding
 
-} FOCUSEDVIEW_T, * PFOCUSEDVIEW_T;
+} FOCUSEDVIEW_T, *PFOCUSEDVIEW_T;
 
 extern FOCUSEDVIEW_T FocusedView;
+
+//=============================================================================
+
+typedef struct _filewatching_t
+{
+  int flagChangeNotify;        // <-> s_flagChangeNotify;
+  int FileWatchingMode;        // <-> Settings.FileWatchingMode;
+  bool ResetFileWatching;      // <-> Settings.ResetFileWatching;
+  DWORD FileCheckInverval;     // <-> Settings2.FileCheckInverval;
+  DWORD AutoReloadTimeout;     // <-> Settings2.AutoReloadTimeout;
+  bool ChasingDocTail;
+
+} FILEWATCHING_T, *PFILEWATCHING_T;
+
+extern FILEWATCHING_T FileWatching;
 
 //=============================================================================
 

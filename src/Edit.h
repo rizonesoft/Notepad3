@@ -98,7 +98,7 @@ bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND hwnd);
-void  EditClearAllOccurrenceMarkers();
+void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool, bool);
 void  EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool);
