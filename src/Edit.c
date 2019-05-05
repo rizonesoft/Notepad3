@@ -4984,9 +4984,15 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
   }
   else // mark all matches
   {
-    if (bMarkAll && (iPos >= 0)) {
+    if (bMarkAll) {
       EditClearAllOccurrenceMarkers(hwnd);
-      EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false, false);
+      if (iPos >= 0) {
+        EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false, false);
+        if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(lpefr->hwnd, true); }
+      }
+      else {
+        if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(lpefr->hwnd, false); }
+      }
     }
   }
   return ((iPos >= 0) ? MATCH : ((iPos == (DocPos)(-1)) ? NO_MATCH : INVALID));
@@ -5211,6 +5217,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       //}
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
+
       _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
     }
     return true;
@@ -5337,6 +5344,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || SciCall_IsSelectionRectangle());
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
+
+          _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
           break;
 
         default:
@@ -5467,9 +5476,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
               _IGNORE_NOTIFY_CHANGE_;
-              if (FocusedView.HideNonMatchedLines) { EditClearAllOccurrenceMarkers(sg_pefrData->hwnd); }
+              EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
               StringCchCopyA(s_lastFind, COUNTOF(s_lastFind), sg_pefrData->szFind);
+              SwitchMarkOccurrences_ON();
               RegExResult_t match = _FindHasMatch(sg_pefrData->hwnd, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
+              SwitchMarkOccurrences_OFF();
               if (s_anyMatch != match) { s_anyMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
               DocPos const iStartPos = (DocPos)lParam;
@@ -5479,27 +5490,35 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
               else {
                 s_fwrdMatch = match;
               }
-              sg_pefrData->bStateChanged = false;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
               if (match != MATCH) {
                 EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-                if (s_InitialTopLine >= 0) { 
+                if (s_InitialTopLine >= 0) {
                   SciCall_SetFirstVisibleLine(s_InitialTopLine);
                 }
                 else {
                   EditSetSelectionEx(sg_pefrData->hwnd, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 }
+                if (FocusedView.HideNonMatchedLines) {
+                  SwitchMarkOccurrences_ON();
+                  EditToggleView(sg_pefrData->hwnd);
+                  SwitchMarkOccurrences_OFF();
+                }
+                Settings.MarkOccurrences = s_SaveMarkOccurrences;
+                MarkAllOccurrences(4, true);
               }
               _OBSERVE_NOTIFY_CHANGE_;
             }
-            SwitchMarkOccurrences_ON();
-            EditMarkAllOccurrences(sg_pefrData->hwnd, false);
-            if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(sg_pefrData->hwnd, false); }
-            SwitchMarkOccurrences_OFF();
           }
-          //else {
-          //  MarkAllOccurrences(50, false);
-          //}
+          else if (sg_pefrData->bStateChanged) {
+            if (FocusedView.HideNonMatchedLines) {
+              SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
+            }
+            else {
+              EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
+            }
+          }
+          sg_pefrData->bStateChanged = false;
         }
         return false;
 
@@ -5511,24 +5530,26 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES))
           {
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
-
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
             _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           }
           else {  // switched OFF
-            EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-            if (FocusedView.HideNonMatchedLines) {
-              PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
-            }
-            InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
+
+            if (FocusedView.HideNonMatchedLines) {
+              SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
+            }
+            else {
+              EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
+            }
+            InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+
           }
         }
         break;
@@ -6559,7 +6580,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
     Globals.iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
-    bool const bMarkLine = FocusedView.HideNonMatchedLines;
     do {
 
       iPos = _FindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos), FRMOD_IGNORE);
@@ -6570,11 +6590,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       // mark this match if not done before
       SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
       SciCall_IndicatorFillRange(iPos, (end - start));
-
-      if (bMarkLine) {
-        SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
-        SciCall_IndicatorFillRange(Sci_GetLineStartPosition(iPos), 1);
-      }
+      SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
+      SciCall_IndicatorFillRange(Sci_GetLineStartPosition(iPos), 1);
 
       start = end;
       end = rangeEnd;
@@ -6916,10 +6933,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
     SciCall_SetProperty("fold.foldsyntaxbased", "0");
     Style_SetFolding(hwnd, true);
-
-    Sci_ApplyLexerStyle(0, -1);
-    EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
-    EditMarkAllOccurrences(hwnd, false);
 
     DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
     DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);
