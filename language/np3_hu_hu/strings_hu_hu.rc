@@ -94,7 +94,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Administrator)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Adminisztrátor)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Vágólap"
     IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -108,7 +108,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "AMinden fájl (*.*)|*.*|"
+    IDS_MUI_FILTER_ALL      "Minden fájl (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Végrehajtható fájlok (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Beállításfájlok (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Válassza ki a mappát, ahol a kedvenc alkamazásaira mutató parancsikonok vannak."
