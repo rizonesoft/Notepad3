@@ -113,25 +113,25 @@ BEGIN
     IDS_MUI_FILTER_INI      "Beállításfájlok (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Válassza ki a mappát, ahol a kedvenc alkamazásaira mutató parancsikonok vannak."
     IDS_MUI_FAVORITES       "Válassza ki a mappát, ahol a kedvenc fájljaira mutató parancsikonok vannak."
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_MUI_BACKSLASHHELP   "Backslash átalakítások\n\n\\a\tFigyelmeztetés (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tLapdobás (FF, Ascii 12)\n\\n\tÚj sor (LF, Ascii 10)\n\\r\tKocsi vissza (CR, Ascii 13)\n\\t\tVízszintes Tab (HT, Ascii 9)\n\\v\tFüggőleges Tab (VT, Ascii 11)\n\\0oo\tOktális érték\n\\u####\tHexadecimális érték\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "RegExp illeszkedés szintaktika (többsoros)\n\n.\tBármilyen karakterre illeszkedik\n^\tÜres szöveg rögtön új sor után\n$\tÜres szöveg közvetlenül a sorvége előtt\n\\<\tSzó kezdete\n\\>\tSzó vége\n\\b\tSzó határa\n[...]\tKarakterek halmaza ([abc]) vagy intervalluma ([a-z])\n[^...]\tKarakterek, amik NINCSENEK a készletben vagy az intervallumban\n\\d\t10-es számrendszeri szám\n\\D\tNem szám kar.\n\\s\tÜres hely karakterek\n\\S\tNEM üres hely karakter\n\\w\t""szó"" karakterek\n\\W\t""nem-szó"" karakter\n\\x\tEscape karakter egyébként speciális jelentéssel\n\\xHH\tKarakter HH Hexa kóddal\n?\tElőzőre illeszkedik 0-szor vagy 1-szer\n*\tElőzőre illeszkedik 0-szor vagy többször\n+\tElőzőre illeszkedik egyszer vagy többször\n*? or +?\tIsmétlések illeszkedése lomhán ""?"" and ""+""\n(\tRégió kezdete\n)\tRégió vége\n\\n\tCserénél egy régióra hivatkozik (n = 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Joker keresés\n\n*\tNulla vagy több karakterre illeszkedik.\n?\tPontosan egy karakterre illeszkedik. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
+    IDS_MUI_ERR_LOADFILE    "Hiba ""%s"" betöltésekor."
+    IDS_MUI_ERR_SAVEFILE    "Hiba ""%s"" mentésekor."
+    IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található.\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről."
+    IDS_MUI_ERR_MRUDLG      "A kijelölt fájlhoz nincs hozzáférésünk!\nEl szeretné távolítani a listából?"
+    IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon létrehozásakor."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+                            "A futó Notepad3 ablak nem válaszol vagy van egy aktív dialógusablaka.\nMeg szeretné nyitni egy új Notepad3 ablakban?"
+    IDS_MUI_ERR_ENCODINGNA  "A kódlap konverziós táblák nem elérhetőek a kiválasztott kódoláshoz az ön rendszerén."
+    IDS_MUI_ERR_UNICODE     "Hiba e Unicode fájl konvertálásakor.\nAz adat el fog veszni, amikor a fájl mentve lesz!"
+    IDS_MUI_ERR_BITMAP      "Hiba a bitkép ""%s"" betöltése közben.\nSzükséges méret: %i x %i (szélesség >= %i x magasság)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"
+                            "Hiba felhasználói jogok emelése közben!"
 END
 
 STRINGTABLE

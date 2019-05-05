@@ -7,6 +7,7 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+.vscode
 
 # C++ Junk           #
 ######################
