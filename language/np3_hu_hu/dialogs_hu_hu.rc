@@ -1,4 +1,3 @@
-
 // Microsoft Visual C++ generated resource script.
 // encoding: CP-1250
 #include "resource.h"
@@ -55,25 +54,25 @@ END
 
 IDD_MUI_ABOUT DIALOGEX 0, 0, 400, 274
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Notepad3 n√©vjegye"
+CAPTION "Notepad3 nÈvjegye"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,330,256,50,14
     EDITTEXT        IDC_VERSION,77,7,220,14,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    LTEXT           "Scintilla k√∂nyvt√°r verzi√≥:",IDC_SCI_VERSION,80,24,219,8
-    LTEXT           "Ford√≠t√≥:",IDC_COMPILER,80,35,218,8
+    LTEXT           "Scintilla kˆnyvt·r verziÛ:",IDC_SCI_VERSION,80,24,219,8
+    LTEXT           "FordÌtÛ:",IDC_COMPILER,80,35,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,52,218,8
     LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,80,64,218,8
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Verzi√≥ m√°sol√°sa",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
+    PUSHBUTTON      "VerziÛ m·sol·sa",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Parancssori s√∫g√≥"
+CAPTION "Parancssori s˙gÛ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
@@ -82,97 +81,97 @@ END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 273, 142
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Keres√©s"
+CAPTION "KeresÈs"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Sz√∂ve&g keres√©se:",IDC_STATIC,7,7,46,8
+    LTEXT           "Szˆve&g keresÈse:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Kisbet≈±/nagybet≈± sz√°m√≠t",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
-    CONTROL         "E&g√©sz szavakra egyez√©s",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
-    CONTROL         "Sz√≥ ele&j√©re egyez√©s",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
+    CONTROL         "&Kisbet˚/nagybet˚ sz·mÌt",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
+    CONTROL         "E&gÈsz szavakra egyezÈs",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
+    CONTROL         "SzÛ ele&jÈre egyezÈs",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "R&egul√°ris kifejez√©ssel",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
+    CONTROL         "R&egul·ris kifejezÈssel",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Pont &mindenre egyezik",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "&Ne menjen k√∂rbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "Ta&l√°lat ut√°n bez√°r√°s",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Tal√°lat&ok jel√∂l√©se",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "W&ildcard keres√©s",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "√Åtl√°tsz√≥ m√≥d, ha nincs f√≥kuszban ",IDC_TRANSPARENT,
+    CONTROL         "&Ne menjen kˆrbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
+    CONTROL         "Ta&l·lat ut·n bez·r·s",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
+    CONTROL         "Tal·lat&ok jelˆlÈse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
+    CONTROL         "W&ildcard keresÈs",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "¡tl·tszÛ mÛd, ha nincs fÛkuszban ",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
-    DEFPUSHBUTTON   "&K√∂vetkez≈ë keres√©se",IDOK,211,7,55,14
-    PUSHBUTTON      "&El≈ëz≈ë keres√©se",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Bez√°r√°s",IDCANCEL,211,99,55,14
+    DEFPUSHBUTTON   "&Kˆvetkezı keresÈse",IDOK,211,7,55,14
+    PUSHBUTTON      "&Elızı keresÈse",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "Bez·r·s",IDCANCEL,211,99,55,14
     CONTROL         "<a>Csere... (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "F&√≥kusz√°lt n√©zet",IDC_TOGGLE_VISIBILITY,211,65,55,14
+    PUSHBUTTON      "F&Ûkusz·lt nÈzet",IDC_TOGGLE_VISIBILITY,211,65,55,14
     SCROLLBAR       IDC_RESIZEGRIP,262,131,10,10
 END
 
 IDD_MUI_REPLACE DIALOGEX 0, 0, 273, 168
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sz√∂veg cser√©je"
+CAPTION "Szˆveg cserÈje"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Keres√©si sz√∂ve&g:",IDC_STATIC,7,7,46,8
+    LTEXT           "KeresÈsi szˆve&g:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Cser√©l√©s &erre:",IDC_STATIC,7,36,44,8
+    LTEXT           "CserÈlÈs &erre:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Kis/nagybet≈± eg&yez√©s",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
-    CONTROL         "Eg√©s&z szavakra egyez√©s",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
-    CONTROL         "Sz√≥kez&detre egyez√©s",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "&Ford√≠tott perjelek √°talak√≠t√°sa",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "R&egul√°ris kifejez√©s keres√©se",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "Kis/nagybet˚ eg&yezÈs",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
+    CONTROL         "EgÈs&z szavakra egyezÈs",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
+    CONTROL         "SzÛkez&detre egyezÈs",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
+    CONTROL         "&FordÌtott perjelek ·talakÌt·sa",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
+    CONTROL         "R&egul·ris kifejezÈs keresÈse",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Pont &mindenre illeszkedik",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "Ne keressen k√∂r&ben",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "Cser√©&l√©s ut√°n bez√°r",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Tal√°lat&ok kiemel√©se",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "&Joker karakteres keres√©s",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "F√≥kuszveszt√©skor √°tl√°tsz√≥",IDC_TRANSPARENT,
+    CONTROL         "Ne keressen kˆr&ben",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
+    CONTROL         "CserÈ&lÈs ut·n bez·r",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
+    CONTROL         "Tal·lat&ok kiemelÈse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
+    CONTROL         "&Joker karakteres keresÈs",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "FÛkuszvesztÈskor ·tl·tszÛ",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "K&√∂v. keres√©se",IDOK,211,7,55,14
-    PUSHBUTTON      "El≈ëz≈ë keres√©se",IDC_FINDPREV,211,23,55,14
+    DEFPUSHBUTTON   "K&ˆv. keresÈse",IDOK,211,7,55,14
+    PUSHBUTTON      "Elızı keresÈse",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Csere",IDC_REPLACE,211,43,55,14
-    PUSHBUTTON      "C&sak a kijel√∂l√©sben",IDC_REPLACEINSEL,211,59,55,14
-    PUSHBUTTON      "&√ñsszes cser√©je",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Felcser√©l√©s",IDC_SWAPSTRG,150,32,49,12
-    PUSHBUTTON      "Bez√°r√°s",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Ugr√°s a keres√©sre (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    PUSHBUTTON      "C&sak a kijelˆlÈsben",IDC_REPLACEINSEL,211,59,55,14
+    PUSHBUTTON      "&÷sszes cserÈje",IDC_REPLACEALL,211,75,55,14
+    PUSHBUTTON      "FelcserÈlÈs",IDC_SWAPSTRG,150,32,49,12
+    PUSHBUTTON      "Bez·r·s",IDCANCEL,211,126,55,14
+    CONTROL         "<a>Ugr·s a keresÈsre (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "F&√≥kusz√°lt n√©zet",IDC_TOGGLE_VISIBILITY,211,94,55,14
+    PUSHBUTTON      "F&Ûkusz·lt nÈzet",IDC_TOGGLE_VISIBILITY,211,94,55,14
     SCROLLBAR       IDC_RESIZEGRIP,262,157,10,10
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Futtat√°s"
+CAPTION "Futtat·s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "√çrja be a program, mappa, dokumentum vagy internetes er≈ëforr√°s c√≠m√©t, s a Windows megnyitja.",IDC_STATIC,39,7,179,17
+    LTEXT           "Õrja be a program, mappa, dokumentum vagy internetes erıforr·s cÌmÈt, s a Windows megnyitja.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "B√∂ng√©sz√©s...",IDC_SEARCHEXE,163,69,55,16
+    PUSHBUTTON      "BˆngÈszÈs...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
-    PUSHBUTTON      "M√©gsem",IDCANCEL,105,69,55,16
+    PUSHBUTTON      "MÈgsem",IDCANCEL,105,69,55,16
 END
 
 IDD_MUI_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Megnyit√°s ezzel..."
+CAPTION "Megnyit·s ezzel..."
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Adja meg a kedvenc alkalmaz√°sok hivatkoz√°sait tartalmaz√≥ mapp√°t.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Adja meg a kedvenc alkalmaz·sok hivatkoz·sait tartalmazÛ mapp·t.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
@@ -181,56 +180,56 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Alap√©rtelmezett k√≥dol√°s (√∫j f√°jl):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "AlapÈrtelmezett kÛdol·s (˙j f·jl):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Haszn√°lja ezt, &ha nem tudja detekt√°lni.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Haszn·lja ezt, &ha nem tudja detekt·lni.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "K√≥dol√°s detekt√°l√°s: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Nyissa meg a 7-bit &ASCII f√°jlokat UTF-8 m√≥dban.",IDC_ASCIIASUTF8,
+    GROUPBOX        "KÛdol·s detekt·l·s: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
+    CONTROL         "Nyissa meg a 7-bit &ASCII f·jlokat UTF-8 mÛdban.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Csak megb√≠zhat√≥ detekt√°l√°si e&redm√©nyek haszn√°lata.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Csak megbÌzhatÛ detekt·l·si e&redmÈnyek haszn·lata.",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
-    CONTROL         "A 8-bit *.&nfo/diz f√°jlok megnyit√°sa DOS-437 m√≥dban.",IDC_NFOASOEM,
+    CONTROL         "A 8-bit *.&nfo/diz f·jlok megnyit·sa DOS-437 mÛdban.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Ne dolgozza fel a k√≥dol√°si f&√°jlok c√≠mk√©it.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Ne dolgozza fel a kÛdol·si f&·jlok cÌmkÈit.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
-    CONTROL         "&ANSI k√≥dlap detekt√°l√°s kihagy√°sa.",IDC_NOANSICPDETECTION,
+    CONTROL         "&ANSI kÛdlap detekt·l·s kihagy·sa.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "&UNICODE detekt√°l√°s kihagy√°sa.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "&UNICODE detekt·l·s kihagy·sa.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,140,151,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,140,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sorv√©gek"
+CAPTION "SorvÈgek"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Alap√©rtelmezett sorv√©g m√≥d:",IDC_STATIC,7,7,116,8
+    LTEXT           "&AlapÈrtelmezett sorvÈg mÛd:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Figyelmeztet√©s inkonzisztens sort√∂r√©sekr≈ël.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "FigyelmeztetÈs inkonzisztens sortˆrÈsekrıl.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "M&ent√©skor legyenek konzisztens sort√∂r√©sek.",IDC_CONSISTENT_EOLS,
+    CONTROL         "M&entÈskor legyenek konzisztens sortˆrÈsek.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
-    CONTROL         "&√úres karakterek t√∂rl√©se a sorv√©gekr≈ël.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&‹res karakterek tˆrlÈse a sorvÈgekrıl.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,139,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,139,24,50,14
 END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inkonzisztens sorv√©gek"
+CAPTION "Inkonzisztens sorvÈgek"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inkonzisztens sorv√©gek vanna e f√°jlban::",IDC_STATIC,7,7,180,8
+    LTEXT           "Inkonzisztens sorvÈgek vanna e f·jlban::",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Szeretn√© rendbetenni a sorv√©geket?",IDC_STATIC,7,52,180,8
+    LTEXT           "&SzeretnÈ rendbetenni a sorvÈgeket?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "I&gen",IDOK,138,63,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,138,80,50,14
@@ -240,7 +239,7 @@ END
 
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ugr√°s"
+CAPTION "Ugr·s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "&Sor:",IDC_LINE_TEXT,7,8,101,8
@@ -248,56 +247,56 @@ BEGIN
     LTEXT           "&Oszlop:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,58,74,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,7,74,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,7,74,50,14
 END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "F√°jl el≈ëzm√©nyek megnyit√°sa"
+CAPTION "F·jl elızmÈnyek megnyit·sa"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
     CONTROL         "K&urzor helye megmarad.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "&F√°jl el≈ëzm√©nylista ment√©se kil√©p√©skor.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
-    CONTROL         "&Keres√©si minta megjegyz√©se.",IDC_REMEMBERSEARCHPATTERN,
+    CONTROL         "&F·jl elızmÈnylista mentÈse kilÈpÈskor.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
+    CONTROL         "&KeresÈsi minta megjegyzÈse.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
-    PUSHBUTTON      "Kihagy√°s",IDC_REMOVE,212,107,50,14,WS_DISABLED
+    PUSHBUTTON      "Kihagy·s",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
-    PUSHBUTTON      "M√©gsem",IDCANCEL,212,139,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "√ârtes√≠t√©s f√°jl m√≥dosul√°s√°r√≥l"
+CAPTION "…rtesÌtÈs f·jl mÛdosul·s·rÛl"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Nincs.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
-    CONTROL         "&√úzenet megjelen√≠t√©se.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
-    CONTROL         "&Automatikus √∫jrat√∂lt√©s (m√≥dos√≠tatlan).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&√öjrakezd√©s, ha √∫j f√°jl lett megnyitva.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
+    CONTROL         "&‹zenet megjelenÌtÈse.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
+    CONTROL         "&Automatikus ˙jratˆltÈs (mÛdosÌtatlan).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&⁄jrakezdÈs, ha ˙j f·jl lett megnyitva.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,127,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 134
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sz√≠nkiemel√©s v√°laszt√°sa"
+CAPTION "SzÌnkiemelÈs v·laszt·sa"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
-    CONTROL         "Kiv√°lasztott sz√≠nkiemel√©s be√°ll√≠t√°s &alap√©rtelmezett√©.",IDC_DEFAULTSCHEME,
+    CONTROL         "Kiv·lasztott szÌnkiemelÈs be·llÌt·s &alapÈrtelmezettÈ.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,118,10
-    CONTROL         "F√°jln√©v &kiterjeszt√©se alapj√°n automatikusan.",IDC_AUTOSELECT,
+    CONTROL         "F·jlnÈv &kiterjesztÈse alapj·n automatikusan.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
-    PUSHBUTTON      "M√©gsem",IDCANCEL,108,113,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,117,10,10
 END
 
 IDD_MUI_STYLECONFIG DIALOGEX 0, 0, 467, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sz√≠nkiemel√©sek testreszab√°sa"
+CAPTION "SzÌnkiemelÈsek testreszab·sa"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
@@ -305,63 +304,63 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "S&z√≠n...",IDC_STYLEFORE,181,201,46,14
-    PUSHBUTTON      "&H√°tt...",IDC_STYLEBACK,232,201,46,14
-    PUSHBUTTON      "&Bet≈±...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "&El≈ën√©zet",IDC_PREVIEW,330,201,42,14
-    PUSHBUTTON      "&Vissza√°ll.",IDC_STYLEDEFAULT,377,201,42,14
+    PUSHBUTTON      "S&zÌn...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "&H·tt...",IDC_STYLEBACK,232,201,46,14
+    PUSHBUTTON      "&Bet˚...",IDC_STYLEFONT,283,201,42,14
+    PUSHBUTTON      "&ElınÈzet",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "&Vissza·ll.",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
     PUSHBUTTON      "&Import...",IDC_IMPORT,181,233,50,14
     PUSHBUTTON      "E&xport...",IDC_EXPORT,237,233,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,233,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,410,233,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,410,233,50,14
     GROUPBOX        "Info",IDC_INFO_GROUPBOX,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
-    LTEXT           "Sz√≠nkiemel√©sek testraszab√°sa",IDC_TITLE,220,25,200,12
+    LTEXT           "SzÌnkiemelÈsek testraszab·sa",IDC_TITLE,220,25,200,12
     EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
     SCROLLBAR       IDC_RESIZEGRIP,7,233,10,10
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Tabul√°tor be√°ll√≠t√°sok"
+CAPTION "Tabul·tor be·llÌt·sok"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Tabul√°tor sz√©less√©g:",IDC_STATIC,7,10,54,8
+    LTEXT           "&Tabul·tor szÈlessÈg:",IDC_STATIC,7,10,54,8
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "&Beh√∫z√°s m√©rete:",IDC_STATIC,7,30,55,8
+    LTEXT           "&Beh˙z·s mÈrete:",IDC_STATIC,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Sz√≥k√∂z√∂k Tab helyett.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab &gomb √∫jraform√°zza a beh√∫z√°sokat.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "&Backspace √∫jraform√°zza a beh√∫z√°sokat.",IDC_BACKTAB_INDENTS,
+    CONTROL         "&SzÛkˆzˆk Tab helyett.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Tab &gomb ˙jraform·zza a beh˙z·sokat.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "&Backspace ˙jraform·zza a beh˙z·sokat.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Figyelmeztet√©s inkonzisztens beh√∫z√°sn√°l.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&FigyelmeztetÈs inkonzisztens beh˙z·sn·l.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Automatikus Tab vagy sz√≥k√∂z felismer√©s.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Automatikus Tab vagy szÛkˆz felismerÈs.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,117,27,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,117,27,50,14
 END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inkonzisztens beh√∫z√°sok"
+CAPTION "Inkonzisztens beh˙z·sok"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistika: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabul√°torok[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
-    LTEXT           "√úres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
+    LTEXT           "Tabul·torok[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
+    LTEXT           "‹res karakterek[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
     LTEXT           "Vegyes[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
     LTEXT           "%s sor",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
     LTEXT           "%s sor",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
     LTEXT           "%s sor",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
-    GROUPBOX        "Minden √∫jrarendez√©se ? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    GROUPBOX        "Minden ˙jrarendezÈse ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tab-ok",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&√úres karakterek",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    LTEXT           "%s sor helytelen beh√∫z√°ssal",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
-    LTEXT           "%s sorIgenlytelen beh√∫z√°ssal",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
-    PUSHBUTTON      "&Igen",emDOK,80,98,50,14
+    CONTROL         "&‹res karakterek",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
+    LTEXT           "%s sor helytelen beh˙z·ssal",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
+    LTEXT           "%s sorIgenlytelen beh˙z·ssal",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
+    PUSHBUTTON      "&Igen",IDOK,80,98,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,134,98,50,14
     CONTROL         "&Ez az ablak mindig megjelenik.", IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
@@ -369,20 +368,20 @@ END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Hossz√∫ sorok"
+CAPTION "Hossz˙ sorok"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Hossz√∫ sorok korl√°tja:",IDC_STATIC,7,10,60,8
+    LTEXT           "&Hossz˙ sorok korl·tja:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Vonal megjelen√≠t√©se.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
-    CONTROL         "&H√°tt√©rsz√≠n v√°ltoztat√°sa.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
+    CONTROL         "&Vonal megjelenÌtÈse.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
+    CONTROL         "&H·ttÈrszÌn v·ltoztat·sa.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,127,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sort√∂r√©s be√°ll√≠t√°sai"
+CAPTION "SortˆrÈs be·llÌt·sai"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -390,51 +389,51 @@ BEGIN
     COMBOBOX        102,7,41,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,139,79,50,14
-    LTEXT           "Nincs beh√∫z√°s t√∂r√©sn√©l|T√∂r√©sn√©l 2 karakter beh√∫z√°s|T√∂r√©sn√©l 1 szintnyi beh√∫z√°s|T√∂r√©sn√©l 2 szintnyi beh√∫z√°s|T√∂r√©sn√©l beh√∫z√°s, mint az els≈ë alsor|T√∂r√©sn√©l a beh√∫z√°s 1 szinttel t√∂bb, mint az els≈ë alsor",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "Nincs jelz√©s a sort√∂r√©s el≈ëtt|Jelz√©s a sort√∂r√©s el≈ëtt (sz√∂veg mellett)|Jelz√©s a sort√∂r√©s el≈ëtt (hat√°rokn√°l)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "Nincs jelz√©s a sort√∂r√©s ut√°n|Jelz√©s a sort√∂r√©s ut√°n (sz√∂veg mellett)|Jelz√©s a sort√∂r√©s ut√°n (hat√°rokn√°l)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "Sort√∂r√©s szavak hat√°r√°n|Sort√∂r√©s b√°rmilyen jeln√©l",203,0,0,187,8,NOT WS_VISIBLE
+    PUSHBUTTON      "MÈgsem",IDCANCEL,139,79,50,14
+    LTEXT           "Nincs beh˙z·s tˆrÈsnÈl|TˆrÈsnÈl 2 karakter beh˙z·s|TˆrÈsnÈl 1 szintnyi beh˙z·s|TˆrÈsnÈl 2 szintnyi beh˙z·s|TˆrÈsnÈl beh˙z·s, mint az elsı alsor|TˆrÈsnÈl a beh˙z·s 1 szinttel tˆbb, mint az elsı alsor",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Nincs jelzÈs a sortˆrÈs elıtt|JelzÈs a sortˆrÈs elıtt (szˆveg mellett)|JelzÈs a sortˆrÈs elıtt (hat·rokn·l)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "Nincs jelzÈs a sortˆrÈs ut·n|JelzÈs a sortˆrÈs ut·n (szˆveg mellett)|JelzÈs a sortˆrÈs ut·n (hat·rokn·l)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "SortˆrÈs szavak hat·r·n|SortˆrÈs b·rmilyen jelnÈl",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Oldal be√°ll√≠t√°sa"
+CAPTION "Oldal be·llÌt·sa"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Pap√≠r",1073,8,8,224,56,WS_GROUP
-    LTEXT           "M&√©ret:",1089,16,24,36,8
+    GROUPBOX        "PapÌr",1073,8,8,224,56,WS_GROUP
+    LTEXT           "M&Èret:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Forr√°s:",1090,16,45,36,8
+    LTEXT           "&Forr·s:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "T√°jol√°s",1072,8,69,64,56,WS_GROUP
-    CONTROL         "&√Åll√≥",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
-    CONTROL         "Fek&v≈ë",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
-    GROUPBOX        "Marg√≥k",1075,80,69,152,56,WS_GROUP
+    GROUPBOX        "T·jol·s",1072,8,69,64,56,WS_GROUP
+    CONTROL         "&¡llÛ",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
+    CONTROL         "Fek&vı",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
+    GROUPBOX        "MargÛk",1075,80,69,152,56,WS_GROUP
     LTEXT           "&Bal:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
     LTEXT           "&Jobb:",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
-    LTEXT           "&Fel√ºl:",1104,88,104,32,8
+    LTEXT           "&Fel¸l:",1104,88,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
     LTEXT           "&Alul:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
-    GROUPBOX        "Fejl√©c √©s l√°bl√©c",1074,8,130,224,56,WS_GROUP
-    LTEXT           "Fe&jl√©c:",IDC_STATIC,16,146,36,8
+    GROUPBOX        "FejlÈc Ès l·blÈc",1074,8,130,224,56,WS_GROUP
+    LTEXT           "Fe&jlÈc:",IDC_STATIC,16,146,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&L√°bl√©c:",IDC_STATIC,16,167,36,8
+    LTEXT           "&L·blÈc:",IDC_STATIC,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Nyomtat√°si sz√≠nek",1076,8,191,224,37,WS_GROUP
-    LTEXT           "M√≥&d:",IDC_STATIC,16,207,36,8
+    GROUPBOX        "Nyomtat·si szÌnek",1076,8,191,224,37,WS_GROUP
+    LTEXT           "MÛ&d:",IDC_STATIC,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Nagy√≠t√°s",IDC_STATIC,240,170,108,58,WS_GROUP
+    GROUPBOX        "NagyÌt·s",IDC_STATIC,240,170,108,58,WS_GROUP
     LTEXT           "S&zint (10% - 500%):",IDC_STATIC,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
     DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
-    PUSHBUTTON      "M√©gsem",IDCANCEL,244,237,50,14
-    PUSHBUTTON      "&Nyomtat√≥...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "El≈ën√©zet",IDC_STATIC,240,8,108,157
+    PUSHBUTTON      "MÈgsem",IDCANCEL,244,237,50,14
+    PUSHBUTTON      "&NyomtatÛ...",IDC_PRINTER,298,237,50,14
+    GROUPBOX        "ElınÈzet",IDC_STATIC,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -447,112 +446,112 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Kattintson ide, hogy megadhassa a kedvenceket tartalmaz√≥ mapp√°t.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Kattintson ide, hogy megadhassa a kedvenceket tartalmazÛ mapp·t.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Hozz√°ad√°s a kedvencekhez"
+CAPTION "Hozz·ad·s a kedvencekhez"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Adja meg az √∫j kedvenc nev√©t:",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "Adja meg az ˙j kedvenc nevÈt:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
-    PUSHBUTTON      "M√©gsem",IDCANCEL,115,45,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,115,45,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,45,10,10
 END
 
 IDD_MUI_PASSWORDS DIALOGEX 0, 0, 311, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "K√≥dol√°s"
+CAPTION "KÛdol·s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,184,98,50,14
-    CONTROL         "√öj mester kulcs megad√°sa",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
+    PUSHBUTTON      "MÈgsem",IDCANCEL,184,98,50,14
+    CONTROL         "⁄j mester kulcs megad·sa",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Nem k√∂telez≈ë mester kulcs:",IDC_STATIC,17,61,72,10,NOT WS_GROUP
-    CONTROL         "K√≥dol√°s jelmondat seg√≠ts√©g√©vel",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Mester kulcs √∫jrafelhaszn√°l√°sa",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    LTEXT           "Nem kˆtelezı mester kulcs:",IDC_STATIC,17,61,72,10,NOT WS_GROUP
+    CONTROL         "KÛdol·s jelmondat segÌtsÈgÈvel",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
+    CONTROL         "Mester kulcs ˙jrafelhaszn·l·sa",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     GROUPBOX        "Jelmondat",IDC_STATIC,7,7,297,108
-    CONTROL         "Jelmondatok megjelen√≠t√©se",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
+    CONTROL         "Jelmondatok megjelenÌtÈse",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "F√°jl visszafejt√©se"
+CAPTION "F·jl visszafejtÈse"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,175,58,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "visszafejt√©s a mester kulcs seg√≠ts√©g√©vel",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "E f√°jlnak van egy mester kulcsa",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    CONTROL         "visszafejtÈs a mester kulcs segÌtsÈgÈvel",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
+    LTEXT           "E f·jlnak van egy mester kulcsa",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
     GROUPBOX        "Jelmondat",IDC_STATIC,8,6,283,69
-    CONTROL         "jelmondat megjelen√≠t√©se",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
+    CONTROL         "jelmondat megjelenÌtÈse",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Oszlop t√∂r√©s"
+CAPTION "Oszlop tˆrÈs"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Hat√°r:",IDC_STATIC,7,7,34,8
+    LTEXT           "&Hat·r:",IDC_STATIC,7,7,34,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,73,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,73,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,73,24,50,14
 END
 
 IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 110
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sorok m√≥dos√≠t√°sa"
+CAPTION "Sorok mÛdosÌt·sa"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Sz√∂veg a sor &elej√©re:",IDC_STATIC,7,7,62,8
+    LTEXT           "Szˆveg a sor &elejÈre:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Sz√∂veg a sor &v√©g√©re:",IDC_STATIC,7,37,68,8
+    LTEXT           "Szˆveg a sor &vÈgÈre:",IDC_STATIC,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,125,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Dokumentum sorok sz√°ma.",IDC_STATIC,57,72,74,8
+    LTEXT           "Dokumentum sorok sz·ma.",IDC_STATIC,57,72,74,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Folytat√≥lagos sz√°m.",IDC_STATIC,57,82,66,8
+    LTEXT           "FolytatÛlagos sz·m.",IDC_STATIC,57,82,66,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Folytat√≥lagos sz√°m (null√°t√≥l).",IDC_STATIC,57,92,109,8
+    LTEXT           "FolytatÛlagos sz·m (null·tÛl).",IDC_STATIC,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "HTML/XML elem beilleszt√©se"
+CAPTION "HTML/XML elem beillesztÈse"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Nyit√≥ elem (attrib√∫tumokkal):",IDC_STATIC,7,7,97,8
+    LTEXT           "&NyitÛ elem (attrib˙tumokkal):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Z√°r√≥ elem (szerkeszthet≈ë):",IDC_STATIC,7,37,90,8
+    LTEXT           "&Z·rÛ elem (szerkeszthetı):",IDC_STATIC,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,125,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,125,24,50,14
 END
 
 IDD_MUI_ENCLOSESELECTION DIALOGEX 0, 0, 182, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Kijel√∂l√©s k√∂rbefoglal√°sa"
+CAPTION "KijelˆlÈs kˆrbefoglal·sa"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Kijel√∂l√©s &el√©:",IDC_STATIC,7,7,76,8
+    LTEXT           "KijelˆlÈs &elÈ:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Kijel√∂l√©s &m√∂g√©:",IDC_STATIC,7,37,71,8
+    LTEXT           "KijelˆlÈs &mˆgÈ:",IDC_STATIC,7,37,71,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,125,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,125,24,50,14
 END
 
 IDD_MUI_INFOBOX DIALOGEX 0, 0, 244, 71
@@ -563,7 +562,7 @@ BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
     DEFPUSHBUTTON   "OK",IDOK,187,50,50,14
-    CONTROL         "Ne &jelenjen meg √∫jra ez az √ºzenet.",IDC_INFOBOXCHECK,
+    CONTROL         "Ne &jelenjen meg ˙jra ez az ¸zenet.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -576,7 +575,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
     PUSHBUTTON      "&Igen",IDYES,131,50,50,14
     PUSHBUTTON      "&Nem",IDNO,187,50,50,14
-    CONTROL         "Ne &jelenjen meg √∫jra ez az √ºzenet.",IDC_INFOBOXCHECK,
+    CONTROL         "Ne &jelenjen meg ˙jra ez az ¸zenet.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -588,84 +587,84 @@ BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
     DEFPUSHBUTTON   "OK",IDOK,131,50,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,187,50,50,14
-    CONTROL         "Ne &jelenjen meg √∫jra ez az √ºzenet.",IDC_INFOBOXCHECK,
+    PUSHBUTTON      "MÈgsem",IDCANCEL,187,50,50,14
+    CONTROL         "Ne &jelenjen meg ˙jra ez az ¸zenet.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sorok rendez√©se"
+CAPTION "Sorok rendezÈse"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "&Emelked≈ë rendez√©s.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
-    CONTROL         "&Cs√∂kken≈ë rendez√©s.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "Sorok &√∂sszekever√©se.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
-    CONTROL         "&Dupla sorok √∂sszevon√°sa.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
-    CONTROL         "D&upla sorok t√∂rl√©se.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
-    CONTROL         "E&gyedi sorok t√∂rl√©se.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
-    CONTROL         "&√úres sorok t√∂rl√©se.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "√úre&s karaktereket tartalmaz√≥ sorok t√∂rl√©se",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Kisbet≈±/Nag&ybet≈± nem sz√°m√≠t.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
-    CONTROL         "Sz√°&mok logikai √∂sszehasonl√≠t√°sa.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
-    CONTROL         "&Oszlopos rendez√©s (f√ºgg≈ëleges kijel√∂l√©s).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
+    CONTROL         "&Emelkedı rendezÈs.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
+    CONTROL         "&Csˆkkenı rendezÈs.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
+    CONTROL         "Sorok &ˆsszekeverÈse.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
+    CONTROL         "&Dupla sorok ˆsszevon·sa.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
+    CONTROL         "D&upla sorok tˆrlÈse.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
+    CONTROL         "E&gyedi sorok tˆrlÈse.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
+    CONTROL         "&‹res sorok tˆrlÈse.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "‹re&s karaktereket tartalmazÛ sorok tˆrlÈse",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Kisbet˚/Nag&ybet˚ nem sz·mÌt.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
+    CONTROL         "Sz·&mok logikai ˆsszehasonlÌt·sa.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
+    CONTROL         "&Oszlopos rendezÈs (f¸ggıleges kijelˆlÈs).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,128,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,128,24,50,14
 END
 
 IDD_MUI_RECODE DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "√öjrak√≥dol√°s"
+CAPTION "⁄jrakÛdol·s"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&V√°lasszon forr√°s k√≥dol√°st a f√°jl √∫jrat√∂lt√©s√©hez:",IDC_STATIC,7,7,119,8
+    LTEXT           "&V·lasszon forr·s kÛdol·st a f·jl ˙jratˆltÈsÈhez:",IDC_STATIC,7,7,119,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
-    PUSHBUTTON      "M√©gsem",IDCANCEL,108,114,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,108,114,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
 END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "K√≥dol√°s"
+CAPTION "KÛdol·s"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&V√°lasszon k√≥dol√°st a jelenlegi f√°jlhoz:",IDC_STATIC,7,7,90,8
+    LTEXT           "&V·lasszon kÛdol·st a jelenlegi f·jlhoz:",IDC_STATIC,7,7,90,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
-    PUSHBUTTON      "M√©gsem",IDCANCEL,108,114,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,108,114,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
 END
 
 IDD_MUI_ALIGN DIALOGEX 0, 0, 184, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sorok igaz√≠t√°sa"
+CAPTION "Sorok igazÌt·sa"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Balra.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
     CONTROL         "&Jobbra.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
-    CONTROL         "&K√∂z√©pre.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
-    CONTROL         "&Sorkiz√°rt.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
-    CONTROL         "Sorkiz√°rt (&Paragrafus m√≥d).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "&KˆzÈpre.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
+    CONTROL         "&Sorkiz·rt.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
+    CONTROL         "Sorkiz·rt (&Paragrafus mÛd).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,127,24,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_CHOOSEFONT DIALOGEX 0, 0, 300, 200
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Bet≈±t√≠pus"
+CAPTION "Bet˚tÌpus"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    LTEXT           "&Bet≈±t√≠pus:",IDC_STATIC,7,7,127,8
+    LTEXT           "&Bet˚tÌpus:",IDC_STATIC,7,7,127,8
     COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Bet≈± &st√≠lus:",IDC_STATIC,154,7,72,8
+    LTEXT           "Bet˚ &stÌlus:",IDC_STATIC,154,7,72,8
     COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&M√©ret:",IDC_STATIC,247,7,40,8
+    LTEXT           "&MÈret:",IDC_STATIC,247,7,40,8
     COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Minta",IDC_STATIC,7,102,284,68,BS_BITMAP
     CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
     DEFPUSHBUTTON   "OK",IDOK,182,178,50,14
-    PUSHBUTTON      "M√©gsem",IDCANCEL,240,178,50,14
+    PUSHBUTTON      "MÈgsem",IDCANCEL,240,178,50,14
 END
 
 

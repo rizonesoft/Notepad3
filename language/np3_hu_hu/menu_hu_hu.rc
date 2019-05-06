@@ -54,106 +54,106 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "&F√°jl"
+    POPUP "&F·jl"
     BEGIN
-        MENUITEM "&√öj\tCtrl+N",                     IDM_FILE_NEW
-        MENUITEM "Me&gnyit√°s...\tCtrl+O",           IDM_FILE_OPEN
-        MENUITEM "&Vissza√°ll√°s\tF5",                IDM_FILE_REVERT
-        MENUITEM "&Ment√©s\tCtrl+S",                 IDM_FILE_SAVE
-        MENUITEM "Ment√©s m&√°sk√©nt...\tF6",          IDM_FILE_SAVEAS
-        MENUITEM "M√°solat m&ent√©se...\tCtrl+F6",    IDM_FILE_SAVECOPY
-        MENUITEM "&Csak olvashat√≥",                 IDM_FILE_READONLY
+        MENUITEM "&⁄j\tCtrl+N",                     IDM_FILE_NEW
+        MENUITEM "Me&gnyit·s...\tCtrl+O",           IDM_FILE_OPEN
+        MENUITEM "&Vissza·ll·s\tF5",                IDM_FILE_REVERT
+        MENUITEM "&MentÈs\tCtrl+S",                 IDM_FILE_SAVE
+        MENUITEM "MentÈs m&·skÈnt...\tF6",          IDM_FILE_SAVEAS
+        MENUITEM "M·solat m&entÈse...\tCtrl+F6",    IDM_FILE_SAVECOPY
+        MENUITEM "&Csak olvashatÛ",                 IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "K√≥dol√°si &jelmondat be√°ll√≠t√°sa...", IDM_SETPASS
+        MENUITEM "KÛdol·si &jelmondat be·llÌt·sa...", IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "In&d√≠t√°s"
+        POPUP "In&dÌt·s"
         BEGIN
-            MENUITEM "&√öj ablak\tAlt+N",            IDM_FILE_NEWWINDOW
-            MENUITEM "&√úres ablak\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
+            MENUITEM "&⁄j ablak\tAlt+N",            IDM_FILE_NEWWINDOW
+            MENUITEM "&‹res ablak\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Emelt szinten ind√≠t√°s",      IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Emelt szinten indÌt·s",      IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "Dokumentum &v√©grehajt√°sa\tCtrl+L", IDM_FILE_LAUNCH
-            MENUITEM "&Megnyit√°s ezzel...\tAlt+L",  IDM_FILE_OPENWITH
+            MENUITEM "Dokumentum &vÈgrehajt·sa\tCtrl+L", IDM_FILE_LAUNCH
+            MENUITEM "&Megnyit·s ezzel...\tAlt+L",  IDM_FILE_OPENWITH
             MENUITEM "&Parancs...\tCtrl+R",         IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Web sablon &2\tCtrl+Shift+2", CMD_WEBACTION2
             MENUITEM "Web sablon &1\tCtrl+Shift+1", CMD_WEBACTION1
         END
         MENUITEM SEPARATOR
-        POPUP "&K√≥dol√°s"
+        POPUP "&KÛdol·s"
         BEGIN
             MENUITEM "&ANSI",                              IDM_ENCODING_ANSI
             MENUITEM "&Unicode",                           IDM_ENCODING_UNICODE
             MENUITEM "Unicode &Big Endian",                IDM_ENCODING_UNICODEREV
             MENUITEM "UTF-&8\tShift+F8",                   IDM_ENCODING_UTF8
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Tov√°bbiak...\tF9",                  IDM_ENCODING_SELECT
+            MENUITEM "&Tov·bbiak...\tF9",                  IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "K&√≥dol√°s detekt√°l√°s√°nak er≈ëltet√©se", CMD_RELOADFORCEDETECTION
+            MENUITEM "K&Ûdol·s detekt·l·s·nak erıltetÈse", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "√öjrak√≥dol√°s az ala&p√©rt.-re\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "√öjrak√≥dol√°s A&NSI-ra\tCtrl-Shift+A", CMD_RECODEANSI
-            MENUITEM "√öjrak√≥dol√°s &OEM-re\tCtrl+Shift+O",  CMD_RECODEOEM
-            MENUITEM "√öjrak√≥dol√°s &GB18030-ra\tCtrl+Shift+F10", CMD_RECODEGB18030
+            MENUITEM "⁄jrakÛdol·s az ala&pÈrt.-re\tCtrl-Alt-F", CMD_RECODEDEFAULT
+            MENUITEM "⁄jrakÛdol·s A&NSI-ra\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "⁄jrakÛdol·s &OEM-re\tCtrl+Shift+O",       CMD_RECODEOEM
+            MENUITEM "⁄jrakÛdol·s &GB18030-ra\tCtrl+Shift+F10", CMD_RECODEGB18030
             MENUITEM SEPARATOR
-            MENUITEM "ASCII-t UTF-8-k&√©nt\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
-            MENUITEM "K√≥dol√°si elemek ki&hagy√°sa\tAlt+F8", CMD_RELOADNOFILEVARS
-            MENUITEM "&√öjrak√≥dol√°s...\tF8",                IDM_ENCODING_RECODE
+            MENUITEM "ASCII-t UTF-8-k&Ènt\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
+            MENUITEM "KÛdol·si elemek ki&hagy·sa\tAlt+F8", CMD_RELOADNOFILEVARS
+            MENUITEM "&⁄jrakÛdol·s...\tF8",                IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "Alap√©rtelmezett &be√°ll√≠t√°sa...",     IDM_ENCODING_SETDEFAULT
+            MENUITEM "AlapÈrtelmezett &be·llÌt·sa...",     IDM_ENCODING_SETDEFAULT
         END
-        POPUP "Sorv√©&gek"
+        POPUP "SorvÈ&gek"
         BEGIN
             MENUITEM "&Windows (CR+LF)",            IDM_LINEENDINGS_CRLF
             MENUITEM "&Mac (CR)",                   IDM_LINEENDINGS_CR
             MENUITEM "&Unix (LF)",                  IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "&Alap√©rtelmezett...",         IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "&AlapÈrtelmezett...",         IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Beh√∫z√°sok ellen≈ërz√©se..."        CMD_CHECK_INDENTATION
+        MENUITEM "&Beh˙z·sok ellenırzÈse..."        CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&Oldalbe√°ll√≠t√°s...",              IDM_FILE_PAGESETUP
-        MENUITEM "&Nyomtat√°s...\tCtrl+P",           IDM_FILE_PRINT
+        MENUITEM "&Oldalbe·llÌt·s...",              IDM_FILE_PAGESETUP
+        MENUITEM "&Nyomtat·s...\tCtrl+P",           IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "&Tulajdons√°gok...",               IDM_FILE_PROPERTIES
-        MENUITEM "Asztali parancsikon k&√©sz√≠t√©se",  IDM_FILE_CREATELINK
+        MENUITEM "&Tulajdons·gok...",               IDM_FILE_PROPERTIES
+        MENUITEM "Asztali parancsikon k&ÈszÌtÈse",  IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "&B√∂ng√©sz√©s...\tCtrl+M",           IDM_FILE_BROWSE
+        MENUITEM "&BˆngÈszÈs...\tCtrl+M",           IDM_FILE_BROWSE
         POPUP "&Kedvencek"
         BEGIN
-            MENUITEM "&Kedvencek megnyit√°sa...\tAlt+I",     IDM_FILE_OPENFAV
-            MENUITEM "&Aktu√°lis f√°jl hozz√°ad√°sa...\tAlt+K", IDM_FILE_ADDTOFAV
-            MENUITEM "Ke&zel√©s...\tAlt+F9",                 IDM_FILE_MANAGEFAV
+            MENUITEM "&Kedvencek megnyit·sa...\tAlt+I",     IDM_FILE_OPENFAV
+            MENUITEM "&Aktu·lis f·jl hozz·ad·sa...\tAlt+K", IDM_FILE_ADDTOFAV
+            MENUITEM "Ke&zelÈs...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
-        MENUITEM "El≈ëzm√©ny (&T√∂rt√©net)...\tCtrl+Alt+H",     IDM_FILE_RECENT
+        MENUITEM "ElızmÈny (&TˆrtÈnet)...\tCtrl+Alt+H",     IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "Kil√©p√©&s\tAlt+F4",                        IDM_FILE_EXIT
+        MENUITEM "KilÈpÈ&s\tAlt+F4",                        IDM_FILE_EXIT
     END
-    POPUP "&Szerkeszt√©s"
+    POPUP "&SzerkesztÈs"
     BEGIN
-        MENUITEM "&Visszavon√°s\tCtrl+Z",        IDM_EDIT_UNDO
-        MENUITEM "&√öjra\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "&Visszavon·s\tCtrl+Z",        IDM_EDIT_UNDO
+        MENUITEM "&⁄jra\tCtrl+Y",               IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Kiv√°&g√°s\tCtrl+X",            IDM_EDIT_CUT
-        MENUITEM "&M√°sol√°s\tCtrl+C",            IDM_EDIT_COPY
-        MENUITEM "Mind m&√°sol√°sa\tAlt+C",       IDM_EDIT_COPYALL
-        MENUITEM "V√°g&√≥laphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
-        MENUITEM "&Beilleszt√©s\tCtrl+V",        IDM_EDIT_PASTE
+        MENUITEM "Kiv·&g·s\tCtrl+X",            IDM_EDIT_CUT
+        MENUITEM "&M·sol·s\tCtrl+C",            IDM_EDIT_COPY
+        MENUITEM "Mind m&·sol·sa\tAlt+C",       IDM_EDIT_COPYALL
+        MENUITEM "V·g&Ûlaphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
+        MENUITEM "&BeillesztÈs\tCtrl+V",        IDM_EDIT_PASTE
         MENUITEM "&Csere\tCtrl+K",              IDM_EDIT_SWAP
-        MENUITEM "&T√∂rl√©s\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "V√°g√≥lap t&√∂rl√©se",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Min&d kijel√∂l√©se\tCtrl+A",    IDM_EDIT_SELECTALL
+        MENUITEM "&TˆrlÈs\tDel",                IDM_EDIT_CLEAR
+        MENUITEM "V·gÛlap t&ˆrlÈse",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Min&d kijelˆlÈse\tCtrl+A",    IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "Sza&vak"
         BEGIN
-            MENUITEM "&Sz√≥ kieg√©sz√≠t√©se\tCtrl+Alt+Enter",   IDM_EDIT_COMPLETEWORD
+            MENUITEM "&SzÛ kiegÈszÌtÈse\tCtrl+Alt+Enter",   IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Kurzor egy sz√≥nyit &balra\tCtrl+Left",   CMD_CTRLLEFT
-            MENUITEM "Kurzor egy sz√≥nyit &jobbra\tCtrl+Right", CMD_CTRLRIGHT
-            MENUITEM "Sz√≥ &t√∂rl√©se balra\tCtrl+Back",          CMD_CTRLBACK
-            MENUITEM "Sz√≥ t&√∂rl√©se jobbra\tCtrl+Del",          CMD_CTRLDEL
+            MENUITEM "Kurzor egy szÛnyit &balra\tCtrl+Left",   CMD_CTRLLEFT
+            MENUITEM "Kurzor egy szÛnyit &jobbra\tCtrl+Right", CMD_CTRLRIGHT
+            MENUITEM "SzÛ &tˆrlÈse balra\tCtrl+Back",          CMD_CTRLBACK
+            MENUITEM "SzÛ t&ˆrlÈse jobbra\tCtrl+Del",          CMD_CTRLDEL
         END
         POPUP "S&orok"
         BEGIN

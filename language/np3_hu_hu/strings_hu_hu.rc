@@ -54,98 +54,100 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "√öj"
-    IDT_FILE_OPEN           "Megnyit√°s"
-    IDT_FILE_BROWSE         "B√∂ng√©sz√©s"
-    IDT_FILE_SAVE           "Ment√©s"
+    IDT_FILE_NEW            "⁄j"
+    IDT_FILE_OPEN           "Megnyit·s"
+    IDT_FILE_BROWSE         "BˆngÈszÈs"
+    IDT_FILE_SAVE           "MentÈs"
+    IDT_FILE_RECENT         "History"
     IDT_EDIT_UNDO           "Visszavon"
-    IDT_EDIT_REDO           "√öjra"
-    IDT_EDIT_CUT            "Kiv√°g√°s"
-    IDT_EDIT_COPY           "M√°sol√°s"
+    IDT_EDIT_REDO           "⁄jra"
+    IDT_EDIT_CUT            "Kiv·g·s"
+    IDT_EDIT_COPY           "M·sol·s"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Beilleszt√©s"
-    IDT_EDIT_FIND           "Keres√©s"
+    IDT_EDIT_PASTE          "BeillesztÈs"
+    IDT_EDIT_FIND           "KeresÈs"
     IDT_EDIT_REPLACE        "Csere"
-    IDT_VIEW_WORDWRAP       "Sort√∂r√©s"
-    IDT_VIEW_ZOOMIN         "Nagy√≠t√°s"
-    IDT_VIEW_ZOOMOUT        "Kicsiny√≠t√©s"
-    IDT_VIEW_SCHEME         "S√©mav√°laszt√°s"
-    IDT_VIEW_SCHEMECONFIG   "S√©m√°k testreszab√°sa"
-    IDT_FILE_EXIT           "Kil√©p√©s"
-    IDT_FILE_SAVEAS         "Ment√©s m√°sk√©nt"
-    IDT_FILE_SAVECOPY       "M√°solat ment√©se"
-    IDT_EDIT_CLEAR          "T√∂rl√©s"
-    IDT_FILE_PRINT          "Nyomtat√°s"
+    IDT_VIEW_WORDWRAP       "SortˆrÈs"
+    IDT_VIEW_ZOOMIN         "NagyÌt·s"
+    IDT_VIEW_ZOOMOUT        "KicsinyÌtÈs"
+    IDT_VIEW_SCHEME         "SÈmav·laszt·s"
+    IDT_VIEW_SCHEMECONFIG   "SÈm·k testreszab·sa"
+    IDT_FILE_EXIT           "KilÈpÈs"
+    IDT_FILE_SAVEAS         "MentÈs m·skÈnt"
+    IDT_FILE_SAVECOPY       "M·solat mentÈse"
+    IDT_EDIT_CLEAR          "TˆrlÈs"
+    IDT_FILE_PRINT          "Nyomtat·s"
     IDT_FILE_OPENFAV        "Kedvencek"
-    IDT_FILE_ADDTOFAV       "Hozz√°ad√°s a kedvencekhez"
+    IDT_FILE_ADDTOFAV       "Hozz·ad·s a kedvencekhez"
     IDT_VIEW_TOGGLEFOLDS    "Kinyit/Becsuk"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Futatt√°s"
-    IDT_VIEW_TOGGLE_VIEW    "F√≥kusz√°lt n√©zet"
-    IDT_VIEW_CHASING_DOCTAIL "Dokumentum k√∂vet√©s"
+    IDT_FILE_LAUNCH         "Futatt·s"
+    IDT_VIEW_TOGGLE_VIEW    "FÛkusz·lt nÈzet"
+    IDT_VIEW_CHASING_DOCTAIL "Dokumentum kˆvetÈs"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Adminisztr√°tor)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : V√°g√≥lap"
-    IDS_MUI_UNTITLED        "N√©vtelen"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Adminisztr·tor)"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : V·gÛlap"
+    IDS_MUI_UNTITLED        "NÈvtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Csak olvashat√≥)"
-    IDS_MUI_LOADFILE        "Bet√∂lt√©s: ""%s""..."
-    IDS_MUI_SAVEFILE        "Ment√©s ""%s""..."
-    IDS_MUI_PRINTFILE       "Oldal nyomtat√°sa %i..."
-    IDS_MUI_SAVINGSETTINGS  "Be√°ll√≠t√°sok ment√©se..."
-    IDS_MUI_LINKDESCRIPTION "Szerkeszt√©s itt: Notepad3"
+    IDS_MUI_READONLY        "(Csak olvashatÛ)"
+    IDS_MUI_LOADFILE        "BetˆltÈs: ""%s""..."
+    IDS_MUI_SAVEFILE        "MentÈs ""%s""..."
+    IDS_MUI_PRINTFILE       "Oldal nyomtat·sa %i..."
+    IDS_MUI_SAVINGSETTINGS  "Be·llÌt·sok mentÈse..."
+    IDS_MUI_LINKDESCRIPTION "SzerkesztÈs itt: Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "Minden f√°jl (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "V√©grehajthat√≥ f√°jlok (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Be√°ll√≠t√°sf√°jlok (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "V√°lassza ki a mapp√°t, ahol a kedvenc alkamaz√°saira mutat√≥ parancsikonok vannak."
-    IDS_MUI_FAVORITES       "V√°lassza ki a mapp√°t, ahol a kedvenc f√°jljaira mutat√≥ parancsikonok vannak."
-    IDS_MUI_BACKSLASHHELP   "Backslash √°talak√≠t√°sok\n\n\\a\tFigyelmeztet√©s (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tLapdob√°s (FF, Ascii 12)\n\\n\t√öj sor (LF, Ascii 10)\n\\r\tKocsi vissza (CR, Ascii 13)\n\\t\tV√≠zszintes Tab (HT, Ascii 9)\n\\v\tF√ºgg≈ëleges Tab (VT, Ascii 11)\n\\0oo\tOkt√°lis √©rt√©k\n\\u####\tHexadecim√°lis √©rt√©k\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp illeszked√©s szintaktika (t√∂bbsoros)\n\n.\tB√°rmilyen karakterre illeszkedik\n^\t√úres sz√∂veg r√∂gt√∂n √∫j sor ut√°n\n$\t√úres sz√∂veg k√∂zvetlen√ºl a sorv√©ge el≈ëtt\n\\<\tSz√≥ kezdete\n\\>\tSz√≥ v√©ge\n\\b\tSz√≥ hat√°ra\n[...]\tKarakterek halmaza ([abc]) vagy intervalluma ([a-z])\n[^...]\tKarakterek, amik NINCSENEK a k√©szletben vagy az intervallumban\n\\d\t10-es sz√°mrendszeri sz√°m\n\\D\tNem sz√°m kar.\n\\s\t√úres hely karakterek\n\\S\tNEM √ºres hely karakter\n\\w\t""sz√≥"" karakterek\n\\W\t""nem-sz√≥"" karakter\n\\x\tEscape karakter egy√©bk√©nt speci√°lis jelent√©ssel\n\\xHH\tKarakter HH Hexa k√≥ddal\n?\tEl≈ëz≈ëre illeszkedik 0-szor vagy 1-szer\n*\tEl≈ëz≈ëre illeszkedik 0-szor vagy t√∂bbsz√∂r\n+\tEl≈ëz≈ëre illeszkedik egyszer vagy t√∂bbsz√∂r\n*? or +?\tIsm√©tl√©sek illeszked√©se lomh√°n ""?"" and ""+""\n(\tR√©gi√≥ kezdete\n)\tR√©gi√≥ v√©ge\n\\n\tCser√©n√©l egy r√©gi√≥ra hivatkozik (n = 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Joker keres√©s\n\n*\tNulla vagy t√∂bb karakterre illeszkedik.\n?\tPontosan egy karakterre illeszkedik. "
+    IDS_MUI_FILTER_ALL      "Minden f·jl (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "VÈgrehajthatÛ f·jlok (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Be·llÌt·sf·jlok (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "V·lassza ki a mapp·t, ahol a kedvenc alkamaz·saira mutatÛ parancsikonok vannak."
+    IDS_MUI_FAVORITES       "V·lassza ki a mapp·t, ahol a kedvenc f·jljaira mutatÛ parancsikonok vannak."
+    IDS_MUI_BACKSLASHHELP   "Backslash ·talakÌt·sok\n\n\\a\tFigyelmeztetÈs (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tLapdob·s (FF, Ascii 12)\n\\n\t⁄j sor (LF, Ascii 10)\n\\r\tKocsi vissza (CR, Ascii 13)\n\\t\tVÌzszintes Tab (HT, Ascii 9)\n\\v\tF¸ggıleges Tab (VT, Ascii 11)\n\\0oo\tOkt·lis ÈrtÈk\n\\u####\tHexadecim·lis ÈrtÈk\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "RegExp illeszkedÈs szintaktika (tˆbbsoros)\n\n.\tB·rmilyen karakterre illeszkedik\n^\t‹res szˆveg rˆgtˆn ˙j sor ut·n\n$\t‹res szˆveg kˆzvetlen¸l a sorvÈge elıtt\n\\<\tSzÛ kezdete\n\\>\tSzÛ vÈge\n\\b\tSzÛ hat·ra\n[...]\tKarakterek halmaza ([abc]) vagy intervalluma ([a-z])\n[^...]\tKarakterek, amik NINCSENEK a kÈszletben vagy az intervallumban\n\\d\t10-es sz·mrendszeri sz·m\n\\D\tNem sz·m kar.\n\\s\t‹res hely karakterek\n\\S\tNEM ¸res hely karakter\n\\w\t""szÛ"" karakterek\n\\W\t""nem-szÛ"" karakter\n\\x\tEscape karakter egyÈbkÈnt speci·lis jelentÈssel\n\\xHH\tKarakter HH Hexa kÛddal\n?\tElızıre illeszkedik 0-szor vagy 1-szer\n*\tElızıre illeszkedik 0-szor vagy tˆbbszˆr\n+\tElızıre illeszkedik egyszer vagy tˆbbszˆr\n*? or +?\tIsmÈtlÈsek illeszkedÈse lomh·n ""?"" and ""+""\n(\tRÈgiÛ kezdete\n)\tRÈgiÛ vÈge\n\\n\tCserÈnÈl egy rÈgiÛra hivatkozik (n = 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Joker keresÈs\n\n*\tNulla vagy tˆbb karakterre illeszkedik.\n?\tPontosan egy karakterre illeszkedik. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Hiba ""%s"" bet√∂lt√©sekor."
-    IDS_MUI_ERR_SAVEFILE    "Hiba ""%s"" ment√©sekor."
-    IDS_MUI_ERR_BROWSE      "F√°jlb√∂ng√©sz≈ë plugin nem tal√°lhat√≥.\nA MiniPath f√°jlb√∂ng√©sz≈ë plugin let√∂lthet≈ë a https://rizonesoft.com c√≠mr≈ël."
-    IDS_MUI_ERR_MRUDLG      "A kijel√∂lt f√°jlhoz nincs hozz√°f√©r√©s√ºnk!\nEl szeretn√© t√°vol√≠tani a list√°b√≥l?"
-    IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon l√©trehoz√°sakor."
+    IDS_MUI_ERR_LOADFILE    "Hiba ""%s"" betˆltÈsekor."
+    IDS_MUI_ERR_SAVEFILE    "Hiba ""%s"" mentÈsekor."
+    IDS_MUI_ERR_BROWSE      "F·jlbˆngÈszı plugin nem tal·lhatÛ.\nA MiniPath f·jlbˆngÈszı plugin letˆlthetı a https://rizonesoft.com cÌmrıl."
+    IDS_MUI_ERR_MRUDLG      "A kijelˆlt f·jlhoz nincs hozz·fÈrÈs¸nk!\nEl szeretnÈ t·volÌtani a list·bÛl?"
+    IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon lÈtrehoz·sakor."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "A fut√≥ Notepad3 ablak nem v√°laszol vagy van egy akt√≠v dial√≥gusablaka.\nMeg szeretn√© nyitni egy √∫j Notepad3 ablakban?"
-    IDS_MUI_ERR_ENCODINGNA  "A k√≥dlap konverzi√≥s t√°bl√°k nem el√©rhet≈ëek a kiv√°lasztott k√≥dol√°shoz az √∂n rendszer√©n."
-    IDS_MUI_ERR_UNICODE     "Hiba e Unicode f√°jl konvert√°l√°sakor.\nAz adat el fog veszni, amikor a f√°jl mentve lesz!"
-    IDS_MUI_ERR_BITMAP      "Hiba a bitk√©p ""%s"" bet√∂lt√©se k√∂zben.\nSz√ºks√©ges m√©ret: %i x %i (sz√©less√©g >= %i x magass√°g)."
+                            "A futÛ Notepad3 ablak nem v·laszol vagy van egy aktÌv dialÛgusablaka.\nMeg szeretnÈ nyitni egy ˙j Notepad3 ablakban?"
+    IDS_MUI_ERR_ENCODINGNA  "A kÛdlap konverziÛs t·bl·k nem elÈrhetıek a kiv·lasztott kÛdol·shoz az ˆn rendszerÈn."
+    IDS_MUI_ERR_UNICODE     "Hiba e Unicode f·jl konvert·l·sakor.\nAz adat el fog veszni, amikor a f·jl mentve lesz!"
+    IDS_MUI_ERR_BITMAP      "Hiba a bitkÈp ""%s"" betˆltÈse kˆzben.\nSz¸ksÈges mÈret: %i x %i (szÈlessÈg >= %i x magass·g)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Hiba felhaszn√°l√≥i jogok emel√©se k√∂zben!"
+                            "Hiba felhaszn·lÛi jogok emelÈse kˆzben!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Egyes karakterek a jelenlegi sz√∂vegben nem t√°mogatottak a kiv√°lasztott k√≥dol√°sban, ez√©rt le k√©ne cser√©lni ≈ëket az alap√©rtelmezett helykit√∂lt≈ëvel ment√©skor.Aj√°nlott egy m√°sik k√≥dol√°st v√°lasztani. Folytatja?"
-    IDS_MUI_ERR_DROP        "Csak egy f√°jlt lehet egyszerre ide ejteni!"
+    IDS_MUI_ERR_UNICODE2    "Egyes karakterek a jelenlegi szˆvegben nem t·mogatottak a kiv·lasztott kÛdol·sban, ezÈrt le kÈne cserÈlni ıket az alapÈrtelmezett helykitˆltıvel mentÈskor.Aj·nlott egy m·sik kÛdol·st v·lasztani. Folytatja?"
+    IDS_MUI_ERR_DROP        "Csak egy f·jlt lehet egyszerre ide ejteni!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "A k√∂vetkez≈ë f√°jlt: ""%s"" nem lehet menteni, lehet, hogy v√©dett.\n\nSzeretn√© adminisztr√°tornk√©nt elind√≠tani a Notepad3-at?"
-    IDS_MUI_ERR_ADMINEXE    "Adminisztr√°tor v√©grehajthat√≥ nem tal√°lhat√≥.\nFelkeress√ºk e  weboldalt: https://rizonesoft.com ?"
+                            "A kˆvetkezı f·jlt: ""%s"" nem lehet menteni, lehet, hogy vÈdett.\n\nSzeretnÈ adminisztr·tornkÈnt elindÌtani a Notepad3-at?"
+    IDS_MUI_ERR_ADMINEXE    "Adminisztr·tor vÈgrehajthatÛ nem tal·lhatÛ.\nFelkeress¸k e  weboldalt: https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Biztosan meg szeretn√© nyitni ezt a nagy f√°jlt?"
+                            "Biztosan meg szeretnÈ nyitni ezt a nagy f·jlt?"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Ismeretlen f√°jlkiterjeszt√©s (%s) !\nMindenk√©ppen bet√∂ltsem?"
-    IDS_MUI_INDENT_CONSISTENT  "A f√°jlnak konzisztens beh√∫z√°sai vannak!"
+                            "Ismeretlen f·jlkiterjesztÈs (%s) !\nMindenkÈppen betˆltsem?"
+    IDS_MUI_INDENT_CONSISTENT  "A f·jlnak konzisztens beh˙z·sai vannak!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -153,37 +155,37 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Ez a m≈±velet nem hajthat√≥ v√©gre f√ºgg≈ëleges kijel√∂l√©sn√©l."
-    IDS_MUI_BUFFERTOOSMALL  "Ez a m≈±velet nem hajthat√≥ v√©gre (t√∫l hossz√∫ sorok)."
-    IDS_MUI_FIND_WRAPFW     "A dokumentum v√©g√©re √©rt, a keres√©s √∫jrakezd≈ëdik az elej√©n."
-    IDS_MUI_FIND_WRAPRE     "A dokumentum elej√©re √©rt, a keres√©s a v√©g√©n folytat√≥dik."
-    IDS_MUI_NOTFOUND        "A megadott sz√∂veg nem tal√°lhat√≥."
-    IDS_MUI_REPLCOUNT       "A megadott sz√∂veg %i db. el≈ëfordul√°sa lett lecser√©lve."
-    IDS_MUI_ASK_ENCODING    "A f√°jl k√≥dol√°s√°nak megv√°ltoztat√°sa lecser√©lhet nem t√°mogatott karaktereket alap√©rtelmezettek karakterekkel, valamint a visszavon√°si t√∂rt√©net t√∂r√∂lve lesz. Folytatja?"
-    IDS_MUI_ASK_ENCODING2   "Egy √ºres f√°jl k√≥dol√°s√°t v√°ltoztatja meg. Ne feledje, hogy ez a visszavon√°si t√∂rt√©netet t√∂rli, mert azt nem lehet szinkroniz√°lni az √∫j k√≥dol√°ssal. Folytatja?"
-    IDS_MUI_READONLY_SAVE   """%s"" csak olvasthat√≥. Legyen ment√©s egy m√°sik f√°jlba?"
+    IDS_MUI_SELRECT         "Ez a m˚velet nem hajthatÛ vÈgre f¸ggıleges kijelˆlÈsnÈl."
+    IDS_MUI_BUFFERTOOSMALL  "Ez a m˚velet nem hajthatÛ vÈgre (t˙l hossz˙ sorok)."
+    IDS_MUI_FIND_WRAPFW     "A dokumentum vÈgÈre Èrt, a keresÈs ˙jrakezdıdik az elejÈn."
+    IDS_MUI_FIND_WRAPRE     "A dokumentum elejÈre Èrt, a keresÈs a vÈgÈn folytatÛdik."
+    IDS_MUI_NOTFOUND        "A megadott szˆveg nem tal·lhatÛ."
+    IDS_MUI_REPLCOUNT       "A megadott szˆveg %i db. elıfordul·sa lett lecserÈlve."
+    IDS_MUI_ASK_ENCODING    "A f·jl kÛdol·s·nak megv·ltoztat·sa lecserÈlhet nem t·mogatott karaktereket alapÈrtelmezettek karakterekkel, valamint a visszavon·si tˆrtÈnet tˆrˆlve lesz. Folytatja?"
+    IDS_MUI_ASK_ENCODING2   "Egy ¸res f·jl kÛdol·s·t v·ltoztatja meg. Ne feledje, hogy ez a visszavon·si tˆrtÈnetet tˆrli, mert azt nem lehet szinkroniz·lni az ˙j kÛdol·ssal. Folytatja?"
+    IDS_MUI_READONLY_SAVE   """%s"" csak olvasthatÛ. Legyen mentÈs egy m·sik f·jlba?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Az aktu√°lis f√°jl egy k√ºls≈ë progarm √°ltal m√≥dos√≠tva lett. √öjrat√∂lts√ºk?"
-    IDS_MUI_FILECHANGENOTIFY2 "Az aktu√°lis f√°jl t√∂r√∂lve lett. Elments√ºk?"
-    IDS_MUI_STICKYWINPOS    "A ragad√≥s ablakpoz√≠ci√≥k be van kapcsolva. Az √∫j Notepad3 ablakok a jelenlegi ablakhelyzet√©t haszn√°lj√°k majd."
-    IDS_MUI_SAVEDSETTINGS   "A jelenlegi be√°ll√≠t√°sok el lettek mentve."
-    IDS_MUI_CREATEINI_FAIL  "Hiba a be√°ll√≠t√°sf√°jl l√©trehoz√°sakor."
-    IDS_MUI_WRITEINI_FAIL   "Hiba a be√°ll√≠t√°sok f√°jlba √≠r√°sakor."
+                            "Az aktu·lis f·jl egy k¸lsı progarm ·ltal mÛdosÌtva lett. ⁄jratˆlts¸k?"
+    IDS_MUI_FILECHANGENOTIFY2 "Az aktu·lis f·jl tˆrˆlve lett. Elments¸k?"
+    IDS_MUI_STICKYWINPOS    "A ragadÛs ablakpozÌciÛk be van kapcsolva. Az ˙j Notepad3 ablakok a jelenlegi ablakhelyzetÈt haszn·lj·k majd."
+    IDS_MUI_SAVEDSETTINGS   "A jelenlegi be·llÌt·sok el lettek mentve."
+    IDS_MUI_CREATEINI_FAIL  "Hiba a be·llÌt·sf·jl lÈtrehoz·sakor."
+    IDS_MUI_WRITEINI_FAIL   "Hiba a be·llÌt·sok f·jlba Ìr·sakor."
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nincs l√©tez≈ë be√°ll√≠t√°sf√°jl..\nAhhoz, hogy megtartsa a st√≠lusb√©li m√≥dos√≠t√°sokat, mentse a be√°ll√≠t√°sokat most (F7) vagy menjen vissza a sz√≠nkiemel√©s konfigur√°ci√≥j√°hoz (Ctrl+F12) √©s export√°lja a st√≠lusokat."
+                            "Nincs lÈtezı be·llÌt·sf·jl..\nAhhoz, hogy megtartsa a stÌlusbÈli mÛdosÌt·sokat, mentse a be·llÌt·sokat most (F7) vagy menjen vissza a szÌnkiemelÈs konfigur·ciÛj·hoz (Ctrl+F12) Ès export·lja a stÌlusokat."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Hiba a sz√≠nkiemel√©sek be√°ll√≠t√°sainak export√°l√°sakor ide: ""%s""."
-    IDS_MUI_REGEX_INVALID   "Hiba a regul√°ris kifejez√©s feldolgoz√°sakor. A kifejez√©s √©rv√©nytelen!"
-    IDS_MUI_DROP_NO_FILE    "Nem siker√ºlt √©rv√©nyes f√°jlnevet kapni.\nHa egy 32 bites alkalmaz√°sb√≥l lett √°tdobva,\nk√©rem, dobja √∫jra a Notepad3 eszk√∂zt√°rra."
+    IDS_MUI_EXPORT_FAIL     "Hiba a szÌnkiemelÈsek be·llÌt·sainak export·l·sakor ide: ""%s""."
+    IDS_MUI_REGEX_INVALID   "Hiba a regul·ris kifejezÈs feldolgoz·sakor. A kifejezÈs ÈrvÈnytelen!"
+    IDS_MUI_DROP_NO_FILE    "Nem siker¸lt ÈrvÈnyes f·jlnevet kapni.\nHa egy 32 bites alkalmaz·sbÛl lett ·tdobva,\nkÈrem, dobja ˙jra a Notepad3 eszkˆzt·rra."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Ments√ºk ""%s"" m√≥dos√≠t√°sait?"
-    IDS_MUI_ASK_REVERT      "Visza√°ll√≠tsuk a f√°jlt az utols√≥ mentett √°llapotra? A v√°ltoztat√°sok elvesznek!"
+    IDS_MUI_ASK_SAVE        "Ments¸k ""%s"" mÛdosÌt·sait?"
+    IDS_MUI_ASK_REVERT      "Visza·llÌtsuk a f·jlt az utolsÛ mentett ·llapotra? A v·ltoztat·sok elvesznek!"
     IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
     IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
     IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
