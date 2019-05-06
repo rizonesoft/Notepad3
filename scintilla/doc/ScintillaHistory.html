@@ -561,7 +561,23 @@
 	Released 17 April 2019.
 	</li>
 	<li>
+	For Visual C++ 2019, /std:c++latest now includes some C++20 features so switch to /std:c++17.
+	</li>
+ 	<li>
+	Lexer added for X12.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1280/">Feature #1280</a>.
+	</li>
+	<li>
 	Fix bug where changing identifier sets in lexers preserved previous identifiers.
+	</li>
+ 	<li>
+	Changed behaviour of SCI_STYLESETCASE(*,SC_CASE_CAMEL) so that it only treats 'a-zA-Z'
+	as word characters because this covers the feature's intended use (viewing case-insensitive ASCII-only
+	keywords in a specified casing style) and simplifies the behaviour and code.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1238/">Feature #1238</a>.
+	</li>
+ 	<li>
+	In SciTE added Camel case option "case:c" for styles to show keywords with initial capital.
 	</li>
     </ul>
     <h3>

@@ -423,7 +423,6 @@ class SurfaceGDI : public Surface {
 	HPEN penOld{};
 	HBRUSH brush{};
 	HBRUSH brushOld{};
-	HFONT font{};
 	HFONT fontOld{};
 	HBITMAP bitmap{};
 	HBITMAP bitmapOld{};
@@ -433,8 +432,8 @@ class SurfaceGDI : public Surface {
 
 	int codePage = 0;
 
-	void BrushColor(ColourDesired back);
-	void SetFont(Font &font_);
+	void BrushColor(ColourDesired back) noexcept;
+	void SetFont(const Font &font_) noexcept;
 	void Clear() noexcept;
 
 public:
@@ -517,7 +516,6 @@ void SurfaceGDI::Clear() noexcept {
 		::SelectObject(hdc, fontOld);
 		fontOld = 0;
 	}
-	font = 0;
 	if (bitmapOld) {
 		::SelectObject(hdc, bitmapOld);
 		::DeleteObject(bitmap);
@@ -575,7 +573,7 @@ void SurfaceGDI::PenColour(ColourDesired fore) {
 	penOld = SelectPen(hdc, pen);
 }
 
-void SurfaceGDI::BrushColor(ColourDesired back) {
+void SurfaceGDI::BrushColor(ColourDesired back) noexcept {
 	if (brush) {
 		::SelectObject(hdc, brushOld);
 		::DeleteObject(brush);
@@ -587,16 +585,14 @@ void SurfaceGDI::BrushColor(ColourDesired back) {
 	brush = ::CreateSolidBrush(colourNearest.AsInteger());
 	brushOld = SelectBrush(hdc, brush);
 }
-void SurfaceGDI::SetFont(Font &font_) {
-	if (font_.GetID() != font) {
-		const FormatAndMetrics *pfm = FamFromFontID(font_.GetID());
-		PLATFORM_ASSERT(pfm->technology == SCWIN_TECH_GDI);
-		if (fontOld) {
-			SelectFont(hdc, pfm->hfont);
-		} else {
-			fontOld = SelectFont(hdc, pfm->hfont);
-		}
-		font = pfm->hfont;
+
+void SurfaceGDI::SetFont(const Font &font_) noexcept {
+	const FormatAndMetrics *pfm = FamFromFontID(font_.GetID());
+	PLATFORM_ASSERT(pfm->technology == SCWIN_TECH_GDI);
+	if (fontOld) {
+		SelectFont(hdc, pfm->hfont);
+	} else {
+		fontOld = SelectFont(hdc, pfm->hfont);
 	}
 }
 
@@ -964,7 +960,6 @@ void SurfaceGDI::SetClip(PRectangle rc) {
 void SurfaceGDI::FlushCachedState() {
 	pen = 0;
 	brush = 0;
-	font = 0;
 }
 
 void SurfaceGDI::SetUnicodeMode(bool unicodeMode_) {
@@ -1006,7 +1001,7 @@ class SurfaceD2D : public Surface {
 	float dpiScaleY;
 
 	void Clear() noexcept;
-	void SetFont(Font &font_);
+	void SetFont(const Font &font_);
 
 public:
 	SurfaceD2D() noexcept;
@@ -1190,7 +1185,7 @@ void SurfaceD2D::D2DPenColour(ColourDesired fore, int alpha) {
 	}
 }
 
-void SurfaceD2D::SetFont(Font &font_) {
+void SurfaceD2D::SetFont(const Font &font_) {
 	const FormatAndMetrics *pfm = FamFromFontID(font_.GetID());
 	PLATFORM_ASSERT(pfm->technology == SCWIN_TECH_DIRECTWRITE);
 	pTextFormat = pfm->pTextFormat;

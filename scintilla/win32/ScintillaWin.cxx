@@ -2337,7 +2337,7 @@ public:
 	GlobalMemory &operator=(const GlobalMemory &) = delete;
 	GlobalMemory &operator=(GlobalMemory &&) = delete;
 	~GlobalMemory() {
-		PLATFORM_ASSERT(!ptr);
+		assert(!ptr);
 		assert(!hand);
 	}
 	void Allocate(size_t bytes) noexcept {
@@ -2348,11 +2348,11 @@ public:
 		}
 	}
 	HGLOBAL Unlock() noexcept {
-		PLATFORM_ASSERT(ptr);
+		assert(ptr);
 		HGLOBAL handCopy = hand;
 		::GlobalUnlock(hand);
 		ptr = nullptr;
-		hand = nullptr;
+		hand = {};
 		return handCopy;
 	}
 	void SetClip(UINT uFormat) noexcept {

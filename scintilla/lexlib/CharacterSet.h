@@ -135,6 +135,10 @@ inline bool IsUpperCase(int ch) {
 	return (ch >= 'A') && (ch <= 'Z');
 }
 
+inline bool IsUpperOrLowerCase(int ch) {
+	return IsUpperCase(ch) || IsLowerCase(ch);
+}
+
 inline bool IsAlphaNumeric(int ch) {
 	return
 		((ch >= '0') && (ch <= '9')) ||

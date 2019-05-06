@@ -23,7 +23,7 @@
 
 using namespace Scintilla;
 
-static PRectangle PixelGridAlign(const PRectangle &rc) {
+static PRectangle PixelGridAlign(const PRectangle &rc) noexcept {
 	// Move left and right side to nearest pixel to avoid blurry visuals
 	return PRectangle(std::round(rc.left), std::floor(rc.top),
 		std::round(rc.right), std::floor(rc.bottom));
