@@ -54,100 +54,98 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_FILE_RECENT         "History"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW            "Új"
+    IDT_FILE_OPEN           "Megnyitás"
+    IDT_FILE_BROWSE         "Böngészés"
+    IDT_FILE_SAVE           "Mentés"
+    IDT_EDIT_UNDO           "Visszavon"
+    IDT_EDIT_REDO           "Újra"
+    IDT_EDIT_CUT            "Kivágás"
+    IDT_EDIT_COPY           "Másolás"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE          "Beillesztés"
+    IDT_EDIT_FIND           "Keresés"
+    IDT_EDIT_REPLACE        "Csere"
+    IDT_VIEW_WORDWRAP       "Sortörés"
+    IDT_VIEW_ZOOMIN         "Nagyítás"
+    IDT_VIEW_ZOOMOUT        "Kicsinyítés"
+    IDT_VIEW_SCHEME         "Sémaválasztás"
+    IDT_VIEW_SCHEMECONFIG   "Sémák testreszabása"
+    IDT_FILE_EXIT           "Kilépés"
+    IDT_FILE_SAVEAS         "Mentés másként"
+    IDT_FILE_SAVECOPY       "Másolat mentése"
+    IDT_EDIT_CLEAR          "Törlés"
+    IDT_FILE_PRINT          "Nyomtatás"
+    IDT_FILE_OPENFAV        "Kedvencek"
+    IDT_FILE_ADDTOFAV       "Hozzáadás a kedvencekhez"
+    IDT_VIEW_TOGGLEFOLDS    "Kinyit/Becsuk"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
+    IDT_FILE_LAUNCH         "Futattás"
+    IDT_VIEW_TOGGLE_VIEW    "Fókuszált nézet"
+    IDT_VIEW_CHASING_DOCTAIL "Dokumentum követés"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Administrator)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Adminisztrátor)"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Vágólap"
+    IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_READONLY        "(Csak olvasható)"
+    IDS_MUI_LOADFILE        "Betöltés: ""%s""..."
+    IDS_MUI_SAVEFILE        "Mentés ""%s""..."
+    IDS_MUI_PRINTFILE       "Oldal nyomtatása %i..."
+    IDS_MUI_SAVINGSETTINGS  "Beállítások mentése..."
+    IDS_MUI_LINKDESCRIPTION "Szerkesztés itt: Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_MUI_FILTER_ALL      "Minden fájl (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Végrehajtható fájlok (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Beállításfájlok (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Válassza ki a mappát, ahol a kedvenc alkamazásaira mutató parancsikonok vannak."
+    IDS_MUI_FAVORITES       "Válassza ki a mappát, ahol a kedvenc fájljaira mutató parancsikonok vannak."
+    IDS_MUI_BACKSLASHHELP   "Backslash átalakítások\n\n\\a\tFigyelmeztetés (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tLapdobás (FF, Ascii 12)\n\\n\tÚj sor (LF, Ascii 10)\n\\r\tKocsi vissza (CR, Ascii 13)\n\\t\tVízszintes Tab (HT, Ascii 9)\n\\v\tFüggőleges Tab (VT, Ascii 11)\n\\0oo\tOktális érték\n\\u####\tHexadecimális érték\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "RegExp illeszkedés szintaktika (többsoros)\n\n.\tBármilyen karakterre illeszkedik\n^\tÜres szöveg rögtön új sor után\n$\tÜres szöveg közvetlenül a sorvége előtt\n\\<\tSzó kezdete\n\\>\tSzó vége\n\\b\tSzó határa\n[...]\tKarakterek halmaza ([abc]) vagy intervalluma ([a-z])\n[^...]\tKarakterek, amik NINCSENEK a készletben vagy az intervallumban\n\\d\t10-es számrendszeri szám\n\\D\tNem szám kar.\n\\s\tÜres hely karakterek\n\\S\tNEM üres hely karakter\n\\w\t""szó"" karakterek\n\\W\t""nem-szó"" karakter\n\\x\tEscape karakter egyébként speciális jelentéssel\n\\xHH\tKarakter HH Hexa kóddal\n?\tElőzőre illeszkedik 0-szor vagy 1-szer\n*\tElőzőre illeszkedik 0-szor vagy többször\n+\tElőzőre illeszkedik egyszer vagy többször\n*? or +?\tIsmétlések illeszkedése lomhán ""?"" and ""+""\n(\tRégió kezdete\n)\tRégió vége\n\\n\tCserénél egy régióra hivatkozik (n = 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Joker keresés\n\n*\tNulla vagy több karakterre illeszkedik.\n?\tPontosan egy karakterre illeszkedik. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
+    IDS_MUI_ERR_LOADFILE    "Hiba ""%s"" betöltésekor."
+    IDS_MUI_ERR_SAVEFILE    "Hiba ""%s"" mentésekor."
+    IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található.\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről."
+    IDS_MUI_ERR_MRUDLG      "A kijelölt fájlhoz nincs hozzáférésünk!\nEl szeretné távolítani a listából?"
+    IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon létrehozásakor."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+                            "A futó Notepad3 ablak nem válaszol vagy van egy aktív dialógusablaka.\nMeg szeretné nyitni egy új Notepad3 ablakban?"
+    IDS_MUI_ERR_ENCODINGNA  "A kódlap konverziós táblák nem elérhetőek a kiválasztott kódoláshoz az ön rendszerén."
+    IDS_MUI_ERR_UNICODE     "Hiba e Unicode fájl konvertálásakor.\nAz adat el fog veszni, amikor a fájl mentve lesz!"
+    IDS_MUI_ERR_BITMAP      "Hiba a bitkép ""%s"" betöltése közben.\nSzükséges méret: %i x %i (szélesség >= %i x magasság)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"
+                            "Hiba felhasználói jogok emelése közben!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
-    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
+    IDS_MUI_ERR_UNICODE2    "Egyes karakterek a jelenlegi szövegben nem támogatottak a kiválasztott kódolásban, ezért le kéne cserélni őket az alapértelmezett helykitöltővel mentéskor.Ajánlott egy másik kódolást választani. Folytatja?"
+    IDS_MUI_ERR_DROP        "Csak egy fájlt lehet egyszerre ide ejteni!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch Notepad3 as Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com ?"
+                            "A következő fájlt: ""%s"" nem lehet menteni, lehet, hogy védett.\n\nSzeretné adminisztrátornként elindítani a Notepad3-at?"
+    IDS_MUI_ERR_ADMINEXE    "Adminisztrátor végrehajtható nem található.\nFelkeressük e  weboldalt: https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large file?"
+                            "Biztosan meg szeretné nyitni ezt a nagy fájlt?"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+                            "Ismeretlen fájlkiterjesztés (%s) !\nMindenképpen betöltsem?"
+    IDS_MUI_INDENT_CONSISTENT  "A fájlnak konzisztens behúzásai vannak!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -155,37 +153,37 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND        "The specified text was not found."
-    IDS_MUI_REPLCOUNT       "%i occurrences of the specified text have been replaced."
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_SELRECT         "Ez a művelet nem hajtható végre függőleges kijelölésnél."
+    IDS_MUI_BUFFERTOOSMALL  "Ez a művelet nem hajtható végre (túl hosszú sorok)."
+    IDS_MUI_FIND_WRAPFW     "A dokumentum végére ért, a keresés újrakezdődik az elején."
+    IDS_MUI_FIND_WRAPRE     "A dokumentum elejére ért, a keresés a végén folytatódik."
+    IDS_MUI_NOTFOUND        "A megadott szöveg nem található."
+    IDS_MUI_REPLCOUNT       "A megadott szöveg %i db. előfordulása lett lecserélve."
+    IDS_MUI_ASK_ENCODING    "A fájl kódolásának megváltoztatása lecserélhet nem támogatott karaktereket alapértelmezettek karakterekkel, valamint a visszavonási történet törölve lesz. Folytatja?"
+    IDS_MUI_ASK_ENCODING2   "Egy üres fájl kódolását változtatja meg. Ne feledje, hogy ez a visszavonási történetet törli, mert azt nem lehet szinkronizálni az új kódolással. Folytatja?"
+    IDS_MUI_READONLY_SAVE   """%s"" csak olvastható. Legyen mentés egy másik fájlba?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+                            "Az aktuális fájl egy külső progarm által módosítva lett. Újratöltsük?"
+    IDS_MUI_FILECHANGENOTIFY2 "Az aktuális fájl törölve lett. Elmentsük?"
+    IDS_MUI_STICKYWINPOS    "A ragadós ablakpozíciók be van kapcsolva. Az új Notepad3 ablakok a jelenlegi ablakhelyzetét használják majd."
+    IDS_MUI_SAVEDSETTINGS   "A jelenlegi beállítások el lettek mentve."
+    IDS_MUI_CREATEINI_FAIL  "Hiba a beállításfájl létrehozásakor."
+    IDS_MUI_WRITEINI_FAIL   "Hiba a beállítások fájlba írásakor."
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+                            "Nincs létező beállításfájl..\nAhhoz, hogy megtartsa a stílusbéli módosításokat, mentse a beállításokat most (F7) vagy menjen vissza a színkiemelés konfigurációjához (Ctrl+F12) és exportálja a stílusokat."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID   "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE    "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
+    IDS_MUI_EXPORT_FAIL     "Hiba a színkiemelések beállításainak exportálásakor ide: ""%s""."
+    IDS_MUI_REGEX_INVALID   "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
+    IDS_MUI_DROP_NO_FILE    "Nem sikerült érvényes fájlnevet kapni.\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, dobja újra a Notepad3 eszköztárra."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to ""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state? Your changes will be lost!"
+    IDS_MUI_ASK_SAVE        "Mentsük ""%s"" módosításait?"
+    IDS_MUI_ASK_REVERT      "Viszaállítsuk a fájlt az utolsó mentett állapotra? A változtatások elvesznek!"
     IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
     IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
     IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
