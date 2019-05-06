@@ -382,7 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Один &экземпляр файла",                       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Mute Message &Beeps",                         IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Заглу&шить звук уведомлений",                 IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Функция клавиши Esc"
         BEGIN
             MENUITEM "&Нет",                                IDM_VIEW_NOESCFUNC
