@@ -12,7 +12,7 @@
 #define SCINTILLA_H
 
 #ifdef __cplusplus
-extern "C"  {
+extern "C" {
 #endif
 
 #if defined(_WIN32)
