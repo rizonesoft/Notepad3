@@ -247,11 +247,10 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define LINESTATE_OCCURRENCE_MARK (1 << 13) 
-
-#define INDIC_NP3_MARK_OCCURANCE 1
-#define INDIC_NP3_MATCH_BRACE    2
-#define INDIC_NP3_BAD_BRACE      3
+#define INDIC_NP3_MARK_OCCURANCE (INDIC_CONTAINER + 1)
+#define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
+#define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
+#define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
 
 
 //=============================================================================
@@ -281,6 +280,7 @@ typedef struct _globals_t
   DWORD     dwLastError;
   HMENU     hMainMenu;
   HICON     hDlgIcon;
+  HICON     hIcon48;
   HICON     hIcon128;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
@@ -296,18 +296,17 @@ typedef struct _globals_t
   FILEVARS  fvCurFile;
   FILEVARS  fvBackup;
   int       iWrapCol;
-  bool      bCodeFoldingAvailable;
   bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
   int       iMarkOccurrencesCount;
-  bool      bChasingDocTail;
   bool      bUseLimitedAutoCCharSet;
   bool      bIsCJKInputCodePage;
   bool      bIniFileFromScratch;
   bool      bFindReplCopySelOrClip;
   bool      bReplaceInitialized;
+  bool      bInconsistentLineBreaks;
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -403,8 +402,12 @@ typedef struct _settings_t
   int OpenWithDlgSizeY;
   int FavoritesDlgSizeX;
   int FavoritesDlgSizeY;
+  int AddToFavDlgSizeX;
+  int FindReplaceDlgSizeX;
   int FindReplaceDlgPosX;
   int FindReplaceDlgPosY;
+  int CustomSchemesDlgSizeX;
+  int CustomSchemesDlgSizeY;
   int CustomSchemesDlgPosX;
   int CustomSchemesDlgPosY;
   bool MuteMessageBeep;
@@ -420,7 +423,10 @@ typedef struct _settings_t
 extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
-// ------------------------------------
+#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences > 0)
+
+
+//=============================================================================
 
 typedef struct _flags_t
 {
@@ -443,11 +449,11 @@ typedef struct _flags_t
 
   int PrintFileAndLeave;
 
-} FLAGS_T, * PFLAGS_T;
+} FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;
 
-// ------------------------------------
+//=============================================================================
 
 typedef struct _settings2_t
 {
@@ -468,8 +474,8 @@ typedef struct _settings2_t
   int    CurrentLineVerticalSlop;
 
   float  AnalyzeReliableConfidenceLevel;
-  float  ReliableCEDConfidenceMapping;   // = 0.85f;
-  float  UnReliableCEDConfidenceMapping; //= 0.20f;
+  //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
+  //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
   WCHAR DefaultExtension[64];
@@ -491,6 +497,33 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
+
+//=============================================================================
+
+typedef struct _focusedview_t
+{
+  bool HideNonMatchedLines;
+  bool CodeFoldingAvailable;
+  bool ShowCodeFolding;       // <-> Settings.ShowCodeFolding
+
+} FOCUSEDVIEW_T, *PFOCUSEDVIEW_T;
+
+extern FOCUSEDVIEW_T FocusedView;
+
+//=============================================================================
+
+typedef struct _filewatching_t
+{
+  int flagChangeNotify;        // <-> s_flagChangeNotify;
+  int FileWatchingMode;        // <-> Settings.FileWatchingMode;
+  bool ResetFileWatching;      // <-> Settings.ResetFileWatching;
+  DWORD FileCheckInverval;     // <-> Settings2.FileCheckInverval;
+  DWORD AutoReloadTimeout;     // <-> Settings2.AutoReloadTimeout;
+  bool ChasingDocTail;
+
+} FILEWATCHING_T, *PFILEWATCHING_T;
+
+extern FILEWATCHING_T FileWatching;
 
 //=============================================================================
 

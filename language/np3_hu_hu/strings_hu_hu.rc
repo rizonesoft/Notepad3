@@ -175,15 +175,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID   "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE    "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
+    IDS_MUI_EXPORT_FAIL     "Hiba a színkiemelések beállításainak exportálásakor ide: ""%s""."
+    IDS_MUI_REGEX_INVALID   "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
+    IDS_MUI_DROP_NO_FILE    "Nem sikerült érvényes fájlnevet kapni.\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, dobja újra a Notepad3 eszköztárra."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to ""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state? Your changes will be lost!"
+    IDS_MUI_ASK_SAVE        "Mentsük ""%s"" módosításait?"
+    IDS_MUI_ASK_REVERT      "Viszaállítsuk a fájlt az utolsó mentett állapotra? A változtatások elvesznek!"
     IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
     IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
     IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"

@@ -776,6 +776,50 @@ DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
 //=============================================================================
 //
+//  Style_SetFoldingAvailability()
+//
+void Style_SetFoldingAvailability(PEDITLEXER pLexer)
+{
+  switch (pLexer->lexerID)
+  {
+    case SCLEX_NULL:
+    case SCLEX_CONTAINER:
+    case SCLEX_BATCH:
+    case SCLEX_CONF:
+    case SCLEX_MAKEFILE:
+    case SCLEX_MARKDOWN:
+      FocusedView.CodeFoldingAvailable = false;
+      break;
+    default:
+      FocusedView.CodeFoldingAvailable = true;
+      break;
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_SetFoldingProperties()
+//
+void Style_SetFoldingProperties(bool active)
+{
+  if (active) {
+    SciCall_SetProperty("fold", "1");
+    SciCall_SetProperty("fold.foldsyntaxbased", "1");
+    SciCall_SetProperty("fold.compact", "0");
+    SciCall_SetProperty("fold.comment", "1");
+    SciCall_SetProperty("fold.html", "1");
+    SciCall_SetProperty("fold.preprocessor", "1");
+    SciCall_SetProperty("fold.cpp.comment.explicit", "0");
+  }
+  else {
+    SciCall_SetProperty("fold", "0");
+  }
+}
+
+
+//=============================================================================
+//
 //  Style_SetLexer()
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) 
@@ -832,29 +876,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetProperty("json.allow.comments", "1");
     SciCall_SetProperty("json.escape.sequence", "1");
   }
-
-  // Code folding
-  switch (pLexNew->lexerID)
-  {
-  case SCLEX_NULL:
-  case SCLEX_CONTAINER:
-  case SCLEX_BATCH:
-  case SCLEX_CONF:
-  case SCLEX_MAKEFILE:
-  case SCLEX_MARKDOWN:
-    Globals.bCodeFoldingAvailable = false;
-    SciCall_SetProperty("fold", "0");
-    break;
-  default:
-    Globals.bCodeFoldingAvailable = true;
-    SciCall_SetProperty("fold", "1");
-    SciCall_SetProperty("fold.compact", "0");
-    SciCall_SetProperty("fold.comment", "1");
-    SciCall_SetProperty("fold.html", "1");
-    SciCall_SetProperty("fold.preprocessor", "1");
-    SciCall_SetProperty("fold.cpp.comment.explicit", "0");
-    break;
+  else if (pLexNew->lexerID == SCLEX_PYTHON) {
+    SciCall_SetProperty("tab.timmy.whinge.level", "1");
   }
+
+  
+  // Code folding
+  Style_SetFoldingAvailability(pLexNew);
+  Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+
 
   // Add KeyWord Lists
   for (int i = 0; i < (KEYWORDSET_MAX + 1); i++) {
@@ -1009,7 +1039,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
   }
 
-  // More default values...
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_INPUT, dColor);
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_TARGET, dColor);
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_CONVERTED, dColor);
+  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
 
   if (pLexNew != &lexANSI) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
@@ -1307,10 +1340,34 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
   }
 
+  // Lexer reserved indicator styles
+  switch (s_pLexCurrent->lexerID)
+  {
+    case SCLEX_PYTHON:
+      SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
+      SendMessage(hwnd, SCI_INDICSETFORE, 1, (LPARAM)RGB(255, 0, 0)); // (light red)
+      //SendMessage(hwnd, SCI_INDICSETALPHA, 1, 40);                  
+      //SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, 1, 100);
+      break;
+
+    default:
+      //SendMessage(hwnd, SCI_INDICSETSTYLE, 0, INDIC_SQUIGGLE);
+      //SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_TT);
+      //SendMessage(hwnd, SCI_INDICSETSTYLE, 2, INDIC_PLAIN);
+      //SendMessage(hwnd, SCI_INDICSETFORE, 0, (LPARAM)RGB(0, 0x7f, 0)); // (dark green)
+      //SendMessage(hwnd, SCI_INDICSETFORE, 1, (LPARAM)RGB(0, 0, 0xff)); // (light blue)
+      //SendMessage(hwnd, SCI_INDICSETFORE, 2, (LPARAM)RGB(0xff, 0, 0)); // (light red)
+      //for (int sty = 3; sty < INDIC_CONTAINER; ++sty) {
+      //  SendMessage(hwnd, SCI_INDICSETSTYLE, sty, INDIC_ROUNDBOX);
+      //}
+      break;
+  }
+
   Style_SetInvisible(hwnd, false); // set fixed invisible style
+  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
 
   // apply lexer styles
-  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
+  Sci_ApplyLexerStyle(0, -1);
   EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
   
   UpdateAllBars(false);
@@ -1601,22 +1658,26 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   int fldStyleLn = 0;
   Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
+
+  int const _debug_flags = 0; 
+  //int const _debug_flags = (SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // !extend margin width
+
   switch (fldStyleLn)
   {
   case 1:
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | _debug_flags);
     break;
   case 2:
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED | _debug_flags);
     break;
   default:
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED | _debug_flags);
     break;
   }
 
   // set width
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
-  Style_SetFolding(hwnd, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  Style_SetFolding(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
 
@@ -1860,14 +1921,17 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 void Style_SetLexerFromName(HWND hwnd,LPCWSTR lpszFile,LPCWSTR lpszName)
 {
   PEDITLEXER pLexNew = Style_MatchLexer(lpszName, false);
-  if (pLexNew)
-    Style_SetLexer(hwnd,pLexNew);
+  if (pLexNew) {
+    Style_SetLexer(hwnd, pLexNew);
+  }
   else {
     pLexNew = Style_MatchLexer(lpszName, true);
-    if (pLexNew)
+    if (pLexNew) {
       Style_SetLexer(hwnd, pLexNew);
-    else
+    }
+    else {
       Style_SetLexerFromFile(hwnd, lpszFile);
+    }
   }
 }
 
@@ -1898,7 +1962,7 @@ void Style_SetDefaultLexer(HWND hwnd)
 //
 void Style_SetHTMLLexer(HWND hwnd)
 {
-  Style_SetLexer(hwnd,Style_MatchLexer(L"Web Source Code",true));
+  Style_SetLexer(hwnd,&lexHTML);
 }
 
 
@@ -1908,7 +1972,7 @@ void Style_SetHTMLLexer(HWND hwnd)
 //
 void Style_SetXMLLexer(HWND hwnd)
 {
-  Style_SetLexer(hwnd,Style_MatchLexer(L"XML Document",true));
+  Style_SetLexer(hwnd,&lexXML);
 }
 
 
@@ -3420,6 +3484,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_INITDIALOG:
       {
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+        ResizeDlg_Init(hwnd, Settings.CustomSchemesDlgSizeX, Settings.CustomSchemesDlgSizeY, IDC_RESIZEGRIP);
+
         GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
 
@@ -3495,10 +3562,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         SendDlgItemMessage(hwnd,IDC_TITLE,WM_SETFONT,(WPARAM)hFontTitle,true);
 
         if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
+        {
           CenterDlgInParent(hwnd);
-        else
+        }
+        else {
           SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
-
+        }
         HMENU hmenu = GetSystemMenu(hwnd, false);
         GetLngString(IDS_MUI_PREVIEW, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchTmpBuffer);
@@ -3527,6 +3596,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         DeleteBitmapButton(hwnd, IDC_STYLEBACK);
         DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
         DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
+        ResizeDlg_Destroy(hwnd, &Settings.CustomSchemesDlgSizeX, &Settings.CustomSchemesDlgSizeY);
+
         // free old backup
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -3563,6 +3634,38 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       }
       else
         return false;
+
+    case WM_SIZE: 
+      {
+        int dx;
+        int dy;
+        ResizeDlg_Size(hwnd, lParam, &dx, &dy);
+        HDWP hdwp = BeginDeferWindowPos(18);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, dy, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, 0, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL_ROOT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_ROOT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEFORE, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEBACK, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEFONT, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PREVIEW, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEDEFAULT, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PREVSTYLE, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_NEXTSTYLE, dx, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_IMPORT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_EXPORT, 0, dy, SWP_NOSIZE);
+        EndDeferWindowPos(hdwp);
+      }
+      return TRUE;
+
+    case WM_GETMINMAXINFO:
+      ResizeDlg_GetMinMaxInfo(hwnd, lParam);
+      return TRUE;
 
 
     case WM_NOTIFY:
@@ -4087,11 +4190,11 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         InsertMenu(GetSystemMenu(hwnd,false),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
         InsertMenu(GetSystemMenu(hwnd,false),SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
 
-        SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE,
-          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
+        SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
+          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
         int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
-        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,cxClient-cGrip,
+        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
@@ -4167,10 +4270,10 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         cxClient = LOWORD(lParam);
         cyClient = HIWORD(lParam);
 
-        GetWindowRect(GetDlgItem(hwnd,IDC_RESIZEGRIP3),&rc);
+        GetWindowRect(GetDlgItem(hwnd,IDC_RESIZEGRIP),&rc);
         MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,true);
+        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
+        InvalidateRect(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,true);
 
         GetWindowRect(GetDlgItem(hwnd,IDOK),&rc);
         MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);

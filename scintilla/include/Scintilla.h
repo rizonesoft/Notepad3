@@ -17,10 +17,10 @@ extern "C" {
 
 #if defined(_WIN32)
 /* Return false on failure: */
-int Scintilla_RegisterClasses(void *hInstance);
-int Scintilla_ReleaseResources(void);
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-int Scintilla_InputCodePage(void);
+__declspec(dllexport) int Scintilla_RegisterClasses(void *hInstance);
+__declspec(dllexport) int Scintilla_ReleaseResources(void);
+__declspec(dllexport) int Scintilla_InputCodePage(void);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
 int Scintilla_LinkLexers(void);

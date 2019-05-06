@@ -414,10 +414,11 @@ DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
 //  Indicators
 //
 DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicatorID)
-DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
 DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length)
 DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length)
-
+DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
+DeclareSciCallR2(IndicatorStart, INDICATORSTART, int, int, indicatorID, DocPos, position)
+DeclareSciCallR2(IndicatorEnd, INDICATOREND, int, int, indicatorID, DocPos, position)
 
 //=============================================================================
 //
@@ -501,11 +502,13 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
 
-// length of line w/o line-end chars (full use SciCall_LineLength()
-#define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
+#define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
 
-///~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
-#define Sci_GetDocEndPosition() SciCall_GetTextLength()
+// length of line w/o line-end chars (full use SciCall_LineLength()
+#define Sci_GetNetLineLength(line) (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
+
+//~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
+#define Sci_GetDocEndPosition() SciCall_GetLineEndPosition(SciCall_GetLineCount() - 1)
 
 // max. line length in range (incl. line-breaks)
 inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
@@ -520,7 +523,7 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
-#define Sci_ApplyStyle(B, E) SciCall_Colourise((B), (E));
+#define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((B), (E));
 
 
 //=============================================================================
