@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&Alapértelmezett...",         IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Behúzások ellenõrzése..."        CMD_CHECK_INDENTATION
+        MENUITEM "&Behúzások ellenõrzése...",       CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "&Oldalbeállítás...",              IDM_FILE_PAGESETUP
         MENUITEM "&Nyomtatás...\tCtrl+P",           IDM_FILE_PRINT

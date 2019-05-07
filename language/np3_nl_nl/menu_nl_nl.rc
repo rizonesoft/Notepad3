@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&Standaard...",                       IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Controleer &inspringen..."                CMD_CHECK_INDENTATION
+        MENUITEM "Controleer &inspringen...",               CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Pagina-inst&eling...",                    IDM_FILE_PAGESETUP
         MENUITEM "&Afdrukken...\tCtrl+P",                   IDM_FILE_PRINT
@@ -382,7 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "En&kel bestand instantie",                            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Bestandswijziging notifi&catie...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY
-        MENUITEM " Dempen Bericht &Beeps",                              IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Dempen Bericht &Beeps",                              IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &toest functie"
         BEGIN
             MENUITEM "&Geen",                               IDM_VIEW_NOESCFUNC
