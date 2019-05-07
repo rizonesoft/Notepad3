@@ -163,7 +163,7 @@ BEGIN
             MENUITEM "So&r kivágása\tCtrl[+Shift]+X",       IDM_EDIT_CUTLINE
             MENUITEM "sor más&olása\tCtrl[+Shift]+C",       IDM_EDIT_COPYLINE
             MENUITEM "Sor/Kijelölés d&uplikálása\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "Sorok &felcserélése\tAlt+D",          IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Soro&k felcserélése\tAlt+D",          IDM_EDIT_LINETRANSPOSE
             MENUITEM "Sor t&örlése\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Törlés sor elejéig\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
@@ -171,47 +171,47 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Oszlop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
             MENUITEM "Sorok szét&vágása\tCtrl+I",           IDM_EDIT_SPLITLINES
-            MENUITEM "Sorok össze&fûzése\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "Sorok összefû&zése\tCtrl+J",          IDM_EDIT_JOINLINES
             MENUITEM "Sorok eg&ybeolvasztása\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Bekezdések megõrzése\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Mer&ge Empty Lines\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Merge Blank Lines\tCtrl+Alt+Y",       IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Empty Lines\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Remove Blank Lines\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Üres sorok egyesítése\tAlt+Y",        IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Üres kar.-eket tart. sorok egyes&ítése\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "Üres so&rok törlése\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Üres kar.-eket &tar. sorok törlése\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "&Duplikált sorok törlése\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
-        POPUP "&Selection"
+        POPUP "Ki&jelölés"
         BEGIN
-            MENUITEM "&Indent",                           IDM_EDIT_INDENT
-            MENUITEM "&Unindent",                         IDM_EDIT_UNINDENT
+            MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
+            MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "&Enclose Selection"
+            POPUP "&Kijelölés körbevétele"
             BEGIN
-                MENUITEM "&Single Quotes\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "&Double Quotes\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "&Aposztróf\tCtrl+1",        CMD_STRINGIFY
+                MENUITEM "I&dézõjel\tCtrl+2",        CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                   CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",            CMD_EMBRACE4
+                MENUITEM "&Backtick\tCtrl+6",             CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&With...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Ezzel...\tAlt+Q",              IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicate Selection/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Sor/Kijelölés &duplikálása\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Pad With Blanks\tAlt+B",           IDM_EDIT_PADWITHSPACES
-            MENUITEM "Strip &First Character\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Strip &Last Character\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Strip &Trailing Blanks\tAlt+W",     IDM_EDIT_TRIMLINES
-            MENUITEM "Compress &Blanks\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Kitöltés &szóközökkel\tAlt+B",      IDM_EDIT_PADWITHSPACES
+            MENUITEM "&Elsõ kar. törlése\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
+            MENUITEM "&Utolsó kar. törlése\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Sorvégi &üres kar. törlése\tAlt+W", IDM_EDIT_TRIMLINES
+            MENUITEM "Üres kar. &tömörítése\tAlt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Modify Lines...\tAlt+M",           IDM_EDIT_MODIFYLINES
-            MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "&Sort Lines...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
+            MENUITEM "Sorok i&gazítása...\tAlt+J",        IDM_EDIT_ALIGN
+            MENUITEM "Sorok &rendezése...\tAlt+O",        IDM_EDIT_SORTLINES
         END
-        POPUP "Co&nvert"
+        POPUP "Ko&nvertálás"
         BEGIN
             MENUITEM "&Uppercase\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Lowercase\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
