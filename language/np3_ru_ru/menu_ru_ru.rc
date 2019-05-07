@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&По умолчанию...",                IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Про&верить отступы..."                CMD_CHECK_INDENTATION
+        MENUITEM "Про&верить отступы...",               CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Параметры ст&раницы...",              IDM_FILE_PAGESETUP
         MENUITEM "Пе&чать...\tCtrl+P",                  IDM_FILE_PRINT

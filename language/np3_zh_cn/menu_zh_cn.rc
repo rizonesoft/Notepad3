@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "默认(&D)...",                           IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "检查缩进(&I)..."                            CMD_CHECK_INDENTATION
+        MENUITEM "检查缩进(&I)...",                           CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "页面设置(&T)...",                           IDM_FILE_PAGESETUP
         MENUITEM "打印(&P)...\tCtrl+P",                       IDM_FILE_PRINT
