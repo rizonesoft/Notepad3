@@ -157,17 +157,17 @@ BEGIN
         END
         POPUP "S&orok"
         BEGIN
-            MENUITEM "Move &Up\tCtrl+Shift+Up",             IDM_EDIT_MOVELINEUP
-            MENUITEM "&Move Down\tCtrl+Shift+Down",         IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mozgatás &fel\tCtrl+Shift+Up",        IDM_EDIT_MOVELINEUP
+            MENUITEM "Mozgatás l&e\tCtrl+Shift+Down",       IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut &Line\tCtrl[+Shift]+X",           IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Line\tCtrl[+Shift]+C",          IDM_EDIT_COPYLINE
-            MENUITEM "&Duplicate Line/Selection\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Transpose Lines\tAlt+D",             IDM_EDIT_LINETRANSPOSE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "So&r kivágása\tCtrl[+Shift]+X",       IDM_EDIT_CUTLINE
+            MENUITEM "sor más&olása\tCtrl[+Shift]+C",       IDM_EDIT_COPYLINE
+            MENUITEM "Sor/Kijelölés d&uplikálása\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Sorok &felcserélése\tAlt+D",          IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Sor t&örlése\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Delete Line Left\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "Delete Line Right\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Törlés sor elejéig\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
+            MENUITEM "Törlés sor végéig\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Column &Wrap...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
