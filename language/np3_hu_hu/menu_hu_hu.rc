@@ -157,17 +157,17 @@ BEGIN
         END
         POPUP "S&orok"
         BEGIN
-            MENUITEM "Mozgat√°s &fel\tCtrl+Shift+Up",        IDM_EDIT_MOVELINEUP
-            MENUITEM "Mozgat√°s l&e\tCtrl+Shift+Down",       IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mozgat·s &fel\tCtrl+Shift+Up",        IDM_EDIT_MOVELINEUP
+            MENUITEM "Mozgat·s l&e\tCtrl+Shift+Down",       IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "So&r kiv√°g√°sa\tCtrl[+Shift]+X",       IDM_EDIT_CUTLINE
-            MENUITEM "sor m√°s&ol√°sa\tCtrl[+Shift]+C",       IDM_EDIT_COPYLINE
-            MENUITEM "Sor/Kijel√∂l√©s d&uplik√°l√°sa\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "Sorok &felcser√©l√©se\tAlt+D",          IDM_EDIT_LINETRANSPOSE
-            MENUITEM "Sor t&√∂rl√©se\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "So&r kiv·g·sa\tCtrl[+Shift]+X",       IDM_EDIT_CUTLINE
+            MENUITEM "sor m·s&ol·sa\tCtrl[+Shift]+C",       IDM_EDIT_COPYLINE
+            MENUITEM "Sor/KijelˆlÈs d&uplik·l·sa\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Sorok &felcserÈlÈse\tAlt+D",          IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Sor t&ˆrlÈse\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "T√∂rl√©s sor elej√©ig\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
-            MENUITEM "T√∂rl√©s sor v√©g√©ig\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
+            MENUITEM "TˆrlÈs sor elejÈig\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
+            MENUITEM "TˆrlÈs sor vÈgÈig\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Column &Wrap...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
