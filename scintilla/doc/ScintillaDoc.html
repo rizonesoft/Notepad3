@@ -469,8 +469,9 @@
     </code>
 
     <p><b id="SCI_GETTEXT">SCI_GETTEXT(int length, char *text NUL-terminated) &rarr; int</b><br />
-     This returns <code class="parameter">length</code>-1 characters of text from the start of the document plus one
-    terminating 0 character. To collect all the text in a document, use <code>SCI_GETLENGTH</code>
+     This returns at most <code class="parameter">length</code>-1 characters of text from the start of the document plus one
+    terminating 0 character. When <code class="parameter">length</code>-1 is beyond document length, it returns document length.
+    To collect all the text in a document, use <code>SCI_GETLENGTH</code>
     to get the number of characters in the document (<code>nLen</code>), allocate a character
     buffer of length <code>nLen+1</code> bytes, then call <code>SCI_GETTEXT(nLen+1, char
     *text)</code>. If the text argument is 0 then the length that should be allocated to store the

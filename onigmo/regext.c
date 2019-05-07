@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   regext.c -  Onigmo (Oniguruma-mod) (regular expression library)
 **********************************************************************/
 /*-
@@ -98,6 +98,8 @@ conv_encoding(OnigEncoding from, OnigEncoding to, const UChar* s, const UChar* e
 {
   ptrdiff_t len = end - s;
 
+#ifdef NP3
+#else
   if (to == ONIG_ENCODING_UTF16_BE) {
     if (from == ONIG_ENCODING_ASCII || from == ONIG_ENCODING_ISO_8859_1) {
       *conv = (UChar* )xmalloc(len * 2);
@@ -156,7 +158,7 @@ conv_encoding(OnigEncoding from, OnigEncoding to, const UChar* s, const UChar* e
       goto swap32;
     }
   }
-
+#endif
   return ONIGERR_NOT_SUPPORTED_ENCODING_COMBINATION;
 }
 

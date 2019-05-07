@@ -1963,6 +1963,14 @@ $(DIR_O)/LexVisualProlog.obj: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
+$(DIR_O)/LexX12.obj: \
+	../lexers/LexX12.cxx \
+	../include/ILexer.h \
+	../include/Sci_Position.h \
+	../include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/LexerModule.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexYAML.obj: \
 	../lexers/LexYAML.cxx \
 	../include/ILexer.h \

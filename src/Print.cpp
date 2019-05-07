@@ -498,11 +498,11 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,1137,CB_SETEXTENDEDUI,true,0);
         SendDlgItemMessage(hwnd,1138,CB_SETEXTENDEDUI,true,0);
       }
-      return true;
+      break;
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      return true;
+      break;
 
     case WM_COMMAND:
       if (LOWORD(wParam) == IDOK)
@@ -519,12 +519,12 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(1026, 1), 0);
       }
-      return true;
+      break;
 
     default:
       break;
   }
-  return false;
+  return 0;
 }
 
 

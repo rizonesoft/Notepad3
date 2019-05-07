@@ -264,6 +264,27 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
 }
 
 
+void IniClearAllSections(LPCWSTR lpszPrefix, LPCWSTR lpszIniFile, bool bDelete)
+{
+  if (StrIsEmpty(lpszIniFile)) { return; }
+
+  WCHAR sections[2048] = L"";
+  GetPrivateProfileSectionNames(sections, COUNTOF(sections), lpszIniFile);
+
+  LPCWSTR p = sections;
+  LPCWSTR value = bDelete ? NULL : L"";
+  size_t const len = StringCchLen(lpszPrefix, 0);
+
+  while (*p) {
+    if (StringCchCompareNI(p, 2048, lpszPrefix, len) == 0)
+    {
+      WritePrivateProfileSection(p, value, lpszIniFile);
+    }
+    p = StrEnd(p, COUNTOF(sections)) + 1;
+  }
+}
+
+
 //=============================================================================
 //
 //  GetCurrentDPI()

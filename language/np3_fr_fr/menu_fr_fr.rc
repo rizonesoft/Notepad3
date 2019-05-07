@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&Défaut...",                          IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Con&trôle de retrait..."                     CMD_CHECK_INDENTATION
+        MENUITEM "Con&trôle de retrait...",                 CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Mise en &page...",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer...\tCtrl+P",                    IDM_FILE_PRINT
@@ -382,7 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Instance de f&ichier unique",                         IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notification de modifi&cation de fichier...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Muet Message &Bips",                                 IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Muet Message &Bips",                                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Fo&nction de la touche 'Esc'"
         BEGIN
             MENUITEM "&Aucune",                                         IDM_VIEW_NOESCFUNC

@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   regposix.c - Onigmo (Oniguruma-mod) (regular expression library)
 **********************************************************************/
 /*-
@@ -232,6 +232,11 @@ reg_set_encoding(int mb_code)
   case REG_POSIX_ENCODING_ASCII:
     enc = ONIG_ENCODING_ASCII;
     break;
+#ifdef NP3
+  case REG_POSIX_ENCODING_UTF8:
+    enc = ONIG_ENCODING_UTF8;
+    break;
+#else
   case REG_POSIX_ENCODING_EUC_JP:
     enc = ONIG_ENCODING_EUC_JP;
     break;
@@ -247,7 +252,7 @@ reg_set_encoding(int mb_code)
   case REG_POSIX_ENCODING_UTF16_LE:
     enc = ONIG_ENCODING_UTF16_LE;
     break;
-
+#endif
   default:
     return ;
     break;

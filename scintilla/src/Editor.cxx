@@ -5798,11 +5798,10 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 			if (wParam == 0)
 				return 0;
 			char *ptr = CharPtrFromSPtr(lParam);
-			size_t iChar = 0;
-			for (; iChar < wParam - 1; iChar++)
-				ptr[iChar] = pdoc->CharAt(iChar);
-			ptr[iChar] = '\0';
-			return iChar;
+			const Sci_Position len = std::min<Sci_Position>(wParam - 1, pdoc->Length());
+			pdoc->GetCharRange(ptr, 0, len);
+			ptr[len] = '\0';
+			return len;
 		}
 
 	case SCI_SETTEXT: {

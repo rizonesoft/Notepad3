@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "デフォルトを設定する(&D)...",               IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "インデントの検査(&I)..."                    CMD_CHECK_INDENTATION
+        MENUITEM "インデントの検査(&I)...",                      CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "ページ設定(&T)...",                          IDM_FILE_PAGESETUP
         MENUITEM "印刷(&P)...\tCtrl+P",                       IDM_FILE_PRINT
@@ -382,7 +382,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "単一のインスタンスでファイルを開く(&F)",               IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知する(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Mute Message &Beeps",                         IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "メッセージ時のシステム音をミュート(&B)",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
             MENUITEM "何もしない(&N)",                          IDM_VIEW_NOESCFUNC
