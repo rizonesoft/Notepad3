@@ -169,11 +169,11 @@ BEGIN
             MENUITEM "Törlés sor elejéig\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Törlés sor végéig\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Column &Wrap...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
+            MENUITEM "&Oszlop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
+            MENUITEM "Sorok szét&vágása\tCtrl+I",           IDM_EDIT_SPLITLINES
+            MENUITEM "Sorok össze&fûzése\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "Sorok eg&ybeolvasztása\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Bekezdések megõrzése\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Mer&ge Empty Lines\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Merge Blank Lines\tCtrl+Alt+Y",       IDM_EDIT_MERGEBLANKLINES
