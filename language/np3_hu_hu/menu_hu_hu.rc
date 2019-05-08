@@ -213,84 +213,84 @@ BEGIN
         END
         POPUP "Ko&nvertálás"
         BEGIN
-            MENUITEM "&Uppercase\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Lowercase\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "&Nagybetûs\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&Kisbetûs\tCtrl+U",                 IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Invert Case\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
-            MENUITEM "Title &Case\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
-            MENUITEM "&Sentence Case\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
+            MENUITEM "Kis/Nagybetû &váltás\tCtrl+Alt+U",  IDM_EDIT_INVERTCASE
+            MENUITEM "Mint &Cím\tCtrl+Alt+I",             IDM_EDIT_TITLECASE
+            MENUITEM "Mint &mondat\tCtrl+Alt+O",          IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "&Tabify Selection\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify Selection\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "Kijelölésben &Tabulátorrá\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
+            MENUITEM "Kijelölés Ta&b-mentes\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Ta&bify Indent\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untabi&fy Indent\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "Behúzás Tab&ulátorrá\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Behúzás Tab-m&entes\tCtrl+Alt+S",   IDM_EDIT_CONVERTTABS2
         END
-        POPUP "&Insert"
+        POPUP "&Beillesztés"
         BEGIN
-            MENUITEM "&New Line Above\tCtrl+Enter",           CMD_CTRLENTER
+            MENUITEM "&Fölé egy új sor\tCtrl+Enter",          CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "&HTML/XML Tag...\tAlt+X",               IDM_EDIT_INSERT_TAG
+            MENUITEM "&HTML/XML elem...\tAlt+X",              IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Encoding Identifier\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Kódolás azonosító\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "&Time/Date (Short Form)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Time/Date (&Long Form)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Update Timestamps\tShift+F5",          CMD_TIMESTAMPS
+            MENUITEM "&Dátum/Idõ (rövid)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Dátum/Idõ (&hosszú)\tCtrl+Shift+F5",    IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "Idõbélye&gek frissítése\tShift+F5",     CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Filename\tCtrl+F9",                    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Path and Filename\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "&Fájlnév\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
+            MENUITEM "&Útvonal és fájlnév\tCtrl+Shift+F9",    IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&GUID\tCtrl+Shift+.",                   IDM_EDIT_INSERT_GUID
         END
-        POPUP "&Miscellaneous"
+        POPUP "&Vegyes"
         BEGIN
-            MENUITEM "&Line Comment (Toggle)\tCtrl+Q", IDM_EDIT_LINECOMMENT
-            MENUITEM "&Stream Comment\tCtrl+Shift+Q",  IDM_EDIT_STREAMCOMMENT
+            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q", IDM_EDIT_LINECOMMENT
+            MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",  IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",      IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
+            MENUITEM "&URL bekódolás\tCtrl+Shift+E",     IDM_EDIT_URLENCODE
+            MENUITEM "U&RL kikódolás\tCtrl+Shift+R",     IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",    IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",  IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "Vezérlõkar.-ek v&édelme\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
+            MENUITEM "Vezérlõkar.-ek védelem t&örlése\tCtrl+Alt+R", IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "&Char To Hex\tCtrl+Alt+X",       IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",       IDM_EDIT_HEX2CHAR
+            MENUITEM "&Kar. -> Hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex ->Kar.\tCtrl+Alt+C",                  IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
-            MENUITEM "Increase Number\tCtrl+Alt+NK+",  CMD_INCREASENUM
-            MENUITEM "Decrease Number\tCtrl+Alt+NK-",  CMD_DECREASENUM
+            MENUITEM "Szám nö&velése\tCtrl+Alt+NK+",             CMD_INCREASENUM
+            MENUITEM "Szám &csökkentése\tCtrl+Alt+NK-",          CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Find Matching Brace\tCtrl+B",            IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Zárójelpár keresése\tCtrl+B",             IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Kijelölés zárójel &párig\tCtrl+Shift+B",   IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Select To &Next\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
-            MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM "Kijelölés a következõi&g\tCtrl+Alt+F2",    IDM_EDIT_SELTONEXT
+            MENUITEM "Kijelölés az &elõzõig\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
         END
         MENUITEM SEPARATOR
-        POPUP "Boo&kmarks"
+        POPUP "Köny&vjelzõk"
         BEGIN
-            MENUITEM "&Toggle\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "&Váltás\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "Goto &Next\tF2",              BME_EDIT_BOOKMARKNEXT
-            MENUITEM "Goto &Previous\tShift+F2",    BME_EDIT_BOOKMARKPREV
+            MENUITEM "Ugrás a k&övetkezõre\tF2",    BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Ugrás az el&õzõre\tShift+F2", BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
-            MENUITEM "&Clear All\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "Összes tö&rlése\tAlt+F2",     BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
-        POPUP "&Search"
+        POPUP "Keresé&s"
         BEGIN
-            MENUITEM "&Find...\tCtrl+F",                      IDM_EDIT_FIND
-            MENUITEM "Save Find Text\tAlt+F3",                IDM_EDIT_SAVEFIND
-            MENUITEM "Find Ne&xt\tF3",                        IDM_EDIT_FINDNEXT
-            MENUITEM "Find Pre&vious\tShift+F3",              IDM_EDIT_FINDPREV
-            MENUITEM "Find Next Selected\tCtrl+F3",           CMD_FINDNEXTSEL
-            MENUITEM "Find Previous Selected\tCtrl+Shift+F3", CMD_FINDPREVSEL
-            MENUITEM "&Replace...\tCtrl+H",                   IDM_EDIT_REPLACE
-            MENUITEM "Replace Ne&xt\tF4",                     IDM_EDIT_REPLACENEXT
-            MENUITEM "&Goto...\tCtrl+G",                      IDM_EDIT_GOTOLINE
+            MENUITEM "&Keresés...\tCtrl+F",                    IDM_EDIT_FIND
+            MENUITEM "Keresési &szöveg mentése\tAlt+F3",       IDM_EDIT_SAVEFIND
+            MENUITEM "K&övetkezõ keresése\tF3",                IDM_EDIT_FINDNEXT
+            MENUITEM "Elõ&zõ keresése\tShift+F3",              IDM_EDIT_FINDPREV
+            MENUITEM "Kijelölés következõ találat\tCtrl+F3",   CMD_FINDNEXTSEL
+            MENUITEM "Kijelölés elõzõ találat\tCtrl+Shift+F3", CMD_FINDPREVSEL
+            MENUITEM "&Csere...\tCtrl+H",                      IDM_EDIT_REPLACE
+            MENUITEM "Következõ cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
+            MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
         END
     END
-    POPUP "&View"
+    POPUP "&Nézet"
     BEGIN
         POPUP "&Scheme"
         BEGIN
