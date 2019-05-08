@@ -292,30 +292,30 @@ BEGIN
     END
     POPUP "&Nézet"
     BEGIN
-        POPUP "&Scheme"
+        POPUP "&Színkiemelés"
         BEGIN
-            MENUITEM "Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
-            MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
-            MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
-            MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+            MENUITEM "&Színkiemelési sablon...\tF12",                      IDM_VIEW_SCHEME
+            MENUITEM "&2. színkiem. sablon\tShift+F12",                    IDM_VIEW_USE2NDDEFAULT
+            MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
+            MENUITEM "Általános betûtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
+            MENUITEM "&Jelenlegi sablon alap betûtípusa...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
         MENUITEM SEPARATOR
-        MENUITEM "Word W&rap\tCtrl+W",                   IDM_VIEW_WORDWRAP
-        MENUITEM "&Long Line Marker\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Indent&ation Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "Sort&örés\tCtrl+W",                     IDM_VIEW_WORDWRAP
+        MENUITEM "&Hosszú sor jelölõ\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Behúzás jelölése\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Show &Blanks\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
-        MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
+        MENUITEM "Sortö&rés jelzése\tCtrl+Shift+7",       IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Sz&óközök megjelenítése\tCtrl+Shift+8", IDM_VIEW_SHOWBLANKS
+        MENUITEM "Sorvégek &megjelenítése\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        POPUP "Highlight C&urrent Line\tCtrl+Shift+I"
+        MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Zárójelpár kiemelés\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
+        POPUP "Akt&uális sor kiemelése\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",               IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",           IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",              IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Nincs kiemelés",               IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Háttérs&zín",           IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "K&eret",              IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mar&k Occurrences"
         BEGIN
