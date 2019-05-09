@@ -61,14 +61,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Default Text"
-    IDS_LEX_WEB_SRC         "Web Source Code"
-    IDS_LEX_XML_DOC         "XML Document"
-    IDS_LEX_CSS_STYLE       "CSS Style Sheets"
-    IDS_LEX_CPP_SRC         "C/C++ Source Code"
-    IDS_LEX_CSHARP_SRC      "C# Source Code"
+    IDS_LEX_DEF_TXT         "Alapértelmezett szöveg"
+    IDS_LEX_WEB_SRC         "Web forráskód"
+    IDS_LEX_XML_DOC         "XML dokumentum"
+    IDS_LEX_CSS_STYLE       "CSS stíluslap"
+    IDS_LEX_CPP_SRC         "C/C++ forráskód"
+    IDS_LEX_CSHARP_SRC      "C# forráskód"
     IDS_LEX_RESOURCE_SCR    "Resource Script"
-    IDS_LEX_MAKEFILES       "Makefiles"
+    IDS_LEX_MAKEFILES       "Makefile-ok"
 END
 
 STRINGTABLE
@@ -80,15 +80,15 @@ BEGIN
     IDS_LEX_PASCAL_SRC      "Pascal Source Code"
     IDS_LEX_ASM_SCR         "Assembly Script"
     IDS_LEX_PERL_SCR        "Perl Script"
-    IDS_LEX_CONF            "Configuration Files"
-    IDS_LEX_BATCH           "Batch Files"
-    IDS_LEX_DIFF            "Diff Files"
-    IDS_LEX_SQL             "SQL Query"
-    IDS_LEX_PYTHON          "Python Script"
-    IDS_LEX_APC_CFG         "Apache Config Files"
+    IDS_LEX_CONF            "Konfigurációs fájlok"
+    IDS_LEX_BATCH           "Batch fájlok"
+    IDS_LEX_DIFF            "Diff fájlok"
+    IDS_LEX_SQL             "SQL lekérdezés"
+    IDS_LEX_PYTHON          "Python script"
+    IDS_LEX_APC_CFG         "Apache konfigurációs fájlok"
     IDS_LEX_PWRSHELL        "PowerShell Script"
-    IDS_LEX_D_SRC           "D Source Code"
-    IDS_LEX_GO_SRC          "Go Source Code"
+    IDS_LEX_D_SRC           "D forráskód"
+    IDS_LEX_GO_SRC          "Go forráskód"
 END
 
 STRINGTABLE
@@ -96,7 +96,7 @@ BEGIN
     IDS_LEX_AWK_SCR         "Awk Script"
     IDS_LEX_ANSI_ART        "ANSI Art"
     IDS_LEX_SHELL_SCR       "Shell Script"
-    IDS_LEX_REG_FILES       "Registry Files"
+    IDS_LEX_REG_FILES       "Registry fájlok"
     IDS_LEX_VHDL            "VHDL"
     IDS_LEX_JSON            "JSON"
     IDS_LEX_NSIS            "NSIS"
@@ -105,7 +105,7 @@ BEGIN
     IDS_LEX_LUA             "Lua Script"
     IDS_LEX_TCL             "Tcl Script"
     IDS_LEX_AUTOIT3         "AutoIt3 Script"
-    IDS_LEX_LATEX           "LaTeX Files"
+    IDS_LEX_LATEX           "LaTeX fájlok"
     IDS_LEX_AHK             "AutoHotkey Script"
     IDS_LEX_CMAKE           "Cmake Script"
     IDS_LEX_AVI_SYNTH       "AviSynth Script"
@@ -117,38 +117,38 @@ BEGIN
     IDS_LEX_YAML            "YAML"
     IDS_LEX_COFFEE_SCR      "Coffeescript"
     IDS_LEX_MATLAB          "MATLAB"
-    IDS_LEX_NIM_SRC         "Nim Source Code"
+    IDS_LEX_NIM_SRC         "Nim forráskód"
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
-    IDS_LEX_RUST_SRC        "Rust Source Code"
+    IDS_LEX_RUST_SRC        "Rust forráskód"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Default Style"
-    IDS_LEX_STD_MARGIN      "Margins and Line Numbers"
-    IDS_LEX_STD_BRACE       "Matching Braces (Indicator)"
-    IDS_LEX_STD_BRACE_FAIL  "Matching Braces Error (Indicator)"
+    IDS_LEX_STD_STYLE       "Alapértelmezett stílus"
+    IDS_LEX_STD_MARGIN      "Margók és sorszámok"
+    IDS_LEX_STD_BRACE       "Zárójelpár (jelzés)"
+    IDS_LEX_STD_BRACE_FAIL  "Zárójelpár hiba (jelzés)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CTRL_CHAR   "Control Characters (Font)"
-    IDS_LEX_STD_INDENT      "Indentation Guide (Colour)"
-    IDS_LEX_STD_SEL         "Selected Text (Colours)"
-    IDS_LEX_STD_WSPC        "Whitespace (Colours, Size 0-12)"
-    IDS_LEX_STD_LN_BACKGR   "Highlight Current Line"
-    IDS_LEX_STD_CARET       "Caret (Colour, Size 1-3)"
-    IDS_LEX_STD_LONG_LN     "Long Line Marker (Colours)"
-    IDS_LEX_STD_X_SPC       "Extra Line Spacing (Size)"
-    IDS_LEX_2ND_STYLE       "2nd Default Style"
-    IDS_LEX_2ND_MARGIN      "2nd Margins and Line Numbers"
-    IDS_LEX_2ND_BRACE       "2nd Matching Braces (Indicator)"
-    IDS_LEX_2ND_BRACE_FAIL  "2nd Matching Braces Error (Indicator)"
-    IDS_LEX_2ND_CTRL_CHAR   "2nd Control Characters (Font)"
-    IDS_LEX_2ND_INDENT      "2nd Indentation Guide (Colour)"
-    IDS_LEX_2ND_SEL         "2nd Selected Text (Colours)"
-    IDS_LEX_2ND_WSPC        "2nd Whitespace (Colours, Size 0-12)"
+    IDS_LEX_STD_CTRL_CHAR   "Vezérlõkarakterek (betû)"
+    IDS_LEX_STD_INDENT      "Behúzási segéd (szín)"
+    IDS_LEX_STD_SEL         "Kijelölt szöveg (színek)"
+    IDS_LEX_STD_WSPC        "Whitespace (színek, méret 0-12)"
+    IDS_LEX_STD_LN_BACKGR   "Jelenlegi sor kiemelése"
+    IDS_LEX_STD_CARET       "Kurzor (szín, méret 1-3)"
+    IDS_LEX_STD_LONG_LN     "Hosszú sor jelölése (színek)"
+    IDS_LEX_STD_X_SPC       "Extra sortávolság (méret)"
+    IDS_LEX_2ND_STYLE       "2. alapértelmezett stílus"
+    IDS_LEX_2ND_MARGIN      "2. margók és sorszámok"
+    IDS_LEX_2ND_BRACE       "2. zárójelpár (jelzés)"
+    IDS_LEX_2ND_BRACE_FAIL  "2. zárójelpár hiba (jelzés)"
+    IDS_LEX_2ND_CTRL_CHAR   "2. vezérlõkarakterek (betû)"
+    IDS_LEX_2ND_INDENT      "2. behúzási segéd (szín)"
+    IDS_LEX_2ND_SEL         "2. kijelölt szöveg (színek)"
+    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méret 0-12)"
 END
 
 STRINGTABLE
