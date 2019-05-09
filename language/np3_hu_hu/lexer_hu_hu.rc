@@ -148,7 +148,7 @@ BEGIN
     IDS_LEX_2ND_CTRL_CHAR   "2. vezérlõkarakterek (betû)"
     IDS_LEX_2ND_INDENT      "2. behúzási segéd (szín)"
     IDS_LEX_2ND_SEL         "2. kijelölt szöveg (színek)"
-    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méret 0-12)"
+    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méretqxqx 0-12)"
 END
 
 STRINGTABLE
