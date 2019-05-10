@@ -285,7 +285,7 @@ IDS_MUI_STYLEEDIT_HELP "\
 样式格式：\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-样式属性可以复制粘贴或拖放。\r\n\r\n\“预览”按钮不会应用修改。\
+样式属性可以复制粘贴或拖放。\r\n\r\n“预览”按钮不会应用修改。\
 "
 
 END
