@@ -340,7 +340,7 @@ BEGIN
             MENUITEM "代码折叠(&F)\tCtrl+Shift+Alt+F",       IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM "切换聚焦(&V)\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "追踪文件末尾（&tail 命令）",            IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Monitoring Log",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允许滚动超过文件尾(&F)",                IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "工具栏(&T)"

@@ -341,7 +341,6 @@ BEGIN
             MENUITEM "すべて折りたたみ(&T)\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoring Log",                         IDM_VIEW_CHASING_DOCTAIL
-            //MENUITEM "編集制限モード",                             IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&F)",               IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "ツールバー(&T)"
