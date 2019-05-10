@@ -87,8 +87,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "运行当前文档"
-    IDT_VIEW_TOGGLE_VIEW    "仅显示匹配行"
+    IDT_FILE_LAUNCH          "运行当前文档"
+    IDT_VIEW_TOGGLE_VIEW     "仅显示匹配行"
     IDT_VIEW_CHASING_DOCTAIL "追踪文件结尾（tail 命令）"
 END
 

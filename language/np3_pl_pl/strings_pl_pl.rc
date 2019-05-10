@@ -87,9 +87,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Ten Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
+    IDT_FILE_LAUNCH          "Ten Document"
+    IDT_VIEW_TOGGLE_VIEW     "Focused View"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
 END
 
 STRINGTABLE

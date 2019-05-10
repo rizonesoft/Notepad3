@@ -340,7 +340,7 @@ BEGIN
             MENUITEM "Sk³adanie kodu\tCtrl+Shift+Alt+F",            IDM_VIEW_FOLDING
             MENUITEM "&Prze³¹cz sk³adanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Focused View\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Doc Tail Chasing",                            IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Monitoring Log",                             IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scroll Past End of &File",                    IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "&Pasek narzêdzi"

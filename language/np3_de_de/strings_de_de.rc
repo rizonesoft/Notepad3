@@ -87,9 +87,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Dokument ausführen"
-    IDT_VIEW_TOGGLE_VIEW    "Fokussierte Ansicht"
-    IDT_VIEW_CHASING_DOCTAIL"Dateiende Überwachung"
+    IDT_FILE_LAUNCH          "Dokument ausführen"
+    IDT_VIEW_TOGGLE_VIEW     "Fokussierte Ansicht"
+    IDT_VIEW_CHASING_DOCTAIL "Logfile Monitoring"
 END
 
 STRINGTABLE

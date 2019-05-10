@@ -87,9 +87,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "開いている文書を実行"
-    IDT_VIEW_TOGGLE_VIEW    "単語一望モード"
-    IDT_VIEW_CHASING_DOCTAIL "編集制限モード"
+    IDT_FILE_LAUNCH          "開いている文書を実行"
+    IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    //IDT_VIEW_CHASING_DOCTAIL "編集制限モード"
 END
 
 STRINGTABLE
