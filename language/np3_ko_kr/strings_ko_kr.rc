@@ -87,10 +87,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "문서 실행"
-    IDT_VIEW_TOGGLE_VIEW    "집중"
+    IDT_FILE_LAUNCH          "문서 실행"
+    IDT_VIEW_TOGGLE_VIEW     "집중"
     IDT_VIEW_CHASING_DOCTAIL "&Monitoring Log"
-    //IDT_VIEW_CHASING_DOCTAIL "열람"
 END
 
 STRINGTABLE

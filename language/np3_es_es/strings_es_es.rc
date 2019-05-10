@@ -89,7 +89,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH         "Ejecutar Documento"
     IDT_VIEW_TOGGLE_VIEW    "Vista enfocada"
-    IDT_VIEW_CHASING_DOCTAIL"Monitoreo de Log (Tail)"
+    IDT_VIEW_CHASING_DOCTAIL"Monitoreo de Log"
 END
 
 STRINGTABLE

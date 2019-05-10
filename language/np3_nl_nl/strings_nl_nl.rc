@@ -87,9 +87,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Uitvoeren Document"
-    IDT_VIEW_TOGGLE_VIEW    "Gefocust zicht"
-    IDT_VIEW_CHASING_DOCTAIL "Log Monitoren (Tail)"
+    IDT_FILE_LAUNCH          "Uitvoeren Document"
+    IDT_VIEW_TOGGLE_VIEW     "Gefocust zicht"
+    IDT_VIEW_CHASING_DOCTAIL "Log Monitoren"
 END
 
 STRINGTABLE
