@@ -201,6 +201,8 @@ DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
 DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
+DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
+
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)
