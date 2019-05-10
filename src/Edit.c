@@ -394,9 +394,9 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
     struct Sci_TextRange tr = { { 0, -1 }, NULL };
     tr.lpstrText = pchText;
-    SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
+    DocPos const rlength = SciCall_GetTextRange(&tr);
 
-    const DocPos wchBufSize = length * 3 + 2;
+    const DocPos wchBufSize = rlength * 3 + 2;
     WCHAR* pwchText = AllocMem(wchBufSize, HEAP_ZERO_MEMORY);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
@@ -410,6 +410,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
     cbwText = MultiByteToWideChar(cpDst, 0, pchText, cbText, pwchText, (MBWC_DocPos_Cast)wchBufSize);
     // convert to Scintilla format
     cbText = WideCharToMultiByte(Encoding_SciCP, 0, pwchText, cbwText, pchText, (MBWC_DocPos_Cast)chBufSize, NULL, NULL);
+
     pchText[cbText] = '\0';
     pchText[cbText+1] = '\0';
 
@@ -4554,6 +4555,8 @@ void EditFixPositions(HWND hwnd)
 //
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 {
+  UNUSED(hwnd);
+
   const DocPos iCurPos = SciCall_GetCurrentPos();
   const DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -4583,8 +4586,8 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   if (pszText && pszTextW) 
   {
     tr.lpstrText = pszText;
-    SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
-    MultiByteToWideChar(Encoding_SciCP,0,pszText,(MBWC_DocPos_Cast)len,pszTextW,(MBWC_DocPos_Cast)len);
+    DocPos const rlen = SciCall_GetTextRange(&tr);
+    MultiByteToWideChar(Encoding_SciCP,0,pszText,(MBWC_DocPos_Cast)rlen,pszTextW,(MBWC_DocPos_Cast)len);
 
     for (WCHAR* p = pszTextW; *p && cch < COUNTOF(tch)-1; p++) {
       if (*p == L'\r' || *p == L'\n' || *p == L'\t' || *p == L' ') {
