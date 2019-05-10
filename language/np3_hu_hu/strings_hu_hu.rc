@@ -87,9 +87,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Futattás"
-    IDT_VIEW_TOGGLE_VIEW    "Fókuszált nézet"
-    IDT_VIEW_CHASING_DOCTAIL "Dokumentum követés"
+    IDT_FILE_LAUNCH          "Futattás"
+    IDT_VIEW_TOGGLE_VIEW     "Fókuszált nézet"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
 END
 
 STRINGTABLE

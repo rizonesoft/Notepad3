@@ -340,7 +340,7 @@ BEGIN
             MENUITEM "Kode &Vou\tCtrl+Shift+Alt+F",         IDM_VIEW_FOLDING
             MENUITEM "&Wissel Voue\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Gefokusde &Aansig\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Doc Stert Jaag",                     IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Monitoring Log",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "Nu&tsbalk"

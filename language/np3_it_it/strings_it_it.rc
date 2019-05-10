@@ -87,8 +87,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Esegui documento"
-    IDT_VIEW_TOGGLE_VIEW    "Vista focalizzata"
+    IDT_FILE_LAUNCH          "Esegui documento"
+    IDT_VIEW_TOGGLE_VIEW     "Vista focalizzata"
     IDT_VIEW_CHASING_DOCTAIL "Rileva modifiche Log (Tail)"
 END
 

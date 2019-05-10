@@ -341,7 +341,7 @@ BEGIN
             MENUITEM "&Alternar pliegues\tCtrl+Shift+F",                IDM_VIEW_TOGGLEFOLDS
             MENUITEM "&Vista enfocada\tCtrl+Alt+V",                     IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoreo de Log (Tail)",                        IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Desplazarse después del final de archivo",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "Barra de herram&ientas"
         BEGIN
