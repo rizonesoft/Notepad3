@@ -243,34 +243,34 @@ Használat:\r\n\
 Notepad3 \t[/?] [...[kódolás]] [...[sorvég mód]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[meghajtó:][útvonal]fájlnév[...]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
-...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
+fájl\tAz utolsó paraméter kell legyen, alapból nincsenekidézõjelezett szóközök.\r\n\
++\tTöbb fájlt is elfogad (idézõjelezett szóközökkel).\r\n\
+-\tEgy fájlt fogad el paraméterként (idézõjelezett szóközök nélkül).\r\n\r\n\
+Opciók:\r\n\
+/?\tE súgót jeleníti meg.\r\n\
+...\tKódolás (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tSorvég karakter (/crlf, /cr, /lf).\r\n\
+/e\tFájl forrás kódolása.\r\n\
+/g\tMegadott pozícióra ugrás (/g -1 fájl vége).\r\n\
+/m\tEgyezés megadott szövegre (/m- utolsó, /mr reg.kif., /mb backslash).\r\n\
+/l\tMódosult fájl automatikus újratöltése.\r\n\
+/q\tÚj fájl létrehozása kérdés nélkül.\r\n\
+/s\tMegadott szíkiemelés kiválasztása.\r\n\
+/d\tAlapértelmezett szövegséma kiválasztása.\r\n\
+/h\tWeb forráskód séma kiválasztása.\r\n\
+/x\tXML dokumentum séma kiválasztása.\r\n\
+/c\tÚj ablak megnyitása és vágólap tartalmának bemásolása.\r\n\
+/b\tÚj dokumentum megnyitása, ahova a vágólap tartalma gyûlik.\r\n\
+/n\tMindig nyisson új ablakot (/ns egyetlen fájl példány).\r\n\
+/r\tAblak újrahasznosítása (/rs egyetlen fájl példány).\r\n\
+/p\tAblak pozíció és méret beállítása (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tCímsor szövegének beállítása.\r\n\
+/i\tIndítás óra melé kicsinyítve.\r\n\
+/o\tAblak mindig felül.\r\n\
+/f\tINI-fájl megadása (/f0 nincs in-fájl).\r\n\
+/u\tEmelt jogosultságokkal indítás.\r\n\
+/v\tFájl nyomtatása rögtön és kilépés.\r\n\
+/vd\tFájl nyomtatása (Nyomtatási ablak megnyitása).\r\n\
 /y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\
