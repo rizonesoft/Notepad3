@@ -9771,8 +9771,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     // the .LOG feature ...
     if (SciCall_GetTextLength() >= 4) {
-      char tchLog[6] = { '\0','\0','\0','\0','\0','\0' };
-      SciCall_GetText(5, tchLog);
+      char tchLog[5] = { '\0','\0','\0','\0','\0' };
+      SciCall_GetText(COUNTOF(tchLog), tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(Globals.hwndEdit,-1,0);
         _BEGIN_UNDO_ACTION_;
@@ -9891,8 +9891,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       }
       else if (SciCall_GetTextLength() >= 4) 
       {
-        char tch[6] = { '\0','\0','\0','\0','\0','\0' };
-        SciCall_GetText(5, tch);
+        char tch[5] = { '\0','\0','\0','\0','\0' };
+        SciCall_GetText(COUNTOF(tch), tch);
         if (StringCchCompareXA(tch,".LOG") != 0) {
           SciCall_ClearSelections();
           //~EditSetSelectionEx(Globals.hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
@@ -10005,14 +10005,15 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
 
   bool bIsEmptyNewFile = false;
   if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)) == 0) {
-    const DocPos cchText = SciCall_GetTextLength();
-    if (cchText == 0)
+    DocPos const cchText = SciCall_GetTextLength();
+    if (cchText == 0) {
       bIsEmptyNewFile = true;
-    else if (cchText < 1023) {
-      char chTextBuf[1024] = { '\0' };
-      SciCall_GetText(1023, chTextBuf);
+    }
+    else if (cchText < 2048) {
+      char chTextBuf[2048] = { '\0' };
+      SciCall_GetText(COUNTOF(chTextBuf), chTextBuf);
       StrTrimA(chTextBuf, " \t\n\r");
-      if (StringCchLenA(chTextBuf, COUNTOF(chTextBuf)) == 0) {
+      if (StrIsEmptyA(chTextBuf)) {
         bIsEmptyNewFile = true;
       }
     }

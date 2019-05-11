@@ -1799,8 +1799,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
-      char tchText[256] = { L'\0' };
-      SciCall_GetText(COUNTOF(tchText) - 1, tchText);
+      char tchText[256] = { '\0' };
+      SciCall_GetText(COUNTOF(tchText), tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
@@ -1837,7 +1837,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
-      SciCall_GetText(COUNTOF(tchText) - 1, tchText);
+      SciCall_GetText(COUNTOF(tchText), tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
@@ -1880,8 +1880,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   }
 
   if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
-    char tchText[512];
-    SciCall_GetText(COUNTOF(tchText) - 1, tchText);
+    char tchText[512] = { '\0' };
+    SciCall_GetText(COUNTOF(tchText), tchText);
     StrTrimA(tchText," \t\n\r");
     if (!Flags.NoCGIGuess) {
       if (tchText[0] == '<') {
