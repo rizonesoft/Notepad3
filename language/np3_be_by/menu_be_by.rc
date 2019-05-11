@@ -340,7 +340,7 @@ BEGIN
             MENUITEM "Згорт&ванне блокаў коду\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
             MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Shift+F",   IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Факусаваны прагляд\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Monitoring Log",                           IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Назіранне за фа&йлам",                      IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Пракручваць за мяжу апошняга радка",        IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "Паліца пры&ладаў"
