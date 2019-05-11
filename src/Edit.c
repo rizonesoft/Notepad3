@@ -305,11 +305,12 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 //  _ClearTextBuffer()
 //
-void  _ClearTextBuffer(HWND hwnd)
+void  _ClearTextBuffer(HWND hwnd, bool bSetSavePoint)
 {
-  UndoRedoRecordingStop();
-
-  SendMessage(hwnd, SCI_CANCEL, 0, 0);
+  if (bSetSavePoint) {
+    UndoRedoRecordingStop();
+  }
+  SciCall_Cancel();
 
   _IGNORE_NOTIFY_CHANGE_;
   
@@ -332,18 +333,19 @@ void  _ClearTextBuffer(HWND hwnd)
 //
 //  _InitTextBuffer()
 //
-void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
+void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen, bool bSetSavePoint)
 {
+  UNUSED(hwnd);
+
   if (textLen > 0) {
     SciCall_AddText(textLen, lpstrText);
   }
   SciCall_GotoPos(0);
   SciCall_ChooseCaretX();
 
-  UndoRedoRecordingStart();
-
   if (bSetSavePoint) { 
-    SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); 
+    UndoRedoRecordingStart();
+    SciCall_SetSavePoint();
   }
 }
 
@@ -354,16 +356,12 @@ void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bS
 //
 extern bool bFreezeAppTitle;
 
-void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
+void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText, bool bSetSavePoint)
 {
   bFreezeAppTitle = true;
-
-  _ClearTextBuffer(hwnd);
-
+  _ClearTextBuffer(hwnd, bSetSavePoint);
   FileVars_Apply(&Globals.fvCurFile);
-
-  _InitTextBuffer(hwnd, lpstrText, cbText, true);
-
+  _InitTextBuffer(hwnd, lpstrText, cbText, bSetSavePoint);
   bFreezeAppTitle = false;
 }
 
@@ -374,17 +372,20 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 //
 bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSetSavePoint)
 {
-  if (encSource == encDest)
-    return true;
+  if ((encSource == encDest) || (Encoding_SciCP == encDest)) {
+    if (bSetSavePoint) {
+      SciCall_SetSavePoint();
+    }
+    return true; 
+  }
 
-  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
-    return false;
+  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest))) { return false; }
 
   DocPos const length = SciCall_GetTextLength();
 
   if (length == 0)
   {
-    _ClearTextBuffer(hwnd);
+    _ClearTextBuffer(hwnd, bSetSavePoint);
     _InitTextBuffer(hwnd, NULL, length, bSetSavePoint);
   }
   else {
@@ -416,7 +417,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
     FreeMem(pwchText);
 
-    _ClearTextBuffer(hwnd);
+    _ClearTextBuffer(hwnd, bSetSavePoint);
     _InitTextBuffer(hwnd, pchText, cbText, bSetSavePoint);
 
     FreeMem(pchText);
@@ -442,8 +443,8 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSet
       // ~ return true; // this would imply a successful conversion - it is not !
       //return false; // commented out ? : allow conversion between arbitrary encodings
     //}
-  
-    // suppress recoding messaged for certain encodings
+
+    // suppress recoding message for certain encodings
     if ((Encoding_GetCodePage(iCurrentEncoding) == 936) && (Encoding_GetCodePage(iNewEncoding) == 54936)) {
       bNoUI = true;
     }
@@ -452,24 +453,24 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSet
     if (SciCall_GetTextLength() <= 0) {
 
       bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
-      
+
 
       bool doNewEncoding = (!bIsEmptyUndoHistory && !bNoUI) ?
         (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, bSetSavePoint);
       }
     }
     else {
-      
+
       bool doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,false);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, false);
       }
     }
-  } 
+  }
   return false;
 }
 
@@ -967,6 +968,7 @@ bool EditLoadFile(
   bool bSkipUTFDetection,
   bool bSkipANSICPDetection,
   bool bForceEncDetection,
+  bool bSetSavePoint,
   EditFileIOStatus* status)
 {
   status->bUnicodeErr = false;
@@ -1150,7 +1152,7 @@ bool EditLoadFile(
     FileVars_Init(NULL,0,&Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
     status->iEncoding = bIsForced ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding);
-    EditSetNewText(hwnd,"",0);
+    //~EditSetNewText(hwnd,"",0,true);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
@@ -1189,9 +1191,9 @@ bool EditLoadFile(
 
     if (convCnt != 0) {
       FreeMem(lpData);
-      EditSetNewText(hwnd,"",0);
       FileVars_Init(lpDataUTF8,convCnt - 1,&Globals.fvCurFile);
-      EditSetNewText(hwnd,lpDataUTF8,convCnt - 1);
+      //~EditSetNewText(hwnd, "", 0, true);
+      EditSetNewText(hwnd,lpDataUTF8,convCnt - 1, bSetSavePoint);
       EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
       FreeMem(lpDataUTF8);
     }
@@ -1218,14 +1220,14 @@ bool EditLoadFile(
 
     if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
-      EditSetNewText(hwnd,"",0);
+      //~EditSetNewText(hwnd,"",0, true);
       if (bIsUTF8Sig) {
-        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData - 3);
+        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData - 3, bSetSavePoint);
         status->iEncoding = CPI_UTF8SIGN;
         EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
       }
       else {
-        EditSetNewText(hwnd,lpData,cbData);
+        EditSetNewText(hwnd,lpData,cbData, bSetSavePoint);
         status->iEncoding = CPI_UTF8;
         EditDetectEOLMode(lpData, cbData, status);
       }
@@ -1259,8 +1261,8 @@ bool EditLoadFile(
           cbData = WideCharToMultiByte(Encoding_SciCP,0,lpDataWide,cbDataWide,lpData,(MBWC_DocPos_Cast)SizeOfMem(lpData),NULL,NULL);
           if (cbData != 0) {
             FreeMem(lpDataWide);
-            EditSetNewText(hwnd,"",0);
-            EditSetNewText(hwnd,lpData,cbData);
+            //~EditSetNewText(hwnd,"",0, true);
+            EditSetNewText(hwnd,lpData,cbData, bSetSavePoint);
             EditDetectEOLMode(lpData, cbData, status);
             FreeMem(lpData);
           }
@@ -1282,8 +1284,8 @@ bool EditLoadFile(
       }
       else {
         status->iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferredEncoding;
-        EditSetNewText(hwnd,"",0);
-        EditSetNewText(hwnd,lpData,cbData);
+        //~EditSetNewText(hwnd,"",0, true);
+        EditSetNewText(hwnd,lpData,cbData, bSetSavePoint);
         EditDetectEOLMode(lpData, cbData, status);
         FreeMem(lpData);
       }
@@ -1998,14 +2000,13 @@ void EditHex2Char(HWND hwnd)
         StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)i);
         cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, COUNTOF(ch), NULL, NULL) - 1;
 
-        if (bTrySelExpand && (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)iSelStart - 1, 0) == '\\') {
+        if (bTrySelExpand && (SciCall_GetCharAt(iSelStart - 1) == '\\')) {
           --iSelStart;
           if (iCurPos < iAnchorPos) { --iCurPos; } else { --iAnchorPos; }
         }
       }
       EditSetSelectionEx(hwnd, iSelStart, iSelEnd, -1, -1);
-      SendMessage(hwnd, SCI_REPLACESEL, 0, (LPARAM)ch);
-
+      SciCall_ReplaceSel(ch);
       if (iCurPos < iAnchorPos)
         EditSetSelectionEx(hwnd, iCurPos + cch, iCurPos, -1, -1);
       else

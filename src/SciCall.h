@@ -203,6 +203,8 @@ DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
 DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
 
+//DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text)  // ::WideCharToMultiByte(Encoding_SciCP)
+// SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3)
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)
@@ -229,12 +231,14 @@ DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option)
 
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position)
 DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line)
+DeclareSciCallV0(DocumentEnd, DOCUMENTEND)
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position)
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode)
 DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode)
+
 
 DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
 DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)

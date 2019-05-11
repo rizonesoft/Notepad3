@@ -22,7 +22,7 @@
 
 void  EditInitializeSciCtrl(HWND);
 void  EditInitWordDelimiter(HWND hwnd);
-void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText);
+void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText,bool);
 bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
 bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
@@ -33,7 +33,8 @@ bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
 void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
-bool EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, EditFileIOStatus* status);
+bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
+                   bool bForceEncDetection, bool bSetSavePoint, EditFileIOStatus* status);
 bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 
 void  EditInvertCase(HWND hwnd);

@@ -93,6 +93,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4 } HYPERLINK_OPS;  // Hyperlink Operations
+typedef enum { FWM_NONE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_MODE;
 
 // ----------------------------------------------------------------------------
 
@@ -381,7 +382,7 @@ typedef struct _settings_t
   int PrintColorMode;
   int PrintZoom;
   bool SaveBeforeRunningTools;
-  int FileWatchingMode;
+  FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
   int EscFunction;
   bool AlwaysOnTop;
@@ -514,11 +515,11 @@ extern FOCUSEDVIEW_T FocusedView;
 
 typedef struct _filewatching_t
 {
-  int flagChangeNotify;        // <-> s_flagChangeNotify;
-  int FileWatchingMode;        // <-> Settings.FileWatchingMode;
-  bool ResetFileWatching;      // <-> Settings.ResetFileWatching;
-  DWORD FileCheckInverval;     // <-> Settings2.FileCheckInverval;
-  DWORD AutoReloadTimeout;     // <-> Settings2.AutoReloadTimeout;
+  FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
+  FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
+  bool ResetFileWatching;               // <-> Settings.ResetFileWatching;
+  DWORD FileCheckInverval;              // <-> Settings2.FileCheckInverval;
+  DWORD AutoReloadTimeout;              // <-> Settings2.AutoReloadTimeout;
   bool ChasingDocTail;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;

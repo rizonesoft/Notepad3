@@ -510,8 +510,8 @@ static void _InitGlobals()
   FocusedView.CodeFoldingAvailable = false;
   FocusedView.ShowCodeFolding = true;
 
-  FileWatching.flagChangeNotify = 0;
-  FileWatching.FileWatchingMode = 0;
+  FileWatching.flagChangeNotify = FWM_NONE;
+  FileWatching.FileWatchingMode = FWM_NONE;
   FileWatching.ResetFileWatching = true;
   FileWatching.ChasingDocTail = false;
 
@@ -1086,7 +1086,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 
     if (bOpened) {
       if (s_flagChangeNotify == 1) {
-        FileWatching.FileWatchingMode = 0;
+        FileWatching.FileWatchingMode = FWM_NONE;
         FileWatching.ResetFileWatching = true;
         InstallFileWatching(Globals.CurrentFile);
       }
@@ -1095,7 +1095,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); 
         }
         else {
-          FileWatching.FileWatchingMode = 2;
+          FileWatching.FileWatchingMode = FWM_AUTORELOAD;
           FileWatching.ResetFileWatching = true;
           InstallFileWatching(Globals.CurrentFile);
         }
@@ -1550,7 +1550,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
-  SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
+  SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   //SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
   //SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0); // default: SC_PHASES_TWO
@@ -2568,17 +2568,17 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, &params->wchData);
 
         if (bOpened) {
-          if (params->flagChangeNotify == 1) {
-            FileWatching.FileWatchingMode = 0;
+          if (params->flagChangeNotify == FWM_MSGBOX) {
+            FileWatching.FileWatchingMode = FWM_NONE;
             FileWatching.ResetFileWatching = true;
             InstallFileWatching(Globals.CurrentFile);
           }
-          else if (params->flagChangeNotify == 2) {
+          else if (params->flagChangeNotify == FWM_AUTORELOAD) {
             if (!FileWatching.ChasingDocTail) {
               SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
             }
             else {
-              FileWatching.FileWatchingMode = 2;
+              FileWatching.FileWatchingMode = FWM_AUTORELOAD;
               FileWatching.ResetFileWatching = true;
               InstallFileWatching(Globals.CurrentFile);
             }
@@ -2701,13 +2701,13 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(wParam);
   UNUSED(lParam);
 
-  if (FileWatching.FileWatchingMode == 1 || IsSaveNeeded(ISN_GET)) {
+  if (FileWatching.FileWatchingMode == FWM_MSGBOX || IsSaveNeeded(ISN_GET)) {
     SetForegroundWindow(hwnd);
   }
 
   if (PathFileExists(Globals.CurrentFile)) 
   {
-    if ((FileWatching.FileWatchingMode == 2 && !IsSaveNeeded(ISN_GET)) ||
+    if (((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsSaveNeeded(ISN_GET)) ||
       InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
@@ -5076,8 +5076,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           SetForegroundWindow(hwnd);
           FileWatching.flagChangeNotify = s_flagChangeNotify;
-          s_flagChangeNotify = 2;
-          FileWatching.FileWatchingMode = 2;
+          s_flagChangeNotify = FWM_AUTORELOAD;
+          FileWatching.FileWatchingMode = FWM_AUTORELOAD;
           FileWatching.ResetFileWatching = true;
           FileWatching.FileCheckInverval = 250UL;
           FileWatching.AutoReloadTimeout = 250UL;
@@ -7221,7 +7221,7 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(pIniSection, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-    GET_INT_VALUE_FROM_INISECTION(FileWatchingMode, 0, 0, 2);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_INT_VALUE_FROM_INISECTION(FileWatchingMode, FWM_NONE, FWM_NONE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
@@ -9525,7 +9525,7 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 //
 //
 bool FileIO(bool fLoad,LPWSTR pszFileName,
-            bool bSkipUnicodeDetect,bool bSkipANSICPDetection, bool bForceEncDetection,
+            bool bSkipUnicodeDetect,bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             EditFileIOStatus* status, bool bSaveCopy)
 {
   WCHAR tch[MAX_PATH+40];
@@ -9537,7 +9537,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
   BeginWaitCursor(tch);
 
   if (fLoad) {
-    fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,status);
+    fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,bSetSavePoint,status);
   }
   else {
     int idx;
@@ -9625,8 +9625,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   if (!bDontSave)
   {
-    if (!FileSave(false,true,false,false))
+    if (!FileSave(false, true, false, false)) {
       return false;
+    }
   }
 
   if (!bReload) { ResetEncryption(); }
@@ -9637,13 +9638,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
     if (!s_flagKeepTitleExcerpt) { StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L""); }
     FileVars_Init(NULL,0,&Globals.fvCurFile);
-    EditSetNewText(Globals.hwndEdit, "", 0);
 
+    EditSetNewText(Globals.hwndEdit, "", 0, true);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     Encoding_Current(Settings.DefaultEncoding);
     Encoding_HasChanged(Settings.DefaultEncoding);
     
-    EditSetNewText(Globals.hwndEdit, "", 0);
     Style_SetDefaultLexer(Globals.hwndEdit);
 
     s_bFileReadOnly = false;
@@ -9695,7 +9695,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       fSuccess = (hFile != INVALID_HANDLE_VALUE);
       if (fSuccess) {
         FileVars_Init(NULL,0,&Globals.fvCurFile);
-        EditSetNewText(Globals.hwndEdit,"",0);
+        EditSetNewText(Globals.hwndEdit,"",0, true);
         Style_SetDefaultLexer(Globals.hwndEdit);
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
         if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
@@ -9708,7 +9708,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
           Encoding_HasChanged(Settings.DefaultEncoding);
         }
         s_bFileReadOnly = false;
-        EditSetNewText(Globals.hwndEdit,"",0);
       }
       if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE)) {
         CloseHandle(hFile);
@@ -9724,11 +9723,19 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       if (fioStatus.iEncoding > 0)
         Encoding_SrcCmdLn(Encoding_MapUnicode(fioStatus.iEncoding));
     }
-    else
+    else {
       fioStatus.iEncoding = Encoding_Current(CPI_GET);
-
-    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,&fioStatus, false);
+    }
+    if (bReload && (FileWatching.FileWatchingMode != FWM_AUTORELOAD)) {
+      _BEGIN_UNDO_ACTION_;
+      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false);
+      _END_UNDO_ACTION_;
+    }
+    else {
+      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload, &fioStatus, false);
+    }
   }
+
   if (fSuccess) {
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
@@ -9767,7 +9774,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       }
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
-    InstallFileWatching(Globals.CurrentFile);
+    if (!bReload) { InstallFileWatching(Globals.CurrentFile); }
 
     // the .LOG feature ...
     if (SciCall_GetTextLength() >= 4) {
@@ -9776,18 +9783,18 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(Globals.hwndEdit,-1,0);
         _BEGIN_UNDO_ACTION_;
-        SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
+        SciCall_NewLine();
         SendMessage(Globals.hwndMain,WM_COMMAND,MAKELONG(IDM_EDIT_INSERT_SHORTDATE,1),0);
         EditJumpTo(Globals.hwndEdit,-1,0);
-        SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
+        SciCall_NewLine();
         _END_UNDO_ACTION_;
-        SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0);
+        SciCall_DocumentEnd();
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
       // set historic caret pos
       else if (iCaretPos > 0) 
       {
-        SendMessage(Globals.hwndEdit, SCI_GOTOPOS, (WPARAM)iCaretPos, 0);
+        SciCall_GotoPos(iCaretPos);
         // adjust view
         const DocPos iCurPos = SciCall_GetCurrentPos();
         EditJumpTo(Globals.hwndEdit, SciCall_LineFromPosition(iCurPos) + 1, SciCall_GetColumn(iCurPos) + 1);
@@ -9795,7 +9802,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     //bReadOnly = false;
-    _SetSaveNeededFlag(false);
+    _SetSaveNeededFlag(bReload);
     UpdateVisibleUrlHotspot(0);
     UpdateAllBars(true);
 
@@ -9885,8 +9892,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 
     if (FileLoad(true,false,true,false,true,false,tchFileName2))
     {
-      if (bIsTail && FileWatching.FileWatchingMode == 2) {
-        SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0);
+      if (bIsTail && (FileWatching.FileWatchingMode == FWM_AUTORELOAD)) {
+        SciCall_DocumentEnd();
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
       else if (SciCall_GetTextLength() >= 4) 
@@ -9895,7 +9902,6 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
         SciCall_GetText(COUNTOF(tch), tch);
         if (StringCchCompareXA(tch,".LOG") != 0) {
           SciCall_ClearSelections();
-          //~EditSetSelectionEx(Globals.hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
           EditJumpTo(Globals.hwndEdit, iCurrLine+1, iCurColumn+1);
           SciCall_EnsureVisible(iDocTopLine);
           const DocLn iNewTopLine = SciCall_GetFirstVisibleLine();
@@ -9955,7 +9961,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
         StringCchCopy(p, (MAX_PATH - len), q);
       }
 
-      if (pFioStatus && FileIO(false, szTempFileName, true, true, false, pFioStatus, true))
+      if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true))
       {
         // preserve encoding
         WCHAR wchEncoding[80];
@@ -10084,7 +10090,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
 
     if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), tchInitialDir))
     {
-      fSuccess = FileIO(false, tchFile, true, true, false, &fioStatus, bSaveCopy);
+      fSuccess = FileIO(false, tchFile, true, true, false, true, &fioStatus, bSaveCopy);
       if (fSuccess)
       {
         if (!bSaveCopy)
@@ -10108,7 +10114,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
     }
   }
   else {
-    fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, &fioStatus, false);
+    fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, true, &fioStatus, false);
   }
 
   if (fSuccess)
@@ -10367,7 +10373,7 @@ bool ActivatePrevInst()
         }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
-        params->flagChangeNotify = 0;
+        params->flagChangeNotify = FWM_NONE;
         params->flagQuietCreate = false;
         params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
         if (s_flagLexerSpecified && s_lpSchemeArg) {
@@ -10763,7 +10769,7 @@ void CancelCallTip()
 void InstallFileWatching(LPCWSTR lpszFile)
 {
   // Terminate
-  if (!FileWatching.FileWatchingMode || StrIsEmpty(lpszFile))
+  if ((FileWatching.FileWatchingMode == FWM_NONE) || StrIsEmpty(lpszFile))
   {
     if (s_bRunningWatch)
     {
@@ -10864,7 +10870,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           FindCloseChangeNotification(s_hChangeHandle);
           s_hChangeHandle = NULL;
         }
-        if (FileWatching.FileWatchingMode == 2) {
+        if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
           s_bRunningWatch = true; /* ! */
           s_dwChangeNotifyTime = GetTickCount();
         }

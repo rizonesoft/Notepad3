@@ -2002,13 +2002,13 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     switch (LOWORD(wParam)) {
     case IDOK:
       if (IsButtonChecked(hwnd, 100)) {
-        Settings.FileWatchingMode = 0;
+        Settings.FileWatchingMode = FWM_NONE;
       }
       else if (IsButtonChecked(hwnd, 101)) {
-        Settings.FileWatchingMode = 1;
+        Settings.FileWatchingMode = FWM_MSGBOX;
       }
       else {
-        Settings.FileWatchingMode = 2;
+        Settings.FileWatchingMode = FWM_AUTORELOAD;
       }
       if (!FileWatching.ChasingDocTail) { FileWatching.FileWatchingMode = Settings.FileWatchingMode; }
 
