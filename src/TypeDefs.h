@@ -27,6 +27,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
+#include <winuser.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
@@ -236,7 +237,8 @@ typedef struct _cmq
 
 } CmdMessageQueue_t;
 
-#define MESSAGE_QUEUE_INIT = { NULL, WM_COMMAND, NULL, NULL, -1 };
+#define MESSAGE_QUEUE_INIT(cmd,wp,lp)  { NULL, (cmd), MAKEWPARAM((wp), 1), ((LPARAM)(DWORD)(lp)), -1, NULL, NULL }
+#define MQ_WM_CMD_INIT(wp,lp)            MESSAGE_QUEUE_INIT(WM_COMMAND, (wp), (lp))
 
 // --------------------------------------------------------------------------
 
@@ -520,7 +522,7 @@ typedef struct _filewatching_t
   bool ResetFileWatching;               // <-> Settings.ResetFileWatching;
   DWORD FileCheckInverval;              // <-> Settings2.FileCheckInverval;
   DWORD AutoReloadTimeout;              // <-> Settings2.AutoReloadTimeout;
-  bool ChasingDocTail;
+  bool MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;
 

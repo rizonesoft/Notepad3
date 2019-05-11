@@ -22,7 +22,7 @@
 
 void  EditInitializeSciCtrl(HWND);
 void  EditInitWordDelimiter(HWND hwnd);
-void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText,bool);
+void  EditSetNewText(HWND hwnd,const char* lpstrText,DocPos lenText,bool);
 bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
 bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);

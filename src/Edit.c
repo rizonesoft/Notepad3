@@ -303,65 +303,46 @@ void EditInitWordDelimiter(HWND hwnd)
 
 //=============================================================================
 //
-//  _ClearTextBuffer()
-//
-void  _ClearTextBuffer(HWND hwnd, bool bSetSavePoint)
-{
-  if (bSetSavePoint) {
-    UndoRedoRecordingStop();
-  }
-  SciCall_Cancel();
-
-  _IGNORE_NOTIFY_CHANGE_;
-  
-  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
-
-  EditClearAllOccurrenceMarkers(hwnd);
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
-
-  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
-  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
-
-  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
-  SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
-
-  _OBSERVE_NOTIFY_CHANGE_;
-}
-
-
-//=============================================================================
-//
-//  _InitTextBuffer()
-//
-void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen, bool bSetSavePoint)
-{
-  UNUSED(hwnd);
-
-  if (textLen > 0) {
-    SciCall_AddText(textLen, lpstrText);
-  }
-  SciCall_GotoPos(0);
-  SciCall_ChooseCaretX();
-
-  if (bSetSavePoint) { 
-    UndoRedoRecordingStart();
-    SciCall_SetSavePoint();
-  }
-}
-
-
-//=============================================================================
-//
 //  EditSetNewText()
 //
 extern bool bFreezeAppTitle;
 
-void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText, bool bSetSavePoint)
+void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bSetSavePoint)
 {
   bFreezeAppTitle = true;
-  _ClearTextBuffer(hwnd, bSetSavePoint);
+
+  // clear markers, flags and positions
+  if (bSetSavePoint) { UndoRedoRecordingStop(); }
+  _IGNORE_NOTIFY_CHANGE_;
+  SciCall_Cancel();
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
+  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
+  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+  EditClearAllOccurrenceMarkers(hwnd);
+  SciCall_SetScrollWidth(1);
+  SciCall_SetXOffset(0);
+  _OBSERVE_NOTIFY_CHANGE_;
+
   FileVars_Apply(&Globals.fvCurFile);
-  _InitTextBuffer(hwnd, lpstrText, cbText, bSetSavePoint);
+
+  // set new text
+  if (lenText > 0) {
+    _ENTER_TARGET_TRANSACTION_;
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
+    _LEAVE_TARGET_TRANSACTION_;
+  }
+  else {
+    SciCall_ClearAll();
+  }
+  SciCall_GotoPos(0);
+  SciCall_ChooseCaretX();
+
+  if (bSetSavePoint) {
+    UndoRedoRecordingStart();
+    SciCall_SetSavePoint();
+  }
+
   bFreezeAppTitle = false;
 }
 
@@ -385,8 +366,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
   if (length == 0)
   {
-    _ClearTextBuffer(hwnd, bSetSavePoint);
-    _InitTextBuffer(hwnd, NULL, length, bSetSavePoint);
+    EditSetNewText(hwnd, "", length, bSetSavePoint);
   }
   else {
 
@@ -417,8 +397,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
     FreeMem(pwchText);
 
-    _ClearTextBuffer(hwnd, bSetSavePoint);
-    _InitTextBuffer(hwnd, pchText, cbText, bSetSavePoint);
+    EditSetNewText(hwnd, pchText, cbText, bSetSavePoint);
 
     FreeMem(pchText);
   }
@@ -532,7 +511,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     const DocPos iAnchor = SciCall_GetAnchor();
 
     // switch encoding to universal UTF-8 codepage
-    SendMessage(Globals.hwndMain,WM_COMMAND,(WPARAM)MAKELONG(IDM_ENCODING_UTF8,1),0);
+    SendWMCommand(Globals.hwndMain, IDM_ENCODING_UTF8);
 
     // restore and adjust selection
     if (iPos > iAnchor) {
@@ -5010,7 +4989,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
 //
 static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
 {
-  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
+  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
   mqc.hwnd = hwnd;
   mqc.lparam = (LPARAM)iStartPos;
 
@@ -5217,7 +5196,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
       // find first occurrence of clip-board text
       //if (!SciCall_IsSelectionRectangle() && SciCall_IsSelectionEmpty()) {
-      //  PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
+      //  PostWMCommand(hwnd, IDOK);
       //}
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
@@ -5516,7 +5495,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
           else if (sg_pefrData->bStateChanged) {
             if (FocusedView.HideNonMatchedLines) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
+              SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
             }
             else {
               EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
@@ -5547,7 +5526,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
 
             if (FocusedView.HideNonMatchedLines) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
+              SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
             }
             else {
               EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
@@ -5789,11 +5768,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       break;
 
       case IDACC_FIND:
-        PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_FIND, 1), 0);
+        PostWMCommand(GetParent(hwnd), IDM_EDIT_FIND);
         break;
 
       case IDACC_REPLACE:
-        PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_REPLACE, 1), 0);
+        PostWMCommand(GetParent(hwnd), IDM_EDIT_REPLACE);
         break;
 
       case IDACC_SAVEPOS:
@@ -5808,23 +5787,24 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       case IDACC_FINDNEXT:
         //SetFocus(Globals.hwndMain);
         //SetForegroundWindow(Globals.hwndMain);
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
+        PostWMCommand(hwnd, IDOK);
         break;
 
       case IDACC_FINDPREV:
         //SetFocus(Globals.hwndMain);
         //SetForegroundWindow(Globals.hwndMain);
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDPREV, 1), 0);
+        PostWMCommand(hwnd, IDC_FINDPREV);
         break;
 
       case IDACC_REPLACENEXT:
-        if (GetDlgItem(hwnd, IDC_REPLACE) != NULL)
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_REPLACE, 1), 0);
+        if (GetDlgItem(hwnd, IDC_REPLACE) != NULL) {
+          PostWMCommand(hwnd, IDC_REPLACE);
+        }
         break;
 
       case IDACC_SAVEFIND:
         Globals.FindReplaceMatchFoundState = FND_NOP;
-        SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_EDIT_SAVEFIND, 1), 0);
+        SendWMCommand(Globals.hwndMain, IDM_EDIT_SAVEFIND);
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
@@ -5834,7 +5814,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         break;
 
       case IDACC_VIEWSCHEMECONFIG:
-        PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_VIEW_SCHEMECONFIG, 1), 0);
+        PostWMCommand(GetParent(hwnd), IDM_VIEW_SCHEMECONFIG);
         break;
 
       default:
@@ -5848,11 +5828,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
     case WM_SYSCOMMAND:
       if (wParam == IDS_MUI_SAVEPOS) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
+        PostWMCommand(hwnd, IDACC_SAVEPOS);
         return true;
       }
       else if (wParam == IDS_MUI_RESETPOS) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
+        PostWMCommand(hwnd, IDACC_RESETPOS);
         return true;
       }
       else
@@ -5867,10 +5847,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case NM_CLICK:
         case NM_RETURN:
           if (pnmhdr->idFrom == IDC_TOGGLEFINDREPLACE) {
-            if (GetDlgItem(hwnd, IDC_REPLACE))
-              PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_FIND, 1), 0);
-            else
-              PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_REPLACE, 1), 0);
+            if (GetDlgItem(hwnd, IDC_REPLACE)) {
+              PostWMCommand(GetParent(hwnd), IDM_EDIT_FIND);
+            }
+            else {
+              PostWMCommand(GetParent(hwnd), IDM_EDIT_REPLACE);
+            }
           }
           // Display help messages in the find/replace windows
           else if (pnmhdr->idFrom == IDC_BACKSLASHHELP) {

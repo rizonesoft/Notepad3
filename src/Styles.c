@@ -3625,11 +3625,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
     case WM_SYSCOMMAND:
       if (wParam == IDS_MUI_SAVEPOS) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
+        PostWMCommand(hwnd, IDACC_SAVEPOS);
         return true;
       }
       else if (wParam == IDS_MUI_RESETPOS) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
+        PostWMCommand(hwnd, IDACC_RESETPOS);
         return true;
       }
       else
@@ -4097,11 +4097,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
         case IDACC_VIEWSCHEMECONFIG:
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
+          PostWMCommand(hwnd, IDC_SETCURLEXERTV);
           break;
 
         case IDACC_PREVIEW:
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_PREVIEW, 1), 0);
+          PostWMCommand(hwnd, IDC_PREVIEW);
           break;
 
         case IDACC_SAVEPOS:
@@ -4321,7 +4321,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           switch (((LPNMHDR)(lParam))->code) {
 
           case NM_DBLCLK:
-            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
+            SendWMCommand(hwnd, IDOK);
             break;
 
           case LVN_ITEMCHANGED:
