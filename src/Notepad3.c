@@ -9835,6 +9835,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
       && !s_flagPrintFileAndLeave 
       && !fioStatus.bUnknownExt
+      && !fioStatus.bEncryptedRaw
       && !bReload;
 
     if (bCheckEOL) {
@@ -9852,6 +9853,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     bool const bCheckIndent = Settings.WarnInconsistentIndents
       && !s_flagPrintFileAndLeave
       && !fioStatus.bUnknownExt
+      && !fioStatus.bEncryptedRaw
       && !bReload;
 
     if (bCheckIndent)
