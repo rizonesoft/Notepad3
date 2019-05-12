@@ -543,6 +543,7 @@ typedef struct _editfileiostatus
 
   bool bCancelDataLoss;
   bool bUnknownExt;
+  bool bEncryptedRaw;
 
   // inconsistent indentation
   INDENT_TYPE iGlobalIndent;
@@ -550,7 +551,7 @@ typedef struct _editfileiostatus
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, I_MIX_LN, {0,0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
 
 
 // ---------   common defines   --------
