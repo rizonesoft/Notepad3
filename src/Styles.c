@@ -1134,17 +1134,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // caret style and width
 
-  int ovr_mask = CARETSTYLE_OVERSTRIKE_BLOCK;
-  if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrbar")) {
-    ovr_mask = CARETSTYLE_OVERSTRIKE_BAR;
-  }
+  int const ovrstrk_mode = (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrblck")) ? 
+    CARETSTYLE_OVERSTRIKE_BLOCK : CARETSTYLE_OVERSTRIKE_BAR;
 
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"block")) {
     StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
-    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovr_mask), 0);
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovrstrk_mode), 0);
+    if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
+      StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
+    }
   }
   else {
-    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_LINE | ovr_mask), 0);
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_LINE | ovrstrk_mode), 0);
 
     iValue = 1;
     fValue = 1.0f;  // default caret width
@@ -1157,8 +1158,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
     StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
 
-    if (CARETSTYLE_OVERSTRIKE_BAR == ovr_mask) {
-      StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrbar");
+    if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
+      StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
     }
   }
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
@@ -2674,8 +2675,8 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   }
 
   // --------   other style settings   --------
-  if (StrStrI(lpszStyleSrc, L"ovrbar") && !StrStrI(lpszStyleDest, L"ovrbar")) {
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrbar");
+  if (StrStrI(lpszStyleSrc, L"ovrblck") && !StrStrI(lpszStyleDest, L"ovrblck")) {
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrblck");
   }
 
   if (StrStrI(lpszStyleSrc, L"block") && !StrStrI(lpszStyleDest, L"block")) {
