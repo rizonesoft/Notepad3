@@ -271,13 +271,13 @@ Opciók:\r\n\
 /u\tEmelt jogosultságokkal indítás.\r\n\
 /v\tFájl nyomtatása rögtön és kilépés.\r\n\
 /vd\tFájl nyomtatása (Nyomtatási ablak megnyitása).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
-Examples:\r\n\
+/y\tRelatív fájlnév esetén keressen az útvonalon (PATH) belül.\r\n\
+/z\tKövetkezõ kihagyása (registry alapú Notepad lecserélésnél lehet hasznos).\r\n\r\n\
+Példák:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Egy új fájlt nyit meg: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately.\
+ \t... Rögtön kinyomtatja a: ""Test.txt"" fájlt.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
