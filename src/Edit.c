@@ -307,12 +307,12 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 extern bool bFreezeAppTitle;
 
-void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bSetSavePoint)
+void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bClearUndoHistory)
 {
   bFreezeAppTitle = true;
 
   // clear markers, flags and positions
-  if (bSetSavePoint) { UndoRedoRecordingStop(); }
+  if (bClearUndoHistory) { UndoRedoRecordingStop(); }
   _IGNORE_NOTIFY_CHANGE_;
   SciCall_Cancel();
   if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
@@ -338,9 +338,9 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bSetS
   SciCall_GotoPos(0);
   SciCall_ChooseCaretX();
 
-  if (bSetSavePoint) {
-    UndoRedoRecordingStart();
+  if (bClearUndoHistory) {
     SciCall_SetSavePoint();
+    UndoRedoRecordingStart();
   }
 
   bFreezeAppTitle = false;
@@ -366,7 +366,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
   if (length == 0)
   {
-    EditSetNewText(hwnd, "", length, bSetSavePoint);
+    EditSetNewText(hwnd, "", 0, bSetSavePoint);
   }
   else {
 
@@ -947,7 +947,7 @@ bool EditLoadFile(
   bool bSkipUTFDetection,
   bool bSkipANSICPDetection,
   bool bForceEncDetection,
-  bool bSetSavePoint,
+  bool bClearUndoHistory,
   EditFileIOStatus* status)
 {
   status->bUnicodeErr = false;
@@ -1043,8 +1043,8 @@ bool EditLoadFile(
 
   bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
 
-  cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 : 
-                             ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
+  cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :
+    ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
 
 
   // --- 2nd Use Encoding Analysis if applicable
@@ -1113,7 +1113,7 @@ bool EditLoadFile(
   }
   else if (!Encoding_IsNONE(iAnalyzedEncoding) && (bIsReliable || !Settings.UseReliableCEDonly)) {
     iPreferredEncoding = iAnalyzedEncoding;
-  } 
+  }
   else if (Encoding_IsNONE(iPreferredEncoding)) {
     iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
   }
@@ -1128,10 +1128,10 @@ bool EditLoadFile(
   bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
 
   if (cbData == 0) {
-    FileVars_Init(NULL,0,&Globals.fvCurFile);
+    FileVars_Init(NULL, 0, &Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
     status->iEncoding = bIsForced ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding);
-    //~EditSetNewText(hwnd,"",0,true);
+    EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
@@ -1148,9 +1148,9 @@ bool EditLoadFile(
       bReverse = true;
     }
 
-    if (bReverse) 
+    if (bReverse)
     {
-      _swab(lpData,lpData,cbData);
+      _swab(lpData, lpData, cbData);
       status->iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
     }
     else {
@@ -1159,20 +1159,19 @@ bool EditLoadFile(
 
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
-    DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciCP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-              (bBOM) ? (cbData)/sizeof(WCHAR) : cbData/sizeof(WCHAR) + 1,lpDataUTF8,(MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8),NULL,NULL);
+    DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciCP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
+      (bBOM) ? (cbData) / sizeof(WCHAR) : cbData / sizeof(WCHAR) + 1, lpDataUTF8, (MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8), NULL, NULL);
 
     if (convCnt == 0) {
       status->bUnicodeErr = true;
-      convCnt = (DWORD)WideCharToMultiByte(CP_ACP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-                (-1),lpDataUTF8,(MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8),NULL,NULL);
+      convCnt = (DWORD)WideCharToMultiByte(CP_ACP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
+        (-1), lpDataUTF8, (MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8), NULL, NULL);
     }
 
     if (convCnt != 0) {
       FreeMem(lpData);
-      FileVars_Init(lpDataUTF8,convCnt - 1,&Globals.fvCurFile);
-      //~EditSetNewText(hwnd, "", 0, true);
-      EditSetNewText(hwnd,lpDataUTF8,convCnt - 1, bSetSavePoint);
+      FileVars_Init(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
+      EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory);
       EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
       FreeMem(lpDataUTF8);
     }
@@ -1187,7 +1186,7 @@ bool EditLoadFile(
 
   else { // ===  ALL OTHERS  ===
 
-    FileVars_Init(lpData,cbData,&Globals.fvCurFile);
+    FileVars_Init(lpData, cbData, &Globals.fvCurFile);
 
     // ===  UTF-8  ===
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
@@ -1199,14 +1198,13 @@ bool EditLoadFile(
 
     if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
-      //~EditSetNewText(hwnd,"",0, true);
       if (bIsUTF8Sig) {
-        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData - 3, bSetSavePoint);
+        EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory);
         status->iEncoding = CPI_UTF8SIGN;
         EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
       }
       else {
-        EditSetNewText(hwnd,lpData,cbData, bSetSavePoint);
+        EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
         status->iEncoding = CPI_UTF8;
         EditDetectEOLMode(lpData, cbData, status);
       }
@@ -1219,29 +1217,28 @@ bool EditLoadFile(
         status->iEncoding = iForcedEncoding;
       else {
         status->iEncoding = FileVars_GetEncoding(&Globals.fvCurFile);
-        if (Encoding_IsNONE(status->iEncoding)) 
+        if (Encoding_IsNONE(status->iEncoding))
         {
           status->iEncoding = ((Globals.fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferredEncoding);
         }
       }
 
       if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
-          ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData,cbData))) {
+        ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData, cbData))) {
 
         UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
         LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
-        int const cbDataWide = MultiByteToWideChar(uCodePage,0,lpData,cbData,lpDataWide,(MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
-        if (cbDataWide != 0) 
+        int const cbDataWide = MultiByteToWideChar(uCodePage, 0, lpData, cbData, lpDataWide, (MBWC_DocPos_Cast)(SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+        if (cbDataWide != 0)
         {
           FreeMem(lpData);
           lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
 
-          cbData = WideCharToMultiByte(Encoding_SciCP,0,lpDataWide,cbDataWide,lpData,(MBWC_DocPos_Cast)SizeOfMem(lpData),NULL,NULL);
+          cbData = WideCharToMultiByte(Encoding_SciCP, 0, lpDataWide, cbDataWide, lpData, (MBWC_DocPos_Cast)SizeOfMem(lpData), NULL, NULL);
           if (cbData != 0) {
             FreeMem(lpDataWide);
-            //~EditSetNewText(hwnd,"",0, true);
-            EditSetNewText(hwnd,lpData,cbData, bSetSavePoint);
+            EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             EditDetectEOLMode(lpData, cbData, status);
             FreeMem(lpData);
           }
@@ -1263,8 +1260,7 @@ bool EditLoadFile(
       }
       else {
         status->iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferredEncoding;
-        //~EditSetNewText(hwnd,"",0, true);
-        EditSetNewText(hwnd,lpData,cbData, bSetSavePoint);
+        EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
         EditDetectEOLMode(lpData, cbData, status);
         FreeMem(lpData);
       }
@@ -5723,17 +5719,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case IDC_REPLACE:
           {
             Globals.bReplaceInitialized = true;
-            _BEGIN_UNDO_ACTION_;
+            _BEGIN_UNDO_ACTION_
             EditReplace(sg_pefrData->hwnd, sg_pefrData);
-            _END_UNDO_ACTION_;
+            _END_UNDO_ACTION_
           }
           break;
 
         case IDC_REPLACEALL:
           Globals.bReplaceInitialized = true;
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditReplaceAll(sg_pefrData->hwnd, sg_pefrData, true);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
           break;
 
         case IDC_REPLACEINSEL:
@@ -6408,7 +6404,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  _BEGIN_UNDO_ACTION_;
+  _BEGIN_UNDO_ACTION_
 
   bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
@@ -6431,7 +6427,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
       }
     }
   }
-  _END_UNDO_ACTION_;
+  _END_UNDO_ACTION_
 
   return (Globals.iReplacedOccurrences > 0) ? true : false;
 }

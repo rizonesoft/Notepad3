@@ -1129,13 +1129,13 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit, -1, 0);
-      _BEGIN_UNDO_ACTION_;
+      _BEGIN_UNDO_ACTION_
       if (SendMessage(Globals.hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
         SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
       }
       SendMessage(Globals.hwndEdit, SCI_PASTE, 0, 0);
       SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
-      _END_UNDO_ACTION_;
+      _END_UNDO_ACTION_
       Settings.AutoIndent = bAutoIndent2;
       if (s_flagJumpTo)
         EditJumpTo(Globals.hwndEdit, s_iInitialLine, s_iInitialColumn);
@@ -2709,13 +2709,13 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     if (((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsSaveNeeded(ISN_GET)) ||
       InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY) == IDYES)
+      //InfoBoxLng(MB_YESNO | MB_ICONWARNING, "AutoReloadFileChangeNotify", IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       
-      if (FileWatching.MonitoringLog) 
-      {
+      if (FileWatching.MonitoringLog) {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        //SetForegroundWindow(hwnd);
+        SetForegroundWindow(hwnd);
         SciCall_ScrollToEnd(); 
       }
     }
@@ -3631,7 +3631,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard)
           s_bLastCopyFromMe = true;
 
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         if (!SciCall_IsSelectionEmpty())
         {
           SciCall_Cut();
@@ -3640,7 +3640,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_CopyAllowLine();
           SciCall_LineDelete();
         }
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
@@ -3684,9 +3684,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SciCall_Paste();
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         UpdateToolbar();
         UpdateStatusbar(false);
       }
@@ -3697,9 +3697,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         UpdateToolbar();
         UpdateStatusbar(false);
       }
@@ -3772,33 +3772,33 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_MOVELINEUP:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditMoveUp(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case IDM_EDIT_MOVELINEDOWN:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditMoveDown(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case IDM_EDIT_DUPLINEORSELECTION:
-      _BEGIN_UNDO_ACTION_;
+      _BEGIN_UNDO_ACTION_
       if (SciCall_IsSelectionEmpty()) { SciCall_LineDuplicate(); } else { SciCall_SelectionDuplicate(); }
-      _END_UNDO_ACTION_;
+      _END_UNDO_ACTION_
       break;
 
 
     case IDM_EDIT_LINETRANSPOSE:
-      _BEGIN_UNDO_ACTION_;
+      _BEGIN_UNDO_ACTION_
       SciCall_LineTranspose();
-      _END_UNDO_ACTION_;
+      _END_UNDO_ACTION_
       break;
 
     case IDM_EDIT_CUTLINE:
@@ -3806,9 +3806,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SendMessage(Globals.hwndEdit,SCI_LINECUT,0,0);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
@@ -3816,72 +3816,72 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_DELETELINE:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SciCall_LineDelete();
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case IDM_EDIT_DELETELINELEFT:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SciCall_DelLineLeft();
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case IDM_EDIT_DELETELINERIGHT:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SciCall_DelLineRight();
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case IDM_EDIT_INDENT:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
     case IDM_EDIT_UNINDENT:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
     case CMD_TAB:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
     case CMD_BACKTAB:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
     case CMD_CTRLTAB:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SciCall_SetUseTabs(true);
         SciCall_SetTabIndents(false);
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
         SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -3897,9 +3897,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_DELETEBACK:
       {
-        ///~_BEGIN_UNDO_ACTION_;
+        ///~_BEGIN_UNDO_ACTION_
         SendMessage(Globals.hwndEdit, SCI_DELETEBACK, 0, 0);
-        ///~_END_UNDO_ACTION_;
+        ///~_END_UNDO_ACTION_
       }
       break;
 
@@ -3911,9 +3911,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,s_wchPrefixSelection,s_wchAppendSelection)) {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit,s_wchPrefixSelection,s_wchAppendSelection);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -3931,9 +3931,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_STRIP1STCHAR:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditStripFirstCharacter(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -3942,9 +3942,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_STRIPLASTCHAR:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditStripLastCharacter(Globals.hwndEdit, false, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -3953,9 +3953,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_TRIMLINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditStripLastCharacter(Globals.hwndEdit, false, true);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -3964,9 +3964,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_COMPRESS_BLANKS:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditCompressBlanks(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -3975,9 +3975,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_MERGEBLANKLINES:
     {
       BeginWaitCursor(NULL);
-      _BEGIN_UNDO_ACTION_;
+      _BEGIN_UNDO_ACTION_
       EditRemoveBlankLines(Globals.hwndEdit, true, true);
-      _END_UNDO_ACTION_;
+      _END_UNDO_ACTION_
       EndWaitCursor();
     }
     break;
@@ -3985,9 +3985,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_MERGEEMPTYLINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditRemoveBlankLines(Globals.hwndEdit, true, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -3996,9 +3996,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REMOVEBLANKLINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditRemoveBlankLines(Globals.hwndEdit, false, true);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4007,9 +4007,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REMOVEEMPTYLINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditRemoveBlankLines(Globals.hwndEdit, false, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4018,9 +4018,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REMOVEDUPLICATELINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditRemoveDuplicateLines(Globals.hwndEdit, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4030,9 +4030,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (EditModifyLinesDlg(hwnd,s_wchPrefixLines,s_wchAppendLines)) {
           BeginWaitCursor(NULL);
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditModifyLines(Globals.hwndEdit,s_wchPrefixLines,s_wchAppendLines);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
           EndWaitCursor();
         }
       }
@@ -4043,9 +4043,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (EditAlignDlg(hwnd,&s_iAlignMode)) {
           BeginWaitCursor(NULL);
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditAlignText(Globals.hwndEdit,s_iAlignMode);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
           EndWaitCursor();
         }
       }
@@ -4056,9 +4056,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (EditSortDlg(hwnd,&s_iSortOptions)) {
           BeginWaitCursor(NULL);
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditSortLines(Globals.hwndEdit,s_iSortOptions);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
           EndWaitCursor();
         }
       }
@@ -4072,9 +4072,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           Globals.iWrapCol = (DocPos)clampi((int)uWrpCol, 1, Globals.fvCurFile.iLongLinesLimit);
           BeginWaitCursor(NULL);
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditWrapToColumn(Globals.hwndEdit, Globals.iWrapCol);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
           EndWaitCursor();
         }
       }
@@ -4084,9 +4084,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SPLITLINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditSplitLines(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4095,9 +4095,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_JOINLINES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditJoinLinesEx(Globals.hwndEdit, false, true);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4105,9 +4105,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_JOINLN_NOSP:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditJoinLinesEx(Globals.hwndEdit, false, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4115,9 +4115,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_JOINLINES_PARA:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditJoinLinesEx(Globals.hwndEdit, true, true);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4126,9 +4126,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTUPPERCASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SendMessage(Globals.hwndEdit,SCI_UPPERCASE,0,0);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4137,9 +4137,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTLOWERCASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SendMessage(Globals.hwndEdit,SCI_LOWERCASE,0,0);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4148,9 +4148,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INVERTCASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditInvertCase(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4159,9 +4159,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_TITLECASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditTitleCase(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4170,9 +4170,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SENTENCECASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditSentenceCase(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4181,9 +4181,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTTABS:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditTabsToSpaces(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4192,9 +4192,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTSPACES:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditSpacesToTabs(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, false);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4203,9 +4203,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTTABS2:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditTabsToSpaces(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, true);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4214,9 +4214,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTSPACES2:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditSpacesToTabs(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, true);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4227,9 +4227,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR wszOpen[256] = { L'\0' };
         WCHAR wszClose[256] = { L'\0' };
         if (EditInsertTagDlg(hwnd, wszOpen, wszClose)) {
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditEncloseSelection(Globals.hwndEdit, wszOpen, wszClose);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
         }
       }
       break;
@@ -4244,9 +4244,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)msz);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
         }
       }
       break;
@@ -4291,9 +4291,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         char chDateTime[128] = { '\0' };
         WideCharToMultiByte(Encoding_SciCP,0,tchDateTime,-1,chDateTime,COUNTOF(chDateTime),NULL,NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)chDateTime);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -4320,9 +4320,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         char chPath[MAX_PATH];
         WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SendMessage(Globals.hwndEdit, SCI_REPLACESEL, 0, (LPARAM)chPath);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -4335,9 +4335,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             StrTrimW(tchMaxPathBuffer, L"{}");
             char chMaxPathBuffer[MAX_PATH] = { '\0' };
             if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
-              _BEGIN_UNDO_ACTION_;
+              _BEGIN_UNDO_ACTION_
               SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)chMaxPathBuffer);
-              _END_UNDO_ACTION_;
+              _END_UNDO_ACTION_
             }
           }
         }
@@ -4348,7 +4348,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_LINECOMMENT:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
 
         switch (SciCall_GetLexer()) {
         default:
@@ -4406,7 +4406,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
         }
 
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4415,7 +4415,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_STREAMCOMMENT:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
 
         switch (SciCall_GetLexer()) {
         default:
@@ -4467,7 +4467,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_MATLAB:
           EditEncloseSelection(Globals.hwndEdit, L"%{", L"%}");
         }
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4476,9 +4476,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_URLENCODE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditURLEncode(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4487,9 +4487,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_URLDECODE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditURLDecode(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4498,9 +4498,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_ESCAPECCHARS:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEscapeCChars(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4509,9 +4509,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNESCAPECCHARS:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditUnescapeCChars(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         EndWaitCursor();
       }
       break;
@@ -4519,9 +4519,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CHAR2HEX:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditChar2Hex(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -4538,9 +4538,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SELTOMATCHINGBRACE:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditSelectToMatchingBrace(Globals.hwndEdit);
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -5399,7 +5399,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CTRLENTER:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
         if (iLine <= 0) {
@@ -5411,7 +5411,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_GotoPos(SciCall_GetLineEndPosition(iLine - 1));
           SciCall_NewLine();
         }
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -5426,9 +5426,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CLEAR:
     case CMD_DEL:
-        ///~_BEGIN_UNDO_ACTION_;
+        ///~_BEGIN_UNDO_ACTION_
         SciCall_Clear();
-        ///~_END_UNDO_ACTION_;
+        ///~_END_UNDO_ACTION_
       break;
 
 #if 0
@@ -5462,9 +5462,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         const DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iPos != iAnchor) {
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           SciCall_SetSel(iPos, iPos);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
         }
         else {
           if (iPos == iStartPos)
@@ -5487,9 +5487,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         const DocPos iEndPos = SciCall_GetLineEndPosition(iLine);
 
         if (iPos != iAnchor) {
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           SciCall_SetSel(iPos, iPos);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
         }
         else {
           if (iStartPos != iEndPos)
@@ -5741,54 +5741,54 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_STRINGIFY:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit, L"'", L"'");
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case CMD_STRINGIFY2:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit, L"\"", L"\"");
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case CMD_EMBRACE:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit, L"(", L")");
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case CMD_EMBRACE2:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit, L"[", L"]");
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case CMD_EMBRACE3:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
 
     case CMD_EMBRACE4:
       {
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         EditEncloseSelection(Globals.hwndEdit, L"`", L"`");
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
       }
       break;
 
@@ -6308,9 +6308,9 @@ static void  _HandleAutoIndent(int const charAdded)
           }
         }
         if (*pLineBuf) {
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
         }
         FreeMem(pLineBuf);
       }
@@ -6366,10 +6366,10 @@ static void  _HandleAutoCloseTags()
         }
         if ((cchIns > 3) && !isNonClosingTag)
         {
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           SciCall_ReplaceSel(replaceBuf);
           SciCall_SetSel(iCurPos, iCurPos);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
         }
       }
     }
@@ -9415,7 +9415,7 @@ void RestoreAction(int token, DoAction doAct)
   if (_UndoRedoActionMap(token, &sel) >= 0)
   {
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-  #define ISSUE_MESSAGE PostMessage
+    HWND const hwndedit = Globals.hwndEdit;
 
     DocPos const _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     DocPos const _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
@@ -9424,22 +9424,22 @@ void RestoreAction(int token, DoAction doAct)
     // This needs to be done _before_ the SCI_SETSEL message
     DocLn const anchorPosLine = SciCall_LineFromPosition(_anchorPos);
     DocLn const currPosLine = SciCall_LineFromPosition(_curPos);
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
-    if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(Globals.hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
+    PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+    if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
 
     int const selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
+    PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
 
     // independent from selection mode
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETCURRENTPOS, (WPARAM)_curPos, 0);
+    PostMessage(hwndedit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
+    PostMessage(hwndedit, SCI_SETCURRENTPOS, (WPARAM)_curPos, 0);
 
     switch (selectionMode)
     {
     case SC_SEL_RECTANGLE: 
-      ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)_anchorPos, 0);
-      ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)_curPos, 0);
+      PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)_anchorPos, 0);
+      PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)_curPos, 0);
       // fall-through
 
     case SC_SEL_THIN:
@@ -9447,8 +9447,8 @@ void RestoreAction(int token, DoAction doAct)
         DocPos const anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
         DocPos const currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
         if ((anchorVS != 0) || (currVS != 0)) {
-          ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
-          ISSUE_MESSAGE(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
+          PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
+          PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
         }
       }
       break;
@@ -9459,11 +9459,10 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_SCROLLCARET, 0, 0);
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_CHOOSECARETX, 0, 0);
-    ISSUE_MESSAGE(Globals.hwndEdit, SCI_CANCEL, 0, 0);
+    PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
+    PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
+    PostMessage(hwndedit, SCI_CANCEL, 0, 0);
 
-  #undef ISSUE_MASSAGE
   }
 }
 
@@ -9584,10 +9583,10 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
       SciCall_SetBackSpaceUnIndents(true);
 
       BeginWaitCursor(NULL);
-      _BEGIN_UNDO_ACTION_;
+      _BEGIN_UNDO_ACTION_
       EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
       EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
-      _END_UNDO_ACTION_;
+      _END_UNDO_ACTION_
       EndWaitCursor();
 
       SciCall_SetUseTabs(useTabs);
@@ -9727,7 +9726,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
     if (bReload && !FileWatching.MonitoringLog) 
     {
+      _BEGIN_UNDO_ACTION_
       fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false);
+      _END_UNDO_ACTION_
     }
     else {
       fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, true, &fioStatus, false);
@@ -9780,12 +9781,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       SciCall_GetText(COUNTOF(tchLog), tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(Globals.hwndEdit,-1,0);
-        _BEGIN_UNDO_ACTION_;
+        _BEGIN_UNDO_ACTION_
         SciCall_NewLine();
         SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
         EditJumpTo(Globals.hwndEdit,-1,0);
         SciCall_NewLine();
-        _END_UNDO_ACTION_;
+        _END_UNDO_ACTION_
         SciCall_DocumentEnd();
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
@@ -10903,13 +10904,13 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit,-1,0);
-      _BEGIN_UNDO_ACTION_;
+      _BEGIN_UNDO_ACTION_
       if (SendMessage(Globals.hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
         SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
       }
       SendMessage(Globals.hwndEdit,SCI_PASTE,0,0);
       SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
-      _END_UNDO_ACTION_;
+      _END_UNDO_ACTION_
       EditEnsureSelectionVisible(Globals.hwndEdit);
       Settings.AutoIndent = bAutoIndent2;
     }
