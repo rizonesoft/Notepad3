@@ -488,7 +488,7 @@ static void _InitGlobals()
   Globals.bFindReplCopySelOrClip = true;
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
-  Globals.bInconsistentLineBreaks = false;
+  Globals.bDocHasInconsistentEOLs = false;
 
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
   Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
@@ -9043,16 +9043,16 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       static WCHAR tchEOL[16] = { L'\0' };
       if (_eol_mode == SC_EOL_LF) 
       {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _LFi_f : _LF_f),
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _LFi_f : _LF_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else if (_eol_mode == SC_EOL_CR) 
       {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRi_f : _CR_f),
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRi_f : _CR_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRLFi_f : _CRLF_f),
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRLFi_f : _CRLF_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       s_iEOLMode = _eol_mode;
@@ -9810,28 +9810,38 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     // Show inconsistent line endings warning
-    Globals.bInconsistentLineBreaks = fioStatus.bInconsistentEOLs;
+    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
     _UpdateStatusbarDelayed(true);
 
-    if (Globals.bInconsistentLineBreaks && Settings.WarnInconsistEOLs && !s_flagPrintFileAndLeave)
-    {
+    
+    bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
+      && !s_flagPrintFileAndLeave 
+      && !fioStatus.bUnknownExt
+      && !bReload;
+
+    if (bCheckEOL) {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
-        Globals.bInconsistentLineBreaks = false;
+        Globals.bDocHasInconsistentEOLs = false;
       }
       SciCall_SetEOLMode(fioStatus.iEOLMode);
       _UpdateStatusbarDelayed(true);
     }
 
     // Show inconsistent indentation 
-
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-    if (Settings.WarnInconsistentIndents && !s_flagPrintFileAndLeave)
+    bool const bCheckIndent = Settings.WarnInconsistentIndents
+      && !s_flagPrintFileAndLeave
+      && !fioStatus.bUnknownExt
+      && !bReload;
+
+    if (bCheckIndent)
     {
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
     }
+
     if (Settings.AutoDetectIndentSettings && !s_flagPrintFileAndLeave)
     {
       if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))

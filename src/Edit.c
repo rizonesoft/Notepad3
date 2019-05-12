@@ -971,7 +971,7 @@ bool EditLoadFile(
 {
   status->bUnicodeErr = false;
   status->bFileTooBig = false;
-  status->bUnknownExt = false;
+  status->bUnknownExt = true;
 
   HANDLE hFile = CreateFile(pszFile,
     GENERIC_READ,
@@ -998,11 +998,13 @@ bool EditLoadFile(
   if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
     if (InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
       CloseHandle(hFile);
-      status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
     }
+  }
+  else {
+    status->bUnknownExt = false;
   }
 
   // Check if a warning message should be displayed for large files
@@ -4463,7 +4465,7 @@ void EditEnsureSelectionVisible(HWND hwnd)
 //
 void EditEnsureConsistentLineEndings(HWND hwnd)
 {
-  Globals.bInconsistentLineBreaks = false;
+  Globals.bDocHasInconsistentEOLs = false;
   SciCall_ConvertEOLs(SciCall_GetEOLMode());
   EditFixPositions(hwnd);
 }
