@@ -306,7 +306,7 @@ typedef struct _globals_t
   bool      bIniFileFromScratch;
   bool      bFindReplCopySelOrClip;
   bool      bReplaceInitialized;
-  bool      bInconsistentLineBreaks;
+  bool      bDocHasInconsistentEOLs;
 
   FR_STATES FindReplaceMatchFoundState;
 
