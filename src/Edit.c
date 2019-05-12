@@ -451,20 +451,23 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSet
 
     if (SciCall_GetTextLength() <= 0) {
 
-      bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
+      bool const bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
       
-
-      bool doNewEncoding = (!bIsEmptyUndoHistory && !bNoUI) ?
-        (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
-
+      bool doNewEncoding = true;
+      if (!bIsEmptyUndoHistory && !bNoUI) {
+        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2);
+        doNewEncoding = ((IDOK == answer) || (IDYES == answer));
+      }
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
       }
     }
     else {
-      
-      bool doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
-
+      bool doNewEncoding = true;
+      if (!bNoUI) {
+        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING);
+        doNewEncoding = ((IDOK == answer) || (IDYES == answer));
+      }
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,false);
       }
@@ -996,7 +999,8 @@ bool EditLoadFile(
   // check for unknown extension
   LPCWSTR lpszExt = PathFindExtension(pszFile);
   if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
-    if (InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
+    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt);
+    if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
@@ -1010,7 +1014,8 @@ bool EditLoadFile(
   // Check if a warning message should be displayed for large files
   DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
-    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
+    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE);
+    if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
       status->bFileTooBig = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -1040,7 +1045,8 @@ bool EditLoadFile(
   // ((readFlag == DECRYPT_SUCCESS) || (readFlag & DECRYPT_NO_ENCRYPTION)) => true;
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
-    bReadSuccess = (InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
+    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS);
+    bReadSuccess = ((IDOK == answer) || (IDYES == answer));
     if (!bReadSuccess) {
       FreeMem(lpData);
       return true;
@@ -1464,7 +1470,12 @@ bool EditSaveFile(
       }
       FreeMem(lpDataWide);
 
-      if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
+      if (bCancelDataLoss) {
+        INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2);
+        bCancelDataLoss = !((IDOK == answer) || (IDYES == answer));
+      }
+
+      if (!bCancelDataLoss) {
         SetEndOfFile(hFile);
         bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
         Globals.dwLastError = GetLastError();
@@ -1549,8 +1560,9 @@ void EditInvertCase(HWND hwnd)
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
-    else
-      InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_SELRECT);
+    else {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    }
   }
 }
 
@@ -1611,8 +1623,9 @@ void EditTitleCase(HWND hwnd)
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
-    else
+    else {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    }
   }
 }
 
@@ -5985,7 +5998,8 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   DocPos end = iDocEndPos;
 
   if (start >= end) {
-    if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
+    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
+    if ((IDOK == answer) || (IDYES == answer)) {
       end = min_p(start, iDocEndPos);  start = 0;
     }
     else
@@ -6004,7 +6018,10 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   {
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) {
+
+      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW);
+      if ((IDOK == answer) || (IDYES == answer)) {
+
         end = min_p(start, iDocEndPos);  start = 0;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
@@ -6064,11 +6081,13 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   DocPos end = 0;
 
   if (start <= end) {
-    if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
+    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
+    if ((IDOK == answer) || (IDYES == answer)) {
       end = start;  start = iTextLength;
     }
-    else
+    else {
       bSuppressNotFound = true;
+    }
   }
 
   CancelCallTip();
@@ -6085,7 +6104,9 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE)) {
+      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
+      if ((IDOK == answer) || (IDYES == answer)) {
+
         end = start;  start = iTextLength;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
