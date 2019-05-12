@@ -185,7 +185,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Speichere die Änderungen nach ""%s""?"
-    IDS_MUI_ASK_REVERT      "Soll das Dokument aus dem zuletzt gespeicherten Zustand wieder hergestellt werden? Deine Änderungen werden dabei verloren gehen!"
+    IDS_MUI_ASK_REVERT      "Soll das Dokument aus dem zuletzt gespeicherten Zustand wieder hergestellt werden?"
     IDS_MUI_ASK_RECODE      "Eine Recodierung erzwingt ein erneutes Laden der Datei vom Speichermedium, nicht gesicherte Änderungen werden verloren gehen!"
     IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden.\nMöchtest Du diese Datei neu erzeugen?"
     IDS_MUI_PRINT_HEADER    "Dateiname, aktuelles Datum und Zeit|Dateiname, aktuelles Datum|Dateiname|Frei lassen"

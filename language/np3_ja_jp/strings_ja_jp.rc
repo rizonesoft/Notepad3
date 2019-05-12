@@ -183,7 +183,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        """%s"" の編集を保存しますか？"
-    IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします。それ以降の変更内容は失われますがよろしいですか？"
+    //IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします。それ以降の変更内容は失われますがよろしいですか？"
+    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます。"
     IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"
     IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄とする"

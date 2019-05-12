@@ -2708,14 +2708,12 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (PathFileExists(Globals.CurrentFile)) 
   {
     if (((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsSaveNeeded(ISN_GET)) ||
-      InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY) == IDYES)
-      //InfoBoxLng(MB_YESNO | MB_ICONWARNING, "AutoReloadFileChangeNotify", IDS_MUI_FILECHANGENOTIFY) == IDYES)
+      InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AutoReloadFileNotify", IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       
       if (FileWatching.MonitoringLog) {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        SetForegroundWindow(hwnd);
         SciCall_ScrollToEnd(); 
       }
     }
@@ -3273,9 +3271,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      //§§§if (IsSaveNeeded(ISN_GET) && InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT) != IDYES) {
-      //§§§  break;
-      //§§§}
+      if (IsSaveNeeded(ISN_GET) && InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"ManualRevertFileDirty", IDS_MUI_ASK_REVERT) != IDYES) {
+        break;
+      }
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       break;
 

@@ -185,7 +185,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Stoor veranderinge na ""%s""?"
-    IDS_MUI_ASK_REVERT      "Herstel lêer na laaste gestoor toestand? Jou veranderinge sal verlore gaan!"
+    IDS_MUI_ASK_REVERT      "Herstel lêer na laaste gestoor toestand?"
     IDS_MUI_ASK_RECODE      "Herkodering vereis herlaai van lêer vanaf skyf, ongestoorde veranderinge sal verlore gaan!"
     IDS_MUI_ASK_CREATE      """%s"" nie gevind nie.\nWil jy hierdie lêer skep?"
     IDS_MUI_PRINT_HEADER    "Leêrnaam, Huidige Datum en Tyd|Leêrnaam, Huidige Datum|Leêrnaam|Los leeg"

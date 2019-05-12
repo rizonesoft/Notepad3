@@ -185,7 +185,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Salvare le modifiche a ""%s""?"
-    IDS_MUI_ASK_REVERT      "Ripristinare il file all'ultimo salvataggio effettuato? Le eventuali modifiche successive saranno perse!"
+    IDS_MUI_ASK_REVERT      "Ripristinare il file all'ultimo salvataggio effettuato?"
     IDS_MUI_ASK_RECODE      "La ricodifica richiede di ricaricare il file dal disco: eventuali modifiche non salvate saranno perse!"
     IDS_MUI_ASK_CREATE      """%s"" non trovato.\nVuoi creare questo file?"
     IDS_MUI_PRINT_HEADER    "Nome file, data e ora correnti|Nome file, Data corrente|Nome file|Lascia vuoto"
