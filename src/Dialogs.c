@@ -274,7 +274,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
   int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
-  if (iMode) { return iMode; }
+  if (iMode > 0) { return iMode; }
 
   WCHAR wchMessage[LARGE_BUFFER];
   if (!GetLngString(uidMsg, wchMessage, COUNTOF(wchMessage))) { return -1LL; }
@@ -315,7 +315,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   }
 
   msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
-  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting)) ? true : false;
+  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
 
 
   int idDlg;
@@ -1911,10 +1911,11 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
                 }
 
                 // Ask...
-                int answ = (LOWORD(wParam) == IDOK) ? (int)InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
-                                                    : ((iCur == lvi.iItem) ? IDNO : IDYES);
+                INT_PTR const answer = (LOWORD(wParam) == IDOK) ? 
+                  InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG) 
+                  : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
-                if (IDYES == answ) {
+                if ((IDOK == answer) || (IDYES == answer)) {
 
                   MRU_Delete(Globals.pFileMRU,lvi.iItem);
                   MRU_DeleteFileFromStore(Globals.pFileMRU,tchFileName);
@@ -3429,7 +3430,8 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     ShellExecuteEx(&sei);
     if ((INT_PTR)sei.hInstApp < 32)
     {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
+      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE);
+      if ((IDOK == answer) || (IDYES == answer))
       {
         sei.lpFile = VERSION_UPDATE_CHECK;
         ShellExecuteEx(&sei);

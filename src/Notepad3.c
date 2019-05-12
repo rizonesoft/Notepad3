@@ -488,7 +488,7 @@ static void _InitGlobals()
   Globals.bFindReplCopySelOrClip = true;
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
-  Globals.bInconsistentLineBreaks = false;
+  Globals.bDocHasInconsistentEOLs = false;
 
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
   Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
@@ -2473,9 +2473,9 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // delegated to SCN_URIDROPPED
   }
 
-  if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+  if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
-
+  }
   DragFinish(hDrop);
 
   return FALSE;
@@ -2512,9 +2512,9 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
     else
       FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
 
-    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
-
+    }
     dwEffect = DROPEFFECT_COPY;
   }
 
@@ -2707,19 +2707,27 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (PathFileExists(Globals.CurrentFile)) 
   {
-    if (((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsSaveNeeded(ISN_GET)) ||
-      InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AutoReloadFileNotify", IDS_MUI_FILECHANGENOTIFY) == IDYES)
+    bool bRevertFile = (FileWatching.FileWatchingMode == 2 && !IsSaveNeeded(ISN_GET));
+
+    if (!bRevertFile) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
+      bRevertFile = ((IDOK == answer) || (IDYES == answer));
+    }
+
+    if (bRevertFile) 
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
-      
-      if (FileWatching.MonitoringLog) {
+      if (FileWatching.MonitoringLog) 
+      {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
+        //SetForegroundWindow(hwnd);
         SciCall_ScrollToEnd(); 
       }
     }
   }
   else {
-    if (InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2) == IDYES) {
+    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
+    if ((IDOK == answer) || (IDYES == answer)) {
       FileSave(true, false, false, false);
     }
   }
@@ -3271,8 +3279,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      if (IsSaveNeeded(ISN_GET) && InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"ManualRevertFileDirty", IDS_MUI_ASK_REVERT) != IDYES) {
-        break;
+      if (IsSaveNeeded(ISN_GET)) {
+        INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT);
+        if (!((IDOK == answer) || (IDYES == answer))) {
+          break;
+        }
       }
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       break;
@@ -3298,12 +3309,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         DWORD dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
-          if (s_bFileReadOnly)
+          if (s_bFileReadOnly) {
             dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
-          else
+          }
+          else {
             dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
-          if (!SetFileAttributes(Globals.CurrentFile,dwFileAttributes))
-            InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_READONLY_MODIFY,Globals.CurrentFile);
+          }
+          if (!SetFileAttributes(Globals.CurrentFile, dwFileAttributes)) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, Globals.CurrentFile);
+          }
         }
         else {
           InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, Globals.CurrentFile);
@@ -3415,8 +3429,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         GetLngString(IDS_MUI_PRINT_PAGENUM,tchPageFmt,COUNTOF(tchPageFmt));
 
-        if (!EditPrint(Globals.hwndEdit,pszTitle,tchPageFmt))
-          InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_PRINT_ERROR,pszTitle);
+        if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_ERROR, pszTitle);
+        }
       }
       break;
 
@@ -3440,11 +3455,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_CREATELINK:
       {
-        if (!StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
+        if (!StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
           break;
-
-        if (!PathCreateDeskLnk(Globals.CurrentFile))
-          InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_ERR_CREATELINK);
+        }
+        if (!PathCreateDeskLnk(Globals.CurrentFile)) {
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_CREATELINK);
+        }
       }
       break;
 
@@ -3569,9 +3585,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           cpi_enc_t iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
-          if (IsSaveNeeded(ISN_GET) && InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE) != IDYES) {
-            break;
+          if (IsSaveNeeded(ISN_GET)) {
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE);
+            if (!((IDOK == answer) || (IDYES == answer))) {
+              break;
+            }
           }
+
           if (RecodeDlg(hwnd,&iNewEncoding)) 
           {
             StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
@@ -7425,11 +7445,6 @@ void LoadSettings()
 
   // Scintilla Styles
   Style_Load();
-
-  // finally clear [Suppressed Messages] (old InfoBox() version)
-  if (s_iSettingsVersion < CFG_VER_0002) {
-    IniClearSection(L"Suppressed Messages", false);
-  }
 }
 
 
@@ -9045,16 +9060,16 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       static WCHAR tchEOL[16] = { L'\0' };
       if (_eol_mode == SC_EOL_LF) 
       {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _LFi_f : _LF_f),
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _LFi_f : _LF_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else if (_eol_mode == SC_EOL_CR) 
       {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRi_f : _CR_f),
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRi_f : _CR_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bInconsistentLineBreaks ? _CRLFi_f : _CRLF_f),
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRLFi_f : _CRLF_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       s_iEOLMode = _eol_mode;
@@ -9683,7 +9698,14 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   // Ask to create a new file...
   if (!bReload && !PathFileExists(szFileName))
   {
-    if (s_flagQuietCreate || InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szFileName) == IDYES) {
+    bool bCreateFile = s_flagQuietCreate;
+    if (!bCreateFile) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szFileName);
+      if ((IDOK == answer) || (IDYES == answer)) {
+        bCreateFile = true;
+      }
+    }
+    if (bCreateFile) {
       HANDLE hFile = CreateFile(szFileName,
                       GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -9814,28 +9836,38 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     // Show inconsistent line endings warning
-    Globals.bInconsistentLineBreaks = fioStatus.bInconsistentEOLs;
+    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
     _UpdateStatusbarDelayed(true);
 
-    if (Globals.bInconsistentLineBreaks && Settings.WarnInconsistEOLs && !s_flagPrintFileAndLeave)
-    {
+    
+    bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
+      && !s_flagPrintFileAndLeave 
+      && !fioStatus.bUnknownExt
+      && !bReload;
+
+    if (bCheckEOL) {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
-        Globals.bInconsistentLineBreaks = false;
+        Globals.bDocHasInconsistentEOLs = false;
       }
       SciCall_SetEOLMode(fioStatus.iEOLMode);
       _UpdateStatusbarDelayed(true);
     }
 
     // Show inconsistent indentation 
-
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-    if (Settings.WarnInconsistentIndents && !s_flagPrintFileAndLeave)
+    bool const bCheckIndent = Settings.WarnInconsistentIndents
+      && !s_flagPrintFileAndLeave
+      && !fioStatus.bUnknownExt
+      && !bReload;
+
+    if (bCheckIndent)
     {
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
     }
+
     if (Settings.AutoDetectIndentSettings && !s_flagPrintFileAndLeave)
     {
       if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
@@ -10065,7 +10097,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
       s_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (s_bFileReadOnly) {
       UpdateToolbar();
-      if (InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Globals.CurrentFile) == IDYES) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Globals.CurrentFile);
+      if ((IDOK == answer) || (IDYES == answer)) {
         bSaveAs = true;
       }
       else {
@@ -10146,8 +10179,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
   {
     if (!s_bIsElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      if (IDYES == InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile))
-      {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_ACCESSDENIED, Globals.CurrentFile);
+      if ((IDOK == answer) || (IDYES == answer)) {
         if (DoElevatedRelaunch(&fioStatus))
         {
           PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
@@ -10400,7 +10433,8 @@ bool ActivatePrevInst()
         return true;
       }
       // IsWindowEnabled()
-      if (IDYES == InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED)) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
+      if ((IDOK == answer) || (IDYES == answer)) {
         return false;
       }
       return true;
@@ -10484,7 +10518,8 @@ bool ActivatePrevInst()
       return true;
     }
     // IsWindowEnabled()
-    return ((IDYES == InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED)) ? false : true);
+    INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED);
+    return ((IDOK == answer) || (IDYES == answer)) ? false : true;;
   }
   return false;
 }
