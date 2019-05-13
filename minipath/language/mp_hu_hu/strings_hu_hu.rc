@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Válasszon egy célmappát."
     IDS_CREATELINK          "Válasszon egy célmappát az új hivatkozásnak."
     IDS_SAVESETTINGS        "Beállítások mentése\nA jelenlegi program beállítások el lettek mentve."
-    IDS_MUI_TRANSL_AUTHOR   "[hu-HU] Magyar fordítás: XSAk"
+    IDS_MUI_TRANSL_AUTHOR   "[hu-HU] Magyar fordítás: xsak"
 END
 
 
