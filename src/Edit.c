@@ -394,9 +394,9 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
     struct Sci_TextRange tr = { { 0, -1 }, NULL };
     tr.lpstrText = pchText;
-    SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
+    DocPos const rlength = SciCall_GetTextRange(&tr);
 
-    const DocPos wchBufSize = length * 3 + 2;
+    const DocPos wchBufSize = rlength * 3 + 2;
     WCHAR* pwchText = AllocMem(wchBufSize, HEAP_ZERO_MEMORY);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
@@ -410,6 +410,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
     cbwText = MultiByteToWideChar(cpDst, 0, pchText, cbText, pwchText, (MBWC_DocPos_Cast)wchBufSize);
     // convert to Scintilla format
     cbText = WideCharToMultiByte(Encoding_SciCP, 0, pwchText, cbwText, pchText, (MBWC_DocPos_Cast)chBufSize, NULL, NULL);
+
     pchText[cbText] = '\0';
     pchText[cbText+1] = '\0';
 
@@ -450,20 +451,23 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSet
 
     if (SciCall_GetTextLength() <= 0) {
 
-      bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
+      bool const bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
       
-
-      bool doNewEncoding = (!bIsEmptyUndoHistory && !bNoUI) ?
-        (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
-
+      bool doNewEncoding = true;
+      if (!bIsEmptyUndoHistory && !bNoUI) {
+        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2);
+        doNewEncoding = ((IDOK == answer) || (IDYES == answer));
+      }
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
       }
     }
     else {
-      
-      bool doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
-
+      bool doNewEncoding = true;
+      if (!bNoUI) {
+        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING);
+        doNewEncoding = ((IDOK == answer) || (IDYES == answer));
+      }
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,false);
       }
@@ -970,7 +974,7 @@ bool EditLoadFile(
 {
   status->bUnicodeErr = false;
   status->bFileTooBig = false;
-  status->bUnknownExt = false;
+  status->bUnknownExt = true;
 
   HANDLE hFile = CreateFile(pszFile,
     GENERIC_READ,
@@ -995,19 +999,23 @@ bool EditLoadFile(
   // check for unknown extension
   LPCWSTR lpszExt = PathFindExtension(pszFile);
   if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
-    if (InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
+    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt);
+    if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
-      status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
     }
   }
+  else {
+    status->bUnknownExt = false;
+  }
 
   // Check if a warning message should be displayed for large files
   DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
-    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
+    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE);
+    if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
       status->bFileTooBig = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -1037,7 +1045,8 @@ bool EditLoadFile(
   // ((readFlag == DECRYPT_SUCCESS) || (readFlag & DECRYPT_NO_ENCRYPTION)) => true;
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
-    bReadSuccess = (InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
+    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS);
+    bReadSuccess = ((IDOK == answer) || (IDYES == answer));
     if (!bReadSuccess) {
       FreeMem(lpData);
       return true;
@@ -1461,7 +1470,12 @@ bool EditSaveFile(
       }
       FreeMem(lpDataWide);
 
-      if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
+      if (bCancelDataLoss) {
+        INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2);
+        bCancelDataLoss = !((IDOK == answer) || (IDYES == answer));
+      }
+
+      if (!bCancelDataLoss) {
         SetEndOfFile(hFile);
         bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
         Globals.dwLastError = GetLastError();
@@ -1546,8 +1560,9 @@ void EditInvertCase(HWND hwnd)
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
-    else
-      InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_SELRECT);
+    else {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    }
   }
 }
 
@@ -1608,8 +1623,9 @@ void EditTitleCase(HWND hwnd)
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
-    else
+    else {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    }
   }
 }
 
@@ -4462,7 +4478,7 @@ void EditEnsureSelectionVisible(HWND hwnd)
 //
 void EditEnsureConsistentLineEndings(HWND hwnd)
 {
-  Globals.bInconsistentLineBreaks = false;
+  Globals.bDocHasInconsistentEOLs = false;
   SciCall_ConvertEOLs(SciCall_GetEOLMode());
   EditFixPositions(hwnd);
 }
@@ -4554,6 +4570,8 @@ void EditFixPositions(HWND hwnd)
 //
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 {
+  UNUSED(hwnd);
+
   const DocPos iCurPos = SciCall_GetCurrentPos();
   const DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -4583,8 +4601,8 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   if (pszText && pszTextW) 
   {
     tr.lpstrText = pszText;
-    SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
-    MultiByteToWideChar(Encoding_SciCP,0,pszText,(MBWC_DocPos_Cast)len,pszTextW,(MBWC_DocPos_Cast)len);
+    DocPos const rlen = SciCall_GetTextRange(&tr);
+    MultiByteToWideChar(Encoding_SciCP,0,pszText,(MBWC_DocPos_Cast)rlen,pszTextW,(MBWC_DocPos_Cast)len);
 
     for (WCHAR* p = pszTextW; *p && cch < COUNTOF(tch)-1; p++) {
       if (*p == L'\r' || *p == L'\n' || *p == L'\t' || *p == L' ') {
@@ -5980,7 +5998,8 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   DocPos end = iDocEndPos;
 
   if (start >= end) {
-    if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
+    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
+    if ((IDOK == answer) || (IDYES == answer)) {
       end = min_p(start, iDocEndPos);  start = 0;
     }
     else
@@ -5999,7 +6018,10 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   {
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) {
+
+      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW);
+      if ((IDOK == answer) || (IDYES == answer)) {
+
         end = min_p(start, iDocEndPos);  start = 0;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
@@ -6059,11 +6081,13 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   DocPos end = 0;
 
   if (start <= end) {
-    if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
+    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
+    if ((IDOK == answer) || (IDYES == answer)) {
       end = start;  start = iTextLength;
     }
-    else
+    else {
       bSuppressNotFound = true;
+    }
   }
 
   CancelCallTip();
@@ -6080,7 +6104,9 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE)) {
+      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
+      if ((IDOK == answer) || (IDYES == answer)) {
+
         end = start;  start = iTextLength;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);

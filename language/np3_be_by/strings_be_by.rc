@@ -87,8 +87,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Выканаць дакумент"
-    IDT_VIEW_TOGGLE_VIEW    "Факусаваны прагляд"
+    IDT_FILE_LAUNCH          "Выканаць дакумент"
+    IDT_VIEW_TOGGLE_VIEW     "Факусаваны прагляд"
     IDT_VIEW_CHASING_DOCTAIL "Назіранне за файлам"
 END
 

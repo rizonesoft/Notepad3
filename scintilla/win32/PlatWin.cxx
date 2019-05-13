@@ -98,7 +98,7 @@ bool LoadD2D() {
 				// A single threaded factory as Scintilla always draw on the GUI thread
 				fnD2DCF(D2D1_FACTORY_TYPE_SINGLE_THREADED,
 					__uuidof(ID2D1Factory),
-					0,
+					nullptr,
 					reinterpret_cast<IUnknown**>(&pD2DFactory));
 			}
 		}
@@ -605,7 +605,7 @@ int SurfaceGDI::DeviceHeightFont(int points) {
 }
 
 void SurfaceGDI::MoveTo(int x_, int y_) {
-	::MoveToEx(hdc, x_, y_, 0);
+	::MoveToEx(hdc, x_, y_, nullptr);
 }
 
 void SurfaceGDI::LineTo(int x_, int y_) {
@@ -2216,7 +2216,7 @@ void Window::Show(bool show) {
 }
 
 void Window::InvalidateAll() {
-	::InvalidateRect(HwndFromWindowID(wid), NULL, FALSE);
+	::InvalidateRect(HwndFromWindowID(wid), nullptr, FALSE);
 }
 
 void Window::InvalidateRectangle(PRectangle rc) {
@@ -2799,7 +2799,7 @@ POINT ListBoxX::MaxTrackSize() const {
 void ListBoxX::SetRedraw(bool on) {
 	::SendMessage(lb, WM_SETREDRAW, on, 0);
 	if (on)
-		::InvalidateRect(lb, NULL, TRUE);
+		::InvalidateRect(lb, nullptr, TRUE);
 }
 
 void ListBoxX::ResizeToCursor() {
@@ -3198,22 +3198,17 @@ LRESULT PASCAL ListBoxX::StaticWndProc(
 namespace {
 
 bool ListBoxX_Register() noexcept {
-	WNDCLASSEX wndclassc;
+	WNDCLASSEX wndclassc {};
 	wndclassc.cbSize = sizeof(wndclassc);
 	// We need CS_HREDRAW and CS_VREDRAW because of the ellipsis that might be drawn for
 	// truncated items in the list and the appearance/disappearance of the vertical scroll bar.
 	// The list repaint is double-buffered to avoid the flicker this would otherwise cause.
 	wndclassc.style = CS_GLOBALCLASS | CS_HREDRAW | CS_VREDRAW;
-	wndclassc.cbClsExtra = 0;
 	wndclassc.cbWndExtra = sizeof(ListBoxX *);
 	wndclassc.hInstance = hinstPlatformRes;
-	wndclassc.hIcon = NULL;
-	wndclassc.hbrBackground = NULL;
-	wndclassc.lpszMenuName = NULL;
 	wndclassc.lpfnWndProc = ListBoxX::StaticWndProc;
 	wndclassc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
 	wndclassc.lpszClassName = ListBoxX_ClassName;
-	wndclassc.hIconSm = 0;
 
 	return ::RegisterClassEx(&wndclassc) != 0;
 }

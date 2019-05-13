@@ -54,91 +54,91 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_FILE_RECENT         "History"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW            "Nowy"
+    IDT_FILE_OPEN           "Otwórz"
+    IDT_FILE_BROWSE         "Przegl¹daj"
+    IDT_FILE_SAVE           "Zapisz"
+    IDT_FILE_RECENT         "Historia"
+    IDT_EDIT_UNDO           "Cofnij"
+    IDT_EDIT_REDO           "Do przodu"
+    IDT_EDIT_CUT            "Wytnij"
+    IDT_EDIT_COPY           "Kopiuj"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE          "Wklej"
+    IDT_EDIT_FIND           "ZnajdŸ"
+    IDT_EDIT_REPLACE        "Zamieñ"
+    IDT_VIEW_WORDWRAP       "Zawijanie tekstu"
+    IDT_VIEW_ZOOMIN         "Powiêksz"
+    IDT_VIEW_ZOOMOUT        "Pomniejsz"
+    IDT_VIEW_SCHEME         "Wybierz schemat"
+    IDT_VIEW_SCHEMECONFIG   "Dostosuj schematy"
+    IDT_FILE_EXIT           "Zakoñcz"
+    IDT_FILE_SAVEAS         "Zapisz jako"
+    IDT_FILE_SAVECOPY       "Zapisz kopiê"
+    IDT_EDIT_CLEAR          "Usuñ"
+    IDT_FILE_PRINT          "Drukuj"
+    IDT_FILE_OPENFAV        "Ulubione"
+    IDT_FILE_ADDTOFAV       "Dodaj do Ulubionych"
+    IDT_VIEW_TOGGLEFOLDS    "Prze³¹cz bloki kodu"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
+    IDT_FILE_LAUNCH          "Ten Document"
+    IDT_VIEW_TOGGLE_VIEW     "Focused View"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Administrator)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Schowek"
+    IDS_MUI_UNTITLED        "Bez nazwy"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_READONLY        "(Tylko do odczytu)"
+    IDS_MUI_LOADFILE        "£adowanie ""%s""..."
+    IDS_MUI_SAVEFILE        "Zapisywanie ""%s""..."
+    IDS_MUI_PRINTFILE       "Drukowanie strony %i..."
+    IDS_MUI_SAVINGSETTINGS  "Zapisywanie ustawieñ..."
+    IDS_MUI_LINKDESCRIPTION "Edytuj za pomoc¹ Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
+    IDS_MUI_FILTER_ALL      "Wszystkie pliki (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Pliki wykonywalne (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Pliki konfiguracyjne (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Wybierz katalog ze skrótami do ulubionych aplikacji."
+    IDS_MUI_FAVORITES       "Wybierz katalog ze skrótami do ulubionych plików."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_MUI_WILDCARDHELP    "Szukaj Wildcard\n\n*\tPasuje zero lub wiêcej znaków.\n?\tPasuje dok³adnie jeden znak. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
+    IDS_MUI_ERR_LOADFILE    "B³¹d podczas ³adowania ""%s""."
+    IDS_MUI_ERR_SAVEFILE    "B³¹d podczas zapisu ""%s""."
+    IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przegl¹darki pliku.\nWtyczkê przegl¹darki pliku do MiniPath mo¿na pobraæ z https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Brak dostêpu do wybranego pliku!\nCzy chcesz usun¹æ go z listy?"
+    IDS_MUI_ERR_CREATELINK  "B³¹d podczas tworzenia skrótu na Pulpicie."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+                            "Istniej¹ce okno Notepad3 jest zajête lub posiada aktywne okno dialogowe.\nCzy chcesz otworzyæ kolejne okno Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA  "Tablice konwersji strony kodowej dla wybranego kodowania nie s¹ dostêpne na tym systemie."
+    IDS_MUI_ERR_UNICODE     "B³¹d podczas kodowania pliku Unicode.\nDane zostan¹ utracone jeœli plik zapisano!"
+    IDS_MUI_ERR_BITMAP      "B³¹d podczas ³adowania mapy bitowej ""%s"".\nWymagany rozmiar: %i x %i (szer. >= %i x wys.)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Error while elevating user rights!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
+    IDS_MUI_ERR_UNICODE2    "Niektóre znaki w tym tekœcie nie s¹ obs³ugiwane przez wybrane kodowanie, i mog¹ zostanie zamienione na standardowe znaki po zapisaniu. Zaleca siê wybraæ inne kodowanie pliku. Kontynuowaæ?"
     IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
     IDS_MUI_ERR_ACCESSDENIED
                             "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch Notepad3 as Administrator?"

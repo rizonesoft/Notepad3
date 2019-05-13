@@ -339,8 +339,8 @@ BEGIN
         BEGIN
             MENUITEM "&Code Pliages\tCtrl+Shift+Alt+F",     IDM_VIEW_FOLDING
             MENUITEM "&Alterner Pliages\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "Vue Focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Surveillance de Log (Tail)",          IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Vue &Focalisée\tCtrl+Alt+V",          IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Sur&veillance de Log",                IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Défiler après la fin de &fichier",    IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "&Barre à outils"

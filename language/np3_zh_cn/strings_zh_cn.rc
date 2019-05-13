@@ -87,9 +87,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "运行当前文档"
-    IDT_VIEW_TOGGLE_VIEW    "仅显示匹配行"
-    IDT_VIEW_CHASING_DOCTAIL "追踪文件结尾（tail 命令）"
+    IDT_FILE_LAUNCH          "运行当前文档"
+    IDT_VIEW_TOGGLE_VIEW     "仅显示匹配行"
+    IDT_VIEW_CHASING_DOCTAIL "日志监控"
 END
 
 STRINGTABLE
@@ -285,8 +285,7 @@ IDS_MUI_STYLEEDIT_HELP "\
 样式格式：\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-样式属性可以复制粘贴或拖放。\r\n\r\n\
-“预览”按钮不会应用修改。\
+样式属性可以复制粘贴或拖放。\r\n\r\n“预览”按钮不会应用修改。\
 "
 
 END
