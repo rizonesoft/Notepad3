@@ -65,7 +65,7 @@ KEYWORDLIST KeyWords_CSS = {
 
 
 EDITLEXER lexCSS = { 
-SCLEX_CSS, IDS_LEX_CSS_STYLE, L"CSS Style Sheets", L"css; less; sass; scss", L"", 
+SCLEX_CSS, IDS_LEX_CSS_STYLE, L"CSS Style Sheets", L"css; less; hss; sass; scss", L"", 
 &KeyWords_CSS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_CSS_DEFAULT}, IDS_LEX_STR_63126, L"CSS Default", L"", L"" },

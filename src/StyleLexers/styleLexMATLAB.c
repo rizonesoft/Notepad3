@@ -9,7 +9,7 @@ KEYWORDLIST KeyWords_MATLAB = {
 
 
 EDITLEXER lexMATLAB = { 
-SCLEX_MATLAB, IDS_LEX_MATLAB, L"MATLAB", L"matlab", L"", 
+SCLEX_MATLAB, IDS_LEX_MATLAB, L"MATLAB", L"matlab; m; sce; sci", L"", 
 &KeyWords_MATLAB, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_MATLAB_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

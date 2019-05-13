@@ -9747,6 +9747,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,&fioStatus, false);
   }
+
+  bool bUnknownLexer = s_flagLexerSpecified;
+
   if (fSuccess) {
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
@@ -9756,7 +9759,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
     }
     if (!s_flagLexerSpecified) { // flag will be cleared
-      Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+      bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
     }
     SciCall_SetEOLMode(fioStatus.iEOLMode);
     Encoding_Current(fioStatus.iEncoding); // load may change encoding
@@ -9827,18 +9830,20 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_UNICODE);
     }
 
-    // Show inconsistent line endings warning
-    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
     _UpdateStatusbarDelayed(true);
 
-    
+    // Show inconsistent line endings warning
+    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
+
     bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
       && !s_flagPrintFileAndLeave 
-      && !fioStatus.bUnknownExt
       && !fioStatus.bEncryptedRaw
+      && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
+    //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
 
-    if (bCheckEOL) {
+    if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
+    {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
         Globals.bDocHasInconsistentEOLs = false;
@@ -9847,16 +9852,18 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       _UpdateStatusbarDelayed(true);
     }
 
+
     // Show inconsistent indentation 
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
     bool const bCheckIndent = Settings.WarnInconsistentIndents
       && !s_flagPrintFileAndLeave
-      && !fioStatus.bUnknownExt
       && !fioStatus.bEncryptedRaw
+      && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
+    //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
 
-    if (bCheckIndent)
+    if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
     {
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
