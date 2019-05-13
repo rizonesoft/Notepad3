@@ -56,72 +56,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
+        MENUITEM "&Megnyitás",                        IDM_FILE_OPEN
+        MENUITEM "Megnyitás m&ásik alkalmazással...", IDM_FILE_OPENWITH
+        MENUITEM "&Gyorsnézet",                       IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "&Név másolosása",                   IDM_POP_COPYNAME
+        MENUITEM "&Hivatkozás készítése...",          IDM_FILE_CREATELINK
+        MENUITEM "Ment&és másként...",                IDM_FILE_SAVEAS
+        MENUITEM "Más&olás/Mozgatás...",              IDM_FILE_COPYMOVE
+        MENUITEM "&Törlés...",                        IDM_FILE_DELETE
+        MENUITEM "Átn&evezés...",                     IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "&Indítás",                          IDM_FILE_LAUNCH
+        MENUITEM "&Futtatás argumentumokkal...",      IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "T&ulajdonságok",                    IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "&Új fájl...",              IDM_FILE_NEW
+        MENUITEM "Új &mappa...",             IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "Fájl s&zûrõ...",           IDM_VIEW_FILTER
+        MENUITEM "Szûrõ &visszaállítása",    IDM_VIEW_FILTERALL
+        POPUP "Me&gjelenítés"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "Ma&ppák",              IDM_VIEW_FOLDERS
+            MENUITEM "Fájlo&k",              IDM_VIEW_FILES
+            MENUITEM "&Rendszer objektumok", IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "Ren&dezés"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "&Név alapján",          IDM_SORT_NAME
+            MENUITEM "&Méret alapján",        IDM_SORT_SIZE
+            MENUITEM "&Típus alapján",        IDM_SORT_TYPE
+            MENUITEM "&Dátum alapján",        IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "&Fordítva",             IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Ugrás a Kedvencekhez",     IDM_VIEW_FAVORITES
+        MENUITEM "Kedvencek s&zerkesztése",   IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Mappa...",                 IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Meghajtók m&egjelenítése",  IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Beállít&ások mentése",      IDM_VIEW_SAVESETTINGS
+        MENUITEM "&Cél beállítása...",        IDM_VIEW_FINDTARGET
+        MENUITEM "Beállítás&ok...",           IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Mappa...",                 IDM_FILE_CHANGEDIR
+        MENUITEM "Meg&hajtó tulajdonságok",   IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Meghajtók me&gjelenítése",  IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "Esz&köztár megjelenítése",   IDM_VIEW_TOOLBAR
+        MENUITEM "Eszk&öztár szerkesztése...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Állapotso&r megjelenítése",  IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath megnyitása",        IDM_TRAY_RESTORE
+        MENUITEM "Kilépés MiniPath-ból",       IDM_TRAY_EXIT
     END
 END
 
