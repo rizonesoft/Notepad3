@@ -409,7 +409,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 //
 //  EditSetNewEncoding()
 //
-bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSetSavePoint)
+bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI)
 {
   cpi_enc_t iCurrentEncoding = Encoding_Current(CPI_GET);
 
@@ -429,24 +429,21 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSet
     }
     // and vice versa ???
 
-    if (SciCall_GetTextLength() <= 0) {
-
-      bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
-
-
-      bool doNewEncoding = (!bIsEmptyUndoHistory && !bNoUI) ?
+    if (SciCall_GetTextLength() <= 0) 
+    {
+      bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bNoUI) ?
         (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, bSetSavePoint);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, true);
       }
     }
     else {
 
-      bool doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
+      bool const doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, false);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, true);
       }
     }
   }
@@ -4480,7 +4477,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 {
   // jump to end with line set to -1
   if (iNewLine < 0) {
-    SendMessage(hwnd, SCI_DOCUMENTEND, 0, 0);
+    SciCall_DocumentEnd();
     return;
   }
   const DocLn iMaxLine = SciCall_GetLineCount();
@@ -4498,6 +4495,43 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
+}
+
+
+
+//=============================================================================
+//
+//  EditGetCurrentDocView()
+//
+const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd)
+{
+  UNUSED(hwnd);
+  DOCVIEWPOS_T docView = INIT_DOCVIEWPOS;
+  docView.iCurPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
+  docView.iAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
+  //docView.vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
+  //docView.vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
+  docView.iCurrLine = SciCall_LineFromPosition(docView.iCurPos);
+  docView.iCurColumn = SciCall_GetColumn(docView.iCurPos);
+  docView.iVisTopLine = SciCall_GetFirstVisibleLine();
+  docView.iDocTopLine = SciCall_DocLineFromVisible(docView.iVisTopLine);
+  docView.iXOffset = SciCall_GetXOffset();
+  docView.bIsTail = (docView.iCurPos == docView.iAnchorPos) && (docView.iCurrLine >= (SciCall_GetLineCount() - 1));
+  return docView;
+}
+
+
+//=============================================================================
+//
+//  EditGetCurrentDocView()
+//
+void EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView)
+{
+  EditJumpTo(hwnd, docView.iCurrLine + 1, docView.iCurColumn + 1);
+  SciCall_EnsureVisible(docView.iDocTopLine);
+  DocLn const iNewTopLine = SciCall_GetFirstVisibleLine();
+  SciCall_LineScroll(0, docView.iVisTopLine - iNewTopLine);
+  SciCall_SetXOffset(docView.iXOffset);
 }
 
 

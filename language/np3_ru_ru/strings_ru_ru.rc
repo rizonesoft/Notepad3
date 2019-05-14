@@ -90,6 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Выполнить документ"
     IDT_VIEW_TOGGLE_VIEW     "Фокусировка просмотра"
     IDT_VIEW_CHASING_DOCTAIL "Слежение за файлом"
+    IDT_VIEW_PIN_ON_TOP      "Always On Top"
 END
 
 STRINGTABLE

@@ -505,6 +505,8 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
 
+#define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
+
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
 #define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())

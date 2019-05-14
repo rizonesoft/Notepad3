@@ -185,13 +185,14 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 },
+  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 }
 };
-static const int NUMTOOLBITMAPS = 28;
+static const int NUMTOOLBITMAPS = 29;
 
 // ----------------------------------------------------------------------------
 
@@ -2737,7 +2738,6 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (!s_bRunningWatch) {
     InstallFileWatching(Globals.CurrentFile);
   }
-
   return FALSE;
 }
 
@@ -3558,8 +3558,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE),
-                               StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) == 0)) {
+        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
 
           if (SciCall_GetTextLength() == 0) {
             Encoding_Current(iNewEncoding);
@@ -5105,6 +5104,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.ResetFileWatching = true;
           FileWatching.FileCheckInverval = 250UL;
           FileWatching.AutoReloadTimeout = 250UL;
+          UndoRedoRecordingStop();
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5112,11 +5112,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.ResetFileWatching = Settings.ResetFileWatching;
           FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
+          UndoRedoRecordingStart();
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+        //~SciCall_DocumentEnd();
+        SciCall_ScrollToEnd();
         UpdateToolbar();
       }
       break;
@@ -9818,11 +9821,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       char tchLog[5] = { '\0','\0','\0','\0','\0' };
       SciCall_GetText(COUNTOF(tchLog), tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
-        EditJumpTo(Globals.hwndEdit,-1,0);
+        SciCall_DocumentEnd();
         _BEGIN_UNDO_ACTION_
         SciCall_NewLine();
         SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
-        EditJumpTo(Globals.hwndEdit,-1,0);
+        SciCall_DocumentEnd();
         SciCall_NewLine();
         _END_UNDO_ACTION_
         SciCall_DocumentEnd();
@@ -9923,17 +9926,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 {
   if (StrIsNotEmpty(szFileName)) {
 
-    const DocPos iCurPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
-    //const int vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
-    //const int vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
-
-    const DocLn iCurrLine = SciCall_LineFromPosition(iCurPos);
-    const DocPos iCurColumn = SciCall_GetColumn(iCurPos);
-    const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
-    const DocLn iDocTopLine = SciCall_DocLineFromVisible(iVisTopLine);
-    const int   iXOffset = SciCall_GetXOffset();
-    const bool bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
+    bool bPreserveView = true;
+    DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
 
     if (bIgnoreCmdLnEnc) { 
       Encoding_SrcCmdLn(CPI_NONE); // ignore history too
@@ -9946,24 +9940,29 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (FileLoad(true,false,true,false,true,false,tchFileName2))
     {
       if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-        if (bIsTail || FileWatching.MonitoringLog) {
-          SciCall_DocumentEnd();
+        if (docView.bIsTail || FileWatching.MonitoringLog) {
+          bPreserveView = false;
+          //~SciCall_DocumentEnd();
+          SciCall_ScrollToEnd();
         }
       }
-      else if (SciCall_GetTextLength() >= 4) 
-      {
+
+      if (SciCall_GetTextLength() >= 4) {
         char tch[5] = { '\0','\0','\0','\0','\0' };
         SciCall_GetText(COUNTOF(tch), tch);
-        if (StringCchCompareXA(tch,".LOG") != 0) {
+        if (StringCchCompareXA(tch,".LOG") == 0) {
           SciCall_ClearSelections();
-          EditJumpTo(Globals.hwndEdit, iCurrLine+1, iCurColumn+1);
-          SciCall_EnsureVisible(iDocTopLine);
-          const DocLn iNewTopLine = SciCall_GetFirstVisibleLine();
-          SciCall_LineScroll(0,iVisTopLine - iNewTopLine);
-          SciCall_SetXOffset(iXOffset);
+          bPreserveView = false;
+          SciCall_DocumentEnd();
+          EditEnsureSelectionVisible(Globals.hwndEdit);
         }
       }
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+
+      if (bPreserveView) {
+        EditSetDocView(Globals.hwndEdit, docView);
+      }
+      
+      SciCall_SetSavePoint();
       return true;
     }
   }

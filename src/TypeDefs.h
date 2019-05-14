@@ -556,6 +556,25 @@ typedef struct _editfileiostatus
 
 #define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
 
+//=============================================================================
+
+typedef struct _docviewpos_t
+{
+  DocPos iCurPos;
+  DocPos iAnchorPos;
+  //DocPos vSpcCaretPos;
+  //DocPos vSpcAnchorPos;
+  DocLn  iCurrLine;
+  DocPos iCurColumn;
+  DocLn  iVisTopLine;
+  DocLn  iDocTopLine;
+  int    iXOffset;
+  bool   bIsTail;
+
+} DOCVIEWPOS_T, * PDOCVIEWPOS_T;
+
+#define INIT_DOCVIEWPOS { 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, false }
+
 
 // ---------   common defines   --------
 
