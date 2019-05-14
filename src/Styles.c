@@ -1728,7 +1728,7 @@ PEDITLEXER  Style_SniffShebang(char* pchText)
       return(&lexJS);
     }
   }
-  return(NULL);
+  return NULL;
 }
 
 
@@ -1785,9 +1785,9 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
+bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
-  LPWSTR lpszExt = PathFindExtension(lpszFile);
+  LPCWSTR lpszExt = PathFindExtension(lpszFile);
   bool  bFound = false;
   PEDITLEXER pLexNew = NULL;
   PEDITLEXER pLexSniffed = NULL;
@@ -1863,13 +1863,21 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(PathFindFileName(lpszFile),L"makefile") == 0) {
+    StringCchCompareXI(PathFindFileName(lpszFile), L"Readme") == 0) {
+    pLexNew = &lexANSI;
+    bFound = true;
+  }
+
+  if (!bFound && s_bAutoSelect && lpszFile &&
+    ((StringCchCompareXI(PathFindFileName(lpszFile),L"Makefile") == 0) ||
+    (StringCchCompareXI(PathFindFileName(lpszFile), L"Kbuild") == 0))) {
     pLexNew = &lexMAK;
     bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(PathFindFileName(lpszFile),L"rakefile") == 0) {
+    ((StringCchCompareXI(PathFindFileName(lpszFile),L"Rakefile") == 0) ||
+    (StringCchCompareXI(PathFindFileName(lpszFile), L"Podfile") == 0))) {
     pLexNew = &lexRUBY;
     bFound = true;
   }
@@ -1877,6 +1885,13 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   if (!bFound && s_bAutoSelect && lpszFile &&
       StringCchCompareXI(PathFindFileName(lpszFile),L"mozconfig") == 0) {
     pLexNew = &lexBASH;
+    bFound = true;
+  }
+
+  if (!bFound && s_bAutoSelect && lpszFile &&
+    ((StringCchCompareXI(PathFindFileName(lpszFile), L"Kconfig") == 0) ||
+    (StringCchCompareXI(PathFindFileName(lpszFile), L"Doxyfile") == 0))) {
+    pLexNew = &lexCONF;
     bFound = true;
   }
 
@@ -1905,13 +1920,60 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   if (!bFound && (Encoding_Current(CPI_GET) == Globals.DOSEncoding)) {
     pLexNew = &lexANSI;
   }
+  
   // Apply the new lexer
-  if (IsLexerStandard(pLexNew)) {
+  if (IsLexerStandard(pLexNew)) 
+  {
     Style_SetDefaultLexer(hwnd);
   }
   else {
     Style_SetLexer(hwnd, pLexNew);
   }
+  return bFound;
+}
+
+
+//=============================================================================
+//
+//  Style_MaybeBinaryFile()
+//
+bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile) 
+{
+  UNUSED(hwnd);
+#if 0
+  UNUSED(lpszFile);
+#else
+  unsigned char buf[5] = { '\0' }; // magic
+  SciCall_GetText(COUNTOF(buf), (char*)buf);
+  UINT const magic2 = (buf[0] << 8) | buf[1];
+  if (magic2 == 0x4D5A ||  // PE: MZ
+    magic2 == 0x504B ||    // ZIP: PK
+    magic2 == 0x377A ||    // 7z
+    magic2 == 0x424D       // BMP: BM
+    ) {
+    return true;
+  }
+  UINT const magic = (magic2 << 16) | (buf[2] << 8) | buf[3];
+  if (magic == 0x89504E47 || // PNG
+    magic == 0x47494638 ||   // GIF: GIF89a
+    magic == 0x25504446 ||   // PDF
+    magic == 0xCAFEBABE      // Java class
+    ) {
+    return true;
+  }
+  const WCHAR* const binaryExt = L" exe cur ico jpeg jpg lib mdb obj pdb pyc pyd "; // keep blank at end
+  size_t const _min = 5ULL;  size_t const _max = 6ULL;
+
+  WCHAR lpszExt[16] = { L'\0' };
+  StringCchPrintf(lpszExt, COUNTOF(lpszExt), L" %s ", PathFindExtension(lpszFile));
+  if (StrIsNotEmpty(lpszExt)) {
+    size_t const len = StringCchLen(lpszExt,MAX_PATH);
+    if (len < _min || len > _max) {
+      if (StrStrI(binaryExt, lpszExt)) { return true; }
+    }
+  }
+#endif
+  return false;
 }
 
 
@@ -1919,7 +1981,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 //
 //  Style_SetLexerFromName()
 //
-void Style_SetLexerFromName(HWND hwnd,LPCWSTR lpszFile,LPCWSTR lpszName)
+void Style_SetLexerFromName(HWND hwnd, LPCWSTR lpszFile, LPCWSTR lpszName)
 {
   PEDITLEXER pLexNew = Style_MatchLexer(lpszName, false);
   if (pLexNew) {
