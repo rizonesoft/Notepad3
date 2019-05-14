@@ -17,7 +17,7 @@ KEYWORDLIST KeyWords_JAVA = {
 
 
 EDITLEXER lexJAVA = { 
-SCLEX_CPP, IDS_LEX_JAVA_SRC, L"Java Source Code", L"java", L"", 
+SCLEX_CPP, IDS_LEX_JAVA_SRC, L"Java Source Code", L"java; jad; aidl; bsh", L"", 
 &KeyWords_JAVA, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

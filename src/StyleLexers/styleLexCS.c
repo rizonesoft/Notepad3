@@ -138,7 +138,7 @@ KEYWORDLIST KeyWords_CS = {
 
 
 EDITLEXER lexCS = { 
-SCLEX_CPP, IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs", L"", 
+SCLEX_CPP, IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs; csx; vala", L"", 
 &KeyWords_CS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"C Default", L"", L"" },

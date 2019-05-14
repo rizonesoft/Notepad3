@@ -187,14 +187,16 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 }
+  { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 }
 };
 static const int NUMTOOLBITMAPS = 28;
 
 // ----------------------------------------------------------------------------
 
 static const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
-static const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17";
+static const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17 0 29";
 
 //=============================================================================
 
@@ -5218,6 +5220,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         IniSetString(L"Settings2", L"SingleFileInstance", NULL);
       break;
 
+
     case IDM_VIEW_ALWAYSONTOP:
       if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
         Settings.AlwaysOnTop = false;
@@ -5229,6 +5232,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         s_flagAlwaysOnTop = 0;
         SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
       }
+      CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
+      UpdateToolbar();
       break;
 
 
@@ -5241,6 +5246,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.TransparentMode = !Settings.TransparentMode;
       SetWindowTransparentMode(hwnd,Settings.TransparentMode, Settings2.OpacityLevel);
       break;
+
 
     case IDM_SET_RENDER_TECH_DEFAULT:
     case IDM_SET_RENDER_TECH_D2D:
@@ -5260,6 +5266,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.Bidirectional = iLoWParam - IDM_SET_BIDIRECTIONAL_NONE;
       SciCall_SetBidirectional(s_SciBidirectional[Settings.Bidirectional]);
       break;
+
 
     case IDM_VIEW_MUTE_MESSAGEBEEP:
       Settings.MuteMessageBeep = !Settings.MuteMessageBeep;
@@ -6130,6 +6137,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_VIEW_TOGGLE_VIEW:
       if (IsCmdEnabled(hwnd,IDM_VIEW_TOGGLE_VIEW))
         SendWMCommand(hwnd, IDM_VIEW_TOGGLE_VIEW);
+      else
+        SimpleBeep();
+      break;
+
+
+    case IDT_VIEW_PIN_ON_TOP:
+      if (IsCmdEnabled(hwnd, IDM_VIEW_ALWAYSONTOP))
+        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_ALWAYSONTOP, 1), 0);
       else
         SimpleBeep();
       break;
@@ -8467,6 +8482,7 @@ static void  _UpdateToolbarDelayed()
 
   CheckTool(IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
   CheckTool(IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+  CheckTool(IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
@@ -9755,6 +9771,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
   }
 
+  bool bUnknownLexer = s_flagLexerSpecified;
+
   if (fSuccess) {
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
@@ -9764,7 +9782,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
     }
     if (!s_flagLexerSpecified) { // flag will be cleared
-      Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+      bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
     }
     SciCall_SetEOLMode(fioStatus.iEOLMode);
     Encoding_Current(fioStatus.iEncoding); // load may change encoding
@@ -9835,17 +9853,20 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_UNICODE);
     }
 
-    // Show inconsistent line endings warning
-    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
     _UpdateStatusbarDelayed(true);
 
-    
+    // Show inconsistent line endings warning
+    Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
+
     bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
       && !s_flagPrintFileAndLeave 
-      && !fioStatus.bUnknownExt
+      && !fioStatus.bEncryptedRaw
+      && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
+    //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
 
-    if (bCheckEOL) {
+    if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
+    {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
         Globals.bDocHasInconsistentEOLs = false;
@@ -9854,15 +9875,18 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       _UpdateStatusbarDelayed(true);
     }
 
+
     // Show inconsistent indentation 
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
     bool const bCheckIndent = Settings.WarnInconsistentIndents
       && !s_flagPrintFileAndLeave
-      && !fioStatus.bUnknownExt
+      && !fioStatus.bEncryptedRaw
+      && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
+    //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
 
-    if (bCheckIndent)
+    if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
     {
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
