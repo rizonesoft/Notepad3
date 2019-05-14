@@ -90,7 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Futattás"
     IDT_VIEW_TOGGLE_VIEW     "Fókuszált nézet"
     IDT_VIEW_CHASING_DOCTAIL "Naplófájl követése"
-    IDT_VIEW_PIN_ON_TOP      "Always On Top"
+    IDT_VIEW_PIN_ON_TOP      "Mindig felül"
 END
 
 STRINGTABLE

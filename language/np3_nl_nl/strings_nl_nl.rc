@@ -90,7 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Uitvoeren Document"
     IDT_VIEW_TOGGLE_VIEW     "Gefocust zicht"
     IDT_VIEW_CHASING_DOCTAIL "Log Monitoren"
-    IDT_VIEW_PIN_ON_TOP      "Always On Top"
+    IDT_VIEW_PIN_ON_TOP      "Altijd bovenop"
 END
 
 STRINGTABLE

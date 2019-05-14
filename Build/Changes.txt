@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.510.build (2019-May 10)
+Current Version 5.19.514.build (2019-May 14)
 ==================================================
 
 --------------------------------------------------
@@ -58,6 +58,9 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Enable Undo on FileRevert / AutoReload
+- Adapt warning dialog according to new FileRevert / AutoReload undo/redo history
+- Add an "Always On Top" toolbar button
 - Rename "Doc Tail Chasing" => "Monitoring Log"
 - Optimized FileWatching interval for "Chasing Tail" mode
 
@@ -77,7 +80,7 @@ CHANGES:
 - Train Africaans (CP-1252) for UCD language detection models
 - Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
 - Menu Languange Selector to Dynamic Language Selector
-- Up-to-Date SCI (GitHub Mirror 2019-Apr-17)
+- Up-to-Date SCI (GitHub Mirror 2019-May-10)
 - Update of CED (2019-Feb-01)
 - SpeedUp of RegEx Replace (in case of const replace pattern)
 - Update of Onigmo RegEx engine (2019-Jan-24)

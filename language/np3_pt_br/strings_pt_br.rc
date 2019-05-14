@@ -148,10 +148,10 @@ BEGIN
                             "Are you sure you want to open this large file?"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_INDENT_CONSISTENT   "The file has a consistent indentation!"
-    IDS_MUI_EOLMODENAME_CRLF    "Windows (CR+LF)"
-    IDS_MUI_EOLMODENAME_LF      "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR      "Old Mac (CR)"
+    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
 END
 
 STRINGTABLE
