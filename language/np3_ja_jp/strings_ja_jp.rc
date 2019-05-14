@@ -90,7 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "開いている文書を実行"
     IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
     IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
-    IDT_VIEW_PIN_ON_TOP      "Always On Top"
+    IDT_VIEW_PIN_ON_TOP      "常に手前に表示"
 END
 
 STRINGTABLE
@@ -133,6 +133,8 @@ BEGIN
     IDS_MUI_ERR_ENCODINGNA  "このコンピュータでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
     IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
     IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error elevating user rights!"
 END
 
 STRINGTABLE
@@ -184,8 +186,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        """%s"" の編集を保存しますか？"
-    //IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします。それ以降の変更内容は失われますがよろしいですか？"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
+    IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします？"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます。"
     IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"
     IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄とする"
