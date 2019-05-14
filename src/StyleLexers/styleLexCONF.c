@@ -116,7 +116,7 @@ KEYWORDLIST KeyWords_CONF = {
 
 
 EDITLEXER lexCONF = { 
-SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; htaccess", L"", 
+SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; cfg; cnf; htaccess; properties; prefs; iface; prop; po; te", L"", 
 &KeyWords_CONF, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_CONF_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -52,7 +52,7 @@ KEYWORDLIST KeyWords_SQL = {
 
 
 EDITLEXER lexSQL = { 
-SCLEX_SQL, IDS_LEX_SQL, L"SQL Query", L"sql", L"", 
+SCLEX_SQL, IDS_LEX_SQL, L"SQL Query", L"sql; mysql; hsql", L"", 
 &KeyWords_SQL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_SQL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
