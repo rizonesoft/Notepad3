@@ -90,6 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Ten Document"
     IDT_VIEW_TOGGLE_VIEW     "Focused View"
     IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    IDT_VIEW_PIN_ON_TOP      "Always On Top"
 END
 
 STRINGTABLE
@@ -185,7 +186,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Save changes to ""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state? Your changes will be lost!"
+    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
     IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
     IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
     IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"

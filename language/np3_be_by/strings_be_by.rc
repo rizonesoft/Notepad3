@@ -90,6 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Выканаць дакумент"
     IDT_VIEW_TOGGLE_VIEW     "Факусаваны прагляд"
     IDT_VIEW_CHASING_DOCTAIL "Назіранне за файлам"
+    IDT_VIEW_PIN_ON_TOP      "Always On Top"
 END
 
 STRINGTABLE
@@ -185,7 +186,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Захаваць змяненні ў «%s»?"
-    IDS_MUI_ASK_REVERT      "Узнавіць файл да апошняга захаванага стану? Незахаваныя змяненні будуць згублены!"
+    IDS_MUI_ASK_REVERT      "Узнавіць файл да апошняга захаванага стану?"
     IDS_MUI_ASK_RECODE      "Каб пераадкрыць у іншай кадоўцы, неабходна пераладаваць файл з дыска. Незахаваныя змяненні будуць згублены!"
     IDS_MUI_ASK_CREATE      "«%s» не знойдены.\nХочаце стварыць гэты файл?"
     IDS_MUI_PRINT_HEADER    "Імя файла, цяперашнія дата і час|Імя файла, цяперашняя дата|Імя файла|Пакінуць пустым"

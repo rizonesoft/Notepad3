@@ -1118,8 +1118,9 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
               break;
 
             case NM_DBLCLK:
-              if (ListView_GetSelectedCount(GetDlgItem(hwnd,IDC_OPENWITHDIR)))
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDOK,1),0);
+              if (ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_OPENWITHDIR))) {
+                SendWMCommand(hwnd, IDOK);
+              }
               break;
           }
         }
@@ -1316,8 +1317,9 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               break;
 
             case NM_DBLCLK:
-              if (ListView_GetSelectedCount(GetDlgItem(hwnd,IDC_FAVORITESDIR)))
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDOK,1),0);
+              if (ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FAVORITESDIR))) {
+                SendWMCommand(hwnd, IDOK);
+              }
               break;
           }
         }
@@ -1607,6 +1609,8 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
   //return(0);
 }
 
+#define IDC_FILEMRU_UPDATE_VIEW (WM_USER+1)
+
 static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
@@ -1646,7 +1650,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_FILEMRU),0,&lvc);
 
         // Update view
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
+        SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
 
         CheckDlgButton(hwnd, IDC_SAVEMRU, SetBtn(Settings.SaveRecentFiles));
         CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
@@ -1727,7 +1731,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
       switch (((LPNMHDR)(lParam))->code) {
 
         case NM_DBLCLK:
-          SendMessage(hwnd,WM_COMMAND,MAKELONG(IDOK,1),0);
+          SendWMCommand(hwnd, IDOK);
           break;
 
 
@@ -1816,8 +1820,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
       switch(LOWORD(wParam))
       {
-
-        case 0x00A0:
+        case IDC_FILEMRU_UPDATE_VIEW:
           {
             int i;
             WCHAR tch[MAX_PATH] = { L'\0' };
@@ -1920,7 +1923,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
                   //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                   //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
                   // must use IDM_VIEW_REFRESH, index might change...
-                  SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
+                  SendWMCommand(hwnd, IDC_FILEMRU_UPDATE_VIEW);
 
                   //DialogEnableWindow(hwnd,IDOK,
                   //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
@@ -2003,20 +2006,20 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     switch (LOWORD(wParam)) {
     case IDOK:
       if (IsButtonChecked(hwnd, 100)) {
-        Settings.FileWatchingMode = 0;
+        Settings.FileWatchingMode = FWM_NONE;
       }
       else if (IsButtonChecked(hwnd, 101)) {
-        Settings.FileWatchingMode = 1;
+        Settings.FileWatchingMode = FWM_MSGBOX;
       }
       else {
-        Settings.FileWatchingMode = 2;
+        Settings.FileWatchingMode = FWM_AUTORELOAD;
       }
-      if (!FileWatching.ChasingDocTail) { FileWatching.FileWatchingMode = Settings.FileWatchingMode; }
+      if (!FileWatching.MonitoringLog) { FileWatching.FileWatchingMode = Settings.FileWatchingMode; }
 
       Settings.ResetFileWatching = IsButtonChecked(hwnd, 103);
-      if (!FileWatching.ChasingDocTail) { FileWatching.ResetFileWatching = Settings.ResetFileWatching; }
+      if (!FileWatching.MonitoringLog) { FileWatching.ResetFileWatching = Settings.ResetFileWatching; }
 
-      if (FileWatching.ChasingDocTail) { PostMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+      if (FileWatching.MonitoringLog) { PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL); }
 
       EndDialog(hwnd, IDOK);
       break;
@@ -2715,7 +2718,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         switch (((LPNMHDR)(lParam))->code) {
 
           case NM_DBLCLK:
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDOK,1),0);
+            SendWMCommand(hwnd, IDOK);
             break;
 
           case LVN_ITEMCHANGED:

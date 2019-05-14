@@ -22,9 +22,9 @@
 
 void  EditInitializeSciCtrl(HWND);
 void  EditInitWordDelimiter(HWND hwnd);
-void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText);
+void  EditSetNewText(HWND hwnd,const char* lpstrText,DocPos lenText,bool);
 bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
-bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool,bool);
+bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
@@ -33,7 +33,8 @@ bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
 void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
-bool EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection, EditFileIOStatus* status);
+bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
+                   bool bForceEncDetection, bool bClearUndoHistory, EditFileIOStatus* status);
 bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 
 void  EditInvertCase(HWND hwnd);
@@ -75,6 +76,8 @@ void  EditSortLines(HWND hwnd,int iSortFlags);
 
 void  EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol);
 void  EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop);
+const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd);
+void  EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView);
 void  EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions(HWND hwnd);
 void  EditEnsureSelectionVisible(HWND hwnd);

@@ -27,6 +27,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
+#include <winuser.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
@@ -93,6 +94,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4 } HYPERLINK_OPS;  // Hyperlink Operations
+typedef enum { FWM_NONE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_MODE;
 
 // ----------------------------------------------------------------------------
 
@@ -235,7 +237,8 @@ typedef struct _cmq
 
 } CmdMessageQueue_t;
 
-#define MESSAGE_QUEUE_INIT = { NULL, WM_COMMAND, NULL, NULL, -1 };
+#define MESSAGE_QUEUE_INIT(cmd,wp,lp)  { NULL, (cmd), MAKEWPARAM((wp), 1), ((LPARAM)(DWORD)(lp)), -1, NULL, NULL }
+#define MQ_WM_CMD_INIT(wp,lp)            MESSAGE_QUEUE_INIT(WM_COMMAND, (wp), (lp))
 
 // --------------------------------------------------------------------------
 
@@ -381,7 +384,7 @@ typedef struct _settings_t
   int PrintColorMode;
   int PrintZoom;
   bool SaveBeforeRunningTools;
-  int FileWatchingMode;
+  FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
   int EscFunction;
   bool AlwaysOnTop;
@@ -514,12 +517,12 @@ extern FOCUSEDVIEW_T FocusedView;
 
 typedef struct _filewatching_t
 {
-  int flagChangeNotify;        // <-> s_flagChangeNotify;
-  int FileWatchingMode;        // <-> Settings.FileWatchingMode;
-  bool ResetFileWatching;      // <-> Settings.ResetFileWatching;
-  DWORD FileCheckInverval;     // <-> Settings2.FileCheckInverval;
-  DWORD AutoReloadTimeout;     // <-> Settings2.AutoReloadTimeout;
-  bool ChasingDocTail;
+  FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
+  FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
+  bool ResetFileWatching;               // <-> Settings.ResetFileWatching;
+  DWORD FileCheckInverval;              // <-> Settings2.FileCheckInverval;
+  DWORD AutoReloadTimeout;              // <-> Settings2.AutoReloadTimeout;
+  bool MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;
 
@@ -552,6 +555,25 @@ typedef struct _editfileiostatus
 } EditFileIOStatus;
 
 #define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
+
+//=============================================================================
+
+typedef struct _docviewpos_t
+{
+  DocPos iCurPos;
+  DocPos iAnchorPos;
+  //DocPos vSpcCaretPos;
+  //DocPos vSpcAnchorPos;
+  DocLn  iCurrLine;
+  DocPos iCurColumn;
+  DocLn  iVisTopLine;
+  DocLn  iDocTopLine;
+  int    iXOffset;
+  bool   bIsTail;
+
+} DOCVIEWPOS_T, * PDOCVIEWPOS_T;
+
+#define INIT_DOCVIEWPOS { 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, false }
 
 
 // ---------   common defines   --------

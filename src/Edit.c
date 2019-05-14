@@ -303,66 +303,45 @@ void EditInitWordDelimiter(HWND hwnd)
 
 //=============================================================================
 //
-//  _ClearTextBuffer()
-//
-void  _ClearTextBuffer(HWND hwnd)
-{
-  UndoRedoRecordingStop();
-
-  SendMessage(hwnd, SCI_CANCEL, 0, 0);
-
-  _IGNORE_NOTIFY_CHANGE_;
-  
-  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
-
-  EditClearAllOccurrenceMarkers(hwnd);
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
-
-  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
-  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
-
-  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
-  SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
-
-  _OBSERVE_NOTIFY_CHANGE_;
-}
-
-
-//=============================================================================
-//
-//  _InitTextBuffer()
-//
-void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
-{
-  if (textLen > 0) {
-    SciCall_AddText(textLen, lpstrText);
-  }
-  SciCall_GotoPos(0);
-  SciCall_ChooseCaretX();
-
-  UndoRedoRecordingStart();
-
-  if (bSetSavePoint) { 
-    SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); 
-  }
-}
-
-
-//=============================================================================
-//
 //  EditSetNewText()
 //
 extern bool bFreezeAppTitle;
 
-void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
+void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bClearUndoHistory)
 {
   bFreezeAppTitle = true;
 
-  _ClearTextBuffer(hwnd);
+  // clear markers, flags and positions
+  if (bClearUndoHistory) { UndoRedoRecordingStop(); }
+  _IGNORE_NOTIFY_CHANGE_;
+  SciCall_Cancel();
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
+  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
+  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+  EditClearAllOccurrenceMarkers(hwnd);
+  SciCall_SetScrollWidth(1);
+  SciCall_SetXOffset(0);
+  _OBSERVE_NOTIFY_CHANGE_;
 
   FileVars_Apply(&Globals.fvCurFile);
 
-  _InitTextBuffer(hwnd, lpstrText, cbText, true);
+  // set new text
+  if (lenText > 0) {
+    _ENTER_TARGET_TRANSACTION_;
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
+    _LEAVE_TARGET_TRANSACTION_;
+  }
+  else {
+    SciCall_ClearAll();
+  }
+  SciCall_GotoPos(0);
+  SciCall_ChooseCaretX();
+
+  if (bClearUndoHistory) {
+    SciCall_SetSavePoint();
+    UndoRedoRecordingStart();
+  }
 
   bFreezeAppTitle = false;
 }
@@ -374,18 +353,20 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 //
 bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSetSavePoint)
 {
-  if (encSource == encDest)
-    return true;
+  if ((encSource == encDest) || (Encoding_SciCP == encDest)) {
+    if (bSetSavePoint) {
+      SciCall_SetSavePoint();
+    }
+    return true; 
+  }
 
-  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
-    return false;
+  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest))) { return false; }
 
   DocPos const length = SciCall_GetTextLength();
 
   if (length == 0)
   {
-    _ClearTextBuffer(hwnd);
-    _InitTextBuffer(hwnd, NULL, length, bSetSavePoint);
+    EditSetNewText(hwnd, "", 0, bSetSavePoint);
   }
   else {
 
@@ -416,8 +397,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
     FreeMem(pwchText);
 
-    _ClearTextBuffer(hwnd);
-    _InitTextBuffer(hwnd, pchText, cbText, bSetSavePoint);
+    EditSetNewText(hwnd, pchText, cbText, bSetSavePoint);
 
     FreeMem(pchText);
   }
@@ -429,7 +409,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 //
 //  EditSetNewEncoding()
 //
-bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSetSavePoint)
+bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI)
 {
   cpi_enc_t iCurrentEncoding = Encoding_Current(CPI_GET);
 
@@ -442,37 +422,31 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bNoUI, bool bSet
       // ~ return true; // this would imply a successful conversion - it is not !
       //return false; // commented out ? : allow conversion between arbitrary encodings
     //}
-  
-    // suppress recoding messaged for certain encodings
+
+    // suppress recoding message for certain encodings
     if ((Encoding_GetCodePage(iCurrentEncoding) == 936) && (Encoding_GetCodePage(iNewEncoding) == 54936)) {
       bNoUI = true;
     }
     // and vice versa ???
 
-    if (SciCall_GetTextLength() <= 0) {
+    if (SciCall_GetTextLength() <= 0) 
+    {
+      bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bNoUI) ?
+        (InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2) == IDYES) : true;
 
-      bool const bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
-      
-      bool doNewEncoding = true;
-      if (!bIsEmptyUndoHistory && !bNoUI) {
-        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2);
-        doNewEncoding = ((IDOK == answer) || (IDYES == answer));
-      }
       if (doNewEncoding) {
-        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, true);
       }
     }
     else {
-      bool doNewEncoding = true;
-      if (!bNoUI) {
-        INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING);
-        doNewEncoding = ((IDOK == answer) || (IDYES == answer));
-      }
+
+      bool const doNewEncoding = (!bNoUI) ? (InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING) == IDYES) : true;
+
       if (doNewEncoding) {
-        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,false);
+        return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, true);
       }
     }
-  } 
+  }
   return false;
 }
 
@@ -534,7 +508,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     const DocPos iAnchor = SciCall_GetAnchor();
 
     // switch encoding to universal UTF-8 codepage
-    SendMessage(Globals.hwndMain,WM_COMMAND,(WPARAM)MAKELONG(IDM_ENCODING_UTF8,1),0);
+    SendWMCommand(Globals.hwndMain, IDM_ENCODING_UTF8);
 
     // restore and adjust selection
     if (iPos > iAnchor) {
@@ -970,6 +944,7 @@ bool EditLoadFile(
   bool bSkipUTFDetection,
   bool bSkipANSICPDetection,
   bool bForceEncDetection,
+  bool bClearUndoHistory,
   EditFileIOStatus* status)
 {
   status->bUnicodeErr = false;
@@ -1004,6 +979,7 @@ bool EditLoadFile(
     INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt);
     if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
+      status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
@@ -1016,8 +992,7 @@ bool EditLoadFile(
   // Check if a warning message should be displayed for large files
   DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
-    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE);
-    if (!((IDOK == answer) || (IDYES == answer))) {
+    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
       status->bFileTooBig = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -1047,8 +1022,7 @@ bool EditLoadFile(
   // ((readFlag == DECRYPT_SUCCESS) || (readFlag & DECRYPT_NO_ENCRYPTION)) => true;
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
-    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS);
-    bReadSuccess = ((IDOK == answer) || (IDYES == answer));
+    bReadSuccess = (InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
     if (!bReadSuccess) {
       FreeMem(lpData);
       return true;
@@ -1075,8 +1049,8 @@ bool EditLoadFile(
 
   bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
 
-  cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 : 
-                             ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
+  cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :
+    ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
 
 
   // --- 2nd Use Encoding Analysis if applicable
@@ -1145,7 +1119,7 @@ bool EditLoadFile(
   }
   else if (!Encoding_IsNONE(iAnalyzedEncoding) && (bIsReliable || !Settings.UseReliableCEDonly)) {
     iPreferredEncoding = iAnalyzedEncoding;
-  } 
+  }
   else if (Encoding_IsNONE(iPreferredEncoding)) {
     iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
   }
@@ -1160,10 +1134,10 @@ bool EditLoadFile(
   bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
 
   if (cbData == 0) {
-    FileVars_Init(NULL,0,&Globals.fvCurFile);
+    FileVars_Init(NULL, 0, &Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
     status->iEncoding = bIsForced ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding);
-    EditSetNewText(hwnd,"",0);
+    EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
@@ -1180,9 +1154,9 @@ bool EditLoadFile(
       bReverse = true;
     }
 
-    if (bReverse) 
+    if (bReverse)
     {
-      _swab(lpData,lpData,cbData);
+      _swab(lpData, lpData, cbData);
       status->iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
     }
     else {
@@ -1191,20 +1165,19 @@ bool EditLoadFile(
 
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
-    DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciCP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-              (bBOM) ? (cbData)/sizeof(WCHAR) : cbData/sizeof(WCHAR) + 1,lpDataUTF8,(MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8),NULL,NULL);
+    DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciCP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
+      (bBOM) ? (cbData) / sizeof(WCHAR) : cbData / sizeof(WCHAR) + 1, lpDataUTF8, (MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8), NULL, NULL);
 
     if (convCnt == 0) {
       status->bUnicodeErr = true;
-      convCnt = (DWORD)WideCharToMultiByte(CP_ACP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-                (-1),lpDataUTF8,(MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8),NULL,NULL);
+      convCnt = (DWORD)WideCharToMultiByte(CP_ACP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
+        (-1), lpDataUTF8, (MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8), NULL, NULL);
     }
 
     if (convCnt != 0) {
       FreeMem(lpData);
-      EditSetNewText(hwnd,"",0);
-      FileVars_Init(lpDataUTF8,convCnt - 1,&Globals.fvCurFile);
-      EditSetNewText(hwnd,lpDataUTF8,convCnt - 1);
+      FileVars_Init(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
+      EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory);
       EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
       FreeMem(lpDataUTF8);
     }
@@ -1219,7 +1192,7 @@ bool EditLoadFile(
 
   else { // ===  ALL OTHERS  ===
 
-    FileVars_Init(lpData,cbData,&Globals.fvCurFile);
+    FileVars_Init(lpData, cbData, &Globals.fvCurFile);
 
     // ===  UTF-8  ===
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
@@ -1231,14 +1204,13 @@ bool EditLoadFile(
 
     if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
-      EditSetNewText(hwnd,"",0);
       if (bIsUTF8Sig) {
-        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData - 3);
+        EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory);
         status->iEncoding = CPI_UTF8SIGN;
         EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
       }
       else {
-        EditSetNewText(hwnd,lpData,cbData);
+        EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
         status->iEncoding = CPI_UTF8;
         EditDetectEOLMode(lpData, cbData, status);
       }
@@ -1251,29 +1223,28 @@ bool EditLoadFile(
         status->iEncoding = iForcedEncoding;
       else {
         status->iEncoding = FileVars_GetEncoding(&Globals.fvCurFile);
-        if (Encoding_IsNONE(status->iEncoding)) 
+        if (Encoding_IsNONE(status->iEncoding))
         {
           status->iEncoding = ((Globals.fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferredEncoding);
         }
       }
 
       if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
-          ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData,cbData))) {
+        ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData, cbData))) {
 
         UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
         LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
-        int const cbDataWide = MultiByteToWideChar(uCodePage,0,lpData,cbData,lpDataWide,(MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
-        if (cbDataWide != 0) 
+        int const cbDataWide = MultiByteToWideChar(uCodePage, 0, lpData, cbData, lpDataWide, (MBWC_DocPos_Cast)(SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+        if (cbDataWide != 0)
         {
           FreeMem(lpData);
           lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
 
-          cbData = WideCharToMultiByte(Encoding_SciCP,0,lpDataWide,cbDataWide,lpData,(MBWC_DocPos_Cast)SizeOfMem(lpData),NULL,NULL);
+          cbData = WideCharToMultiByte(Encoding_SciCP, 0, lpDataWide, cbDataWide, lpData, (MBWC_DocPos_Cast)SizeOfMem(lpData), NULL, NULL);
           if (cbData != 0) {
             FreeMem(lpDataWide);
-            EditSetNewText(hwnd,"",0);
-            EditSetNewText(hwnd,lpData,cbData);
+            EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             EditDetectEOLMode(lpData, cbData, status);
             FreeMem(lpData);
           }
@@ -1295,8 +1266,7 @@ bool EditLoadFile(
       }
       else {
         status->iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferredEncoding;
-        EditSetNewText(hwnd,"",0);
-        EditSetNewText(hwnd,lpData,cbData);
+        EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
         EditDetectEOLMode(lpData, cbData, status);
         FreeMem(lpData);
       }
@@ -1475,12 +1445,7 @@ bool EditSaveFile(
       }
       FreeMem(lpDataWide);
 
-      if (bCancelDataLoss) {
-        INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2);
-        bCancelDataLoss = !((IDOK == answer) || (IDYES == answer));
-      }
-
-      if (!bCancelDataLoss) {
+      if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
         SetEndOfFile(hFile);
         bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
         Globals.dwLastError = GetLastError();
@@ -1565,9 +1530,8 @@ void EditInvertCase(HWND hwnd)
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
-    else {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
-    }
+    else
+      InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_SELRECT);
   }
 }
 
@@ -1628,9 +1592,8 @@ void EditTitleCase(HWND hwnd)
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
-    else {
+    else
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
-    }
   }
 }
 
@@ -2018,14 +1981,13 @@ void EditHex2Char(HWND hwnd)
         StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)i);
         cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, COUNTOF(ch), NULL, NULL) - 1;
 
-        if (bTrySelExpand && (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)iSelStart - 1, 0) == '\\') {
+        if (bTrySelExpand && (SciCall_GetCharAt(iSelStart - 1) == '\\')) {
           --iSelStart;
           if (iCurPos < iAnchorPos) { --iCurPos; } else { --iAnchorPos; }
         }
       }
       EditSetSelectionEx(hwnd, iSelStart, iSelEnd, -1, -1);
-      SendMessage(hwnd, SCI_REPLACESEL, 0, (LPARAM)ch);
-
+      SciCall_ReplaceSel(ch);
       if (iCurPos < iAnchorPos)
         EditSetSelectionEx(hwnd, iCurPos + cch, iCurPos, -1, -1);
       else
@@ -4515,7 +4477,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 {
   // jump to end with line set to -1
   if (iNewLine < 0) {
-    SendMessage(hwnd, SCI_DOCUMENTEND, 0, 0);
+    SciCall_DocumentEnd();
     return;
   }
   const DocLn iMaxLine = SciCall_GetLineCount();
@@ -4533,6 +4495,43 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
+}
+
+
+
+//=============================================================================
+//
+//  EditGetCurrentDocView()
+//
+const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd)
+{
+  UNUSED(hwnd);
+  DOCVIEWPOS_T docView = INIT_DOCVIEWPOS;
+  docView.iCurPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
+  docView.iAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
+  //docView.vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
+  //docView.vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
+  docView.iCurrLine = SciCall_LineFromPosition(docView.iCurPos);
+  docView.iCurColumn = SciCall_GetColumn(docView.iCurPos);
+  docView.iVisTopLine = SciCall_GetFirstVisibleLine();
+  docView.iDocTopLine = SciCall_DocLineFromVisible(docView.iVisTopLine);
+  docView.iXOffset = SciCall_GetXOffset();
+  docView.bIsTail = (docView.iCurPos == docView.iAnchorPos) && (docView.iCurrLine >= (SciCall_GetLineCount() - 1));
+  return docView;
+}
+
+
+//=============================================================================
+//
+//  EditGetCurrentDocView()
+//
+void EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView)
+{
+  EditJumpTo(hwnd, docView.iCurrLine + 1, docView.iCurColumn + 1);
+  SciCall_EnsureVisible(docView.iDocTopLine);
+  DocLn const iNewTopLine = SciCall_GetFirstVisibleLine();
+  SciCall_LineScroll(0, docView.iVisTopLine - iNewTopLine);
+  SciCall_SetXOffset(docView.iXOffset);
 }
 
 
@@ -5029,7 +5028,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
 //
 static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
 {
-  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
+  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
   mqc.hwnd = hwnd;
   mqc.lparam = (LPARAM)iStartPos;
 
@@ -5236,7 +5235,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
       // find first occurrence of clip-board text
       //if (!SciCall_IsSelectionRectangle() && SciCall_IsSelectionEmpty()) {
-      //  PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
+      //  PostWMCommand(hwnd, IDOK);
       //}
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
@@ -5535,7 +5534,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
           else if (sg_pefrData->bStateChanged) {
             if (FocusedView.HideNonMatchedLines) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
+              SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
             }
             else {
               EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
@@ -5566,7 +5565,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
 
             if (FocusedView.HideNonMatchedLines) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
+              SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
             }
             else {
               EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
@@ -5763,17 +5762,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case IDC_REPLACE:
           {
             Globals.bReplaceInitialized = true;
-            _BEGIN_UNDO_ACTION_;
+            _BEGIN_UNDO_ACTION_
             EditReplace(sg_pefrData->hwnd, sg_pefrData);
-            _END_UNDO_ACTION_;
+            _END_UNDO_ACTION_
           }
           break;
 
         case IDC_REPLACEALL:
           Globals.bReplaceInitialized = true;
-          _BEGIN_UNDO_ACTION_;
+          _BEGIN_UNDO_ACTION_
           EditReplaceAll(sg_pefrData->hwnd, sg_pefrData, true);
-          _END_UNDO_ACTION_;
+          _END_UNDO_ACTION_
           break;
 
         case IDC_REPLACEINSEL:
@@ -5808,11 +5807,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       break;
 
       case IDACC_FIND:
-        PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_FIND, 1), 0);
+        PostWMCommand(GetParent(hwnd), IDM_EDIT_FIND);
         break;
 
       case IDACC_REPLACE:
-        PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_REPLACE, 1), 0);
+        PostWMCommand(GetParent(hwnd), IDM_EDIT_REPLACE);
         break;
 
       case IDACC_SAVEPOS:
@@ -5827,23 +5826,24 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       case IDACC_FINDNEXT:
         //SetFocus(Globals.hwndMain);
         //SetForegroundWindow(Globals.hwndMain);
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
+        PostWMCommand(hwnd, IDOK);
         break;
 
       case IDACC_FINDPREV:
         //SetFocus(Globals.hwndMain);
         //SetForegroundWindow(Globals.hwndMain);
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDPREV, 1), 0);
+        PostWMCommand(hwnd, IDC_FINDPREV);
         break;
 
       case IDACC_REPLACENEXT:
-        if (GetDlgItem(hwnd, IDC_REPLACE) != NULL)
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_REPLACE, 1), 0);
+        if (GetDlgItem(hwnd, IDC_REPLACE) != NULL) {
+          PostWMCommand(hwnd, IDC_REPLACE);
+        }
         break;
 
       case IDACC_SAVEFIND:
         Globals.FindReplaceMatchFoundState = FND_NOP;
-        SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_EDIT_SAVEFIND, 1), 0);
+        SendWMCommand(Globals.hwndMain, IDM_EDIT_SAVEFIND);
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
@@ -5853,7 +5853,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         break;
 
       case IDACC_VIEWSCHEMECONFIG:
-        PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_VIEW_SCHEMECONFIG, 1), 0);
+        PostWMCommand(GetParent(hwnd), IDM_VIEW_SCHEMECONFIG);
         break;
 
       default:
@@ -5867,11 +5867,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
     case WM_SYSCOMMAND:
       if (wParam == IDS_MUI_SAVEPOS) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
+        PostWMCommand(hwnd, IDACC_SAVEPOS);
         return true;
       }
       else if (wParam == IDS_MUI_RESETPOS) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
+        PostWMCommand(hwnd, IDACC_RESETPOS);
         return true;
       }
       else
@@ -5886,10 +5886,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case NM_CLICK:
         case NM_RETURN:
           if (pnmhdr->idFrom == IDC_TOGGLEFINDREPLACE) {
-            if (GetDlgItem(hwnd, IDC_REPLACE))
-              PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_FIND, 1), 0);
-            else
-              PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_REPLACE, 1), 0);
+            if (GetDlgItem(hwnd, IDC_REPLACE)) {
+              PostWMCommand(GetParent(hwnd), IDM_EDIT_FIND);
+            }
+            else {
+              PostWMCommand(GetParent(hwnd), IDM_EDIT_REPLACE);
+            }
           }
           // Display help messages in the find/replace windows
           else if (pnmhdr->idFrom == IDC_BACKSLASHHELP) {
@@ -6003,8 +6005,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   DocPos end = iDocEndPos;
 
   if (start >= end) {
-    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
-    if ((IDOK == answer) || (IDYES == answer)) {
+    if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
       end = min_p(start, iDocEndPos);  start = 0;
     }
     else
@@ -6023,10 +6024,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   {
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
-
-      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW);
-      if ((IDOK == answer) || (IDYES == answer)) {
-
+      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) {
         end = min_p(start, iDocEndPos);  start = 0;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
@@ -6086,13 +6084,11 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   DocPos end = 0;
 
   if (start <= end) {
-    INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
-    if ((IDOK == answer) || (IDYES == answer)) {
+    if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
       end = start;  start = iTextLength;
     }
-    else {
+    else
       bSuppressNotFound = true;
-    }
   }
 
   CancelCallTip();
@@ -6109,9 +6105,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
-      INT_PTR const answer = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
-      if ((IDOK == answer) || (IDYES == answer)) {
-
+      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE)) {
         end = start;  start = iTextLength;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
@@ -6453,7 +6447,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  _BEGIN_UNDO_ACTION_;
+  _BEGIN_UNDO_ACTION_
 
   bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
@@ -6476,7 +6470,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
       }
     }
   }
-  _END_UNDO_ACTION_;
+  _END_UNDO_ACTION_
 
   return (Globals.iReplacedOccurrences > 0) ? true : false;
 }

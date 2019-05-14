@@ -90,6 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "运行当前文档"
     IDT_VIEW_TOGGLE_VIEW     "仅显示匹配行"
     IDT_VIEW_CHASING_DOCTAIL "日志监控"
+    IDT_VIEW_PIN_ON_TOP      "Always On Top"
 END
 
 STRINGTABLE
@@ -185,7 +186,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "将修改保存到“%s”？"
-    IDS_MUI_ASK_REVERT      "还原文件到上次保存的状态吗？\n\n警告：所有未保存的修改将丢失。"
+    //IDS_MUI_ASK_REVERT      "还原文件到上次保存的状态吗？\n\n警告：所有未保存的修改将丢失。"
+    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
     IDS_MUI_ASK_RECODE      "更改编码并重新加载吗？\n\n警告：所有未保存的修改将丢失。"
     IDS_MUI_ASK_CREATE      "文件“%s”未找到。是否创建一个新的文件？"
     IDS_MUI_PRINT_HEADER    "文件名，当前日期和时间|文件名，当前日期|文件名|留空"

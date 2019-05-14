@@ -517,7 +517,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       }
       else if (LOWORD(wParam) == IDC_PRINTER)
       {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(1026, 1), 0);
+        PostWMCommand(hwnd, 1026);
       }
       break;
 

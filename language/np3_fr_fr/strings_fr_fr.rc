@@ -90,6 +90,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Exécuter Document"
     IDT_VIEW_TOGGLE_VIEW     "Vue Focalisée"
     IDT_VIEW_CHASING_DOCTAIL "Surveillance de Log"
+    IDT_VIEW_PIN_ON_TOP      "Always On Top"
 END
 
 STRINGTABLE
@@ -185,7 +186,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "Sauvegarger les modification vers ""%s""?"
-    IDS_MUI_ASK_REVERT      "Rétablir le dernier état enregistré? Vos changements seront perdus!"
+    IDS_MUI_ASK_REVERT      "Rétablir le dernier état enregistré?"
     IDS_MUI_ASK_RECODE      "Le recodage nécessite le rechargement du fichier à partir du disque, les modifications non enregistrées seront perdues!"
     IDS_MUI_ASK_CREATE      """%s"" pas trouvé.\nVoulez-vous créer ce fichier?"
     IDS_MUI_PRINT_HEADER    "Non du fichier, Date et Heure actuelle|Non du fichier, Date actuelle|Non du fichier|Laisser vide"

@@ -27,19 +27,19 @@
 #define DATA_NOTEPAD3_PARAMS 0xFB10
 typedef struct np3params {
 
-  int        flagFileSpecified;
-  int        flagChangeNotify;
-  int        flagLexerSpecified;
-  int        iInitialLexer;
-  int        flagQuietCreate;
-  int        flagJumpTo;
-  int        iInitialLine;
-  int        iInitialColumn;
-  cpi_enc_t  iSrcEncoding;
-  cpi_enc_t  flagSetEncoding;
-  int        flagSetEOLMode;
-  int        flagTitleExcerpt;
-  WCHAR      wchData;
+  int                 flagFileSpecified;
+  FILE_WATCHING_MODE  flagChangeNotify;
+  int                 flagLexerSpecified;
+  int                 iInitialLexer;
+  int                 flagQuietCreate;
+  int                 flagJumpTo;
+  int                 iInitialLine;
+  int                 iInitialColumn;
+  cpi_enc_t           iSrcEncoding;
+  cpi_enc_t           flagSetEncoding;
+  int                 flagSetEOLMode;
+  int                 flagTitleExcerpt;
+  WCHAR               wchData;
 } 
 np3params, *LPnp3params;
 
@@ -167,7 +167,7 @@ void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize);
 bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 
 bool FileIO(bool fLoad, LPWSTR pszFileName,
-            bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection,
+            bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             EditFileIOStatus* status, bool bSaveCopy);
 bool FileLoad(bool bDontSave, bool bNew, bool bReload,
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile);

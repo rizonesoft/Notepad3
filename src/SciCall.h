@@ -196,6 +196,7 @@ DeclareSciCallV0(Cut, CUT)
 DeclareSciCallV0(Copy, COPY)
 DeclareSciCallV0(Paste, PASTE)
 DeclareSciCallV0(Clear, CLEAR)
+DeclareSciCallV0(ClearAll, CLEARALL)
 DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
 DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
@@ -203,6 +204,8 @@ DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
 DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
 
+//DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text)  // ::WideCharToMultiByte(Encoding_SciCP)
+// SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3)
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)
@@ -215,6 +218,7 @@ DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION)
+DeclareSciCallV0(TargetWholeDocument, TARGETWHOLEDOCUMENT)
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end)
 DeclareSciCallR2(ReplaceTarget, REPLACETARGET, DocPos, DocPos, length, const char*, text)
 DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const char*, text)
@@ -229,12 +233,14 @@ DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option)
 
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position)
 DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line)
+DeclareSciCallV0(DocumentEnd, DOCUMENTEND)
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position)
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode)
 DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode)
+
 
 DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
 DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)
@@ -498,6 +504,8 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_IsMultiLineSelection() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -  SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)
 
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
+
+#define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
 
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
