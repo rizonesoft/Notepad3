@@ -974,7 +974,8 @@ bool EditLoadFile(
 {
   status->bUnicodeErr = false;
   status->bFileTooBig = false;
-  status->bUnknownExt = true;
+  status->bUnknownExt = false;
+  status->bEncryptedRaw = false;
 
   HANDLE hFile = CreateFile(pszFile,
     GENERIC_READ,
@@ -999,6 +1000,7 @@ bool EditLoadFile(
   // check for unknown extension
   LPCWSTR lpszExt = PathFindExtension(pszFile);
   if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
+    status->bUnknownExt = true;
     INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt);
     if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
@@ -1008,7 +1010,7 @@ bool EditLoadFile(
     }
   }
   else {
-    status->bUnknownExt = false;
+    status->bUnknownExt = (lpszExt) ? false : true;
   }
 
   // Check if a warning message should be displayed for large files
@@ -1050,6 +1052,9 @@ bool EditLoadFile(
     if (!bReadSuccess) {
       FreeMem(lpData);
       return true;
+    }
+    else {
+      status->bEncryptedRaw =  true;
     }
   }
 
