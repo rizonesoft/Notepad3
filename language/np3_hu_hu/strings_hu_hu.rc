@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Megnyitás"
     IDT_FILE_BROWSE         "Böngészés"
     IDT_FILE_SAVE           "Mentés"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "Elõzmények"
     IDT_EDIT_UNDO           "Visszavon"
     IDT_EDIT_REDO           "Újra"
     IDT_EDIT_CUT            "Kivágás"
@@ -89,7 +89,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Futattás"
     IDT_VIEW_TOGGLE_VIEW     "Fókuszált nézet"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    IDT_VIEW_CHASING_DOCTAIL "Naplófájl követése"
 END
 
 STRINGTABLE
