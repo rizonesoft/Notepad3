@@ -340,7 +340,7 @@ BEGIN
             MENUITEM "Kódblokk össze&csukás\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
             MENUITEM "Kódblokk &váltás\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Fókuszált n&ézet\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Monitoring Log",                         IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Naplófájl követése",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Görgetés a fájl vége &után is",           IDM_VIEW_SCROLLPASTEOF
 
         END
