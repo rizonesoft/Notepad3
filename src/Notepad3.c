@@ -176,6 +176,8 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
+  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
@@ -194,7 +196,7 @@ static const int NUMTOOLBITMAPS = 28;
 // ----------------------------------------------------------------------------
 
 static const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
-static const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17";
+static const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 28 0 15 0 25 0 17";
 
 //=============================================================================
 
@@ -5212,6 +5214,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         IniSetString(L"Settings2", L"SingleFileInstance", NULL);
       break;
 
+
     case IDM_VIEW_ALWAYSONTOP:
       if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
         Settings.AlwaysOnTop = false;
@@ -5223,6 +5226,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         s_flagAlwaysOnTop = 0;
         SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
       }
+      CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
+      UpdateToolbar();
       break;
 
 
@@ -5235,6 +5240,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.TransparentMode = !Settings.TransparentMode;
       SetWindowTransparentMode(hwnd,Settings.TransparentMode, Settings2.OpacityLevel);
       break;
+
 
     case IDM_SET_RENDER_TECH_DEFAULT:
     case IDM_SET_RENDER_TECH_D2D:
@@ -5254,6 +5260,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.Bidirectional = iLoWParam - IDM_SET_BIDIRECTIONAL_NONE;
       SciCall_SetBidirectional(s_SciBidirectional[Settings.Bidirectional]);
       break;
+
 
     case IDM_VIEW_MUTE_MESSAGEBEEP:
       Settings.MuteMessageBeep = !Settings.MuteMessageBeep;
@@ -6124,6 +6131,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_VIEW_TOGGLE_VIEW:
       if (IsCmdEnabled(hwnd, IDM_VIEW_TOGGLE_VIEW))
         SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_TOGGLE_VIEW, 1), 0);
+      else
+        SimpleBeep();
+      break;
+
+
+    case IDT_VIEW_PIN_ON_TOP:
+      if (IsCmdEnabled(hwnd, IDM_VIEW_ALWAYSONTOP))
+        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_ALWAYSONTOP, 1), 0);
       else
         SimpleBeep();
       break;
@@ -8461,6 +8476,7 @@ static void  _UpdateToolbarDelayed()
 
   CheckTool(IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
   CheckTool(IDT_VIEW_CHASING_DOCTAIL, FileWatching.ChasingDocTail);
+  CheckTool(IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
