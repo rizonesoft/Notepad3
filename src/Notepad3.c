@@ -3286,8 +3286,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!((IDOK == answer) || (IDYES == answer))) {
           break;
         }
+        FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       }
-      FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       break;
 
 
@@ -9922,51 +9922,48 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 //  FileRevert()
 //
 //
-bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc) 
+bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 {
-  if (StrIsNotEmpty(szFileName)) {
+  if (StrIsEmpty(szFileName)) { return false; }
 
-    bool bPreserveView = true;
-    DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
+  bool bPreserveView = true;
+  DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
 
-    if (bIgnoreCmdLnEnc) { 
-      Encoding_SrcCmdLn(CPI_NONE); // ignore history too
-    }
-    Encoding_SrcWeak(Encoding_Current(CPI_GET));
+  if (bIgnoreCmdLnEnc) {
+    Encoding_SrcCmdLn(CPI_NONE); // ignore history too
+  }
+  Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
-    WCHAR tchFileName2[MAX_PATH] = { L'\0' };
-    StringCchCopyW(tchFileName2,COUNTOF(tchFileName2),szFileName);
+  WCHAR tchFileName2[MAX_PATH] = { L'\0' };
+  StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-    if (FileLoad(true,false,true,false,true,false,tchFileName2))
-    {
-      if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-        if (docView.bIsTail || FileWatching.MonitoringLog) {
-          bPreserveView = false;
-          //~SciCall_DocumentEnd();
-          SciCall_ScrollToEnd();
-        }
-      }
+  if (!FileLoad(true, false, true, false, true, false, tchFileName2)) { return false; }
 
-      if (SciCall_GetTextLength() >= 4) {
-        char tch[5] = { '\0','\0','\0','\0','\0' };
-        SciCall_GetText(COUNTOF(tch), tch);
-        if (StringCchCompareXA(tch,".LOG") == 0) {
-          SciCall_ClearSelections();
-          bPreserveView = false;
-          SciCall_DocumentEnd();
-          EditEnsureSelectionVisible(Globals.hwndEdit);
-        }
-      }
-
-      if (bPreserveView) {
-        EditSetDocView(Globals.hwndEdit, docView);
-      }
-      
-      SciCall_SetSavePoint();
-      return true;
+  if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
+    if (docView.bIsTail || FileWatching.MonitoringLog) {
+      bPreserveView = false;
+      //~SciCall_DocumentEnd();
+      SciCall_ScrollToEnd();
     }
   }
-  return false;
+
+  if (SciCall_GetTextLength() >= 4) {
+    char tch[5] = { '\0','\0','\0','\0','\0' };
+    SciCall_GetText(COUNTOF(tch), tch);
+    if (StringCchCompareXA(tch, ".LOG") == 0) {
+      SciCall_ClearSelections();
+      bPreserveView = false;
+      SciCall_DocumentEnd();
+      EditEnsureSelectionVisible(Globals.hwndEdit);
+    }
+  }
+
+  if (bPreserveView) {
+    EditSetDocView(Globals.hwndEdit, docView);
+  }
+
+  SciCall_SetSavePoint();
+  return true;
 }
 
 
