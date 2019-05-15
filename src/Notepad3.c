@@ -174,30 +174,27 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
+  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
-  { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
 };
 static const int NUMTOOLBITMAPS = 29;
 
 // ----------------------------------------------------------------------------
 
 static const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
-static const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17 0 29";
+static const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //=============================================================================
 
@@ -3286,8 +3283,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!((IDOK == answer) || (IDYES == answer))) {
           break;
         }
-        FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
+        //~ don't revert if no save needed
+        //~FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET)); 
       }
+      // revert in any case (manually forced)
+      FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       break;
 
 
