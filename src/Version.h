@@ -73,7 +73,11 @@
             #define VER_CPL     MS Visual C++ 2019 v16.0.Prev(1-4)
         #endif
     #elif (_MSC_VER >= 1916)
-        #if(_MSC_FULL_VER >= 191627027) 
+        #if(_MSC_FULL_VER >= 191627031)
+            #define VER_CPL     MS Visual C++ 2017 v15.9.12
+        #elif(_MSC_FULL_VER >= 191627030)
+            #define VER_CPL     MS Visual C++ 2017 v15.9.11
+        #elif(_MSC_FULL_VER >= 191627027)
             #define VER_CPL     MS Visual C++ 2017 v15.9.(7-10)
         #elif(_MSC_FULL_VER >= 191627026) 
             #define VER_CPL     MS Visual C++ 2017 v15.9.(5-6)
@@ -85,7 +89,7 @@
             #define VER_CPL     MS Visual C++ 2017 v15.9.(0-1)
         #endif
     #elif (_MSC_VER >= 1915)
-        #if(_MSC_FULL_VER >= 191526732) 
+        #if(_MSC_FULL_VER >= 191526732)
             #define VER_CPL     MS Visual C++ 2017 v15.8.(8-9)
         #elif(_MSC_FULL_VER >= 191526730)
             #define VER_CPL     MS Visual C++ 2017 v15.8.(5-7)
