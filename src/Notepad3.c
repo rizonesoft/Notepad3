@@ -3283,8 +3283,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!((IDOK == answer) || (IDYES == answer))) {
           break;
         }
-        FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
+        //~ don't revert if no save needed
+        //~FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET)); 
       }
+      // revert in any case (manually forced)
+      FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       break;
 
 
