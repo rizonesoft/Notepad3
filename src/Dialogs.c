@@ -3455,14 +3455,16 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 //
 bool bFreezeAppTitle = false;
 
-static const WCHAR *pszSep = L" - ";
-static const WCHAR *pszMod = L"* ";
+const WCHAR* const pszSep = L" - ";
+const WCHAR* const pszMod = L"* ";
+const WCHAR* const pszPin = L"(T) ";
+
 static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
 static WCHAR szAdditionalTitleInfo[MAX_PATH] = { L'\0' };
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
-  LPCWSTR lpszFile, int iFormat, bool bModified,
+  LPCWSTR lpszFile, int iFormat, bool bModified, bool bAlwaysOnTop,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
   if (bFreezeAppTitle)
@@ -3482,10 +3484,12 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 
   WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
   
-  if (bModified)
-    StringCchCopy(szTitle, COUNTOF(szTitle), pszMod);
-  else
-    StringCchCopy(szTitle, COUNTOF(szTitle), L"");
+  if (bAlwaysOnTop) {
+    StringCchCat(szTitle, COUNTOF(szTitle), pszPin);
+  }
+  if (bModified) {
+    StringCchCat(szTitle, COUNTOF(szTitle), pszMod);
+  }
 
   if (StrIsNotEmpty(lpszExcerpt)) {
     WCHAR szExcrptFmt[32] = { L'\0' };
