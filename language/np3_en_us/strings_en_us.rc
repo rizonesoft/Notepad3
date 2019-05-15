@@ -163,7 +163,7 @@ BEGIN
     IDS_MUI_NOTFOUND        "The specified text was not found."
     IDS_MUI_REPLCOUNT       "%i occurrences of the specified text have been replaced."
     IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
+    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronized with the new encoding. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
     IDS_MUI_FILECHANGENOTIFY
                             "The current file has been modified by an external program. Reload?"

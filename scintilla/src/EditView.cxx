@@ -2019,7 +2019,7 @@ void EditView::DrawLine(Surface *surface, const EditModel &model, const ViewStyl
 		return; // No further drawing
 	}
 
-	// See if something overrides the line background color.
+	// See if something overrides the line background colour.
 	const ColourOptional background = vsDraw.Background(model.pdoc->GetMark(line), model.caret.active, ll->containsCaret);
 
 	const Sci::Position posLineStart = model.pdoc->LineStart(line);

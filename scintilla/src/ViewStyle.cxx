@@ -443,12 +443,12 @@ bool ViewStyle::IsLineFrameOpaque(bool caretActive, bool lineContainsCaret) cons
 		(caretLineAlpha == SC_ALPHA_NOALPHA) && lineContainsCaret;
 }
 
-// See if something overrides the line background color:  Either if caret is on the line
-// and background color is set for that, or if a marker is defined that forces its background
-// color onto the line, or if a marker is defined but has no selection margin in which to
+// See if something overrides the line background colour:  Either if caret is on the line
+// and background colour is set for that, or if a marker is defined that forces its background
+// colour onto the line, or if a marker is defined but has no selection margin in which to
 // display itself (as long as it's not an SC_MARK_EMPTY marker).  These are checked in order
 // with the earlier taking precedence.  When multiple markers cause background override,
-// the color for the highest numbered one is used.
+// the colour for the highest numbered one is used.
 ColourOptional ViewStyle::Background(int marksOfLine, bool caretActive, bool lineContainsCaret) const {
 	ColourOptional background;
 	if (!caretLineFrame && (caretActive || alwaysShowCaretLineBackground) && showCaretLineBackground &&

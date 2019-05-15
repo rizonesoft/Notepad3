@@ -420,7 +420,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 							DrawStyledText(surface, vs, vs.marginStyleOffset, rcMarker,
 								stMargin, 0, stMargin.length, drawAll);
 						} else {
-							// if we're displaying annotation lines, color the margin to match the associated document line
+							// if we're displaying annotation lines, colour the margin to match the associated document line
 							const int annotationLines = model.pdoc->AnnotationLines(lineDoc);
 							if (annotationLines && (visibleLine > lastVisibleLine - annotationLines)) {
 								surface->FillRectangle(rcMarker, vs.styles[stMargin.StyleAt(0) + vs.marginStyleOffset].back);
