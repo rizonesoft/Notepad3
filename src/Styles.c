@@ -943,11 +943,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_OK].szValue, FOREGROUND_LAYER, &dColor))
-      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, dColor);
+      SciCall_IndicSetFore(INDIC_NP3_MATCH_BRACE, dColor);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, true))
-      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+      SciCall_IndicSetAlpha(INDIC_NP3_MATCH_BRACE, iValue);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, false))
-      SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+      SciCall_IndicSetOutlineAlpha(INDIC_NP3_MATCH_BRACE, iValue);
 
     iValue = -1; // need for retrieval
     if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_BRACE_OK].szValue, 0, &iValue)) {
@@ -956,7 +956,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
       StringCchCatW(pCurrentStandard->Styles[STY_BRACE_OK].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
     }
-    SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
+    SciCall_IndicSetStyle(INDIC_NP3_MATCH_BRACE, iValue);
   }
   if (Settings2.UseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
@@ -964,11 +964,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, FOREGROUND_LAYER, &dColor))
-      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, dColor);
+      SciCall_IndicSetFore(INDIC_NP3_BAD_BRACE, dColor);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, true))
-      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
+      SciCall_IndicSetAlpha(INDIC_NP3_BAD_BRACE, iValue);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, false))
-      SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, iValue);
+      SciCall_IndicSetOutlineAlpha(INDIC_NP3_BAD_BRACE, iValue);
 
     iValue = -1; // need for retrieval
     if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, 0, &iValue)) {
@@ -977,7 +977,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
       StringCchCatW(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
     }
-    SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, iValue);
+    SciCall_IndicSetStyle(INDIC_NP3_BAD_BRACE, iValue);
+
   }
 
   // Occurrences Marker
@@ -1131,8 +1132,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // bookmark line or marker
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
 
-  // caret style and width
+  // Hyperlink (URL) indicators
+  Style_SetUrlHotSpot(hwnd);
 
+  // caret style and width
   int const ovrstrk_mode = (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrblck")) ? 
     CARETSTYLE_OVERSTRIKE_BLOCK : CARETSTYLE_OVERSTRIKE_BAR;
 
@@ -1364,7 +1367,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
-  Style_SetUrlHotSpot(hwnd);
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
@@ -1383,8 +1385,18 @@ void Style_SetUrlHotSpot(HWND hwnd)
 {
   UNUSED(hwnd);
 
-  const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
+  WCHAR* lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
+  int const cCount = COUNTOF(GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue);
 
+  int indicHoverStyle = -1; // need for retrieval
+  if (!Style_GetIndicatorType(lpszStyleHotSpot, cCount, &indicHoverStyle)) {
+    // got default, get string
+    WCHAR wchSpecificStyle[80] = { L'\0' };
+    StringCchCatW(lpszStyleHotSpot, cCount, L"; ");
+    Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &indicHoverStyle);
+    StringCchCatW(lpszStyleHotSpot, cCount, wchSpecificStyle);
+  }
+ 
   COLORREF activeFG = RGB(0x00, 0x00, 0xFF);
   Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG);
   COLORREF inactiveFG = RGB(0x00, 0x00, 0xC0);
@@ -1392,16 +1404,24 @@ void Style_SetUrlHotSpot(HWND hwnd)
     inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
   }
   
-  // normal
+  int iValue = 40;
+  if (Style_StrGetAlpha(lpszStyleHotSpot, &iValue, true)) {
+    SciCall_IndicSetAlpha(INDIC_NP3_HYPERLINK_U, iValue);
+  }
+  iValue = 80;
+  if (Style_StrGetAlpha(lpszStyleHotSpot, &iValue, false)) {
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_HYPERLINK_U, iValue);
+  }
+
+  // normal (fix)
   SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
   SciCall_IndicSetFore(INDIC_NP3_HYPERLINK, inactiveFG);
   SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK_U, INDIC_PLAIN);
-  //SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
   SciCall_IndicSetFore(INDIC_NP3_HYPERLINK_U, inactiveFG);
-  // hover
+  // hover (stylish)
   SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
   SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK, activeFG);
-  SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
+  SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK_U, indicHoverStyle);
   SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK_U, activeFG);
 }
 
@@ -2440,7 +2460,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb)
 //
 //  Style_StrGetAlpha()
 //
-bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st) 
+bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st) 
 {
   const WCHAR* strAlpha = bAlpha1st ? L"alpha:" : L"alpha2:";
 
@@ -2455,7 +2475,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
     int iValue = 0;
     int itok = swscanf_s(tch, L"%i", &iValue);
     if (itok == 1) {
-      *i = clampi(iValue, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
+      *iOutValue = clampi(iValue, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
       return true;
     }
   }
