@@ -902,8 +902,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // constants
   SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
-  //§§§SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
-                                                                              // Auto-select codepage according to charset
+
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
@@ -1365,63 +1364,44 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
-  //§§§Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
+  Style_SetUrlHotSpot(hwnd);
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
-  EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
+
+  EditUpdateUrlIndicators(hwnd, 0, -1, Settings.HyperlinkHotspot);
   
   UpdateAllBars(false);
 }
-
 
 
 //=============================================================================
 //
 //  Style_SetUrlHotSpot()
 //
-void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
+void Style_SetUrlHotSpot(HWND hwnd)
 {
-  int const cHotSpotStyleID = Style_GetHotspotStyleID();
+  UNUSED(hwnd);
 
-  if (bHotSpot)
-  {
-    const WCHAR* const lpszStyleDefault = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
-    const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
+  const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
 
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)true);
-    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, false, 0);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
-
-    // Font
-    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
-
-    COLORREF rgb = 0;
-
-    if (!Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &rgb)) 
-    {
-      Style_StrGetColor(L"italic; fore:#0000FF", FOREGROUND_LAYER, &rgb);
-    }
-    COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
-    SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
-
-
-    if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &rgb))
-    {
-      if (!Style_StrGetColor(lpszStyleDefault, BACKGROUND_LAYER, &rgb))
-      {
-        rgb = GetSysColor(COLOR_WINDOW);
-      }
-    }
-    SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
-  }
-  else {
-    Style_SetStyles(hwnd, cHotSpotStyleID, L"", false); // uses Styles[STY_DEFAULT]
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)false);
-  }
-
+  COLORREF activeFG = RGB(0x00, 0x00, 0xFF);
+  Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG);
+  //COLORREF inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
+  COLORREF inactiveFG = RGB(0x00, 0x00, 0xC0);
+  Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG);
+  
+  // normal
+  SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+  SciCall_IndicSetFore(INDIC_NP3_HYPERLINK, inactiveFG);
+  SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK_U, INDIC_PLAIN);
+  //SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
+  SciCall_IndicSetFore(INDIC_NP3_HYPERLINK_U, inactiveFG);
+  // hover
+  SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+  SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK, activeFG);
+  SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
+  SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK_U, activeFG);
 }
 
 

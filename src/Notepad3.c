@@ -266,7 +266,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+    EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
     UpdateAllBars(false);
   }
 }
@@ -1342,8 +1342,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
+      UpdateVisibleUrlIndics();
       MarkAllOccurrences(0, true);
-      EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -2311,7 +2311,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   UpdateAllBars(false);
   
   return 0;
@@ -2373,8 +2373,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   SendWMSize(hwnd, NULL);
 
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   MarkAllOccurrences(0, true);
-  EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   UpdateUI();
   UpdateAllBars(false);
 
@@ -3149,12 +3149,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
 
-  bool bIsHLink = false;
-  int const iHotSpotStyleID = Style_GetHotspotStyleID();
-  char const ccStyleAt = SciCall_GetStyleAt(iCurPos);
-  if (SciCall_StyleGetHotspot(iHotSpotStyleID)) {
-    bIsHLink = (ccStyleAt == (char)iHotSpotStyleID);
-  }
+  bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
   i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
@@ -3248,6 +3243,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   switch(iLoWParam)
   {
     case SCEN_CHANGE:
+      UpdateVisibleUrlIndics();
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       break;
 
@@ -3265,12 +3261,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_TIMER_MAIN_MRKALL:
       EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
       break;
-
-
-    case IDT_TIMER_UPDATE_HOTSPOT:
-      EditApplyVisibleStyle(Globals.hwndEdit);
-      break;
-
 
     case IDT_TIMER_CLEAR_CALLTIP:
       CancelCallTip();
@@ -3583,8 +3573,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        //§§§Sci_ApplyLexerStyle(0, -1);
-        EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+        EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
         UpdateStatusbar(false);
       }
       break;
@@ -4985,6 +4974,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOGGLE_VIEW:
       if (FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
+        UpdateVisibleUrlIndics();
         MarkAllOccurrences(0, true);
       }
       else {
@@ -5069,14 +5059,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      Style_SetUrlHotSpot(Globals.hwndEdit, Settings.HyperlinkHotspot);
-      if (Settings.HyperlinkHotspot) {
-        UpdateVisibleUrlHotspot(0);
-      }
-      else {
-        SciCall_StartStyling(0);
-        Style_ResetCurrentLexer(Globals.hwndEdit);
-      }
+      UpdateVisibleUrlIndics();
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -5919,11 +5902,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
     case CMD_OPEN_HYPERLINK:
         HandleHotSpotURL(SciCall_GetCurrentPos(), OPEN_WITH_BROWSER);
       break;
-
 
     case CMD_ALTDOWN:
       EditFoldAltArrow(DOWN, SNIFF);
@@ -6218,28 +6199,12 @@ bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
 {
   bool bHandled = false;
 
-  char const cStyle = SciCall_GetStyleAt(position);
-  int const iStyleID = Style_GetHotspotStyleID();
+  int const value = SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position);
+  if (value <= 0) { return bHandled; }
 
-  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return bHandled; }
-
-  // get left most position of style
-  DocPos pos = position;
-  char cNewStyle = cStyle;
-  while ((cNewStyle == cStyle) && (--pos > 0)) {
-    cNewStyle = SciCall_GetStyleAt(pos);
-  }
-  DocPos const firstPos = (pos != 0) ? (pos + 1) : 0;
-
-  // get right most position of style
-  pos = position;
-  cNewStyle = cStyle;
-  DocPos const docEndPos = Sci_GetDocEndPosition();
-  while ((cNewStyle == cStyle) && (++pos <= docEndPos)) {
-    cNewStyle = SciCall_GetStyleAt(pos);
-  }
-  DocPos lastPos = pos;
-  DocPos length = (lastPos - firstPos);
+  DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
+  DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
+  DocPos const length = (lastPos - firstPos);
 
   if ((length > 0) && (length < XHUGE_BUFFER))
   {
@@ -6247,14 +6212,14 @@ bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
 
     StringCchCopyNA(chURL, XHUGE_BUFFER, SciCall_GetRangePointer(firstPos, length), length);
     StrTrimA(chURL, " \t\n\r");
-    
+
     if (!StringCchLenA(chURL, COUNTOF(chURL))) { return bHandled; }
 
     WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
     int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, XHUGE_BUFFER) - 1;
 
     const WCHAR* chkPreFix = L"file://";
-    size_t const lenPfx = StringCchLenW(chkPreFix,0);
+    size_t const lenPfx = StringCchLenW(chkPreFix, 0);
 
     if (operation & COPY_HYPERLINK)
     {
@@ -6562,6 +6527,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (IsMarkOccurrencesEnabled()) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
             }
+            if (Settings.HyperlinkHotspot) {
+              UpdateVisibleUrlIndics();
+            }
             if (scn->linesAdded != 0) {
               UpdateMarginWidth();
             }
@@ -6569,14 +6537,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
         }
         break;
-
-
-        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-          {
-            //§§§EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_GetEndStyled(), (int)scn->position, Settings.HyperlinkHotspot);
-          }
-          break;
-
 
         case SCN_UPDATEUI:
         {
@@ -6588,12 +6548,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
           {
-
             // Brace Match
             if (Settings.MatchBraces) {
               EditMatchBrace(Globals.hwndEdit);
             }
-
             if (IsMarkOccurrencesEnabled()) {
               // clear marks only, if selection changed
               if (iUpd & SC_UPDATE_SELECTION)
@@ -6608,12 +6566,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               else if (iUpd & SC_UPDATE_CONTENT) {
                 // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
                 // using WM_COMMAND -> SCEN_CHANGE  instead!
+                //~~~UpdateVisibleUrlIndics();
                 //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
               }
             }
-
             if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
+              UpdateVisibleUrlIndics();
             }
             UpdateToolbar();
             UpdateStatusbar(false);
@@ -6624,15 +6582,14 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
             if (Settings.HyperlinkHotspot) {
-              //§§§UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
-              EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, true);
+              UpdateVisibleUrlIndics();
             }
           }
         }
         break;
 
-
         case SCN_HOTSPOTCLICK:
+        case SCN_INDICATORCLICK:
         {
           if (scn->modifiers & SCMOD_CTRL) {
             // open in browser
@@ -6746,10 +6703,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         default:
           return FALSE;
-      }
-      // in any case 
-      if (Settings.MarkOccurrencesCurrentWord && IsMarkOccurrencesEnabled()) {
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       }
       return -1LL;
 
@@ -8454,17 +8407,14 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 
 //=============================================================================
 //
-//  UpdateVisibleUrlHotspot()
+//  UpdateVisibleUrlIndics()
 // 
-void UpdateVisibleUrlHotspot(int delay)
+void UpdateVisibleUrlIndics()
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_HOTSPOT, 0);
-  mqc.hwnd = Globals.hwndMain;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+  EditUpdateUrlIndicators(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), Settings.HyperlinkHotspot);
 }
-
-
-
 
 
 //=============================================================================
@@ -9853,7 +9803,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(bReload);
-    UpdateVisibleUrlHotspot(0);
+    UpdateVisibleUrlIndics();
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)

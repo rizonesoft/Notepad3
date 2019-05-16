@@ -83,7 +83,6 @@ typedef enum {
 LexDefaultStyles;
 
 #define _STYLE_GETSTYLEID(ID) ((STYLE_LASTPREDEFINED + 1) + ID)
-#define Style_GetHotspotStyleID()   ((int)_STYLE_GETSTYLEID(STY_URL_HOTSPOT))
 #define Style_GetInvisibleStyleID() ((int)_STYLE_GETSTYLEID(STY_INVISIBLE))
 #define Style_GetReadonlyStyleID()  ((int)_STYLE_GETSTYLEID(STY_READONLY))
 

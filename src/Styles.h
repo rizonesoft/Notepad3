@@ -45,7 +45,7 @@ float  Style_GetCurrentFontSize();
 void   Style_SetFoldingAvailability(PEDITLEXER pLexer);
 void   Style_SetFoldingProperties(bool active);
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
-void   Style_SetUrlHotSpot(HWND hwnd, bool);
+void   Style_SetUrlHotSpot(HWND hwnd);
 void   Style_SetInvisible(HWND hwnd, bool);
 void   Style_SetReadonly(HWND hwnd, bool);
 void   Style_SetLongLineColors(HWND hwnd);
