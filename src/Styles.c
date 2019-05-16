@@ -1944,29 +1944,34 @@ bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
   UINT const magic2 = (buf[0] << 8) | buf[1];
   if (magic2 == 0x4D5A ||  // PE: MZ
     magic2 == 0x504B ||    // ZIP: PK
-    magic2 == 0x377A ||    // 7z
-    magic2 == 0x424D       // BMP: BM
+    magic2 == 0x377A ||    // 7z: 7z
+    magic2 == 0x424D ||    // BMP: BM
+    magic2 == 0xFFD8       // JPEG
     ) {
     return true;
   }
   UINT const magic = (magic2 << 16) | (buf[2] << 8) | buf[3];
-  if (magic == 0x89504E47 || // PNG
-    magic == 0x47494638 ||   // GIF: GIF89a
-    magic == 0x25504446 ||   // PDF
-    magic == 0xCAFEBABE      // Java class
+  if (magic == 0x89504E47 ||  // PNG: 0x89+PNG
+    magic == 0x47494638 ||    // GIF: GIF89a
+    magic == 0x25504446 ||    // PDF: %PDF-{version}
+    magic == 0x52617221 ||    // RAR: Rar!
+    magic == 0x7F454C46 ||    // ELF: 0x7F+ELF
+    magic == 0x213C6172 ||    // .lib, .a: !<arch>\n
+    magic == 0xFD377A58 ||    // xz: 0xFD+7zXZ
+    magic == 0xCAFEBABE       // Java class
     ) {
     return true;
   }
-  const WCHAR* const binaryExt = L" exe cur ico jpeg jpg lib mdb obj pdb pyc pyd "; // keep blank at end
+  const WCHAR* const binaryExt = L"|bin|exe|cur|ico|iso|img|lib|mdb|obj|pak|pdb|pyc|pyd|tar|"; // keep '|' at end
   size_t const _min = 5ULL;  size_t const _max = 6ULL;
 
   WCHAR lpszExt[16] = { L'\0' };
-  StringCchPrintf(lpszExt, COUNTOF(lpszExt), L" %s ", PathFindExtension(lpszFile));
-  if (StrIsNotEmpty(lpszExt)) {
-    size_t const len = StringCchLen(lpszExt,MAX_PATH);
-    if (len < _min || len > _max) {
-      if (StrStrI(binaryExt, lpszExt)) { return true; }
-    }
+  StringCchCopy(lpszExt, COUNTOF(lpszExt), L"|");
+  StringCchCopy(lpszExt, COUNTOF(lpszExt), PathFindExtension(lpszFile));
+  StringCchCat(lpszExt, COUNTOF(lpszExt), L"|");
+  size_t const len = StringCchLen(lpszExt,MAX_PATH);
+  if (len < _min || len > _max) {
+    if (StrStrI(binaryExt, lpszExt)) { return true; }
   }
 #endif
   return false;
