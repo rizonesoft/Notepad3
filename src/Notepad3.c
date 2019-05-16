@@ -8474,7 +8474,7 @@ void UpdateToolbar()
 static void  _UpdateToolbarDelayed()
 {
   SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 Settings.PathNameFormat, IsSaveNeeded(ISN_GET), Settings.AlwaysOnTop,
+                 Settings.PathNameFormat, IsSaveNeeded(ISN_GET),
                  IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
   if (!Settings.ShowToolbar) { return; }
