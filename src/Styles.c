@@ -1387,9 +1387,10 @@ void Style_SetUrlHotSpot(HWND hwnd)
 
   COLORREF activeFG = RGB(0x00, 0x00, 0xFF);
   Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG);
-  //COLORREF inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
   COLORREF inactiveFG = RGB(0x00, 0x00, 0xC0);
-  Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG);
+  if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG)) {
+    inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
+  }
   
   // normal
   SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
