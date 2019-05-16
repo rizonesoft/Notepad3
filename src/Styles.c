@@ -902,7 +902,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // constants
   SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
-  SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
+  //§§§SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
                                                                               // Auto-select codepage according to charset
   //~Style_SetACPfromCharSet(hwnd);
 
@@ -1365,7 +1365,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
-  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
+  //§§§Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
@@ -1391,15 +1391,10 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)true);
     SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, false, 0);
+    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
 
     // Font
     Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
-
-    //if (StrStrI(lpszStyleHotSpot, L"underline") != NULL)
-    //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
-    //else
-    //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, false, 0);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
 
     COLORREF rgb = 0;
 

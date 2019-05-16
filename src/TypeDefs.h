@@ -254,6 +254,8 @@ typedef struct _cmq
 #define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
 #define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
 #define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
+#define INDIC_NP3_HYPERLINK      (INDIC_CONTAINER + 5)
+#define INDIC_NP3_HYPERLINK_U    (INDIC_CONTAINER + 6)
 
 
 //=============================================================================

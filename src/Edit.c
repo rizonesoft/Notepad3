@@ -6196,6 +6196,7 @@ void EditApplyVisibleStyle(HWND hwnd)
 {
   DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
   DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+#if 0
   if (Settings.HyperlinkHotspot && !_IsInTargetTransaction()) {
     _IGNORE_NOTIFY_CHANGE_;
     EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
@@ -6204,6 +6205,10 @@ void EditApplyVisibleStyle(HWND hwnd)
   else if (!FocusedView.HideNonMatchedLines) {
     Sci_ApplyLexerStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
   }
+#else
+  //§§§
+  EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), Settings.HyperlinkHotspot);
+#endif
 }
 
 
@@ -6884,18 +6889,25 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   }
   if (endPos == startPos) { return; }
 
+#if 0
   if (!bActiveHotspot) {
     SciCall_StartStyling(startPos);
     Sci_ApplyLexerStyle(startPos, endPos);
     return;
   }
-
+#else
+  if (!bActiveHotspot) {
+    SciCall_IndicatorClearRange(startPos, endPos - startPos);
+    return;
+  }
+#endif
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
 
   int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
 
+#if 0
   SciCall_StartStyling(startPos);
 
   _ENTER_TARGET_TRANSACTION_;
@@ -6927,6 +6939,40 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   _LEAVE_TARGET_TRANSACTION_;
 
   SciCall_StartStyling(Sci_GetDocEndPosition());
+
+#else
+
+  SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK);
+  SciCall_IndicatorClearRange(startPos, endPos - startPos);
+  SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK_U);
+  SciCall_IndicatorClearRange(startPos, endPos - startPos);
+
+  DocPos start = startPos;
+  DocPos end = endPos;
+  do {
+
+    DocPos const iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
+
+    if (iPos < 0) {
+      break; // not found
+    }
+    DocPos const mlen = end - start;
+    if ((mlen <= 0) || (end > endPos)) {
+      break; // wrong match
+    }
+
+    SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK);
+    SciCall_IndicatorFillRange(start, mlen);
+    SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK_U);
+    SciCall_IndicatorFillRange(start, mlen);
+
+    // next occurrence
+    start = end + 1;
+    end = endPos;
+
+  } while (start < end);
+
+#endif
 }
 
 
@@ -6946,7 +6992,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
-    Sci_ApplyLexerStyle(0, -1);
+    //§§§Sci_ApplyLexerStyle(0, -1);
     EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
     EditMarkAllOccurrences(hwnd, true);
   }
