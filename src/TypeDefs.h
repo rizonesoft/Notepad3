@@ -157,7 +157,7 @@ typedef enum {
 
 // --------------------------------------------------------------------------
 
-typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO } CALLTIPTYPE;
+typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO, CT_DWELL } CALLTIPTYPE;
 
 // --------------------------------------------------------------------------
 

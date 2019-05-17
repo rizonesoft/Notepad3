@@ -153,6 +153,8 @@
 #define IDS_MUI_GOTO_LINE               15055
 #define IDS_MUI_GOTO_COLUMN             15056
 #define IDS_MUI_INDENT_CONSISTENT       15057
+#define IDS_MUI_URL_OPEN_FILE           15058
+#define IDS_MUI_URL_OPEN_BROWSER        15059
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001

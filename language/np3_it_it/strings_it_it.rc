@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Errore nell'esportazione degli Stili su ""%s""."
-    IDS_MUI_REGEX_INVALID   "Errore nella valutazione della regular expression. La RegExp non è valida!"
-    IDS_MUI_DROP_NO_FILE    "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."
+    IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s""."
+    IDS_MUI_REGEX_INVALID    "Errore nella valutazione della regular expression. La RegExp non è valida!"
+    IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

@@ -1256,8 +1256,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 //
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static bool bAltKeyIsDown = false;
-
   switch(umsg)
   {
     // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
@@ -1280,11 +1278,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYDOWN:
       if (IsAsyncKeyDown(VK_MENU))  // ALT-KEY DOWN
       {
-        if (!bAltKeyIsDown) {
-          bAltKeyIsDown = true;
-          if (!Settings2.DenyVirtualSpaceAccess) {
-            SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
-          }
+        if (!Settings2.DenyVirtualSpaceAccess) {
+          SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
@@ -1292,27 +1287,28 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYUP:
       if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
       {
-        if (bAltKeyIsDown) {
-          bAltKeyIsDown = false;
-          SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
-        }
+         SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_KILLFOCUS:
-      if (bAltKeyIsDown) {
-        bAltKeyIsDown = false;
-        SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
+      if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
+      {
+         SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
+
 
     case WM_CREATE:
       return MsgCreate(hwnd, wParam, lParam);
 
-
     case WM_DESTROY:
     case WM_ENDSESSION:
       return MsgEndSession(hwnd, umsg, wParam, lParam);
+
+    case WM_SETFOCUS:
+      SetFocus(Globals.hwndEdit);
+      break;
 
     case WM_CLOSE:
       s_flagAppIsClosing = true;
@@ -1349,10 +1345,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_SIZE:
       return MsgSize(hwnd, wParam, lParam);
-
-    case WM_SETFOCUS:
-      SetFocus(Globals.hwndEdit);
-      break;
 
     case WM_DROPFILES:
       return MsgDropFiles(hwnd, wParam, lParam);
@@ -1563,10 +1555,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, false, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, false, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
+
+  int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION;
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, vspaceOpt, 0);
+
   // Idle Styling (very large text)
   SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
@@ -1626,8 +1621,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
   
-  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
-  //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)500, 0);
+  //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
+  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)250, 0);
   
 
   #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
@@ -5903,7 +5898,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_OPEN_HYPERLINK:
-        HandleHotSpotURL(SciCall_GetCurrentPos(), OPEN_WITH_BROWSER);
+        HandleHotSpotURL(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3));
       break;
 
     case CMD_ALTDOWN:
@@ -6195,81 +6190,132 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //  HandleHotSpotURL()
 //
 //
-bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
+void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
+  switch (uid)
+  {
+    case SCN_DWELLSTART:
+    {
+      if (SciCall_CallTipActive() || (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) <= 0)) { return; }
+
+      char chURL[LARGE_BUFFER] = { '\0' };
+      DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
+      DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
+      DocPos const length = (lastPos - firstPos);
+
+      StringCchCopyNA(chURL, COUNTOF(chURL), SciCall_GetRangePointer(firstPos, length), length);
+      StrTrimA(chURL, " \t\n\r");
+
+      if (StrIsEmptyA(chURL)) { return; }
+
+      CHAR  chCalltipAdd[MIDSZ_BUFFER] = { L'\0' };
+      WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
+      if (StrStrIA(chURL, "file:") == chURL) { 
+        GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+      } else {
+        GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+      }
+      WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chCalltipAdd, COUNTOF(chCalltipAdd), NULL, NULL);
+      StringCchCatA(chURL, COUNTOF(chURL), chCalltipAdd);
+
+      SciCall_CallTipShow(position, chURL);
+      SciCall_CallTipSetHlt(0, (int)length);
+      Globals.CallTipType = CT_DWELL;
+    }
+    break;
+
+    case SCN_DWELLEND:
+    {
+      CancelCallTip();
+    }
+    break;
+
+    default:
+      break;
+  }
+}
+
+//=============================================================================
+//
+//  HandleHotSpotURL()
+//
+//
+bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation)
+{
+  CancelCallTip();
+  //PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
+
+  if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) == 0) { return false; }
+
+  char chURL[HUGE_BUFFER] = { '\0' };
+
   bool bHandled = false;
-
-  int const value = SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position);
-  if (value <= 0) { return bHandled; }
-
   DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
   DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
-  DocPos const length = (lastPos - firstPos);
+  DocPos const length = min_p(lastPos - firstPos, COUNTOF(chURL));
 
-  if ((length > 0) && (length < XHUGE_BUFFER))
+  StringCchCopyNA(chURL, COUNTOF(chURL), SciCall_GetRangePointer(firstPos, length), length);
+  StrTrimA(chURL, " \t\n\r");
+
+  if (StrIsEmptyA(chURL)) { return bHandled; }
+
+  WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
+  int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, COUNTOF(wchURL)) - 1;
+
+  const WCHAR* chkPreFix = L"file://";
+  size_t const lenPfx = StringCchLenW(chkPreFix, 0);
+
+  if (operation & COPY_HYPERLINK)
   {
-    char chURL[XHUGE_BUFFER] = { '\0' };
-
-    StringCchCopyNA(chURL, XHUGE_BUFFER, SciCall_GetRangePointer(firstPos, length), length);
-    StrTrimA(chURL, " \t\n\r");
-
-    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return bHandled; }
-
-    WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
-    int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, XHUGE_BUFFER) - 1;
-
-    const WCHAR* chkPreFix = L"file://";
-    size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-
-    if (operation & COPY_HYPERLINK)
-    {
-      if (lenHypLnk > 0) {
-        SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
-        bHandled = true;
-      }
-    }
-    if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
-    {
-      WCHAR* szFileName = &(wchURL[lenPfx]);
-      StrTrimW(szFileName, L"/");
-
-      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)lenPfx);
-
-      if (PathIsDirectory(szFileName))
-      {
-        WCHAR tchFile[MAX_PATH] = { L'\0' };
-
-        if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
-          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-      }
-      else {
-        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
-      }
-      bHandled = true;
-    }
-    else if (operation & (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3)) // open in web browser
-    {
-      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
-        StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-        PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-      }
-
-      SHELLEXECUTEINFO sei;
-      ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-      sei.cbSize = sizeof(SHELLEXECUTEINFO);
-      sei.fMask = SEE_MASK_NOZONECHECKS;
-      sei.hwnd = NULL;
-      sei.lpVerb = NULL;
-      sei.lpFile = wchURL;
-      sei.lpParameters = NULL;
-      sei.lpDirectory = wchDirectory;
-      sei.nShow = SW_SHOWNORMAL;
-      ShellExecuteEx(&sei);
-
+    if (lenHypLnk > 0) {
+      SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
       bHandled = true;
     }
   }
+  if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+  {
+    WCHAR* szFileName = &(wchURL[lenPfx]);
+    StrTrimW(szFileName, L"/");
+
+    PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(wchURL) - lenPfx));
+    if (PathIsDirectory(szFileName))
+    {
+      WCHAR tchFile[MAX_PATH] = { L'\0' };
+      if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
+      {
+        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+      }
+    }
+    else {
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
+    }
+    bHandled = true;
+  }
+  else if (operation & OPEN_WITH_BROWSER) // open in web browser
+  {
+    WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+    if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+      StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+      PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+    }
+
+    SHELLEXECUTEINFO sei;
+    ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+    sei.cbSize = sizeof(SHELLEXECUTEINFO);
+    sei.fMask = SEE_MASK_NOZONECHECKS;
+    sei.hwnd = NULL;
+    sei.lpVerb = NULL;
+    sei.lpFile = wchURL;
+    sei.lpParameters = NULL;
+    sei.lpDirectory = wchDirectory;
+    sei.nShow = SW_SHOWNORMAL;
+    ShellExecuteEx(&sei);
+
+    bHandled = true;
+  }
+
+  SciCall_SetEmptySelection(position);
+
   return bHandled;
 }
 
@@ -6501,9 +6547,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   switch(pnmh->idFrom)
   {
+    static int _s_indic_click_modifiers = 0;
+
     case IDC_EDIT:
       switch (pnmh->code)
       {
+        case SCN_HOTSPOTCLICK:
+        case SCN_HOTSPOTDOUBLECLICK:
+        case SCN_HOTSPOTRELEASECLICK:
+        case SCN_CALLTIPCLICK:
+          return FALSE;
+
         case SCN_MODIFIED:
         {
           int const iModType = scn->modificationType;
@@ -6570,9 +6624,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
               }
             }
-            if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlIndics();
-            }
             UpdateToolbar();
             UpdateStatusbar(false);
           }
@@ -6581,37 +6632,49 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
-            if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlIndics();
-            }
+          }
+          if (Settings.HyperlinkHotspot) {
+            UpdateVisibleUrlIndics();
           }
         }
         break;
 
-        case SCN_HOTSPOTCLICK:
+        case SCN_DWELLSTART:
+        case SCN_DWELLEND:
+        {
+          HandleDWellStartEnd(scn->position, pnmh->code);
+        }
+        break;
+
         case SCN_INDICATORCLICK:
         {
-          if (scn->modifiers & SCMOD_CTRL) {
-            // open in browser
-            HandleHotSpotURL((int)scn->position, OPEN_WITH_BROWSER);
-          }
-          if (scn->modifiers & SCMOD_ALT) {
-            // open in application, if applicable (file://)
-            HandleHotSpotURL((int)scn->position, OPEN_WITH_NOTEPAD3);
-          }
+          _s_indic_click_modifiers = scn->modifiers;
         }
         break;
 
+        case SCN_INDICATORRELEASE:
+        {
+          if (_s_indic_click_modifiers & SCMOD_CTRL) {
+            // open in browser
+            HandleHotSpotURL(scn->position, OPEN_WITH_BROWSER);
+          }
+          else if (_s_indic_click_modifiers & SCMOD_ALT) {
+            // open in application, if applicable (file://)
+            HandleHotSpotURL(scn->position, OPEN_WITH_NOTEPAD3);
+          }
+          _s_indic_click_modifiers = 0;
+        }
+        break;
 
         case SCN_CHARADDED:
-          {
-            int const ich = scn->ch;
+        {
+          int const ich = scn->ch;
 
-            if (Globals.CallTipType != CT_NONE) {
-              CancelCallTip();
-            }
+          if (Globals.CallTipType != CT_NONE) {
+            CancelCallTip();
+          }
 
-            switch (ich) {
+          switch (ich) {
             case '\r':
             case '\n':
               if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
@@ -6624,29 +6687,29 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               break;
             default:
               break;
-            }
-
-            if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) 
-            {
-              if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
-            }
           }
-          break;
+
+          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+          {
+            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+          }
+        }
+        break;
 
         case SCN_AUTOCCHARDELETED:
-          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) 
+          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
           {
             if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
           }
           break;
 
         case SCN_NEEDSHOWN:
-          {
-            DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
-            DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
-            for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-          }
-          break;
+        {
+          DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
+          DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
+          for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+        }
+        break;
 
 
         case SCN_MARGINCLICK:
@@ -6656,12 +6719,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
 
-        // ~~~ Not used in Windows ~~~
-        // see: CMD_ALTUP / CMD_ALTDOWN
-        //case SCN_KEY:
-        //  // Also see the corresponding patch in scintilla\src\Editor.cxx
-        //  FoldAltArrow(scn->ch, scn->modifiers);
-        //  break;
+          // ~~~ Not used in Windows ~~~
+          // see: CMD_ALTUP / CMD_ALTDOWN
+          //case SCN_KEY:
+          //  // Also see the corresponding patch in scintilla\src\Editor.cxx
+          //  FoldAltArrow(scn->ch, scn->modifiers);
+          //  break;
 
 
         case SCN_SAVEPOINTREACHED:
@@ -6678,28 +6741,28 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           UpdateMarginWidth();
           break;
 
-        case SCN_URIDROPPED: 
+        case SCN_URIDROPPED:
+        {
+          // see WM_DROPFILES
+          WCHAR szBuf[MAX_PATH + 40];
+          if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
           {
-            // see WM_DROPFILES
-            WCHAR szBuf[MAX_PATH + 40];
-            if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0) 
-            {
-              if (IsIconic(hwnd)) {
-                ShowWindow(hwnd, SW_RESTORE);
-              }
-              //SetForegroundWindow(hwnd);
-              if (PathIsDirectory(szBuf)) {
-                WCHAR tchFile[MAX_PATH];
-                if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-                  FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-                }
-              }
-              else if (PathFileExists(szBuf)) {
-                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+            if (IsIconic(hwnd)) {
+              ShowWindow(hwnd, SW_RESTORE);
+            }
+            //SetForegroundWindow(hwnd);
+            if (PathIsDirectory(szBuf)) {
+              WCHAR tchFile[MAX_PATH];
+              if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
+                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
               }
             }
+            else if (PathFileExists(szBuf)) {
+              FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+            }
           }
-          break;
+        }
+        break;
 
         default:
           return FALSE;
@@ -6710,7 +6773,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDC_TOOLBAR:
 
-      switch(pnmh->code)
+      switch (pnmh->code)
       {
         case TBN_ENDADJUST:
           UpdateToolbar();
@@ -6721,27 +6784,27 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
         case TBN_GETBUTTONINFO:
+        {
+          if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
           {
-            if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
-            {
-              WCHAR tch[SMALL_BUFFER] = { L'\0' };
-              GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
-              StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
-              CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
-              return TRUE;
-            }
+            WCHAR tch[SMALL_BUFFER] = { L'\0' };
+            GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
+            StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
+            CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
+            return TRUE;
           }
-          return FALSE;
+        }
+        return FALSE;
 
         case TBN_RESET:
-          {
-            int i; int c = (int)SendMessage(s_hwndToolbar,TB_BUTTONCOUNT,0,0);
-            for (i = 0; i < c; i++) {
-              SendMessage(s_hwndToolbar, TB_DELETEBUTTON, 0, 0);
-            }
-            SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+        {
+          int i; int c = (int)SendMessage(s_hwndToolbar, TB_BUTTONCOUNT, 0, 0);
+          for (i = 0; i < c; i++) {
+            SendMessage(s_hwndToolbar, TB_DELETEBUTTON, 0, 0);
           }
-          return FALSE;
+          SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+        }
+        return FALSE;
 
         default:
           return FALSE;

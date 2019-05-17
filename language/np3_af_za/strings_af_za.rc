@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Kon nie stylinstellings uitvoer na ""%s""."
-    IDS_MUI_REGEX_INVALID   "Kon nie regular expression evalueer nie. Expression is ongeldig!"
-    IDS_MUI_DROP_NO_FILE    "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."
+    IDS_MUI_EXPORT_FAIL      "Kon nie stylinstellings uitvoer na ""%s""."
+    IDS_MUI_REGEX_INVALID    "Kon nie regular expression evalueer nie. Expression is ongeldig!"
+    IDS_MUI_DROP_NO_FILE     "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

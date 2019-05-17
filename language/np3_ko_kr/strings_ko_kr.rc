@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
-    IDS_MUI_REGEX_INVALID   "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
-    IDS_MUI_DROP_NO_FILE    "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
+    IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
+    IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
+    IDS_MUI_DROP_NO_FILE     "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE
