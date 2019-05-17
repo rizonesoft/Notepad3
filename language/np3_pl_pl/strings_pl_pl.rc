@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID   "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE    "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
+    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
+    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
+    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

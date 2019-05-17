@@ -4371,6 +4371,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 //
 void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
 {
+  UNUSED(hwnd);
+
   if ((iAnchorPos < 0) && (iCurrentPos < 0)) {
     SciCall_SelectAll();
   }
@@ -4406,8 +4408,7 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
-  EditApplyVisibleStyle(hwnd);
-
+  UpdateVisibleUrlIndics();
   UpdateToolbar();
   UpdateStatusbar(false);
 }
@@ -6190,25 +6191,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
 //=============================================================================
 //
-//  EditApplyVisibleStyle()
-// 
-void EditApplyVisibleStyle(HWND hwnd)
-{
-  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
-  if (Settings.HyperlinkHotspot && !_IsInTargetTransaction()) {
-    _IGNORE_NOTIFY_CHANGE_;
-    EditUpdateUrlHotspots(hwnd, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), true);
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
-  else if (!FocusedView.HideNonMatchedLines) {
-    Sci_ApplyLexerStyle(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
-  }
-}
-
-
-//=============================================================================
-//
 //  _GetReplaceString()
 //
 static char*  _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
@@ -6852,23 +6834,24 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
 //=============================================================================
 //
-//  _FinalizeStyling()
+//  EditFinalizeStyling()
 //
-static void _FinalizeStyling(DocPos iEndPos)
+void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
-  DocPos const iEndStyled = SciCall_GetEndStyled();
-  if ((iEndPos < 0) || (iEndStyled < iEndPos)) {
-    Sci_ApplyLexerStyle(iEndStyled, iEndPos);
+  UNUSED(hwnd);
+  DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
+  if ((iEndPos < 0) || (startPos < iEndPos)) {
+    Sci_ApplyLexerStyle(startPos, iEndPos);
   }
 }
 
 
 //=============================================================================
 //
-//  EditUpdateUrlHotspots()
+//  EditUpdateUrlIndicators()
 //  Find and mark all URL hot-spots
 //
-void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
+void EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
 {
   if (endPos < 0) {
     endPos = Sci_GetDocEndPosition(); 
@@ -6884,11 +6867,12 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   }
   if (endPos == startPos) { return; }
 
-  if (!bActiveHotspot) {
-    SciCall_StartStyling(startPos);
-    Sci_ApplyLexerStyle(startPos, endPos);
-    return;
-  }
+  SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK);
+  SciCall_IndicatorClearRange(startPos, endPos - startPos);
+  SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK_U);
+  SciCall_IndicatorClearRange(startPos, endPos - startPos);
+
+  if (!bActiveHotspot) { return; }
 
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
@@ -6896,27 +6880,24 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
 
-  SciCall_StartStyling(startPos);
-
-  _ENTER_TARGET_TRANSACTION_;
-
   DocPos start = startPos;
   DocPos end = endPos;
   do {
-    SciCall_StartStyling(start);
 
     DocPos const iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
 
     if (iPos < 0) {
       break; // not found
     }
-    DocPos mlen = end - start;
-    if ((mlen <= 0) || ((iPos + mlen) > endPos)) {
+    DocPos const mlen = end - start;
+    if ((mlen <= 0) || (end > endPos)) {
       break; // wrong match
     }
-    // mark this match
-    SciCall_StartStyling(iPos);
-    SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
+
+    SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK);
+    SciCall_IndicatorFillRange(start, mlen);
+    SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK_U);
+    SciCall_IndicatorFillRange(start, mlen);
 
     // next occurrence
     start = end + 1;
@@ -6924,9 +6905,6 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   } while (start < end);
 
-  _LEAVE_TARGET_TRANSACTION_;
-
-  SciCall_StartStyling(Sci_GetDocEndPosition());
 }
 
 
@@ -6946,8 +6924,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
-    Sci_ApplyLexerStyle(0, -1);
-    EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
     EditMarkAllOccurrences(hwnd, true);
   }
   else // =====   hide lines without marker   =====
@@ -6956,7 +6932,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
-    SciCall_SetProperty("fold.foldsyntaxbased", "0");
     Style_SetFolding(hwnd, true);
 
     DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);

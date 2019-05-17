@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Error al exportar la configuración de estilo a ""%s""."
-    IDS_MUI_REGEX_INVALID   "Error al evaluar la expresión regular. ¡La expresión es inválida!"
-    IDS_MUI_DROP_NO_FILE    "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."
+    IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s""."
+    IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
+    IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

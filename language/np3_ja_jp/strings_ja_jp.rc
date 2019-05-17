@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     """%s"" への配色設定のエクスポートに失敗しました。"
-    IDS_MUI_REGEX_INVALID   "正規表現の構文が正しくありません"
-    IDS_MUI_DROP_NO_FILE    "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"
+    IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
+    IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません"
+    IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

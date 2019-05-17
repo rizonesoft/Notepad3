@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Fout bij het exporteren van stijl instellingen naar ""%s""."
-    IDS_MUI_REGEX_INVALID   "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
-    IDS_MUI_DROP_NO_FILE    "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
+    IDS_MUI_EXPORT_FAIL      "Fout bij het exporteren van stijl instellingen naar ""%s""."
+    IDS_MUI_REGEX_INVALID    "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
+    IDS_MUI_DROP_NO_FILE     "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

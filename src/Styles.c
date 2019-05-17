@@ -902,8 +902,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // constants
   SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
-  SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
-                                                                              // Auto-select codepage according to charset
+
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
@@ -944,11 +943,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_OK].szValue, FOREGROUND_LAYER, &dColor))
-      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, dColor);
+      SciCall_IndicSetFore(INDIC_NP3_MATCH_BRACE, dColor);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, true))
-      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+      SciCall_IndicSetAlpha(INDIC_NP3_MATCH_BRACE, iValue);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, false))
-      SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+      SciCall_IndicSetOutlineAlpha(INDIC_NP3_MATCH_BRACE, iValue);
 
     iValue = -1; // need for retrieval
     if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_BRACE_OK].szValue, 0, &iValue)) {
@@ -957,7 +956,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
       StringCchCatW(pCurrentStandard->Styles[STY_BRACE_OK].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
     }
-    SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
+    SciCall_IndicSetStyle(INDIC_NP3_MATCH_BRACE, iValue);
   }
   if (Settings2.UseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
@@ -965,11 +964,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, FOREGROUND_LAYER, &dColor))
-      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, dColor);
+      SciCall_IndicSetFore(INDIC_NP3_BAD_BRACE, dColor);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, true))
-      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
+      SciCall_IndicSetAlpha(INDIC_NP3_BAD_BRACE, iValue);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, false))
-      SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, iValue);
+      SciCall_IndicSetOutlineAlpha(INDIC_NP3_BAD_BRACE, iValue);
 
     iValue = -1; // need for retrieval
     if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, 0, &iValue)) {
@@ -978,7 +977,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
       StringCchCatW(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
     }
-    SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, iValue);
+    SciCall_IndicSetStyle(INDIC_NP3_BAD_BRACE, iValue);
+
   }
 
   // Occurrences Marker
@@ -1132,8 +1132,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // bookmark line or marker
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
 
-  // caret style and width
+  // Hyperlink (URL) indicators
+  Style_SetUrlHotSpot(hwnd);
 
+  // caret style and width
   int const ovrstrk_mode = (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrblck")) ? 
     CARETSTYLE_OVERSTRIKE_BLOCK : CARETSTYLE_OVERSTRIKE_BAR;
 
@@ -1365,68 +1367,61 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
-  Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
-  EditUpdateUrlHotspots(hwnd, 0, -1, Settings.HyperlinkHotspot);
-  
+
+  UpdateVisibleUrlIndics(); 
   UpdateAllBars(false);
 }
-
 
 
 //=============================================================================
 //
 //  Style_SetUrlHotSpot()
 //
-void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
+void Style_SetUrlHotSpot(HWND hwnd)
 {
-  int const cHotSpotStyleID = Style_GetHotspotStyleID();
+  UNUSED(hwnd);
 
-  if (bHotSpot)
-  {
-    const WCHAR* const lpszStyleDefault = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
-    const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
+  WCHAR* lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
+  int const cCount = COUNTOF(GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue);
 
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)true);
-    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, false, 0);
-
-    // Font
-    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
-
-    //if (StrStrI(lpszStyleHotSpot, L"underline") != NULL)
-    //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
-    //else
-    //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, false, 0);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
-
-    COLORREF rgb = 0;
-
-    if (!Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &rgb)) 
-    {
-      Style_StrGetColor(L"italic; fore:#0000FF", FOREGROUND_LAYER, &rgb);
-    }
-    COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
-    SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
-
-
-    if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &rgb))
-    {
-      if (!Style_StrGetColor(lpszStyleDefault, BACKGROUND_LAYER, &rgb))
-      {
-        rgb = GetSysColor(COLOR_WINDOW);
-      }
-    }
-    SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
-    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
+  int indicHoverStyle = -1; // need for retrieval
+  if (!Style_GetIndicatorType(lpszStyleHotSpot, cCount, &indicHoverStyle)) {
+    // got default, get string
+    WCHAR wchSpecificStyle[80] = { L'\0' };
+    StringCchCatW(lpszStyleHotSpot, cCount, L"; ");
+    Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &indicHoverStyle);
+    StringCchCatW(lpszStyleHotSpot, cCount, wchSpecificStyle);
   }
-  else {
-    Style_SetStyles(hwnd, cHotSpotStyleID, L"", false); // uses Styles[STY_DEFAULT]
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)false);
+ 
+  COLORREF activeFG = RGB(0x00, 0x00, 0xFF);
+  Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG);
+  COLORREF inactiveFG = RGB(0x00, 0x00, 0xC0);
+  if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG)) {
+    inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
+  }
+  
+  int iValue = 40;
+  if (Style_StrGetAlpha(lpszStyleHotSpot, &iValue, true)) {
+    SciCall_IndicSetAlpha(INDIC_NP3_HYPERLINK_U, iValue);
+  }
+  iValue = 80;
+  if (Style_StrGetAlpha(lpszStyleHotSpot, &iValue, false)) {
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_HYPERLINK_U, iValue);
   }
 
+  // normal (fix)
+  SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+  SciCall_IndicSetFore(INDIC_NP3_HYPERLINK, inactiveFG);
+  SciCall_IndicSetStyle(INDIC_NP3_HYPERLINK_U, INDIC_PLAIN);
+  SciCall_IndicSetFore(INDIC_NP3_HYPERLINK_U, inactiveFG);
+  // hover (stylish)
+  SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+  SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK, activeFG);
+  SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK_U, indicHoverStyle);
+  SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK_U, activeFG);
 }
 
 
@@ -1948,29 +1943,34 @@ bool Style_MaybeBinaryFile(HWND hwnd, LPCWSTR lpszFile)
   UINT const magic2 = (buf[0] << 8) | buf[1];
   if (magic2 == 0x4D5A ||  // PE: MZ
     magic2 == 0x504B ||    // ZIP: PK
-    magic2 == 0x377A ||    // 7z
-    magic2 == 0x424D       // BMP: BM
+    magic2 == 0x377A ||    // 7z: 7z
+    magic2 == 0x424D ||    // BMP: BM
+    magic2 == 0xFFD8       // JPEG
     ) {
     return true;
   }
   UINT const magic = (magic2 << 16) | (buf[2] << 8) | buf[3];
-  if (magic == 0x89504E47 || // PNG
-    magic == 0x47494638 ||   // GIF: GIF89a
-    magic == 0x25504446 ||   // PDF
-    magic == 0xCAFEBABE      // Java class
+  if (magic == 0x89504E47 ||  // PNG: 0x89+PNG
+    magic == 0x47494638 ||    // GIF: GIF89a
+    magic == 0x25504446 ||    // PDF: %PDF-{version}
+    magic == 0x52617221 ||    // RAR: Rar!
+    magic == 0x7F454C46 ||    // ELF: 0x7F+ELF
+    magic == 0x213C6172 ||    // .lib, .a: !<arch>\n
+    magic == 0xFD377A58 ||    // xz: 0xFD+7zXZ
+    magic == 0xCAFEBABE       // Java class
     ) {
     return true;
   }
-  const WCHAR* const binaryExt = L" exe cur ico jpeg jpg lib mdb obj pdb pyc pyd "; // keep blank at end
+  const WCHAR* const binaryExt = L"|bin|exe|cur|ico|iso|img|lib|mdb|obj|pak|pdb|pyc|pyd|tar|"; // keep '|' at end
   size_t const _min = 5ULL;  size_t const _max = 6ULL;
 
   WCHAR lpszExt[16] = { L'\0' };
-  StringCchPrintf(lpszExt, COUNTOF(lpszExt), L" %s ", PathFindExtension(lpszFile));
-  if (StrIsNotEmpty(lpszExt)) {
-    size_t const len = StringCchLen(lpszExt,MAX_PATH);
-    if (len < _min || len > _max) {
-      if (StrStrI(binaryExt, lpszExt)) { return true; }
-    }
+  StringCchCopy(lpszExt, COUNTOF(lpszExt), L"|");
+  StringCchCopy(lpszExt, COUNTOF(lpszExt), PathFindExtension(lpszFile));
+  StringCchCat(lpszExt, COUNTOF(lpszExt), L"|");
+  size_t const len = StringCchLen(lpszExt,MAX_PATH);
+  if (len < _min || len > _max) {
+    if (StrStrI(binaryExt, lpszExt)) { return true; }
   }
 #endif
   return false;
@@ -2464,7 +2464,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb)
 //
 //  Style_StrGetAlpha()
 //
-bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st) 
+bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st) 
 {
   const WCHAR* strAlpha = bAlpha1st ? L"alpha:" : L"alpha2:";
 
@@ -2479,7 +2479,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
     int iValue = 0;
     int itok = swscanf_s(tch, L"%i", &iValue);
     if (itok == 1) {
-      *i = clampi(iValue, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
+      *iOutValue = clampi(iValue, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
       return true;
     }
   }

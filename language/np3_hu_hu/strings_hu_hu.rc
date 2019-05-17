@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Hiba a színkiemelések beállításainak exportálásakor ide: ""%s""."
-    IDS_MUI_REGEX_INVALID   "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
-    IDS_MUI_DROP_NO_FILE    "Nem sikerült érvényes fájlnevet kapni.\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, dobja újra a Notepad3 eszköztárra."
+    IDS_MUI_EXPORT_FAIL      "Hiba a színkiemelések beállításainak exportálásakor ide: ""%s""."
+    IDS_MUI_REGEX_INVALID    "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
+    IDS_MUI_DROP_NO_FILE     "Nem sikerült érvényes fájlnevet kapni.\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, dobja újra a Notepad3 eszköztárra."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE

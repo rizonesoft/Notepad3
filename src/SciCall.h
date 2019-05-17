@@ -140,7 +140,11 @@ DeclareSciCallR0(CanUndo, CANUNDO, bool)
 DeclareSciCallR0(CanRedo, CANREDO, bool)
 DeclareSciCallR0(GetModify, GETMODIFY, bool)
 DeclareSciCallR0(CanPaste, CANPASTE, bool)
+DeclareSciCallV0(GrabFocus, GRABFOCUS)
+DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag)
+DeclareSciCallR0(GetFocus, GETFOCUS, bool)
 
+DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
@@ -276,6 +280,7 @@ inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf) {
 DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
 DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
 DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
+DeclareSciCallV2(CallTipSetHlt, CALLTIPSETHLT, int, beg, int, end)
 DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool)
 DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
 
@@ -303,7 +308,6 @@ DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
 DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV0(DelLineLeft, DELLINELEFT)
 DeclareSciCallV0(DelLineRight, DELLINERIGHT)
-
 DeclareSciCallR0(GetLexer, GETLEXER, int)
 DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
@@ -421,6 +425,12 @@ DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
 //
 //  Indicators
 //
+DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicatorID, int, style)
+DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicatorID, COLORREF, colour)
+DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicatorID, int, style)
+DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicatorID, COLORREF, colour)
+DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicatorID, int, alpha)
+DeclareSciCallV2(IndicSetOutlineAlpha, INDICSETOUTLINEALPHA, int, indicatorID, int, alpha)
 DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicatorID)
 DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length)
 DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length)

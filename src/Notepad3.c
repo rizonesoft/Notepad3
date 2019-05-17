@@ -266,7 +266,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+    UpdateVisibleUrlIndics();
     UpdateAllBars(false);
   }
 }
@@ -1256,8 +1256,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 //
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static bool bAltKeyIsDown = false;
-
   switch(umsg)
   {
     // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
@@ -1280,11 +1278,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYDOWN:
       if (IsAsyncKeyDown(VK_MENU))  // ALT-KEY DOWN
       {
-        if (!bAltKeyIsDown) {
-          bAltKeyIsDown = true;
-          if (!Settings2.DenyVirtualSpaceAccess) {
-            SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
-          }
+        if (!Settings2.DenyVirtualSpaceAccess) {
+          SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
@@ -1292,27 +1287,28 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSKEYUP:
       if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
       {
-        if (bAltKeyIsDown) {
-          bAltKeyIsDown = false;
-          SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
-        }
+         SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_KILLFOCUS:
-      if (bAltKeyIsDown) {
-        bAltKeyIsDown = false;
-        SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
+      if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
+      {
+         SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
+
 
     case WM_CREATE:
       return MsgCreate(hwnd, wParam, lParam);
 
-
     case WM_DESTROY:
     case WM_ENDSESSION:
       return MsgEndSession(hwnd, umsg, wParam, lParam);
+
+    case WM_SETFOCUS:
+      SetFocus(Globals.hwndEdit);
+      break;
 
     case WM_CLOSE:
       s_flagAppIsClosing = true;
@@ -1342,17 +1338,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
+      UpdateVisibleUrlIndics();
       MarkAllOccurrences(0, true);
-      EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
       return MsgSize(hwnd, wParam, lParam);
-
-    case WM_SETFOCUS:
-      SetFocus(Globals.hwndEdit);
-      break;
 
     case WM_DROPFILES:
       return MsgDropFiles(hwnd, wParam, lParam);
@@ -1563,10 +1555,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, false, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, false, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
+
+  int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION;
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, vspaceOpt, 0);
+
   // Idle Styling (very large text)
   SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
@@ -1606,6 +1601,16 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   //SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_FOCUS_VIEW, INDIC_POINT);
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_FOCUS_VIEW, INDIC_HIDDEN); // invisible
   
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xA0));
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xA0));
+
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xFF));
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
+  SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
+
   // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
 
@@ -1616,8 +1621,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
   
-  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
-  //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)500, 0);
+  //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
+  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)250, 0);
   
 
   #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
@@ -2301,7 +2306,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  UpdateVisibleUrlIndics();
   UpdateAllBars(false);
   
   return 0;
@@ -2363,8 +2368,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   SendWMSize(hwnd, NULL);
 
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  UpdateVisibleUrlIndics();
   MarkAllOccurrences(0, true);
-  EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   UpdateUI();
   UpdateAllBars(false);
 
@@ -3139,12 +3144,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
 
-  bool bIsHLink = false;
-  int const iHotSpotStyleID = Style_GetHotspotStyleID();
-  char const ccStyleAt = SciCall_GetStyleAt(iCurPos);
-  if (SciCall_StyleGetHotspot(iHotSpotStyleID)) {
-    bIsHLink = (ccStyleAt == (char)iHotSpotStyleID);
-  }
+  bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
   i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
@@ -3238,6 +3238,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   switch(iLoWParam)
   {
     case SCEN_CHANGE:
+      UpdateVisibleUrlIndics();
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       break;
 
@@ -3255,12 +3256,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_TIMER_MAIN_MRKALL:
       EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
       break;
-
-
-    case IDT_TIMER_UPDATE_HOTSPOT:
-      EditApplyVisibleStyle(Globals.hwndEdit);
-      break;
-
 
     case IDT_TIMER_CLEAR_CALLTIP:
       CancelCallTip();
@@ -3573,8 +3568,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        Sci_ApplyLexerStyle(0, -1);
-        EditUpdateUrlHotspots(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+        UpdateVisibleUrlIndics();
         UpdateStatusbar(false);
       }
       break;
@@ -4975,6 +4969,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOGGLE_VIEW:
       if (FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
+        UpdateVisibleUrlIndics();
         MarkAllOccurrences(0, true);
       }
       else {
@@ -5059,14 +5054,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      Style_SetUrlHotSpot(Globals.hwndEdit, Settings.HyperlinkHotspot);
-      if (Settings.HyperlinkHotspot) {
-        UpdateVisibleUrlHotspot(0);
-      }
-      else {
-        SciCall_StartStyling(0);
-        Style_ResetCurrentLexer(Globals.hwndEdit);
-      }
+      UpdateVisibleUrlIndics();
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -5909,11 +5897,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
     case CMD_OPEN_HYPERLINK:
-        HandleHotSpotURL(SciCall_GetCurrentPos(), OPEN_WITH_BROWSER);
+        HandleHotSpotURL(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3));
       break;
-
 
     case CMD_ALTDOWN:
       EditFoldAltArrow(DOWN, SNIFF);
@@ -6204,97 +6190,132 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //  HandleHotSpotURL()
 //
 //
-bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
+void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
-  bool bHandled = false;
-
-  char const cStyle = SciCall_GetStyleAt(position);
-  int const iStyleID = Style_GetHotspotStyleID();
-
-  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return bHandled; }
-
-  // get left most position of style
-  DocPos pos = position;
-  char cNewStyle = cStyle;
-  while ((cNewStyle == cStyle) && (--pos > 0)) {
-    cNewStyle = SciCall_GetStyleAt(pos);
-  }
-  DocPos const firstPos = (pos != 0) ? (pos + 1) : 0;
-
-  // get right most position of style
-  pos = position;
-  cNewStyle = cStyle;
-  DocPos const docEndPos = Sci_GetDocEndPosition();
-  while ((cNewStyle == cStyle) && (++pos <= docEndPos)) {
-    cNewStyle = SciCall_GetStyleAt(pos);
-  }
-  DocPos lastPos = pos;
-  DocPos length = (lastPos - firstPos);
-
-  if ((length > 0) && (length < XHUGE_BUFFER))
+  switch (uid)
   {
-    char chURL[XHUGE_BUFFER] = { '\0' };
-
-    StringCchCopyNA(chURL, XHUGE_BUFFER, SciCall_GetRangePointer(firstPos, length), length);
-    StrTrimA(chURL, " \t\n\r");
-    
-    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return bHandled; }
-
-    WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
-    int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, XHUGE_BUFFER) - 1;
-
-    const WCHAR* chkPreFix = L"file://";
-    size_t const lenPfx = StringCchLenW(chkPreFix,0);
-
-    if (operation & COPY_HYPERLINK)
+    case SCN_DWELLSTART:
     {
-      if (lenHypLnk > 0) {
-        SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
-        bHandled = true;
+      if (SciCall_CallTipActive() || (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) <= 0)) { return; }
+
+      char chURL[LARGE_BUFFER] = { '\0' };
+      DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
+      DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
+      DocPos const length = (lastPos - firstPos);
+
+      StringCchCopyNA(chURL, COUNTOF(chURL), SciCall_GetRangePointer(firstPos, length), length);
+      StrTrimA(chURL, " \t\n\r");
+
+      if (StrIsEmptyA(chURL)) { return; }
+
+      CHAR  chCalltipAdd[MIDSZ_BUFFER] = { L'\0' };
+      WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
+      if (StrStrIA(chURL, "file:") == chURL) { 
+        GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+      } else {
+        GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
       }
+      WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chCalltipAdd, COUNTOF(chCalltipAdd), NULL, NULL);
+      StringCchCatA(chURL, COUNTOF(chURL), chCalltipAdd);
+
+      SciCall_CallTipShow(position, chURL);
+      SciCall_CallTipSetHlt(0, (int)length);
+      Globals.CallTipType = CT_DWELL;
     }
-    if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+    break;
+
+    case SCN_DWELLEND:
     {
-      WCHAR* szFileName = &(wchURL[lenPfx]);
-      StrTrimW(szFileName, L"/");
-
-      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)lenPfx);
-
-      if (PathIsDirectory(szFileName))
-      {
-        WCHAR tchFile[MAX_PATH] = { L'\0' };
-
-        if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
-          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-      }
-      else {
-        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
-      }
-      bHandled = true;
+      CancelCallTip();
     }
-    else if (operation & (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3)) // open in web browser
-    {
-      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
-        StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-        PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-      }
+    break;
 
-      SHELLEXECUTEINFO sei;
-      ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-      sei.cbSize = sizeof(SHELLEXECUTEINFO);
-      sei.fMask = SEE_MASK_NOZONECHECKS;
-      sei.hwnd = NULL;
-      sei.lpVerb = NULL;
-      sei.lpFile = wchURL;
-      sei.lpParameters = NULL;
-      sei.lpDirectory = wchDirectory;
-      sei.nShow = SW_SHOWNORMAL;
-      ShellExecuteEx(&sei);
+    default:
+      break;
+  }
+}
 
+//=============================================================================
+//
+//  HandleHotSpotURL()
+//
+//
+bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation)
+{
+  CancelCallTip();
+  //PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
+
+  if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) == 0) { return false; }
+
+  char chURL[HUGE_BUFFER] = { '\0' };
+
+  bool bHandled = false;
+  DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
+  DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
+  DocPos const length = min_p(lastPos - firstPos, COUNTOF(chURL));
+
+  StringCchCopyNA(chURL, COUNTOF(chURL), SciCall_GetRangePointer(firstPos, length), length);
+  StrTrimA(chURL, " \t\n\r");
+
+  if (StrIsEmptyA(chURL)) { return bHandled; }
+
+  WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
+  int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, COUNTOF(wchURL)) - 1;
+
+  const WCHAR* chkPreFix = L"file://";
+  size_t const lenPfx = StringCchLenW(chkPreFix, 0);
+
+  if (operation & COPY_HYPERLINK)
+  {
+    if (lenHypLnk > 0) {
+      SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
       bHandled = true;
     }
   }
+  if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+  {
+    WCHAR* szFileName = &(wchURL[lenPfx]);
+    StrTrimW(szFileName, L"/");
+
+    PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(wchURL) - lenPfx));
+    if (PathIsDirectory(szFileName))
+    {
+      WCHAR tchFile[MAX_PATH] = { L'\0' };
+      if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
+      {
+        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+      }
+    }
+    else {
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
+    }
+    bHandled = true;
+  }
+  else if (operation & OPEN_WITH_BROWSER) // open in web browser
+  {
+    WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+    if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+      StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+      PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+    }
+
+    SHELLEXECUTEINFO sei;
+    ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+    sei.cbSize = sizeof(SHELLEXECUTEINFO);
+    sei.fMask = SEE_MASK_NOZONECHECKS;
+    sei.hwnd = NULL;
+    sei.lpVerb = NULL;
+    sei.lpFile = wchURL;
+    sei.lpParameters = NULL;
+    sei.lpDirectory = wchDirectory;
+    sei.nShow = SW_SHOWNORMAL;
+    ShellExecuteEx(&sei);
+
+    bHandled = true;
+  }
+
+  SciCall_SetEmptySelection(position);
+
   return bHandled;
 }
 
@@ -6526,9 +6547,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   switch(pnmh->idFrom)
   {
+    static int _s_indic_click_modifiers = 0;
+
     case IDC_EDIT:
       switch (pnmh->code)
       {
+        case SCN_HOTSPOTCLICK:
+        case SCN_HOTSPOTDOUBLECLICK:
+        case SCN_HOTSPOTRELEASECLICK:
+        case SCN_CALLTIPCLICK:
+          return FALSE;
+
         case SCN_MODIFIED:
         {
           int const iModType = scn->modificationType;
@@ -6552,6 +6581,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (IsMarkOccurrencesEnabled()) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
             }
+            if (Settings.HyperlinkHotspot) {
+              UpdateVisibleUrlIndics();
+            }
             if (scn->linesAdded != 0) {
               UpdateMarginWidth();
             }
@@ -6560,13 +6592,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-
         case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-          {
-            EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_GetEndStyled(), (int)scn->position, Settings.HyperlinkHotspot);
-          }
-          break;
-
+        {
+          EditFinalizeStyling(Globals.hwndEdit, scn->position);
+        }
+        break;
 
         case SCN_UPDATEUI:
         {
@@ -6578,12 +6608,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
           {
-
             // Brace Match
             if (Settings.MatchBraces) {
               EditMatchBrace(Globals.hwndEdit);
             }
-
             if (IsMarkOccurrencesEnabled()) {
               // clear marks only, if selection changed
               if (iUpd & SC_UPDATE_SELECTION)
@@ -6598,12 +6626,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               else if (iUpd & SC_UPDATE_CONTENT) {
                 // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
                 // using WM_COMMAND -> SCEN_CHANGE  instead!
+                //~~~UpdateVisibleUrlIndics();
                 //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
               }
-            }
-
-            if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
             }
             UpdateToolbar();
             UpdateStatusbar(false);
@@ -6613,38 +6638,49 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
-            if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
-            }
-            //~~~EditApplyVisibleStyle(Globals.hwndEdit);
+          }
+          if (Settings.HyperlinkHotspot) {
+            UpdateVisibleUrlIndics();
           }
         }
         break;
 
-
-        case SCN_HOTSPOTCLICK:
+        case SCN_DWELLSTART:
+        case SCN_DWELLEND:
         {
-          if (scn->modifiers & SCMOD_CTRL) {
-            // open in browser
-            HandleHotSpotURL((int)scn->position, OPEN_WITH_BROWSER);
-          }
-          if (scn->modifiers & SCMOD_ALT) {
-            // open in application, if applicable (file://)
-            HandleHotSpotURL((int)scn->position, OPEN_WITH_NOTEPAD3);
-          }
+          HandleDWellStartEnd(scn->position, pnmh->code);
         }
         break;
 
+        case SCN_INDICATORCLICK:
+        {
+          _s_indic_click_modifiers = scn->modifiers;
+        }
+        break;
+
+        case SCN_INDICATORRELEASE:
+        {
+          if (_s_indic_click_modifiers & SCMOD_CTRL) {
+            // open in browser
+            HandleHotSpotURL(scn->position, OPEN_WITH_BROWSER);
+          }
+          else if (_s_indic_click_modifiers & SCMOD_ALT) {
+            // open in application, if applicable (file://)
+            HandleHotSpotURL(scn->position, OPEN_WITH_NOTEPAD3);
+          }
+          _s_indic_click_modifiers = 0;
+        }
+        break;
 
         case SCN_CHARADDED:
-          {
-            int const ich = scn->ch;
+        {
+          int const ich = scn->ch;
 
-            if (Globals.CallTipType != CT_NONE) {
-              CancelCallTip();
-            }
+          if (Globals.CallTipType != CT_NONE) {
+            CancelCallTip();
+          }
 
-            switch (ich) {
+          switch (ich) {
             case '\r':
             case '\n':
               if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
@@ -6657,29 +6693,29 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               break;
             default:
               break;
-            }
-
-            if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) 
-            {
-              if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
-            }
           }
-          break;
+
+          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+          {
+            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+          }
+        }
+        break;
 
         case SCN_AUTOCCHARDELETED:
-          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) 
+          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
           {
             if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
           }
           break;
 
         case SCN_NEEDSHOWN:
-          {
-            DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
-            DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
-            for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-          }
-          break;
+        {
+          DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
+          DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
+          for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+        }
+        break;
 
 
         case SCN_MARGINCLICK:
@@ -6689,12 +6725,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
 
-        // ~~~ Not used in Windows ~~~
-        // see: CMD_ALTUP / CMD_ALTDOWN
-        //case SCN_KEY:
-        //  // Also see the corresponding patch in scintilla\src\Editor.cxx
-        //  FoldAltArrow(scn->ch, scn->modifiers);
-        //  break;
+          // ~~~ Not used in Windows ~~~
+          // see: CMD_ALTUP / CMD_ALTDOWN
+          //case SCN_KEY:
+          //  // Also see the corresponding patch in scintilla\src\Editor.cxx
+          //  FoldAltArrow(scn->ch, scn->modifiers);
+          //  break;
 
 
         case SCN_SAVEPOINTREACHED:
@@ -6711,35 +6747,31 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           UpdateMarginWidth();
           break;
 
-        case SCN_URIDROPPED: 
+        case SCN_URIDROPPED:
+        {
+          // see WM_DROPFILES
+          WCHAR szBuf[MAX_PATH + 40];
+          if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
           {
-            // see WM_DROPFILES
-            WCHAR szBuf[MAX_PATH + 40];
-            if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0) 
-            {
-              if (IsIconic(hwnd)) {
-                ShowWindow(hwnd, SW_RESTORE);
-              }
-              //SetForegroundWindow(hwnd);
-              if (PathIsDirectory(szBuf)) {
-                WCHAR tchFile[MAX_PATH];
-                if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-                  FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-                }
-              }
-              else if (PathFileExists(szBuf)) {
-                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+            if (IsIconic(hwnd)) {
+              ShowWindow(hwnd, SW_RESTORE);
+            }
+            //SetForegroundWindow(hwnd);
+            if (PathIsDirectory(szBuf)) {
+              WCHAR tchFile[MAX_PATH];
+              if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
+                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
               }
             }
+            else if (PathFileExists(szBuf)) {
+              FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+            }
           }
-          break;
+        }
+        break;
 
         default:
           return FALSE;
-      }
-      // in any case 
-      if (Settings.MarkOccurrencesCurrentWord && IsMarkOccurrencesEnabled()) {
-        MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       }
       return -1LL;
 
@@ -6747,7 +6779,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDC_TOOLBAR:
 
-      switch(pnmh->code)
+      switch (pnmh->code)
       {
         case TBN_ENDADJUST:
           UpdateToolbar();
@@ -6758,27 +6790,27 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
         case TBN_GETBUTTONINFO:
+        {
+          if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
           {
-            if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
-            {
-              WCHAR tch[SMALL_BUFFER] = { L'\0' };
-              GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
-              StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
-              CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
-              return TRUE;
-            }
+            WCHAR tch[SMALL_BUFFER] = { L'\0' };
+            GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
+            StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
+            CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
+            return TRUE;
           }
-          return FALSE;
+        }
+        return FALSE;
 
         case TBN_RESET:
-          {
-            int i; int c = (int)SendMessage(s_hwndToolbar,TB_BUTTONCOUNT,0,0);
-            for (i = 0; i < c; i++) {
-              SendMessage(s_hwndToolbar, TB_DELETEBUTTON, 0, 0);
-            }
-            SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+        {
+          int i; int c = (int)SendMessage(s_hwndToolbar, TB_BUTTONCOUNT, 0, 0);
+          for (i = 0; i < c; i++) {
+            SendMessage(s_hwndToolbar, TB_DELETEBUTTON, 0, 0);
           }
-          return FALSE;
+          SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+        }
+        return FALSE;
 
         default:
           return FALSE;
@@ -8444,17 +8476,14 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 
 //=============================================================================
 //
-//  UpdateVisibleUrlHotspot()
+//  UpdateVisibleUrlIndics()
 // 
-void UpdateVisibleUrlHotspot(int delay)
+void UpdateVisibleUrlIndics()
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_HOTSPOT, 0);
-  mqc.hwnd = Globals.hwndMain;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+  EditUpdateUrlIndicators(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), Settings.HyperlinkHotspot);
 }
-
-
-
 
 
 //=============================================================================
@@ -9843,7 +9872,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(bReload);
-    UpdateVisibleUrlHotspot(0);
+    UpdateVisibleUrlIndics();
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
