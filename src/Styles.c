@@ -1371,8 +1371,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
 
-  EditUpdateUrlIndicators(hwnd, 0, -1, Settings.HyperlinkHotspot);
-  
+  UpdateVisibleUrlIndics(); 
   UpdateAllBars(false);
 }
 

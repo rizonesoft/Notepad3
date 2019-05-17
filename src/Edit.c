@@ -6834,13 +6834,14 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
 //=============================================================================
 //
-//  _FinalizeStyling()
+//  EditFinalizeStyling()
 //
-static void _FinalizeStyling(DocPos iEndPos)
+void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
-  DocPos const iEndStyled = SciCall_GetEndStyled();
-  if ((iEndPos < 0) || (iEndStyled < iEndPos)) {
-    Sci_ApplyLexerStyle(iEndStyled, iEndPos);
+  UNUSED(hwnd);
+  DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
+  if ((iEndPos < 0) || (startPos < iEndPos)) {
+    Sci_ApplyLexerStyle(startPos, iEndPos);
   }
 }
 
@@ -6931,7 +6932,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
-    SciCall_SetProperty("fold.foldsyntaxbased", "0");
     Style_SetFolding(hwnd, true);
 
     DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
@@ -6972,7 +6972,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     }
     SciCall_FoldAll(FOLD);
   }
-  EditUpdateUrlIndicators(hwnd, 0, -1, Settings.HyperlinkHotspot);
 }
 
 

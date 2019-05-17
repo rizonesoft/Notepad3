@@ -104,6 +104,7 @@ void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool, bool);
+void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 void  EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);

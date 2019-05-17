@@ -266,7 +266,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+    UpdateVisibleUrlIndics();
     UpdateAllBars(false);
   }
 }
@@ -2306,7 +2306,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  UpdateVisibleUrlIndics();
   UpdateAllBars(false);
   
   return 0;
@@ -2368,7 +2368,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   SendWMSize(hwnd, NULL);
 
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  UpdateVisibleUrlIndics();
   MarkAllOccurrences(0, true);
   UpdateUI();
   UpdateAllBars(false);
@@ -3568,7 +3568,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+        UpdateVisibleUrlIndics();
         UpdateStatusbar(false);
       }
       break;
@@ -6589,6 +6589,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
             _SetSaveNeededFlag(true);
           }
+        }
+        break;
+
+        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+        {
+          EditFinalizeStyling(Globals.hwndEdit, scn->position);
         }
         break;
 
