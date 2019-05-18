@@ -170,7 +170,6 @@ DeclareSciCallR0(GetRectangularSelectionCaretVirtualSpace, GETRECTANGULARSELECTI
 DeclareSciCallV1(SetRectangularSelectionCaretVirtualSpace, SETRECTANGULARSELECTIONCARETVIRTUALSPACE, DocPos, position)
 DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos)
 DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position)
-
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
 // Multiselections (Lines of Rectangular selection)
@@ -278,12 +277,14 @@ inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf) {
 //
 //  CallTip and AutoComplete
 //
+
 DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
 DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
 DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
 DeclareSciCallV2(CallTipSetHlt, CALLTIPSETHLT, int, beg, int, end)
 DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool)
 DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
+DeclareSciCallV1(SetMouseDWellTime, SETMOUSEDWELLTIME, int, millisec)
 
 DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool)
 DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE)
@@ -545,6 +546,8 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((B), (E));
+
+#define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)  
 
 
 //=============================================================================
