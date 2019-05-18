@@ -4868,7 +4868,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 			} else {
 				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 				if (hoverIndicatorPos != Sci::invalidPosition)
-					if (modifiers & SCI_CTRL) { DisplayCursor(Window::cursorHand); }
+					if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
 				else
 					DisplayCursor(Window::cursorText);
 				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
