@@ -4866,10 +4866,12 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 				DisplayCursor(Window::cursorHand);
 				SetHotSpotRange(&pt);
 			} else {
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 				if (hoverIndicatorPos != Sci::invalidPosition)
-					DisplayCursor(Window::cursorHand);
+					if (modifiers & SCI_CTRL) { DisplayCursor(Window::cursorHand); }
 				else
 					DisplayCursor(Window::cursorText);
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				SetHotSpotRange(nullptr);
 			}
 		}

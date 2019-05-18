@@ -1400,7 +1400,7 @@ void Style_SetUrlHotSpot(HWND hwnd)
  
   COLORREF activeFG = RGB(0x00, 0x00, 0xFF);
   Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &activeFG);
-  COLORREF inactiveFG = RGB(0x00, 0x00, 0xC0);
+  COLORREF inactiveFG = RGB(0x00, 0x00, 0xBF);
   if (!Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG)) {
     inactiveFG = (COLORREF)((activeFG * 75 + 50) / 100);
   }

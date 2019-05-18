@@ -229,6 +229,11 @@ inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); 
 #define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
+// ----------------------------------------------------------------------------
+
+#define RGB_GET_R(color)    ((BYTE)((0xFF)&(color)))
+#define RGB_GET_G(color)    ((BYTE)(((0xFF<<8)&(color))>>8))
+#define RGB_GET_B(color)    ((BYTE)(((0xFF<<16)&(color))>>16))
 
 // ----------------------------------------------------------------------------
 
