@@ -344,6 +344,7 @@ typedef struct _settings_t
   int  HighlightCurrentLine;
   bool HyperlinkHotspot;
   bool ScrollPastEOF;
+  bool ShowHypLnkToolTip;
   bool AutoIndent;
   bool AutoCompleteWords;
   bool AutoCLexerKeyWords;

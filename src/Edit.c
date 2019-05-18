@@ -6914,9 +6914,6 @@ void EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bAc
 //
 void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
 {
-  DocPos const iStartPos = 0;
-  DocPos const iEndPos = Sci_GetDocEndPosition();
-
   if (!bHideLines) {
     // reset
     Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
@@ -6925,48 +6922,42 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
     EditMarkAllOccurrences(hwnd, true);
+    UpdateVisibleUrlIndics();
   }
   else // =====   hide lines without marker   =====
   {
     // prepare hidden (folding) settings
+    EditFinalizeStyling(hwnd, -1);
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
+
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
+    SciCall_SetProperty("fold.compact", "1");
+    // special case, cause Lexer is mad 
+    SciCall_SetProperty("fold.ahkl.skip", "1");
+
     Style_SetFolding(hwnd, true);
 
-    DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
-    DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);
+    DocLn const iStartLine = 0;
+    DocLn const iEndLine = SciCall_GetLineCount() - 1;
 
     int const baseLevel = SC_FOLDLEVELBASE;
 
-    // clear levels to avoid multi rearangements on existing lexer provided levels
-    for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine)
-    {
-      SciCall_SetFoldLevel(iLine, baseLevel);
-    }
-
     // 1st line
     int level = baseLevel;
-
-    DocPos const _begOfLine = SciCall_PositionFromLine(iStartLine);
-    if (_begOfLine == SciCall_IndicatorStart(INDIC_NP3_FOCUS_VIEW, _begOfLine))
-    {
-      SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELWHITEFLAG | level); // hide
-    }
+    SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELHEADERFLAG | level++); // visible in any case
 
     for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
     {
       DocPos const begOfLine = SciCall_PositionFromLine(iLine);
+
       if (begOfLine == SciCall_IndicatorStart(INDIC_NP3_FOCUS_VIEW, begOfLine)) // visible
       {
         level = baseLevel;
-        SciCall_SetFoldLevel(iLine, level);
+        SciCall_SetFoldLevel(iLine, SC_FOLDLEVELHEADERFLAG | level++);
       }
       else // hide line
       {
-        if (level == baseLevel) {
-          SciCall_SetFoldLevel(iLine - 1, SC_FOLDLEVELHEADERFLAG | level++);
-        }
         SciCall_SetFoldLevel(iLine, SC_FOLDLEVELWHITEFLAG | level);
       }
     }

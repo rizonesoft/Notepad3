@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Vue &Focalisée\tCtrl+Alt+V",          IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Sur&veillance de Log",                IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Défiler après la fin de &fichier",    IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Barre à outils"
         BEGIN

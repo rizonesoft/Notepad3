@@ -341,7 +341,8 @@ BEGIN
             MENUITEM "Code Faltung &Umschalten\tCtrl+Shift+F",  IDM_VIEW_TOGGLEFOLDS
             MENUITEM "&Fokussierte Ansicht\tCtrl+Alt+V",        IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Logfile &Monitoring",                     IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "Erweiterte Dokument Ende Ansicht",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Erweiterte Dokument Ende Ansicht",       IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Zeige einen &Hyperlink Tooltip",          IDM_VIEW_SHOW_HYPLNK_CALLTIP
             END
         POPUP "&Werkzeugleiste"
         BEGIN

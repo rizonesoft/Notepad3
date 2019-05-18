@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoring Log",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&F)",               IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Show &Hyperlink Tooltip",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "ツールバー(&T)"
         BEGIN

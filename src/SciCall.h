@@ -170,7 +170,6 @@ DeclareSciCallR0(GetRectangularSelectionCaretVirtualSpace, GETRECTANGULARSELECTI
 DeclareSciCallV1(SetRectangularSelectionCaretVirtualSpace, SETRECTANGULARSELECTIONCARETVIRTUALSPACE, DocPos, position)
 DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos)
 DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position)
-
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
 // Multiselections (Lines of Rectangular selection)
@@ -213,7 +212,7 @@ DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, tex
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)
-DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, const char*, text)
+DeclareSciCallR01(GetSelText, GETSELTEXT, size_t, const char*, text)
 DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text)
 DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
 DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text)
@@ -221,6 +220,7 @@ DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
 
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
+//DeclareSciCallR01(GetTargetText, GETTARGETTEXT, sptr_t, const unsigned char*, text)
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION)
 DeclareSciCallV0(TargetWholeDocument, TARGETWHOLEDOCUMENT)
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end)
@@ -277,12 +277,14 @@ inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf) {
 //
 //  CallTip and AutoComplete
 //
+
 DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
 DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
 DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
 DeclareSciCallV2(CallTipSetHlt, CALLTIPSETHLT, int, beg, int, end)
 DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool)
 DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
+DeclareSciCallV1(SetMouseDWellTime, SETMOUSEDWELLTIME, int, millisec)
 
 DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool)
 DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE)
@@ -544,6 +546,8 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((B), (E));
+
+#define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)  
 
 
 //=============================================================================

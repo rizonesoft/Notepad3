@@ -1621,8 +1621,12 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
   
-  //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
-  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)250, 0);
+  if (Settings.ShowHypLnkToolTip) {
+    SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)250, 0);
+  }
+  else {      // Hyperlink ToolTip is the only purpose for now, so globally disable it
+    SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
+  }
   
 
   #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
@@ -3083,6 +3087,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
+  CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
 
   bool b = Flags.bReuseWindow;
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,b);
@@ -5117,6 +5122,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
       break;
 
+    case IDM_VIEW_SHOW_HYPLNK_CALLTIP:
+      Settings.ShowHypLnkToolTip = !Settings.ShowHypLnkToolTip;
+      // HyperlinkTooltip is the only purpose, so
+      if (Settings.ShowHypLnkToolTip) 
+        SciCall_SetMouseDWellTime(250);
+      else
+        Sci_DisableMouseDWellNotification();
+      break;
+
     case IDM_VIEW_TOOLBAR:
       Settings.ShowToolbar = !Settings.ShowToolbar;
       ShowWindow(s_hwndReBar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
@@ -6187,7 +6201,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  HandleHotSpotURL()
+//  HandleDWellStartEnd()
 //
 //
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
@@ -6196,7 +6210,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
   {
     case SCN_DWELLSTART:
     {
-      if (SciCall_CallTipActive() || (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) <= 0)) { return; }
+      if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive() ||
+        (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) <= 0)) { return; }
 
       char chURL[LARGE_BUFFER] = { '\0' };
       DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
@@ -6262,9 +6277,6 @@ bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation)
   WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
   int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, COUNTOF(wchURL)) - 1;
 
-  const WCHAR* chkPreFix = L"file://";
-  size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-
   if (operation & COPY_HYPERLINK)
   {
     if (lenHypLnk > 0) {
@@ -6272,8 +6284,10 @@ bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation)
       bHandled = true;
     }
   }
-  if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+  else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIA(chURL, "file://") == chURL))
   {
+    const WCHAR* chkPreFix = L"file://";
+    size_t const lenPfx = StringCchLenW(chkPreFix, 0);
     WCHAR* szFileName = &(wchURL[lenPfx]);
     StrTrimW(szFileName, L"/");
 
@@ -7231,6 +7245,8 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
+
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCLexerKeyWords, false);
@@ -7601,6 +7617,7 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);

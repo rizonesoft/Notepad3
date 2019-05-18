@@ -338,10 +338,11 @@ BEGIN
         POPUP "전시(&D)"
         BEGIN
             MENUITEM "코드 접기(&F)\tCtrl+Shift+Alt+F",    IDM_VIEW_FOLDING
-            MENUITEM "모든 접기 전환(&T)\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "집중\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Monitoring Log",                  IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "모든 접기 전환(&T)\tCtrl+Shift+F",   IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "집중\tCtrl+Alt+V",                   IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "&Monitoring Log",                   IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "파일 끝 스크롤(&F)",                  IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Show &Hyperlink Tooltip",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "도구 모음(&T)"
         BEGIN
