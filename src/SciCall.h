@@ -213,7 +213,7 @@ DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, tex
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)
-DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, const char*, text)
+DeclareSciCallR01(GetSelText, GETSELTEXT, size_t, const char*, text)
 DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text)
 DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
 DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text)
@@ -221,6 +221,7 @@ DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
 
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
+//DeclareSciCallR01(GetTargetText, GETTARGETTEXT, sptr_t, const unsigned char*, text)
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION)
 DeclareSciCallV0(TargetWholeDocument, TARGETWHOLEDOCUMENT)
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end)

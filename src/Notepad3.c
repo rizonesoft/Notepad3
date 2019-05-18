@@ -6187,7 +6187,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  HandleHotSpotURL()
+//  HandleDWellStartEnd()
 //
 //
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
@@ -6262,9 +6262,6 @@ bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation)
   WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
   int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, COUNTOF(wchURL)) - 1;
 
-  const WCHAR* chkPreFix = L"file://";
-  size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-
   if (operation & COPY_HYPERLINK)
   {
     if (lenHypLnk > 0) {
@@ -6272,8 +6269,10 @@ bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation)
       bHandled = true;
     }
   }
-  if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+  else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIA(chURL, "file://") == chURL))
   {
+    const WCHAR* chkPreFix = L"file://";
+    size_t const lenPfx = StringCchLenW(chkPreFix, 0);
     WCHAR* szFileName = &(wchURL[lenPfx]);
     StrTrimW(szFileName, L"/");
 

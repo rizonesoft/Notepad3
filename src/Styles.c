@@ -805,10 +805,12 @@ void Style_SetFoldingProperties(bool active)
 {
   if (active) {
     SciCall_SetProperty("fold", "1");
-    SciCall_SetProperty("fold.foldsyntaxbased", "1");
-    SciCall_SetProperty("fold.compact", "0");
     SciCall_SetProperty("fold.comment", "1");
+    SciCall_SetProperty("fold.compact", "0");
+    SciCall_SetProperty("fold.foldsyntaxbased", "1");
+
     SciCall_SetProperty("fold.html", "1");
+    SciCall_SetProperty("fold.ahkl.skip", "0");
     SciCall_SetProperty("fold.preprocessor", "1");
     SciCall_SetProperty("fold.cpp.comment.explicit", "0");
   }
