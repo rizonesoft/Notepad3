@@ -44,6 +44,7 @@ void     Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings);
 float  Style_GetCurrentFontSize();
 void   Style_SetFoldingAvailability(PEDITLEXER pLexer);
 void   Style_SetFoldingProperties(bool active);
+void   Style_SetFoldingFocusedView();
 void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
 void   Style_SetUrlHotSpot(HWND hwnd);
 void   Style_SetInvisible(HWND hwnd, bool);
