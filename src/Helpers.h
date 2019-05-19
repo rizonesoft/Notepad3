@@ -44,7 +44,7 @@
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
-//#define ARRAYSIZE(A) (assert(!(sizeof(A) % sizeof(*(A)))), (sizeof(A) / sizeof(*(A))))
+//#define ARRAYSIZE(A) (assert(!(sizeof(A) % sizeof(*(A)))), (sizeof(A) / sizeof((A)[0])))
 #define COUNTOF(ar) ARRAYSIZE(ar)
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 

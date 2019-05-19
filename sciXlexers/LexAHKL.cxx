@@ -40,12 +40,10 @@ struct OptionsAHKL {
   bool fold;
   bool foldComment;
   bool foldCompact;
-  bool skipFolding;
   OptionsAHKL() {
     fold = false;
     foldComment = true;
     foldCompact = true;
-    skipFolding = false;
   }
 };
 
@@ -68,7 +66,6 @@ struct OptionSetAHKL : public OptionSet<OptionsAHKL> {
     DefineProperty("fold", &OptionsAHKL::fold);
     DefineProperty("fold.comment", &OptionsAHKL::foldComment);
     DefineProperty("fold.compact", &OptionsAHKL::foldCompact);
-    DefineProperty("fold.ahkl.skip", &OptionsAHKL::skipFolding);
     DefineWordListSets(ahklWordLists);
   }
 };
@@ -718,7 +715,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
 {
-  if (!options.fold || options.skipFolding) {
+  if (!options.fold) {
     return;
   }
 
