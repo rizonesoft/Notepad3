@@ -6840,8 +6840,9 @@ void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   UNUSED(hwnd);
   DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
-  if ((iEndPos < 0) || (startPos < iEndPos)) {
-    Sci_ApplyLexerStyle(startPos, iEndPos);
+  DocPos const endPos = (iEndPos < 0) ? (DocPos)-1 : SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
+  if (startPos < endPos) {
+    Sci_ApplyLexerStyle(startPos, endPos);
   }
 }
 
@@ -6921,17 +6922,17 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     SciCall_FoldAll(EXPAND);
+    EditFinalizeStyling(hwnd, -1);
     EditMarkAllOccurrences(hwnd, true);
     UpdateVisibleUrlIndics();
   }
-  else // =====   hide lines without marker   =====
+  else // =====   fold lines without marker   =====
   {
     // prepare hidden (folding) settings
     EditFinalizeStyling(hwnd, -1);
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
     Style_SetFoldingFocusedView();
-
     Style_SetFolding(hwnd, true);
 
     DocLn const iStartLine = 0;

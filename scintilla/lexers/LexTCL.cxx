@@ -45,6 +45,8 @@ static inline bool IsANumberChar(int ch) {
 
 static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , WordList *keywordlists[], Accessor &styler) {
 #define  isComment(s) (s==SCE_TCL_COMMENT || s==SCE_TCL_COMMENTLINE || s==SCE_TCL_COMMENT_BOX || s==SCE_TCL_BLOCK_COMMENT)
+
+	bool fold = (styler.GetPropertyInt("fold") != 0);
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool commentLevel = false;
 	bool subBrace = false; // substitution begin with a brace ${.....}
@@ -81,7 +83,8 @@ static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , W
 		currentLevel = styler.LevelAt(currentLine - 1) >> 17;
 		commentLevel = (styler.LevelAt(currentLine - 1) >> 16) & 1;
 	} else
-		styler.SetLevel(0, SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG);
+		if (fold) { styler.SetLevel(0, SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG); }
+
 	bool visibleChars = false;
 
 	int previousLevel = currentLevel;
@@ -203,8 +206,10 @@ next:
 				flag = SC_FOLDLEVELWHITEFLAG;
 			if (currentLevel > previousLevel)
 				flag = SC_FOLDLEVELHEADERFLAG;
-			styler.SetLevel(currentLine, flag + previousLevel + SC_FOLDLEVELBASE + (currentLevel << 17) + (commentLevel << 16));
 
+			if (fold) {
+				styler.SetLevel(currentLine, flag + previousLevel + SC_FOLDLEVELBASE + (currentLevel << 17) + (commentLevel << 16));
+			}
 			// Update the line state, so it can be seen by next line
 			if (sc.state == SCE_TCL_IN_QUOTE) {
 				lineState = LS_OPEN_DOUBLE_QUOTE;
