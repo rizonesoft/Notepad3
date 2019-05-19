@@ -89,7 +89,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH         "Voer Dokument Uit"
     IDT_VIEW_TOGGLE_VIEW    "Gefokusde Aansig"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    IDT_VIEW_CHASING_DOCTAIL "Moniteringslogboek"
     IDT_VIEW_PIN_ON_TOP      "Altyd Bo-op"
 END
 
@@ -113,7 +113,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "Alle lêers (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Uitvoerbare lêers (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfigurasie lêers (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap lêers (*.bmp)|*.bmp|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Kies die gids met skakels na jou gunsteling programme."
     IDS_MUI_FAVORITES       "Kies die gids met skakels na jou gunsteling lêers."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -218,7 +218,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "[af-ZA] Afrikaanse vertaling deur rizonesoft"
+    IDS_MUI_TRANSL_AUTHOR   "[af-ZA] Afrikaanse vertaling deur Rizonesoft"
     IDS_MUI_TITLE_FIXBASE   " BASIS (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Styl +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Styl"
@@ -234,9 +234,9 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "Taal"
-    IDS_MUI_MENU_THEMES     "Themes"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDS_MUI_MENU_THEMES     "Temas"
+    IDM_THEMES_DEFAULT      "Fabriek Verstek"
+    IDM_THEMES_FILE_ITEM    "Standaard Instellings"
 END
 
 STRINGTABLE
