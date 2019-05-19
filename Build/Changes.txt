@@ -30,12 +30,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.518.build (2019-May 18)
+Current Version 5.19.519.build (2019-May 19)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Add Dark Theme "Obsidian"
 - Add option to disable Hyperlink Tooltip
 - ToolTip for Hyperlinks
 
@@ -95,6 +96,7 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
+- Hand cursor coupled with indicator hover style only on modifier keys
 - Allow indicator styling for Hyperlink hover rendering
 - Find/Replace dialog <-> "Focused View" enhancements
 - Rework inconsistent line-breaks in status bar
@@ -104,7 +106,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- 
+- Focused View: refolding by lexer
 - FocusedView started from Find/Replace dialog
 
 - Do not ignore notify change for Paste/Swap/Undo/Redo
