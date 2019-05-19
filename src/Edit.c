@@ -7251,19 +7251,14 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             if (id_capture == (int)dwId || id_capture == 0) {
               if (id_hover != id_capture || id_hover == 0) {
                 id_hover = (int)dwId;
-                //InvalidateRect(GetDlgItem(hwnd,dwId),NULL,false);
               }
             }
             else if (id_hover != 0) {
-              //int _id_hover = id_hover;
               id_hover = 0;
-              //InvalidateRect(GetDlgItem(hwnd,_id_hover),NULL,false);
             }
           }
           else if (id_hover != 0) {
-            //int _id_hover = id_hover;
             id_hover = 0;
-            //InvalidateRect(GetDlgItem(hwnd,_id_hover),NULL,false);
           }
           SetCursor(id_hover != 0 ? hCursorHover : hCursorNormal);
         }
@@ -7319,6 +7314,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         SetCursor(hCursorNormal);
       }
       break;
+
     case WM_COMMAND:
       switch(LOWORD(wParam))
       {

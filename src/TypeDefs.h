@@ -257,6 +257,9 @@ typedef struct _cmq
 #define INDIC_NP3_HYPERLINK      (INDIC_CONTAINER + 5)
 #define INDIC_NP3_HYPERLINK_U    (INDIC_CONTAINER + 6)
 
+// --------------------------------------------------------------------------
+
+#define SC_NP3_CURSORHAND 8
 
 //=============================================================================
 

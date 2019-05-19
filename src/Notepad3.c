@@ -244,13 +244,16 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 #endif
 
 
+//#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE)
+#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION)
+
 //=============================================================================
 //
 //  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
 //
 static volatile LONG iNotifyChangeStackCounter = 0L;
 
-bool CheckNotifyChangeEvent()
+static __forceinline bool CheckNotifyChangeEvent()
 {
   return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
@@ -1272,32 +1275,17 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
     case WM_TIMER:
-    case WM_KEYDOWN:
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
-    case WM_SYSKEYDOWN:
-      if (IsAsyncKeyDown(VK_MENU))  // ALT-KEY DOWN
-      {
-        if (!Settings2.DenyVirtualSpaceAccess) {
-          SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
-        }
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
-    case WM_SYSKEYUP:
-      if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
-      {
-         SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
     case WM_KILLFOCUS:
-      if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
-      {
-         SciCall_SetVirtualSpaceOptions(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
-      }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
+    // never send 
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
+
+    // -------------------------------------------------
 
     case WM_CREATE:
       return MsgCreate(hwnd, wParam, lParam);
@@ -1559,7 +1547,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
 
-  int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION;
+  int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS;
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, vspaceOpt, 0);
 
   // Idle Styling (very large text)
@@ -1641,7 +1629,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   } else {
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
   }
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS), 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
@@ -6210,10 +6198,11 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
   {
     case SCN_DWELLSTART:
     {
+      //SciCall_SetCursor(SC_NP3_CURSORHAND);
       if (!Settings.ShowHypLnkToolTip || SciCall_CallTipActive() ||
         (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) <= 0)) { return; }
 
-      char chURL[LARGE_BUFFER] = { '\0' };
+      char chURL[MIDSZ_BUFFER] = { '\0' };
       DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
       DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
       DocPos const length = (lastPos - firstPos);
@@ -6223,17 +6212,21 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
       if (StrIsEmptyA(chURL)) { return; }
 
-      CHAR  chCalltipAdd[MIDSZ_BUFFER] = { L'\0' };
       WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
       if (StrStrIA(chURL, "file:") == chURL) { 
         GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
       } else {
         GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
       }
-      WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chCalltipAdd, COUNTOF(chCalltipAdd), NULL, NULL);
-      StringCchCatA(chURL, COUNTOF(chURL), chCalltipAdd);
+      CHAR  chAdd[MIDSZ_BUFFER] = { L'\0' };
+      WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, COUNTOF(chAdd), NULL, NULL);
 
-      SciCall_CallTipShow(position, chURL);
+      char chCallTip[LARGE_BUFFER] = { '\0' };
+      //StringCchCatA(chCallTip, COUNTOF(chCallTip), "=> ");
+      StringCchCatA(chCallTip, COUNTOF(chCallTip), chURL);
+      StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
+      //SciCall_CallTipSetPosition(true);
+      SciCall_CallTipShow(position, chCallTip);
       SciCall_CallTipSetHlt(0, (int)length);
       Globals.CallTipType = CT_DWELL;
     }
@@ -6241,6 +6234,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
     case SCN_DWELLEND:
     {
+      //SciCall_SetCursor(SC_CURSORNORMAL);
       CancelCallTip();
     }
     break;
@@ -6511,6 +6505,9 @@ static bool  _IsIMEOpenInNoNativeMode()
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
+
+static bool s_mod_ctrl_pressed = false;
+
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
