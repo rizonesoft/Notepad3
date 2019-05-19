@@ -90,7 +90,7 @@ int    Style_GetCurrentLexerRID();
 void   Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName);
 void   Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName);
 int    Style_GetLexerIconId(PEDITLEXER plex);
-bool   Style_HasLexerForExt(LPCWSTR lpszExt);
+bool   Style_HasLexerForExt(LPCWSTR lpszFile);
 HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex);
 INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
 HWND   Style_CustomizeSchemesDlg(HWND hwnd);

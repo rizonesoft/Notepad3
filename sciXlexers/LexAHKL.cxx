@@ -392,7 +392,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
 				} else if ((sc.chPrev == 'x' || sc.chPrev == 'y'|| sc.chPrev == 'w'|| sc.chPrev == 'h')
-					&& inCommand && isdigit(sc.ch) ) {				// Special number cases when entering sizes
+					&& inCommand && isdigit(sc.ch & 0xFF) ) {				// Special number cases when entering sizes
 
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
@@ -448,7 +448,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 			}
 
 			case SCE_AHKL_DECNUMBER:	{
-				if (!isdigit(sc.ch)) {
+				if (!isdigit(sc.ch & 0xFF)) {
 
 					if (sc.ch == 'x' || sc.ch == 'X')
 						sc.ChangeState(SCE_AHKL_HEXNUMBER);
@@ -635,7 +635,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				if (valIdentifier.Contains(sc.ch))
 					validFunction = true;
 
-				if (isdigit(sc.ch))
+				if (isdigit(sc.ch & 0xFF))
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
 				else if (inCommand && sc.ch == '+')

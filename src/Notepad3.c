@@ -1245,7 +1245,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
   }
 
-
   return(Globals.hwndMain);
 }
 

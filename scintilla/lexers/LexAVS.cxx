@@ -31,14 +31,13 @@ static inline bool IsAWordChar(const int ch) {
 }
 
 static inline bool IsAWordStart(int ch) {
-	return isalpha(ch) || (ch != ' ' && ch != '\n' && ch != '(' && ch != '.' && ch != ',');
+	return isalpha(ch & 0xFF) || (ch != ' ' && ch != '\n' && ch != '(' && ch != '.' && ch != ',');
 }
 
 static inline bool IsANumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
-	return (ch < 0x80) &&
-			(isdigit(ch) || ch == '.' || ch == '-' || ch == '+');
+	return (ch < 0x80) && (isdigit(ch) || ch == '.' || ch == '-' || ch == '+');
 }
 
 static void ColouriseAvsDoc(

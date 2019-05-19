@@ -121,7 +121,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -146,7 +146,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -170,7 +170,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -193,7 +193,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;NP3;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>

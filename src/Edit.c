@@ -972,11 +972,10 @@ bool EditLoadFile(
   DWORD dwFileSize = GetFileSize(hFile, NULL);
   DWORD dwBufSize = dwFileSize + 16;
 
-  // check for unknown extension
-  LPCWSTR lpszExt = PathFindExtension(pszFile);
-  if (lpszExt && !Style_HasLexerForExt(lpszExt)) {
+  // check for unknown file/extension
+  if (!Style_HasLexerForExt(pszFile)) {
     status->bUnknownExt = true;
-    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt);
+    INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile));
     if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
       status->bUnknownExt = true;
@@ -986,7 +985,7 @@ bool EditLoadFile(
     }
   }
   else {
-    status->bUnknownExt = (lpszExt) ? false : true;
+    status->bUnknownExt = true;
   }
 
   // Check if a warning message should be displayed for large files
@@ -1046,7 +1045,7 @@ bool EditLoadFile(
   cpi_enc_t iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
 
   // --- 1st check for force encodings ---
-
+  LPCWSTR lpszExt = PathFindExtension(pszFile);
   bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
 
   cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :

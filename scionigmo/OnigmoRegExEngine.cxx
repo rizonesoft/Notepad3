@@ -624,6 +624,82 @@ std::string& OnigmoRegExEngine::convertReplExpr(std::string& replStr)
 }
 // ============================================================================
 
+
+//ptrdiff_t const res = OnigmoRegExFind("a(.*)b|[e-f]+", "zzzzaffffffffb");
+//if (res >= 0) {
+//  (void)0;
+//}
+
+extern "C" ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText)
+{
+  regex_t* reg;
+  const UChar* pattern = reinterpret_cast<const UChar*>(pchPattern);
+
+  OnigPosition result = ONIG_NORMAL;
+
+  try {
+    OnigErrorInfo einfo;
+    int res = onig_new(&reg, pattern, pattern + strlen((char*)pattern),
+      ONIG_OPTION_DEFAULT, ONIG_ENCODING_UTF8, ONIG_SYNTAX_DEFAULT, &einfo);
+
+    if (res != ONIG_NORMAL) {
+      //OnigUChar err_msg[ONIG_MAX_ERROR_MESSAGE_LEN];
+      //onig_error_code_to_str(err_msg, result, &einfo);
+      //fprintf(stderr, "ERROR: %s\n", s);
+      result = static_cast<OnigPosition>(-111);
+    }
+  }
+  catch (...) {
+    // -1 is normally used for not found, -666 is used here for exception
+    result = static_cast<OnigPosition>(-666);  
+  }
+
+  if (result >= 0) 
+  {
+    OnigRegion* region = onig_region_new();
+
+    const UChar* str = reinterpret_cast<const UChar*>(pchText);
+    const UChar* end = str + strlen(pchText);
+    const UChar* start = str;
+    const UChar* range = end;
+
+    try {
+      result = onig_search(reg, str, end, start, range, region, ONIG_OPTION_NONE);
+    }
+    catch (...) {
+      // -1 is normally used for not found, -666 is used here for exception
+      result = static_cast<OnigPosition>(-666);
+    }
+
+    if (result >= 0)
+    {
+      // found: (result == region->beg[0]) ???
+      result = region->beg[0]; // (!!!)
+    }
+    else if (result == ONIG_MISMATCH)
+    {
+      //fprintf(stderr, "search fail\n");
+      (void)0;
+    }
+    else if (result < ONIG_MISMATCH) 
+    {
+      //OnigUChar err_msg[ONIG_MAX_ERROR_MESSAGE_LEN];
+      //onig_error_code_to_str(err_msg, result);
+      //fprintf(stderr, "ERROR: %s\n", err_msg);
+      (void)0;
+    }
+
+    onig_region_free(region, 1 /* 1:free self, 0:free contents only */);
+  }
+
+  onig_free(reg);
+  onig_end();
+
+  return result;
+}
+// ============================================================================
+
+
 #pragma warning( pop )
 
 #endif //SCI_OWNREGEX

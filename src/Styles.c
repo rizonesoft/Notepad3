@@ -1789,31 +1789,26 @@ PEDITLEXER  Style_SniffShebang(char* pchText)
 //
 PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames) 
 {
-  int const cch = (int)StringCchLenW(lpszMatch, 0);
-
-  if (!bCheckNames) 
+  if (bCheckNames) 
   {
-    for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
-      LPCWSTR p1 = g_pLexArray[iLex]->szExtensions;
-      do {
-        LPCWSTR p2 = StrStrI(p1, lpszMatch);
-        if (p2 == NULL) {
-          break;
+    int const cch = (int)StringCchLenW(lpszMatch, 0);
+    if (cch >= 3) {
+      for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) 
+      {
+        if (StrCmpNI(g_pLexArray[iLex]->pszName, lpszMatch, cch) == 0) 
+        {
+          return(g_pLexArray[iLex]);
         }
-        WCHAR const ch = (p2 == p1) ? L'\0' : p2[-1];
-        p2 += cch;
-        if ((ch == L';' || ch == ' ' || ch == L'\0') && (*p2 == L';' || *p2 == L' ' || *p2 == L'\0')) {
-          return g_pLexArray[iLex];
-        }
-        p1 = StrChr(p2, L';');
-      } while (p1 != NULL);
+      }
     }
   }
-  else {
-    if (cch >= 3) {
-      for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
-        if (StrCmpNI(g_pLexArray[iLex]->pszName, lpszMatch, cch) == 0)
-          return(g_pLexArray[iLex]);
+  else if (StrIsNotEmpty(lpszMatch)) 
+  {
+    for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex)
+    {
+      if (_IsItemInStyleString(g_pLexArray[iLex]->szExtensions, lpszMatch)) 
+      {
+        return g_pLexArray[iLex];
       }
     }
   }
@@ -1823,12 +1818,62 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
 
 //=============================================================================
 //
+//  Style_RegExMatchLexer()
+//
+PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
+{
+  if (StrIsNotEmpty(lpszFileName))
+  {
+    char chFilePath[MAX_PATH << 1] = { '\0' };
+    WideCharToMultiByte(CP_UTF8, 0, lpszFileName, -1, chFilePath, COUNTOF(chFilePath), NULL, NULL);
+
+    for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex)
+    {
+      const WCHAR* p = g_pLexArray[iLex]->szExtensions;
+      do {
+        const WCHAR* f = StrChr(p, L'\\');
+        const WCHAR* e = f;
+        if (f) {
+          e = StrChr(f, L';');
+          if (!e) {
+            e = f + lstrlen(f);
+          }
+          ++f; // exclude '\'
+          char regexpat[MAX_PATH] = { '\0' };
+          WideCharToMultiByte(CP_UTF8, 0, f, (int)(e-f), regexpat, COUNTOF(regexpat), NULL, NULL);
+
+          if (OnigmoRegExFind(regexpat, chFilePath) >= 0) {
+            return g_pLexArray[iLex];
+          }
+        }
+        p = e;
+      } while (p != NULL);
+    }
+  }
+  return NULL;
+}
+  
+
+//=============================================================================
+//
 //  Style_HasLexerForExt()
 //
-bool Style_HasLexerForExt(LPCWSTR lpszExt)
+bool Style_HasLexerForExt(LPCWSTR lpszFile)
 {
-  if (lpszExt && (*lpszExt == L'.')) ++lpszExt;
-  return (lpszExt && Style_MatchLexer(lpszExt,false)) ? true : false;
+  bool bFound = false;
+  LPCWSTR lpszExt = PathFindExtension(lpszFile);
+  if (StrIsNotEmpty(lpszExt)) {
+    if (*lpszExt == L'.') ++lpszExt;
+    if (lpszExt && Style_MatchLexer(lpszExt, false))
+    {
+      bFound = true;
+    }
+  }
+  if (!bFound && StrIsNotEmpty(lpszFile)) 
+  {
+    bFound = Style_RegExMatchLexer(PathFindFileName(lpszFile));
+  }
+  return bFound;
 }
 
 
@@ -1882,9 +1927,11 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
   }
 
-  if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
-      (StrIsNotEmpty(lpszFile) && *lpszExt)) {
+  LPCWSTR lpszFileName = PathFindFileName(lpszFile);
 
+  if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
+      (StrIsNotEmpty(lpszFile) && *lpszExt)) 
+  {
     if (*lpszExt == L'.') ++lpszExt;
 
     if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
@@ -1898,7 +1945,7 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       }
     }
 
-    if (!bFound && StringCchCompareXI(PathFindFileName(lpszFile),L"cmakelists.txt") == 0) {
+    if (!bFound && StringCchCompareXI(lpszFileName,L"cmakelists.txt") == 0) {
       pLexNew = &lexCmake;
       bFound = true;
     }
@@ -1911,37 +1958,47 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
         bFound = true;
       }
     }
+
+    // check for filename regex match
+    if (!bFound) {
+      pLexSniffed = Style_RegExMatchLexer(lpszFileName);
+      if (pLexSniffed) {
+        pLexNew = pLexSniffed;
+        bFound = true;
+      }
+    }
+
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-    StringCchCompareXI(PathFindFileName(lpszFile), L"Readme") == 0) {
+    StringCchCompareXI(lpszFileName, L"Readme") == 0) {
     pLexNew = &lexANSI;
     bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(PathFindFileName(lpszFile),L"Makefile") == 0) ||
-    (StringCchCompareXI(PathFindFileName(lpszFile), L"Kbuild") == 0))) {
+    ((StringCchCompareXI(lpszFileName,L"Makefile") == 0) ||
+    (StringCchCompareXI(lpszFileName, L"Kbuild") == 0))) {
     pLexNew = &lexMAK;
     bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(PathFindFileName(lpszFile),L"Rakefile") == 0) ||
-    (StringCchCompareXI(PathFindFileName(lpszFile), L"Podfile") == 0))) {
+    ((StringCchCompareXI(lpszFileName,L"Rakefile") == 0) ||
+    (StringCchCompareXI(lpszFileName, L"Podfile") == 0))) {
     pLexNew = &lexRUBY;
     bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(PathFindFileName(lpszFile),L"mozconfig") == 0) {
+      StringCchCompareXI(lpszFileName,L"mozconfig") == 0) {
     pLexNew = &lexBASH;
     bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(PathFindFileName(lpszFile), L"Kconfig") == 0) ||
-    (StringCchCompareXI(PathFindFileName(lpszFile), L"Doxyfile") == 0))) {
+    ((StringCchCompareXI(lpszFileName, L"Kconfig") == 0) ||
+    (StringCchCompareXI(lpszFileName, L"Doxyfile") == 0))) {
     pLexNew = &lexCONF;
     bFound = true;
   }
