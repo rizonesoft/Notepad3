@@ -568,7 +568,16 @@
 	<a href="https://sourceforge.net/p/scintilla/feature-requests/1280/">Feature #1280</a>.
 	</li>
 	<li>
+	Improved performance of line folding code on large files when no folds are contracted.
+	This improves the time taken to open or close large files.
+	</li>
+	<li>
 	Fix bug where changing identifier sets in lexers preserved previous identifiers.
+	</li>
+	<li>
+	Fixed bug where changing to Unicode would rediscover line end positions even if still
+	sticking to ASCII (not Unicode NEL, LS, PS) line ends.
+	Only noticeable on huge files with over 100,000 lines.
 	</li>
  	<li>
 	Changed behaviour of SCI_STYLESETCASE(*,SC_CASE_CAMEL) so that it only treats 'a-zA-Z'

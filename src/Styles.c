@@ -822,6 +822,20 @@ void Style_SetFoldingProperties(bool active)
 
 //=============================================================================
 //
+//  Style_SetFoldingFocusedView()
+//
+void Style_SetFoldingFocusedView()
+{
+    SciCall_SetProperty("fold", "1");
+    SciCall_SetProperty("fold.comment", "1");
+    SciCall_SetProperty("fold.compact", "0");
+    SciCall_SetProperty("fold.foldsyntaxbased", "1");
+    SciCall_SetProperty("fold.ahkl.skip", "1");
+}
+
+
+//=============================================================================
+//
 //  Style_SetLexer()
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) 

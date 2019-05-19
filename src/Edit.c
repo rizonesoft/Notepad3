@@ -6930,11 +6930,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     EditFinalizeStyling(hwnd, -1);
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
-
-    Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
-    SciCall_SetProperty("fold.compact", "1");
-    // special case, cause Lexer is mad 
-    SciCall_SetProperty("fold.ahkl.skip", "1");
+    Style_SetFoldingFocusedView();
 
     Style_SetFolding(hwnd, true);
 
