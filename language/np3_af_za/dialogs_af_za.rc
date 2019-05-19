@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,65,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,73,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+    CONTROL         "Deursigtige modus waneer fokus verloor", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,77,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,73,10
     CONTROL         "W&isselkarakterd Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,73,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+    CONTROL         "Deursigtige modus waneer fokus verloor", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,23,55,14
@@ -222,18 +222,18 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inconsistent Line Endings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inconsistent line endings found in file:",IDC_STATIC,7,7,180,8
+    LTEXT           "Strydige lyn eindes gevind in die lêer:",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Do you want to normalize the line endings?",IDC_STATIC,7,52,180,8
+    LTEXT           "%s lyn(e).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s lyn(e).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s lyn(e).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "&Wil jy die lyn eindes normaliseer?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Yes",IDOK,138,63,50,14
-    PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_EOLS,
+    PUSHBUTTON      "&Ja",IDOK,138,63,50,14
+    PUSHBUTTON      "&Nee",IDCANCEL,138,80,50,14
+    CONTROL         "&Toon altyd hierdie dialoog.", IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -335,9 +335,9 @@ BEGIN
     CONTROL         "Tab sleutel hervorm indentasie.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "&Backspace-sleutel hervorm indentasie.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Waarskuwing teen strydige indentasie.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Autodetect Tab or Space Indentation.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Spoor Tab of Space indentation op.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,117,24,50,14
@@ -348,21 +348,21 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inconsistent Indentation"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Statistics: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    GROUPBOX        "Statistieke: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
-    LTEXT           "Blanks[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
-    LTEXT           "Mixed[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
-    LTEXT           "%s line(s)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
-    LTEXT           "%s line(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
-    LTEXT           "%s line(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
-    GROUPBOX        "Re-Indent All ? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    LTEXT           "Spasies[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
+    LTEXT           "Gemengde[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
+    LTEXT           "%s lyn(e)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
+    LTEXT           "%s lyn(e)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
+    LTEXT           "%s lyn(e)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
+    GROUPBOX        "Re-Indent Alles ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
-    LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
-    PUSHBUTTON      "&Yes",IDOK,80,98,50,14
-    PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Spasies",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
+    LTEXT           "%s lyn(e) w/ onreëlmatige indentdiepte",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
+    LTEXT           "%s lyn(e) w/ onreëlmatige indentdiepte",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
+    PUSHBUTTON      "&Ja",IDOK,80,98,50,14
+    PUSHBUTTON      "&Nee",IDCANCEL,134,98,50,14
+    CONTROL         "&Toon altyd hierdie dialoog.", IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
