@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.519.build (2019-May 19)
+Current Version 5.19.520.build (2019-May 20)
 ==================================================
 
 --------------------------------------------------
@@ -96,6 +96,8 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
+- Allow customizable fileName-RegEx to extensionlist
+	( \rc$; = all filenames (incl. ext) which ends on 'rc')
 - Hand cursor coupled with indicator hover style only on modifier keys
 - Allow indicator styling for Hyperlink hover rendering
 - Find/Replace dialog <-> "Focused View" enhancements
@@ -135,7 +137,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------
 - Polish (it-IT) Translation (In progress)
-- Hungarian (hu-HU) Translation (In progress)
+- Hungarian (hu-HU) Translation
 - Italian (it-IT) Translation
 - Korean (UHC) Translation
 
