@@ -60,7 +60,7 @@ BEGIN
         MENUITEM "Megnyitás m&ásik alkalmazással...", IDM_FILE_OPENWITH
         MENUITEM "&Gyorsnézet",                       IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Név másolosása",                   IDM_POP_COPYNAME
+        MENUITEM "&Név másolása",                     IDM_POP_COPYNAME
         MENUITEM "&Hivatkozás készítése...",          IDM_FILE_CREATELINK
         MENUITEM "Ment&és másként...",                IDM_FILE_SAVEAS
         MENUITEM "Más&olás/Mozgatás...",              IDM_FILE_COPYMOVE
@@ -139,3 +139,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
