@@ -290,7 +290,7 @@ Ein backslash (\\) definiert RegEx Dateinamen-Muster:\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Formate kopieren: 'Copy && Paste' oder 'Drag && Drop'\
+Formate kopieren: 'Copy & Paste' oder 'Drag & Drop'\
 "
 
 END
