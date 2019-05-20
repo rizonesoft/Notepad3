@@ -284,7 +284,9 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Fájlnév kiterjesztéseket ';'-vel kell elválasztani\r\n\r\n\
+Fájlnév kiterjesztéseket ';'-vel kell elválasztani\r\n\
+A backslash (\\) defines RegEx filename patterns:\r\n\
+   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Stílus formátum:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\

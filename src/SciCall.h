@@ -553,7 +553,7 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 //=============================================================================
 
 // SciOnigmo RegEx search
-ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText);
+ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive);
 
 //=============================================================================
 

@@ -313,9 +313,9 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bClea
 
   // clear markers, flags and positions
   if (bClearUndoHistory) { UndoRedoRecordingStop(); }
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
   _IGNORE_NOTIFY_CHANGE_;
   SciCall_Cancel();
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
   SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
   EditClearAllOccurrenceMarkers(hwnd);
@@ -5274,7 +5274,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
 
-          if (FocusedView.HideNonMatchedLines) { EditToggleView(sg_pefrData->hwnd); }
+          if (FocusedView.HideNonMatchedLines) { 
+            SwitchMarkOccurrences_ON();
+            EditToggleView(sg_pefrData->hwnd);
+            SwitchMarkOccurrences_OFF();
+          }
           MarkAllOccurrences(50, true);
 
           if (s_InitialTopLine >= 0) { 
@@ -6916,12 +6920,12 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
 {
   if (!bHideLines) {
     // reset
+    SciCall_FoldAll(EXPAND);
     Style_SetFoldingAvailability(Style_GetCurrentLexerPtr());
     FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
     Style_SetFoldingProperties(FocusedView.CodeFoldingAvailable);
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
-    SciCall_FoldAll(EXPAND);
-    EditFinalizeStyling(hwnd, -1);
+    Sci_ApplyLexerStyle(0, -1);
     EditMarkAllOccurrences(hwnd, true);
     UpdateVisibleUrlIndics();
   }
@@ -6929,6 +6933,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
   {
     // prepare hidden (folding) settings
     EditFinalizeStyling(hwnd, -1);
+    EditMarkAllOccurrences(hwnd, true);
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
     Style_SetFoldingFocusedView();
