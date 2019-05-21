@@ -1,5 +1,50 @@
 History
 
+2019/05/07: Version 6.9.2 (same as Release Candidate 3)
+
+2019/04/23: Release Candidate 3 for 6.9.2
+2019/04/23: add doc/SYNTAX.md into distribution file
+2019/04/09: Release Candidate 2 for 6.9.2
+2019/04/09: fix #139: UAF in match_at()
+2019/04/01: Release Candidate 1 for 6.9.2
+2019/04/01: update Unicode version to 12.1.0 (draft)
+2019/03/29: allow {n,m} (n>m) as possessive interval
+2019/03/25: add ONIG_SYN_OP2_OPTION_ONIGURUMA
+2019/03/22: add new options ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER and
+            ONIG_OPTION_TEXT_SEGMENT_WORD
+2019/03/21: PR #137: fix cross-compilation
+2019/03/20: update Unicode version to 12.0.0
+2019/03/17: add doc/SYNTAX.md
+2019/03/13: {n,m}+ and {n,m}? are possessive and reluctant range operator
+            in Perl syntax
+2019/03/04: fix #132: don't execute testp if ENABLE_POSIX_API == no
+2019/02/28: re-implement bytecode by using Operation struct
+2019/02/26: fix #130: Build error on UWP with VS2017
+2019/02/03: PR #128: regerror/toascii: do not attempt to serialize NULL pointer
+2019/01/30: Build breaks without autoreconf #73
+2019/01/02: fix #127: Windows VS 2008 build errors
+2018/12/19: fix #126: Unable to compile when USE_CALLOUT is not defined
+
+2018/12/11: Version 6.9.1
+
+2018/10/08: use ENC_FLAG_SKIP_OFFSET_XXX values
+2018/10/06: UTF-8 supports code range from 0x0000 to 0x10FFFF
+            (https://tools.ietf.org/html/rfc3629)
+2018/10/05: speed improvement
+2018/10/03: use OPTIMIZE_STR_CASE_FOLD_FAST
+2018/10/01: convert CRLF line endings to LF
+2018/09/27: set SIZEOF_SIZE_T for windows platforms
+2018/09/22: use Sunday quick search algorithm instead of Boyer-Moor-Horspool
+2018/09/20: introduce threaded code into match_at()
+2018/09/17: remove HAVE_STRINGS_H
+2018/09/16: remove HAVE_PROTOTYPES and HAVE_STDARG_PROTOTYPES
+2018/09/14: add a command line option '-gc' for make_unicode_property_data.py.
+2018/09/08: remove AC_HEADER_STDC
+2018/09/06: remove AC_OUTPUT macro call
+2018/09/06: remove AC_FUNC_MEMCMP, AC_HEADER_TIME, AC_C_CONST, HAVE__SETJMP and
+            HAVE_STRING_H
+2018/09/05: remove HAVE_LIMITS_H, HAVE_FLOAT_H and HAVE_STDLIB_H
+
 2018/09/03: Version 6.9.0
 
 2018/08/24: add Unicode Emoji properties

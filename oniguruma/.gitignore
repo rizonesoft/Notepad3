@@ -21,12 +21,17 @@ Makefile.in
 *.lib
 *.exe
 *.exp
+*.gcno
+*.gcda
+*.gcov
 *~
 .libs/
 .deps/
 /build
 /onig-*.tar.gz
 m4/*.m4
+/coverage
+/coverage.info
 
 # src/
 /src/CaseFolding.txt
