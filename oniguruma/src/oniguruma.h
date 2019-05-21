@@ -147,6 +147,7 @@ typedef struct OnigEncodingTypeST {
 
 typedef OnigEncodingType* OnigEncoding;
 
+#if 0
 ONIG_EXTERN OnigEncodingType OnigEncodingASCII;
 ONIG_EXTERN OnigEncodingType OnigEncodingISO_8859_1;
 ONIG_EXTERN OnigEncodingType OnigEncodingISO_8859_2;
@@ -178,6 +179,10 @@ ONIG_EXTERN OnigEncodingType OnigEncodingKOI8_R;
 ONIG_EXTERN OnigEncodingType OnigEncodingCP1251;
 ONIG_EXTERN OnigEncodingType OnigEncodingBIG5;
 ONIG_EXTERN OnigEncodingType OnigEncodingGB18030;
+#else // lean and mean
+ONIG_EXTERN OnigEncodingType OnigEncodingASCII;
+ONIG_EXTERN OnigEncodingType OnigEncodingUTF8;
+#endif
 
 #define ONIG_ENCODING_ASCII        (&OnigEncodingASCII)
 #define ONIG_ENCODING_ISO_8859_1   (&OnigEncodingISO_8859_1)

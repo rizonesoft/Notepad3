@@ -55,7 +55,7 @@
 #define _SCI_BUILD                     L"Scintilla "
 #endif
 
-#define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER))) L"  (RegEx: Onigmo v" _W(_STRG(ONIGMO_REGEX_VER)) L")"
+#define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER))) L"  (RegEx: Oniguruma v" _W(_STRG(ONIGURUMA_REGEX_VER)) L")"
 
 // ============================================================================
 

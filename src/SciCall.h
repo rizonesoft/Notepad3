@@ -83,6 +83,10 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 
 #endif // SCI_DIRECTFUNCTION_INTERFACE
 
+// SciOniguruma RegEx search
+ptrdiff_t WINAPI OnigRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive);
+
+//=============================================================================
 
 //=============================================================================
 //
@@ -551,11 +555,6 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 #define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((B), (E));
 
 #define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)  
-
-//=============================================================================
-
-// SciOnigmo RegEx search
-ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive);
 
 //=============================================================================
 

@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   regext.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
@@ -95,6 +95,7 @@ static int
 conv_encoding(OnigEncoding from, OnigEncoding to, const UChar* s, const UChar* end,
               UChar** conv, UChar** conv_end)
 {
+#if 0
   int len = (int )(end - s);
 
   if (to == ONIG_ENCODING_UTF16_BE) {
@@ -155,7 +156,7 @@ conv_encoding(OnigEncoding from, OnigEncoding to, const UChar* s, const UChar* e
       goto swap32;
     }
   }
-
+#endif
   return ONIGERR_NOT_SUPPORTED_ENCODING_COMBINATION;
 }
 

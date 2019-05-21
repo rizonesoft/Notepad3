@@ -62,6 +62,41 @@ static OnigEncoding g_UsedEncodingsTypes[] = { g_pOnigEncodingType };
 // ============================================================================
 // ============================================================================
 
+// ------------------------------------
+// --- Onigmo Engine Simple Options ---
+// ------------------------------------
+static void SetSimpleOptions(OnigOptionType& onigOptions, 
+  const bool caseSensitive, const int searchFlags = 0)
+{
+  // fixed options
+  onigOptions = ONIG_OPTION_DEFAULT;
+
+  // OFF: not wanted options in Notepad3
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
+  //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
+
+  // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
+  if (searchFlags & SCFIND_DOT_MATCH_ALL) {
+    ONIG_OPTION_ON(onigOptions, ONIG_OPTION_MULTILINE);
+  }
+  else {
+    ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MULTILINE);
+  }
+
+  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_SINGLELINE);
+  //ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
+
+  // dynamic options
+  ONIG_OPTION_ON(onigOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
+}
+// ============================================================================
+
+
+
+
+
 class OnigurumaRegExEngine : public RegexSearchBase
 {
 public:
@@ -217,46 +252,20 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
   Sci::Position const rangeEnd = (findForward) ? maxPos : minPos;
   Sci::Position const rangeLen = (rangeEnd - rangeBeg);
 
-
-  // -----------------------------
-  // --- Oniguruma Engine Options ---
-  // -----------------------------
-
-  // fixed options
-  OnigOptionType onigmoOptions = ONIG_OPTION_DEFAULT;
-
-  // OFF: not wanted options in Notepad3
-  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND);
-  //ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_ASCII_RANGE);
-
-  // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
-  if (searchFlags & SCFIND_DOT_MATCH_ALL) {
-    ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_MULTILINE);
-  }
-  else {
-    ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_MULTILINE);
-  }
-
-
-  //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
-  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
-
-  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_CAPTURE_GROUP);
-
-  // dynamic options
-  ONIG_OPTION_ON(onigmoOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
-  ONIG_OPTION_ON(onigmoOptions, (rangeBeg != 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
-  ONIG_OPTION_ON(onigmoOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
-
+  OnigOptionType onigOptions;
+  SetSimpleOptions(onigOptions, caseSensitive, searchFlags);
+  ONIG_OPTION_ON(onigOptions, (rangeBeg != 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
+  ONIG_OPTION_ON(onigOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
+  
   std::string sPattern(pattern);
-  std::string const & sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigmoOptions);
+  std::string const & sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigOptions);
 
-  bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+  bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
   if (bReCompile) {
     m_RegExprStrg.clear();
     m_RegExprStrg = sRegExprStrg;
-    m_CmplOptions = onigmoOptions;
+    m_CmplOptions = onigOptions;
     m_ErrorInfo[0] = '\0';
     try {
       OnigErrorInfo einfo;
@@ -289,9 +298,9 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
     onig_region_init(&m_Region);
 
     if (findForward)
-      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
+      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigOptions);
     else //                                                              X                                    //
-      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigmoOptions);
+      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigOptions);
   }
   catch (...) {
     return SciPos(-3);  // -1 is normally used for not found, -3 is used here for exception
@@ -680,30 +689,6 @@ private:
 // ============================================================================
 
 
-// ------------------------------------
-// --- Onigmo Engine Simple Options ---
-// ------------------------------------
-static void SetSimpleOptions(OnigOptionType& onigOptions, const bool caseSensitive)
-{
-  // fixed options
-  onigOptions = ONIG_OPTION_DEFAULT;
-
-  // OFF: not wanted options in Notepad3
-  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
-  //ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_ASCII_RANGE);
-  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MULTILINE);
-
-  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_SINGLELINE);
-  //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
-
-  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
-
-  // dynamic options
-  ONIG_OPTION_ON(onigOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
-}
-// ============================================================================
-
-
 
 OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* document, const bool caseSensitive)
 {
@@ -785,7 +770,11 @@ static SimpleRegExEngine ModuleRegExEngine;
 
 // ============================================================================
 
-extern "C" ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive)
+extern "C"
+#ifdef SCINTILLA_DLL
+__declspec(dllexport)
+#endif
+ptrdiff_t APIENTRY OnigRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive)
 {
   const UChar* pattern = reinterpret_cast<const UChar*>(pchPattern);
   const UChar* string = reinterpret_cast<const UChar*>(pchText);
