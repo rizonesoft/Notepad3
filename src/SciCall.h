@@ -144,6 +144,8 @@ DeclareSciCallV0(GrabFocus, GRABFOCUS)
 DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag)
 DeclareSciCallR0(GetFocus, GETFOCUS, bool)
 
+DeclareSciCallV0(LinesSplit, LINESSPLIT)
+
 DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
