@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.520.build (2019-May 20)
+Current Version 5.19.521.build (2019-May 21)
 ==================================================
 
 --------------------------------------------------
@@ -62,6 +62,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Replace RegEx Onigmo by RegEx Oniguruma
 - Enable Undo on FileRevert / AutoReload
 - Adapt warning dialog according to new FileRevert / AutoReload undo/redo history
 - Add an "Always On Top" toolbar button
