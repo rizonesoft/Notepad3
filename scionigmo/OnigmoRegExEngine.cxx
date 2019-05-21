@@ -785,7 +785,11 @@ static SimpleRegExEngine ModuleRegExEngine;
 
 // ============================================================================
 
-extern "C" ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive)
+extern "C"
+#ifdef SCINTILLA_DLL
+__declspec(dllexport)
+#endif
+ptrdiff_t OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive)
 {
   const UChar* pattern = reinterpret_cast<const UChar*>(pchPattern);
   const UChar* string = reinterpret_cast<const UChar*>(pchText);
