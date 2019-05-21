@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.8.0  2018/03/13
+Oniguruma API  Version 6.9.2  2019/03/25
 
 #include <oniguruma.h>
 
@@ -92,6 +92,8 @@ Oniguruma API  Version 6.8.0  2018/03/13
                                      (alnum, alpha, blank, cntrl, digit, graph,
                                       lower, print, punct, space, upper, xdigit,
                                       word)
+      ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER  Extended Grapheme Cluster mode
+      ONIG_OPTION_TEXT_SEGMENT_WORD                       Word mode
 
   5 enc:        character encoding.
 

@@ -24,6 +24,24 @@ Supported character encodings:
 
 * GB18030: contributed by KUBO Takehiro
 * CP1251:  contributed by Byte
+* doc/SYNTAX.md: contributed by seanofw
+
+
+New feature of version 6.9.2
+-----------------------------------
+
+* Update Unicode version 12.1.0
+* NEW: Unicode Text Segment mode option (?y{g}) (?y{w})
+
+  g: Extended Grapheme Cluster mode / w: Word mode
+
+  (Unicode Standard Annex #29 [http://unicode.org/reports/tr29/])
+
+
+New feature of version 6.9.1
+--------------------------
+
+* Speed improvement (* especially UTF-8)
 
 
 New feature of version 6.9.0
@@ -78,7 +96,7 @@ New feature of version 6.6.0
 --------------------------
 
 * NEW: ASCII only mode options for character type/property (?WDSP)
-* NEW: Extended Grapheme Cluster boundary \y, \Y (*original)
+* NEW: Extended Grapheme Cluster boundary \y, \Y
 * NEW: Extended Grapheme Cluster \X
 * Range-clear (Absent-clear) operator restores previous range in retractions.
 
