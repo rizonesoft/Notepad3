@@ -6528,7 +6528,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
         DocPos const iWordStart = SciCall_WordStartPosition(iCurrPos, true);
         DocPos const iWordEnd = SciCall_WordEndPosition(iCurrPos, true);
         iFindLength = (iWordEnd - iWordStart);
-        StringCchCopyNA(pszText, HUGE_BUFFER, SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
+        StringCchCopyNA(txtBuffer, COUNTOF(txtBuffer), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
       }
       else {
         return; // no selection and no word mark chosen
