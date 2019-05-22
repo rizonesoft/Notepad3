@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\
-Ein backslash (\\) definiert RegEx Dateinamen-Muster:\r\n\
+mit einem Backslash (\\), RegEx definiert ein Ende Dateinamens-Muster:\r\n\
    \\xyz$;   => Dateinamen(basename+ext) mit 'xyz' am Ende.\r\n\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
