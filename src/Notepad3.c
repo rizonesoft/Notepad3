@@ -6627,7 +6627,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               // clear marks only, if selection changed
               if (iUpd & SC_UPDATE_SELECTION)
               {
-                if (!SciCall_IsSelectionEmpty()) {
+                if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
                   MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
                 }
                 else {
@@ -6637,8 +6637,8 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               else if (iUpd & SC_UPDATE_CONTENT) {
                 // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
                 // using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~~~UpdateVisibleUrlIndics();
                 //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+                //~~~UpdateVisibleUrlIndics();
               }
             }
             UpdateToolbar();
