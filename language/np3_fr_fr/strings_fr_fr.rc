@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Erreur d'exportation des paramètres de style vers ""%s""."
     IDS_MUI_REGEX_INVALID    "Erreur lors de l'évaluation de l'expression régulière. L'expression est invalide!"
     IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré.\nSi une application 32 bits est utilisée,\nessayer de faire glisser le fichier sur la barre d'outils de Notepad3."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Cliquer pour ouvrir le fichier."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquer pour ouvrir le lien dans navigateur."
 END
 
 STRINGTABLE
@@ -285,8 +285,8 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Les extensions de fichier sont séparées par ';'\r\n\
-A backslash (\\) defines RegEx filename patterns:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+avec un Backslash (\\), RegEx définit un modèle de fin de nom de fichier:\r\n\
+   \\xyz$;   => noms de fichier(basename+ext) avec 'xyz'comme derniers caractères.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
