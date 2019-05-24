@@ -518,6 +518,8 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
 //
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
+#define Sci_IsMultiSelection() (SciCall_GetSelections() > 1)
+#define Sci_IsMultiOrRectangleSelection() (SciCall_IsSelectionRectangle() || Sci_IsMultiSelection())
 
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) == SciCall_LineFromPosition(SciCall_GetSelectionStart()))
 #define Sci_IsMultiLineSelection() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -  SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)

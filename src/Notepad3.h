@@ -18,6 +18,7 @@
 
 #include "TypeDefs.h"
 #include "SciCall.h"
+#include "../uthash/utarray.h"
 
 //==== Main Window ============================================================
 
@@ -44,24 +45,28 @@ typedef struct np3params {
 np3params, *LPnp3params;
 
 
+#pragma pack(push, 1)
 typedef struct _undoSel
 {
   int selMode_undo;
-  DocPos anchorPos_undo;
-  DocPos curPos_undo;
-  DocPos anchorVS_undo;
-  DocPos curVS_undo;
+  UT_array* anchorPos_undo;
+  UT_array* curPos_undo;
+  UT_array* anchorVS_undo;
+  UT_array* curVS_undo;
 
   int selMode_redo;
-  DocPos anchorPos_redo;
-  DocPos curPos_redo;
-  DocPos anchorVS_redo;
-  DocPos curVS_redo;
+  UT_array* anchorPos_redo;
+  UT_array* curPos_redo;
+  UT_array* anchorVS_redo;
+  UT_array* curVS_redo;
 } 
 UndoRedoSelection_t;
+#pragma pack(pop)
 
-#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0 }
+//#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0 }
+#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, NULL, NULL, NULL, NULL, SC_SEL_STREAM, NULL, NULL, NULL, NULL }
 
+#define NP3_SEL_MULTI  (SC_SEL_RECTANGLE + SC_SEL_LINES + SC_SEL_THIN)
 
 typedef enum {
   UNDO = true,
