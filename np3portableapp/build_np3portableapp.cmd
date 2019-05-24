@@ -42,8 +42,8 @@ set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\Porta
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_DOC_DIR=%SCRIPT_DIR%..\doc
-set NP3_THEMES_DIR=%SCRIPT_DIR%..\themes
-set NP3_STYLE_SCHEME_DIR=%SCRIPT_DIR%..\themes\style_schemata
+::set NP3_THEMES_DIR=%SCRIPT_DIR%..\Themes
+set NP3_BUILD_SCHEMES_DIR=%SCRIPT_DIR%..\Build\Themes
 ::set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
 ::set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v142
@@ -110,12 +110,13 @@ copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" 
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 
-del /s /f /q "%NP3_PORTAPP_DIR%\App\themes\*.*"
-for /f "delims=" %%d in ('dir /ad /b "%NP3_PORTAPP_DIR%\App\themes\"') do rmdir /s /q "%NP3_PORTAPP_DIR%\App\themes\%%d"
-xcopy "%NP3_THEMES_DIR%" "%NP3_PORTAPP_DIR%\App\themes" /C /V /I /S /Y
+del /s /f /q "%NP3_PORTAPP_DIR%\App\Themes\*.*"
+for /f "delims=" %%d in ('dir /ad /b "%NP3_PORTAPP_DIR%\App\Themes\"') do rmdir /s /q "%NP3_PORTAPP_DIR%\App\Themes\%%d"
+::xcopy "%NP3_THEMES_DIR%" "%NP3_PORTAPP_DIR%\App\Themes" /C /V /I /S /Y
+if exist "%NP3_PORTAPP_DIR%\App\Themes" rmdir /s /q "%NP3_PORTAPP_DIR%\App\Themes"
 
-del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes\*.*"
-xcopy "%NP3_STYLE_SCHEME_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes" /C /V /I /S /Y
+del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes\*.*"
+xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes" /C /V /I /S /Y
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d"
