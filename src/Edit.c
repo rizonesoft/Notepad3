@@ -5054,7 +5054,6 @@ static bool s_SaveTFBackSlashes = false;
 static inline void SwitchMarkOccurrences_ON()  { Settings.MarkOccurrences = max_i(1, s_SaveMarkOccurrences); }
 static inline void SwitchMarkOccurrences_OFF() { Settings.MarkOccurrences = 0; }
 
-
 static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static LPEDITFINDREPLACE sg_pefrData = NULL;
@@ -5090,6 +5089,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       // switch off normal mark occurrences
       Settings.MarkOccurrences = 0;
       Settings.MarkOccurrencesMatchVisible = false;
+      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
 
       // Load MRUs
       for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
@@ -5158,15 +5158,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
       if (sg_pefrData->bMarkOccurences) {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
-        EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
-        EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
       }
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
       }
-      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
-
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
@@ -5267,8 +5263,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
           Settings.MarkOccurrences = s_SaveMarkOccurrences;
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
-          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
-          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
+          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, Settings.MarkOccurrences);
 
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
@@ -5370,7 +5365,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-          _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+
+          _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           break;
 
         default:
@@ -5496,7 +5492,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       break;
 
       case IDT_TIMER_MAIN_MRKALL:
-        {
+        if (sg_pefrData) {
           _SetSearchFlags(hwnd, sg_pefrData);
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
@@ -5555,14 +5551,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES))
           {
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
-            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
-            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
             _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           }
           else {  // switched OFF
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
-            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
           }
@@ -6148,7 +6140,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   
   if (!IsMarkOccurrencesEnabled()) {
     EditClearAllOccurrenceMarkers(hwnd);
-    Globals.iMarkOccurrencesCount = -1;
     return;
   }
 
@@ -6459,19 +6450,17 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 void EditClearAllOccurrenceMarkers(HWND hwnd)
 {
   UNUSED(hwnd);
-  if (Globals.iMarkOccurrencesCount > 0) 
-  {
-    Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
 
-    _IGNORE_NOTIFY_CHANGE_;
+  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
 
-    SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
-    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-    SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
-    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-    
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
+  _IGNORE_NOTIFY_CHANGE_;
+
+  SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
+  SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+  SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
+  SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+
+  _OBSERVE_NOTIFY_CHANGE_;
 }
 
 
@@ -6583,7 +6572,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     DocPos start = rangeStart;
     DocPos end = rangeEnd;
 
-    Globals.iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
     do {
 
