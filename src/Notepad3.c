@@ -231,7 +231,7 @@ static UT_array* UndoRedoSelectionUTArray = NULL;
 static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
-static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* selection);
+static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
 
 static void  _DelayClearZoomCallTip(int delay);
 
@@ -3034,7 +3034,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
-  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
@@ -4949,14 +4948,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       Settings.MarkOccurrences = (Settings.MarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
       MarkAllOccurrences(0, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       Settings.MarkOccurrencesMatchVisible = !Settings.MarkOccurrencesMatchVisible;
       MarkAllOccurrences(0, true);
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
@@ -8541,7 +8538,6 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(IDT_FILE_LAUNCH, b2);
 
-
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
   //EnableTool(IDT_EDIT_FINDPREV,b2 && StringCchLenA(Settings.EFR_Data.szFind,0));
@@ -8553,7 +8549,7 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
-  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible));
+  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && (Settings.MarkOccurrences > 0));
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
@@ -9372,29 +9368,31 @@ void UndoRedoRecordingStop()
 static int _SaveUndoSelection()
 {
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
-  sel.selMode_undo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+  UndoRedoSelection_t* pSel = &sel;
 
-  switch (sel.selMode_undo)
+  pSel->selMode_undo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+
+  switch (pSel->selMode_undo)
   {
   case SC_SEL_RECTANGLE:
   case SC_SEL_THIN:
-    sel.anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-    sel.curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+    pSel->anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
+    pSel->curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
     if (!Settings2.DenyVirtualSpaceAccess) {
-      sel.anchorVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-      sel.curVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+      pSel->anchorVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+      pSel->curVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
     }
     break;
 
   case SC_SEL_LINES:
   case SC_SEL_STREAM:
   default:
-    sel.anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
-    sel.curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+    pSel->anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
+    pSel->curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
     break;
   }
 
-  int const token = _UndoRedoActionMap(-1, &sel);
+  int const token = _UndoRedoActionMap(-1, &pSel);
 
   if (token >= 0) {
     SciCall_AddUndoAction(token, 0);
@@ -9412,32 +9410,31 @@ static int _SaveUndoSelection()
 static void  _SaveRedoSelection(int token)
 {
   if (token >= 0) {
-    UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
+    UndoRedoSelection_t* pSel = NULL;
 
-    if (_UndoRedoActionMap(token, &sel) >= 0)
+    if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
     {
-      sel.selMode_redo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+      pSel->selMode_redo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
 
-      switch (sel.selMode_redo)
+      switch (pSel->selMode_redo)
       {
       case SC_SEL_RECTANGLE:
       case SC_SEL_THIN:
-        sel.anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-        sel.curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+        pSel->anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
+        pSel->curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
         if (!Settings2.DenyVirtualSpaceAccess) {
-          sel.anchorVS_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+          pSel->anchorVS_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+          pSel->curVS_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
         }
         break;
 
       case SC_SEL_LINES:
       case SC_SEL_STREAM:
       default:
-        sel.anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
-        sel.curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        pSel->anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
+        pSel->curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
         break;
       }
-
-      _UndoRedoActionMap(token, &sel); // set with redo action filled
     }
   }
 }
@@ -9485,15 +9482,15 @@ void RestoreAction(int token, DoAction doAct)
 {
   if (_InUndoRedoTransaction()) { return; }
 
-  UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
+  UndoRedoSelection_t* pSel = NULL;
 
-  if (_UndoRedoActionMap(token, &sel) >= 0)
+  if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
   {
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     HWND const hwndedit = Globals.hwndEdit;
 
-    DocPos const _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
-    DocPos const _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
+    DocPos const _anchorPos = (doAct == UNDO ? pSel->anchorPos_undo : pSel->anchorPos_redo);
+    DocPos const _curPos = (doAct == UNDO ? pSel->curPos_undo : pSel->curPos_redo);
 
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
@@ -9503,7 +9500,7 @@ void RestoreAction(int token, DoAction doAct)
     if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
 
-    int const selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
+    int const selectionMode = (doAct == UNDO ? pSel->selMode_undo : pSel->selMode_redo);
     PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
 
     // independent from selection mode
@@ -9519,8 +9516,8 @@ void RestoreAction(int token, DoAction doAct)
 
     case SC_SEL_THIN:
       {
-        DocPos const anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
-        DocPos const currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
+      DocPos const anchorVS = (doAct == UNDO ? pSel->anchorVS_undo : pSel->anchorVS_redo);
+      DocPos const currVS = (doAct == UNDO ? pSel->curVS_undo : pSel->curVS_redo);
         if ((anchorVS != 0) || (currVS != 0)) {
           PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
           PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
@@ -9534,6 +9531,7 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
+
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     PostMessage(hwndedit, SCI_CANCEL, 0, 0);
@@ -9547,7 +9545,7 @@ void RestoreAction(int token, DoAction doAct)
 //  _UndoSelectionMap()
 //
 //
-static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
+static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
 {
   if (UndoRedoSelectionUTArray == NULL)  { return -1; }
 
@@ -9572,20 +9570,21 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
   // get or set map item request ?
   if ((token >= 0) && (utoken < uiTokenCnt)) 
   {
-    if (selection->anchorPos_undo < 0) {
+    if ((*selection) == NULL) {
       // this is a get request
-      *selection = *(UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
+      (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
     }
     else {
       // this is a set request (fill redo pos)
-      utarray_insert(UndoRedoSelectionUTArray, (void*)selection, utoken);
+      assert(false); // not used yet
+      //utarray_insert(UndoRedoSelectionUTArray, (void*)selection, utoken);
     }
     // don't clear map item here (token used in redo/undo again)
   }
   else if (token < 0) {
     // set map new item request
     token = (int)uiTokenCnt;
-    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, uiTokenCnt);
+    utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), uiTokenCnt);
     uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
   }
   return token;
