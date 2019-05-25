@@ -9804,6 +9804,19 @@ void RestoreAction(int token, DoAction doAct)
             }
             ++i;
           }
+#else
+          SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
+          int const selCount = utarray_len(pSel->anchorPos_undo);
+          pPosAnchor = NULL;
+          pPosCur = NULL;
+          int i = 0;
+          while (i < selCount)
+          {
+            pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_next(pSel->anchorPos_undo, pPosAnchor) : utarray_next(pSel->anchorPos_redo, pPosAnchor));
+            pPosCur = (DocPos*)((UNDO == doAct) ? utarray_next(pSel->curPos_undo, pPosCur) : utarray_next(pSel->curPos_redo, pPosCur));
+            PostMessage(hwndedit, SCI_INDICATORFILLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur - *pPosAnchor));
+            ++i;
+          }
 #endif
         }
         break;

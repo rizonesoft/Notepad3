@@ -5365,8 +5365,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
+          _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
 
-          _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           break;
 
         default:
