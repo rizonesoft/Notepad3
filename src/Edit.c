@@ -5012,7 +5012,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
     if (bMarkAll) {
       EditClearAllOccurrenceMarkers(hwnd);
       if (iPos >= 0) {
-        EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd, false, false);
+        EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd);
         if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(lpefr->hwnd, true); }
       }
       else {
@@ -5160,12 +5160,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
-        EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
-        DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
       }
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
-        DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
         EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
       }
       EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
@@ -5272,7 +5269,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
-          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
 
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
@@ -5561,24 +5557,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
-            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
             _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           }
           else {  // switched OFF
-            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
-            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
-
-            if (FocusedView.HideNonMatchedLines) {
-              SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
-            }
-            else {
-              EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-            }
+            EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-
           }
         }
         break;
@@ -6169,6 +6155,9 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   bool const bWaitCursor = (Globals.iMarkOccurrencesCount > 4000) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
 
+  int searchFlags = EditAddSearchFlags(0, false, false, false,
+     Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
+
   _IGNORE_NOTIFY_CHANGE_;
 
   if (Settings.MarkOccurrencesMatchVisible) {
@@ -6181,10 +6170,10 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
     // !!! don't clear all marks, else this method is re-called
     // !!! on UpdateUI notification on drawing indicator mark
-    EditMarkAll(hwnd, NULL, Settings.MarkOccurrencesCurrentWord, iPosStart, iPosEnd, Settings.MarkOccurrencesMatchCase, Settings.MarkOccurrencesMatchWholeWords);
+    EditMarkAll(hwnd, NULL, searchFlags, iPosStart, iPosEnd);
   }
   else {
-    EditMarkAll(hwnd, NULL, Settings.MarkOccurrencesCurrentWord, 0, Sci_GetDocEndPosition(), Settings.MarkOccurrencesMatchCase, Settings.MarkOccurrencesMatchWholeWords);
+    EditMarkAll(hwnd, NULL, searchFlags, 0, Sci_GetDocEndPosition());
   }
   
   _OBSERVE_NOTIFY_CHANGE_;
@@ -6512,27 +6501,38 @@ void EditToggleView(HWND hwnd)
 }
 
 
+
+//=============================================================================
+//
+//  EditAddSearchFlags()
+//
+int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll)
+{
+  flags |= (bRegEx) ? SCFIND_REGEXP : 0;
+  flags |= (bWordStart) ? SCFIND_WORDSTART : 0;
+  flags |= (bMatchWords) ? SCFIND_WHOLEWORD : 0;
+  flags |= (bMatchCase ? SCFIND_MATCHCASE : 0);
+  flags |= (bDotMatchAll ? SCFIND_DOT_MATCH_ALL : 0);
+  return flags;
+}
+
+
 //=============================================================================
 //
 //  EditMarkAll()
 //  Mark all occurrences of the matching text in range (by Aleksandar Lekov)
 //
-void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool bMatchCase, bool bMatchWords)
+void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd)
 {
-  char* pszText = NULL;
-  char txtBuffer[HUGE_BUFFER] = { '\0' };
+  char txtBuffer[XHUGE_BUFFER] = { '\0' };
+  char* pszText = (pszFind != NULL) ? pszFind : txtBuffer;
 
   DocPos iFindLength = 0;
 
-  if (pszFind != NULL)
-    pszText = pszFind;
-  else
-    pszText = txtBuffer;
-
-  if (pszFind == NULL) 
+  if (StrIsEmptyA(pszText))
   {
     if (SciCall_IsSelectionEmpty()) {
-      if (flags) { // nothing selected, get word under caret if flagged
+      if (flags & SCFIND_WHOLEWORD) { // nothing selected, get word under caret if flagged
         DocPos const iCurrPos = SciCall_GetCurrentPos();
         DocPos const iWordStart = SciCall_WordStartPosition(iCurrPos, true);
         DocPos const iWordEnd = SciCall_WordEndPosition(iCurrPos, true);
@@ -6540,12 +6540,10 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
         StringCchCopyNA(txtBuffer, COUNTOF(txtBuffer), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
       }
       else {
-        return; // no selection and no word mark chosen
+        return; // no pattern, no selection and no word mark chosen
       }
     }
-    else { // selection found
-
-      if (flags) { return; } // no current word matching if we have a selection 
+    else { // we have a selection
 
       // get current selection
       DocPos const iSelStart = SciCall_GetSelectionStart();
@@ -6553,14 +6551,14 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       DocPos const iSelCount = (iSelEnd - iSelStart);
 
       // if multiple lines are selected exit
-      if ((SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) || (iSelCount >= HUGE_BUFFER)) {
+      if ((SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) || (iSelCount >= COUNTOF(txtBuffer))) {
         return;
       }
       
       iFindLength = SciCall_GetSelText(pszText) - 1;
 
       // exit if selection is not a word and Match whole words only is enabled
-      if (bMatchWords) {
+      if (flags & SCFIND_WHOLEWORD) {
         DocPos iSelStart2 = 0;
         const char* delims = (Settings.AccelWordNavigation ? DelimCharsAccel : DelimChars);
         while ((iSelStart2 <= iSelCount) && pszText[iSelStart2]) {
@@ -6571,10 +6569,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
         }
       }
     }
-    // set additional flags
-    flags = flags ? SCFIND_WHOLEWORD : 0; // match current word under caret ?
-    flags |= (bMatchWords) ? SCFIND_WHOLEWORD : 0;
-    flags |= (bMatchCase ? SCFIND_MATCHCASE : 0);
   }
   else {
     iFindLength = (DocPos)StringCchLenA(pszFind, FNDRPL_BUFFER);
@@ -6933,8 +6927,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
   else // =====   fold lines without marker   =====
   {
     // prepare hidden (folding) settings
-    EditFinalizeStyling(hwnd, -1);
-    EditMarkAllOccurrences(hwnd, true);
     FocusedView.CodeFoldingAvailable = true;
     FocusedView.ShowCodeFolding = true;
     Style_SetFoldingFocusedView();
