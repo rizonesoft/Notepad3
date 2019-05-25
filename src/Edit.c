@@ -6139,7 +6139,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   
   if (!IsMarkOccurrencesEnabled()) {
     EditClearAllOccurrenceMarkers(hwnd);
-    Globals.iMarkOccurrencesCount = -1;
     return;
   }
 
@@ -6450,19 +6449,17 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 void EditClearAllOccurrenceMarkers(HWND hwnd)
 {
   UNUSED(hwnd);
-  if (Globals.iMarkOccurrencesCount > 0) 
-  {
-    Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
 
-    _IGNORE_NOTIFY_CHANGE_;
+  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
 
-    SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
-    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-    SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
-    SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-    
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
+  _IGNORE_NOTIFY_CHANGE_;
+
+  SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
+  SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+  SciCall_SetIndicatorCurrent(INDIC_NP3_FOCUS_VIEW);
+  SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+
+  _OBSERVE_NOTIFY_CHANGE_;
 }
 
 
@@ -6574,7 +6571,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     DocPos start = rangeStart;
     DocPos end = rangeEnd;
 
-    Globals.iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
     do {
 
