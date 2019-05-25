@@ -5348,16 +5348,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             s_InitialCaretPos = SciCall_GetCurrentPos();
             s_InitialTopLine = SciCall_GetFirstVisibleLine();
           }
-
           if (!SciCall_IsSelectionEmpty()) {
             EditEnsureSelectionVisible(Globals.hwndEdit);
           }
-
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || SciCall_IsSelectionRectangle());
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-
-          _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
+          _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
           break;
 
         default:
