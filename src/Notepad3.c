@@ -3034,6 +3034,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
+  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0));
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
@@ -4948,7 +4949,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       Settings.MarkOccurrences = (Settings.MarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
+      if ((Settings.MarkOccurrences <= 0) && FocusedView.HideNonMatchedLines) {
+        EditToggleView(Globals.hwndEdit);
+      }
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0));
       MarkAllOccurrences(0, true);
+      UpdateToolbar();
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
@@ -9577,7 +9583,7 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
     else {
       // this is a set request (fill redo pos)
       assert(false); // not used yet
-      //utarray_insert(UndoRedoSelectionUTArray, (void*)selection, utoken);
+      //utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
     }
     // don't clear map item here (token used in redo/undo again)
   }
