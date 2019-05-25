@@ -5045,7 +5045,6 @@ static bool s_SaveTFBackSlashes = false;
 static inline void SwitchMarkOccurrences_ON()  { Settings.MarkOccurrences = max_i(1, s_SaveMarkOccurrences); }
 static inline void SwitchMarkOccurrences_OFF() { Settings.MarkOccurrences = 0; }
 
-
 static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static LPEDITFINDREPLACE sg_pefrData = NULL;
@@ -5082,7 +5081,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       Settings.MarkOccurrences = 0;
       Settings.MarkOccurrencesMatchVisible = false;
       EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
-      //EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
 
       // Load MRUs
       for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
@@ -5257,7 +5255,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Settings.MarkOccurrences = s_SaveMarkOccurrences;
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, Settings.MarkOccurrences);
-          //EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
 
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
@@ -5359,7 +5356,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || SciCall_IsSelectionRectangle());
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
-          _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+
+          _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           break;
 
         default:
@@ -5485,7 +5483,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       break;
 
       case IDT_TIMER_MAIN_MRKALL:
-        {
+        if (sg_pefrData) {
           _SetSearchFlags(hwnd, sg_pefrData);
           if (sg_pefrData->bMarkOccurences) {
             if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
