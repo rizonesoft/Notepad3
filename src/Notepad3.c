@@ -1542,9 +1542,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
+  
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
+
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, false, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, false, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, true, 0);
+  
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
 
@@ -9527,35 +9531,29 @@ bool RestoreAction(int token, DoAction doAct)
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     HWND const hwndedit = Globals.hwndEdit;
 
-    DocPos const _anchorPos = (doAct == UNDO ? pSel->anchorPos_undo : pSel->anchorPos_redo);
-    DocPos const _curPos = (doAct == UNDO ? pSel->curPos_undo : pSel->curPos_redo);
+    DocPos const anchorPos = (doAct == UNDO ? pSel->anchorPos_undo : pSel->anchorPos_redo);
+    DocPos const curPos = (doAct == UNDO ? pSel->curPos_undo : pSel->curPos_redo);
 
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
-    DocLn const anchorPosLine = SciCall_LineFromPosition(_anchorPos);
-    DocLn const currPosLine = SciCall_LineFromPosition(_curPos);
+    DocLn const anchorPosLine = SciCall_LineFromPosition(anchorPos);
+    DocLn const currPosLine = SciCall_LineFromPosition(curPos);
     PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
     if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
-
 
     int const selectionMode = (doAct == UNDO ? pSel->selMode_undo : pSel->selMode_redo);
     PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
 
     // independent from selection mode
-    PostMessage(hwndedit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
-    PostMessage(hwndedit, SCI_SETCURRENTPOS, (WPARAM)_curPos, 0);
-
     switch (selectionMode)
     {
-    case SC_SEL_RECTANGLE: 
-      PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)_anchorPos, 0);
-      PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)_curPos, 0);
-      // fall-through
-
-    case SC_SEL_THIN:
+      case SC_SEL_RECTANGLE:
+      case SC_SEL_THIN:
       {
-      DocPos const anchorVS = (doAct == UNDO ? pSel->anchorVS_undo : pSel->anchorVS_redo);
-      DocPos const currVS = (doAct == UNDO ? pSel->curVS_undo : pSel->curVS_redo);
+        PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
+        PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)curPos, 0);
+        DocPos const anchorVS = (doAct == UNDO ? pSel->anchorVS_undo : pSel->anchorVS_redo);
+        DocPos const currVS = (doAct == UNDO ? pSel->curVS_undo : pSel->curVS_redo);
         if ((anchorVS != 0) || (currVS != 0)) {
           PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
           PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
@@ -9563,11 +9561,12 @@ bool RestoreAction(int token, DoAction doAct)
       }
       break;
 
-    case SC_SEL_LINES:
-    case SC_SEL_STREAM:
-    default:
-      // nothing to do here
-      break;
+      case SC_SEL_LINES:
+      case SC_SEL_STREAM:
+      default:
+        PostMessage(hwndedit, SCI_SETANCHOR, (WPARAM)anchorPos, 0);
+        PostMessage(hwndedit, SCI_SETCURRENTPOS, (WPARAM)curPos, 0);
+        break;
     }
 
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);

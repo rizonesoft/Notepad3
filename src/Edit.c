@@ -5256,20 +5256,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
 
-          // check if we had to revert FocusedView
           if (FocusedView.HideNonMatchedLines) {
-            if (!IsMarkOccurrencesEnabled() || 
-              SciCall_IsSelectionEmpty() ||
-              Settings.MarkOccurrencesMatchVisible ||
-              Settings.MarkOccurrencesCurrentWord ||
-              IsButtonChecked(hwnd, IDC_FINDSTART) ||
-              IsButtonChecked(hwnd, IDC_FINDREGEXP) || 
-              IsButtonChecked(hwnd, IDC_WILDCARDSEARCH) ||
-              (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)) ||
-              (Settings.MarkOccurrencesMatchCase != IsButtonChecked(hwnd, IDC_FINDCASE)))
-            {
-              EditToggleView(sg_pefrData->hwnd);
-            }
+            EditToggleView(sg_pefrData->hwnd);
           }
 
           if (IsMarkOccurrencesEnabled()) {
@@ -6521,7 +6509,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
   if (StrIsEmptyA(pszText))
   {
     if (SciCall_IsSelectionEmpty()) {
-      if (flags & SCFIND_WHOLEWORD) { // nothing selected, get word under caret if flagged
+      // nothing selected, get word under caret if flagged
+      if (Settings.MarkOccurrencesCurrentWord && (flags & SCFIND_WHOLEWORD)) {
         DocPos const iCurrPos = SciCall_GetCurrentPos();
         DocPos const iWordStart = SciCall_WordStartPosition(iCurrPos, true);
         DocPos const iWordEnd = SciCall_WordEndPosition(iCurrPos, true);
@@ -6554,7 +6543,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
           if (StrChrIA(delims, pszText[iSelStart2])) {
             return;
           }
-          iSelStart2++;
+          ++iSelStart2;
         }
       }
     }
