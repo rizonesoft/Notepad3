@@ -5098,8 +5098,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if ((Settings.MarkOccurrences <= 0) && FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
       }
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0));
-      MarkAllOccurrences(0, true);
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsMarkOccurrencesEnabled());
+      if (IsMarkOccurrencesEnabled()) {
+        MarkAllOccurrences(0, true);
+      }
+      else {
+        EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+        Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
+      }
       UpdateToolbar();
       break;
 
