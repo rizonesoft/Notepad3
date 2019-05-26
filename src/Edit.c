@@ -4399,7 +4399,6 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
-  UpdateVisibleUrlIndics();
   UpdateToolbar();
   UpdateStatusbar(false);
 }
@@ -6910,7 +6909,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
     Style_SetFolding(hwnd, FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
     Sci_ApplyLexerStyle(0, -1);
     EditMarkAllOccurrences(hwnd, true);
-    UpdateVisibleUrlIndics();
   }
   else // =====   fold lines without marker   =====
   {
