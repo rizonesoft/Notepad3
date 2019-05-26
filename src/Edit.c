@@ -5256,19 +5256,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
 
-          // check if we had to revert FocusedView
           if (FocusedView.HideNonMatchedLines) {
-            if (!IsMarkOccurrencesEnabled() || 
-              SciCall_IsSelectionEmpty() ||
-              Settings.MarkOccurrencesMatchVisible ||
-              Settings.MarkOccurrencesCurrentWord ||           IsButtonChecked(hwnd, IDC_FINDSTART) ||
-              IsButtonChecked(hwnd, IDC_FINDREGEXP) || 
-              IsButtonChecked(hwnd, IDC_WILDCARDSEARCH) ||
-              (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)) ||
-              (Settings.MarkOccurrencesMatchCase != IsButtonChecked(hwnd, IDC_FINDCASE)))
-            {
-              EditToggleView(sg_pefrData->hwnd);
-            }
+            EditToggleView(sg_pefrData->hwnd);
           }
 
           if (IsMarkOccurrencesEnabled()) {
