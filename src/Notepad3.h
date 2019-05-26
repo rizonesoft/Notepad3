@@ -150,7 +150,7 @@ void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
 int  BeginUndoAction();
 void EndUndoAction(int token);
-void RestoreAction(int token, DoAction doAct);
+bool RestoreAction(int token, DoAction doAct);
 
 #define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
