@@ -5260,8 +5260,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           // check if we had to revert FocusedView
           if (FocusedView.HideNonMatchedLines) {
             if (!IsMarkOccurrencesEnabled() || 
+              SciCall_IsSelectionEmpty() ||
               Settings.MarkOccurrencesMatchVisible ||
-              (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)))
+              IsButtonChecked(hwnd, IDC_FINDSTART) ||
+              IsButtonChecked(hwnd, IDC_FINDREGEXP) || 
+              IsButtonChecked(hwnd, IDC_WILDCARDSEARCH) ||
+              (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)) ||
+              (Settings.MarkOccurrencesMatchCase != IsButtonChecked(hwnd, IDC_FINDCASE)))
             {
               EditToggleView(sg_pefrData->hwnd);
             }
