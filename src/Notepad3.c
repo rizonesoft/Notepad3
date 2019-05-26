@@ -229,6 +229,7 @@ int const g_FontQuality[4] = {
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 
 static UT_array* UndoRedoSelectionUTArray = NULL;
+static UT_array* UndoRedoMultiSelStack = NULL;
 static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
@@ -579,7 +580,6 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
   if (hwnd) {
-
     KillTimer(hwnd, IDT_TIMER_MRKALL);
   }
 
@@ -589,6 +589,17 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   {
     DL_DELETE(MessageQueue, pmqc);
     FreeMem(pmqc);
+  }
+
+  if (UndoRedoSelectionUTArray != NULL) {
+    utarray_clear(UndoRedoSelectionUTArray);
+    utarray_free(UndoRedoSelectionUTArray);
+    UndoRedoSelectionUTArray = NULL;
+  }
+  if (UndoRedoMultiSelStack != NULL) {
+    utarray_clear(UndoRedoMultiSelStack);
+    utarray_free(UndoRedoMultiSelStack);
+    UndoRedoMultiSelStack = NULL;
   }
 
   // Save Settings is done elsewhere
@@ -1126,6 +1137,15 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
   utarray_new(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
   utarray_reserve(UndoRedoSelectionUTArray,256);
+
+  if (UndoRedoMultiSelStack != NULL) {
+    utarray_clear(UndoRedoMultiSelStack);
+    utarray_free(UndoRedoMultiSelStack);
+    UndoRedoMultiSelStack = NULL;
+  }
+  utarray_new(UndoRedoMultiSelStack, &UndoRedoSelection_icd);
+  utarray_reserve(UndoRedoMultiSelStack,32);
+
 
   // Check for /c [if no file is specified] -- even if a file is specified
   /*else */if (s_flagNewFromClipboard) {
@@ -9583,13 +9603,13 @@ void EndUndoAction(int token)
 //
 bool RestoreAction(int token, DoAction doAct)
 {
+  assert(UndoRedoMultiSelStack != NULL);
+
   if (_InUndoRedoTransaction()) { return false; }
 
   UndoRedoSelection_t* pSel = NULL;
 
   static DocPosU multiSelCount = 0;
-  static DocPosU iSel = 0;
-  static DocPosU posOffset = 0;
 
   if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
   {
@@ -9609,14 +9629,15 @@ bool RestoreAction(int token, DoAction doAct)
     }
     else {
       if (multiSelCount == 0) {
-        multiSelCount = selCount;  iSel = 0;  posOffset = 0;
-      } 
+        multiSelCount = selCount;  
+        utarray_clear(UndoRedoMultiSelStack);
+        utarray_init(UndoRedoMultiSelStack, &UndoRedoSelection_icd);
+      }
       //if (multiSelCount == selCount) {
       //  //PostMessage(hwndedit, SCI_SETSELECTIONMODE, SC_SEL_STREAM, 0);
       //}
     }
 
-    //if (selectionMode != NP3_SEL_MULTI) {
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
     DocLn const anchorPosLine = SciCall_LineFromPosition(anchorPos);
@@ -9628,23 +9649,33 @@ bool RestoreAction(int token, DoAction doAct)
     {
       case NP3_SEL_MULTI:
       {
-        if (iSel == 0) {
-          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
-          if ((anchorVS != 0) || (currVS != 0)) {
-            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)iSel, (LPARAM)anchorVS);
-            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)iSel, (LPARAM)currVS);
-          }
+        if (multiSelCount != 0) {
+          utarray_push_back(UndoRedoMultiSelStack, (void*)pSel);
+          --multiSelCount;
         }
-        else {
-          PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)(curPos + posOffset), (LPARAM)(anchorPos + posOffset));
-          if ((anchorVS != 0) || (currVS != 0)) {
-            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)iSel, (LPARAM)anchorVS);
-            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)iSel, (LPARAM)currVS);
+        if (multiSelCount == 0) { // now we are ready to set multi selection
+
+          UndoRedoSelection_t* ps = NULL;
+          while ((ps = (UndoRedoSelection_t*)utarray_prev(UndoRedoMultiSelStack, ps)) != NULL)
+          {
+            if (multiSelCount == 0) {
+              PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
+              if ((anchorVS != 0) || (currVS != 0)) {
+                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)anchorVS);
+                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)currVS);
+              }
+            }
+            else {
+              PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
+              if ((anchorVS != 0) || (currVS != 0)) {
+                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)anchorVS);
+                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)currVS);
+              }
+            }
+            ++multiSelCount;
           }
+          multiSelCount = 0; // reset
         }
-        ++iSel;
-        --multiSelCount;
-        //posOffset += ((anchorPos <= curPos) ? (curPos - anchorPos) : (anchorPos - curPos));
         if (multiSelCount == 0) {
           //PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, 0);
         }
@@ -9689,7 +9720,7 @@ bool RestoreAction(int token, DoAction doAct)
 //
 static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
 {
-  if (UndoRedoSelectionUTArray == NULL)  { return -1; }
+  if (UndoRedoSelectionUTArray == NULL) { return -1; };
 
   static unsigned int uiTokenCnt = 0U;
 
