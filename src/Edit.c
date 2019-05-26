@@ -5261,8 +5261,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             if (!IsMarkOccurrencesEnabled() || 
               SciCall_IsSelectionEmpty() ||
               Settings.MarkOccurrencesMatchVisible ||
-              Settings.MarkOccurrencesCurrentWord ||
-              IsButtonChecked(hwnd, IDC_FINDSTART) ||
+              Settings.MarkOccurrencesCurrentWord ||           IsButtonChecked(hwnd, IDC_FINDSTART) ||
               IsButtonChecked(hwnd, IDC_FINDREGEXP) || 
               IsButtonChecked(hwnd, IDC_WILDCARDSEARCH) ||
               (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)) ||

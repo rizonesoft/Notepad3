@@ -9431,7 +9431,7 @@ void UndoRedoRecordingStop()
 static int _SaveUndoSelection()
 {
   static DocPosU multiSelCount = 0;
-  static DocPosU multiSelId = 0;
+  static DocPosU iSel = 0;
 
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   UndoRedoSelection_t* pSel = &sel;
@@ -9446,18 +9446,18 @@ static int _SaveUndoSelection()
       {
         if (multiSelCount == 0) { 
           multiSelCount = SciCall_GetSelections(); 
-          multiSelId = 0; 
+          iSel = 0;
         }
         pSel->sel_count_undo = multiSelCount;
 
-        DocPosU const iSel = multiSelId++;
         pSel->anchorPos_undo = SciCall_GetSelectionNAnchor(iSel);
         pSel->curPos_undo = SciCall_GetSelectionNCaret(iSel);
         if (!Settings2.DenyVirtualSpaceAccess) {
           pSel->anchorVS_undo = SciCall_GetSelectionNAnchorVirtualSpace(iSel);
           pSel->curVS_undo = SciCall_GetSelectionNCaretVirtualSpace(iSel);
         }
-        if (multiSelId == multiSelCount) {
+        ++iSel;
+        if (multiSelCount == iSel) {
           multiSelCount = 0; // done
         }
       }
@@ -9504,7 +9504,7 @@ static int _SaveUndoSelection()
 static void  _SaveRedoSelection(int token)
 {
   static DocPosU multiSelCount = 0;
-  static DocPosU multiSelId = 0;
+  static DocPosU iSel = 0;
 
   if (token >= 0) {
     UndoRedoSelection_t* pSel = NULL;
@@ -9520,18 +9520,18 @@ static void  _SaveRedoSelection(int token)
         {
           if (multiSelCount == 0) { 
             multiSelCount = SciCall_GetSelections();  
-            multiSelId = 0;
+            iSel = 0;
           }
           pSel->sel_count_redo = multiSelCount;
 
-          DocPosU const iSel = multiSelId++;
           pSel->anchorPos_redo = SciCall_GetSelectionNAnchor(iSel);
           pSel->curPos_redo = SciCall_GetSelectionNCaret(iSel);
           if (!Settings2.DenyVirtualSpaceAccess) {
             pSel->anchorVS_redo = SciCall_GetSelectionNAnchorVirtualSpace(iSel);
             pSel->curVS_redo = SciCall_GetSelectionNCaretVirtualSpace(iSel);
           }
-          if (multiSelId == multiSelCount) {
+          ++iSel;
+          if (multiSelCount == iSel) {
             multiSelCount = 0; // done
           }
         }
@@ -9653,23 +9653,28 @@ bool RestoreAction(int token, DoAction doAct)
           utarray_push_back(UndoRedoMultiSelStack, (void*)pSel);
           --multiSelCount;
         }
-        if (multiSelCount == 0) { // now we are ready to set multi selection
-
+        if (multiSelCount == 0) // now we are ready to set multi selection
+        {
           UndoRedoSelection_t* ps = NULL;
           while ((ps = (UndoRedoSelection_t*)utarray_prev(UndoRedoMultiSelStack, ps)) != NULL)
           {
+            DocPos const _anchorPos = (doAct == UNDO ? ps->anchorPos_undo : ps->anchorPos_redo);
+            DocPos const _curPos = (doAct == UNDO ? ps->curPos_undo : ps->curPos_redo);
+            DocPos const _anchorVS = (doAct == UNDO ? ps->anchorVS_undo : ps->anchorVS_redo);
+            DocPos const _currVS = (doAct == UNDO ? ps->curVS_undo : ps->curVS_redo);
+
             if (multiSelCount == 0) {
-              PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
-              if ((anchorVS != 0) || (currVS != 0)) {
-                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)anchorVS);
-                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)currVS);
+              PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)_curPos, (LPARAM)_anchorPos);
+              if ((_anchorVS != 0) || (_currVS != 0)) {
+                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)_anchorVS);
+                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)_currVS);
               }
             }
             else {
-              PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
-              if ((anchorVS != 0) || (currVS != 0)) {
-                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)anchorVS);
-                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)currVS);
+              PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)_curPos, (LPARAM)_anchorPos);
+              if ((_anchorVS != 0) || (_currVS != 0)) {
+                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)_anchorVS);
+                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)multiSelCount, (LPARAM)_currVS);
               }
             }
             ++multiSelCount;
