@@ -110,10 +110,9 @@ copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" 
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 
-del /s /f /q "%NP3_PORTAPP_DIR%\App\Themes\*.*"
-for /f "delims=" %%d in ('dir /ad /b "%NP3_PORTAPP_DIR%\App\Themes\"') do rmdir /s /q "%NP3_PORTAPP_DIR%\App\Themes\%%d"
+::del /s /f /q "%NP3_PORTAPP_DIR%\App\Themes\*.*"
+::for /f "delims=" %%d in ('dir /ad /b "%NP3_PORTAPP_DIR%\App\Themes\"') do rmdir /s /q "%NP3_PORTAPP_DIR%\App\Themes\%%d"
 ::xcopy "%NP3_THEMES_DIR%" "%NP3_PORTAPP_DIR%\App\Themes" /C /V /I /S /Y
-if exist "%NP3_PORTAPP_DIR%\App\Themes" rmdir /s /q "%NP3_PORTAPP_DIR%\App\Themes"
 
 del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes\*.*"
 xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes" /C /V /I /S /Y
