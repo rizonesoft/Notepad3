@@ -9409,7 +9409,8 @@ void UndoRedoRecordingStop()
 //
 static int _SaveUndoSelection()
 {
-  static DocPosU multiSelNum = 0;
+  static DocPosU multiSelCount = 0;
+  static DocPosU multiSelId = 0;
 
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   UndoRedoSelection_t* pSel = &sel;
@@ -9422,14 +9423,21 @@ static int _SaveUndoSelection()
     {
       case NP3_SEL_MULTI:
       {
-        if (multiSelNum == 0) { multiSelNum = SciCall_GetSelections(); }
-        DocPosU const iSel = --multiSelNum;
-        pSel->sel_id_undo = iSel;
+        if (multiSelCount == 0) { 
+          multiSelCount = SciCall_GetSelections(); 
+          multiSelId = 0; 
+        }
+        pSel->sel_count_undo = multiSelCount;
+
+        DocPosU const iSel = multiSelId++;
         pSel->anchorPos_undo = SciCall_GetSelectionNAnchor(iSel);
         pSel->curPos_undo = SciCall_GetSelectionNCaret(iSel);
         if (!Settings2.DenyVirtualSpaceAccess) {
           pSel->anchorVS_undo = SciCall_GetSelectionNAnchorVirtualSpace(iSel);
           pSel->curVS_undo = SciCall_GetSelectionNCaretVirtualSpace(iSel);
+        }
+        if (iSel == multiSelCount) {
+          multiSelCount = 0; // done
         }
       }
       break; 
@@ -9474,7 +9482,8 @@ static int _SaveUndoSelection()
 //
 static void  _SaveRedoSelection(int token)
 {
-  static DocPosU multiSelNum = 0;
+  static DocPosU multiSelCount = 0;
+  static DocPosU multiSelId = 0;
 
   if (token >= 0) {
     UndoRedoSelection_t* pSel = NULL;
@@ -9488,14 +9497,21 @@ static void  _SaveRedoSelection(int token)
       {
         case NP3_SEL_MULTI:
         {
-          if (multiSelNum == 0) { multiSelNum = SciCall_GetSelections(); }
-          DocPosU const iSel = --multiSelNum;
-          pSel->sel_id_redo = iSel;
+          if (multiSelCount == 0) { 
+            multiSelCount = SciCall_GetSelections();  
+            multiSelId = 0;
+          }
+          pSel->sel_count_redo = multiSelCount;
+
+          DocPosU const iSel = multiSelId++;
           pSel->anchorPos_redo = SciCall_GetSelectionNAnchor(iSel);
           pSel->curPos_redo = SciCall_GetSelectionNCaret(iSel);
           if (!Settings2.DenyVirtualSpaceAccess) {
             pSel->anchorVS_redo = SciCall_GetSelectionNAnchorVirtualSpace(iSel);
             pSel->curVS_redo = SciCall_GetSelectionNCaretVirtualSpace(iSel);
+          }
+          if (iSel == multiSelCount) {
+            multiSelCount = 0; // done
           }
         }
         break;
@@ -9570,7 +9586,9 @@ bool RestoreAction(int token, DoAction doAct)
 
   UndoRedoSelection_t* pSel = NULL;
 
-  static DocPosU multiSelNum = 0;
+  static DocPosU multiSelCount = 0;
+  static DocPosU iSel = 0;
+  static DocPosU posOffset = 0;
 
   if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
   {
@@ -9581,7 +9599,7 @@ bool RestoreAction(int token, DoAction doAct)
     DocPos const curPos = (doAct == UNDO ? pSel->curPos_undo : pSel->curPos_redo);
     DocPos const anchorVS = (doAct == UNDO ? pSel->anchorVS_undo : pSel->anchorVS_redo);
     DocPos const currVS = (doAct == UNDO ? pSel->curVS_undo : pSel->curVS_redo);
-    DocPosU const selectionId = (doAct == UNDO ? pSel->sel_id_undo : pSel->sel_id_redo);
+    DocPosU const selCount = (doAct == UNDO ? pSel->sel_count_undo : pSel->sel_count_redo);
 
     int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
 
@@ -9589,10 +9607,10 @@ bool RestoreAction(int token, DoAction doAct)
       PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
     }
     else {
-      if (multiSelNum == 0) { multiSelNum = selectionId; } // init
-      if (selectionId == multiSelNum) {
-        PostMessage(hwndedit, SCI_SETSELECTIONMODE, SC_SEL_STREAM, 0);
-      }
+      if (multiSelCount == 0) { multiSelCount = selCount;  iSel = 0; } // init
+      //if (multiSelCount == selCount) {
+      //  //PostMessage(hwndedit, SCI_SETSELECTIONMODE, SC_SEL_STREAM, 0);
+      //}
     }
 
     //if (selectionMode != NP3_SEL_MULTI) {
@@ -9609,23 +9627,22 @@ bool RestoreAction(int token, DoAction doAct)
     {
       case NP3_SEL_MULTI:
       {
-#if 0
-        if (selectionId == multiSelNum) {
-          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)anchorPos, (LPARAM)curPos);
+        if (multiSelCount == selCount) {
+          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
           if ((anchorVS != 0) || (currVS != 0)) {
-            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)selectionId, (LPARAM)anchorVS);
-            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)selectionId, (LPARAM)currVS);
+            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)iSel, (LPARAM)anchorVS);
+            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)iSel, (LPARAM)currVS);
           }
         }
         else {
-          PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)anchorPos, (LPARAM)curPos);
+          PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)(curPos + posOffset), (LPARAM)(anchorPos + posOffset));
           if ((anchorVS != 0) || (currVS != 0)) {
-            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)selectionId, (LPARAM)anchorVS);
-            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)selectionId, (LPARAM)currVS);
+            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)iSel, (LPARAM)anchorVS);
+            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)iSel, (LPARAM)currVS);
           }
         }
-#endif
-        multiSelNum = selectionId; // decrease
+        posOffset += ((anchorPos <= curPos) ? (curPos - anchorPos) : (anchorPos - curPos));
+        --multiSelCount;
         //if (selectionId == 0) {
         //  multiSelNum = 0;
         //  //PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, 0);
@@ -9660,7 +9677,7 @@ bool RestoreAction(int token, DoAction doAct)
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
   }
 
-  return (multiSelNum == 0);
+  return (multiSelCount == 0);
 }
 
 

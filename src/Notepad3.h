@@ -49,14 +49,14 @@ np3params, *LPnp3params;
 typedef struct _undoSel
 {
   int selMode_undo;
-  DocPosU sel_id_undo;
+  DocPosU sel_count_undo;
   DocPos anchorPos_undo;
   DocPos curPos_undo;
   DocPos anchorVS_undo;
   DocPos curVS_undo;
 
   int selMode_redo;
-  DocPosU sel_id_redo;
+  DocPosU sel_count_redo;
   DocPos anchorPos_redo;
   DocPos curPos_redo;
   DocPos anchorVS_redo;
