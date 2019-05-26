@@ -6509,7 +6509,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
   if (StrIsEmptyA(pszText))
   {
     if (SciCall_IsSelectionEmpty()) {
-      if (flags & SCFIND_WHOLEWORD) { // nothing selected, get word under caret if flagged
+      // nothing selected, get word under caret if flagged
+      if (Settings.MarkOccurrencesCurrentWord && (flags & SCFIND_WHOLEWORD)) {
         DocPos const iCurrPos = SciCall_GetCurrentPos();
         DocPos const iWordStart = SciCall_WordStartPosition(iCurrPos, true);
         DocPos const iWordEnd = SciCall_WordEndPosition(iCurrPos, true);
@@ -6542,7 +6543,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
           if (StrChrIA(delims, pszText[iSelStart2])) {
             return;
           }
-          iSelStart2++;
+          ++iSelStart2;
         }
       }
     }
