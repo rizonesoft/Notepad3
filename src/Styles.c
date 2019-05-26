@@ -1426,8 +1426,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
-  UpdateVisibleUrlIndics();
+
   UpdateAllBars(false);
 }
 

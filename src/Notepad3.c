@@ -1326,7 +1326,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      UpdateVisibleUrlIndics();
+      EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
       MarkAllOccurrences(0, true);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
@@ -2302,7 +2302,8 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  UpdateVisibleUrlIndics();
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  MarkAllOccurrences(0, true);
   UpdateAllBars(false);
   
   return 0;
@@ -2363,9 +2364,9 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   SendWMSize(hwnd, NULL);
 
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-  UpdateVisibleUrlIndics();
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   MarkAllOccurrences(0, true);
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   UpdateUI();
   UpdateAllBars(false);
 
@@ -3565,7 +3566,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        UpdateVisibleUrlIndics();
         UpdateStatusbar(false);
       }
       break;
@@ -4975,7 +4975,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOGGLE_VIEW:
       if (FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
-        UpdateVisibleUrlIndics();
         MarkAllOccurrences(0, true);
       }
       else {
@@ -5060,7 +5059,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      UpdateVisibleUrlIndics();
+      EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -6658,6 +6657,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
         }
       }
+
       if (Settings.HyperlinkHotspot) {
         UpdateVisibleUrlIndics();
       }
@@ -6733,6 +6733,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       DocLn const iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
       DocLn const iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
       for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+      UpdateVisibleUrlIndics();
     }
     break;
 
@@ -10026,7 +10027,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(bReload);
-    UpdateVisibleUrlIndics();
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
