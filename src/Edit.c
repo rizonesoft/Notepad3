@@ -5265,13 +5265,21 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Settings.MarkOccurrences = s_SaveMarkOccurrences;
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+
+          // check if we had to revert FocusedView
+          if (FocusedView.HideNonMatchedLines) {
+            if (!IsMarkOccurrencesEnabled() || 
+              Settings.MarkOccurrencesMatchVisible ||
+              (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)))
+            {
+              EditToggleView(sg_pefrData->hwnd);
+            }
+          }
+
           if (IsMarkOccurrencesEnabled()) {
             MarkAllOccurrences(50, true);
           }
           else {
-            if (FocusedView.HideNonMatchedLines) {
-              EditToggleView(sg_pefrData->hwnd);
-            }
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             Globals.iMarkOccurrencesCount = -1;
           }
