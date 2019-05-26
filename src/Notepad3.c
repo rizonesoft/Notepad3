@@ -9436,7 +9436,7 @@ static int _SaveUndoSelection()
           pSel->anchorVS_undo = SciCall_GetSelectionNAnchorVirtualSpace(iSel);
           pSel->curVS_undo = SciCall_GetSelectionNCaretVirtualSpace(iSel);
         }
-        if (iSel == multiSelCount) {
+        if (multiSelId == multiSelCount) {
           multiSelCount = 0; // done
         }
       }
@@ -9510,7 +9510,7 @@ static void  _SaveRedoSelection(int token)
             pSel->anchorVS_redo = SciCall_GetSelectionNAnchorVirtualSpace(iSel);
             pSel->curVS_redo = SciCall_GetSelectionNCaretVirtualSpace(iSel);
           }
-          if (iSel == multiSelCount) {
+          if (multiSelId == multiSelCount) {
             multiSelCount = 0; // done
           }
         }
@@ -9607,27 +9607,27 @@ bool RestoreAction(int token, DoAction doAct)
       PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
     }
     else {
-      if (multiSelCount == 0) { multiSelCount = selCount;  iSel = 0; } // init
+      if (multiSelCount == 0) {
+        multiSelCount = selCount;  iSel = 0;  posOffset = 0;
+      } 
       //if (multiSelCount == selCount) {
       //  //PostMessage(hwndedit, SCI_SETSELECTIONMODE, SC_SEL_STREAM, 0);
       //}
     }
 
     //if (selectionMode != NP3_SEL_MULTI) {
-    if (true) {
-      // Ensure that the first and last lines of a selection are always unfolded
-      // This needs to be done _before_ the SCI_SETSEL message
-      DocLn const anchorPosLine = SciCall_LineFromPosition(anchorPos);
-      DocLn const currPosLine = SciCall_LineFromPosition(curPos);
-      PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
-      if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
-    }
+    // Ensure that the first and last lines of a selection are always unfolded
+    // This needs to be done _before_ the SCI_SETSEL message
+    DocLn const anchorPosLine = SciCall_LineFromPosition(anchorPos);
+    DocLn const currPosLine = SciCall_LineFromPosition(curPos);
+    PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+    if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
     switch (selectionMode)
     {
       case NP3_SEL_MULTI:
       {
-        if (multiSelCount == selCount) {
+        if (iSel == 0) {
           PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)curPos, (LPARAM)anchorPos);
           if ((anchorVS != 0) || (currVS != 0)) {
             PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)iSel, (LPARAM)anchorVS);
@@ -9641,12 +9641,12 @@ bool RestoreAction(int token, DoAction doAct)
             PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)iSel, (LPARAM)currVS);
           }
         }
-        posOffset += ((anchorPos <= curPos) ? (curPos - anchorPos) : (anchorPos - curPos));
+        ++iSel;
         --multiSelCount;
-        //if (selectionId == 0) {
-        //  multiSelNum = 0;
-        //  //PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, 0);
-        //}
+        //posOffset += ((anchorPos <= curPos) ? (curPos - anchorPos) : (anchorPos - curPos));
+        if (multiSelCount == 0) {
+          //PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, 0);
+        }
       }
       break;
 
