@@ -5150,6 +5150,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
+        Globals.iMarkOccurrencesCount = -1;
       }
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
@@ -5252,14 +5253,19 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Globals.iReplacedOccurrences = 0;
           Globals.FindReplaceMatchFoundState = FND_NOP;
 
-          if (FocusedView.HideNonMatchedLines) {
-            EditToggleView(sg_pefrData->hwnd);
-          }
-
           Settings.MarkOccurrences = s_SaveMarkOccurrences;
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
-          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, Settings.MarkOccurrences);
-          MarkAllOccurrences(50, true);
+          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+          if (IsMarkOccurrencesEnabled()) {
+            MarkAllOccurrences(50, true);
+          }
+          else {
+            if (FocusedView.HideNonMatchedLines) {
+              EditToggleView(sg_pefrData->hwnd);
+            }
+            EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
+            Globals.iMarkOccurrencesCount = -1;
+          }
 
           if (s_InitialTopLine >= 0) { 
             SciCall_SetFirstVisibleLine(s_InitialTopLine); 
@@ -5504,7 +5510,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                 if (FocusedView.HideNonMatchedLines) {
                   EditToggleView(sg_pefrData->hwnd);
                 }
-                Settings.MarkOccurrences = s_SaveMarkOccurrences;
                 MarkAllOccurrences(4, true);
               }
               _OBSERVE_NOTIFY_CHANGE_;
@@ -5534,7 +5539,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
           else {  // switched OFF
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
+            if (FocusedView.HideNonMatchedLines) {
+              EditToggleView(sg_pefrData->hwnd);
+            }
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
+            Globals.iMarkOccurrencesCount = -1;
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
           }
         }
@@ -6427,8 +6436,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 void EditClearAllOccurrenceMarkers(HWND hwnd)
 {
   UNUSED(hwnd);
-
-  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
+  Globals.iMarkOccurrencesCount = 0;
 
   _IGNORE_NOTIFY_CHANGE_;
 
