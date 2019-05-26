@@ -227,14 +227,15 @@ int const g_FontQuality[4] = {
 
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
+
 static UT_array* UndoRedoSelectionUTArray = NULL;
 static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
 
-static void  _DelayClearZoomCallTip(int delay);
 
+static void  _DelayClearZoomCallTip(int delay);
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
@@ -1529,6 +1530,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
+  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   //SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
@@ -1553,7 +1555,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // Idle Styling (very large text)
   //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
-  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
 
   // assign command keys
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
@@ -3149,7 +3150,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
 
   UpdateSettingsCmds();
-
+  
   return FALSE;
 }
 
@@ -6508,6 +6509,290 @@ static bool  _IsIMEOpenInNoNativeMode()
 }
 #endif
 
+
+//=============================================================================
+//
+//  MsgNotifyLean() - Handles WM_NOTIFY (only absolute neccessary events)
+//
+//  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
+//
+inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* const scn)
+{
+  // --- check only mandatory events (must be fast !!!) ---
+  if (pnmh->idFrom == IDC_EDIT) {
+    if (pnmh->code == SCN_MODIFIED) {
+      bool bModified = true;
+      int const iModType = scn->modificationType;
+      if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+          if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
+            _SaveRedoSelection(_SaveUndoSelection());
+        }
+        bModified = false; // not yet
+      }
+      // check for ADDUNDOACTION step
+      if (iModType & SC_MOD_CONTAINER)
+      {
+        if (iModType & SC_PERFORMED_UNDO) {
+          RestoreAction(scn->token, UNDO);
+        }
+        else if (iModType & SC_PERFORMED_REDO) {
+          RestoreAction(scn->token, REDO);
+        }
+      }
+      if (bModified) { _SetSaveNeededFlag(true); }
+    }
+    else if (pnmh->code == SCN_SAVEPOINTREACHED) {
+      _SetSaveNeededFlag(false);
+    }
+    else if (pnmh->code == SCN_SAVEPOINTLEFT) {
+      _SetSaveNeededFlag(true);
+    }
+    else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
+      if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+    }
+  }
+  return TRUE;
+}
+
+
+//=============================================================================
+//
+//  _MsgNotifyFromEdit() - Handles WM_NOTIFY (only absolute neccessary events)
+//
+//  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
+//
+static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
+{
+  static int _s_indic_click_modifiers = 0;
+
+  switch (pnmh->code)
+  {
+    case SCN_HOTSPOTCLICK:
+    case SCN_HOTSPOTDOUBLECLICK:
+    case SCN_HOTSPOTRELEASECLICK:
+    case SCN_CALLTIPCLICK:
+      return 0;
+
+    case SCN_MODIFIED:
+    {
+      int const iModType = scn->modificationType;
+      bool bModified = true;
+      if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+          if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
+            _SaveRedoSelection(_SaveUndoSelection());
+        }
+        bModified = false; // not yet
+      }
+      if (iModType & SC_MOD_CONTAINER) {
+        if (iModType & SC_PERFORMED_UNDO) {
+          bModified = RestoreAction(scn->token, UNDO);
+        }
+        else if (iModType & SC_PERFORMED_REDO) {
+          bModified = RestoreAction(scn->token, REDO);
+        }
+      }
+      if (bModified) {
+        if (IsMarkOccurrencesEnabled()) {
+          MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        }
+        if (Settings.HyperlinkHotspot) {
+          UpdateVisibleUrlIndics();
+        }
+        if (scn->linesAdded != 0) {
+          UpdateMarginWidth();
+        }
+        _SetSaveNeededFlag(true);
+      }
+    }
+    break;
+
+    case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+    {
+      EditFinalizeStyling(Globals.hwndEdit, scn->position);
+    }
+    break;
+
+    case SCN_UPDATEUI:
+    {
+      int const iUpd = scn->updated;
+      //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
+      //  // special case
+      //}
+      //else
+
+      if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
+      {
+        // Brace Match
+        if (Settings.MatchBraces) {
+          EditMatchBrace(Globals.hwndEdit);
+        }
+        if (IsMarkOccurrencesEnabled()) {
+          // clear marks only, if selection changed
+          if (iUpd & SC_UPDATE_SELECTION)
+          {
+            if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
+              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+            }
+            else {
+              EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+            }
+          }
+          else if (iUpd & SC_UPDATE_CONTENT) {
+            // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+            // using WM_COMMAND -> SCEN_CHANGE  instead!
+            //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+            //~~~UpdateVisibleUrlIndics();
+          }
+        }
+        UpdateToolbar();
+        UpdateStatusbar(false);
+      }
+      else if (iUpd & SC_UPDATE_V_SCROLL)
+      {
+        if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
+          MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+        }
+      }
+      if (Settings.HyperlinkHotspot) {
+        UpdateVisibleUrlIndics();
+      }
+    }
+    break;
+
+    case SCN_DWELLSTART:
+    case SCN_DWELLEND:
+    {
+      HandleDWellStartEnd(scn->position, pnmh->code);
+    }
+    break;
+
+    case SCN_INDICATORCLICK:
+    {
+      _s_indic_click_modifiers = scn->modifiers;
+    }
+    break;
+
+    case SCN_INDICATORRELEASE:
+    {
+      if (_s_indic_click_modifiers & SCMOD_CTRL) {
+        // open in browser
+        HandleHotSpotURL(scn->position, OPEN_WITH_BROWSER);
+      }
+      else if (_s_indic_click_modifiers & SCMOD_ALT) {
+        // open in application, if applicable (file://)
+        HandleHotSpotURL(scn->position, OPEN_WITH_NOTEPAD3);
+      }
+      _s_indic_click_modifiers = 0;
+    }
+    break;
+
+    case SCN_CHARADDED:
+    {
+      int const ich = scn->ch;
+
+      if (Globals.CallTipType != CT_NONE) {
+        CancelCallTip();
+      }
+
+      switch (ich) {
+        case '\r':
+        case '\n':
+          if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
+          break;
+        case '>':
+          if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
+          break;
+        case '?':
+          _HandleTinyExpr();
+          break;
+        default:
+          break;
+      }
+
+      if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+      {
+        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+      }
+    }
+    break;
+
+    case SCN_AUTOCCHARDELETED:
+      if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+      {
+        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+      }
+      break;
+
+    case SCN_NEEDSHOWN:
+    {
+      DocLn const iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
+      DocLn const iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
+      for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+    }
+    break;
+
+    case SCN_MARGINCLICK:
+      if (scn->margin == MARGIN_SCI_FOLDING) {
+        EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
+      }
+      break;
+
+      // ~~~ Not used in Windows ~~~
+      // see: CMD_ALTUP / CMD_ALTDOWN
+      //case SCN_KEY:
+      //  // Also see the corresponding patch in scintilla\src\Editor.cxx
+      //  FoldAltArrow(scn->ch, scn->modifiers);
+      //  break;
+
+
+    case SCN_SAVEPOINTREACHED:
+      _SetSaveNeededFlag(false);
+      break;
+
+
+    case SCN_SAVEPOINTLEFT:
+      _SetSaveNeededFlag(true);
+      break;
+
+
+    case SCN_ZOOM:
+      UpdateMarginWidth();
+      break;
+
+    case SCN_URIDROPPED:
+    {
+      // see WM_DROPFILES
+      WCHAR szBuf[MAX_PATH + 40];
+      if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
+      {
+        if (IsIconic(hwnd)) {
+          ShowWindow(hwnd, SW_RESTORE);
+        }
+        //SetForegroundWindow(hwnd);
+        if (PathIsDirectory(szBuf)) {
+          WCHAR tchFile[MAX_PATH];
+          if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
+            FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+          }
+        }
+        else if (PathFileExists(szBuf)) {
+          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+        }
+      }
+    }
+    break;
+
+    default:
+      return 0;
+  }
+  return -1LL;
+}
+
+
+
+
 //=============================================================================
 //
 //  MsgNotify() - Handles WM_NOTIFY
@@ -6521,279 +6806,18 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
 
-  LPNMHDR pnmh = (LPNMHDR)lParam;
-  struct SCNotification* scn = (struct SCNotification*)lParam;
+  LPNMHDR const pnmh = (LPNMHDR)lParam;
+  const SCNotification* const scn = (SCNotification*)lParam;
 
   if (!CheckNotifyChangeEvent()) 
   {
-    // --- check only mandatory events (must be fast !!!) ---
-    if (pnmh->idFrom == IDC_EDIT) {
-      if (pnmh->code == SCN_MODIFIED) {
-        bool bModified = true;
-        int const iModType = scn->modificationType;
-        if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-          if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-            if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
-              _SaveRedoSelection(_SaveUndoSelection());
-          }
-          bModified = false; // not yet
-        }
-        // check for ADDUNDOACTION step
-        if (iModType & SC_MOD_CONTAINER)
-        {
-          if (iModType & SC_PERFORMED_UNDO) {
-            RestoreAction(scn->token, UNDO);
-          }
-          else if (iModType & SC_PERFORMED_REDO) {
-            RestoreAction(scn->token, REDO);
-          }
-        }
-        if (bModified) { _SetSaveNeededFlag(true); }
-      }
-      else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-        _SetSaveNeededFlag(false);
-      }
-      else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-        _SetSaveNeededFlag(true);
-      }
-      else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
-        if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-      }
-    }
-    return TRUE;
+    return _MsgNotifyLean(pnmh, scn);
   }
-
-  // --- check ALL events ---
 
   switch(pnmh->idFrom)
   {
-    static int _s_indic_click_modifiers = 0;
-
     case IDC_EDIT:
-      switch (pnmh->code)
-      {
-        case SCN_HOTSPOTCLICK:
-        case SCN_HOTSPOTDOUBLECLICK:
-        case SCN_HOTSPOTRELEASECLICK:
-        case SCN_CALLTIPCLICK:
-          return FALSE;
-
-        case SCN_MODIFIED:
-        {
-          int const iModType = scn->modificationType;
-          bool bModified = true;
-          if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-              if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
-                _SaveRedoSelection(_SaveUndoSelection());
-            }
-            bModified = false; // not yet
-          }
-          if (iModType & SC_MOD_CONTAINER) {
-            if (iModType & SC_PERFORMED_UNDO) {
-              RestoreAction(scn->token, UNDO);
-            }
-            else if (iModType & SC_PERFORMED_REDO) {
-              RestoreAction(scn->token, REDO);
-            }
-          }
-          if (bModified) {
-            if (IsMarkOccurrencesEnabled()) {
-              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-            }
-            if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlIndics();
-            }
-            if (scn->linesAdded != 0) {
-              UpdateMarginWidth();
-            }
-            _SetSaveNeededFlag(true);
-          }
-        }
-        break;
-
-        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-        {
-          EditFinalizeStyling(Globals.hwndEdit, scn->position);
-        }
-        break;
-
-        case SCN_UPDATEUI:
-        {
-          int const iUpd = scn->updated;
-          //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
-          //  // special case
-          //}
-          //else
-
-          if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
-          {
-            // Brace Match
-            if (Settings.MatchBraces) {
-              EditMatchBrace(Globals.hwndEdit);
-            }
-            if (IsMarkOccurrencesEnabled()) {
-              // clear marks only, if selection changed
-              if (iUpd & SC_UPDATE_SELECTION)
-              {
-                if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
-                  MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-                }
-                else {
-                  EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-                }
-              }
-              else if (iUpd & SC_UPDATE_CONTENT) {
-                // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-                // using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-                //~~~UpdateVisibleUrlIndics();
-              }
-            }
-            UpdateToolbar();
-            UpdateStatusbar(false);
-          }
-          else if (iUpd & SC_UPDATE_V_SCROLL)
-          {
-            if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
-              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
-            }
-          }
-          if (Settings.HyperlinkHotspot) {
-            UpdateVisibleUrlIndics();
-          }
-        }
-        break;
-
-        case SCN_DWELLSTART:
-        case SCN_DWELLEND:
-        {
-          HandleDWellStartEnd(scn->position, pnmh->code);
-        }
-        break;
-
-        case SCN_INDICATORCLICK:
-        {
-          _s_indic_click_modifiers = scn->modifiers;
-        }
-        break;
-
-        case SCN_INDICATORRELEASE:
-        {
-          if (_s_indic_click_modifiers & SCMOD_CTRL) {
-            // open in browser
-            HandleHotSpotURL(scn->position, OPEN_WITH_BROWSER);
-          }
-          else if (_s_indic_click_modifiers & SCMOD_ALT) {
-            // open in application, if applicable (file://)
-            HandleHotSpotURL(scn->position, OPEN_WITH_NOTEPAD3);
-          }
-          _s_indic_click_modifiers = 0;
-        }
-        break;
-
-        case SCN_CHARADDED:
-        {
-          int const ich = scn->ch;
-
-          if (Globals.CallTipType != CT_NONE) {
-            CancelCallTip();
-          }
-
-          switch (ich) {
-            case '\r':
-            case '\n':
-              if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
-              break;
-            case '>':
-              if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
-              break;
-            case '?':
-              _HandleTinyExpr();
-              break;
-            default:
-              break;
-          }
-
-          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
-          {
-            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
-          }
-        }
-        break;
-
-        case SCN_AUTOCCHARDELETED:
-          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
-          {
-            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
-          }
-          break;
-
-        case SCN_NEEDSHOWN:
-        {
-          DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
-          DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
-          for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-        }
-        break;
-
-
-        case SCN_MARGINCLICK:
-          if (scn->margin == MARGIN_SCI_FOLDING) {
-            EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
-          }
-          break;
-
-
-          // ~~~ Not used in Windows ~~~
-          // see: CMD_ALTUP / CMD_ALTDOWN
-          //case SCN_KEY:
-          //  // Also see the corresponding patch in scintilla\src\Editor.cxx
-          //  FoldAltArrow(scn->ch, scn->modifiers);
-          //  break;
-
-
-        case SCN_SAVEPOINTREACHED:
-          _SetSaveNeededFlag(false);
-          break;
-
-
-        case SCN_SAVEPOINTLEFT:
-          _SetSaveNeededFlag(true);
-          break;
-
-
-        case SCN_ZOOM:
-          UpdateMarginWidth();
-          break;
-
-        case SCN_URIDROPPED:
-        {
-          // see WM_DROPFILES
-          WCHAR szBuf[MAX_PATH + 40];
-          if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
-          {
-            if (IsIconic(hwnd)) {
-              ShowWindow(hwnd, SW_RESTORE);
-            }
-            //SetForegroundWindow(hwnd);
-            if (PathIsDirectory(szBuf)) {
-              WCHAR tchFile[MAX_PATH];
-              if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-              }
-            }
-            else if (PathFileExists(szBuf)) {
-              FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
-            }
-          }
-        }
-        break;
-
-        default:
-          return FALSE;
-      }
-      return -1LL;
+      return _MsgNotifyFromEdit(hwnd, pnmh, scn);
 
     // ------------------------------------------------------------------------
 
@@ -6935,11 +6959,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     default:
       switch(pnmh->code)
       {
+        // ToolTip
         case TTN_NEEDTEXT:
           {
             if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
             {
-              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
+              WCHAR tch[SMALL_BUFFER] = { L'\0' };
               GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
               StringCchCopyN(((LPTOOLTIPTEXT)lParam)->szText,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),tch,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText));
             }
@@ -9490,9 +9515,9 @@ void EndUndoAction(int token)
 //  RestoreAction()
 //
 //
-void RestoreAction(int token, DoAction doAct)
+bool RestoreAction(int token, DoAction doAct)
 {
-  if (_InUndoRedoTransaction()) { return; }
+  if (_InUndoRedoTransaction()) { return false; }
 
   UndoRedoSelection_t* pSel = NULL;
 
@@ -9547,8 +9572,8 @@ void RestoreAction(int token, DoAction doAct)
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     PostMessage(hwndedit, SCI_CANCEL, 0, 0);
-
   }
+  return true;
 }
 
 

@@ -4515,13 +4515,13 @@ const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd)
 
 //=============================================================================
 //
-//  EditGetCurrentDocView()
+//  EditSetDocView()
 //
 void EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView)
 {
   EditJumpTo(hwnd, docView.iCurrLine + 1, docView.iCurColumn + 1);
-  SciCall_EnsureVisible(docView.iDocTopLine);
   DocLn const iNewTopLine = SciCall_GetFirstVisibleLine();
+  SciCall_EnsureVisible(iNewTopLine);
   SciCall_LineScroll(0, docView.iVisTopLine - iNewTopLine);
   SciCall_SetXOffset(docView.iXOffset);
 }
@@ -5256,13 +5256,21 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           Settings.MarkOccurrences = s_SaveMarkOccurrences;
           Settings.MarkOccurrencesMatchVisible = s_SaveMarkMatchVisible;
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+
+          // check if we had to revert FocusedView
+          if (FocusedView.HideNonMatchedLines) {
+            if (!IsMarkOccurrencesEnabled() || 
+              Settings.MarkOccurrencesMatchVisible ||
+              (Settings.MarkOccurrencesMatchWholeWords != IsButtonChecked(hwnd, IDC_FINDWORD)))
+            {
+              EditToggleView(sg_pefrData->hwnd);
+            }
+          }
+
           if (IsMarkOccurrencesEnabled()) {
             MarkAllOccurrences(50, true);
           }
           else {
-            if (FocusedView.HideNonMatchedLines) {
-              EditToggleView(sg_pefrData->hwnd);
-            }
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             Globals.iMarkOccurrencesCount = -1;
           }
@@ -5349,6 +5357,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             s_InitialCaretPos = SciCall_GetCurrentPos();
             s_InitialTopLine = SciCall_GetFirstVisibleLine();
           }
+
           if (!SciCall_IsSelectionEmpty()) {
             EditEnsureSelectionVisible(Globals.hwndEdit);
           }
@@ -5356,6 +5365,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
           _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+
           break;
 
         default:
