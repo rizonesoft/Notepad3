@@ -89,7 +89,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "開いている文書を実行"
     IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    IDT_VIEW_CHASING_DOCTAIL "編集制限モード"
     IDT_VIEW_PIN_ON_TOP      "常に手前に表示"
 END
 
@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
     IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません"
     IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます。"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
 END
 
 STRINGTABLE
@@ -285,14 +285,12 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 拡張子の区切りは ; です。\r\n\
-with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
-設定書式:\r\n\
+バックスラッシュ (\\) でファイル名の末尾のパターンを定義可能:\r\n\
+   例 \\xyz$;   ファイル名(ベースファイル名+拡張子)の末尾が xyz に合致\r\n\r\n\
+設定書式(各指定は省略可能, foreは文字色):\r\n\
 font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-各指定は省略可能。フォントのnnはサイズ。foreは文字色。\r\n\
-コピー&&ペーストやドラッグ&&ドロップでも指定が変更できます。\r\n\
-プレビューでの反映では、まだ設定は保存されません。\
+コピー&ペーストやドラッグ&ドロップでも指定が変更できます。\
 "
 
 END
