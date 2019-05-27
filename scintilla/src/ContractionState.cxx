@@ -210,16 +210,24 @@ Sci::Line ContractionState<LINE>::DocFromDisplay(Sci::Line lineDisplay) const {
 
 template <typename LINE>
 void ContractionState<LINE>::InsertLines(Sci::Line lineDoc, Sci::Line lineCount) {
-	for (Sci::Line l = 0; l < lineCount; l++) {
-		InsertLine(lineDoc + l);
+	if (OneToOne()) {
+		linesInDocument += static_cast<LINE>(lineCount);
+	} else {
+		for (Sci::Line l = 0; l < lineCount; l++) {
+			InsertLine(lineDoc + l);
+		}
 	}
 	Check();
 }
 
 template <typename LINE>
 void ContractionState<LINE>::DeleteLines(Sci::Line lineDoc, Sci::Line lineCount) {
-	for (Sci::Line l = 0; l < lineCount; l++) {
-		DeleteLine(lineDoc);
+	if (OneToOne()) {
+		linesInDocument -= static_cast<LINE>(lineCount);
+	} else {
+		for (Sci::Line l = 0; l < lineCount; l++) {
+			DeleteLine(lineDoc);
+		}
 	}
 	Check();
 }

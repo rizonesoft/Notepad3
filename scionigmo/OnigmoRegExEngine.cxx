@@ -23,13 +23,10 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <mbstring.h>
 
 #define VC_EXTRALEAN 1
 #include <windows.h>
-
-#pragma warning( push )
-#pragma warning( disable : 4996 )   // Scintilla's "unsafe" use of std::copy() (SplitVector.h)
-//                                  // or use -D_SCL_SECURE_NO_WARNINGS preprocessor define
 
 #include "Platform.h"
 #include "Scintilla.h"
@@ -42,6 +39,7 @@
 #include "Decoration.h"
 #include "CharClassify.h"
 #include "Document.h"
+
 // ---------------------------------------------------------------
 #include "onigmo.h"   // Onigmo - Regular Expression Engine (v6.1.3)
 // ---------------------------------------------------------------
@@ -85,7 +83,7 @@ public:
 
   ~OnigmoRegExEngine() override
   {
-    onig_region_free(&m_Region, 0);
+    onig_region_free(&m_Region, 0); /* 1:free self, 0:free contents only */
     onig_free(m_RegExpr);
     onig_end();
   }
@@ -262,17 +260,13 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
     m_ErrorInfo[0] = '\0';
     try {
       OnigErrorInfo einfo;
-
-      onig_region_free(&m_Region, 0);
-
+      onig_free(m_RegExpr);
       int res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
                          m_CmplOptions, g_pOnigEncodingType, &m_OnigSyntax, &einfo);
       if (res != ONIG_NORMAL) {
         onig_error_code_to_str(UCharPtr(m_ErrorInfo), res, &einfo);
         return SciPos(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
       }
-
-      onig_region_init(&m_Region);
     }
     catch (...) {
       return SciPos(-2);
@@ -291,6 +285,9 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
 
   OnigPosition result = ONIG_MISMATCH;
   try {
+    onig_region_free(&m_Region, 0);  /* 1:free self, 0:free contents only */
+    onig_region_init(&m_Region);
+
     if (findForward)
       result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
     else //                                                              X                                    //
@@ -464,7 +461,7 @@ void OnigmoRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const s
     inputStr_inout.replace(oRegion.beg[0], (oRegion.end[0] - oRegion.beg[0]), replace);
   }
 
-  onig_region_free(&oRegion, 0);
+  onig_region_free(&oRegion, 0);  // 1:free self, 0:free contents only
   onig_free(oRegExpr);
 }
 // ----------------------------------------------------------------------------
@@ -624,6 +621,181 @@ std::string& OnigmoRegExEngine::convertReplExpr(std::string& replStr)
 }
 // ============================================================================
 
-#pragma warning( pop )
+
+
+
+
+// ============================================================================
+// ============================================================================
+
+
+class SimpleRegExEngine
+{
+public:
+
+  SimpleRegExEngine()
+    : m_OnigSyntax(*ONIG_SYNTAX_PERL)
+    , m_Options(ONIG_OPTION_DEFAULT)
+    , m_RegExpr(nullptr)
+    , m_Region({ 0,0,nullptr,nullptr,nullptr })
+    , m_ErrorInfo()
+    , m_MatchPos(ONIG_MISMATCH)
+    , m_MatchLen(0)
+  {
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END;
+    onig_initialize(g_UsedEncodingsTypes, _ARRAYSIZE(g_UsedEncodingsTypes));
+    onig_region_init(&m_Region);
+  }
+
+  ~SimpleRegExEngine() noexcept
+  {
+    onig_region_free(&m_Region, 0);  /* 1:free self, 0:free contents only */
+    onig_free(m_RegExpr);
+    onig_end();
+  }
+
+  OnigPosition Find(const OnigUChar* pattern, const OnigUChar* document, const  bool caseSensitive);
+
+  const OnigPosition GetMatchPos() const { return m_MatchPos; };
+  const OnigPosition GetMatchLen() const { return m_MatchLen; };
+  const OnigRegion& GetRegion() const { return m_Region; };
+
+private:
+
+  //void regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr);
+
+private:
+
+  OnigSyntaxType  m_OnigSyntax;
+  OnigOptionType  m_Options;
+  OnigRegex       m_RegExpr;
+  OnigRegion      m_Region;
+
+  OnigUChar       m_ErrorInfo[ONIG_MAX_ERROR_MESSAGE_LEN];
+
+  OnigPosition    m_MatchPos;
+  OnigPosition    m_MatchLen;
+
+};
+// ============================================================================
+
+
+// ------------------------------------
+// --- Onigmo Engine Simple Options ---
+// ------------------------------------
+static void SetSimpleOptions(OnigOptionType& onigmoOptions, const bool caseSensitive)
+{
+  // fixed options
+  onigmoOptions = ONIG_OPTION_DEFAULT;
+
+  // OFF: not wanted options in Notepad3
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND);
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_ASCII_RANGE);
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_MULTILINE);
+
+  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
+  //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_CAPTURE_GROUP);
+
+  // dynamic options
+  ONIG_OPTION_ON(onigmoOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
+}
+// ============================================================================
+
+
+
+OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* document, const bool caseSensitive)
+{
+  auto const patternLen = (pattern) ? OnigPosition(_mbslen(pattern)) : 0;
+  if (patternLen == 0) {
+    return OnigPosition(-1);
+  }
+
+  auto const stringLen = (document) ? OnigPosition(_mbslen(document)) : 0;
+  if (stringLen == 0) {
+    return OnigPosition(-1);
+  }
+
+  // init search options
+  SetSimpleOptions(m_Options, caseSensitive);
+  m_ErrorInfo[0] = '\0';
+
+  try {
+    onig_free(m_RegExpr);
+
+    OnigErrorInfo einfo;
+    int res = onig_new(&m_RegExpr, pattern, (pattern + patternLen),
+      m_Options, g_pOnigEncodingType, &m_OnigSyntax, &einfo);
+
+    if (res != ONIG_NORMAL) {
+      //onig_error_code_to_str(m_ErrorInfo, res, &einfo);
+      return OnigPosition(-111);
+    }
+
+    onig_region_free(&m_Region, 0);
+    onig_region_init(&m_Region);
+
+    const UChar* strgBeg = document;
+    const UChar* strgEnd = document + stringLen;
+    const UChar* rangeBeg = strgBeg;
+    const UChar* rangeEnd = strgEnd;
+
+    // start search
+    OnigPosition result = onig_search(m_RegExpr, strgBeg, strgEnd,
+      rangeBeg, rangeEnd, &m_Region, m_Options);
+
+    if (result < ONIG_MISMATCH) {
+      //onig_error_code_to_str(m_ErrorInfo, result);
+      return OnigPosition(-3);
+    }
+
+    m_MatchPos = OnigPosition(ONIG_MISMATCH); // not found
+    m_MatchLen = OnigPosition(0);
+
+    if (result >= 0) // found
+    {
+      //~m_MatchPos = result; //
+      m_MatchPos = m_Region.beg[0];
+      //~m_MatchLen = (m_Region.end[0] - result);
+      m_MatchLen = (m_Region.end[0] - m_Region.beg[0]);
+    }
+    //else if (result == ONIG_MISMATCH) // not found
+    //{
+    //  m_MatchPos = result;
+    //  m_MatchLen = OnigPosition(0);
+    //}
+    else if (result < ONIG_MISMATCH)
+    {
+      //onig_error_code_to_str(m_ErrorInfo, result);
+      m_MatchPos = result;
+      m_MatchLen = OnigPosition(0);
+    }
+  }
+  catch (...) {
+    // -1 is normally used for not found, -666 is used here for exception
+    return OnigPosition(-666);
+  }
+
+  return m_MatchPos;
+}
+// ============================================================================
+
+static SimpleRegExEngine ModuleRegExEngine;
+
+// ============================================================================
+
+extern "C"
+#ifdef SCINTILLA_DLL
+__declspec(dllexport)
+#endif
+ptrdiff_t WINAPI OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive)
+{
+  const UChar* pattern = reinterpret_cast<const UChar*>(pchPattern);
+  const UChar* string = reinterpret_cast<const UChar*>(pchText);
+
+  return static_cast<ptrdiff_t>(ModuleRegExEngine.Find(pattern, string, caseSensitive));
+}
+// ============================================================================
 
 #endif //SCI_OWNREGEX

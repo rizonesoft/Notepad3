@@ -3938,6 +3938,10 @@ int Editor::KeyDefault(int, int) {
 
 int Editor::KeyDownWithModifiers(int key, int modifiers, bool *consumed) {
 	DwellEnd(false);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	if (hoverIndicatorPos != Sci::invalidPosition)
+		if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const int msg = kmap.Find(key, modifiers);
 	if (msg) {
 		if (consumed)
@@ -4499,7 +4503,11 @@ static constexpr bool AllowVirtualSpace(int virtualSpaceOptions, bool rectangula
 
 void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) {
 	SetHoverIndicatorPoint(pt);
-	//Platform::DebugPrintf("ButtonDown %d %d = %d alt=%d %d\n", curTime, lastClickTime, curTime - lastClickTime, alt, inDragDrop);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	if (hoverIndicatorPos != Sci::invalidPosition)
+		if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+  //Platform::DebugPrintf("ButtonDown %d %d = %d alt=%d %d\n", curTime, lastClickTime, curTime - lastClickTime, alt, inDragDrop);
 	ptMouseLast = pt;
 	const bool ctrl = (modifiers & SCI_CTRL) != 0;
 	const bool shift = (modifiers & SCI_SHIFT) != 0;
@@ -4866,10 +4874,12 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 				DisplayCursor(Window::cursorHand);
 				SetHotSpotRange(&pt);
 			} else {
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 				if (hoverIndicatorPos != Sci::invalidPosition)
-					DisplayCursor(Window::cursorHand);
+					if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
 				else
 					DisplayCursor(Window::cursorText);
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				SetHotSpotRange(nullptr);
 			}
 		}

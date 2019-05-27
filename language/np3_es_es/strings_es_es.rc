@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Error al exportar la configuración de estilo a ""%s""."
-    IDS_MUI_REGEX_INVALID   "Error al evaluar la expresión regular. ¡La expresión es inválida!"
-    IDS_MUI_DROP_NO_FILE    "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."
+    IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s""."
+    IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
+    IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Cliquear para abrir el archivo."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquear para abrir el enlace en navegador."
 END
 
 STRINGTABLE
@@ -282,7 +284,9 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Las extensiones de archivo están separadas por ';'\r\n\r\n\
+Las extensiones de archivo están separadas por ';'\r\n\
+con un Backslash (\\), RegEx define un final de patrones de nombre de archivo:\r\n\
+   \\xyz$;   => nombres de archivo(basename+ext) con 'xyz' como últimas letras.\r\n\r\n\
 Estilo formato:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\

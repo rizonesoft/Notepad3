@@ -157,7 +157,7 @@ typedef enum {
 
 // --------------------------------------------------------------------------
 
-typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO } CALLTIPTYPE;
+typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO, CT_DWELL } CALLTIPTYPE;
 
 // --------------------------------------------------------------------------
 
@@ -254,7 +254,12 @@ typedef struct _cmq
 #define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
 #define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
 #define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
+#define INDIC_NP3_HYPERLINK      (INDIC_CONTAINER + 5)
+#define INDIC_NP3_HYPERLINK_U    (INDIC_CONTAINER + 6)
 
+// --------------------------------------------------------------------------
+
+#define SC_NP3_CURSORHAND 8
 
 //=============================================================================
 
@@ -342,6 +347,7 @@ typedef struct _settings_t
   int  HighlightCurrentLine;
   bool HyperlinkHotspot;
   bool ScrollPastEOF;
+  bool ShowHypLnkToolTip;
   bool AutoIndent;
   bool AutoCompleteWords;
   bool AutoCLexerKeyWords;

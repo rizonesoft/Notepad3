@@ -338,10 +338,11 @@ BEGIN
         POPUP "전시(&D)"
         BEGIN
             MENUITEM "코드 접기(&F)\tCtrl+Shift+Alt+F",    IDM_VIEW_FOLDING
-            MENUITEM "모든 접기 전환(&T)\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "집중\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Monitoring Log",                  IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "파일 끝 스크롤(&F)",                  IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "모든 접기 전환(&T)\tCtrl+Shift+F",   IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "집중\tCtrl+Alt+V",                   IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "열람(&M)",                           IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "파일 끝 스크롤(&F)",                 IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "하이퍼 링크 툴팁 보이기(&H)",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "도구 모음(&T)"
         BEGIN
@@ -359,13 +360,13 @@ BEGIN
         END
         POPUP "위치(&P)"
         BEGIN
-            MENUITEM "창 위치 복사\tCtrl+Shift+K",        CMD_COPYWINPOS
+            MENUITEM "창 위치 복사\tCtrl+Shift+K",         CMD_COPYWINPOS
             MENUITEM "기본 위치에 맞추기\tCtrl+Shift+P",    CMD_DEFAULTWINPOS
             MENUITEM "기본 위치로 저장",                   CMD_SAVEASDEFWINPOS
-            MENUITEM "저장된 기본 위치 지우기",              CMD_CLEARSAVEDWINPOS
+            MENUITEM "저장된 기본 위치 지우기",             CMD_CLEARSAVEDWINPOS
             MENUITEM "처음 위치에 맞추기\tCtrl+F11",        CMD_INITIALWINPOS
             MENUITEM "전체 영역 위치 전환\tF11",            CMD_FULLSCRWINPOS
-            MENUITEM "창 위치 고정(&P)",                  IDM_VIEW_STICKYWINPOS
+            MENUITEM "창 위치 고정(&P)",                   IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "설정(&S)"

@@ -12,31 +12,31 @@
 
 #define bindir "..\Bin"
 
-#ifnexist bindir + "\Release_x86_v141\Notepad3.exe"
+#ifnexist bindir + "\Release_x86_v142\Notepad3.exe"
   #error Compile Notepad3 x86 first
 #endif
 
-#ifnexist bindir + "\Release_x86_v141\minipath.exe"
+#ifnexist bindir + "\Release_x86_v142\minipath.exe"
   #error Compile MiniPath x86 first
 #endif
 
-#ifnexist bindir + "\Release_x86_v141\np3encrypt.exe"
+#ifnexist bindir + "\Release_x86_v142\np3encrypt.exe"
   #error Compile np3encrypt.exe x86 first
 #endif
 
-#ifnexist bindir + "\Release_x64_v141\Notepad3.exe"
+#ifnexist bindir + "\Release_x64_v142\Notepad3.exe"
   #error Compile Notepad3 x64 first
 #endif
 
-#ifnexist bindir + "\Release_x64_v141\minipath.exe"
+#ifnexist bindir + "\Release_x64_v142\minipath.exe"
   #error Compile MiniPath x64 first
 #endif
 
-#ifnexist bindir + "\Release_x64_v141\np3encrypt.exe"
+#ifnexist bindir + "\Release_x64_v142\np3encrypt.exe"
   #error Compile np3encrypt.exe x64 first
 #endif
 
-#define app_version   GetFileVersion(bindir + "\Release_x86_v141\Notepad3.exe")
+#define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
 #define app_name      "Notepad3"
 #define app_copyright "(c) Rizonesoft 2008-2019"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
@@ -59,8 +59,7 @@ DefaultDirName={pf}\Notepad3
 LicenseFile=License.txt
 OutputDir=.\Packages
 OutputBaseFilename={#app_name}_{#app_version}_Setup
-SetupIconFile=.\Resources\Setup.ico
-WizardImageFile=compiler:WizModernImage-IS.bmp
+WizardStyle=modern
 WizardSmallImageFile=.\Resources\WizardSmallImageFile.bmp
 Compression=lzma2/max
 InternalCompressLevel=max
@@ -72,8 +71,8 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
 DisableWelcomePage=yes
-AllowCancelDuringInstall=no
-MinVersion=5.1sp3
+AllowCancelDuringInstall=yes
+MinVersion=6.0
 ArchitecturesAllowed=x86 x64
 ArchitecturesInstallIn64BitMode=x64
 #ifexist "..\signinfo_notepad3.txt"
@@ -81,6 +80,7 @@ SignTool=MySignTool
 #endif
 CloseApplications=true
 SetupMutex='{#app_name}' + '_setup_mutex'
+
 
 
 [Languages]
@@ -124,58 +124,60 @@ Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescript
 
 
 [Files]
-Source: {#bindir}\Release_x64_v141\Notepad3.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\Notepad3.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\Notepad3.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\Notepad3.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: License.txt;                                                DestDir: {app};                             Flags: ignoreversion
 Source: Readme.txt;                                                 DestDir: {app};                             Flags: ignoreversion
-Source: Notepad3.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
-Source: {#bindir}\Release_x64_v141\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: minipath.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
-Source: {#bindir}\Release_x64_v141\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\np3lng.dll;                  DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\np3lng.dll;                  DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\af-ZA\np3lng.dll.mui;        DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\af-ZA\np3lng.dll.mui;        DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\be-BY\mplng.dll.mui;         DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\be-BY\mplng.dll.mui;         DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\be-BY\np3lng.dll.mui;        DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\be-BY\np3lng.dll.mui;        DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode() 
-Source: {#bindir}\Release_x64_v141\lng\de-DE\mplng.dll.mui;         DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\de-DE\mplng.dll.mui;         DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\de-DE\np3lng.dll.mui;        DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\de-DE\np3lng.dll.mui;        DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\en-GB\mplng.dll.mui;         DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\en-GB\mplng.dll.mui;         DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\en-GB\np3lng.dll.mui;        DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\en-GB\np3lng.dll.mui;        DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\es-ES\mplng.dll.mui;         DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\es-ES\mplng.dll.mui;         DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\es-ES\np3lng.dll.mui;        DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\es-ES\np3lng.dll.mui;        DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\fr-FR\mplng.dll.mui;         DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\fr-FR\mplng.dll.mui;         DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\fr-FR\np3lng.dll.mui;        DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\fr-FR\np3lng.dll.mui;        DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\ja-JP\mplng.dll.mui;         DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\ja-JP\mplng.dll.mui;         DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\ja-JP\np3lng.dll.mui;        DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\ja-JP\np3lng.dll.mui;        DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\nl-NL\mplng.dll.mui;         DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\nl-NL\mplng.dll.mui;         DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\nl-NL\np3lng.dll.mui;        DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\nl-NL\np3lng.dll.mui;        DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode() 
-Source: {#bindir}\Release_x64_v141\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: Notepad3.ini;                                           DestDir: {userappdata}\Rizonesoft\Notepad3; 		Flags: onlyifdoesntexist uninsneveruninstall
+Source: minipath.ini;											DestDir: {userappdata}\Rizonesoft\Notepad3; 		Flags: onlyifdoesntexist uninsneveruninstall
+Source: Themes\Dark Theme.ini;									DestDir: {userappdata}\Rizonesoft\Notepad3\Themes; 	Flags: onlyifdoesntexist uninsneveruninstall
+Source: Themes\Obsidian.ini;									DestDir: {userappdata}\Rizonesoft\Notepad3\Themes; 	Flags: onlyifdoesntexist uninsneveruninstall
+Source: {#bindir}\Release_x64_v142\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\np3lng.dll;                  DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\np3lng.dll;                  DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\af-ZA\np3lng.dll.mui;        DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\af-ZA\np3lng.dll.mui;	DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\be-BY\mplng.dll.mui;         DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\be-BY\mplng.dll.mui;         DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\be-BY\np3lng.dll.mui;        DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\be-BY\np3lng.dll.mui;        DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode() 
+Source: {#bindir}\Release_x64_v142\lng\de-DE\mplng.dll.mui;         DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\de-DE\mplng.dll.mui;         DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\de-DE\np3lng.dll.mui;        DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\de-DE\np3lng.dll.mui;        DestDir: {app}\lng\de-DE;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\en-GB\mplng.dll.mui;         DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\en-GB\mplng.dll.mui;         DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\en-GB\np3lng.dll.mui;        DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\en-GB\np3lng.dll.mui;        DestDir: {app}\lng\en-GB;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\es-ES\mplng.dll.mui;         DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\es-ES\mplng.dll.mui;         DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\es-ES\np3lng.dll.mui;        DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\es-ES\np3lng.dll.mui;        DestDir: {app}\lng\es-ES;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\fr-FR\mplng.dll.mui;         DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\fr-FR\mplng.dll.mui;         DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\fr-FR\np3lng.dll.mui;        DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\fr-FR\np3lng.dll.mui;        DestDir: {app}\lng\fr-FR;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\ja-JP\mplng.dll.mui;         DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\ja-JP\mplng.dll.mui;         DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\ja-JP\np3lng.dll.mui;        DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\ja-JP\np3lng.dll.mui;        DestDir: {app}\lng\ja-JP;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\nl-NL\mplng.dll.mui;         DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\nl-NL\mplng.dll.mui;         DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\nl-NL\np3lng.dll.mui;        DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\nl-NL\np3lng.dll.mui;        DestDir: {app}\lng\nl-NL;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode() 
+Source: {#bindir}\Release_x64_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
@@ -183,7 +185,7 @@ Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
 [Icons]
 Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
 Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {userstartmenu}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: startup_icon;       Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {commonprograms}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: startup_icon;       Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
 Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklaunchicon;    Comment: {#app_name} {#app_version}; WorkingDir: {app};                           IconFilename: {app}\Notepad3.exe; IconIndex: 0
 
 

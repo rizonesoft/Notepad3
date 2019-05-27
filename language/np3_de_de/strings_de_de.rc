@@ -181,6 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s""."
     IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulären Ausdrucks (RegEx), der Ausruck ist ungültig!"
     IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen."
 END
 
 STRINGTABLE
@@ -282,11 +284,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\r\n\
+Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\
+mit einem Backslash (\\), RegEx definiert ein Ende Dateinamens-Muster:\r\n\
+   \\xyz$;   => Dateinamen(basename+ext) mit 'xyz' am Ende.\r\n\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Formate kopieren: 'Copy && Paste' oder 'Drag && Drop'\
+Formate kopieren: 'Copy & Paste' oder 'Drag & Drop'\
 "
 
 END

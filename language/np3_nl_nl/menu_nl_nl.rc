@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Ge&focust zicht\tCtrl+Alt+V",                     IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Log &Monitoren",                                  IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scrollen na einde van bes&tand",                  IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Toon &hyperlink tooltip",                         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Werkbalk"
         BEGIN

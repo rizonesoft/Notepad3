@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Fókuszált n&ézet\tCtrl+Alt+V",            IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Naplófájl követése",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Görgetés a fájl vége &után is",           IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Show &Hyperlink Tooltip",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Eszköztár"
         BEGIN

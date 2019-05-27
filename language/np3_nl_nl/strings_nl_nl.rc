@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Fout bij het exporteren van stijl instellingen naar ""%s""."
-    IDS_MUI_REGEX_INVALID   "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
-    IDS_MUI_DROP_NO_FILE    "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
+    IDS_MUI_EXPORT_FAIL      "Fout bij het exporteren van stijl instellingen naar ""%s""."
+    IDS_MUI_REGEX_INVALID    "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
+    IDS_MUI_DROP_NO_FILE     "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik om het bestand te openen."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om de link in de browser te openen."
 END
 
 STRINGTABLE
@@ -282,7 +284,9 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Bestand extensies moeten gescheiden door ';'\r\n\r\n\
+Bestand extensies moeten gescheiden door ';'\r\n\
+met een backslash (\\), RegEx definieert een einde van bestandsnaampatronen:\r\n\
+   \\xyz$;   => bestandsnamen(basename+ext) met 'xyz' als laatste tekens.\r\n\r\n\
 Stijl formaat:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\

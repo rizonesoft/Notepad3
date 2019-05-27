@@ -30,12 +30,16 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.514.build (2019-May 14)
+Current Version 5.19.522.build (2019-May 22)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Add Dark Theme "Obsidian"
+- Add option to disable Hyperlink Tooltip
+- ToolTip for Hyperlinks
+
 - 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
 - Menu entry to mute MessageBox beeps
 - Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
@@ -68,7 +72,7 @@ CHANGES:
 - Make Custom.Schemes and Find/Replace dialog resizable
 - BOOKMARK (margin flag) style changed to vertical flavor
 - Auto-Save after elevating user right
-- Support Compiler version 192027508 (VS2019 v16.0.(0-3)
+- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-1)
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
 - Start dual encoding detectors in (thread) parallel for large files
@@ -92,6 +96,10 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
+- Allow customizable fileName-RegEx to extensionlist
+	( \rc$; = all filenames (incl. ext) which ends on 'rc')
+- Hand cursor coupled with indicator hover style only on modifier keys
+- Allow indicator styling for Hyperlink hover rendering
 - Find/Replace dialog <-> "Focused View" enhancements
 - Rework inconsistent line-breaks in status bar
 
@@ -100,6 +108,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Focused View: refolding by lexer
 - FocusedView started from Find/Replace dialog
 
 - Do not ignore notify change for Paste/Swap/Undo/Redo
@@ -128,7 +137,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------
 - Polish (it-IT) Translation (In progress)
-- Hungarian (hu-HU) Translation (In progress)
+- Hungarian (hu-HU) Translation
 - Italian (it-IT) Translation
 - Korean (UHC) Translation
 

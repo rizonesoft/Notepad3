@@ -153,6 +153,8 @@
 #define IDS_MUI_GOTO_LINE               15055
 #define IDS_MUI_GOTO_COLUMN             15056
 #define IDS_MUI_INDENT_CONSISTENT       15057
+#define IDS_MUI_URL_OPEN_FILE           15058
+#define IDS_MUI_URL_OPEN_BROWSER        15059
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
@@ -608,6 +610,7 @@
 #define IDM_VIEW_CHASING_DOCTAIL        40466
 #define IDM_VIEW_TOGGLETB               40467
 #define IDM_VIEW_MUTE_MESSAGEBEEP       40468
+#define IDM_VIEW_SHOW_HYPLNK_CALLTIP    40469
 
 #define IDM_SET_RENDER_TECH_DEFAULT     40500
 #define IDM_SET_RENDER_TECH_D2D         40501

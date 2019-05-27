@@ -143,20 +143,20 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
-void UpdateVisibleUrlHotspot(int delay);
+void UpdateVisibleUrlIndics();
 inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
 int  BeginUndoAction();
 void EndUndoAction(int token);
-void RestoreAction(int token, DoAction doAct);
+bool RestoreAction(int token, DoAction doAct);
 
 #define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
 
-
-bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation);
+void HandleDWellStartEnd(const DocPos position, const UINT uid);
+bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation);
 
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
@@ -198,7 +198,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
-bool CheckNotifyChangeEvent();
+static __forceinline bool CheckNotifyChangeEvent();
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
 

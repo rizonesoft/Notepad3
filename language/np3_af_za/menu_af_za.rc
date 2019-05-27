@@ -71,14 +71,14 @@ BEGIN
             MENUITEM "&Nuwe Venster\tAlt+N",                IDM_FILE_NEWWINDOW
             MENUITEM "Lê&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Herlaai Verhoogde",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Voer &Dokument Uit\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "Maak &Oop Met...\tAlt+L",             IDM_FILE_OPENWITH
             MENUITEM "&Bevel...\tCtrl+R",                   IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web Template &1\tCtrl+Shift+1",       CMD_WEBACTION1
-            MENUITEM "Web Template &2\tCtrl+Shift+2",       CMD_WEBACTION2
+            MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
+            MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "&Enkodering"
@@ -112,7 +112,7 @@ BEGIN
             MENUITEM "&Verstek...",                         IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation...",                   CMD_CHECK_INDENTATION
+        MENUITEM "Kontroleer &Indentasie...",               CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Bladsy Ops&telling...",                   IDM_FILE_PAGESETUP
         MENUITEM "&Druk...\tCtrl+P",                        IDM_FILE_PRINT
@@ -342,13 +342,14 @@ BEGIN
             MENUITEM "Gefokusde &Aansig\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoring Log",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Show &Hyperlink Tooltip",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "Nu&tsbalk"
         BEGIN
             MENUITEM "Wys Nuts&balk",                       IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Nutsbalk",                    IDM_VIEW_TOGGLETB
             MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -363,7 +364,7 @@ BEGIN
             MENUITEM "Snap na Verstek Posisie\tCtrl+Shift+P",        CMD_DEFAULTWINPOS
             MENUITEM "Stoor as Verstek Posisie",                     CMD_SAVEASDEFWINPOS
             MENUITEM "Herstel Gestoorde Verstek Posisie",            CMD_CLEARSAVEDWINPOS
-            MENUITEM "Snap to Aanvanklike Posisie\tCtrl+F11",        CMD_INITIALWINPOS
+            MENUITEM "Snap na Aanvanklike Posisie\tCtrl+F11",        CMD_INITIALWINPOS
             MENUITEM "Wissel Volle Area Posisie\tF11",               CMD_FULLSCRWINPOS
             MENUITEM "Klewerige Venster &Posisie",                   IDM_VIEW_STICKYWINPOS
         END
@@ -469,7 +470,7 @@ BEGIN
         MENUITEM "Wys &Nutsbalk",                           IDM_VIEW_TOOLBAR
         MENUITEM "To&ggle Nutsbalk",                        IDM_VIEW_TOGGLETB
         MENUITEM "&Pas Nutsbalk...",                        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "Wys &Statusbalk",                         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

@@ -3482,11 +3482,9 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 
   WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
   
-  if (bModified)
-    StringCchCopy(szTitle, COUNTOF(szTitle), pszMod);
-  else
-    StringCchCopy(szTitle, COUNTOF(szTitle), L"");
-
+  if (bModified) {
+    StringCchCat(szTitle, COUNTOF(szTitle), pszMod);
+  }
   if (StrIsNotEmpty(lpszExcerpt)) {
     WCHAR szExcrptFmt[32] = { L'\0' };
     WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
@@ -3496,9 +3494,9 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   }
   else if (StrIsNotEmpty(lpszFile))
   {
-    if (iFormat < 2 && !PathIsRoot(lpszFile))
+    if ((iFormat < 2) && !PathIsRoot(lpszFile))
     {
-      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) 
+      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0)
       {
         StringCchCopy(szCachedFile, COUNTOF(szCachedFile), lpszFile);
         PathGetDisplayName(szCachedDisplayName, COUNTOF(szCachedDisplayName), szCachedFile);

@@ -178,9 +178,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "ѕамылка экспарту наладаҐ стыл€Ґ Ђ%sї."
-    IDS_MUI_REGEX_INVALID   "ѕамылка апрацоҐк≥ рэгул€рнага выразу. ¬ыраз несапраҐдны!"
-    IDS_MUI_DROP_NO_FILE    "Ќе выйшла атрымаць ≥м€ файла. \n ал≥ перац€гваеце з 32-б≥тнай праграмы,\nперац€гн≥це на пал≥цу прыладаҐ Notepad3."
+    IDS_MUI_EXPORT_FAIL      "ѕамылка экспарту наладаҐ стыл€Ґ Ђ%sї."
+    IDS_MUI_REGEX_INVALID    "ѕамылка апрацоҐк≥ рэгул€рнага выразу. ¬ыраз несапраҐдны!"
+    IDS_MUI_DROP_NO_FILE     "Ќе выйшла атрымаць ≥м€ файла. \n ал≥ перац€гваеце з 32-б≥тнай праграмы,\nперац€гн≥це на пал≥цу прыладаҐ Notepad3."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
 END
 
 STRINGTABLE
@@ -282,7 +284,9 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-ѕашырэнн≥ файлаҐ пав≥нны быць падзелены с≥мвалам ;\r\n\r\n\
+ѕашырэнн≥ файлаҐ пав≥нны быць падзелены с≥мвалам ;\r\n\
+with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
+   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars\r\n\r\n\
 ‘армат стылю:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\

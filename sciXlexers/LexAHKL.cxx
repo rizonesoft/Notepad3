@@ -28,9 +28,24 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
-#include <windows.h>
+#include "OptionSet.h"
+#include "DefaultLexer.h"
+//#include "PropSetSimple.h"
+
 
 using namespace Scintilla;
+
+// Options used for LexerRust
+struct OptionsAHKL {
+  bool fold;
+  bool foldComment;
+  bool foldCompact;
+  OptionsAHKL() {
+    fold = false;
+    foldComment = true;
+    foldCompact = true;
+  }
+};
 
 static const char* const ahklWordLists[] = {
 						"Directives",
@@ -42,9 +57,23 @@ static const char* const ahklWordLists[] = {
 						"Keyboard & Mouse Keys",
 						"User Defined 1",
 						"User Defined 2",
-						 nullptr};
+						 nullptr
+};
 
-class LexerAHKL : public ILexer4 {
+
+struct OptionSetAHKL : public OptionSet<OptionsAHKL> {
+  OptionSetAHKL() {
+    DefineProperty("fold", &OptionsAHKL::fold);
+    DefineProperty("fold.comment", &OptionsAHKL::foldComment);
+    DefineProperty("fold.compact", &OptionsAHKL::foldCompact);
+    DefineWordListSets(ahklWordLists);
+  }
+};
+
+class LexerAHKL : public DefaultLexer {
+
+  OptionsAHKL options;
+  OptionSetAHKL osAHKL;
 
 	CharacterSet valLabel;
 	CharacterSet valHotkeyMod;
@@ -82,31 +111,29 @@ public:
 
 	virtual ~LexerAHKL() = default;
 
-	int SCI_METHOD Version() const override { return lvRelease4;}
-	void SCI_METHOD Release() override { delete this;	}
-	const char * SCI_METHOD PropertyNames() override { return "";	}
-	int SCI_METHOD PropertyType(const char *name) override { return 0; }
-	const char * SCI_METHOD DescribeProperty(const char *name) override {	return ""; }
-	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override { return 0;}
-	const char * SCI_METHOD DescribeWordListSets() override { return ""; }
+  void SCI_METHOD Release() override {
+    delete this;
+  }
+  int SCI_METHOD Version() const override {
+    return lvRelease4;
+  }
+  const char* SCI_METHOD PropertyNames() override {
+    return osAHKL.PropertyNames();
+  }
+  int SCI_METHOD PropertyType(const char* name) override {
+    return osAHKL.PropertyType(name);
+  }
+  const char* SCI_METHOD DescribeProperty(const char* name) override {
+    return osAHKL.DescribeProperty(name);
+  }
+  const char* SCI_METHOD DescribeWordListSets() override {
+    return osAHKL.DescribeWordListSets();
+  }
 	void * SCI_METHOD PrivateCall(int, void *) override {	return nullptr;	}
-	int SCI_METHOD LineEndTypesSupported() override { return 0; }
-	int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override { return 0; }
-	int SCI_METHOD SubStylesStart(int styleBase) override { return 0; }
-	int SCI_METHOD SubStylesLength(int styleBase) override { return 0; }
-	int SCI_METHOD StyleFromSubStyle(int subStyle) override { return 0; }
-	int SCI_METHOD PrimaryStyleFromStyle(int style) override { return 0; }
-	void SCI_METHOD FreeSubStyles() override { return; }
-	void SCI_METHOD SetIdentifiers(int style, const char *identifiers) override { return; }
-	int SCI_METHOD DistanceToSecondaryStyles() override { return 0; }
-	const char * SCI_METHOD GetSubStyleBases() override { return ""; }
-	int SCI_METHOD NamedStyles()  override { return 0; }
-	const char * SCI_METHOD NameOfStyle(int style) override { return ""; }
-	const char * SCI_METHOD TagsOfStyle(int style) override { return ""; }
-	const char * SCI_METHOD DescriptionOfStyle(int style) override { return ""; }
 
-
-	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
+  // --------------------------------------------------------------------------
+  Sci_Position SCI_METHOD PropertySet(const char* key, const char* val) override;
+  Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
 
@@ -114,6 +141,14 @@ public:
 		return new LexerAHKL();
 	}
 };
+
+Sci_Position SCI_METHOD LexerAHKL::PropertySet(const char* key, const char* val) {
+  if (osAHKL.PropertySet(&options, key, val)) {
+    return 0;
+  }
+  return -1;
+}
+
 
 Sci_Position SCI_METHOD LexerAHKL::WordListSet(int n, const char *wl)
 {
@@ -357,7 +392,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
 				} else if ((sc.chPrev == 'x' || sc.chPrev == 'y'|| sc.chPrev == 'w'|| sc.chPrev == 'h')
-					&& inCommand && isdigit(sc.ch) ) {				// Special number cases when entering sizes
+					&& inCommand && isdigit(sc.ch & 0xFF) ) {				// Special number cases when entering sizes
 
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
@@ -413,7 +448,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 			}
 
 			case SCE_AHKL_DECNUMBER:	{
-				if (!isdigit(sc.ch)) {
+				if (!isdigit(sc.ch & 0xFF)) {
 
 					if (sc.ch == 'x' || sc.ch == 'X')
 						sc.ChangeState(SCE_AHKL_HEXNUMBER);
@@ -600,7 +635,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				if (valIdentifier.Contains(sc.ch))
 					validFunction = true;
 
-				if (isdigit(sc.ch))
+				if (isdigit(sc.ch & 0xFF))
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
 				else if (inCommand && sc.ch == '+')
@@ -680,92 +715,68 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
 {
-	LexAccessor styler(pAccess);
+  if (!options.fold) {
+    return;
+  }
 
-	//int visibleChars = 0;
-	int lineCurrent = styler.GetLine(startPos);
-	int levelCurrent = SC_FOLDLEVELBASE;
-	int styleNext = styler.StyleAt(startPos);
-	int style = initStyle;
-	Sci_PositionU endPos = startPos + lengthDoc;
+  LexAccessor styler(pAccess);
 
-	char chNext = styler[startPos];
+  bool const foldComment = options.foldComment; //props.GetInt("fold.comment") != 0;
+  bool const foldCompact = options.foldCompact; //props.GetInt("fold.compact", 1) != 0;
 
-	bool OnlySpaces = true;
-
-	if (lineCurrent > 0)
-		levelCurrent = styler.LevelAt(lineCurrent-1) >> 16;
-	unsigned int lineStartNext = styler.LineStart(lineCurrent+1);
-	int levelMinCurrent = levelCurrent;
-	int levelNext = levelCurrent;
-
-	for (Sci_PositionU i = startPos; i < endPos; i++)
-	{
-		//int stylePrev = style;
-
-		char ch = chNext;
-
-		bool atEOL = i == (lineStartNext-2);
-
-		style = styleNext;
-		chNext = styler.SafeGetCharAt(i + 1);
-		styleNext = styler.StyleAt(i + 1);
-
-		if ((OnlySpaces && ch == '/' && chNext == '*'))
-			levelNext++;
-
-		else if ((OnlySpaces && ch == '*' && chNext == '/'))
-			levelNext--;
-
-		if (style == SCE_AHKL_NEUTRAL) {
-
-			if ((OnlySpaces && ch == '(') || ch == '{') {
-
-				// Measure the minimum before a '{' to allow
-				// folding on "} else {"
-				if (levelMinCurrent > levelNext)
-					levelMinCurrent = levelNext;
-
-				levelNext++;
-
-			} else if ((OnlySpaces && ch == ')') || ch == '}') {
-
-				levelNext--;
-
-			}
-
-		}
-
-		//if (!isspace(ch))
-		//	visibleChars++;
-
-		if (atEOL || (i == endPos-1)) {
-
-			int levelUse = levelCurrent;
-			int lev = levelUse | levelNext << 16;
-
-			if (levelUse < levelNext)
-				lev |= SC_FOLDLEVELHEADERFLAG;
-
-			if (lev != styler.LevelAt(lineCurrent))
-				styler.SetLevel(lineCurrent, lev);
-
-			lineCurrent++;
-			lineStartNext = styler.LineStart(lineCurrent+1);
-			levelCurrent = levelNext;
-			levelMinCurrent = levelCurrent;
-
-			if (atEOL && (i == static_cast<unsigned int>(styler.Length()-1))) 		// There is an empty line at end of file so give it same level and empty
-				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) | SC_FOLDLEVELWHITEFLAG);
-
-			//visibleChars = 0;
-			OnlySpaces = true;
-
-		}
-
-		if (!isspace(ch))
-			OnlySpaces = false;
-	}
+  Sci_PositionU endPos = startPos + lengthDoc;
+  bool bOnlySpaces = true;
+  int lineCurrent = styler.GetLine(startPos);
+  int levelCurrent = SC_FOLDLEVELBASE;
+  if (lineCurrent > 0) {
+    levelCurrent = styler.LevelAt(lineCurrent - 1) & SC_FOLDLEVELNUMBERMASK;
+  }
+  int levelNext = levelCurrent;
+  char chNext = styler[startPos];
+  int styleNext = styler.StyleAt(startPos);
+  int style = initStyle;
+  for (Sci_PositionU i = startPos; i < endPos; i++) {
+    char ch = chNext;
+    chNext = styler.SafeGetCharAt(i + 1);
+    int stylePrev = style;
+    style = styleNext;
+    styleNext = styler.StyleAt(i + 1);
+    bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+    if (foldComment && style == SCE_AHKL_COMMENTBLOCK) {
+      if (stylePrev != SCE_AHKL_COMMENTBLOCK) {
+        levelNext++;
+      }
+      else if ((styleNext != SCE_AHKL_COMMENTBLOCK) && !atEOL) {
+        // Comments don't end at end of line and the next character may be unstyled.
+        levelNext--;
+      }
+    }
+    if (ch == '(' || ch == '{') {
+      levelNext++;
+    }
+    else if (ch == ')' || ch == '}') {
+      levelNext--;
+    }
+    if (atEOL) {
+      int level = levelCurrent;
+      if (bOnlySpaces && foldCompact) {
+        // Empty line
+        level |= SC_FOLDLEVELWHITEFLAG;
+      }
+      if (!bOnlySpaces && levelNext > levelCurrent) {
+        level |= SC_FOLDLEVELHEADERFLAG;
+      }
+      if (level != styler.LevelAt(lineCurrent)) {
+        styler.SetLevel(lineCurrent, level);
+      }
+      lineCurrent++;
+      levelCurrent = levelNext;
+      bOnlySpaces = true;
+    }
+    if (!isspacechar(ch)) {
+      bOnlySpaces = false;
+    }
+  }
 
 }
 

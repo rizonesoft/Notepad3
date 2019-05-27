@@ -103,15 +103,16 @@ void  EditPrintInit();
 void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
-void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool, bool);
-void  EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool);
+int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
+void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
+void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
+void  EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
-void  EditApplyVisibleStyle(HWND hwnd);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
 
 
