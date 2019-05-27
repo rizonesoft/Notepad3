@@ -433,7 +433,7 @@ extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
 #define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences > 0)
-
+#define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
 
 //=============================================================================
 
