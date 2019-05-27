@@ -132,8 +132,8 @@ Source: {#bindir}\Release_x64_v142\minipath.exe;                    DestDir: {ap
 Source: {#bindir}\Release_x86_v142\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: Notepad3.ini;                                           DestDir: {userappdata}\Rizonesoft\Notepad3; 		Flags: onlyifdoesntexist uninsneveruninstall
 Source: minipath.ini;											DestDir: {userappdata}\Rizonesoft\Notepad3; 		Flags: onlyifdoesntexist uninsneveruninstall
-Source: Themes\Dark Theme.ini;									DestDir: {userappdata}\Rizonesoft\Notepad3\Themes; 	Flags: onlyifdoesntexist uninsneveruninstall
-Source: Themes\Obsidian.ini;									DestDir: {userappdata}\Rizonesoft\Notepad3\Themes; 	Flags: onlyifdoesntexist uninsneveruninstall
+Source: themes\Dark Theme.ini;									DestDir: {userappdata}\Rizonesoft\Notepad3\themes; 	Flags: onlyifdoesntexist uninsneveruninstall
+Source: themes\Obsidian.ini;									DestDir: {userappdata}\Rizonesoft\Notepad3\themes; 	Flags: onlyifdoesntexist uninsneveruninstall
 Source: {#bindir}\Release_x64_v142\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\np3lng.dll;                  DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
@@ -141,7 +141,7 @@ Source: {#bindir}\Release_x86_v142\lng\np3lng.dll;                  DestDir: {ap
 Source: {#bindir}\Release_x64_v142\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\af-ZA\np3lng.dll.mui;        DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v142\lng\af-ZA\np3lng.dll.mui;	DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\af-ZA\np3lng.dll.mui;		DestDir: {app}\lng\af-ZA;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\be-BY\mplng.dll.mui;         DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\be-BY\mplng.dll.mui;         DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\be-BY\np3lng.dll.mui;        DestDir: {app}\lng\be-BY;                   Flags: ignoreversion;                         Check: Is64BitInstallMode()
@@ -181,6 +181,7 @@ Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {ap
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
+Name: "{userappdata}\Rizonesoft\Notepad3\themes"
 
 [Icons]
 Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
