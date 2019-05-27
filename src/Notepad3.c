@@ -2078,9 +2078,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
 
     BITMAP bmp;
+    ZeroMemory(&bmp, sizeof(BITMAP));
     GetObject(hbmp, sizeof(BITMAP), &bmp);
 
-    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
+    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS)) && hbmp;
 
     if (!dimOk) {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
@@ -7591,7 +7592,7 @@ void LoadSettings()
     WCHAR tchHighDpiToolBar[32] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
     s_iToolBarTheme = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
-    s_iToolBarTheme = StrIsNotEmpty(s_tchToolbarBitmap) ? 2 : clampi(s_iToolBarTheme, -1, 1);
+    s_iToolBarTheme = clampi(s_iToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
     if (s_iToolBarTheme < 0) { // undefined: determine high DPI (higher than Full-HD)
       s_iToolBarTheme = IsFullHDOrHigher(Globals.hwndMain, ResX, ResY) ? 1 : 0;
     }
