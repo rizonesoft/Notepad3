@@ -4630,7 +4630,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 
 //=============================================================================
 //
-//  _EditSetSearchFlags()
+//  _SetSearchFlags()
 //
 static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 {
@@ -6135,7 +6135,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   bool const bWaitCursor = (Globals.iMarkOccurrencesCount > 4000) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
 
-  int searchFlags = EditAddSearchFlags(0, false, false, false,
+  int searchFlags = EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,
      Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
 
   _IGNORE_NOTIFY_CHANGE_;
