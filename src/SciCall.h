@@ -153,7 +153,6 @@ DeclareSciCallV0(LinesSplit, LINESSPLIT)
 DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
-DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
 DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, DocPos)
 DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos)
 DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line)
@@ -180,7 +179,8 @@ DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
 // Multiselections (Lines of Rectangular selection)
 DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
-DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
+DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
+DeclareSciCallV1(SetSelectionMode, SETSELECTIONMODE, int, mode)
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
 DeclareSciCallR0(GetMainSelection, GETMAINSELECTION, DocPosU)
 DeclareSciCallV1(SetMainSelection, SETMAINSELECTION, DocPosU, zoom)
@@ -194,6 +194,8 @@ DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE,
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum)
+DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
+
 
 
 // Zoom
@@ -520,8 +522,8 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
 //
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
-#define Sci_IsMultiSelection() (SciCall_GetSelections() > 1)
-#define Sci_IsMultiOrRectangleSelection() (SciCall_IsSelectionRectangle() || Sci_IsMultiSelection())
+#define Sci_IsMultiSelection() ((SciCall_GetSelections() > 1) && !SciCall_IsSelectionRectangle())
+#define Sci_IsMultiOrRectangleSelection() ((SciCall_GetSelections() > 1) || SciCall_IsSelectionRectangle())
 
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) == SciCall_LineFromPosition(SciCall_GetSelectionStart()))
 #define Sci_IsMultiLineSelection() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -  SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)

@@ -4024,15 +4024,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_BACKTAB:
-      {
-        _BEGIN_UNDO_ACTION_
+    {
+      _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-        _END_UNDO_ACTION_
-      }
-      break;
+      _END_UNDO_ACTION_
+    }
+    break;
 
     case CMD_CTRLTAB:
-      {
+    {
+      if (Sci_IsMultiLineSelection()) {
+        SciCall_SetSelectionMode(SC_SEL_STREAM);
+      }
+      else {
         _BEGIN_UNDO_ACTION_
         SciCall_SetUseTabs(true);
         SciCall_SetTabIndents(false);
@@ -4041,7 +4045,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         _END_UNDO_ACTION_
       }
-      break;
+    }
+    break;
 
     case CMD_CHECK_INDENTATION:
       {  
@@ -6675,8 +6680,9 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
       int const iModType = scn->modificationType;
       if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
         if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-          if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
+          if (!_InUndoRedoTransaction()) {
             _SaveRedoSelection(_SaveUndoSelection());
+          }
         }
         bModified = false; // not yet
       }
@@ -6730,8 +6736,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       bool bModified = true;
       if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
         if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-          if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
+          if (!_InUndoRedoTransaction()) {
             _SaveRedoSelection(_SaveUndoSelection());
+          }
         }
         bModified = false; // not yet
       }
