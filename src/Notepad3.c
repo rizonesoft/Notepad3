@@ -3040,7 +3040,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
-  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0));
+  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
@@ -4957,7 +4957,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if ((Settings.MarkOccurrences <= 0) && FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
       }
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsMarkOccurrencesEnabled());
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
       if (IsMarkOccurrencesEnabled()) {
         MarkAllOccurrences(0, true);
       }
@@ -8591,7 +8591,7 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
-  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && (Settings.MarkOccurrences > 0));
+  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
@@ -9412,25 +9412,29 @@ static int _SaveUndoSelection()
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   UndoRedoSelection_t* pSel = &sel;
 
-  pSel->selMode_undo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+  pSel->selMode_undo = SciCall_GetSelectionMode();
 
   switch (pSel->selMode_undo)
   {
-  case SC_SEL_RECTANGLE:
-  case SC_SEL_THIN:
-    pSel->anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-    pSel->curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-    if (!Settings2.DenyVirtualSpaceAccess) {
-      pSel->anchorVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-      pSel->curVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    case SC_SEL_RECTANGLE:
+    case SC_SEL_THIN:
+    {
+      pSel->anchorPos_undo = SciCall_GetRectangularSelectionAnchor();
+      pSel->curPos_undo = SciCall_GetRectangularSelectionCaret();
+      if (!Settings2.DenyVirtualSpaceAccess) {
+        pSel->anchorVS_undo = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+        pSel->curVS_undo = SciCall_GetRectangularSelectionCaretVirtualSpace();
+      }
     }
     break;
 
-  case SC_SEL_LINES:
-  case SC_SEL_STREAM:
-  default:
-    pSel->anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
-    pSel->curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+    case SC_SEL_LINES:
+    case SC_SEL_STREAM:
+    default:
+    {
+      pSel->anchorPos_undo = SciCall_GetAnchor();
+      pSel->curPos_undo = SciCall_GetCurrentPos();
+    }
     break;
   }
 
@@ -9456,25 +9460,29 @@ static void  _SaveRedoSelection(int token)
 
     if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
     {
-      pSel->selMode_redo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+      pSel->selMode_redo = SciCall_GetSelectionMode();
 
       switch (pSel->selMode_redo)
       {
-      case SC_SEL_RECTANGLE:
-      case SC_SEL_THIN:
-        pSel->anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-        pSel->curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-        if (!Settings2.DenyVirtualSpaceAccess) {
-          pSel->anchorVS_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-          pSel->curVS_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+        case SC_SEL_RECTANGLE:
+        case SC_SEL_THIN:
+        {
+          pSel->anchorPos_redo = SciCall_GetRectangularSelectionAnchor();
+          pSel->curPos_redo = SciCall_GetRectangularSelectionCaret();
+          if (!Settings2.DenyVirtualSpaceAccess) {
+            pSel->anchorVS_redo = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+            pSel->curVS_redo = SciCall_GetRectangularSelectionCaretVirtualSpace();
+          }
         }
         break;
 
-      case SC_SEL_LINES:
-      case SC_SEL_STREAM:
-      default:
-        pSel->anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
-        pSel->curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        case SC_SEL_LINES:
+        case SC_SEL_STREAM:
+        default:
+        {
+          pSel->anchorPos_redo = SciCall_GetAnchor();
+          pSel->curPos_redo = SciCall_GetCurrentPos();
+        }
         break;
       }
     }
