@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 확장자는 ';' 로 구분되어야 합니다.\r\n\
-RegEx 백 슬래시가있는 파일 이름 패턴의 끝 (\\) 정의 합니다:\r\n\
+백 슬래시(\\)를 사용하여, 파일 이름 끝 패턴 정규식을 정의:\r\n\
    \\xyz$;   => 'xyz'로 파일 이름(기본 이름+확장자) 지정.\r\n\r\n\
 스타일 형식:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
