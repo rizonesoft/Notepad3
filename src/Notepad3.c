@@ -5614,25 +5614,48 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ///~_END_UNDO_ACTION_
       break;
 
-#if 0
-    case CMD_LEFT:
-      //Sci_SendMsgV0(CHARLEFT);
-      SciCall_GotoPos(SciCall_PositionBefore(SciCall_GetCurrentPos()));
+
+    case CMD_CTRLUP:
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(LINEUPEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(LINESCROLLUP);
+      }
       break;
 
-    case CMD_RIGHT:
-      //Sci_SendMsgV0(CHARRIGHT);
-      SciCall_GotoPos(SciCall_PositionAfter(SciCall_GetCurrentPos()));
+
+    case CMD_CTRLDOWN:
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(LINEDOWNEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(LINESCROLLDOWN);
+      }
       break;
-#endif
+
 
     case CMD_CTRLLEFT:
-      Sci_SendMsgV0(WORDLEFT);
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(CHARLEFTEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(WORDLEFT);
+      }
       break;
 
 
     case CMD_CTRLRIGHT:
-      Sci_SendMsgV0(WORDRIGHT);
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(CHARRIGHTEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(WORDRIGHT);
+      }
       break;
 
 
@@ -9794,7 +9817,7 @@ bool RestoreAction(int token, DoAction doAct)
 
       int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
 
-      PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode != NP3_SEL_MULTI) ? selectionMode : SC_SEL_STREAM), 0);
+      PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
 
       switch (selectionMode)
       {
@@ -9850,7 +9873,7 @@ bool RestoreAction(int token, DoAction doAct)
 
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
-    //PostMessage(hwndedit, SCI_CANCEL, 0, 0);
+    //~PostMessage(hwndedit, SCI_CANCEL, 0, 0);
   }
   return true;
 }
