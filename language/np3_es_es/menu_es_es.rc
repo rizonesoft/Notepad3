@@ -302,7 +302,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Ajuste automático de línea\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "&Marcador de larga línea\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Marcador de línea larga\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guías de Sangría\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostrar &símbolos de ajuste\tCtrl+Shift+7",           IDM_VIEW_WORDWRAPSYMBOLS
@@ -476,7 +476,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Abrir Notepad3",                              IDM_TRAY_RESTORE
-        MENUITEM "Salir de Notepad3",                           IDM_TRAY_EXIT
+        MENUITEM "Cerrar Notepad3",                           IDM_TRAY_EXIT
     END
 END
 

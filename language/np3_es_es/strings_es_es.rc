@@ -236,7 +236,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_MUI_MENU_THEMES     "&Temas"
     IDM_THEMES_DEFAULT      "Defecto de fábrica"
-    IDM_THEMES_FILE_ITEM    "Ajustes estandar"
+    IDM_THEMES_FILE_ITEM    "Ajustes estándar"
 END
 
 STRINGTABLE
@@ -274,7 +274,7 @@ Opciones:\r\n\
 /u\tLanzar con privilegios elevados.\r\n\
 /v\tImprimir el archivo inmediatamente y salir.\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora).\r\n\
-/y\tEntorno de búsqueda CAMINO en caso de nombre de archivo relativo..\r\n\
+/y\tEntorno de búsqueda PATH en caso de nombre de archivo relativo..\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\ten el registro).\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
