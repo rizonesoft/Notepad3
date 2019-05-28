@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Lêernaam uitbreidings moet geskei word deur ;\r\n\
-A backslash (\\) defines RegEx filename patterns:\r\n\
+with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

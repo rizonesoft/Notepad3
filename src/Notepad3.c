@@ -226,15 +226,158 @@ int const g_FontQuality[4] = {
 // static method declarations
 
 // undo / redo  selections
-static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
+
+static UT_icd UndoRedoSelElement_icd = { sizeof(DocPos), NULL, NULL, NULL };
+
+static void InitUndoRedoSelection(void* elt)
+{
+  UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
+
+  if (selection != NULL) {
+    selection->selMode_undo = SC_SEL_STREAM;
+    selection->anchorPos_undo = NULL;
+    selection->curPos_undo = NULL;
+    selection->anchorVS_undo = NULL;
+    selection->curVS_undo = NULL;
+
+    selection->selMode_redo = SC_SEL_STREAM;
+    selection->anchorPos_redo = NULL;
+    selection->curPos_redo = NULL;
+    selection->anchorVS_redo = NULL;
+    selection->curVS_redo = NULL;
+  }
+}
+
+
+static void DelUndoRedoSelection(void* elt)
+{
+  UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
+
+  if (selection != NULL) {
+    if (selection->anchorPos_undo != NULL) {
+      utarray_clear(selection->anchorPos_undo);
+      utarray_free(selection->anchorPos_undo);
+      selection->anchorPos_undo = NULL;
+    }
+    if (selection->curPos_undo != NULL) {
+      utarray_clear(selection->curPos_undo);
+      utarray_free(selection->curPos_undo);
+      selection->curPos_undo = NULL;
+    }
+    if (selection->anchorVS_undo != NULL) {
+      utarray_clear(selection->anchorVS_undo);
+      utarray_free(selection->anchorVS_undo);
+      selection->anchorVS_undo = NULL;
+    }
+    if (selection->curVS_undo != NULL) {
+      utarray_clear(selection->curVS_undo);
+      utarray_free(selection->curVS_undo);
+      selection->curVS_undo = NULL;
+    }
+
+    if (selection->anchorPos_redo != NULL) {
+      utarray_clear(selection->anchorPos_redo);
+      utarray_free(selection->anchorPos_redo);
+      selection->anchorPos_redo = NULL;
+    }
+    if (selection->curPos_redo != NULL) {
+      utarray_clear(selection->curPos_redo);
+      utarray_free(selection->curPos_redo);
+      selection->curPos_redo = NULL;
+    }
+    if (selection->anchorVS_redo != NULL) {
+      utarray_clear(selection->anchorVS_redo);
+      utarray_free(selection->anchorVS_redo);
+      selection->anchorVS_redo = NULL;
+    }
+    if (selection->curVS_redo != NULL) {
+      utarray_clear(selection->curVS_redo);
+      utarray_free(selection->curVS_redo);
+      selection->curVS_redo = NULL;
+    }
+  }
+}
+
+static void CopyUndoRedoSelection(void* dst, const void* src)
+{
+  UndoRedoSelection_t* dst_sel = (UndoRedoSelection_t*)dst;
+  const UndoRedoSelection_t* src_sel = (UndoRedoSelection_t*)src;
+
+  DocPos* pPos = NULL;
+  InitUndoRedoSelection(dst);
+
+  dst_sel->selMode_undo = (src_sel) ? src_sel->selMode_undo : SC_SEL_STREAM;
+
+  utarray_new(dst_sel->anchorPos_undo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_undo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->anchorPos_undo, pPos);
+    }
+  }
+
+  utarray_new(dst_sel->curPos_undo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->curPos_undo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->curPos_undo, pPos);
+    }
+  }
+  
+  utarray_new(dst_sel->anchorVS_undo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_undo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->anchorVS_undo, pPos);
+    }
+  }
+
+  utarray_new(dst_sel->curVS_undo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->curVS_undo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->curVS_undo, pPos);
+    }
+  }
+
+
+  dst_sel->selMode_redo = (src_sel) ? src_sel->selMode_redo : SC_SEL_STREAM;
+
+  utarray_new(dst_sel->anchorPos_redo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_redo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->anchorPos_redo, pPos);
+    }
+  }
+
+  utarray_new(dst_sel->curPos_redo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->curPos_redo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->curPos_redo, pPos);
+    }
+  }
+
+  utarray_new(dst_sel->anchorVS_redo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_redo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->anchorVS_redo, pPos);
+    }
+  }
+
+  utarray_new(dst_sel->curVS_redo, &UndoRedoSelElement_icd);
+  if (src_sel) {
+    while ((pPos = (DocPos*)utarray_next(src_sel->curVS_redo, pPos)) != NULL) {
+      utarray_push_back(dst_sel->curVS_redo, pPos);
+    }
+  }
+}
+
+static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
-static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* selection);
+static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
+
+// ----------------------------------------------------------------------------
 
 static void  _DelayClearZoomCallTip(int delay);
-
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
@@ -578,7 +721,6 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
   if (hwnd) {
-
     KillTimer(hwnd, IDT_TIMER_MRKALL);
   }
 
@@ -588,6 +730,12 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   {
     DL_DELETE(MessageQueue, pmqc);
     FreeMem(pmqc);
+  }
+
+  if (UndoRedoSelectionUTArray != NULL) {
+    utarray_clear(UndoRedoSelectionUTArray);
+    utarray_free(UndoRedoSelectionUTArray);
+    UndoRedoSelectionUTArray = NULL;
   }
 
   // Save Settings is done elsewhere
@@ -1325,7 +1473,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      UpdateVisibleUrlIndics();
+      EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
       MarkAllOccurrences(0, true);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
@@ -1529,6 +1677,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
+  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
   //SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
@@ -1540,20 +1689,22 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
+  
+  SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, false, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, false, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
 
   int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS;
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, vspaceOpt, 0);
+
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
 
   SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_NONE, 0); // needed for focused view
   // Idle Styling (very large text)
   //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
-  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
 
   // assign command keys
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
@@ -1927,9 +2078,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
 
     BITMAP bmp;
+    ZeroMemory(&bmp, sizeof(BITMAP));
     GetObject(hbmp, sizeof(BITMAP), &bmp);
 
-    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
+    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS)) && hbmp;
 
     if (!dimOk) {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
@@ -2298,7 +2450,8 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SendWMSize(hwnd, rc);
 
   UpdateUI();
-  UpdateVisibleUrlIndics();
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  MarkAllOccurrences(0, true);
   UpdateAllBars(false);
   
   return 0;
@@ -2359,9 +2512,9 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   SendWMSize(hwnd, NULL);
 
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-  UpdateVisibleUrlIndics();
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
   MarkAllOccurrences(0, true);
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
   UpdateUI();
   UpdateAllBars(false);
 
@@ -3030,11 +3183,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,Settings.AccelWordNavigation);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (Settings.MarkOccurrences > 0));
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, Settings.MarkOccurrencesMatchCase);
 
-  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
+  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, IsFocusedViewAllowed());
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, FocusedView.HideNonMatchedLines);
 
   if (Settings.MarkOccurrencesMatchWholeWords) {
@@ -3049,7 +3202,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
   CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
 
-  i = (Settings.MarkOccurrences > 0);
+  i = IsMarkOccurrencesEnabled();
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
@@ -3149,7 +3302,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
 
   UpdateSettingsCmds();
-
+  
   return FALSE;
 }
 
@@ -3561,7 +3714,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        UpdateVisibleUrlIndics();
         UpdateStatusbar(false);
       }
       break;
@@ -3872,15 +4024,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_BACKTAB:
-      {
-        _BEGIN_UNDO_ACTION_
+    {
+      _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-        _END_UNDO_ACTION_
-      }
-      break;
+      _END_UNDO_ACTION_
+    }
+    break;
 
     case CMD_CTRLTAB:
-      {
+    {
+      if (Sci_IsMultiLineSelection()) {
+        SciCall_SetSelectionMode(SC_SEL_STREAM);
+      }
+      else {
         _BEGIN_UNDO_ACTION_
         SciCall_SetUseTabs(true);
         SciCall_SetTabIndents(false);
@@ -3889,7 +4045,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         _END_UNDO_ACTION_
       }
-      break;
+    }
+    break;
 
     case CMD_CHECK_INDENTATION:
       {  
@@ -4949,20 +5106,28 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       Settings.MarkOccurrences = (Settings.MarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
-      MarkAllOccurrences(0, true);
+      if ((Settings.MarkOccurrences <= 0) && FocusedView.HideNonMatchedLines) {
+        EditToggleView(Globals.hwndEdit);
+      }
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, IsMarkOccurrencesEnabled());
+      if (IsMarkOccurrencesEnabled()) {
+        MarkAllOccurrences(0, true);
+      }
+      else {
+        EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+        Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
+      }
+      UpdateToolbar();
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       Settings.MarkOccurrencesMatchVisible = !Settings.MarkOccurrencesMatchVisible;
       MarkAllOccurrences(0, true);
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
       if (FocusedView.HideNonMatchedLines) {
         EditToggleView(Globals.hwndEdit);
-        UpdateVisibleUrlIndics();
         MarkAllOccurrences(0, true);
       }
       else {
@@ -5047,7 +5212,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      UpdateVisibleUrlIndics();
+      EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -5449,25 +5614,48 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ///~_END_UNDO_ACTION_
       break;
 
-#if 0
-    case CMD_LEFT:
-      //Sci_SendMsgV0(CHARLEFT);
-      SciCall_GotoPos(SciCall_PositionBefore(SciCall_GetCurrentPos()));
+
+    case CMD_CTRLUP:
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(LINEUPEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(LINESCROLLUP);
+      }
       break;
 
-    case CMD_RIGHT:
-      //Sci_SendMsgV0(CHARRIGHT);
-      SciCall_GotoPos(SciCall_PositionAfter(SciCall_GetCurrentPos()));
+
+    case CMD_CTRLDOWN:
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(LINEDOWNEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(LINESCROLLDOWN);
+      }
       break;
-#endif
+
 
     case CMD_CTRLLEFT:
-      Sci_SendMsgV0(WORDLEFT);
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(CHARLEFTEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(WORDLEFT);
+      }
       break;
 
 
     case CMD_CTRLRIGHT:
-      Sci_SendMsgV0(WORDRIGHT);
+      if (Sci_IsMultiSelection())
+      {
+        Sci_SendMsgV0(CHARRIGHTEXTEND);
+      }
+      else {
+        Sci_SendMsgV0(WORDRIGHT);
+      }
       break;
 
 
@@ -6499,6 +6687,294 @@ static bool  _IsIMEOpenInNoNativeMode()
 }
 #endif
 
+
+//=============================================================================
+//
+//  MsgNotifyLean() - Handles WM_NOTIFY (only absolute neccessary events)
+//
+//  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
+//
+inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* const scn)
+{
+  // --- check only mandatory events (must be fast !!!) ---
+  if (pnmh->idFrom == IDC_EDIT) {
+    if (pnmh->code == SCN_MODIFIED) {
+      bool bModified = true;
+      int const iModType = scn->modificationType;
+      if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+          if (!_InUndoRedoTransaction()) {
+            _SaveRedoSelection(_SaveUndoSelection());
+          }
+        }
+        bModified = false; // not yet
+      }
+      // check for ADDUNDOACTION step
+      if (iModType & SC_MOD_CONTAINER)
+      {
+        if (iModType & SC_PERFORMED_UNDO) {
+          RestoreAction(scn->token, UNDO);
+        }
+        else if (iModType & SC_PERFORMED_REDO) {
+          RestoreAction(scn->token, REDO);
+        }
+      }
+      if (bModified) { _SetSaveNeededFlag(true); }
+    }
+    else if (pnmh->code == SCN_SAVEPOINTREACHED) {
+      _SetSaveNeededFlag(false);
+    }
+    else if (pnmh->code == SCN_SAVEPOINTLEFT) {
+      _SetSaveNeededFlag(true);
+    }
+    else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
+      if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+    }
+  }
+  return TRUE;
+}
+
+
+//=============================================================================
+//
+//  _MsgNotifyFromEdit() - Handles WM_NOTIFY (only absolute neccessary events)
+//
+//  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
+//
+static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
+{
+  static int _s_indic_click_modifiers = 0;
+
+  switch (pnmh->code)
+  {
+    case SCN_HOTSPOTCLICK:
+    case SCN_HOTSPOTDOUBLECLICK:
+    case SCN_HOTSPOTRELEASECLICK:
+    case SCN_CALLTIPCLICK:
+      return 0;
+
+    case SCN_MODIFIED:
+    {
+      int const iModType = scn->modificationType;
+      bool bModified = true;
+      if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+          if (!_InUndoRedoTransaction()) {
+            _SaveRedoSelection(_SaveUndoSelection());
+          }
+        }
+        bModified = false; // not yet
+      }
+      if (iModType & SC_MOD_CONTAINER) {
+        if (iModType & SC_PERFORMED_UNDO) {
+          bModified = RestoreAction(scn->token, UNDO);
+        }
+        else if (iModType & SC_PERFORMED_REDO) {
+          bModified = RestoreAction(scn->token, REDO);
+        }
+      }
+      if (bModified) {
+        if (IsMarkOccurrencesEnabled()) {
+          MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+        }
+        if (Settings.HyperlinkHotspot) {
+          UpdateVisibleUrlIndics();
+        }
+        if (scn->linesAdded != 0) {
+          UpdateMarginWidth();
+        }
+        _SetSaveNeededFlag(true);
+      }
+    }
+    break;
+
+    case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+    {
+      EditFinalizeStyling(Globals.hwndEdit, scn->position);
+    }
+    break;
+
+    case SCN_UPDATEUI:
+    {
+      int const iUpd = scn->updated;
+      //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
+      //  // special case
+      //}
+      //else
+
+      if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
+      {
+        // Brace Match
+        if (Settings.MatchBraces) {
+          EditMatchBrace(Globals.hwndEdit);
+        }
+        if (IsMarkOccurrencesEnabled()) {
+          // clear marks only, if selection changed
+          if (iUpd & SC_UPDATE_SELECTION)
+          {
+            if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
+              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
+            }
+            else {
+              EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+            }
+          }
+          else if (iUpd & SC_UPDATE_CONTENT) {
+            // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+            // using WM_COMMAND -> SCEN_CHANGE  instead!
+            //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+            //~~~UpdateVisibleUrlIndics();
+          }
+        }
+        UpdateToolbar();
+        UpdateStatusbar(false);
+      }
+      else if (iUpd & SC_UPDATE_V_SCROLL)
+      {
+        if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
+          MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
+        }
+      }
+
+      if (Settings.HyperlinkHotspot) {
+        UpdateVisibleUrlIndics();
+      }
+    }
+    break;
+
+    case SCN_DWELLSTART:
+    case SCN_DWELLEND:
+    {
+      HandleDWellStartEnd(scn->position, pnmh->code);
+    }
+    break;
+
+    case SCN_INDICATORCLICK:
+    {
+      _s_indic_click_modifiers = scn->modifiers;
+    }
+    break;
+
+    case SCN_INDICATORRELEASE:
+    {
+      if (_s_indic_click_modifiers & SCMOD_CTRL) {
+        // open in browser
+        HandleHotSpotURL(scn->position, OPEN_WITH_BROWSER);
+      }
+      else if (_s_indic_click_modifiers & SCMOD_ALT) {
+        // open in application, if applicable (file://)
+        HandleHotSpotURL(scn->position, OPEN_WITH_NOTEPAD3);
+      }
+      _s_indic_click_modifiers = 0;
+    }
+    break;
+
+    case SCN_CHARADDED:
+    {
+      int const ich = scn->ch;
+
+      if (Globals.CallTipType != CT_NONE) {
+        CancelCallTip();
+      }
+
+      switch (ich) {
+        case '\r':
+        case '\n':
+          if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
+          break;
+        case '>':
+          if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
+          break;
+        case '?':
+          _HandleTinyExpr();
+          break;
+        default:
+          break;
+      }
+
+      if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+      {
+        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+      }
+    }
+    break;
+
+    case SCN_AUTOCCHARDELETED:
+      if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
+      {
+        if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+      }
+      break;
+
+    case SCN_NEEDSHOWN:
+    {
+      DocLn const iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
+      DocLn const iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
+      for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+      UpdateVisibleUrlIndics();
+    }
+    break;
+
+    case SCN_MARGINCLICK:
+      if (scn->margin == MARGIN_SCI_FOLDING) {
+        EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
+      }
+      break;
+
+      // ~~~ Not used in Windows ~~~
+      // see: CMD_ALTUP / CMD_ALTDOWN
+      //case SCN_KEY:
+      //  // Also see the corresponding patch in scintilla\src\Editor.cxx
+      //  FoldAltArrow(scn->ch, scn->modifiers);
+      //  break;
+
+
+    case SCN_SAVEPOINTREACHED:
+      _SetSaveNeededFlag(false);
+      break;
+
+
+    case SCN_SAVEPOINTLEFT:
+      _SetSaveNeededFlag(true);
+      break;
+
+
+    case SCN_ZOOM:
+      UpdateMarginWidth();
+      break;
+
+    case SCN_URIDROPPED:
+    {
+      // see WM_DROPFILES
+      WCHAR szBuf[MAX_PATH + 40];
+      if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
+      {
+        if (IsIconic(hwnd)) {
+          ShowWindow(hwnd, SW_RESTORE);
+        }
+        //SetForegroundWindow(hwnd);
+        if (PathIsDirectory(szBuf)) {
+          WCHAR tchFile[MAX_PATH];
+          if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
+            FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+          }
+        }
+        else if (PathFileExists(szBuf)) {
+          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+        }
+      }
+    }
+    break;
+
+    default:
+      return 0;
+  }
+  return -1LL;
+}
+
+
+
+
 //=============================================================================
 //
 //  MsgNotify() - Handles WM_NOTIFY
@@ -6512,279 +6988,18 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
 
-  LPNMHDR pnmh = (LPNMHDR)lParam;
-  struct SCNotification* scn = (struct SCNotification*)lParam;
+  LPNMHDR const pnmh = (LPNMHDR)lParam;
+  const SCNotification* const scn = (SCNotification*)lParam;
 
   if (!CheckNotifyChangeEvent()) 
   {
-    // --- check only mandatory events (must be fast !!!) ---
-    if (pnmh->idFrom == IDC_EDIT) {
-      if (pnmh->code == SCN_MODIFIED) {
-        bool bModified = true;
-        int const iModType = scn->modificationType;
-        if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-          if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-            if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
-              _SaveRedoSelection(_SaveUndoSelection());
-          }
-          bModified = false; // not yet
-        }
-        // check for ADDUNDOACTION step
-        if (iModType & SC_MOD_CONTAINER)
-        {
-          if (iModType & SC_PERFORMED_UNDO) {
-            RestoreAction(scn->token, UNDO);
-          }
-          else if (iModType & SC_PERFORMED_REDO) {
-            RestoreAction(scn->token, REDO);
-          }
-        }
-        if (bModified) { _SetSaveNeededFlag(true); }
-      }
-      else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-        _SetSaveNeededFlag(false);
-      }
-      else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-        _SetSaveNeededFlag(true);
-      }
-      else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
-        if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-      }
-    }
-    return TRUE;
+    return _MsgNotifyLean(pnmh, scn);
   }
-
-  // --- check ALL events ---
 
   switch(pnmh->idFrom)
   {
-    static int _s_indic_click_modifiers = 0;
-
     case IDC_EDIT:
-      switch (pnmh->code)
-      {
-        case SCN_HOTSPOTCLICK:
-        case SCN_HOTSPOTDOUBLECLICK:
-        case SCN_HOTSPOTRELEASECLICK:
-        case SCN_CALLTIPCLICK:
-          return FALSE;
-
-        case SCN_MODIFIED:
-        {
-          int const iModType = scn->modificationType;
-          bool bModified = true;
-          if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-              if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
-                _SaveRedoSelection(_SaveUndoSelection());
-            }
-            bModified = false; // not yet
-          }
-          if (iModType & SC_MOD_CONTAINER) {
-            if (iModType & SC_PERFORMED_UNDO) {
-              RestoreAction(scn->token, UNDO);
-            }
-            else if (iModType & SC_PERFORMED_REDO) {
-              RestoreAction(scn->token, REDO);
-            }
-          }
-          if (bModified) {
-            if (IsMarkOccurrencesEnabled()) {
-              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-            }
-            if (Settings.HyperlinkHotspot) {
-              UpdateVisibleUrlIndics();
-            }
-            if (scn->linesAdded != 0) {
-              UpdateMarginWidth();
-            }
-            _SetSaveNeededFlag(true);
-          }
-        }
-        break;
-
-        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-        {
-          EditFinalizeStyling(Globals.hwndEdit, scn->position);
-        }
-        break;
-
-        case SCN_UPDATEUI:
-        {
-          int const iUpd = scn->updated;
-          //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
-          //  // special case
-          //}
-          //else
-
-          if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
-          {
-            // Brace Match
-            if (Settings.MatchBraces) {
-              EditMatchBrace(Globals.hwndEdit);
-            }
-            if (IsMarkOccurrencesEnabled()) {
-              // clear marks only, if selection changed
-              if (iUpd & SC_UPDATE_SELECTION)
-              {
-                if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
-                  MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
-                }
-                else {
-                  EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-                }
-              }
-              else if (iUpd & SC_UPDATE_CONTENT) {
-                // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-                // using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-                //~~~UpdateVisibleUrlIndics();
-              }
-            }
-            UpdateToolbar();
-            UpdateStatusbar(false);
-          }
-          else if (iUpd & SC_UPDATE_V_SCROLL)
-          {
-            if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
-              MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
-            }
-          }
-          if (Settings.HyperlinkHotspot) {
-            UpdateVisibleUrlIndics();
-          }
-        }
-        break;
-
-        case SCN_DWELLSTART:
-        case SCN_DWELLEND:
-        {
-          HandleDWellStartEnd(scn->position, pnmh->code);
-        }
-        break;
-
-        case SCN_INDICATORCLICK:
-        {
-          _s_indic_click_modifiers = scn->modifiers;
-        }
-        break;
-
-        case SCN_INDICATORRELEASE:
-        {
-          if (_s_indic_click_modifiers & SCMOD_CTRL) {
-            // open in browser
-            HandleHotSpotURL(scn->position, OPEN_WITH_BROWSER);
-          }
-          else if (_s_indic_click_modifiers & SCMOD_ALT) {
-            // open in application, if applicable (file://)
-            HandleHotSpotURL(scn->position, OPEN_WITH_NOTEPAD3);
-          }
-          _s_indic_click_modifiers = 0;
-        }
-        break;
-
-        case SCN_CHARADDED:
-        {
-          int const ich = scn->ch;
-
-          if (Globals.CallTipType != CT_NONE) {
-            CancelCallTip();
-          }
-
-          switch (ich) {
-            case '\r':
-            case '\n':
-              if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
-              break;
-            case '>':
-              if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
-              break;
-            case '?':
-              _HandleTinyExpr();
-              break;
-            default:
-              break;
-          }
-
-          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
-          {
-            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
-          }
-        }
-        break;
-
-        case SCN_AUTOCCHARDELETED:
-          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
-          {
-            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
-          }
-          break;
-
-        case SCN_NEEDSHOWN:
-        {
-          DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
-          DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
-          for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-        }
-        break;
-
-
-        case SCN_MARGINCLICK:
-          if (scn->margin == MARGIN_SCI_FOLDING) {
-            EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
-          }
-          break;
-
-
-          // ~~~ Not used in Windows ~~~
-          // see: CMD_ALTUP / CMD_ALTDOWN
-          //case SCN_KEY:
-          //  // Also see the corresponding patch in scintilla\src\Editor.cxx
-          //  FoldAltArrow(scn->ch, scn->modifiers);
-          //  break;
-
-
-        case SCN_SAVEPOINTREACHED:
-          _SetSaveNeededFlag(false);
-          break;
-
-
-        case SCN_SAVEPOINTLEFT:
-          _SetSaveNeededFlag(true);
-          break;
-
-
-        case SCN_ZOOM:
-          UpdateMarginWidth();
-          break;
-
-        case SCN_URIDROPPED:
-        {
-          // see WM_DROPFILES
-          WCHAR szBuf[MAX_PATH + 40];
-          if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
-          {
-            if (IsIconic(hwnd)) {
-              ShowWindow(hwnd, SW_RESTORE);
-            }
-            //SetForegroundWindow(hwnd);
-            if (PathIsDirectory(szBuf)) {
-              WCHAR tchFile[MAX_PATH];
-              if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
-              }
-            }
-            else if (PathFileExists(szBuf)) {
-              FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
-            }
-          }
-        }
-        break;
-
-        default:
-          return FALSE;
-      }
-      return -1LL;
+      return _MsgNotifyFromEdit(hwnd, pnmh, scn);
 
     // ------------------------------------------------------------------------
 
@@ -6926,13 +7141,16 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     default:
       switch(pnmh->code)
       {
+        // ToolTip
         case TTN_NEEDTEXT:
           {
             if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
             {
-              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
+              WCHAR tch[SMALL_BUFFER] = { L'\0' };
               GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
-              StringCchCopyN(((LPTOOLTIPTEXT)lParam)->szText,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),tch,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText));
+              WCHAR* pttText = ((LPTOOLTIPTEXT)lParam)->szText;
+              size_t const ttLen = COUNTOF(((LPTOOLTIPTEXT)lParam)->szText);
+              StringCchCopyN(pttText, ttLen, tch,COUNTOF(tch));
             }
           }
           break;
@@ -7404,7 +7622,7 @@ void LoadSettings()
     WCHAR tchHighDpiToolBar[32] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
     s_iToolBarTheme = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
-    s_iToolBarTheme = StrIsNotEmpty(s_tchToolbarBitmap) ? 2 : clampi(s_iToolBarTheme, -1, 1);
+    s_iToolBarTheme = clampi(s_iToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
     if (s_iToolBarTheme < 0) { // undefined: determine high DPI (higher than Full-HD)
       s_iToolBarTheme = IsFullHDOrHigher(Globals.hwndMain, ResX, ResY) ? 1 : 0;
     }
@@ -8541,7 +8759,6 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(IDT_FILE_LAUNCH, b2);
 
-
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
   //EnableTool(IDT_EDIT_FINDPREV,b2 && StringCchLenA(Settings.EFR_Data.szFind,0));
@@ -8553,7 +8770,7 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
-  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible));
+  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
@@ -8716,10 +8933,10 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
 
 //=============================================================================
 //
-//  _InterpRectSelTinyExpr()
+//  _InterpMultiSelectionTinyExpr()
 //
 //
-static double  _InterpRectSelTinyExpr(int* piExprError)
+static double  _InterpMultiSelectionTinyExpr(int* piExprError)
 {
   #define _tmpBufCnt 128
   char tmpRectSelN[_tmpBufCnt] = { '\0' };
@@ -8781,7 +8998,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   DocPos const iSelEnd           = SciCall_GetSelectionEnd();
 
   bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
-  bool const   bIsSelCountable   = !(bIsSelectionEmpty || SciCall_IsSelectionRectangle());
+  bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
 
   bool bIsUpdateNeeded = bForceRedraw;
 
@@ -8889,10 +9106,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     static DocPos s_iSelStart = -1;
     static DocPos s_iSelEnd = -1;
 
-    if (bForceRedraw || ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)))
+    if (bForceRedraw || ((s_bIsSelCountable != bIsSelCharCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)))
     {
       static WCHAR tchSelB[64] = { L'\0' };
-      if (bIsSelCountable)
+      if (bIsSelCharCountable)
       {
         const DocPos iSel = (DocPos)SendMessage(Globals.hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
         StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
@@ -8909,7 +9126,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
         s_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, s_mxSBPostfix[STATUS_SELCTBYTES]);
 
-      s_bIsSelCountable = bIsSelCountable;
+      s_bIsSelCountable = bIsSelCharCountable;
       s_iSelStart = iSelStart;
       s_iSelEnd = iSelEnd;
       bIsUpdateNeeded = true;
@@ -8961,7 +9178,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     tchExpression[1] = L'-';
     tchExpression[2] = L'\0';
 
-    if (bIsSelCountable)
+    if (bIsSelCharCountable)
     {
       DocPos const iSelSize = SciCall_GetSelText(NULL);
       if (iSelSize < 2048) // should be fast !
@@ -8979,9 +9196,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         s_iExprError = -1;
       }
     }
-    else if (SciCall_IsSelectionRectangle() && !bIsSelectionEmpty)
+    else if (Sci_IsMultiOrRectangleSelection() && !bIsSelectionEmpty)
     {
-      s_dExpression = _InterpRectSelTinyExpr(&s_iExprError);
+      s_dExpression = _InterpMultiSelectionTinyExpr(&s_iExprError);
     }
     else
       s_iExprError = -2;
@@ -9371,35 +9588,82 @@ void UndoRedoRecordingStop()
 //
 static int _SaveUndoSelection()
 {
-  UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
-  sel.selMode_undo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+  static DocPosU _s_iSelection = 0;           // index
 
-  switch (sel.selMode_undo)
+  UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
+  CopyUndoRedoSelection(&sel, NULL); // init
+  UndoRedoSelection_t* pSel = &sel;
+
+  DocPosU const numOfSel = SciCall_GetSelections();
+
+  // each single selection of a multi-selection will call thid method
+  // we are only interested in the first call
+  if (0 == _s_iSelection) {
+    _s_iSelection = numOfSel;
+  }
+  if ((numOfSel-1) != --_s_iSelection) {
+    return -1;
+  }
+
+  int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
+
+  pSel->selMode_undo = selMode;
+
+  switch (selMode)
   {
-  case SC_SEL_RECTANGLE:
-  case SC_SEL_THIN:
-    sel.anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-    sel.curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-    if (!Settings2.DenyVirtualSpaceAccess) {
-      sel.anchorVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-      sel.curVS_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    case NP3_SEL_MULTI:
+    {
+      for (DocPosU i = 0; i < numOfSel; ++i) {
+        DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+        utarray_push_back(pSel->anchorPos_undo, &anchorPos);
+        DocPos const curPos = SciCall_GetSelectionNCaret(i);
+        utarray_push_back(pSel->curPos_undo, &curPos);
+        if (!Settings2.DenyVirtualSpaceAccess) {
+          DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
+          utarray_push_back(pSel->anchorVS_undo, &anchorVS);
+          DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
+          utarray_push_back(pSel->curVS_undo, &curVS);
+        }
+      }
     }
     break;
 
-  case SC_SEL_LINES:
-  case SC_SEL_STREAM:
-  default:
-    sel.anchorPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
-    sel.curPos_undo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+    case SC_SEL_RECTANGLE:
+    case SC_SEL_THIN:
+    {
+      DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
+      utarray_push_back(pSel->anchorPos_undo, &anchorPos);
+      DocPos const curPos = SciCall_GetRectangularSelectionCaret();
+      utarray_push_back(pSel->curPos_undo, &curPos);
+      if (!Settings2.DenyVirtualSpaceAccess) {
+        DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+        utarray_push_back(pSel->anchorVS_undo, &anchorVS);
+        DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
+        utarray_push_back(pSel->curVS_undo, &curVS);
+      }
+    }
+    break;
+
+    case SC_SEL_LINES:
+    case SC_SEL_STREAM:
+    default:
+    {
+      DocPos const anchorPos = SciCall_GetAnchor();
+      utarray_push_back(pSel->anchorPos_undo, &anchorPos);
+      DocPos const curPos = SciCall_GetCurrentPos();
+      utarray_push_back(pSel->curPos_undo, &curPos);
+      DocPos const dummy = (DocPos)-1;
+      utarray_push_back(pSel->anchorVS_undo, &dummy);
+      utarray_push_back(pSel->curVS_undo, &dummy);
+    }
     break;
   }
 
-  int const token = _UndoRedoActionMap(-1, &sel);
+  int const token = _UndoRedoActionMap(-1, &pSel);
 
   if (token >= 0) {
     SciCall_AddUndoAction(token, 0);
   }
-  
   return token;
 }
 
@@ -9411,33 +9675,74 @@ static int _SaveUndoSelection()
 //
 static void  _SaveRedoSelection(int token)
 {
-  if (token >= 0) {
-    UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
+  static DocPosU _s_iSelection = 0;  // index
 
-    if (_UndoRedoActionMap(token, &sel) >= 0)
+  if (token < 0) { return; }
+
+  UndoRedoSelection_t* pSel = NULL;
+
+  DocPosU const numOfSel = SciCall_GetSelections();
+
+  // each single selection of a multi-selection will call this method
+  // we are only interested in the last call
+  if (0 == _s_iSelection) {
+    _s_iSelection = numOfSel;
+  }
+  if (0 != --_s_iSelection) {
+    return;
+  }
+
+  if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
+  {
+    int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
+    
+    pSel->selMode_redo = selMode;
+
+    switch (selMode)
     {
-      sel.selMode_redo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
-
-      switch (sel.selMode_redo)
+      case NP3_SEL_MULTI:
       {
+        for (DocPosU i = 0; i < numOfSel; ++i) {
+          DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+          utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+          DocPos const curPos = SciCall_GetSelectionNCaret(i);
+          utarray_push_back(pSel->curPos_redo, &curPos);
+          if (!Settings2.DenyVirtualSpaceAccess) {
+            DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
+            utarray_push_back(pSel->anchorVS_redo, &anchorVS);
+            DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
+            utarray_push_back(pSel->curVS_redo, &curVS);
+          }
+        }
+      }
+      break;
+
       case SC_SEL_RECTANGLE:
       case SC_SEL_THIN:
-        sel.anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-        sel.curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+      {
+        DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
+        utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+        DocPos const curPos = SciCall_GetRectangularSelectionCaret();
+        utarray_push_back(pSel->curPos_redo, &curPos);
         if (!Settings2.DenyVirtualSpaceAccess) {
-          sel.anchorVS_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+          DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+          utarray_push_back(pSel->anchorVS_redo, &anchorVS);
+          DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
+          utarray_push_back(pSel->curVS_redo, &curVS);
         }
-        break;
+      }
+      break;
 
       case SC_SEL_LINES:
       case SC_SEL_STREAM:
       default:
-        sel.anchorPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETANCHOR, 0, 0);
-        sel.curPos_redo = (DocPos)SendMessage(Globals.hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-        break;
+      {
+        DocPos const anchorPos = SciCall_GetAnchor();
+        utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+        DocPos const curPos = SciCall_GetCurrentPos();
+        utarray_push_back(pSel->curPos_redo, &curPos);
       }
-
-      _UndoRedoActionMap(token, &sel); // set with redo action filled
+      break;
     }
   }
 }
@@ -9481,75 +9786,107 @@ void EndUndoAction(int token)
 //  RestoreAction()
 //
 //
-void RestoreAction(int token, DoAction doAct)
+bool RestoreAction(int token, DoAction doAct)
 {
-  if (_InUndoRedoTransaction()) { return; }
+  if (_InUndoRedoTransaction()) { return false; }
 
-  UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
+  UndoRedoSelection_t* pSel = NULL;
 
-  if (_UndoRedoActionMap(token, &sel) >= 0)
+  if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL))
   {
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     HWND const hwndedit = Globals.hwndEdit;
 
-    DocPos const _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
-    DocPos const _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
+    DocPos* pPosAnchor = NULL;
+    DocPos* pPosCur = NULL;
+    DocPos* pPosAnchorVS = NULL;
+    DocPos* pPosCurVS = NULL;
+    pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
+    pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
+    pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
+    pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
 
-    // Ensure that the first and last lines of a selection are always unfolded
-    // This needs to be done _before_ the SCI_SETSEL message
-    DocLn const anchorPosLine = SciCall_LineFromPosition(_anchorPos);
-    DocLn const currPosLine = SciCall_LineFromPosition(_curPos);
-    PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
-    if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
+    if (pPosAnchor && pPosCur) {
+      // Ensure that the first and last lines of a selection are always unfolded
+      // This needs to be done _before_ the SCI_SETSEL message
+      DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
+      DocLn const currPosLine = SciCall_LineFromPosition((*pPosCur));
+      PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+      if (anchorPosLine != currPosLine) { PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
 
-    int const selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
-    PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
+      int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
 
-    // independent from selection mode
-    PostMessage(hwndedit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
-    PostMessage(hwndedit, SCI_SETCURRENTPOS, (WPARAM)_curPos, 0);
+      PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
 
-    switch (selectionMode)
-    {
-    case SC_SEL_RECTANGLE: 
-      PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)_anchorPos, 0);
-      PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)_curPos, 0);
-      // fall-through
-
-    case SC_SEL_THIN:
+      switch (selectionMode)
       {
-        DocPos const anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
-        DocPos const currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
-        if ((anchorVS != 0) || (currVS != 0)) {
-          PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
-          PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
+        case NP3_SEL_MULTI:
+        {
+          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+          if (pPosAnchorVS && pPosCurVS) {
+            PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
+            PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
+          }
+          
+          DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
+          DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
+          
+          unsigned int i = 1;
+          while (i < selCount)
+          {
+            pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
+            pPosCur = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curPos_undo, i) : utarray_eltptr(pSel->curPos_redo, i));
+            if (pPosAnchor && pPosCur) {
+              PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+              if (i < selCountVS) {
+                pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorVS_undo, i) : utarray_eltptr(pSel->anchorVS_redo, i));
+                pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curVS_undo, i) : utarray_eltptr(pSel->curVS_redo, i));
+                if (pPosAnchorVS && pPosCurVS) {
+                  PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosAnchorVS));
+                  PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosCurVS));
+                }
+              }
+            }
+            ++i;
+          }
         }
-      }
-      break;
+        break;
 
-    case SC_SEL_LINES:
-    case SC_SEL_STREAM:
-    default:
-      // nothing to do here
-      break;
+        case SC_SEL_RECTANGLE:
+        case SC_SEL_THIN:
+          PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)(*pPosAnchor), 0);
+          PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)(*pPosCur), 0);
+          if (pPosAnchorVS && pPosCurVS) {
+            PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
+            PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
+          }
+          break;
+
+        case SC_SEL_LINES:
+        case SC_SEL_STREAM:
+        default:
+          PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+          break;
+      }
     }
+
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
-    PostMessage(hwndedit, SCI_CANCEL, 0, 0);
-
+    //~PostMessage(hwndedit, SCI_CANCEL, 0, 0);
   }
+  return true;
 }
 
 
 //=============================================================================
 //
-//  _UndoSelectionMap()
+//  _UndoRedoActionMap()
 //
 //
-static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
+static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
 {
-  if (UndoRedoSelectionUTArray == NULL)  { return -1; }
+  if (UndoRedoSelectionUTArray == NULL) { return -1; };
 
   static unsigned int uiTokenCnt = 0U;
 
@@ -9572,20 +9909,21 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
   // get or set map item request ?
   if ((token >= 0) && (utoken < uiTokenCnt)) 
   {
-    if (selection->anchorPos_undo < 0) {
+    if ((*selection) == NULL) {
       // this is a get request
-      *selection = *(UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
+      (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
     }
     else {
       // this is a set request (fill redo pos)
-      utarray_insert(UndoRedoSelectionUTArray, (void*)selection, utoken);
+      assert(false); // not used yet
+      //utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
     }
     // don't clear map item here (token used in redo/undo again)
   }
   else if (token < 0) {
     // set map new item request
     token = (int)uiTokenCnt;
-    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, uiTokenCnt);
+    utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), uiTokenCnt);
     uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
   }
   return token;
@@ -9886,7 +10224,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     _SetSaveNeededFlag(bReload);
-    UpdateVisibleUrlIndics();
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)

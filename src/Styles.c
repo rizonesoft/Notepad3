@@ -1125,11 +1125,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true)) { // selection alpha
     SendMessage(hwnd, SCI_SETSELALPHA, iValue, 0);
-    SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, iValue, 0);
+    SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, iValue*2/3, 0);
   }
   else {
     SendMessage(hwnd, SCI_SETSELALPHA, SC_ALPHA_NOALPHA, 0);
-    SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_NOALPHA, 0);
+    SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_NOALPHA*2/3, 0);
   }
 
   if (_IsItemInStyleString(pCurrentStandard->Styles[STY_SEL_TXT].szValue, L"eolfilled")) // selection eolfilled
@@ -1426,8 +1426,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
+  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
-  UpdateVisibleUrlIndics();
+
   UpdateAllBars(false);
 }
 

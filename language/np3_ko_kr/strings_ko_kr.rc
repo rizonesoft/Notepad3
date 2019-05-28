@@ -89,7 +89,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "문서 실행"
     IDT_VIEW_TOGGLE_VIEW     "집중"
-    IDT_VIEW_CHASING_DOCTAIL "&Monitoring Log"
+    IDT_VIEW_CHASING_DOCTAIL "열람(&M)"
     IDT_VIEW_PIN_ON_TOP      "항상 위에"
 END
 
@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
     IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
     IDS_MUI_DROP_NO_FILE     "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click 파일 열기."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click 브라우저에서 링크 열기."
 END
 
 STRINGTABLE
@@ -285,8 +285,8 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 확장자는 ';' 로 구분되어야 합니다.\r\n\
-A backslash (\\) defines RegEx filename patterns:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+백 슬래시(\\)를 사용하여, 파일 이름 끝 패턴 정규식을 정의:\r\n\
+   \\xyz$;   => 'xyz'로 파일 이름(기본 이름+확장자) 지정.\r\n\r\n\
 스타일 형식:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
