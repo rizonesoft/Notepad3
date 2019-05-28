@@ -267,7 +267,7 @@ BEGIN
             MENUITEM "Kijelölés az &elozoig\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
         END
         MENUITEM SEPARATOR
-        POPUP "Köny&vjelzok"
+        POPUP "Köny&vjelzõk"
         BEGIN
             MENUITEM "&Váltás\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
@@ -390,7 +390,7 @@ BEGIN
             MENUITEM "Notepad&3 elrejtése",          IDM_VIEW_ESCMINIMIZE
             MENUITEM "Kilé&pés a Notepad3-ból",      IDM_VIEW_ESCEXIT
         END
-        MENUITEM "Eszközök &futtatása elott mentés", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Eszközök &futtatása elõtt mentés", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
         BEGIN
