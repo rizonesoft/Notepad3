@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Error al convertir este archivo Unicode.\n¡Los datos se perderán si se guarda el archivo!"
     IDS_MUI_ERR_BITMAP      "Error cargando bitmap ""%s"".\nDimensiones necesarias: %i x %i (ancho >= %i x alto)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "¡Error al elevar los derechos de usuario!"
+                            "¡Error al elevar los privilegios de usuario!"
 END
 
 STRINGTABLE
@@ -145,7 +145,7 @@ BEGIN
                             "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¿Quiere lanzar Notepad3 como administrador?"
     IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable .\n¿Consultar website https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "¿¿Seguro que quiere abrir este archivo grande??"
+                            "¿¿Seguro que quiere abrir este archivo tan grande??"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
     IDS_MUI_INDENT_CONSISTENT  "¡El archivo tiene una sangría consistente!"
@@ -158,8 +158,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Esta operación no se puede realizar en una selección rectangular."
     IDS_MUI_BUFFERTOOSMALL  "Esta operación no se puede realizar (líneas demasiado largas)."
-    IDS_MUI_FIND_WRAPFW     "Se llega al final del documento, reinicie la búsqueda al principio."
-    IDS_MUI_FIND_WRAPRE     "Se llega al principio del documento, reinicie la búsqueda al final."
+    IDS_MUI_FIND_WRAPFW     "Se llegó al final del documento, reiniciando la búsqueda desde el principio."
+    IDS_MUI_FIND_WRAPRE     "Se llegó al principio del documento, reiniciando la búsqueda desde el final."
     IDS_MUI_NOTFOUND        "El texto especificado no fue encontrado."
     IDS_MUI_REPLCOUNT       "%i ocurrencias del texto especificado se han reemplazado."
     IDS_MUI_ASK_ENCODING    "Cambiar la codificación del archivo de una codificación a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrará. ¿Continuar?"
