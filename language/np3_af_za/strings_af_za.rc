@@ -58,7 +58,7 @@ BEGIN
     IDT_FILE_OPEN           "Oop"
     IDT_FILE_BROWSE         "Snuffel"
     IDT_FILE_SAVE           "Stoor"
-    IDT_FILE_RECENT         "History"
+    IDT_FILE_RECENT         "Geskiedenis"
     IDT_EDIT_UNDO           "Maak Ongedaan"
     IDT_EDIT_REDO           "Doen Oor"
     IDT_EDIT_CUT            "Sny"
@@ -87,8 +87,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Voer Dokument Uit"
-    IDT_VIEW_TOGGLE_VIEW     "Gefokusde Aansig"
+    IDT_FILE_LAUNCH         "Voer Dokument Uit"
+    IDT_VIEW_TOGGLE_VIEW    "Gefokusde Aansig"
     IDT_VIEW_CHASING_DOCTAIL "Moniteringslogboek"
     IDT_VIEW_PIN_ON_TOP      "Altyd Bo-op"
 END
@@ -132,9 +132,9 @@ BEGIN
                             "Bestaande Notepad3-venster is besig of het 'n aktiewe dialoog.\nWil jy 'n ander Notepad3-venster oopmaak?"
     IDS_MUI_ERR_ENCODINGNA  "Kodeblad-omskakelingstabelle vir die geselekteerde enkodering is nie op u stelsel beskikbaar nie."
     IDS_MUI_ERR_UNICODE     "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Kon nie bitmap ""%s"" laai nie.\nBenodig afmetings: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error while elevating user rights!"
+                            "Fout tydens die verhoging van gebruikersregte!"
 END
 
 STRINGTABLE
@@ -148,7 +148,7 @@ BEGIN
                             "Is jy seker jy wil hierdie groot lêer oopmaak?"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "Die lêer het 'n konsekwente indentasie!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Kon nie stylinstellings uitvoer na ""%s""."
     IDS_MUI_REGEX_INVALID    "Kon nie regular expression evalueer nie. Expression is ongeldig!"
     IDS_MUI_DROP_NO_FILE     "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik om die lêer oop te maak."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om skakel in leser oop te maak."
 END
 
 STRINGTABLE
@@ -226,9 +226,9 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    " Styl '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Geassosieerde lêernaam uitbreidings:"
     IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %ti):"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Lengte Pas"
+    IDS_MUI_GOTO_LINE       "Lyn (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN     "Kolom (1 - %lli):"
 END
 
 STRINGTABLE
@@ -274,7 +274,7 @@ Opsies:\r\n\
 /u\tBegin met verhoogde voorregte.\r\n\
 /v\tDruk lêer dadelik en stop.\r\n\
 /vd\tDruk lêer (maak drukker dialoog oop).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\tSoek omgewing PATH in geval van relatiewe lêernaam.\r\n\
 /z\tSlaan oor na (bruikbaar vir registry-basis Notepad-vervanging).\r\n\r\n\
 Voorbeelde:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
@@ -285,9 +285,9 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Lêernaam uitbreidings moet geskei word deur ;\r\n\
-with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars\r\n\r\n\
-Style format:\r\n\
+met 'n terugslag (\\), RegEx definieer 'n einde-van-lêernaam patrone:\r\n\
+   \\xyz$;   => lêername(basisnaam+ext) met 'xyz' vir laaste karakters\r\n\r\n\
+Stylformaat:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 Styl eienskappe kan gekopieer word deur kopieer en plak of sleep en drop.\

@@ -89,8 +89,11 @@ FOR %%A IN ("Changes.txt" "License.txt" "Readme.txt" "Notepad3.ini" "minipath.in
 	"..\%1\Notepad3.exe" "..\%1\minipath.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "LNG=%TEMP_NAME%\lng"
+SET "THEMES=%TEMP_NAME%\themes"
 IF NOT EXIST %LNG% MD %LNG%
+IF NOT EXIST %THEMES% MD %THEMES%
 XCOPY /E /Y /V "..\%1\lng" "%LNG%" /EXCLUDE:Ignore.txt
+XCOPY /E /Y /V "themes" "%THEMES%"
 
 SET "FAVORITES=%TEMP_NAME%\Favorites"
 IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
@@ -98,7 +101,7 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mx=9^
  "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "Changes.txt"^
- "Readme.txt" "Favorites" "minipath.exe" "minipath.ini" "lng">NUL
+ "Readme.txt" "Favorites" "minipath.exe" "minipath.ini" "lng" "themes">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"
