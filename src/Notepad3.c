@@ -9160,7 +9160,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         tchLinesSelected[2] = L'\0';
       }
       else {
-        StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%lli", iLinesSelected);
+        StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), DOCPOSFMTW, iLinesSelected);
         FormatNumberStr(tchLinesSelected, COUNTOF(tchLinesSelected), 0);
       }
       StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
