@@ -265,6 +265,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "次の検索一致まで選択(&N)\tCtrl+Alt+F2",       IDM_EDIT_SELTONEXT
             MENUITEM "前の検索一致まで選択(&P)\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM SEPARATOR
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "ブックマーク(しおり)(&K)"

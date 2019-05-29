@@ -257,14 +257,17 @@ BEGIN
             MENUITEM "문자를 Hex 값으로 변환(&H)\tCtrl+Alt+X",            IDM_EDIT_CHAR2HEX
             MENUITEM "Hex 값을 문자로 변환(&R)\tCtrl+Alt+C",              IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
-            MENUITEM "번호 증가\tCtrl+Alt+NK+",               CMD_INCREASENUM
-            MENUITEM "번호 감소\tCtrl+Alt+NK-",               CMD_DECREASENUM
+            MENUITEM "번호 증가\tCtrl+Alt+NK+",                    CMD_INCREASENUM
+            MENUITEM "번호 감소\tCtrl+Alt+NK-",                    CMD_DECREASENUM
+            MENUITEM SEPARATOR                                   
+            MENUITEM "괄호 짝 찾기(&F)\tCtrl+B",                   IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "괄호 영역 선택(&S)\tCtrl+Shift+B",           IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM SEPARATOR                                   
+            MENUITEM "다음 선택(&X)\tCtrl+Alt+F2",                 IDM_EDIT_SELTONEXT
+            MENUITEM "이전 선택(&V)\tCtrl+Alt+Shift+F2",           IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "괄호 짝 찾기(&F)\tCtrl+B",              IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "괄호 영역 선택(&S)\tCtrl+Shift+B",      IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "다음 선택(&X)\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
-            MENUITEM "이전 선택(&V)\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"

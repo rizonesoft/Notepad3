@@ -115,6 +115,8 @@ void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
 
+void  EditSelectionMultiSelectAll();
+
 
 #define FV_TABWIDTH        1
 #define FV_INDENTWIDTH     2
@@ -156,6 +158,11 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
 void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 
 #define NP3_BRACES_TO_MATCH "()[]{}"
+
+
+#define GetMarkAllOccSearchFlags()  EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,\
+                                      Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false)
+
 
 #endif //_NP3_EDIT_H_
 

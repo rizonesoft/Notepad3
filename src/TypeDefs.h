@@ -308,7 +308,7 @@ typedef struct _globals_t
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
-  int       iMarkOccurrencesCount;
+  DocPos    iMarkOccurrencesCount;
   bool      bUseLimitedAutoCCharSet;
   bool      bIsCJKInputCodePage;
   bool      bIniFileFromScratch;

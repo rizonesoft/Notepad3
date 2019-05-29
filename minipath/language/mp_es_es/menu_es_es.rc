@@ -83,7 +83,7 @@ BEGIN
         BEGIN
             MENUITEM "&Carpetas",                    IDM_VIEW_FOLDERS
             MENUITEM "&Archivos",                    IDM_VIEW_FILES
-            MENUITEM "Objetos &Systema",             IDM_VIEW_HIDDEN
+            MENUITEM "Objetos &Sistema",             IDM_VIEW_HIDDEN
         END
         POPUP "&Ordenar"
         BEGIN
@@ -121,7 +121,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Abrir MiniPath",                   IDM_TRAY_RESTORE
-        MENUITEM "Salir MiniPath",                   IDM_TRAY_EXIT
+        MENUITEM "Cerrar MiniPath",                   IDM_TRAY_EXIT
     END
 END
 

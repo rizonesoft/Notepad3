@@ -210,7 +210,7 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Habilitar ""&Esc"" para...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "Minimizar &ventana.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "Sa&lir MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "Cerrar MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -222,12 +222,12 @@ BEGIN
     LTEXT           "Aspecto de elementos en la lista de carpetas.",IDC_STATIC,40,15,150,8
     GROUPBOX        "Colores",IDC_STATIC,10,41,205,134
     LTEXT           "Usar este color de texto cuando no se fija NINGÚN FILTRO:",IDC_STATIC,20,54,180,8
-    CONTROL         "Defecto color &windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "Color por defecto &windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Color &personal.:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Pick Color...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Utilizar este color de texto Cuando un FILTRO ESTÁ ACTIVO:",IDC_STATIC,20,105,200,8
-    CONTROL         "&Defecto color windows.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    LTEXT           "Utilizar este color de texto cuando un FILTRO ESTÁ ACTIVO:",IDC_STATIC,20,105,200,8
+    CONTROL         "Color por &defecto.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "C&olor personal.:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Elegir...",IDC_COLOR_PICK2,120,130,50,14
