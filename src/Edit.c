@@ -6206,6 +6206,7 @@ void EditSelectionMultiSelectAll()
     }
     SciCall_MultipleSelectAddEach();
     SciCall_SetMainSelection(0);
+    SciCall_ScrollRange(SciCall_GetSelectionNAnchor(0), SciCall_GetSelectionNCaret(0));
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
