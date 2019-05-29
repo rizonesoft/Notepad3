@@ -87,8 +87,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Voer Dokument Uit"
-    IDT_VIEW_TOGGLE_VIEW    "Gefokusde Aansig"
+    IDT_FILE_LAUNCH          "Voer Dokument Uit"
+    IDT_VIEW_TOGGLE_VIEW     "Gefokusde Aansig"
     IDT_VIEW_CHASING_DOCTAIL "Moniteringslogboek"
     IDT_VIEW_PIN_ON_TOP      "Altyd Bo-op"
 END
