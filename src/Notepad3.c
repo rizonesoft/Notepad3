@@ -1361,7 +1361,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SetNotifyIconTitle(Globals.hwndMain);
   }
   Globals.iReplacedOccurrences = 0;
-  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
+  Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : (DocPos)-1;
 
   UpdateAllBars(false);
 
@@ -3881,55 +3881,52 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_SELECTWORD:
-      {
-        DocPos iPos = SciCall_GetCurrentPos();
+    {
+      DocPos const iPos = SciCall_GetCurrentPos();
 
-        if (SendMessage(Globals.hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
+      if (SciCall_IsSelectionEmpty()) {
 
-          DocPos iWordStart = SciCall_WordStartPosition(iPos, true);
-          DocPos iWordEnd = SciCall_WordEndPosition(iPos, true);
+        DocPos iWordStart = SciCall_WordStartPosition(iPos, true);
+        DocPos iWordEnd = SciCall_WordEndPosition(iPos, true);
 
-          if (iWordStart == iWordEnd) // we are in whitespace salad...
-          {
-            iWordStart = SciCall_WordEndPosition(iPos, false);
-            iWordEnd   = SciCall_WordEndPosition(iWordStart, true);
-            if (iWordStart != iWordEnd) {
-              SciCall_SetSel(iWordStart, iWordEnd);
-            }
-          }
-          else {
-            SciCall_SetSel(iWordStart, iWordEnd);
-          }
-
-          if (SciCall_IsSelectionEmpty()) {
-            const DocLn iLine = SciCall_LineFromPosition(iPos);
-            const DocPos iLineStart = SciCall_GetLineIndentPosition(iLine);
-            const DocPos iLineEnd = SciCall_GetLineEndPosition(iLine);
-            SciCall_SetSel(iLineStart, iLineEnd);
+        if (iWordStart == iWordEnd) // we are in whitespace salad...
+        {
+          iWordStart = SciCall_WordEndPosition(iPos, false);
+          iWordEnd = SciCall_WordEndPosition(iWordStart, true);
+          if (iWordStart != iWordEnd) {
+            SciCall_SetSelection(iWordEnd, iWordStart);
           }
         }
         else {
-          const DocLn iLine = SciCall_LineFromPosition(iPos);
-          const DocPos iLineStart = SciCall_GetLineIndentPosition(iLine);
-          const DocPos iLineEnd = SciCall_GetLineEndPosition(iLine);
-          SciCall_SetSel(iLineStart, iLineEnd);
+          SciCall_SetSelection(iWordEnd, iWordStart);
         }
-        UpdateStatusbar(false);
+
+        if (!SciCall_IsSelectionEmpty()) {
+          SciCall_ChooseCaretX();
+          UpdateStatusbar(false);
+          break;
+        }
       }
-      break;
+
+      // selection not empty or no word found - select line
+      DocPos const iSelStart = SciCall_GetSelectionStart();
+      DocPos const iSelEnd = SciCall_GetSelectionEnd();
+      DocPos const iLineStart = SciCall_LineFromPosition(iSelStart);
+      DocPos const iLineEnd = SciCall_LineFromPosition(iSelEnd);
+      SciCall_SetSelection(SciCall_GetLineEndPosition(iLineEnd), SciCall_PositionFromLine(iLineStart));
+
+      SciCall_ChooseCaretX();
+      UpdateStatusbar(false);
+    }
+    break;
 
 
-    case IDM_EDIT_SELECTLINE:
-      {
-        const DocPos iSelStart = SciCall_GetSelectionStart();
-        const DocPos iSelEnd = SciCall_GetSelectionEnd();
-        const DocPos iLineStart = SciCall_LineFromPosition(iSelStart);
-        const DocPos iLineEnd = SciCall_LineFromPosition(iSelEnd);
-        SciCall_SetSel(SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
-        SciCall_ChooseCaretX();
-        UpdateStatusbar(false);
-      }
-      break;
+    case IDM_EDIT_SELECTALLMATCHES:
+    {
+      EditSelectionMultiSelectAll();
+      UpdateStatusbar(false);
+    }
+    break;
 
 
     case IDM_EDIT_MOVELINEUP:
@@ -4037,18 +4034,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CTRLTAB:
     {
-      if (Sci_IsMultiLineSelection()) {
-        SciCall_SetSelectionMode(SC_SEL_STREAM);
-      }
-      else {
-        _BEGIN_UNDO_ACTION_
-        SciCall_SetUseTabs(true);
-        SciCall_SetTabIndents(false);
-        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-        SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
-        SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
-        _END_UNDO_ACTION_
-      }
+      _BEGIN_UNDO_ACTION_
+      SciCall_SetUseTabs(true);
+      SciCall_SetTabIndents(false);
+      EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+      SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
+      SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
+      _END_UNDO_ACTION_
     }
     break;
 
@@ -5119,7 +5111,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       else {
         EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-        Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : -1;
+        Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : (DocPos)-1;
       }
       UpdateToolbar();
       break;
@@ -9003,6 +8995,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
   bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
+  bool const   bIsMultiSelection = Sci_IsMultiSelection();
 
   bool bIsUpdateNeeded = bForceRedraw;
 
@@ -9107,10 +9100,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || Globals.hwndDlgFindReplace)
   {
     static bool s_bIsSelCountable = false;
+    static bool s_bIsMultiSelection = false;
     static DocPos s_iSelStart = -1;
     static DocPos s_iSelEnd = -1;
 
-    if (bForceRedraw || ((s_bIsSelCountable != bIsSelCharCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)))
+    if (bForceRedraw || ((s_bIsSelCountable != bIsSelCharCountable) || (s_iSelStart != iSelStart) 
+        || (s_iSelEnd != iSelEnd)) || (s_bIsMultiSelection != bIsMultiSelection))
     {
       static WCHAR tchSelB[64] = { L'\0' };
       if (bIsSelCharCountable)
@@ -9119,6 +9114,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         StringCchPrintf(tchSel, COUNTOF(tchSel), DOCPOSFMTW, iSel);
         FormatNumberStr(tchSel, COUNTOF(tchSel), 0);
         StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
+      }
+      else if (bIsMultiSelection) {
+        StringCchPrintf(tchSel, COUNTOF(tchSel), L"# " DOCPOSFMTW, SciCall_GetSelections());
+        tchSelB[0] = L'0'; tchSelB[1] = L'\0';
       }
       else {
         tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
@@ -9131,6 +9130,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         s_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, s_mxSBPostfix[STATUS_SELCTBYTES]);
 
       s_bIsSelCountable = bIsSelCharCountable;
+      s_bIsMultiSelection = bIsMultiSelection;
       s_iSelStart = iSelStart;
       s_iSelEnd = iSelEnd;
       bIsUpdateNeeded = true;
@@ -9142,6 +9142,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_SELCTLINES])
   {
     static bool s_bIsSelectionEmpty = true;
+    static bool s_bIsMultiSelection = false;
     static DocLn s_iLinesSelected = -1;
 
     DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
@@ -9153,7 +9154,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bForceRedraw || ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected)))
     {
       static WCHAR tchLinesSelected[32] = { L'\0' };
-      if (bIsSelectionEmpty) {
+      if (bIsSelectionEmpty || bIsMultiSelection) {
         tchLinesSelected[0] = L'-';
         tchLinesSelected[1] = L'-';
         tchLinesSelected[2] = L'\0';
@@ -9166,6 +9167,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         s_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, s_mxSBPostfix[STATUS_SELCTLINES]);
 
       s_bIsSelectionEmpty = bIsSelectionEmpty;
+      s_bIsMultiSelection = bIsMultiSelection;
       s_iLinesSelected = iLinesSelected;
       bIsUpdateNeeded = true;
     }
@@ -9234,20 +9236,20 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // number of occurrence marks found
   if (s_iStatusbarVisible[STATUS_OCCURRENCE] || Globals.hwndDlgFindReplace)
   {
-    static int s_iMarkOccurrencesCount = -111;
+    static DocPos s_iMarkOccurrencesCount = (DocPos)-111;
     static bool s_bMOVisible = false;
     if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount)))
     {
       if ((Globals.iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
       {
-        if ((Settings2.MarkOccurrencesMaxCount < 0) || (Globals.iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount))
+        if ((Settings2.MarkOccurrencesMaxCount < 0) || (Globals.iMarkOccurrencesCount < (DocPos)Settings2.MarkOccurrencesMaxCount))
         {
-          StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", Globals.iMarkOccurrencesCount);
+          StringCchPrintf(tchOcc, COUNTOF(tchOcc), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
           FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
         }
         else {
           static WCHAR tchTmp[32] = { L'\0' };
-          StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", Globals.iMarkOccurrencesCount);
+          StringCchPrintf(tchTmp, COUNTOF(tchTmp), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
           FormatNumberStr(tchTmp, COUNTOF(tchTmp), 0);
           StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
         }

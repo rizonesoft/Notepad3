@@ -182,8 +182,9 @@ DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
 DeclareSciCallV1(SetSelectionMode, SETSELECTIONMODE, int, mode)
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
+DeclareSciCallV2(SetSelection, SETSELECTION, DocPos, caretPos, DocPos, anchorPos)
 DeclareSciCallR0(GetMainSelection, GETMAINSELECTION, DocPosU)
-DeclareSciCallV1(SetMainSelection, SETMAINSELECTION, DocPosU, zoom)
+DeclareSciCallV1(SetMainSelection, SETMAINSELECTION, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNAnchor, GETSELECTIONNANCHOR, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNCaretVirtualSpace, GETSELECTIONNCARETVIRTUALSPACE, DocPos, DocPosU, selnum)
@@ -195,8 +196,7 @@ DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPAC
 DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum)
 DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
-
-
+DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH)
 
 // Zoom
 DeclareSciCallR0(GetZoom, GETZOOM, int)
@@ -254,7 +254,6 @@ DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode)
 DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode)
-
 
 DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
 DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)

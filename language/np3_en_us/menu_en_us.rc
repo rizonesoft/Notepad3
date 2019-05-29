@@ -199,7 +199,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&With...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicate Selection/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplicate Selection/Line\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Pad With Blanks\tAlt+B",           IDM_EDIT_PADWITHSPACES
             MENUITEM "Strip &First Character\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
@@ -265,6 +265,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Select To &Next\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
             MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM SEPARATOR
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "Boo&kmarks"

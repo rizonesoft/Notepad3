@@ -265,6 +265,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "选定直到下一个查找匹配(&N)\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
             MENUITEM "选定直到上一个查找匹配(&P)\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM SEPARATOR
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",   IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "书签(&K)"

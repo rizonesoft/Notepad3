@@ -3645,7 +3645,7 @@ void EditCompressBlanks(HWND hwnd)
           SciCall_TargetFromSelection();
         }
         else {
-          SciCall_SetTargetRange(0, Sci_GetDocEndPosition());
+          SciCall_TargetWholeDocument();
         }
         SciCall_ReplaceTarget(-1, pszOut);
 
@@ -4636,7 +4636,6 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 }
 
 
-
 //=============================================================================
 //
 //  _SetSearchFlags()
@@ -5158,7 +5157,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-        Globals.iMarkOccurrencesCount = -1;
+        Globals.iMarkOccurrencesCount = (DocPos)-1;
       }
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
@@ -5274,7 +5273,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
           else {
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-            Globals.iMarkOccurrencesCount = -1;
+            Globals.iMarkOccurrencesCount = (DocPos)-1;
           }
 
           if (s_InitialTopLine >= 0) { 
@@ -5556,7 +5555,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
               EditToggleView(sg_pefrData->hwnd);
             }
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
-            Globals.iMarkOccurrencesCount = -1;
+            Globals.iMarkOccurrencesCount = (DocPos)-1;
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
           }
         }
@@ -6145,8 +6144,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   bool const bWaitCursor = (Globals.iMarkOccurrencesCount > 4000) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
 
-  int searchFlags = EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,
-     Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
+  int const searchFlags = GetMarkAllOccSearchFlags();
 
   _IGNORE_NOTIFY_CHANGE_;
 
@@ -6169,6 +6167,49 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   _OBSERVE_NOTIFY_CHANGE_;
 
   if (bWaitCursor) { EndWaitCursor(); } 
+}
+
+
+//=============================================================================
+//
+//  EditSelectionMultiSelectAll()
+//
+void EditSelectionMultiSelectAll()
+{
+  DocPos const iSelSize = SciCall_GetSelText(NULL);
+  if (iSelSize > 1)
+  {
+    char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+    if (NULL == pszText) {
+      FreeMem(pszText);
+      return;
+    }
+    SciCall_GetSelText(pszText);
+
+    int const searchFlags = IsMarkOccurrencesEnabled() ? GetMarkAllOccSearchFlags() : 
+                            EditAddSearchFlags(0, false, false, true, false, false);
+
+    SciCall_SetSearchFlags(searchFlags);
+
+    DocPos const saveTargetBeg = SciCall_GetTargetStart();
+    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
+    if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) 
+    {
+      // get visible lines for update
+      DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+      DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+      SciCall_SetTargetRange(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
+    }
+    else {
+      SciCall_TargetWholeDocument();
+    }
+    SciCall_MultipleSelectAddEach();
+
+    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
+    FreeMem(pszText);
+  }
 }
 
 
@@ -6588,7 +6629,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       start = end;
       end = rangeEnd;
 
-    } while ((++Globals.iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount) && (start < end));
+    } while ((++Globals.iMarkOccurrencesCount < (DocPos)Settings2.MarkOccurrencesMaxCount) && (start < end));
   }
 }
 
