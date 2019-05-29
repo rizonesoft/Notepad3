@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误。"
     IDS_MUI_REGEX_INVALID    "正则表达式无效。"
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
-    IDS_MUI_URL_OPEN_FILE    "\n按住Alt同时点击以打开文件."
-    IDS_MUI_URL_OPEN_BROWSER "\n按住Ctrl同时点击以在浏览器中打开链接."
+    IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件."
+    IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接."
 END
 
 STRINGTABLE
@@ -285,8 +285,8 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 文件扩展名必须以 ; 隔开。\r\n\
-with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+使用反斜杠（\\）可定义用于匹配文件名后缀的正则表达式：\r\n\
+   例如 \\xyz$; 可匹配以 xyz 结尾的文件名（含扩展名）。\r\n\r\n\
 样式格式：\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
