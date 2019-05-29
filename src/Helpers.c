@@ -234,9 +234,9 @@ DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDe
     int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
-        long long pos = 0;
-        if (swscanf_s((p + ich + 1), L"%lli", &pos) == 1) {
-          return (DocPos)pos;
+        DocPos pos = 0;
+        if (swscanf_s((p + ich + 1), DOCPOSFMTW, &pos) == 1) {
+          return pos;
         }
         return posDefault;
       }

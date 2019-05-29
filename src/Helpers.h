@@ -122,6 +122,10 @@ inline unsigned clampul(unsigned long x, unsigned long lower, unsigned long uppe
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
+inline DocPos clampp(DocPos x, DocPos lower, DocPos upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
 // Is the character an octal digit?
 inline bool IsDigitA(const CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
 inline bool IsDigitW(const WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
@@ -190,13 +194,15 @@ inline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool b
 bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString);
 
 inline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
-  WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
+  WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); 
+  return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
 inline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, bool b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos){
-  WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
+  WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), DOCPOSFMTW, pos); 
+  return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
 // ----------------------------------------------------------------------------

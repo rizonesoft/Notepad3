@@ -7011,14 +7011,15 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         DocPos const iCurColumn = SciCall_GetColumn(SciCall_GetCurrentPos()) + 1;
         DocPos const iLineEndPos = Sci_GetNetLineLength(iCurLine);
 
-        FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, iMaxLnNum);
+        FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, 
+          (int)clampp(iMaxLnNum, 0, INT_MAX));
         FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN, 
-          max_p(iLineEndPos, (DocPos)Globals.fvCurFile.iLongLinesLimit));
+          (int)clampp(max_p(iLineEndPos, (DocPos)Globals.fvCurFile.iLongLinesLimit), 0, INT_MAX));
         SetDlgItemText(hwnd, IDC_LINE_TEXT, wchLineCaption);
         SetDlgItemText(hwnd, IDC_COLUMN_TEXT, wchColumnCaption);
 
-        SetDlgItemInt(hwnd, IDC_LINENUM, (UINT)iCurLine, false);
-        SetDlgItemInt(hwnd, IDC_COLNUM, (UINT)iCurColumn, false);
+        SetDlgItemInt(hwnd, IDC_LINENUM, (int)clampp(iCurLine, 0, INT_MAX), false);
+        SetDlgItemInt(hwnd, IDC_COLNUM, (int)clampp(iCurColumn, 0, INT_MAX), false);
         SendDlgItemMessage(hwnd,IDC_LINENUM,EM_LIMITTEXT,80,0);
         SendDlgItemMessage(hwnd,IDC_COLNUM,EM_LIMITTEXT,80,0);
         CenterDlgInParent(hwnd);
