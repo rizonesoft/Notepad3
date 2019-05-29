@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relanzar con altos derechos",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&Relanzar con privilegios elevados",  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Ejecutar &documento\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Abrir con...\tAlt+L",                IDM_FILE_OPENWITH
@@ -188,8 +188,8 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "&Incluir selección"
             BEGIN
-                MENUITEM "Simple comillas\tCtrl+1",         CMD_STRINGIFY
-                MENUITEM "&Doble comillas\tCtrl+2",         CMD_STRINGIFY2
+                MENUITEM "Comillas simples\tCtrl+1",         CMD_STRINGIFY
+                MENUITEM "Comillas &dobles\tCtrl+2",         CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
@@ -302,7 +302,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Ajuste automático de línea\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "&Marcador de larga línea\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Marcador de línea larga\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guías de Sangría\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostrar &símbolos de ajuste\tCtrl+Shift+7",           IDM_VIEW_WORDWRAPSYMBOLS
@@ -326,7 +326,7 @@ BEGIN
             MENUITEM "Coincidir &sensible a mayúsculas",    IDM_VIEW_MARKOCCUR_CASE
             POPUP "Coincidir &palabra completa solo"
             BEGIN
-                MENUITEM "&OFF",                             IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "&OFF",                            IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "Coincidir palabra &seleccionada", IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Coincidir palabra &actual",       IDM_VIEW_MARKOCCUR_CURRENT
             END
@@ -383,7 +383,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Ins&tancia de archivo único",                         IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Mudo Mensaje &Pitidos",                               IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Silenciar sonidos de aviso",                          IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Función de la tecla 'Esc'"
         BEGIN
             MENUITEM "&Ninguna",                            IDM_VIEW_NOESCFUNC
@@ -394,8 +394,8 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Recordar"
         BEGIN
-            MENUITEM "&Recordar archivos recientes",        IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Preservar la posición de Caret",     IDM_VIEW_NOPRESERVECARET
+            MENUITEM "&Recordar archivos recientes",         IDM_VIEW_NOSAVERECENT
+            MENUITEM "&Preservar la posición del cursor",    IDM_VIEW_NOPRESERVECARET
             MENUITEM "Recordar los &argumentos de búsqueda", IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Ventana"
@@ -476,7 +476,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Abrir Notepad3",                              IDM_TRAY_RESTORE
-        MENUITEM "Salir Notepad3",                              IDM_TRAY_EXIT
+        MENUITEM "Cerrar Notepad3",                           IDM_TRAY_EXIT
     END
 END
 

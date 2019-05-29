@@ -2014,17 +2014,17 @@ bool SelectExternalToolBar(HWND hwnd)
       StringCchCat(szFile, COUNTOF(szFile), L" ");
       StringCchCat(szFile, COUNTOF(szFile), szArg2);
     }
-    StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), szFile);
-
+    PathRelativeToApp(szFile, s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), true,true, true);
     IniSetString(L"Toolbar Images", L"BitmapDefault", s_tchToolbarBitmap);
   }
 
   if (StrIsNotEmpty(s_tchToolbarBitmap))
   {
-    StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), s_tchToolbarBitmap);
-    PathRemoveExtension(s_tchToolbarBitmapHot);
-    StringCchCat(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"Hot.bmp");
-    if (PathFileExists(s_tchToolbarBitmapHot)) {
+    StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
+    PathRemoveExtension(szFile);
+    StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
+    if (PathFileExists(szFile)) {
+      PathRelativeToApp(szFile, s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), true, true, true);
       IniSetString(L"Toolbar Images", L"BitmapHot", s_tchToolbarBitmapHot);
     }
     else {
@@ -2032,10 +2032,11 @@ bool SelectExternalToolBar(HWND hwnd)
       IniSetString(L"Toolbar Images", L"BitmapHot", NULL);
     }
 
-    StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), s_tchToolbarBitmap);
-    PathRemoveExtension(s_tchToolbarBitmapDisabled);
-    StringCchCat(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"Disabled.bmp");
-    if (PathFileExists(s_tchToolbarBitmapDisabled)) {
+    StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
+    PathRemoveExtension(szFile);
+    StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
+    if (PathFileExists(szFile)) {
+      PathRelativeToApp(szFile, s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), true, true, true);
       IniSetString(L"Toolbar Images", L"BitmapDisabled", s_tchToolbarBitmapDisabled);
     }
     else {
@@ -2087,6 +2088,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
+      IniSetString(L"Toolbar Images", L"BitmapDefault", NULL);
       DeleteObject(hbmp);
       hbmp = NULL;
     }
@@ -2140,6 +2142,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapHot,
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+      IniSetString(L"Toolbar Images", L"BitmapHot", NULL);
       DeleteObject(hbmp);
       hbmp = NULL;
     }
@@ -2186,6 +2189,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapDisabled,
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
+      IniSetString(L"Toolbar Images", L"BitmapDisabled", NULL);
       DeleteObject(hbmp);
       hbmp = NULL;
     }

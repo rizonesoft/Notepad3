@@ -30,7 +30,36 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.522.build (2019-May 22)
+Current Version 5.19.528.build (28 May 2019)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+
+--------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------
+
+
+==================================================
+Version 5.19.528.2228 RC (28 May 2019)
 ==================================================
 
 --------------------------------------------------
@@ -39,7 +68,6 @@ NEW:
 - Add Dark Theme "Obsidian"
 - Add option to disable Hyperlink Tooltip
 - ToolTip for Hyperlinks
-
 - 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
 - Menu entry to mute MessageBox beeps
 - Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
@@ -67,7 +95,6 @@ CHANGES:
 - Add an "Always On Top" toolbar button
 - Rename "Doc Tail Chasing" => "Monitoring Log"
 - Optimized FileWatching interval for "Chasing Tail" mode
-
 - Make "Add to Favorites" dialog resizable
 - Make Custom.Schemes and Find/Replace dialog resizable
 - BOOKMARK (margin flag) style changed to vertical flavor
@@ -102,7 +129,6 @@ ENHANCEMENT:
 - Allow indicator styling for Hyperlink hover rendering
 - Find/Replace dialog <-> "Focused View" enhancements
 - Rework inconsistent line-breaks in status bar
-
 - Rework EOL and Indentation check with dialogs
 
 --------------------------------------------------
@@ -110,7 +136,6 @@ FIXES:
 --------------------------------------------------
 - Focused View: refolding by lexer
 - FocusedView started from Find/Replace dialog
-
 - Do not ignore notify change for Paste/Swap/Undo/Redo
 - Colourise bug on find next (w/ mark occurrences)
 - Indentation warning dialog
