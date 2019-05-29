@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s""."
     IDS_MUI_REGEX_INVALID    "Errore nella valutazione della regular expression. La RegExp non è valida!"
     IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click per aprire il file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser."
 END
 
 STRINGTABLE
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Le estensioni devono essere separate con ';'\r\n\
-with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
+un backslash (\\), la RegEx definisce un pattern EOF:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Formato Stile:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
