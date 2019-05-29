@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Ошибка экспорта настроек стилей в «%s»."
     IDS_MUI_REGEX_INVALID    "Ошибка обработки регулярного выражения. Выражение недействительно!"
     IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click, чтобы открыть файл."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, чтобы открыть ссылку в браузере."
 END
 
 STRINGTABLE
@@ -285,8 +285,8 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Расширения файлов должны быть разделены символом ;\r\n\
-with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+с обратной чертой (\\), RegEx определяет шаблон конца имени файла:\r\n\
+   \\xyz$;   => имя файла (basename+ext) с 'xyz' в конце.\r\n\r\n\
 Формат стиля:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
