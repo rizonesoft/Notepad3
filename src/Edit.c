@@ -6205,6 +6205,7 @@ void EditSelectionMultiSelectAll()
       SciCall_TargetWholeDocument();
     }
     SciCall_MultipleSelectAddEach();
+    SciCall_SetMainSelection(0);
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
