@@ -227,8 +227,8 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "Hozzárendelt kiterjesztések:"
     IDS_MUI_EXAMPLE_TEXT    "Árvíztûrõ tükörfúrógép, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Nulla hosszú egyezés"
-    IDS_MUI_GOTO_LINE       "Sor (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN     "Oszlop (1 - %lli):"
+    IDS_MUI_GOTO_LINE       "Sor (1 - %ti):"
+    IDS_MUI_GOTO_COLUMN     "Oszlop (1 - %ti):"
 END
 
 STRINGTABLE

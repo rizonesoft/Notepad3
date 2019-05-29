@@ -227,8 +227,8 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "关联的文件扩展名："
     IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\n中国智造，慧及全球"
     IDS_MUI_ZERO_LEN_MATCH  "^ 零宽度匹配"
-    IDS_MUI_GOTO_LINE       "行（1 - %lli）："
-    IDS_MUI_GOTO_COLUMN     "列（1 - %lli）："
+    IDS_MUI_GOTO_LINE       "行（1 - %ti）："
+    IDS_MUI_GOTO_COLUMN     "列（1 - %ti）："
 END
 
 STRINGTABLE
