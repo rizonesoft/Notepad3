@@ -234,9 +234,9 @@ DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDe
     int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
-        long long pos = 0;
-        if (swscanf_s((p + ich + 1), L"%lli", &pos) == 1) {
-          return (DocPos)pos;
+        DocPos pos = 0;
+        if (swscanf_s((p + ich + 1), DOCPOSFMTW, &pos) == 1) {
+          return pos;
         }
         return posDefault;
       }
@@ -1496,7 +1496,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
   return(StringCchCompareX(psz1,psz2));
 }
 
-bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
+bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {

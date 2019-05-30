@@ -345,7 +345,7 @@ BEGIN
             MENUITEM "Visualizzazione focalizzata\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoraggio log",                          IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scorri oltre la fine del file (EOF)",        IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Show &Hyperlink Tooltip",                    IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "Mostra Tooltip &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Toolbar"
         BEGIN

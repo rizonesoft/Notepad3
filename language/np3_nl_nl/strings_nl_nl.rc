@@ -227,8 +227,8 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "Bijbehorende bestandsextensies:"
     IDS_MUI_EXAMPLE_TEXT    "Pa's wijze lynx bezag vroom het fikse aquaduct, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Match"
-    IDS_MUI_GOTO_LINE       "Lijn (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN     "Kolom (1 - %lli):"
+    IDS_MUI_GOTO_LINE       "Lijn (1 - %ti):"
+    IDS_MUI_GOTO_COLUMN     "Kolom (1 - %ti):"
 END
 
 STRINGTABLE

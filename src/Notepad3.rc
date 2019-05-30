@@ -223,7 +223,7 @@ BEGIN
     VK_F12,         IDM_VIEW_SCHEMECONFIG,            VIRTKEY, CONTROL, NOINVERT
     VK_F12,         IDM_VIEW_FONT,                    VIRTKEY, ALT, NOINVERT
     VK_F12,         IDM_VIEW_USE2NDDEFAULT,           VIRTKEY, SHIFT, NOINVERT
-    VK_F12,         IDM_VIEW_CURRENTSCHEME,           VIRTKEY, CONTROL, ALT
+    VK_F12,         IDM_VIEW_CURRENTSCHEME,           VIRTKEY, CONTROL, ALT, NOINVERT
     VK_F2,          IDM_EDIT_SELTONEXT,               VIRTKEY, CONTROL, ALT, NOINVERT
     VK_F2,          IDM_EDIT_SELTOPREV,               VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     VK_F2,          BME_EDIT_BOOKMARKNEXT,            VIRTKEY, NOINVERT
@@ -292,8 +292,8 @@ BEGIN
     "H",            IDACC_REPLACE,                    VIRTKEY, CONTROL, NOINVERT
     "S",            IDACC_SAVEPOS,                    VIRTKEY, CONTROL, NOINVERT
     "R",            IDACC_RESETPOS,                   VIRTKEY, CONTROL, NOINVERT
-    VK_F2,          IDACC_SELTONEXT,                  VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_F2,          IDACC_SELTOPREV,                  VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
+    //VK_F2,          IDACC_SELTONEXT,                  VIRTKEY, CONTROL, ALT, NOINVERT
+    //VK_F2,          IDACC_SELTOPREV,                  VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     VK_F3,          IDACC_FINDNEXT,                   VIRTKEY, NOINVERT
     VK_F3,          IDACC_SAVEFIND,                   VIRTKEY, ALT, NOINVERT
     VK_F3,          IDACC_FINDPREV,                   VIRTKEY, SHIFT, NOINVERT

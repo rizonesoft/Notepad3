@@ -197,6 +197,7 @@ DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum
 DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum)
 DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
 DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH)
+DeclareSciCallV0(RotateSelection, ROTATESELECTION)
 
 // Zoom
 DeclareSciCallR0(GetZoom, GETZOOM, int)
