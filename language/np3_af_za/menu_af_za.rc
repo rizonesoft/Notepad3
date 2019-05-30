@@ -316,9 +316,9 @@ BEGIN
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Merk Huidi&ge Lyn\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "&Geen Uitliggende",                   IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Agtergrondkleur",                    IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Buitelyn &Raamwerk",                  IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mer&k Voorvalle"
         BEGIN
@@ -343,9 +343,9 @@ BEGIN
             MENUITEM "Kode &Vou\tCtrl+Shift+Alt+F",         IDM_VIEW_FOLDING
             MENUITEM "&Wissel Voue\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Gefokusde &Aansig\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Moniteringslogboek",                 IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Monitoring Log",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Show &Hyperlink Tooltip",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "Wys &Hiperskakel Nutsmiddelwenk",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "Nu&tsbalk"
         BEGIN
