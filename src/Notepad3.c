@@ -4818,6 +4818,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_RotateSelection();
             DocPosU const iMain = SciCall_GetMainSelection();
             SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iMain), SciCall_GetSelectionNCaret(iMain));
+            SciCall_ChooseCaretX();
           }
           break;
 
@@ -4832,6 +4833,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               SciCall_SetMainSelection(iNewMain);
               SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iNewMain), SciCall_GetSelectionNCaret(iNewMain));
             }
+            SciCall_ChooseCaretX();
           }
           break;
 

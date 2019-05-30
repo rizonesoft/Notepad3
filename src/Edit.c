@@ -6207,6 +6207,7 @@ void EditSelectionMultiSelectAll()
     SciCall_MultipleSelectAddEach();
     SciCall_SetMainSelection(0);
     SciCall_ScrollRange(SciCall_GetSelectionNAnchor(0), SciCall_GetSelectionNCaret(0));
+    SciCall_ChooseCaretX();
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
@@ -6588,16 +6589,11 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       if (Settings.MarkOccurrencesCurrentWord && (flags & SCFIND_WHOLEWORD))
       {
         DocPos const iCurPos = SciCall_GetCurrentPos();
-        EditSelectWordAtPos(iCurPos, false);
-        size_t const len = SciCall_GetSelText(NULL);
-        if ((len > 1) && (len < COUNTOF(txtBuffer))) {
-          SciCall_GetSelText(txtBuffer);
-          SciCall_SetSelection(iCurPos, iCurPos);
-          iFindLength = len - 1;
-        }
-        else {
-          return; // selected word empty or too big
-        }
+        DocPos iWordStart = SciCall_WordStartPosition(iCurPos, true);
+        DocPos iWordEnd = SciCall_WordEndPosition(iCurPos, true);
+        if (iWordStart == iWordEnd) { return; }
+        iFindLength = (iWordEnd - iWordStart);
+        StringCchCopyNA(txtBuffer, COUNTOF(txtBuffer), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
       }
       else {
         return; // no pattern, no selection and no word mark chosen
