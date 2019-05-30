@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Hiba a színkiemelések beállításainak exportálásakor ide: ""%s""."
     IDS_MUI_REGEX_INVALID    "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
     IDS_MUI_DROP_NO_FILE     "Nem sikerült érvényes fájlnevet kapni.\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, dobja újra a Notepad3 eszköztárra."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kattintás a fájl megnyitásához."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kattintás a böngészõben való megnyitáshoz."
 END
 
 STRINGTABLE
@@ -285,8 +285,8 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Fájlnév kiterjesztéseket ';'-vel kell elválasztani\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+Használja a  \\<reg.kif.>; fájlnév minta megadásához:\r\n\
+   \\xyz$;   => fájlnevek (névtõ és kiterjesztés) ahol 'xyz' a vége.\r\n\r\n\
 Stílus formátum:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
