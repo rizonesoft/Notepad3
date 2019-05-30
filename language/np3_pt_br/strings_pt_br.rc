@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Língua"
-    IDS_MUI_MENU_THEMES     "Themes"
+    IDS_MUI_MENU_LANGUAGE   "&Language"
+    IDS_MUI_MENU_THEMES     "&Themes"
     IDM_THEMES_DEFAULT      "Factory Default"
     IDM_THEMES_FILE_ITEM    "Standard Settings"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Filename extensions must be separated by ';'\r\n\
-with a backslash (\\), RegEx defines an end-of-filename patterns:\r\n\
+use \\<regex>; to define a filename matching pattern:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

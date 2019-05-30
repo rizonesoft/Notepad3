@@ -435,7 +435,7 @@ BEGIN
             MENUITEM "&Ouvrir le ficher de configuration\tCtrl+F7",     CMD_OPENINIFILE
         END
     END
-    POPUP "&Aide"
+    POPUP "Ai&de"
     BEGIN
         MENUITEM "Documentation &en ligne\tF1",             IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR

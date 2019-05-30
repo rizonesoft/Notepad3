@@ -398,7 +398,7 @@ BEGIN
             MENUITEM "Preser&ve Caret Position",    IDM_VIEW_NOPRESERVECARET
             MENUITEM "Remember S&earch Pattern",    IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "&Window"
+        POPUP "W&indow"
         BEGIN
             POPUP "Window Title Displa&y"
             BEGIN

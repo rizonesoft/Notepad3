@@ -398,7 +398,7 @@ BEGIN
             MENUITEM "记忆插入光标位置(&V)",                   IDM_VIEW_NOPRESERVECARET
             MENUITEM "记忆查找方式(&E)",                       IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "窗口(&W)"
+        POPUP "窗口(&I)"
         BEGIN
             POPUP "标题栏显示(&Y)"
             BEGIN
