@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 확장자는 ';' 로 구분되어야 합니다.\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
+\\<regex> 사용; 파일 이름과 일치하는 패턴 정의:\r\n\
    \\xyz$;   => 'xyz'로 파일 이름(기본 이름+확장자) 지정.\r\n\r\n\
 스타일 형식:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
