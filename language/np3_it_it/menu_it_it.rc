@@ -384,7 +384,7 @@ BEGIN
         MENUITEM "Completamento automatico &keywords lexer",         IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Navi&gazione accelerata delle parole\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Impedisci di riaprire lo stesso &file",            IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Im&pedisci di riaprire lo stesso file",            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
         MENUITEM "Muto Messaggio &Bips",                             IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Azione su tasto '&Esc'"

@@ -401,7 +401,7 @@ BEGIN
             MENUITEM "캐럿 위치 보존(&V)",                 IDM_VIEW_NOPRESERVECARET
             MENUITEM "검색 문자열 기억(&E)",               IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "창(&W)"
+        POPUP "창(&I)"
         BEGIN
             POPUP "창 제목 표시(&Y)"
             BEGIN

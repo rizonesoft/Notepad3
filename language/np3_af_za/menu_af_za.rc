@@ -372,7 +372,7 @@ BEGIN
             MENUITEM "Klewerige Venster &Posisie",                   IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "In&stellings"
+    POPUP "&Instellings"
     BEGIN
         MENUITEM "Voeg Tabbladsye in as &Spasies",                  IDM_VIEW_TABSASSPACES
         MENUITEM "&Tab Instellings...\tCtrl+T",                     IDM_VIEW_TABSETTINGS
