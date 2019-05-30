@@ -1496,7 +1496,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
   return(StringCchCompareX(psz1,psz2));
 }
 
-bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
+bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {

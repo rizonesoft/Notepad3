@@ -3882,24 +3882,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SELECTWORD:
     {
-      DocPos const iPos = SciCall_GetCurrentPos();
-
       if (SciCall_IsSelectionEmpty()) {
 
-        DocPos iWordStart = SciCall_WordStartPosition(iPos, true);
-        DocPos iWordEnd = SciCall_WordEndPosition(iPos, true);
-
-        if (iWordStart == iWordEnd) // we are in whitespace salad...
-        {
-          iWordStart = SciCall_WordEndPosition(iPos, false);
-          iWordEnd = SciCall_WordEndPosition(iWordStart, true);
-          if (iWordStart != iWordEnd) {
-            SciCall_SetSelection(iWordEnd, iWordStart);
-          }
-        }
-        else {
-          SciCall_SetSelection(iWordEnd, iWordStart);
-        }
+        EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
 
         if (!SciCall_IsSelectionEmpty()) {
           SciCall_ChooseCaretX();
@@ -3923,8 +3908,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SELECTALLMATCHES:
     {
-      EditSelectionMultiSelectAll();
-      UpdateStatusbar(false);
+      if (!Sci_IsMultiOrRectangleSelection()) {
+        if (SciCall_IsSelectionEmpty()) {
+          if (!IsMarkOccurrencesEnabled() || Settings.MarkOccurrencesCurrentWord) {
+            EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
+          }
+        }
+        EditSelectionMultiSelectAll();
+        UpdateStatusbar(false);
+      }
     }
     break;
 
@@ -4819,6 +4811,35 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
       if (SciCall_GetTextLength() == 0) { break; }
 
+      if (Sci_IsMultiSelection()) { 
+        switch (iLoWParam) {
+          case IDM_EDIT_SELTONEXT:
+          {
+            SciCall_RotateSelection();
+            DocPosU const iMain = SciCall_GetMainSelection();
+            SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iMain), SciCall_GetSelectionNCaret(iMain));
+          }
+          break;
+
+          case IDM_EDIT_SELTOPREV:
+          {
+            DocPosU const iMain = SciCall_GetMainSelection();
+            if (iMain > 0) {
+              SciCall_SetMainSelection(iMain - 1);
+              SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iMain - 1), SciCall_GetSelectionNCaret(iMain - 1));
+            } else {
+              DocPosU const iNewMain = SciCall_GetSelections() - 1;
+              SciCall_SetMainSelection(iNewMain);
+              SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iNewMain), SciCall_GetSelectionNCaret(iNewMain));
+            }
+          }
+          break;
+
+          default: break;
+        }
+        break; // done
+      }
+
       if (IsFindPatternEmpty() && !StringCchLenA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind)))
       {
         if (iLoWParam != IDM_EDIT_REPLACENEXT) {
@@ -4877,34 +4898,39 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_FINDPREVSEL:
     case IDM_EDIT_SAVEFIND:
     {
-      DocPos cchSelection = SciCall_GetSelText(NULL);
-
-      if (1 >= cchSelection)
-      {
-        SendWMCommand(hwnd, IDM_EDIT_SELECTWORD);
-        cchSelection = SciCall_GetSelText(NULL);
+      if (SciCall_IsSelectionEmpty()) {
+        EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
       }
 
-      if ((1 < cchSelection) && (cchSelection < FNDRPL_BUFFER))
+      size_t const cchSelection = SciCall_GetSelText(NULL);
+
+      if (1 < cchSelection)
       {
-        char  mszSelection[FNDRPL_BUFFER];
-        SciCall_GetSelText(mszSelection);
+        char* szSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
+        if (NULL == szSelection) {
+          break;
+        }
+        SciCall_GetSelText(szSelection);
 
         // Check lpszSelection and truncate newlines
-        char *lpsz = StrChrA(mszSelection, '\n');
+        char *lpsz = StrChrA(szSelection, '\n');
         if (lpsz) *lpsz = '\0';
 
-        lpsz = StrChrA(mszSelection, '\r');
+        lpsz = StrChrA(szSelection, '\r');
         if (lpsz) *lpsz = '\0';
 
-        StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), mszSelection);
+        StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), szSelection);
         Settings.EFR_Data.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
         Settings.EFR_Data.bTransformBS = false;
 
-        WCHAR wszBuf[FNDRPL_BUFFER];
-        MultiByteToWideChar(Encoding_SciCP, 0, mszSelection, -1, wszBuf, FNDRPL_BUFFER);
-        MRU_Add(Globals.pMRUfind, wszBuf, 0, 0, NULL);
-        SetFindPattern(wszBuf);
+        LPWSTR pszTextW = AllocMem(cchSelection * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (pszTextW == NULL) {
+          FreeMem(szSelection);
+          break;
+        }
+        MultiByteToWideChar(Encoding_SciCP, 0, szSelection, -1, pszTextW, (MBWC_DocPos_Cast)cchSelection);
+        MRU_Add(Globals.pMRUfind, pszTextW, 0, 0, NULL);
+        SetFindPattern(pszTextW);
 
         switch (iLoWParam) {
 
@@ -4925,6 +4951,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
         }
+     
+        FreeMem(szSelection);
+        FreeMem(pszTextW);
       }
     }
     break;

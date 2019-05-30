@@ -6177,7 +6177,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 void EditSelectionMultiSelectAll()
 {
   DocPos const iSelSize = SciCall_GetSelText(NULL);
-  if (iSelSize > 1)
+  if ((iSelSize > 1))
   {
     char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
     if (NULL == pszText) {
@@ -6531,6 +6531,28 @@ void EditToggleView(HWND hwnd)
 }
 
 
+//=============================================================================
+//
+//  EditSelectWordAtPos()
+//
+void EditSelectWordAtPos(const DocPos iPos, const bool bForceWord)
+{
+  DocPos iWordStart = SciCall_WordStartPosition(iPos, true);
+  DocPos iWordEnd = SciCall_WordEndPosition(iPos, true);
+
+  if ((iWordStart == iWordEnd) && bForceWord) // we are in whitespace salad...
+  {
+    iWordStart = SciCall_WordEndPosition(iPos, false);
+    iWordEnd = SciCall_WordEndPosition(iWordStart, true);
+    if (iWordStart != iWordEnd) {
+      SciCall_SetSelection(iWordEnd, iWordStart);
+    }
+  }
+  else {
+    SciCall_SetSelection(iWordEnd, iWordStart);
+  }
+}
+
 
 //=============================================================================
 //
@@ -6563,19 +6585,26 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
   {
     if (SciCall_IsSelectionEmpty()) {
       // nothing selected, get word under caret if flagged
-      if (Settings.MarkOccurrencesCurrentWord && (flags & SCFIND_WHOLEWORD)) {
-        DocPos const iCurrPos = SciCall_GetCurrentPos();
-        DocPos const iWordStart = SciCall_WordStartPosition(iCurrPos, true);
-        DocPos const iWordEnd = SciCall_WordEndPosition(iCurrPos, true);
-        iFindLength = (iWordEnd - iWordStart);
-        StringCchCopyNA(txtBuffer, COUNTOF(txtBuffer), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
+      if (Settings.MarkOccurrencesCurrentWord && (flags & SCFIND_WHOLEWORD))
+      {
+        DocPos const iCurPos = SciCall_GetCurrentPos();
+        EditSelectWordAtPos(iCurPos, false);
+        size_t const len = SciCall_GetSelText(NULL);
+        if ((len > 1) && (len < COUNTOF(txtBuffer))) {
+          SciCall_GetSelText(txtBuffer);
+          SciCall_SetSelection(iCurPos, iCurPos);
+          iFindLength = len - 1;
+        }
+        else {
+          return; // selected word empty or too big
+        }
       }
       else {
         return; // no pattern, no selection and no word mark chosen
       }
     }
-    else { // we have a selection
-
+    else // we have a selection
+    {
       // get current selection
       DocPos const iSelStart = SciCall_GetSelectionStart();
       DocPos const iSelEnd = SciCall_GetSelectionEnd();
@@ -6585,7 +6614,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       if ((SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) || (iSelCount >= COUNTOF(txtBuffer))) {
         return;
       }
-      
+
       iFindLength = SciCall_GetSelText(pszText) - 1;
 
       // exit if selection is not a word and Match whole words only is enabled
@@ -6619,9 +6648,9 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
       iPos = _FindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos), FRMOD_IGNORE);
 
-      if (iPos < 0)
+      if (iPos < 0) {
         break; // not found
-
+      }
       // mark this match if not done before
       SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
       SciCall_IndicatorFillRange(iPos, (end - start));

@@ -103,6 +103,7 @@ void  EditPrintInit();
 void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
+void  EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
 void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
