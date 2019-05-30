@@ -320,7 +320,7 @@ BEGIN
         POPUP "Elõ&fordulások jelölése"
         BEGIN
             MENUITEM "&Aktív\tAlt+A",                   IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM SEPARAõOR
+            MENUITEM SEPARATOR
             MENUITEM "Csak a láthatóak",                IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "Kis/Nag&ybetû érzékeny egyezés",  IDM_VIEW_MARKOCCUR_CASE
