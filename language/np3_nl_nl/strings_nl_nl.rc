@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Taal"
-    IDS_MUI_MENU_THEMES     "Thema's"
+    IDS_MUI_MENU_LANGUAGE   "&Taal"
+    IDS_MUI_MENU_THEMES     "The&ma's"
     IDM_THEMES_DEFAULT      "Fabrieksinstelling"
     IDM_THEMES_FILE_ITEM    "Standaard instellingen"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Bestand extensies moeten gescheiden door ';'\r\n\
-met een backslash (\\), RegEx definieert een einde van bestandsnaampatronen:\r\n\
+gebruiken \\<regex>; om een overeenkomstig bestandsnaam patroon te definiëren:\r\n\
    \\xyz$;   => bestandsnamen(basename+ext) met 'xyz' als laatste tekens.\r\n\r\n\
 Stijl formaat:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

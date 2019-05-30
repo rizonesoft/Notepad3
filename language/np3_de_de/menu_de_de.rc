@@ -54,7 +54,7 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "Datei"
+    POPUP "&Datei"
     BEGIN
         MENUITEM "&Neu\tCtrl+N",                            IDM_FILE_NEW
         MENUITEM "&Öffnen...\tCtrl+O",                      IDM_FILE_OPEN
@@ -131,7 +131,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Beenden\tAlt+F4",                         IDM_FILE_EXIT
     END
-    POPUP "B&earbeiten"
+    POPUP "&Bearbeiten"
     BEGIN
         MENUITEM "&Rückgängig\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Wiederholen\tCtrl+Y",                    IDM_EDIT_REDO
@@ -290,7 +290,7 @@ BEGIN
             MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
         END
     END
-    POPUP "Ansicht"
+    POPUP "&Ansicht"
     BEGIN
         POPUP "&Schema"
         BEGIN
@@ -369,7 +369,7 @@ BEGIN
             MENUITEM "Fenster Position einfrieren",             IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "Ein&stellungen"
+    POPUP "&Einstellungen"
     BEGIN
         MENUITEM "Tabs mittels &Leerzeichen einfügen",          IDM_VIEW_TABSASSPACES
         MENUITEM "&Tabulator Einstellungen...\tCtrl+T",         IDM_VIEW_TABSETTINGS

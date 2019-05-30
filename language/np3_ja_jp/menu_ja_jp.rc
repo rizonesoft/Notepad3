@@ -398,7 +398,7 @@ BEGIN
             MENUITEM "保存/カーソル位置(文書ごと)(&V)",          IDM_VIEW_NOPRESERVECARET
             MENUITEM "保存/検索文字列(&E)",                  IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "ウィンドウ(&W)"
+        POPUP "ウィンドウ(&I)"
         BEGIN
             POPUP "タイトルバーの表示(&Y)"
             BEGIN

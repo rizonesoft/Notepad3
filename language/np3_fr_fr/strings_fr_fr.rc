@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Langue"
-    IDS_MUI_MENU_THEMES     "Thèmes"
+    IDS_MUI_MENU_LANGUAGE   "&Langue"
+    IDS_MUI_MENU_THEMES     "&Thèmes"
     IDM_THEMES_DEFAULT      "Défaut de fabrication"
     IDM_THEMES_FILE_ITEM    "Paramètres standard"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Les extensions de fichier sont séparées par ';'\r\n\
-avec un Backslash (\\), RegEx définit un modèle de fin de nom de fichier:\r\n\
+utiliser \\<regex>; pour définir un modèle correspondant au nom de fichier:\r\n\
    \\xyz$;   => noms de fichier(basename+ext) avec 'xyz'comme derniers caractères.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

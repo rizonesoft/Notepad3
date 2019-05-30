@@ -290,7 +290,7 @@ BEGIN
             MENUITEM "&Ga naar...\tCtrl+G",                     IDM_EDIT_GOTOLINE
         END
     END
-    POPUP "&Beeld"
+    POPUP "Beel&d"
     BEGIN
         POPUP "&Scheme"
         BEGIN
