@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Расширения файлов должны быть разделены символом ;\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
+используйте \\<regex>; для определения шаблона имени файла:\r\n\
    \\xyz$;   => имя файла (basename+ext) с 'xyz' в конце.\r\n\r\n\
 Формат стиля:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
