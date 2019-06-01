@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "语言(&L)"
-    IDS_MUI_MENU_THEMES     "主题(&T)"
+    IDS_MUI_MENU_THEMES     "切换主题(&S)"
     IDM_THEMES_DEFAULT      "工厂默认(&F)"
     IDM_THEMES_FILE_ITEM    "标准设置(&S)"
 END

@@ -292,11 +292,13 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Scheme"
+        POPUP "&Themes"
         BEGIN
+            MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
             MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
             MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
@@ -346,7 +348,7 @@ BEGIN
         END
         POPUP "&Toolbar"
         BEGIN
-            MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
+            MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
             MENUITEM "C&ustomise Toolbar...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB

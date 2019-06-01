@@ -292,11 +292,13 @@ BEGIN
     END
     POPUP "&Nézet"
     BEGIN
-        POPUP "&Színkiemelés"
+        POPUP "&Témák"
         BEGIN
+            MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "&Színkiemelési sablon...\tF12",                      IDM_VIEW_SCHEME
             MENUITEM "&2. színkiem. sablon\tShift+F12",                    IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Általános betûtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
             MENUITEM "&Jelenlegi sablon alap betûtípusa...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
