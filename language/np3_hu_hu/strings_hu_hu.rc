@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "N&yelv"
-    IDS_MUI_MENU_THEMES     "&Témák"
+    IDS_MUI_MENU_THEMES     "Téma &váltása"
     IDM_THEMES_DEFAULT      "Gyári érték"
     IDM_THEMES_FILE_ITEM    "Standard beállítások"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Fájlnév kiterjesztéseket ';'-vel kell elválasztani\r\n\
-Használja a  \\<reg.kif.>; fájlnév minta megadásához:\r\n\
+használja a  \\<reg.kif.>; fájlnév minta megadásához:\r\n\
    \\xyz$;   => fájlnevek (névtõ és kiterjesztés) ahol 'xyz' a vége.\r\n\r\n\
 Stílus formátum:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

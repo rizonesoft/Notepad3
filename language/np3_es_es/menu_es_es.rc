@@ -292,11 +292,13 @@ BEGIN
     END
     POPUP "&Vista"
     BEGIN
-        POPUP "&Esquema"
+        POPUP "&Temas"
         BEGIN
+            MENUITEM "&Personalizar Esquemas...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "&Sintaxis Esquema...\tF12",                       IDM_VIEW_SCHEME
             MENUITEM "&2º Esquema por defecto\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Personalizar Esquemas...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "&Fuente global por defecto...\tAlt+F12",          IDM_VIEW_FONT
             MENUITEM "Fuente del Esquema &actual por defecto...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END

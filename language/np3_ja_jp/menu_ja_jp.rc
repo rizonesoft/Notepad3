@@ -292,11 +292,13 @@ BEGIN
     END
     POPUP "表示(&V)"
     BEGIN
-        POPUP "配色(&S)"
+        POPUP "テーマ(&T)"
         BEGIN
+            MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "文書の種類を選択(&X)...\tF12",              IDM_VIEW_SCHEME
             MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
             MENUITEM "フォント設定/適用中(&H)...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
         END
@@ -346,8 +348,8 @@ BEGIN
         END
         POPUP "ツールバー(&T)"
         BEGIN
-            MENUITEM "ツールバーを表示(&B)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "アイコン大小の切り替え(&G)",                          IDM_VIEW_TOGGLETB
+            MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
+            MENUITEM "アイコン大小の切り替え(&G)",                    IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
             MENUITEM "ツールバー用独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
             MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR

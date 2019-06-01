@@ -292,11 +292,13 @@ BEGIN
     END
     POPUP "&Widok"
     BEGIN
-        POPUP "&Schemat"
+        POPUP "&Tematy"
         BEGIN
+            MENUITEM "&Dostosuj schematy...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Schemat sk³adni...\tF12",                               IDM_VIEW_SCHEME
             MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Dostosuj schematy...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
             MENUITEM "Domyœlna czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
@@ -346,7 +348,7 @@ BEGIN
         END
         POPUP "&Pasek narzêdzi"
         BEGIN
-            MENUITEM "Poka¿ pasek narzêdzi",                        IDM_VIEW_TOOLBAR
+            MENUITEM "&Poka¿ pasek narzêdzi",                        IDM_VIEW_TOOLBAR
             MENUITEM "Prze³¹cz pasek narzêdzi",                     IDM_VIEW_TOGGLETB
             MENUITEM "Dostosuj pasek narzêdzi...",                  IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Za³aduj motyw paska narzêdzi...",            IDM_VIEW_LOADTHEMETB
