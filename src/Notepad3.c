@@ -567,7 +567,10 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   int const pos = GetMenuItemCount(hMenuBar) - 1;
   if (pos >= 0) {
     GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-    return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
+    return res;
   }
   return false;
 }
