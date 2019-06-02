@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "&Affichage"
     BEGIN
-        POPUP "&Schème"
+        POPUP "&Thèmes"
         BEGIN
+            MENUITEM "&Personnaliser les Schèmes...\tCtrl+F12",         IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Schème Synta&xe...\tF12",                         IDM_VIEW_SCHEME
             MENUITEM "&2ème Défaut Schème\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Personnaliser les Schèmes...\tCtrl+F12",         IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Globale &Défaut Police...\tAlt+F12",              IDM_VIEW_FONT
             MENUITEM "Actuel Sc&hème Défaut Police...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
         END
@@ -349,7 +351,7 @@ BEGIN
         END
         POPUP "&Barre à outils"
         BEGIN
-            MENUITEM "A&fficher la barre à outils",         IDM_VIEW_TOOLBAR
+            MENUITEM "&Afficher la barre à outils",         IDM_VIEW_TOOLBAR
             MENUITEM "Al&terner la barre à outils",         IDM_VIEW_TOGGLETB
             MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Charger un thème d'outils...",       IDM_VIEW_LOADTHEMETB
@@ -438,7 +440,7 @@ BEGIN
             MENUITEM "&Ouvrir le ficher de configuration\tCtrl+F7",     CMD_OPENINIFILE
         END
     END
-    POPUP "&Aide"
+    POPUP "Ai&de"
     BEGIN
         MENUITEM "Documentation &en ligne\tF1",             IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR

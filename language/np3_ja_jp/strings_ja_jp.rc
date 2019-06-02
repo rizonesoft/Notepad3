@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
     IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error elevating user rights!"
+                            "ユーザー権限の昇格エラー。"
 END
 
 STRINGTABLE
@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "言語"
-    IDS_MUI_MENU_THEMES     "テーマ"
+    IDS_MUI_MENU_LANGUAGE   "言語(&L)"
+    IDS_MUI_MENU_THEMES     "テーマを切り替える(&S)"
     IDM_THEMES_DEFAULT      "初期設定"
     IDM_THEMES_FILE_ITEM    "標準設定"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 拡張子の区切りは ; です。\r\n\
-バックスラッシュ (\\) でファイル名の末尾のパターンを定義可能:\r\n\
+use \\<regex>; to define a filename matching pattern:\r\n\
    例 \\xyz$;   ファイル名(ベースファイル名+拡張子)の末尾が xyz に合致\r\n\r\n\
 設定書式(各指定は省略可能, foreは文字色):\r\n\
 font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\

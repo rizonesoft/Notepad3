@@ -4377,8 +4377,8 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
     iCurrentPos = Sci_GetDocEndPosition();
   }
 
-  const DocLn iNewLine = SciCall_LineFromPosition(iCurrentPos);
-  const DocLn iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+  DocLn const iNewLine = SciCall_LineFromPosition(iCurrentPos);
+  DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
 
   // Ensure that the first and last lines of a selection are always unfolded
   // This needs to be done *before* the SCI_SETSEL message
@@ -6207,6 +6207,7 @@ void EditSelectionMultiSelectAll()
     SciCall_MultipleSelectAddEach();
     SciCall_SetMainSelection(0);
     SciCall_ScrollRange(SciCall_GetSelectionNAnchor(0), SciCall_GetSelectionNCaret(0));
+    SciCall_ChooseCaretX();
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
@@ -6588,16 +6589,11 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       if (Settings.MarkOccurrencesCurrentWord && (flags & SCFIND_WHOLEWORD))
       {
         DocPos const iCurPos = SciCall_GetCurrentPos();
-        EditSelectWordAtPos(iCurPos, false);
-        size_t const len = SciCall_GetSelText(NULL);
-        if ((len > 1) && (len < COUNTOF(txtBuffer))) {
-          SciCall_GetSelText(txtBuffer);
-          SciCall_SetSelection(iCurPos, iCurPos);
-          iFindLength = len - 1;
-        }
-        else {
-          return; // selected word empty or too big
-        }
+        DocPos iWordStart = SciCall_WordStartPosition(iCurPos, true);
+        DocPos iWordEnd = SciCall_WordEndPosition(iCurPos, true);
+        if (iWordStart == iWordEnd) { return; }
+        iFindLength = (iWordEnd - iWordStart);
+        StringCchCopyNA(txtBuffer, COUNTOF(txtBuffer), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
       }
       else {
         return; // no pattern, no selection and no word mark chosen
@@ -7891,6 +7887,22 @@ void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
 
 //=============================================================================
 //
+//  EditShowZeroLengthCallTip()
+//
+static char s_chZeroLenCT[80] = { '\0' };
+
+void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
+{
+  UNUSED(hwnd);
+  if (s_chZeroLenCT[0] == '\0') {
+    GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, s_chZeroLenCT, COUNTOF(s_chZeroLenCT));
+  }
+  SciCall_CallTipShow(iPosition, s_chZeroLenCT);
+  Globals.CallTipType = CT_ZEROLEN_MATCH;
+}
+
+//=============================================================================
+//
 //  EditGetBookmarkList()
 //
 void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
@@ -8226,6 +8238,30 @@ cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 }
 
 
+//=============================================================================
+//
+//  EditBookmarkClick()
+//
+void  EditBookmarkClick(const DocLn ln, const int modifiers)
+{
+  UNUSED(modifiers);
+
+  int const bitmask = SciCall_MarkerGet(ln);
+
+  if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+  {
+    SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
+  }
+  else {
+    SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK);    // set
+  }
+
+  if (modifiers & SCMOD_ALT) {
+    SciCall_GotoLine(ln);
+  }
+}
+
+
 //==============================================================================
 //
 //  Folding Functions
@@ -8234,7 +8270,7 @@ cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 #define FOLD_CHILDREN SCMOD_CTRL
 #define FOLD_SIBLINGS SCMOD_SHIFT
 
-inline bool _FoldToggleNode(DocLn ln, FOLD_ACTION action)
+inline bool _FoldToggleNode(const DocLn ln, const FOLD_ACTION action)
 {
   bool const fExpanded = SciCall_GetFoldExpanded(ln);
   if ((action == SNIFF) || ((action == FOLD) && fExpanded) || ((action == EXPAND) && !fExpanded))
@@ -8246,7 +8282,7 @@ inline bool _FoldToggleNode(DocLn ln, FOLD_ACTION action)
 }
 
 
-void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
+void EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
 {
   bool fToggled = false;
   if (action == SNIFF) {
@@ -8255,9 +8291,9 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
   if (mode & (FOLD_CHILDREN | FOLD_SIBLINGS))
   {
     // ln/lvNode: line and level of the source of this fold action
-    DocLn lnNode = ln;
-    int lvNode = SciCall_GetFoldLevel(lnNode) & SC_FOLDLEVELNUMBERMASK;
-    DocLn lnTotal = SciCall_GetLineCount();
+    DocLn const lnNode = ln;
+    int const lvNode = SciCall_GetFoldLevel(lnNode) & SC_FOLDLEVELNUMBERMASK;
+    DocLn const lnTotal = SciCall_GetLineCount();
 
     // lvStop: the level over which we should not cross
     int lvStop = lvNode;
@@ -8408,23 +8444,6 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
       }
     }
   }
-}
-
-
-//=============================================================================
-//
-//  EditShowZeroLengthCallTip()
-//
-static char s_chZeroLenCT[80] = { '\0' };
-
-void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
-{
-  UNUSED(hwnd);
-  if (s_chZeroLenCT[0] == '\0') {
-    GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, s_chZeroLenCT, COUNTOF(s_chZeroLenCT));
-  }
-  SciCall_CallTipShow(iPosition, s_chZeroLenCT);
-  Globals.CallTipType = CT_ZEROLEN_MATCH;
 }
 
 ///   End of Edit.c   ///

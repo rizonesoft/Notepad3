@@ -259,7 +259,7 @@ void Style_SetIniFile(LPCWSTR szIniFile)
 bool Style_InsertThemesMenu(HMENU hMenuBar)
 {
   HMENU hmenuThemes = CreatePopupMenu();
-  int const pos = GetMenuItemCount(hMenuBar) - 1;
+  //int const pos = GetMenuItemCount(hMenuBar) - 1;
 
   GetLngString(Theme_Files[0].rid, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
   GetLngString(Theme_Files[1].rid, Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName));
@@ -281,7 +281,8 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   WCHAR wchMenuItemStrg[80] = { L'\0' };
   GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
 
-  bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
+  //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
+  bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
 
   CheckCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, true);
 
@@ -1615,6 +1616,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 {
   if (iStyle == STYLE_LINENUMBER) {
     Style_SetStyles(hwnd, iStyle, lpszStyle, false);   // line numbers
+    //~SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, true);
   }
 
   COLORREF clrFore = SciCall_StyleGetFore(STYLE_LINENUMBER);
@@ -1653,6 +1655,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
   SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
+  SciCall_SetMarginSensitiveN(MARGIN_SCI_BOOKMRK, true);
+  SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
 
   // ---  Code folding  ---
 

@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Мова"
-    IDS_MUI_MENU_THEMES     "Тэмы"
+    IDS_MUI_MENU_LANGUAGE   "&Мова"
+    IDS_MUI_MENU_THEMES     "&Перамыкач Тэмы"
     IDM_THEMES_DEFAULT      "Завадскія налады"
     IDM_THEMES_FILE_ITEM    "Стандартныя налады"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Пашырэнні файлаў павінны быць падзелены сімвалам ;\r\n\
-з адваротнай рыскай (\\), RegEx вызначае шаблон канчатку імя файла:\r\n\
+выкарыстоўвайце \\<regex>; каб вызначыць шаблон імя файла:\r\n\
    \\xyz$;   => імя файла (basename+ext) з 'xyz' на канцы.\r\n\r\n\
 Фармат стылю:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

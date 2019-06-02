@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "나라말"
-    IDS_MUI_MENU_THEMES     "테마"
+    IDS_MUI_MENU_LANGUAGE   "나라말(&L)"
+    IDS_MUI_MENU_THEMES     "테마 전환(&S)"
     IDM_THEMES_DEFAULT      "초기화"
     IDM_THEMES_FILE_ITEM    "표준 설정"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 확장자는 ';' 로 구분되어야 합니다.\r\n\
-백 슬래시(\\)를 사용하여, 파일 이름 끝 패턴 정규식을 정의:\r\n\
+\\<regex> 사용; 파일 이름과 일치하는 패턴 정의:\r\n\
    \\xyz$;   => 'xyz'로 파일 이름(기본 이름+확장자) 지정.\r\n\r\n\
 스타일 형식:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

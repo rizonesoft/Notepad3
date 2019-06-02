@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Erreur lors de la conversion de ce fichier Unicode.\nLes données seront perdues si le fichier est sauvegardé!"
     IDS_MUI_ERR_BITMAP      "Erreur chargement bitmap ""%s"".\nDimensions nécessaires: %i x %i (largeur >= %i x hauteur)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Erreur lors de l'élévation des droits de l'utilisateur!"
+                            "Erreur d'élévation des droits de l'utilisateur!"
 END
 
 STRINGTABLE
@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Langue"
-    IDS_MUI_MENU_THEMES     "Thèmes"
+    IDS_MUI_MENU_LANGUAGE   "&Langue"
+    IDS_MUI_MENU_THEMES     "&Changer de thème"
     IDM_THEMES_DEFAULT      "Défaut de fabrication"
     IDM_THEMES_FILE_ITEM    "Paramètres standard"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Les extensions de fichier sont séparées par ';'\r\n\
-avec un Backslash (\\), RegEx définit un modèle de fin de nom de fichier:\r\n\
+utiliser \\<regex>; pour définir un modèle correspondant au nom de fichier:\r\n\
    \\xyz$;   => noms de fichier(basename+ext) avec 'xyz'comme derniers caractères.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

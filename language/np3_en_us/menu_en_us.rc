@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Scheme"
+        POPUP "&Themes"
         BEGIN
+            MENUITEM "&Customize Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
             MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Customize Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
             MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
@@ -401,7 +403,7 @@ BEGIN
             MENUITEM "Preser&ve Caret Position",    IDM_VIEW_NOPRESERVECARET
             MENUITEM "Remember S&earch Pattern",    IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "&Window"
+        POPUP "W&indow"
         BEGIN
             POPUP "Window Title Displa&y"
             BEGIN

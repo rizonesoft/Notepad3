@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "查看(&V)"
     BEGIN
-        POPUP "语法高亮方案(&S)"
+        POPUP "主题(&T)"
         BEGIN
+            MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "选择语法高亮方案(&X)...\tF12",                 IDM_VIEW_SCHEME
             MENUITEM "使用备选基本样式(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
             MENUITEM "当前方案默认字体(&H)...\tCtrl+Alt+F12",        IDM_VIEW_CURRENTSCHEME
         END
@@ -401,7 +403,7 @@ BEGIN
             MENUITEM "记忆插入光标位置(&V)",                   IDM_VIEW_NOPRESERVECARET
             MENUITEM "记忆查找方式(&E)",                       IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "窗口(&W)"
+        POPUP "窗口(&I)"
         BEGIN
             POPUP "标题栏显示(&Y)"
             BEGIN

@@ -709,7 +709,10 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   int const pos = GetMenuItemCount(hMenuBar) - 1;
   if (pos >= 0) {
     GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-    return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
+    return res;
   }
   return false;
 }
@@ -4688,12 +4691,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_SELTOMATCHINGBRACE:
-      {
-        _BEGIN_UNDO_ACTION_
+    {
+      _BEGIN_UNDO_ACTION_
         EditSelectToMatchingBrace(Globals.hwndEdit);
-        _END_UNDO_ACTION_
-      }
-      break;
+      _END_UNDO_ACTION_
+    }
+    break;
 
 
     // Main Bookmark Functions
@@ -4715,8 +4718,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_GotoLine(iNextLine);
             SciCall_ScrollCaret();
         }
-        break;
     }
+    break;
 
     case BME_EDIT_BOOKMARKPREV:
     {
@@ -4736,29 +4739,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_GotoLine(iNextLine);
             SciCall_ScrollCaret();
         }
-        break;
     }
+    break;
+
 
     case BME_EDIT_BOOKMARKTOGGLE:
-      {
-        const DocPos iPos = SciCall_GetCurrentPos();
-        const DocLn iLine = SciCall_LineFromPosition(iPos);
+    {
+      const DocLn ln = Sci_GetCurrentLineNumber();
+      EditBookmarkClick(ln, 0);
+    }
+    break;
 
-        int bitmask = SciCall_MarkerGet(iLine);
-
-        if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
-          SciCall_MarkerDelete(iLine, MARKER_NP3_BOOKMARK); // unset
-        }
-        else {
-          SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);    // set
-        }
-        break;
-      }
 
     case BME_EDIT_BOOKMARKCLEAR:
       SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
     break;
-
 
 
     case IDM_EDIT_FIND:
@@ -4818,6 +4813,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_RotateSelection();
             DocPosU const iMain = SciCall_GetMainSelection();
             SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iMain), SciCall_GetSelectionNCaret(iMain));
+            SciCall_ChooseCaretX();
           }
           break;
 
@@ -4832,6 +4828,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               SciCall_SetMainSelection(iNewMain);
               SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iNewMain), SciCall_GetSelectionNCaret(iNewMain));
             }
+            SciCall_ChooseCaretX();
           }
           break;
 
@@ -6778,6 +6775,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_CALLTIPCLICK:
       return 0;
 
+
     case SCN_MODIFIED:
     {
       int const iModType = scn->modificationType;
@@ -6813,11 +6811,13 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     }
     break;
 
+
     case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
     {
       EditFinalizeStyling(Globals.hwndEdit, scn->position);
     }
     break;
+
 
     case SCN_UPDATEUI:
     {
@@ -6867,6 +6867,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     }
     break;
 
+
     case SCN_DWELLSTART:
     case SCN_DWELLEND:
     {
@@ -6874,11 +6875,13 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     }
     break;
 
+
     case SCN_INDICATORCLICK:
     {
       _s_indic_click_modifiers = scn->modifiers;
     }
     break;
+
 
     case SCN_INDICATORRELEASE:
     {
@@ -6893,6 +6896,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       _s_indic_click_modifiers = 0;
     }
     break;
+
 
     case SCN_CHARADDED:
     {
@@ -6924,6 +6928,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     }
     break;
 
+
     case SCN_AUTOCCHARDELETED:
       if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords))
       {
@@ -6931,27 +6936,43 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       }
       break;
 
+
     case SCN_NEEDSHOWN:
     {
-      DocLn const iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
-      DocLn const iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
+      DocLn const iFirstLine = SciCall_LineFromPosition(scn->position);
+      DocLn const iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
       for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
       UpdateVisibleUrlIndics();
     }
     break;
 
+
     case SCN_MARGINCLICK:
-      if (scn->margin == MARGIN_SCI_FOLDING) {
-        EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
-      }
+    switch (scn->margin) 
+    {
+      case MARGIN_SCI_FOLDING:
+        EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+        break;
+      case MARGIN_SCI_BOOKMRK:
+        EditBookmarkClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+        break;
+      case MARGIN_SCI_LINENUM:
+      default:
+        break;
+    }
+    break;
+
+
+    case SCN_MARGINRIGHTCLICK:
       break;
 
-      // ~~~ Not used in Windows ~~~
-      // see: CMD_ALTUP / CMD_ALTDOWN
-      //case SCN_KEY:
-      //  // Also see the corresponding patch in scintilla\src\Editor.cxx
-      //  FoldAltArrow(scn->ch, scn->modifiers);
-      //  break;
+
+    // ~~~ Not used in Windows ~~~
+    // see: CMD_ALTUP / CMD_ALTDOWN
+    //case SCN_KEY:
+    //  // Also see the corresponding patch in scintilla\src\Editor.cxx
+    //  FoldAltArrow(scn->ch, scn->modifiers);
+    //  break;
 
 
     case SCN_SAVEPOINTREACHED:
@@ -6967,6 +6988,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_ZOOM:
       UpdateMarginWidth();
       break;
+
 
     case SCN_URIDROPPED:
     {

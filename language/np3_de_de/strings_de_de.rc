@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Sprache"
-    IDS_MUI_MENU_THEMES     "Farbschema"
+    IDS_MUI_MENU_LANGUAGE   "&Sprache"
+    IDS_MUI_MENU_THEMES     "&Thema Wechseln"
     IDM_THEMES_DEFAULT      "Fabrik-Vorgaben"
     IDM_THEMES_FILE_ITEM    "Standard Einstellungen"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\
-mit einem Backslash (\\), RegEx definiert ein Ende Dateinamens-Muster:\r\n\
+nutze \\<regex>; um ein Regular Expression für Dateinamen zu definieren:\r\n\
    \\xyz$;   => Dateinamen(basename+ext) mit 'xyz' am Ende.\r\n\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

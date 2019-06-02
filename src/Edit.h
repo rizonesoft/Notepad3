@@ -110,12 +110,12 @@ void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 void  EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
+void  EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
-
+void  EditBookmarkClick(const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
-
 void  EditSelectionMultiSelectAll();
 
 
@@ -156,10 +156,8 @@ void EditToggleFolds(FOLD_ACTION action,bool);
 void EditFoldClick(DocLn ln, int mode);
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
 
-void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 
 #define NP3_BRACES_TO_MATCH "()[]{}"
-
 
 #define GetMarkAllOccSearchFlags()  EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,\
                                       Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false)

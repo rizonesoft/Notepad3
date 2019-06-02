@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode.\nCi sarà una perdita di dati se salvi il file!"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Errore durante l'aumento dei diritti utente!"
+                            "Errore di elevazione dei diritti utente!"
 END
 
 STRINGTABLE
@@ -233,8 +233,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Lingua"
-    IDS_MUI_MENU_THEMES     "Temi"
+    IDS_MUI_MENU_LANGUAGE   "&Lingua"
+    IDS_MUI_MENU_THEMES     "&Cambia tema"
     IDM_THEMES_DEFAULT      "Impostazioni di fabbrica"
     IDM_THEMES_FILE_ITEM    "Impostazioni standard"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Le estensioni devono essere separate con ';'\r\n\
-un backslash (\\), la RegEx definisce un pattern EOF:\r\n\
+Usa il backslash (\\) per definire un pattern di riconoscimento filename:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Formato Stile:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
