@@ -8238,6 +8238,30 @@ cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 }
 
 
+//=============================================================================
+//
+//  EditBookmarkClick()
+//
+void  EditBookmarkClick(const DocLn ln, const int modifiers)
+{
+  UNUSED(modifiers);
+
+  int const bitmask = SciCall_MarkerGet(ln);
+
+  if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+  {
+    SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
+  }
+  else {
+    SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK);    // set
+  }
+
+  if (modifiers & SCMOD_ALT) {
+    SciCall_GotoLine(ln);
+  }
+}
+
+
 //==============================================================================
 //
 //  Folding Functions

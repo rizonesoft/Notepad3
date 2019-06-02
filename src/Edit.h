@@ -113,6 +113,7 @@ bool  EditAutoCompleteWord(HWND hwnd,bool);
 void  EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
+void  EditBookmarkClick(const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
 void  EditSelectionMultiSelectAll();
