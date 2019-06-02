@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "보기(&V)"
     BEGIN
-        POPUP "스키마(&S)"
+        POPUP "테마(&T)"
         BEGIN
+            MENUITEM "스키마 편집(&C)...\tCtrl+F12",                  IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "구문 스키마(&X)...\tF12",                       IDM_VIEW_SCHEME
             MENUITEM "&2nd 기본 스키마\tShift+F12",                   IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "스키마 편집(&C)...\tCtrl+F12",                  IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "전체 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
             MENUITEM "현재 스키마 기본 글꼴(&H)...\tCtrl+Alt+F12",    IDM_VIEW_CURRENTSCHEME
         END
@@ -349,7 +351,7 @@ BEGIN
         END
         POPUP "도구 모음(&T)"
         BEGIN
-            MENUITEM "도구 모음 보이기(&B)",               IDM_VIEW_TOOLBAR
+            MENUITEM "도구 모음 보이기(&T)",               IDM_VIEW_TOOLBAR
             MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
             MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
             MENUITEM "도구 모음 테마 변경(&L)...",          IDM_VIEW_LOADTHEMETB

@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "&Aansig"
     BEGIN
-        POPUP "&Skema"
+        POPUP "&Temas"
         BEGIN
+            MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "&Sintakseskema...\tF12",                               IDM_VIEW_SCHEME
             MENUITEM "&2de Verstek Skema\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
             MENUITEM "Huidige Skema se Verstek Font...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME
         END
@@ -349,7 +351,7 @@ BEGIN
         END
         POPUP "Nu&tsbalk"
         BEGIN
-            MENUITEM "Wys Nuts&balk",                       IDM_VIEW_TOOLBAR
+            MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Nutsbalk",                    IDM_VIEW_TOGGLETB
             MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB

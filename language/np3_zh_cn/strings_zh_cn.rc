@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "语言(&L)"
-    IDS_MUI_MENU_THEMES     "主题(&T)"
+    IDS_MUI_MENU_THEMES     "切换主题(&S)"
     IDM_THEMES_DEFAULT      "工厂默认(&F)"
     IDM_THEMES_FILE_ITEM    "标准设置(&S)"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 文件扩展名必须以 ; 隔开。\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
+使用 \\<regex>; 可定义用于匹配文件名的正则表达式：\r\n\
    例如 \\xyz$; 可匹配以 xyz 结尾的文件名（含扩展名）。\r\n\r\n\
 样式格式：\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
     IDS_MUI_ERR_BITMAP      "Kon nie bitmap ""%s"" laai nie.\nBenodig afmetings: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Fout tydens die verhoging van gebruikersregte!"
+                            "Fout die verhoging van gebruikersregte!"
 END
 
 STRINGTABLE
@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
-    IDS_MUI_MENU_THEMES     "T&emas"
+    IDS_MUI_MENU_THEMES     "&Skakel Tema"
     IDM_THEMES_DEFAULT      "Fabriek Verstek"
     IDM_THEMES_FILE_ITEM    "Standaard Instellings"
 END
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Lêernaam uitbreidings moet geskei word deur ;\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
+gebruik \\<regex>; om 'n lêernaampasvorm te definieer:\r\n\
    \\xyz$;   => lêername(basisnaam+ext) met 'xyz' vir laaste karakters\r\n\r\n\
 Stylformaat:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\

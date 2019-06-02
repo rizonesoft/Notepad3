@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "&Ansicht"
     BEGIN
-        POPUP "&Schema"
+        POPUP "&Themen"
         BEGIN
+            MENUITEM "&Syntax Schemata anpassen...\tCtrl+F12",  IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Standard Synta&x Schema...\tF12",         IDM_VIEW_SCHEME
             MENUITEM "&2tes Standard Schema\tShift+F12",        IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Syntax Schemata anpassen...\tCtrl+F12",  IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Globaler &Standard Font...\tAlt+F12",     IDM_VIEW_FONT
             MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
         END

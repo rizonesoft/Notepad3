@@ -295,11 +295,13 @@ BEGIN
     END
     POPUP "&Visualizza"
     BEGIN
-        POPUP "&Schema"
+        POPUP "&Temi"
         BEGIN
+            MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Schema Sintassi...\tF12",                                IDM_VIEW_SCHEME
             MENUITEM "&2° Schema di Default\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
+            MENUITEM SEPARATOR
             MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
             MENUITEM "Font di Default dello Schema corrente...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
@@ -349,7 +351,7 @@ BEGIN
         END
         POPUP "&Toolbar"
         BEGIN
-            MENUITEM "Mostra Tool&bar",               IDM_VIEW_TOOLBAR
+            MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "Ca&mbia Toolbar",               IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Carica Tema Toolbar...",       IDM_VIEW_LOADTHEMETB
