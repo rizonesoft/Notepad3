@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
             MENUITEM "&Továbbiak...\tF9",                  IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "K&ódolás detektálásának erõltetése", CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Újrakódolás az ala&pért.-re\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Újrakódolás A&NSI-ra\tCtrl-Shift+A",      CMD_RECODEANSI
             MENUITEM "Újrakódolás &OEM-re\tCtrl+Shift+O",       CMD_RECODEOEM
             MENUITEM "Újrakódolás &GB18030-ra\tCtrl+Shift+F10", CMD_RECODEGB18030
+            MENUITEM "Újrakódolás az UCHARDET elemzéshez",      CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII-t UTF-8-k&ént\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
             MENUITEM "Kódolási elemek ki&hagyása\tAlt+F8", CMD_RELOADNOFILEVARS
