@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 拡張子の区切りは ; です。\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
+\\正規表現記法; という書式でファイル名の一致パターンを定義できます:\r\n\
    例 \\xyz$;   ファイル名(ベースファイル名+拡張子)の末尾が xyz に合致\r\n\r\n\
 設定書式(各指定は省略可能, foreは文字色):\r\n\
 font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\
