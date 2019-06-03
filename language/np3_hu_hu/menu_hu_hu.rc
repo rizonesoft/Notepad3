@@ -397,7 +397,7 @@ BEGIN
         POPUP "&Emlékezés"
         BEGIN
             MENUITEM "&Legutóbbi fájlokra emlékezzen",  IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Õrizze meg a kurzos pozícióját", IDM_VIEW_NOPRESERVECARET
+            MENUITEM "&Õrizze meg a kurzor pozícióját", IDM_VIEW_NOPRESERVECARET
             MENUITEM "&Keresési mintákre emlékezzen",   IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Ablak"
