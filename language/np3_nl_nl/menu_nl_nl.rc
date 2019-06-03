@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 met &signatuur",                    IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                            IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Forceren encodering detectie",            CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Hercoderen naar &Standaard\tCtrl-Alt-F",    CMD_RECODEDEFAULT
             MENUITEM "Hercoderen naar &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
             MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Hercoderen naar &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM "Hercoderen naar UCHARDET-analyse",          CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
             MENUITEM "Encoderingst&ags negeren\tAlt+F8",          CMD_RELOADNOFILEVARS

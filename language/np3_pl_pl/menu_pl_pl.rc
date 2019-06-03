@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 z &sygnatur¹",                 IDM_ENCODING_UTF8SIGN
             MENUITEM "&Wiêcej...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Wymuœ wykrywanie kodowania",                 CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Przekoduj na domyœlny &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Przekoduj na &ANSI\tCtrl-Shift+A",           CMD_RECODEANSI
             MENUITEM "Przekoduj na &OEM\tCtrl+Shift+O",            CMD_RECODEOEM
             MENUITEM "Przekoduj na &GB18030\tCtrl+Shift+F10",      CMD_RECODEGB18030
+            MENUITEM "Przekoduj na analizy UCHARDET",              CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII jako UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
             MENUITEM "Ignoruj znaczniki &kodowania\tAlt+F8",       CMD_RELOADNOFILEVARS
