@@ -291,17 +291,6 @@ BEGIN
     END
     POPUP "Beel&d"
     BEGIN
-        POPUP "&Thema's"
-        BEGIN
-            MENUITEM "&Aanpassen Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Synta&xis Scheme...\tF12",                        IDM_VIEW_SCHEME
-            MENUITEM "&2de Standaard Scheme\tShift+F12",                IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Globaal Stan&daard Lettertype...\tAlt+F12",       IDM_VIEW_FONT
-            MENUITEM "Actueel Sc&heme Standaard Lettertype...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Automatische &terugloop\tCtrl+W",         IDM_VIEW_WORDWRAP
         MENUITEM "&Lange lijnmarkering\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
         MENUITEM "Inspringen gidsen\tCtrl+Shift+G",         IDM_VIEW_SHOWINDENTGUIDES
@@ -370,6 +359,16 @@ BEGIN
             MENUITEM "Kleverige vensterppositie",                       IDM_VIEW_STICKYWINPOS
         END
     END
+    POPUP "&Uiterlijk"
+    BEGIN
+        MENUITEM "&Aanpassen Schemes...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Selecteren Synta&x Scheme...\tF12",                     IDM_VIEW_SCHEME
+        MENUITEM "&2de Standaard Scheme\tShift+F12",                      IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Globaal Stan&daard Lettertype...\tAlt+F12",             IDM_VIEW_FONT
+        MENUITEM "Actueel Sc&heme Standaard Lettertype...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        END
     POPUP "&Instellingen"
     BEGIN
         MENUITEM "Invoegen tabs als &spaties",                          IDM_VIEW_TABSASSPACES

@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "나라말(&L)"
-    IDS_MUI_MENU_THEMES     "테마 전환(&S)"
+    IDS_MUI_MENU_THEMES     "Scheme Collection(&S)"
     IDM_THEMES_DEFAULT      "초기화"
     IDM_THEMES_FILE_ITEM    "표준 설정"
 END

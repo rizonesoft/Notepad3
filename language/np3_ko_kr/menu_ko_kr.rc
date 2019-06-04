@@ -291,17 +291,6 @@ BEGIN
     END
     POPUP "보기(&V)"
     BEGIN
-        POPUP "테마(&T)"
-        BEGIN
-            MENUITEM "스키마 편집(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "구문 스키마(&X)...\tF12",                      IDM_VIEW_SCHEME
-            MENUITEM "&2nd 기본 스키마\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "전체 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
-            MENUITEM "현재 스키마 기본 글꼴(&H)...\tCtrl+Alt+F12",     IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "워드 랩(&R)\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "긴 줄 표시(&L)\tCtrl+Shift+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "들여쓰기 안내선(&A)\tCtrl+Shift+G",        IDM_VIEW_SHOWINDENTGUIDES
@@ -370,6 +359,16 @@ BEGIN
             MENUITEM "창 위치 고정(&P)",                  IDM_VIEW_STICKYWINPOS
         END
     END
+    POPUP "Appearance(&P)"
+    BEGIN
+        MENUITEM "스키마 편집(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Syntax Scheme(&X)...\tF12",          IDM_VIEW_SCHEME
+        MENUITEM "&2nd 기본 스키마\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "전체 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
+        MENUITEM "현재 스키마 기본 글꼴(&H)...\tCtrl+Alt+F12",      IDM_VIEW_CURRENTSCHEME
+        END
     POPUP "설정(&S)"
     BEGIN
         MENUITEM "탭을 공백으로 삽입(&S)",                   IDM_VIEW_TABSASSPACES

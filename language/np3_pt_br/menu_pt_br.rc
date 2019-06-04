@@ -291,17 +291,6 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Themes"
-        BEGIN
-            MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
-            MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
-            MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Word W&rap\tCtrl+W",                   IDM_VIEW_WORDWRAP
         MENUITEM "&Long Line Marker\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&ation Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
@@ -369,6 +358,16 @@ BEGIN
             MENUITEM "Toggle Full Area Position\tF11",         CMD_FULLSCRWINPOS
             MENUITEM "Sticky Window &Position",                IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
+        MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Settings"
     BEGIN

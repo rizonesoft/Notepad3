@@ -291,17 +291,6 @@ BEGIN
     END
     POPUP "&Aansig"
     BEGIN
-        POPUP "&Temas"
-        BEGIN
-            MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "&Sintakseskema...\tF12",                               IDM_VIEW_SCHEME
-            MENUITEM "&2de Verstek Skema\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
-            MENUITEM "Huidige Skema se Verstek Font...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Woord Oo&rvloei\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "&Lang Lyn Merker\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&asiegidse\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
@@ -369,6 +358,16 @@ BEGIN
             MENUITEM "Wissel Volle Area Posisie\tF11",               CMD_FULLSCRWINPOS
             MENUITEM "Klewerige Venster &Posisie",                   IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",                        IDM_VIEW_SCHEME
+        MENUITEM "&2de Verstek Skema\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
+        MENUITEM "Huidige Skema se Verstek Font...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Instellings"
     BEGIN
