@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "Переоткрыть в A&NSI\tCtrl-Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
             MENUITEM "Переоткрыть в &GB18030\tCtrl+Shift+F10",              CMD_RECODEGB18030
-            MENUITEM "Переоткрыть в UCHARDET Анализ",                       CMD_RELOADFORCEDETECTION
+            MENUITEM "Переоткрыть с &UCHARDET анализом",                    CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ASCII &как UTF-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
             MENUITEM "Игнорировать &теги кодировки\tAlt+F8",                CMD_RELOADNOFILEVARS

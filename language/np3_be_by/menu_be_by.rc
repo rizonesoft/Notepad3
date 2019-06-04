@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "Пераадкрыць у A&NSI\tCtrl-Shift+A",                 CMD_RECODEANSI
             MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
             MENUITEM "Пераадкрыць у &GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
-            MENUITEM "Пераадкрыць у UCHARDET аналізу",                    CMD_RELOADFORCEDETECTION
+            MENUITEM "Пераадкрыць з &UCHARDET аналізам",                  CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
             MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",                  CMD_RELOADNOFILEVARS
