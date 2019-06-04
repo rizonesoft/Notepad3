@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
     IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "ユーザー権限の昇格エラー。"
+                            "権限取得のエラー。"
 END
 
 STRINGTABLE
@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語(&L)"
-    IDS_MUI_MENU_THEMES     "テーマを切り替える(&S)"
+    IDS_MUI_MENU_THEMES     "テーマの切り替え(&S)"
     IDM_THEMES_DEFAULT      "初期設定"
     IDM_THEMES_FILE_ITEM    "標準設定"
 END
