@@ -3670,8 +3670,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (s_flagPasteBoard) {
         s_bLastCopyFromMe = true;
       }
-      if (!HandleHotSpotURL(SciCall_GetCurrentPos(), COPY_HYPERLINK)) {
-        SciCall_CopyAllowLine();
+      if (!SciCall_IsSelectionEmpty() || 
+          !HandleHotSpotURL(SciCall_GetCurrentPos(), COPY_HYPERLINK))
+      {
+          SciCall_CopyAllowLine();
       }
       UpdateToolbar();
       break;
