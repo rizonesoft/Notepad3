@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "行頭削除\tAlt+Z",                       IDM_EDIT_STRIP1STCHAR
             MENUITEM "行末削除(&L)\tAlt+U",                   IDM_EDIT_STRIPLASTCHAR
             MENUITEM "末尾の空白削除(&T)\tAlt+W",              IDM_EDIT_TRIMLINES
-            MENUITEM "空白をまとめる(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "空白をまとめる(&W)\tCtrl+Alt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "行の修飾(&M)...\tAlt+M",                 IDM_EDIT_MODIFYLINES
             MENUITEM "行の整列(&A)...\tAlt+J",                 IDM_EDIT_ALIGN

@@ -200,11 +200,11 @@ BEGIN
             END
             MENUITEM "¸´Ð´Ñ¡¶¨ÄÚÈÝ/ÐÐ(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "Ìî³ä¿Õ¸ñ(&P)\tAlt+B",                     IDM_EDIT_PADWITHSPACES
+            MENUITEM "Ìî³ä¿Õ¸ñ(&P)\tAlt+B",                    IDM_EDIT_PADWITHSPACES
             MENUITEM "É¾³ýµÚÒ»¸ö×Ö·û(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
             MENUITEM "É¾³ý×îºóÒ»¸ö×Ö·û(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "É¾³ýÐÐÎ²¿Õ¸ñ(&T)\tAlt+W",                IDM_EDIT_TRIMLINES
-            MENUITEM "Ñ¹Ëõ¿Õ°××Ö·û(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "É¾³ýÐÐÎ²¿Õ¸ñ(&T)\tAlt+W",                 IDM_EDIT_TRIMLINES
+            MENUITEM "Ñ¹Ëõ¿Õ°××Ö·û(&W)\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "ÐÞ¸Ä(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "¶ÔÆë(&A)...\tAlt+J",                     IDM_EDIT_ALIGN

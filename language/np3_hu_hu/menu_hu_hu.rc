@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "&Elsõ kar. törlése\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
             MENUITEM "&Utolsó kar. törlése\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Sorvégi &üres kar. törlése\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Üres kar. &tömörítése\tAlt+P",      IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Üres kar. &tömörítése\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
             MENUITEM "Sorok i&gazítása...\tAlt+J",        IDM_EDIT_ALIGN
