@@ -291,17 +291,6 @@ BEGIN
     END
     POPUP "&Vista"
     BEGIN
-        POPUP "&Temas"
-        BEGIN
-            MENUITEM "&Personalizar Esquemas...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "&Sintaxis Esquema...\tF12",                       IDM_VIEW_SCHEME
-            MENUITEM "&2º Esquema por defecto\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "&Fuente global por defecto...\tAlt+F12",          IDM_VIEW_FONT
-            MENUITEM "Fuente del Esquema &actual por defecto...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "&Ajuste automático de línea\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "&Marcador de línea larga\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guías de Sangría\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES
@@ -369,6 +358,16 @@ BEGIN
             MENUITEM "&Alternar posición de área completa\tF11",        CMD_FULLSCRWINPOS
             MENUITEM "&Fijar la posición de la ventana",                IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&pariencia"
+    BEGIN
+        MENUITEM "&Personalizar Esquemas...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Seleccionar Esquema Sinta&xis...\tF12",           IDM_VIEW_SCHEME
+        MENUITEM "&2º Esquema por defecto\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "&Fuente global por defecto...\tAlt+F12",          IDM_VIEW_FONT
+        MENUITEM "Fuente del Esquema &actual por defecto...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Configuración"
     BEGIN

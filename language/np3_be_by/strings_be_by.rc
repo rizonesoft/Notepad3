@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Мова"
-    IDS_MUI_MENU_THEMES     "&Перамыкач Тэмы"
+    IDS_MUI_MENU_THEMES     "&Scheme Collection"
     IDM_THEMES_DEFAULT      "Завадскія налады"
     IDM_THEMES_FILE_ITEM    "Стандартныя налады"
 END

@@ -291,17 +291,6 @@ BEGIN
     END
     POPUP "&Widok"
     BEGIN
-        POPUP "&Tematy"
-        BEGIN
-            MENUITEM "&Dostosuj schematy...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Schemat sk³adni...\tF12",                               IDM_VIEW_SCHEME
-            MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
-            MENUITEM "Domyœlna czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Zawijanie wierszy\tCtrl+W",                       IDM_VIEW_WORDWRAP
         MENUITEM "&Znacznik d³ugoœci wiersza\tCtrl+Shift+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "Linie pomocnicze wciêæ\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES
@@ -370,6 +359,16 @@ BEGIN
             MENUITEM "Sticky Window &Position",                     IDM_VIEW_STICKYWINPOS
         END
     END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Dostosuj schematy...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",                         IDM_VIEW_SCHEME
+        MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
+        MENUITEM "Domyœlna czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        END
     POPUP "&Ustawienia"
     BEGIN
         MENUITEM "Wstaw spacjê zamiast tabulacji",                  IDM_VIEW_TABSASSPACES

@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
-    IDS_MUI_MENU_THEMES     "&Skakel Tema"
+    IDS_MUI_MENU_THEMES     "&Scheme Collection"
     IDM_THEMES_DEFAULT      "Fabriek Verstek"
     IDM_THEMES_FILE_ITEM    "Standaard Instellings"
 END
