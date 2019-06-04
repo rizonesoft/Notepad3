@@ -256,10 +256,13 @@ void Style_SetIniFile(LPCWSTR szIniFile)
 //
 //  Style_InsertThemesMenu()
 //
+static HMENU s_hmenuThemes = NULL;
+
 bool Style_InsertThemesMenu(HMENU hMenuBar)
 {
-  HMENU hmenuThemes = CreatePopupMenu();
-  //int const pos = GetMenuItemCount(hMenuBar) - 1;
+  if (s_hmenuThemes) { DestroyMenu(s_hmenuThemes); }
+  s_hmenuThemes = CreatePopupMenu();
+  //int const pos = GetMenuItemCount(hMenuBar) - 2;
 
   GetLngString(Theme_Files[0].rid, Theme_Files[0].szName, COUNTOF(Theme_Files[0].szName));
   GetLngString(Theme_Files[1].rid, Theme_Files[1].szName, COUNTOF(Theme_Files[1].szName));
@@ -267,10 +270,10 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   for (unsigned i = 0; i < ThemeItems_CountOf(); ++i)
   {
     if (i == 2) {
-      AppendMenu(hmenuThemes, MF_SEPARATOR, 0, 0);
+      AppendMenu(s_hmenuThemes, MF_SEPARATOR, 0, 0);
     }
     if (Theme_Files[i].rid > 0) {
-      AppendMenu(hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szName);
+      AppendMenu(s_hmenuThemes, MF_ENABLED | MF_STRING, Theme_Files[i].rid, Theme_Files[i].szName);
     }
     else {
       break; // done
@@ -281,8 +284,8 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   WCHAR wchMenuItemStrg[80] = { L'\0' };
   GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
 
-  //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
-  bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)hmenuThemes, wchMenuItemStrg);
+  //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
+  bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
 
   CheckCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, true);
 
@@ -300,6 +303,12 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
 //  Style_DynamicThemesMenuCmd() - Handles IDS_MUI_MENU_THEMES messages
 //
 //
+static void _EnableSchemeConfig(const bool bEnable)
+{
+  EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_SCHEMECONFIG, bEnable);
+  EnableTool(Globals.hwndToolbar, IDT_VIEW_SCHEMECONFIG, bEnable);
+}
+
 void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
 {
   unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
@@ -313,7 +322,7 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
 
   if (Settings.SaveSettings) {
     if (s_idxSelectedTheme == 0) {
-      // nothing to do: internal defaults
+      // internal defaults
     }
     else if (s_idxSelectedTheme == 1) {
       if (bEnableSaveSettings) {
@@ -348,6 +357,7 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
     Style_ResetCurrentLexer(Globals.hwndEdit);
     SendWMSize(Globals.hwndMain, NULL);
     UpdateUI();
+    _EnableSchemeConfig(s_idxSelectedTheme != 0);
     UpdateAllBars(true);
   }
 
@@ -671,9 +681,10 @@ bool Style_Export(HWND hwnd)
 //
 DWORD Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
-
   if (StrIsEmpty(szFile)) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
+    if (s_idxSelectedTheme != 0) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
+    }
     return false;
   }
 
@@ -971,14 +982,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   if (IsLexerStandard(pLexNew))
   {
-    // styles ar already set
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, false);
+    // styles are already set
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true);
   }
   else {
     // merge lexer default styles
     Style_SetStyles(hwnd, STYLE_DEFAULT, wchNewLexerStyleStrg, false);
-
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(Globals.hwndDlgCustomizeSchemes));
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
   }
 
   // Broadcast STYLE_DEFAULT as base style to all other styles

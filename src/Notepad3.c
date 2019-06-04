@@ -70,7 +70,6 @@ static WCHAR     s_wchWndClass[16] = _W(SAPPNAME);
 
 static HWND      s_hwndEditFrame = NULL;
 static HWND      s_hwndNextCBChain = NULL;
-static HWND      s_hwndToolbar = NULL;
 static HWND      s_hwndReBar = NULL;
 
 static WCHAR     s_wchTmpFilePath[MAX_PATH] = { L'\0' };
@@ -532,6 +531,8 @@ typedef struct _lng_menu_t {
   const WCHAR* MenuItem;
 } LNG_MENU_T;
 
+static HMENU s_hmenuLanguage = NULL;
+
 #include "../language/language_menus.hpp"
 
 static bool _InsertLanguageMenu(HMENU hMenuBar)
@@ -541,7 +542,8 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
     return false;
   }
 
-  HMENU hmenuLanguage = CreatePopupMenu();
+  if (s_hmenuLanguage) { DestroyMenu(s_hmenuLanguage); }
+  s_hmenuLanguage = CreatePopupMenu();
 
   WCHAR wchMenuItemFmt[128] = L"%s";
   WCHAR wchMenuItemStrg[196] = { L'\0' };
@@ -559,7 +561,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
       }
 
       StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
-      AppendMenu(hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
+      AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
     }
   }
 
@@ -567,8 +569,8 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   int const pos = GetMenuItemCount(hMenuBar) - 1;
   if (pos >= 0) {
     GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-    //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
-    bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+    //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
+    bool const res = InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
     InsertMenu(hMenuBar, IDM_VIEW_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
     return res;
   }
@@ -1801,7 +1803,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
   MRU_Load(Globals.pMRUreplace);
 
   if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
-    Globals.hwndStatus == NULL || s_hwndToolbar == NULL || s_hwndReBar == NULL)
+    Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL)
     return -1LL;
 
   Style_SetDefaultLexer(Globals.hwndEdit);
@@ -1920,12 +1922,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
   DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
 
-  if (s_hwndToolbar) { DestroyWindow(s_hwndToolbar); }
+  if (Globals.hwndToolbar) { DestroyWindow(Globals.hwndToolbar); }
 
-  s_hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
+  Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
-  SendMessage(s_hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
+  SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
   // Add Toolbar Bitmap
   HBITMAP hbmp = NULL;
@@ -1966,7 +1968,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   HIMAGELIST himlOld = NULL;
   BUTTON_IMAGELIST bi;
-  if (SendMessage(s_hwndToolbar, TB_GETIMAGELIST, 0, (LPARAM)&bi)) {
+  if (SendMessage(Globals.hwndToolbar, TB_GETIMAGELIST, 0, (LPARAM)&bi)) {
     himlOld = bi.himl;
   }
 
@@ -1979,7 +1981,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
   hbmp = NULL;
-  SendMessage(s_hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
+  SendMessage(Globals.hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
   if (himlOld) {
     ImageList_Destroy(himlOld);
     himlOld = NULL;
@@ -2008,7 +2010,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
-  if (SendMessage(s_hwndToolbar, TB_GETHOTIMAGELIST, 0, (LPARAM)& bi)) {
+  if (SendMessage(Globals.hwndToolbar, TB_GETHOTIMAGELIST, 0, (LPARAM)& bi)) {
     himlOld = bi.himl;
   }
   if (hbmp) {
@@ -2023,10 +2025,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
     DeleteObject(hbmp);
     hbmp = NULL;
-    SendMessage(s_hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
+    SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
   }
   else { // clear the old one
-    SendMessage(s_hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
+    SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
   }
   if (himlOld) {
     ImageList_Destroy(himlOld);
@@ -2055,7 +2057,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
-  if (SendMessage(s_hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
+  if (SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
     himlOld = bi.himl;
   }
   if (hbmp) {
@@ -2070,7 +2072,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
     DeleteObject(hbmp);
     hbmp = NULL;
-    SendMessage(s_hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+    SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
   }
   else {  // create disabled Toolbar, no external bitmap is supplied
 
@@ -2087,12 +2089,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
       }
       if (fProcessed) {
-        if (SendMessage(s_hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
+        if (SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
           himlOld = bi.himl;
         }
         himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmpCopy, CLR_DEFAULT);
-        SendMessage(s_hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+        SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
       }
     }
   }
@@ -2121,31 +2123,31 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       StringCchPrintf(tchIndex, COUNTOF(tchIndex), L"%02i", n);
 
       if (IniSectionGetString(pIniSection, tchIndex, L"", tchDesc, COUNTOF(tchDesc)) > 0) {
-        s_tbbMainWnd[i].iString = SendMessage(s_hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
+        s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
         s_tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
       }
       else {
         GetLngString(s_tbbMainWnd[i].idCommand, tchDesc, COUNTOF(tchDesc));
-        s_tbbMainWnd[i].iString = SendMessage(s_hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc); // tooltip
+        s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc); // tooltip
         s_tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
       }
     }
     FreeMem(pIniSection);
   }
 
-  //~SendMessage(s_hwndToolbar, TB_SETMAXTEXTROWS, 0, 0);
+  //~SendMessage(Globals.hwndToolbar, TB_SETMAXTEXTROWS, 0, 0);
 
-  SendMessage(s_hwndToolbar,TB_SETEXTENDEDSTYLE,0,
-    (SendMessage(s_hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | (TBSTYLE_EX_MIXEDBUTTONS | TBSTYLE_EX_DOUBLEBUFFER)));
+  SendMessage(Globals.hwndToolbar,TB_SETEXTENDEDSTYLE,0,
+    (SendMessage(Globals.hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | (TBSTYLE_EX_MIXEDBUTTONS | TBSTYLE_EX_DOUBLEBUFFER)));
 
-  SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+  SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
 
-  if (Toolbar_SetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
-    SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+  if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
+    SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
   }
   RECT rc;
-  SendMessage(s_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
-  //SendMessage(s_hwndToolbar,TB_SETINDENT,2,0);
+  SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+  //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
 
 
   // Create Statusbar 
@@ -2180,7 +2182,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbBand.fStyle = s_bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
-  rbBand.hwndChild  = s_hwndToolbar;
+  rbBand.hwndChild  = Globals.hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
   rbBand.cx         = 0;
@@ -2231,7 +2233,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       DestroyWindow(Globals.hwndDlgCustomizeSchemes);
     }
     
-    // call SaveSettings() when s_hwndToolbar is still valid
+    // call SaveSettings() when Globals.hwndToolbar is still valid
     SaveSettings(false);
 
     if (StrIsNotEmpty(Globals.IniFile))
@@ -2303,7 +2305,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SciCall_GotoPos(pos);
   
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+  Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
   CreateBars(hwnd, Globals.hInstance);
 
@@ -2367,7 +2369,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   }
 
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(s_hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
+  Toolbar_GetButtons(Globals.hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
 
   CreateBars(hwnd,hInstance);
 
@@ -2403,13 +2405,13 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (Settings.ShowToolbar)
   {
-/*  SendMessage(s_hwndToolbar,WM_SIZE,0,0);
+/*  SendMessage(Globals.hwndToolbar,WM_SIZE,0,0);
     RECT rc;
-    GetWindowRect(s_hwndToolbar,&rc);
+    GetWindowRect(Globals.hwndToolbar,&rc);
     y = (rc.bottom - rc.top);
     cy -= (rc.bottom - rc.top);*/
 
-    //SendMessage(s_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+    //SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
     SetWindowPos(s_hwndReBar,NULL,0,0,LOWORD(lParam),s_cyReBar,SWP_NOZORDER);
     // the ReBar automatically sets the correct height
     // calling SetWindowPos() with the height of one toolbar button
@@ -5155,7 +5157,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_CUSTOMIZETB:
-      SendMessage(s_hwndToolbar,TB_CUSTOMIZE,0,0);
+      SendMessage(Globals.hwndToolbar,TB_CUSTOMIZE,0,0);
       break;
 
     case IDM_VIEW_LOADTHEMETB:
@@ -6863,11 +6865,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case TBN_RESET:
         {
-          int i; int c = (int)SendMessage(s_hwndToolbar, TB_BUTTONCOUNT, 0, 0);
+          int i; int c = (int)SendMessage(Globals.hwndToolbar, TB_BUTTONCOUNT, 0, 0);
           for (i = 0; i < c; i++) {
-            SendMessage(s_hwndToolbar, TB_DELETEBUTTON, 0, 0);
+            SendMessage(Globals.hwndToolbar, TB_DELETEBUTTON, 0, 0);
           }
-          SendMessage(s_hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+          SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
         }
         return FALSE;
 
@@ -7730,7 +7732,7 @@ void SaveSettings(bool bSaveSettingsNow)
     
     ///~IniSectionSetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction);
 
-    Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+    Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
     if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) == 0) {
       IniSectionSetString(pIniSection, L"ToolbarButtons", NULL);
     } else {
@@ -8560,9 +8562,6 @@ void UpdateToolbar()
 
 //=============================================================================
 
-#define EnableTool(id,b) SendMessage(s_hwndToolbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
-#define CheckTool(id,b)  SendMessage(s_hwndToolbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
-
 static void  _UpdateToolbarDelayed()
 {
   SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
@@ -8571,38 +8570,38 @@ static void  _UpdateToolbarDelayed()
 
   if (!Settings.ShowToolbar) { return; }
 
-  EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
-  EnableTool(IDT_FILE_SAVE, IsSaveNeeded(ISN_GET) /*&& !bReadOnly*/);
-  EnableTool(IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
+  EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
+  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsSaveNeeded(ISN_GET) /*&& !bReadOnly*/);
+  EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
-  CheckTool(IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
-  CheckTool(IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
-  CheckTool(IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
   bool ro = SciCall_GetReadOnly();
   bool tv = FocusedView.HideNonMatchedLines;
 
-  EnableTool(IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
-  EnableTool(IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
-  EnableTool(IDT_EDIT_PASTE, SciCall_CanPaste() && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_PASTE, SciCall_CanPaste() && !ro);
 
-  EnableTool(IDT_FILE_LAUNCH, b2);
+  EnableTool(Globals.hwndToolbar, IDT_FILE_LAUNCH, b2);
 
-  EnableTool(IDT_EDIT_FIND, b2);
-  //EnableTool(IDT_EDIT_FINDNEXT,b2);
-  //EnableTool(IDT_EDIT_FINDPREV,b2 && StringCchLenA(Settings.EFR_Data.szFind,0));
-  EnableTool(IDT_EDIT_REPLACE, b2 && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_FIND, b2);
+  //EnableTool(Globals.hwndToolbar, ,b2);
+  //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && StringCchLenA(Settings.EFR_Data.szFind,0));
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_REPLACE, b2 && !ro);
 
-  EnableTool(IDT_EDIT_CUT, !b1 && !ro);
-  EnableTool(IDT_EDIT_COPY, !b1 && !ro);
-  EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_CUT, !b1 && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_COPY, !b1 && !ro);
+  EnableTool(Globals.hwndToolbar, IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+  EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLEFOLDS, b2 && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 
-  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
-  CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
+  EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
 

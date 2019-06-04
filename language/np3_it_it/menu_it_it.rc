@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Rimuovi &primo carattere\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
             MENUITEM "Rimuovi &ultimo carattere\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Rimuovi i blanks a fine riga\tAlt+W",  IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimi i blanks\tAlt+P",             IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Comprimi i blanks\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifica righe...\tAlt+M",     IDM_EDIT_MODIFYLINES
             MENUITEM "&Allinea righe...\tAlt+J",      IDM_EDIT_ALIGN

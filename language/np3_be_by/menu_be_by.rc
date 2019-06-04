@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Выдаліць першы сімвал\tAlt+Z",    IDM_EDIT_STRIP1STCHAR
             MENUITEM "Выдаліць апошні сімвал\tAlt+U",   IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Выдаліць прабелы навокал\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Аб'яднаць прабелы\tAlt+P",        IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Аб'яднаць прабелы\tCtrl+Alt+P",   IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Змяніць радкі...\tAlt+M",        IDM_EDIT_MODIFYLINES
             MENUITEM "Выраў&наваць радкі...\tAlt+J",    IDM_EDIT_ALIGN

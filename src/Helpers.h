@@ -311,6 +311,9 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
+#define EnableTool(htbar,id,b) SendMessage(htbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
+#define CheckTool(htbar,id,b)  SendMessage(htbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
+
 #define EnableCmdPos(hmenu,pos,b) EnableMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_ENABLED:MF_BYPOSITION|MF_GRAYED)
 #define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
 

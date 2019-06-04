@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Strippen &eerste teken\tAlt+Z",           IDM_EDIT_STRIP1STCHAR
             MENUITEM "Strippen &laatste teken\tAlt+U",          IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Strippen &achteraan blancos\tAlt+W",      IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimeren &blancos\tAlt+P",             IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Comprimeren &blancos\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Wijzigen lijnen...\tAlt+M",              IDM_EDIT_MODIFYLINES
             MENUITEM "Lijnen &uitlijnen...\tAlt+J",             IDM_EDIT_ALIGN

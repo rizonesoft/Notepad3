@@ -201,10 +201,10 @@ BEGIN
             MENUITEM "선택 영역/줄 복제(&D)\tCtrl+D",         IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "공백을 채워 맞추기(&P)\tAlt+B",          IDM_EDIT_PADWITHSPACES
-            MENUITEM "첫 문자 제거(&F)\tAlt+Z",              IDM_EDIT_STRIP1STCHAR
-            MENUITEM "끝 문자 제거(&L)\tAlt+U",              IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "뒷 공백 제거(&T)\tAlt+W",              IDM_EDIT_TRIMLINES
-            MENUITEM "공백 줄이기(&B)\tAlt+P",               IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "첫 문자 제거(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
+            MENUITEM "끝 문자 제거(&L)\tAlt+U",               IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "뒷 공백 제거(&T)\tAlt+W",               IDM_EDIT_TRIMLINES
+            MENUITEM "공백 줄이기(&B)\tCtrl+Alt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "줄 외부 꾸미기(&M)...\tAlt+M",          IDM_EDIT_MODIFYLINES
             MENUITEM "줄 맞춤(&N)...\tAlt+J",                 IDM_EDIT_ALIGN

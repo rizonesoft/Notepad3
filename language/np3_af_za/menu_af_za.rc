@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Strip &Eerste Karakter\tAlt+Z",       IDM_EDIT_STRIP1STCHAR
             MENUITEM "Strip &Laaste Karakter\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Strip &Agterliggende Spasies\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "&Kompres Spasies\tAlt+P",             IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "&Kompres Spasies\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifiseer Lyne...\tAlt+M",          IDM_EDIT_MODIFYLINES
             MENUITEM "&Bring Lyne in Lyn...\tAlt+J",        IDM_EDIT_ALIGN
