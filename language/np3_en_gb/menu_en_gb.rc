@@ -291,15 +291,15 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        MENUITEM "Word W&rap\tCtrl+W",                   IDM_VIEW_WORDWRAP
+        MENUITEM "&Word Wrap\tCtrl+W",                   IDM_VIEW_WORDWRAP
         MENUITEM "&Long Line Marker\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Indent&ation Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "Indentation &Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Show W&rap Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Show &Blanks\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
         MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Highlight C&urrent Line\tCtrl+Shift+I"
         BEGIN
@@ -334,7 +334,7 @@ BEGIN
             MENUITEM "Scroll Past End of &File",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Toolbar"
+        POPUP "T&oolbar"
         BEGIN
             MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
