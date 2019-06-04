@@ -52,6 +52,7 @@ extern "C" {
 # define PV_(args) args
 #endif
 
+#ifndef ONIG_STATIC
 #ifndef ONIG_EXTERN
 #if defined(_WIN32) && !defined(__GNUC__)
 #if defined(ONIGURUMA_EXPORT)
@@ -63,6 +64,9 @@ extern "C" {
 #endif
 
 #ifndef ONIG_EXTERN
+#define ONIG_EXTERN   extern
+#endif
+#else
 #define ONIG_EXTERN   extern
 #endif
 
