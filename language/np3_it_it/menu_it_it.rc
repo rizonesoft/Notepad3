@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",             IDM_ENCODING_UTF8SIGN
             MENUITEM "&Altri...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Forza il rilevamento compatto dell'Encoding",     CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Ricodifica con Encoding di &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Ricodifica come &ANSI\tCtrl-Shift+A",             CMD_RECODEANSI
             MENUITEM "Ricodifica come &OEM\tCtrl+Shift+O",              CMD_RECODEOEM
             MENUITEM "Ricodifica come &GB18030\tCtrl+Shift+F10",        CMD_RECODEGB18030
+            MENUITEM "Ricodifica a UCHARDET Analysis",                  CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII come UTF-&8\tCtrl+Shift+F8",                CMD_RELOADASCIIASUTF8
             MENUITEM "Ignora Encoding &Tags\tAlt+F8",                   CMD_RELOADNOFILEVARS
@@ -205,7 +204,7 @@ BEGIN
             MENUITEM "Rimuovi &primo carattere\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
             MENUITEM "Rimuovi &ultimo carattere\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Rimuovi i blanks a fine riga\tAlt+W",  IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimi i blanks\tAlt+P",             IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Comprimi i blanks\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifica righe...\tAlt+M",     IDM_EDIT_MODIFYLINES
             MENUITEM "&Allinea righe...\tAlt+J",      IDM_EDIT_ALIGN

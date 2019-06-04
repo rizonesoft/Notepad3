@@ -284,6 +284,7 @@ typedef struct _globals_t
   HANDLE    hndlProcessHeap;
   HWND      hwndEdit;
   HANDLE    hndlScintilla;
+  HANDLE    hwndToolbar;
   HWND      hwndStatus;
   DWORD     dwLastError;
   HMENU     hMainMenu;

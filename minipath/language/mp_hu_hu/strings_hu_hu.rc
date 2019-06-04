@@ -94,7 +94,7 @@ BEGIN
     IDS_ERR_LNK_GETPATH     "Hivatkozási hiba\nNincs érvényes fájlrendszer-útvonal a hivatkozott objektumhoz.\nTalán a hivatkozás nem egy fájlra vagy mappára mutat."
     IDS_ERR_LNK_NOACCESS    "Hivatkozási hiba\nNincs hozzáférésem a hivatkozott objektum fájlrendszeri útvonalához.\nEllenõrizze a lemezt vagy a hálózati kapcsolatot."
     IDS_ERR_CREATELINK      "Hivatkozási hiba\nHiba a megadott hivatkozás létrehozásakor.\nTalán a célmappa írásvédett."
-    IDS_ERR_FILTER          "File Filter Error\nNincs további szûrõ megadva.\nKérem, nézze meg a MiniPath readme fájlban a további információkat."
+    IDS_ERR_FILTER          "Fájlszûrõ hiba\nNincs további szûrõ megadva.\nKérem, nézze meg a MiniPath readme fájlban a további információkat."
     IDS_ERR_PREVWINDISABLED "MiniPath\nA már futó MiniPath ablak foglalt vagy nyitva van egy párbeszédablaka.\nSzeretne egy újabb Minipath ablakot megnyitni?"
 END
 
