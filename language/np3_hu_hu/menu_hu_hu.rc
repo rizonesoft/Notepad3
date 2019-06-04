@@ -359,11 +359,11 @@ BEGIN
             MENUITEM "&Ragadós ablak pozíció",                    IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "Meg&jelenés"
     BEGIN
         MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "S&zínkiemelés sablon...\tF12",                       IDM_VIEW_SCHEME
         MENUITEM "&2. színkiem. sablon\tShift+F12",                    IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Általános betûtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
