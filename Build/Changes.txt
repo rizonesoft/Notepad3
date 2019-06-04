@@ -40,6 +40,13 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Add a top level menu "Appearance"
+- Force Encoding Detector result -> Recode to UCHARDET Analysis
+- In case of (partial) selection, copy only selection instead of complete hyperlink (issue #1296)
+- New top-level menu "Appearance" holding Themes and Schemes stuff (en-US, en-GB and de-DE)
+- Rearranging the" Encoding" menu
+- replace Onigmo by Oniguruma
+- CED -> UCHARDET license and acknowledgement
 - In case of (partial) selection, copy only selection instead of complete hyperlink 
 - MUI - Rearranging the Language and Themes menus
 
