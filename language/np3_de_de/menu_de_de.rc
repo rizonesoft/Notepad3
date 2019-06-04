@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 mit &Signatur",                 IDM_ENCODING_UTF8SIGN
             MENUITEM "&Mehr Codierungen...\tF9",            IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Erzwinge Encoding Detection",         CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Recodiere als &Default\tCtrl-Alt-F",      CMD_RECODEDEFAULT
             MENUITEM "Recodiere als &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
             MENUITEM "Recodiere als &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Recodiere als &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM "Recodiere wie UCHARDET Analyse",          CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",     CMD_RELOADASCIIASUTF8
             MENUITEM "Ignoriere Codierungs &Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
@@ -205,7 +204,7 @@ BEGIN
             MENUITEM "&Entferne ersten Buchstaben\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
             MENUITEM "Entferne letzten &Buchstaben\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Entferne &anhängende Leerzeichen\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Vereinige &Leerzeichen\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Vereinige &Leerzeichen\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Numeriere Zeilen...\tAlt+M",             IDM_EDIT_MODIFYLINES
             MENUITEM "&Zeilen &ausrichten...\tAlt+J",           IDM_EDIT_ALIGN
@@ -295,17 +294,6 @@ BEGIN
     END
     POPUP "&Ansicht"
     BEGIN
-        POPUP "&Themen"
-        BEGIN
-            MENUITEM "&Syntax Schemata anpassen...\tCtrl+F12",  IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Standard Synta&x Schema...\tF12",         IDM_VIEW_SCHEME
-            MENUITEM "&2tes Standard Schema\tShift+F12",        IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Globaler &Standard Font...\tAlt+F12",     IDM_VIEW_FONT
-            MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Langzeilen Umbruch\tCtrl+W",              IDM_VIEW_WORDWRAP
         MENUITEM "&Langzeilen Markierung\tCtrl+Shift+L",    IDM_VIEW_LONGLINEMARKER
         MENUITEM "Leitlinien Einrückung\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
@@ -373,6 +361,16 @@ BEGIN
             MENUITEM "&Vollbereich Ansicht Umschalten\tF11",    CMD_FULLSCRWINPOS
             MENUITEM "Fenster Position einfrieren",             IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "&Aussehen"
+    BEGIN
+        MENUITEM "&Schemata anpassen...\tCtrl+F12",           IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Synta&x Schema wählen...\tF12",             IDM_VIEW_SCHEME
+        MENUITEM "&2tes Standard Schema\tShift+F12",          IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Globaler &Standard Font...\tAlt+F12",       IDM_VIEW_FONT
+        MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",    IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Einstellungen"
     BEGIN

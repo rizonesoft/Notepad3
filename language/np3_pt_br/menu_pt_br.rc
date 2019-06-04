@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
             MENUITEM "&More...\tF9",                       IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Force Encoding Detection",           CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Recode to &Default\tCtrl-Alt-F",     CMD_RECODEDEFAULT
             MENUITEM "Recode to &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
             MENUITEM "Recode to &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
             MENUITEM "Recode to &GB18030\tCtrl+Shift+F10", CMD_RECODEGB18030
+            MENUITEM "Recode to UCHARDET Analysis",        CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII as UTF-&8\tCtrl+Shift+F8",     CMD_RELOADASCIIASUTF8
             MENUITEM "Ignore Encoding &Tags\tAlt+F8",      CMD_RELOADNOFILEVARS
@@ -205,7 +204,7 @@ BEGIN
             MENUITEM "Strip &First Character\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
             MENUITEM "Strip &Last Character\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Strip &Trailing Blanks\tAlt+W",     IDM_EDIT_TRIMLINES
-            MENUITEM "Compress &Blanks\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Compress &Blanks\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modify Lines...\tAlt+M",           IDM_EDIT_MODIFYLINES
             MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN

@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
             MENUITEM "&Továbbiak...\tF9",                  IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "K&ódolás detektálásának erõltetése", CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Újrakódolás az ala&pért.-re\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Újrakódolás A&NSI-ra\tCtrl-Shift+A",      CMD_RECODEANSI
             MENUITEM "Újrakódolás &OEM-re\tCtrl+Shift+O",       CMD_RECODEOEM
             MENUITEM "Újrakódolás &GB18030-ra\tCtrl+Shift+F10", CMD_RECODEGB18030
+            MENUITEM "Újrakódolás UCHARDET elemzéshez",         CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII-t UTF-8-k&ént\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
             MENUITEM "Kódolási elemek ki&hagyása\tAlt+F8", CMD_RELOADNOFILEVARS
@@ -205,7 +204,7 @@ BEGIN
             MENUITEM "&Elsõ kar. törlése\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
             MENUITEM "&Utolsó kar. törlése\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Sorvégi &üres kar. törlése\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Üres kar. &tömörítése\tAlt+P",      IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Üres kar. &tömörítése\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
             MENUITEM "Sorok i&gazítása...\tAlt+J",        IDM_EDIT_ALIGN
@@ -400,7 +399,7 @@ BEGIN
         POPUP "&Emlékezés"
         BEGIN
             MENUITEM "&Legutóbbi fájlokra emlékezzen",  IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Õrizze meg a kurzos pozícióját", IDM_VIEW_NOPRESERVECARET
+            MENUITEM "&Õrizze meg a kurzor pozícióját", IDM_VIEW_NOPRESERVECARET
             MENUITEM "&Keresési mintákre emlékezzen",   IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Ablak"

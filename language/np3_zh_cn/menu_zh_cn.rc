@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 带签名(&S)",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "强制检测编码(&M)",                          CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "重新编码为默认(&E)\tCtrl-Alt-F",            CMD_RECODEDEFAULT
             MENUITEM "重新编码为 ANSI(&A)\tCtrl-Shift+A",         CMD_RECODEANSI
             MENUITEM "重新编码为 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "重新编码为 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
+            MENUITEM "重新编码为 UCHARDET 分析",                  CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "重载 ASCII 为 UTF-8(&8)\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
             MENUITEM "忽略编码标记(&T)\tAlt+F8",                  CMD_RELOADNOFILEVARS
@@ -201,11 +200,11 @@ BEGIN
             END
             MENUITEM "复写选定内容/行(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "填充空格(&P)\tAlt+B",                     IDM_EDIT_PADWITHSPACES
+            MENUITEM "填充空格(&P)\tAlt+B",                    IDM_EDIT_PADWITHSPACES
             MENUITEM "删除第一个字符(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
             MENUITEM "删除最后一个字符(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "删除行尾空格(&T)\tAlt+W",                IDM_EDIT_TRIMLINES
-            MENUITEM "压缩空白字符(&W)\tAlt+P",                 IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "删除行尾空格(&T)\tAlt+W",                 IDM_EDIT_TRIMLINES
+            MENUITEM "压缩空白字符(&W)\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "修改(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN

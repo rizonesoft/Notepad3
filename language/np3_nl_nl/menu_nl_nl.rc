@@ -90,12 +90,11 @@ BEGIN
             MENUITEM "UTF-8 met &signatuur",                    IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                            IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Forceren encodering detectie",            CMD_RELOADFORCEDETECTION
-            MENUITEM SEPARATOR
             MENUITEM "Hercoderen naar &Standaard\tCtrl-Alt-F",    CMD_RECODEDEFAULT
             MENUITEM "Hercoderen naar &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
             MENUITEM "Hercoderen naar &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Hercoderen naar &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
+            MENUITEM "Hercoderen naar UCHARDET-analyse",          CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII als UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
             MENUITEM "Encoderingst&ags negeren\tAlt+F8",          CMD_RELOADNOFILEVARS
@@ -205,7 +204,7 @@ BEGIN
             MENUITEM "Strippen &eerste teken\tAlt+Z",           IDM_EDIT_STRIP1STCHAR
             MENUITEM "Strippen &laatste teken\tAlt+U",          IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Strippen &achteraan blancos\tAlt+W",      IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimeren &blancos\tAlt+P",             IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Comprimeren &blancos\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Wijzigen lijnen...\tAlt+M",              IDM_EDIT_MODIFYLINES
             MENUITEM "Lijnen &uitlijnen...\tAlt+J",             IDM_EDIT_ALIGN
