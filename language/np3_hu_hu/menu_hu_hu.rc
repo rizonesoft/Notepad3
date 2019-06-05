@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "&Nézet"
     BEGIN
-        POPUP "&Témák"
-        BEGIN
-            MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "&Színkiemelési sablon...\tF12",                      IDM_VIEW_SCHEME
-            MENUITEM "&2. színkiem. sablon\tShift+F12",                    IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Általános betûtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
-            MENUITEM "&Jelenlegi sablon alap betûtípusa...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Sort&örés\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Hosszú sor jelölõ\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Behúzás jelölése\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
@@ -372,6 +361,16 @@ BEGIN
             MENUITEM "Váltás teljes képernyõre\tF11",             CMD_FULLSCRWINPOS
             MENUITEM "&Ragadós ablak pozíció",                    IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "Meg&jelenés"
+    BEGIN
+        MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "S&zínkiemelés sablon...\tF12",                       IDM_VIEW_SCHEME
+        MENUITEM "&2. színkiem. sablon\tShift+F12",                    IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Általános betûtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
+        MENUITEM "&Jelenlegi sablon alap betûtípusa...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Beállítások"
     BEGIN

@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "&Affichage"
     BEGIN
-        POPUP "&Thèmes"
-        BEGIN
-            MENUITEM "&Personnaliser les Schèmes...\tCtrl+F12",         IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Schème Synta&xe...\tF12",                         IDM_VIEW_SCHEME
-            MENUITEM "&2ème Défaut Schème\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Globale &Défaut Police...\tAlt+F12",              IDM_VIEW_FONT
-            MENUITEM "Actuel Sc&hème Défaut Police...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "Retour automatique à la lig&ne\tCtrl+W",              IDM_VIEW_WORDWRAP
         MENUITEM "Marqueur de &longue ligne\tCtrl+Shift+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "Guides de retra&it\tCtrl+Shift+G",                    IDM_VIEW_SHOWINDENTGUIDES
@@ -372,6 +361,16 @@ BEGIN
             MENUITEM "Alterner position de zone complète\tF11",         CMD_FULLSCRWINPOS
             MENUITEM "Figer la &position de la fenêtre",                IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&pparence"
+    BEGIN
+        MENUITEM "&Personnaliser les Schèmes...\tCtrl+F12",         IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Sélectionner Schème Synta&xe...\tF12",            IDM_VIEW_SCHEME
+        MENUITEM "&2ème Défaut Schème\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Globale &Défaut Police...\tAlt+F12",              IDM_VIEW_FONT
+        MENUITEM "Actuel Sc&hème Défaut Police...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Paramètres"
     BEGIN

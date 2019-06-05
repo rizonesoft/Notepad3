@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.601.build RC2 (1 Juni 2019)
+Current Version 5.19.605.build RC2 (5 Juni 2019)
 ==================================================
 
 --------------------------------------------------
@@ -40,7 +40,11 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- MUI - Rearranging the Language and Themes menus
+- New top-level menu "Appearance" holding Themes and Schemes stuff
+- Rearranging the Language and Themes menus
+- Rearranging the" Encoding" menu
+- Force Encoding Detector result -> Recode to UCHARDET Analysis
+- In case of (partial) selection, copy only selection instead of complete hyperlink 
 
 --------------------------------------------------
 ENHANCEMENT:

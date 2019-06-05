@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "表示(&V)"
     BEGIN
-        POPUP "テーマ(&T)"
-        BEGIN
-            MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "文書の種類を選択(&X)...\tF12",              IDM_VIEW_SCHEME
-            MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
-            MENUITEM "フォント設定/適用中(&H)...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "右端で折り返す(&R)\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "行の長さのガイド(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
@@ -373,6 +362,16 @@ BEGIN
             MENUITEM "ウィンドウ位置の固定(&P)",                      IDM_VIEW_STICKYWINPOS
         END
     END
+    POPUP "Appearance(&P)"
+    BEGIN
+        MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Syntax Scheme(&X)...\tF12",        IDM_VIEW_SCHEME
+        MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
+        MENUITEM "フォント設定/適用中(&H)...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
+        END
     POPUP "設定(&S)"
     BEGIN
         MENUITEM "タブキーで空白を入力(&S)",                  IDM_VIEW_TABSASSPACES

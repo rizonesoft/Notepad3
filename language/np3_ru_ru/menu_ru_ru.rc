@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "&Вид"
     BEGIN
-        POPUP "&Темы"
-        BEGIN
-            MENUITEM "&Настройка стилей...\tCtrl+F12",                          IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "&Cхема синтаксиса...\tF12",                               IDM_VIEW_SCHEME
-            MENUITEM "&Вторая схема по умолчанию\tShift+F12",                   IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Общий &шрифт по умолчанию...\tAlt+F12",                   IDM_VIEW_FONT
-            MENUITEM "Шрифт по умолчанию для &текущей схемы...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "&Перенос строк\tCtrl+W",                          IDM_VIEW_WORDWRAP
         MENUITEM "&Метка длинных строк\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Линия отступа\tCtrl+Shift+G",                    IDM_VIEW_SHOWINDENTGUIDES
@@ -373,6 +362,16 @@ BEGIN
             MENUITEM "&Фиксированное положение окна",                       IDM_VIEW_STICKYWINPOS
         END
     END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Настройка стилей...\tCtrl+F12",                          IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",                           IDM_VIEW_SCHEME
+        MENUITEM "&Вторая схема по умолчанию\tShift+F12",                   IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Общий &шрифт по умолчанию...\tAlt+F12",                   IDM_VIEW_FONT
+        MENUITEM "Шрифт по умолчанию для &текущей схемы...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
+        END
     POPUP "&Настройки"
     BEGIN
         MENUITEM "Заменять табуляцию &пробелами",               IDM_VIEW_TABSASSPACES

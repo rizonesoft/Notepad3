@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "&Visualizza"
     BEGIN
-        POPUP "&Temi"
-        BEGIN
-            MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Schema Sintassi...\tF12",                                IDM_VIEW_SCHEME
-            MENUITEM "&2° Schema di Default\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
-            MENUITEM "Font di Default dello Schema corrente...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "A capo automatico\tCtrl+W",                          IDM_VIEW_WORDWRAP
         MENUITEM "&Marcatore riga lunga\tCtrl+Shift+L",                IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guide indentazione\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES
@@ -372,6 +361,16 @@ BEGIN
             MENUITEM "Massimizza la finestra (Full area)\tF11",      CMD_FULLSCRWINPOS
             MENUITEM "Posizione finestra ""&sticky""",               IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
+        MENUITEM "&2° Schema di Default\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
+        MENUITEM "Font di Default dello Schema corrente...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Impostazioni"
     BEGIN

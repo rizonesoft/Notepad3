@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "查看(&V)"
     BEGIN
-        POPUP "主题(&T)"
-        BEGIN
-            MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "选择语法高亮方案(&X)...\tF12",                 IDM_VIEW_SCHEME
-            MENUITEM "使用备选基本样式(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
-            MENUITEM "当前方案默认字体(&H)...\tCtrl+Alt+F12",        IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "自动换行(&R)\tCtrl+W",                         IDM_VIEW_WORDWRAP
         MENUITEM "显示行长度标记(&L)\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
         MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
@@ -373,6 +362,16 @@ BEGIN
             MENUITEM "粘住窗口位置(&P)",                       IDM_VIEW_STICKYWINPOS
         END
     END
+    POPUP "外观(&P)"
+    BEGIN
+        MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "选择语法高亮方案(&X)...\tF12",                IDM_VIEW_SCHEME
+        MENUITEM "使用备选基本样式(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
+        MENUITEM "当前方案默认字体(&H)...\tCtrl+Alt+F12",        IDM_VIEW_CURRENTSCHEME
+        END
     POPUP "设置(&S)"
     BEGIN
         MENUITEM "将制表符替换为空格(&S)",                         IDM_VIEW_TABSASSPACES

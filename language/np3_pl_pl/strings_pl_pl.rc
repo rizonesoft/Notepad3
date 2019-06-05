@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jêzyk"
-    IDS_MUI_MENU_THEMES     "&Prze³¹cz motyw"
+    IDS_MUI_MENU_THEMES     "&Scheme Collection"
     IDM_THEMES_DEFAULT      "Factory Default"
     IDM_THEMES_FILE_ITEM    "Standard Settings"
 END
