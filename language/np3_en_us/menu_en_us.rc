@@ -301,7 +301,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        POPUP "Highlight C&urrent Line\tCtrl+Shift+I"
+        POPUP "H&ighlight Current Line\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&No Highlight",               IDM_VIEW_HILITCURLN_NONE
             MENUITEM "Background &Color",           IDM_VIEW_HILITCURLN_BACK
