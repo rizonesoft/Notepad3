@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
             MENUITEM "その他の文字コードを指定(&M)...\tF9",        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトで読み直し(&D)\tCtrl-Alt-F",        CMD_RECODEDEFAULT
-            MENUITEM "ANSIで読み直し(&A)\tCtrl-Shift+A",         CMD_RECODEANSI
+            MENUITEM "デフォルトで読み直し(&D)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
+            MENUITEM "ANSIで読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "OEMで読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "GB18030で読み直し(&G)\tCtrl+Shift+F10",     CMD_RECODEGB18030
             MENUITEM "UCHARDET解析で読み直し",                  CMD_RELOADFORCEDETECTION

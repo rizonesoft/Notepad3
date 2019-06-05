@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",               IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Hercodeer na &Standaard\tCtrl-Alt-F",    CMD_RECODEDEFAULT
-            MENUITEM "Hercodeer na &ANSI\tCtrl-Shift+A",       CMD_RECODEANSI
+            MENUITEM "Hercodeer na &Standaard\tCtrl+Alt+F",    CMD_RECODEDEFAULT
+            MENUITEM "Hercodeer na &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
             MENUITEM "Hercodeer na &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Hercodeer na &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
             MENUITEM "Hercodeer na UCHARDET-analise",          CMD_RELOADFORCEDETECTION
