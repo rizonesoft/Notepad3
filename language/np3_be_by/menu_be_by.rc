@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 з BO&M",                   IDM_ENCODING_UTF8SIGN
             MENUITEM "Я&шчэ...\tF9",                   IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "Пераадкрыць у A&NSI\tCtrl-Shift+A",                 CMD_RECODEANSI
+            MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы\tCtrl+Alt+F", CMD_RECODEDEFAULT
+            MENUITEM "Пераадкрыць у A&NSI\tCtrl+Shift+A",                 CMD_RECODEANSI
             MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
             MENUITEM "Пераадкрыць у &GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
             MENUITEM "Пераадкрыць з &UCHARDET аналізам",                  CMD_RELOADFORCEDETECTION
@@ -294,17 +294,6 @@ BEGIN
     END
     POPUP "&Выгляд"
     BEGIN
-        POPUP "&тэмы"
-        BEGIN
-            MENUITEM "&Налады стыляў...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "&Cхема сінтаксісу...\tF12",                IDM_VIEW_SCHEME
-            MENUITEM "&Другая прадвызначаная схема\tShift+F12",  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Агульны прадвызначаны &шрыфт...\tAlt+F12", IDM_VIEW_FONT
-            MENUITEM "&Прадвызначаны шрыфт для выбранай схемы...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Метка доўгіх радкоў\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
         MENUITEM "Л&інія водступа\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
@@ -372,6 +361,16 @@ BEGIN
             MENUITEM "Расцягнуць &на ўвесь экран\tF11",                     CMD_FULLSCRWINPOS
             MENUITEM "&Фіксаваная пазіцыя акна",                            IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Налады стыляў...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",               IDM_VIEW_SCHEME
+        MENUITEM "&Другая прадвызначаная схема\tShift+F12",     IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Агульны прадвызначаны &шрыфт...\tAlt+F12",    IDM_VIEW_FONT
+        MENUITEM "&Прадвызначаны шрыфт для выбранай схемы...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Налады"
     BEGIN

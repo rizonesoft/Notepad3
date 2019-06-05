@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
             MENUITEM "&More...\tF9",                       IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Recode to &Default\tCtrl-Alt-F",     CMD_RECODEDEFAULT
-            MENUITEM "Recode to &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "Recode to &Default\tCtrl+Alt+F",     CMD_RECODEDEFAULT
+            MENUITEM "Recode to &ANSI\tCtrl+Shift+A",      CMD_RECODEANSI
             MENUITEM "Recode to &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
             MENUITEM "Recode to &GB18030\tCtrl+Shift+F10", CMD_RECODEGB18030
             MENUITEM "Recode to UCHARDET Analysis",        CMD_RELOADFORCEDETECTION
@@ -294,34 +294,23 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        POPUP "&Themes"
-        BEGIN
-            MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
-            MENUITEM SEPARATOR
-            MENUITEM "Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
-            MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
-            MENUITEM SEPARATOR
-            MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
-            MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "Word W&rap\tCtrl+W",                   IDM_VIEW_WORDWRAP
+        MENUITEM "&Word Wrap\tCtrl+W",                   IDM_VIEW_WORDWRAP
         MENUITEM "&Long Line Marker\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Indent&ation Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "Indentation &Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Show W&rap Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Show &Blanks\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
         MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        POPUP "Highlight C&urrent Line\tCtrl+Shift+I"
+        POPUP "H&ighlight Current Line\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&No Highlight",               IDM_VIEW_HILITCURLN_NONE
             MENUITEM "Background &Color",           IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Outline &Frame",              IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Mar&k Occurrences"
+        POPUP "Mark &Occurrences"
         BEGIN
             MENUITEM "&Active\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
@@ -372,6 +361,16 @@ BEGIN
             MENUITEM "Toggle Full Area Position\tF11",         CMD_FULLSCRWINPOS
             MENUITEM "Sticky Window &Position",                IDM_VIEW_STICKYWINPOS
         END
+    END
+    POPUP "A&ppearance"
+    BEGIN
+        MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Select Synta&x Scheme...\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "&2nd Default Scheme\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
+        MENUITEM SEPARATOR
+        MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
+        MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Settings"
     BEGIN
