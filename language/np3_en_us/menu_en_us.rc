@@ -307,7 +307,7 @@ BEGIN
             MENUITEM "Background &Color",           IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Outline &Frame",              IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Mar&k Occurrences"
+        POPUP "Mark &Occurrences"
         BEGIN
             MENUITEM "&Active\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
@@ -334,7 +334,7 @@ BEGIN
             MENUITEM "Scroll Past End of &File",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "T&oolbar"
+        POPUP "&Toolbar"
         BEGIN
             MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
