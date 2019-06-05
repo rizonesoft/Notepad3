@@ -1316,8 +1316,6 @@ bool EditSaveFile(
 
   // get text
   cbData = (DWORD)SciCall_GetTextLength();
-  lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-  SciCall_GetText((DocPos)SizeOfMem(lpData), lpData);
 
   if (cbData == 0) {
     bWriteSuccess = SetEndOfFile(hFile);
@@ -1325,7 +1323,10 @@ bool EditSaveFile(
   }
   else {
 
-  // FIXME: move checks in front of disk file access
+    lpData = AllocMem(cbData + 4 + PAD_SLOP, HEAP_ZERO_MEMORY); //fix: +bom
+    SciCall_GetText((DocPos)cbData+1, lpData);
+
+    // FIXME: move checks in front of disk file access
   // Msg if file tag encoding does not correspond to BOM
   /*if ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) == 0 && (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
       bool bEncodingMismatch = true;
@@ -1352,7 +1353,7 @@ bool EditSaveFile(
     {
       SetEndOfFile(hFile);
 
-      LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+      LPWSTR lpDataWide = AllocMem(cbData * 2 + PAD_SLOP, HEAP_ZERO_MEMORY);
       int bomoffset = 0;
       if (Encoding_IsUNICODE_BOM(status->iEncoding)) {
         const char* bom = "\xFF\xFE";
@@ -1378,7 +1379,7 @@ bool EditSaveFile(
 
       if (Encoding_IsUTF8_SIGN(status->iEncoding)) {
         const char* bom = "\xEF\xBB\xBF";
-        DWORD bomoffset = 3;
+        DWORD const bomoffset = 3;
         MoveMemory(&lpData[bomoffset], lpData, cbData);
         CopyMemory(lpData, bom, bomoffset);
         cbData += bomoffset;
@@ -1395,7 +1396,7 @@ bool EditSaveFile(
       BOOL bCancelDataLoss = FALSE;
       UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
-      LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+      LPWSTR lpDataWide = AllocMem(cbData * 2 + PAD_SLOP, HEAP_ZERO_MEMORY);
       int    cbDataWide = MultiByteToWideChar(Encoding_SciCP,0,lpData,cbData,
                                               lpDataWide,(MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
 
