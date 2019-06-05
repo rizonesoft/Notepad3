@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "서명 있는 UTF-8(&S)",                  IDM_ENCODING_UTF8SIGN
             MENUITEM "기타(&M)...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "기본값으로 표시(&F)\tCtrl-Alt-F",        CMD_RECODEDEFAULT
-            MENUITEM "ANSI로 표시(&N)\tCtrl-Shift+A",        CMD_RECODEANSI
+            MENUITEM "기본값으로 표시(&F)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
+            MENUITEM "ANSI로 표시(&N)\tCtrl+Shift+A",        CMD_RECODEANSI
             MENUITEM "OEM으로 표시(&O)\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "GB18030으로 표시(&G)\tCtrl+Shift+F10",  CMD_RECODEGB18030
             MENUITEM "UCHARDET 분석으로 재 코딩",               CMD_RELOADFORCEDETECTION
