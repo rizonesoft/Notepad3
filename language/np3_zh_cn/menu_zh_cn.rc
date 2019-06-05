@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 带签名(&S)",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "重新编码为默认(&E)\tCtrl-Alt-F",            CMD_RECODEDEFAULT
-            MENUITEM "重新编码为 ANSI(&A)\tCtrl-Shift+A",         CMD_RECODEANSI
+            MENUITEM "重新编码为默认(&E)\tCtrl+Alt+F",            CMD_RECODEDEFAULT
+            MENUITEM "重新编码为 ANSI(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "重新编码为 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "重新编码为 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
             MENUITEM "重新编码为 UCHARDET 分析",                  CMD_RELOADFORCEDETECTION

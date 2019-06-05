@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
             MENUITEM "&More...\tF9",                       IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Recode to &Default\tCtrl-Alt-F",     CMD_RECODEDEFAULT
-            MENUITEM "Recode to &ANSI\tCtrl-Shift+A",      CMD_RECODEANSI
+            MENUITEM "Recode to &Default\tCtrl+Alt+F",     CMD_RECODEDEFAULT
+            MENUITEM "Recode to &ANSI\tCtrl+Shift+A",      CMD_RECODEANSI
             MENUITEM "Recode to &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
             MENUITEM "Recode to &GB18030\tCtrl+Shift+F10", CMD_RECODEGB18030
             MENUITEM "Recode to UCHARDET Analysis",        CMD_RELOADFORCEDETECTION
