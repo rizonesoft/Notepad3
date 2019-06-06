@@ -27,11 +27,12 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
-New feature of version 6.9.2
+New feature of version 6.9.2 (Reiwa)
 -----------------------------------
 
+* add doc/SYNTAX.md
 * Update Unicode version 12.1.0
-* NEW: Unicode Text Segment mode option (?y{g}) (?y{w})
+* NEW: Unicode Text Segment mode option (?y{g}) (?y{w})  (*original)
 
   g: Extended Grapheme Cluster mode / w: Word mode
 
