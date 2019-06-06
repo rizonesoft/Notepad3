@@ -316,12 +316,12 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
     //~m_MatchPos = SciPos(result); //
     m_MatchPos = SciPos(m_Region.beg[0]);
     //~m_MatchLen = SciPos(m_Region.end[0] - result);
-    m_MatchLen = SciPos(m_Region.end[0] - m_Region.beg[0]);
+    m_MatchLen = SciPos(m_Region.end[0]) - SciPos(m_Region.beg[0]);
   }
 
   //NOTE: potential 64-bit-size issue at interface here:
   *length = m_MatchLen;
-  return SciPos(m_MatchPos);
+  return m_MatchPos;
 }
 // ============================================================================
 
