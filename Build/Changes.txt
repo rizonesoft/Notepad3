@@ -73,13 +73,13 @@ Version 5.19.528.2228 RC (28 May 2019)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Add Dark Theme "Obsidian"
+- Add another Dark Theme "Obsidian"
 - Add option to disable Hyperlink Tooltip
 - ToolTip for Hyperlinks
 - 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
 - Menu entry to mute MessageBox beeps
-- Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
-  Factory Default, Standard Settings, Dark Theme mode
+- Theme Menu to load exported styles "on the fly" (e.g.: "Dark" or "Obsidian")
+  Factory Default, Standard Settings, a Dark Theme
 - Close Zoom Info Bubble after ~3 sec.
 - Recent History button in Toolbar
 - [Settings2] key-values (internal) to control concurrent encoding detection
