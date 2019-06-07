@@ -19,7 +19,6 @@ Keyboard Shortcuts for Notepad3
   Tools
 
     Alt+N                 Open document in new window.
-    Alt+0                 Open new empty window.
     Ctrl+M                Run metapath file browser plugin.
     Ctrl+L                Launch document.
     Alt+L                 Open with.
