@@ -7349,9 +7349,6 @@ void LoadSettings()
     Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(pIniSection, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
     if (Settings2.MarkOccurrencesMaxCount <= 0) { Settings2.MarkOccurrencesMaxCount = INT_MAX; }
 
-    Defaults2.UpdateDelayHyperlinkStyling = 100;
-    Settings2.UpdateDelayHyperlinkStyling = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling",
-                                                                    Defaults2.UpdateDelayHyperlinkStyling), USER_TIMER_MINIMUM, 10000);
     Defaults2.UpdateDelayMarkAllOccurrences = 50;
     Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllOccurrences",
                                                                       Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
