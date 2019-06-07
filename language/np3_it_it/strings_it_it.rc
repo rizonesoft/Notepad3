@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Lingua"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
+    IDS_MUI_MENU_THEMES     "&Collezione di Schemi"
     IDM_THEMES_DEFAULT      "Impostazioni di fabbrica"
     IDM_THEMES_FILE_ITEM    "Impostazioni standard"
 END

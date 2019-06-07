@@ -90,8 +90,8 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",             IDM_ENCODING_UTF8SIGN
             MENUITEM "&Altri...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Ricodifica con Encoding di &Default\tCtrl+Alt+F", CMD_RECODEDEFAULT
-            MENUITEM "Ricodifica come &ANSI\tCtrl+Shift+A",             CMD_RECODEANSI
+            MENUITEM "Ricodifica con Encoding di &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
+            MENUITEM "Ricodifica come &ANSI\tCtrl-Shift+A",             CMD_RECODEANSI
             MENUITEM "Ricodifica come &OEM\tCtrl+Shift+O",              CMD_RECODEOEM
             MENUITEM "Ricodifica come &GB18030\tCtrl+Shift+F10",        CMD_RECODEGB18030
             MENUITEM "Ricodifica a UCHARDET Analysis",                  CMD_RELOADFORCEDETECTION
@@ -359,11 +359,11 @@ BEGIN
             MENUITEM "Posizione finestra ""&sticky""",               IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "A&spetto"
     BEGIN
         MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
+        MENUITEM "Seleziona Schema Sintassi...\tF12",                          IDM_VIEW_SCHEME
         MENUITEM "&2° Schema di Default\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
