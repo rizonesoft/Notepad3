@@ -70,10 +70,10 @@ Contributors:
   - Florian Balmer ( http://www.flos-freeware.ch )
   - XhmikosR ( http://xhmikosr.github.io/notepad2-mod/ )
   - Kai Liu ( http://code.kliu.org/misc/notepad2/ )
-  - RL Vision
+  - RL Vision (https://www.rlvision.com/notepad2/about.php )
   - Aleksandar Lekov
   - Bruno Barbieri
-  - RaiKoHoff
+  - RaiKoHoff ( https://github.com/RaiKoHoff )
 
 
 More information:

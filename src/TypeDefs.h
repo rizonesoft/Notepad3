@@ -476,7 +476,6 @@ typedef struct _settings2_t
   int    SciFontQuality;
 
   int    MarkOccurrencesMaxCount;
-  int    UpdateDelayHyperlinkStyling;
   int    UpdateDelayMarkAllOccurrences;
   bool   DenyVirtualSpaceAccess;
   bool   UseOldStyleBraceMatching;

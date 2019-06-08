@@ -407,8 +407,8 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
               AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
               AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
               { // finally, decrypt the actual data
-                int nbb = BAD_CIPHER_STATE;
-                int nbp = BAD_CIPHER_STATE;
+                long nbb = BAD_CIPHER_STATE;
+                long nbp = BAD_CIPHER_STATE;
                 if ((readsize - code_offset) >= PAD_SLOP) {
                   nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
                 }
@@ -416,9 +416,9 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
                   nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
                 }
                 if (nbp >= 0) {
-                  int nb = nbb + nbp;
-                  rawdata[nb] = (char)0;
-                  rawdata[nb + 1] = (char)0;	// two zeros in case it's multi-byte
+                  unsigned long const nb = nbb + nbp;
+                  rawdata[nb] = '\0';
+                  rawdata[nb + 1] = '\0';	// two zeros in case it's multi-byte
                   *resultlen = (DWORD)nb;
                 }
                 else {

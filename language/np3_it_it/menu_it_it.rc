@@ -362,11 +362,11 @@ BEGIN
             MENUITEM "Posizione finestra ""&sticky""",               IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "A&spetto"
     BEGIN
         MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                          IDM_VIEW_SCHEME
+        MENUITEM "Seleziona Schema Sintassi...\tF12",                          IDM_VIEW_SCHEME
         MENUITEM "&2° Schema di Default\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
