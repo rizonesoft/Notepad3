@@ -648,16 +648,18 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
-  return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
+  /*bool const ok =*/ (void)IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
+  //~return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
+  return ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0); // don't rely on result ok
 }
 // ----------------------------------------------------------------------------
 
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
   int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-  bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
-  return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
+  /*bool const ok =*/ (void)IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
+  //~return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
+  return ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0); // don't rely on result ok
 }
 // ============================================================================
 
@@ -677,7 +679,7 @@ bool IsValidUnicode(const char* pBuffer, const size_t len, bool* lpbBOM, bool* l
   int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
 
   int iTest = iAllTests;
-  (void) IsTextUnicode(pBuffer, (int)cb, &iTest);
+  /*bool const ok =*/ (void)IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok
  
   if (iTest == iAllTests) {
     iTest = 0; // iTest doesn't seem to have been modified ...
