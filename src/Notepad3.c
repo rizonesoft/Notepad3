@@ -436,21 +436,23 @@ inline bool IsSaveNeeded(const SAVE_NEEDED_QUERY query)
 
 static void _SetSaveNeededFlag(const bool setSaveNeeded)
 {
-  bool const isDocModified = setSaveNeeded || SciCall_GetModify(); // consistency
+  bool const bGetModify = SciCall_GetModify();
+  bool const isDocModified = setSaveNeeded || bGetModify; // consistency
 
   // update on change
   if (IsSaveNeeded(ISN_GET) != isDocModified) 
   {
     IsSaveNeeded(isDocModified ? ISN_SET : ISN_CLEAR);
     UpdateToolbar();
-    UpdateStatusbar(false);
+    UpdateStatusbar(true);
   }
 
   if (setSaveNeeded) {
     // Force trigger modified (e.g. RelaunchElevated)
-    if (!SciCall_GetModify()) {
-      SciCall_AppendText(1, " "); // trigger dirty flag
-      SciCall_DeleteRange(Sci_GetDocEndPosition(), 1);
+    if (!bGetModify) {
+      DocPos const posDocEnd = Sci_GetDocEndPosition();
+      SciCall_AppendText(1, "\v"); // trigger dirty flag
+      SciCall_DeleteRange(posDocEnd, 1);
     }
     // notify Search/Replace dialog
     if (IsWindow(Globals.hwndDlgFindReplace)) {
@@ -2895,7 +2897,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
 
   bool const s = SciCall_IsSelectionEmpty();
-  bool const e = (SciCall_GetTextLength() == 0);
+  bool const e = (SciCall_GetTextLength() <= 0);
   bool const p = SciCall_CanPaste();
   bool const mls = Sci_IsMultiLineSelection();
 
@@ -3564,7 +3566,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _IGNORE_NOTIFY_CHANGE_;
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
 
-          if (SciCall_GetTextLength() == 0) {
+          if (SciCall_GetTextLength() <= 0) {
             Encoding_Current(iNewEncoding);
             Encoding_HasChanged(iNewEncoding);
           }
@@ -4681,7 +4683,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELTONEXT:
     case IDM_EDIT_SELTOPREV:
 
-      if (SciCall_GetTextLength() == 0) { break; }
+      if (SciCall_GetTextLength() <= 0) { break; }
 
       if (IsFindPatternEmpty() && !StringCchLenA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind)))
       {
@@ -10155,7 +10157,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
   bool bIsEmptyNewFile = false;
   if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)) == 0) {
     DocPos const cchText = SciCall_GetTextLength();
-    if (cchText == 0) {
+    if (cchText <= 0) {
       bIsEmptyNewFile = true;
     }
     else if (cchText < 2048) {
