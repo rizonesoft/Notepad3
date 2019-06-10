@@ -23,19 +23,18 @@
 #include <limits.h>
 #include <shellapi.h>
 
-#include "Notepad3.h"
 #include "Styles.h"
 #include "Dialogs.h"
 #include "resource.h"
-
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
 #include "../uthash/utlist.h"
 //#include "../uthash/utstring.h"
 #include "../tinyexpr/tinyexpr.h"
-
 #include "Encoding.h"
 #include "MuiLanguage.h"
+#include "Notepad3.h"
+#include "Config/Config.h"
 
 #include "SciCall.h"
 #include "SciLexer.h"
@@ -5049,7 +5048,7 @@ static char s_lastFind[FNDRPL_BUFFER] = { L'\0' };
 static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' };
 static WCHAR s_tchBuf2[FNDRPL_BUFFER] = { L'\0' };
 
-static int  s_SaveMarkOccurrences = 0;
+static bool s_SaveMarkOccurrences = false;
 static bool s_SaveMarkMatchVisible = false;
 static bool s_SaveTFBackSlashes = false;
 
@@ -5086,7 +5085,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       s_SaveMarkOccurrences = s_bSwitchedFindReplace ? s_SaveMarkOccurrences : Settings.MarkOccurrences;
       s_SaveMarkMatchVisible = s_bSwitchedFindReplace ? s_SaveMarkMatchVisible : Settings.MarkOccurrencesMatchVisible;
       // switch off normal mark occurrences
-      Settings.MarkOccurrences = 0;
+      Settings.MarkOccurrences = false;
       Settings.MarkOccurrencesMatchVisible = false;
       EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
 

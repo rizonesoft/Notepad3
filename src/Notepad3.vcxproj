@@ -431,6 +431,7 @@
     <ClCompile Include="ChooseFont\ChooseFont.cpp" />
     <ClCompile Include="ChooseFont\FontEnumeration.cpp" />
     <ClCompile Include="ChooseFont\GdiTextRenderer.cpp" />
+    <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
@@ -533,6 +534,8 @@
     <ClInclude Include="ChooseFont\ChooseFont.h" />
     <ClInclude Include="ChooseFont\FontEnumeration.h" />
     <ClInclude Include="ChooseFont\GdiTextRenderer.h" />
+    <ClInclude Include="Config\Config.h" />
+    <ClInclude Include="Config\SimpleIni.h" />
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />
