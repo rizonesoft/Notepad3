@@ -359,11 +359,11 @@ BEGIN
             MENUITEM "&Фиксированное положение окна",                       IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "С&тиль"
     BEGIN
-        MENUITEM "&Настройка стилей...\tCtrl+F12",                          IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Настройка схем...\tCtrl+F12",                            IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                           IDM_VIEW_SCHEME
+        MENUITEM "Выбрать &схему синтаксиса...\tF12",                       IDM_VIEW_SCHEME
         MENUITEM "&Вторая схема по умолчанию\tShift+F12",                   IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Общий &шрифт по умолчанию...\tAlt+F12",                   IDM_VIEW_FONT
