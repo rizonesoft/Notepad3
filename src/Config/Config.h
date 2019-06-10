@@ -25,8 +25,17 @@ extern "C" {
 
 //==== Ini-File Handling =============================================
 
+bool FindIniFile();
+int  TestIniFile();
+bool  CreateIniFile();
+bool CreateIniFileEx(LPCWSTR lpszIniFile);
+void LoadSettings();
+void SaveSettings(bool);
+
+// ----------------------------------------------------------------------------
+
 bool LoadIniFile(LPCWSTR lpIniFilePath);
-bool SaveIniFile();
+bool SaveIniFile(LPCWSTR lpIniFilePath);
 void ReleaseIniFile();
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, 

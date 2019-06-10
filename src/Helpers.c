@@ -1605,7 +1605,7 @@ bool MRU_Save(LPMRULIST pmru)
       }
     }
 
-    SaveIniFile();
+    SaveIniFile(Globals.IniFile);
     return true;
   }
   return false;

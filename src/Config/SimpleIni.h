@@ -1272,14 +1272,6 @@ private:
      */
     size_t m_uDataLen;
 
-    /** File path for this data */
-    char m_FilePathA[MAX_PATH];
-
-#ifdef SI_HAS_WIDE_FILE
-    SI_WCHAR_T m_FilePathW[MAX_PATH];
-#endif
-
-
     /** File comment for this data, if one exists. */
     const SI_CHAR * m_pFileComment;
 
@@ -1344,10 +1336,6 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Reset()
     delete[] m_pData;
     m_pData = NULL;
     m_uDataLen = 0;
-    m_FilePathA[0] = '\0';
-#ifdef SI_HAS_WIDE_FILE
-    m_FilePathW[0] = L'\0';
-#endif
     m_pFileComment = NULL;
     if (!m_data.empty()) {
         m_data.erase(m_data.begin(), m_data.end());
@@ -1392,7 +1380,6 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     )
 {
 #ifdef _WIN32
-    wcscpy_s(m_FilePathW, _countof(m_FilePathW), a_pwszFile);
     FILE * fp = NULL;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     _wfopen_s(&fp, a_pwszFile, L"rb");
@@ -1565,16 +1552,6 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
         m_pData = pData;
         m_uDataLen = uLen+1;
     }
-
-    // Notepad3: change .ini-file encoding to UTF-8
-    if (pDataUTF16toUTF8) {
-#ifdef SI_HAS_WIDE_FILE
-      SaveFile(m_FilePathW, true);
-#else
-      SaveFile(m_FilePathA, true);
-#endif
-    }
-
     return SI_OK;
 }
 
@@ -2529,17 +2506,17 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         if (iSection->pComment) {
             if (bNeedNewLine) {
                 a_oOutput.Write(SI_NEWLINE_A);
-                a_oOutput.Write(SI_NEWLINE_A);
+                //§§§a_oOutput.Write(SI_NEWLINE_A);
+                bNeedNewLine = false;
             }
             if (!OutputMultiLineText(a_oOutput, convert, iSection->pComment)) {
                 return SI_FAIL;
             }
-            bNeedNewLine = false;
         }
 
         if (bNeedNewLine) {
             a_oOutput.Write(SI_NEWLINE_A);
-            a_oOutput.Write(SI_NEWLINE_A);
+            //§§§a_oOutput.Write(SI_NEWLINE_A);
             bNeedNewLine = false;
         }
 
@@ -2548,10 +2525,12 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
             if (!convert.ConvertToStore(iSection->pItem)) {
                 return SI_FAIL;
             }
+            //a_oOutput.Write(SI_NEWLINE_A); // before new section
             a_oOutput.Write("[");
             a_oOutput.Write(convert.Data());
             a_oOutput.Write("]");
             a_oOutput.Write(SI_NEWLINE_A);
+            bNeedNewLine = false;
         }
 
         // get all of the keys sorted in load order
@@ -2577,6 +2556,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                 // write out the comment if there is one
                 if (iValue->pComment) {
                     a_oOutput.Write(SI_NEWLINE_A);
+                    bNeedNewLine = false;
                     if (!OutputMultiLineText(a_oOutput, convert, iValue->pComment)) {
                         return SI_FAIL;
                     }
@@ -2597,6 +2577,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                     // multi-line data needs to be processed specially to ensure
                     // that we use the correct newline format for the current system
                     a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
+                    bNeedNewLine = false;
                     if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
                         return SI_FAIL;
                     }
@@ -2606,9 +2587,10 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                     a_oOutput.Write(convert.Data());
                 }
                 a_oOutput.Write(SI_NEWLINE_A);
+                bNeedNewLine = false;
             }
         }
-        bNeedNewLine = true;
+        //§§§bNeedNewLine = true;
     }
 
     return SI_OK;

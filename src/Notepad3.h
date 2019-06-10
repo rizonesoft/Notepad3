@@ -117,6 +117,8 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE hInstance);
 HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
+WININFO InitDefaultWndPos(const int flagsPos);
+void InitWindowPosition(WININFO* pWinInfo, const int flagsPos);
 void BeginWaitCursor(LPCWSTR text);
 void EndWaitCursor();
 bool ActivatePrevInst();
@@ -130,15 +132,9 @@ void InstallFileWatching(LPCWSTR lpszFile);
 void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
-
-void LoadSettings();
-void SaveSettings(bool);
 void ParseCommandLine();
 void LoadFlags();
-bool FindIniFile();
-int  TestIniFile();
-bool  CreateIniFile();
-bool CreateIniFileEx(LPCWSTR lpszIniFile);
+void SaveAllSettings(bool bSaveSettingsNow);
 void ShowZoomCallTip();
 void CancelCallTip();
 

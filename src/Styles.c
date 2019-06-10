@@ -769,7 +769,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
       }
     }
 
-    SaveIniFile();
+    SaveIniFile(szFile);
   }
   return ok;
 }

@@ -507,7 +507,7 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
-//extern SETTINGS2_T Defaults2;
+extern SETTINGS2_T Defaults2;
 
 //=============================================================================
 

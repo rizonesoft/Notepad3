@@ -99,8 +99,8 @@ void DeleteBitmapButton(HWND hwnd, int nCtlId);
 void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText);
 bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID);
 
-int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
-int Toolbar_SetButtons(HWND, int, LPCWSTR, void*, int);
+int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
+int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 

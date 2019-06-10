@@ -3968,7 +3968,7 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
 //
 //  Toolbar_Get/SetButtons()
 //
-int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons)
+int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons)
 {
   WCHAR tchButtons[512] = { L'\0' };
   WCHAR tchItem[32] = { L'\0' };
@@ -3988,7 +3988,7 @@ int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButton
   return(c);
 }
 
-int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb)
+int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb)
 {
   WCHAR tchButtons[MIDSZ_BUFFER];
 
