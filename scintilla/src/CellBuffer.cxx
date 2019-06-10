@@ -140,14 +140,14 @@ class LineVector : public ILineVector {
 public:
 	LineVector() : starts(256), perLine(nullptr) {
 		Init();
- 	}
+	}
 	// Deleted so LineVector objects can not be copied.
 	LineVector(const LineVector &) = delete;
 	LineVector(LineVector &&) = delete;
 	LineVector &operator=(const LineVector &) = delete;
 	LineVector &operator=(LineVector &&) = delete;
 	~LineVector() override {
- 	}
+	}
 	void Init() override {
 		starts.DeleteAll();
 		if (perLine) {
@@ -559,8 +559,10 @@ void CellBuffer::GetCharRange(char *buffer, Sci::Position position, Sci::Positio
 	if (position < 0)
 		return;
 	if ((position + lengthRetrieve) > substance.Length()) {
-		Platform::DebugPrintf("Bad GetCharRange %d for %d of %d\n", position,
-		                      lengthRetrieve, substance.Length());
+		Platform::DebugPrintf("Bad GetCharRange %.0f for %.0f of %.0f\n",
+				      static_cast<double>(position),
+				      static_cast<double>(lengthRetrieve),
+				      static_cast<double>(substance.Length()));
 		return;
 	}
 	substance.GetRange(buffer, position, lengthRetrieve);
@@ -580,8 +582,10 @@ void CellBuffer::GetStyleRange(unsigned char *buffer, Sci::Position position, Sc
 		return;
 	}
 	if ((position + lengthRetrieve) > style.Length()) {
-		Platform::DebugPrintf("Bad GetStyleRange %d for %d of %d\n", position,
-		                      lengthRetrieve, style.Length());
+		Platform::DebugPrintf("Bad GetStyleRange %.0f for %.0f of %.0f\n",
+				      static_cast<double>(position),
+				      static_cast<double>(lengthRetrieve),
+				      static_cast<double>(style.Length()));
 		return;
 	}
 	style.GetRange(reinterpret_cast<char *>(buffer), position, lengthRetrieve);
