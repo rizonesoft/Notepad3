@@ -2055,7 +2055,7 @@ bool SelectExternalToolBar(HWND hwnd)
     }
     else {
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
-      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", NULL);
+      IniFileDeleteValue(Globals.IniFile, L"Toolbar Images", L"BitmapHot", NULL, false);
     }
 
     StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
@@ -2067,14 +2067,14 @@ bool SelectExternalToolBar(HWND hwnd)
     }
     else {
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
-      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", NULL);
+      IniFileDeleteValue(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", NULL, false);
     }
     s_iToolBarTheme = 2;
     return true;
   }
   else {
-    IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", NULL);
-    IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", NULL);
+    IniFileDeleteValue(Globals.IniFile, L"Toolbar Images", L"BitmapHot", NULL, false);
+    IniFileDeleteValue(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", NULL, false);
   }
   return false;
 }
@@ -2117,7 +2117,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
-      IniSectionSetString(L"Toolbar Images", L"BitmapDefault", NULL);
+      IniSectionDeleteValue(L"Toolbar Images", L"BitmapDefault", NULL, false);
       bDirtyFlag = true;
       DeleteObject(hbmp);
       hbmp = NULL;
@@ -2172,7 +2172,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapHot,
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
-      IniSectionSetString(L"Toolbar Images", L"BitmapHot", NULL);
+      IniSectionDeleteValue(L"Toolbar Images", L"BitmapHot", NULL, false);
       bDirtyFlag = true;
       DeleteObject(hbmp);
       hbmp = NULL;
@@ -2220,7 +2220,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapDisabled,
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
       StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
-      IniSectionSetString(L"Toolbar Images", L"BitmapDisabled", NULL);
+      IniSectionDeleteValue(L"Toolbar Images", L"BitmapDisabled", NULL, false);
       bDirtyFlag = true;
       DeleteObject(hbmp);
       hbmp = NULL;
@@ -5398,19 +5398,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           }
           else { // clear entries
 
-            IniSectionSetString(Window_Section, tchPosX, NULL);
-            IniSectionSetString(Window_Section, tchPosY, NULL);
-            IniSectionSetString(Window_Section, tchSizeX, NULL);
-            IniSectionSetString(Window_Section, tchSizeY, NULL);
-            IniSectionSetString(Window_Section, tchMaximized, NULL);
-            IniSectionSetString(Window_Section, tchZoom, NULL);
+            IniSectionDeleteValue(Window_Section, tchPosX, NULL, false);
+            IniSectionDeleteValue(Window_Section, tchPosY, NULL, false);
+            IniSectionDeleteValue(Window_Section, tchSizeX, NULL, false);
+            IniSectionDeleteValue(Window_Section, tchSizeY, NULL, false);
+            IniSectionDeleteValue(Window_Section, tchMaximized, NULL, false);
+            IniSectionDeleteValue(Window_Section, tchZoom, NULL, false);
           }
 
-          if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
+          if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) {
             IniSectionSetBool(L"Settings2", L"StickyWindowPosition", Flags.bStickyWindowPosition);
-          else
-            IniSectionSetString(L"Settings2", L"StickyWindowPosition", NULL);
-
+          }
+          else {
+            IniSectionDeleteValue(L"Settings2", L"StickyWindowPosition", NULL, false);
+          }
           SaveIniFile(Globals.IniFile);
         }
       }
@@ -5419,19 +5420,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_REUSEWINDOW:
       Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
-      if (Flags.bReuseWindow != DefaultFlags.bReuseWindow)
+      if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
         IniFileSetBool(Globals.IniFile, L"Settings2", L"ReuseWindow", Flags.bReuseWindow);
-      else
-        IniFileSetString(Globals.IniFile, L"Settings2", L"ReuseWindow", NULL);
+      }
+      else {
+        IniFileDeleteValue(Globals.IniFile, L"Settings2", L"ReuseWindow", NULL, false);
+      }
       break;
 
 
     case IDM_VIEW_SINGLEFILEINSTANCE:
       Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
-      if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance)
+      if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
         IniFileSetInt(Globals.IniFile, L"Settings2", L"SingleFileInstance", Flags.bSingleFileInstance);
-      else
-        IniFileSetString(Globals.IniFile, L"Settings2", L"SingleFileInstance", NULL);
+      }
+      else {
+        IniFileDeleteValue(Globals.IniFile, L"Settings2", L"SingleFileInstance", NULL, false);
+      }
       break;
 
 
@@ -5542,10 +5547,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SAVESETTINGS:
       if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS)) {
         Settings.SaveSettings = !Settings.SaveSettings;
-        if (Settings.SaveSettings == Defaults.SaveSettings)
-          IniFileSetString(Globals.IniFile, L"Settings", L"SaveSettings", NULL);
-        else
+        if (Settings.SaveSettings == Defaults.SaveSettings) {
+          IniFileDeleteValue(Globals.IniFile, L"Settings", L"SaveSettings", NULL, false);
+        }
+        else {
           IniFileSetBool(Globals.IniFile, L"Settings", L"SaveSettings", Settings.SaveSettings);
+        }
       }
       break;
 
@@ -6132,7 +6139,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEARSAVEDWINPOS:
       s_DefWinInfo = InitDefaultWndPos(2);
-      IniFileSetString(Globals.IniFile, L"Settings2", L"DefaultWindowPosition", NULL);
+      IniFileDeleteValue(Globals.IniFile, L"Settings2", L"DefaultWindowPosition", NULL, false);
     break;
 
     case CMD_OPENINIFILE:

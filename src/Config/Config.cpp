@@ -155,9 +155,6 @@ extern "C" bool IniSectionGetBool(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool
 
 extern "C" bool IniSectionSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
-  if (lpString == NULL) {
-    return s_INI.DeleteValue(lpSectionName, lpKeyName, NULL, false);
-  }
   SI_Error const rc = s_INI.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
   return SI_SUCCESS(rc);
 }
@@ -189,6 +186,13 @@ extern "C" bool IniSectionSetBool(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool
 {
   SI_Error const rc = s_INI.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
   return SI_SUCCESS(rc);
+}
+// ============================================================================
+
+
+extern "C" bool IniSectionDeleteValue(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpValue, bool bRemoveEmpty)
+{
+  return s_INI.DeleteValue(lpSectionName, lpKeyName, lpValue, bRemoveEmpty);
 }
 // ============================================================================
 
@@ -241,14 +245,11 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
-  if (SI_SUCCESS(rc)) {
-    if (lpString == NULL) {
-      Ini.DeleteValue(lpSectionName, lpKeyName, NULL, false);
-    }
-    else {
-      SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
-      rc = SI_SUCCESS(res) ? SI_OK : SI_FAIL;
-    }
+  if (SI_SUCCESS(rc)) 
+  {
+    SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
+    rc = SI_SUCCESS(res) ? SI_OK : SI_FAIL;
+
     if (SI_SUCCESS(rc)) {
       Ini.SetSpaces(s_bSetSpaces);
       rc = Ini.SaveFile(Globals.IniFile, true);
@@ -316,6 +317,20 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 }
 // ============================================================================
 
+
+extern "C" bool IniFileDeleteValue(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpValue, bool bRemoveEmpty)
+{
+  CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  SI_Error rc = Ini.LoadFile(lpFilePath);
+  if (SI_SUCCESS(rc))
+  {
+    Ini.DeleteValue(lpSectionName, lpKeyName, lpValue, bRemoveEmpty);
+    Ini.SetSpaces(s_bSetSpaces);
+    rc = Ini.SaveFile(Globals.IniFile, true);
+  }
+  return SI_SUCCESS(rc);
+}
+// ============================================================================
 
 
 //=============================================================================
@@ -589,7 +604,7 @@ void LoadSettings()
     Defaults.RenderingTechnology = IniSectionGetInt(Settings2_Section, L"SciDirectWriteTech", -111);
     if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
       // cleanup
-      IniSectionSetString(Settings2_Section, L"SciDirectWriteTech", NULL);
+      IniSectionDeleteValue(Settings2_Section, L"SciDirectWriteTech", NULL, false);
       bDirtyFlag = true;
     }
     Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, 0, 3);
@@ -598,7 +613,7 @@ void LoadSettings()
     Defaults.Bidirectional = IniSectionGetInt(Settings2_Section, L"EnableBidirectionalSupport", -111);
     if ((Defaults.Bidirectional != -111) && Settings.SaveSettings) {
       // cleanup
-      IniSectionSetString(Settings2_Section, L"EnableBidirectionalSupport", NULL);
+      IniSectionDeleteValue(Settings2_Section, L"EnableBidirectionalSupport", NULL, false);
       bDirtyFlag = true;
     }
     Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : 0;
@@ -1127,7 +1142,7 @@ void LoadFlags()
     IniSectionSet##TYPE(Settings_Section, _W(_STRG(VARNAME)), Settings.VARNAME);  \
   }                                                                               \
   else {                                                                          \
-    IniSectionSetString(Settings_Section, _W(_STRG(VARNAME)), NULL);              \
+    IniSectionDeleteValue(Settings_Section, _W(_STRG(VARNAME)), NULL, false);     \
   }
 
 // ----------------------------------------------------------------------------
@@ -1285,7 +1300,7 @@ bool SaveSettings(bool bSaveSettingsNow)
 
     Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
     if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) == 0) {
-      IniSectionSetString(Settings_Section, L"ToolbarButtons", NULL);
+      IniSectionDeleteValue(Settings_Section, L"ToolbarButtons", NULL, false);
     }
     else {
       IniSectionSetString(Settings_Section, L"ToolbarButtons", Settings.ToolbarButtons);

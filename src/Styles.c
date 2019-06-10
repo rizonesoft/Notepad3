@@ -51,6 +51,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 {
   &lexStandard,      // Default Text
   &lexStandard2nd,   // 2nd Default Text
+  &lexTEXT,          // Pure Text Files
   &lexANSI,          // ANSI Files
   &lexCONF,          // Apache Config Files
   &lexASM,           // Assembly Script
@@ -635,8 +636,12 @@ void Style_Save()
 {
   Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
 
-  IniFileSetString(Globals.IniFile, L"Styles", STYLING_THEME_NAME, 
-                   (s_idxSelectedTheme > 1) ? Theme_Files[s_idxSelectedTheme].szName : NULL);
+  if (s_idxSelectedTheme > 1) {
+    IniFileSetString(Globals.IniFile, L"Styles", STYLING_THEME_NAME, Theme_Files[s_idxSelectedTheme].szName);
+  }
+  else {
+    IniFileDeleteValue(Globals.IniFile, L"Styles", STYLING_THEME_NAME, NULL, false);
+  }
 }
 
 
@@ -737,6 +742,10 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
       for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
       {
         IniSectionClear(g_pLexArray[iLexer]->pszName, true);
+      }
+      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
+      {
+        IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
       }
     }
 
@@ -1040,6 +1049,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (!Style_StrGetColor(pCurrentStandard->Styles[STY_MARK_OCC].szValue, FOREGROUND_LAYER, &dColor))
   {
     dColor = GetSysColor(COLOR_HIGHLIGHT);
+
     WCHAR sty[32] = { L'\0' };
     StringCchPrintf(sty, COUNTOF(sty), L"; fore:#%02X%02X%02X", (int)GetRValue(dColor), (int)GetGValue(dColor), (int)GetBValue(dColor));
     StringCchCat(pCurrentStandard->Styles[STY_MARK_OCC].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), sty);

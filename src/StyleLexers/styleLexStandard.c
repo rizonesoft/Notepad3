@@ -5,7 +5,7 @@
 KEYWORDLIST KeyWords_NULL = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexStandard = { 
-SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; tmp; log; asc; doc; wtx", L"", 
+SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"", L"", 
 &KeyWords_NULL, {
     /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default", L"" },
     /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#008080", L"" },
@@ -27,7 +27,7 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; tmp; log; asc; doc; w
 
 
 EDITLEXER lexStandard2nd = { 
-SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; tmp; log; asc; doc; wtx", L"", 
+SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"", L"", 
 &KeyWords_NULL,{
     /*  0 */ { {STYLE_DEFAULT}, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New", L"" },
     /*  1 */ { {STYLE_LINENUMBER}, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Courier New; size:-2; fore:#008080", L"" },
@@ -46,6 +46,15 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; tmp; log; asc; 
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"fore:#00D000; back:#009C00; alpha:180; indic_compositionthin", L"" },
     /* 15 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
              EDITLEXER_SENTINEL } };
+
+
+EDITLEXER lexTEXT = {
+SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
+&KeyWords_NULL,{
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Segoe UI Semibold; size:11; semibold; smoothing:cleartype", L"" },
+    { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
+    { {SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
+    EDITLEXER_SENTINEL } };
 
 
 EDITLEXER lexANSI = { 

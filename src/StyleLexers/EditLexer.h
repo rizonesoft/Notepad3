@@ -91,6 +91,7 @@ LexDefaultStyles;
 
 extern EDITLEXER lexStandard;      // Default Text
 extern EDITLEXER lexStandard2nd;   // 2nd Default Text
+extern EDITLEXER lexTEXT;          // Pure Text Files
 extern EDITLEXER lexANSI;          // ANSI Files
 extern EDITLEXER lexCONF;          // Apache Config Files
 extern EDITLEXER lexASM;           // Assembly Script
