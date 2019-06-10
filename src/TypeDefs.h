@@ -463,6 +463,7 @@ typedef struct _flags_t
 } FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;
+extern FLAGS_T DefaultFlags;
 
 //=============================================================================
 

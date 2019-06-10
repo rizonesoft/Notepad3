@@ -133,8 +133,7 @@ void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTim
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 void ParseCommandLine();
-void LoadFlags();
-void SaveAllSettings(bool bSaveSettingsNow);
+bool SaveAllSettings(bool bSaveSettingsNow);
 void ShowZoomCallTip();
 void CancelCallTip();
 

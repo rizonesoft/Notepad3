@@ -46,8 +46,15 @@ extern "C" WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH];
 
 extern "C" bool      s_bEnableSaveSettings;
 extern "C" int       s_iToolBarTheme;
+
 extern "C" bool      s_flagPosParam;
 extern "C" int       s_flagWindowPos;
+extern "C" int       s_flagReuseWindow;
+extern "C" int       s_flagSingleFileInstance;
+extern "C" int       s_flagMultiFileArg;
+extern "C" int       s_flagShellUseSystemMRU;
+extern "C" int       s_flagPrintFileAndLeave;
+
 
 // ----------------------------------------------------------------------------
 
@@ -85,7 +92,9 @@ extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.SetSpaces(s_bSetSpaces);
   SI_Error const rc = s_INI.SaveFile(lpIniFilePath, true);
-  s_INI.Reset(); // done
+  if (SI_SUCCESS(rc)) {
+    s_INI.Reset(); // done
+  }
   return SI_SUCCESS(rc);
 }
 
@@ -1049,6 +1058,66 @@ void LoadSettings()
 
 //=============================================================================
 //
+//  LoadFlags()
+//
+//
+void LoadFlags()
+{
+  LoadIniFile(Globals.IniFile);
+
+  const WCHAR* const Settings2_Section = L"Settings2";
+
+  Flags.bDevDebugMode = IniSectionGetBool(Settings2_Section, L"DevDebugMode", DefaultFlags.bDevDebugMode);
+  Flags.bStickyWindowPosition = IniSectionGetBool(Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
+
+  if (s_flagReuseWindow == 0) {
+    Flags.bReuseWindow = IniSectionGetBool(Settings2_Section, L"ReuseWindow", DefaultFlags.bReuseWindow);
+  }
+  else {
+    Flags.bReuseWindow = (s_flagReuseWindow == 2);
+  }
+
+  if (s_flagSingleFileInstance == 0) {
+    Flags.bSingleFileInstance = IniSectionGetBool(Settings2_Section, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
+  }
+  else {
+    Flags.bSingleFileInstance = (s_flagSingleFileInstance == 2);
+  }
+
+  if (s_flagMultiFileArg == 0) {
+    Flags.MultiFileArg = IniSectionGetBool(Settings2_Section, L"MultiFileArg", DefaultFlags.MultiFileArg);
+  }
+  else {
+    Flags.MultiFileArg = (s_flagMultiFileArg == 2);
+  }
+
+  if (s_flagShellUseSystemMRU == 0) {
+    Flags.ShellUseSystemMRU = IniSectionGetBool(Settings2_Section, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
+  }
+  else {
+    Flags.ShellUseSystemMRU = (s_flagShellUseSystemMRU == 2);
+  }
+
+  Flags.RelativeFileMRU = IniSectionGetBool(Settings2_Section, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
+  Flags.PortableMyDocs = IniSectionGetBool(Settings2_Section, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
+  Flags.NoFadeHidden = IniSectionGetBool(Settings2_Section, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
+
+  Flags.ToolbarLook = IniSectionGetInt(Settings2_Section, L"ToolbarLook", DefaultFlags.ToolbarLook);
+  Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
+
+  Flags.SimpleIndentGuides = IniSectionGetBool(Settings2_Section, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
+  Flags.NoHTMLGuess = IniSectionGetBool(Settings2_Section, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
+  Flags.NoCGIGuess = IniSectionGetBool(Settings2_Section, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
+  Flags.NoFileVariables = IniSectionGetInt(Settings2_Section, L"NoFileVariables", DefaultFlags.NoFileVariables);
+
+  Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
+
+  ReleaseIniFile();
+}
+
+
+//=============================================================================
+//
 //  SaveSettings()
 //
 
@@ -1063,9 +1132,9 @@ void LoadSettings()
 // ----------------------------------------------------------------------------
 
 
-void SaveSettings(bool bSaveSettingsNow)
+bool SaveSettings(bool bSaveSettingsNow)
 {
-  if (StrIsEmpty(Globals.IniFile) || !s_bEnableSaveSettings) { return; }
+  if (StrIsEmpty(Globals.IniFile) || !s_bEnableSaveSettings) { return false; }
 
   CreateIniFile();
   LoadIniFile(Globals.IniFile);
@@ -1077,8 +1146,7 @@ void SaveSettings(bool bSaveSettingsNow)
     if (Settings.SaveSettings != Defaults.SaveSettings) {
       IniSectionSetBool(Settings_Section, L"SaveSettings", Settings.SaveSettings);
     }
-    SaveIniFile(Globals.IniFile);
-    return;
+    return SaveIniFile(Globals.IniFile);
   }
 
   // update window placement 
@@ -1274,10 +1342,12 @@ void SaveSettings(bool bSaveSettingsNow)
     IniSectionSetInt(Window_Section, tchZoom, s_WinInfo.zoom);
   }
 
-  SaveIniFile(Globals.IniFile);
+  bool const ok = SaveIniFile(Globals.IniFile);
 
-  Style_Save();  // Scintilla Styles
-
+  if (ok) {
+    Style_Save();  // Scintilla Styles
+  }
+  return ok;
 }
 //=============================================================================
 

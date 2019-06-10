@@ -81,6 +81,13 @@ int       s_iToolBarTheme = -1;
 bool      s_flagPosParam = false;
 int       s_flagWindowPos = 0;
 
+int       s_flagReuseWindow = 0;
+int       s_flagSingleFileInstance = 0;
+int       s_flagMultiFileArg = 0;
+int       s_flagShellUseSystemMRU = 0;
+int       s_flagPrintFileAndLeave = 0;
+
+
 // ------------------------------------
 
 static WCHAR     s_wchWndClass[16] = _W(SAPPNAME);
@@ -526,12 +533,8 @@ static LPWSTR     s_lpOrigFileArg = NULL;
 static WCHAR      s_lpFileArg[MAX_PATH+1];
 
 static cpi_enc_t  s_flagSetEncoding = CPI_NONE;
-static int        s_flagMultiFileArg = 0;
 static int        s_flagSetEOLMode = 0;
-static int        s_flagShellUseSystemMRU = 0;
 static bool       s_flagIsElevatedRelaunch = false;
-static int        s_flagReuseWindow = 0;
-static int        s_flagSingleFileInstance = 0;
 static bool       s_flagStartAsTrayIcon = false;
 static int        s_flagAlwaysOnTop = 0;
 static bool       s_flagKeepTitleExcerpt = false;
@@ -546,7 +549,6 @@ static bool       s_flagRelaunchElevated = false;
 static bool       s_flagAppIsClosing = false;
 static bool       s_flagSearchPathIfRelative = false;
 static bool       s_flagDisplayHelp = false;
-static int        s_flagPrintFileAndLeave = 0;
 
 //==============================================================================
 
@@ -853,7 +855,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // ----------------------------------------------------
   // MultiLingual
   //
-  //Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
   Globals.iPrefLANGID = LoadLanguageResources();
 
   // ----------------------------------------------------
@@ -1573,15 +1574,16 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 //  SaveAllSettings()
 //
-void SaveAllSettings(bool bSaveSettingsNow)
+bool SaveAllSettings(bool bSaveSettingsNow)
 {
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
 
-  SaveSettings(bSaveSettingsNow);
+  bool const ok = SaveSettings(bSaveSettingsNow);
 
   EndWaitCursor();
+  return ok;
 }
 
 
@@ -5571,13 +5573,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (!bCreateFailure) 
         {
-          if (WritePrivateProfileString(L"Settings", L"WriteTest", L"ok", Globals.IniFile)) {
-            SaveAllSettings(true);
+          if (SaveAllSettings(true)) {
             InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_SAVEDSETTINGS);
           }
           else {
             Globals.dwLastError = GetLastError();
-            InfoBoxLng(MB_ICONWARNING, NULL,IDS_MUI_WRITEINI_FAIL);
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_WRITEINI_FAIL);
           }
         }
         else {
@@ -7703,66 +7704,6 @@ void ParseCommandLine()
     FreeMem(lp2);
     FreeMem(lp3);
   }
-}
-
-
-//=============================================================================
-//
-//  LoadFlags()
-//
-//
-void LoadFlags()
-{
-  LoadIniFile(Globals.IniFile);
-
-  const WCHAR* const Settings2_Section = L"Settings2";
-
-  Flags.bDevDebugMode = IniSectionGetBool(Settings2_Section, L"DevDebugMode", DefaultFlags.bDevDebugMode);
-  Flags.bStickyWindowPosition = IniSectionGetBool(Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
-
-  if (s_flagReuseWindow == 0) {
-    Flags.bReuseWindow = IniSectionGetBool(Settings2_Section, L"ReuseWindow", DefaultFlags.bReuseWindow);
-  }
-  else {
-    Flags.bReuseWindow = (s_flagReuseWindow == 2);
-  }
-
-  if (s_flagSingleFileInstance == 0) {
-    Flags.bSingleFileInstance = IniSectionGetBool(Settings2_Section, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
-  }
-  else {
-    Flags.bSingleFileInstance = (s_flagSingleFileInstance == 2);
-  }
-
-  if (s_flagMultiFileArg == 0) {
-    Flags.MultiFileArg = IniSectionGetBool(Settings2_Section, L"MultiFileArg", DefaultFlags.MultiFileArg);
-  }
-  else {
-    Flags.MultiFileArg = (s_flagMultiFileArg == 2);
-  }
-
-  if (s_flagShellUseSystemMRU == 0) {
-    Flags.ShellUseSystemMRU = IniSectionGetBool(Settings2_Section, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
-  }
-  else {
-    Flags.ShellUseSystemMRU = (s_flagShellUseSystemMRU == 2);
-  }
-
-  Flags.RelativeFileMRU = IniSectionGetBool(Settings2_Section, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
-  Flags.PortableMyDocs = IniSectionGetBool(Settings2_Section, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
-  Flags.NoFadeHidden = IniSectionGetBool(Settings2_Section, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
-
-  Flags.ToolbarLook = IniSectionGetInt(Settings2_Section, L"ToolbarLook", DefaultFlags.ToolbarLook);
-  Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
-
-  Flags.SimpleIndentGuides = IniSectionGetBool(Settings2_Section, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
-  Flags.NoHTMLGuess = IniSectionGetBool(Settings2_Section, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
-  Flags.NoCGIGuess = IniSectionGetBool(Settings2_Section, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
-  Flags.NoFileVariables = IniSectionGetInt(Settings2_Section, L"NoFileVariables", DefaultFlags.NoFileVariables);
-
-  Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
-
-  ReleaseIniFile();
 }
 
 
