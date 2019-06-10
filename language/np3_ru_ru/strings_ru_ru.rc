@@ -173,7 +173,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "Ошибка создания конфигурационного файла."
     IDS_MUI_WRITEINI_FAIL   "Ошибка записи настроек в конфигурационный файл."
     IDS_MUI_SETTINGSNOTSAVED
-                            "Конфигурационный файл не найден.\nДля сохранения изменений стилей сохраните настройки (F7) или вернитесь к настройке стилей (Ctrl+F12) и экспортируйте их."
+                            "Конфигурационный файл не найден.\nДля сохранения изменений стилей сохраните настройки (F7) или вернитесь к настройке схем (Ctrl+F12) и экспортируйте их."
 END
 
 STRINGTABLE
@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Язык"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
+    IDS_MUI_MENU_THEMES     "&Коллекция схем"
     IDM_THEMES_DEFAULT      "Заводские настройки"
     IDM_THEMES_FILE_ITEM    "Стандартные настройки"
 END

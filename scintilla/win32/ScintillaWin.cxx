@@ -146,7 +146,6 @@ constexpr UINT SC_WIN_IDLE = 5001;
 // and delivering SCN_UPDATEUI
 constexpr UINT SC_WORK_IDLE = 5002;
 
-
 #define SC_INDICATOR_INPUT INDIC_IME
 #define SC_INDICATOR_TARGET INDIC_IME+1
 #define SC_INDICATOR_CONVERTED INDIC_IME+2
@@ -192,7 +191,7 @@ constexpr POINT POINTFromPoint(Point pt) noexcept {
 }
 
 inline bool KeyboardIsKeyDown(int key) noexcept {
-	return (::GetKeyState(key) & 0x80000000) != 0;
+	return (::GetKeyState(key) & 0x8000) != 0;
 }
 
 }
@@ -404,7 +403,7 @@ class ScintillaWin :
 
 	Sci::Position TargetAsUTF8(char *text) const;
 	Sci::Position EncodedFromUTF8(const char *utf8, char *encoded) const;
-	sptr_t WndPaint(uptr_t wParam);
+	sptr_t WndPaint();
 
 	sptr_t HandleCompositionWindowed(uptr_t wParam, sptr_t lParam);
 	sptr_t HandleCompositionInline(uptr_t wParam, sptr_t lParam);
@@ -425,7 +424,8 @@ class ScintillaWin :
 	bool ValidCodePage(int codePage) const noexcept override;
 	sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) noexcept override;
 	void IdleWork() override;
-	void QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo) override;	bool SetIdle(bool on) noexcept override;
+	void QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo) noexcept override;
+	bool SetIdle(bool on) noexcept override;
 	UINT_PTR timers[tickDwell + 1]{};
 	bool FineTickerRunning(TickReason reason) noexcept override;
 	void FineTickerStart(TickReason reason, int millis, int tolerance) noexcept override;
@@ -478,6 +478,7 @@ class ScintillaWin :
 
 public:
 	~ScintillaWin() override;
+
 	// Deleted so ScintillaWin objects can not be copied.
 	ScintillaWin(const ScintillaWin &) = delete;
 	ScintillaWin(ScintillaWin &&) = delete;
@@ -669,7 +670,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 			if (SUCCEEDED(hr)) {
 				pRenderTarget = pDCRT;
 			} else {
-				Platform::DebugPrintf("Failed CreateDCRenderTarget 0x%x\n", hr);
+				//Platform::DebugPrintf("Failed CreateDCRenderTarget 0x%lx\n", hr);
 				pRenderTarget = nullptr;
 			}
 
@@ -685,7 +686,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 			if (SUCCEEDED(hr)) {
 				pRenderTarget = pHwndRenderTarget;
 			} else {
-				Platform::DebugPrintf("Failed CreateHwndRenderTarget 0x%x\n", hr);
+				//Platform::DebugPrintf("Failed CreateHwndRenderTarget 0x%lx\n", hr);
 				pRenderTarget = nullptr;
 			}
 		}
@@ -708,7 +709,7 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 		GetClientRect(MainHWND(), &rcWindow);
 		const HRESULT hr = static_cast<ID2D1DCRenderTarget*>(pRenderTarget)->BindDC(hdc, &rcWindow);
 		if (FAILED(hr)) {
-			Platform::DebugPrintf("BindDC failed 0x%x\n", hr);
+			//Platform::DebugPrintf("BindDC failed 0x%lx\n", hr);
 			DropRenderTarget();
 		}
 	}
@@ -740,12 +741,12 @@ void ScintillaWin::StartDrag() {
 	dropWentOutside = true;
 	IDataObject *pDataObject = reinterpret_cast<IDataObject *>(&dob);
 	IDropSource *pDropSource = reinterpret_cast<IDropSource *>(&ds);
-	//Platform::DebugPrintf("About to DoDragDrop %x %x\n", pDataObject, pDropSource);
+	//Platform::DebugPrintf("About to DoDragDrop %p %p\n", pDataObject, pDropSource);
 	const HRESULT hr = ::DoDragDrop(
 		pDataObject,
 		pDropSource,
 		DROPEFFECT_COPY | DROPEFFECT_MOVE, &dwEffect);
-	//Platform::DebugPrintf("DoDragDrop = %x\n", hr);
+	//Platform::DebugPrintf("DoDragDrop = %lx\n", hr);
 	if (SUCCEEDED(hr)) {
 		if ((hr == DRAGDROP_S_DROP) && (dwEffect == DROPEFFECT_MOVE) && dropWentOutside) {
 			// Remove dragged out text
@@ -851,7 +852,7 @@ inline int WideCharLenFromMultiByte(UINT codePage, std::string_view sv) noexcept
 	return WideCharFromMultiByte(codePage, sv, nullptr, 0);
 }
 
-std::string StringEncode(std::wstring_view wsv, int codePage) {
+std::string StringEncode(const std::wstring_view wsv, int codePage) {
 	const int cchMulti = wsv.length() ? MultiByteLenFromWideChar(codePage, wsv) : 0;
 	std::string sMulti(cchMulti, 0);
 	if (cchMulti) {
@@ -860,7 +861,7 @@ std::string StringEncode(std::wstring_view wsv, int codePage) {
 	return sMulti;
 }
 
-std::wstring StringDecode(std::string_view sv, int codePage) {
+std::wstring StringDecode(const std::string_view sv, int codePage) {
 	const int cchWide = sv.length() ? WideCharLenFromMultiByte(codePage, sv) : 0;
 	std::wstring sWide(cchWide, 0);
 	if (cchWide) {
@@ -869,7 +870,7 @@ std::wstring StringDecode(std::string_view sv, int codePage) {
 	return sWide;
 }
 
-std::wstring StringMapCase(std::wstring_view wsv, DWORD mapFlags) {
+std::wstring StringMapCase(const std::wstring_view wsv, DWORD mapFlags) {
 	const int charsConverted = ::LCMapStringW(LOCALE_SYSTEM_DEFAULT, mapFlags,
 		wsv.data(), static_cast<int>(wsv.length()), nullptr, 0);
 	std::wstring wsConverted(charsConverted, 0);
@@ -920,48 +921,41 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 		std::wstring characters(charsLen, L'\0');
 		WideCharFromMultiByte(CP_UTF8, utf8Input, characters.data(), charsLen);
 
-		const int encodedLen = MultiByteLenFromWideChar(CodePageOfDocument(), characters);
+		const UINT codePage = CodePageOfDocument();
+		const int encodedLen = MultiByteLenFromWideChar(codePage, characters);
 		if (encoded) {
-			MultiByteFromWideChar(CodePageOfDocument(), characters, encoded, encodedLen);
+			MultiByteFromWideChar(codePage, characters, encoded, encodedLen);
 			encoded[encodedLen] = '\0';
 		}
 		return encodedLen;
 	}
 }
 
-sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
+sptr_t ScintillaWin::WndPaint() {
 	//ElapsedPeriod ep;
 
 	// Redirect assertions to debug output and save current state
 	const bool assertsPopup = Platform::ShowAssertionPopUps(false);
 	paintState = painting;
-	PAINTSTRUCT ps;
-	PAINTSTRUCT *pps;
+	PAINTSTRUCT ps = {};
 
-	const bool IsOcxCtrl = (wParam != 0); // if wParam != 0, it contains
-								   // a PAINTSTRUCT* from the OCX
 	// Removed since this interferes with reporting other assertions as it occurs repeatedly
 	//PLATFORM_ASSERT(hRgnUpdate == nullptr);
 	hRgnUpdate = ::CreateRectRgn(0, 0, 0, 0);
-	if (IsOcxCtrl) {
-		pps = reinterpret_cast<PAINTSTRUCT*>(wParam);
-	} else {
-		::GetUpdateRgn(MainHWND(), hRgnUpdate, FALSE);
-		pps = &ps;
-		::BeginPaint(MainHWND(), pps);
-	}
-	rcPaint = PRectangle::FromInts(pps->rcPaint.left, pps->rcPaint.top, pps->rcPaint.right, pps->rcPaint.bottom);
+	::GetUpdateRgn(MainHWND(), hRgnUpdate, FALSE);
+	::BeginPaint(MainHWND(), &ps);
+	rcPaint = PRectangle::FromInts(ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right, ps.rcPaint.bottom);
 	const PRectangle rcClient = GetClientRectangle();
 	paintingAllText = BoundsContains(rcPaint, hRgnUpdate, rcClient);
 	if (technology == SC_TECHNOLOGY_DEFAULT) {
-		AutoSurface surfaceWindow(pps->hdc, this);
+		AutoSurface surfaceWindow(ps.hdc, this);
 		if (surfaceWindow) {
 			Paint(surfaceWindow, rcPaint);
 			surfaceWindow->Release();
 		}
 	} else {
 #if defined(USE_D2D)
-		EnsureRenderTarget(pps->hdc);
+		EnsureRenderTarget(ps.hdc);
 		AutoSurface surfaceWindow(pRenderTarget, this);
 		if (surfaceWindow) {
 			pRenderTarget->BeginDraw();
@@ -980,15 +974,11 @@ sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
 		hRgnUpdate = nullptr;
 	}
 
-	if (!IsOcxCtrl)
-		::EndPaint(MainHWND(), pps);
+	::EndPaint(MainHWND(), &ps);
 	if (paintState == paintAbandoned) {
 		// Painting area was insufficient to cover new styling or brace highlight positions
-		if (IsOcxCtrl) {
-			FullPaintDC(pps->hdc);
-		} else {
-			FullPaint();
-		}
+		FullPaint();
+		::ValidateRect(MainHWND(), nullptr);
 	}
 	paintState = notPainting;
 
@@ -1092,10 +1082,11 @@ void ScintillaWin::SelectionToHangul() {
 	if (utf16Len > 0) {
 		std::string documentStr(documentStrLen, '\0');
 		pdoc->GetCharRange(documentStr.data(), selStart, documentStrLen);
+		const UINT codePage = CodePageOfDocument();
 
-		std::wstring uniStr = StringDecode(documentStr, CodePageOfDocument());
+		std::wstring uniStr = StringDecode(documentStr, codePage);
 		const int converted = HanjaDict::GetHangulOfHanja(uniStr.data());
-		documentStr = StringEncode(uniStr, CodePageOfDocument());
+		documentStr = StringEncode(uniStr, codePage);
 
 		if (converted > 0) {
 			pdoc->BeginUndoAction();
@@ -1155,6 +1146,7 @@ void ScintillaWin::ToggleHanja() {
 
 namespace {
 
+// https://docs.microsoft.com/en-us/windows/desktop/Intl/composition-string
 std::vector<int> MapImeIndicators(const std::vector<BYTE> &inputStyle) {
 	std::vector<int> imeIndicator(inputStyle.size(), SC_INDICATOR_UNKNOWN);
 	for (size_t i = 0; i < inputStyle.size(); i++) {
@@ -1395,7 +1387,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			break;
 
 		case WM_PAINT:
-			return WndPaint(wParam);
+			return WndPaint();
 
 		case WM_PRINTCLIENT: {
 			HDC hdc = reinterpret_cast<HDC>(wParam);
@@ -1980,7 +1972,7 @@ void ScintillaWin::IdleWork() {
 	Editor::IdleWork();
 }
 
-void ScintillaWin::QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo) {
+void ScintillaWin::QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo) noexcept {
 	Editor::QueueIdleWork(items, upTo);
 	if (!styleIdleInQueue) {
 		if (PostMessage(MainHWND(), SC_WORK_IDLE, 0, 0)) {
@@ -2208,7 +2200,7 @@ public:
 				return 1;
 			}
 
-			unsigned int lenFlat = 0;
+			size_t lenFlat = 0;
 			for (size_t mixIndex = 0; mixIndex < nUtf16Mixed; mixIndex++) {
 				if ((lenFlat + 20) > utf16Folded.size())
 					utf16Folded.resize(lenFlat + 60);
@@ -2583,7 +2575,7 @@ DropSource::DropSource() noexcept {
 
 /// Implement IUnkown
 STDMETHODIMP DataObject::QueryInterface(REFIID riid, PVOID *ppv) noexcept {
-	//Platform::DebugPrintf("DO QI %x\n", this);
+	//Platform::DebugPrintf("DO QI %p\n", this);
 	return sci->QueryInterface(riid, ppv);
 }
 STDMETHODIMP_(ULONG)DataObject::AddRef() noexcept {
@@ -2649,7 +2641,7 @@ STDMETHODIMP DataObject::SetData(FORMATETC *, STGMEDIUM *, BOOL) noexcept {
 
 STDMETHODIMP DataObject::EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC **ppEnum) {
 	try {
-		//Platform::DebugPrintf("DOB EnumFormatEtc %d\n", dwDirection);
+		//Platform::DebugPrintf("DOB EnumFormatEtc %lu\n", dwDirection);
 		if (dwDirection != DATADIR_GET) {
 			*ppEnum = nullptr;
 			return E_FAIL;
@@ -2693,7 +2685,7 @@ DataObject::DataObject() noexcept {
 
 /// Implement IUnknown
 STDMETHODIMP DropTarget::QueryInterface(REFIID riid, PVOID *ppv) noexcept {
-	//Platform::DebugPrintf("DT QI %x\n", this);
+	Platform::DebugPrintf("DT QI %p\n", this);
 	return sci->QueryInterface(riid, ppv);
 }
 STDMETHODIMP_(ULONG)DropTarget::AddRef() noexcept {
@@ -2804,7 +2796,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 	if ((baseStart == baseEnd) || (mainEnd > baseEnd))
 		return 0;
 
-	const int codePage = CodePageOfDocument();
+	const UINT codePage = CodePageOfDocument();
 	const std::wstring rcFeed = StringDecode(RangeText(baseStart, baseEnd), codePage);
 	const int rcFeedLen = static_cast<int>(rcFeed.length()) * sizeof(wchar_t);
 	const int rcSize = sizeof(RECONVERTSTRING) + rcFeedLen + sizeof(wchar_t);
@@ -3154,6 +3146,8 @@ const char* GetSourceFormatName(CLIPFORMAT fmt, char name[], int cchName) noexce
 			return "CF_HDROP";
 		case CF_LOCALE:
 			return "CF_LOCALE";
+		case CF_OEMTEXT:
+			return "CF_OEMTEXT";
 		default:
 			return "Unknown";
 		}
@@ -3182,7 +3176,7 @@ void ScintillaWin::EnumDataSourceFormat(const char *tag, LPDATAOBJECT pIDataSour
 				const char *fmtName = GetSourceFormatName(fmt, name, sizeof(name));
 				const int len = sprintf(buf, "%s: fmt[%lu]=%u, 0x%04X; tymed=%lu, %s; name=%s\n",
 					tag, i, fmt, fmt, tymed, typeName, fmtName);
-				AddCharUTF(buf, len);
+				InsertCharacter(std::string_view(buf, len));
 			}
 		}
 	}
@@ -3379,7 +3373,7 @@ STDMETHODIMP ScintillaWin::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState, PO
 		}
 
 		if (!succeed) {
-			//Platform::DebugPrintf("Bad data format: 0x%x\n", hr);
+			//Platform::DebugPrintf("Bad data format: 0x%lx\n", hr);
 			return hr;
 		}
 
