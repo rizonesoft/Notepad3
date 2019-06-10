@@ -40,6 +40,9 @@
     <Filter Include="Config">
       <UniqueIdentifier>{80bb23ba-0110-42e2-b201-04e2f8cedbbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Config">
+      <UniqueIdentifier>{413ae81d-2d64-473f-aa31-a62dd3ba7050}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -396,6 +399,9 @@
     <ClCompile Include="..\uchardet\uchardet\src\nsGB18030Prober.cpp">
       <Filter>Source Files\uchardet</Filter>
     </ClCompile>
+    <ClCompile Include="Config\Config.cpp">
+      <Filter>Source Files\Config</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
@@ -559,6 +565,12 @@
     </ClInclude>
     <ClInclude Include="..\uchardet\uchardet\src\nsGB18030Prober.h">
       <Filter>Source Files\uchardet</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\Config.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\SimpleIni.h">
+      <Filter>Source Files\Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

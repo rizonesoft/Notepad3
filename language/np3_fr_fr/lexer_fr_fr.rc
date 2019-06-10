@@ -121,6 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
     IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL        	"AutoHotkey_L Script"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE

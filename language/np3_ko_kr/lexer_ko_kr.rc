@@ -121,6 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus 통계 코드"
     IDS_LEX_RUST_SRC        "Rust 소스 코드"
     IDS_LEX_AHKL            "AutoHotkey_L 스크립트"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE

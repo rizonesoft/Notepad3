@@ -104,8 +104,9 @@ typedef enum
   CFG_VER_NONE = 0, /// old version
   CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
   CFG_VER_0002 = 2,  /// LongLine Marker Off by default
+  CFG_VER_0003 = 3,  /// SimpleIni UTF-8 BOM
 
-  CFG_VER_CURRENT = CFG_VER_0002
+  CFG_VER_CURRENT = CFG_VER_0003
 
 } CFG_VERSION;
 
@@ -367,7 +368,7 @@ typedef struct _settings_t
   bool ShowSelectionMargin;
   bool ShowLineNumbers;
   bool ShowCodeFolding;
-  int MarkOccurrences;
+  bool MarkOccurrences;
   bool MarkOccurrencesMatchVisible;
   bool MarkOccurrencesMatchCase;
   bool MarkOccurrencesMatchWholeWords;
@@ -433,7 +434,7 @@ typedef struct _settings_t
 extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
-#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences > 0)
+#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences)
 #define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
 
 //=============================================================================
@@ -462,6 +463,7 @@ typedef struct _flags_t
 } FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;
+extern FLAGS_T DefaultFlags;
 
 //=============================================================================
 
@@ -506,6 +508,7 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
+extern SETTINGS2_T Defaults2;
 
 //=============================================================================
 

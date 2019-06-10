@@ -26,6 +26,7 @@
 #include "Encoding.h"
 #include "MuiLanguage.h"
 #include "Notepad3.h"
+#include "Config/Config.h"
 
 #include "Scintilla.h"
 
@@ -157,131 +158,6 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
   }
   CloseClipboard();
   return false;
-}
-
-
-//=============================================================================
-//
-//  Manipulation of (cached) ini file sections
-//
-int IniSectionGetString(
-  LPCWSTR lpCachedIniSection,
-  LPCWSTR lpName,
-  LPCWSTR lpDefault,
-  LPWSTR lpReturnedString,
-  int cchReturnedString)
-{
-  LPWSTR p = (LPWSTR)lpCachedIniSection;
-  if (p) {
-    int const ich = (int)StringCchLen(lpName,0);
-    while (*p) {
-      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
-        StringCchCopyN(lpReturnedString, cchReturnedString, (p+ich+1), cchReturnedString);
-        return (int)StringCchLen(lpReturnedString, cchReturnedString);
-      }
-      p = StrEnd(p,0) + 1; // skip '\0's
-    }
-  }
-  StringCchCopyN(lpReturnedString, cchReturnedString, lpDefault, cchReturnedString);
-  return (int)StringCchLen(lpReturnedString, cchReturnedString);
-}
-
-
-int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
-{
-  LPWSTR p = (LPWSTR)lpCachedIniSection;
-  if (p) {
-    int const ich = (int)StringCchLen(lpName,0);
-    while (*p) {
-      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
-        int i = 0;
-        if (swscanf_s((p + ich + 1), L"%i", &i) == 1) {
-          return(i);
-        }
-        return(iDefault);
-      }
-      p = StrEnd(p,0) + 1; // skip '\0's
-    }
-  }
-  return(iDefault);
-}
-
-
-UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault)
-{
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
-  if (p) {
-    int const ich = (int)StringCchLen(lpName,0);
-    while (*p) {
-      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
-        UINT u;
-        if (swscanf_s((p + ich + 1), L"%u", &u) == 1) {
-          return(u);
-        }
-        return(uDefault);
-      }
-      p = StrEnd(p,0) + 1; // skip '\0's
-    }
-  }
-  return(uDefault);
-}
-
-
-DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDefault)
-{
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
-  if (p) {
-    int const ich = (int)StringCchLen(lpName,0);
-    while (*p) {
-      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
-        DocPos pos = 0;
-        if (swscanf_s((p + ich + 1), DOCPOSFMTW, &pos) == 1) {
-          return pos;
-        }
-        return posDefault;
-      }
-      p = StrEnd(p,0) + 1; // skip '\0's
-    }
-  }
-  return posDefault;
-}
-
-
-bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
-{
-  // TODO(rkotten): length limit of lpCachedIniSection
-  WCHAR* p = lpCachedIniSection;
-  if (p && lpString) {
-    while (*p) {
-      p = StrEnd(p,0) + 1; // skip '\0\0's
-    }
-    StringCchPrintf(p,(96+1024),L"%s=%s",lpName,lpString);
-    p = StrEnd(p,0) + 1;
-    *p = L'\0'; // set '\0\0's for section end
-    return true;
-  }
-  return false;
-}
-
-
-void IniClearAllSections(LPCWSTR lpszPrefix, LPCWSTR lpszIniFile, bool bDelete)
-{
-  if (StrIsEmpty(lpszIniFile)) { return; }
-
-  WCHAR sections[2048] = L"";
-  GetPrivateProfileSectionNames(sections, COUNTOF(sections), lpszIniFile);
-
-  LPCWSTR p = sections;
-  LPCWSTR value = bDelete ? NULL : L"";
-  size_t const len = StringCchLen(lpszPrefix, 0);
-
-  while (*p) {
-    if (StringCchCompareNI(p, 2048, lpszPrefix, len) == 0)
-    {
-      WritePrivateProfileSection(p, value, lpszIniFile);
-    }
-    p = StrEnd(p, COUNTOF(sections)) + 1;
-  }
 }
 
 
@@ -1650,56 +1526,53 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
   return((int)StringCchLen(pszItem, cchItem));
 }
 
-bool MRU_Load(LPMRULIST pmru) 
+bool MRU_Load(LPMRULIST pmru)
 {
-  size_t const len = 2 * MRU_MAXITEMS * 1024;
-  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (pIniSection) {
-    MRU_Empty(pmru);
-    LoadIniSection(pmru->szRegKey, pIniSection, (int)len);
+  MRU_Empty(pmru);
+  LoadIniFile(Globals.IniFile);
 
-    int n = 0;
-    for (int i = 0; i < pmru->iSize; i++) {
-      WCHAR tchName[32] = { L'\0' };
-      StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-      WCHAR tchItem[1024] = { L'\0' };
-      if (IniSectionGetString(pIniSection, tchName, L"", tchItem, COUNTOF(tchItem))) {
-        /*if (pmru->iFlags & MRU_UTF8) {
-          WCHAR wchItem[1024];
-          int cbw = MultiByteToWideChar(CP_UTF7, 0, tchItem, -1, wchItem, COUNTOF(wchItem));
-          WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-          pmru->pszItems[n] = StrDup(tchItem);
-        }
-        else*/
+  const WCHAR* const RegKey_Section = pmru->szRegKey;
+
+  int n = 0;
+  for (int i = 0; i < pmru->iSize; i++) {
+    WCHAR tchName[32] = { L'\0' };
+    StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+    WCHAR tchItem[1024] = { L'\0' };
+    if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
+      /*if (pmru->iFlags & MRU_UTF8) {
+        WCHAR wchItem[1024];
+        int cbw = MultiByteToWideChar(CP_UTF7, 0, tchItem, -1, wchItem, COUNTOF(wchItem));
+        WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
         pmru->pszItems[n] = StrDup(tchItem);
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-        int const iCP = (cpi_enc_t)IniSectionGetInt(pIniSection, tchName, 0);
-        pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-        pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
-        
-        WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-        IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
-        pmru->pszBookMarks[n] = StrDup(wchBookMarks);
-
-        ++n;
       }
+      else*/
+      pmru->pszItems[n] = StrDup(tchItem);
+
+      StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
+      int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
+      pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
+
+      StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
+      pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : 0;
+
+      StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
+
+      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+      IniSectionGetString(RegKey_Section, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
+      pmru->pszBookMarks[n] = StrDup(wchBookMarks);
+
+      ++n;
     }
-    FreeMem(pIniSection);
-    return true;
   }
-  return false;
+  ReleaseIniFile();
+  return true;
 }
 
-bool MRU_Save(LPMRULIST pmru) 
+bool MRU_Save(LPMRULIST pmru)
 {
-  size_t const len = 2 * MRU_MAXITEMS * 1024;
-  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (pIniSection) {
+  if (LoadIniFile(Globals.IniFile)) {
+
+    const WCHAR* const RegKey_Section = pmru->szRegKey;
     //IniDeleteSection(pmru->szRegKey);
 
     for (int i = 0; i < pmru->iSize; i++) {
@@ -1711,28 +1584,28 @@ bool MRU_Save(LPMRULIST pmru)
           WCHAR wchItem[1024];
           int cbw = MultiByteToWideChar(Encoding_SciCP,0,pmru->pszItems[i],-1,wchItem,COUNTOF(wchItem));
           WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-          IniSectionSetString(pIniSection,tchName,tchItem);
+          IniSectionSetString(RegKey_Section,tchName,tchItem);
         }
         else*/
-        IniSectionSetString(pIniSection, tchName, pmru->pszItems[i]);
+        IniSectionSetString(RegKey_Section, tchName, pmru->pszItems[i]);
 
         if (pmru->iEncoding[i] > 0) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
           int const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
-          IniSectionSetInt(pIniSection, tchName, iCP);
+          IniSectionSetInt(RegKey_Section, tchName, iCP);
         }
         if (pmru->iCaretPos[i] > 0) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-          IniSectionSetPos(pIniSection, tchName, pmru->iCaretPos[i]);
+          IniSectionSetPos(RegKey_Section, tchName, pmru->iCaretPos[i]);
         }
         if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
-          IniSectionSetString(pIniSection, tchName, pmru->pszBookMarks[i]);
+          IniSectionSetString(RegKey_Section, tchName, pmru->pszBookMarks[i]);
         }
       }
     }
-    SaveIniSection(pmru->szRegKey, pIniSection);
-    FreeMem(pIniSection);
+
+    SaveIniFile(Globals.IniFile);
     return true;
   }
   return false;

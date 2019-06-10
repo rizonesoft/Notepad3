@@ -160,51 +160,6 @@ inline bool StrIsEmptyW(LPCWSTR s) { return (!s || (*s == L'\0')); }
 #define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
 #endif
 
-//==== Ini-File Handling =============================================
-
-#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),Globals.IniFile)
-#define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,(nDefault),Globals.IniFile)
-#define IniGetBool(lpSection,lpName,nDefault)                        (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),Globals.IniFile) ? true : false)
-#define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,(lpString),Globals.IniFile)
-
-inline void IniClearSection(LPCWSTR lpSection, bool bDelete) {
-  if (StrIsEmpty(Globals.IniFile)) { return; }
-  WritePrivateProfileSection(lpSection, (bDelete ? NULL : L""), Globals.IniFile);
-}
-void IniClearAllSections(LPCWSTR lpszPrefix, LPCWSTR lpszIniFile, bool bDelete);
-
-// ----------------------------------------------------------------------------
-
-inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
-  WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
-}
-
-#define IniSetBool(lpSection,lpName,nValue)    IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
-#define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),Globals.IniFile)
-#define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,Globals.IniFile)
-
-int IniSectionGetString(LPCWSTR lpCachedIniSection, LPCWSTR lpName, LPCWSTR lpDefault, LPWSTR lpReturnedString, int cchReturnedString);
-int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault);
-UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault);
-DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDefault);
-inline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
-  return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? true : false);
-}
-
-bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString);
-
-inline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
-  WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); 
-  return IniSectionSetString(lpCachedIniSection,lpName,tch);
-}
-inline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, bool b) {
-  return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
-}
-inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos){
-  WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), DOCPOSFMTW, pos); 
-  return IniSectionSetString(lpCachedIniSection, lpName, tch);
-}
-
 // ----------------------------------------------------------------------------
 
 inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
