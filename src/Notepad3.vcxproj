@@ -481,6 +481,7 @@
     <ClCompile Include="StyleLexers\styleLexSQL.c" />
     <ClCompile Include="StyleLexers\styleLexStandard.c" />
     <ClCompile Include="StyleLexers\styleLexTCL.c" />
+    <ClCompile Include="StyleLexers\styleLexTOML.c" />
     <ClCompile Include="StyleLexers\styleLexVB.c" />
     <ClCompile Include="StyleLexers\styleLexVBS.c" />
     <ClCompile Include="StyleLexers\styleLexVHDL.c" />

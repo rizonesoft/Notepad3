@@ -339,6 +339,9 @@
     <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx">
       <Filter>scioniguruma</Filter>
     </ClCompile>
+    <ClCompile Include="..\sciXlexers\LexTOML.cxx">
+      <Filter>sciXlexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">

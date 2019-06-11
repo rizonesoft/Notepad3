@@ -2,6 +2,7 @@
 #define SCIXLEXER_H
 
 #define SCLEX_AHKL  200
+#define SCLEX_TOML  201
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  Notepad3\scintilla\src\Catalogue.cxx  !!!!!
@@ -38,5 +39,16 @@
 #define SCE_AHKL_USERDEFINED2 28
 #define SCE_AHKL_ESCAPESEQ 30
 #define SCE_AHKL_ERROR 31
+
+
+#define SCE_TOML_DEFAULT 0
+#define SCE_TOML_COMMENT 1
+#define SCE_TOML_KEY 2
+#define SCE_TOML_SECTION 3
+#define SCE_TOML_ASSIGNMENT 4
+#define SCE_TOML_DEFVAL 5
+#define SCE_TOML_DATATYPE 6
+#define SCE_TOML_TYPEERROR 7
+
 
 #endif

@@ -92,6 +92,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexBASH,          // Shell Script
   &lexSQL,           // SQL Query
   &lexTCL,           // Tcl Script
+  &lexTOML,          // TOML Config Script
   &lexVBS,           // VBScript
   &lexVHDL,          // VHDL
   &lexVB,            // Visual Basic
