@@ -130,6 +130,7 @@ static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
 static DWORD     s_dwLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
+static bool      s_bIndicMultiEdit = false;
 
 static int       s_iInitialLine;
 static int       s_iInitialColumn;
@@ -1699,7 +1700,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE; 
   /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
   
-  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO;
+  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO;
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
@@ -1776,6 +1777,11 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHICK);
   SendMessage(hwndEditCtrl, SCI_INDICSETHOVERFORE, INDIC_NP3_HYPERLINK_U, RGB(0x00, 0x00, 0xFF));
 
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MULTI_EDIT, INDIC_ROUNDBOX);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MULTI_EDIT, 60);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MULTI_EDIT, 180);
+ 
   // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
 
@@ -5619,6 +5625,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         CancelCallTip();
         SciCall_AutoCCancel();
       }
+      else if (s_bIndicMultiEdit) {
+        SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+        SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+        s_bIndicMultiEdit = false;
+      }
       else if (Settings.EscFunction == 1) {
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
@@ -6805,7 +6816,7 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
 //
 static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
 {
-  static int _s_indic_click_modifiers = 0;
+  static int  _s_indic_click_modifiers = 0;
 
   switch (pnmh->code)
   {
@@ -6848,6 +6859,14 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         }
         _SetSaveNeededFlag(true);
       }
+
+      if (s_bIndicMultiEdit && !(iModType & SC_MULTILINEUNDOREDO)) {
+        if (!Sci_IsMultiSelection()) {
+          SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+          SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+          s_bIndicMultiEdit = false;
+        }
+      }
     }
     break;
 
@@ -6862,6 +6881,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_UPDATEUI:
     {
       int const iUpd = scn->updated;
+
       //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
       //  // special case
       //}
@@ -6873,24 +6893,25 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         if (Settings.MatchBraces) {
           EditMatchBrace(Globals.hwndEdit);
         }
-        if (IsMarkOccurrencesEnabled()) {
+        if (iUpd & SC_UPDATE_SELECTION)
+        {
           // clear marks only, if selection changed
-          if (iUpd & SC_UPDATE_SELECTION)
-          {
-            if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord) {
+          if (IsMarkOccurrencesEnabled()) {
+            if (!SciCall_IsSelectionEmpty() || Settings.MarkOccurrencesCurrentWord)
+            {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
             }
             else {
               EditClearAllOccurrenceMarkers(Globals.hwndEdit);
             }
           }
-          else if (iUpd & SC_UPDATE_CONTENT) {
-            // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-            // using WM_COMMAND -> SCEN_CHANGE  instead!
-            //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-            //~~~UpdateVisibleUrlIndics();
-          }
         }
+        //else if (iUpd & SC_UPDATE_CONTENT) {
+          // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+          // using WM_COMMAND -> SCEN_CHANGE  instead!
+          //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
+          //~~~UpdateVisibleUrlIndics();
+        //}
         UpdateToolbar();
         UpdateStatusbar(false);
       }
@@ -6942,8 +6963,17 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     {
       int const ich = scn->ch;
 
-      if (Globals.CallTipType != CT_NONE) {
-        CancelCallTip();
+      if (Globals.CallTipType != CT_NONE) { CancelCallTip(); }
+
+      if (Sci_IsMultiSelection()) {
+        SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+        DocPosU const selCount = SciCall_GetSelections();
+        for (DocPosU s = 0; s < selCount; ++s)
+        {
+          DocPos const pos = SciCall_GetSelectionNStart(s);
+          SciCall_IndicatorFillRange(SciCall_PositionBefore(pos), 1);
+        }
+        if (!s_bIndicMultiEdit) { s_bIndicMultiEdit = true; }
       }
 
       switch (ich) {

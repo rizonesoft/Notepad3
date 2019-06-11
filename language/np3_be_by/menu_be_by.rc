@@ -362,11 +362,11 @@ BEGIN
             MENUITEM "&Фіксаваная пазіцыя акна",                            IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "&Стыль"
     BEGIN
-        MENUITEM "&Налады стыляў...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Налады схемаў...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",               IDM_VIEW_SCHEME
+        MENUITEM "Выбраць с&хему сінтаксісу...\tF12",           IDM_VIEW_SCHEME
         MENUITEM "&Другая прадвызначаная схема\tShift+F12",     IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Агульны прадвызначаны &шрыфт...\tAlt+F12",    IDM_VIEW_FONT

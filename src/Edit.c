@@ -6604,6 +6604,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     }
     else // we have a selection
     {
+      if (Sci_IsMultiSelection()) { return; }
+
       // get current selection
       DocPos const iSelStart = SciCall_GetSelectionStart();
       DocPos const iSelEnd = SciCall_GetSelectionEnd();

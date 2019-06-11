@@ -1042,7 +1042,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       StringCchCatW(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
     }
     SciCall_IndicSetStyle(INDIC_NP3_BAD_BRACE, iValue);
-
   }
 
   // Occurrences Marker
@@ -1076,6 +1075,24 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     StringCchCat(pCurrentStandard->Styles[STY_MARK_OCC].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
   }
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
+
+
+  // Multi Edit Indicator
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, FOREGROUND_LAYER, &dColor))
+    SciCall_IndicSetFore(INDIC_NP3_MULTI_EDIT, dColor);
+  if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue, true))
+    SciCall_IndicSetAlpha(INDIC_NP3_MULTI_EDIT, iValue);
+  if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue, false))
+    SciCall_IndicSetOutlineAlpha(INDIC_NP3_MULTI_EDIT, iValue);
+
+  iValue = -1; // need for retrieval
+  if (!Style_GetIndicatorType(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, 0, &iValue)) {
+    // got default, get string
+    StringCchCatW(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), L"; ");
+    Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
+    StringCchCatW(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), wchSpecificStyle);
+  }
+  SciCall_IndicSetStyle(INDIC_NP3_MULTI_EDIT, iValue);
 
 
   // Inline-IME Color
