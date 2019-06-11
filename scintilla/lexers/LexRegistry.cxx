@@ -32,7 +32,7 @@
 using namespace Scintilla;
 
 static const char *const RegistryWordListDesc[] = {
-	0
+	nullptr
 };
 
 struct OptionsRegistry {
@@ -64,6 +64,10 @@ class LexerRegistry : public DefaultLexer {
 		return (state == SCE_REG_ADDEDKEY || state == SCE_REG_DELETEDKEY);
 	}
 
+	static bool IsByteValue(int value) {
+		return ((value >= 0) && (value < 256));
+	}
+
 	static bool AtValueType(LexAccessor &styler, Sci_Position start) {
 		Sci_Position i = 0;
 		while (i < 10) {
@@ -78,39 +82,59 @@ class LexerRegistry : public DefaultLexer {
 		return false;
 	}
 
+	static bool AtEndOfLine(LexAccessor& styler, Sci_Position pos) {
+		const char curr = styler.SafeGetCharAt(pos, '\0');
+		const char next = styler.SafeGetCharAt(pos+1, '\0');
+		return (!curr || (curr == '\n') || (curr == '\r' && next != '\n'));
+	}
+
+	static bool AtBeginOfLine(LexAccessor& styler, Sci_Position pos) {
+		const char prev = styler.SafeGetCharAt(pos-1, '\0');
+		const char curr = styler.SafeGetCharAt(pos, '\0');
+		return (!curr || (prev == '\n') || (prev == '\r' && curr != '\n'));
+	}
+
 	static bool IsNextNonWhitespace(LexAccessor &styler, Sci_Position start, char ch) {
-		Sci_Position i = 0;
-		while (i < 100) {
-			i++;
-			char curr = styler.SafeGetCharAt(start+i, '\0');
-			char next = styler.SafeGetCharAt(start+i+1, '\0');
-			bool atEOL = (curr == '\r' && next != '\n') || (curr == '\n');
+		while (!AtEndOfLine(styler, start + 1)) {
+			++start;
+			char curr = styler.SafeGetCharAt(start, '\0');
 			if (curr == ch) {
 				return true;
-			} else if (!isspacechar(curr) || atEOL) {
+			} else if (!isspacechar(curr)) {
 				return false;
 			}
 		}
 		return false;
 	}
 
+	static bool IsPrevNonWhitespace(LexAccessor &styler, Sci_Position start, char ch) {
+		while (!AtBeginOfLine(styler, start - 1)) {
+			--start;
+			char curr = styler.SafeGetCharAt(start, '\0');
+			if (curr == ch) {
+				return true;
+			}
+			else if (!isspacechar(curr)) {
+				return false;
+			}
+		}
+		return false;
+	}
+	
 	// Looks for the equal sign at the end of the string
 	static bool AtValueName(LexAccessor &styler, Sci_Position start) {
-		bool atEOL = false;
-		Sci_Position i = 0;
 		bool escaped = false;
-		while (!atEOL) {
-			i++;
-			char curr = styler.SafeGetCharAt(start+i, '\0');
-			char next = styler.SafeGetCharAt(start+i+1, '\0');
-			atEOL = (curr == '\r' && next != '\n') || (curr == '\n');
+		while (!AtEndOfLine(styler, start + 1)) {
+			++start;
+			char curr = styler.SafeGetCharAt(start, '\0');
+			char next = styler.SafeGetCharAt(start+1, '\0');
 			if (escaped) {
 				escaped = false;
 				continue;
 			}
 			escaped = curr == '\\';
 			if (curr == '"') {
-				return IsNextNonWhitespace(styler, start+i, '=');
+				return IsNextNonWhitespace(styler, start, '=');
 			} else if (!curr) {
 				return false;
 			}
@@ -118,15 +142,10 @@ class LexerRegistry : public DefaultLexer {
 		return false;
 	}
 
-	static bool AtKeyPathEnd(LexAccessor &styler, Sci_Position start) {
-		bool atEOL = false;
-		Sci_Position i = 0;
-		while (!atEOL) {
-			i++;
-			char curr = styler.SafeGetCharAt(start+i, '\0');
-			char next = styler.SafeGetCharAt(start+i+1, '\0');
-			atEOL = (curr == '\r' && next != '\n') || (curr == '\n');
-			if (curr == ']' || !curr) {
+	static bool AtKeyPathEnd(LexAccessor& styler, Sci_Position start) {
+		while (!AtEndOfLine(styler, start + 1)) {
+			char curr = styler.SafeGetCharAt(++start, '\0');
+			if (curr == ']') {
 				// There's still at least one or more square brackets ahead
 				return false;
 			}
@@ -160,6 +179,17 @@ class LexerRegistry : public DefaultLexer {
 		}
 	}
 
+	static void ContextForwardSetState(StyleContext& context, const int newState, int& lastNonDefaultState) 
+	{
+		if (context.state != SCE_REG_DEFAULT) {
+			lastNonDefaultState = context.state;
+		}
+		if (newState >= SCE_REG_DEFAULT)
+			context.ForwardSetState(newState);
+		else
+			context.Forward();
+	}
+
 public:
 	LexerRegistry() {}
 	virtual ~LexerRegistry() {}
@@ -188,7 +218,7 @@ public:
 		return -1;
 	}
 	void *SCI_METHOD PrivateCall(int, void *) override {
-		return 0;
+		return nullptr;
 	}
 	static ILexer4 *LexerFactoryRegistry() {
 		return new LexerRegistry;
@@ -200,6 +230,7 @@ public:
 								Sci_Position length,
 								int initStyle,
 								IDocument *pAccess) override;
+
 	void SCI_METHOD Fold(Sci_PositionU startPos,
 								 Sci_Position length,
 								 int initStyle,
@@ -207,9 +238,9 @@ public:
 };
 
 void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
-								   Sci_Position length,
-								   int initStyle,
-								   IDocument *pAccess) {
+									 Sci_Position length,
+									 int initStyle,
+									 IDocument *pAccess) {
 	int beforeGUID = SCE_REG_DEFAULT;
 	int beforeEscape = SCE_REG_DEFAULT;
 	CharacterSet setOperators = CharacterSet(CharacterSet::setNone, "-,.=:\\@()");
@@ -217,11 +248,18 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 	StyleContext context(startPos, length, initStyle, styler);
 	bool highlight = true;
 	bool afterEqualSign = false;
-	while (context.More()) {
+	//int statePrevious = SCE_REG_DEFAULT;
+	int stateLastNonDefault = SCE_REG_DEFAULT;
+
+	while (context.More() && context.ch) {
 		if (context.atLineStart) {
 			Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
-			bool continued = styler[currPos-3] == '\\';
+			bool continued = IsPrevNonWhitespace(styler, currPos, '\\'); //styler[currPos - 3] == '\\';
 			highlight = continued ? true : false;
+			if (!continued) {
+				context.SetState(SCE_REG_DEFAULT);
+				stateLastNonDefault = SCE_REG_DEFAULT;
+			}
 		}
 		switch (context.state) {
 			case SCE_REG_COMMENT:
@@ -233,7 +271,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_STRING: {
 					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 					if (context.ch == '"') {
-						context.ForwardSetState(SCE_REG_DEFAULT);
+						ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 					} else if (context.ch == '\\') {
 						beforeEscape = context.state;
 						context.SetState(SCE_REG_ESCAPED);
@@ -252,9 +290,9 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				}
 				break;
 			case SCE_REG_PARAMETER:
-				context.ForwardSetState(SCE_REG_STRING);
+				ContextForwardSetState(context, SCE_REG_STRING, stateLastNonDefault);
 				if (context.ch == '"') {
-					context.ForwardSetState(SCE_REG_DEFAULT);
+					ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 				}
 				break;
 			case SCE_REG_VALUETYPE:
@@ -271,7 +309,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_ADDEDKEY: {
 					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 					if (context.ch == ']' && AtKeyPathEnd(styler, currPos)) {
-						context.ForwardSetState(SCE_REG_DEFAULT);
+						ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 					} else if (context.ch == '{') {
 						if (AtGUID(styler, currPos)) {
 							beforeGUID = context.state;
@@ -283,7 +321,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_ESCAPED:
 				if (context.ch == '"') {
 					context.SetState(beforeEscape);
-					context.ForwardSetState(SCE_REG_DEFAULT);
+					ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 				} else if (context.ch == '\\') {
 					context.Forward();
 				} else {
@@ -294,16 +332,19 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_STRING_GUID:
 			case SCE_REG_KEYPATH_GUID: {
 					if (context.ch == '}') {
-						context.ForwardSetState(beforeGUID);
+						ContextForwardSetState(context, beforeGUID, stateLastNonDefault);
 						beforeGUID = SCE_REG_DEFAULT;
 					}
 					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 					if (context.ch == '"' && IsStringState(context.state)) {
-						context.ForwardSetState(SCE_REG_DEFAULT);
-					} else if (context.ch == ']' &&
-							   AtKeyPathEnd(styler, currPos) &&
-							   IsKeyPathState(context.state)) {
-						context.ForwardSetState(SCE_REG_DEFAULT);
+						ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
+					} else if (context.ch == ']' && IsKeyPathState(context.state)) {
+						if (AtKeyPathEnd(styler, currPos)) {
+							ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
+						} 
+						else {
+							ContextForwardSetState(context, beforeGUID, stateLastNonDefault);
+						}
 					} else if (context.ch == '\\' && IsStringState(context.state)) {
 						beforeEscape = context.state;
 						context.SetState(SCE_REG_ESCAPED);
@@ -337,15 +378,20 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				if (wordStart && AtValueType(styler, currPos)) {
 					context.SetState(SCE_REG_VALUETYPE);
 				}
-			} else if (isxdigit(context.ch) && highlight) {
+			} else if (IsByteValue(context.ch) && isxdigit(context.ch & 0xFF) && highlight) {
 				context.SetState(SCE_REG_HEXDIGIT);
 			}
 			highlight = (context.ch == '@') ? true : highlight;
 			if (setOperators.Contains(context.ch) && highlight) {
 				context.SetState(SCE_REG_OPERATOR);
 			}
+			// continue style for eolfilled
+			if (context.ch == '\r' || context.ch == '\n') {
+				context.SetState(stateLastNonDefault);
+			}
 		}
-		context.Forward();
+		//statePrevious = context.state;
+		ContextForwardSetState(context, -1, stateLastNonDefault);
 	}
 	context.Complete();
 }
@@ -409,7 +455,7 @@ void SCI_METHOD LexerRegistry::Fold(Sci_PositionU startPos,
 }
 
 LexerModule lmRegistry(SCLEX_REGISTRY,
-					   LexerRegistry::LexerFactoryRegistry,
-					   "registry",
-					   RegistryWordListDesc);
+						 LexerRegistry::LexerFactoryRegistry,
+						 "registry",
+						 RegistryWordListDesc);
 
