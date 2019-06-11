@@ -55,7 +55,6 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexANSI,          // ANSI Files
   &lexCONF,          // Apache Config Files
   &lexASM,           // Assembly Script
-  &lexAHK,           // AutoHotkey Script
   &lexAHKL,          // AutoHotkey L Script
   &lexAU3,           // AutoIt3 Script
   &lexAVS,           // AviSynth Script

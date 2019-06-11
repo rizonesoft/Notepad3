@@ -93,9 +93,6 @@
     <ClCompile Include="ChooseFont\GdiTextRenderer.cpp">
       <Filter>Source Files\ChooseFont</Filter>
     </ClCompile>
-    <ClCompile Include="StyleLexers\styleLexAHK.c">
-      <Filter>Source Files\StyleLexers</Filter>
-    </ClCompile>
     <ClCompile Include="StyleLexers\styleLexASM.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>

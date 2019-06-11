@@ -267,9 +267,6 @@
     <ClCompile Include="lexers\LexRust.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\sciXlexers\LexAHK.cxx">
-      <Filter>sciXlexers</Filter>
-    </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
     </ClCompile>

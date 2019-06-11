@@ -96,7 +96,6 @@ extern EDITLEXER lexTEXT;          // Pure Text Files
 extern EDITLEXER lexANSI;          // ANSI Files
 extern EDITLEXER lexCONF;          // Apache Config Files
 extern EDITLEXER lexASM;           // Assembly Script
-extern EDITLEXER lexAHK;           // AutoHotkey Script
 extern EDITLEXER lexAHKL;          // AutoHotkey L Script
 extern EDITLEXER lexAU3;           // AutoIt3 Script
 extern EDITLEXER lexAVS;           // AviSynth Script
