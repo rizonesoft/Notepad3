@@ -900,17 +900,19 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 static inline bool _IsItemInStyleString(LPCWSTR lpszStyleStrg, LPCWSTR item)
 {
   LPCWSTR pFound = StrStrI(lpszStyleStrg, item);
-  if (pFound) {
-    const WCHAR pre = (pFound == lpszStyleStrg) ? L' ' : pFound[-1];
+  while (pFound) {
+    WCHAR const pre = (pFound == lpszStyleStrg) ? L' ' : pFound[-1];
     if ((pre == L' ') || (pre == L';')) {
-      const WCHAR end = pFound[lstrlen(item)];
+      WCHAR const end = pFound[StringCchLenW(item, 0)];
       if ((end == L'\0') || (end == L' ') || (end == L';')) {
         return true;
       }
     }
+    pFound = StrStrI(pFound + 1, item);
   }
   return false;
 }
+
 
 //=============================================================================
 //
