@@ -444,6 +444,8 @@ BEGIN
     IDS_LEX_STR_63351       "ホットストリング・オプション"
     IDS_LEX_STR_63352       "インライン入力時のIME変換"
     IDS_LEX_STR_63353       "第2 インライン入力時のIME変換"
+    IDS_LEX_STR_63354       "Multi Edit Indicator"
+    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
 END
 
 #endif    // Japanese (Japan) resources

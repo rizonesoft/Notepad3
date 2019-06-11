@@ -72,10 +72,11 @@ typedef enum {
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
   STY_URL_HOTSPOT = 14,
+  STY_MULTI_EDIT = 15,
+  STY_IME_COLOR = 17,
 
-  STY_IME_COLOR = 15,
-  STY_INVISIBLE = 16,
-  STY_READONLY = 17
+  STY_INVISIBLE = 17,
+  STY_READONLY = 18
 
   // MAX = (127 - STYLE_LASTPREDEFINED)
   // -------^----- => char <-> int casting !!!

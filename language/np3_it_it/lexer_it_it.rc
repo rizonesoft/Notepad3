@@ -444,6 +444,8 @@ BEGIN
     IDS_LEX_STR_63351       "HotStringOption"
     IDS_LEX_STR_63352       "Inline-IME Color"
     IDS_LEX_STR_63353       "2nd Inline-IME Color"
+    IDS_LEX_STR_63354       "Multi Edit Indicator"
+    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
 END
 
 #endif    // Italian (Italy) resources

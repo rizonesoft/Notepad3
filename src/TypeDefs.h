@@ -257,6 +257,8 @@ typedef struct _cmq
 #define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
 #define INDIC_NP3_HYPERLINK      (INDIC_CONTAINER + 5)
 #define INDIC_NP3_HYPERLINK_U    (INDIC_CONTAINER + 6)
+#define INDIC_NP3_MULTI_EDIT     (INDIC_CONTAINER + 7)
+
 
 // --------------------------------------------------------------------------
 
