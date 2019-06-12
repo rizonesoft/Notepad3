@@ -233,8 +233,8 @@
     <ClCompile Include="..\oniguruma\src\unicode_unfold_key.c" />
     <ClCompile Include="..\oniguruma\src\utf8.c" />
     <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx" />
-    <ClCompile Include="..\sciXlexers\LexAHK.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx" />
+    <ClCompile Include="..\sciXlexers\LexTOML.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
     <ClCompile Include="lexers\LexAU3.cxx" />
     <ClCompile Include="lexers\LexAVS.cxx" />
@@ -326,6 +326,7 @@
     <ClInclude Include="..\oniguruma\src\regint.h" />
     <ClInclude Include="..\oniguruma\src\regparse.h" />
     <ClInclude Include="..\oniguruma\src\st.h" />
+    <ClInclude Include="..\sciXlexers\CharSetX.h" />
     <ClInclude Include="..\sciXlexers\SciXLexer.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />

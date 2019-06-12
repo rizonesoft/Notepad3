@@ -772,6 +772,7 @@
 #define IDS_LEX_RUST_SRC                63046
 #define IDS_LEX_AHKL                    63047
 #define IDS_LEX_TEXT_FILES              63048
+#define IDS_LEX_TOML_CFG                63049
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101

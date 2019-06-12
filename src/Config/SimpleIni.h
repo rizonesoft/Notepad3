@@ -325,7 +325,7 @@ template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 class CSimpleIniTempl
 {
 public:
-    typedef SI_CHAR SI_CHAR_T;
+    using SI_CHAR_T = SI_CHAR;
 
     /** key entry */
     struct Entry {
@@ -377,15 +377,15 @@ public:
     };
 
     /** map keys to values */
-    typedef std::multimap<Entry,const SI_CHAR *,typename Entry::KeyOrder> TKeyVal;
+    using TKeyVal = std::multimap<Entry,const SI_CHAR *,typename Entry::KeyOrder>;
 
     /** map sections to key/value map */
-    typedef std::map<Entry,TKeyVal,typename Entry::KeyOrder> TSection;
+    using TSection = std::map<Entry,TKeyVal,typename Entry::KeyOrder>;
 
     /** set of dependent string pointers. Note that these pointers are
         dependent on memory owned by CSimpleIni.
     */
-    typedef std::list<Entry> TNamesDepend;
+    using TNamesDepend = std::list<Entry>;
 
     /** interface definition for the OutputWriter object to pass to Save()
         in order to output the INI file data.
@@ -895,8 +895,8 @@ public:
     const SI_CHAR * GetValue(
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
-        const SI_CHAR * a_pDefault     = NULL,
-        bool *          a_pHasMultiple = NULL
+        const SI_CHAR * a_pDefault     = nullptr,
+        bool *          a_pHasMultiple = nullptr
         ) const;
 
     /** Retrieve a numeric value for a specific key. If multiple keys are enabled
@@ -916,7 +916,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         long            a_nDefault     = 0,
-        bool *          a_pHasMultiple = NULL
+        bool *          a_pHasMultiple = nullptr
         ) const;
 
     /** Retrieve a numeric value for a specific key. If multiple keys are enabled
@@ -936,7 +936,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         double          a_nDefault     = 0,
-        bool *          a_pHasMultiple = NULL
+        bool *          a_pHasMultiple = nullptr
         ) const;
 
     /** Retrieve a boolean value for a specific key. If multiple keys are enabled
@@ -961,7 +961,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         bool            a_bDefault     = false,
-        bool *          a_pHasMultiple = NULL
+        bool *          a_pHasMultiple = nullptr
         ) const;
 
     /** Add or update a section or value. This will always insert
@@ -1358,7 +1358,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     )
 {
     strcpy_s(m_FilePathA, _countof(m_FilePathA), a_pszFile);
-    FILE * fp = NULL;
+    FILE * fp = nullptr;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     fopen_s(&fp, a_pszFile, "rb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -1380,7 +1380,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     )
 {
 #ifdef _WIN32
-    FILE * fp = NULL;
+    FILE * fp = nullptr;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     _wfopen_s(&fp, a_pwszFile, L"rb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -1418,7 +1418,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     }
     
     // allocate and ensure NULL terminated
-    char * pData = new(std::nothrow) char[lSize+1];
+    auto * pData = new(std::nothrow) char[lSize+1];
     if (!pData) {
         return SI_NOMEM;
     }
@@ -1474,8 +1474,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
             return SI_NOMEM;
           }
 
-          size_t const convCnt = (size_t)WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)a_pData + 1, (int)(a_uDataLen / sizeof(WCHAR) - 1),
-                                                                         (LPSTR)pDataUTF16toUTF8, (int)(a_uDataLen * 3 + 1), NULL, NULL);
+          auto const convCnt = (size_t)WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)a_pData + 1, (int)(a_uDataLen / sizeof(WCHAR) - 1),
+                                                                       (LPSTR)pDataUTF16toUTF8, (int)(a_uDataLen * 3 + 1), nullptr, nullptr);
           if (convCnt == 0) {
             delete[] pDataUTF16toUTF8;
             return SI_FAIL;
@@ -1504,7 +1504,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
 
     // allocate memory for the data, ensure that there is a NULL
     // terminator wherever the converted data ends
-    SI_CHAR * pData = new(std::nothrow) SI_CHAR[uLen+1];
+    auto * pData = new(std::nothrow) SI_CHAR[uLen+1];
     if (!pData) {
         delete[] pDataUTF16toUTF8;
         return SI_NOMEM;
@@ -1861,7 +1861,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
 
         // move this line down to the location that it should be if necessary
         if (pDataLine < pCurrLine) {
-            size_t nLen = (size_t) (a_pData - pCurrLine);
+            auto nLen = (size_t) (a_pData - pCurrLine);
             memmove(pDataLine, pCurrLine, nLen * sizeof(SI_CHAR));
             pDataLine[nLen] = '\0';
         }
@@ -1933,7 +1933,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::CopyString(
         for ( ; a_pString[uLen]; ++uLen) /*loop*/ ;
     }
     ++uLen; // NULL character
-    SI_CHAR * pCopy = new(std::nothrow) SI_CHAR[uLen];
+    auto * pCopy = new(std::nothrow) SI_CHAR[uLen];
     if (!pCopy) {
         return SI_NOMEM;
     }
@@ -1983,7 +1983,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         }
 
         typename TSection::value_type oEntry(oSection, TKeyVal());
-        typedef typename TSection::iterator SectionIterator;
+        using SectionIterator = typename TSection::iterator;
         std::pair<SectionIterator,bool> i = m_data.insert(oEntry);
         iSection = i.first;
         bInserted = true;
@@ -2176,7 +2176,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetDoubleValue(
         return a_nDefault;
     }
 
-    char * pszSuffix = NULL;
+    char * pszSuffix = nullptr;
     double nValue = strtod(szValue, &pszSuffix);
 
     // any invalid strings will return the default value
@@ -2235,6 +2235,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetBoolValue(
     switch (pszValue[0]) {
     case 't': case 'T': // true
     case 'y': case 'Y': // yes
+    case '9': case '8': case '7': case '6': // != 0
+    case '5': case '4': case '3': case '2': // != 0
     case '1':           // 1 (one)
         return true;
 
@@ -2415,7 +2417,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     bool            a_bAddSignature
     ) const
 {
-    FILE * fp = NULL;
+    FILE * fp = nullptr;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     fopen_s(&fp, a_pszFile, "wb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -2436,7 +2438,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     ) const
 {
 #ifdef _WIN32
-    FILE * fp = NULL;
+    FILE * fp = nullptr;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     _wfopen_s(&fp, a_pwszFile, L"wb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -3455,10 +3457,10 @@ public:
 //                                  TYPE DEFINITIONS
 // ---------------------------------------------------------------------------
 
-typedef CSimpleIniTempl<char,
-    SI_NoCase<char>,SI_ConvertA<char> >                 CSimpleIniA;
-typedef CSimpleIniTempl<char,
-    SI_Case<char>,SI_ConvertA<char> >                   CSimpleIniCaseA;
+using CSimpleIniA = CSimpleIniTempl<char,
+    SI_NoCase<char>,SI_ConvertA<char> >;
+using CSimpleIniCaseA = CSimpleIniTempl<char,
+    SI_Case<char>,SI_ConvertA<char> >;
 
 #if defined(SI_CONVERT_ICU)
 typedef CSimpleIniTempl<UChar,
@@ -3466,10 +3468,10 @@ typedef CSimpleIniTempl<UChar,
 typedef CSimpleIniTempl<UChar,
     SI_Case<UChar>,SI_ConvertW<UChar> >                 CSimpleIniCaseW;
 #else
-typedef CSimpleIniTempl<wchar_t,
-    SI_NoCase<wchar_t>,SI_ConvertW<wchar_t> >           CSimpleIniW;
-typedef CSimpleIniTempl<wchar_t,
-    SI_Case<wchar_t>,SI_ConvertW<wchar_t> >             CSimpleIniCaseW;
+using CSimpleIniW = CSimpleIniTempl<wchar_t,
+    SI_NoCase<wchar_t>,SI_ConvertW<wchar_t> >;
+using CSimpleIniCaseW = CSimpleIniTempl<wchar_t,
+    SI_Case<wchar_t>,SI_ConvertW<wchar_t> >;
 #endif
 
 #ifdef _UNICODE

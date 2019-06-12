@@ -267,9 +267,6 @@
     <ClCompile Include="lexers\LexRust.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\sciXlexers\LexAHK.cxx">
-      <Filter>sciXlexers</Filter>
-    </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
     </ClCompile>
@@ -341,6 +338,9 @@
     </ClCompile>
     <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx">
       <Filter>scioniguruma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sciXlexers\LexTOML.cxx">
+      <Filter>sciXlexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -553,6 +553,9 @@
     </ClInclude>
     <ClInclude Include="..\oniguruma\src\config.h">
       <Filter>oniguruma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sciXlexers\CharSetX.h">
+      <Filter>sciXlexers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

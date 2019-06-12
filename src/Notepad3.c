@@ -688,21 +688,25 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   if (s_hmenuLanguage) { DestroyMenu(s_hmenuLanguage); }
   s_hmenuLanguage = CreatePopupMenu();
 
-  WCHAR wchMenuItemFmt[128] = L"%s";
+  WCHAR wchMenuItemFmt[128] = { L'\0' };
   WCHAR wchMenuItemStrg[196] = { L'\0' };
   for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
   {
     if (MUI_LanguageDLLs[lng].bHasDLL) 
     {
       // GetLngString(MUI_LanguageDLLs[lng].rid, wchMenuItemFmt, COUNTOF(wchMenuItemFmt));
+      bool found = false;
       for (int i = 0; i < COUNTOF(s_LanguageMenu); ++i) {
         if (MUI_LanguageDLLs[lng].LangId == s_LanguageMenu[i].LangID)
         {
           StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), s_LanguageMenu[i].MenuItem);
+          found = true;
           break;
         }
       }
-
+      if (!found) {
+        StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), L"Lang-(Sub)\t\t\t[%s]");
+      }
       StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
       AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
     }
@@ -3153,11 +3157,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_LINECOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
+
   EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
-      i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
+      i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
       i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD) && !ro);
 
   EnableCmd(hmenu, CMD_CTRLENTER, !ro);
@@ -4573,7 +4578,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_ASM:
         case SCLEX_PROPERTIES:
         case SCLEX_AU3:
-        case SCLEX_AHK:
+        case SCLEX_AHKL:
         case SCLEX_NSIS: // # could also be used instead
         case SCLEX_INNOSETUP:
         case SCLEX_REGISTRY:
@@ -4623,7 +4628,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_TCL:
         case SCLEX_AU3:
         case SCLEX_LATEX:
-        case SCLEX_AHK:
+        case SCLEX_AHKL:
         case SCLEX_RUBY:
         case SCLEX_CMAKE:
         case SCLEX_MARKDOWN:

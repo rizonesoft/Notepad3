@@ -1,34 +1,13 @@
-﻿#ifndef SCIXLEXER_H
-#define SCIXLEXER_H
+﻿#pragma once
+#ifndef _SCIXLEXER_H_
+#define _SCIXLEXER_H_
 
-#define SCLEX_AHK   200
-#define SCLEX_AHKL  201
+#define SCLEX_AHKL  200
+#define SCLEX_TOML  201
 
 // -----------------------------------------------------------------------------
-// !!!!! ADD  Lexer Linkage in:  Notepad3\scintilla\src\Catalogue.cxx  !!!!!
+// !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
 // -----------------------------------------------------------------------------
-
-#define SCE_AHK_DEFAULT 0
-#define SCE_AHK_COMMENTLINE 1
-#define SCE_AHK_COMMENTBLOCK 2
-#define SCE_AHK_ESCAPE 3
-#define SCE_AHK_SYNOPERATOR 4
-#define SCE_AHK_EXPOPERATOR 5
-#define SCE_AHK_STRING 6
-#define SCE_AHK_NUMBER 7
-#define SCE_AHK_IDENTIFIER 8
-#define SCE_AHK_VARREF 9
-#define SCE_AHK_LABEL 10
-#define SCE_AHK_WORD_CF 11
-#define SCE_AHK_WORD_CMD 12
-#define SCE_AHK_WORD_FN 13
-#define SCE_AHK_WORD_DIR 14
-#define SCE_AHK_WORD_KB 15
-#define SCE_AHK_WORD_VAR 16
-#define SCE_AHK_WORD_SP 17
-#define SCE_AHK_WORD_UD 18
-#define SCE_AHK_VARREFKW 19
-#define SCE_AHK_ERROR 20
 
 #define SCE_AHKL_NEUTRAL 0
 #define SCE_AHKL_IDENTIFIER 1
@@ -62,4 +41,16 @@
 #define SCE_AHKL_ESCAPESEQ 30
 #define SCE_AHKL_ERROR 31
 
-#endif
+
+#define SCE_TOML_DEFAULT 0
+#define SCE_TOML_COMMENT 1
+#define SCE_TOML_SECTION 2
+#define SCE_TOML_KEY 3
+#define SCE_TOML_ASSIGNMENT 4
+#define SCE_TOML_VALUE 5
+#define SCE_TOML_STRING 6
+#define SCE_TOML_ARRAY 7
+#define SCE_TOML_PARSINGERROR 8
+
+
+#endif //_SCIXLEXER_H_

@@ -1,12 +1,11 @@
-﻿// Scintilla source code edit control
+// Scintilla source code edit control
 /** @file LexAHKL.cxx
  ** Lexer AutoHotkey L
  ** Created by Isaias "RaptorX" Baez (graptorx@gmail.com)
  **/
 // Copyright ©2013 Isaias "RaptorX" Baez <graptorx@gmail.com> - [GPLv3]
 // The License.txt file describes the conditions under which this software may be distributed.
-// https://github.com/RaptorX/LexAHKL/
-//
+
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -20,34 +19,21 @@
 
 #include "ILexer.h"
 #include "Scintilla.h"
-#include "SciXLexer.h"
+#include "SciLexer.h"
 
 #include "WordList.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
 #include "StyleContext.h"
-#include "CharSetX.h"
+#include "CharacterSet.h"
 #include "LexerModule.h"
-#include "OptionSet.h"
-#include "DefaultLexer.h"
-//#include "PropSetSimple.h"
+#include <windows.h>
 
-
+#ifdef SCI_NAMESPACE
 using namespace Scintilla;
+#endif
 
-// Options used for LexerRust
-struct OptionsAHKL {
-  bool fold;
-  bool foldComment;
-  bool foldCompact;
-  OptionsAHKL() {
-    fold = false;
-    foldComment = true;
-    foldCompact = true;
-  }
-};
-
-static const char* const ahklWordLists[] = {
+static const char *const ahklWordLists[] = {
 						"Directives",
 						"Commands",
 						"Command Parameters",
@@ -57,23 +43,9 @@ static const char* const ahklWordLists[] = {
 						"Keyboard & Mouse Keys",
 						"User Defined 1",
 						"User Defined 2",
-						 nullptr
-};
+					   0};
 
-
-struct OptionSetAHKL : public OptionSet<OptionsAHKL> {
-  OptionSetAHKL() {
-    DefineProperty("fold", &OptionsAHKL::fold);
-    DefineProperty("fold.comment", &OptionsAHKL::foldComment);
-    DefineProperty("fold.compact", &OptionsAHKL::foldCompact);
-    DefineWordListSets(ahklWordLists);
-  }
-};
-
-class LexerAHKL : public DefaultLexer {
-
-  OptionsAHKL options;
-  OptionSetAHKL osAHKL;
+class LexerAHKL : public ILexer {
 
 	CharacterSet valLabel;
 	CharacterSet valHotkeyMod;
@@ -96,63 +68,55 @@ class LexerAHKL : public DefaultLexer {
 	CharacterSet EscSequence;
 
 public:
-	LexerAHKL() :	
-		//valLabel(CharacterSet::setAlphaNum, "@#$_~!^&*()+[]\';./\\<>?|{}-=\""),
-		valLabel(CharacterSet::setAlphaNum, R"(@#$_~!^&*()+[]';./\<>?|{}-=")"),
-		valHotkeyMod(CharacterSet::setDigits, "#!^+&<>*~$"),
-		valIdentifier(CharacterSet::setAlphaNum, "@#$_"),
-		valHotstringOpt(CharacterSet::setDigits, "*?BbCcEeIiKkOoPpRrSsZz"),
-		valDocComment(CharacterSet::setNone, "'`\""),
-		ExpOperator(CharacterSet::setNone, "+-*/!~&|^<>.:"),
-		SynOperator(CharacterSet::setNone, "+-*/!~&|^<>.:()[]?,{}"),
-		EscSequence(CharacterSet::setNone, ",%`;nrbtvaf")
-	{
+	LexerAHKL() :
+	valLabel(CharacterSet::setAlphaNum, "@#$_~!^&*()+[]\';./\\<>?|{}-=\""),
+	valHotkeyMod(CharacterSet::setDigits, "#!^+&<>*~$"),
+	valIdentifier(CharacterSet::setAlphaNum, "@#$_"),
+	valHotstringOpt(CharacterSet::setDigits, "*?BbCcEeIiKkOoPpRrSsZz"),
+	valDocComment(CharacterSet::setNone, "'`\""),
+	ExpOperator(CharacterSet::setNone, "+-*/!~&|^<>.:"),
+	SynOperator(CharacterSet::setNone, "+-*/!~&|^<>.:()[]?,{}"),
+	EscSequence(CharacterSet::setNone, ",%`;nrbtvaf") {
 	}
 
-	virtual ~LexerAHKL() = default;
-
-  void SCI_METHOD Release() override {
-    delete this;
-  }
-  int SCI_METHOD Version() const override {
-    return lvRelease4;
-  }
-  const char* SCI_METHOD PropertyNames() override {
-    return osAHKL.PropertyNames();
-  }
-  int SCI_METHOD PropertyType(const char* name) override {
-    return osAHKL.PropertyType(name);
-  }
-  const char* SCI_METHOD DescribeProperty(const char* name) override {
-    return osAHKL.DescribeProperty(name);
-  }
-  const char* SCI_METHOD DescribeWordListSets() override {
-    return osAHKL.DescribeWordListSets();
-  }
-	void * SCI_METHOD PrivateCall(int, void *) override {	return nullptr;	}
-
-  // --------------------------------------------------------------------------
-  Sci_Position SCI_METHOD PropertySet(const char* key, const char* val) override;
-  Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
-
-	static ILexer4 *LexerFactoryAHKL() {
+	virtual ~LexerAHKL() {
+	}
+	void SCI_METHOD Release() {
+		delete this;
+	}
+	int SCI_METHOD Version() const {
+		return lvOriginal;
+	}
+	const char * SCI_METHOD PropertyNames() {
+		return "";
+	}
+	int SCI_METHOD PropertyType(const char *name) {
+		return 0;
+	}
+	const char * SCI_METHOD DescribeProperty(const char *name) {
+		return "";
+	}
+	int SCI_METHOD PropertySet(const char *key, const char *val) {
+		return 0;
+	}
+	const char * SCI_METHOD DescribeWordListSets() {
+		return 0;
+	}
+	void * SCI_METHOD PrivateCall(int, void *) {
+		return 0;
+	}
+	static ILexer *LexerFactory() {
 		return new LexerAHKL();
 	}
+
+	int SCI_METHOD WordListSet(int n, const char *wl);
+	void SCI_METHOD Lex(unsigned int startPos, int length, int initStyle, IDocument *pAccess);
+	void SCI_METHOD Fold(unsigned int startPos, int length, int initStyle, IDocument *pAccess);
 };
 
-Sci_Position SCI_METHOD LexerAHKL::PropertySet(const char* key, const char* val) {
-  if (osAHKL.PropertySet(&options, key, val)) {
-    return 0;
-  }
-  return -1;
-}
-
-
-Sci_Position SCI_METHOD LexerAHKL::WordListSet(int n, const char *wl)
+int SCI_METHOD LexerAHKL::WordListSet(int n, const char *wl)
 {
-	WordList *wordListN = nullptr;
+	WordList *wordListN = 0;
 	switch (n) {
 
 		case 0:
@@ -205,32 +169,32 @@ Sci_Position SCI_METHOD LexerAHKL::WordListSet(int n, const char *wl)
 	return firstModification;
 }
 
-
-void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
+void SCI_METHOD LexerAHKL::Lex(unsigned int startPos, int length, int initStyle, IDocument *pAccess)
 {
 	LexAccessor styler(pAccess);
-	StyleContext sc(startPos, lengthDoc, initStyle, styler);
+	StyleContext sc(startPos, length, initStyle, styler);
 
 	// non-lexical states
 	int expLevel = 0;
 	int mainState = SCE_AHKL_NEUTRAL;								// Used on some special cases like objects where SCE_AHKL_NEUTRAL is set but
 													// we basically come from SCE_AHKL_OBJECT and we need to be aware of it
-	bool OnlySpaces = false;
-	bool validLabel = false;
-	bool validFunction = false;
+	bool OnlySpaces;
+	bool validLabel;
+	bool validFunction;
 
-	bool inKey = false;
-	bool inString = false;
-	bool inCommand = false;
-	bool inHotstring = false;
-	bool inExpString = false;
-	bool inDocComment = false;
-	bool inExpression = false;
+	bool inKey;
+	bool inString;
+	bool inCommand;
+	bool inHotstring;
+	bool inExpString;
+	bool inDocComment;
+	bool inExpression;
 
 	bool inStringBlk = (sc.state == SCE_AHKL_STRINGOPTS || sc.state == SCE_AHKL_STRINGBLOCK || sc.state == SCE_AHKL_STRINGCOMMENT);
 	bool inCommentBlk = (sc.state == SCE_AHKL_COMMENTDOC || sc.state == SCE_AHKL_COMMENTBLOCK);
 
 	for (; sc.More(); sc.Forward()) {
+
 
 		// AutoHotkey usually resets lexical state in a per line base except in Comment and String Blocks
 		if (sc.atLineStart) {
@@ -243,6 +207,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 			if (!inStringBlk && !inCommentBlk)
 				sc.SetState(SCE_AHKL_NEUTRAL);
+
 		}
 
 		// Comments are allowed almost everywhere
@@ -352,7 +317,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 					} else if (mainState == SCE_AHKL_OBJECT) {			// Special object case
 
-						mainState = SCE_AHKL_NEUTRAL;
+						mainState == SCE_AHKL_NEUTRAL;
 
 						if (sc.ch == '(') {
 
@@ -373,9 +338,8 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					} else if (sc.ch == ':' && sc.chNext != ':' && sc.chNext != '/' && sc.chNext != '\\') {
 
 						sc.ChangeState(SCE_AHKL_LABEL);
-						if ((sc.chNext != '\r') && (sc.chNext != '\n'))
-							sc.ForwardSetState(SCE_AHKL_ERROR);
-						
+						sc.ForwardSetState(SCE_AHKL_ERROR);
+
 						break;
 
 					} else if (!inHotstring && sc.ch == ':' && sc.chNext == ':') {
@@ -392,7 +356,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
 				} else if ((sc.chPrev == 'x' || sc.chPrev == 'y'|| sc.chPrev == 'w'|| sc.chPrev == 'h')
-					&& inCommand && isdigit(sc.ch & 0xFF) ) {				// Special number cases when entering sizes
+					&& inCommand && isdigit(sc.ch) ) {				// Special number cases when entering sizes
 
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
@@ -409,7 +373,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
 				} else if ((OnlySpaces || isspace(sc.chPrev)) &&
-						 ((sc.ch == '@' && isalnum(sc.chNext)) || valDocComment.Contains(sc.ch))) {
+					   ((sc.ch == '@' && isalnum(sc.chNext)) || valDocComment.Contains(sc.ch))) {
 
 					if (valDocComment.Contains(sc.ch))
 						inDocComment = true;
@@ -448,7 +412,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 			}
 
 			case SCE_AHKL_DECNUMBER:	{
-				if (!isdigit(sc.ch & 0xFF)) {
+				if (!isdigit(sc.ch)) {
 
 					if (sc.ch == 'x' || sc.ch == 'X')
 						sc.ChangeState(SCE_AHKL_HEXNUMBER);
@@ -508,7 +472,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 						inCommand = true;
 				}
 
-				// if ((OnlySpaces || IsASpace(sc.chPrev)) && sc.Match(';')) {
+				// if ((OnlySpaces || isspace(sc.chPrev)) && sc.Match(';')) {
 
 					// sc.SetState(SCE_AHKL_STRINGCOMMENT);
 
@@ -613,17 +577,16 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				expLevel += 1;
 				inExpression = true;
 
-        if (sc.Match(" % ")) {
-          inCommand = false;
-        }
+				if (sc.Match(" % "))
+					inCommand = false;
 
 			} else if (sc.ch == ']' || sc.ch == ')') {
 
 				expLevel -= 1, inCommand = false;
 
-        if (expLevel == 0) {
-          inExpression = false;
-        }
+				if (expLevel == 0)
+					inExpression = false;
+
 			}
 
 			// Handle Command continuation section
@@ -636,7 +599,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				if (valIdentifier.Contains(sc.ch))
 					validFunction = true;
 
-				if (IsADigit(sc.ch))
+				if (isdigit(sc.ch))
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
 				else if (inCommand && sc.ch == '+')
@@ -655,7 +618,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 			} else if (sc.ch == ']') {
 
-				mainState = SCE_AHKL_NEUTRAL;						// Reset object state
+				mainState == SCE_AHKL_NEUTRAL;						// Reset object state
 
 			} else if (sc.ch == ')') {
 
@@ -700,82 +663,109 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 				inHotstring = true;
 				sc.SetState(SCE_AHKL_HOTSTRINGOPT);
+
 			}
+
 		}
-    if (!IsASpace((sc.ch))) {
-      OnlySpaces = false;
-    }
+
+		if (!isspace(sc.ch))
+			OnlySpaces = false;
+
 	}
 
 	sc.Complete();
 }
 
-
-void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess)
+void SCI_METHOD LexerAHKL::Fold(unsigned int startPos, int length, int initStyle, IDocument *pAccess)
 {
-  if (!options.fold) {
-    return;
-  }
+	LexAccessor styler(pAccess);
 
-  LexAccessor styler(pAccess);
+	int visibleChars = 0;
+	int lineCurrent = styler.GetLine(startPos);
+	int levelCurrent = SC_FOLDLEVELBASE;
+	int styleNext = styler.StyleAt(startPos);
+	int style = initStyle;
+	unsigned int endPos = startPos + length;
 
-  bool const foldComment = options.foldComment; //props.GetInt("fold.comment") != 0;
-  bool const foldCompact = options.foldCompact; //props.GetInt("fold.compact", 1) != 0;
+	char chNext = styler[startPos];
 
-  Sci_PositionU endPos = startPos + lengthDoc;
-  bool bOnlySpaces = true;
-  int lineCurrent = styler.GetLine(startPos);
-  int levelCurrent = SC_FOLDLEVELBASE;
-  if (lineCurrent > 0) {
-    levelCurrent = styler.LevelAt(lineCurrent - 1) & SC_FOLDLEVELNUMBERMASK;
-  }
-  int levelNext = levelCurrent;
-  char chNext = styler[startPos];
-  int styleNext = styler.StyleAt(startPos);
-  int style = initStyle;
-  for (Sci_PositionU i = startPos; i < endPos; i++) {
-    char ch = chNext;
-    chNext = styler.SafeGetCharAt(i + 1);
-    int stylePrev = style;
-    style = styleNext;
-    styleNext = styler.StyleAt(i + 1);
-    bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
-    if (foldComment && style == SCE_AHKL_COMMENTBLOCK) {
-      if (stylePrev != SCE_AHKL_COMMENTBLOCK) {
-        levelNext++;
-      }
-      else if ((styleNext != SCE_AHKL_COMMENTBLOCK) && !atEOL) {
-        // Comments don't end at end of line and the next character may be unstyled.
-        levelNext--;
-      }
-    }
-    if (ch == '(' || ch == '{') {
-      levelNext++;
-    }
-    else if (ch == ')' || ch == '}') {
-      levelNext--;
-    }
-    if (atEOL) {
-      int level = levelCurrent;
-      if (bOnlySpaces && foldCompact) {
-        // Empty line
-        level |= SC_FOLDLEVELWHITEFLAG;
-      }
-      if (!bOnlySpaces && levelNext > levelCurrent) {
-        level |= SC_FOLDLEVELHEADERFLAG;
-      }
-      if (level != styler.LevelAt(lineCurrent)) {
-        styler.SetLevel(lineCurrent, level);
-      }
-      lineCurrent++;
-      levelCurrent = levelNext;
-      bOnlySpaces = true;
-    }
-    if (!isspacechar(ch)) {
-      bOnlySpaces = false;
-    }
-  }
+	bool OnlySpaces = true;
+
+	if (lineCurrent > 0)
+		levelCurrent = styler.LevelAt(lineCurrent-1) >> 16;
+	unsigned int lineStartNext = styler.LineStart(lineCurrent+1);
+	int levelMinCurrent = levelCurrent;
+	int levelNext = levelCurrent;
+
+	for (unsigned int i = startPos; i < endPos; i++) {
+		int stylePrev = style;
+
+		char ch = chNext;
+
+		bool atEOL = i == (lineStartNext-2);
+
+		style = styleNext;
+		chNext = styler.SafeGetCharAt(i + 1);
+		styleNext = styler.StyleAt(i + 1);
+
+		if ((OnlySpaces && ch == '/' && chNext == '*'))
+			levelNext++;
+
+		else if ((OnlySpaces && ch == '*' && chNext == '/'))
+			levelNext--;
+
+		if (style == SCE_AHKL_NEUTRAL) {
+
+			if ((OnlySpaces && ch == '(') || ch == '{') {
+
+				// Measure the minimum before a '{' to allow
+				// folding on "} else {"
+				if (levelMinCurrent > levelNext)
+					levelMinCurrent = levelNext;
+
+				levelNext++;
+
+			} else if ((OnlySpaces && ch == ')') || ch == '}') {
+
+				levelNext--;
+
+			}
+
+		}
+
+		if (!isspace(ch))
+			visibleChars++;
+
+		if (atEOL || (i == endPos-1)) {
+
+			int levelUse = levelCurrent;
+			int lev = levelUse | levelNext << 16;
+
+			if (levelUse < levelNext)
+				lev |= SC_FOLDLEVELHEADERFLAG;
+
+			if (lev != styler.LevelAt(lineCurrent))
+				styler.SetLevel(lineCurrent, lev);
+
+			lineCurrent++;
+			lineStartNext = styler.LineStart(lineCurrent+1);
+			levelCurrent = levelNext;
+			levelMinCurrent = levelCurrent;
+
+			if (atEOL && (i == static_cast<unsigned int>(styler.Length()-1))) 		// There is an empty line at end of file so give it same level and empty
+				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) | SC_FOLDLEVELWHITEFLAG);
+
+			visibleChars = 0;
+			OnlySpaces = true;
+
+		}
+
+		if (!isspace(ch))
+			OnlySpaces = false;
+
+
+	}
 
 }
 
-LexerModule lmAHKL(SCLEX_AHKL, LexerAHKL::LexerFactoryAHKL, "ahk; ahkl", ahklWordLists);
+LexerModule lmAHKL(SCLEX_AHKL, LexerAHKL::LexerFactory, "ahkl", ahklWordLists);
