@@ -326,6 +326,7 @@
     <ClInclude Include="..\oniguruma\src\regint.h" />
     <ClInclude Include="..\oniguruma\src\regparse.h" />
     <ClInclude Include="..\oniguruma\src\st.h" />
+    <ClInclude Include="..\sciXlexers\CharSetX.h" />
     <ClInclude Include="..\sciXlexers\SciXLexer.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />

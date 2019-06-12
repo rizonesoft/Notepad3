@@ -26,7 +26,7 @@
 #include "LexAccessor.h"
 #include "Accessor.h"
 #include "StyleContext.h"
-#include "CharacterSet.h"
+#include "CharSetX.h"
 #include "LexerModule.h"
 #include "OptionSet.h"
 #include "DefaultLexer.h"
@@ -508,7 +508,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 						inCommand = true;
 				}
 
-				// if ((OnlySpaces || isspace(sc.chPrev)) && sc.Match(';')) {
+				// if ((OnlySpaces || IsASpace(sc.chPrev)) && sc.Match(';')) {
 
 					// sc.SetState(SCE_AHKL_STRINGCOMMENT);
 
@@ -613,16 +613,17 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				expLevel += 1;
 				inExpression = true;
 
-				if (sc.Match(" % "))
-					inCommand = false;
+        if (sc.Match(" % ")) {
+          inCommand = false;
+        }
 
 			} else if (sc.ch == ']' || sc.ch == ')') {
 
 				expLevel -= 1, inCommand = false;
 
-				if (expLevel == 0)
-					inExpression = false;
-
+        if (expLevel == 0) {
+          inExpression = false;
+        }
 			}
 
 			// Handle Command continuation section
@@ -635,7 +636,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				if (valIdentifier.Contains(sc.ch))
 					validFunction = true;
 
-				if (isdigit(sc.ch & 0xFF))
+				if (IsADigit(sc.ch))
 					sc.SetState(SCE_AHKL_DECNUMBER);
 
 				else if (inCommand && sc.ch == '+')
@@ -699,14 +700,11 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 				inHotstring = true;
 				sc.SetState(SCE_AHKL_HOTSTRINGOPT);
-
 			}
-
 		}
-
-		if (!isspace(sc.ch))
-			OnlySpaces = false;
-
+    if (!IsASpace((sc.ch))) {
+      OnlySpaces = false;
+    }
 	}
 
 	sc.Complete();

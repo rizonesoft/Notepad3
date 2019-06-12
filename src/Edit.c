@@ -7023,7 +7023,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines)
 //
 //  _HighlightIfBrace()
 //
-static bool _HighlightIfBrace(HWND hwnd, DocPos iPos)
+static bool _HighlightIfBrace(const HWND hwnd, const DocPos iPos)
 {
   UNUSED(hwnd);
   if (iPos < 0) {
@@ -7033,15 +7033,15 @@ static bool _HighlightIfBrace(HWND hwnd, DocPos iPos)
     return true;
   }
 
-  char c = SciCall_GetCharAt(iPos);
+  char const c = SciCall_GetCharAt(iPos);
   
   if (StrChrA(NP3_BRACES_TO_MATCH, c)) {
-    DocPos iBrace2 = SciCall_BraceMatch(iPos);
-    if (iBrace2 != -1) {
-      DocPos col1 = SciCall_GetColumn(iPos);
-      DocPos col2 = SciCall_GetColumn(iBrace2);
+    DocPos const iBrace2 = SciCall_BraceMatch(iPos);
+    if (iBrace2 != (DocPos)-1) {
+      int const col1 = (int)SciCall_GetColumn(iPos);
+      int const col2 = (int)SciCall_GetColumn(iBrace2);
       SciCall_BraceHighLight(iPos, iBrace2);
-      SciCall_SetHighLightGuide(min_i((int)col1, (int)col2));
+      SciCall_SetHighLightGuide(min_i(col1, col2));
     }
     else {
       SciCall_BraceBadLight(iPos);

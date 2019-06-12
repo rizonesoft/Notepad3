@@ -688,21 +688,25 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   if (s_hmenuLanguage) { DestroyMenu(s_hmenuLanguage); }
   s_hmenuLanguage = CreatePopupMenu();
 
-  WCHAR wchMenuItemFmt[128] = L"%s";
+  WCHAR wchMenuItemFmt[128] = { L'\0' };
   WCHAR wchMenuItemStrg[196] = { L'\0' };
   for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
   {
     if (MUI_LanguageDLLs[lng].bHasDLL) 
     {
       // GetLngString(MUI_LanguageDLLs[lng].rid, wchMenuItemFmt, COUNTOF(wchMenuItemFmt));
+      bool found = false;
       for (int i = 0; i < COUNTOF(s_LanguageMenu); ++i) {
         if (MUI_LanguageDLLs[lng].LangId == s_LanguageMenu[i].LangID)
         {
           StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), s_LanguageMenu[i].MenuItem);
+          found = true;
           break;
         }
       }
-
+      if (!found) {
+        StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), L"Lang-(Sub)\t\t\t[%s]");
+      }
       StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
       AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
     }

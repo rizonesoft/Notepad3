@@ -554,5 +554,8 @@
     <ClInclude Include="..\oniguruma\src\config.h">
       <Filter>oniguruma</Filter>
     </ClInclude>
+    <ClInclude Include="..\sciXlexers\CharSetX.h">
+      <Filter>sciXlexers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

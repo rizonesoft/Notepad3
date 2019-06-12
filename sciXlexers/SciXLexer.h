@@ -1,11 +1,12 @@
-﻿#ifndef SCIXLEXER_H
-#define SCIXLEXER_H
+﻿#pragma once
+#ifndef _SCIXLEXER_H_
+#define _SCIXLEXER_H_
 
 #define SCLEX_AHKL  200
 #define SCLEX_TOML  201
 
 // -----------------------------------------------------------------------------
-// !!!!! ADD  Lexer Linkage in:  Notepad3\scintilla\src\Catalogue.cxx  !!!!!
+// !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
 // -----------------------------------------------------------------------------
 
 #define SCE_AHKL_NEUTRAL 0
@@ -43,12 +44,13 @@
 
 #define SCE_TOML_DEFAULT 0
 #define SCE_TOML_COMMENT 1
-#define SCE_TOML_KEY 2
-#define SCE_TOML_SECTION 3
+#define SCE_TOML_SECTION 2
+#define SCE_TOML_KEY 3
 #define SCE_TOML_ASSIGNMENT 4
-#define SCE_TOML_DEFVAL 5
-#define SCE_TOML_DATATYPE 6
-#define SCE_TOML_TYPEERROR 7
+#define SCE_TOML_VALUE 5
+#define SCE_TOML_STRING 6
+#define SCE_TOML_ARRAY 7
+#define SCE_TOML_PARSINGERROR 8
 
 
-#endif
+#endif //_SCIXLEXER_H_
