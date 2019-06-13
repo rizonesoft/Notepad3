@@ -246,7 +246,7 @@ Használat:\r\n\
 Notepad3 \t[/?] [...[kódolás]] [...[sorvég mód]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[meghajtó:][útvonal]fájlnév[...]]\r\n\r\n\
-fájl\tAz utolsó paraméter kell legyen, alapból nincsenekidézõjelezett szóközök.\r\n\
+fájl\tAz utolsó paraméter kell legyen, alapból nincsenek idézõjelezett szóközök.\r\n\
 +\tTöbb fájlt is elfogad (idézõjelezett szóközökkel).\r\n\
 -\tEgy fájlt fogad el paraméterként (idézõjelezett szóközök nélkül).\r\n\r\n\
 Opciók:\r\n\
