@@ -83,7 +83,7 @@ namespace {
   };
 
   static const char* const tomlWordListDesc[] = {
-      "TOML",
+      "true false inf -inf +inf nan -nan +nan",
       nullptr
   };
 
@@ -100,13 +100,16 @@ namespace {
   LexicalClass lexicalClasses[] = {
     // Lexer TOML SCLEX_TOML SCE_TOML_:
     0,  "SCE_TOML_DEFAULT",        "default",              "Default",
-    1,  "SCE_TOML_COMMENT",        "comment",              "Comment",
-    2,  "SCE_TOML_KEY",            "key",                  "Key",
+    1,  "SCE_TOML_KEYWORD",        "keyword",              "Keyword",
+    2,  "SCE_TOML_COMMENT",        "comment",              "Comment",
     3,  "SCE_TOML_SECTION",        "section",              "Section",
-    4,  "SCE_TOML_ASSIGNMENT",     "assignment",           "Assignment",
-    5,  "SCE_TOML_DEFVAL",         "default value",        "Default Value",
-    6,  "SCE_TOML_VALUETYPE",      "value type",           "Value Type",
-    7,  "SCE_TOML_PARSINGERROR",   "type error",           "Type Error",
+    4,  "SCE_TOML_KEY",            "key",                  "Key",
+    5,  "SCE_TOML_ASSIGNMENT",     "assignment",           "Assignment",
+    6,  "SCE_TOML_VALUE",          "value",                "Value",
+    7,  "SCE_TOML_NUMBER",         "number",               "Number",
+    8,  "SCE_TOML_STR_BASIC",      "string_basic",         "Basic String",
+    9,  "SCE_TOML_STR_LITERAL",    "string_basic",         "Literal String",
+   10,  "SCE_TOML_PARSINGERROR",   "type_error",           "Type Error",
   };
 
   } // end of namespace
@@ -230,6 +233,16 @@ inline bool IsAKeyChar(const int ch) {
 }
 // ----------------------------------------------------------------------------
 
+inline bool IsValidNumEnd(const int ch) {
+  return (
+    IsASpace(ch) ||
+    IsCommentChar(ch) ||
+    (ch == ',') ||
+    (ch == ']')
+    );
+}
+// ----------------------------------------------------------------------------
+
 
 static int GetBracketLevel(StyleContext& sc) 
 {
@@ -261,6 +274,7 @@ static int GetBracketLevel(StyleContext& sc)
 // ----------------------------------------------------------------------------
 
 
+// ----------------------------------------------------------------------------
 
 void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess) 
 {
@@ -268,8 +282,12 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
   StyleContext sc(startPos, length, initStyle, styler);
 
   bool inSectionDef = false;
-  bool inMultiLnString = (sc.state == SCE_TOML_STRING);
-  bool inMultiLnArrayDef = (sc.state == SCE_TOML_ARRAY);
+  bool inMultiLnString = (sc.state == SCE_TOML_STR_BASIC) || (sc.state == SCE_TOML_STR_LITERAL);
+  bool inMultiLnArrayDef = (sc.state == SCE_TOML_VALUE);
+  bool inHex = false;
+  bool inBin = false;
+  bool inOct = false;
+  //bool bFloatHasDot = false;
 
   for (; sc.More(); sc.Forward())
   {
@@ -280,13 +298,9 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
     if (sc.atLineStart) {
       switch (sc.state)
       {
-        case SCE_TOML_STRING:
+        case SCE_TOML_STR_BASIC:
+        case SCE_TOML_STR_LITERAL:
           if (!inMultiLnString) {
-            sc.SetState(SCE_TOML_PARSINGERROR);
-          }
-          break;
-        case SCE_TOML_ARRAY:
-          if (!inMultiLnArrayDef) {
             sc.SetState(SCE_TOML_PARSINGERROR);
           }
           break;
@@ -294,7 +308,9 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
           // preserve error
           break;
         default:
-          sc.SetState(SCE_TOML_DEFAULT); // reset
+          if (!inMultiLnArrayDef) {
+            sc.SetState(SCE_TOML_DEFAULT); // reset
+          }
           break;
       }
     }
@@ -347,9 +363,11 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         }
         break;
 
+
       case SCE_TOML_COMMENT:
         // eat - rest of line is comment
         break;
+
 
       case SCE_TOML_SECTION:
         if (sc.ch == ']') {
@@ -365,6 +383,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         }
         break;
 
+
       case SCE_TOML_KEY:
         if (IsASpaceOrTab(sc.ch)) {
           sc.SetState(SCE_TOML_ASSIGNMENT); // end of key
@@ -376,6 +395,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
           sc.SetState(SCE_TOML_PARSINGERROR);
         }
         break;
+
 
       case SCE_TOML_ASSIGNMENT:
         if (IsAssignChar(sc.ch)) {
@@ -393,48 +413,11 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
       case SCE_TOML_VALUE:
         if (sc.ch == '[') {
-          sc.SetState(SCE_TOML_ARRAY);
           inMultiLnArrayDef = true;
         }
         else if (sc.ch == ']') {
-          sc.SetState(SCE_TOML_PARSINGERROR);
-        }
-        else if (sc.ch == '"') {
-          sc.SetState(SCE_TOML_STRING);
-          if (sc.Match(R"(""")")) {
-            inMultiLnString = true;
-            sc.Forward(2);
-          }
-        }
-        break;
-
-      case SCE_TOML_STRING:
-        if (sc.ch == '\\') {
-          sc.ForwardSetState(SCE_TOML_STRING);
-        }
-        else if (sc.ch == '"') {
-          if (!inMultiLnString) {
-            sc.ForwardSetState(SCE_TOML_VALUE);
-          }
-          else { 
-            // inMultiLnString
-            if (sc.Match(R"(""")")) {
-              sc.Forward(2);
-              sc.ForwardSetState(SCE_TOML_VALUE);
-              inMultiLnString = false;
-            }
-            else {
-              sc.SetState(SCE_TOML_PARSINGERROR);
-            }
-          }
-        }
-        break;
-
-      case SCE_TOML_ARRAY:
-        if (sc.ch == ']') {
           int const level = GetBracketLevel(sc);
           if (level == 0) {
-            sc.ForwardSetState(SCE_TOML_VALUE);
             inMultiLnArrayDef = false;
           }
           else if (level < 0) {
@@ -442,20 +425,153 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             inMultiLnArrayDef = false;
           }
         }
+        else if (IsNumber(sc)) {
+          sc.SetState(SCE_TOML_NUMBER);
+          if ((sc.ch == '+') || (sc.ch == '-')) {
+            sc.Forward();
+          }
+          inHex = IsNumHex(sc);
+          inBin = IsNumBinary(sc);
+          inOct = IsNumOctal(sc);
+          if (inHex || inBin || inOct) {
+            sc.Forward(2);
+          }
+          if (IsNumExponent(sc)) {
+            sc.Forward(2);
+            if ((sc.ch == '+') || (sc.ch == '-')) {
+              sc.Forward();
+            }
+          }
+        }
+        else if (sc.ch == '"') {
+          sc.SetState(SCE_TOML_STR_BASIC);
+          if (sc.Match(R"(""")")) {
+            inMultiLnString = true;
+            sc.Forward(2);
+          }
+        }
+        else if (sc.ch == '\'') {
+          sc.SetState(SCE_TOML_STR_LITERAL);
+          if (sc.Match(R"(''')")) {
+            inMultiLnString = true;
+            sc.Forward(2);
+          }
+        }
         break;
+
+
+      case SCE_TOML_NUMBER:
+        if (sc.ch == '_') {
+          // eat // TODO: only once
+        }
+        else if (inHex || inBin || inOct) {
+          if (IsValidNumEnd(sc.ch)) {
+            sc.SetState(SCE_TOML_VALUE);
+            inHex = false;
+            inBin = false;
+            inOct = false;
+          }
+          else {
+            if ((inHex && !IsADigit(sc.ch, 16)) ||
+                (inBin && !IsADigit(sc.ch,  2)) ||
+                (inOct && !IsADigit(sc.ch,  8)))
+            {
+              sc.SetState(SCE_TOML_PARSINGERROR);
+            }
+          }
+        }
+        else if (IsNumExponent(sc)) {
+          sc.Forward();
+          if ((sc.chNext == '+') || (sc.chNext == '-')) {
+            sc.Forward();
+          }
+        }
+        else if (sc.ch == '.') {
+          // eat // TODO: only once
+        }
+        else if (IsADigit(sc.ch)) {
+          // eat
+        }
+        else {
+          if (IsValidNumEnd(sc.ch)) {
+            sc.SetState(SCE_TOML_VALUE);
+            inHex = false;
+            inBin = false;
+            inOct = false;
+          }
+          else {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
+        }
+        break;
+
+
+      case SCE_TOML_STR_BASIC:
+      case SCE_TOML_STR_LITERAL:
+        if (sc.ch == '\\') {
+          if (sc.state != SCE_TOML_STR_BASIC) {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
+          else {
+            sc.ForwardSetState(sc.state);
+          }
+        }
+        else if (sc.ch == '"') {
+          if (sc.state == SCE_TOML_STR_BASIC) {
+            if (!inMultiLnString) {
+              sc.ForwardSetState(SCE_TOML_VALUE);
+            }
+            else {
+              // inMultiLnString
+              if (sc.Match(R"(""")")) {
+                sc.Forward(2);
+                sc.ForwardSetState(SCE_TOML_VALUE);
+                inMultiLnString = false;
+              }
+              else {
+                sc.SetState(SCE_TOML_PARSINGERROR);
+              }
+            }
+          }
+        }
+        else if (sc.ch == '\'') {
+          if (sc.state == SCE_TOML_STR_LITERAL) {
+            if (!inMultiLnString) {
+              sc.ForwardSetState(SCE_TOML_VALUE);
+            }
+            else {
+              // inMultiLnString
+              if (sc.Match(R"(''')")) {
+                sc.Forward(2);
+                sc.ForwardSetState(SCE_TOML_VALUE);
+                inMultiLnString = false;
+              }
+              else {
+                sc.SetState(SCE_TOML_PARSINGERROR);
+              }
+            }
+          }
+        }
+        break;
+
 
       case SCE_TOML_PARSINGERROR:
         // still parsing error until new line
         break;
+
 
       default:
         sc.SetState(SCE_TOML_PARSINGERROR); // unknown
         break;
     }
 
-    //if (sc.atLineEnd) {
-    //  // ---
-    //}
+    if (sc.atLineEnd) {
+      if (!inMultiLnArrayDef && !inMultiLnString) {
+        if (sc.state == SCE_TOML_VALUE) {
+          sc.ForwardSetState(SCE_TOML_DEFAULT);
+        }
+      }
+    }
 
   }
   sc.Complete();
