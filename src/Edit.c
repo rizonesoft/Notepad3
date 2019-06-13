@@ -8207,7 +8207,6 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
   else {
     fToggled = _FoldToggleNode(ln, action);
   }
-  if (fToggled) { SciCall_ScrollCaret(); }
 }
 
 
