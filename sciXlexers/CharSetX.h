@@ -27,17 +27,24 @@ constexpr bool IsLineBreak(const int ch) noexcept {
   return ((ch == '\n') || (ch == '\r'));
 }
 
+inline int IsNumber(const Scintilla::StyleContext& sc) {
+  return  Scintilla::IsADigit(sc.ch) || (((sc.ch == '+') || (sc.ch == '-')) && Scintilla::IsADigit(sc.chNext));
+}
+
 constexpr int IsNumHex(const Scintilla::StyleContext& sc) noexcept {
-  return (sc.chNext == 'x') || (sc.chNext == 'X');
+  return (sc.ch == '0') && (sc.chNext == 'x') || (sc.chNext == 'X');
 }
 
 constexpr int IsNumBinary(const Scintilla::StyleContext& sc) noexcept {
-  return (sc.chNext == 'b') || (sc.chNext == 'B');
+  return (sc.ch == '0') && (sc.chNext == 'b') || (sc.chNext == 'B');
 }
 
-
 inline int IsNumOctal(const Scintilla::StyleContext& sc) {
-  return Scintilla::IsADigit(sc.chNext) || (sc.chNext == 'o');
+  return (sc.ch == '0') && (sc.chNext == 'o') || (sc.chNext == 'O');
+}
+
+inline int IsNumExponent(const Scintilla::StyleContext& sc) {
+  return Scintilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
 }
 
 inline bool IsAIdentifierChar(const int ch) {

@@ -446,6 +446,7 @@ BEGIN
     IDS_LEX_STR_63353       "备选：输入法候选文本颜色"
     IDS_LEX_STR_63354       "Multi Edit Indicator"
     IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63356       "Date-Time"
 END
 
 #endif    // Chinese (Simplified, PRC) resources

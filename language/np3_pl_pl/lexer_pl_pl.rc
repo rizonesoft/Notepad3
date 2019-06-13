@@ -446,6 +446,7 @@ BEGIN
     IDS_LEX_STR_63353       "2nd Inline-IME Color"
     IDS_LEX_STR_63354       "Multi Edit Indicator"
     IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63356       "Date-Time"
 END
 
 #endif    // Polish (Poland) resources

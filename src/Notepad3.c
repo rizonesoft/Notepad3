@@ -3163,7 +3163,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD) && !ro);
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD || i == SCLEX_TOML) && !ro);
 
   EnableCmd(hmenu, CMD_CTRLENTER, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
@@ -4573,6 +4573,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
         case SCLEX_NIMROD:
+        case SCLEX_TOML:
           EditToggleLineComments(Globals.hwndEdit, L"#", true);
           break;
         case SCLEX_ASM:
@@ -4636,6 +4637,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_JSON:
         case SCLEX_REGISTRY:
         case SCLEX_NIMROD:
+        case SCLEX_TOML:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:
