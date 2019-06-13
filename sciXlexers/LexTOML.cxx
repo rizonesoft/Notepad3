@@ -64,7 +64,7 @@ namespace {
     }
   };
 
-  static const char* const tomlWordListsDesc[] = {
+  static const char* const tomlWordLists[] = {
       "Keyword",
       nullptr
   };
@@ -75,7 +75,7 @@ namespace {
       DefineProperty("fold", &OptionsTOML::fold, "FOLD COMMENT");
       DefineProperty("fold.compact", &OptionsTOML::foldCompact, "FOLDCOMPACT COMMENT");
 
-      DefineWordListSets(tomlWordListsDesc);
+      DefineWordListSets(tomlWordLists);
     }
   };
 
@@ -99,7 +99,7 @@ namespace {
 class LexerTOML : public DefaultLexer {
   
   CharacterSet validKey;
-  //CharacterSet validKeyWord;
+  CharacterSet validKeyWord;
   CharacterSet validNumberEnd;
   CharacterSet chDateTime;
   
@@ -112,7 +112,7 @@ public:
   LexerTOML() 
     : DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses))
     , validKey(CharacterSet::setAlphaNum, R"(-_.)", 0x80, false)
-    //, validKeyWord(CharacterSet::setAlphaNum, "_", 0x80, false)
+    , validKeyWord(CharacterSet::setAlphaNum, "_+-", 0x80, false)
     , validNumberEnd(CharacterSet::setNone, " \t\n\v\f\r#,)}]", 0x80, false)
     , chDateTime(CharacterSet::setNone, "-:TZ", 0x80, false)
   { }
@@ -215,6 +215,17 @@ constexpr bool IsAssignChar(const int ch) noexcept {
 }
 // ----------------------------------------------------------------------------
 
+inline bool IsAIdentifierChar(const int ch) {
+  return (IsAlphaNumeric(ch) || ch == '_' || ch == '.');
+}
+// ----------------------------------------------------------------------------
+
+inline bool IsAKeywordChar(const int ch) {
+  return (IsAIdentifierChar(ch) || ch == '+' || ch == '-');
+}
+// ----------------------------------------------------------------------------
+
+
 static int GetBracketLevel(StyleContext& sc, const bool stopAtLnBreak = false) 
 {
   Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
@@ -257,9 +268,9 @@ static bool IsDateTimeStr(StyleContext& sc, const CharacterSet& validCh, const C
   Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
   Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
 
-  Sci_Position i = 0;
   bool bDateTimeFlag = false;
   
+  Sci_Position i = 0;
   while ((++i + posCurrent) < posEnd)
   {
     int const ch = sc.GetRelative(i);
@@ -286,9 +297,9 @@ static bool IsLookAheadLineEmpty(StyleContext& sc)
   Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
   Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
 
-  Sci_Position i = 0;
   bool bLHLineEmpty = true;
 
+  Sci_Position i = 0;
   while ((++i + posCurrent) < posEnd)
   {
     int const ch = sc.GetRelative(i);
@@ -302,6 +313,40 @@ static bool IsLookAheadLineEmpty(StyleContext& sc)
     }
   }
   return bLHLineEmpty;
+}
+// ----------------------------------------------------------------------------
+
+static bool IsLookAheadInList(StyleContext& sc, const CharacterSet& validCh, const WordList& keywords)
+{
+  Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
+  Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
+
+  static char identifier[1024] = { '\0' };
+
+  int j = 0;
+  Sci_Position i = -1;
+  while (((++i + posCurrent) < posEnd) && (j < 1023))
+  {
+    int const ch = sc.GetRelative(i);
+
+    if (IsABlankOrTabX(ch)) {
+      if (j == 0) { continue; }
+    }
+    if (validCh.Contains(ch)) {
+      identifier[j++] = static_cast<char>(ch);
+      continue;
+    }
+    identifier[j] = '\0';
+    break;
+  }
+
+  if (identifier[0] != '\0') {
+    TrimIdentifier(identifier, identifier);
+    if (keywords.InList(identifier)) {
+      return true;
+    }
+  }
+  return false;
 }
 // ----------------------------------------------------------------------------
 
@@ -327,6 +372,8 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
   bool inBin = false;
   bool inOct = false;
 
+  bool bPossibleKeyword = true;
+
   for (; sc.More(); sc.Forward())
   {
 
@@ -336,6 +383,8 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
     if (sc.atLineStart) {
       inMultiLnArrayDef = (GetBracketLevel(sc) >= 0);
       inSQuotedKey = inDQuotedKey = inInnerQKey = false; // clear
+      bPossibleKeyword = true; // reset
+
       switch (sc.state)
       {
         case SCE_TOML_STR_BASIC:
@@ -506,6 +555,13 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         // fall through
 
       case SCE_TOML_VALUE:
+        if (bPossibleKeyword && IsLookAheadInList(sc, validKeyWord, keywords)) {
+          sc.SetState(SCE_TOML_KEYWORD);
+          break;
+        }
+        else {
+          bPossibleKeyword = false;
+        }
         if (sc.ch == '[') {
           inMultiLnArrayDef = true;
         }
@@ -555,6 +611,13 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
             inMultiLnString = true;
             sc.Forward(2);
           }
+        }
+        break;
+
+
+      case SCE_TOML_KEYWORD:
+        if (!(IsASpaceX(sc.ch) || validKeyWord.Contains(sc.ch))) {
+          sc.SetState(SCE_TOML_VALUE);
         }
         break;
 
@@ -765,7 +828,7 @@ void SCI_METHOD LexerTOML::Fold(Sci_PositionU startPos, Sci_Position length, int
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "toml", tomlWordListsDesc);
+LexerModule lmTOML(SCLEX_TOML, LexerTOML::LexerFactoryTOML, "toml", tomlWordLists);
 
 // ----------------------------------------------------------------------------
 

@@ -1419,8 +1419,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   switch (s_pLexCurrent->lexerID)
   {
     case SCLEX_PYTHON:
-      SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_COMPOSITIONTHIN);
-      SendMessage(hwnd, SCI_INDICSETFORE, 1, (LPARAM)RGB(0xAF, 0, 0)); // (light red)
+      SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_BOX);
+      SendMessage(hwnd, SCI_INDICSETFORE, 1, (LPARAM)RGB(0xBF, 0, 0)); // (light red)
       //SendMessage(hwnd, SCI_INDICSETALPHA, 1, 40);                  
       //SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, 1, 100);
       break;
