@@ -36,7 +36,6 @@ see ecryption-doc.txt for details
 
 #define WKEY_LEN 256
 #define KEY_LEN  512
-#define PAD_SLOP 16
 
 bool  useFileKey = false;			// file should be encrypted
 char fileKey[KEY_LEN] = { 0 };		// ascii passphrase for the file key
@@ -408,8 +407,8 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
               AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
               AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
               { // finally, decrypt the actual data
-                int nbb = BAD_CIPHER_STATE;
-                int nbp = BAD_CIPHER_STATE;
+                long nbb = BAD_CIPHER_STATE;
+                long nbp = BAD_CIPHER_STATE;
                 if ((readsize - code_offset) >= PAD_SLOP) {
                   nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
                 }
@@ -417,9 +416,9 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
                   nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
                 }
                 if (nbp >= 0) {
-                  int nb = nbb + nbp;
-                  rawdata[nb] = (char)0;
-                  rawdata[nb + 1] = (char)0;	// two zeros in case it's multi-byte
+                  unsigned long const nb = nbb + nbp;
+                  rawdata[nb] = '\0';
+                  rawdata[nb + 1] = '\0';	// two zeros in case it's multi-byte
                   *resultlen = (DWORD)nb;
                 }
                 else {
@@ -476,7 +475,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
         static int sequence = 1;	// sequence counter so each time is unique
         srand(sequence++ ^ (unsigned int)time(NULL));
         {
-            int i; for (i = 0; i < AES_MAX_IV_SIZE; i++) {
+            for (int i = 0; i < AES_MAX_IV_SIZE; i++) {
                 precodedata[PREAMBLE_SIZE + i] = 0;//rand();
             }
         }
@@ -513,7 +512,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
                 AES_bin_setup(&masterencode, AES_DIR_ENCRYPT, KEY_BYTES * 8, binMasterKey);
                 {// generate another IV for the master key
 
-                    int i; for (i = 0; i < sizeof(masterFileIV); i++) { masterFileIV[i] = (BYTE)(rand() & BYTE_MAX); }
+                    for (int i = 0; i < sizeof(masterFileIV); i++) { masterFileIV[i] = (BYTE)(rand() & BYTE_MAX); }
                 }
 
                 AES_bin_cipherInit(&mastercypher, AES_MODE_CBC, masterFileIV);
@@ -542,10 +541,11 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
             DWORD enclen = 0;
             bool bWriteRes = false;
 
-            BYTE* encdata = (BYTE*)HeapAlloc(GetProcessHeap(), HEAP_GENERATE_EXCEPTIONS, size + PAD_SLOP);  // add slop to the end for padding
-            if (!encdata) 
-                return bWriteRes;
+            BYTE* encdata = (BYTE*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size + PAD_SLOP);  // add slop to the end for padding
 
+            if (!encdata) {
+              return bWriteRes;
+            }
             if (size > PAD_SLOP) { enclen += AES_blockEncrypt(&fileCypher, &fileEncode, data, size - PAD_SLOP, encdata); }
 
             enclen += AES_padEncrypt(&fileCypher, &fileEncode, data + enclen, size - enclen, encdata + enclen);

@@ -40,6 +40,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-2)
 - New top-level menu "Appearance" holding Themes and Schemes stuff
 - Rearranging the Language and Themes menus
 - Rearranging the" Encoding" menu
@@ -72,13 +73,13 @@ Version 5.19.528.2228 RC (28 May 2019)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Add Dark Theme "Obsidian"
+- Add another Dark Theme "Obsidian"
 - Add option to disable Hyperlink Tooltip
 - ToolTip for Hyperlinks
 - 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
 - Menu entry to mute MessageBox beeps
-- Theme Menu to load exported styles "on the fly (e.g.: "Dark Theme")
-  Factory Default, Standard Settings, Dark Theme mode
+- Theme Menu to load exported styles "on the fly" (e.g.: "Dark" or "Obsidian")
+  Factory Default, Standard Settings, a Dark Theme
 - Close Zoom Info Bubble after ~3 sec.
 - Recent History button in Toolbar
 - [Settings2] key-values (internal) to control concurrent encoding detection
@@ -106,7 +107,6 @@ CHANGES:
 - Make Custom.Schemes and Find/Replace dialog resizable
 - BOOKMARK (margin flag) style changed to vertical flavor
 - Auto-Save after elevating user right
-- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-1)
 - Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
 - Make international language menu (language independent)
 - Start dual encoding detectors in (thread) parallel for large files

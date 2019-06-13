@@ -84,7 +84,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Keresés"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Szöve&g keresése:",IDC_STATIC,7,7,46,8
+    LTEXT           "Szöve&g keresése:",IDC_STATIC,7,7,66,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Kis-/nagybetû számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
     CONTROL         "E&gész szavakra egyezés",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
@@ -116,31 +116,31 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Szöveg cseréje"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Keresési szöve&g:",IDC_STATIC,7,7,46,8
+    LTEXT           "Keresési szöve&g:",IDC_STATIC,7,7,66,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Cserélés &erre:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Kis/nagybetû eg&yezés",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
+    CONTROL         "Kis-/nag&ybetû számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,89,10
     CONTROL         "Egés&z szavakra egyezés",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Szókez&detre egyezés",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "&Backslash-ek átalakítása",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
+    CONTROL         "Back&slash átalakítás",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "R&eguláris kifejezés keresése",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Pont &mindenre illeszkedik",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "Ne keressen kör&ben",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "&Csere után bezár",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Találat&ok kiemelése",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "&Joker karakteres keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Fókuszvesztéskor átlátszó",IDC_TRANSPARENT,
+    CONTROL         "Pont &mindenre egyezik",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,85,10
+    CONTROL         "&Ne menjen körbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
+    CONTROL         "Csere után bezár",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,80,10
+    CONTROL         "Elõ&fordulások jelölése",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,75,10
+    CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "K&öv. keresése",IDOK,211,7,55,14
     PUSHBUTTON      "Elõzõ keresése",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Csere",IDC_REPLACE,211,43,55,14
-    PUSHBUTTON      "C&sak a kijelölésben",IDC_REPLACEINSEL,211,59,55,14
+    PUSHBUTTON      "A &kijelölésben",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "&Összes cseréje",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Felcserélés",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Bezárás",IDCANCEL,211,126,55,14
     CONTROL         "<a>Ugrás a keresésre (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,130,74,10
+                    "SysLink",0x0,125,130,84,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
@@ -186,13 +186,13 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "Kódolás detektálás: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Nyissa meg a 7-bit &ASCII fájlokat UTF-8 módban.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,160,10
     CONTROL         "Csak megbízható detektálási e&redmények használata.",IDC_RELIABLE_DETECTION_RES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
     CONTROL         "A 8-bit *.&nfo/diz fájlok megnyitása DOS-437 módban.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,170,10
     CONTROL         "Ne dolgozza fel a kódolási f&ájlok címkéit.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
     CONTROL         "&ANSI kódlap detektálás kihagyása.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
     CONTROL         "&UNICODE detektálás kihagyása.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
@@ -222,13 +222,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inkonzisztens sorvégek"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inkonzisztens sorvégek vannak e fájlban::",IDC_STATIC,7,7,180,8
+    LTEXT           "Inkonzisztens sorvégek vannak e fájlban:",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s sor(ok).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s sor(ok).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s sor(ok).",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "&Szeretné rendbetenni a sorvégeket?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "I&gen",IDOK,138,63,50,14
@@ -256,7 +256,7 @@ CAPTION "Fájl elõzmények megnyitása"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "K&urzor helyét megjegyzi.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
+    CONTROL         "K&urzor helyét megjegyzi",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
     CONTROL         "&Fájl elõzmények mentése kilépéskor.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
     CONTROL         "&Keresési minta megjegyzése.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
@@ -266,17 +266,17 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 
-IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 65
+IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 194, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Értesítés fájl módosulásáról"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Nincs.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
-    CONTROL         "&Üzenet megjelenítése.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
-    CONTROL         "&Automatikus újratöltés (módosítatlan).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Újrakezdés, ha új fájl lett megnyitva.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Mégsem",IDCANCEL,127,24,50,14
+    CONTROL         "&Üzenet megjelenítése.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,80,10
+    CONTROL         "&Automatikus újratöltés (módosítatlan).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,125,10
+    CONTROL         "&Újrakezdés, ha új fájl lett megnyitva.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,120,10
+    DEFPUSHBUTTON   "OK",IDOK,137,7,50,14
+    PUSHBUTTON      "Mégsem",IDCANCEL,137,24,50,14
 END
 
 IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 134
@@ -286,7 +286,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
     CONTROL         "E színkiemelés beállítás &alapértelmezetté.",IDC_DEFAULTSCHEME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,118,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,135,10
     CONTROL         "Fájlnév &kit. alapján automatikusan.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
@@ -327,10 +327,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Tabulátor beállítások"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Tabulátor szélesség:",IDC_STATIC,7,10,54,8
-    EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "&Behúzás mérete:",IDC_STATIC,7,30,55,8
-    EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
+    LTEXT           "&Tabulátor szélesség:",IDC_STATIC,7,10,60,8
+    EDITTEXT        IDC_TAB_WIDTH,70,7,30,14,ES_AUTOHSCROLL
+    LTEXT           "&Behúzás mérete:",IDC_STATIC,7,30,60,8
+    EDITTEXT        IDC_INDENT_DEPTH,70,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Szóközök Tab helyett.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tab &gomb újraformázza a behúzásokat.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "&Backspace újraformázza a behúzásokat.",IDC_BACKTAB_INDENTS,
@@ -349,17 +349,17 @@ CAPTION "Inkonzisztens behúzások"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistika: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabulátorok[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
-    LTEXT           "Üres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
-    LTEXT           "Vegyes[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
-    LTEXT           "%s sor",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
-    LTEXT           "%s sor",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
-    LTEXT           "%s sor",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
+    LTEXT           "Tabulátorok[%i]:",IDC_INDENT_WIDTH_TAB,34,18,50,8,SS_LEFT
+    LTEXT           "Üres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,34,30,60,8,SS_LEFT
+    LTEXT           "Vegyes[x]:",IDC_STATIC,34,42,30,8,SS_LEFT
+    LTEXT           "%s sor(ok)",IDC_INDENT_SUM_SPC,104,30,52,8,SS_RIGHT
+    LTEXT           "%s sor(ok)",IDC_INDENT_SUM_TAB,104,18,52,8,SS_RIGHT
+    LTEXT           "%s sor(ok)",IDC_INDENT_SUM_MIX,104,42,52,8,SS_RIGHT
     GROUPBOX        "Minden újrarendezése ? ",IDC_STATIC,7,60,182,56,WS_GROUP
-    CONTROL         "&Tab-ok",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Üres karakterek",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    LTEXT           "%s sor helytelen behúzással",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
-    LTEXT           "%s sorIgenlytelen behúzással",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
+    CONTROL         "&Tab-ok",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
+    CONTROL         "&Üres karakt.",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,44,10
+    LTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_TAB_MODX,60,72,124,8,SS_RIGHT
+    LTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_SPC_MODX,60,84,124,8,SS_RIGHT
     PUSHBUTTON      "&Igen",IDOK,80,98,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,134,98,50,14
     CONTROL         "&Ez az ablak mindig megjelenik.", IDC_WARN_INCONSISTENT_INDENTS,
@@ -489,10 +489,10 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "visszafejtés a mester kulcs segítségével",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "E fájlnak van egy mester kulcsa",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    CONTROL         "visszafejtés a mester kulcs segítségével",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,145,40,138,10
+    LTEXT           "E fájlnak van egy mester kulcsa",IDC_PWD_STATMPW,16,41,105,11,NOT WS_GROUP
     GROUPBOX        "Jelmondat",IDC_STATIC,8,6,283,69
-    CONTROL         "jelmondat megjelenítése",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
+    CONTROL         "jelmondat megjelenítése",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,98,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
@@ -519,7 +519,7 @@ BEGIN
     PUSHBUTTON      "Mégsem",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Dokumentum sorok száma.",IDC_STATIC,57,72,74,8
+    LTEXT           "Dokumentum sorok száma.",IDC_STATIC,57,72,94,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
     LTEXT           "Folytatólagos szám.",IDC_STATIC,57,82,66,8
@@ -599,15 +599,15 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Emelkedõ rendezés.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
     CONTROL         "&Csökkenõ rendezés.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "Sorok &összekeverése.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
+    CONTROL         "Sorok &összekeverése.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,85,10
     CONTROL         "&Dupla sorok összevonása.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
     CONTROL         "D&upla sorok törlése.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
     CONTROL         "E&gyedi sorok törlése.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
     CONTROL         "&Üres sorok törlése.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Üre&s karaktereket tartalmazó sorok törlése",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Kisbetû/Nag&ybetû nem számít.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
-    CONTROL         "Szá&mok logikai összehasonlítása.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
-    CONTROL         "&Oszlopos rendezés (függõleges kijelölés).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
+    CONTROL         "Üre&s karaktereket tartalmazó sorok törlése.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,144,10
+    CONTROL         "Kisbetû/Nag&ybetû nem számít.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,120,10
+    CONTROL         "Szá&mok logikai összehasonlítása.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,110,10
+    CONTROL         "&Oszlopos rendezés (függõleges kijelölés).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,144,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,128,24,50,14
 END
@@ -617,7 +617,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Újrakódolás"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Válasszon forrás kódolást a fájl újratöltéséhez:",IDC_STATIC,7,7,119,8
+    LTEXT           "&Válasszon forrás kódolást a fájl újratöltéséhez:",IDC_STATIC,7,7,145,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Mégsem",IDCANCEL,108,114,50,14
@@ -629,7 +629,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Kódolás"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Válasszon kódolást a jelenlegi fájlhoz:",IDC_STATIC,7,7,90,8
+    LTEXT           "&Válasszon kódolást a jelenlegi fájlhoz:",IDC_STATIC,7,7,120,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Mégsem",IDCANCEL,108,114,50,14
