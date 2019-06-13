@@ -111,7 +111,7 @@ class LexerTOML : public DefaultLexer {
 public:
   LexerTOML() 
     : DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses))
-    , validKey(CharacterSet::setAlphaNum, "_.", 0x80, false)
+    , validKey(CharacterSet::setAlphaNum, R"(-_.)", 0x80, false)
     //, validKeyWord(CharacterSet::setAlphaNum, "_", 0x80, false)
     , validNumberEnd(CharacterSet::setNone, " \t\n\v\f\r#,)}]", 0x80, false)
     , chDateTime(CharacterSet::setNone, "-:TZ", 0x80, false)
@@ -281,6 +281,32 @@ static bool IsDateTimeStr(StyleContext& sc, const CharacterSet& validCh, const C
 // ----------------------------------------------------------------------------
 
 
+static bool IsLookAheadLineEmpty(StyleContext& sc)
+{
+  Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
+  Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
+
+  Sci_Position i = 0;
+  bool bLHLineEmpty = true;
+
+  while ((++i + posCurrent) < posEnd)
+  {
+    int const ch = sc.GetRelative(i);
+
+    if (!Scintilla::IsASpace(ch)) {
+      if (IsCommentChar(ch)) {
+        break; // ignore rest of line
+      }
+      bLHLineEmpty = false;
+      break;
+    }
+  }
+  return bLHLineEmpty;
+}
+// ----------------------------------------------------------------------------
+
+
+
 // ----------------------------------------------------------------------------
 
 void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess) 
@@ -288,13 +314,18 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
   Accessor styler(pAccess, nullptr);
   StyleContext sc(startPos, length, initStyle, styler);
 
+  bool inSQuotedKey = false;
+  bool inDQuotedKey = false;
+  bool inInnerQKey = false;
+
   bool inSectionDef = false;
+  
   bool inMultiLnString = (sc.state == SCE_TOML_STR_BASIC) || (sc.state == SCE_TOML_STR_LITERAL);
   bool inMultiLnArrayDef = false;
+  
   bool inHex = false;
   bool inBin = false;
   bool inOct = false;
-  //bool bFloatHasDot = false;
 
   for (; sc.More(); sc.Forward())
   {
@@ -304,6 +335,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
     // --------------------------------------------------
     if (sc.atLineStart) {
       inMultiLnArrayDef = (GetBracketLevel(sc) >= 0);
+      inSQuotedKey = inDQuotedKey = inInnerQKey = false; // clear
       switch (sc.state)
       {
         case SCE_TOML_STR_BASIC:
@@ -311,6 +343,9 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
           if (!inMultiLnString) {
             sc.SetState(SCE_TOML_PARSINGERROR);
           }
+          break;
+        case SCE_TOML_ASSIGNMENT:
+          sc.SetState(SCE_TOML_PARSINGERROR);
           break;
         case SCE_TOML_PARSINGERROR:
           // preserve error
@@ -366,8 +401,18 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         else if (validKey.Contains(sc.ch)) {
           sc.SetState(SCE_TOML_KEY);
         }
-        else {
-          sc.SetState(SCE_TOML_PARSINGERROR);
+        else { // not valid - maybe quoted
+          if (sc.ch == '"') {
+            inDQuotedKey = true;
+            sc.SetState(SCE_TOML_KEY);
+          }
+          else if (sc.ch == '\'') {
+            inSQuotedKey = true;
+            sc.SetState(SCE_TOML_KEY);
+          }
+          else {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
         }
         break;
 
@@ -395,24 +440,63 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
 
       case SCE_TOML_KEY:
-        if (IsASpaceOrTab(sc.ch)) {
-          sc.SetState(SCE_TOML_ASSIGNMENT); // end of key
+        if ((sc.ch == '"') && inDQuotedKey) {
+          if (inInnerQKey) {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
+          else {
+            sc.ForwardSetState(SCE_TOML_ASSIGNMENT); // end of key
+          }
+        }
+        else if ((sc.ch == '\'') && inSQuotedKey) {
+          if (inInnerQKey) {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
+          else {
+            sc.ForwardSetState(SCE_TOML_ASSIGNMENT); // end of key
+          }
+        }
+        else if (IsASpaceOrTab(sc.ch)) {
+          if (!(inSQuotedKey || inDQuotedKey || inInnerQKey)) {
+            sc.SetState(SCE_TOML_ASSIGNMENT); // end of key
+          }
+          // else eat
         }
         else if (IsAssignChar(sc.ch)) {
-          sc.SetState(SCE_TOML_ASSIGNMENT);
+          if (!(inSQuotedKey || inDQuotedKey || inInnerQKey)) {
+            sc.SetState(SCE_TOML_ASSIGNMENT);
+          }
+          // else eat
         }
-        else if (!validKey.Contains(sc.ch)) {
-          sc.SetState(SCE_TOML_PARSINGERROR);
+        else if (validKey.Contains(sc.ch)) {
+          // eat
+        }
+        else {
+          if ((sc.ch == '"') && inSQuotedKey) {
+            inInnerQKey = !inInnerQKey; //toggle
+          }
+          else if ((sc.ch == '\'') && inDQuotedKey) {
+            inInnerQKey = !inInnerQKey; //toggle
+          }
+          else if (!(inSQuotedKey || inDQuotedKey || inInnerQKey)) {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
+          // else eat
         }
         break;
 
 
       case SCE_TOML_ASSIGNMENT:
         if (IsAssignChar(sc.ch)) {
-          sc.ForwardSetState(SCE_TOML_VALUE);
+          if (!IsLookAheadLineEmpty(sc)) {
+            sc.ForwardSetState(SCE_TOML_VALUE);
+          }
+          else {
+            sc.SetState(SCE_TOML_PARSINGERROR);
+          }
           // fall through case SCE_TOML_VALUE:
         }
-        else if (IsASpaceOrTab(sc.ch)) {
+        else if (IsASpace(sc.ch)) {
           break; // OK
         }
         else {
