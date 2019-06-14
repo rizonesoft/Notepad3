@@ -295,20 +295,24 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     uidMsg == IDS_MUI_CREATEINI_FAIL || uidMsg == IDS_MUI_WRITEINI_FAIL ||
     uidMsg == IDS_MUI_EXPORT_FAIL || uidMsg == IDS_MUI_ERR_ELEVATED_RIGHTS) 
   {
-    WCHAR wchErr[MIDSZ_BUFFER] = { L'\0' };
+
+    LPVOID lpMsgBuf = NULL;
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       Globals.dwLastError,
       Globals.iPrefLANGID,
-      wchErr, COUNTOF(wchErr),
+      (LPWSTR)& lpMsgBuf, 0,
       NULL);
 
-    if (StrIsNotEmpty(wchErr)) {
-      StrTrim(wchErr, L" \a\b\f\n\r\t\v");
+    Globals.dwLastError = ERROR_SUCCESS; // reset;
+
+    if (lpMsgBuf) {
       StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L"\n\n");
-      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), wchErr);
+      StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), lpMsgBuf);
+      LocalFree(lpMsgBuf);
     }
+
     WCHAR wcht = *CharPrev(msgBox.lpstrMessage, StrEnd(msgBox.lpstrMessage, COUNTOF(wchMessage)));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
       StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L".");
