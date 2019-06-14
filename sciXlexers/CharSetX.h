@@ -18,6 +18,18 @@
 //- IsUpperOrLowerCase(int ch);
 //- IsAlphaNumeric(int ch);
 
+constexpr bool IsASpaceX(const int ch) noexcept {
+  return ((ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d)));
+}
+
+constexpr bool IsABlankOrTabX(const int ch) noexcept {
+  return ((ch == ' ') || (ch == '\t'));
+}
+
+constexpr bool IsADigitX(const int ch) noexcept {
+  return ((ch >= '0') && (ch <= '9'));
+}
+
 constexpr bool IsALetter(const int ch) noexcept {
   // 97 to 122 || 65 to 90
   return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
@@ -28,7 +40,8 @@ constexpr bool IsLineBreak(const int ch) noexcept {
 }
 
 inline int IsNumber(const Scintilla::StyleContext& sc) {
-  return  Scintilla::IsADigit(sc.ch) || (((sc.ch == '+') || (sc.ch == '-')) && Scintilla::IsADigit(sc.chNext));
+  return  Scintilla::IsADigit(sc.ch) || 
+          (((sc.ch == '+') || (sc.ch == '-')) && Scintilla::IsADigit(sc.chNext));
 }
 
 constexpr int IsNumHex(const Scintilla::StyleContext& sc) noexcept {
@@ -47,10 +60,16 @@ inline int IsNumExponent(const Scintilla::StyleContext& sc) {
   return Scintilla::IsADigit(sc.ch) && ((sc.chNext == 'e') || (sc.chNext == 'E'));
 }
 
-inline bool IsAIdentifierChar(const int ch) {
-  return (Scintilla::IsAlphaNumeric(ch) || ch == '_' || ch == '.');
+inline void TrimIdentifier(const char* input, char* output)
+{
+  size_t j = 0;
+  for (size_t i = 0; input[i] != '\0'; ++i) {
+    if (!IsASpaceX(input[i])) {
+      output[j++] = input[i];
+    }
+  }
+  output[j] = '\0';
 }
-
 
 
 #endif //_CHARSETX_H_

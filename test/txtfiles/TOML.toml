@@ -41,6 +41,9 @@ bare-key = "value"
 'key2' = "value"
 'quoted "value"' = "value"
 
+# boolean
+bool1 = true
+bool2 = false
 
 [strings]
 str = "I'm a string. \"You can quote me\". Name\tJos\u00E9\nLocation\tSF."
@@ -136,10 +139,6 @@ sf3 = -inf # negative infinity
 sf4 = nan  # actual sNaN/qNaN encoding is implementation specific
 sf5 = +nan # same as `nan`
 sf6 = -nan # valid, actual encoding is implementation specific
-
-# boolean
-bool1 = true
-bool2 = false
 
 [date time]
 
