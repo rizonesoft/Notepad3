@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",                IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",               IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN

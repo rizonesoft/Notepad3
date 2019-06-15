@@ -251,14 +251,15 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define INDIC_NP3_MARK_OCCURANCE (INDIC_CONTAINER + 1)
-#define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
-#define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
-#define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
-#define INDIC_NP3_HYPERLINK      (INDIC_CONTAINER + 5)
-#define INDIC_NP3_HYPERLINK_U    (INDIC_CONTAINER + 6)
-#define INDIC_NP3_MULTI_EDIT     (INDIC_CONTAINER + 7)
-
+#define INDIC_NP3_MARK_OCCURANCE   (INDIC_CONTAINER +  1)
+#define INDIC_NP3_MATCH_BRACE      (INDIC_CONTAINER +  2)
+#define INDIC_NP3_BAD_BRACE        (INDIC_CONTAINER +  3)
+#define INDIC_NP3_FOCUS_VIEW       (INDIC_CONTAINER +  4)
+#define INDIC_NP3_HYPERLINK        (INDIC_CONTAINER +  5)
+#define INDIC_NP3_HYPERLINK_U      (INDIC_CONTAINER +  6)
+#define INDIC_NP3_COLOR_DEF        (INDIC_CONTAINER +  7) // (HIDDEN)
+#define INDIC_NP3_COLOR_DWELL      (INDIC_CONTAINER +  8)
+#define INDIC_NP3_MULTI_EDIT       (INDIC_CONTAINER +  9)
 
 // --------------------------------------------------------------------------
 
@@ -350,6 +351,7 @@ typedef struct _settings_t
   bool AutoCloseTags;
   int  HighlightCurrentLine;
   bool HyperlinkHotspot;
+  bool ColorDefHotspot;
   bool ScrollPastEOF;
   bool ShowHypLnkToolTip;
   bool AutoIndent;

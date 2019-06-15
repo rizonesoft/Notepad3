@@ -1,4 +1,6 @@
 # This is a TOML document. - encoding:UTF-8
+# https://github.com/toml-lang/toml
+#
 
 title = "TOML Example"
 
@@ -11,6 +13,15 @@ server = "192.168.1.1"
 ports = [ 8001, 8001, 8002 ]
 connection_max = 5000
 enabled = true
+
+[colors]
+color1 = "#D=8020"
+color2 = "#FFC000"
+color3 = "#00XX00"
+color4 = "#608020"
+color4 = "#608020"
+color4 = "#608020"
+color4 = "#608020"
 
 [servers]
 

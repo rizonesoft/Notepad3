@@ -424,7 +424,10 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
         if (inSectionDef) {
           sc.SetState(SCE_TOML_PARSINGERROR);
         }
-        else if (inMultiLnString || inMultiLnArrayDef) {
+        else if ((sc.state == SCE_TOML_STR_BASIC) || 
+                 (sc.state == SCE_TOML_STR_LITERAL) || 
+                 inMultiLnArrayDef)
+        {
           sc.ForwardSetState(sc.state); // ignore
         }
         else {

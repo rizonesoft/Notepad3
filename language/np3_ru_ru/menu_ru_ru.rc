@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Отображать &гиперссылки\tCtrl+Alt+W",             IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",                      IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
         POPUP "Подсвечивать т&екущую строку\tCtrl+Shift+I"
         BEGIN

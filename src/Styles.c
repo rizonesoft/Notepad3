@@ -39,6 +39,7 @@
 #include "Styles.h"
 
 extern const int g_FontQuality[4];
+extern COLORREF  g_colorCustom[16];
 
 bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
 
@@ -125,8 +126,6 @@ const COLORREF s_colorDefault[16] =
   RGB(0xB0, 0x00, 0xB0),
   RGB(0xB2, 0x8B, 0x40)
 };
-
-static COLORREF s_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 static bool s_bAutoSelect = true;
 
@@ -483,7 +482,7 @@ void Style_Load()
   _SetCurrentFontSize(fBFS);
 
   for (int i = 0; i < 16; ++i) {
-    s_colorCustom[i] = s_colorDefault[i];
+    g_colorCustom[i] = s_colorDefault[i];
   }
 
   // 2nd Default Style has same filename extension list as (1st) Default Style
@@ -559,7 +558,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     if (bResetToDefault)
     {
       for (int i = 0; i < 16; i++) {
-        s_colorCustom[i] = s_colorDefault[i];
+        g_colorCustom[i] = s_colorDefault[i];
       }
     }
     else {
@@ -575,12 +574,12 @@ bool Style_ImportFromFile(const WCHAR* szFile)
             unsigned int irgb;
             itok = swscanf_s(CharNext(wch), L"%x", &irgb);
             if (itok == 1) {
-              s_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
+              g_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
             }
           }
         }
         if (itok != 1) {
-          s_colorCustom[i] = s_colorDefault[i];
+          g_colorCustom[i] = s_colorDefault[i];
         }
       }
     }
@@ -703,12 +702,12 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     const WCHAR* const CustomColors_Section = L"Custom Colors";
 
     for (int i = 0; i < 16; i++) {
-      if (bForceAll || (s_colorCustom[i] != s_colorDefault[i])) {
+      if (bForceAll || (g_colorCustom[i] != s_colorDefault[i])) {
         WCHAR tch[32] = { L'\0' };
         WCHAR wch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
         StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
-          (int)GetRValue(s_colorCustom[i]), (int)GetGValue(s_colorCustom[i]), (int)GetBValue(s_colorCustom[i]));
+          (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
         IniSectionSetString(CustomColors_Section, tch, wch);
       }
     }
@@ -1442,7 +1441,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // apply lexer styles
   Sci_ApplyLexerStyle(0, -1);
-  EditUpdateUrlIndicators(Globals.hwndEdit, 0, -1, Settings.HyperlinkHotspot);
+  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
 
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
@@ -3230,28 +3229,23 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 //
 bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle, bool bPreserveStyles)
 {
-  CHOOSECOLOR cc;
   WCHAR szNewStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
   COLORREF dRGBResult;
   COLORREF dColor;
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  ZeroMemory(&cc,sizeof(CHOOSECOLOR));
-
   dRGBResult = (bForeGround) ? GetSysColor(COLOR_WINDOWTEXT) : GetSysColor(COLOR_WINDOW);
   Style_StrGetColor(lpszStyle, (bForeGround ? FOREGROUND_LAYER : BACKGROUND_LAYER), &dRGBResult);
 
+  CHOOSECOLOR cc;
+  ZeroMemory(&cc, sizeof(CHOOSECOLOR));
   cc.lStructSize = sizeof(CHOOSECOLOR);
   cc.hwndOwner = hwnd;
   cc.rgbResult = dRGBResult;
-  cc.lpCustColors = s_colorCustom;
+  cc.lpCustColors = g_colorCustom;
   cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
-
-  if (!ChooseColor(&cc))
-    return false;
-
+  if (!ChooseColor(&cc)) { return false; }
   dRGBResult = cc.rgbResult;
-
 
   // Rebuild style string
   StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"");  // clear

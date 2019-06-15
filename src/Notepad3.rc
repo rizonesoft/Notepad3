@@ -98,34 +98,37 @@ BEGIN
     "9",            CMD_TOGGLETITLE,                  VIRTKEY, CONTROL, NOINVERT
     "9",            IDM_VIEW_SHOWEOLS,                VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_EDIT_SELECTALL,               VIRTKEY, CONTROL, NOINVERT
-    "A",            IDM_VIEW_MARKOCCUR_ONOFF,         VIRTKEY, ALT, NOINVERT
+    "A",            IDM_VIEW_MARKOCCUR_ONOFF,         VIRTKEY, ALT, NOINVERT  /// NO Menu
     "A",            CMD_RECODEANSI,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_VIEW_ACCELWORDNAV,            VIRTKEY, CONTROL, ALT, NOINVERT
     "B",            IDM_EDIT_FINDMATCHINGBRACE,       VIRTKEY, CONTROL, NOINVERT
-    "B",            IDM_EDIT_PADWITHSPACES,           VIRTKEY, ALT, NOINVERT
+    "B",            IDM_EDIT_PADWITHSPACES,           VIRTKEY, ALT, NOINVERT  /// NO Menu
     "B",            IDM_EDIT_SELTOMATCHINGBRACE,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "B",            IDM_EDIT_REMOVEBLANKLINES,        VIRTKEY, CONTROL, ALT, NOINVERT
     "C",            IDM_EDIT_COPY,                    VIRTKEY, CONTROL, NOINVERT
-    "C",            IDM_EDIT_COPYALL,                 VIRTKEY, ALT, NOINVERT
+    "C",            IDM_EDIT_COPYALL,                 VIRTKEY, ALT, NOINVERT  /// NO Menu
     "C",            IDM_EDIT_HEX2CHAR,                VIRTKEY, CONTROL, ALT, NOINVERT
     "C",            IDM_EDIT_COPY,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
     "D",            IDM_EDIT_DUPLINEORSELECTION,      VIRTKEY, CONTROL, NOINVERT
-    "D",            IDM_EDIT_LINETRANSPOSE,           VIRTKEY, ALT, NOINVERT
+    "D",            IDM_EDIT_LINETRANSPOSE,           VIRTKEY, ALT, NOINVERT  /// NO Menu
     "D",            IDM_EDIT_DELETELINE,              VIRTKEY, SHIFT, CONTROL, NOINVERT
     "D",            IDM_EDIT_REMOVEDUPLICATELINES,    VIRTKEY, CONTROL, ALT, NOINVERT
     "E",            IDM_EDIT_COPYADD,                 VIRTKEY, CONTROL, NOINVERT
     "E",            IDM_EDIT_ESCAPECCHARS,            VIRTKEY, CONTROL, ALT, NOINVERT
     "E",            IDM_EDIT_URLENCODE,               VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //~"E",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(Edit)
     "F",            IDM_EDIT_FIND,                    VIRTKEY, CONTROL, NOINVERT
     "F",            CMD_RECODEDEFAULT,                VIRTKEY, CONTROL, ALT, NOINVERT
     "F",            IDM_VIEW_FOLDING,                 VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     "F",            IDM_VIEW_TOGGLEFOLDS,             VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //~"F",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(File)
     "G",            IDM_EDIT_GOTOLINE,                VIRTKEY, CONTROL, NOINVERT
     "G",            IDM_VIEW_SHOWINDENTGUIDES,        VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "G",            IDM_VIEW_TRANSPARENT,             VIRTKEY, ALT, NOINVERT
+    "G",            IDM_VIEW_TRANSPARENT,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "H",            IDM_EDIT_REPLACE,                 VIRTKEY, CONTROL, NOINVERT
     "H",            IDM_FILE_RECENT,                  VIRTKEY, CONTROL, ALT, NOINVERT
     "H",            IDM_VIEW_AUTOCLOSETAGS,           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //~"H",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(Help)
     "I",            IDM_EDIT_SPLITLINES,              VIRTKEY, CONTROL, NOINVERT
     "I",            IDM_FILE_OPENFAV,                 VIRTKEY, ALT, NOINVERT
     "I",            IDM_EDIT_TITLECASE,               VIRTKEY, CONTROL, ALT, NOINVERT
@@ -133,62 +136,66 @@ BEGIN
     "J",            IDM_EDIT_JOINLINES,               VIRTKEY, CONTROL, NOINVERT
     "J",            IDM_EDIT_JOINLN_NOSP,             VIRTKEY, CONTROL, ALT, NOINVERT
     "J",            IDM_EDIT_JOINLINES_PARA,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "J",            IDM_EDIT_ALIGN,                   VIRTKEY, ALT, NOINVERT
+    "J",            IDM_EDIT_ALIGN,                   VIRTKEY, ALT, NOINVERT  /// NO Menu
     "K",            IDM_EDIT_SWAP,                    VIRTKEY, CONTROL, NOINVERT
     "K",            IDM_FILE_ADDTOFAV,                VIRTKEY, ALT, NOINVERT
     "K",            CMD_COPYWINPOS,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //"K",            IDM_VIEW_COLORDEFHOTSPOTS,        VIRTKEY, CONTROL, ALT, NOINVERT
     "L",            IDM_FILE_LAUNCH,                  VIRTKEY, CONTROL, NOINVERT
     "L",            IDM_FILE_OPENWITH,                VIRTKEY, ALT, NOINVERT
     "L",            IDM_VIEW_LONGLINEMARKER,          VIRTKEY, SHIFT, CONTROL, NOINVERT
     "M",            IDM_FILE_BROWSE,                  VIRTKEY, CONTROL, NOINVERT
-    "M",            IDM_EDIT_MODIFYLINES,             VIRTKEY, ALT, NOINVERT
+    "M",            IDM_EDIT_MODIFYLINES,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "M",            IDM_VIEW_MARGIN,                  VIRTKEY, SHIFT, CONTROL, NOINVERT
     "N",            IDM_FILE_NEW,                     VIRTKEY, CONTROL, NOINVERT
-    "N",            IDM_FILE_NEWWINDOW,               VIRTKEY, ALT, NOINVERT
+    "N",            IDM_FILE_NEWWINDOW,               VIRTKEY, ALT, NOINVERT  /// NO Menu
     "N",            IDM_FILE_NEWWINDOW2,              VIRTKEY, SHIFT, ALT, NOINVERT
     "N",            IDM_VIEW_LINENUMBERS,             VIRTKEY, SHIFT, CONTROL, NOINVERT
     "O",            IDM_FILE_OPEN,                    VIRTKEY, CONTROL, NOINVERT
-    "O",            IDM_EDIT_SORTLINES,               VIRTKEY, ALT, NOINVERT
+    "O",            IDM_EDIT_SORTLINES,               VIRTKEY, ALT, NOINVERT  /// NO Menu
     "O",            IDM_EDIT_SENTENCECASE,            VIRTKEY, CONTROL, ALT, NOINVERT
     "O",            CMD_RECODEOEM,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
     "P",            IDM_FILE_PRINT,                   VIRTKEY, CONTROL, NOINVERT
     "P",            IDM_EDIT_COMPRESS_BLANKS,         VIRTKEY, ALT, NOINVERT
     "P",            CMD_DEFAULTWINPOS,                VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //~"P",            MMMMMMMMMMMMMMMMMM,                VIRTKEY, ALT, NOINVERT  /// Menu(Appearance)
     "Q",            IDM_EDIT_LINECOMMENT,             VIRTKEY, CONTROL, NOINVERT
-    "Q",            IDM_EDIT_ENCLOSESELECTION,        VIRTKEY, ALT, NOINVERT
+    "Q",            IDM_EDIT_ENCLOSESELECTION,        VIRTKEY, ALT, NOINVERT  /// NO Menu
     "Q",            IDM_EDIT_STREAMCOMMENT,           VIRTKEY, SHIFT, CONTROL, NOINVERT
     "R",            IDM_FILE_RUN,                     VIRTKEY, CONTROL, NOINVERT
-    "R",            IDM_EDIT_REMOVEEMPTYLINES,        VIRTKEY, ALT, NOINVERT
+    "R",            IDM_EDIT_REMOVEEMPTYLINES,        VIRTKEY, ALT, NOINVERT  /// NO Menu
     "R",            IDM_EDIT_UNESCAPECCHARS,          VIRTKEY, CONTROL, ALT, NOINVERT
     "R",            IDM_EDIT_URLDECODE,               VIRTKEY, SHIFT, CONTROL, NOINVERT
     "S",            IDM_FILE_SAVE,                    VIRTKEY, CONTROL, NOINVERT
     "S",            IDM_EDIT_CONVERTTABS2,            VIRTKEY, CONTROL, ALT, NOINVERT
     "S",            IDM_EDIT_CONVERTTABS,             VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //~"S",            MMMMMMMMMMMMMMMMMM,               VIRTKEY, ALT, NOINVERT  /// Menu(Settings)
     "T",            IDM_VIEW_TABSETTINGS,             VIRTKEY, CONTROL, NOINVERT
-    "T",            IDM_VIEW_ALWAYSONTOP,             VIRTKEY, ALT, NOINVERT
+    "T",            IDM_VIEW_ALWAYSONTOP,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "T",            IDM_EDIT_CONVERTSPACES2,          VIRTKEY, CONTROL, ALT, NOINVERT
     "T",            IDM_EDIT_CONVERTSPACES,           VIRTKEY, SHIFT, CONTROL, NOINVERT
     "U",            IDM_EDIT_CONVERTLOWERCASE,        VIRTKEY, CONTROL, NOINVERT
-    "U",            IDM_EDIT_STRIPLASTCHAR,           VIRTKEY, ALT, NOINVERT
+    "U",            IDM_EDIT_STRIPLASTCHAR,           VIRTKEY, ALT, NOINVERT  /// NO Menu
     "U",            IDM_EDIT_INVERTCASE,              VIRTKEY, CONTROL, ALT, NOINVERT
     "U",            IDM_EDIT_CONVERTUPPERCASE,        VIRTKEY, SHIFT, CONTROL, NOINVERT
     "V",            IDM_EDIT_PASTE,                   VIRTKEY, CONTROL, NOINVERT
     "V",            IDM_VIEW_MATCHBRACES,             VIRTKEY, SHIFT, CONTROL, NOINVERT
     "V",            IDM_VIEW_TOGGLE_VIEW,             VIRTKEY, CONTROL, ALT, NOINVERT
+    //~"V",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(View)
     "W",            IDM_VIEW_WORDWRAP,                VIRTKEY, CONTROL, NOINVERT
-    "W",            IDM_EDIT_TRIMLINES,               VIRTKEY, ALT, NOINVERT
+    "W",            IDM_EDIT_TRIMLINES,               VIRTKEY, ALT, NOINVERT  /// NO Menu
     "W",            IDM_EDIT_COLUMNWRAP,              VIRTKEY, SHIFT, CONTROL, NOINVERT
     "W",            IDM_VIEW_HYPERLINKHOTSPOTS,       VIRTKEY, CONTROL, ALT, NOINVERT
     "X",            IDM_EDIT_CUT,                     VIRTKEY, CONTROL, NOINVERT
-    "X",            IDM_EDIT_INSERT_TAG,              VIRTKEY, ALT, NOINVERT
+    "X",            IDM_EDIT_INSERT_TAG,              VIRTKEY, ALT, NOINVERT  /// NO Menu
     "X",            IDM_EDIT_CHAR2HEX,                VIRTKEY, CONTROL, ALT, NOINVERT
     "X",            IDM_EDIT_CUTLINE,                 VIRTKEY, SHIFT, CONTROL, NOINVERT
     "Y",            IDM_EDIT_REDO,                    VIRTKEY, CONTROL, NOINVERT
-    "Y",            IDM_EDIT_MERGEEMPTYLINES,         VIRTKEY, ALT, NOINVERT
+    "Y",            IDM_EDIT_MERGEEMPTYLINES,         VIRTKEY, ALT, NOINVERT  /// NO Menu
     "Y",            IDM_EDIT_UNDO,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
     "Y",            IDM_EDIT_MERGEBLANKLINES,         VIRTKEY, CONTROL, ALT, NOINVERT
     "Z",            IDM_EDIT_UNDO,                    VIRTKEY, CONTROL, NOINVERT
-    "Z",            IDM_EDIT_STRIP1STCHAR,            VIRTKEY, ALT, NOINVERT
+    "Z",            IDM_EDIT_STRIP1STCHAR,            VIRTKEY, ALT, NOINVERT  /// NO Menu
     "Z",            IDM_EDIT_REDO,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
     //VK_LEFT,        CMD_LEFT,                         VIRTKEY, NOINVERT
     VK_LEFT,        CMD_CTRLLEFT,                     VIRTKEY, CONTROL, NOINVERT

@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Colour Definition Hotspots",          IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "H&ighlight Current Line\tCtrl+Shift+I"
         BEGIN

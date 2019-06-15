@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Poka¿ znaki koñca wiersza\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Miejsca aktywne hiperp³¹czenia\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",              IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Wyró¿nianie pasuj¹cych nawiasów\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Wyró¿nianie bie¿¹cego wiersza\tCtrl+Shift+I"
         BEGIN

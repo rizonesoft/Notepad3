@@ -6907,56 +6907,68 @@ void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 
 //=============================================================================
 //
-//  EditUpdateUrlIndicators()
-//  Find and mark all URL hot-spots
+//  EditUpdateIndicators()
+//  Find and mark all COLOR refs (#RRGGBB)
 //
-void EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bActiveHotspot)
+static void _ClearIndicatorInRange(const int indicator, const int indicator2nd,
+                                   const DocPos startPos, const DocPos endPos)
+{
+  SciCall_SetIndicatorCurrent(indicator);
+  SciCall_IndicatorClearRange(startPos, endPos - startPos);
+  if (indicator2nd >= 0) {
+    SciCall_SetIndicatorCurrent(indicator2nd);
+    SciCall_IndicatorClearRange(startPos, endPos - startPos);
+  }
+}
+
+static void _UpdateIndicators(HWND hwnd, const int indicator, const int indicator2nd, 
+                              const char* regExpr, DocPos startPos, DocPos endPos)
 {
   if (endPos < 0) {
-    endPos = Sci_GetDocEndPosition(); 
+    endPos = Sci_GetDocEndPosition();
   }
   else if (endPos < startPos) {
     swapos(&startPos, &endPos);
   }
   if (startPos < 0) { // current line only
-    DocPos const currPos = SciCall_GetCurrentPos();
-    DocLn const lineNo = SciCall_LineFromPosition(currPos);
+    DocLn const lineNo = SciCall_LineFromPosition(SciCall_GetCurrentPos());
     startPos = SciCall_PositionFromLine(lineNo);
     endPos = SciCall_GetLineEndPosition(lineNo);
   }
-  if (endPos == startPos) { return; }
+  else if (endPos == startPos) { return; }
 
-  SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK);
-  SciCall_IndicatorClearRange(startPos, endPos - startPos);
-  SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK_U);
-  SciCall_IndicatorClearRange(startPos, endPos - startPos);
+  // --------------------------------------------------------------------------
 
-  if (!bActiveHotspot) { return; }
-
-  const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
-    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
-
-  int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
+  int const iRegExLen = (int)StringCchLenA(regExpr, 0);
 
   DocPos start = startPos;
   DocPos end = endPos;
   do {
 
-    DocPos const iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
+    DocPos const _start = start;
+    DocPos const _end   = end;
+    DocPos const iPos = _FindInTarget(hwnd, regExpr, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
 
     if (iPos < 0) {
-      break; // not found
+      // not found
+      _ClearIndicatorInRange(indicator, indicator2nd, _start, _end);
+      break;
     }
     DocPos const mlen = end - start;
     if ((mlen <= 0) || (end > endPos)) {
+      // wrong match
+      _ClearIndicatorInRange(indicator, indicator2nd, _start, _end);
       break; // wrong match
     }
 
-    SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK);
+    _ClearIndicatorInRange(indicator, indicator2nd, _start, end);
+
+    SciCall_SetIndicatorCurrent(indicator);
     SciCall_IndicatorFillRange(start, mlen);
-    SciCall_SetIndicatorCurrent(INDIC_NP3_HYPERLINK_U);
-    SciCall_IndicatorFillRange(start, mlen);
+    if (indicator2nd >= 0) {
+      SciCall_SetIndicatorCurrent(indicator2nd);
+      SciCall_IndicatorFillRange(start, mlen);
+    }
 
     // next occurrence
     start = end + 1;
@@ -6964,6 +6976,35 @@ void EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bAc
 
   } while (start < end);
 
+}
+
+//=============================================================================
+//
+//  EditUpdateIndicators()
+//  - Find and mark all URL hot-spots
+//  - Find and mark all COLOR refs (#RRGGBB)
+//
+void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClearOnly)
+{
+  if (bClearOnly) {
+    _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
+    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
+    return;
+  }
+
+  if (Settings.HyperlinkHotspot) 
+  {
+    static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+      "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
+      "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
+    _UpdateIndicators(hwnd, INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
+  }
+  
+  if (Settings.ColorDefHotspot) 
+  {
+    static const char* pColorRegEx = "#([0-9a-fA-F]){6}";
+    _UpdateIndicators(hwnd, INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
+  }
 }
 
 

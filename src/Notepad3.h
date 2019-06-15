@@ -143,7 +143,7 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
-void UpdateVisibleUrlIndics();
+void UpdateVisibleHotspotIndicators();
 inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
@@ -155,8 +155,10 @@ bool RestoreAction(int token, DoAction doAct);
 #define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
 
+void HandlePosChange();
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
-bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation);
+bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
+void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
