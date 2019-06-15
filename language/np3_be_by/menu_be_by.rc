@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Вызначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",                  IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Падсвечваць ак&тыўны радок\tCtrl+Shift+I"
         BEGIN

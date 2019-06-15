@@ -441,6 +441,7 @@ DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
 //
 DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicatorID, int, style)
 DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicatorID, COLORREF, colour)
+DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicatorID, bool, under)
 DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicatorID, int, style)
 DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicatorID, COLORREF, colour)
 DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicatorID, int, alpha)

@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Afficher les fins de lign&e\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicateurs H&yperlink\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",                          IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Correspondence &visuelle des accolades\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Mise en b&rillance de la ligne actuelle\tCtrl+Shift+I"
         BEGIN

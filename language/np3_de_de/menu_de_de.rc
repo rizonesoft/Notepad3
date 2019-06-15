@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Zeige Zeilenumbrüche\tCtrl+Shift+9",      IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Farb-Definition Indikator",              IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "A&ktuelle Zeile hervorheben\tCtrl+Shift+I"
         BEGIN

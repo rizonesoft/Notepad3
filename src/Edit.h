@@ -107,7 +107,7 @@ void  EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
 void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
-void  EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool);
+void  EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClearOnly);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
 void  EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);

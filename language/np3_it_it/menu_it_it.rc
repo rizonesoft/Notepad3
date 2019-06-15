@@ -303,6 +303,7 @@ BEGIN
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0",             IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Evidenzia h&yperlink\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",                         IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Evidenzia &parentesi corrispondente\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Evidenzia riga corrente\tCtrl+Shift+I"
         BEGIN
