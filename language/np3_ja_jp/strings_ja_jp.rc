@@ -234,7 +234,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語(&L)"
-    IDS_MUI_MENU_THEMES     "Scheme Collection(&S)"
+    IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_DEFAULT      "初期設定"
     IDM_THEMES_FILE_ITEM    "標準設定"
 END
