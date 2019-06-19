@@ -2498,7 +2498,7 @@ set void SetVirtualSpaceOptions=2596(int virtualSpaceOptions,)
 # Return options for virtual space behaviour.
 get int GetVirtualSpaceOptions=2597(,)
 
-# On GTK+, allow selecting the modifier key to use for mouse-based
+# On GTK, allow selecting the modifier key to use for mouse-based
 # rectangular selection. Often the window manager requires Alt+Mouse Drag
 # for moving windows.
 # Valid values are SCMOD_CTRL(default), SCMOD_ALT, or SCMOD_SUPER.
@@ -4988,7 +4988,7 @@ evt void CharAdded=2001(int ch)
 evt void SavePointReached=2002(void)
 evt void SavePointLeft=2003(void)
 evt void ModifyAttemptRO=2004(void)
-# GTK+ Specific to work around focus and accelerator problems:
+# GTK Specific to work around focus and accelerator problems:
 evt void Key=2005(int ch, int modifiers)
 evt void DoubleClick=2006(int modifiers, int position, int line)
 evt void UpdateUI=2007(int updated)
