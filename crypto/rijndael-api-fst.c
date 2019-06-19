@@ -568,7 +568,7 @@ int AES_padDecrypt
         return BAD_CIPHER_STATE;
     }
 
-    return 16 * numBlocks - padLen;
+    return (16 * numBlocks) - padLen;
 }
 
 #ifdef INTERMEDIATE_VALUE_KAT

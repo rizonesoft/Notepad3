@@ -130,7 +130,7 @@
      <a class="jump" href="https://www.scintilla.org/SciTry.vb">A simple sample using Scintilla from
     Visual Basic</a>.<br />
      <a class="jump" href="https://www.scintilla.org/bait.zip">Bait is a tiny sample using Scintilla
-     on GTK+</a>.<br />
+     on GTK</a>.<br />
      <a class="jump" href="Lexer.txt">A detailed description of how to write a lexer, including a
     discussion of folding</a>.<br />
      <a class="jump" href="http://sphere.sourceforge.net/flik/docs/scintilla-container_lexer.html">
@@ -151,8 +151,8 @@
     of a normal Edit control, Scintilla allows control of syntax styling, folding, markers, autocompletion
     and call tips.</p>
 
-    <p>The GTK+ version also uses messages in a similar way to the Windows version. This is
-    different to normal GTK+ practice but made it easier to implement rapidly.</p>
+    <p>The GTK version also uses messages in a similar way to the Windows version. This is
+    different to normal GTK practice but made it easier to implement rapidly.</p>
 
     <p>Scintilla also builds with Cocoa on OS X and with Qt, and follows the conventions of
     those platforms.</p>
@@ -273,12 +273,11 @@
           <td>&cir; <a class="toc" href="#ByCharacterOrCodeUnit">By character or UTF-16 code unit</a></td>
 
           <td>&cir; <a class="toc" href="#MultipleSelectionAndVirtualSpace">Multiple Selection and Virtual Space</a></td>
-          scrolling</a></td>
 
         </tr>
 
         <tr>
-          <td>&cir; <a class="toc" href="#ScrollingAndAutomaticScrolling">Scrolling and automatic
+          <td>&cir; <a class="toc" href="#ScrollingAndAutomaticScrolling">Scrolling and automatic scrolling</a></td>
 
           <td>&cir; <a class="toc" href="#WhiteSpace">White space</a></td>
 
@@ -389,7 +388,7 @@
         <tr>
           <td>&cir; <a class="toc" href="#Images">Images</a></td>
 
-          <td>&cir; <a class="toc" href="#GTK">GTK+</a></td>
+          <td>&cir; <a class="toc" href="#GTK">GTK</a></td>
 
           <td>&cir; <a class="toc" href="#ProvisionalMessages"><span class="provisional">Provisional messages</span></a></td>
 
@@ -641,11 +640,11 @@ struct Sci_TextRange {
 };
 </pre>
 
-    <h3 id="EncodedAccess">Specific to GTK+, Cocoa and Windows only: Access to encoded text</h3>
+    <h3 id="EncodedAccess">Specific to GTK, Cocoa and Windows only: Access to encoded text</h3>
 
     <p><b id="SCI_TARGETASUTF8">SCI_TARGETASUTF8(&lt;unused&gt;, char *s) &rarr; int</b><br />
      This method retrieves the value of the target encoded as UTF-8 which is the default
-     encoding of GTK+ so is useful for retrieving text for use in other parts of the user interface,
+     encoding of GTK so is useful for retrieving text for use in other parts of the user interface,
      such as find and replace dialogs. The length of the encoded text in bytes is returned.
      Cocoa uses UTF-16 which is easily converted from UTF-8 so this method can be used to perform the
      more complex work of transcoding from the various encodings supported.
@@ -1024,7 +1023,7 @@ struct Sci_TextToFind {
     <code>SCI_GETSELECTIONEMPTY()</code>, which will be zero if there are any non-empty
     selection ranges implying that a copy or cut to the clipboard should work.</p>
 
-    <p>GTK+ does not really support <code>SCI_CANPASTE</code> and always returns <code>true</code>
+    <p>GTK does not really support <code>SCI_CANPASTE</code> and always returns <code>true</code>
     unless the document is read-only.</p>
 
     <p>On X, the clipboard is asynchronous and may require several messages between
@@ -1706,7 +1705,7 @@ struct Sci_TextToFind {
     <p>
     <b id="SCI_SETRECTANGULARSELECTIONMODIFIER">SCI_SETRECTANGULARSELECTIONMODIFIER(int modifier)</b><br />
     <b id="SCI_GETRECTANGULARSELECTIONMODIFIER">SCI_GETRECTANGULARSELECTIONMODIFIER &rarr; int</b><br />
-     On GTK+ and Qt, the key used to indicate that a rectangular selection should be created when combined with a mouse drag can be set.
+     On GTK and Qt, the key used to indicate that a rectangular selection should be created when combined with a mouse drag can be set.
      The three possible values are <code>SCMOD_CTRL</code>=2, <code>SCMOD_ALT</code>=4 (default) or <code>SCMOD_SUPER</code>=8.
      Since <code>SCMOD_ALT</code> may already be used by a window manager, the window manager may need configuring to allow this choice.
      <code>SCMOD_SUPER</code> is often a system dependent modifier key such as the Left Windows key on a Windows keyboard or the
@@ -2912,7 +2911,7 @@ struct Sci_TextToFind {
     only the first 32 characters of the name are used, the name is decoded as UTF-8, and the name is not case sensitive. For
     internal caching, Scintilla tracks fonts by name and does care about the casing of font names,
     so please be consistent.
-    On GTK+, Pango is used to display text and the name is sent directly to Pango without transformation.
+    On GTK, Pango is used to display text and the name is sent directly to Pango without transformation.
     On Qt, the name is decoded as UTF-8.
     On Cocoa, the name is decoded as MacRoman.</p>
     <p>Sizes can be set to a whole number of points with <code>SCI_STYLESETSIZE</code>
@@ -2964,16 +2963,15 @@ struct Sci_TextToFind {
     <code>SCI_STYLESETCHARACTERSET(SCE_C_STRING, SC_CHARSET_RUSSIAN)</code> would ensure that
     strings in Russian would display correctly in C and C++ (<code>SCE_C_STRING</code> is the style
     number used by the C and C++ lexer to display literal strings; it has the value 6). This
-    feature works differently on Windows and GTK+.<br />
+    feature works differently on Windows and GTK.<br />
     The default character set is <code>SC_CHARSET_DEFAULT</code>.</p>
-    <p><code>SC_CHARSET_ANSI</code> specifies European Windows code page 1252.</p>
     <p><code>SC_CHARSET_DEFAULT</code> specifies the system-default code page unless the code page is set.</p>
 
 <table class="standard" summary="Character Sets supported"><tbody>
   <tr>
     <th>Character Set</th>
     <th>Windows</th>
-    <th>GTK+</th>
+    <th>GTK</th>
     <th>Cocoa</th></tr></tbody>
   <tbody>
   <tr>
@@ -3681,12 +3679,12 @@ struct Sci_TextToFind {
      These messages turn buffered drawing on or off and report the buffered drawing state. Buffered
     drawing draws each line into a bitmap rather than directly to the screen and then copies the
     bitmap to the screen. This avoids flickering although it does take longer. The default is for
-    drawing to be buffered on Win32 and GTK+ and to not be buffered on Cocoa and Qt.
+    drawing to be buffered on Win32 and GTK and to not be buffered on Cocoa and Qt.
     Buffered drawing is not supported on Cocoa.
     </p>
 
     <p>Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    For Win32 and GTK+, client code should turn off buffering at initialisation.
+    For Win32 and GTK, client code should turn off buffering at initialisation.
     There are some older platforms and unusual modes where buffering may still be useful.
     </p>
 
@@ -3816,8 +3814,8 @@ struct Sci_TextToFind {
     <p><b id="SCI_GRABFOCUS">SCI_GRABFOCUS</b><br />
      <b id="SCI_SETFOCUS">SCI_SETFOCUS(bool focus)</b><br />
      <b id="SCI_GETFOCUS">SCI_GETFOCUS &rarr; bool</b><br />
-     Scintilla can be told to grab the focus with this message. This is needed more on GTK+ where
-           focus handling is more complicated than on Windows.</p>
+     Scintilla can be told to grab the focus with <code>SCI_GRABFOCUS</code>.
+     This is needed more on GTK where focus handling is more complicated than on Windows.</p>
 
     <p>The internal focus flag can be set with <code>SCI_SETFOCUS</code>. This is used by clients
     that have complex focus requirements such as having their own window that gets the real focus
@@ -4564,7 +4562,7 @@ struct Sci_TextToFind {
 
           <td>A version of <code>INDIC_SQUIGGLE</code> that draws using a pixmap instead of
 	  as a series of line segments for performance.
-	  Measured to be between 3 and 6 times faster than <code>INDIC_SQUIGGLE</code> on GTK+.
+	  Measured to be between 3 and 6 times faster than <code>INDIC_SQUIGGLE</code> on GTK.
 	  Appearance will not be as good as <code>INDIC_SQUIGGLE</code> on OS X in HiDPI mode.</td>
         </tr>
 
@@ -5449,7 +5447,7 @@ struct Sci_TextToFind {
     <code>SCMOD_META</code>, and <code>SCMOD_SUPER</code>.
     On OS X, the Command key is mapped to <code>SCMOD_CTRL</code> and the Control key to
     <code>SCMOD_META</code>.
-    <code>SCMOD_SUPER</code> is only available on GTK+ which is commonly the Windows key.
+    <code>SCMOD_SUPER</code> is only available on GTK which is commonly the Windows key.
     If you are building a table, you might
     want to use <code>SCMOD_NORM</code>, which has the value 0, to mean no modifiers.</p>
 
@@ -5549,7 +5547,7 @@ struct Sci_TextToFind {
     removed and the selection and caret are hidden.</p>
 
     <p>Different platforms use different display surface ID types to print on. On Windows, these are
-    <code>HDC</code>s., on GTK+ 3.x <code>cairo_t *</code>,
+    <code>HDC</code>s., on GTK 3.x <code>cairo_t *</code>,
     and on Cocoa <code>CGContextRef</code> is used.</p>
 
     <code><a class="message" href="#SCI_FORMATRANGE">SCI_FORMATRANGE(bool draw, Sci_RangeToFormat *fr) &rarr; position</a><br />
@@ -5600,7 +5598,7 @@ struct Sci_RangeToFormat {
     The Surface IDs are not really used for measurement (<code>draw=0</code>) but can be set
     to a bitmap context (created with <code>CGBitmapContextCreate</code>) to avoid runtime warnings.</p>
 
-    <p>On GTK+, the surface IDs to use can be found from the printing context with
+    <p>On GTK, the surface IDs to use can be found from the printing context with
     <code>gtk_print_context_get_cairo_context(context)</code>.</p>
 
      <p><code>chrg.cpMin</code> and <code>chrg.cpMax</code> define the start position and maximum
@@ -5740,7 +5738,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     to the native thread of the Scintilla window in which case <code>SendMessage(hSciWnd, SCI_*,
     wParam, lParam)</code> should be used to synchronize with the window's thread.</p>
 
-    <p>This feature also works on GTK+ but has no significant impact on speed.</p>
+    <p>This feature also works on GTK but has no significant impact on speed.</p>
 
     <p>From version 1.47 on Windows, Scintilla exports a function called
     <code>Scintilla_DirectFunction</code> that can be used the same as the function returned by
@@ -6016,8 +6014,8 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <a class="message" href="#SCI_TOGGLEFOLDSHOWTEXT">SCI_TOGGLEFOLDSHOWTEXT(int line, const char *text)</a><br />
      <a class="message" href="#SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</a><br />
      <a class="message" href="#SCI_FOLDDISPLAYTEXTGETSTYLE">SCI_FOLDDISPLAYTEXTGETSTYLE &rarr; int</a><br />
-     <a class="message" href="#SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT(const char *text)</a><br />
-     <a class="message" href="#SCI_GETDEFAULTFOLDDISPLAYTEXT">SCI_GETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, char *text)</a><br />
+     <a class="message" href="#SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, const char *text)</a><br />
+     <a class="message" href="#SCI_GETDEFAULTFOLDDISPLAYTEXT">SCI_GETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, char *text) &rarr; int</a><br />
      <a class="message" href="#SCI_FOLDLINE">SCI_FOLDLINE(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDCHILDREN">SCI_FOLDCHILDREN(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDALL">SCI_FOLDALL(int action)</a><br />
@@ -6177,7 +6175,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p>An optional text tag may be shown to the right of the folded text with the
     <code class="parameter">text</code> argument to
     <code>SCI_TOGGLEFOLDSHOWTEXT</code>.
-    The default text for all header lines can be set with <code><a class="message" href="#SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT</a></code>.
+    The default text for all header lines can be set with <code><a class="seealso" href="#SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT</a></code>.
     The text is drawn with the
     <code><a class="message" href="#StyleDefinition">STYLE_FOLDDISPLAYTEXT</a></code> style.</p>
 
@@ -6215,7 +6213,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
       </tbody>
     </table>
 
-    <p><b id="SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT(const char *text)</b><br />
+    <p><b id="SCI_SETDEFAULTFOLDDISPLAYTEXT">SCI_SETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, const char *text)</b><br />
      <b id="SCI_GETDEFAULTFOLDDISPLAYTEXT">SCI_GETDEFAULTFOLDDISPLAYTEXT(&lt;unused&gt;, char *text) &rarr; int</b><br />
      These messages set and get the default text displayed at the right of the folded text.</p>
 
@@ -6734,7 +6732,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p>Scintilla supports some platform accessibility features.
     This support differs between platforms.
-    On GTK+ and Cocoa the platform accessibility APIs are implemented sufficiently to
+    On GTK and Cocoa the platform accessibility APIs are implemented sufficiently to
     make screen readers work.
     On Win32, the system caret is manipulated to help screen readers.
     </p>
@@ -6750,7 +6748,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p>On most platforms, accessibility is either implemented or not implemented and this can be
     discovered with <code>SCI_GETACCESSIBILITY</code> with
     <code>SCI_SETACCESSIBILITY</code> performing no action.
-    On GTK+, there are storage and performance costs to accessibility, so it can be disabled
+    On GTK, there are storage and performance costs to accessibility, so it can be disabled
     by calling <code>SCI_SETACCESSIBILITY</code>.
     </p>
 
@@ -6792,7 +6790,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     styling and fold points for an unsupported language you can either do this in the container or
     better still, write your own lexer following the pattern of one of the existing ones.</p>
 
-    <p>Scintilla also supports external lexers. These are DLLs (on Windows) or .so modules (on GTK+/Linux) that export three
+    <p>Scintilla also supports external lexers. These are DLLs (on Windows) or .so modules (on GTK/Linux) that export three
     functions: <code>GetLexerCount</code>, <code>GetLexerName</code>, and
     <code>GetLexerFactory</code>. See <code>externalLexer.cxx</code> for more.</p>
      <a class="message" href="#SCI_SETLEXER">SCI_SETLEXER(int lexer)</a><br />
@@ -6857,7 +6855,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p><code>SCI_GETLEXERLANGUAGE</code> retrieves the name of the lexer.</p>
 
     <p><b id="SCI_LOADLEXERLIBRARY">SCI_LOADLEXERLIBRARY(&lt;unused&gt;, const char *path)</b><br />
-     Load a lexer implemented in a shared library. This is a .so file on GTK+/Linux or a .DLL file on Windows.
+     Load a lexer implemented in a shared library. This is a .so file on GTK/Linux or a .DLL file on Windows.
      </p>
 
     <p><b id="SCI_COLOURISE">SCI_COLOURISE(int start, int end)</b><br />
@@ -7190,7 +7188,7 @@ removing the mask parameter to <code>StartStyling</code>.</p>
     occurred that may interest the container.</p>
     <p>Notifications are sent using the
     <code>WM_NOTIFY</code> message on Windows.</p>
-    <p>On GTK+, the "sci-notify" signal is sent and the signal handler should have the signature
+    <p>On GTK, the "sci-notify" signal is sent and the signal handler should have the signature
     <code>handler(GtkWidget *, gint, SCNotification *notification, gpointer  userData)</code>.</p>
     <p>On Cocoa, a delegate implementing the <code>ScintillaNotificationProtocol</code>
     may be set to receive notifications or the <code>ScintillaView</code> class may be subclassed and the
@@ -7300,7 +7298,7 @@ struct SCNotification {
     The <code>WM_COMMAND</code> message is used on Windows.
     This emulates the Windows Edit control. Only the lower
     16 bits of the control's ID is passed in these notifications.</p>
-    <p>On GTK+, the "command" signal is sent and the signal handler should have the signature
+    <p>On GTK, the "command" signal is sent and the signal handler should have the signature
     <code>handler(GtkWidget *, gint wParam, gpointer lParam, gpointer userData)</code>.</p>
     <code><a class="message" href="#SCEN_CHANGE">SCEN_CHANGE</a><br />
      <a class="message" href="#SCEN_SETFOCUS">SCEN_SETFOCUS</a><br />
@@ -7360,7 +7358,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     href="#SCI_SETREADONLY">SCI_SETREADONLY</a></code>.</p>
 
     <p><b id="SCN_KEY">SCN_KEY</b><br />
-     Reports all keys pressed but not consumed by Scintilla. Used on GTK+ because of
+     Reports all keys pressed but not consumed by Scintilla. Used on GTK because of
      some problems with keyboard focus and is not sent by the Windows version. <code>SCNotification::ch</code> holds the key code and
     <code>SCNotification.modifiers</code> holds the modifiers. This notification is sent if the
     modifiers include <code>SCMOD_ALT</code> or <code>SCMOD_CTRL</code> and the key code is less
@@ -7772,7 +7770,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     <p><b id="SCEN_CHANGE">SCEN_CHANGE</b><br />
      <code>SCEN_CHANGE</code> (768) is fired when the text (not the style) of the document changes.
     This notification is sent using the <code>WM_COMMAND</code> message on Windows and the
-    "command" signal on GTK+ as this is the behaviour of the standard Edit control
+    "command" signal on GTK as this is the behaviour of the standard Edit control
     (<code>SCEN_CHANGE</code> has the same value as the Windows Edit control
     <code>EN_CHANGE</code>). No other information is sent. If you need more detailed information
     use <a class="message" href="#SCN_MODIFIED"><code>SCN_MODIFIED</code></a>. You can filter the
@@ -7811,7 +7809,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
      <b id="SCEN_KILLFOCUS">SCEN_KILLFOCUS</b><br />
      <code>SCEN_SETFOCUS</code> (512) is fired when Scintilla receives focus and
     <code>SCEN_KILLFOCUS</code> (256) when it loses focus. These notifications are sent using the
-    <code>WM_COMMAND</code> message on Windows and the "command" signal on GTK+ as this is the
+    <code>WM_COMMAND</code> message on Windows and the "command" signal on GTK as this is the
     behaviour of the standard Edit control. Unfortunately, these codes do not match the Windows Edit
     notification codes <code>EN_SETFOCUS</code> (256) and <code>EN_KILLFOCUS</code> (512). It is
     now too late to change the Scintilla codes as clients depend on the current values.</p>
@@ -7970,7 +7968,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
      See the <code><a class="jump" href="#SCN_AUTOCCOMPLETED">SCN_AUTOCCOMPLETED</a></code> notification
     for the possible values for <code>listCompletionMethod.</code>
     <p><b id="SCN_URIDROPPED">SCN_URIDROPPED</b><br />
-     Only on the GTK+ version. Indicates that the user has dragged a URI such as a file name or Web
+     Only on the GTK version. Indicates that the user has dragged a URI such as a file name or Web
     address onto Scintilla. The container could interpret this as a request to open the file. The
     <code>text</code> field of <code>SCNotification</code> points at the URI text.</p>
 
@@ -8244,7 +8242,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     If there is no suitable platform support, the <a href="http://lodev.org/lodepng/">LodePNG and picoPNG</a> libraries are small libraries
     for loading and decoding PNG files available under a BSD-style license.</p>
 
-    <p>RGBA format is supported on Windows, GTK+ and OS X Cocoa.</p>
+    <p>RGBA format is supported on Windows, GTK and OS X Cocoa.</p>
 
     <h3 id="XPM">XPM</h3>
 
@@ -8264,8 +8262,8 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
 
     <p>XPM format is supported on on all platforms.</p>
 
-    <h2 id="GTK">GTK+</h2>
-    <p>On GTK+, the following functions create a Scintilla widget, communicate with it and allow
+    <h2 id="GTK">GTK</h2>
+    <p>On GTK, the following functions create a Scintilla widget, communicate with it and allow
     resources to be released after all Scintilla widgets have been destroyed.</p>
     <code><a class="message" href="#scintilla_new">GtkWidget *scintilla_new()</a><br />
      <a class="message" href="#scintilla_set_id">void scintilla_set_id(ScintillaObject *sci, uptr_t id)</a><br />
@@ -8427,7 +8425,7 @@ EM_SETTARGETDEVICE
     <p>These features have now been removed completely.</p>
 
     <p><b id="SC_CP_DBCS">SC_CP_DBCS</b> Removed in 2016 with release 3.7.1<br />
-     This was used to set a DBCS (Double Byte Character Set) mode on GTK+.
+     This was used to set a DBCS (Double Byte Character Set) mode on GTK.
      An explicit DBCS code page should be used when calling <a class="seealso" href="#SCI_SETCODEPAGE">SCI_SETCODEPAGE</a></p>
 
     <p><b id="SCI_SETUSEPALETTE">SCI_SETUSEPALETTE(bool usePalette)</b> Removed in 2016 with release 3.7.1<br />
@@ -8445,9 +8443,9 @@ EM_SETTARGETDEVICE
     directories.
     The compiler must support C++17.
     For Windows, GCC 7.1 or Microsoft Visual C++ 2017.5 can be used
-    for building. For GTK+, GCC 7.1 or newer should be used. GTK+ 2.24 and 3.x are
-    supported with glib 2.22+. The version of GTK+ installed should be detected automatically.
-    When both GTK+ 2 and GTK+ 3 are present, building for GTK+ 3.x requires defining GTK3
+    for building. For GTK, GCC 7.1 or newer should be used. GTK 2.24 and 3.x are
+    supported with glib 2.22+. The version of GTK installed should be detected automatically.
+    When both GTK 2 and GTK 3 are present, building for GTK 3.x requires defining GTK3
     on the command line.</p>
 
     <p>Adding and removing source files from Scintilla may require modifying build files.

@@ -196,7 +196,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Backtick\tCtrl+6",             CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Ezzel...\tAlt+Q",              IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Egyéni...\tAlt+Q",              IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "Sor/Kijelölés &duplikálása\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
@@ -307,7 +307,7 @@ BEGIN
             MENUITEM "Háttérs&zín",                       IDM_VIEW_HILITCURLN_BACK
             MENUITEM "K&eret",                            IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Elõ&fordulások jelölése"
+        POPUP "Elõ&fordulások kiemelése"
         BEGIN
             MENUITEM "&Aktív\tAlt+A",                   IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR

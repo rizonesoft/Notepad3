@@ -337,7 +337,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest, bool bSe
 
   DocPos const length = SciCall_GetTextLength();
 
-  if (length == 0)
+  if (length <= 0)
   {
     EditSetNewText(hwnd, "", 0, bSetSavePoint);
   }
@@ -708,7 +708,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
     length = SciCall_GetTextLength();
     pszText = SciCall_GetRangePointer(0, length);
   }
-  if (length == 0) {
+  if (length <= 0) {
     res = true;  // nothing to copy or append
     return res;
   }
@@ -986,7 +986,7 @@ bool EditLoadFile(
   }
 
   DWORD cbData = 0L;
-  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize - 2, (void**)& lpData, &cbData);
+  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize, (void**)&lpData, &cbData);
   Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 
@@ -1113,16 +1113,19 @@ bool EditLoadFile(
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
-
-  // ===  UNICODE  ===
   else if (bIsUnicodeForced || (!bIsForced && bIsUnicodeAnalyzed && bIsUnicodeValid))
   {
-    if (iForcedEncoding == CPI_UNICODE) {
-      bBOM = Has_UTF16_LE_BOM(lpData, clampi((int)cbData, 0, 8));
+    // ===  UNICODE  ===
+
+    bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
+    bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
+
+    if ((iForcedEncoding == CPI_UNICODE) || bBOM_LE) {
+      bBOM = bBOM_LE;
       bReverse = false;
     }
-    else if (iForcedEncoding == CPI_UNICODEBE) {
-      bBOM = Has_UTF16_BE_BOM(lpData, clampi((int)cbData, 0, 8));
+    else if ((iForcedEncoding == CPI_UNICODEBE) || bBOM_BE) {
+      bBOM = bBOM_BE;
       bReverse = true;
     }
 
@@ -1138,7 +1141,7 @@ bool EditLoadFile(
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
     DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciCP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-      (bBOM) ? (cbData) / sizeof(WCHAR) : cbData / sizeof(WCHAR) + 1, lpDataUTF8, (MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8), NULL, NULL);
+      (bBOM) ? (cbData / sizeof(WCHAR)) : (cbData / sizeof(WCHAR) + 1), lpDataUTF8, (MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8), NULL, NULL);
 
     if (convCnt == 0) {
       status->bUnicodeErr = true;
@@ -1269,7 +1272,6 @@ bool EditSaveFile(
   bool   bWriteSuccess;
 
   char* lpData;
-  DWORD cbData;
   DWORD dwBytesWritten;
 
   status->bCancelDataLoss = false;
@@ -1315,20 +1317,20 @@ bool EditSaveFile(
   }
 
   // get text
-  cbData = (DWORD)SciCall_GetTextLength();
+  DocPos cbData = SciCall_GetTextLength();
 
-  if (cbData == 0) {
+  if (cbData <= 0) {
     bWriteSuccess = SetEndOfFile(hFile);
     Globals.dwLastError = GetLastError();
   }
   else {
 
-    lpData = AllocMem(cbData + 4 + PAD_SLOP, HEAP_ZERO_MEMORY); //fix: +bom
-    SciCall_GetText((DocPos)cbData+1, lpData);
+    lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
+    cbData = SciCall_GetText((cbData+1), lpData);
 
     // FIXME: move checks in front of disk file access
-  // Msg if file tag encoding does not correspond to BOM
-  /*if ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) == 0 && (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
+    // Msg if file tag encoding does not correspond to BOM
+    /*if ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) == 0 && (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
       bool bEncodingMismatch = true;
       FILEVARS fv;
       FileVars_Init(lpData,cbData,&fv);
@@ -1353,7 +1355,7 @@ bool EditSaveFile(
     {
       SetEndOfFile(hFile);
 
-      LPWSTR lpDataWide = AllocMem(cbData * 2 + PAD_SLOP, HEAP_ZERO_MEMORY);
+      LPWSTR lpDataWide = AllocMem((cbData+1) * 2 + 2, HEAP_ZERO_MEMORY);
       int bomoffset = 0;
       if (Encoding_IsUNICODE_BOM(status->iEncoding)) {
         const char* bom = "\xFF\xFE";
@@ -1361,7 +1363,7 @@ bool EditSaveFile(
         bomoffset = 1;
       }
       int const cbDataWide = bomoffset + 
-        MultiByteToWideChar(Encoding_SciCP, 0, lpData, cbData, &lpDataWide[bomoffset], 
+        MultiByteToWideChar(Encoding_SciCP, 0, lpData, (MBWC_DocPos_Cast)cbData, &lpDataWide[bomoffset],
         (MBWC_DocPos_Cast)((SizeOfMem(lpDataWide) / sizeof(WCHAR)) - bomoffset));
       if (Encoding_IsUNICODE_REVERSE(status->iEncoding)) {
         _swab((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
@@ -1377,15 +1379,15 @@ bool EditSaveFile(
     {
       SetEndOfFile(hFile);
 
+      DocPos bomoffset = 0;
       if (Encoding_IsUTF8_SIGN(status->iEncoding)) {
         const char* bom = "\xEF\xBB\xBF";
-        DWORD const bomoffset = 3;
+        bomoffset = 3;
         MoveMemory(&lpData[bomoffset], lpData, cbData);
         CopyMemory(lpData, bom, bomoffset);
-        cbData += bomoffset;
-    }
+      }
       //bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)(cbData + bomoffset), &dwBytesWritten);
       Globals.dwLastError = GetLastError();
 
       FreeMem(lpData);
@@ -1396,23 +1398,24 @@ bool EditSaveFile(
       BOOL bCancelDataLoss = FALSE;
       UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
-      LPWSTR lpDataWide = AllocMem(cbData * 2 + PAD_SLOP, HEAP_ZERO_MEMORY);
-      int    cbDataWide = MultiByteToWideChar(Encoding_SciCP,0,lpData,cbData,
-                                              lpDataWide,(MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
+      LPWSTR lpDataWide = AllocMem((cbData+1) * 2, HEAP_ZERO_MEMORY);
+      int const cbDataWide = MultiByteToWideChar(Encoding_SciCP,0,lpData, (MBWC_DocPos_Cast)cbData,
+                                                 lpDataWide, (MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
 
+      int cbDataNew = 0;
       if (Encoding_IsMBCS(status->iEncoding)) {
         FreeMem(lpData);
         lpData = AllocMem(SizeOfMem(lpDataWide) * 2, HEAP_ZERO_MEMORY); // need more space
-        cbData = WideCharToMultiByte(uCodePage, 0, lpDataWide, cbDataWide, 
+        cbDataNew = WideCharToMultiByte(uCodePage, 0, lpDataWide, cbDataWide,
                                      lpData, (MBWC_DocPos_Cast)SizeOfMem(lpData), NULL, NULL);
       }
       else {
         ZeroMemory(lpData, SizeOfMem(lpData));
-        cbData = WideCharToMultiByte(uCodePage,WC_NO_BEST_FIT_CHARS,lpDataWide,cbDataWide,
+        cbDataNew = WideCharToMultiByte(uCodePage,WC_NO_BEST_FIT_CHARS,lpDataWide,cbDataWide,
                                      lpData,(MBWC_DocPos_Cast)SizeOfMem(lpData),NULL,&bCancelDataLoss);
         if (!bCancelDataLoss) {
-          cbData = WideCharToMultiByte(uCodePage,0,lpDataWide,cbDataWide,
-                                       lpData,(MBWC_DocPos_Cast)SizeOfMem(lpData),NULL,NULL);
+          cbDataNew = WideCharToMultiByte(uCodePage,0,lpDataWide,cbDataWide,
+                                          lpData,(MBWC_DocPos_Cast)SizeOfMem(lpData),NULL,NULL);
           bCancelDataLoss = FALSE;
         }
       }
@@ -1420,7 +1423,7 @@ bool EditSaveFile(
 
       if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
         SetEndOfFile(hFile);
-        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
+        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataNew, &dwBytesWritten);
         Globals.dwLastError = GetLastError();
       }
       else {
@@ -1432,7 +1435,7 @@ bool EditSaveFile(
 
     else {
       SetEndOfFile(hFile);
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)cbData, &dwBytesWritten);
       Globals.dwLastError = GetLastError();
       FreeMem(lpData);
     }
@@ -3684,7 +3687,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
   }
 
   const DocPos iSelStart = (SciCall_IsSelectionEmpty() ? 0 : SciCall_GetSelectionStart());
-  const DocPos iSelEnd = (SciCall_IsSelectionEmpty() ? (Sci_GetDocEndPosition()-1) : SciCall_GetSelectionEnd());
+  const DocPos iSelEnd = (SciCall_IsSelectionEmpty() ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd());
 
   DocLn iBegLine = SciCall_LineFromPosition(iSelStart);
   DocLn iEndLine = SciCall_LineFromPosition(iSelEnd);
@@ -6054,13 +6057,13 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (slen <= 0)
     return false;
 
-  DocPos const iTextLength = Sci_GetDocEndPosition() + 1;
+  DocPos const iDocEndPos = Sci_GetDocEndPosition();
   DocPos start = SciCall_GetCurrentPos();
   DocPos end = 0;
 
   if (start <= end) {
     if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
-      end = start;  start = iTextLength;
+      end = start;  start = iDocEndPos;
     }
     else
       bSuppressNotFound = true;
@@ -6075,13 +6078,13 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
     bSuppressNotFound = true;
   }
-  else if ((iPos < 0) && (start <= iTextLength) &&  !bExtendSelection) 
+  else if ((iPos < 0) && (start <= iDocEndPos) &&  !bExtendSelection) 
   {
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
       if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE)) {
-        end = start;  start = iTextLength;
+        end = start;  start = iDocEndPos;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
 
@@ -8204,7 +8207,6 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
   else {
     fToggled = _FoldToggleNode(ln, action);
   }
-  if (fToggled) { SciCall_ScrollCaret(); }
 }
 
 

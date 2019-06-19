@@ -46,7 +46,7 @@ enum NumType {
     FormatError
 };
 
-int GetNumStyle(const int numType) {
+int GetNumStyle(const int numType) noexcept {
     if (numType == NumType::FormatError) {
         return SCE_NIM_NUMERROR;
     }
@@ -54,20 +54,20 @@ int GetNumStyle(const int numType) {
     return SCE_NIM_NUMBER;
 }
 
-bool IsLetter(const int ch) {
+constexpr bool IsLetter(const int ch) noexcept {
     // 97 to 122 || 65 to 90
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
-bool IsAWordChar(const int ch) {
+bool IsAWordChar(const int ch) noexcept {
     return ch < 0x80 && (isalnum(ch) || ch == '_' || ch == '.');
 }
 
-int IsNumHex(const StyleContext &sc) {
+int IsNumHex(const StyleContext &sc) noexcept {
     return sc.chNext == 'x' || sc.chNext == 'X';
 }
 
-int IsNumBinary(const StyleContext &sc) {
+int IsNumBinary(const StyleContext &sc) noexcept {
     return sc.chNext == 'b' || sc.chNext == 'B';
 }
 
@@ -75,11 +75,11 @@ int IsNumOctal(const StyleContext &sc) {
     return IsADigit(sc.chNext) || sc.chNext == 'o';
 }
 
-bool IsNewline(const int ch) {
+constexpr bool IsNewline(const int ch) noexcept {
     return (ch == '\n' || ch == '\r');
 }
 
-bool IsFuncName(const char *str) {
+bool IsFuncName(const char *str) noexcept {
     const char *identifiers[] = {
         "proc",
         "func",
@@ -114,7 +114,7 @@ constexpr bool IsStreamComment(const int style) noexcept {
 // Adopted from Accessor.cxx
 int GetIndent(const Sci_Position line, Accessor &styler) {
     Sci_Position startPos = styler.LineStart(line);
-    Sci_Position eolPos = styler.LineStart(line + 1) - 1;
+    const Sci_Position eolPos = styler.LineStart(line + 1) - 1;
 
     char ch = styler[startPos];
     int style = styler.StyleAt(startPos);
@@ -126,7 +126,7 @@ int GetIndent(const Sci_Position line, Accessor &styler) {
     // No fold points inside triple literals
     while ((IsASpaceOrTab(ch) || IsTripleLiteral(style)) && (startPos < eolPos)) {
         if (inPrevPrefix) {
-            char chPrev = styler[posPrev++];
+            const char chPrev = styler[posPrev++];
             if (chPrev != ' ' && chPrev != '\t') {
                 inPrevPrefix = false;
             }
@@ -178,7 +178,7 @@ struct OptionsNim {
 
 static const char *const nimWordListDesc[] = {
     "Keywords",
-    0
+    nullptr
 };
 
 struct OptionSetNim : public OptionSet<OptionsNim> {
@@ -230,11 +230,11 @@ public:
 
     virtual ~LexerNim() { }
 
-    void SCI_METHOD Release() override {
+    void SCI_METHOD Release() noexcept override {
         delete this;
     }
 
-    int SCI_METHOD Version() const override {
+    int SCI_METHOD Version() const noexcept override {
         return lvRelease4;
     }
 
@@ -261,15 +261,15 @@ public:
     void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
     void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
 
-    void * SCI_METHOD PrivateCall(int, void *) override {
-        return 0;
+    void * SCI_METHOD PrivateCall(int, void *) noexcept override {
+        return nullptr;
     }
 
-    int SCI_METHOD LineEndTypesSupported() override {
+    int SCI_METHOD LineEndTypesSupported() noexcept override {
         return SC_LINE_END_TYPE_UNICODE;
     }
 
-    int SCI_METHOD PrimaryStyleFromStyle(int style) override {
+    int SCI_METHOD PrimaryStyleFromStyle(int style) noexcept override {
         return style;
     }
 
@@ -287,7 +287,7 @@ Sci_Position SCI_METHOD LexerNim::PropertySet(const char *key, const char *val) 
 }
 
 Sci_Position SCI_METHOD LexerNim::WordListSet(int n, const char *wl) {
-    WordList *wordListN = 0;
+    WordList *wordListN = nullptr;
 
     switch (n) {
         case 0:
@@ -317,7 +317,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
         initStyle = SCE_NIM_DEFAULT;
     }
 
-    Accessor styler(pAccess, NULL);
+    Accessor styler(pAccess, nullptr);
     StyleContext sc(startPos, length, initStyle, styler);
 
     // Nim supports nested block comments!
@@ -444,7 +444,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
                     if (keywords.InList(s) && !funcNameExists) {
                         // Prevent styling keywords if they are sub-identifiers
-                        Sci_Position segStart = styler.GetStartSegment() - 1;
+                        const Sci_Position segStart = styler.GetStartSegment() - 1;
                         if (segStart < 0 || styler.SafeGetCharAt(segStart, '\0') != '.') {
                             style = SCE_NIM_WORD;
                         }
@@ -626,8 +626,8 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                     sc.SetState(SCE_NIM_STRING);
                 }
 
-                int rawStrStyle = options.highlightRawStrIdent ? IsLetter(sc.ch) :
-                                  (sc.ch == 'r' || sc.ch == 'R');
+                const int rawStrStyle = options.highlightRawStrIdent ? IsLetter(sc.ch) :
+                                        (sc.ch == 'r' || sc.ch == 'R');
 
                 if (rawStrStyle) {
                     sc.Forward();
@@ -723,7 +723,7 @@ void SCI_METHOD LexerNim::Fold(Sci_PositionU startPos, Sci_Position length, int,
         return;
     }
 
-    Accessor styler(pAccess, NULL);
+    Accessor styler(pAccess, nullptr);
 
     const Sci_Position docLines = styler.GetLine(styler.Length());
     const Sci_Position maxPos = startPos + length;
@@ -771,14 +771,14 @@ void SCI_METHOD LexerNim::Fold(Sci_PositionU startPos, Sci_Position length, int,
         int skipLevel = indentNextLevel;
 
         while (--skipLine > lineCurrent) {
-            int skipLineIndent = IndentAmount(skipLine, styler);
+            const int skipLineIndent = IndentAmount(skipLine, styler);
 
             if (options.foldCompact) {
                 if ((skipLineIndent & SC_FOLDLEVELNUMBERMASK) > indentNextLevel) {
                     skipLevel = levelBeforeComments;
                 }
 
-                int whiteFlag = skipLineIndent & SC_FOLDLEVELWHITEFLAG;
+                const int whiteFlag = skipLineIndent & SC_FOLDLEVELWHITEFLAG;
                 styler.SetLevel(skipLine, skipLevel | whiteFlag);
             } else {
                 if ((skipLineIndent & SC_FOLDLEVELNUMBERMASK) > indentNextLevel &&
