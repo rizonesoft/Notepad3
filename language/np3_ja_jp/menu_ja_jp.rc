@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "ANSIで読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "OEMで読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "GB18030で読み直し(&G)\tCtrl+Shift+F10",     CMD_RECODEGB18030
-            MENUITEM "UCHARDET解析で読み直し",                  CMD_RELOADFORCEDETECTION
+            MENUITEM "UCHARDET解析で検出し読み直し",                  CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCIIをUTF-8として開く(&8)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
             MENUITEM "文字コードを無視(&T)\tAlt+F8",              CMD_RELOADNOFILEVARS
@@ -363,11 +363,11 @@ BEGIN
             MENUITEM "ウィンドウ位置の固定(&P)",                      IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "Appearance(&P)"
+    POPUP "外観(&P)"
     BEGIN
         MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Syntax Scheme(&X)...\tF12",        IDM_VIEW_SCHEME
+        MENUITEM "文書の種類を選択(&X)...\tF12",        IDM_VIEW_SCHEME
         MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
