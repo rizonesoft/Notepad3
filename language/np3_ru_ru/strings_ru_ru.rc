@@ -218,7 +218,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "[ru-RU] Перевод: alexantr"
+    IDS_MUI_TRANSL_AUTHOR   "(ru-RU) Перевод: alexantr"
     IDS_MUI_TITLE_FIXBASE   "БАЗОВЫЙ (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ Стиль %s: %s +++"
     IDS_MUI_TITLE_FIXCUR    "Стиль %s: %s"

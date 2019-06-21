@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "请选择目标文件夹。"
     IDS_CREATELINK          "请选择保存新快捷方式的文件夹。"
     IDS_SAVESETTINGS        "保存设置\n当前设置已保存。"
-    IDS_MUI_TRANSL_AUTHOR   "[zh-CN] 简体中文翻译 by lhmouse"
+    IDS_MUI_TRANSL_AUTHOR   "(zh-CN) 简体中文翻译 by lhmouse"
 END
 
 
