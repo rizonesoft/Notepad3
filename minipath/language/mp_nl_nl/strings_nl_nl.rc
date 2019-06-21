@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Selecteer een doelmap."
     IDS_CREATELINK          "Selecteer een doelmap voor de nieuwe link."
     IDS_SAVESETTINGS        "Instellingen opslaan\nDe huidige programma-instellingen zijn opgeslagen."
-    IDS_MUI_TRANSL_AUTHOR   "[nl-NL] Nederlandse vertaling door hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "(nl-NL) Nederlandse vertaling door hpwamr"
 END
 
 

@@ -117,7 +117,7 @@ BEGIN
     IDS_MUI_OPENWITH        "Válassza ki a mappát, ahol a kedvenc alkamazásaira mutató parancsikonok vannak."
     IDS_MUI_FAVORITES       "Válassza ki a mappát, ahol a kedvenc fájljaira mutató parancsikonok vannak."
     IDS_MUI_BACKSLASHHELP   "Backslash átalakítások\n\n\\a\tFigyelmeztetés (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tLapdobás (FF, Ascii 12)\n\\n\tÚj sor (LF, Ascii 10)\n\\r\tKocsi vissza (CR, Ascii 13)\n\\t\tVízszintes Tab (HT, Ascii 9)\n\\v\tFüggõleges Tab (VT, Ascii 11)\n\\0oo\tOktális érték\n\\u####\tHexadecimális érték\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp illeszkedés szintaktika (többsoros)\n\n.\tBármilyen karakterre illeszkedik\n^\tÜres szöveg rögtön új sor után\n$\tÜres szöveg közvetlenül a sorvége elõtt\n\\<\tSzó kezdete\n\\>\tSzó vége\n\\b\tSzó határa\n[...]\tKarakterek halmaza ([abc]) vagy intervalluma ([a-z])\n[^...]\tKarakterek, amik NINCSENEK a készletben vagy az intervallumban\n\\d\t10-es számrendszeri szám\n\\D\tNem szám karakter\n\\s\tÜres hely karakterek\n\\S\tNEM üres hely karakter\n\\w\t""szó"" karakterek\n\\W\t""nem-szó"" karakter\n\\x\tEscape karakter egyébként speciális jelentéssel\n\\xHH\tKarakter HH Hexa kóddal\n?\tElõzõre illeszkedik 0-szor vagy 1-szer\n*\tElõzõre illeszkedik 0-szor vagy többször\n+\tElõzõre illeszkedik egyszer vagy többször\n*? or +?\tIsmétlések illeszkedése lomhán ""?"" and ""+""\n(\tRégió kezdete\n)\tRégió vége\n\\n\tCserénél egy régióra hivatkozik (n = 1-9)\n"
+    IDS_MUI_REGEXPHELP      "RegExp illeszkedés szintaktika (többsoros)\n\n.\tBármilyen karakterre illeszkedik\n^\tÜres szöveg rögtön új sor után\n$\tÜres szöveg közvetlenül a sorvége elõtt\n\\<\tSzó kezdete\n\\>\tSzó vége\n\\b\tSzó határa\n[...]\tKarakterek halmaza ([abc]) vagy intervalluma ([a-z])\n[^...]\tKarakterek, amik NINCSENEK a készletben\n\tvagy az intervallumban\n\\d\t10-es számrendszeri szám\n\\D\tNem szám karakter\n\\s\tÜres hely karakterek\n\\S\tNEM üres hely karakter\n\\w\t""szó"" karakterek\n\\W\t""nem-szó"" karakter\n\\x\tEscape karakter egyébként speciális jelentéssel\n\\xHH\tKarakter HH Hexa kóddal\n?\tElõzõre illeszkedik 0-szor vagy 1-szer\n*\tElõzõre illeszkedik 0-szor vagy többször\n+\tElõzõre illeszkedik egyszer vagy többször\n*? or +?\tIsmétlések illeszkedése lomhán ""?"" and ""+""\n(\tRégió kezdete\n)\tRégió vége\n\\n\tCserénél egy régióra hivatkozik (n = 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Joker keresés\n\n*\tNulla vagy több karakterre illeszkedik.\n?\tPontosan egy karakterre illeszkedik. "
 END
 
@@ -218,7 +218,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "[hu-HU] Magyar fordítás: xsak"
+    IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Magyar fordítás: xsak"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
