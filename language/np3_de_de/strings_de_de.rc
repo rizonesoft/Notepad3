@@ -218,7 +218,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "[de-DE] Deutsche Übersetzung von RaiKoHoff"
+    IDS_MUI_TRANSL_AUTHOR   "(de-DE) Deutsche Übersetzung von RaiKoHoff"
     IDS_MUI_TITLE_FIXBASE   " BASIS (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Stil +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Stil"

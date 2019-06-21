@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Seleziona una cartella di destinazione."
     IDS_CREATELINK          "Seleziona una cartella di destinazione per il nuovo link."
     IDS_SAVESETTINGS        "Salva impostazioni\nLe impostazioni correnti sono state salvate."
-    IDS_MUI_TRANSL_AUTHOR   "[it-IT] Traduzione italiana di RaffaeleBianc0"
+    IDS_MUI_TRANSL_AUTHOR   "(it-IT) Traduzione italiana di RaffaeleBianc0"
 END
 
 

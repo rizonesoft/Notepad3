@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Вызначце мэтавую папку."
     IDS_CREATELINK          "Вызначце мэтавую папку для новага цэтліка."
     IDS_SAVESETTINGS        "Захаванне наладаў\nДзейныя налады праграмы захаваны."
-    IDS_MUI_TRANSL_AUTHOR   "[be-BY] Пераклад: alexantr"
+    IDS_MUI_TRANSL_AUTHOR   "(be-BY) Пераклад: alexantr"
 END
 
 

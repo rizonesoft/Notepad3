@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.605.build RC2 (5 Juni 2019)
+Current Version 5.19.621.build RC2 (21 June 2019)
 ==================================================
 
 --------------------------------------------------
@@ -40,7 +40,8 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-2)
+- Scintilla Library (SCI) version 4.1.6 (2019-Jun-10)
+- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-3)
 - New top-level menu "Appearance" holding Themes and Schemes stuff
 - Rearranging the Language and Themes menus
 - Rearranging the" Encoding" menu
@@ -63,7 +64,7 @@ REMOVED:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Polish (it-IT) Translation (In progress)
+- Polish (pl-PL) Translation (In progress)
 
 
 ==================================================
@@ -124,7 +125,6 @@ CHANGES:
 - Update of Onigmo RegEx engine (2019-Jan-24)
 - Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
-- Scintilla Library (SCI) version 4.1.5 (2019-Apr-17)
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
 
 --------------------------------------------------
@@ -168,10 +168,10 @@ REMOVED:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Polish (it-IT) Translation (In progress)
 - Hungarian (hu-HU) Translation
 - Italian (it-IT) Translation
-- Korean (UHC) Translation
+- Korean (ko-KR) Translation
+- Polish (pl-PL) Translation (In progress)
 
 
 ==================================================
@@ -245,16 +245,16 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Afrikaans Translation.
-- Belarusian Translation.
-- Chinese Simplified Translation.
-- Dutch Translation.
-- English (UK) Translation.
-- French Translation.
-- German Translation.
-- Japanese Translation
-- Russian Translation.
-- Spanish Translation.
+- Afrikaans (af-ZA) Translation.
+- Belarusian (be-BY) Translation.
+- German (de-DE) Translation.
+- English (en-GB) Translation.
+- Spanish (es-ES) Translation.
+- French (fr-FR) Translation.
+- Japanese (ja-JP) Translation
+- Dutch (nl-NL) Translation.
+- Russian (ru-RU) Translation.
+- Chinese Simplified (zh-CN) Translation.
 
 
 ==================================================
