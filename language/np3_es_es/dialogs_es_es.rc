@@ -139,7 +139,7 @@ BEGIN
     PUSHBUTTON      "Reemplazar &todo",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Alternar textos",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Cerrar",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Ir a Buscar texto (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Ir a Buscar (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10

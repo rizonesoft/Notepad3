@@ -81,13 +81,13 @@ END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 273, 142
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Keresés"
+CAPTION "Szöveg keresése"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Szöve&g keresése:",IDC_STATIC,7,7,66,8
+    LTEXT           "Keresési szöve&g:",IDC_STATIC,7,7,66,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Kis-/nagybetû számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,89,10
-    CONTROL         "E&gész szavakra egyezés",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
+    CONTROL         "K&is-/nagybetû számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,89,10
+    CONTROL         "Egés&z szavakra egyezés",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "Szókez&detre egyezés",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Backslash átalakítás",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,89,10
     CONTROL         "R&eguláris kifejezés keresése",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,97,10
@@ -101,7 +101,7 @@ BEGIN
     DEFPUSHBUTTON   "&Köv. keresése",IDOK,211,7,55,14
     PUSHBUTTON      "&Elõzõ keresése",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Bezárás",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Csere... (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Ugrás a csere (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
@@ -120,7 +120,7 @@ BEGIN
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Cserélés &erre:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Kis-/nagybetû számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,89,10
+    CONTROL         "K&is-/nagybetû számít",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,89,10
     CONTROL         "Egés&z szavakra egyezés",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Szókez&detre egyezés",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Backslash átalakítás",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,97,10
@@ -139,7 +139,7 @@ BEGIN
     PUSHBUTTON      "&Összes cseréje",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Felcserélés",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Bezárás",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Keresés... (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Ugrás a keresésre (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,84,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
