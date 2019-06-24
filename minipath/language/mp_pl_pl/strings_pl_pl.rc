@@ -53,29 +53,29 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "Back"
-    IDT_HISTORY_FORWARD     "Forward"
-    IDT_UPDIR               "Upper Directory"
-    IDT_ROOT                "Root Directory"
-    IDT_VIEW_FAVORITES      "Favourites"
-    IDT_FILE_PREV           "Previous File"
-    IDT_FILE_NEXT           "Next File"
-    IDT_FILE_RUN            "Run"
-    IDT_FILE_QUICKVIEW      "Quickview"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_COPYMOVE       "Copy/Move"
-    IDT_FILE_DELETE         "Delete"
-    IDT_FILE_DELETE2        "Delete (No Recycle)"
-    IDT_VIEW_FILTER         "Filter"
+    IDT_HISTORY_BACK        "Cofnij"
+    IDT_HISTORY_FORWARD     "Do przodu"
+    IDT_UPDIR               "Katalog nadrzêdny"
+    IDT_ROOT                "Katalog g³ówny"
+    IDT_VIEW_FAVORITES      "Ulubione"
+    IDT_FILE_PREV           "Poprzedni plik"
+    IDT_FILE_NEXT           "Nastêpny plik"
+    IDT_FILE_RUN            "Uruchom"
+    IDT_FILE_QUICKVIEW      "Szybki podgl¹d"
+    IDT_FILE_SAVEAS         "Zapisz jako"
+    IDT_FILE_COPYMOVE       "Kopiuj/Przenieœ"
+    IDT_FILE_DELETE         "Usuñ"
+    IDT_FILE_DELETE2        "Delete (Bez mo¿liwoœci odzyskania)"
+    IDT_VIEW_FILTER         "Filtr"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Object(s)"
-    IDS_NUMFILES2           "%s Object(s) | Filter"
-    IDS_SAVEFILE            "Saving ""%s""..."
-    IDS_OPEN_FILE_WITH      "Open with %s"
+    IDS_NUMFILES            "%s objekt(y)"
+    IDS_NUMFILES2           "%s objekt(y) | Filter"
+    IDS_SAVEFILE            "Zapisywanie ""%s""..."
+    IDS_OPEN_FILE_WITH      "Otwórz za pomoc¹ %s"
 END
 
 STRINGTABLE
@@ -109,19 +109,19 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "Find Executable"
-    IDS_GETQUICKVIEWER      "Find Quickview"
-    IDS_GETTARGET           "Find Editor"
-    IDS_NEWFILE             "New File"
-    IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Select a new directory."
-    IDS_FAVORITES           "Specify the ""Favourites"" directory."
+    IDS_SEARCHEXE           "ZnajdŸ wykonywalny"
+    IDS_GETQUICKVIEWER      "ZnajdŸ Quickview"
+    IDS_GETTARGET           "Find Edytor"
+    IDS_NEWFILE             "Nowy plik"
+    IDS_FILTER_ALL          "Wszystkie pliki (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "Pliki wykonywalne (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nWszystkie pliki (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Wybierz nowy katalog."
+    IDS_FAVORITES           "Okreœl katalog ""Ulubione"" ."
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "&Keep on Top"
+    SC_ALWAYSONTOP          "&Zawsze na wierzchu"
     SC_ABOUT                "&Info..."
 END
 
@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie tÅ‚umaczenie Crane70"
+    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie t³umaczenie: Crane70"
 END
 
 
