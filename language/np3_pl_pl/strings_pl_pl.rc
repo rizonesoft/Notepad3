@@ -89,7 +89,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Ten Document"
     IDT_VIEW_TOGGLE_VIEW     "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    IDT_VIEW_CHASING_DOCTAIL "Dziennik monitorowania"
     IDT_VIEW_PIN_ON_TOP      "Zawsze na wierzchu"
 END
 
@@ -134,21 +134,21 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "B³¹d podczas kodowania pliku Unicode.\nDane zostan¹ utracone jeœli plik zapisano!"
     IDS_MUI_ERR_BITMAP      "B³¹d podczas ³adowania mapy bitowej ""%s"".\nWymagany rozmiar: %i x %i (szer. >= %i x wys.)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error elevating user rights!"
+                            "B³¹d podczas nadawania praw u¿ytkownika!"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Niektóre znaki w tym tekœcie nie s¹ obs³ugiwane przez wybrane kodowanie, i mog¹ zostanie zamienione na standardowe znaki po zapisaniu. Zaleca siê wybraæ inne kodowanie pliku. Kontynuowaæ?"
-    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
+    IDS_MUI_ERR_DROP        "Tylko jeden plik mo¿e byæ upuszczony w tym samym czasie!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch Notepad3 as Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com ?"
+                            "Plik ""%s"" nie mo¿e zostaæ zapisany i mo¿e byæ zabezpieczony.\n\nCzy uruchomiæ Notepad3 jako Administrator?"
+    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nSprawdŸ stronê https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large file?"
+                            "Czy na pewno chcesz otworzyæ ten du¿y plik?"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+                            "Nieznane rozszerzenie nazwy pliku (%s) !\nCzy mimo to za³adowaæ ?"
+    IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wciêcie!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -156,24 +156,24 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND        "The specified text was not found."
-    IDS_MUI_REPLCOUNT       "%i occurrences of the specified text have been replaced."
+    IDS_MUI_SELRECT         "Ta operacja nie mo¿e zostaæ przeprowadzona w obrêbie prostk¹tnego zaznaczenia"
+    IDS_MUI_BUFFERTOOSMALL  "Ta operacja nie mo¿e zostaæ przeprowadzona (zbyt d³ugie wiersze)."
+    IDS_MUI_FIND_WRAPFW     "Dotarto do koñca dokumentu, ponowne przeszukiwanie od pocz¹tku."
+    IDS_MUI_FIND_WRAPRE     "Dotarto do pocz¹tku dokumentu, ponowne przeszukiwanie do koñca."
+    IDS_MUI_NOTFOUND        "Nie znaleziono okreœlonego tekstu."
+    IDS_MUI_REPLCOUNT       "%i przyk³ady okreœlonego tekstu zosta³y zast¹pione."
     IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
     IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisaæ do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
+                            "Bie¿¹cy plik zosta³ zmieniony przez zewnêtrzny program. Za³adowaæ ponownie?"
+    IDS_MUI_FILECHANGENOTIFY2 "Bie¿¹cy plik zosta³ usuniêty. Zapisaæ teraz?"
     IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+    IDS_MUI_SAVEDSETTINGS   "Bie¿¹ce ustawienia programu zosta³y zapisane."
+    IDS_MUI_CREATEINI_FAIL  "B³¹d podczas tworzenia pliku konfiguracyjnego."
+    IDS_MUI_WRITEINI_FAIL   "B³¹d zapisywania ustawieñ do pliku konfiguracyjnego."
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+                            "Nie znaleziono istniej¹cego pliku konfiguracyjnego.\nAby zachowaæ zmiany stylów, zapisz ustawienia (F7) lub wróæ do schematu konfiguracji (Ctrl+F12) i eksportuj style."
 END
 
 STRINGTABLE
@@ -187,38 +187,38 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to ""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
+    IDS_MUI_ASK_SAVE        "Zapisaæ zmiany w ""%s""?"
+    IDS_MUI_ASK_REVERT      "Przywróciæ plik do poprzedniego stanu? Zmiany zostan¹ utracone!"
+    IDS_MUI_ASK_RECODE      "Ponowne kodowanie wymaga ponownego za³adowania pliku z dysku, niezapisane zmiany zostan¹ utracone!"
+    IDS_MUI_ASK_CREATE      """%s"" nie znaleziono.\nCzy chcesz utworzyæ ten plik?"
+    IDS_MUI_PRINT_HEADER    "Nazwa pliku, bie¿¹ca data i czas|Nazwa pliku, bie¿¹ca data|Nazwa pliku|Zostaw czysty"
+    IDS_MUI_PRINT_FOOTER    "Numer strony|Pozostaw czysty"
     IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
-    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_PRINT_PAGENUM   "Strona %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory."
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
-    IDS_MUI_STY_BASESTD     "BASE (Default Style):"
-    IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
-    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
+    IDS_MUI_PRINT_EMPTY     "Ten dokument nie zawiera ¿adnego tekstu do wydrukowania."
+    IDS_MUI_PRINT_ERROR     "B³¹d drukowania ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "Skrót do bie¿¹cego pliku utworzono w katalogu Ulubione."
+    IDS_MUI_FAV_FAILURE     "Nie mo¿na utworzyæ skrótu do bie¿¹cego pliku.\nUpewnij siê, czy nie ma innego pliku o tej samej nazwie."
+    IDS_MUI_READONLY_MODIFY "Nie mo¿na zmieniæ atrybutów  ""%s"" ."
+    IDS_MUI_SAVEPOS         "&Zapisz pozycjê\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Resetuj pozycjê\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Zobacz ustawienia\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Has³o nieprawid³owe.\nWprowadziæ ponownie has³o?"
+    IDS_MUI_NOPASS          "Odkodowywanie anulowane!\nCzy odczytaæ zakodowane pierwotne dane?"
+    IDS_MUI_STY_BASESTD     "BASE (Styl domyœlny):"
+    IDS_MUI_STY_BASE2ND     "BASE (drugi styl domyœlny):"
+    IDS_MUI_STY_LEXDEF      "%s - Styl domyœlny:"
     IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
     IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "[pl-PL] Polskie t³umaczenie Crane70"
+    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie t³umaczenie: Crane70"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
@@ -227,16 +227,16 @@ BEGIN
     IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
     IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Linia (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN     "Kolumna (1 - %lli):"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jêzyk"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
+    IDS_MUI_MENU_THEMES     "Wybór &schematów"
+    IDM_THEMES_DEFAULT      "Domyœlne"
+    IDM_THEMES_FILE_ITEM    "Ustawienia standardowe"
 END
 
 STRINGTABLE
@@ -285,7 +285,7 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Filename extensions must be separated by ';'\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
+zastosuj \\<regex>; aby zdefiniowaæ nazwê pliku pasuj¹c¹ do wzoru:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
@@ -311,7 +311,7 @@ IDS_MUI_ABOUT_RTF_2  "\
 \\cf0 \\fs20\\b1\\ul1 Open Source / Biblioteki:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 \\f1Podzi\\'eakowanie\\f0 :\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1Podzi\\'eakowania\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
 \\cf0 \\fs20\\b1\\ul1 Zasoby:\\ul0\\b0\\fs18\\par\
@@ -321,7 +321,7 @@ IDS_MUI_ABOUT_RTF_5  "\
 "
 
 IDS_MUI_ABOUT_RTF_6  "\
-\\cf0 \\fs20\\b1\\ul1 Notepad3 Licencja:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Licencja Notepad3:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2015-2019 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
