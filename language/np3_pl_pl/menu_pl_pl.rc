@@ -90,11 +90,11 @@ BEGIN
             MENUITEM "UTF-8 z &sygnatur¹",                 IDM_ENCODING_UTF8SIGN
             MENUITEM "&Wiêcej...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Przekoduj na domyœlny &Default\tCtrl+Alt+F", CMD_RECODEDEFAULT
+            MENUITEM "Przekoduj na domyœlny\tCtrl+Alt+F",          CMD_RECODEDEFAULT
             MENUITEM "Przekoduj na &ANSI\tCtrl+Shift+A",           CMD_RECODEANSI
             MENUITEM "Przekoduj na &OEM\tCtrl+Shift+O",            CMD_RECODEOEM
             MENUITEM "Przekoduj na &GB18030\tCtrl+Shift+F10",      CMD_RECODEGB18030
-            MENUITEM "Przekoduj na analizy UCHARDET",              CMD_RELOADFORCEDETECTION
+            MENUITEM "Przekoduj na analizê UCHARDET",              CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII jako UTF-&8\tCtrl+Shift+F8",           CMD_RELOADASCIIASUTF8
             MENUITEM "Ignoruj znaczniki &kodowania\tAlt+F8",       CMD_RELOADNOFILEVARS
@@ -334,13 +334,13 @@ BEGIN
             MENUITEM "Sk³adanie kodu\tCtrl+Shift+Alt+F",            IDM_VIEW_FOLDING
             MENUITEM "&Prze³¹cz sk³adanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Focused View\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Monitoring Log",                             IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Dziennik &monitorowania",                      IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scroll Past End of &File",                    IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Show &Hyperlink Tooltip",                     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Pasek narzêdzi"
         BEGIN
-            MENUITEM "&Poka¿ pasek narzêdzi",                        IDM_VIEW_TOOLBAR
+            MENUITEM "Poka¿ pasek narzêdzi",                        IDM_VIEW_TOOLBAR
             MENUITEM "Prze³¹cz pasek narzêdzi",                     IDM_VIEW_TOGGLETB
             MENUITEM "Dostosuj pasek narzêdzi...",                  IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Za³aduj motyw paska narzêdzi...",            IDM_VIEW_LOADTHEMETB
@@ -363,15 +363,15 @@ BEGIN
             MENUITEM "Sticky Window &Position",                     IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "&Wygl¹d"
     BEGIN
         MENUITEM "&Dostosuj schematy...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                         IDM_VIEW_SCHEME
+        MENUITEM "&Wybierz schemat sk³adni...\tF12",                       IDM_VIEW_SCHEME
         MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
-        MENUITEM "Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
-        MENUITEM "Domyœlna czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM "&Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
+        MENUITEM "Domyœlna &czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
     POPUP "&Ustawienia"
     BEGIN
@@ -387,7 +387,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Przyk³ad pojedyñczego pliku",                     IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Mute Message &Beeps",                             IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Wycisz sygna³ dŸwiêkowy",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Funkcja klawisza Esc"
         BEGIN
             MENUITEM "¯adna",                                       IDM_VIEW_NOESCFUNC
