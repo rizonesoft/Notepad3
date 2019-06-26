@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.622.build RC2 (22 June 2019)
+Current Version 5.19.626.build RC2 (26 June 2019)
 ==================================================
 
 --------------------------------------------------
@@ -41,7 +41,7 @@ NEW:
 CHANGES:
 --------------------------------------------------
 - Scintilla Library (SCI) version 4.1.7 (2019-Jun-13)
-- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-3)
+- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-4)
 - New top-level menu "Appearance" holding Themes and Schemes stuff
 - Rearranging the Language and Themes menus
 - Rearranging the" Encoding" menu
@@ -55,7 +55,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-Load external Toolbars (clear config on error, path relative to be portable
+Load external Toolbars (clear config on error, path relative to be portable)
 
 --------------------------------------------------
 REMOVED:
