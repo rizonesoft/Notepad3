@@ -86,22 +86,22 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Wyszukaj ci¹g:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Rozró¿nij ma³ych i du¿ych liter",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
+    CONTROL         "Rozró¿nij wielkoœæ liter",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,89,10
     CONTROL         "Tylko pasuj¹ce ca³e wyrazy",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "Tylko pasuj¹cy pocz¹tek wyrazu",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Przekszta³æ backslash'e",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Wyszukaj regularne wyra¿enia",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Kropka zastêpuje wszystko",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
+    CONTROL         "Szukaj regularnych wyra¿eñ",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
+    CONTROL         "Kropka = wszystko",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
     CONTROL         "&Nie owijaj",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "Zamknij po znalezieniu",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Zaznacz wystêpowania",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Szukaj wieloznacznika",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "WyjdŸ po znalezieniu",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,77,10
+    CONTROL         "Poka¿ wystêpowania",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
+    CONTROL         "Szukaj Wildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
     CONTROL         "PrzeŸroczyste okno bez skupienia",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
-    DEFPUSHBUTTON   "&ZnajdŸ nastêpny",IDOK,211,7,55,14
-    PUSHBUTTON      "ZnajdŸ &poprzedni",IDC_FINDPREV,211,24,55,14
+    DEFPUSHBUTTON   "&ZnajdŸ nast.",IDOK,211,7,55,14
+    PUSHBUTTON      "ZnajdŸ &poprz.",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Zamknij",IDCANCEL,211,99,55,14
-    CONTROL         "<a>PrzejdŸ do Zamieñ (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Goto Zamieñ (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
@@ -120,26 +120,26 @@ BEGIN
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Zamieñ na:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Rozró¿nij ma³ych i du¿ych liter",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
+    CONTROL         "Rozró¿nij wielkoœæ liter",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,89,10
     CONTROL         "Tylko pasuj¹ce ca³e wyrazy",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Tylko pasuj¹cy pocz¹tek wyrazu",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Przekszta³æ backslash'e",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Wyszukaj regularne wyra¿enia",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Kropka zastêpuje wszystko",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
+    CONTROL         "Szukaj regularnych wyra¿eñ",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "Kropka = wszystko",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "Nie owijaj",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "Zamknij po zast¹pieniu",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Zaznacz wystêpowania",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Szukaj wieloznacznika",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "WyjdŸ po zast¹pieniu",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
+    CONTROL         "Poka¿ wystêpowania",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
+    CONTROL         "Szukaj Wildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
     CONTROL         "PrzeŸroczyste okno bez skupienia",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "&ZnajdŸ nastêpny",IDOK,211,7,55,14
-    PUSHBUTTON      "ZnajdŸ &poprzedni",IDC_FINDPREV,211,23,55,14
+    DEFPUSHBUTTON   "&ZnajdŸ nast.",IDOK,211,7,55,14
+    PUSHBUTTON      "ZnajdŸ &poprz.",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Zamieñ",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "Wybierz...",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Zast¹p wszystko",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Zamieñ miejscami",IDC_SWAPSTRG,150,32,49,12
+    PUSHBUTTON      "Zamieñ miejscami",IDC_SWAPSTRG,135,32,64,12
     PUSHBUTTON      "Zamknij",IDCANCEL,211,126,55,14
-    CONTROL         "<a>PrzejdŸ do ZnajdŸ (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Goto ZnajdŸ (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
