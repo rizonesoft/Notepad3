@@ -171,7 +171,7 @@ BEGIN
             MENUITEM "Zawijanie kolumn...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM "&Rozdziel wiersze\tCtrl+I",                 IDM_EDIT_SPLITLINES
             MENUITEM "Po³¹cz wiersze\tCtrl+J",                    IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",                   IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Po³¹cz linie\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Zachowaj paragrafy\tCtrl+Shift+J",         IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Po³¹cz puste wiersze\tAlt+Y",                   IDM_EDIT_MERGEEMPTYLINES
@@ -187,7 +187,7 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "&Ujêcie zaznaczenia"
             BEGIN
-                MENUITEM "&Pojedyñczy cudzys³ów\tCtrl+1",     CMD_STRINGIFY
+                MENUITEM "&Pojedynczy cudzys³ów\tCtrl+1",     CMD_STRINGIFY
                 MENUITEM "&Podwójny cydzys³ów\tCtrl+2",       CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                       CMD_EMBRACE
@@ -201,7 +201,7 @@ BEGIN
             MENUITEM "&Duplikuj zaznaczenie/wiersz\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Wyœciel pustym miejscem\tAlt+B",          IDM_EDIT_PADWITHSPACES
-            MENUITEM "Usuñ pierszy znak wiersza\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Usuñ pierwszy znak wiersza\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
             MENUITEM "Usuñ ostatni znak wiersza\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Usuñ koñcowe niewidoczne znaki\tAlt+W",    IDM_EDIT_TRIMLINES
             MENUITEM "Skompresuj niewidoczne znaki\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
@@ -333,10 +333,10 @@ BEGIN
         BEGIN
             MENUITEM "Sk³adanie kodu\tCtrl+Shift+Alt+F",            IDM_VIEW_FOLDING
             MENUITEM "&Prze³¹cz sk³adanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "Focused View\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "Dziennik &monitorowania",                      IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "Scroll Past End of &File",                    IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Show &Hyperlink Tooltip",                     IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "Widok skupiony\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Dziennik &monitorowania",                     IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Rozszerzony widok koñca dokumentu",           IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Poka¿ podpowiedŸ hiper³¹cza",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Pasek narzêdzi"
         BEGIN
@@ -354,21 +354,21 @@ BEGIN
         END
         POPUP "&Po³o¿enie"
         BEGIN
-            MENUITEM "Copy Position Args\tCtrl+Shift+K",            CMD_COPYWINPOS
-            MENUITEM "Snap to Default Position\tCtrl+Shift+P",      CMD_DEFAULTWINPOS
-            MENUITEM "Save as Default Position",                    CMD_SAVEASDEFWINPOS
-            MENUITEM "Clear saved Default Position",                CMD_CLEARSAVEDWINPOS
-            MENUITEM "Snap to Initial Position\tCtrl+F11",          CMD_INITIALWINPOS
-            MENUITEM "Toggle Full Area Position\tF11",              CMD_FULLSCRWINPOS
-            MENUITEM "Sticky Window &Position",                     IDM_VIEW_STICKYWINPOS
+            MENUITEM "Kopiuj pozycjê (Argumenty)\tCtrl+Shift+K",    CMD_COPYWINPOS
+            MENUITEM "Pozycja domyœlna\tCtrl+Shift+P",              CMD_DEFAULTWINPOS
+            MENUITEM "Zapisz jako domyœln¹ pozycjê",                CMD_SAVEASDEFWINPOS
+            MENUITEM "Wyczyœæ zapisan¹ domyœln¹ pozycjê",           CMD_CLEARSAVEDWINPOS
+            MENUITEM "Pozycja pocz¹tkowa\tCtrl+F11",                CMD_INITIALWINPOS
+            MENUITEM "Prze³¹cz pozycjê ca³ego obszaru\tF11",        CMD_FULLSCRWINPOS
+            MENUITEM "Zamro¿ona pozycja okna",                      IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "&Wygl¹d"
     BEGIN
-        MENUITEM "&Dostosuj schematy...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Dostosuj schematy...\tCtrl+F12",                        IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "&Wybierz schemat sk³adni...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",               IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
         MENUITEM "Domyœlna &czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -382,8 +382,8 @@ BEGIN
         MENUITEM "Automatyczne wciêcie",                            IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "Automatyczne zamykanie &HTML/XML\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "A&utouzupe³nianie wyrazów",                       IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Auto Complete Lexer-&Key-Words",                  IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A",        IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Autouzupe³nianie Lexer-&Key-Words",               IDM_VIEW_AUTOCLEXKEYWORDS
+        MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
         MENUITEM "Przyk³ad pojedyñczego pliku",                     IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
@@ -398,7 +398,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Zapamiêtaj"
         BEGIN
-            MENUITEM "Remember Recent F&iles",                      IDM_VIEW_NOSAVERECENT
+            MENUITEM "Zapamiêtaj ostatnie pliki",                   IDM_VIEW_NOSAVERECENT
             MENUITEM "Zachowaj pozycjê znaku wstawienia",           IDM_VIEW_NOPRESERVECARET
             MENUITEM "Zapamiêtaj wzór wyszukiwania",                IDM_VIEW_NOSAVEFINDREPL
         END
@@ -418,9 +418,9 @@ BEGIN
         END
         POPUP "&Technologia"
         BEGIN
-            POPUP "&Rendering"
+            POPUP "&Renderowanie"
             BEGIN
-                MENUITEM "Default &GDI",                IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "Domyœlne &GDI",               IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC

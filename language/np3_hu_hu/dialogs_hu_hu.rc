@@ -101,7 +101,7 @@ BEGIN
     DEFPUSHBUTTON   "&Köv. keresése",IDOK,211,7,55,14
     PUSHBUTTON      "&Elõzõ keresése",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Bezárás",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Ugrás a csere (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Csere (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
@@ -139,7 +139,7 @@ BEGIN
     PUSHBUTTON      "&Összes cseréje",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Felcserélés",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Bezárás",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Ugrás a keresésre (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Keresés (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,84,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
