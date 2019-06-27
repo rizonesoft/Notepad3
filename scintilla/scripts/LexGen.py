@@ -123,7 +123,7 @@ def RegenerateAll(root):
     sci = ScintillaData.ScintillaData(root)
 
     Regenerate(root + "src/Catalogue.cxx", "//", sci.lexerModules)
-    #Regenerate(root + "win32/scintilla.mak", "#", sci.lexFiles)    #commented out
+    Regenerate(root + "win32/scintilla.mak", "#", sci.lexFiles)
 
     startDir = os.getcwd()
     os.chdir(os.path.join(scintillaBase, "win32"))

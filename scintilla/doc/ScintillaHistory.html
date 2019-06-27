@@ -542,6 +542,9 @@
 	<td>Jad Altahan</td>
 	<td>Andrea Ricchi</td>
 	<td>Juarez Rudsatz</td>
+	<td>Wil van Antwerpen</td>
+      </tr><tr>
+	<td>Hodong Kim</td>
     </tr>
     </table>
     <p>
@@ -552,6 +555,64 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scite418.zip">Release 4.1.8</a>
+    </h3>
+    <ul>
+	<li>
+	Released 13 June 2019.
+	</li>
+ 	<li>
+	Scintilla.iface adds line and pointer types, increases use of the position type, uses enumeration
+	types in methods and properties, and adds enumeration aliases to produce better CamelCase
+	identifiers.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1297/">Feature #1297</a>.
+	</li>
+ 	<li>
+	Lexer added for DataFlex.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1295/">Feature #1295</a>.
+	</li>
+ 	<li>
+	Matlab lexer now treats keywords as case-sensitive.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2112/">Bug #2112</a>.
+	</li>
+ 	<li>
+	SQL lexer fixes single quoted strings where '" (quote, double quote) was seen as continuing the string.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2098/">Bug #2098</a>.
+	</li>
+ 	<li>
+	Platform layers should use InsertCharacter method to perform keyboard and IME input, replacing
+	AddCharUTF method.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1293/">Feature #1293</a>.
+	</li>
+ 	<li>
+	Add CARETSTYLE_BLOCK_AFTER option to always display block caret after selection.
+	<a href="https://sourceforge.net/p/scintilla/bugs/1924/">Bug #1924</a>.
+	</li>
+ 	<li>
+	On Win32, limit text returned from WM_GETTEXT to the length specified in wParam.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2110/">Bug #2110</a>.
+	</li>
+ 	<li>
+	Fix position of line caret when overstrike caret set to block.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2106/">Bug #2106</a>.
+	</li>
+ 	<li>
+	On GTK, reset IME when mouse is clicked.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2111/">Bug #2111</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scite417.zip">Release 4.1.7</a>
+    </h3>
+    <ul>
+	<li>
+	Released 13 June 2019.
+	</li>
+	<li>
+	Fixes an incorrect default setting in SciTE which caused multiple visual features to fail to display.
+	</li>
     </ul>
     <h3>
        <a href="https://www.scintilla.org/scite416.zip">Release 4.1.6</a>

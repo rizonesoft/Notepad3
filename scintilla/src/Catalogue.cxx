@@ -103,6 +103,7 @@ int Scintilla_LinkLexers() {
 	//LINK_LEXER(lmCsound);
 	LINK_LEXER(lmCss);
 	LINK_LEXER(lmD);
+	//LINK_LEXER(lmDataflex);
 	LINK_LEXER(lmDiff);
 	//LINK_LEXER(lmDMAP);
 	//LINK_LEXER(lmDMIS);
