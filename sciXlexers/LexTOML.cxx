@@ -228,7 +228,7 @@ inline bool IsAKeywordChar(const int ch) {
 
 static int GetBracketLevel(StyleContext& sc, const bool stopAtLnBreak = false) 
 {
-  Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
+  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
 
   int iBracketLevel = -1;
   int inInlTbl = 0;
@@ -265,8 +265,8 @@ static int GetBracketLevel(StyleContext& sc, const bool stopAtLnBreak = false)
 
 static bool IsDateTimeStr(StyleContext& sc, const CharacterSet& validCh, const CharacterSet& valEnd)
 {
-  Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
-  Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
+  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
+  auto const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
 
   bool bDateTimeFlag = false;
   
@@ -294,8 +294,8 @@ static bool IsDateTimeStr(StyleContext& sc, const CharacterSet& validCh, const C
 
 static bool IsLookAheadLineEmpty(StyleContext& sc)
 {
-  Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
-  Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
+  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
+  auto const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
 
   bool bLHLineEmpty = true;
 
@@ -318,8 +318,8 @@ static bool IsLookAheadLineEmpty(StyleContext& sc)
 
 static bool IsLookAheadInList(StyleContext& sc, const CharacterSet& validCh, const WordList& keywords)
 {
-  Sci_Position const posCurrent = static_cast<Sci_Position>(sc.currentPos);
-  Sci_Position const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
+  auto const posCurrent = static_cast<Sci_Position>(sc.currentPos);
+  auto const posEnd = static_cast<Sci_Position>(sc.lineStartNext);
 
   static char identifier[1024] = { '\0' };
 
