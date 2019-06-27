@@ -26,6 +26,7 @@ extern "C" {
 #include <commdlg.h>
 #ifdef __cplusplus
 #include <cstring>
+#include <string_view>
 #else
 #include <string.h>
 #endif

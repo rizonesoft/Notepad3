@@ -1212,7 +1212,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"block")) {
     StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
-    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovrstrk_mode), 0);
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK_AFTER | ovrstrk_mode), 0);
     if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
       StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
     }

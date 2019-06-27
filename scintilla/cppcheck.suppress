@@ -38,6 +38,7 @@ variableScope:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBatch.cxx
 variableScope:scintilla/lexers/LexCmake.cxx
 variableScope:scintilla/lexers/LexCSS.cxx
+variableScope:scintilla/lexers/LexDataflex.cxx
 variableScope:scintilla/lexers/LexErlang.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 variableScope:scintilla/lexers/LexInno.cxx
