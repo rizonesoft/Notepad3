@@ -1212,10 +1212,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"block")) {
     StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
-    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK_AFTER | ovrstrk_mode), 0);
-    if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
-      StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
-    }
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovrstrk_mode), 0);
   }
   else {
     SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_LINE | ovrstrk_mode), 0);
@@ -1228,13 +1225,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
 
-    StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
-    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
-
-    if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
-      StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
+    if (iValue != 1) {
+      StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
     }
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
   }
+  if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
+  }
+
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
     SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, false, 0);
