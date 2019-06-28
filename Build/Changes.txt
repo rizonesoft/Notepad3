@@ -30,45 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.626.build RC2 (26 June 2019)
-==================================================
-
---------------------------------------------------
-NEW:
---------------------------------------------------
-
---------------------------------------------------
-CHANGES:
---------------------------------------------------
-- Scintilla Library (SCI) version 4.1.7 (2019-Jun-13)
-- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-4)
-- New top-level menu "Appearance" holding Themes and Schemes stuff
-- Rearranging the Language and Themes menus
-- Rearranging the" Encoding" menu
-- Force Encoding Detector result -> Recode to UCHARDET Analysis
-- In case of (partial) selection, copy only selection instead of complete hyperlink 
-
---------------------------------------------------
-ENHANCEMENT:
---------------------------------------------------
-
---------------------------------------------------
-FIXES:
---------------------------------------------------
-Load external Toolbars (clear config on error, path relative to be portable)
-
---------------------------------------------------
-REMOVED:
---------------------------------------------------
-
---------------------------------------------------
-TRANSLATIONS (MUI):
---------------------------------------------------
-- Polish (pl-PL) Translation (In progress)
-
-
-==================================================
-Version 5.19.528.2228 RC (28 May 2019)
+Version 5.19.62x.23xx (2x June 2019)
 ==================================================
 
 --------------------------------------------------
@@ -141,6 +103,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Load external Toolbars (clear config on error, path relative to be portable)
 - Focused View: refolding by lexer
 - FocusedView started from Find/Replace dialog
 - Do not ignore notify change for Paste/Swap/Undo/Redo
