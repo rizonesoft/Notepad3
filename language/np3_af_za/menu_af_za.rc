@@ -363,11 +363,11 @@ BEGIN
             MENUITEM "Klewerige Venster &Posisie",                   IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "&Voorkoms"
     BEGIN
         MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                        IDM_VIEW_SCHEME
+        MENUITEM "&Kies Sintakseskema...\tF12",                        IDM_VIEW_SCHEME
         MENUITEM "&2de Verstek Skema\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
