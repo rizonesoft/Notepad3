@@ -30,6 +30,53 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
+Current Version 5.19.701.build (1 July 2019)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Advanced TOML Lexer
+- Multiselect Edit Indicator
+- Color hover and picker (HTML color def only #RRGGBB)
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Scintilla Library (SCI) version 4.1.8 (2019-Jun-27)
+- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-4)
+- Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
+- Oniguruma: support static build
+- Merge current (v.6.9.2) Oniguruma docs
+- Replace Onigmo by Oniguruma
+- CED -> UCHARDET license and acknowledgement
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Use UTF-8 for themes files
+- Use UTF-8 for .ini-File Handler (Initial Version)
+- Multi-Selection with selection restore on undo
+- Bookmark margin click
+- Some multi-selection enhancements
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Multi-Selection while Mark-Occurrences of current word is active
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+- Remove (old) AHK Lexer in favour of modern AHK_L Lexer
+
+--------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------
+- Polish (pl-PL) Translation (In progress)
+
+
+==================================================
 Version 5.19.630.2381 (30 June 2019)
 ==================================================
 
