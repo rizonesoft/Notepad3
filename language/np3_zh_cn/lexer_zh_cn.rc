@@ -121,6 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus 统计代码"
     IDS_LEX_RUST_SRC        "Rust 源代码"
     IDS_LEX_AHKL            "AutoHotkey_L 脚本"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE
@@ -443,6 +444,9 @@ BEGIN
     IDS_LEX_STR_63351       "HotStringOption"
     IDS_LEX_STR_63352       "输入法候选文本颜色"
     IDS_LEX_STR_63353       "备选：输入法候选文本颜色"
+    IDS_LEX_STR_63354       "Multi Edit Indicator"
+    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63356       "Date-Time"
 END
 
 #endif    // Chinese (Simplified, PRC) resources

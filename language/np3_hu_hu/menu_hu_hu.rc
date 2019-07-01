@@ -264,6 +264,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Kijelölés a következõi&g\tCtrl+Alt+F2",    IDM_EDIT_SELTONEXT
             MENUITEM "Kijelölés az &elõzõig\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM SEPARATOR
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "Köny&vjelzõk"
@@ -300,6 +303,7 @@ BEGIN
         MENUITEM "Sorvégek &megjelenítése\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",            IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Zárójelpár kiemelés\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
         POPUP "Akt&uális sor kiemelése\tCtrl+Shift+I"
         BEGIN

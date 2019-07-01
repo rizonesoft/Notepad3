@@ -1,0 +1,349 @@
+# This is a TOML document. - encoding:UTF-8
+# https://github.com/toml-lang/toml
+#
+
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00-08:00 # First class dates
+
+[database]
+server = "192.168.1.1"
+ports = [ 8001, 8001, 8002 ]
+connection_max = 5000
+enabled = true
+
+[colors]
+color1 = "#D=8020"
+color2 = "#FFC000"
+color3 = "#00XX00"
+color4 = "#608020"
+color4 = "#608020"
+color4 = "#608020"
+color4 = "#608020"
+
+[servers]
+
+  # Indentation (tabs and/or spaces) is allowed but not required
+  [servers.alpha]
+  ip = "10.0.0.1"
+  dc = "eqdc10"
+
+  [servers.beta]
+  ip = "10.0.0.2"
+  dc = "eqdc10"
+
+[clients]
+data = [ ["gamma", "delta"], [1, 2] ]
+
+[keys]
+
+key = "value"
+key = # INVALID
+key = "value"
+bare_key = "value"
+bare-key = "value"
+1234 = "value"
+
+"127.0.0.1" = "value"
+"character encoding" = "value"
+"ʎǝʞ" = "value"
+'key2' = "value"
+'quoted "value"' = "value"
+
+# boolean
+bool1 = true
+bool2 = false
+
+[strings]
+str = "I'm a string. \"You can quote me\". Name\tJos\u00E9\nLocation\tSF."
+
+str1 = """
+Roses are red
+Violets are blue"""
+
+# On a Unix system, the above multi-line string will most likely be the same as:
+str2 = "Roses are red\nViolets are blue"
+
+# On a Windows system, it will most likely be equivalent to:
+str3 = "Roses are red\r\nViolets are blue"
+
+# The following strings are byte-for-byte equivalent:
+str1 = "The quick brown fox jumps over the lazy dog."
+
+str2 = """
+The quick brown \
+
+
+  fox jumps over \
+    the lazy dog."""
+
+str3 = """\
+       The quick brown \
+       fox jumps over \
+       the lazy dog.\
+       """
+
+###  String Literals  ###
+regex2 = '''I [dw]on't need \d{2} apples'''
+
+lines  = '''
+The first newline is
+trimmed in raw strings.
+   All other whitespace
+   is preserved.
+'''
+
+# What you see is what you get.
+winpath  = 'C:\Users\nodejs\templates'
+winpath2 = '\\ServerX\admin$\system32\'
+quoted   = 'Tom "Dubs" Preston-Werner'
+regex    = '<\i\c*\s*>'
+
+str4 = """
+Roses are red
+Violets are blue"""
+
+
+[numbers]
+
+int1 = +99
+int2 = 42
+int3 = 0
+int4 = -17
+int5 = 1_000
+int6 = 5_349_221
+int7 = 1_2_3_4_5     # VALID but discouraged
+
+# hexadecimal with prefix `0x`
+hex1 = 0xDEADBEEF
+hex2 = 0xdeadbeef
+hex3 = 0xdead_beef
+
+# octal with prefix `0o`
+oct1 = 0o01234567
+oct2 = 0o755 # useful for Unix file permissions
+
+# binary with prefix `0b`
+bin1 = 0b11010110
+
+# fractional
+flt1 = +1.0
+flt2 = 3.1415
+flt3 = -0.01
+
+# exponent
+flt4 = 5e+22
+flt5 = 1e6
+flt6 = -2E-2
+
+# both
+flt7 = 6.626e-34
+flt8 = 224_617.445_991_228
+# infinity
+sf1 = inf  # positive infinity
+sf2 = +inf # positive infinity
+sf3 = -inf # negative infinity
+
+# not a number
+sf4 = nan  # actual sNaN/qNaN encoding is implementation specific
+sf5 = +nan # same as `nan`
+sf6 = -nan # valid, actual encoding is implementation specific
+
+[date time]
+
+# Offset Date-Time ( RFC 3339 : http://tools.ietf.org/html/rfc3339 )
+odt1 = 1979-05-27T07:32:00Z
+odt2 = 1979-05-27T00:32:00-07:00
+odt3 = 1979-05-27T00:32:00.999999-07:00
+# readability
+odt4 = 1979-05-27 07:32:00Z
+
+# Local Date-Time (
+ldt1 = 1979-05-27T07:32:00
+ldt2 = 1979-05-27T00:32:00.999999
+
+# Local Date
+ld1 = 1979-05-27
+
+# Local Time
+lt1 = 07:32:00
+lt2 = 00:32:00.999999
+
+[array]
+
+arr1 = [ 1, 2, 3 ]
+arr2 = [ "red", "yellow", "green" ]
+arr3 = [ [ 1, 2 ], [3, 4, 5] ]
+arr4 = [ "all", 'strings', """are the same""", '''type''']
+arr5 = [ [ 1, 2 ], ["a", "b", "c"] ]
+
+arr6 = [ 1, 2.0 ] # INVALID
+
+arr7 = [
+  1, 2, 3
+]
+
+# Line breaks are OK when inside arrays
+hosts = [
+  "alpha",
+  "omega", 
+  "echo"  # Comments at evry time
+]
+
+arr8 = [
+  1,
+  2, # this is ok
+]
+
+
+# This is a special Section [table] definitions
+[table]
+# Under that, and until the next table or EOF are the key/values of that table.
+# Key/value pairs within tables are not guaranteed to be in any specific order.
+
+[table-1]
+key1 = "some string"
+key2 = 123
+
+[table-2]
+key1 = "another string"
+key2 = 456
+
+[dog."tater.man"]
+type.name = "pug"
+# In JSON land, that would give you the following structure:
+# { "dog": { "tater.man": { "type": { "name": "pug" } } } }
+
+[a.b.c]            # this is best practice
+[ d.e.f ]          # same as [d.e.f]
+[ g .  h  . i ]    # same as [g.h.i]
+[ j . "ʞ" . 'l' ]  # same as [j."ʞ".'l']
+
+# [x] you
+# [x.y] don't
+# [x.y.z] need these
+[x.y.z.w] # for this to work
+
+# DO NOT DO THIS
+
+[a]
+b = 1
+
+[a]
+c = 2
+
+# DO NOT DO THIS EITHER
+
+[a]
+b = 1
+
+[a.b]
+c = 2
+
+# Inline Table
+name = { first = "Tom", last = "Preston-Werner" }
+point = { x = 1, y = 2 }
+animal = { type.name = "pug" }
+
+[name]
+first = "Tom"
+last = "Preston-Werner"
+
+[point]
+x = 1
+y = 2
+
+[animal]
+type.name = "pug"
+
+
+
+# Array of Tables
+[[products]]
+name = "Hammer"
+sku = 738594937
+
+[[products]]
+
+[[products]]
+name = "Nail"
+sku = 284758393
+color = "gray"
+
+# In JSON land, that would give you the following structure:
+# {
+#   "products": [
+#     { "name": "Hammer", "sku": 738594937 },
+#     { },
+#     { "name": "Nail", "sku": 284758393, "color": "gray" }
+#   ]
+# }
+# 
+# 
+
+[[fruit]]
+  name = "apple"
+
+  [fruit.physical]
+    color = "red"
+    shape = "round"
+
+  [[fruit.variety]]
+    name = "red delicious"
+
+  [[fruit.variety]]
+    name = "granny smith"
+
+[[fruit]]
+  name = "banana"
+
+  [[fruit.variety]]
+    name = "plantain"
+    
+# In JSON land, that would give you the following structure:
+# {
+#   "fruit": [
+#     {
+#       "name": "apple",
+#       "physical": {
+#         "color": "red",
+#         "shape": "round"
+#       },
+#       "variety": [
+#         { "name": "red delicious" },
+#         { "name": "granny smith" }
+#       ]
+#     },
+#     {
+#       "name": "banana",
+#       "variety": [
+#         { "name": "plantain" }
+#       ]
+#     }
+#   ]
+# } 
+#    
+
+# INVALID TOML DOC
+fruit = []
+
+[[fruit]] # Not allowed
+
+# INVALID TOML DOC
+[[fruit]]
+  name = "apple"
+
+  [[fruit.variety]]
+    name = "red delicious"
+
+  # This table conflicts with the previous table
+  [fruit.variety]
+    name = "granny smith"
+    
+points = [ { x = 1, y = 2, z = 3 },
+           { x = 7, y = 8, z = 9 },
+           { x = 2, y = 4, z = 8 } ]
+           
+               

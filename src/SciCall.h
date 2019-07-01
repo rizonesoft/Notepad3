@@ -83,13 +83,10 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 
 #endif // SCI_DIRECTFUNCTION_INTERFACE
 
-//=============================================================================
-
 // SciOniguruma RegEx search
-ptrdiff_t WINAPI OnigmoRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive);
+ptrdiff_t WINAPI OnigRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive);
 
 //=============================================================================
-
 
 //=============================================================================
 //
@@ -156,7 +153,6 @@ DeclareSciCallV0(LinesSplit, LINESSPLIT)
 DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
-DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
 DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, DocPos)
 DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos)
 DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line)
@@ -183,8 +179,12 @@ DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
 // Multiselections (Lines of Rectangular selection)
 DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
-DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
+DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int)
+DeclareSciCallV1(SetSelectionMode, SETSELECTIONMODE, int, mode)
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
+DeclareSciCallV2(SetSelection, SETSELECTION, DocPos, caretPos, DocPos, anchorPos)
+DeclareSciCallR0(GetMainSelection, GETMAINSELECTION, DocPosU)
+DeclareSciCallV1(SetMainSelection, SETMAINSELECTION, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNAnchor, GETSELECTIONNANCHOR, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNCaretVirtualSpace, GETSELECTIONNCARETVIRTUALSPACE, DocPos, DocPosU, selnum)
@@ -195,7 +195,9 @@ DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE,
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum)
-
+DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
+DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH)
+DeclareSciCallV0(RotateSelection, ROTATESELECTION)
 
 // Zoom
 DeclareSciCallR0(GetZoom, GETZOOM, int)
@@ -253,7 +255,6 @@ DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode)
 DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode)
-
 
 DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
 DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)
@@ -406,6 +407,7 @@ DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, int, margin, int, pixelWidth)
 DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, int, margin, int, mask)
 DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
 DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
+DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, int, margin, int, cursor)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag)
@@ -439,6 +441,7 @@ DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
 //
 DeclareSciCallV2(IndicSetStyle, INDICSETSTYLE, int, indicatorID, int, style)
 DeclareSciCallV2(IndicSetFore, INDICSETFORE, int, indicatorID, COLORREF, colour)
+DeclareSciCallV2(IndicSetUnder, INDICSETUNDER, int, indicatorID, bool, under)
 DeclareSciCallV2(IndicSetHoverStyle, INDICSETHOVERSTYLE, int, indicatorID, int, style)
 DeclareSciCallV2(IndicSetHoverFore, INDICSETHOVERFORE, int, indicatorID, COLORREF, colour)
 DeclareSciCallV2(IndicSetAlpha, INDICSETALPHA, int, indicatorID, int, alpha)
@@ -521,6 +524,10 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
 //
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
+
+#define Sci_IsThinSelection() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+#define Sci_IsMultiSelection() ((SciCall_GetSelections() > 1) && !SciCall_IsSelectionRectangle())
+#define Sci_IsMultiOrRectangleSelection() ((SciCall_GetSelections() > 1) || SciCall_IsSelectionRectangle())
 
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) == SciCall_LineFromPosition(SciCall_GetSelectionStart()))
 #define Sci_IsMultiLineSelection() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -  SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)

@@ -115,7 +115,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -143,7 +143,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -170,7 +170,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet Condition="'$(VisualStudioVersion)'&gt;'10.0'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -197,7 +197,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
@@ -224,25 +224,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\onigmo\enc\ascii.c" />
-    <ClCompile Include="..\onigmo\enc\mktable.c" />
-    <ClCompile Include="..\onigmo\enc\unicode.c" />
-    <ClCompile Include="..\onigmo\enc\us_ascii.c" />
-    <ClCompile Include="..\onigmo\enc\utf_8.c" />
-    <ClCompile Include="..\onigmo\regcomp.c" />
-    <ClCompile Include="..\onigmo\regenc.c" />
-    <ClCompile Include="..\onigmo\regerror.c" />
-    <ClCompile Include="..\onigmo\regexec.c" />
-    <ClCompile Include="..\onigmo\regext.c" />
-    <ClCompile Include="..\onigmo\reggnu.c" />
-    <ClCompile Include="..\onigmo\regparse.c" />
-    <ClCompile Include="..\onigmo\regposerr.c" />
-    <ClCompile Include="..\onigmo\regposix.c" />
-    <ClCompile Include="..\onigmo\regsyntax.c" />
-    <ClCompile Include="..\onigmo\regtrav.c" />
-    <ClCompile Include="..\onigmo\regversion.c" />
-    <ClCompile Include="..\onigmo\st.c" />
-    <ClCompile Include="..\scionigmo\OnigmoRegExEngine.cxx" />
+    <ClCompile Include="..\oniguruma\src\ascii.c" />
+    <ClCompile Include="..\oniguruma\src\mktable.c" />
+    <ClCompile Include="..\oniguruma\src\onig_init.c" />
+    <ClCompile Include="..\oniguruma\src\regcomp.c" />
+    <ClCompile Include="..\oniguruma\src\regenc.c" />
+    <ClCompile Include="..\oniguruma\src\regerror.c" />
+    <ClCompile Include="..\oniguruma\src\regexec.c" />
+    <ClCompile Include="..\oniguruma\src\regext.c" />
+    <ClCompile Include="..\oniguruma\src\reggnu.c" />
+    <ClCompile Include="..\oniguruma\src\regparse.c" />
+    <ClCompile Include="..\oniguruma\src\regsyntax.c" />
+    <ClCompile Include="..\oniguruma\src\regtrav.c" />
+    <ClCompile Include="..\oniguruma\src\regversion.c" />
+    <ClCompile Include="..\oniguruma\src\st.c" />
+    <ClCompile Include="..\oniguruma\src\unicode.c" />
+    <ClCompile Include="..\oniguruma\src\unicode_fold1_key.c" />
+    <ClCompile Include="..\oniguruma\src\unicode_fold2_key.c" />
+    <ClCompile Include="..\oniguruma\src\unicode_fold3_key.c" />
+    <ClCompile Include="..\oniguruma\src\unicode_unfold_key.c" />
+    <ClCompile Include="..\oniguruma\src\utf8.c" />
+    <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHK.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
@@ -330,17 +332,13 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\onigmo\enc\jis\props.h" />
-    <ClInclude Include="..\onigmo\enc\unicode\casefold.h" />
-    <ClInclude Include="..\onigmo\enc\unicode\name2ctype.h" />
-    <ClInclude Include="..\onigmo\onigmo.h" />
-    <ClInclude Include="..\onigmo\onigmognu.h" />
-    <ClInclude Include="..\onigmo\onigmoposix.h" />
-    <ClInclude Include="..\onigmo\regenc.h" />
-    <ClInclude Include="..\onigmo\regint.h" />
-    <ClInclude Include="..\onigmo\regparse.h" />
-    <ClInclude Include="..\onigmo\st.h" />
-    <ClInclude Include="..\onigmo\win32\config.h" />
+    <ClInclude Include="..\oniguruma\src\config.h" />
+    <ClInclude Include="..\oniguruma\src\oniggnu.h" />
+    <ClInclude Include="..\oniguruma\src\oniguruma.h" />
+    <ClInclude Include="..\oniguruma\src\regenc.h" />
+    <ClInclude Include="..\oniguruma\src\regint.h" />
+    <ClInclude Include="..\oniguruma\src\regparse.h" />
+    <ClInclude Include="..\oniguruma\src\st.h" />
     <ClInclude Include="..\sciXlexers\SciXLexer.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />

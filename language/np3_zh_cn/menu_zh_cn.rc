@@ -264,6 +264,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "选定直到下一个查找匹配(&N)\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
             MENUITEM "选定直到上一个查找匹配(&P)\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM SEPARATOR
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",   IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "书签(&K)"
@@ -300,6 +303,7 @@ BEGIN
         MENUITEM "显示换行符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",                IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
         POPUP "高亮当前行(&G)\tCtrl+Shift+I"
         BEGIN

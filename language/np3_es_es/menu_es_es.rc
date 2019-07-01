@@ -264,6 +264,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Seleccionar siguie&nte\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
             MENUITEM "Seleccionar an&terior\tCtrl+Alt+Shift+F2",        IDM_EDIT_SELTOPREV
+            MENUITEM SEPARATOR
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "&Marcadores"
@@ -300,6 +303,7 @@ BEGIN
         MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicar &hipervínculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Color Definition Hotspots",              IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
         BEGIN

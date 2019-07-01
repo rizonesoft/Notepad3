@@ -72,10 +72,11 @@ typedef enum {
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
   STY_URL_HOTSPOT = 14,
+  STY_MULTI_EDIT = 15,
+  STY_IME_COLOR = 17,
 
-  STY_IME_COLOR = 15,
-  STY_INVISIBLE = 16,
-  STY_READONLY = 17
+  STY_INVISIBLE = 17,
+  STY_READONLY = 18
 
   // MAX = (127 - STYLE_LASTPREDEFINED)
   // -------^----- => char <-> int casting !!!
@@ -91,10 +92,10 @@ LexDefaultStyles;
 
 extern EDITLEXER lexStandard;      // Default Text
 extern EDITLEXER lexStandard2nd;   // 2nd Default Text
+extern EDITLEXER lexTEXT;          // Pure Text Files
 extern EDITLEXER lexANSI;          // ANSI Files
 extern EDITLEXER lexCONF;          // Apache Config Files
 extern EDITLEXER lexASM;           // Assembly Script
-extern EDITLEXER lexAHK;           // AutoHotkey Script
 extern EDITLEXER lexAHKL;          // AutoHotkey L Script
 extern EDITLEXER lexAU3;           // AutoIt3 Script
 extern EDITLEXER lexAVS;           // AviSynth Script
@@ -132,6 +133,7 @@ extern EDITLEXER lexRust;          // Rust Script
 extern EDITLEXER lexBASH;          // Shell Script
 extern EDITLEXER lexSQL;           // SQL Query
 extern EDITLEXER lexTCL;           // Tcl Script
+extern EDITLEXER lexTOML;          // TOML Config Script
 extern EDITLEXER lexVBS;           // VBScript
 extern EDITLEXER lexVHDL;          // VHDL
 extern EDITLEXER lexVB;            // Visual Basic

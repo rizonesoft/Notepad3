@@ -45,8 +45,8 @@ try
 	if (!$Build) { $Build = 0 }
 	$SciVer = [string](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
-	$OnigmoVer = [string](Get-Content "onigmo\version.txt")
-	if (!$OnigmoVer) { $OnigmoVer = "0.0.0" }
+	$OnigVer = [string](Get-Content "oniguruma\version.txt")
+	if (!$OnigVer) { $OnigVer = "0.0.0" }
 	
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Version number: 'v$CompleteVer $VerPatch'")
@@ -60,7 +60,7 @@ try
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGMOVER\$', "$OnigmoVer" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGURUMAVER\$', "$OnigVer" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "src\VersionEx.h"
 	
 	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force

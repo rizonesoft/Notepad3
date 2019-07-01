@@ -104,8 +104,9 @@ typedef enum
   CFG_VER_NONE = 0, /// old version
   CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
   CFG_VER_0002 = 2,  /// LongLine Marker Off by default
+  CFG_VER_0003 = 3,  /// SimpleIni UTF-8 BOM
 
-  CFG_VER_CURRENT = CFG_VER_0002
+  CFG_VER_CURRENT = CFG_VER_0003
 
 } CFG_VERSION;
 
@@ -250,12 +251,15 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define INDIC_NP3_MARK_OCCURANCE (INDIC_CONTAINER + 1)
-#define INDIC_NP3_MATCH_BRACE    (INDIC_CONTAINER + 2)
-#define INDIC_NP3_BAD_BRACE      (INDIC_CONTAINER + 3)
-#define INDIC_NP3_FOCUS_VIEW     (INDIC_CONTAINER + 4)
-#define INDIC_NP3_HYPERLINK      (INDIC_CONTAINER + 5)
-#define INDIC_NP3_HYPERLINK_U    (INDIC_CONTAINER + 6)
+#define INDIC_NP3_MARK_OCCURANCE   (INDICATOR_CONTAINER +  1)
+#define INDIC_NP3_MATCH_BRACE      (INDICATOR_CONTAINER +  2)
+#define INDIC_NP3_BAD_BRACE        (INDICATOR_CONTAINER +  3)
+#define INDIC_NP3_FOCUS_VIEW       (INDICATOR_CONTAINER +  4)
+#define INDIC_NP3_HYPERLINK        (INDICATOR_CONTAINER +  5)
+#define INDIC_NP3_HYPERLINK_U      (INDICATOR_CONTAINER +  6)
+#define INDIC_NP3_COLOR_DEF        (INDICATOR_CONTAINER +  7) // (HIDDEN)
+#define INDIC_NP3_COLOR_DWELL      (INDICATOR_CONTAINER +  8)
+#define INDIC_NP3_MULTI_EDIT       (INDICATOR_CONTAINER +  9)
 
 // --------------------------------------------------------------------------
 
@@ -309,7 +313,7 @@ typedef struct _globals_t
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
-  int       iMarkOccurrencesCount;
+  DocPos    iMarkOccurrencesCount;
   bool      bUseLimitedAutoCCharSet;
   bool      bIsCJKInputCodePage;
   bool      bIniFileFromScratch;
@@ -347,6 +351,7 @@ typedef struct _settings_t
   bool AutoCloseTags;
   int  HighlightCurrentLine;
   bool HyperlinkHotspot;
+  bool ColorDefHotspot;
   bool ScrollPastEOF;
   bool ShowHypLnkToolTip;
   bool AutoIndent;
@@ -367,7 +372,7 @@ typedef struct _settings_t
   bool ShowSelectionMargin;
   bool ShowLineNumbers;
   bool ShowCodeFolding;
-  int MarkOccurrences;
+  bool MarkOccurrences;
   bool MarkOccurrencesMatchVisible;
   bool MarkOccurrencesMatchCase;
   bool MarkOccurrencesMatchWholeWords;
@@ -433,7 +438,7 @@ typedef struct _settings_t
 extern SETTINGS_T Defaults;
 extern SETTINGS_T Settings;
 
-#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences > 0)
+#define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences)
 #define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
 
 //=============================================================================
@@ -462,6 +467,7 @@ typedef struct _flags_t
 } FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;
+extern FLAGS_T DefaultFlags;
 
 //=============================================================================
 
@@ -506,6 +512,7 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
+extern SETTINGS2_T Defaults2;
 
 //=============================================================================
 

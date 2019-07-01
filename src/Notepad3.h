@@ -18,6 +18,7 @@
 
 #include "TypeDefs.h"
 #include "SciCall.h"
+#include "../uthash/utarray.h"
 
 //==== Main Window ============================================================
 
@@ -44,24 +45,28 @@ typedef struct np3params {
 np3params, *LPnp3params;
 
 
+#pragma pack(push, 1)
 typedef struct _undoSel
 {
   int selMode_undo;
-  DocPos anchorPos_undo;
-  DocPos curPos_undo;
-  DocPos anchorVS_undo;
-  DocPos curVS_undo;
+  UT_array* anchorPos_undo;
+  UT_array* curPos_undo;
+  UT_array* anchorVS_undo;
+  UT_array* curVS_undo;
 
   int selMode_redo;
-  DocPos anchorPos_redo;
-  DocPos curPos_redo;
-  DocPos anchorVS_redo;
-  DocPos curVS_redo;
+  UT_array* anchorPos_redo;
+  UT_array* curPos_redo;
+  UT_array* anchorVS_redo;
+  UT_array* curVS_redo;
 } 
 UndoRedoSelection_t;
+#pragma pack(pop)
 
-#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0 }
+//#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0 }
+#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, NULL, NULL, NULL, NULL, SC_SEL_STREAM, NULL, NULL, NULL, NULL }
 
+#define NP3_SEL_MULTI  (SC_SEL_RECTANGLE + SC_SEL_LINES + SC_SEL_THIN)
 
 typedef enum {
   UNDO = true,
@@ -112,6 +117,8 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE hInstance);
 HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
+WININFO InitDefaultWndPos(const int flagsPos);
+void InitWindowPosition(WININFO* pWinInfo, const int flagsPos);
 void BeginWaitCursor(LPCWSTR text);
 void EndWaitCursor();
 bool ActivatePrevInst();
@@ -125,15 +132,8 @@ void InstallFileWatching(LPCWSTR lpszFile);
 void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
-
-void LoadSettings();
-void SaveSettings(bool);
 void ParseCommandLine();
-void LoadFlags();
-bool FindIniFile();
-int  TestIniFile();
-bool  CreateIniFile();
-bool CreateIniFileEx(LPCWSTR lpszIniFile);
+bool SaveAllSettings(bool bSaveSettingsNow);
 void ShowZoomCallTip();
 void CancelCallTip();
 
@@ -143,7 +143,7 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
-void UpdateVisibleUrlIndics();
+void UpdateVisibleHotspotIndicators();
 inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
@@ -155,8 +155,10 @@ bool RestoreAction(int token, DoAction doAct);
 #define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
 
+void HandlePosChange();
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
-bool HandleHotSpotURL(const DocPos position, const HYPERLINK_OPS operation);
+bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
+void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);

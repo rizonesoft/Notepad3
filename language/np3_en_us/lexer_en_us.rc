@@ -121,6 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
     IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE
@@ -443,6 +444,9 @@ BEGIN
     IDS_LEX_STR_63351       "HotStringOption"
     IDS_LEX_STR_63352       "Inline-IME Color"
     IDS_LEX_STR_63353       "2nd Inline-IME Color"
+    IDS_LEX_STR_63354       "Multi Edit Indicator"
+    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63356       "Date-Time"
 END
 
 #endif    // English (United States) resources

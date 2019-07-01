@@ -103,17 +103,20 @@ void  EditPrintInit();
 void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
+void  EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
 void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
 void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
-void  EditUpdateUrlIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool);
+void  EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClearOnly);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
+void  EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
-
+void  EditBookmarkClick(const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
+void  EditSelectionMultiSelectAll();
 
 
 #define FV_TABWIDTH        1
@@ -153,9 +156,12 @@ void EditToggleFolds(FOLD_ACTION action,bool);
 void EditFoldClick(DocLn ln, int mode);
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
 
-void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 
 #define NP3_BRACES_TO_MATCH "()[]{}"
+
+#define GetMarkAllOccSearchFlags()  EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,\
+                                      Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false)
+
 
 #endif //_NP3_EDIT_H_
 

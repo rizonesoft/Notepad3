@@ -28,13 +28,14 @@
 #include <richedit.h>
 #pragma warning( pop ) 
 
-#include "Notepad3.h"
 #include "Edit.h"
 #include "Dlapi.h"
 #include "resource.h"
 #include "Version.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
+#include "Notepad3.h"
+#include "Config/Config.h"
 
 #include "SciCall.h"
 
@@ -246,7 +247,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     case IDYES:
     case IDNO:
       if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
-        IniSetInt(L"Suppressed Messages", lpMsgBox->lpstrSetting, LOWORD(wParam));
+        IniFileSetInt(Globals.IniFile, L"Suppressed Messages", lpMsgBox->lpstrSetting, LOWORD(wParam));
       }
     case IDABORT:
     case IDRETRY:
@@ -273,7 +274,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 //
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-  int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+  int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Globals.IniFile, L"Suppressed Messages", lpstrSetting, 0);
   if (iMode > 0) { return iMode; }
 
   WCHAR wchMessage[LARGE_BUFFER];
@@ -3971,7 +3972,7 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
 //
 //  Toolbar_Get/SetButtons()
 //
-int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons)
+int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons)
 {
   WCHAR tchButtons[512] = { L'\0' };
   WCHAR tchItem[32] = { L'\0' };
@@ -3991,7 +3992,7 @@ int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButton
   return(c);
 }
 
-int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb)
+int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb)
 {
   WCHAR tchButtons[MIDSZ_BUFFER];
 

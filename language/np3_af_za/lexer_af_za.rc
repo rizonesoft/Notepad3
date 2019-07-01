@@ -121,6 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistiek Kode"
     IDS_LEX_RUST_SRC        "Rust Bronkode"
     IDS_LEX_AHKL            "AutoHotkey_L Skrip"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE
@@ -443,6 +444,9 @@ BEGIN
     IDS_LEX_STR_63351       "HotStringOption"
     IDS_LEX_STR_63352       "In lyn-IME Kleur"
     IDS_LEX_STR_63353       "2de In lyn-IME Kleur"
+    IDS_LEX_STR_63354       "Multi Edit Indicator"
+    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63356       "Date-Time"
 END
 
 #endif    // Afrikaans (South Africa) resources

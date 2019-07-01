@@ -121,6 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statisticsコード"
     IDS_LEX_RUST_SRC        "Rustコード"
     IDS_LEX_AHKL            "AutoHotkey_Lスクリプト"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE
@@ -443,6 +444,9 @@ BEGIN
     IDS_LEX_STR_63351       "ホットストリング・オプション"
     IDS_LEX_STR_63352       "インライン入力時のIME変換"
     IDS_LEX_STR_63353       "第2 インライン入力時のIME変換"
+    IDS_LEX_STR_63354       "Multi Edit Indicator"
+    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63356       "Date-Time"
 END
 
 #endif    // Japanese (Japan) resources
