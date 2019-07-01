@@ -35,7 +35,6 @@ set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR
 :: --- Environment ---
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
-::set PORTAPP_ROOT_DIR=D:\Rizonesoft\PortableApps\PortableApps
 set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
