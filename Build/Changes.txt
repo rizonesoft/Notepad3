@@ -105,7 +105,7 @@ FIXES:
 --------------------------------------------------
 - Load external Toolbars (clear config on error, path relative to be portable)
 - Focused View: refolding by lexer
-- FocusedView started from Find/Replace dialog
+- Focused View started from Find/Replace dialog
 - Do not ignore notify change for Paste/Swap/Undo/Redo
 - Colourise bug on find next (w/ mark occurrences)
 - Indentation warning dialog
