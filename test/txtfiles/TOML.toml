@@ -41,16 +41,19 @@ data = [ ["gamma", "delta"], [1, 2] ]
 
 key = "value"
 key = # INVALID
-key = "value"
 bare_key = "value"
 bare-key = "value"
 1234 = "value"
+= "string"  # is invalid
 
 "127.0.0.1" = "value"
 "character encoding" = "value"
 "ʎǝʞ" = "value"
 'key2' = "value"
 'quoted "value"' = "value"
+
+"~!@$^&*()_+-` 1234567890 []|/?><.,;:'" = 1
+'~!@$^&*()_+-` 1234567890 []|/?><.,;:"' = 2
 
 # boolean
 bool1 = true

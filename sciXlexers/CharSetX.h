@@ -36,7 +36,7 @@ constexpr bool IsALetter(const int ch) noexcept {
 }
 
 constexpr bool IsLineBreak(const int ch) noexcept {
-  return ((ch == '\n') || (ch == '\r'));
+  return ((ch == '\n') || (ch == '\r') || (ch == '\0'));
 }
 
 inline int IsNumber(const Scintilla::StyleContext& sc) {
