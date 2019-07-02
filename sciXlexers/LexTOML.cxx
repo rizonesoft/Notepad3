@@ -449,6 +449,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
     {
       inMultiLnArrayDef = (GetSquareBracketLevel(sc, false) > 0);
       inSQuotedKey = inDQuotedKey = false;
+      isSectKeyBeg = isSectKeyEnd = false;
       bPossibleKeyword = true;
 
       if (inMultiLnArrayDef) {
@@ -572,27 +573,59 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
       case SCE_TOML_SECTION:
       {
-        if (sc.ch == ']') {
-          if (isSectKeyBeg) {
-            isSectKeyEnd = true;
-          }
-          if (GetSquareBracketLevel(sc, true) == 1) {
-            inSectionDef = false;
+        if (sc.ch == '"') {
+          if (!inSQuotedKey) {
+            inDQuotedKey = !inDQuotedKey;
           }
         }
-        else if (IsCommentChar(sc.ch)) {
-          if (!inSectionDef) {
-            sc.SetState(SCE_TOML_COMMENT);
+        else if (sc.ch == '\'') {
+          if (!inDQuotedKey) {
+            inSQuotedKey = !inSQuotedKey;
+          }
+        }
+        else if (!(inDQuotedKey || inSQuotedKey)) {
+          if (sc.ch == '[') {
+            if (isSectKeyBeg) {
+              SetStateParsingError(sc);
+            }
+            // Array of Tables - eat
+          }
+          else if (sc.ch == ']') {
+            int const level = GetSquareBracketLevel(sc, true);
+            if (isSectKeyBeg) {
+              isSectKeyEnd = true;
+            }
+            if (level == 1) {
+              inSectionDef = false;
+            }
+            else if (level < 1) {
+              SetStateParsingError(sc);
+            }
+          }
+          else if (IsCommentChar(sc.ch)) {
+            if (!inSectionDef) {
+              sc.SetState(SCE_TOML_COMMENT);
+            }
+            else {
+              SetStateParsingError(sc);
+            }
+          }
+          else if (IsASpaceOrTab(sc.ch)) {
+            // eat
           }
           else {
-            SetStateParsingError(sc);
+            if (validKey.Contains(sc.ch)) {
+              if (isSectKeyEnd) {
+                SetStateParsingError(sc);
+              }
+              else {
+                isSectKeyBeg = true;
+              }
+            }
+            else {
+              SetStateParsingError(sc);
+            }
           }
-        }
-        else if (!IsASpaceOrTab(sc.ch)) {
-          if (!validKey.Contains(sc.ch)) {
-            SetStateParsingError(sc);
-          }
-          // else EAT
         }
       }
       break;
