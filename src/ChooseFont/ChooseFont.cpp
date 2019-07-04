@@ -49,8 +49,8 @@ class ChooseFontDialog
 {
 public:
 
-  explicit ChooseFontDialog(HWND hParent, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI);
-  virtual ~ChooseFontDialog();
+  ChooseFontDialog(HWND hParent, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI);
+  ~ChooseFontDialog();
   ChooseFontDialog() = delete;
 
   HRESULT GetTextFormat(IDWriteTextFormat** textFormat);
@@ -131,7 +131,7 @@ ChooseFontDialog::~ChooseFontDialog()
 
 /******************************************************************
 *                                                                 *
-* ChooseFontDialog::ChooseFontDialog                              *
+* ChooseFontDialog::GetTextFormat                                 *
 *                                                                 *
 * Create and display the dialog initialized to default attributes *
 *                                                                 *
@@ -696,7 +696,7 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
   }
 
   // Select the current size
-  FLOAT  fCurFontSize = static_cast<FLOAT>(round(m_currentTextFormat->GetFontSize() * 10.0f) / 10.0f);
+  FLOAT  fCurFontSize = static_cast<FLOAT>(roundf(m_currentTextFormat->GetFontSize() * 10.0f) / 10.0f);
   StringCchPrintf(sizeName, _ARRAYSIZE(sizeName), L"%.3G", fCurFontSize);
 
   SetWindowText(hwndSizes, sizeName);
@@ -791,7 +791,7 @@ static void  SetChosenFontFromTextFormat(
 
     StringCchCopy(lpCF->lpLogFont->lfFaceName, LF_FACESIZE, fontFamilyName);
     lpCF->lpLogFont->lfHeight = -MulDiv(static_cast<int>(lround(pointSize)), GetDeviceCaps(lpCF->hDC, LOGPIXELSY), 72);
-    lpCF->iPointSize = static_cast<INT>(lround(pointSize * 10.0f));
+    lpCF->iPointSize = static_cast<INT>(lroundf(pointSize * 10.0f));
     lpCF->lpLogFont->lfWeight = static_cast<LONG>(fontWeight);
     lpCF->lpLogFont->lfItalic = static_cast<BYTE>((((fontStyle == DWRITE_FONT_STYLE_ITALIC) ||
       (fontStyle == DWRITE_FONT_STYLE_OBLIQUE)) ? TRUE : FALSE));

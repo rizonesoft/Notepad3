@@ -829,7 +829,7 @@ void LoadSettings()
     cpi_enc_t const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_UTF8);
     GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
-    GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
+    GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);

@@ -1014,7 +1014,8 @@ bool EditLoadFile(
   // Encoding Detection
   // --------------------------------------------------------------------------
 
-  cpi_enc_t iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+  // assume current code-page or default encoding (if forced)
+  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT;
 
   // --- 1st check for force encodings ---
   LPCWSTR lpszExt = PathFindExtension(pszFile);
@@ -1033,7 +1034,7 @@ bool EditLoadFile(
 
   if (Encoding_IsNONE(iForcedEncoding) || bForceEncDetection)
   {
-    iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iPreferredEncoding);
+    iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
 
     if (Flags.bDevDebugMode) {
 #if 1
@@ -1048,7 +1049,6 @@ bool EditLoadFile(
 #endif
     }
   }
-  bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
 
   // ------------------------------------------------------
 
@@ -1056,18 +1056,29 @@ bool EditLoadFile(
   {
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
-    if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding; // stay on preferred
+    if (iAnalyzedEncoding == CPI_NONE) 
+    {
+      iAnalyzedEncoding = iAnalyzeFallback;
+      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+    }
+    else if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
+      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+      confidence = Settings2.AnalyzeReliableConfidenceLevel;
     }
     else {
       if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
         iAnalyzedEncoding = CPI_NONE;
+        confidence = 0.0;
       }
     }
   }
+
+  bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
+
   // --------------------------------------------------------------------------
 
-  if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
+  if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) 
+  {
     iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
   }
   // --------------------------------------------------------------------------
@@ -1080,7 +1091,8 @@ bool EditLoadFile(
   // choose best encoding guess
   cpi_enc_t const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
 
-  // remap Preferred Encoding
+  // set Preferred Encoding
+  cpi_enc_t iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
 
   if (bIsForced) {
     iPreferredEncoding = iForcedEncoding;
