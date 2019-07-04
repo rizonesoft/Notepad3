@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.701.build (1 July 2019)
+Current Version 5.19.704.build (4 July 2019)
 ==================================================
 
 --------------------------------------------------
@@ -43,6 +43,9 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding
+- Allow Fixedsys font for GDI rendering
+- For new "Text File" scheme: use regular Segoe UI font
 - Scintilla Library (SCI) version 4.1.8 (2019-Jun-27)
 - Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-4)
 - Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
@@ -63,6 +66,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced)
 - Multi-Selection while Mark-Occurrences of current word is active
 
 --------------------------------------------------
