@@ -87,8 +87,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Ten Dokument"
-    IDT_VIEW_TOGGLE_VIEW     "Focused View"
+    IDT_FILE_LAUNCH          "Ten Document"
+    IDT_VIEW_TOGGLE_VIEW     "Widok skupiony"
     IDT_VIEW_CHASING_DOCTAIL "Dziennik monitorowania"
     IDT_VIEW_PIN_ON_TOP      "Zawsze na wierzchu"
 END
@@ -111,13 +111,13 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Wszystkie pliki (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Pliki wykonywalne (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Wszystkie pliki (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Pliki konfiguracyjne (*.ini)|*.ini|Wszystkie pliki (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|Wszystkie pliki (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Pliki wykonywalne (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Pliki konfiguracyjne (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Wybierz katalog ze skrótami do ulubionych aplikacji."
     IDS_MUI_FAVORITES       "Wybierz katalog ze skrótami do ulubionych plików."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tPasuje ka¿dy znak\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Szukaj wieloznacznika\n\n*\tPasuje zero lub wiêcej znaków.\n?\tPasuje dok³adnie jeden znak. "
 END
 
@@ -143,7 +143,7 @@ BEGIN
     IDS_MUI_ERR_DROP        "Tylko jeden plik mo¿e byæ upuszczony w tym samym czasie!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Plik ""%s"" nie mo¿e zostaæ zapisany i mo¿e byæ zabezpieczony.\n\nCzy uruchomiæ Notepad3 jako Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nSprawdŸ stronê https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Nie znalezionanarzêdzia administracyjnego.\nSprawdŸ stronê https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyæ ten du¿y plik?"
     IDS_MUI_WARN_UNKNOWN_EXT
@@ -162,13 +162,13 @@ BEGIN
     IDS_MUI_FIND_WRAPRE     "Dotarto do pocz¹tku dokumentu, ponowne przeszukiwanie do koñca."
     IDS_MUI_NOTFOUND        "Nie znaleziono okreœlonego tekstu."
     IDS_MUI_REPLCOUNT       "%i przyk³ady okreœlonego tekstu zosta³y zast¹pione."
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
+    IDS_MUI_ASK_ENCODING    "Prze³¹czanie kodowania pliku z jednego kodowania na drugie mo¿e zamieniæ tekst na domyœlne znaki, i przywrócenie historii zostanie wymazane. Kontynuowaæ?"
+    IDS_MUI_ASK_ENCODING2   "W³aœnie chcesz zmieniæ kodowanie pustego pliku. Spowoduje to wyczyszczenie historii, jak i równie¿ nie bêdzie mo¿liwe zsynchronizowanie nowego kodowania. Kontynuowaæ?"
     IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisaæ do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
                             "Bie¿¹cy plik zosta³ zmieniony przez zewnêtrzny program. Za³adowaæ ponownie?"
     IDS_MUI_FILECHANGENOTIFY2 "Bie¿¹cy plik zosta³ usuniêty. Zapisaæ teraz?"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
+    IDS_MUI_STICKYWINPOS    "Zamro¿ona pozycja okna jest w³¹czona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bie¿¹cego umiejscowienia okna."
     IDS_MUI_SAVEDSETTINGS   "Bie¿¹ce ustawienia programu zosta³y zapisane."
     IDS_MUI_CREATEINI_FAIL  "B³¹d podczas tworzenia pliku konfiguracyjnego."
     IDS_MUI_WRITEINI_FAIL   "B³¹d zapisywania ustawieñ do pliku konfiguracyjnego."
@@ -178,10 +178,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL      "B³¹d podczas eksportowania ustawieñ stylu do ""%s""."
-    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyæ plik."
+    IDS_MUI_EXPORT_FAIL      "B³¹d podczas eksportowania ustawieñ styu do ""%s""."
+    IDS_MUI_REGEX_INVALID    "B³¹d podczas oceny regularnego wyra¿enia. Wyra¿enie jest nieuzasadnione!"
+    IDS_MUI_DROP_NO_FILE     "Nie rozpoznano ¿adnej sensownej nazwy pliku.\nJeœli upuœcisz aplikacjê 32-bitow¹,\nprzeci¹gnij i upuœæ do paska narzêdzi Notepad3'a."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyc plik."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyæ link w przegl¹darce."
 END
 
@@ -193,7 +193,7 @@ BEGIN
     IDS_MUI_ASK_CREATE      """%s"" nie znaleziono.\nCzy chcesz utworzyæ ten plik?"
     IDS_MUI_PRINT_HEADER    "Nazwa pliku, bie¿¹ca data i czas|Nazwa pliku, bie¿¹ca data|Nazwa pliku|Zostaw czysty"
     IDS_MUI_PRINT_FOOTER    "Numer strony|Pozostaw czysty"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
+    IDS_MUI_PRINT_COLOR     "Normalny|Odwróæ jasne (ciemne t³o)|Czarny na bia³y|Kolorowy na bia³y|Kolorowy na bia³y (z wyj¹tkiem numerów wierszy)|Kolory ekranu"
     IDS_MUI_PRINT_PAGENUM   "Strona %i"
 END
 
@@ -224,8 +224,8 @@ BEGIN
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
     IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
+    IDS_MUI_ASSOCIATED_EXT  "Skojarzone rozszerzenia nazwy plików:"
+    IDS_MUI_EXAMPLE_TEXT    "W ni¿ach móg³ zjeœæ truflê koñ b¹dŸ psy, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Linia (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Kolumna (1 - %lli):"
@@ -242,10 +242,10 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+U¿ycie:\r\n\
+Notepad3 \t[/?] [...[Kodowanie]] [...[Tryb koñca wiersza]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[napêd:][œcie¿ka]nazwa pliku[...]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
