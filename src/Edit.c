@@ -1024,7 +1024,6 @@ bool EditLoadFile(
   cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :
     ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
 
-
   // --- 2nd Use Encoding Analysis if applicable
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
@@ -1047,6 +1046,13 @@ bool EditLoadFile(
       SciCall_SetXOffset(iXOff);
       Globals.CallTipType = CT_ENC_INFO;
 #endif
+    }
+  }
+  else {
+    if (Flags.bDevDebugMode) {
+      WCHAR wchBuf[128] = { L'\0' };
+      StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[iForcedEncoding].wchLabel);
+      SetAdditionalTitleInfo(wchBuf);
     }
   }
 
@@ -1180,6 +1186,15 @@ bool EditLoadFile(
 
     FileVars_Init(lpData, cbData, &Globals.fvCurFile);
 
+    if (Flags.bDevDebugMode) {
+      if (FileVars_IsValidEncoding(&Globals.fvCurFile)) {
+        WCHAR wchBuf[128] = { L'\0' };
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"FileVarEncoding='%s'", 
+          g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
+        SetAdditionalTitleInfo(wchBuf);
+      }
+    }
+
     // ===  UTF-8  ===
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
@@ -1207,6 +1222,7 @@ bool EditLoadFile(
 
       if (bIsForced)
         status->iEncoding = iForcedEncoding;
+
       else {
         status->iEncoding = FileVars_GetEncoding(&Globals.fvCurFile);
         if (Encoding_IsNONE(status->iEncoding))
@@ -1263,6 +1279,12 @@ bool EditLoadFile(
   Encoding_SrcWeak(CPI_NONE);
 
   SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(iAnalyzedEncoding) ? 0x10000 : 0x1000);
+
+  if (Flags.bDevDebugMode) {
+    WCHAR wcBuf[128] = { L'\0' };
+    StringCchPrintf(wcBuf, ARRAYSIZE(wcBuf), L"  OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
+    AppendAdditionalTitleInfo(wcBuf);
+  }
 
   return true;
 }

@@ -1504,8 +1504,9 @@ bool MRU_Empty(LPMRULIST pmru)
       pmru->pszItems[i] = NULL;
       pmru->iEncoding[i] = 0;
       pmru->iCaretPos[i] = 0;
-      if (pmru->pszBookMarks[i])
+      if (pmru->pszBookMarks[i]) {
         LocalFree(pmru->pszBookMarks[i]);  // StrDup()
+      }
       pmru->pszBookMarks[i] = NULL;
     }
   }
@@ -1573,7 +1574,7 @@ bool MRU_Save(LPMRULIST pmru)
   if (LoadIniFile(Globals.IniFile)) {
 
     const WCHAR* const RegKey_Section = pmru->szRegKey;
-    //IniDeleteSection(pmru->szRegKey);
+    IniSectionClear(pmru->szRegKey, false);
 
     for (int i = 0; i < pmru->iSize; i++) {
       if (pmru->pszItems[i]) {
