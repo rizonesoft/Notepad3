@@ -20,7 +20,7 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"", L"",
     /* 10 */ { {_STYLE_GETSTYLEID(STY_LONG_LN_MRK)}, IDS_LEX_STD_LONG_LN, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
     /* 11 */ { {_STYLE_GETSTYLEID(STY_X_LN_SPACE)}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
     /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; alpha:100", L"" },
-    /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"alpha:60; alpha2:60; indic_roundbox", L"" },
+    /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"fore:#3399FF; alpha:60; alpha2:60; indic_roundbox", L"" },
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"fore:#0000FF; back:#0000BF; indic_plain", L"" },
     /* 15 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63354, L"Multi Edit Indicator", L"fore:#FFA000; alpha:60; alpha2:180; indic_roundbox", L"" },
     /* 16 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
@@ -53,7 +53,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"", L"",
 EDITLEXER lexTEXT = {
 SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
 &KeyWords_NULL,{
-    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Segoe UI Semibold; size:11; semibold; smoothing:cleartype", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Segoe UI; size:11; smoothing:cleartype", L"" },
     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
     { {SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
     EDITLEXER_SENTINEL } };
