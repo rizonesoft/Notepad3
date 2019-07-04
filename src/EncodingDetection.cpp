@@ -873,7 +873,7 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
   //~}
       
-  StringCchPrintfA(tmpBuf, 128, (int)lroundf(ucd_conf_perc) >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
+  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), (int)lroundf(ucd_conf_perc) >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
   MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchEncodingInfo, ARRAYSIZE(wchEncodingInfo));

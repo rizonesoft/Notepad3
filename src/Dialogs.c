@@ -3550,6 +3550,11 @@ void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
   StringCchCopy(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
+void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
+{
+  StringCchCat(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
+}
+
 
 //=============================================================================
 //

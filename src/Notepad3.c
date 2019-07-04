@@ -1209,6 +1209,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if (s_lpEncodingArg) {
     Encoding_SrcCmdLn(Encoding_MatchW(s_lpEncodingArg));
   }
+
   // Pathname parameter
   if (s_flagIsElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
   {
@@ -7557,6 +7558,7 @@ void ParseCommandLine()
 
         // Encoding
         cpi_enc_t const encoding = Encoding_MatchW(lp1);
+
         if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0) {
           s_flagSetEncoding = CPI_ANSI_DEFAULT;
         }
@@ -7576,8 +7578,12 @@ void ParseCommandLine()
         }
         // maybe parsed encoding
         else if (encoding != CPI_NONE) {
+          if (s_lpEncodingArg) { LocalFree(s_lpEncodingArg); }
+          s_lpEncodingArg = StrDup(lp1);
           s_flagSetEncoding = encoding;
         }
+        
+
         // EOL Mode
         else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
