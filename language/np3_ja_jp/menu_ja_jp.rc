@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "管理者権限で再起動(&R)",          IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "管理者権限で再起動(&R)",                 IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "開いている文書を実行(&D)\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
@@ -93,8 +93,8 @@ BEGIN
             MENUITEM "デフォルトで読み直し(&D)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
             MENUITEM "ANSIで読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "OEMで読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
-            MENUITEM "GB18030で読み直し(&G)\tCtrl+Shift+F10",     CMD_RECODEGB18030
-            MENUITEM "UCHARDET解析で検出し読み直し",                  CMD_RELOADFORCEDETECTION
+            MENUITEM "GB18030で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
+            MENUITEM "UCHARDET解析で検出し読み直し",              CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCIIをUTF-8として開く(&8)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
             MENUITEM "文字コードを無視(&T)\tAlt+F8",              CMD_RELOADNOFILEVARS
@@ -177,8 +177,8 @@ BEGIN
             MENUITEM "空の行をまとめる(&G)\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "スペースの行もまとめる\tCtrl+Alt+Y",          IDM_EDIT_MERGEBLANKLINES
             MENUITEM "空の行を削除(&R)\tAlt+R",                IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "スペースの行も削除\tCtrl+Alt+B",            IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "重複内容の行を削除(&O)\tCtrl+Alt+D",      IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "スペースの行も削除\tCtrl+Alt+B",           IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "重複内容の行を削除(&O)\tCtrl+Alt+D",     IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "選択(&S)"
         BEGIN
@@ -298,18 +298,18 @@ BEGIN
         MENUITEM "行の長さのガイド(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "空白(&W)\tCtrl+Shift+8",                    IDM_VIEW_SHOWBLANKS
-        MENUITEM "改行コード(&E)\tCtrl+Shift+9",                IDM_VIEW_SHOWEOLS
+        MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",             IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "空白(&W)\tCtrl+Shift+8",                   IDM_VIEW_SHOWBLANKS
+        MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Color Definition Hotspots",               IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
+        MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "無し(&N)",                       IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "背景色を変える(&C)",                   IDM_VIEW_HILITCURLN_BACK
-            MENUITEM "枠線(&F)",                      IDM_VIEW_HILITCURLN_FRAME
+            MENUITEM "無し(&N)",                             IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "背景色を変える(&C)",                     IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "枠線(&F)",                             IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "単語出現マーカー(&k)"
         BEGIN
@@ -336,14 +336,14 @@ BEGIN
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&F)",               IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "ハイパーリンクのツールチップを表示(&H)",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "ハイパーリンクのツールチップを表示(&H)",            IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "ツールバー(&T)"
         BEGIN
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
             MENUITEM "アイコン大小の切り替え(&G)",                    IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
-            MENUITEM "ツールバー用独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
+            MENUITEM "ツールバー用独自アイコンを設定(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
         END
         POPUP "拡大縮小(&Z)"
@@ -367,7 +367,7 @@ BEGIN
     BEGIN
         MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "文書の種類を選択(&X)...\tF12",        IDM_VIEW_SCHEME
+        MENUITEM "文書の種類を選択(&X)...\tF12",              IDM_VIEW_SCHEME
         MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
@@ -375,7 +375,7 @@ BEGIN
         END
     POPUP "設定(&S)"
     BEGIN
-        MENUITEM "タブキーで空白を入力(&S)",                  IDM_VIEW_TABSASSPACES
+        MENUITEM "タブキーで空白を入力(&S)",                       IDM_VIEW_TABSASSPACES
         MENUITEM "タブキーの設定(&T)...\tCtrl+T",                  IDM_VIEW_TABSETTINGS
         MENUITEM "折り返し方の設定(&W)...",                        IDM_VIEW_WORDWRAPSETTINGS
         MENUITEM "行の長さのガイド設定(&L)...",                     IDM_VIEW_LONGLINESETTINGS
@@ -387,7 +387,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "単一のインスタンスでファイルを開く(&F)",               IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知する(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
-        MENUITEM "メッセージ時のシステム音をミュート(&B)",                         IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "メッセージ時のシステム音をミュート(&B)",               IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
             MENUITEM "何もしない(&N)",                          IDM_VIEW_NOESCFUNC
@@ -472,10 +472,10 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "アイコン大小の切り替え(&G)",                           IDM_VIEW_TOGGLETB
+        MENUITEM "アイコン大小の切り替え(&G)",                     IDM_VIEW_TOGGLETB
         MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
-        MENUITEM "ツールバー用独自アイコンを設定(&L)...",                    IDM_VIEW_LOADTHEMETB
-        MENUITEM "ステータスバーの表示(&S)",                       IDM_VIEW_STATUSBAR
+        MENUITEM "ツールバー用独自アイコンを設定(&L)...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "ステータスバーの表示(&S)",                      IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN

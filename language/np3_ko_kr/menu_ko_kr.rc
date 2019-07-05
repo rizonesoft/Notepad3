@@ -156,8 +156,8 @@ BEGIN
         END
         POPUP "줄(&I)"
         BEGIN
-            MENUITEM "위로 옮김(&U)\tCtrl+Shift+Up",                IDM_EDIT_MOVELINEUP
-            MENUITEM "아래로 옮김(&M)\tCtrl+Shift+Down",            IDM_EDIT_MOVELINEDOWN
+            MENUITEM "위로 옮김(&U)\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
+            MENUITEM "아래로 옮김(&M)\tCtrl+Shift+Down",           IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "줄 잘라내기(&L)\tCtrl[+Shift]+X",            IDM_EDIT_CUTLINE
             MENUITEM "줄 복사(&C)\tCtrl[+Shift]+C",               IDM_EDIT_COPYLINE
@@ -227,9 +227,9 @@ BEGIN
         END
         POPUP "삽입(&N)"
         BEGIN
-            MENUITEM "새 줄(&N)\tCtrl+Enter",                     CMD_CTRLENTER
+            MENUITEM "새 줄(&N)\tCtrl+Enter",                   CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "HTML/XML 태그(&H)...\tAlt+X",               IDM_EDIT_INSERT_TAG
+            MENUITEM "HTML/XML 태그(&H)...\tAlt+X",             IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
             MENUITEM "인코딩 식별자(&E)\tCtrl+F8",                 IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
@@ -250,11 +250,11 @@ BEGIN
             MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "C언어 이스케이프 시퀀스 변환(&P)\tCtrl+Alt+E",       IDM_EDIT_ESCAPECCHARS
-            MENUITEM "C언어 이스케이프 시퀀스 복원(&U)\tCtrl+Alt+R",       IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "C언어 이스케이프 시퀀스 변환(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C언어 이스케이프 시퀀스 복원(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "문자를 Hex 값으로 변환(&H)\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
-            MENUITEM "Hex 값을 문자로 변환(&R)\tCtrl+Alt+C",            IDM_EDIT_HEX2CHAR
+            MENUITEM "문자를 Hex 값으로 변환(&H)\tCtrl+Alt+X",        IDM_EDIT_CHAR2HEX
+            MENUITEM "Hex 값을 문자로 변환(&R)\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "번호 증가\tCtrl+Alt+NK+",               CMD_INCREASENUM
             MENUITEM "번호 감소\tCtrl+Alt+NK-",               CMD_DECREASENUM
@@ -271,7 +271,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
         BEGIN
-            MENUITEM "지정/해제(&T)\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "지정/해제(&T)\tCtrl+F2",                  BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
             MENUITEM "다음 책갈피로 바로가기(&N)\tF2",              BME_EDIT_BOOKMARKNEXT
             MENUITEM "이전 책갈피로 바로가기(&P)\tShift+F2",        BME_EDIT_BOOKMARKPREV
@@ -367,7 +367,7 @@ BEGIN
     BEGIN
         MENUITEM "스키마 편집(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "구문 스키마 선택(&X)...\tF12",          IDM_VIEW_SCHEME
+        MENUITEM "구문 스키마 선택(&X)...\tF12",                  IDM_VIEW_SCHEME
         MENUITEM "&2nd 기본 스키마\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "전체 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
@@ -385,9 +385,9 @@ BEGIN
         MENUITEM "Lexer-Key-Words 자동 완성(&K)",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "단어 탐색 가속(&G)\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "단일 파일 인스턴스(&F)",                  IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "파일 변경 알림(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
-        MENUITEM "메시지 비프음 소거(&B)",                  IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "단일 파일 인스턴스(&F)",                   IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY
+        MENUITEM "메시지 비프음 소거(&B)",                   IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "ESC 키 기능(&K)"
         BEGIN
             MENUITEM "동작 없음(&N)",                      IDM_VIEW_NOESCFUNC

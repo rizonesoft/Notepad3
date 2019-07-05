@@ -259,11 +259,11 @@ BEGIN
             MENUITEM "Increase Number\tCtrl+Alt+NK+",  CMD_INCREASENUM
             MENUITEM "Decrease Number\tCtrl+Alt+NK-",  CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Find Matching Brace\tCtrl+B",            IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Find Matching Brace\tCtrl+B",              IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B",   IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Select To &Next\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
-            MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM "Select To &Next\tCtrl+Alt+F2",              IDM_EDIT_SELTONEXT
+            MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2",    IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES

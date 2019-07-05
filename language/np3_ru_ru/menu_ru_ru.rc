@@ -100,7 +100,7 @@ BEGIN
             MENUITEM "Игнорировать &теги кодировки\tAlt+F8",                CMD_RELOADNOFILEVARS
             MENUITEM "&Переоткрыть в...\tF8",                               IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Установить кодировку по умолчанию...", IDM_ENCODING_SETDEFAULT
+            MENUITEM "&Установить кодировку по умолчанию...",               IDM_ENCODING_SETDEFAULT
         END
         POPUP "Окончани&я строк"
         BEGIN
@@ -259,10 +259,10 @@ BEGIN
             MENUITEM "Увеличить число\tCtrl+Alt+NK+",                   CMD_INCREASENUM
             MENUITEM "Уменьшить число\tCtrl+Alt+NK-",                   CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Найти парные скобки\tCtrl+B",                        IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Выделить по &парным скобкам\tCtrl+Shift+B",           IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Найти парные скобки\tCtrl+B",                          IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Выделить по &парным скобкам\tCtrl+Shift+B",             IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "&Выделить до следующего вхождения\tCtrl+Alt+F2",      IDM_EDIT_SELTONEXT
+            MENUITEM "&Выделить до следующего вхождения\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
             MENUITEM "Выделить до предыдущего в&хождения\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Select &Word or Lines\tCtrl+Spc",             IDM_EDIT_SELECTWORD

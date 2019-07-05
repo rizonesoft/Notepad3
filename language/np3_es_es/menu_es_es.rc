@@ -187,8 +187,8 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "&Incluir selección"
             BEGIN
-                MENUITEM "Comillas simples\tCtrl+1",         CMD_STRINGIFY
-                MENUITEM "Comillas &dobles\tCtrl+2",         CMD_STRINGIFY2
+                MENUITEM "Comillas simples\tCtrl+1",        CMD_STRINGIFY
+                MENUITEM "Comillas &dobles\tCtrl+2",        CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
@@ -265,8 +265,8 @@ BEGIN
             MENUITEM "Seleccionar siguie&nte\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
             MENUITEM "Seleccionar an&terior\tCtrl+Alt+Shift+F2",        IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Seleccionar &palabra o líneas\tCtrl+Spc",              IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-selección &todas coincidencias\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "&Marcadores"
@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicar &hipervínculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Color Definition Hotspots",              IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "&Definición color Hotspots",                          IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
         BEGIN
@@ -480,7 +480,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Abrir Notepad3",                              IDM_TRAY_RESTORE
-        MENUITEM "Cerrar Notepad3",                           IDM_TRAY_EXIT
+        MENUITEM "Cerrar Notepad3",                             IDM_TRAY_EXIT
     END
 END
 
