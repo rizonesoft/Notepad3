@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.704.build (4 July 2019)
+Current Version 5.19.705.build (5 July 2019)
 ==================================================
 
 --------------------------------------------------
@@ -66,7 +66,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced)
+- Extended encoding detection debug information
+- Encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced)
 - Multi-Selection while Mark-Occurrences of current word is active
 
 --------------------------------------------------

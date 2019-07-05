@@ -147,7 +147,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Sza&vak"
         BEGIN
-            MENUITEM "&Szó kiegészítése\tCtrl+Alt+Enter",   IDM_EDIT_COMPLETEWORD
+            MENUITEM "&Szó kiegészítése\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
             MENUITEM "Kurzor egy szónyit &balra\tCtrl+Left",   CMD_CTRLLEFT
             MENUITEM "Kurzor egy szónyit &jobbra\tCtrl+Right", CMD_CTRLRIGHT
@@ -187,14 +187,14 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "&Kijelölés körbevétele"
             BEGIN
-                MENUITEM "&Aposztróf\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "I&dézõjel\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "&Aposztróf\tCtrl+1",             CMD_STRINGIFY
+                MENUITEM "I&dézõjel\tCtrl+2",              CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                   CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                    CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                    CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                    CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backtick\tCtrl+6",             CMD_EMBRACE4
+                MENUITEM "&Backtick\tCtrl+6",              CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "&Egyéni...\tAlt+Q",              IDM_EDIT_ENCLOSESELECTION
             END
@@ -220,10 +220,10 @@ BEGIN
             MENUITEM "Mint &mondat\tCtrl+Alt+O",          IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "Kijelölésben &Tabulátorrá\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
-            MENUITEM "Kijelölés Ta&b-mentes\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "Kijelölés Ta&b-mentes\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Behúzás Tab&ulátorrá\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Behúzás Tab-m&entes\tCtrl+Alt+S",   IDM_EDIT_CONVERTTABS2
+            MENUITEM "Behúzás Tab&ulátorrá\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Behúzás Tab-m&entes\tCtrl+Alt+S",       IDM_EDIT_CONVERTTABS2
         END
         POPUP "&Beillesztés"
         BEGIN

@@ -174,20 +174,20 @@ BEGIN
             MENUITEM "Smel&t Lyne Saam\tCtrl+Alt+J",         IDM_EDIT_JOINLN_NOSP
             MENUITEM "Behou &Paragrawe\tCtrl+Shift+J",       IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Voeg Lêer Lyne &Saam\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Voeg Lêer Lyne &Saam\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Voeg &Blank Lyne Saam\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Verw&yder Lêer Lyne\tAlt+R",            IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Verw&yder Lêer Lyne\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Ver&wyder Blank Lyne\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "Verwyder D&uplikaatlyne\tCtrl+Alt+D",  IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "&Seleksie"
         BEGIN
             MENUITEM "&Inkeep",                             IDM_EDIT_INDENT
-            MENUITEM "&Ontkeep",                                IDM_EDIT_UNINDENT
+            MENUITEM "&Ontkeep",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "Omsluit S&eleksie"
             BEGIN
-                MENUITEM "&Enkele Aanhaling\tCtrl+1",           CMD_STRINGIFY
+                MENUITEM "&Enkele Aanhaling\tCtrl+1",       CMD_STRINGIFY
                 MENUITEM "&Dubbelle Aanhaling\tCtrl+2",     CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
@@ -196,9 +196,9 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Backticks\tCtrl+6",              CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Met...\tAlt+Q",                      IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Met...\tAlt+Q",                  IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Dupliseer Seleksie/Lyn\tCtrl+D",        IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Dupliseer Seleksie/Lyn\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Pad Met Spasies\tAlt+B",             IDM_EDIT_PADWITHSPACES
             MENUITEM "Strip &Eerste Karakter\tAlt+Z",       IDM_EDIT_STRIP1STCHAR
@@ -212,14 +212,14 @@ BEGIN
         END
         POPUP "Co&nvert"
         BEGIN
-            MENUITEM "&Hoofletters\tCtrl+Shift+U",               IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Kleinletter\tCtrl+U",                     IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "&Hoofletters\tCtrl+Shift+U",              IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&Kleinletter\tCtrl+U",                    IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Keer &Case\tCtrl+Alt+U",                     IDM_EDIT_INVERTCASE
-            MENUITEM "&Titel Case\tCtrl+Alt+I",                  IDM_EDIT_TITLECASE
-            MENUITEM "&Sin Case\tCtrl+Alt+O",                         IDM_EDIT_SENTENCECASE
+            MENUITEM "Keer &Case\tCtrl+Alt+U",                  IDM_EDIT_INVERTCASE
+            MENUITEM "&Titel Case\tCtrl+Alt+I",                 IDM_EDIT_TITLECASE
+            MENUITEM "&Sin Case\tCtrl+Alt+O",                   IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "&Tabifiseer Seleksie\tCtrl+Shift+T",       IDM_EDIT_CONVERTSPACES
+            MENUITEM "&Tabifiseer Seleksie\tCtrl+Shift+T",      IDM_EDIT_CONVERTSPACES
             MENUITEM "&On-Tabifiseer Seleksie\tCtrl+Shift+S",   IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "Ta&bifiseer Inkeep\tCtrl+Alt+T",          IDM_EDIT_CONVERTSPACES2
@@ -262,11 +262,11 @@ BEGIN
             MENUITEM "&Vind Bypassende Hakie\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Kies na &Bypassende Hakie\tCtrl+Shift+B",      IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Kies na &Volgende\tCtrl+Alt+F2",                IDM_EDIT_SELTONEXT
-            MENUITEM "Kies na Vori&ge\tCtrl+Alt+Shift+F2",            IDM_EDIT_SELTOPREV
+            MENUITEM "Kies na &Volgende\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
+            MENUITEM "Kies na Vori&ge\tCtrl+Alt+Shift+F2",           IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Select &Word or Lines\tCtrl+Spc",              IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "Boe&kmerke"
@@ -367,7 +367,7 @@ BEGIN
     BEGIN
         MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "&Kies Sintakseskema...\tF12",                        IDM_VIEW_SCHEME
+        MENUITEM "&Kies Sintakseskema...\tF12",                          IDM_VIEW_SCHEME
         MENUITEM "&2de Verstek Skema\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT

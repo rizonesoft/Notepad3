@@ -231,13 +231,13 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML 标记(&H)...\tAlt+X",            IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "编码标识符(&E)\tCtrl+F8",                   IDM_EDIT_INSERT_ENCODING
+            MENUITEM "编码标识符(&E)\tCtrl+F8",                IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "日期和时间（短格式）(&T)\tCtrl+F5",         IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "更新时间戳(&U)\tShift+F5",                 CMD_TIMESTAMPS
+            MENUITEM "更新时间戳(&U)\tShift+F5",                CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "文件名(&F)\tCtrl+F9",                      IDM_EDIT_INSERT_FILENAME
+            MENUITEM "文件名(&F)\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
             MENUITEM "完整文件路径(&P)\tCtrl+Shift+F9",          IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
@@ -294,8 +294,8 @@ BEGIN
     END
     POPUP "查看(&V)"
     BEGIN
-        MENUITEM "自动换行(&R)\tCtrl+W",                         IDM_VIEW_WORDWRAP
-        MENUITEM "显示行长度标记(&L)\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
+        MENUITEM "自动换行(&R)\tCtrl+W",                        IDM_VIEW_WORDWRAP
+        MENUITEM "显示行长度标记(&L)\tCtrl+Shift+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "显示软换行(&P)\tCtrl+Shift+7",                IDM_VIEW_WORDWRAPSYMBOLS
@@ -367,7 +367,7 @@ BEGIN
     BEGIN
         MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "选择语法高亮方案(&X)...\tF12",                IDM_VIEW_SCHEME
+        MENUITEM "选择语法高亮方案(&X)...\tF12",                 IDM_VIEW_SCHEME
         MENUITEM "使用备选基本样式(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
@@ -375,19 +375,19 @@ BEGIN
         END
     POPUP "设置(&S)"
     BEGIN
-        MENUITEM "将制表符替换为空格(&S)",                         IDM_VIEW_TABSASSPACES
-        MENUITEM "制表符设置(&T)...\tCtrl+T",                     IDM_VIEW_TABSETTINGS
-        MENUITEM "自动换行设置(&W)...",                           IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "长行标记设置(&L)...",                           IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "自动缩进(&D)",                                  IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",         IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "自动补全单词(&U)",                              IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "自动补全语法关键字(&K)",                        IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                  IDM_VIEW_ACCELWORDNAV
+        MENUITEM "将制表符替换为空格(&S)",                       IDM_VIEW_TABSASSPACES
+        MENUITEM "制表符设置(&T)...\tCtrl+T",                   IDM_VIEW_TABSETTINGS
+        MENUITEM "自动换行设置(&W)...",                         IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "长行标记设置(&L)...",                         IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "自动缩进(&D)",                                IDM_VIEW_AUTOINDENTTEXT
+        MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",       IDM_VIEW_AUTOCLOSETAGS
+        MENUITEM "自动补全单词(&U)",                            IDM_VIEW_AUTOCOMPLETEWORDS
+        MENUITEM "自动补全语法关键字(&K)",                      IDM_VIEW_AUTOCLEXKEYWORDS
+        MENUITEM "加速单词导航(&G)\tCtrl+Alt+A",                IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "单一文件实例(&F)",                             IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "文件修改通知(&C)...\tAlt+F5",                  IDM_VIEW_CHANGENOTIFY
-        MENUITEM "关闭消息提示音(&B)",                         IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "单一文件实例(&F)",                            IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_VIEW_CHANGENOTIFY
+        MENUITEM "关闭消息提示音(&B)",                          IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc 键功能(&K)"
         BEGIN
             MENUITEM "无(&N)",                                IDM_VIEW_NOESCFUNC
@@ -420,10 +420,10 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "默认 GDI(&G)",                     IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (Direct2D) (&D)",         IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite Retain(&R)",             IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "DirectWrite GDI DC(&W)",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "默认 GDI(&G)",                      IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "双向(&B)"
             BEGIN
@@ -447,7 +447,7 @@ BEGIN
         MENUITEM "访问网站以检查更新(&W)",                    IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "命令行帮助(&C)...",                         IDM_HELP_CMD
-        MENUITEM "关于(&A)...\tShift+F1",                     IDM_HELP_ABOUT
+        MENUITEM "关于(&A)...\tShift+F1",                    IDM_HELP_ABOUT
     END
 END
 

@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "&Nieuw venster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeg venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "He&rlancering met hoge rechten",                  IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "He&rlancering met hoge rechten",      IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Uitvoeren &Document\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Opslaan als...\tAlt+L",              IDM_FILE_OPENWITH
@@ -265,8 +265,8 @@ BEGIN
             MENUITEM "Selectie naar &volgende\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
             MENUITEM "Selectie naar vori&ge\tCtrl+Alt+Shift+F2",        IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",                 IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",       IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Selectie &woord of lijnen\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-selectie alle Matching\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "Blad&wijzers"
@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "Tonen de lijn &eindes\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indicatoren\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Color Definition Hotspots",              IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "&Kleurdefinitie Hotspots",                IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Visuele Brace Matching\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
         POPUP "Mar&keer actueel lijn\tCtrl+Shift+I"
         BEGIN
@@ -387,7 +387,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "En&kel bestand instantie",                            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Bestandswijziging notifi&catie...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Dempen Bericht &Beeps",                              IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Dempen Bericht &Beeps",                               IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &toest functie"
         BEGIN
             MENUITEM "&Geen",                               IDM_VIEW_NOESCFUNC
