@@ -87,7 +87,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Ten Document"
+    IDT_FILE_LAUNCH          "Ten Dokument"
     IDT_VIEW_TOGGLE_VIEW     "Widok skupiony"
     IDT_VIEW_CHASING_DOCTAIL "Dziennik monitorowania"
     IDT_VIEW_PIN_ON_TOP      "Zawsze na wierzchu"
@@ -112,8 +112,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Wszystkie pliki (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Pliki wykonywalne (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Pliki konfiguracyjne (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Pliki konfiguracyjne (*.ini)|*.ini|Wszystkie pliki (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|Wszystkie pliki (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Wybierz katalog ze skrótami do ulubionych aplikacji."
     IDS_MUI_FAVORITES       "Wybierz katalog ze skrótami do ulubionych plików."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -143,11 +143,11 @@ BEGIN
     IDS_MUI_ERR_DROP        "Tylko jeden plik mo¿e byæ upuszczony w tym samym czasie!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Plik ""%s"" nie mo¿e zostaæ zapisany i mo¿e byæ zabezpieczony.\n\nCzy uruchomiæ Notepad3 jako Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "Nie znalezionanarzêdzia administracyjnego.\nSprawdŸ stronê https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzêdzia administracyjnego.\nSprawdŸ stronê https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyæ ten du¿y plik?"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Nieznane rozszerzenie nazwy pliku (%s) !\nCzy mimo to za³adowaæ ?"
+                            "Nieznane rozszerzenie nazwy pliku (%s) !\nCzy mimo to za³adowaæ?"
     IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wciêcie!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -181,7 +181,7 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "B³¹d podczas eksportowania ustawieñ styu do ""%s""."
     IDS_MUI_REGEX_INVALID    "B³¹d podczas oceny regularnego wyra¿enia. Wyra¿enie jest nieuzasadnione!"
     IDS_MUI_DROP_NO_FILE     "Nie rozpoznano ¿adnej sensownej nazwy pliku.\nJeœli upuœcisz aplikacjê 32-bitow¹,\nprzeci¹gnij i upuœæ do paska narzêdzi Notepad3'a."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyc plik."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyæ plik."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyæ link w przegl¹darce."
 END
 
