@@ -69,12 +69,10 @@ inline bool IniSectionSetPos(LPCWSTR lpSectionName, LPCWSTR lpKeyName, DocPos po
 //                  a_pKey is NULL, the section to remove.
 //  lpKeyName       Key to remove from the section.Set to
 //                  NULL to remove the entire section.
-//  lpValue         Value of key to remove from the section.
-//                  Set to NULL to remove all keys.
 //  bRemoveEmpty    If the section is empty after this key has
 //                  been deleted, should the empty section be removed ?
 //
-bool IniSectionDeleteValue(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpValue, bool bRemoveEmpty);
+bool IniSectionDelete(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty);
 bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty);
 bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty);
 
@@ -100,12 +98,10 @@ bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName
 //                  a_pKey is NULL, the section to remove.
 //  lpKeyName       Key to remove from the section.Set to
 //                  NULL to remove the entire section.
-//  lpValue         Value of key to remove from the section.
-//                  Set to NULL to remove all keys.
 //  bRemoveEmpty    If the section is empty after this key has
 //                  been deleted, should the empty section be removed ?
 //
-bool IniFileDeleteValue(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpValue, bool bRemoveEmpty);
+bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty);
 
 // ----------------------------------------------------------------------------
 
