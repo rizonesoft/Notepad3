@@ -639,7 +639,7 @@ void Style_Save()
     IniFileSetString(Globals.IniFile, L"Styles", STYLING_THEME_NAME, Theme_Files[s_idxSelectedTheme].szName);
   }
   else {
-    IniFileDeleteValue(Globals.IniFile, L"Styles", STYLING_THEME_NAME, NULL, false);
+    IniFileDelete(Globals.IniFile, L"Styles", STYLING_THEME_NAME, false);
   }
 }
 
@@ -719,21 +719,38 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     if (bUse2ndSty) {
       IniSectionSetBool(Styles_Section, L"Use2ndDefaultStyle", bUse2ndSty);
     }
+    else {
+      IniSectionDelete(Styles_Section, L"Use2ndDefaultStyle", false);
+    }
+
     // default scheme
     if (s_iDefaultLexer != 0) {
       IniSectionSetInt(Styles_Section, L"DefaultScheme", s_iDefaultLexer);
     }
+    else {
+      IniSectionDelete(Styles_Section, L"DefaultScheme", false);
+    }
+
     // auto select
     if (!s_bAutoSelect) {
-      IniSectionSetInt(Styles_Section, L"AutoSelect", s_bAutoSelect);
+      IniSectionSetBool(Styles_Section, L"AutoSelect", s_bAutoSelect);
+    }
+    else {
+      IniSectionDelete(Styles_Section, L"AutoSelect", false);
     }
 
     // scheme select dlg dimensions
     if (s_cxStyleSelectDlg != STYLESELECTDLG_X) {
       IniSectionSetInt(Styles_Section, L"SelectDlgSizeX", s_cxStyleSelectDlg);
     }
+    else {
+      IniSectionDelete(Styles_Section, L"SelectDlgSizeX", false);
+    }
     if (s_cyStyleSelectDlg != STYLESELECTDLG_Y) {
       IniSectionSetInt(Styles_Section, L"SelectDlgSizeY", s_cyStyleSelectDlg);
+    }
+    else {
+      IniSectionDelete(Styles_Section, L"SelectDlgSizeY", false);
     }
 
     // create canonical order of lexer sections
@@ -758,6 +775,9 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
       {
         IniSectionSetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
       }
+      else {
+        IniSectionDelete(Lexer_Section, L"FileNameExtensions", false);
+      }
 
       unsigned i = 0;
       while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
@@ -772,6 +792,9 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
           szTmpStyle[0] = L'\0'; // clear
           Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
           IniSectionSetString(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
+        }
+        else {
+          IniSectionDelete(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, false);
         }
         ++i;
       }
