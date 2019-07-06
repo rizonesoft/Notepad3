@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Zapisz &kopiê...\tCtrl+F6",             IDM_FILE_SAVECOPY
         MENUITEM "&Tylko do odczytu",                     IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "Ustaw has³o kodowania...",              IDM_SETPASS
+        MENUITEM "Ustaw has³o szyfrowania...",            IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Uruchom"
         BEGIN
@@ -151,8 +151,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Kursor przed wyrazem\tCtrl+Left",           CMD_CTRLLEFT
             MENUITEM "Kursor za wyrazem\tCtrl+Right",             CMD_CTRLRIGHT
-            MENUITEM "&Usuñ krsor przed wyrazem\tCtrl+Back",      CMD_CTRLBACK
-            MENUITEM "Usuñ kursor za wyrazem\tCtrl+Del",          CMD_CTRLDEL
+            MENUITEM "&Usuñ wyrazy przed kursorem\tCtrl+Back",    CMD_CTRLBACK
+            MENUITEM "Usuñ wyrazy za kursorem\tCtrl+Del",         CMD_CTRLDEL
         END
         POPUP "&Wiersze"
         BEGIN
@@ -234,8 +234,8 @@ BEGIN
             MENUITEM "&Identyfikator kodowania\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "&Godzinê/Datê (krótki format)\tCtrl+F5",      IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Godzinê/Datê (&D³ugi format)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Aktualizacjê znacznika czasu\tShift+F5",     CMD_TIMESTAMPS
+            MENUITEM "Godzinê/Datê (&d³ugi format)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Aktualizacja znacznika czasu\tShift+F5",     CMD_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Nazwê pliku\tCtrl+F9",                       IDM_EDIT_INSERT_FILENAME
             MENUITEM "&Œcie¿kê i nazwê pliku\tCtrl+Shift+F9",       IDM_EDIT_INSERT_PATHNAME
@@ -247,14 +247,14 @@ BEGIN
             MENUITEM "&Komentarz liniowy (Toggle)\tCtrl+Q",         IDM_EDIT_LINECOMMENT
             MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "&Kodowanie URL\tCtrl+Shift+E",                IDM_EDIT_URLENCODE
-            MENUITEM "Dekodowanie URL\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
+            MENUITEM "&Koduj URL\tCtrl+Shift+E",                    IDM_EDIT_URLENCODE
+            MENUITEM "Dekoduj URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
             MENUITEM "&Znaki ucieczki\tCtrl+Alt+E",                 IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Usuñ znaki ucieczki\tCtrl+Alt+R",            IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "&Char To Hex\tCtrl+Alt+X",                    IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",                    IDM_EDIT_HEX2CHAR
+            MENUITEM "&Char na Hex\tCtrl+Alt+X",                    IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex na Char\tCtrl+Alt+C",                    IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "Zwiêksz liczbê\tCtrl+Alt+NK+",                CMD_INCREASENUM
             MENUITEM "Zmniejsz liczbê\tCtrl+Alt+NK-",               CMD_DECREASENUM
@@ -265,8 +265,8 @@ BEGIN
             MENUITEM "Zaznacz do &nastêpnego\tCtrl+Alt+F2",         IDM_EDIT_SELTONEXT
             MENUITEM "Zaznacz do &poprzedniego\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",             IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",   IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
+            MENUITEM "Multiwybór wszystko pasuj¹ce\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "Zak³adki"
@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "Poka¿ znaki koñca wiersza\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Miejsca aktywne hiperp³¹czenia\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Color Definition Hotspots",                      IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "&Definicja kolorów Hotspotów",                    IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Wyró¿nianie pasuj¹cych nawiasów\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Wyró¿nianie bie¿¹cego wiersza\tCtrl+Shift+I"
         BEGIN

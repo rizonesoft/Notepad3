@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+// encoding: CP-1254
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Polish (Poland) resources
+// Turkish (Turkey) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
-LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_TRK)
+LANGUAGE LANG_TURKISH, SUBLANG_TURKISH_TURKEY
+#pragma code_page(1254)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -61,13 +61,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Tekst domyœlny"
-    IDS_LEX_WEB_SRC         "Kod Ÿród³owy strony"
-    IDS_LEX_XML_DOC         "Dokument XML"
-    IDS_LEX_CSS_STYLE       "Arkusze stylu CSS"
-    IDS_LEX_CPP_SRC         "Kod Ÿród³owy C/C++"
-    IDS_LEX_CSHARP_SRC      "Kod Ÿród³owy C#"
-    IDS_LEX_RESOURCE_SCR    "Skrypt zasobu"
+    IDS_LEX_DEF_TXT         "Default Text"
+    IDS_LEX_WEB_SRC         "Web Source Code"
+    IDS_LEX_XML_DOC         "XML Document"
+    IDS_LEX_CSS_STYLE       "CSS Style Sheets"
+    IDS_LEX_CPP_SRC         "C/C++ Source Code"
+    IDS_LEX_CSHARP_SRC      "C# Source Code"
+    IDS_LEX_RESOURCE_SCR    "Resource Script"
     IDS_LEX_MAKEFILES       "Makefiles"
 END
 
@@ -76,19 +76,19 @@ BEGIN
     IDS_LEX_VB_SCR          "VBScript"
     IDS_LEX_VIS_BAS         "Visual Basic"
     IDS_LEX_J_SCR           "JavaScript"
-    IDS_LEX_JAVA_SRC        "Kod Ÿród³owy Java"
-    IDS_LEX_PASCAL_SRC      "Kod Ÿród³owy Pascal"
-    IDS_LEX_ASM_SCR         "Skrypt Assembly"
-    IDS_LEX_PERL_SCR        "Skrypt Perl"
-    IDS_LEX_CONF            "Pliki konfiguracyjne"
-    IDS_LEX_BATCH           "Pliki wsadowe"
+    IDS_LEX_JAVA_SRC        "Java Source Code"
+    IDS_LEX_PASCAL_SRC      "Pascal Source Code"
+    IDS_LEX_ASM_SCR         "Assembly Script"
+    IDS_LEX_PERL_SCR        "Perl Script"
+    IDS_LEX_CONF            "Configuration Files"
+    IDS_LEX_BATCH           "Batch Files"
     IDS_LEX_DIFF            "Diff Files"
     IDS_LEX_SQL             "SQL Query"
-    IDS_LEX_PYTHON          "Skrypt Python"
-    IDS_LEX_APC_CFG         "Pliki konfiguracyjne Apache"
-    IDS_LEX_PWRSHELL        "Skrypt PowerShell"
-    IDS_LEX_D_SRC           "Kod Ÿród³owy D"
-    IDS_LEX_GO_SRC          "Kod Ÿród³owy Go"
+    IDS_LEX_PYTHON          "Python Script"
+    IDS_LEX_APC_CFG         "Apache Config Files"
+    IDS_LEX_PWRSHELL        "PowerShell Script"
+    IDS_LEX_D_SRC           "D Source Code"
+    IDS_LEX_GO_SRC          "Go Source Code"
 END
 
 STRINGTABLE
@@ -117,16 +117,16 @@ BEGIN
     IDS_LEX_YAML            "YAML"
     IDS_LEX_COFFEE_SCR      "Coffeescript"
     IDS_LEX_MATLAB          "MATLAB"
-    IDS_LEX_NIM_SRC         "Kod Ÿród³owy Nim"
+    IDS_LEX_NIM_SRC         "Nim Source Code"
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
-    IDS_LEX_RUST_SRC        "Kod Ÿród³owy Rust"
+    IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
-    IDS_LEX_TEXT_FILES      "Pliki tekstowe"
+    IDS_LEX_TEXT_FILES      "Text Files"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Styl domyœlny"
+    IDS_LEX_STD_STYLE       "Default Style"
     IDS_LEX_STD_MARGIN      "Margins and Line Numbers"
     IDS_LEX_STD_BRACE       "Matching Braces (Indicator)"
     IDS_LEX_STD_BRACE_FAIL  "Matching Braces Error (Indicator)"
@@ -449,7 +449,7 @@ BEGIN
     IDS_LEX_STR_63356       "Date-Time"
 END
 
-#endif    // Polish (Poland) resources
+#endif    // Turkish (Turkey) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
