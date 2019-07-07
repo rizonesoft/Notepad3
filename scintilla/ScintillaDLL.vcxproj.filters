@@ -267,9 +267,6 @@
     <ClCompile Include="lexers\LexRust.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\sciXlexers\LexAHK.cxx">
-      <Filter>sciXlexers</Filter>
-    </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
     </ClCompile>
@@ -344,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="..\oniguruma\src\utf8.c">
       <Filter>oniguruma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sciXlexers\LexTOML.cxx">
+      <Filter>sciXlexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -557,5 +557,13 @@
     <ClInclude Include="..\oniguruma\src\st.h">
       <Filter>oniguruma</Filter>
     </ClInclude>
+    <ClInclude Include="..\sciXlexers\CharSetX.h">
+      <Filter>sciXlexers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="win32\ScintRes.rc">
+      <Filter>win32</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
