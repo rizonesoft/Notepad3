@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.705.build (5 July 2019)
+Current Version 5.19.707.build (7 July 2019)
 ==================================================
 
 --------------------------------------------------
@@ -66,6 +66,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Notepad3.ini file, remove some keys with default values (styles)
 - Extended encoding detection debug information
 - Encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced)
 - Multi-Selection while Mark-Occurrences of current word is active
@@ -78,7 +79,8 @@ REMOVED:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Polish (pl-PL) Translation (In progress)
+- Polish (pl-PL) Translation
+- Turkish (tr-TR) Translation (In progress)
 
 
 ==================================================
