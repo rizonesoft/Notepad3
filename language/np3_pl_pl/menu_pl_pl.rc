@@ -266,7 +266,7 @@ BEGIN
             MENUITEM "Zaznacz do &poprzedniego\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
-            MENUITEM "Multiwybór wszystko pasuj¹ce\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Multiwybór-wszystko pasuj¹ce\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "Zak³adki"
@@ -302,7 +302,7 @@ BEGIN
         MENUITEM "Poka¿ niewidoczne znaki \tCtrl+Shift+8",          IDM_VIEW_SHOWBLANKS
         MENUITEM "Poka¿ znaki koñca wiersza\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "Miejsca aktywne hiperp³¹czenia\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Aktywne miejsca hiperp³¹cza\tCtrl+Alt+W",         IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Definicja kolorów Hotspotów",                    IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Wyró¿nianie pasuj¹cych nawiasów\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
         POPUP "Wyró¿nianie bie¿¹cego wiersza\tCtrl+Shift+I"
@@ -360,7 +360,7 @@ BEGIN
             MENUITEM "Wyczyœæ zapisan¹ domyœln¹ pozycjê",           CMD_CLEARSAVEDWINPOS
             MENUITEM "Pozycja pocz¹tkowa\tCtrl+F11",                CMD_INITIALWINPOS
             MENUITEM "Prze³¹cz pozycjê ca³ego obszaru\tF11",        CMD_FULLSCRWINPOS
-            MENUITEM "Zamro¿ona pozycja okna",                      IDM_VIEW_STICKYWINPOS
+            MENUITEM "Sta³a pozycja okna",                      IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "&Wygl¹d"
@@ -382,7 +382,7 @@ BEGIN
         MENUITEM "Automatyczne wciêcie",                            IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "Automatyczne zamykanie &HTML/XML\tCtrl+Shift+H",  IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "A&utouzupe³nianie wyrazów",                       IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Autouzupe³nianie Lexer-&Key-Words",               IDM_VIEW_AUTOCLEXKEYWORDS
+        MENUITEM "Autouzupe³nianie Lekserem",               IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
         MENUITEM "Przyk³ad pojedyñczego pliku",                     IDM_VIEW_SINGLEFILEINSTANCE
@@ -434,7 +434,7 @@ BEGIN
         END
         POPUP "&Konfiguracja zaawansowana"
         BEGIN
-            MENUITEM "Zapisz ustawienia przed zakoñczeniem",   IDM_VIEW_SAVESETTINGS
+            MENUITEM "Zapisz ustawienia przed wyjœciem",   IDM_VIEW_SAVESETTINGS
             MENUITEM "Zapisz ustawienia teraz\tF7",            IDM_VIEW_SAVESETTINGSNOW
             MENUITEM "&Otwórz plik ustawieñ\tCtrl+F7",         CMD_OPENINIFILE
         END

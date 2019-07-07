@@ -91,13 +91,13 @@ BEGIN
     CONTROL         "Tylko pasuj¹cy pocz¹tek wyrazu",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Przekszta³æ backslash'e",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
     CONTROL         "Regularne wyra¿enia",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Kropka = wszystko",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
+    CONTROL         "Kropka = dowolny znak",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,85,10
     CONTROL         "&Nie zawijaj",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "WyjdŸ po znalezieniu",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,77,10
     CONTROL         "Poka¿ wystêpowanie",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "Szukaj Wildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "PrzeŸroczyste okno bez skupienia",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
+    CONTROL         "PrzeŸroczyste okno bez trybu skupienia",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,130,10
     DEFPUSHBUTTON   "&ZnajdŸ nast.",IDOK,211,7,55,14
     PUSHBUTTON      "ZnajdŸ &poprz.",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Zamknij",IDCANCEL,211,99,55,14
@@ -125,13 +125,13 @@ BEGIN
     CONTROL         "Tylko pasuj¹cy pocz¹tek wyrazu",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Przekszta³æ backslash'e",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "Regularne wyra¿enia",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Kropka = wszystko",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
+    CONTROL         "Kropka = dowolny znak",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,85,10
     CONTROL         "Nie zawijaj",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "WyjdŸ po zast¹pieniu",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Poka¿ wystêpowanie",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Szukaj Wildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "PrzeŸroczyste okno bez skupienia",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
+    CONTROL         "PrzeŸroczyste okno bez trybu skupienia",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,130,10
     DEFPUSHBUTTON   "&ZnajdŸ nast.",IDOK,211,7,55,14
     PUSHBUTTON      "ZnajdŸ &poprz.",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Zamieñ",IDC_REPLACE,211,43,55,14
@@ -327,7 +327,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ustawienia tabulatora"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Szer. tabulatora:",IDC_STATIC,7,10,54,8
+    LTEXT           "&Szerokoœæ tab.:",IDC_STATIC,7,10,54,8
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "Rozmiar akapitu:",IDC_STATIC,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
@@ -390,10 +390,10 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Anuluj",IDCANCEL,139,79,50,14
-    LTEXT           "Nie zawijaj wciêæ|Zawiñ wciêcie o 1 znak|Zawiñ wciêcie o 2 znaki|Zawiñ wciêcie o 1 poziom|Zawiñ wciêcie o 2 poziomy|Wrap indent as first subline|Wrap indent 1 level more than first subline",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "No visual indicators before wrap|Show visual indicators before wrap (near text)|Show visual indicators before wrap (near borders)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "No visual indicators after wrap|Show visual indicators after wrap (near text)|Show visual indicators after wrap (near borders)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "Wrap text between words|Wrap text between any glyphs",203,0,0,187,8,NOT WS_VISIBLE
+    LTEXT           "Nie zawijaj wciêæ|Zwiñ wciêcie o 1 znak|Zawiñ wciêcie o 2 znaki|Zwiñ wciêcie o 1 poziom|Zwiñ wciêcie o 2 poziomy|Zwiñ wciêcie jako pierwsz¹ podliniê|Zwiñ wciêcie 1 poziom wiêcej ni¿ pierwsz¹ podliniê",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Brak wskaŸników wizualnych przed zwiniêciem|Poka¿ wskaŸniki wizualne przed zwiniêciem (obok tekstu)|Poka¿ wskaŸniki wizualne przed zwiniêciem (obok granicy)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "Brak wskaŸników wizualnych po zwiniêciu|Poka¿ wskaŸniki wizualne po zwiniêciu (obok tekstu)|Poka¿ wskaŸniki wizualne po zwiniêciu (obok granicy)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "Zwiñ tekst miêdzy wierszami|Zwiñ tekst pomiêdzy glifami",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
@@ -457,7 +457,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Dodaj do Ulubionych"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "WprowadŸ nazwê dla nowego elementu ulubionych:",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "Wpisz nazwê dla nowego elementu ulubionych:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Anuluj",IDCANCEL,115,45,50,14
