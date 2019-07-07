@@ -40,21 +40,21 @@ set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\Portab
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
-set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
-set NP3_DOC_DIR=%SCRIPT_DIR%..\doc
-::set NP3_THEMES_DIR=%SCRIPT_DIR%..\themes
-set NP3_BUILD_SCHEMES_DIR=%SCRIPT_DIR%..\Build\themes
-::set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
-::set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
-set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v142
-set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v142
+call :RESOLVEPATH NP3_DISTRIB_DIR %SCRIPT_DIR%..\Build
+call :RESOLVEPATH NP3_DOC_DIR %SCRIPT_DIR%..\doc
+::call :RESOLVEPATH NP3_THEMES_DIR %SCRIPT_DIR%..\themes
+call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\themes
+::call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v141
+::call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v141
+call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v142
+call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v142
 
-set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
-set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
-set NP3_PORTAPP_INSTALL=%NP3_PORTAPP_DIR%\App\AppInfo\installer
+call :RESOLVEPATH NP3_PORTAPP_DIR %SCRIPT_DIR%Notepad3Portable
+call :RESOLVEPATH NP3_PORTAPP_INFO %NP3_PORTAPP_DIR%\App\AppInfo\appinfo
+call :RESOLVEPATH NP3_PORTAPP_INSTALL %NP3_PORTAPP_DIR%\App\AppInfo\installer
 
-set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
-set NP3_BUILD_NAME=%SCRIPT_DIR%_buildname.txt
+call :RESOLVEPATH NP3_BUILD_VER %SCRIPT_DIR%..\Versions\build.txt
+call :RESOLVEPATH NP3_BUILD_NAME %SCRIPT_DIR%_buildname.txt
 
 :: --------------------------------------------------------------------------------------------------------------------
 
@@ -103,6 +103,11 @@ copy /B "%NP3_WIN32_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\
 copy /B "%NP3_WIN32_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\" /Y /V
 
 copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+if exist %NP3_WIN32_DIR%\Scintilla.dll (
+    copy /B "%NP3_WIN32_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+) else (
+    echo. Scintilla.dll does not exist
+)
 copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 ::copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 ::copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
@@ -125,6 +130,11 @@ copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\ln
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
 copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+if exist %NP3_X64_DIR%\Scintilla.dll (
+    copy /B "%NP3_X64_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+) else (
+    echo. Scintilla.dll does not exist
+)
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 ::copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 ::copy /B "%NP3_X64_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
@@ -164,55 +174,64 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 goto :END
 :: REPLACE  strg(%1)  srcfile(%2)  replstrg(%3)  dstfile(%4) 
 :REPLACE
-if exist "%~4" del /F /Q "%~4"
-type NUL > "%~4"
-for /f "tokens=1,* delims=¶" %%A in (%~2) do (
-    set string=%%A
-    setlocal EnableDelayedExpansion
-    set modified=!string:%~1=%~3!
-    >> "%~4" echo(!modified!
-    endlocal
-)
-goto:EOF
+    if exist "%~4" del /F /Q "%~4"
+    type NUL > "%~4"
+    for /f "tokens=1,* delims=¶" %%A in (%~2) do (
+        set string=%%A
+        setlocal EnableDelayedExpansion
+        set modified=!string:%~1=%~3!
+        >> "%~4" echo(!modified!
+        endlocal
+    )
+    goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETDATE
-for /f "tokens=2 delims==" %%a in ('
-    wmic OS Get localdatetime /value
-') do set "dt=%%a"
-set "YY=%dt:~2,2%" & set "YYYY=%dt:~0,4%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
-set "HH=%dt:~8,2%" & set "Min=%dt:~10,2%" & set "Sec=%dt:~12,2%"
-::set "datestamp=%YYYY%%MM%%DD%" & set "timestamp=%HH%%Min%%Sec%"
-::set "fullstamp=%YYYY%-%MM%-%DD%_%HH%-%Min%-%Sec%"
-::echo datestamp: "%datestamp%"
-::echo timestamp: "%timestamp%"
-::echo fullstamp: "%fullstamp%"
-goto:EOF
+    for /f "tokens=2 delims==" %%a in ('
+        wmic OS Get localdatetime /value
+    ') do set "dt=%%a"
+    set "YY=%dt:~2,2%" & set "YYYY=%dt:~0,4%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
+    set "HH=%dt:~8,2%" & set "Min=%dt:~10,2%" & set "Sec=%dt:~12,2%"
+    ::set "datestamp=%YYYY%%MM%%DD%" & set "timestamp=%HH%%Min%%Sec%"
+    ::set "fullstamp=%YYYY%-%MM%-%DD%_%HH%-%Min%-%Sec%"
+    ::echo datestamp: "%datestamp%"
+    ::echo timestamp: "%timestamp%"
+    ::echo fullstamp: "%fullstamp%"
+    goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETFILEVER
-set "file=%~1"
-if not defined file goto:EOF
-if not exist "%file%" goto:EOF
-set "FILEVER="
-for /F "tokens=2 delims==" %%a in ('
-    wmic datafile where name^="%file:\=\\%" Get Version /value 
-') do set "FILEVER=%%a"
-::echo %file% = %FILEVER% 
-goto:EOF
+    set "file=%~1"
+    if not defined file goto:EOF
+    if not exist "%file%" goto:EOF
+    set "FILEVER="
+    for /F "tokens=2 delims==" %%a in ('
+        wmic datafile where name^="%file:\=\\%" Get Version /value 
+    ') do set "FILEVER=%%a"
+    ::echo %file% = %FILEVER% 
+    goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETBUILD
-set /p nxbuild=<%NP3_BUILD_VER%
-set /a BUILD = %nxbuild% - 1
-set /p DEVNAME=<%NP3_BUILD_NAME%
-set DEVNAME=%DEVNAME:"=%
-goto:EOF
+    set /p nxbuild=<%NP3_BUILD_VER%
+    set /a BUILD = %nxbuild% - 1
+    set /p DEVNAME=<%NP3_BUILD_NAME%
+    set DEVNAME=%DEVNAME:"=%
+    goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
+rem Resolve path to absolute.
+rem Param 1: Name of output variable.
+rem Param 2: Path to resolve.
+rem Return: Resolved absolute path.
+:RESOLVEPATH
+    set %1=%~dpfn2
+    goto:EOF
+:: --------------------------------------------------------------------------------------------------------------------
+    
 :: ====================================================================================================================
 :END
-::pause
-endlocal
+pause
+::endlocal
 ::exit
 :: ====================================================================================================================
