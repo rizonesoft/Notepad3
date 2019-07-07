@@ -284,13 +284,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\
+Rozszerzenia plików nale¿y oddzieliæ ';'\r\n\
 zastosuj \\<regex>; aby zdefiniowaæ nazwê pliku pasuj¹c¹ do wzoru:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+W³aœciwoœci stylu mo¿na kopiowaæ u¿ywj¹c Kopiuj i Wklej lub Przeci¹gnij i Upuœæ.\
 "
 
 END

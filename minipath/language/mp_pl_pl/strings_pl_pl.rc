@@ -65,7 +65,7 @@ BEGIN
     IDT_FILE_SAVEAS         "Zapisz jako"
     IDT_FILE_COPYMOVE       "Kopiuj/Przenieœ"
     IDT_FILE_DELETE         "Usuñ"
-    IDT_FILE_DELETE2        "Delete (Bez mo¿liwoœci odzyskania)"
+    IDT_FILE_DELETE2        "Usuñ (Bez mo¿liwoœci odzyskania)"
     IDT_VIEW_FILTER         "Filtr"
 END
 
@@ -73,38 +73,38 @@ STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
     IDS_NUMFILES            "%s objekt(y)"
-    IDS_NUMFILES2           "%s objekt(y) | Filter"
+    IDS_NUMFILES2           "%s objekt(y) | Filtr"
     IDS_SAVEFILE            "Zapisywanie ""%s""..."
     IDS_OPEN_FILE_WITH      "Otwórz za pomoc¹ %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory.\nCheck the disk or the network connection."
-    IDS_ERR_FILE            "File Access Error\nNo access to ""%s"".\nThe file may be used by another application.\nCheck the disk or the network connection."
-    IDS_ERR_NEW             "File Access Error\nFile could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s"".\nProbably an already existing file is write-protected."
-    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file."
-    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
-    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
-    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
-    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
-    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
-    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
-    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
+    IDS_ERR_CD              "B³¹d dostêpu do katalogu\nBrak dostêpu do katalogu.\nSprawdŸ dysk lub po³¹czenie sieciowe."
+    IDS_ERR_FILE            "B³¹d dostêpu do pliku\nBrak dostêpu do ""%s"".\nPlik mo¿e byæ u¿ywany przez inn¹ aplikacjê.\nSprawdŸ dysk lub po³¹czenie sieciowe."
+    IDS_ERR_NEW             "B³¹d dostêpu do pliku\nNie mo¿na utworzyæ pliku.\nSprawdŸ dysk lub po³¹czenie sieciowe."
+    IDS_ERR_NEWDIR          "B³¹d dostêpu do katalogu\nNie mo¿na utworzyæ katalogu.\nSprawdŸ dysk lub po³¹czenie sieciowe."
+    IDS_ERR_SAVEAS1         "B³¹d zapisu pliku\nB³¹d przy zapisie ""%s"".\nPlik prawdopodobnie zabezpieczony przed zapisem."
+    IDS_ERR_SAVEAS2         "B³¹d zapisu pliku\nB³¹d przy usuwaniu atrybutu Tylko do zapisu w zapisanym pliku."
+    IDS_ERR_CMDLINE         "MiniPath\nB³¹d dostêpu do pliku lub katalogu okreœlonego w linii komend."
+    IDS_ERR_STARTUPDIR      "MiniPath\nBrak dostêpu aby uruchomiæ katalog."
+    IDS_ERR_DROP1           "MiniPath\nBrak dostêpu aby upuœciæ plik lub katalog."
+    IDS_ERR_DROP2           "MiniPath\nTylko jeden plik lub katalog mo¿na upuœciæ w tym samym czasie."
+    IDS_ERR_FAVORITES       "Ulubione\nBtak dostêpu do ""Ulubionych"".\nOkreœl w³aœciwy katalog w ""Opcjach""."
+    IDS_ERR_LNK_GETPATH     "B³¹d linku\nBrak dostêpnej œcie¿ki systemu plików dla tego obiektu.\nPrawdopodobnie ten link nie odsy³a do pliku lub katalogu."
+    IDS_ERR_LNK_NOACCESS    "B³¹d linku\nBrak dostêpnej œcie¿ki systemu plików dla tego obiektu.\nSprawdŸ dysk lub po³¹czenie sieciowe."
+    IDS_ERR_CREATELINK      "B³¹d linku\nB³¹d podczas tworzenia okreœlonego linku.\nPrawdopodobnie katalog docelowy jest zabezpieczony przed zapisem."
+    IDS_ERR_FILTER          "B³¹d filtra pliku\nNie okreœlono dodatkowych filtrów.\nSprawdŸ w pliku readme aby uzyskac wiêcej informacji."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nIstniej¹ce okno MiniPath jest zajête lub ma aktywne okno dialogowe.\nCzy chcesz otworzyæ kolejne okno MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
-    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
-    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
-    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nIstniej¹ce okno docelowe jest zajête lub ma aktywne okno dialogowe.\nCzy chcesz otworzyæ nowe okno?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nUpewnij siê, ¿e wszystkie wymagane pola s¹ kompletne.\nMusisz te¿ znaleŸæ okno docelowe jeœli odpowiednia opcja jest w³¹czona."
+    IDS_ERR_INIOPEN         "MiniPath\nBrak dostêpu do pliku konfiguracujnego MiniPath."
+    IDS_ERR_INICREATE       "Zapis ustawieñ\nB³¹d podczas tworzenia pliku konfiguracyjnego."
+    IDS_ERR_INIWRITE        "Zapis ustawieñ\nNie zapisano ustawieñ!\nBrak dostêpu zapisu w pliku konfiguracyjnym."
 END
 
 STRINGTABLE
