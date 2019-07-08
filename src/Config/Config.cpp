@@ -199,7 +199,13 @@ extern "C" bool IniSectionDelete(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool 
 
 extern "C" bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty)
 {
-  return s_INI.Delete(lpSectionName, bRemoveEmpty ? nullptr : L"", bRemoveEmpty);
+
+  bool const ok = s_INI.Delete(lpSectionName, nullptr, bRemoveEmpty);
+  if (!bRemoveEmpty) {
+    SI_Error const rc = s_INI.SetValue(lpSectionName, nullptr, nullptr);
+    return SI_SUCCESS(rc);
+  }
+  return ok;
 }
 // ============================================================================
 
