@@ -68,7 +68,7 @@ BEGIN
     IDS_LEX_CPP_SRC         "C/C++ Source Code"
     IDS_LEX_CSHARP_SRC      "C# Source Code"
     IDS_LEX_RESOURCE_SCR    "Resource Script"
-    IDS_LEX_MAKEFILES       "Makefiles"
+    IDS_LEX_MAKEFILES       "Makefile"
 END
 
 STRINGTABLE
@@ -80,12 +80,12 @@ BEGIN
     IDS_LEX_PASCAL_SRC      "Pascal Source Code"
     IDS_LEX_ASM_SCR         "Assembly Script"
     IDS_LEX_PERL_SCR        "Perl Script"
-    IDS_LEX_CONF            "Configuration Files"
-    IDS_LEX_BATCH           "Batch Files"
-    IDS_LEX_DIFF            "Diff Files"
+    IDS_LEX_CONF            "Configuration File"
+    IDS_LEX_BATCH           "Batch File"
+    IDS_LEX_DIFF            "Diff File"
     IDS_LEX_SQL             "SQL Query"
     IDS_LEX_PYTHON          "Python Script"
-    IDS_LEX_APC_CFG         "Apache Config Files"
+    IDS_LEX_APC_CFG         "Apache Config File"
     IDS_LEX_PWRSHELL        "PowerShell Script"
     IDS_LEX_D_SRC           "D Source Code"
     IDS_LEX_GO_SRC          "Go Source Code"
@@ -96,7 +96,7 @@ BEGIN
     IDS_LEX_AWK_SCR         "Awk Script"
     IDS_LEX_ANSI_ART        "ANSI Art"
     IDS_LEX_SHELL_SCR       "Shell Script"
-    IDS_LEX_REG_FILES       "Registry Files"
+    IDS_LEX_REG_FILES       "Registry File"
     IDS_LEX_VHDL            "VHDL"
     IDS_LEX_JSON            "JSON"
     IDS_LEX_NSIS            "NSIS"
@@ -105,7 +105,7 @@ BEGIN
     IDS_LEX_LUA             "Lua Script"
     IDS_LEX_TCL             "Tcl Script"
     IDS_LEX_AUTOIT3         "AutoIt3 Script"
-    IDS_LEX_LATEX           "LaTeX Files"
+    IDS_LEX_LATEX           "LaTeX File"
     IDS_LEX_AHK             "AutoHotkey Script"
     IDS_LEX_CMAKE           "Cmake Script"
     IDS_LEX_AVI_SYNTH       "AviSynth Script"
@@ -121,7 +121,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
     IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
-    IDS_LEX_TEXT_FILES      "Text Files"
+    IDS_LEX_TEXT_FILES      "Text File"
 END
 
 STRINGTABLE
