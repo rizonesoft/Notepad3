@@ -71,7 +71,7 @@ BEGIN
             MENUITEM "&Nowe okno\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Puste okno\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",                IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "Notepad3 jako &Administrator",      IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "Ten dokument\tCtrl+L",              IDM_FILE_LAUNCH
             MENUITEM "&Otwórz w...\tAlt+L",               IDM_FILE_OPENWITH
@@ -203,7 +203,7 @@ BEGIN
             MENUITEM "&Wyœciel pustym miejscem\tAlt+B",          IDM_EDIT_PADWITHSPACES
             MENUITEM "Usuñ pierwszy znak wiersza\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
             MENUITEM "Usuñ ostatni znak wiersza\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Usuñ koñcowe niewidoczne znaki\tAlt+W",    IDM_EDIT_TRIMLINES
+            MENUITEM "Usuñ niewidoczne koñcowe znaki\tAlt+W",    IDM_EDIT_TRIMLINES
             MENUITEM "Skompresuj niewidoczne znaki\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modyfikuj wiersze...\tAlt+M",          IDM_EDIT_MODIFYLINES
