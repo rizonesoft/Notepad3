@@ -674,7 +674,7 @@ bool Style_Export(HWND hwnd)
     Globals.dwLastError = Style_ExportToFile(szFile, true);
 
     if (Globals.dwLastError != ERROR_SUCCESS) {
-      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, szFile);
+      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, PathFindFileName(szFile));
     }
   }
   return (Globals.dwLastError == ERROR_SUCCESS);

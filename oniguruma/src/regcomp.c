@@ -1307,8 +1307,9 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
         len += tlen;
       }
 
+      len += SIZE_OP_JUMP + SIZE_OP_ATOMIC_END;
+
       if (IS_NOT_NULL(Else)) {
-        len += SIZE_OP_JUMP;
         tlen = compile_length_tree(Else, reg);
         if (tlen < 0) return tlen;
         len += tlen;
@@ -1455,7 +1456,7 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
 
   case BAG_IF_ELSE:
     {
-      int cond_len, then_len, jump_len;
+      int cond_len, then_len, else_len, jump_len;
       Node* cond = NODE_BAG_BODY(node);
       Node* Then = node->te.Then;
       Node* Else = node->te.Else;
@@ -1472,8 +1473,7 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
       else
         then_len = 0;
 
-      jump_len = cond_len + then_len + SIZE_OP_ATOMIC_END;
-      if (IS_NOT_NULL(Else)) jump_len += SIZE_OP_JUMP;
+      jump_len = cond_len + then_len + SIZE_OP_ATOMIC_END + SIZE_OP_JUMP;
 
       r = add_op(reg, OP_PUSH);
       if (r != 0) return r;
@@ -1490,11 +1490,20 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
       }
 
       if (IS_NOT_NULL(Else)) {
-        int else_len = compile_length_tree(Else, reg);
-        r = add_op(reg, OP_JUMP);
-        if (r != 0) return r;
-        COP(reg)->jump.addr = else_len + SIZE_INC_OP;
+        else_len = compile_length_tree(Else, reg);
+        if (else_len < 0) return else_len;
+      }
+      else
+        else_len = 0;
 
+      r = add_op(reg, OP_JUMP);
+      if (r != 0) return r;
+      COP(reg)->jump.addr = SIZE_OP_ATOMIC_END + else_len + SIZE_INC_OP;
+
+      r = add_op(reg, OP_ATOMIC_END);
+      if (r != 0) return r;
+
+      if (IS_NOT_NULL(Else)) {
         r = compile_tree(Else, reg, env);
       }
     }
