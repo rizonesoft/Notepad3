@@ -229,7 +229,7 @@ BEGIN
     LTEXT           "%s line(s).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s line(s).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s line(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Do you want to normalise the line endings?",IDC_STATIC,7,52,180,8
+    LTEXT           "&Do you want to normalize the line endings?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Yes",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
@@ -566,17 +566,17 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
-IDD_MUI_INFOBOX2 DIALOGEX 0, 0, 244, 71
+IDD_MUI_INFOBOX2 DIALOGEX 0, 0, 244, 86
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
-    PUSHBUTTON      "&Yes",IDYES,131,50,50,14
-    PUSHBUTTON      "&No",IDNO,187,50,50,14
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,59
+    PUSHBUTTON      "&Yes",IDYES,131,65,50,14
+    PUSHBUTTON      "&No",IDNO,187,65,50,14
     CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,69,122,10
 END
 
 IDD_MUI_INFOBOX3 DIALOGEX 0, 0, 244, 71
