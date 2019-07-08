@@ -3318,9 +3318,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   
   CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
   
-  CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,Settings.SaveRecentFiles);
+  CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
   CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
-  CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,Settings.SaveFindReplace);
+  CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
   CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,Settings.SaveBeforeRunningTools);
 
   CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,Settings.FileWatchingMode);
