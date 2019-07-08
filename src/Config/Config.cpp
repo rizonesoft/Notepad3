@@ -1370,6 +1370,7 @@ bool SaveSettings(bool bSaveSettingsNow)
 
   if (ok) {
     Style_Save();  // Scintilla Styles
+    Globals.bIniFileFromScratch = false;
   }
   return ok;
 }
