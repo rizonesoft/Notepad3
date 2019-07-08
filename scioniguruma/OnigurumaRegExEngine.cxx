@@ -40,7 +40,7 @@
 #ifdef ONIG_ESCAPE_UCHAR_COLLISION
 #undef ONIG_ESCAPE_UCHAR_COLLISION
 #endif
-#include "oniguruma.h"   // Oniguruma - Regular Expression Engine (v6.9.0)
+#include "oniguruma.h"   // Oniguruma - Regular Expression Engine (v6.9.2)
 // ---------------------------------------------------------------
 
 #define UCharPtr(pchar) reinterpret_cast<OnigUChar*>(pchar)
@@ -71,25 +71,29 @@ static void SetSimpleOptions(OnigOptionType& onigOptions,
   // fixed options
   onigOptions = ONIG_OPTION_DEFAULT;
 
-  // OFF: not wanted options in Notepad3
+  // Notepad3 forced options
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
+  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
+  //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
 
-  // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
+  // dynamic options
   if (searchFlags & SCFIND_DOT_MATCH_ALL) {
+    ONIG_OPTION_ON(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
     ONIG_OPTION_ON(onigOptions, ONIG_OPTION_MULTILINE);
   }
   else {
+    ONIG_OPTION_OFF(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
     ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MULTILINE);
   }
 
-  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_SINGLELINE);
-  //ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
-
-  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
-
-  // dynamic options
-  ONIG_OPTION_ON(onigOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
+  if (!caseSensitive) {
+    ONIG_OPTION_ON(onigOptions, ONIG_OPTION_IGNORECASE);
+  }
+  else {
+    ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_IGNORECASE);
+  }
 }
 // ============================================================================
 
@@ -102,7 +106,6 @@ class OnigurumaRegExEngine : public RegexSearchBase
 public:
 
   explicit OnigurumaRegExEngine(CharClassify* charClassTable)
-    //: m_OnigSyntax(*ONIG_SYNTAX_PERL)
     : m_OnigSyntax(*ONIG_SYNTAX_DEFAULT)
     , m_CmplOptions(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
@@ -111,7 +114,7 @@ public:
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
   {
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END;
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(g_UsedEncodingsTypes, _ARRAYSIZE(g_UsedEncodingsTypes));
     onig_region_init(&m_Region);
   }
@@ -643,7 +646,7 @@ class SimpleRegExEngine
 public:
 
   SimpleRegExEngine()
-    : m_OnigSyntax(*ONIG_SYNTAX_PERL)
+    : m_OnigSyntax(*ONIG_SYNTAX_DEFAULT)
     , m_Options(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
     , m_Region({ 0,0,nullptr,nullptr,nullptr })
@@ -651,7 +654,7 @@ public:
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
   {
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END;
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(g_UsedEncodingsTypes, _ARRAYSIZE(g_UsedEncodingsTypes));
     onig_region_init(&m_Region);
   }

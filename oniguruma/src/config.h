@@ -18,8 +18,10 @@
 #define SIZEOF_OFF_T 4
 #if defined(_WIN64)
 #define SIZEOF_VOIDP 8
+#define SIZEOF_SIZE_T 8
 #else
 #define SIZEOF_VOIDP 4
+#define SIZEOF_SIZE_T 4
 #endif
 #define SIZEOF_FLOAT 4
 #define SIZEOF_DOUBLE 8

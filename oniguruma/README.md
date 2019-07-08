@@ -27,6 +27,13 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
+Master branch
+-------------
+
+* Fixed CVE-2019-13224
+* Fixed CVE-2019-13225
+
+
 New feature of version 6.9.2 (Reiwa)
 -----------------------------------
 
