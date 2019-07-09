@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   ascii.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
@@ -98,7 +98,11 @@ OnigEncodingType OnigEncodingASCII = {
   "US-ASCII",  /* name */
   1,           /* max enc length */
   1,           /* min enc length */
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
+  onigenc_is_mbc_newline_0x0a_or_0x0d,
+#else
   onigenc_is_mbc_newline_0x0a,
+#endif
   onigenc_single_byte_mbc_to_code,
   onigenc_single_byte_code_to_mbclen,
   onigenc_single_byte_code_to_mbc,

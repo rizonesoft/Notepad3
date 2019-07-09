@@ -1,4 +1,4 @@
-#ifndef REGINT_H
+﻿#ifndef REGINT_H
 #define REGINT_H
 /**********************************************************************
   regint.h -  Oniguruma (regular expression library)
