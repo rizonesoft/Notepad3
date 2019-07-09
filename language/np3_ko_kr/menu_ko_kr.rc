@@ -265,8 +265,8 @@ BEGIN
             MENUITEM "다음 선택(&X)\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
             MENUITEM "이전 선택(&V)\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "줄 끝 표시(&E)\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "하이퍼 링크 핫스팟(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Color Definition Hotspots",             IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "색상 정의 핫스팟(&C)",                   IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "괄호 짝 강조(&V)\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
         POPUP "현재 줄 강조(&G)\tCtrl+Shift+I"
         BEGIN
