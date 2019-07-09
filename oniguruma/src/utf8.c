@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   utf8.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
@@ -297,7 +297,11 @@ OnigEncodingType OnigEncodingUTF8 = {
   6,
 #endif
   1,           /* min enc length */
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
+  onigenc_is_mbc_newline_0x0a_or_0x0d,
+#else
   onigenc_is_mbc_newline_0x0a,
+#endif
   mbc_to_code,
   code_to_mbclen,
   code_to_mbc,

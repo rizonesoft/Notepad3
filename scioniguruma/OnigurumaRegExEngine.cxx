@@ -75,6 +75,7 @@ static void SetSimpleOptions(OnigOptionType& onigOptions,
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
 
