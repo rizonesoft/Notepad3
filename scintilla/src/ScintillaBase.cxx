@@ -80,20 +80,20 @@ void ScintillaBase::Finalise() {
 }
 
 void ScintillaBase::AddCharUTF(const char *s, unsigned int len, bool /*treatAsDBCS*/) {
-	InsertCharacter(std::string_view(s, len));
+	InsertCharacter(std::string_view(s, len), CharacterSource::directInput);
 }
 
-void ScintillaBase::InsertCharacter(std::string_view sv) {
+void ScintillaBase::InsertCharacter(std::string_view sv, CharacterSource charSource) {
 	const bool isFillUp = ac.Active() && ac.IsFillUpChar(sv[0]);
 	if (!isFillUp) {
-		Editor::InsertCharacter(sv);
+		Editor::InsertCharacter(sv, charSource);
 	}
 	if (ac.Active()) {
 		AutoCompleteCharacterAdded(sv[0]);
 		// For fill ups add the character after the autocompletion has
 		// triggered so containers see the key so can display a calltip.
 		if (isFillUp) {
-			Editor::InsertCharacter(sv);
+			Editor::InsertCharacter(sv, charSource);
 		}
 	}
 }

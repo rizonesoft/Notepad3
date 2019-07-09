@@ -23,8 +23,8 @@
 #include <memory>
 #include <chrono>
 
-#if !defined(NOMINMAX)
 // Want to use std::min and std::max so don't want Windows.h version of min and max
+#if !defined(NOMINMAX)
 #define NOMINMAX
 #endif
 #define VC_EXTRALEAN 1
@@ -71,7 +71,6 @@ Used by VSCode, Atom etc.
 #ifdef SCI_LEXER
 #include "SciLexer.h"
 #endif
-#include "CharacterCategory.h"
 #ifdef SCI_LEXER
 #include "LexerModule.h"
 #endif
@@ -147,8 +146,8 @@ constexpr UINT SC_WIN_IDLE = 5001;
 constexpr UINT SC_WORK_IDLE = 5002;
 
 #define SC_INDICATOR_INPUT INDICATOR_IME
-#define SC_INDICATOR_TARGET INDICATOR_IME+1
-#define SC_INDICATOR_CONVERTED INDICATOR_IME+2
+#define SC_INDICATOR_TARGET (INDICATOR_IME + 1)
+#define SC_INDICATOR_CONVERTED (INDICATOR_IME + 2)
 #define SC_INDICATOR_UNKNOWN INDICATOR_IME_MAX
 
 #ifndef SCS_CAP_SETRECONVERTSTRING
@@ -164,7 +163,7 @@ using namespace Scintilla;
 
 namespace {
 
-const TCHAR *callClassName = TEXT("CallTip");
+const TCHAR *callClassName = L"CallTip";
 
 inline void *PointerFromWindow(HWND hWnd) noexcept {
 	return reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, 0));
@@ -388,9 +387,9 @@ class ScintillaWin :
 
 	static sptr_t DirectFunction(
 		sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam);
-	static LRESULT PASCAL SWndProc(
+	static LRESULT CALLBACK SWndProc(
 		HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
-	static LRESULT PASCAL CTWndProc(
+	static LRESULT CALLBACK CTWndProc(
 		HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
 
 	enum {
@@ -418,9 +417,9 @@ class ScintillaWin :
 	void SelectionToHangul();
 	void EscapeHanja();
 	void ToggleHanja();
-	void AddWString(std::wstring_view wsv);
+	void AddWString(std::wstring_view wsv, CharacterSource charSource);
 
-	UINT CodePageOfDocument() const;
+	UINT CodePageOfDocument() const noexcept;
 	bool ValidCodePage(int codePage) const noexcept override;
 	sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) noexcept override;
 	void IdleWork() override;
@@ -473,8 +472,8 @@ class ScintillaWin :
 	int SetScrollInfo(int nBar, LPCSCROLLINFO lpsi, BOOL bRedraw) const noexcept;
 	bool GetScrollInfo(int nBar, LPSCROLLINFO lpsi) const noexcept;
 	void ChangeScrollPos(int barType, Sci::Position pos);
-	sptr_t GetTextLength();
-	sptr_t GetText(uptr_t wParam, sptr_t lParam);
+	sptr_t GetTextLength() const noexcept;
+	sptr_t GetText(uptr_t wParam, sptr_t lParam) const;
 
 public:
 	~ScintillaWin() override;
@@ -612,7 +611,7 @@ void ScintillaWin::Init() {
 
 	// Find SetCoalescableTimer which is only available from Windows 8+
 	SetCoalescableTimerFn = reinterpret_cast<SetCoalescableTimerSig>(
-		::GetProcAddress(::GetModuleHandle(TEXT("user32.dll")), "SetCoalescableTimer"));
+		::GetProcAddress(::GetModuleHandle(L"user32.dll"), "SetCoalescableTimer"));
 
 	vs.indicators[SC_INDICATOR_UNKNOWN] = Indicator(INDIC_HIDDEN, ColourDesired(0, 0, 0xff));
 	vs.indicators[SC_INDICATOR_INPUT] = Indicator(INDIC_DOTS, ColourDesired(0, 0, 0xff));
@@ -729,8 +728,9 @@ HWND ScintillaWin::MainHWND() const noexcept {
 }
 
 bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
-	const int xMove = static_cast<int>(std::abs(ptStart.x - ptNow.x));
-	const int yMove = static_cast<int>(std::abs(ptStart.y - ptNow.y));
+	const Point ptDifference = ptStart - ptNow;
+	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
+	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
 	return (xMove > ::GetSystemMetrics(SM_CXDRAG)) ||
 		(yMove > ::GetSystemMetrics(SM_CYDRAG));
 }
@@ -993,7 +993,7 @@ sptr_t ScintillaWin::HandleCompositionWindowed(uptr_t wParam, sptr_t lParam) {
 	if (lParam & GCS_RESULTSTR) {
 		IMContext imc(MainHWND());
 		if (imc.hIMC) {
-			AddWString(imc.GetCompositionString(GCS_RESULTSTR));
+			AddWString(imc.GetCompositionString(GCS_RESULTSTR), CharacterSource::imeResult);
 
 			// Set new position after converted
 			const Point pos = PointMainCaret();
@@ -1171,16 +1171,18 @@ std::vector<int> MapImeIndicators(const std::vector<BYTE> &inputStyle) {
 
 }
 
-void ScintillaWin::AddWString(std::wstring_view wsv) {
+void ScintillaWin::AddWString(std::wstring_view wsv, CharacterSource charSource) {
 	if (wsv.empty())
 		return;
 
-	const int codePage = CodePageOfDocument();
+	const UINT codePage = CodePageOfDocument();
+	char inBufferCP[16];
 	for (size_t i = 0; i < wsv.size(); ) {
 		const size_t ucWidth = UTF16CharLength(wsv[i]);
-		const std::string docChar = StringEncode(wsv.substr(i, ucWidth), codePage);
 
-		InsertCharacter(docChar);
+		const int size = MultiByteFromWideChar(codePage, wsv.substr(i, ucWidth), inBufferCP, sizeof(inBufferCP) - 1);
+		inBufferCP[size] = '\0';
+		InsertCharacter(std::string_view(inBufferCP, size), charSource);
 		i += ucWidth;
 	}
 }
@@ -1221,20 +1223,18 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 		std::vector<int> imeIndicator = MapImeIndicators(imc.GetImeAttributes());
 
-		const bool tmpRecordingMacro = recordingMacro;
-		recordingMacro = false;
-		const int codePage = CodePageOfDocument();
+		const UINT codePage = CodePageOfDocument();
+		char inBufferCP[16];
 		const std::wstring_view wsv = wcs;
 		for (size_t i = 0; i < wsv.size(); ) {
 			const size_t ucWidth = UTF16CharLength(wsv[i]);
-			const std::string docChar = StringEncode(wsv.substr(i, ucWidth), codePage);
+			const int size = MultiByteFromWideChar(codePage, wsv.substr(i, ucWidth), inBufferCP, sizeof(inBufferCP) - 1);
+			inBufferCP[size] = '\0';
+			InsertCharacter(std::string_view(inBufferCP, size), CharacterSource::tentativeInput);
 
-			InsertCharacter(docChar);
-
-			DrawImeIndicator(imeIndicator[i], static_cast<unsigned int>(docChar.size()));
+			DrawImeIndicator(imeIndicator[i], size);
 			i += ucWidth;
 		}
-		recordingMacro = tmpRecordingMacro;
 
 		// Move IME caret from current last position to imeCaretPos.
 		const int imeEndToImeCaretU16 = imc.GetImeCaretPos() - static_cast<unsigned int>(wcs.size());
@@ -1246,7 +1246,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			view.imeCaretBlockOverride = true;
 		}
 	} else if (lParam & GCS_RESULTSTR) {
-		AddWString(imc.GetCompositionString(GCS_RESULTSTR));
+		AddWString(imc.GetCompositionString(GCS_RESULTSTR), CharacterSource::imeResult);
 	}
 	EnsureCaretVisible();
 	SetCandidateWindowPos();
@@ -1322,15 +1322,15 @@ UINT CodePageFromCharSet(DWORD characterSet, UINT documentCodePage) noexcept {
 
 }
 
-UINT ScintillaWin::CodePageOfDocument() const {
+UINT ScintillaWin::CodePageOfDocument() const noexcept {
 	return CodePageFromCharSet(vs.styles[STYLE_DEFAULT].characterSet, pdoc->dbcsCodePage);
 }
 
-sptr_t ScintillaWin::GetTextLength() {
+sptr_t ScintillaWin::GetTextLength() const noexcept {
 	return pdoc->CountUTF16(0, pdoc->Length());
 }
 
-sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) {
+sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) const {
 	if (lParam == 0) {
 		return pdoc->CountUTF16(0, pdoc->Length());
 	}
@@ -1618,7 +1618,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 					lastHighSurrogateChar = 0;
 					wclen = 2;
 				}
-				AddWString(std::wstring_view(wcs, wclen));
+				AddWString(std::wstring_view(wcs, wclen), CharacterSource::directInput);
 			}
 			return 0;
 
@@ -1630,13 +1630,13 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			} else {
 				wchar_t wcs[3] = { 0 };
 				const unsigned int wclen = UTF16FromUTF32Character(static_cast<unsigned int>(wParam), wcs);
-				AddWString(std::wstring_view(wcs, wclen));
+				AddWString(std::wstring_view(wcs, wclen), CharacterSource::directInput);
 				return FALSE;
 			}
 
 		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN: {
-			//Platform::DebugPrintf("S keydown %d %x %x %x %x\n", iMessage, wParam, lParam, ::IsKeyDown(VK_SHIFT), ::IsKeyDown(VK_CONTROL));
+			//Platform::DebugPrintf("S keydown %d %x %x %x %x\n", iMessage, wParam, lParam, KeyboardIsKeyDown(VK_SHIFT), KeyboardIsKeyDown(VK_CONTROL));
 			lastKeyDownConsumed = false;
 			const int ret = KeyDownWithModifiers(KeyTranslate(static_cast<int>(wParam)),
 				ModifierFlags(KeyboardIsKeyDown(VK_SHIFT),
@@ -2387,6 +2387,7 @@ void ScintillaWin::Paste() {
 		return;
 	}
 	UndoGroup ug(pdoc);
+	//EnumAllClipboardFormat("Paste");
 	const bool isLine = SelectionEmpty() &&
 		(::IsClipboardFormatAvailable(cfLineSelect) || ::IsClipboardFormatAvailable(cfVSLineTag));
 	ClearSelection(multiPasteMode == SC_MULTIPASTE_EACH);
@@ -2463,7 +2464,7 @@ void ScintillaWin::Paste() {
 
 void ScintillaWin::CreateCallTipWindow(PRectangle) noexcept {
 	if (!ct.wCallTip.Created()) {
-		HWND wnd = ::CreateWindow(callClassName, TEXT("ACallTip"),
+		HWND wnd = ::CreateWindow(callClassName, L"ACallTip",
 			WS_POPUP, 100, 100, 150, 20,
 			MainHWND(), nullptr,
 			GetWindowInstance(MainHWND()),
@@ -2683,7 +2684,7 @@ DataObject::DataObject() noexcept {
 
 /// Implement IUnknown
 STDMETHODIMP DropTarget::QueryInterface(REFIID riid, PVOID *ppv) noexcept {
-	Platform::DebugPrintf("DT QI %p\n", this);
+	//Platform::DebugPrintf("DT QI %p\n", this);
 	return sci->QueryInterface(riid, ppv);
 }
 STDMETHODIMP_(ULONG)DropTarget::AddRef() noexcept {
@@ -3174,7 +3175,7 @@ void ScintillaWin::EnumDataSourceFormat(const char *tag, LPDATAOBJECT pIDataSour
 				const char *fmtName = GetSourceFormatName(fmt, name, sizeof(name));
 				const int len = sprintf(buf, "%s: fmt[%lu]=%u, 0x%04X; tymed=%lu, %s; name=%s\n",
 					tag, i, fmt, fmt, tymed, typeName, fmtName);
-				InsertCharacter(std::string_view(buf, len));
+				InsertCharacter(std::string_view(buf, len), CharacterSource::directInput);
 			}
 		}
 	}
@@ -3440,15 +3441,9 @@ bool ScintillaWin::Register(HINSTANCE hInstance_) noexcept {
 	wndclass.cbSize = sizeof(wndclass);
 	wndclass.style = CS_GLOBALCLASS | CS_HREDRAW | CS_VREDRAW;
 	wndclass.lpfnWndProc = ScintillaWin::SWndProc;
-	wndclass.cbClsExtra = 0;
 	wndclass.cbWndExtra = sizeof(ScintillaWin *);
 	wndclass.hInstance = hInstance;
-	wndclass.hIcon = nullptr;
-	wndclass.hCursor = nullptr;
-	wndclass.hbrBackground = nullptr;
-	wndclass.lpszMenuName = nullptr;
 	wndclass.lpszClassName = L"Scintilla";
-	wndclass.hIconSm = nullptr;
 	scintillaClassAtom = ::RegisterClassExW(&wndclass);
 	bool result = 0 != scintillaClassAtom;
 
@@ -3457,16 +3452,11 @@ bool ScintillaWin::Register(HINSTANCE hInstance_) noexcept {
 		WNDCLASSEX wndclassc {};
 		wndclassc.cbSize = sizeof(wndclassc);
 		wndclassc.style = CS_GLOBALCLASS | CS_HREDRAW | CS_VREDRAW;
-		wndclassc.cbClsExtra = 0;
 		wndclassc.cbWndExtra = sizeof(ScintillaWin *);
 		wndclassc.hInstance = hInstance;
-		wndclassc.hIcon = nullptr;
-		wndclassc.hbrBackground = nullptr;
-		wndclassc.lpszMenuName = nullptr;
 		wndclassc.lpfnWndProc = ScintillaWin::CTWndProc;
 		wndclassc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 		wndclassc.lpszClassName = callClassName;
-		wndclassc.hIconSm = nullptr;
 
 		callClassAtom = ::RegisterClassEx(&wndclassc);
 		result = 0 != callClassAtom;
@@ -3533,7 +3523,7 @@ BOOL ScintillaWin::DestroySystemCaret() noexcept {
 	return retval;
 }
 
-LRESULT PASCAL ScintillaWin::CTWndProc(
+LRESULT CALLBACK ScintillaWin::CTWndProc(
 	HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	// Find C++ object associated with window.
 	ScintillaWin *sciThis = static_cast<ScintillaWin *>(PointerFromWindow(hWnd));
@@ -3653,7 +3643,7 @@ sptr_t __stdcall Scintilla_DirectFunction(
 }
 #endif
 
-LRESULT PASCAL ScintillaWin::SWndProc(
+LRESULT CALLBACK ScintillaWin::SWndProc(
 	HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	//Platform::DebugPrintf("S W:%x M:%x WP:%x L:%x\n", hWnd, iMessage, wParam, lParam);
 

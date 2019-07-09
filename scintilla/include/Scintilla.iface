@@ -3031,6 +3031,15 @@ val SC_AC_COMMAND=5
 ali SC_AC_FILLUP=FILL_UP
 ali SC_AC_DOUBLECLICK=DOUBLE_CLICK
 
+# characterSource for SCN_CHARADDED
+enu CharacterSource=SC_CHARACTERSOURCE_
+# Direct input characters.
+val SC_CHARACTERSOURCE_DIRECT_INPUT=0
+# IME (inline mode) or dead key tentative input characters.
+val SC_CHARACTERSOURCE_TENTATIVE_INPUT=1
+# IME (either inline or windowed mode) full composited string.
+val SC_CHARACTERSOURCE_IME_RESULT=2
+
 ################################################
 # For SciLexer.h
 enu Lexer=SCLEX_
@@ -5179,7 +5188,7 @@ val SCE_DF_ICODE=14
 # Events
 
 evt void StyleNeeded=2000(int position)
-evt void CharAdded=2001(int ch)
+evt void CharAdded=2001(int ch, int characterSource)
 evt void SavePointReached=2002(void)
 evt void SavePointLeft=2003(void)
 evt void ModifyAttemptRO=2004(void)

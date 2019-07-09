@@ -6498,7 +6498,11 @@ void HandlePosChange()
     unsigned int iValue = 0;
     if (sscanf_s(&chText[1], "%x", &iValue) == 1)
     {
-      COLORREF const rgb = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+      unsigned int r = (iValue & 0xFF0000) >> 16;
+      unsigned int g = (iValue & 0xFF00) >> 8;
+      unsigned int b = (iValue & 0xFF);
+      //bool const dark = ((r + b + g + 2) / 3) < 0x80;
+      COLORREF const rgb = RGB(r,g,b);
       SciCall_IndicSetHoverFore(INDIC_NP3_COLOR_DEF, rgb);
     }
   }
