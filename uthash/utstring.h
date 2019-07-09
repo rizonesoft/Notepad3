@@ -39,8 +39,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UTSTRING_UNUSED
 #endif
 
-#ifndef oom
-#define oom() exit(-1)
+#ifdef oom
+#error "The name of macro 'oom' has been changed to 'utstring_oom'. Please update your code."
+#define utstring_oom() oom()
+#endif
+
+#ifndef utstring_oom
+#define utstring_oom() exit(-1)
 #endif
 
 typedef struct {
@@ -54,7 +59,9 @@ do {                                                       \
   if (((s)->n - (s)->i) < (size_t)(amt)) {                 \
     char *utstring_tmp = (char*)realloc(                   \
       (s)->d, (s)->n + (amt));                             \
-    if (utstring_tmp == NULL) oom();                       \
+    if (!utstring_tmp) {                                   \
+      utstring_oom();                                      \
+    }                                                      \
     (s)->d = utstring_tmp;                                 \
     (s)->n += (amt);                                       \
   }                                                        \
@@ -81,9 +88,11 @@ do {                                                       \
 
 #define utstring_new(s)                                    \
 do {                                                       \
-   (s) = (UT_string*)malloc(sizeof(UT_string));            \
-   if (!(s)) oom();                                        \
-   utstring_init(s);                                       \
+  (s) = (UT_string*)malloc(sizeof(UT_string));             \
+  if (!(s)) {                                              \
+    utstring_oom();                                        \
+  }                                                        \
+  utstring_init(s);                                        \
 } while(0)
 
 #define utstring_renew(s)                                  \
