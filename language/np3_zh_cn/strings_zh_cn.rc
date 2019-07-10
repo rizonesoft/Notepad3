@@ -181,8 +181,8 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误。"
     IDS_MUI_REGEX_INVALID    "正则表达式无效。"
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
-    IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件."
-    IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接."
+    IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件。"
+    IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接。"
 END
 
 STRINGTABLE
