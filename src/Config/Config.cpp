@@ -1169,6 +1169,9 @@ bool SaveSettings(bool bSaveSettingsNow)
     if (Settings.SaveSettings != Defaults.SaveSettings) {
       IniSectionSetBool(Settings_Section, L"SaveSettings", Settings.SaveSettings);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"SaveSettings", false);
+    }
     return SaveIniFile(Globals.IniFile);
   }
 
@@ -1186,29 +1189,56 @@ bool SaveSettings(bool bSaveSettingsNow)
     if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
       IniSectionSetBool(Settings_Section, L"CloseFind", Settings.EFR_Data.bFindClose);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"CloseFind", false);
+    }
     if (Settings.EFR_Data.bReplaceClose != Defaults.EFR_Data.bReplaceClose) {
       IniSectionSetBool(Settings_Section, L"CloseReplace", Settings.EFR_Data.bReplaceClose);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"CloseReplace", false);
     }
     if (Settings.EFR_Data.bNoFindWrap != Defaults.EFR_Data.bNoFindWrap) {
       IniSectionSetBool(Settings_Section, L"NoFindWrap", Settings.EFR_Data.bNoFindWrap);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"NoFindWrap", false);
+    }
     if (Settings.EFR_Data.bTransformBS != Defaults.EFR_Data.bTransformBS) {
       IniSectionSetBool(Settings_Section, L"FindTransformBS", Settings.EFR_Data.bTransformBS);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"FindTransformBS", false);
     }
     if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
       IniSectionSetBool(Settings_Section, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"WildcardSearch", false);
+    }
     if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
       IniSectionSetBool(Settings_Section, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"FindMarkAllOccurrences", false);
     }
     if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines) {
       IniSectionSetBool(Settings_Section, L"HideNonMatchedLines", Settings.EFR_Data.bHideNonMatchedLines);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"HideNonMatchedLines", false);
+    }
     if (Settings.EFR_Data.bDotMatchAll != Defaults.EFR_Data.bDotMatchAll) {
       IniSectionSetBool(Settings_Section, L"RegexDotMatchesAll", Settings.EFR_Data.bDotMatchAll);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"RegexDotMatchesAll", false);
+    }
     if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
       IniSectionSetInt(Settings_Section, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"efrData_fuFlags", false);
     }
 
     WCHAR wchTmp[MAX_PATH] = { L'\0' };
@@ -1216,9 +1246,15 @@ bool SaveSettings(bool bSaveSettingsNow)
       PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
       IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"OpenWithDir", false);
+    }
     if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
       PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
       IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"Favorites", false);
     }
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PathNameFormat);
@@ -1283,14 +1319,26 @@ bool SaveSettings(bool bSaveSettingsNow)
     if (Settings.PrintMargin.left != Defaults.PrintMargin.left) {
       IniSectionSetInt(Settings_Section, L"PrintMarginLeft", Settings.PrintMargin.left);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"PrintMarginLeft", false);
+    }
     if (Settings.PrintMargin.top != Defaults.PrintMargin.top) {
       IniSectionSetInt(Settings_Section, L"PrintMarginTop", Settings.PrintMargin.top);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"PrintMarginTop", false);
     }
     if (Settings.PrintMargin.right != Defaults.PrintMargin.right) {
       IniSectionSetInt(Settings_Section, L"PrintMarginRight", Settings.PrintMargin.right);
     }
+    else {
+      IniSectionDelete(Settings_Section, L"PrintMarginRight", false);
+    }
     if (Settings.PrintMargin.bottom != Defaults.PrintMargin.bottom) {
       IniSectionSetInt(Settings_Section, L"PrintMarginBottom", Settings.PrintMargin.bottom);
+    }
+    else {
+      IniSectionDelete(Settings_Section, L"PrintMarginBottom", false);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
@@ -1307,11 +1355,11 @@ bool SaveSettings(bool bSaveSettingsNow)
     ///~IniSectionSetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction);
 
     Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
-    if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) == 0) {
-      IniSectionDelete(Settings_Section, L"ToolbarButtons", false);
+    if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) != 0) {
+      IniSectionSetString(Settings_Section, L"ToolbarButtons", Settings.ToolbarButtons);
     }
     else {
-      IniSectionSetString(Settings_Section, L"ToolbarButtons", Settings.ToolbarButtons);
+      IniSectionDelete(Settings_Section, L"ToolbarButtons", false);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowToolbar);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowStatusbar);
@@ -1347,23 +1395,29 @@ bool SaveSettings(bool bSaveSettingsNow)
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
   IniSectionSetInt(Window_Section, tchHighDpiToolBar, s_iToolBarTheme);
 
-  if (!Flags.bStickyWindowPosition) {
-
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
-
-    StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
-    StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
-    StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
-    StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
-    StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
-    StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
-
+  WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
+  StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
+  StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
+  StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
+  StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
+  StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
+  StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
+  if (!Flags.bStickyWindowPosition) 
+  {
     IniSectionSetInt(Window_Section, tchPosX, s_WinInfo.x);
     IniSectionSetInt(Window_Section, tchPosY, s_WinInfo.y);
     IniSectionSetInt(Window_Section, tchSizeX, s_WinInfo.cx);
     IniSectionSetInt(Window_Section, tchSizeY, s_WinInfo.cy);
     IniSectionSetBool(Window_Section, tchMaximized, s_WinInfo.max);
     IniSectionSetInt(Window_Section, tchZoom, s_WinInfo.zoom);
+  }
+  else {
+    IniSectionDelete(Window_Section, tchPosX, false);
+    IniSectionDelete(Window_Section, tchPosY, false);
+    IniSectionDelete(Window_Section, tchSizeX, false);
+    IniSectionDelete(Window_Section, tchSizeY, false);
+    IniSectionDelete(Window_Section, tchMaximized, false);
+    IniSectionDelete(Window_Section, tchZoom, false);
   }
 
   bool const ok = SaveIniFile(Globals.IniFile);

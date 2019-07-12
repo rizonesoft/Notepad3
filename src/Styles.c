@@ -683,6 +683,16 @@ bool Style_Export(HWND hwnd)
 //
 //  Style_ExportToFile()
 //
+
+#define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)        \
+  if ((VALUE) != (DEFAULT)) {                                              \
+    IniSectionSet##TYPE(Styles_Section, _W(_STRG(VARNAME)), (VALUE));      \
+  } else {                                                                 \
+    IniSectionDelete(Styles_Section, _W(_STRG(VARNAME)), false);           \
+  }
+// ----------------------------------------------------------------------------
+
+
 bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
   if (StrIsEmpty(szFile)) {
@@ -698,13 +708,18 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   const WCHAR* const CustomColors_Section = L"Custom Colors";
 
   for (int i = 0; i < 16; i++) {
-    if (bForceAll || (g_colorCustom[i] != s_colorDefault[i])) {
-      WCHAR tch[32] = { L'\0' };
-      WCHAR wch[32] = { L'\0' };
-      StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+    WCHAR tch[32] = { L'\0' };
+    WCHAR wch[32] = { L'\0' };
+    StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+    if (bForceAll || (g_colorCustom[i] != s_colorDefault[i])) 
+    {
       StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
         (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
+
       IniSectionSetString(CustomColors_Section, tch, wch);
+    }
+    else {
+      IniSectionDelete(CustomColors_Section, tch, false);
     }
   }
 
@@ -712,42 +727,17 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
   // auto select
   bool const bUse2ndSty = Style_GetUse2ndDefault();
-  if (bUse2ndSty) {
-    IniSectionSetBool(Styles_Section, L"Use2ndDefaultStyle", bUse2ndSty);
-  }
-  else {
-    IniSectionDelete(Styles_Section, L"Use2ndDefaultStyle", false);
-  }
+  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Bool, Use2ndDefaultStyle, bUse2ndSty, false);
 
   // default scheme
-  if (s_iDefaultLexer != 0) {
-    IniSectionSetInt(Styles_Section, L"DefaultScheme", s_iDefaultLexer);
-  }
-  else {
-    IniSectionDelete(Styles_Section, L"DefaultScheme", false);
-  }
+  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, DefaultScheme, s_iDefaultLexer, 0);
 
   // auto select
-  if (!s_bAutoSelect) {
-    IniSectionSetBool(Styles_Section, L"AutoSelect", s_bAutoSelect);
-  }
-  else {
-    IniSectionDelete(Styles_Section, L"AutoSelect", false);
-  }
+  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Bool, AutoSelect, s_bAutoSelect, true);
 
   // scheme select dlg dimensions
-  if (s_cxStyleSelectDlg != STYLESELECTDLG_X) {
-    IniSectionSetInt(Styles_Section, L"SelectDlgSizeX", s_cxStyleSelectDlg);
-  }
-  else {
-    IniSectionDelete(Styles_Section, L"SelectDlgSizeX", false);
-  }
-  if (s_cyStyleSelectDlg != STYLESELECTDLG_Y) {
-    IniSectionSetInt(Styles_Section, L"SelectDlgSizeY", s_cyStyleSelectDlg);
-  }
-  else {
-    IniSectionDelete(Styles_Section, L"SelectDlgSizeY", false);
-  }
+  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeX, s_cxStyleSelectDlg, STYLESELECTDLG_X);
+  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeY, s_cyStyleSelectDlg, STYLESELECTDLG_Y);
 
   // create canonical order of lexer sections 
   if (bForceAll) {
@@ -761,6 +751,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     }
     bForceAll = !Globals.bIniFileFromScratch;
   }
+  // ----------------------------------------------------------------
 
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
 
