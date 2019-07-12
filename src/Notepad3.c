@@ -1996,9 +1996,9 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
   MRU_Load(Globals.pMRUreplace);
 
   if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
-    Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL)
+    Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL) {
     return -1LL;
-
+  }
   Style_SetDefaultLexer(Globals.hwndEdit);
 
   ObserveNotifyChangeEvent();
@@ -2771,12 +2771,12 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), &params->wchData))
             bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
         }
-
-        else
+        else {
           bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, &params->wchData);
-
+        }
         if (bOpened) {
-          if (params->flagChangeNotify == FWM_MSGBOX) {
+          if (params->flagChangeNotify == FWM_MSGBOX) 
+          {
             FileWatching.FileWatchingMode = FWM_NONE;
             FileWatching.ResetFileWatching = true;
             InstallFileWatching(Globals.CurrentFile);

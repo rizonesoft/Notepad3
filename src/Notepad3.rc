@@ -156,9 +156,9 @@ BEGIN
     "O",            IDM_EDIT_SENTENCECASE,            VIRTKEY, CONTROL, ALT, NOINVERT
     "O",            CMD_RECODEOEM,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
     "P",            IDM_FILE_PRINT,                   VIRTKEY, CONTROL, NOINVERT
-    "P",            IDM_EDIT_COMPRESS_BLANKS,         VIRTKEY, ALT, NOINVERT
+    "P",            IDM_EDIT_COMPRESS_BLANKS,         VIRTKEY, CONTROL, ALT, NOINVERT
     "P",            CMD_DEFAULTWINPOS,                VIRTKEY, SHIFT, CONTROL, NOINVERT
-    //~"P",            MMMMMMMMMMMMMMMMMM,                VIRTKEY, ALT, NOINVERT  /// Menu(Appearance)
+    //~"P",            IDM_EDIT_COMPRESS_BLANKS          VIRTKEY, ALT, NOINVERT  /// Menu(Appearance)
     "Q",            IDM_EDIT_LINECOMMENT,             VIRTKEY, CONTROL, NOINVERT
     "Q",            IDM_EDIT_ENCLOSESELECTION,        VIRTKEY, ALT, NOINVERT  /// NO Menu
     "Q",            IDM_EDIT_STREAMCOMMENT,           VIRTKEY, SHIFT, CONTROL, NOINVERT
