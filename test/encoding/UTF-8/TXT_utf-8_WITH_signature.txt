@@ -1,0 +1,7 @@
+﻿This is a UTF-8 encoded file WITH signature UTF-8: "ef bb bf" (MS NOTEPAD make "UTF-8" file ALWAYS with signature)
+
+"Voix ambiguë d'un cœur qui au zéphyr préfère les jattes de kiwis."
+
+	áéióú <- 5 UTF-8 chars
+
+IMPORTANT: make sure to delete the file history (that includes codification info) before testing this.

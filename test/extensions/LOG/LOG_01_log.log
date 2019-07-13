@@ -1,0 +1,754 @@
+_____________________________________________________
+|12/02/2018 | 2. On E Drive - Data of AMR | Completed
+|
+|    Items processed: 19 (1,67 GB)
+|    Total time: 00:00:19
+|____________________________________________________
+
+[22:02:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Contacts
+                       E:\Data on C\Contacts
+[22:02:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Documents
+                       E:\Data on C\Documents
+[22:02:53]  Info:  Updating file "E:\Data on C\Documents\Outlook Files\pop.scarlet.be.am.pst"
+[22:02:54]  Info:  Updating file "E:\Data on C\Documents\Outlook Files\archive.pst"
+[22:03:10]  Info:  Updating file "E:\Data on C\Documents\Outlook Files\SCANPST - Shortcut.lnk"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\_Cartels y Flyers\Flyer_2017.pptx"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\_Cartels y Flyers\Poster_2017.pptx"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Sponsorcontract 2018 - Lacom VOLVO.docx"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Sponsorcontract 2018 - Lacom VOLVO.pdf"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service\bache.jpg"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service\bache_175%.png"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service\bache_250%.png"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer_2018.pptx"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Poster_2018.pptx"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\SPONSORS 2018_MG.xlsx"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\Personal\Procedures\PC-Laptop\Software AMR - List of programs.txt"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\Personal\Procedures\PC-Laptop\Software AMR - List of programs.xlsx"
+[22:03:11]  Info:  Creating file "E:\Data on C\Documents\Personal\Scarlet\Scarlet Factures\18R-0377000.pdf"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\Personal\Scarlet\Scarlet Factures\2018.rar"
+[22:03:11]  Info:  Updating file "E:\Data on C\Documents\SMA\Sunny Explorer\My PV plant 1 - VREG - Meterstanden en Betaling datum.xlsx"
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Desktop
+                       E:\Data on C\MS Windows\Desktop
+[22:03:11]  Info:  Updating file "E:\Data on C\MS Windows\Desktop\Reader WordPress.url"
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Favorites
+                       E:\Data on C\MS Windows\Favorites
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Pictures
+                       E:\Data on C\Pictures
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Music
+                       E:\Data on C\Music
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Videos
+                       E:\Data on C\Videos
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\Signatures
+                       E:\Data on C\MS Office\Signatures
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\UProof
+                       E:\Data on C\MS Office\UProof
+[22:03:11]  Info:  Synchronizing folder pair: Mirror->
+                       D:\Floppy_Disk_Img
+                       E:\Data on D\Floppy_Disk_Img
+[22:03:12]  Info:  Synchronizing folder pair: Mirror->
+                       D:\Hints & Tips
+                       E:\Data on D\Hints & Tips
+[22:03:12]  Info:  Synchronizing folder pair: Mirror->
+                       D:\Progs & Docs
+                       E:\Data on D\Progs & Docs
+[22:03:12]  Info:  Completed
+
+
+_____________________________________________________
+|12/02/2018 | 1. On D Drive - Data of AMR | Completed
+|
+|    Items processed: 19 (1,67 GB)
+|    Total time: 00:00:12
+|____________________________________________________
+
+[22:02:13]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Contacts
+                       D:\Data on C\Contacts
+[22:02:13]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Documents
+                       D:\Data on C\Documents
+[22:02:13]  Info:  Updating file "D:\Data on C\Documents\Outlook Files\pop.scarlet.be.am.pst"
+[22:02:14]  Info:  Updating file "D:\Data on C\Documents\Outlook Files\archive.pst"
+[22:02:24]  Info:  Updating file "D:\Data on C\Documents\Outlook Files\SCANPST - Shortcut.lnk"
+[22:02:24]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\_Cartels y Flyers\Flyer_2017.pptx"
+[22:02:24]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\_Cartels y Flyers\Poster_2017.pptx"
+[22:02:24]  Info:  Updating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Sponsorcontract 2018 - Lacom VOLVO.docx"
+[22:02:24]  Info:  Updating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Sponsorcontract 2018 - Lacom VOLVO.pdf"
+[22:02:24]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service\bache.jpg"
+[22:02:24]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service\bache_175%.png"
+[22:02:24]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service\bache_250%.png"
+[22:02:25]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer_2018.pptx"
+[22:02:25]  Info:  Creating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Poster_2018.pptx"
+[22:02:25]  Info:  Updating file "D:\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\SPONSORS 2018_MG.xlsx"
+[22:02:25]  Info:  Updating file "D:\Data on C\Documents\Personal\Procedures\PC-Laptop\Software AMR - List of programs.txt"
+[22:02:25]  Info:  Updating file "D:\Data on C\Documents\Personal\Procedures\PC-Laptop\Software AMR - List of programs.xlsx"
+[22:02:25]  Info:  Creating file "D:\Data on C\Documents\Personal\Scarlet\Scarlet Factures\18R-0377000.pdf"
+[22:02:25]  Info:  Updating file "D:\Data on C\Documents\Personal\Scarlet\Scarlet Factures\2018.rar"
+[22:02:25]  Info:  Updating file "D:\Data on C\Documents\SMA\Sunny Explorer\My PV plant 1 - VREG - Meterstanden en Betaling datum.xlsx"
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Desktop
+                       D:\Data on C\MS Windows\Desktop
+[22:02:25]  Info:  Updating file "D:\Data on C\MS Windows\Desktop\Reader WordPress.url"
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Favorites
+                       D:\Data on C\MS Windows\Favorites
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Pictures
+                       D:\Data on C\Pictures
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Music
+                       D:\Data on C\Music
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Videos
+                       D:\Data on C\Videos
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\Signatures
+                       D:\Data on C\MS Office\Signatures
+[22:02:25]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\UProof
+                       D:\Data on C\MS Office\UProof
+[22:02:25]  Info:  Completed
+
+
+_____________________________________________________
+|11/02/2018 | 2. On E Drive - Data of AMR | Completed
+|
+|    Items processed: 2 (17,4 KB)
+|    Total time: 00:00:01
+|____________________________________________________
+
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Contacts
+                       E:\Data on C\Contacts
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Documents
+                       E:\Data on C\Documents
+[17:16:22]  Info:  Updating file "E:\Data on C\Documents\FFS_SyncSettings\6. On USB Disk A - All Data of AMR.ffs_gui"
+[17:16:22]  Info:  Updating file "E:\Data on C\Documents\FFS_SyncSettings\7. On USB Disk B - All Data of AMR.ffs_gui"
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Desktop
+                       E:\Data on C\MS Windows\Desktop
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Favorites
+                       E:\Data on C\MS Windows\Favorites
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Pictures
+                       E:\Data on C\Pictures
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Music
+                       E:\Data on C\Music
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Videos
+                       E:\Data on C\Videos
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\Signatures
+                       E:\Data on C\MS Office\Signatures
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\UProof
+                       E:\Data on C\MS Office\UProof
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       D:\Floppy_Disk_Img
+                       E:\Data on D\Floppy_Disk_Img
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       D:\Hints & Tips
+                       E:\Data on D\Hints & Tips
+[17:16:22]  Info:  Synchronizing folder pair: Mirror->
+                       D:\Progs & Docs
+                       E:\Data on D\Progs & Docs
+[17:16:22]  Info:  Completed
+
+
+_____________________________________________________
+|11/02/2018 | 1. On D Drive - Data of AMR | Completed
+|
+|    Items processed: 2 (17,4 KB)
+|    Total time: 00:00:00
+|____________________________________________________
+
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Contacts
+                       D:\Data on C\Contacts
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Documents
+                       D:\Data on C\Documents
+[17:15:53]  Info:  Updating file "D:\Data on C\Documents\FFS_SyncSettings\6. On USB Disk A - All Data of AMR.ffs_gui"
+[17:15:53]  Info:  Updating file "D:\Data on C\Documents\FFS_SyncSettings\7. On USB Disk B - All Data of AMR.ffs_gui"
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Desktop
+                       D:\Data on C\MS Windows\Desktop
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Favorites
+                       D:\Data on C\MS Windows\Favorites
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Pictures
+                       D:\Data on C\Pictures
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Music
+                       D:\Data on C\Music
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Videos
+                       D:\Data on C\Videos
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\Signatures
+                       D:\Data on C\MS Office\Signatures
+[17:15:53]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\AppData\Roaming\Microsoft\UProof
+                       D:\Data on C\MS Office\UProof
+[17:15:53]  Info:  Completed
+
+
+____________________________________________________________
+|11/02/2018 | 6. On USB Disk A - All Data of AMR | Completed
+|
+|    Items processed: 4.240 (7,82 GB)
+|    Total time: 00:08:43
+|___________________________________________________________
+
+[16:57:08]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Contacts
+                       H:\Data's AMR\Data on C\Contacts
+[16:57:08]  Info:  Synchronizing folder pair: Mirror->
+                       C:\Users\AndreM\Documents
+                       H:\Data's AMR\Data on C\Documents
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\BVBA Dias-Decoster"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\Dias-Decoster\Boulangerie Dias-Decoster.jpg" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\BVBA Dias-Decoster\Boulangerie Dias-Decoster.jpg"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\Dias-Decoster\Dias-Decoster Vilvoorde.jpg" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\BVBA Dias-Decoster\Dias-Decoster Vilvoorde.jpg"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\Dias-Decoster\vkt recto vilvoorde.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\BVBA Dias-Decoster\vkt recto vilvoorde.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\Dias-Decoster\vkt verso peutie.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\BVBA Dias-Decoster\vkt verso peutie.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 1 - rapport périodique - assistance - admin de la personne.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 1 - rapport périodique - assistance - admin de la personne.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 2 - rapport périodique - assistance - admin des biens.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 2 - rapport périodique - assistance - admin des biens.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 3 - rapport 1 - représentation - admin de la personne.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 3 - rapport 1 - représentation - admin de la personne.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 4 - rapport 1 - représentation - admin des biens.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 4 - rapport 1 - représentation - admin des biens.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 5 - rapport périodique - représentation - admin de la personne.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 5 - rapport périodique - représentation - admin de la personne.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 6 - rapport périodique - représentation - admin des biens.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 6 - rapport périodique - représentation - admin des biens.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Annexe 7 - 1240 Cj.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Annexe 7 - 1240 Cj.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\CERTIFICAT MEDICAL.doc" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\CERTIFICAT MEDICAL.doc"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Comment protéger une personne qui n'est pas (ou plus) capable   Service public federal Justice.url" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Comment protéger une personne qui n'est pas (ou plus) capable   Service public federal Justice.url"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\protection-beschermen-fr.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\protection-beschermen-fr.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\Protéger la personne et son patrimoine  Service public federal Justice.url" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\Protéger la personne et son patrimoine  Service public federal Justice.url"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\rapport (1er) biens.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\rapport (1er) biens.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\rapport (1er) personne.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\rapport (1er) personne.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\rapport annuel sur la personne.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\rapport annuel sur la personne.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux\rapport annuel sur les biens.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fichiers origaux - Rapports\rapport annuel sur les biens.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Patricia\Finances"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Finances\Gestion des comptes titres - Guy et Patricia Marenne.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Patricia\Finances\Gestion des comptes titres - Guy et Patricia Marenne.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Finances\Patricia Marenne - Free Invest Plan - Avis libres 2016-02-001.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Patricia\Finances\Patricia Marenne - Free Invest Plan - Avis libres 2016-02-001.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Notifications"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Acceptation - Administrateur de la personne et des biens - 2017-09-14.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Notifications\Guy Marenne - Acceptation - Administrateur de la personne et des biens - 2017-09-14.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Documents Placement Free Invest Plan 90.000€.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - Documents Placement Free Invest Plan 90.000€.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - J.P. Gedinne Com. patrimoine 2012-11-30.docx" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - J.P. Gedinne Com. patrimoine 2012-11-30.docx"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - J.P. Gedinne Gestion biens 2012-12-31.docx" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - J.P. Gedinne Gestion biens 2012-12-31.docx"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - J.P. Gedinne Gestion biens 2012-12-31.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - J.P. Gedinne Gestion biens 2012-12-31.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Notification - Administrateur de la personne et des biens - 2017-09-14.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Notifications\Guy Marenne - Notification - Administrateur de la personne et des biens - 2017-09-14.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Notification - Tuteur légal André Marenne.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - Notification - Tuteur légal André Marenne.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Ordonnance - Autorisation de placement Free Invest Plan.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - Ordonnance - Autorisation de placement Free Invest Plan.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Ordonnance - Autorisation sous bénéfice d'inventaire.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Archives\Guy Marenne - Ordonnance - Autorisation sous bénéfice d'inventaire.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy\Guy Marenne - Publication au moniteur belge - Administrateur de la personne et des biens - 2017-09-20.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Notifications\Guy Marenne - Publication au moniteur belge - Administrateur de la personne et des biens - 2017-09-20.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Notifications"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Acceptation - Administrateur de la personne et des biens - 2017-09-14.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Notifications\Patricia Marenne - Acceptation - Administrateur de la personne et des biens - 2017-09-14.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Documents Placement Free Invest Plan 80.000€.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - Documents Placement Free Invest Plan 80.000€.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - J.P. Gedinne Com. patrimoine 2012-11-30.docx" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - J.P. Gedinne Com. patrimoine 2012-11-30.docx"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - J.P. Gedinne Com. patrimoine 2012-11-30.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - J.P. Gedinne Com. patrimoine 2012-11-30.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - J.P. Gedinne Gestion biens 2012-12-31.docx" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - J.P. Gedinne Gestion biens 2012-12-31.docx"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Notification - Administrateur de la personne et des biens - 2017-09-14.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Notifications\Patricia Marenne - Notification - Administrateur de la personne et des biens - 2017-09-14.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Notification - Tuteur légal André Marenne.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - Notification - Tuteur légal André Marenne.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Ordonnance - Autorisation de placement Free Invest Plan.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - Ordonnance - Autorisation de placement Free Invest Plan.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Ordonnance - Autorisation sous bénéfice d'inventaire.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Archives\Patricia Marenne - Ordonnance - Autorisation sous bénéfice d'inventaire.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia\Patricia Marenne - Publication au moniteur belge - Administrateur de la personne et des biens - 2017-09-20.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Notifications\Patricia Marenne - Publication au moniteur belge - Administrateur de la personne et des biens - 2017-09-20.pdf"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Home Membre"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Home Membre\Guy Marenne - Libération de la chambre suite départ.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Home Membre\Guy Marenne - Libération de la chambre suite départ.pdf"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Home Membre\Libération de la chambre suite départ ou décès d'un résident.docx" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Home Membre\Libération de la chambre suite départ ou décès d'un résident.docx"
+[16:57:08]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\005.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\005.JPG"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\007.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\007.JPG"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\008.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\008.JPG"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\009.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\009.JPG"
+[16:57:08]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\010.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\010.JPG"
+[16:57:09]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\011.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\011.JPG"
+[16:57:09]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\012.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\012.JPG"
+[16:57:09]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\013.JPG" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\013.JPG"
+[16:57:09]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats\Photos degats.zip" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Archives\Photos degats\Photos degats.zip"
+[16:57:09]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\O&O_Defrag_Pro_20.reg" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Desktop\DKT-PI3630.docx"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Desktop\DKT-PI3630.png"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Desktop\LPT-PVLDV6.docx"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Desktop\LPT-PVLDV6.png"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\1. On D Drive - Data of AMR.ffs_gui"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\2. On E Drive - Data of AMR.ffs_gui"
+[16:57:09]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\3. On USB Data P - Partial Data of AMR.ffs_gui"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\4. On USB Data A - All Data of AMR.ffs_gui"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\5. On E Drive - All Data of USB Stick TDK3.0-64GB.ffs_gui"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\6. On USB Disk A - All Data of AMR.ffs_gui"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\FFS_SyncSettings\7. On USB Disk B - All Data of AMR.ffs_gui"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Cars\Nissan\Qashqai\Lufop_zone_de_danger_Nissan_2014_EU_for_ViP.zip" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Divers\Divers.rar"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_le-creta_2013-06.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_le-creta_2013-08.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_le-creta_2013-09.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_le-creta_2013-12.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_le-creta_2013-12a.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\Suzi's Tapas bar - Roquetas de Mar.jpg" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\André - Rita - eID.pdf"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\André Marenne - 51.04.02-143.23.pdf"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\André Marenne_a - 51.04.02-143.23.jpg" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\André Marenne_b - 51.04.02-143.23.jpg" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\Archives\AndreM Id_a_150%.jpg" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\Archives\AndreM Id_b_150%.jpg" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\Archives\AndreM Id_Cartes.JPG" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\Archives\André Marenne - 51040214323.tif" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Andre Marenne\Archives\André Marenne - Carte d'identité.docx" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2017\Dossier sponsors 2017\Dias-Decoster" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Fichiers origaux" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Finances" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Guy" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Guy et Patricia Marenne - Administrateur de la personne et des biens - 2017-09-14.docx" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\http--www.ejustice.just.fgov.be-cgi_tsv-tsv_rech.pllanguage=fr.url" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Patricia" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Home Membre" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Guy\Photos degats" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Famille\Jean-Pol\EmiratesETicket-1762300426333.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Famille\Jean-Pol\EmiratesETicket-1762300426334.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Famille\Jean-Pol\EmiratesETicket-1762300426335.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Kaspersky\KIS - Renewal Pricing List.xlsx"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Kaspersky\Proxy Anonymous France.txt" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Kaspersky\Andre Marenne\Kaspersky Lab UK Online Store - Order Completed - 2015-11-26 -19.30.txt" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Kaspersky\Andre Marenne\Kaspersky Lab UK Online Store - Order Completed - 2015-11-26 -19.45.txt" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Kaspersky\KIS 2018\KIS 2018 - Customer Settings.docx"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Kaspersky\KIS 2018\KIS 2018 - Customer Settings.pdf"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Parkings\Affiches\GARAGEBOX te huur (A4) 0475 85 50 80.docx"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Parkings\Affiches\PARKINGPLAATS te huur (A4) 0479 23 27 19.docx" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Parkings\Affiches\PARKINGPLAATS te huur (A5) 0475 85 50 80.docx" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Parkings\Affiches\PARKINGPLAATS te huur (A5) 0479 23 27 19.docx" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Procedures\PC-Laptop\PC-Laptop Soho - Installation Check List.xlsx"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-0082482.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-0306221.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-0536179.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-0780231.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-1014609.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-1260761.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-1511944.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-1763114.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\17R-2019795.pdf" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Personal\Scarlet\Scarlet Factures\2017.rar" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\SMA\Sunny Explorer\2016\2016.rar"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.10.17).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.11.2).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.13.13).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.14.24).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.16.35).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.17.13).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.18.27).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.19.35).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.19.54).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:10]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.20.22).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.24.54).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.3.42).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.5.17).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.5.38).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.6.10).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.6.19).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Moving file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\backup(2017-9-10 18.9.28).spdb" to "H:\Data's AMR\Data on C\Versioning\Documents"
+[16:57:11]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Sticky Passwords\default.spdb"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Default.rdp"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171001_164046.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171004_103713.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171020_181951.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171020_182011.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171020_182030.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171021_170309.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171027_182639.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171028_111855.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171102_143418.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171107_155538.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171107_161537.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171107_175953.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171108_161439.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171207_002627.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171208_211057.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171213_114701.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20171227_103249.reg"
+[16:57:11]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\CCleaner\cc_20180108_185730.reg"
+[16:57:11]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Outlook Files\archive.pst"
+[16:57:56]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Outlook Files\pop.scarlet.be.am.pst"
+[16:58:33]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Outlook Files\SCANPST - Shortcut.lnk"
+[16:58:33]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Cars\Dats - Factures\Dats_2017.rar"
+[16:58:33]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Cars\Nissan\Micra\Nissan Micra 1-HEB-718 - Gebruikskosten.xlsx"
+[16:58:33]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Cars\Nissan\New Leaf"
+[16:58:33]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Cars\Nissan\New Leaf\Nissan_Leaf-2018_BEFR.pdf"
+[16:58:33]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Cars\Nissan\Qashqai\Nissan Qashqai 1-JRR-726 - Cout d'utilisation.xlsx"
+[16:58:33]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Divers\TL OSCRAM - light-can-be-white-en.pdf"
+[16:58:34]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\1710075-lg_krant_jan_feb_maart_fr_lr04.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_website_02_03_04_fr_v01.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_website_02_fr_v01.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_website_03_fr_v01.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Restaurants\coupon_website_04_fr_v01.pdf"
+[16:58:35]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Courrier\Loisirs\Voyages\Vacances annuelles - Résumé chiffré.xlsx"
+[16:58:35]  Info:  Updating file "H:\Data's AMR\Data on C\Documents\Personal\Domicile\Rita Van Campenhout\Rita Van Campenhout - 49.08.06-160.66.pdf"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\2015-12-01_12_QSF_hygiene_personnelle.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\2015-12-01_19_QSF_temperatures_des_produits_chauds.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\2015-12-01_20_QSF_allergenes.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\Capture d¹écran 2017-03-30 à 10.50.40.png"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\Capture d¹écran 2017-03-30 à 10.52.41.png"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\G-044_Module_AT_fr.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Cocina 2018\Personal de Cocina Feria 2017.pdf"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Comité de Feria 2018"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Comité de Feria 2018\Carpa_12mx35m.pdf"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\AB Automotive"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\AB Automotive\AB Logo (original).jpg"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\AB Automotive\AB Logo_A3-A4.jpg"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Bio.Punt Lijsterbes"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Bio.Punt Lijsterbes\Lijsterbes reclame.pdf"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Bio.Punt Lijsterbes\Lijsterbes reclame.pptx"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Bio.Punt Lijsterbes\Lijsterbes reclame_A3-A4.jpg"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Bio.Punt Lijsterbes\Lijsterbes_Vilvoorde13_midden.jpg"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Bio.Punt Lijsterbes\Logo Biopunt lijsterbes.jpg"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\BNP Paribas Fortis"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\BNP Paribas Fortis\BNP Paribas Fortis - Vilvoorde - A4-A3 (2017).jpg"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\BNP Paribas Fortis\BNP Paribas Fortis LOGO_Only.JPG"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\BNP Paribas Fortis\Logos_Vilvoorde (2017).pdf"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Carrosserie CQ&S"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Carrosserie CQ&S\Carrosserie CQ&S.jpg"
+[16:58:35]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Carrosserie Petit Jean"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Carrosserie Petit Jean\Carrosserie Petijean LOGO_Only.jpg"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Carrosserie Petit Jean\Carrosserie Petijean PUB.jpg"
+[16:58:35]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Carrosserie Petit Jean\Carrosserie Petijean.png"
+[16:58:36]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser\Churros Porras Valyser.pdf"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser\Churros recto.pdf"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser\Churros verso.pdf"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser\Churros-Porras Valyser.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser\Churros-Porras Valyser_recto.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Churrería Valyser\Churros-Porras Valyser_verso.jpg"
+[16:58:36]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Coca Cola"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Coca Cola\Coca Cola.gif"
+[16:58:36]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\DATAREX"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\DATAREX\DATAREX Feria 20170313 H.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\DATAREX\DATAREX Feria 20170313 H.pdf"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\DATAREX\DATAREX Feria 20170313 V.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\DATAREX\DATAREX Feria 20170313 V.pdf"
+[16:58:36]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA\Boulangerie Dias-Decoster.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA\Dias-Decoster Vilvoorde.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA\Soft Solutions - François Crabbé.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA\Soft Solutions.jpg"
+[16:58:36]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA\vkt recto vilvoorde 2017.pdf"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Dias-Decoster BVBA\vkt recto vilvoorde 2018.pdf"
+[16:58:37]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\ERGO-Liliane Puttemans"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\ERGO-Liliane Puttemans\Ad_Puttemans_A5-liggend.pdf"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\ERGO-Liliane Puttemans\ERGO-Liliane Puttemans.jpg"
+[16:58:37]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Esthetica Nieves"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Esthetica Nieves\biomer_nieves.pdf"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Esthetica Nieves\Nieves_Biomer_A4.jpg"
+[16:58:37]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Franck Angellini"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Franck Angellini\Franck Angellini.jpg"
+[16:58:37]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\FRIT & ZO"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\FRIT & ZO\FRIT & ZO - A4-A3.pdf"
+[16:58:37]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\FRIT & ZO\Frit & Zo.png"
+[16:58:38]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Gentleman"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Gentleman\Gentleman.jpg"
+[16:58:38]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMAGE Kapsalon"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMAGE Kapsalon\IMAGE Kapsalon.jpg"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMAGE Kapsalon\IMAGE Kapsalon.txt"
+[16:58:38]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immo Bosmans Buro"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immo Bosmans Buro\Bosmans Immo - logo+adres.pdf"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immo Bosmans Buro\Immo Bosmans Buro - A4-A3.jpg"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immo Bosmans Buro\Immo Bosmans Buro LOGO_Only.png"
+[16:58:38]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immolution"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immolution\Immolution Original.jpg"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Immolution\Immolution.jpg"
+[16:58:38]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Feria_2017_Imoya_Team.jpg"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\IMOYA-HiRes.jpg"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Kantkwartier_001 - 1920x720.png"
+[16:58:38]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Kantkwartier_001.tiff"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Marijke Verboven.png"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Michel Vanstallen.png"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Robrecht Vanstallen.png"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Sponsorbord-4x5m-lowres.jpg"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Sponsorcontract 2017 - IMOYA Projects.docx"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\IMOYA Projects\Sponsorcontract 2017 - IMOYA Projects.pdf"
+[16:58:43]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Insuralia-Fintro Vilvoorde"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Insuralia-Fintro Vilvoorde\Insuralia - Agrest 2017.jpg"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Insuralia-Fintro Vilvoorde\Insuralia - Agrest 2017.pdf"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Insuralia-Fintro Vilvoorde\Insuralia LOGO_Only.PNG"
+[16:58:43]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jeannine Textiel"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jeannine Textiel\Jeannine - Logo - 2014.jpg"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jeannine Textiel\Jeannine - Logo 2017.jpg"
+[16:58:43]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen\Jennes Machelen - A4.jpg"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen\Jennes Machelen.pdf"
+[16:58:43]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen\Jennes Machelen.pub"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen\jennes_machelen_logo_rgb.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen\SKODA_Logo_Transparant_New.png"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Jennes Machelen\VW Das Auto.png"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Lacom VOLVO - Feria 2016.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\LACOM2012_logo_Baseline_ENG_NEW_2015.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\LACOM2012_logo_Baseline_ENG_NEW_2015.pdf"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Sponsorcontract 2018 - Lacom VOLVO.docx"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Lacom VOLVO\Sponsorcontract 2018 - Lacom VOLVO.pdf"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\Leo Peeters.png"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\LOGO_LeoPeeters.pdf"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\LOGO_NISSAN.pdf"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\Nissan Logo.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\Nissan_Logo-LP - A4-A3.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\Nissan_Logo-LP - A4-A3.pdf"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Leo Peeters NISSAN\Nissan_Logo.jpg"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Luli & Zoon"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Luli & Zoon\Luli & Zoon.png"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Maes Pils"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Maes Pils\Maes Pils.png"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Multipharma"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Multipharma\Multipharma Vilvoorde - A4-A3.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Multipharma\MUL_logo_RVB.jpg"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Naomi Banken Fotografiek"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Naomi Banken Fotografiek\logo Naomi horizontaal.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Naomi Banken Fotografiek\logo Naomi verticaal.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Naomi Banken Fotografiek\logo Naomi verticaal.pdf"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Naomi Banken Fotografiek\logo_Naomi horizontaal.pdf"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Palm Bier"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Palm Bier\Palm Bier.png"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Peña Madridista"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Peña Madridista\Peña Madridista A3_A4.jpg"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Peña Madridista\Peña Madridista Original.jpg"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Philbo"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Philbo\Philbo.jpg"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Rode Pelikaan"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Rode Pelikaan\Rode Pelikaan.jpg"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Sleeucar A-L Service"
+[16:58:44]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\V&V Service"
+[16:58:44]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\V&V Service\V&V Service - Logo -A3-A4.jpg"
+[16:58:45]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Van Craenenbrouck"
+[16:58:45]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\Van Craenenbrouck\BVBA Van Craenenbrouck.jpg"
+[16:58:45]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers"
+[16:58:45]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\A3_All_Logos_2017.pdf"
+[16:58:45]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\A3_All_Logos_2017.pptx"
+[16:58:46]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\A3_Pared_2017.pdf"
+[16:58:46]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\A3_Pared_2017.pptx"
+[16:58:47]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\A4_Mesas_2017.pdf"
+[16:58:47]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\A4_Mesas_2017.pptx"
+[16:58:47]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flamenco Feria 2017 - Vilvoorde.docx"
+[16:58:47]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flamenco Feria 2017 - Vilvoorde.pdf"
+[16:58:47]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flamenco Feria 2017 - Vilvoorde.xlsx"
+[16:58:47]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer P1_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer P2_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer P3_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer P4_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Flyer_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Graffikka - A3_Pared_2017 y A4_Mesas_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Poster_2017.pdf"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Cartels y Flyers\Poster_2017.png"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2015"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2015\Lisa Delbo"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2015\Lisa Delbo\Lisa Delbo.png"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2015\Nicole en Hugo"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2015\Nicole en Hugo\Nicole en Hugo.jpg"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016\Davy en Sasha"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016\Davy en Sasha\davy en sasha 1.jpg"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016\Davy en Sasha\davy en sasha 2.jpg"
+[16:58:48]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016\Jo Vally"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016\Jo Vally\JoVally_presspic4.jpg"
+[16:58:48]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2016\Jo Vally\JoVally_presspic5.jpg"
+[16:58:49]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017"
+[16:58:49]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Heidi Bl&W.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\index.htm_cmp_stiletto1010_bnr.gif"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto.zip"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_01.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_02.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_03.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_04.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_bw.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_Kleur.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2017\Stiletto\Stiletto_LARGE-Kleur.jpg"
+[16:58:49]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018"
+[16:58:49]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Amaryllis Temmerman"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Amaryllis Temmerman\Amaryllis_temmerman-02.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Amaryllis Temmerman\Amaryllis_temmerman-02.png"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Amaryllis Temmerman\Amaryllis_temmerman-1475392834.jpg"
+[16:58:49]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Paul Severs"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Paul Severs\Paul Severs - Medische waarschuwing.pdf"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Paul Severs\paulsevers.jpg"
+[16:58:49]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Paul Severs\paulsevers.png"
+[16:58:50]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Los Artistas\2018\Paul Severs\paul_severs-goud_van_hier_a.jpg"
+[16:58:50]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers"
+[16:58:50]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\Flamenco Feria 2018 sponsordossier.docx"
+[16:58:50]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\Flamenco Feria 2018 sponsordossier.pdf"
+[16:58:50]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\invitacion Sponsoring Flamenco Feria 2018 (con 2 bebidas).docx"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\invitacion Sponsoring Flamenco Feria 2018 (con 2 bebidas).pdf"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\invitacion Sponsoring Flamenco Feria 2018 (con 4 bebidas).docx"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\invitacion Sponsoring Flamenco Feria 2018 (con 4 bebidas).pdf"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\invitacion Sponsoring Flamenco Feria 2018 (con cava y tapa).docx"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\invitacion Sponsoring Flamenco Feria 2018 (con cava y tapa).pdf"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\Sponsorcontract 2018.docx"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\Sponsorcontract 2018.pdf"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\SPONSORS 2018_MG.pdf"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\SPONSORS 2018_MG.xlsx"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\_Lista ordonada de todos los sponsors 2018.xlsx"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsordossiers\_Sponsors 2018_Planing.xlsx"
+[16:58:51]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018"
+[16:58:51]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos André Feria 2017"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos André Feria 2017\20170506_103754.jpg"
+[16:58:51]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos André Feria 2017\20170506_103841.jpg"
+[16:58:52]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos André Feria 2017\20170506_104443.jpg"
+[16:58:52]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos André Feria 2017\IMG-20170506-WA0001.jpeg"
+[16:58:52]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos André Feria 2017\Photos André Feria 2017.rar"
+[16:58:54]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos Fernand y Miguel Feria 2017"
+[16:58:54]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos Fernand y Miguel Feria 2017\DSC_0276.JPG"
+[16:58:54]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos Fernand y Miguel Feria 2017\DSC_0322.JPG"
+[16:58:54]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos Fernand y Miguel Feria 2017\Photos Fernand y Miguel Feria 2017.zip"
+[16:58:56]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Sponsors Famenco Feria 2018\Photos Fernand y Miguel Feria 2017\SAM_4688.JPG"
+[16:58:56]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Tools"
+[16:58:56]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Tools\Convert EPS to JPG - FREE Online EPS to JPG converter.url"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Tools\Convertisseur de PDF en JPG - En ligne et gratuit.url"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Tools\PDFMerge! - Fusionner des fichiers PDF en ligne gratuitement.url"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Espanol\Peña Andaluza\Flamenco Feria 2018\Dossier sponsors 2018\_Tools\Smallpdf.com - La Solution Gratuite pour tous vos PDFs.url"
+[16:58:57]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports\Patricia Marenne - Rapport 1 - représentation - admin de la personne - 2017-09-24.doc"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports\Patricia Marenne - Rapport 1 - représentation - admin de la personne - 2017-09-24.pdf"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports\Patricia Marenne - Rapport 1 - représentation - admin des biens - 2017-09-24.doc"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports\Patricia Marenne - Rapport 1 - représentation - admin des biens - 2017-09-24.pdf"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports\Patricia Marenne - Rapport annuel - représentation - admin de la personne -2018-09-07.doc"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B601 - Patricia Marenne\Rapports\Patricia Marenne - Rapport annuel - représentation - admin des biens - 2018-09-07.doc"
+[16:58:57]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports\Guy Marenne - Rapport 1 - représentation - admin de la personne - 2017-09-24.doc"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports\Guy Marenne - Rapport 1 - représentation - admin de la personne - 2017-09-24.pdf"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports\Guy Marenne - Rapport 1 - représentation - admin des biens - 2017-09-24.doc"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports\Guy Marenne - Rapport 1 - représentation - admin des biens - 2017-09-24.pdf"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports\Guy Marenne - Rapport annuel - représentation - admin de la personne -2018-09-07.doc"
+[16:58:57]  Info:  Creating file "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\17B602 - Guy Marenne\Rapports\Guy Marenne - Rapport annuel - représentation - admin des biens - 2018-09-07.doc"
+[16:58:57]  Info:  Creating folder "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Archives"
+[16:58:57]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\André Marenne - Requête Juge Paix Gedinne 2013-01-04.docx" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Archives\André Marenne - Requête Juge Paix Gedinne 2013-01-04.docx"
+[16:58:57]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\BNP Paribas Fortis Free Invest Plan - Fiche Info financière Assurance-vie Branche 21.pdf" to 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Archives\BNP Paribas Fortis Free Invest Plan - Fiche Info financière Assurance-vie Branche 21.pdf"
+[16:58:57]  Info:  Moving file 
+                   "H:\Data's AMR\Data on C\Documents\Personal\Famille\André Tutelle\Documents tutelle\Juge de Paix\Fonds de protection des dépôts et des instruments financiers.pdf" to 
+[...]
