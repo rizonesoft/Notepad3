@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FreeFileSync XmlType="GLOBAL" XmlFormat="8">
+    <General>
+        <Language Name="English (U.S.)"/>
+        <FailSafeFileCopy Enabled="true"/>
+        <CopyLockedFiles Enabled="false"/>
+        <CopyFilePermissions Enabled="false"/>
+        <AutomaticRetry Count="0" Delay="5"/>
+        <FileTimeTolerance Seconds="2"/>
+        <FolderAccessTimeout Seconds="20"/>
+        <RunWithBackgroundPriority Enabled="false"/>
+        <LockDirectoriesDuringSync Enabled="true"/>
+        <VerifyCopiedFiles Enabled="false"/>
+        <LastSyncsLogSizeMax Bytes="100000"/>
+        <NotificationSound CompareFinished="" SyncFinished="gong.wav"/>
+        <ProgressDialog AutoClose="false"/>
+        <OptionalDialogs>
+            <ConfirmStartSync Show="true"/>
+            <ConfirmSaveConfig Show="true"/>
+            <ConfirmExternalCommandMassInvoke Show="true"/>
+            <WarnUnresolvedConflicts Show="true"/>
+            <WarnNotEnoughDiskSpace Show="true"/>
+            <WarnSignificantDifference Show="true"/>
+            <WarnRecycleBinNotAvailable Show="true"/>
+            <WarnInputFieldEmpty Show="true"/>
+            <WarnModificationTimeError Show="true"/>
+            <WarnDependentFolderPair Show="true"/>
+            <WarnDependentBaseFolders Show="true"/>
+            <WarnDirectoryLockFailed Show="true"/>
+            <WarnVersioningFolderPartOfSync Show="true"/>
+        </OptionalDialogs>
+    </General>
+    <Gui>
+        <MainDialog Width="1323" Height="882" PosX="282" PosY="31" Maximized="false">
+            <ManualCopyTo KeepRelativePaths="true" OverwriteIfExists="false">
+                <FolderHistory LastUsedPath="" MaxSize="15"/>
+            </ManualCopyTo>
+            <Search CaseSensitive="false"/>
+            <FolderPairsVisible Max="6"/>
+            <ConfigPanel ScrollPos="0" SyncOverdue="7" SortByColumn="Name" SortAscending="true">
+                <Columns>
+                    <Item Type="Name" Visible="true" Width="-65" Stretch="1"/>
+                    <Item Type="Last" Visible="true" Width="65" Stretch="0"/>
+                </Columns>
+                <Configurations MaxSize="100">
+                    <Item LastSync="1518469392">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\2. On E Drive - Data of NP3.ffs_gui</Item>
+                    <Item LastSync="1518469345">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\1. On D Drive - Data of NP3.ffs_gui</Item>
+                    <Item LastSync="0">FFS:\Users\KeyPass\AppData\Roaming\FreeFileSync\LastRun.ffs_gui</Item>
+                    <Item LastSync="1518364343">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\7. On USB Disk B - All Data of NP3.ffs_gui</Item>
+                    <Item LastSync="1518365151">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\6. On USB Disk A - All Data of NP3.ffs_gui</Item>
+                    <Item LastSync="1518363477">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\5. On E Drive - All Data of USB Stick TDK3.0-64GB.ffs_gui</Item>
+                    <Item LastSync="1518363424">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\4. On USB Data A - All Data of NP3.ffs_gui</Item>
+                    <Item LastSync="1518362859">FFS:\Users\KeyPass\Documents\FFS_SyncSettings\3. On USB Data P - Partial Data of NP3.ffs_gui</Item>
+                </Configurations>
+                <LastUsed>
+                    <Item>FFS:\Users\KeyPass\Documents\FFS_SyncSettings\2. On E Drive - Data of NP3.ffs_gui</Item>
+                </LastUsed>
+            </ConfigPanel>
+            <OverviewPanel ShowPercentage="true" SortByColumn="Bytes" SortAscending="false">
+                <Columns>
+                    <Item Type="Tree" Visible="true" Width="-132" Stretch="1"/>
+                    <Item Type="Count" Visible="true" Width="60" Stretch="0"/>
+                    <Item Type="Bytes" Visible="true" Width="60" Stretch="0"/>
+                </Columns>
+            </OverviewPanel>
+            <FilePanel ShowIcons="true" IconSize="Small" SashOffset="0" HistoryMaxSize="15">
+                <ColumnsLeft PathFormat="Relative">
+                    <Item Type="Path" Visible="true" Width="-80" Stretch="1"/>
+                    <Item Type="Date" Visible="false" Width="112" Stretch="0"/>
+                    <Item Type="Size" Visible="true" Width="80" Stretch="0"/>
+                    <Item Type="Ext" Visible="false" Width="60" Stretch="0"/>
+                </ColumnsLeft>
+                <FolderHistoryLeft>
+                    <Item>C:\Users\KeyPass\Contacts</Item>
+                    <Item>[USB Data A]\</Item>
+                    <Item>H:\</Item>
+                    <Item>H:\Temp2</Item>
+                    <Item>G:\Temp2</Item>
+                    <Item>G:\Downloads</Item>
+                    <Item>D:\Floppy_Disk_Img</Item>
+                    <Item>C:\Users\KeyPass\Documents</Item>
+                    <Item>C:\Users\KeyPass\Documents\Personal\Financial</Item>
+                    <Item>C:\Users\KeyPass\Documents\FFS_SyncSettings</Item>
+                    <Item>C:\Users\KeyPass\Documents\Sticky Passwords</Item>
+                    <Item>C:\Users\KeyPass\Documents\SMA</Item>
+                    <Item>C:\Users\KeyPass\Documents\Outlook Files</Item>
+                    <Item>C:\Users\KeyPass\Documents\Personal\Medical</Item>
+                    <Item>C:\Users\KeyPass\Documents\Personal\Kaspersky</Item>
+                </FolderHistoryLeft>
+                <ColumnsRight PathFormat="Relative">
+                    <Item Type="Path" Visible="true" Width="-80" Stretch="1"/>
+                    <Item Type="Ext" Visible="false" Width="60" Stretch="0"/>
+                    <Item Type="Date" Visible="false" Width="112" Stretch="0"/>
+                    <Item Type="Size" Visible="true" Width="80" Stretch="0"/>
+                </ColumnsRight>
+                <FolderHistoryRight>
+                    <Item>E:\Data on C\Contacts</Item>
+                    <Item>D:\Data on C\Contacts</Item>
+                    <Item>[USB Disk A]\Data's NP3\Data on C\Contacts</Item>
+                    <Item>[USB Disk B]\Data's NP3\Data on C\Contacts</Item>
+                    <Item>E:\TDK3.0-64GB</Item>
+                    <Item>[USB Data A]\Data on C\Contacts</Item>
+                    <Item>[USB Data P]\Data on C\Contacts</Item>
+                    <Item>[USB_Data]\Data on C\Contacts</Item>
+                    <Item>H:\Data on C\Contacts</Item>
+                    <Item>D:\Temp2</Item>
+                    <Item>D:\Downloads</Item>
+                    <Item>D:\</Item>
+                    <Item>H:\Floppy_Disk_Img</Item>
+                    <Item>H:\Data on C\Documents</Item>
+                    <Item>H:\Data on C\Documents\Personal\Financial</Item>
+                </FolderHistoryRight>
+            </FilePanel>
+            <DefaultViewFilter Equal="false" Conflict="true" Excluded="false">
+                <CategoryView LeftOnly="true" RightOnly="true" LeftNewer="true" RightNewer="true" Different="true"/>
+                <ActionView CreateLeft="true" CreateRight="true" UpdateLeft="true" UpdateRight="true" DeleteLeft="true" DeleteRight="true" DoNothing="true"/>
+            </DefaultViewFilter>
+            <Perspective>layout2|name=CenterPanel;caption=;state=256;dir=5;layer=0;row=0;pos=0;prop=100000;bestw=884;besth=171;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=TopPanel;caption=Main Bar;state=2099708;dir=1;layer=2;row=1;pos=0;prop=100000;bestw=401;besth=50;minw=180;minh=50;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=ProgressPanel;caption=;state=2097662;dir=1;layer=2;row=2;pos=0;prop=100000;bestw=368;besth=81;minw=200;minh=81;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=FoldersPanel;caption=Folder Pairs;state=2099708;dir=1;layer=2;row=3;pos=0;prop=100000;bestw=882;besth=45;minw=-1;minh=86;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=SearchPanel;caption=Find;state=2099710;dir=3;layer=2;row=2;pos=0;prop=100000;bestw=378;besth=25;minw=200;minh=25;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=ViewFilterPanel;caption=View Settings;state=2099708;dir=3;layer=2;row=1;pos=0;prop=100000;bestw=884;besth=45;minw=82;minh=45;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=ConfigPanel;caption=Configuration;state=2099196;dir=4;layer=3;row=0;pos=0;prop=100000;bestw=230;besth=57;minw=210;minh=57;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|name=OverviewPanel;caption=Overview;state=2099196;dir=4;layer=3;row=0;pos=1;prop=100000;bestw=884;besth=170;minw=-1;minh=-1;maxw=-1;maxh=-1;floatx=-1;floaty=-1;floatw=-1;floath=-1|dock_size(5,0,0)=265|dock_size(1,2,1)=50|dock_size(1,2,3)=190|dock_size(3,2,1)=45|dock_size(4,3,0)=302|</Perspective>
+        </MainDialog>
+        <DefaultExclusionFilter>
+            <Item>\System Volume Information\</Item>
+            <Item>\$Recycle.Bin\</Item>
+            <Item>\RECYCLER\</Item>
+            <Item>\RECYCLED\</Item>
+            <Item>*\desktop.ini</Item>
+            <Item>*\thumbs.db</Item>
+        </DefaultExclusionFilter>
+        <CommandHistory MaxSize="8"/>
+        <ExternalApps>
+            <Item Label="Show in Explorer">explorer /select, "%local_path%"</Item>
+            <Item Label="Open with default application">"%local_path%"</Item>
+        </ExternalApps>
+        <LastOnlineCheck>1517955481</LastOnlineCheck>
+        <LastOnlineVersion>9.8</LastOnlineVersion>
+    </Gui>
+</FreeFileSync>

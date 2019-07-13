@@ -1,0 +1,9 @@
+13:09 11/04/2019
+
+Test files: "Incons_Line_Endings_Source.txt"
+--------------------------------------------
+
+Mixed: Line Endings: CRLF, CR and LF
+------------------------------------
+CR:   32, 33, 43, 44
+LF:   10-12, 52, 53

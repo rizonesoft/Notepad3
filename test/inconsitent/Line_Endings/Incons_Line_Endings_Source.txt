@@ -1,0 +1,69 @@
+﻿//   Mixed: Line Endings: CRLF, CR and LF
+//   ------------------------------------
+//   CR:   32, 33, 43, 44
+//   LF:   10-12, 52, 53
+//
+// Releases a COM object and nullptrifies pointer.
+template <typename InterfaceType>
+inline void SafeRelease(InterfaceType** currentObject)
+{
+    if (*currentObject != nullptr)
+    {
+        (*currentObject)->Release();
+        *currentObject = nullptr;
+    }
+}
+
+
+// Acquires an additional reference, if non-nullptr.
+template <typename InterfaceType>
+inline InterfaceType* SafeAcquire(InterfaceType* newObject)
+{
+    if (newObject != nullptr)
+        newObject->AddRef();
+
+    return newObject;
+}
+
+
+// Sets a new COM object, releasing the old one.
+template <typename InterfaceType>
+inline void SafeSet(InterfaceType** currentObject, InterfaceType* newObject)
+{      SafeAcquire(newObject);      SafeRelease(currentObject);
+      *currentObject = newObject;
+}
+
+
+// Releases a COM object and nullptrifies pointer.
+template <typename InterfaceType>
+inline InterfaceType* SafeDetach(InterfaceType** currentObject)
+{
+      InterfaceType* oldObject = *currentObject;      *currentObject = nullptr;      return oldObject;
+}
+
+
+// Sets a new COM object, acquiring the reference.
+template <typename InterfaceType>
+inline void SafeAttach(InterfaceType** currentObject, InterfaceType* newObject)
+{
+    SafeRelease(currentObject);
+    *currentObject = newObject;
+}
+
+
+// Maps exceptions to equivalent HRESULTs,
+inline HRESULT ExceptionToHResult() noexcept
+{
+    try
+    {
+        throw;  // Rethrow previous exception.
+    }
+    catch(std::bad_alloc&)
+    {
+        return E_OUTOFMEMORY;
+    }
+    catch (...)
+    {
+        return E_FAIL;
+    }
+}

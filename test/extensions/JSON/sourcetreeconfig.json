@@ -1,0 +1,47 @@
+{
+  "$id": "13",
+  "AutoRefresh": true,
+  "AutoRefreshRemotes": true,
+  "CommitTextLinks": null,
+  "DraftCommitMsg": "",
+  "IncomingSavedCount": 0,
+  "LastCheckedRemotes": "2019-07-12T23:08:32.1713054+02:00",
+  "LastUsedView": 1,
+  "LogBranchFilterIndex": 0,
+  "OutgoingSavedCount": 0,
+  "SidebarExpandedItems": [
+    "Branches",
+    "Remotes",
+    "Stashes"
+  ],
+  "SidebarWidth": 210.0,
+  "SubtreeLinks": [],
+  "RemoteProjectLinks": [
+    {
+      "$id": "14",
+      "BaseUrl": "https://www.github.com",
+      "Identifier": "hpwamr/Notepad3",
+      "RemoteName": "hpwamr",
+      "Type": 0,
+      "Username": "hpwamr@outlook.com",
+      "CloneUrl": null,
+      "ProjectUrl": null,
+      "AccountId": "",
+      "AvatarUrl": null,
+      "DisplayName": "hpwamr: https://www.github.com"
+    },
+    {
+      "$id": "15",
+      "BaseUrl": "https://www.github.com",
+      "Identifier": "rizonesoft/Notepad3",
+      "RemoteName": "rizonesoft",
+      "Type": 0,
+      "Username": "hpwamr@outlook.com",
+      "CloneUrl": null,
+      "ProjectUrl": null,
+      "AccountId": "",
+      "AvatarUrl": null,
+      "DisplayName": "rizonesoft: https://www.github.com"
+    }
+  ]
+}
