@@ -3832,14 +3832,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNDO:
       if (SciCall_CanUndo()) {
         SciCall_Undo();
-        UpdateToolbar();
       }
       break;
 
     case IDM_EDIT_REDO:
       if (SciCall_CanRedo()) {
         SciCall_Redo();
-        UpdateToolbar();
       }
       break;
 
@@ -7013,7 +7011,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       bool bModified = true;
       if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
         if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction()) {
+          if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
             _SaveRedoSelection(_SaveUndoSelection());
           }
         }
