@@ -89,8 +89,10 @@ copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\setting
 copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Help\Changes.txt" /Y /V
 copy "%NP3_DISTRIB_DIR%\License.txt" "%NP3_PORTAPP_DIR%\Other\Help\License.txt" /Y /V
 copy "%NP3_DISTRIB_DIR%\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Help\Readme.txt" /Y /V
+copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\Other\Help\Notepad3.txt" /Y /V
 copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\Other\Help\KeyboardShortcuts.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\Other\Help\encryption-doc.txt" /Y /V
+
 
 :: clear Notepad3 binary dir (except .ini files)
 for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\" /b /a-d /s ^| findstr /v .ini') do del "%%f"
