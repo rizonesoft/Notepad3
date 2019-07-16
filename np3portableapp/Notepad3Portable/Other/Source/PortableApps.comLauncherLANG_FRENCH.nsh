@@ -1,7 +1,0 @@
-﻿;Courtesy of Dirinfo
-LangString LauncherFileNotFound ${LANG_FRENCH} "${PORTABLEAPPNAME} n'a pas pu démarrer. Vous pourriez tenter de le réinstaller pour corriger ce problème. (ERREUR: $MISSINGFILEORPATH non trouvé)"
-LangString LauncherAlreadyRunning ${LANG_FRENCH} "Une autre instance de ${APPNAME} est déjà en cours d'exécution. Veuillez fermer les autres instances de ${APPNAME} avant de lancer ${PORTABLEAPPNAME}."
-LangString LauncherAskCopyLocal ${LANG_FRENCH} "${PORTABLEAPPNAME} semble s'exécuter depuis un emplacement en lecture-seule. Voudriez-vous le copier dans un dossier temporaire du disque dur et le lancer depuis là ?$\n$\nPrivacy Note: Si vous acceptez, vos données personnelles appartenant à ${PORTABLEAPPNAME} seront temporairement copiées sur un disque local. Bien que cette copie de vos données sera effacée quand vous fermerez ${PORTABLEAPPNAME}, une personne mal intentionnée pourraît éventuellement y avoir accès ultérieurement."
-LangString LauncherNoReadOnly ${LANG_FRENCH} "${PORTABLEAPPNAME} ne peut s'éxécuter depuis un emplacement en lecture-seule, et va maintenant se fermer."
-LangString LauncherPathTooLong ${LANG_FRENCH} "Le chemin au ${PORTABLEAPPNAME} est trop long. Raccourcis-vous s'il te plaît le chemin à travers le troncation sur les listes étantes de cette utilisation ou à travers les brièvetés des noms de liste de rassembleur."
-LangString LauncherNextButton ${LANG_FRENCH} "&Suivant >"

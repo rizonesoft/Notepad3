@@ -122,9 +122,9 @@ To bring back the notification messages suppressed with the
 and delete all the values from the [Suppressed Messages] section.
 
 To block the "Don't display this message again" option for an 
-individual notification, set the value of the corresponding ini-option to 2. 
-For example, MsgNotFound=2 ensures the "Text not found" notification message 
-will always be displayed.
+individual notification, set the value of the corresponding ini-option to  -1. 
+For example, MsgNotFound=-1 ensures the "Text not found" notification message 
+will always be displayed (non suppressable by check-box).
 
 
 =======================================================================
