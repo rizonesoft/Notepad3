@@ -101,12 +101,13 @@ typedef enum { FWM_NONE = 0, FWM_MSGBOX = 1, FWM_AUTORELOAD = 2 } FILE_WATCHING_
 // keep backward compatible with older settings-file versions
 typedef enum
 {
-  CFG_VER_NONE = 0, /// old version
+  CFG_VER_NONE = 0,  /// old version
   CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
   CFG_VER_0002 = 2,  /// LongLine Marker Off by default
   CFG_VER_0003 = 3,  /// SimpleIni UTF-8 BOM
+  CFG_VER_0004 = 4,  /// Text Files lexer vs. Default Text => (2nd) Common Style
 
-  CFG_VER_CURRENT = CFG_VER_0003
+  CFG_VER_CURRENT = CFG_VER_0004
 
 } CFG_VERSION;
 
@@ -269,16 +270,18 @@ typedef struct _cmq
 
 typedef struct _constants_t
 {
-  const WCHAR* FileBrowserMiniPath;
+  int const          StdDefaultLexerID; // Pure Text Files
+  const WCHAR* const FileBrowserMiniPath;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 
-extern CONSTANTS_T Constants;
+extern CONSTANTS_T const Constants;
 
 // ------------------------------------
 
 typedef struct _globals_t
 {
+  int       iCfgVersionRead;
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
   HINSTANCE hLngResContainer;

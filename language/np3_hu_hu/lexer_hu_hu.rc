@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Alapértelmezett szöveg"
+    IDS_LEX_DEF_TXT         "Common Base"
     IDS_LEX_WEB_SRC         "Web forráskód"
     IDS_LEX_XML_DOC         "XML dokumentum"
     IDS_LEX_CSS_STYLE       "CSS stíluslap"
@@ -122,6 +122,7 @@ BEGIN
     IDS_LEX_RUST_SRC        "Rust forráskód"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Szövegfájlok"
+    IDS_LEX_TOML_CFG        "TOML"
 END
 
 STRINGTABLE
@@ -336,7 +337,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "Hiperhivatkozás területe"
     IDS_LEX_STR_63265       "2. hiperhivatkozás területe"
-    IDS_LEX_STR_63266       "2. alapértelmezett szöveg"
+    IDS_LEX_STR_63266       "2. Common Base"
     IDS_LEX_STR_63267       "Szövegen belüli változó"
     IDS_LEX_STR_63268       "Rendezett lista"
     IDS_LEX_STR_63269       "Infix"
