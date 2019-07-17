@@ -237,36 +237,36 @@ BEGIN
             MENUITEM "Час/&дата (доўгая форма)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Аднавіць меткі часу\tShift+F5",          CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "Імя &файла\tCtrl+F9",               IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Шлях і імя файла\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Імя &файла\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
+            MENUITEM "&Шлях і імя файла\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",               IDM_EDIT_INSERT_GUID
+            MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
         END
         POPUP "Рознае"
         BEGIN
-            MENUITEM "&Каментарыі (пераключыць)\tCtrl+Q", IDM_EDIT_LINECOMMENT
-            MENUITEM "&Блокавы каментарый\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
+            MENUITEM "&Каментарыі (пераключыць)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+            MENUITEM "&Блокавы каментарый\tCtrl+Shift+Q",               IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "Ка&даваць URL\tCtrl+Shift+E",       IDM_EDIT_URLENCODE
-            MENUITEM "Дэк&адаваць URL\tCtrl+Shift+R",     IDM_EDIT_URLDECODE
+            MENUITEM "Ка&даваць URL\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
+            MENUITEM "Дэк&адаваць URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Экранаваць сімвалы C\tCtrl+Alt+E",            IDM_EDIT_ESCAPECCHARS
-            MENUITEM "В&ыдаліць экранаванне сімвалаў C\tCtrl+Alt+R", IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "&Экранаваць сімвалы C\tCtrl+Alt+E",               IDM_EDIT_ESCAPECCHARS
+            MENUITEM "В&ыдаліць экранаванне сімвалаў C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "&Сімвал у шаснаццатковы код\tCtrl+Alt+X", IDM_EDIT_CHAR2HEX
-            MENUITEM "&Шаснаццатковы код у сімвал\tCtrl+Alt+C", IDM_EDIT_HEX2CHAR
+            MENUITEM "&Сімвал у шаснаццатковы код\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
+            MENUITEM "&Шаснаццатковы код у сімвал\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
-            MENUITEM "Павялічыць лік\tCtrl+Alt+NK+", CMD_INCREASENUM
-            MENUITEM "Паменьшыць лік\tCtrl+Alt+NK-", CMD_DECREASENUM
+            MENUITEM "Павялічыць лік\tCtrl+Alt+NK+",                    CMD_INCREASENUM
+            MENUITEM "Паменьшыць лік\tCtrl+Alt+NK-",                    CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "Адшукаць парныя ду&жкі\tCtrl+B",           IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Вылучыць па &парным дужкам\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Адшукаць парныя ду&жкі\tCtrl+B",                  IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Вылучыць па &парным дужкам\tCtrl+Shift+B",        IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "&Вылучыць да наступнага ўваходжання\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
             MENUITEM "Вылучыць да папярэдняга ўва&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Вылучыць с&лова альбо радок\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
+            MENUITEM "&Мультывылучэнне ўсіх уваходжанняў\tCtrl+Shift+Spc",      IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "&Закладкі"
@@ -302,8 +302,8 @@ BEGIN
         MENUITEM "Паказваць пра&бельныя сімвалы\tCtrl+Shift+8", IDM_VIEW_SHOWBLANKS
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "Вызначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Color Definition Hotspots",                  IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Адзначаць рэгіёны вылучэння &колера",         IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Падсвечваць ак&тыўны радок\tCtrl+Shift+I"
         BEGIN
