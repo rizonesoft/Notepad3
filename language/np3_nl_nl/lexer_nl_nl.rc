@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Standaard Tekst"
+    IDS_LEX_DEF_TXT         "Common Base"
     IDS_LEX_WEB_SRC         "Web Source Code"
     IDS_LEX_XML_DOC         "XML Document"
     IDS_LEX_CSS_STYLE       "CSS Style Sheets"
@@ -122,6 +122,7 @@ BEGIN
     IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Text Files"
+    IDS_LEX_TOML_CFG        "TOML"
 END
 
 STRINGTABLE
@@ -336,7 +337,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "Hyperlink Hotspots"
     IDS_LEX_STR_63265       "2nd Hyperlink Hotspots"
-    IDS_LEX_STR_63266       "2de Standaard Tekst"
+    IDS_LEX_STR_63266       "2de Common Base"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"

@@ -52,7 +52,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 {
   &lexStandard,      // Default Text
   &lexStandard2nd,   // 2nd Default Text
-  &lexTEXT,          // Pure Text Files
+  &lexTEXT,          // Pure Text Files (Constants.StdDefaultLexerID = 2)
   &lexANSI,          // ANSI Files
   &lexCONF,          // Apache Config Files
   &lexASM,           // Assembly Script
@@ -104,7 +104,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 
 
 // Currently used lexer
-static int s_iDefaultLexer = 0;
+static int s_iDefaultLexer = 2; // (Constants.StdDefaultLexerID) Pure Text Files
 static PEDITLEXER s_pLexCurrent = &lexStandard;
 
 const COLORREF s_colorDefault[16] = 
@@ -485,9 +485,6 @@ void Style_Load()
     g_colorCustom[i] = s_colorDefault[i];
   }
 
-  // 2nd Default Style has same filename extension list as (1st) Default Style
-  StringCchCopyW(lexStandard2nd.szExtensions, COUNTOF(lexStandard2nd.szExtensions), lexStandard.szExtensions);
-
   _FillThemesMenuTable();
 
   // get theme name from settings
@@ -591,7 +588,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     Style_SetUse2ndDefault(IniSectionGetBool(Styles_Section, L"Use2ndDefaultStyle", false));
 
     // default scheme
-    s_iDefaultLexer = clampi(IniSectionGetInt(Styles_Section, L"DefaultScheme", 0), 0, COUNTOF(g_pLexArray) - 1);
+    s_iDefaultLexer = clampi(IniSectionGetInt(Styles_Section, L"DefaultScheme", Constants.StdDefaultLexerID), 0, COUNTOF(g_pLexArray) - 1);
 
     // auto select
     s_bAutoSelect = IniSectionGetBool(Styles_Section, L"AutoSelect", true);
@@ -604,7 +601,12 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     // Lexer 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
-      LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
+      LPCWSTR Lexer_Section = g_pLexArray[iLexer]->pszName;
+
+      if ((Globals.iCfgVersionRead < CFG_VER_0004) && (iLexer < 2))
+      {
+        Lexer_Section = (iLexer == 0) ? L"Default Text" : L"2nd Default Text";
+      }
 
       IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
         g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
@@ -618,6 +620,23 @@ bool Style_ImportFromFile(const WCHAR* szFile)
           COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
         ++i;
       }
+
+      if (Globals.iCfgVersionRead < CFG_VER_0004)
+      {
+        // handling "Text Files" lexer
+        if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0)
+        {
+          StringCchCopyW(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
+          StringCchCatW(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), L"; ");
+          StringCchCatW(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[1]->szExtensions);
+          StrTrim(g_pLexArray[iLexer]->szExtensions, L"; ");
+          lexStandard.szExtensions[0] = L'\0';
+          lexStandard2nd.szExtensions[0] = L'\0';
+          // copy default style
+          StringCchCopyW(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
+        }
+      }
+
     }
 
     ReleaseIniFile();
@@ -730,7 +749,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   SAVE_STYLE_IF_NOT_EQ_DEFAULT(Bool, Use2ndDefaultStyle, bUse2ndSty, false);
 
   // default scheme
-  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, DefaultScheme, s_iDefaultLexer, 0);
+  SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, DefaultScheme, s_iDefaultLexer, Constants.StdDefaultLexerID);
 
   // auto select
   SAVE_STYLE_IF_NOT_EQ_DEFAULT(Bool, AutoSelect, s_bAutoSelect, true);
@@ -787,6 +806,10 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
       ++i;
     }
   }
+
+  // cleanup old (< v4) stuff 
+  IniSectionDelete(L"Default Text", NULL, true);
+  IniSectionDelete(L"2nd Default Text", NULL, true);
 
   return SaveIniFile(szFile);
 }
@@ -3915,12 +3938,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                       GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
                       DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, false);
                     }
+                    DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, false);
                   }
                   else {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
                     iCurStyleIdx = STY_DEFAULT;
                     GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
                     FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
+                    DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, true);
                   }
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
@@ -3946,7 +3971,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   }
                   else {
                     GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
-
                     FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                   }
                   SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);

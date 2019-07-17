@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "普通の文書"
+    IDS_LEX_DEF_TXT         "Common Base"
     IDS_LEX_WEB_SRC         "Webソースコード"
     IDS_LEX_XML_DOC         "XML文書"
     IDS_LEX_CSS_STYLE       "CSSスタイルシート"
@@ -122,6 +122,7 @@ BEGIN
     IDS_LEX_RUST_SRC        "Rustコード"
     IDS_LEX_AHKL            "AutoHotkey_Lスクリプト"
     IDS_LEX_TEXT_FILES      "Text Files"
+    IDS_LEX_TOML_CFG        "TOML"
 END
 
 STRINGTABLE
@@ -336,7 +337,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "URLアドレスにリンク"
     IDS_LEX_STR_63265       "第2 URLアドレスにリンク"
-    IDS_LEX_STR_63266       "普通の文書 配色2"
+    IDS_LEX_STR_63266       "2nd Common Base"
     IDS_LEX_STR_63267       "文字列内の変数"
     IDS_LEX_STR_63268       "配列 (番号付きリスト)"
     IDS_LEX_STR_63269       "${} (Infix, 訳求)"

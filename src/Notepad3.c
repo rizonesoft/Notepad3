@@ -48,7 +48,7 @@
 * Local and global Variables for Notepad3.c
 *
 */
-CONSTANTS_T Constants;
+CONSTANTS_T const Constants = { 2, L"minipath.exe" };
 
 FLAGS_T     Flags;
 FLAGS_T     DefaultFlags;
@@ -613,13 +613,10 @@ static void _InitGlobals()
   ZeroMemory(&Settings, sizeof(SETTINGS_T));
   ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
   ZeroMemory(&Flags, sizeof(FLAGS_T));
-  ZeroMemory(&Constants, sizeof(CONSTANTS_T));
 
   ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
   ZeroMemory(&(Globals.fvBackup), sizeof(FILEVARS));
   
-  Constants.FileBrowserMiniPath = L"minipath.exe";
-
   Globals.hMainMenu = NULL;
   Globals.CallTipType = CT_NONE;
   Globals.iAvailLngCount = 1;

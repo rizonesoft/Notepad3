@@ -559,8 +559,6 @@ extern "C" bool CreateIniFileEx(LPCWSTR lpszIniFile)
 //  LoadSettings()
 //
 //
-static int s_iSettingsVersion = CFG_VER_CURRENT;
-
 void LoadSettings()
 {
   int const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
@@ -568,8 +566,9 @@ void LoadSettings()
   LoadIniFile(Globals.IniFile);
   {
     bool bDirtyFlag = false;  // do we have to save the file on done
-    // prerequisites 
-    s_iSettingsVersion = IniSectionGetInt(L"Settings", L"SettingsVersion", _ver);
+
+    // prerequisites
+    Globals.iCfgVersionRead = IniSectionGetInt(L"Settings", L"SettingsVersion", _ver);
 
     Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
     Settings.SaveSettings = IniSectionGetBool(L"Settings", L"SaveSettings", Defaults.SaveSettings);
@@ -814,7 +813,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (s_iSettingsVersion < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
+    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (Globals.iCfgVersionRead < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
@@ -851,9 +850,9 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
     int const zoomScale = float2int(1000.0f / GetBaseFontSize(Globals.hwndMain));
-    Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
+    Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(Settings_Section, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
-    if (s_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
+    if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
     Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
     WCHAR localeInfo[3];
@@ -883,7 +882,7 @@ void LoadSettings()
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
     // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
-    StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (s_iSettingsVersion < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
+    StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
     IniSectionGetString(Settings_Section, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
     GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
@@ -1020,8 +1019,8 @@ void LoadSettings()
       s_WinInfo.cy = IniSectionGetInt(Window_Section, tchSizeY, CW_USEDEFAULT);
       s_WinInfo.max = IniSectionGetBool(Window_Section, tchMaximized, false);
       s_WinInfo.max = clampi(s_WinInfo.max, 0, 1);
-      s_WinInfo.zoom = IniSectionGetInt(Window_Section, tchZoom, (s_iSettingsVersion < CFG_VER_0001) ? 0 : 100);
-      if (s_iSettingsVersion < CFG_VER_0001) { s_WinInfo.zoom = (s_WinInfo.zoom + 10) * 10; }
+      s_WinInfo.zoom = IniSectionGetInt(Window_Section, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
+      if (Globals.iCfgVersionRead < CFG_VER_0001) { s_WinInfo.zoom = (s_WinInfo.zoom + 10) * 10; }
       s_WinInfo.zoom = clampi(s_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
       if ((s_WinInfo.x == CW_USEDEFAULT) || (s_WinInfo.y == CW_USEDEFAULT) ||
@@ -1164,227 +1163,225 @@ bool SaveSettings(bool bSaveSettingsNow)
 
   const WCHAR* const Settings_Section = L"Settings";
 
-  if (!(Settings.SaveSettings || bSaveSettingsNow)) {
-    IniSectionSetInt(Settings_Section, L"SettingsVersion", CFG_VER_CURRENT);
+  if (!(Settings.SaveSettings || bSaveSettingsNow))
+  {
     if (Settings.SaveSettings != Defaults.SaveSettings) {
       IniSectionSetBool(Settings_Section, L"SaveSettings", Settings.SaveSettings);
     }
     else {
       IniSectionDelete(Settings_Section, L"SaveSettings", false);
     }
-    return SaveIniFile(Globals.IniFile);
+    return SaveIniFile(Globals.IniFile); // at least 'SaveSettings' has to be set
   }
 
   // update window placement 
   s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
-  {
-    IniSectionSetInt(Settings_Section, L"SettingsVersion", CFG_VER_CURRENT);
+  IniSectionSetInt(Settings_Section, L"SettingsVersion", CFG_VER_CURRENT);  // new settings
 
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveSettings);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveRecentFiles);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveCaretPos);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveSettings);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveRecentFiles);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveCaretPos);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
 
-    if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
-      IniSectionSetBool(Settings_Section, L"CloseFind", Settings.EFR_Data.bFindClose);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"CloseFind", false);
-    }
-    if (Settings.EFR_Data.bReplaceClose != Defaults.EFR_Data.bReplaceClose) {
-      IniSectionSetBool(Settings_Section, L"CloseReplace", Settings.EFR_Data.bReplaceClose);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"CloseReplace", false);
-    }
-    if (Settings.EFR_Data.bNoFindWrap != Defaults.EFR_Data.bNoFindWrap) {
-      IniSectionSetBool(Settings_Section, L"NoFindWrap", Settings.EFR_Data.bNoFindWrap);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"NoFindWrap", false);
-    }
-    if (Settings.EFR_Data.bTransformBS != Defaults.EFR_Data.bTransformBS) {
-      IniSectionSetBool(Settings_Section, L"FindTransformBS", Settings.EFR_Data.bTransformBS);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"FindTransformBS", false);
-    }
-    if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
-      IniSectionSetBool(Settings_Section, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"WildcardSearch", false);
-    }
-    if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
-      IniSectionSetBool(Settings_Section, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"FindMarkAllOccurrences", false);
-    }
-    if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines) {
-      IniSectionSetBool(Settings_Section, L"HideNonMatchedLines", Settings.EFR_Data.bHideNonMatchedLines);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"HideNonMatchedLines", false);
-    }
-    if (Settings.EFR_Data.bDotMatchAll != Defaults.EFR_Data.bDotMatchAll) {
-      IniSectionSetBool(Settings_Section, L"RegexDotMatchesAll", Settings.EFR_Data.bDotMatchAll);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"RegexDotMatchesAll", false);
-    }
-    if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
-      IniSectionSetInt(Settings_Section, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"efrData_fuFlags", false);
-    }
-
-    WCHAR wchTmp[MAX_PATH] = { L'\0' };
-    if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
-      PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
-      IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"OpenWithDir", false);
-    }
-    if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
-      PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
-      IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"Favorites", false);
-    }
-
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PathNameFormat);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WordWrap);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabIndents);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapIndent);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapSymbols);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowWordWrapSymbols);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MatchBraces);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ColorDefHotspot);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AccelWordNavigation);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowIndentGuides);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoDetectIndentSettings);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLineMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowSelectionMargin);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrences);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchVisible);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchCase);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchWholeWords);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesCurrentWord);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewWhiteSpace);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewEOLs);
-
-    Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(false, (int)Settings.DefaultEncoding);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
-    Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding);
-
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseDefaultForFileEncoding);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadASCIIasUTF8);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseReliableCEDonly);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadNFOasOEM);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, NoEncodingTags);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipANSICodePageDetection);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEOLMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistEOLs);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixLineEndings);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixTrailingBlanks);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintHeader);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintFooter);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintColorMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintZoom);
-
-    if (Settings.PrintMargin.left != Defaults.PrintMargin.left) {
-      IniSectionSetInt(Settings_Section, L"PrintMarginLeft", Settings.PrintMargin.left);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"PrintMarginLeft", false);
-    }
-    if (Settings.PrintMargin.top != Defaults.PrintMargin.top) {
-      IniSectionSetInt(Settings_Section, L"PrintMarginTop", Settings.PrintMargin.top);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"PrintMarginTop", false);
-    }
-    if (Settings.PrintMargin.right != Defaults.PrintMargin.right) {
-      IniSectionSetInt(Settings_Section, L"PrintMarginRight", Settings.PrintMargin.right);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"PrintMarginRight", false);
-    }
-    if (Settings.PrintMargin.bottom != Defaults.PrintMargin.bottom) {
-      IniSectionSetInt(Settings_Section, L"PrintMarginBottom", Settings.PrintMargin.bottom);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"PrintMarginBottom", false);
-    }
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AlwaysOnTop);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MinimizeToTray);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TransparentMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FindReplaceTransparentMode);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RenderingTechnology);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, Bidirectional);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MuteMessageBeep);
-
-    ///~IniSectionSetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction);
-
-    Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
-    if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) != 0) {
-      IniSectionSetString(Settings_Section, L"ToolbarButtons", Settings.ToolbarButtons);
-    }
-    else {
-      IniSectionDelete(Settings_Section, L"ToolbarButtons", false);
-    }
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowToolbar);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowStatusbar);
-
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EncodingDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EncodingDlgSizeY);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RecodeDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RecodeDlgSizeY);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileMRUDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileMRUDlgSizeY);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, OpenWithDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, OpenWithDlgSizeY);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeY);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AddToFavDlgSizeX);
-
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosY);
-
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeY);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
+  if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
+    IniSectionSetBool(Settings_Section, L"CloseFind", Settings.EFR_Data.bFindClose);
   }
+  else {
+    IniSectionDelete(Settings_Section, L"CloseFind", false);
+  }
+  if (Settings.EFR_Data.bReplaceClose != Defaults.EFR_Data.bReplaceClose) {
+    IniSectionSetBool(Settings_Section, L"CloseReplace", Settings.EFR_Data.bReplaceClose);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"CloseReplace", false);
+  }
+  if (Settings.EFR_Data.bNoFindWrap != Defaults.EFR_Data.bNoFindWrap) {
+    IniSectionSetBool(Settings_Section, L"NoFindWrap", Settings.EFR_Data.bNoFindWrap);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"NoFindWrap", false);
+  }
+  if (Settings.EFR_Data.bTransformBS != Defaults.EFR_Data.bTransformBS) {
+    IniSectionSetBool(Settings_Section, L"FindTransformBS", Settings.EFR_Data.bTransformBS);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"FindTransformBS", false);
+  }
+  if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
+    IniSectionSetBool(Settings_Section, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"WildcardSearch", false);
+  }
+  if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
+    IniSectionSetBool(Settings_Section, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"FindMarkAllOccurrences", false);
+  }
+  if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines) {
+    IniSectionSetBool(Settings_Section, L"HideNonMatchedLines", Settings.EFR_Data.bHideNonMatchedLines);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"HideNonMatchedLines", false);
+  }
+  if (Settings.EFR_Data.bDotMatchAll != Defaults.EFR_Data.bDotMatchAll) {
+    IniSectionSetBool(Settings_Section, L"RegexDotMatchesAll", Settings.EFR_Data.bDotMatchAll);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"RegexDotMatchesAll", false);
+  }
+  if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
+    IniSectionSetInt(Settings_Section, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"efrData_fuFlags", false);
+  }
+
+  WCHAR wchTmp[MAX_PATH] = { L'\0' };
+  if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
+    PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
+    IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"OpenWithDir", false);
+  }
+  if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
+    PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
+    IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"Favorites", false);
+  }
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PathNameFormat);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WordWrap);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabIndents);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapIndent);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapSymbols);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowWordWrapSymbols);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MatchBraces);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ColorDefHotspot);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowHypLnkToolTip);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AccelWordNavigation);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowIndentGuides);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoDetectIndentSettings);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLineMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowSelectionMargin);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrences);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchVisible);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchCase);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesMatchWholeWords);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesCurrentWord);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewWhiteSpace);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewEOLs);
+
+  Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(false, (int)Settings.DefaultEncoding);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
+  Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding);
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseDefaultForFileEncoding);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadASCIIasUTF8);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseReliableCEDonly);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadNFOasOEM);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, NoEncodingTags);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipANSICodePageDetection);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEOLMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistEOLs);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixLineEndings);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixTrailingBlanks);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintHeader);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintFooter);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintColorMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintZoom);
+
+  if (Settings.PrintMargin.left != Defaults.PrintMargin.left) {
+    IniSectionSetInt(Settings_Section, L"PrintMarginLeft", Settings.PrintMargin.left);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"PrintMarginLeft", false);
+  }
+  if (Settings.PrintMargin.top != Defaults.PrintMargin.top) {
+    IniSectionSetInt(Settings_Section, L"PrintMarginTop", Settings.PrintMargin.top);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"PrintMarginTop", false);
+  }
+  if (Settings.PrintMargin.right != Defaults.PrintMargin.right) {
+    IniSectionSetInt(Settings_Section, L"PrintMarginRight", Settings.PrintMargin.right);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"PrintMarginRight", false);
+  }
+  if (Settings.PrintMargin.bottom != Defaults.PrintMargin.bottom) {
+    IniSectionSetInt(Settings_Section, L"PrintMarginBottom", Settings.PrintMargin.bottom);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"PrintMarginBottom", false);
+  }
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AlwaysOnTop);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MinimizeToTray);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TransparentMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FindReplaceTransparentMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RenderingTechnology);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, Bidirectional);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MuteMessageBeep);
+
+  ///~IniSectionSetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction);
+
+  Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+  if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) != 0) {
+    IniSectionSetString(Settings_Section, L"ToolbarButtons", Settings.ToolbarButtons);
+  }
+  else {
+    IniSectionDelete(Settings_Section, L"ToolbarButtons", false);
+  }
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowToolbar);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowStatusbar);
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EncodingDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EncodingDlgSizeY);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RecodeDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RecodeDlgSizeY);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileMRUDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileMRUDlgSizeY);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, OpenWithDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, OpenWithDlgSizeY);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeY);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AddToFavDlgSizeX);
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosY);
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeY);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
   int ResX, ResY;
   GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
@@ -1402,7 +1399,7 @@ bool SaveSettings(bool bSaveSettingsNow)
   StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
   StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
   StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
-  if (!Flags.bStickyWindowPosition) 
+  if (!Flags.bStickyWindowPosition)
   {
     IniSectionSetInt(Window_Section, tchPosX, s_WinInfo.x);
     IniSectionSetInt(Window_Section, tchPosY, s_WinInfo.y);
