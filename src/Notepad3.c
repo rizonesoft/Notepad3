@@ -1702,7 +1702,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   //  
   ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE; 
   /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
-  
+
   int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO;
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
@@ -1719,7 +1719,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, true, 0);
-  
+
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
@@ -1747,7 +1747,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (SCMOD_SHIFT << 16)), SCI_LINEENDWRAPEXTEND);
 
   // set indicator styles (foreground and alpha maybe overridden by style settings)
-  
+
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
   SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
@@ -1769,7 +1769,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   //SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_FOCUS_VIEW, INDIC_POINT);
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_FOCUS_VIEW, INDIC_HIDDEN); // invisible
-  
+
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK, INDIC_TEXTFORE);
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_HYPERLINK, RGB(0x00, 0x00, 0xA0));
   SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_HYPERLINK_U, INDIC_COMPOSITIONTHIN);
@@ -1798,7 +1798,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
   SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MULTI_EDIT, 60);
   SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MULTI_EDIT, 180);
- 
+
   // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
 
@@ -1808,17 +1808,17 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // Properties
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
-  
+
   if (Settings.ShowHypLnkToolTip || Settings.ColorDefHotspot) {
     SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)100, 0);
   }
   else {
     SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
   }
-  
 
-  #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
-  #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
+
+#define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
+#define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
   if (Settings2.CurrentLineHorizontalSlop > 0)
     SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
   else
@@ -1826,7 +1826,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   if (Settings2.CurrentLineVerticalSlop > 0) {
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineVerticalSlop);
-  } else {
+  }
+  else {
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
   }
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS), 0);
@@ -1847,11 +1848,12 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   _SetWrapVisualFlags(hwndEditCtrl);
 
   // Long Lines
-  if (Settings.MarkLongLines)
-    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((Settings.LongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND), 0);
-  else
+  if (Settings.MarkLongLines) {
+    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((Settings.LongLineMode == EDGE_BACKGROUND) ? EDGE_BACKGROUND : EDGE_LINE), 0);
+  }
+  else {
     SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
-
+  }
   SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Globals.fvCurFile.iLongLinesLimit, 0);
 
   // general margin
@@ -5085,13 +5087,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_LONGLINEMARKER:
       Settings.MarkLongLines = !Settings.MarkLongLines;
-      if (Settings.MarkLongLines) {
-        SendMessage(Globals.hwndEdit,SCI_SETEDGEMODE,(Settings.LongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
-        Style_SetLongLineColors(Globals.hwndEdit);
-      }
-      else {
-        SendMessage(Globals.hwndEdit, SCI_SETEDGEMODE, EDGE_NONE, 0);
-      }
+      Style_SetLongLineEdge(Globals.hwndEdit, Settings.LongLinesLimit);
       UpdateToolbar();
       UpdateStatusbar(false);
       break;
@@ -5106,9 +5102,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Settings.LongLinesLimit = _iLongLinesLimit;
           }
           Settings.MarkLongLines = true;
-          SciCall_SetEdgeMode((Settings.LongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND);
-          Style_SetLongLineColors(Globals.hwndEdit);
-          SciCall_SetEdgeColumn(_iLongLinesLimit);
+          Style_SetLongLineEdge(Globals.hwndEdit, Settings.LongLinesLimit);
           UpdateToolbar();
           UpdateStatusbar(false);
         }

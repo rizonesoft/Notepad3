@@ -2270,11 +2270,11 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
       SetDlgItemInt(hwnd, 100, iNumber, false);
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 15, 0);
 
-      if (Settings.LongLineMode == EDGE_LINE) {
-        CheckRadioButton(hwnd, 101, 102, 101);
+      if (Settings.LongLineMode == EDGE_BACKGROUND) {
+        CheckRadioButton(hwnd, 101, 102, 102);
       }
       else {
-        CheckRadioButton(hwnd, 101, 102, 102);
+        CheckRadioButton(hwnd, 101, 102, 101);
       }
       CenterDlgInParent(hwnd);
 

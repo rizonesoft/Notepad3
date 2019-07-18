@@ -369,7 +369,13 @@ DeclareSciCallV1(SetWrapIndentMode, SETWRAPINDENTMODE, int, mode)
 DeclareSciCallV1(SetWrapStartIndent, SETWRAPSTARTINDENT, int, mode)
 
 DeclareSciCallV1(SetEdgeMode, SETEDGEMODE, int, mode)
+DeclareSciCallR0(GetEdgeMode, GETEDGEMODE, int)
 DeclareSciCallV1(SetEdgeColumn, SETEDGECOLUMN, int, column)
+DeclareSciCallR0(GetEdgeColumn, GETEDGECOLUMN, int)
+DeclareSciCallV1(SetEdgeColour, SETEDGECOLOUR, int, colour)
+DeclareSciCallR0(GetEdgeColour, GETEDGECOLOUR, int)
+DeclareSciCallV2(MultiEdgeAddLine, MULTIEDGEADDLINE, int, column, int, colour)
+DeclareSciCallV0(MultiEdgeClearAll, MULTIEDGECLEARALL)
 
 DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width)
 DeclareSciCallR0(GetTabWidth, GETTABWIDTH, int)
