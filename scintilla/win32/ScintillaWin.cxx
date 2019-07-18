@@ -1440,10 +1440,10 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			// Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
 			if (wParam & MK_RBUTTON) {
 				if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
-					if (EM_CANREDO) Redo();
+					Redo();
 				}
 				else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
-					if (EM_CANUNDO) Undo();
+					Undo();
 				}
 				return 0;
 			}
