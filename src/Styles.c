@@ -1134,17 +1134,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   #define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
   #define _SC_INDIC_IME_UNKNOWN    INDIC_IME_MAX
 
-  if (Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &dColor)) { // IME foregr
-    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_INPUT, dColor);
-    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_TARGET, dColor);
-    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_CONVERTED, dColor);
-    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &dColor)) // IME foregr
+  {
+    SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, dColor);
+    SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, dColor);
+    SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, dColor);
+    SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, dColor);
   }
-
-  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_INPUT, dColor);
-  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_TARGET, dColor);
-  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_CONVERTED, dColor);
-  SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
 
   COLORREF rgb;
   if (pLexNew != &lexANSI) {
@@ -1300,18 +1296,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
                 COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchSpecificStyle);
 
-  if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) {
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_LONG_LN_MRK].szValue, FOREGROUND_LAYER, &rgb)) // edge fore
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
-    else
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
-  }
-  else {
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) // edge back
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
-    else
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
-  }
+  Style_SetLongLineEdge(hwnd, Settings.LongLinesLimit);
 
   Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 
                           COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue));
@@ -1555,24 +1540,44 @@ void Style_SetReadonly(HWND hwnd, bool bReadonly)
 
 //=============================================================================
 //
-//  Style_SetLongLineColors()
+//  Style_SetLongLineEdge()
 //
-void Style_SetLongLineColors(HWND hwnd)
+void Style_SetLongLineEdge(HWND hwnd, const int iLongLineLimit)
 {
+  UNUSED(hwnd);
   COLORREF rgb;
-
-  if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) 
-  {
-    if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, FOREGROUND_LAYER, &rgb)) { // edge fore
-      rgb = GetSysColor(COLOR_3DLIGHT);
-    }
-  }
-  else {
+  if (Settings.LongLineMode == EDGE_BACKGROUND) {
     if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) { // edge back
       rgb = GetSysColor(COLOR_3DSHADOW);
     }
   }
-  SendMessage(hwnd, SCI_SETEDGECOLOUR, rgb, 0);
+  else {
+    if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, FOREGROUND_LAYER, &rgb)) { // edge fore
+      rgb = GetSysColor(COLOR_3DLIGHT);
+    }
+  }
+  if (Settings.MarkLongLines) 
+  {
+    switch (Settings.LongLineMode) {
+      case EDGE_LINE:
+      case EDGE_BACKGROUND:
+        SciCall_SetEdgeMode(Settings.LongLineMode);
+        SciCall_SetEdgeColour(rgb);
+        SciCall_SetEdgeColumn(iLongLineLimit);
+        break;
+      case EDGE_MULTILINE:
+        SciCall_SetEdgeMode(Settings.LongLineMode);
+        SciCall_MultiEdgeClearAll();
+        SciCall_MultiEdgeAddLine(iLongLineLimit, rgb);
+        break;
+      default:
+        SciCall_SetEdgeMode(EDGE_NONE);
+        break;
+    }
+  }
+  else {
+    SciCall_SetEdgeMode(EDGE_NONE);
+  }
 }
 
 

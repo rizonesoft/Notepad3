@@ -1527,6 +1527,7 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
   return((int)StringCchLen(pszItem, cchItem));
 }
 
+
 bool MRU_Load(LPMRULIST pmru)
 {
   MRU_Empty(pmru);
@@ -1538,15 +1539,9 @@ bool MRU_Load(LPMRULIST pmru)
   for (int i = 0; i < pmru->iSize; i++) {
     WCHAR tchName[32] = { L'\0' };
     StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-    WCHAR tchItem[1024] = { L'\0' };
+    WCHAR tchItem[2048] = { L'\0' };
     if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
-      /*if (pmru->iFlags & MRU_UTF8) {
-        WCHAR wchItem[1024];
-        int cbw = MultiByteToWideChar(CP_UTF7, 0, tchItem, -1, wchItem, COUNTOF(wchItem));
-        WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-        pmru->pszItems[n] = StrDup(tchItem);
-      }
-      else*/
+      StrTrim(tchItem, L"\x02\x03");
       pmru->pszItems[n] = StrDup(tchItem);
 
       StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
@@ -1576,19 +1571,14 @@ bool MRU_Save(LPMRULIST pmru)
     const WCHAR* const RegKey_Section = pmru->szRegKey;
     IniSectionClear(pmru->szRegKey, false);
 
+    WCHAR tchValue[2048] = { L'\0' };
+
     for (int i = 0; i < pmru->iSize; i++) {
       if (pmru->pszItems[i]) {
         WCHAR tchName[32] = { L'\0' };
         StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-        /*if (pmru->iFlags & MRU_UTF8) {
-          WCHAR  tchItem[1024];
-          WCHAR wchItem[1024];
-          int cbw = MultiByteToWideChar(Encoding_SciCP,0,pmru->pszItems[i],-1,wchItem,COUNTOF(wchItem));
-          WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-          IniSectionSetString(RegKey_Section,tchName,tchItem);
-        }
-        else*/
-        IniSectionSetString(RegKey_Section, tchName, pmru->pszItems[i]);
+        StringCchPrintf(tchValue, COUNTOF(tchValue), L"\x02%s\x03", pmru->pszItems[i]);
+        IniSectionSetString(RegKey_Section, tchName, tchValue);
 
         if (pmru->iEncoding[i] > 0) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
