@@ -538,6 +538,8 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) == SciCall_LineFromPosition(SciCall_GetSelectionStart()))
 #define Sci_IsMultiLineSelection() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -  SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)
 
+#define Sci_IsPosInSelection(position) ((position >= SciCall_GetSelectionStart()) && (position <= SciCall_GetSelectionEnd()))
+
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
 
 #define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())

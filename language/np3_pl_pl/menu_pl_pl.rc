@@ -434,7 +434,7 @@ BEGIN
         END
         POPUP "&Konfiguracja zaawansowana"
         BEGIN
-            MENUITEM "Zapisz ustawienia przed wyjœciem",   IDM_VIEW_SAVESETTINGS
+            MENUITEM "Zapisz ustawienia przed wyjœciem",       IDM_VIEW_SAVESETTINGS
             MENUITEM "Zapisz ustawienia teraz\tF7",            IDM_VIEW_SAVESETTINGSNOW
             MENUITEM "&Otwórz plik ustawieñ\tCtrl+F7",         CMD_OPENINIFILE
         END
@@ -467,6 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Prze³¹cz Current Fold",                    IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
+        MENUITEM "Open Web Action &1",                        CMD_WEBACTION1
+        MENUITEM "Open Web Action &2",                        CMD_WEBACTION2
         MENUITEM "Otwórz ³¹cze",                              CMD_OPEN_HYPERLINK
     END
     POPUP "+"
