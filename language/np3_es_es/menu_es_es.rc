@@ -467,6 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Al&ternar el pliegue actual",                 IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
+        MENUITEM "Open Web Action &1",                          CMD_WEBACTION1
+        MENUITEM "Open Web Action &2",                          CMD_WEBACTION2
         MENUITEM "Abrir &Hyperlink",                            CMD_OPEN_HYPERLINK
     END
     POPUP "+"
