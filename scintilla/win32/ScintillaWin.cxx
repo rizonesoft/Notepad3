@@ -1437,6 +1437,17 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				break;
 			}
 
+			// Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
+			if (wParam & MK_RBUTTON) {
+				if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
+					if (EM_CANREDO) Redo();
+				}
+				else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
+					if (EM_CANUNDO) Undo();
+				}
+				return 0;
+			}
+
 			// Don't handle datazoom.
 			// (A good idea for datazoom would be to "fold" or "unfold" details.
 			// i.e. if datazoomed out only class structures are visible, when datazooming in the control
@@ -1447,6 +1458,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 			// Either SCROLL or ZOOM. We handle the wheel steppings calculation
 			wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
+
 			if (std::abs(wheelDelta) >= WHEEL_DELTA && linesPerScroll > 0) {
 				Sci::Line linesToScroll = linesPerScroll;
 				if (linesPerScroll == WHEEL_PAGESCROLL)
