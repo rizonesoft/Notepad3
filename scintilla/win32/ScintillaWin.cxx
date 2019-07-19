@@ -1330,6 +1330,31 @@ sptr_t ScintillaWin::GetTextLength() const noexcept {
 	return pdoc->CountUTF16(0, pdoc->Length());
 }
 
+
+//Hooks for canceling a right click.
+HHOOK mouseHook;
+MSG msg;
+bool cancelRightClick = false;
+LRESULT __stdcall MouseHookCallback(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)	{
+		case WM_RBUTTONUP:
+			if (cancelRightClick) {
+				cancelRightClick = false;
+				return -1;
+			}
+	}
+	return CallNextHookEx(mouseHook, nCode, wParam, lParam);
+}
+void SetHook() {
+	mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookCallback, NULL, 0);
+}
+void ReleaseHook() {
+	UnhookWindowsHookEx(mouseHook);
+	PeekMessage(&msg, NULL, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE | PM_NOYIELD);
+}
+
+
 sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) const {
 	if (lParam == 0) {
 		return pdoc->CountUTF16(0, pdoc->Length());
@@ -1440,13 +1465,18 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			// Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
 			if (wParam & MK_RBUTTON) {
 				if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
-					if (EM_CANREDO) Redo();
+					Redo();
+					cancelRightClick = true;
+					SetHook();
 				}
 				else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
-					if (EM_CANUNDO) Undo();
+					Undo();
+					cancelRightClick = true;
+					SetHook();
 				}
 				return 0;
 			}
+
 
 			// Don't handle datazoom.
 			// (A good idea for datazoom would be to "fold" or "unfold" details.
