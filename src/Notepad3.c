@@ -142,6 +142,7 @@ static int       s_cyReBar;
 static int       s_cyReBarFrame;
 static int       s_cxEditFrame;
 static int       s_cyEditFrame;
+static bool      s_bUndoRedoScroll = false;
 
 // for tiny expression calculation
 static double    s_dExpression = 0.0;
@@ -1557,7 +1558,20 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case WM_MOUSEWHEEL:
-      if (wParam & MK_CONTROL) { ShowZoomCallTip(); }
+      if (wParam & MK_CONTROL) { 
+        ShowZoomCallTip(); 
+      }
+      else if (wParam & MK_RBUTTON) {
+        // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
+        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
+          s_bUndoRedoScroll = true;
+          SciCall_Redo();
+        }
+        else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
+          s_bUndoRedoScroll = true;
+          SciCall_Undo();
+        }
+      }
       break;
 
     case WM_INPUTLANGCHANGE:
@@ -2846,21 +2860,25 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  HMENU hmenu;
-  int imenu = 0;
-  POINT pt;
-  int nID = GetDlgCtrlID((HWND)wParam);
+  // no context menu after undo/redo history scrolling
+  if (s_bUndoRedoScroll) {
+    s_bUndoRedoScroll = false;
+    return FALSE;
+  }
 
+  int nID = GetDlgCtrlID((HWND)wParam);
   if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
     (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
     return DefWindowProc(hwnd, umsg, wParam, lParam);
 
-  hmenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+  HMENU hmenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
 
+  POINT pt;
   pt.x = (int)(short)LOWORD(lParam);
   pt.y = (int)(short)HIWORD(lParam);
 
+  int imenu = 0;
   switch (nID) {
   case IDC_EDIT:
     {
