@@ -1,0 +1,155 @@
+From 421e3c89a27d36a195c56a57e69995a6856f0144 Mon Sep 17 00:00:00 2001
+From: Rainer Kottenhoff <rainer.kottenhoff@gmail.com>
+Date: Fri, 19 Jul 2019 15:15:51 +0200
+Subject: [PATCH] + chg: no pre-defined font for "Text Files" + fix: no context
+ menu after undo/redo history scrolling
+
+---
+ Versions/build.txt                 |  2 +-
+ res/Notepad3.exe.manifest.conf     |  2 +-
+ scintilla/win32/ScintillaWin.cxx   | 14 ++------------
+ src/Notepad3.c                     | 30 ++++++++++++++++++++++++------
+ src/StyleLexers/styleLexStandard.c |  2 +-
+ src/VersionEx.h                    |  2 +-
+ 6 files changed, 30 insertions(+), 22 deletions(-)
+
+diff --git a/Versions/build.txt b/Versions/build.txt
+index 38ac9c59..8c88d58d 100644
+--- a/Versions/build.txt
++++ b/Versions/build.txt
+@@ -1 +1 @@
+-2398
++2399
+diff --git a/res/Notepad3.exe.manifest.conf b/res/Notepad3.exe.manifest.conf
+index 051bb650..cb40e1bf 100644
+--- a/res/Notepad3.exe.manifest.conf
++++ b/res/Notepad3.exe.manifest.conf
+@@ -3,7 +3,7 @@
+   <assemblyIdentity
+     name="Notepad3"
+     processorArchitecture="*"
+-    version="5.19.719.2398"
++    version="5.19.719.2399"
+     type="win32"
+   />
+   <description>Notepad3 BETA</description>
+diff --git a/scintilla/win32/ScintillaWin.cxx b/scintilla/win32/ScintillaWin.cxx
+index 28596fa7..12fd7173 100644
+--- a/scintilla/win32/ScintillaWin.cxx
++++ b/scintilla/win32/ScintillaWin.cxx
+@@ -1437,22 +1437,12 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
+ 				break;
+ 			}
+ 
+-			// Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
+-			if (wParam & MK_RBUTTON) {
+-				if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
+-					Redo();
+-				}
+-				else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
+-					Undo();
+-				}
+-				return 0;
+-			}
+-
+ 			// Don't handle datazoom.
+ 			// (A good idea for datazoom would be to "fold" or "unfold" details.
+ 			// i.e. if datazoomed out only class structures are visible, when datazooming in the control
+ 			// structures appear, then eventually the individual statements...)
+-			if (wParam & MK_SHIFT) {
++			if (wParam & (MK_SHIFT | MK_RBUTTON)) {
++				// send to client
+ 				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+ 			}
+ 
+diff --git a/src/Notepad3.c b/src/Notepad3.c
+index b70ad278..53a8e102 100644
+--- a/src/Notepad3.c
++++ b/src/Notepad3.c
+@@ -142,6 +142,7 @@ static int       s_cyReBar;
+ static int       s_cyReBarFrame;
+ static int       s_cxEditFrame;
+ static int       s_cyEditFrame;
++static bool      s_bUndoRedoScroll = false;
+ 
+ // for tiny expression calculation
+ static double    s_dExpression = 0.0;
+@@ -1557,7 +1558,20 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+       break;
+ 
+     case WM_MOUSEWHEEL:
+-      if (wParam & MK_CONTROL) { ShowZoomCallTip(); }
++      if (wParam & MK_CONTROL) { 
++        ShowZoomCallTip(); 
++      }
++      else if (wParam & MK_RBUTTON) {
++        // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
++        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
++          s_bUndoRedoScroll = true;
++          SciCall_Redo();
++        }
++        else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
++          s_bUndoRedoScroll = true;
++          SciCall_Undo();
++        }
++      }
+       break;
+ 
+     case WM_INPUTLANGCHANGE:
+@@ -2846,21 +2860,25 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
+ //
+ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+ {
+-  HMENU hmenu;
+-  int imenu = 0;
+-  POINT pt;
+-  int nID = GetDlgCtrlID((HWND)wParam);
++  // no context menu after undo/redo history scrolling
++  if (s_bUndoRedoScroll) {
++    s_bUndoRedoScroll = false;
++    return FALSE;
++  }
+ 
++  int nID = GetDlgCtrlID((HWND)wParam);
+   if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
+     (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
+     return DefWindowProc(hwnd, umsg, wParam, lParam);
+ 
+-  hmenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
++  HMENU hmenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
+   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
+ 
++  POINT pt;
+   pt.x = (int)(short)LOWORD(lParam);
+   pt.y = (int)(short)HIWORD(lParam);
+ 
++  int imenu = 0;
+   switch (nID) {
+   case IDC_EDIT:
+     {
+diff --git a/src/StyleLexers/styleLexStandard.c b/src/StyleLexers/styleLexStandard.c
+index 9aafcd5f..0a9868b0 100644
+--- a/src/StyleLexers/styleLexStandard.c
++++ b/src/StyleLexers/styleLexStandard.c
+@@ -53,7 +53,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
+ EDITLEXER lexTEXT = {
+ SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
+ &KeyWords_NULL,{
+-    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Segoe UI; size:11; smoothing:cleartype", L"" },
++    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
+     { {SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
+     EDITLEXER_SENTINEL } };
+diff --git a/src/VersionEx.h b/src/VersionEx.h
+index f400c6a1..53bab1d5 100644
+--- a/src/VersionEx.h
++++ b/src/VersionEx.h
+@@ -8,7 +8,7 @@
+ #define VERSION_MAJOR 5
+ #define VERSION_MINOR 19
+ #define VERSION_REV 719
+-#define VERSION_BUILD 2398
++#define VERSION_BUILD 2399
+ #define SCINTILLA_VER 420
+ #define ONIGURUMA_REGEX_VER 6.9.3
+ #define VERSION_PATCH BETA
