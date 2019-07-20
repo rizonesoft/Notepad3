@@ -344,9 +344,9 @@
 #define CMD_CTRLDOWN                    20004
 #define CMD_CTRLLEFT                    20005
 #define CMD_CTRLRIGHT                   20006
-#define CMD_DELETEBACK                  20007
+//#define CMD_DELETEBACK                  20007
 #define CMD_CTRLBACK                    20008
-#define CMD_DEL                         20009
+//#define CMD_CLEAR                       20009
 #define CMD_CTRLDEL                     20010
 #define CMD_CTRLTAB                     20011
 #define CMD_RECODEDEFAULT               20012

@@ -4123,13 +4123,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
     break;
 
-    case CMD_DELETEBACK:
-      {
-        ///~_BEGIN_UNDO_ACTION_
-        SendMessage(Globals.hwndEdit, SCI_DELETEBACK, 0, 0);
-        ///~_END_UNDO_ACTION_
-      }
-      break;
+    //case CMD_DELETEBACK:
+    //  ///~_BEGIN_UNDO_ACTION_
+    //  SciCall_DeleteBack();
+    //  ///~_END_UNDO_ACTION_
+    //  break;
 
     case CMD_VK_INSERT:
       SendMessage(Globals.hwndEdit, SCI_EDITTOGGLEOVERTYPE, 0, 0);
@@ -5722,7 +5720,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_CLEAR:
-    case CMD_DEL:
+    //case CMD_CLEAR:
         ///~_BEGIN_UNDO_ACTION_
         SciCall_Clear();
         ///~_END_UNDO_ACTION_
@@ -5732,10 +5730,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_CTRLUP:
       if (Sci_IsMultiSelection())
       {
-        Sci_SendMsgV0(LINEUPEXTEND);
+        SciCall_LineUpExtend();
       }
       else {
-        Sci_SendMsgV0(LINESCROLLUP);
+        SciCall_LineScrollUp();
       }
       break;
 
@@ -5743,10 +5741,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_CTRLDOWN:
       if (Sci_IsMultiSelection())
       {
-        Sci_SendMsgV0(LINEDOWNEXTEND);
+        SciCall_LineDownExtend();
       }
       else {
-        Sci_SendMsgV0(LINESCROLLDOWN);
+        SciCall_LineScrollDown();
       }
       break;
 
@@ -5754,10 +5752,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_CTRLLEFT:
       if (Sci_IsMultiSelection())
       {
-        Sci_SendMsgV0(CHARLEFTEXTEND);
+        SciCall_CharLeftExtend();
       }
       else {
-        Sci_SendMsgV0(WORDLEFT);
+        SciCall_WordLeft();
       }
       break;
 
@@ -5765,21 +5763,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_CTRLRIGHT:
       if (Sci_IsMultiSelection())
       {
-        Sci_SendMsgV0(CHARRIGHTEXTEND);
+        SciCall_CharRightExtend();
       }
       else {
-        Sci_SendMsgV0(WORDRIGHT);
+        SciCall_WordRight();
       }
       break;
 
 
     case CMD_CTRLBACK:
       {
-        const DocPos iPos = SciCall_GetCurrentPos();
-        const DocPos iAnchor = SciCall_GetAnchor();
-        const DocLn iLine = SciCall_LineFromPosition(iPos);
-        const DocPos iStartPos = SciCall_PositionFromLine(iLine);
-        const DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
+        DocPos const iPos = SciCall_GetCurrentPos();
+        DocPos const iAnchor = SciCall_GetAnchor();
+        DocLn  const iLine = SciCall_LineFromPosition(iPos);
+        DocPos const iStartPos = SciCall_PositionFromLine(iLine);
+        DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iPos != iAnchor) {
           _BEGIN_UNDO_ACTION_
@@ -5788,11 +5786,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         else {
           if (iPos == iStartPos)
-            Sci_SendMsgV0(DELETEBACK);
+            SciCall_DeleteBack();
           else if (iPos <= iIndentPos)
-            Sci_SendMsgV0(DELLINELEFT);
+            SciCall_DelLineLeft();
           else
-            Sci_SendMsgV0(DELWORDLEFT);
+            SciCall_DelWordLeft();
         }
       }
       break;
@@ -5813,9 +5811,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         else {
           if (iStartPos != iEndPos)
-            Sci_SendMsgV0(DELWORDRIGHT);
+            SciCall_DelWordRight();
           else // iStartPos == iEndPos
-            Sci_SendMsgV0(LINEDELETE);
+            SciCall_LineDelete();
         }
       }
       break;
