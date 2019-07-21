@@ -1119,8 +1119,9 @@ bool EditLoadFile(
 
   bool bBOM = false;
   bool bReverse = false;
-  bool const bIsUnicodeValid = IsValidUnicode(lpData, cbData, &bBOM, &bReverse);
   bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
+
+  cpi_enc_t const encUnicode = bSkipUTFDetection ? CPI_NONE : GetUnicodeEncoding(lpData, cbData, &bBOM, &bReverse);
 
   if (cbData == 0) {
     FileVars_Init(NULL, 0, &Globals.fvCurFile);
@@ -1130,20 +1131,22 @@ bool EditLoadFile(
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
-  else if (bIsUnicodeForced || (!bIsForced && bIsUnicodeAnalyzed && bIsUnicodeValid))
+  else if (bIsUnicodeForced || (!bIsForced && (bIsUnicodeAnalyzed || !Encoding_IsNONE(encUnicode))))
   {
     // ===  UNICODE  ===
+    if (Encoding_IsNONE(encUnicode)) 
+    {
+      bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
+      bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
 
-    bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
-    bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
-
-    if ((iForcedEncoding == CPI_UNICODE) || bBOM_LE) {
-      bBOM = bBOM_LE;
-      bReverse = false;
-    }
-    else if ((iForcedEncoding == CPI_UNICODEBE) || bBOM_BE) {
-      bBOM = bBOM_BE;
-      bReverse = true;
+      if ((iForcedEncoding == CPI_UNICODE) || bBOM_LE) {
+        bBOM = bBOM_LE;
+        bReverse = false;
+      }
+      else if ((iForcedEncoding == CPI_UNICODEBE) || bBOM_BE) {
+        bBOM = bBOM_BE;
+        bReverse = true;
+      }
     }
 
     if (bReverse)
