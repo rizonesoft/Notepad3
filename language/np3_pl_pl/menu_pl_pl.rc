@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Dostosuj schematy...\tCtrl+F12",                        IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "&Wybierz schemat sk³adni...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&Alternatywny schemat sk³adni\tShift+F12",               IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2nd Common Base\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
         MENUITEM "Domyœlna &czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME

@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Pas Skemas Aan...\tCtrl+F12",                         IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "&Kies Sintakseskema...\tF12",                          IDM_VIEW_SCHEME
-        MENUITEM "&2de Verstek Skema\tShift+F12",                        IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2de Common Base\tShift+F12",                          IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Huidige Skema se Verstek Font...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME

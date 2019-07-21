@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Personalizar Esquemas...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Seleccionar Esquema Sinta&xis...\tF12",           IDM_VIEW_SCHEME
-        MENUITEM "&2º Esquema por defecto\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2º Base Común\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Fuente global por defecto...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "Fuente del Esquema &actual por defecto...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME

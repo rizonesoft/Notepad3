@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Seleziona Schema Sintassi...\tF12",                      IDM_VIEW_SCHEME
-        MENUITEM "&2° Schema di Default\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2° Common Base\tShift+F12",                             IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Font di Default dello Schema corrente...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
