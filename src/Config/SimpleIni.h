@@ -2557,8 +2557,10 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
             for ( ; iValue != oValues.end(); ++iValue) {
                 // write out the comment if there is one
                 if (iValue->pComment) {
-                    a_oOutput.Write(SI_NEWLINE_A);
-                    bNeedNewLine = false;
+                    if (bNeedNewLine) {
+                        a_oOutput.Write(SI_NEWLINE_A);
+                        bNeedNewLine = false;
+                    }
                     if (!OutputMultiLineText(a_oOutput, convert, iValue->pComment)) {
                         return SI_FAIL;
                     }
