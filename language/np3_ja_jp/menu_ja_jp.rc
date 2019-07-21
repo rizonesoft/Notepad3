@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "文書の種類を選択(&X)...\tF12",              IDM_VIEW_SCHEME
-        MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "2nd Common Base(&2)\tShift+F12",          IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "フォント設定/適用中(&H)...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME

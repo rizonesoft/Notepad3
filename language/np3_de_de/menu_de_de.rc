@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Schemata anpassen...\tCtrl+F12",           IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Synta&x Schema wählen...\tF12",             IDM_VIEW_SCHEME
-        MENUITEM "&2tes Standard Schema\tShift+F12",          IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2tes Common Base\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globaler &Standard Font...\tAlt+F12",       IDM_VIEW_FONT
         MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",    IDM_VIEW_CURRENTSCHEME

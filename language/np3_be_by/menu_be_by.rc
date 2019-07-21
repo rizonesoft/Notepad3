@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Налады схемаў...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Выбраць с&хему сінтаксісу...\tF12",           IDM_VIEW_SCHEME
-        MENUITEM "&Другая прадвызначаная схема\tShift+F12",     IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2nd Common Base\tShift+F12",                 IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Агульны прадвызначаны &шрыфт...\tAlt+F12",    IDM_VIEW_FONT
         MENUITEM "&Прадвызначаны шрыфт для выбранай схемы...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME

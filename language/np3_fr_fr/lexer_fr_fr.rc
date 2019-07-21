@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Common Base"
+    IDS_LEX_DEF_TXT         "Base Commune"
     IDS_LEX_WEB_SRC         "Web Source Code"
     IDS_LEX_XML_DOC         "XML Document"
     IDS_LEX_CSS_STYLE       "CSS Style Sheets"
@@ -337,7 +337,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "Hyperlink Hotspots"
     IDS_LEX_STR_63265       "2nd Hyperlink Hotspots"
-    IDS_LEX_STR_63266       "2ème Common Base"
+    IDS_LEX_STR_63266       "2ème Base Commune"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"

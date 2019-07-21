@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "스키마 편집(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "구문 스키마 선택(&X)...\tF12",                  IDM_VIEW_SCHEME
-        MENUITEM "&2nd 기본 스키마\tShift+F12",                  IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2nd Common Base\tShift+F12",               IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "전체 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
         MENUITEM "현재 스키마 기본 글꼴(&H)...\tCtrl+Alt+F12",      IDM_VIEW_CURRENTSCHEME
