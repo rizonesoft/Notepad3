@@ -58,18 +58,6 @@
 
 //=============================================================================
 //
-//  Sci_SendMessage()  short version
-//
-#define Sci_SendMsgV0(CMD)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
-#define Sci_SendMsgV1(CMD,WP)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
-#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
-
-#define Sci_PostMsgV0(CMD)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
-#define Sci_PostMsgV1(CMD,WP)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
-#define Sci_PostMsgV2(CMD,WP,LP)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
-
-//=============================================================================
-//
 //  SciCall()
 //
 #ifdef SCI_DIRECTFUNCTION_INTERFACE
@@ -132,10 +120,8 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 
 //=============================================================================
-//
-//  Selection, positions and information
-//
 
+//  Selection, positions and information
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
 DeclareSciCallV0(Undo, UNDO)
@@ -204,6 +190,32 @@ DeclareSciCallR0(GetZoom, GETZOOM, int)
 DeclareSciCallV1(SetZoom, SETZOOM, int, zoom)
 DeclareSciCallV0(ZoomIn, ZOOMIN)
 DeclareSciCallV0(ZoomOut, ZOOMOUT)
+
+// Keyboard Commands
+DeclareSciCallV0(NewLine, NEWLINE)
+DeclareSciCallV0(LineUpExtend, LINEUPEXTEND)
+DeclareSciCallV0(LineScrollUp, LINESCROLLUP)
+DeclareSciCallV0(LineDownExtend, LINEDOWNEXTEND)
+DeclareSciCallV0(LineScrollDown, LINESCROLLDOWN)
+DeclareSciCallV0(CharLeftExtend, CHARLEFTEXTEND)
+DeclareSciCallV0(CharRightExtend, CHARRIGHTEXTEND)
+DeclareSciCallV0(WordLeft, WORDLEFT)
+DeclareSciCallV0(WordRight, WORDRIGHT)
+DeclareSciCallV0(DeleteBack, DELETEBACK)
+DeclareSciCallV0(DelWordLeft, DELWORDLEFT)
+DeclareSciCallV0(DelWordRight, DELWORDRIGHT)
+DeclareSciCallV0(DelLineLeft, DELLINELEFT)
+DeclareSciCallV0(DelLineRight, DELLINERIGHT)
+DeclareSciCallV0(LineDelete, LINEDELETE)
+
+//  Commands
+DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
+DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE)
+DeclareSciCallV0(LineTranspose, LINETRANSPOSE)
+DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
+DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
+DeclareSciCallR0(GetLexer, GETLEXER, int)
+DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
 // Operations
 DeclareSciCallV0(Cut, CUT)
@@ -306,23 +318,6 @@ DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text)
 DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag)
 DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options)
 DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list)
-
-
-//=============================================================================
-//
-//  Commands
-//
-DeclareSciCallV0(NewLine, NEWLINE)
-DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
-DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE)
-DeclareSciCallV0(LineTranspose, LINETRANSPOSE)
-DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
-DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
-DeclareSciCallV0(LineDelete, LINEDELETE)
-DeclareSciCallV0(DelLineLeft, DELLINELEFT)
-DeclareSciCallV0(DelLineRight, DELLINERIGHT)
-DeclareSciCallR0(GetLexer, GETLEXER, int)
-DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
 
 //=============================================================================
