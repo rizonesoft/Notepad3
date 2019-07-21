@@ -121,7 +121,7 @@ inline bool IsUTF8Signature(const char* p) {
 
 bool IsValidUTF7(const char* pTest, size_t nLength);
 bool IsValidUTF8(const char* pTest, size_t nLength);
-bool IsValidUnicode(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse);
+
 
 //////////////////////////////////////////////////////
 // Google's   CED       "Compact Encoding Detection" 
@@ -145,6 +145,7 @@ inline bool IsDBCSCodePage(UINT cp) {
 }
 
 cpi_enc_t Encoding_AnalyzeText(const char* const text, const size_t len, float* confidence_io, const cpi_enc_t encodingHint);
+cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse);
 
 const char*  Encoding_GetTitleInfoA();
 const WCHAR* Encoding_GetTitleInfoW();

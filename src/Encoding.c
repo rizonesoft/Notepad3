@@ -664,51 +664,6 @@ bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 // ============================================================================
 
 
-bool IsValidUnicode(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse) 
-{
-  size_t const enoughData = 2048LL;
-  size_t const cb = (len < enoughData) ? len : enoughData;
-
-  if (!pBuffer || cb < 2) { return false; }
-
-  // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
-  // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
-  // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
-  // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
-  //
-  int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
-
-  int iTest = iAllTests;
-  /*bool const ok =*/ (void)IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok
- 
-  if (iTest == iAllTests) {
-    iTest = 0; // iTest doesn't seem to have been modified ...
-  }
-
-  bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
-  bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
-
-  bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
-  bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
-  bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
-
-  //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
-
-  if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse))) 
-  {
-    if (lpbBOM) {
-      *lpbBOM = (bHasBOM || bHasRBOM);
-    }
-    if (lpbReverse) {
-      *lpbReverse = (bHasRBOM || bIsReverse);
-    }
-    return true;
-  }
-  return false;
-}
-// ============================================================================
-
-
 bool IsValidUTF7(const char* pTest, size_t nLength) 
 {
   if (!pTest) { return false; }
