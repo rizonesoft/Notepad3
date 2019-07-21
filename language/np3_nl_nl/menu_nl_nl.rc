@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Aanpassen Schemes...\tCtrl+F12",                       IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Selecteren Synta&x Scheme...\tF12",                     IDM_VIEW_SCHEME
-        MENUITEM "&2de Common Base\tShift+F12",                           IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2de Gemeenschappelijke Basis\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globaal Stan&daard Lettertype...\tAlt+F12",             IDM_VIEW_FONT
         MENUITEM "Actueel Sc&heme Standaard Lettertype...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -436,7 +436,7 @@ BEGIN
         BEGIN
             MENUITEM "Ops&laan de configuratie bij afsluiten",          IDM_VIEW_SAVESETTINGS
             MENUITEM "Bewaar de configuratie &nu\tF7",                  IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Open het configuratie bestand\tCtrl+F7",         CMD_OPENINIFILE
+            MENUITEM "&Openen het configuratie bestand\tCtrl+F7",       CMD_OPENINIFILE
         END
     END
     POPUP "&Help"
@@ -467,9 +467,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Toggle huidige vouw",                    IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",                      CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",                      CMD_WEBACTION2
-        MENUITEM "Open &Hyperlink",                         CMD_OPEN_HYPERLINK
+        MENUITEM "Openen Web Action &1",                    CMD_WEBACTION1
+        MENUITEM "Openen Web Action &2",                    CMD_WEBACTION2
+        MENUITEM "Openen &Hyperlink",                       CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN

@@ -1,0 +1,4 @@
+FIRST NAME ,LAST NAME,USERNAME ,PASSWORD ,EMAIL ADDRESS,PHONE NUMBER,PASSPORT,GROUPS,USERCODE,TITLE,ADDRESS 1 ,ADDRESS 2,CITY,STATE,ZIP
+Frank,Riley,friley,changeme,friley@kanab.org,123-456-7890,3,"1,3",1040,Teacher,328 Innovation,Suite # 200 ,state college,PA,16803
+Steve,Brannigan,sbrannigan,changeme,sbrannigan@kanab.org,123-456-7890,3,1,1041,Teacher,328 Innovation,Suite # 200 ,state college,PA,16803
+Marie,Ambrose,mambrose,changeme,mambrose@kanab.org,123-456-7890,3,1,1042,Teacher,328 Innovation,Suite # 200 ,state college,PA,16803
