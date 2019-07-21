@@ -1,6 +1,10 @@
 @echo off
 exit
 echo ÊäÈëuÅÌÄ¿Â¼
+echo ÊäÈëuÅÌÄ¿Â¼
+echo ÊäÈëuÅÌÄ¿Â¼
+echo ÊäÈëuÅÌÄ¿Â¼
+echo ÊäÈëuÅÌÄ¿Â¼
 set /p DriveU=
 echo on
 attrib "%DriveU%:\System Volume Information" -s

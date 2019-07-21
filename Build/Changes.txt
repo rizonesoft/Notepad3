@@ -68,6 +68,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- obsolete newline after .ini-file sections with comments
+- Enhanced Unicode detection
 - Use string begin/end terminator for most recent lists
 - Oniguruma allow CRLF as newline token
 - Notepad3.ini file, remove some keys with default values (styles)
