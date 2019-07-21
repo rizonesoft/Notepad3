@@ -1,0 +1,246 @@
+diff --git a/src/Config/Config.cpp b/src/Config/Config.cpp
+index 567ac09c..021d940f 100644
+--- a/src/Config/Config.cpp
++++ b/src/Config/Config.cpp
+@@ -1370,6 +1370,7 @@ bool SaveSettings(bool bSaveSettingsNow)
+ 
+   if (ok) {
+     Style_Save();  // Scintilla Styles
++    Globals.bIniFileFromScratch = false;
+   }
+   return ok;
+ }
+diff --git a/src/Styles.c b/src/Styles.c
+index 4e394569..4e7e78bc 100644
+--- a/src/Styles.c
++++ b/src/Styles.c
+@@ -633,7 +633,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
+ //
+ void Style_Save()
+ {
+-  Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, false);
++  Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
+ 
+   if (s_idxSelectedTheme > 1) {
+     IniFileSetString(Globals.IniFile, L"Styles", STYLING_THEME_NAME, Theme_Files[s_idxSelectedTheme].szName);
+@@ -667,17 +667,15 @@ bool Style_Export(HWND hwnd)
+   ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
+             | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
+ 
+-  Globals.dwLastError = ERROR_SUCCESS;
+-
++  bool ok = false;
+   if (GetSaveFileName(&ofn)) 
+   {
+-    Globals.dwLastError = Style_ExportToFile(szFile, true);
+-
+-    if (Globals.dwLastError != ERROR_SUCCESS) {
++    ok = Style_ExportToFile(szFile, true);
++    if (!ok) {
+       InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_EXPORT_FAIL, PathFindFileName(szFile));
+     }
+   }
+-  return (Globals.dwLastError == ERROR_SUCCESS);
++  return ok;
+ }
+ 
+ 
+@@ -694,115 +692,112 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
+     return false;
+   }
+ 
+-  bool const ok = LoadIniFile(szFile);
+-
+-  if (ok) {
++  LoadIniFile(szFile); // reset
+ 
+     // Custom colors
+-    const WCHAR* const CustomColors_Section = L"Custom Colors";
++  const WCHAR* const CustomColors_Section = L"Custom Colors";
+ 
+-    for (int i = 0; i < 16; i++) {
+-      if (bForceAll || (g_colorCustom[i] != s_colorDefault[i])) {
+-        WCHAR tch[32] = { L'\0' };
+-        WCHAR wch[32] = { L'\0' };
+-        StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+-        StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
+-          (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
+-        IniSectionSetString(CustomColors_Section, tch, wch);
+-      }
++  for (int i = 0; i < 16; i++) {
++    if (bForceAll || (g_colorCustom[i] != s_colorDefault[i])) {
++      WCHAR tch[32] = { L'\0' };
++      WCHAR wch[32] = { L'\0' };
++      StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
++      StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
++        (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
++      IniSectionSetString(CustomColors_Section, tch, wch);
+     }
++  }
+ 
+-    const WCHAR* const Styles_Section = L"Styles";
++  const WCHAR* const Styles_Section = L"Styles";
+ 
+-    // auto select
+-    bool const bUse2ndSty = Style_GetUse2ndDefault();
+-    if (bUse2ndSty) {
+-      IniSectionSetBool(Styles_Section, L"Use2ndDefaultStyle", bUse2ndSty);
+-    }
+-    else {
+-      IniSectionDelete(Styles_Section, L"Use2ndDefaultStyle", false);
+-    }
++  // auto select
++  bool const bUse2ndSty = Style_GetUse2ndDefault();
++  if (bUse2ndSty) {
++    IniSectionSetBool(Styles_Section, L"Use2ndDefaultStyle", bUse2ndSty);
++  }
++  else {
++    IniSectionDelete(Styles_Section, L"Use2ndDefaultStyle", false);
++  }
+ 
+-    // default scheme
+-    if (s_iDefaultLexer != 0) {
+-      IniSectionSetInt(Styles_Section, L"DefaultScheme", s_iDefaultLexer);
+-    }
+-    else {
+-      IniSectionDelete(Styles_Section, L"DefaultScheme", false);
+-    }
++  // default scheme
++  if (s_iDefaultLexer != 0) {
++    IniSectionSetInt(Styles_Section, L"DefaultScheme", s_iDefaultLexer);
++  }
++  else {
++    IniSectionDelete(Styles_Section, L"DefaultScheme", false);
++  }
+ 
+-    // auto select
+-    if (!s_bAutoSelect) {
+-      IniSectionSetBool(Styles_Section, L"AutoSelect", s_bAutoSelect);
+-    }
+-    else {
+-      IniSectionDelete(Styles_Section, L"AutoSelect", false);
+-    }
++  // auto select
++  if (!s_bAutoSelect) {
++    IniSectionSetBool(Styles_Section, L"AutoSelect", s_bAutoSelect);
++  }
++  else {
++    IniSectionDelete(Styles_Section, L"AutoSelect", false);
++  }
+ 
+-    // scheme select dlg dimensions
+-    if (s_cxStyleSelectDlg != STYLESELECTDLG_X) {
+-      IniSectionSetInt(Styles_Section, L"SelectDlgSizeX", s_cxStyleSelectDlg);
++  // scheme select dlg dimensions
++  if (s_cxStyleSelectDlg != STYLESELECTDLG_X) {
++    IniSectionSetInt(Styles_Section, L"SelectDlgSizeX", s_cxStyleSelectDlg);
++  }
++  else {
++    IniSectionDelete(Styles_Section, L"SelectDlgSizeX", false);
++  }
++  if (s_cyStyleSelectDlg != STYLESELECTDLG_Y) {
++    IniSectionSetInt(Styles_Section, L"SelectDlgSizeY", s_cyStyleSelectDlg);
++  }
++  else {
++    IniSectionDelete(Styles_Section, L"SelectDlgSizeY", false);
++  }
++
++  // create canonical order of lexer sections 
++  if (bForceAll) {
++    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
++    {
++      IniSectionClear(g_pLexArray[iLexer]->pszName, true);
+     }
+-    else {
+-      IniSectionDelete(Styles_Section, L"SelectDlgSizeX", false);
++    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
++    {
++      IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
+     }
+-    if (s_cyStyleSelectDlg != STYLESELECTDLG_Y) {
+-      IniSectionSetInt(Styles_Section, L"SelectDlgSizeY", s_cyStyleSelectDlg);
++    bForceAll = !Globals.bIniFileFromScratch;
++  }
++
++  WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
++
++  for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
++  {
++    LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
++
++    if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0))
++    {
++      IniSectionSetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
+     }
+     else {
+-      IniSectionDelete(Styles_Section, L"SelectDlgSizeY", false);
++      IniSectionDelete(Lexer_Section, L"FileNameExtensions", false);
+     }
+ 
+-    // create canonical order of lexer sections
+-    if (bForceAll) {
+-      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
+-      {
+-        IniSectionClear(g_pLexArray[iLexer]->pszName, true);
+-      }
+-      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
+-      {
+-        IniSectionSetString(g_pLexArray[iLexer]->pszName, NULL, NULL);
+-      }
+-    }
+-
+-    WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
+-
+-    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
++    unsigned i = 0;
++    while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+     {
+-      LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
++      // normalize defaults
++      szTmpStyle[0] = L'\0'; // clear
++      Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].pszDefault, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+ 
+-      if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0))
++      if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle) != 0))
+       {
+-        IniSectionSetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
++        // normalize value
++        szTmpStyle[0] = L'\0'; // clear
++        Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
++        IniSectionSetString(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
+       }
+       else {
+-        IniSectionDelete(Lexer_Section, L"FileNameExtensions", false);
+-      }
+-
+-      unsigned i = 0;
+-      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+-      {
+-        // normalize defaults
+-        szTmpStyle[0] = L'\0'; // clear
+-        Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].pszDefault, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+-
+-        if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle) != 0))
+-        {
+-          // normalize value
+-          szTmpStyle[0] = L'\0'; // clear
+-          Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+-          IniSectionSetString(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
+-        }
+-        else {
+-          IniSectionDelete(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, false);
+-        }
+-        ++i;
++        IniSectionDelete(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, false);
+       }
++      ++i;
+     }
+-
+-    SaveIniFile(szFile);
+   }
+-  return ok;
++
++  return SaveIniFile(szFile);
+ }
+ 
+ 

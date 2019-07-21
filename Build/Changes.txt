@@ -30,12 +30,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current Version 5.19.717.build (17 July 2019)
+Current Version 5.19.720.build (20 July 2019)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Add Web Template Action to context menu
 - Advanced TOML Lexer
 - Multiselect Edit Indicator
 - Color hover and picker (HTML color def only #RRGGBB)
@@ -43,11 +44,11 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
 - Update to Oniguruma v.6.9.3
 - Scintilla Library (SCI) version 4.2.0 (2019-Jul-5)
 - To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding
 - Allow Fixedsys font for GDI rendering
-- For new "Text File" scheme: use regular Segoe UI font
 - Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-6)
 - Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
 - Oniguruma: support static build
@@ -67,6 +68,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Use string begin/end terminator for most recent lists
 - Oniguruma allow CRLF as newline token
 - Notepad3.ini file, remove some keys with default values (styles)
 - Extended encoding detection debug information
