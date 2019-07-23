@@ -496,7 +496,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
              CB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,CB_GETCURSEL,0,0)));
 
           if (HIWORD(wParam) == CBN_CLOSEUP) {
-            LONG lSelEnd;
+            LONG lSelEnd = 0;
             SendDlgItemMessage(hwnd,IDC_GOTO,CB_GETEDITSEL,0,(LPARAM)&lSelEnd);
             SendDlgItemMessage(hwnd,IDC_GOTO,CB_SETEDITSEL,0,MAKELPARAM(lSelEnd,lSelEnd));
           }
@@ -2455,7 +2455,7 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           }
           else
           {
-            WCHAR tch[256] = L"";
+            WCHAR tch[MAX_PATH] = L"";
             if (LOWORD(wParam) == IDOK) {
               if (GetDlgItemText(hwnd,IDC_WINMODULE,tch,COUNTOF(tch))) {
                 PathRelativeToApp(tch,tch,COUNTOF(tch),TRUE,TRUE,flagPortableMyDocs);

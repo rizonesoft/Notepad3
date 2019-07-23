@@ -381,6 +381,7 @@ BOOL SetWindowPathTitle(HWND hwnd,LPCWSTR lpszFile)
     if (!PathIsRoot(lpszFile))
     {
       SHFILEINFO shfi;
+      ZeroMemory(&shfi, sizeof(SHFILEINFO));
       if (SHGetFileInfo(lpszFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME))
         lstrcpy(szTitle, shfi.szDisplayName);
       else
