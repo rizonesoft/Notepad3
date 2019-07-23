@@ -23,9 +23,10 @@
 #include <commdlg.h>
 #include <strsafe.h>
 #include <muiload.h>
-#include "helpers.h"
+
 #include "dlapi.h"
 #include "dialogs.h"
+#include "config.h"
 #include "minipath.h"
 #include "resource.h"
 
@@ -106,21 +107,13 @@ int       cxOpenWithDlg;
 int       cyOpenWithDlg;
 int       cxCopyMoveDlg;
 
-WCHAR      tchFilter[DL_FILTER_BUFSIZE];
+WCHAR     tchFilter[DL_FILTER_BUFSIZE];
 BOOL      bNegFilter;
 BOOL      bDefCrNoFilt;
 BOOL      bDefCrFilter;
 COLORREF  crNoFilt;
 COLORREF  crFilter;
 COLORREF  crCustom[16];
-
-typedef struct _wi
-{
-  int x;
-  int y;
-  int cx;
-  int cy;
-} WININFO;
 
 WININFO   wi;
 
@@ -130,7 +123,7 @@ int       cyDriveBoxFrame;
 
 int       nIdFocus = IDC_DIRLIST;
 
-WCHAR      szCurDir[MAX_PATH + 40];
+WCHAR     szCurDir[MAX_PATH + 40];
 DWORD     dwFillMask;
 int       nSortFlags;
 BOOL      fSortRev;
@@ -151,7 +144,7 @@ WCHAR szDDEMsg[256] = L"";
 WCHAR szDDEApp[256] = L"";
 WCHAR szDDETopic[256] = L"";
 
-static BOOL bHasQuickview = FALSE;
+BOOL bHasQuickview = FALSE;
 
 UINT16    g_uWinVer;
 
@@ -507,7 +500,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     SetWindowPos(hwndMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 
   if (g_bTransparentMode) {
-    int const iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
+    int const iAlphaPercent = IniFileGetInt(g_wchIniFile, L"Settings2", L"OpacityLevel", 75);
     SetWindowTransparentMode(hwndMain, TRUE, clampi(iAlphaPercent, 0, 100));
   }
 
@@ -533,7 +526,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     if (iStartupDir == 1)
     {
       WCHAR tch[MAX_PATH];
-      if (IniGetString(L"Settings",L"MRUDirectory",L"",tch,COUNTOF(tch)))
+      if (IniFileGetString(g_wchIniFile, L"Settings", L"MRUDirectory", L"", tch, COUNTOF(tch)))
         DisplayPath(tch,IDS_ERR_STARTUPDIR);
       else
         ErrorMessage(2,IDS_ERR_STARTUPDIR);
@@ -618,7 +611,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         // Init directory watching
         // iAutoRefreshRate is in 1/10 sec
-        int iAutoRefreshRate = IniGetInt(L"Settings2",L"AutoRefreshRate",30);
+      int iAutoRefreshRate = IniFileGetInt(g_wchIniFile, L"Settings2", L"AutoRefreshRate", 30);
         if (iAutoRefreshRate)
           SetTimer(hwnd,ID_TIMER,(iAutoRefreshRate * 100),NULL);
         return MsgCreate(hwnd,wParam,lParam);
@@ -648,6 +641,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         DragAcceptFiles(hwnd,FALSE);
 
         History_Uninit(&mHistory);
+
+        // prepare save
+        Toolbar_GetButtons(hwndToolbar, IDT_HISTORY_BACK, tchToolbarButtons, COUNTOF(tchToolbarButtons));
 
         SaveSettings(FALSE);
 
@@ -1106,9 +1102,6 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   WCHAR tchDesc[256];
   WCHAR tchIndex[256];
 
-  WCHAR *pIniSection = NULL;
-  int   cbIniSection = 0;
-
   if (bShowToolbar)
     dwReBarStyle |= WS_VISIBLE;
 
@@ -1188,9 +1181,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     DeleteObject(hbmpCopy);
 
   // Load toolbar labels
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-  LoadIniSection(L"Toolbar Labels",pIniSection,cbIniSection);
+  LoadIniFile(g_wchIniFile);
+  const WCHAR* const ToolbarLabels_Section = L"Toolbar Labels";
+
   n = 0;
   for (i = 0; i < COUNTOF(tbbMainWnd); i++) {
 
@@ -1201,7 +1194,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
     wsprintf(tchIndex,L"%02i",n);
 
-    if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc)) &&
+    if (IniSectionGetString(ToolbarLabels_Section,tchIndex,L"",tchDesc,COUNTOF(tchDesc)) &&
         lstrcmpi(tchDesc,L"(none)") != 0) {
 
       tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
@@ -1218,7 +1211,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     else
       tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
   }
-  LocalFree(pIniSection);
+  ReleaseIniFile();
 
   SendMessage(hwndToolbar,TB_SETEXTENDEDSTYLE,0,
     SendMessage(hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | TBSTYLE_EX_MIXEDBUTTONS);
@@ -2151,7 +2144,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (!bCreateFailure) 
         {
-          if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
+          if (IniFileSetString(g_wchIniFile, L"Settings", L"WriteTest", L"ok")) 
+          {
+            // prepare save
+            Toolbar_GetButtons(hwndToolbar, IDT_HISTORY_BACK, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+
             BeginWaitCursor();
             SaveSettings(TRUE);
             EndWaitCursor();
@@ -2278,7 +2275,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case ACC_SWITCHTRANSPARENCY:
       g_bTransparentMode = !g_bTransparentMode;
-      int const iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
+      int const iAlphaPercent = IniFileGetInt(g_wchIniFile, L"Settings2", L"OpacityLevel", 75);
       SetWindowTransparentMode(hwndMain, g_bTransparentMode, clampi(iAlphaPercent, 0, 100));
       break;
 
@@ -2866,314 +2863,6 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
 //=============================================================================
 //
-//  LoadSettings()
-//
-//
-void LoadSettings()
-{
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  int   cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-
-  LoadIniSection(L"Settings",pIniSection,cbIniSection);
-
-  bSaveSettings =
-    IniSectionGetInt(pIniSection,L"SaveSettings",1);
-  if (bSaveSettings) bSaveSettings = 1;
-
-  bSingleClick = IniSectionGetInt(pIniSection,L"SingleClick",1);
-  if (bSingleClick) bSingleClick = 1;
-
-  bTrackSelect = IniSectionGetInt(pIniSection,L"TrackSelect",1);
-  if (bTrackSelect) bTrackSelect = 1;
-
-  bFullRowSelect = IniSectionGetInt(pIniSection,L"FullRowSelect",0);
-  if (bFullRowSelect) bFullRowSelect = 1;
-
-  fUseRecycleBin = IniSectionGetInt(pIniSection,L"UseRecycleBin",0);
-  if (fUseRecycleBin) fUseRecycleBin = 1;
-
-  fNoConfirmDelete = IniSectionGetInt(pIniSection,L"NoConfirmDelete",0);
-  if (fNoConfirmDelete) fNoConfirmDelete = 1;
-
-  bClearReadOnly = IniSectionGetInt(pIniSection,L"ClearReadOnly",1);
-  if (bClearReadOnly) bClearReadOnly = 1;
-
-  bRenameOnCollision = IniSectionGetInt(pIniSection,L"RenameOnCollision",0);
-  if (bRenameOnCollision) bRenameOnCollision = 1;
-
-  bFocusEdit = IniSectionGetInt(pIniSection,L"FocusEdit",1);
-  if (bFocusEdit) bFocusEdit = 1;
-
-  bAlwaysOnTop = IniSectionGetInt(pIniSection,L"AlwaysOnTop",0);
-  if (bAlwaysOnTop) bAlwaysOnTop = 1;
-
-  bMinimizeToTray = IniSectionGetInt(pIniSection,L"MinimizeToTray",0);
-  if (bMinimizeToTray) bMinimizeToTray = 1;
-
-  g_bTransparentMode = IniSectionGetInt(pIniSection,L"TransparentMode",0);
-  if (g_bTransparentMode) g_bTransparentMode = 1;
-
-  iEscFunction = IniSectionGetInt(pIniSection,L"EscFunction",2);
-  iEscFunction = max(min(iEscFunction,2),0);
-
-  iStartupDir = IniSectionGetInt(pIniSection,L"StartupDirectory",2);
-  iStartupDir = max(min(iStartupDir,2),0);
-
-  if (!IniSectionGetString(pIniSection, L"Favorites", L"",
-                           g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir))) {
-    // try to fetch Favorites dir from Notepad3.ini
-    GetPrivateProfileString(L"Settings", L"Favorites", L"",
-                            g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir), g_wchNP3IniFile);
-    if (StrIsNotEmpty(g_wchNP3IniFile)) { bNP3sFavoritesSettings = TRUE; }
-  }
-  if (StrIsEmpty(g_tchFavoritesDir))
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,g_tchFavoritesDir);
-  else
-    PathAbsoluteFromApp(g_tchFavoritesDir,NULL,COUNTOF(g_tchFavoritesDir),TRUE);
-
-  if (!IniSectionGetString(pIniSection,L"Quikview.exe",L"",
-        szQuickview,COUNTOF(szQuickview))) {
-    GetSystemDirectory(szQuickview,COUNTOF(szQuickview));
-    PathAddBackslash(szQuickview);
-    lstrcat(szQuickview,L"Viewers\\Quikview.exe");
-  }
-  else
-    PathAbsoluteFromApp(szQuickview,NULL,COUNTOF(szQuickview),TRUE);
-
-  bHasQuickview = PathFileExists(szQuickview);
-
-  IniSectionGetString(pIniSection,L"QuikviewParams",L"",
-    szQuickviewParams,COUNTOF(szQuickviewParams));
-
-  if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"",
-                           tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
-
-    // try to fetch Open With dir from Notepad3.ini
-    GetPrivateProfileString(L"Settings", L"OpenWithDir", L"",
-                            tchOpenWithDir, COUNTOF(tchOpenWithDir), g_wchNP3IniFile);
-  }
-  if (StrIsEmpty(tchOpenWithDir))
-    SHGetSpecialFolderPath(NULL, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
-  else
-    PathAbsoluteFromApp(tchOpenWithDir,NULL,COUNTOF(tchOpenWithDir),TRUE);
-
-  dwFillMask =
-    IniSectionGetInt(pIniSection,L"FillMask",DL_ALLOBJECTS);
-  if (dwFillMask & ~DL_ALLOBJECTS) dwFillMask = DL_ALLOBJECTS;
-
-  nSortFlags =
-    IniSectionGetInt(pIniSection,L"SortOptions",DS_TYPE);
-  nSortFlags = min(3,max(nSortFlags,0));
-
-  fSortRev = IniSectionGetInt(pIniSection,L"SortReverse",0);
-  if (fSortRev) fSortRev = 1;
-
-  if (!lpFilterArg) {
-    if (!IniSectionGetString(pIniSection,L"FileFilter",L"",
-          tchFilter,COUNTOF(tchFilter)))
-      lstrcpy(tchFilter,L"*.*");
-
-    bNegFilter = IniSectionGetInt(pIniSection,L"NegativeFilter",0);
-    if (bNegFilter) bNegFilter = 1;
-  }
-
-  else { // ignore filter if /m was specified
-    if (*lpFilterArg == L'-') {
-      bNegFilter = TRUE;
-      lstrcpyn(tchFilter,lpFilterArg + 1,COUNTOF(tchFilter));
-    }
-    else {
-      bNegFilter = FALSE;
-      lstrcpyn(tchFilter,lpFilterArg,COUNTOF(tchFilter));
-    }
-  }
-
-  bDefCrNoFilt = IniSectionGetInt(pIniSection,L"DefColorNoFilter",1);
-  if (bDefCrNoFilt) bDefCrNoFilt = 1;
-  bDefCrFilter = IniSectionGetInt(pIniSection,L"DefColorFilter",1);
-  if (bDefCrFilter) bDefCrFilter = 1;
-
-  crNoFilt = IniSectionGetInt(pIniSection,L"ColorNoFilter",GetSysColor(COLOR_WINDOWTEXT));
-  crFilter = IniSectionGetInt(pIniSection,L"ColorFilter",GetSysColor(COLOR_HIGHLIGHT));
-
-  if (IniSectionGetString(pIniSection,L"ToolbarButtons",L"",
-        tchToolbarButtons,COUNTOF(tchToolbarButtons)) == 0)
-    lstrcpy(tchToolbarButtons,L"1 2 3 4 5 0 8");
-
-  bShowToolbar = IniSectionGetInt(pIniSection,L"ShowToolbar",1);
-  if (bShowToolbar) bShowToolbar = 1;
-
-  bShowStatusbar = IniSectionGetInt(pIniSection,L"ShowStatusbar",1);
-  if (bShowStatusbar) bShowStatusbar = 1;
-
-  bShowDriveBox = IniSectionGetInt(pIniSection,L"ShowDriveBox",1);
-  if (bShowDriveBox) bShowDriveBox = 1;
-
-  cxGotoDlg = IniSectionGetInt(pIniSection,L"GotoDlgSizeX",0);
-  cxGotoDlg = max(cxGotoDlg,0);
-
-  cxOpenWithDlg = IniSectionGetInt(pIniSection,L"OpenWithDlgSizeX",0);
-  cxOpenWithDlg = max(cxOpenWithDlg,0);
-
-  cyOpenWithDlg = IniSectionGetInt(pIniSection,L"OpenWithDlgSizeY",0);
-  cyOpenWithDlg = max(cyOpenWithDlg,0);
-
-  cxCopyMoveDlg = IniSectionGetInt(pIniSection,L"CopyMoveDlgSizeX",0);
-  cxCopyMoveDlg = max(cxCopyMoveDlg,0);
-
-  int ResX = GetSystemMetrics(SM_CXSCREEN);
-  int ResY = GetSystemMetrics(SM_CYSCREEN);
-
-  LoadIniSection(L"Toolbar Images", pIniSection, cbIniSection);
-  IniSectionGetString(pIniSection, L"BitmapDefault", L"",
-    tchToolbarBitmap, COUNTOF(tchToolbarBitmap));
-  IniSectionGetString(pIniSection, L"BitmapHot", L"",
-    tchToolbarBitmapHot, COUNTOF(tchToolbarBitmap));
-  IniSectionGetString(pIniSection, L"BitmapDisabled", L"",
-    tchToolbarBitmapDisabled, COUNTOF(tchToolbarBitmap));
-
-  if (!flagPosParam) { // ignore window position if /p was specified
-
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32];
-
-    wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
-    wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
-    wsprintf(tchSizeX,L"%ix%i SizeX",ResX,ResY);
-    wsprintf(tchSizeY,L"%ix%i SizeY",ResX,ResY);
-
-    LoadIniSection(L"Window",pIniSection,cbIniSection);
-
-    wi.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
-    wi.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
-    wi.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
-    wi.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
-  }
-
-  LocalFree(pIniSection);
-
-  // Initialize custom colors for ChooseColor()
-  crCustom[0] = RGB(0,0,128);                     crCustom[8]  = RGB(255,255,226);
-  crCustom[1] = GetSysColor(COLOR_WINDOWTEXT);    crCustom[9]  = GetSysColor(COLOR_WINDOW);
-  crCustom[2] = GetSysColor(COLOR_INFOTEXT);      crCustom[10] = GetSysColor(COLOR_INFOBK);
-  crCustom[3] = GetSysColor(COLOR_HIGHLIGHTTEXT); crCustom[11] = GetSysColor(COLOR_HIGHLIGHT);
-  crCustom[4] = GetSysColor(COLOR_ACTIVECAPTION); crCustom[12] = GetSysColor(COLOR_DESKTOP);
-  crCustom[5] = GetSysColor(COLOR_3DFACE);        crCustom[13] = GetSysColor(COLOR_3DFACE);
-  crCustom[6] = GetSysColor(COLOR_3DFACE);        crCustom[14] = GetSysColor(COLOR_3DFACE);
-  crCustom[7] = GetSysColor(COLOR_3DFACE);        crCustom[15] = GetSysColor(COLOR_3DFACE);
-
-}
-
-
-//=============================================================================
-//
-//  SaveSettings()
-//
-//
-void SaveSettings(BOOL bSaveSettingsNow)
-{
-  WCHAR wchTmp[MAX_PATH];
-
-  if (StrIsEmpty(g_wchIniFile))
-    return;
-
-  CreateIniFile();
-
-  if (!bSaveSettings && !bSaveSettingsNow) {
-    if (iStartupDir == 1)
-      IniSetString(L"Settings",L"MRUDirectory",szCurDir);
-    IniSetInt(L"Settings",L"SaveSettings",bSaveSettings);
-    return;
-  }
-
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  //int cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-
-  IniSectionSetInt(pIniSection,L"SaveSettings",bSaveSettings);
-  IniSectionSetInt(pIniSection,L"SingleClick",bSingleClick);
-  IniSectionSetInt(pIniSection,L"TrackSelect",bTrackSelect);
-  IniSectionSetInt(pIniSection,L"FullRowSelect",bFullRowSelect);
-  IniSectionSetInt(pIniSection,L"UseRecycleBin",fUseRecycleBin);
-  IniSectionSetInt(pIniSection,L"NoConfirmDelete",fNoConfirmDelete);
-  IniSectionSetInt(pIniSection,L"ClearReadOnly",bClearReadOnly);
-  IniSectionSetInt(pIniSection,L"RenameOnCollision",bRenameOnCollision);
-  IniSectionSetInt(pIniSection,L"FocusEdit",bFocusEdit);
-  IniSectionSetInt(pIniSection,L"AlwaysOnTop",bAlwaysOnTop);
-  IniSectionSetInt(pIniSection,L"MinimizeToTray",bMinimizeToTray);
-  IniSectionSetInt(pIniSection,L"TransparentMode",g_bTransparentMode);
-  IniSectionSetInt(pIniSection,L"EscFunction",iEscFunction);
-  IniSectionSetInt(pIniSection,L"StartupDirectory",iStartupDir);
-  if (iStartupDir == 1)
-    IniSectionSetString(pIniSection,L"MRUDirectory",szCurDir);
-  if (!bNP3sFavoritesSettings) { 
-    PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
-    IniSectionSetString(pIniSection, L"Favorites", wchTmp);
-  }
-  PathRelativeToApp(szQuickview,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
-  IniSectionSetString(pIniSection,L"Quikview.exe",wchTmp);
-  IniSectionSetString(pIniSection,L"QuikviewParams",szQuickviewParams);
-  PathRelativeToApp(tchOpenWithDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
-  IniSectionSetString(pIniSection,L"OpenWithDir",wchTmp);
-  IniSectionSetInt(pIniSection,L"FillMask",dwFillMask);
-  IniSectionSetInt(pIniSection,L"SortOptions",nSortFlags);
-  IniSectionSetInt(pIniSection,L"SortReverse",fSortRev);
-  IniSectionSetString(pIniSection,L"FileFilter",tchFilter);
-  IniSectionSetInt(pIniSection,L"NegativeFilter",bNegFilter);
-  IniSectionSetInt(pIniSection,L"DefColorNoFilter",bDefCrNoFilt);
-  IniSectionSetInt(pIniSection,L"DefColorFilter",bDefCrFilter);
-  IniSectionSetInt(pIniSection,L"ColorNoFilter",crNoFilt);
-  IniSectionSetInt(pIniSection,L"ColorFilter",crFilter);
-  Toolbar_GetButtons(hwndToolbar,IDT_HISTORY_BACK,tchToolbarButtons,COUNTOF(tchToolbarButtons));
-  IniSectionSetString(pIniSection,L"ToolbarButtons",tchToolbarButtons);
-  IniSectionSetInt(pIniSection,L"ShowToolbar",bShowToolbar);
-  IniSectionSetInt(pIniSection,L"ShowStatusbar",bShowStatusbar);
-  IniSectionSetInt(pIniSection,L"ShowDriveBox",bShowDriveBox);
-  IniSectionSetInt(pIniSection,L"GotoDlgSizeX",cxGotoDlg);
-  IniSectionSetInt(pIniSection,L"OpenWithDlgSizeX",cxOpenWithDlg);
-  IniSectionSetInt(pIniSection,L"OpenWithDlgSizeY",cyOpenWithDlg);
-  IniSectionSetInt(pIniSection,L"CopyMoveDlgSizeX",cxCopyMoveDlg);
-
-  SaveIniSection(L"Settings",pIniSection);
-  LocalFree(pIniSection);
-
-  /*
-    SaveSettingsNow(): query Window Dimensions
-  */
-
-  if (bSaveSettingsNow)
-  {
-    WINDOWPLACEMENT wndpl;
-
-    // GetWindowPlacement
-    wndpl.length = sizeof(WINDOWPLACEMENT);
-    GetWindowPlacement(hwndMain,&wndpl);
-
-    wi.x = wndpl.rcNormalPosition.left;
-    wi.y = wndpl.rcNormalPosition.top;
-    wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-    wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-  }
-
-  {
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
-    int ResX = GetSystemMetrics(SM_CXSCREEN);
-    int ResY = GetSystemMetrics(SM_CYSCREEN);
-
-    wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
-    wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
-    wsprintf(tchSizeX,L"%ix%i SizeX",ResX,ResY);
-    wsprintf(tchSizeY,L"%ix%i SizeY",ResX,ResY);
-    wsprintf(tchMaximized,L"%ix%i Maximized",ResX,ResY);
-
-    IniSetInt(L"Window",tchPosX,wi.x);
-    IniSetInt(L"Window",tchPosY,wi.y);
-    IniSetInt(L"Window",tchSizeX,wi.cx);
-    IniSetInt(L"Window",tchSizeY,wi.cy);
-  }
-}
-
-
-//=============================================================================
-//
 //  ParseCommandLine()
 //
 //
@@ -3277,280 +2966,6 @@ void ParseCommandLine()
   LocalFree(lp1);
   LocalFree(lp2);
 
-}
-
-
-//=============================================================================
-//
-//  LoadFlags()
-//
-//
-void LoadFlags()
-{
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-
-  LoadIniSection(L"Settings2",pIniSection,cchIniSection);
-
-  if (!IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", L"",
-                           g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) 
-  {
-    // try to fetch Locale Name from Notepad3.ini
-    GetPrivateProfileString(L"Settings2", L"PreferredLanguageLocaleName", L"",
-                            g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), g_wchNP3IniFile);
-  }
-
-  if (!flagNoReuseWindow) {
-
-    if (!IniSectionGetInt(pIniSection,L"ReuseWindow",1))
-      flagNoReuseWindow = 1;
-  }
-
-  if (IniSectionGetInt(pIniSection,L"PortableMyDocs",1))
-    flagPortableMyDocs = 1;
-
-  if (IniSectionGetInt(pIniSection,L"NoFadeHidden",0))
-    flagNoFadeHidden = 1;
-
-  flagToolbarLook = IniSectionGetInt(pIniSection,L"ToolbarLook",0);
-  flagToolbarLook = max(min(flagToolbarLook,2),0);
-
-  LocalFree(pIniSection);
-}
-
-
-//=============================================================================
-//
-//  FindIniFile()
-//
-//
-int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
-{
-  WCHAR tchFileExpanded[MAX_PATH];
-  WCHAR tchBuild[MAX_PATH];
-  ExpandEnvironmentStrings(lpszFile,tchFileExpanded,COUNTOF(tchFileExpanded));
-
-  if (PathIsRelative(tchFileExpanded)) {
-    // program directory
-    lstrcpy(tchBuild,lpszModule);
-    lstrcpy(PathFindFileName(tchBuild),tchFileExpanded);
-    if (PathFileExists(tchBuild)) {
-      lstrcpy(lpszFile,tchBuild);
-      return 1;
-    }
-    // Sub directory (.\np3\) 
-    lstrcpy(tchBuild,lpszModule);
-    PathRemoveFileSpec(tchBuild);
-    lstrcat(tchBuild,L"\\np3\\");
-    lstrcat(tchBuild,tchFileExpanded);
-    if (PathFileExists(tchBuild)) {
-      lstrcpy(lpszFile,tchBuild);
-      return 1;
-    }
-    // Application Data (%APPDATA%)
-    if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
-      PathAppend(tchBuild, tchFileExpanded);
-      if (PathFileExists(tchBuild)) {
-        lstrcpy(lpszFile, tchBuild);
-        return 1;
-      }
-    }
-    // Home (%HOMEPATH%)
-    if (S_OK == SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
-      PathAppend(tchBuild, tchFileExpanded);
-      if (PathFileExists(tchBuild)) {
-        lstrcpy(lpszFile, tchBuild);
-        return 1;
-      }
-    }
-  }
-  else if (PathFileExists(tchFileExpanded)) {
-    lstrcpy(lpszFile,tchFileExpanded);
-    return 1;
-  }
-
-  return 0;
-}
-
-int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
-{
-  WCHAR tch[MAX_PATH];
-  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
-    if (CheckIniFile(tch,lpszModule)) {
-      lstrcpy(lpszFile,tch);
-      return(1);
-    }
-    else {
-      WCHAR tchFileExpanded[MAX_PATH];
-      ExpandEnvironmentStrings(tch,tchFileExpanded,COUNTOF(tchFileExpanded));
-      if (PathIsRelative(tchFileExpanded)) {
-        lstrcpy(lpszFile,lpszModule);
-        lstrcpy(PathFindFileName(lpszFile),tchFileExpanded);
-        return(1);
-      }
-      else {
-        lstrcpy(lpszFile,tchFileExpanded);
-        return(1);
-      }
-    }
-  }
-  return(0);
-}
-
-int FindIniFile() {
-
-  int bFound = 0;
-  WCHAR tchTest[MAX_PATH];
-  WCHAR tchModule[MAX_PATH];
-  GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
-
-  if (StrIsNotEmpty(g_wchIniFile)) {
-    if (lstrcmpi(g_wchIniFile,L"*?") == 0)
-      return(0);
-    else {
-      if (!CheckIniFile(g_wchIniFile,tchModule)) {
-        ExpandEnvironmentStringsEx(g_wchIniFile,COUNTOF(g_wchIniFile));
-        if (PathIsRelative(g_wchIniFile)) {
-          lstrcpy(tchTest,tchModule);
-          PathRemoveFileSpec(tchTest);
-          PathAppend(tchTest,g_wchIniFile);
-          lstrcpy(g_wchIniFile,tchTest);
-        }
-      }
-    }
-    return(1);
-  }
-
-  lstrcpy(tchTest,PathFindFileName(tchModule));
-  PathRenameExtension(tchTest,L".ini");
-  bFound = CheckIniFile(tchTest,tchModule);
-
-  if (!bFound) {
-    lstrcpy(tchTest,L"minipath.ini");
-    bFound = CheckIniFile(tchTest,tchModule);
-  }
-
-  if (bFound) {
-    // allow two redirections: administrator -> user -> custom
-    if (CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule))
-      CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest,tchModule);
-    lstrcpy(g_wchIniFile,tchTest);
-  }
-  else {
-    lstrcpy(g_wchIniFile,tchModule);
-    PathRenameExtension(g_wchIniFile,L".ini");
-  }
-
-  // --- check for Notepad3.ini to synchronize some settings ---
-  PathRemoveFileSpec(tchModule);
-  lstrcat(tchModule, L"\\Notepad3.exe");
-  lstrcpy(tchTest, PathFindFileName(tchModule));
-  PathRenameExtension(tchTest, L".ini");
-  bFound = CheckIniFile(tchTest,tchModule);
-  if (!bFound) {
-    lstrcpy(tchTest, L"notepad3.ini");
-    bFound = CheckIniFile(tchTest,tchModule);
-  }
-  if (bFound) {
-    // allow two redirections: administrator -> user -> custom
-    if (CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule)) {
-      CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule);
-    }
-    lstrcpy(g_wchNP3IniFile, tchTest);
-  }
-  else {
-    lstrcpy(g_wchNP3IniFile, tchModule);
-    PathRenameExtension(g_wchNP3IniFile, L".ini");
-  }
-  return (bFound ? 1 : 0);
-}
-
-
-int TestIniFile() {
-
-  if (lstrcmpi(g_wchIniFile,L"*?") == 0) {
-    lstrcpy(g_wchIniFile2,L"");
-    lstrcpy(g_wchIniFile,L"");
-    return(0);
-  }
-
-  if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile,StrEnd(g_wchIniFile)) == L'\\') {
-    WCHAR wchModule[MAX_PATH];
-    GetModuleFileName(NULL,wchModule,COUNTOF(wchModule));
-    PathAppend(g_wchIniFile,PathFindFileName(wchModule));
-    PathRenameExtension(g_wchIniFile,L".ini");
-    if (!PathFileExists(g_wchIniFile)) {
-      lstrcpy(PathFindFileName(g_wchIniFile),L"minipath.ini");
-      if (!PathFileExists(g_wchIniFile)) {
-        lstrcpy(PathFindFileName(g_wchIniFile),PathFindFileName(wchModule));
-        PathRenameExtension(g_wchIniFile,L".ini");
-      }
-    }
-  }
-  // --- test for Notepad3.ini ---
-  if (PathIsDirectory(g_wchNP3IniFile) || *CharPrev(g_wchNP3IniFile, StrEnd(g_wchNP3IniFile)) == L'\\') {
-    WCHAR wchModule[MAX_PATH];
-    GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
-    PathRemoveFileSpec(wchModule);
-    lstrcat(wchModule, L"\\Notepad3.exe");
-    PathAppend(g_wchNP3IniFile, PathFindFileName(wchModule));
-    PathRenameExtension(g_wchNP3IniFile, L".ini");
-    if (!PathFileExists(g_wchNP3IniFile)) {
-      lstrcpy(PathFindFileName(g_wchNP3IniFile), L"notepad3.ini");
-      if (!PathFileExists(g_wchNP3IniFile)) {
-        lstrcpy(PathFindFileName(g_wchNP3IniFile), PathFindFileName(wchModule));
-        PathRenameExtension(g_wchNP3IniFile, L".ini");
-      }
-    }
-  }
-  if (!PathFileExists(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile)) {
-    lstrcpy(g_wchNP3IniFile, L"");
-  }
-
-  if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile)) {
-    lstrcpy(g_wchIniFile2,g_wchIniFile);
-    lstrcpy(g_wchIniFile,L"");
-    return(0);
-  }
-  else
-    return(1);
-}
-
-
-int CreateIniFile() {
-
-  return(CreateIniFileEx(g_wchIniFile));
-}
-
-
-int CreateIniFileEx(LPCWSTR lpszIniFile) {
-
-  if (*lpszIniFile) {
-
-    WCHAR *pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
-    if (pwchTail) {
-      *pwchTail = 0;
-      SHCreateDirectoryEx(NULL,lpszIniFile,NULL);
-      *pwchTail = L'\\';
-    }
-
-    HANDLE hFile = CreateFile(lpszIniFile,
-              GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
-              NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-    if (hFile != INVALID_HANDLE_VALUE) {
-      if (GetFileSize(hFile,NULL) == 0) {
-        DWORD dw;
-        WriteFile(hFile,(LPCVOID)L"\xFEFF[minipath]\r\n",26,&dw,NULL);
-      }
-      CloseHandle(hFile);
-      return(1);
-    }
-    else
-      return(0);
-  }
-
-  else
-    return(0);
 }
 
 
@@ -3920,26 +3335,22 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 void LoadTargetParamsOnce(void)
 {
   static BOOL fLoaded;
-  WCHAR *pIniSection;
-  int   cbIniSection;
-
+  
   if (fLoaded)
     return;
 
-  pIniSection  = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  cbIniSection = pIniSection ? (int)LocalSize(pIniSection)/sizeof(WCHAR) : 0;
+  LoadIniFile(g_wchIniFile);
+  const WCHAR* const TargetApp_Section = L"Target Application";
 
-  LoadIniSection(L"Target Application",pIniSection,cbIniSection);
-
-  if (IniSectionGetInt(pIniSection,L"UseTargetApplication",0xFB) != 0xFB) {
-    iUseTargetApplication = IniSectionGetInt(pIniSection,L"UseTargetApplication",iUseTargetApplication);
-    iTargetApplicationMode = IniSectionGetInt(pIniSection,L"TargetApplicationMode",iTargetApplicationMode);
-    IniSectionGetString(pIniSection,L"TargetApplicationPath",szTargetApplication,szTargetApplication,COUNTOF(szTargetApplication));
-    IniSectionGetString(pIniSection,L"TargetApplicationParams",szTargetApplicationParams,szTargetApplicationParams,COUNTOF(szTargetApplicationParams));
-    IniSectionGetString(pIniSection,L"TargetApplicationWndClass",szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
-    IniSectionGetString(pIniSection,L"DDEMessage",szDDEMsg,szDDEMsg,COUNTOF(szDDEMsg));
-    IniSectionGetString(pIniSection,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
-    IniSectionGetString(pIniSection,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
+  if (IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",0xFB) != 0xFB) {
+    iUseTargetApplication = IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",iUseTargetApplication);
+    iTargetApplicationMode = IniSectionGetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
+    IniSectionGetString(TargetApp_Section,L"TargetApplicationPath",szTargetApplication,szTargetApplication,COUNTOF(szTargetApplication));
+    IniSectionGetString(TargetApp_Section,L"TargetApplicationParams",szTargetApplicationParams,szTargetApplicationParams,COUNTOF(szTargetApplicationParams));
+    IniSectionGetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
+    IniSectionGetString(TargetApp_Section,L"DDEMessage",szDDEMsg,szDDEMsg,COUNTOF(szDDEMsg));
+    IniSectionGetString(TargetApp_Section,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
+    IniSectionGetString(TargetApp_Section,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
   }
   else if (iUseTargetApplication && StrIsEmpty(szTargetApplication)) {
     iUseTargetApplication = 1;
@@ -3952,7 +3363,7 @@ void LoadTargetParamsOnce(void)
     lstrcpy(szDDETopic,L"");
   }
 
-  LocalFree(pIniSection);
+  ReleaseIniFile();
   fLoaded = TRUE;
 }
 
@@ -4158,9 +3569,9 @@ void SnapToTarget(HWND hwnd)
   int  cxScreen;
   HWND hwnd2;
 
-  if (IniGetInt(L"Target Application",L"UseTargetApplication",0xFB) != 0xFB) {
+  if (IniFileGetInt(g_wchIniFile,L"Target Application",L"UseTargetApplication",0xFB) != 0xFB) {
 
-    IniGetString(L"Target Application",L"TargetApplicationWndClass",
+    IniFileGetString(g_wchIniFile, L"Target Application",L"TargetApplicationWndClass",
       szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
 
     if (StrIsEmpty(szTargetApplicationWndClass))

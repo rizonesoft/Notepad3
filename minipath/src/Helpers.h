@@ -21,25 +21,6 @@ extern UINT16    g_uWinVer;
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
-extern WCHAR g_wchIniFile[MAX_PATH];
-
-#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,g_wchIniFile)
-#define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,nDefault,g_wchIniFile)
-#define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,lpString,g_wchIniFile)
-#define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
-inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
-  WCHAR tch[32]; wsprintf(tch,L"%i",i); 
-  return WritePrivateProfileString(lpSection,lpName,tch,g_wchIniFile);
-}
-#define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,cchBuf,g_wchIniFile);
-#define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
-int IniSectionGetString(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,int);
-int IniSectionGetInt(LPCWSTR,LPCWSTR,int);
-BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
-inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
-  WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
-}
-
 // clamp
 inline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
@@ -143,8 +124,8 @@ WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
 
 //==== StrIs(Not)Empty() =============================================
 
-static inline BOOL StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
-static inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+inline BOOL StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
+inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)
