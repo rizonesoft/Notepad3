@@ -3992,7 +3992,7 @@ int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButt
       (tbb.idCommand == 0) ? 0 : tbb.idCommand - cmdBase + 1);
     StringCchCat(tchButtons, COUNTOF(tchButtons), tchItem);
   }
-  TrimStringW(tchButtons);
+  TrimSpcW(tchButtons);
   StringCchCopyN(lpszButtons, cchButtons, tchButtons, COUNTOF(tchButtons));
   return(c);
 }
@@ -4003,7 +4003,7 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
 
   ZeroMemory(tchButtons, COUNTOF(tchButtons) * sizeof(tchButtons[0]));
   StringCchCopyN(tchButtons, COUNTOF(tchButtons), lpszButtons, COUNTOF(tchButtons) - 2);
-  TrimStringW(tchButtons);
+  TrimSpcW(tchButtons);
   WCHAR *p = StrStr(tchButtons, L"  ");
   while (p) {
     MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLen(p,0) + 1) * sizeof(WCHAR));

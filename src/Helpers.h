@@ -290,24 +290,23 @@ void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszS
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
 
 
-bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars);
+bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
+bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
-inline bool TrimStringA(LPSTR lpString) {
+inline bool TrimSpcA(LPSTR lpString) {
   if (!lpString || !*lpString) { return false; }
-  StrTrimA(lpString, " ");
-  return true;
+  return (bool)StrTrimA(lpString, " \t\v");
 };
 
-inline bool TrimStringW(LPWSTR lpString) {
+inline bool TrimSpcW(LPWSTR lpString) {
   if (!lpString || !*lpString) { return false; }
-  StrTrimW(lpString, L" ");
-  return true;
+  return (bool)StrTrimW(lpString, L" \t\v");
 };
 
 #if (defined(UNICODE) || defined(_UNICODE))
-#define TrimString TrimStringW
+#define TrimSpc TrimSpcW
 #else
-#define TrimString TrimStringA
+#define TrimSpc TrimSpcA
 #endif
 
 bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len);
