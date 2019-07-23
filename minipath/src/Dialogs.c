@@ -1352,9 +1352,30 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
 //  GetFilterDlgProc()
 //
 //
-
 extern WCHAR tchFilter[DL_FILTER_BUFSIZE];
 extern BOOL bNegFilter;
+
+static HWND  s_hWnd = NULL;
+static HMENU s_hMenu = NULL;
+static DWORD s_dwIndex = 0;
+static DWORD s_dwCheck = 0xFFFF; // index of current filter
+static WCHAR s_szTypedFilter[512];
+
+
+static void CALLBACK _AppendFilterMenu(LPCWSTR pszFilterName, LPCWSTR pszFilterValue)
+{
+  AppendMenu(s_hMenu, MF_ENABLED | MF_STRING, 1234 + s_dwIndex, pszFilterName);
+
+  // Find description for current filter
+
+  if ((!lstrcmpi(pszFilterValue,           s_szTypedFilter) && IsDlgButtonChecked(s_hWnd, IDC_NEGFILTER) != BST_CHECKED) ||
+      (!lstrcmpi(CharNext(pszFilterValue), s_szTypedFilter) && IsDlgButtonChecked(s_hWnd, IDC_NEGFILTER) == BST_CHECKED && *pszFilterValue == L'-')) 
+  {
+    s_dwCheck = s_dwIndex;
+  }
+  s_dwIndex++;
+}
+
 
 INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -1387,73 +1408,35 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
       switch(LOWORD(wParam))
       {
-
         case IDC_BROWSEFILTER:
           {
-            HMENU hMenu;
-            WCHAR  szTypedFilter[512];
-            DWORD dwIndex = 0;
-            DWORD dwCheck = 0xFFFF; // index of current filter
+            s_hWnd = hwnd;
+            s_dwIndex = 0;
+            s_dwCheck = 0xFFFF; // index of current filter
+            s_hMenu = CreatePopupMenu();
+            GetDlgItemText(hwnd, IDC_FILTER, s_szTypedFilter, COUNTOF(s_szTypedFilter));
 
-            GetDlgItemText(hwnd,IDC_FILTER,szTypedFilter,COUNTOF(szTypedFilter));
+            IniFileIterateSection(g_wchIniFile, L"Filters", _AppendFilterMenu);
 
-            hMenu = CreatePopupMenu();
-
-#if 0
-            §§§@@@
-            LoadIniFile(g_wchIniFile);
-            const WCHAR* const Filters_Section = L"Filters";
-
-            int   cbIniSection = 0;
-            WCHAR* pszFilterName;
-            WCHAR* pszFilterValue;
-
-            pszFilterName = pIniSection;
-            while (*pszFilterName)
-            {
-              pszFilterValue = CharNext(StrChr(pszFilterName,L'='));
-              if (*pszFilterValue) {
-
-                *CharPrev(pszFilterName,pszFilterValue) = 0;
-                AppendMenu(hMenu,MF_ENABLED|MF_STRING,1234+dwIndex,pszFilterName);
-
-                // Find description for current filter
-
-                if ( (!lstrcmpi(pszFilterValue,szTypedFilter) && IsDlgButtonChecked(hwnd,IDC_NEGFILTER) != BST_CHECKED) ||
-                      (!lstrcmpi(CharNext(pszFilterValue),szTypedFilter) &&
-                        IsDlgButtonChecked(hwnd,IDC_NEGFILTER) == BST_CHECKED &&
-                        *pszFilterValue == L'-') )
-                  dwCheck = dwIndex;
-              }
-
-              dwIndex++;
-              pszFilterName = StrEnd(pszFilterValue) + 1;
+            if (s_dwCheck != 0xFFFF) { // check description for current filter
+              CheckMenuRadioItem(s_hMenu, 0, s_dwIndex, s_dwCheck, MF_BYPOSITION);
             }
-            LocalFree(pIniSection);
-            ReleaseIniFile();
-#endif
-
-            if (dwCheck != 0xFFFF) // check description for current filter
-              CheckMenuRadioItem(hMenu,0,dwIndex,dwCheck,MF_BYPOSITION);
-
-            if (dwIndex) // at least 1 item exists
+            if (s_dwIndex > 0) // at least 1 item exists
             {
-              DWORD dwCmd;
               RECT rc;
-
               GetWindowRect(GetDlgItem(hwnd,IDC_BROWSEFILTER),&rc);
               //MapWindowPoints(hwnd,NULL,(POINT*)&rc,2);
               // Seems that TrackPopupMenuEx() works with client coords...?
 
-              dwCmd = TrackPopupMenuEx(hMenu,
+              DWORD const dwCmd = TrackPopupMenuEx(s_hMenu,
                                TPM_RETURNCMD|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,
                                rc.left+1,rc.bottom+1,hwnd,NULL);
 
-              if (dwCmd)
+              if (dwCmd > 0)
               {
                 WCHAR tchName[256];
                 WCHAR tchValue[256];
-                GetMenuString(hMenu,dwCmd,tchName,COUNTOF(tchName),MF_BYCOMMAND);
+                GetMenuString(s_hMenu,dwCmd,tchName,COUNTOF(tchName),MF_BYCOMMAND);
 
                 if (IniFileGetString(g_wchIniFile, L"Filters", tchName, L"", tchValue, COUNTOF(tchValue)))
                 {
@@ -1463,23 +1446,26 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
                       SetDlgItemText(hwnd,IDC_FILTER,&tchValue[1]);
                       CheckDlgButton(hwnd,IDC_NEGFILTER,BST_CHECKED);
                     }
-                    else
+                    else {
                       MessageBeep(0);
+                    }
                   }
                   else {
                     SetDlgItemText(hwnd,IDC_FILTER,tchValue);
                     CheckDlgButton(hwnd,IDC_NEGFILTER,BST_UNCHECKED);
                   }
                 }
-
-                else
+                else {
                   MessageBeep(0);
+                }
               }
             }
             else
               ErrorMessage(0,IDS_ERR_FILTER);
 
-            DestroyMenu(hMenu);
+            DestroyMenu(s_hMenu);
+            s_hMenu = NULL;
+
             PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_FILTER)),1);
           }
           break;

@@ -1517,7 +1517,7 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
 
 BOOL MRU_Load(LPMRULIST pmru) {
 
-  int i,n = 0;
+  int i, n = 0;
   WCHAR tchName[32];
   WCHAR tchItem[1024];
 
@@ -1527,16 +1527,14 @@ BOOL MRU_Load(LPMRULIST pmru) {
   const WCHAR* const RegKey_Section = pmru->szRegKey;
 
   for (i = 0; i < pmru->iSize; i++) {
-    StringCchPrintf(tchName,COUNTOF(tchName),L"%.2i",i+1);
-    if (IniSectionGetString(RegKey_Section,tchName,L"",tchItem,COUNTOF(tchItem))) {
-      /*if (pmru->iFlags & MRU_UTF8) {
-        WCHAR wchItem[1024];
-        int cbw = MultiByteToWideChar(CP_UTF7,0,tchItem,-1,wchItem,COUNTOF(wchItem));
-        WideCharToMultiByte(CP_UTF8,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-        pmru->pszItems[n++] = StrDup(tchItem);
+    StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+    if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
+      size_t const len = (size_t)lstrlen(tchItem);
+      if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
+        MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
+        tchItem[len - 2] = L'\0'; // clear dangling '"'
       }
-      else*/
-        pmru->pszItems[n++] = StrDup(tchItem);
+      pmru->pszItems[n++] = StrDup(tchItem);
     }
   }
   ReleaseIniFile();
@@ -1545,31 +1543,25 @@ BOOL MRU_Load(LPMRULIST pmru) {
 
 BOOL MRU_Save(LPMRULIST pmru) {
 
-  int i;
-  WCHAR tchName[32];
-
   if (LoadIniFile(g_wchIniFile)) {
+
+    WCHAR tchName[32];
+    WCHAR tchItem[1024] = { L'\0' };
 
     const WCHAR* const RegKey_Section = pmru->szRegKey;
     IniSectionClear(pmru->szRegKey, FALSE);
 
-    for (i = 0; i < pmru->iSize; i++) {
+    for (int i = 0; i < pmru->iSize; i++) {
       if (pmru->pszItems[i]) {
         StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-        /*if (pmru->iFlags & MRU_UTF8) {
-          WCHAR  tchItem[1024];
-          WCHAR wchItem[1024];
-          int cbw = MultiByteToWideChar(CP_UTF8,0,pmru->pszItems[i],-1,wchItem,COUNTOF(wchItem));
-          WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-          IniSectionSetString(pIniSection,tchName,tchItem);
-        }
-        else*/
-        IniSectionSetString(RegKey_Section, tchName, pmru->pszItems[i]);
+        StringCchPrintf(tchItem, COUNTOF(tchItem), L"\"%s\"", pmru->pszItems[i]);
+        IniSectionSetString(RegKey_Section, tchName, tchItem);
       }
     }
     SaveIniFile(g_wchIniFile);
+    return TRUE;
   }
-  return(1);
+  return FALSE;
 }
 
 void MRU_LoadToCombobox(HWND hwnd,LPCWSTR pszKey)

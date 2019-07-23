@@ -377,6 +377,28 @@ extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 // ============================================================================
 
 
+extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
+{
+  CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  SI_Error rc = Ini.LoadFile(lpFilePath);
+  if (SI_SUCCESS(rc))
+  {
+    bool bHasMultiple = false;
+
+    // get all keys in a section
+    CSimpleIniW::TNamesDepend keyList;
+    Ini.GetAllKeys(lpSectionName, keyList);
+
+    for (const auto& key : keyList)
+    {
+      callBack(key.pItem, Ini.GetValue(lpSectionName, key.pItem, L"", &bHasMultiple));
+    }
+  }
+  return SI_SUCCESS(rc);
+}
+// ============================================================================
+
+
 
 //=============================================================================
 //
@@ -534,7 +556,7 @@ int FindIniFile() {
   if (bFound) {
     // allow two redirections: administrator -> user -> custom
     if (CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule))
-      CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule);
+        CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule);
     lstrcpy(g_wchIniFile, tchTest);
   }
   else {
@@ -555,7 +577,7 @@ int FindIniFile() {
   if (bFound) {
     // allow two redirections: administrator -> user -> custom
     if (CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule)) {
-      CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule);
+        CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule);
     }
     lstrcpy(g_wchNP3IniFile, tchTest);
   }
@@ -889,8 +911,9 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(Settings_Section, L"TransparentMode", g_bTransparentMode);
   IniSectionSetInt(Settings_Section, L"EscFunction", iEscFunction);
   IniSectionSetInt(Settings_Section, L"StartupDirectory", iStartupDir);
-  if (iStartupDir == 1)
+  if (iStartupDir == 1) {
     IniSectionSetString(Settings_Section, L"MRUDirectory", szCurDir);
+  }
   if (!bNP3sFavoritesSettings) {
     PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
     IniSectionSetString(Settings_Section, L"Favorites", wchTmp);

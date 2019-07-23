@@ -103,6 +103,12 @@ bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName
 //
 bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty);
 
+//  IniFileIterateSection():
+//
+typedef void (*IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
+bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
+
+
 // ----------------------------------------------------------------------------
 
 

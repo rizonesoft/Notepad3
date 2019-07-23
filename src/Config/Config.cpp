@@ -339,6 +339,30 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 // ============================================================================
 
 
+
+extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
+{
+  CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  SI_Error rc = Ini.LoadFile(lpFilePath);
+  if (SI_SUCCESS(rc))
+  {
+    bool bHasMultiple = false;
+
+    // get all keys in a section
+    CSimpleIniW::TNamesDepend keyList;
+    Ini.GetAllKeys(lpSectionName, keyList);
+
+    for (const auto& key : keyList)
+    {
+      callBack(key.pItem, Ini.GetValue(lpSectionName, key.pItem, L"", &bHasMultiple));
+    }
+  }
+  return SI_SUCCESS(rc);
+}
+// ============================================================================
+
+
+
 //=============================================================================
 //
 //  _CheckIniFile()

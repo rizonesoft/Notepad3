@@ -96,6 +96,13 @@ extern "C" {
   //
   BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bRemoveEmpty);
 
+
+  //  IniFileIterateSection():
+  //
+  typedef void (*IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
+  BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
+
+
   // ----------------------------------------------------------------------------
 
 
