@@ -2374,7 +2374,7 @@ bool Style_StrGetFont(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
     if ((p = StrChr(lpszFont, L';')) != NULL) {
       *p = L'\0';
     }
-    TrimStringW(lpszFont);
+    TrimSpcW(lpszFont);
     if (_IsItemInStyleString(lpszFont, L"Default")) {
         if (IsFontAvailable(L"Consolas")) {
         StringCchCopyN(lpszFont, cchFont, L"Consolas", cchFont);
@@ -2402,7 +2402,7 @@ bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimStringW(tch);
+    TrimSpcW(tch);
     if (_IsItemInStyleString(tch, L"none") ||
       _IsItemInStyleString(tch, L"standard") ||
       _IsItemInStyleString(tch, L"cleartype") ||
@@ -2474,7 +2474,7 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
     }
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
-    TrimStringW(tch);
+    TrimSpcW(tch);
     
     float fValue = 0.0;
     if (Char2FloatW(tch, &fValue))
@@ -2506,7 +2506,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
     StringCchCopy(tch, COUNTOF(tch), (p + CSTRLEN(L"size:")));
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
-    TrimStringW(tch);
+    TrimSpcW(tch);
 
     float fValue = 0.0f;
     if (Char2FloatW(tch, &fValue)) {
@@ -2614,7 +2614,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb)
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimStringW(tch);
+    TrimSpcW(tch);
     unsigned int iValue = 0;
     int itok = swscanf_s(tch, L"%x", &iValue);
     if (itok == 1)
@@ -2642,7 +2642,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st)
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimStringW(tch);
+    TrimSpcW(tch);
     int iValue = 0;
     int itok = swscanf_s(tch, L"%i", &iValue);
     if (itok == 1) {

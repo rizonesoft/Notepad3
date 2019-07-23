@@ -894,19 +894,33 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
 
 //=============================================================================
 //
-//  StrLTrim()
+//  StrLTrimI()
 //
-bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
+bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars)
 {
-  if (!pszSource || !*pszSource)
-    return false;
+  if (!pszSource || !*pszSource) { return false; }
 
   LPWSTR psz = pszSource;
   while (StrChrI(pszTrimChars, *psz)) { ++psz; }
 
-  MoveMemory(pszSource,psz,sizeof(WCHAR)*(StringCchLenW(psz,0) + 1));
+  MoveMemory(pszSource, psz, sizeof(WCHAR)*(StringCchLenW(psz,0) + 1));
 
-  return true;
+  return (psz != pszSource);
+}
+
+//=============================================================================
+//
+//  StrRTrimI()
+//
+bool StrRTrimI(LPWSTR pszSource, LPCWSTR pszTrimChars)
+{
+  if (!pszSource || !*pszSource) { return false; }
+  size_t const length = StringCchLenW(pszSource, 0);
+  
+  size_t len = length;
+  while ((len > 0) && StrChrI(pszTrimChars, pszSource[--len])) { pszSource[len] = L'\0'; }
+
+  return (length != len);
 }
 
 
@@ -967,13 +981,15 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
 {
   StringCchCopy(lpArg1, len, lpArgs);
 
+  if (StrIsEmpty(lpArg1)) { return false; }
   if (lpArg2) { *lpArg2 = L'\0'; }
-  if (!TrimStringW(lpArg1)) { return false; }
+
+  TrimSpcW(lpArg1);
 
   bool bQuoted = false;
   if (*lpArg1 == L'\"') {
     *lpArg1 = L' ';
-    TrimStringW(lpArg1);
+    TrimSpcW(lpArg1);
     bQuoted = true;
   }
 
@@ -990,10 +1006,10 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
       StringCchCopy(lpArg2, len, psz + 1);
     }
   }
-  TrimStringW(lpArg1);
+  TrimSpcW(lpArg1);
 
   if (lpArg2) {
-    TrimStringW(lpArg2);
+    TrimSpcW(lpArg2);
   }
   return true;
 }
@@ -1541,7 +1557,11 @@ bool MRU_Load(LPMRULIST pmru)
     StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
     WCHAR tchItem[2048] = { L'\0' };
     if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
-      StrTrim(tchItem, L"\x02\x03");
+      size_t const len = StringCchLen(tchItem, 0);
+      if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len-1] == L'"')) {
+        MoveMemory(tchItem, (tchItem+1), len * sizeof(WCHAR));
+        tchItem[len - 2] = L'\0'; // clear dangling '"'
+      }
       pmru->pszItems[n] = StrDup(tchItem);
 
       StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
@@ -1577,7 +1597,7 @@ bool MRU_Save(LPMRULIST pmru)
       if (pmru->pszItems[i]) {
         WCHAR tchName[32] = { L'\0' };
         StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-        StringCchPrintf(tchValue, COUNTOF(tchValue), L"\x02%s\x03", pmru->pszItems[i]);
+        StringCchPrintf(tchValue, COUNTOF(tchValue), L"\"%s\"", pmru->pszItems[i]);
         IniSectionSetString(RegKey_Section, tchName, tchValue);
 
         if (pmru->iEncoding[i] > 0) {
@@ -2106,7 +2126,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLe
   static WCHAR wchTmpBuff[MIDSZ_BUFFER];
 
   StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
-  TrimStringW(wchTmpBuff);
+  TrimSpcW(wchTmpBuff);
   // fill default
   for (int i = 0; i < iCount; ++i) {
     if (sDefault && *sDefault)
@@ -2145,7 +2165,7 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
   static WCHAR wchTmpBuff[SMALL_BUFFER];
 
   StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
-  TrimStringW(wchTmpBuff);
+  TrimSpcW(wchTmpBuff);
   // ensure single spaces only
   WCHAR *p = StrStr(wchTmpBuff, L"  ");
   while (p) {

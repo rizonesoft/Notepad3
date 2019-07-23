@@ -7567,7 +7567,7 @@ void ParseCommandLine()
       else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) {
 
         // LTrim
-        StrLTrim(lp1, L"-/");
+        StrLTrimI(lp1, L"-/");
 
         // Encoding
         cpi_enc_t const encoding = Encoding_MatchW(lp1);
@@ -7628,7 +7628,7 @@ void ParseCommandLine()
         else if (StrCmpNI(lp1, L"tmpfbuf=", CSTRLEN(L"tmpfbuf=")) == 0) {
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                          lp1 + CSTRLEN(L"tmpfbuf="), len - CSTRLEN(L"tmpfbuf="));
-          TrimStringW(s_wchTmpFilePath);
+          TrimSpcW(s_wchTmpFilePath);
           NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
           s_flagIsElevatedRelaunch = true;
         }
@@ -7656,7 +7656,7 @@ void ParseCommandLine()
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"*?");
           else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
             StringCchCopyN(Globals.IniFile, COUNTOF(Globals.IniFile), lp1, len);
-            TrimStringW(Globals.IniFile);
+            TrimSpcW(Globals.IniFile);
             NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
           }
           break;
