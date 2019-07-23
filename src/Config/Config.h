@@ -105,7 +105,7 @@ bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName,
 
 //  IniFileIterateSection():
 //
-typedef void (*IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
+typedef void (CALLBACK* IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
 bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
 
 

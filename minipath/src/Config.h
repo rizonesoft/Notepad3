@@ -99,7 +99,7 @@ extern "C" {
 
   //  IniFileIterateSection():
   //
-  typedef void (*IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
+  typedef void (CALLBACK* IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
   BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
 
 
