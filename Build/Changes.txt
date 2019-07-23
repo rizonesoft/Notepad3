@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.721.build (21 July 2019)
+Current BETA Version 5.19.723.#(build) (2019-07-23)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Use double-quotes as MRU list string limiter
 - Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
 - Update to Oniguruma v.6.9.3
 - Scintilla Library (SCI) version 4.2.0 (2019-Jul-5)
@@ -68,9 +69,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- obsolete newline after .ini-file sections with comments
+- Obsolete newline after .ini-file sections with comments
 - Enhanced Unicode detection
-- Use string begin/end terminator for most recent lists
 - Oniguruma allow CRLF as newline token
 - Notepad3.ini file, remove some keys with default values (styles)
 - Extended encoding detection debug information
