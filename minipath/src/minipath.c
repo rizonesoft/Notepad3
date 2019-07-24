@@ -30,7 +30,19 @@
 #include "minipath.h"
 #include "resource.h"
 
+
+SETTINGS_T Settings;
+SETTINGS_T Defaults;
+
+WCHAR     g_wchIniFile[MAX_PATH];
+WCHAR     g_wchIniFile2[MAX_PATH];
+WCHAR     g_wchNP3IniFile[MAX_PATH];
+
 HICON     g_hDlgIcon = NULL;
+
+WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
+LANGID    g_iPrefLANGID;
+
 
 /******************************************************************************
 *
@@ -70,66 +82,19 @@ HWND      hwndMain;
 
 HANDLE    hChangeHandle = NULL;
 
-HISTORY   mHistory;
+HISTORY   g_mHistory;
 
 WCHAR     g_wchIniFile[MAX_PATH] = L"";
 WCHAR     g_wchIniFile2[MAX_PATH] = L"";
 WCHAR     g_wchNP3IniFile[MAX_PATH] = L"";
 
-BOOL      bSaveSettings;
-WCHAR     szQuickview[MAX_PATH] = L"";
-WCHAR     szQuickviewParams[MAX_PATH] = L"";
-WCHAR     g_tchFavoritesDir[MAX_PATH] = L"";
-BOOL      bNP3sFavoritesSettings = FALSE;
-WCHAR     tchOpenWithDir[MAX_PATH] = L"";
-WCHAR     tchToolbarButtons[512] = L"";
-WCHAR     tchToolbarBitmap[MAX_PATH] = L"";
-WCHAR     tchToolbarBitmapHot[MAX_PATH] = L"";
-WCHAR     tchToolbarBitmapDisabled[MAX_PATH] = L"";
-BOOL      bClearReadOnly;
-BOOL      bRenameOnCollision;
-BOOL      bSingleClick;
-BOOL      bTrackSelect;
-BOOL      bFullRowSelect;
-int       iStartupDir;
-int       iEscFunction;
-BOOL      bFocusEdit;
-BOOL      bAlwaysOnTop;
-BOOL      g_bTransparentMode;
-BOOL      bMinimizeToTray;
-BOOL      fUseRecycleBin;
-BOOL      fNoConfirmDelete;
-BOOL      bShowToolbar;
-BOOL      bShowStatusbar;
-BOOL      bShowDriveBox;
-int       cxGotoDlg;
-int       cxOpenWithDlg;
-int       cyOpenWithDlg;
-int       cxCopyMoveDlg;
-
-WCHAR     tchFilter[DL_FILTER_BUFSIZE];
-BOOL      bNegFilter;
-BOOL      bDefCrNoFilt;
-BOOL      bDefCrFilter;
-COLORREF  crNoFilt;
-COLORREF  crFilter;
-COLORREF  crCustom[16];
-
-WININFO   wi;
-
+int       nIdFocus = IDC_DIRLIST;
 int       cyReBar;
 int       cyReBarFrame;
 int       cyDriveBoxFrame;
 
-int       nIdFocus = IDC_DIRLIST;
-
-WCHAR     szCurDir[MAX_PATH + 40];
-DWORD     dwFillMask;
-int       nSortFlags;
-BOOL      fSortRev;
-
-LPWSTR     lpPathArg = NULL;
-LPWSTR     lpFilterArg = NULL;
+LPWSTR    lpPathArg = NULL;
+LPWSTR    lpFilterArg = NULL;
 
 UINT      wFuncCopyMove = FO_COPY;
 
@@ -274,7 +239,6 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   HWND   hwnd;
   HACCEL hAcc;
 
-  INITCOMMONCONTROLSEX icex;
 
   // Set global variable g_hInstance
   g_hInstance = hInstance;
@@ -290,6 +254,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
   // Command Line, Ini File and Flags
+  InitDefaultSettings();
   ParseCommandLine();
   FindIniFile();
   TestIniFile();
@@ -302,6 +267,8 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   // Init OLE and Common Controls
   OleInitialize(NULL);
 
+  INITCOMMONCONTROLSEX icex;
+  ZeroMemory(&icex, sizeof(INITCOMMONCONTROLSEX));
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
   icex.dwICC  = ICC_WIN95_CLASSES|ICC_COOL_CLASSES|ICC_BAR_CLASSES|ICC_USEREX_CLASSES;
   InitCommonControlsEx(&icex);
@@ -430,10 +397,16 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
 
+  WININFO wi = Settings.wi;
+
   RECT rc;
-  rc.left = wi.x;  rc.top = wi.y;  rc.right = wi.x + wi.cx;  rc.bottom = wi.y + wi.cy;
+  rc.left = wi.x;  
+  rc.top = wi.y;  
+  rc.right = wi.x + wi.cx;  
+  rc.bottom = wi.y + wi.cy;
   RECT rc2;
   MONITORINFO mi;
+
 
   HMONITOR hMonitor = MonitorFromRect(&rc,MONITOR_DEFAULTTONEAREST);
   mi.cbSize = sizeof(mi);
@@ -496,10 +469,10 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
                hInstance,
                NULL);
 
-  if (bAlwaysOnTop)
+  if (Settings.bAlwaysOnTop)
     SetWindowPos(hwndMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 
-  if (g_bTransparentMode) {
+  if (Settings.g_bTransparentMode) {
     int const iAlphaPercent = IniFileGetInt(g_wchIniFile, L"Settings2", L"OpacityLevel", 75);
     SetWindowTransparentMode(hwndMain, TRUE, clampi(iAlphaPercent, 0, 100));
   }
@@ -521,9 +494,9 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   }
 
   // Use a startup directory
-  else if (iStartupDir)
+  else if (Settings.iStartupDir)
   {
-    if (iStartupDir == 1)
+    if (Settings.iStartupDir == 1)
     {
       WCHAR tch[MAX_PATH];
       if (IniFileGetString(g_wchIniFile, L"Settings", L"MRUDirectory", L"", tch, COUNTOF(tch)))
@@ -532,16 +505,18 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
         ErrorMessage(2,IDS_ERR_STARTUPDIR);
     }
     else
-      DisplayPath(g_tchFavoritesDir,IDS_ERR_STARTUPDIR);
+      DisplayPath(Settings.g_tchFavoritesDir,IDS_ERR_STARTUPDIR);
   }
 
   // Favorites
   else if (flagGotoFavorites)
-    DisplayPath(g_tchFavoritesDir,IDS_ERR_FAVORITES);
+    DisplayPath(Settings.g_tchFavoritesDir,IDS_ERR_FAVORITES);
 
   // Update Dirlist
   if (!ListView_GetItemCount(hwndDirList))
     PostMessage(hwndMain,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+
+  Settings.wi = wi;
 
   return(hwndMain);
 }
@@ -632,18 +607,18 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         wndpl.length = sizeof(WINDOWPLACEMENT);
         GetWindowPlacement(hwnd,&wndpl);
 
-        wi.x = wndpl.rcNormalPosition.left;
-        wi.y = wndpl.rcNormalPosition.top;
-        wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-        wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
+        Settings.wi.x = wndpl.rcNormalPosition.left;
+        Settings.wi.y = wndpl.rcNormalPosition.top;
+        Settings.wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
+        Settings.wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
 
         DirList_Destroy(hwndDirList);
         DragAcceptFiles(hwnd,FALSE);
 
-        History_Uninit(&mHistory);
+        History_Uninit(&g_mHistory);
 
         // prepare save
-        Toolbar_GetButtons(hwndToolbar, IDT_HISTORY_BACK, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+        Toolbar_GetButtons(hwndToolbar, IDT_HISTORY_BACK, Settings.tchToolbarButtons, COUNTOF(Settings.tchToolbarButtons));
 
         SaveSettings(FALSE);
 
@@ -665,12 +640,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         LRESULT lret = DefWindowProc(hwnd,umsg,wParam,lParam);
 
-        if (lstrcmp(tchFilter,L"*.*") || bNegFilter) {
-          ListView_SetTextColor(hwndDirList,(bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : crFilter);
+        if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
+          ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crFilter);
           ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
         else {
-          ListView_SetTextColor(hwndDirList,(bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : crNoFilt);
+          ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crNoFilt);
           ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
         }
 
@@ -733,7 +708,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 
     case WM_SETFOCUS:
-      SetFocus(GetDlgItem(hwnd,nIdFocus));
+      SetFocus(GetDlgItem(hwnd, nIdFocus));
       break;
 
 
@@ -839,7 +814,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         case SC_MINIMIZE:
         case SC_MINIMIZE | 0x02:
           ShowOwnedPopups(hwnd,FALSE);
-          if (!bMinimizeToTray)
+          if (!Settings.bMinimizeToTray)
             return DefWindowProc(hwnd,umsg,wParam,lParam);
           else {
             MinimizeWndToTray(hwnd);
@@ -854,12 +829,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         }
 
         case SC_ALWAYSONTOP:
-          if (bAlwaysOnTop) {
-            bAlwaysOnTop = 0;
+          if (Settings.bAlwaysOnTop) {
+            Settings.bAlwaysOnTop = 0;
             SetWindowPos(hwnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
           }
           else {
-            bAlwaysOnTop = 1;
+            Settings.bAlwaysOnTop = 1;
             SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
           }
           break;
@@ -972,7 +947,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SetWindowPos(hwndDirList,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
   }
 
-  if (bShowDriveBox)
+  if (Settings.bShowDriveBox)
     dwDriveBoxStyle |= WS_VISIBLE;
 
   hwndDriveBox = CreateWindowEx(
@@ -997,11 +972,11 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   ListView_SetExtendedListViewStyle(hwndDirList,LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
   ListView_InsertColumn(hwndDirList,0,&lvc);
   DirList_Init(hwndDirList,NULL);
-  if (bTrackSelect)
+  if (Settings.bTrackSelect)
     ListView_SetExtendedListViewStyleEx(hwndDirList,
       LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE,
       LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE);
-  if (bFullRowSelect) {
+  if (Settings.bFullRowSelect) {
     ListView_SetExtendedListViewStyleEx(hwndDirList,
       LVS_EX_FULLROWSELECT,
       LVS_EX_FULLROWSELECT);
@@ -1012,8 +987,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
   // History
-  History_Init(&mHistory);
-  History_UpdateToolbar(&mHistory,hwndToolbar,
+  History_Init(&g_mHistory);
+  History_UpdateToolbar(&g_mHistory,hwndToolbar,
         IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
   // ToolTip with Current Directory
   ZeroMemory(&ti,sizeof(TOOLINFO));
@@ -1102,7 +1077,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   WCHAR tchDesc[256];
   WCHAR tchIndex[256];
 
-  if (bShowToolbar)
+  if (Settings.bShowToolbar)
     dwReBarStyle |= WS_VISIBLE;
 
   hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
@@ -1112,9 +1087,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Add normal Toolbar Bitmap
   hbmp = NULL;
-  if (StrIsNotEmpty(tchToolbarBitmap))
+  if (StrIsNotEmpty(Settings.tchToolbarBitmap))
   {
-    hbmp = _LoadBitmapFile(tchToolbarBitmap);
+    hbmp = _LoadBitmapFile(Settings.tchToolbarBitmap);
   }
   if (hbmp) {
     bExternalBitmap = TRUE;
@@ -1134,9 +1109,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Optionally add hot Toolbar Bitmap
   hbmp = NULL;
-  if (StrIsNotEmpty(tchToolbarBitmapHot))
+  if (StrIsNotEmpty(Settings.tchToolbarBitmapHot))
   {
-    hbmp = _LoadBitmapFile(tchToolbarBitmapHot);
+    hbmp = _LoadBitmapFile(Settings.tchToolbarBitmapHot);
     if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
@@ -1149,9 +1124,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Optionally add disabled Toolbar Bitmap
   hbmp = NULL;
-  if (StrIsNotEmpty(tchToolbarBitmapDisabled))
+  if (StrIsNotEmpty(Settings.tchToolbarBitmapDisabled))
   {
-    hbmp = _LoadBitmapFile(tchToolbarBitmapDisabled);
+    hbmp = _LoadBitmapFile(Settings.tchToolbarBitmapDisabled);
     if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
@@ -1218,12 +1193,12 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
   //SendMessage(hwndToolbar,TB_SAVERESTORE,FALSE,(LPARAM)lptbsp);
-  if (Toolbar_SetButtons(hwndToolbar,IDT_HISTORY_BACK,tchToolbarButtons,tbbMainWnd,COUNTOF(tbbMainWnd)) == 0)
+  if (Toolbar_SetButtons(hwndToolbar,IDT_HISTORY_BACK, Settings.tchToolbarButtons,tbbMainWnd,COUNTOF(tbbMainWnd)) == 0)
     SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
   SendMessage(hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(hwndToolbar,TB_SETINDENT,2,0);
 
-  if (bShowStatusbar)
+  if (Settings.bShowStatusbar)
     dwStatusbarStyle |= WS_VISIBLE;
 
   hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
@@ -1277,7 +1252,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   if (IsVista() && bIsAppThemed) {
     SetWindowLongPtr(hwndDirList,GWL_EXSTYLE,GetWindowLongPtr(hwndDirList,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
     SetWindowPos(hwndDirList,NULL,0,0,0,0,SWP_NOZORDER|SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE);
-    if (bFullRowSelect)
+    if (Settings.bFullRowSelect)
       SetTheme(hwndDirList,L"Explorer");
     else
       SetTheme(hwndDirList,L"Listview");
@@ -1293,7 +1268,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SendMessage(hwndStatus,SB_GETTEXT,ID_FILEINFO,(LPARAM)chStatus);
 
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(hwndToolbar,IDT_HISTORY_BACK,tchToolbarButtons,COUNTOF(tchToolbarButtons));
+  Toolbar_GetButtons(hwndToolbar,IDT_HISTORY_BACK, Settings.tchToolbarButtons,COUNTOF(Settings.tchToolbarButtons));
 
   DestroyWindow(hwndToolbar);
   DestroyWindow(hwndReBar);
@@ -1334,7 +1309,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   cx = LOWORD(lParam);
   cy = HIWORD(lParam);
 
-  if (bShowToolbar)
+  if (Settings.bShowToolbar)
   {
 /*  SendMessage(hwndToolbar,WM_SIZE,0,0);
     GetWindowRect(hwndToolbar,&rc);
@@ -1353,7 +1328,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
     cy -= cyReBar + cyReBarFrame;  // border
   }
 
-  if (bShowStatusbar)
+  if (Settings.bShowStatusbar)
   {
     SendMessage(hwndStatus,WM_SIZE,0,0);
     GetWindowRect(hwndStatus,&rc);
@@ -1365,7 +1340,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DeferWindowPos(hdwp,hwndDriveBox,NULL,x,y,cx,max(cy,100),
                 SWP_NOZORDER | SWP_NOACTIVATE);
 
-  if (bShowDriveBox) {
+  if (Settings.bShowDriveBox) {
     GetWindowRect(hwndDriveBox,&rc);
     y += (rc.bottom - rc.top) + cyDriveBoxFrame;
     cy -= (rc.bottom - rc.top) + cyDriveBoxFrame;
@@ -1417,23 +1392,23 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i = (SendMessage(hwndDriveBox,CB_GETCURSEL,0,0) != CB_ERR);
   EnableCmd(hmenu,IDM_FILE_DRIVEPROP,i);
 
-  CheckCmd(hmenu,IDM_VIEW_FOLDERS,(dwFillMask & DL_FOLDERS));
-  CheckCmd(hmenu,IDM_VIEW_FILES,(dwFillMask & DL_NONFOLDERS));
-  CheckCmd(hmenu,IDM_VIEW_HIDDEN,(dwFillMask & DL_INCLHIDDEN));
+  CheckCmd(hmenu,IDM_VIEW_FOLDERS,(Settings.dwFillMask & DL_FOLDERS));
+  CheckCmd(hmenu,IDM_VIEW_FILES,(Settings.dwFillMask & DL_NONFOLDERS));
+  CheckCmd(hmenu,IDM_VIEW_HIDDEN,(Settings.dwFillMask & DL_INCLHIDDEN));
 
-  EnableCmd(hmenu,IDM_VIEW_FILTERALL,(lstrcmp(tchFilter,L"*.*") || bNegFilter));
+  EnableCmd(hmenu,IDM_VIEW_FILTERALL,(lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter));
 
-  CheckCmd(hmenu,IDM_VIEW_TOOLBAR,bShowToolbar);
-  EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB,bShowToolbar);
-  CheckCmd(hmenu,IDM_VIEW_STATUSBAR,bShowStatusbar);
-  CheckCmd(hmenu,IDM_VIEW_DRIVEBOX,bShowDriveBox);
+  CheckCmd(hmenu,IDM_VIEW_TOOLBAR, Settings.bShowToolbar);
+  EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB, Settings.bShowToolbar);
+  CheckCmd(hmenu,IDM_VIEW_STATUSBAR, Settings.bShowStatusbar);
+  CheckCmd(hmenu,IDM_VIEW_DRIVEBOX, Settings.bShowDriveBox);
 
   CheckMenuRadioItem(hmenu,IDM_SORT_NAME,IDM_SORT_DATE,
-    IDM_SORT_NAME + nSortFlags,MF_BYCOMMAND);
+    IDM_SORT_NAME + Settings.nSortFlags,MF_BYCOMMAND);
 
-  CheckCmd(hmenu,IDM_SORT_REVERSE,fSortRev);
+  CheckCmd(hmenu,IDM_SORT_REVERSE, Settings.fSortRev);
 
-  CheckCmd(hmenu,SC_ALWAYSONTOP,bAlwaysOnTop);
+  CheckCmd(hmenu,SC_ALWAYSONTOP, Settings.bAlwaysOnTop);
 
   i = (StrIsNotEmpty(g_wchIniFile) || StrIsNotEmpty(g_wchIniFile2));
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,i);
@@ -1469,12 +1444,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             WCHAR tch[64];
 
             if (DriveBox_GetSelDrive(hwndDriveBox,tch,COUNTOF(tch),TRUE)
-                && !PathIsSameRoot(szCurDir,tch))
+                && !PathIsSameRoot(Settings.szCurDir,tch))
             {
               if (!ChangeDirectory(hwnd,tch,1))
               {
                 ErrorMessage(2,IDS_ERR_CD);
-                DriveBox_SelectDrive(hwndDriveBox,szCurDir);
+                DriveBox_SelectDrive(hwndDriveBox, Settings.szCurDir);
               }
             }
             SetFocus(hwndDirList);
@@ -1600,7 +1575,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpVerb = NULL;
         sei.lpFile = dli.szFileName;
         sei.lpParameters = NULL;
-        sei.lpDirectory = szCurDir;
+        sei.lpDirectory = Settings.szCurDir;
         sei.nShow = SW_SHOWNORMAL;
 
         ShellExecuteEx(&sei);
@@ -1630,8 +1605,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         else
           GetShortPathName(dli.szFileName,szTmp,COUNTOF(szTmp));
 
-        if (StrIsNotEmpty(szQuickviewParams)) {
-          StrCatBuff(szParam,szQuickviewParams,COUNTOF(szParam));
+        if (StrIsNotEmpty(Settings.szQuickviewParams)) {
+          StrCatBuff(szParam, Settings.szQuickviewParams,COUNTOF(szParam));
           StrCatBuff(szParam,L" ",COUNTOF(szParam));
         }
         StrCatBuff(szParam,szTmp,COUNTOF(szParam));
@@ -1641,9 +1616,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.fMask = 0;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = szQuickview;
+        sei.lpFile = Settings.szQuickview;
         sei.lpParameters = szParam;
-        sei.lpDirectory = szCurDir;
+        sei.lpDirectory = Settings.szCurDir;
         sei.nShow = SW_SHOWNORMAL;
 
         ShellExecuteEx(&sei);
@@ -1697,7 +1672,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         ofn.lpstrFile = szNewFile;
         ofn.nMaxFile = MAX_PATH;
         ofn.lpstrTitle = szTitle;
-        ofn.lpstrInitialDir = szCurDir;
+        ofn.lpstrInitialDir = Settings.szCurDir;
         ofn.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT |
                     OFN_NODEREFERENCELINKS | OFN_OVERWRITEPROMPT |
                     OFN_PATHMUSTEXIST;
@@ -1816,7 +1791,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (!bSuccess)
           ErrorMessage(2,IDS_ERR_SAVEAS1,dli.szDisplayName);
 
-        if (bSuccess && bClearReadOnly)
+        if (bSuccess && Settings.bClearReadOnly)
         {
           DWORD dwFileAttributes = GetFileAttributes(szNewFile);
           if (dwFileAttributes & FILE_ATTRIBUTE_READONLY)
@@ -1862,9 +1837,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         shfos.wFunc = FO_DELETE;
         shfos.pFrom = tch;
         shfos.pTo = NULL;
-        if (fUseRecycleBin && (LOWORD(wParam) != IDM_FILE_DELETE2))
+        if (Settings.fUseRecycleBin && (LOWORD(wParam) != IDM_FILE_DELETE2))
           shfos.fFlags = FOF_ALLOWUNDO;
-        if (fNoConfirmDelete || LOWORD(wParam) == IDM_FILE_DELETE3)
+        if (Settings.fNoConfirmDelete || LOWORD(wParam) == IDM_FILE_DELETE3)
           shfos.fFlags |= FOF_NOCONFIRMATION;
 
         SHFileOperation(&shfos);
@@ -1936,7 +1911,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         GetModuleFileName(NULL,szModuleName,COUNTOF(szModuleName));
 
-        lstrcpy(szParameters,szCurDir);
+        lstrcpy(szParameters, Settings.szCurDir);
         PathQuoteSpaces(szParameters);
 
         lstrcat(szParameters,L" -f");
@@ -1978,30 +1953,30 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_FOLDERS:
-      if (dwFillMask & DL_FOLDERS)
-        dwFillMask &= (~DL_FOLDERS);
+      if (Settings.dwFillMask & DL_FOLDERS)
+        Settings.dwFillMask &= (~DL_FOLDERS);
       else
-        dwFillMask |= DL_FOLDERS;
+        Settings.dwFillMask |= DL_FOLDERS;
       SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
       ListView_EnsureVisible(hwndDirList,0,FALSE); // not done by update
       break;
 
 
     case IDM_VIEW_FILES:
-      if (dwFillMask & DL_NONFOLDERS)
-        dwFillMask &= (~DL_NONFOLDERS);
+      if (Settings.dwFillMask & DL_NONFOLDERS)
+        Settings.dwFillMask &= (~DL_NONFOLDERS);
       else
-        dwFillMask |= DL_NONFOLDERS;
+        Settings.dwFillMask |= DL_NONFOLDERS;
       SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
       ListView_EnsureVisible(hwndDirList,0,FALSE); // not done by update
       break;
 
 
     case IDM_VIEW_HIDDEN:
-      if (dwFillMask & DL_INCLHIDDEN)
-        dwFillMask &= (~DL_INCLHIDDEN);
+      if (Settings.dwFillMask & DL_INCLHIDDEN)
+        Settings.dwFillMask &= (~DL_INCLHIDDEN);
       else
-        dwFillMask |= DL_INCLHIDDEN;
+        Settings.dwFillMask |= DL_INCLHIDDEN;
       SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
       ListView_EnsureVisible(hwndDirList,0,FALSE); // not done by update
       break;
@@ -2023,16 +1998,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
         }
         Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,
-          (lstrcmp(tchFilter,L"*.*") || bNegFilter) ? TBFILTERBMP : TBFILTERBMP+1);
+          (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) ? TBFILTERBMP : TBFILTERBMP+1);
       break;
 
 
     case IDM_VIEW_FILTERALL:
-      if (lstrcmp(tchFilter,L"*.*") || bNegFilter) {
+      if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
         DLITEM dli;
 
-        lstrcpy(tchFilter,L"*.*");
-        bNegFilter = FALSE;
+        lstrcpy(Settings.tchFilter,L"*.*");
+        Settings.bNegFilter = FALSE;
 
         // Store information about currently selected item
         dli.mask  = DLI_ALL;
@@ -2057,7 +2032,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_FAVORITES:
       // Goto Favorites Directory
-      DisplayPath(g_tchFavoritesDir,IDS_ERR_FAVORITES);
+      DisplayPath(Settings.g_tchFavoritesDir,IDS_ERR_FAVORITES);
       break;
 
 
@@ -2068,7 +2043,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.fMask = 0;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = g_tchFavoritesDir;
+        sei.lpFile = Settings.g_tchFavoritesDir;
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
@@ -2080,13 +2055,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_TOOLBAR:
-      if (bShowToolbar) {
+      if (Settings.bShowToolbar) {
         ShowWindow(hwndReBar,SW_HIDE);
-        bShowToolbar = 0;
+        Settings.bShowToolbar = 0;
       }
       else {
         ShowWindow(hwndReBar,SW_SHOW);
-        bShowToolbar = 1;
+        Settings.bShowToolbar = 1;
       }
       SendWMSize(hwnd);
       break;
@@ -2098,28 +2073,28 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_STATUSBAR:
-      if (bShowStatusbar) {
+      if (Settings.bShowStatusbar) {
         ShowWindow(hwndStatus,SW_HIDE);
-        bShowStatusbar = 0;
+        Settings.bShowStatusbar = 0;
       }
       else {
         ShowWindow(hwndStatus,SW_SHOW);
-        bShowStatusbar = 1;
+        Settings.bShowStatusbar = 1;
       }
       SendWMSize(hwnd);
       break;
 
 
     case IDM_VIEW_DRIVEBOX:
-      if (bShowDriveBox) {
+      if (Settings.bShowDriveBox) {
         ShowWindow(hwndDriveBox,SW_HIDE);
-        bShowDriveBox = 0;
+        Settings.bShowDriveBox = 0;
         if (GetDlgCtrlID(GetFocus()) == IDC_DRIVEBOX)
           SetFocus(hwndDirList);
         }
       else {
         ShowWindow(hwndDriveBox,SW_SHOW);
-        bShowDriveBox = 1;
+        Settings.bShowDriveBox = 1;
       }
       SendWMSize(hwnd);
       break;
@@ -2147,18 +2122,20 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           if (IniFileSetString(g_wchIniFile, L"Settings", L"WriteTest", L"ok")) 
           {
             // prepare save
-            Toolbar_GetButtons(hwndToolbar, IDT_HISTORY_BACK, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+            Toolbar_GetButtons(hwndToolbar, IDT_HISTORY_BACK, Settings.tchToolbarButtons, COUNTOF(Settings.tchToolbarButtons));
 
             BeginWaitCursor();
             SaveSettings(TRUE);
             EndWaitCursor();
             ErrorMessage(0,IDS_SAVESETTINGS);
           }
-          else
-            ErrorMessage(2,IDS_ERR_INIWRITE);
+          else {
+            ErrorMessage(2, IDS_ERR_INIWRITE);
+          }
         }
-        else
-          ErrorMessage(2,IDS_ERR_INICREATE);
+        else {
+          ErrorMessage(2, IDS_ERR_INICREATE);
+        }
       }
       break;
 
@@ -2170,37 +2147,37 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_OPTIONS:
       OptionsPropSheet(hwnd, g_hLngResContainer);
-      bHasQuickview = PathFileExists(szQuickview);
+      bHasQuickview = PathFileExists(Settings.szQuickview);
       break;
 
 
     case IDM_SORT_NAME:
-      nSortFlags = DS_NAME;
-      DirList_Sort(hwndDirList,nSortFlags,fSortRev);
+      Settings.nSortFlags = DS_NAME;
+      DirList_Sort(hwndDirList, Settings.nSortFlags, Settings.fSortRev);
       break;
 
 
     case IDM_SORT_SIZE:
-      nSortFlags = DS_SIZE;
-      DirList_Sort(hwndDirList,nSortFlags,fSortRev);
+      Settings.nSortFlags = DS_SIZE;
+      DirList_Sort(hwndDirList, Settings.nSortFlags, Settings.fSortRev);
       break;
 
 
     case IDM_SORT_TYPE:
-      nSortFlags = DS_TYPE;
-      DirList_Sort(hwndDirList,nSortFlags,fSortRev);
+      Settings.nSortFlags = DS_TYPE;
+      DirList_Sort(hwndDirList, Settings.nSortFlags, Settings.fSortRev);
       break;
 
 
     case IDM_SORT_DATE:
-      nSortFlags = DS_LASTMOD;
-      DirList_Sort(hwndDirList,nSortFlags,fSortRev);
+      Settings.nSortFlags = DS_LASTMOD;
+      DirList_Sort(hwndDirList, Settings.nSortFlags, Settings.fSortRev);
       break;
 
 
     case IDM_SORT_REVERSE:
-      fSortRev = !fSortRev;
-      DirList_Sort(hwndDirList,nSortFlags,fSortRev);
+      Settings.fSortRev = !Settings.fSortRev;
+      DirList_Sort(hwndDirList, Settings.nSortFlags, Settings.fSortRev);
       break;
 
 
@@ -2232,9 +2209,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case ACC_ESCAPE:
       if (SendMessage(hwndDriveBox,CB_GETDROPPEDSTATE,0,0))
         SendMessage(hwndDriveBox,CB_SHOWDROPDOWN,0,0);
-      else if (iEscFunction == 1)
+      else if (Settings.iEscFunction == 1)
         SendMessage(hwnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
-      else if (iEscFunction == 2)
+      else if (Settings.iEscFunction == 2)
         PostMessage(hwnd,WM_CLOSE,0,0);
       break;
 
@@ -2256,7 +2233,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           nId = IDC_DIRLIST;
       }
 
-      if (nId == IDC_DRIVEBOX && !bShowDriveBox)
+      if (nId == IDC_DRIVEBOX && !Settings.bShowDriveBox)
         nId = IDC_DIRLIST;
 
       SetFocus(GetDlgItem(hwnd,nId));
@@ -2266,17 +2243,17 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_TOGGLE_FOCUSEDIT:
-      if (bFocusEdit)
-        bFocusEdit = 0;
+      if (Settings.bFocusEdit)
+        Settings.bFocusEdit = 0;
       else
-        bFocusEdit = 1;
+        Settings.bFocusEdit = 1;
       break;
 
 
     case ACC_SWITCHTRANSPARENCY:
-      g_bTransparentMode = !g_bTransparentMode;
+      Settings.g_bTransparentMode = !Settings.g_bTransparentMode;
       int const iAlphaPercent = IniFileGetInt(g_wchIniFile, L"Settings2", L"OpacityLevel", 75);
-      SetWindowTransparentMode(hwndMain, g_bTransparentMode, clampi(iAlphaPercent, 0, 100));
+      SetWindowTransparentMode(hwndMain, Settings.g_bTransparentMode, clampi(iAlphaPercent, 0, 100));
       break;
 
 
@@ -2342,38 +2319,38 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDT_HISTORY_BACK:
-      if (History_CanBack(&mHistory))
+      if (History_CanBack(&g_mHistory))
       {
         WCHAR tch[MAX_PATH];
-        History_Back(&mHistory,tch,COUNTOF(tch));
+        History_Back(&g_mHistory,tch,COUNTOF(tch));
         if (!ChangeDirectory(hwnd,tch,0))
           ErrorMessage(2,IDS_ERR_CD);
       }
       else
         MessageBeep(0);
-      History_UpdateToolbar(&mHistory,hwndToolbar,
+      History_UpdateToolbar(&g_mHistory,hwndToolbar,
         IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
       break;
 
 
     case IDT_HISTORY_FORWARD:
-      if (History_CanForward(&mHistory))
+      if (History_CanForward(&g_mHistory))
       {
         WCHAR tch[MAX_PATH];
-        History_Forward(&mHistory,tch,COUNTOF(tch));
+        History_Forward(&g_mHistory,tch,COUNTOF(tch));
         if (!ChangeDirectory(hwnd,tch,0))
           ErrorMessage(2,IDS_ERR_CD);
       }
       else
         MessageBeep(0);
-      History_UpdateToolbar(&mHistory,hwndToolbar,
+      History_UpdateToolbar(&g_mHistory,hwndToolbar,
         IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
       break;
 
 
     case IDT_UPDIR:
     {
-      if (!PathIsRoot(szCurDir))
+      if (!PathIsRoot(Settings.szCurDir))
       {
         if (!ChangeDirectory(hwnd,L"..",1))
           ErrorMessage(2,IDS_ERR_CD);
@@ -2386,7 +2363,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDT_ROOT:
       {
-        if (!PathIsRoot(szCurDir))
+        if (!PathIsRoot(Settings.szCurDir))
         {
           if (!ChangeDirectory(hwnd,L"\\",1))
             ErrorMessage(2,IDS_ERR_CD);
@@ -2512,10 +2489,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDT_FILE_DELETE:
       if (ListView_GetSelectedCount(hwndDirList)) {
-        BOOL fUseRecycleBin2 = fUseRecycleBin;
-        fUseRecycleBin = 1;
+        BOOL const fUseRecycleBin2 = Settings.fUseRecycleBin;
+        Settings.fUseRecycleBin = 1;
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_DELETE,1),0);
-        fUseRecycleBin = fUseRecycleBin2;
+        Settings.fUseRecycleBin = fUseRecycleBin2;
       }
       else
         MessageBeep(0);
@@ -2628,7 +2605,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               {
                 wsprintf(tchnum,L"%u",ListView_GetItemCount(hwndDirList));
                 FormatNumberStr(tchnum);
-                FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+                FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
               }
 
               StatusSetText(hwndStatus,ID_FILEINFO,tch);
@@ -2639,7 +2616,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case NM_CLICK:
 
-          if (bSingleClick && ListView_GetSelectedCount(hwndDirList))
+          if (Settings.bSingleClick && ListView_GetSelectedCount(hwndDirList))
           {
             if (IsKeyDown(VK_MENU))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
@@ -2688,10 +2665,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
 
         case TBN_ENDADJUST:
-          History_UpdateToolbar(&mHistory,hwndToolbar,
+          History_UpdateToolbar(&g_mHistory,hwndToolbar,
             IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
           Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,
-            (lstrcmp(tchFilter,L"*.*") || bNegFilter) ? TBFILTERBMP : TBFILTERBMP+1);
+            (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) ? TBFILTERBMP : TBFILTERBMP+1);
           break;
 
         case TBN_QUERYDELETE:
@@ -2736,7 +2713,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             if (((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND)
             {
-              PathCompactPathEx(((LPTOOLTIPTEXT)lParam)->szText,szCurDir,
+              PathCompactPathEx(((LPTOOLTIPTEXT)lParam)->szText, Settings.szCurDir,
                                 COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),0);
             }
 
@@ -2796,25 +2773,26 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
     int iTopItem = ListView_GetTopIndex(hwndDirList);
 
-    GetCurrentDirectory(COUNTOF(szCurDir),szCurDir);
+    GetCurrentDirectory(COUNTOF(Settings.szCurDir), Settings.szCurDir);
 
-    SetWindowPathTitle(hwnd,szCurDir);
+    SetWindowPathTitle(hwnd, Settings.szCurDir);
 
-    if (lstrcmp(tchFilter,L"*.*") || bNegFilter) {
-      ListView_SetTextColor(hwndDirList,(bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : crFilter);
+    if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crFilter);
       Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,TBFILTERBMP);
     }
     else {
-      ListView_SetTextColor(hwndDirList,(bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : crNoFilt);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crNoFilt);
       Toolbar_SetButtonImage(hwndToolbar,IDT_VIEW_FILTER,TBFILTERBMP+1);
     }
 
-    cItems = DirList_Fill(hwndDirList,szCurDir,dwFillMask,tchFilter,bNegFilter,flagNoFadeHidden,nSortFlags,fSortRev);
+    cItems = DirList_Fill(hwndDirList, Settings.szCurDir, Settings.dwFillMask, 
+      Settings.tchFilter, Settings.bNegFilter,flagNoFadeHidden, Settings.nSortFlags, Settings.fSortRev);
     DirList_StartIconThread(hwndDirList);
 
     // Get long pathname
-    DirList_GetLongPathName(hwndDirList,szCurDir);
-    SetCurrentDirectory(szCurDir);
+    DirList_GetLongPathName(hwndDirList, Settings.szCurDir);
+    SetCurrentDirectory(Settings.szCurDir);
 
     if (cItems > 0)
       ListView_SetItemState(hwndDirList,0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -2830,7 +2808,7 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
     // setup new change notification handle
     FindCloseChangeNotification(hChangeHandle);
-    hChangeHandle = FindFirstChangeNotification(szCurDir,FALSE,
+    hChangeHandle = FindFirstChangeNotification(Settings.szCurDir,FALSE,
         FILE_NOTIFY_CHANGE_FILE_NAME  | \
         FILE_NOTIFY_CHANGE_DIR_NAME   | \
         FILE_NOTIFY_CHANGE_ATTRIBUTES | \
@@ -2838,18 +2816,18 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
         FILE_NOTIFY_CHANGE_LAST_WRITE);
 
     DriveBox_Fill(hwndDriveBox);
-    DriveBox_SelectDrive(hwndDriveBox,szCurDir);
+    DriveBox_SelectDrive(hwndDriveBox, Settings.szCurDir);
 
     wsprintf(tchnum,L"%u",cItems);
     FormatNumberStr(tchnum);
-    FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+    FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
     StatusSetText(hwndStatus,ID_FILEINFO,tch);
 
     // Update History
     if (bUpdateHistory)
     {
-      History_Add(&mHistory,szCurDir);
-      History_UpdateToolbar(&mHistory,hwndToolbar,
+      History_Add(&g_mHistory, Settings.szCurDir);
+      History_UpdateToolbar(&g_mHistory,hwndToolbar,
         IDT_HISTORY_BACK,IDT_HISTORY_FORWARD);
     }
 
@@ -2921,15 +2899,15 @@ void ParseCommandLine()
         case L'P':
           if (*CharUpper(lp1+1) == L'D' || *CharUpper(lp1+1) == L'S') {
             flagPosParam = 1;
-            wi.x = wi.y = wi.cx = wi.cy = CW_USEDEFAULT;
+            Settings.wi.x = Settings.wi.y = Settings.wi.cx = Settings.wi.cy = CW_USEDEFAULT;
           }
           else if (ExtractFirstArgument(lp2,lp1,lp2)) {
             int itok =
-              swscanf_s(lp1,L"%i,%i,%i,%i",&wi.x,&wi.y,&wi.cx,&wi.cy);
+              swscanf_s(lp1,L"%i,%i,%i,%i",&Settings.wi.x,&Settings.wi.y,&Settings.wi.cx,&Settings.wi.cy);
             if (itok == 4) { // scan successful
               flagPosParam = 1;
-              if (wi.cx < 1) wi.cx = CW_USEDEFAULT;
-              if (wi.cy < 1) wi.cy = CW_USEDEFAULT;
+              if (Settings.wi.cx < 1) Settings.wi.cx = CW_USEDEFAULT;
+              if (Settings.wi.cy < 1) Settings.wi.cy = CW_USEDEFAULT;
             }
           }
           break;
@@ -3402,7 +3380,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       if (IsIconic(hwnd))
         ShowWindowAsync(hwnd,SW_RESTORE);
 
-      if (bFocusEdit)
+      if (Settings.bFocusEdit)
         SetForegroundWindow(hwnd);
 
       if (lpFileName)
@@ -3473,7 +3451,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       sei.lpVerb = NULL;
       sei.lpFile = szFile;
       sei.lpParameters = szParam;
-      sei.lpDirectory = szCurDir;
+      sei.lpDirectory = Settings.szCurDir;
       sei.nShow = SW_SHOWNORMAL;
 
       ShellExecuteEx(&sei);
@@ -3545,7 +3523,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         sei.lpFile = lpParam;
         sei.lpParameters = NULL;
       }
-      sei.lpDirectory = szCurDir;
+      sei.lpDirectory = Settings.szCurDir;
       sei.nShow = SW_SHOWNORMAL;
 
       ShellExecuteEx(&sei);

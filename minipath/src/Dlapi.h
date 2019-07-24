@@ -136,14 +136,15 @@ BOOL DirList_SelectItem(HWND,LPCWSTR,LPCWSTR);
 
 //==== DlCreateFilter() and DlMatchFilter() ===================================
 
-#define DL_FILTER_BUFSIZE 128
+#define DL_FILTER_BUFSIZE 256
 
 typedef struct tagDL_FILTER { //dlf
   int   nCount;
   WCHAR  tFilterBuf[DL_FILTER_BUFSIZE];
-  WCHAR  *pFilter  [DL_FILTER_BUFSIZE];
+  WCHAR* pFilter[DL_FILTER_BUFSIZE];
   BOOL  bExcludeFilter;
-} DL_FILTER, *PDL_FILTER;
+} DL_FILTER, * PDL_FILTER;
+
 
 void DirList_CreateFilter(PDL_FILTER,LPCWSTR,BOOL);
 

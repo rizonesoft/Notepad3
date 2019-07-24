@@ -24,6 +24,7 @@ extern "C" {
 
   //==== Ini-File Handling =============================================
 
+  void InitDefaultSettings();
   void LoadSettings();
   void SaveSettings(BOOL);
   void LoadFlags();

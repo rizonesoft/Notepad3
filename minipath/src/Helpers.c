@@ -24,6 +24,7 @@
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <strsafe.h>
+#include "minipath.h"
 #include "dlapi.h"
 #include "config.h"
 #include "resource.h"
@@ -1051,26 +1052,24 @@ void PathCanonicalizeEx(LPWSTR lpSrc)
 //
 //  This Expansion also searches the L"Favorites" folder
 //
-extern WCHAR g_tchFavoritesDir[MAX_PATH];
-extern WCHAR szCurDir[MAX_PATH];
 
 BOOL SearchPathEx(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer) {
   DWORD dwRetVal = 0;
 
   if (StrEqual(lpFileName, L"..") || StrEqual(lpFileName, L".")) {
-    if (StrEqual(lpFileName, L"..") && PathIsRoot(szCurDir)) {
+    if (StrEqual(lpFileName, L"..") && PathIsRoot(Settings.szCurDir)) {
       lstrcpyn(lpBuffer, L"*.*", nBufferLength);
       dwRetVal = 1;
     }
   }
 
   if (!dwRetVal) {
-    dwRetVal = SearchPath(szCurDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
+    dwRetVal = SearchPath(Settings.szCurDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
   }
 
   // Search Favorites if no result
   if (!dwRetVal) {
-    dwRetVal = SearchPath(g_tchFavoritesDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
+    dwRetVal = SearchPath(Settings.g_tchFavoritesDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
   }
 
   return dwRetVal != 0;
