@@ -80,6 +80,15 @@
 //==== Callback Message from System Tray ======================================
 #define WM_TRAYMESSAGE WM_USER
 
+//==== TypeDefs ======================================
+typedef struct _wi
+{
+  int x;
+  int y;
+  int cx;
+  int cy;
+} WININFO;
+
 
 //==== Function Declarations ==================================================
 BOOL InitApplication(HINSTANCE);
@@ -88,17 +97,7 @@ BOOL ActivatePrevInst();
 void ShowNotifyIcon(HWND,BOOL);
 
 BOOL ChangeDirectory(HWND,LPCWSTR,BOOL);
-void LoadSettings();
-void SaveSettings(BOOL);
-
 void ParseCommandLine();
-void LoadFlags();
-int  CheckIniFile(LPWSTR,LPCWSTR);
-int  CheckIniFileRedirect(LPWSTR,LPWSTR,LPWSTR,LPCWSTR);
-int  FindIniFile();
-int  TestIniFile();
-int  CreateIniFile();
-int  CreateIniFileEx(LPCWSTR);
 
 BOOL DisplayPath(LPCWSTR,UINT);
 BOOL DisplayLnkFile(LPCWSTR);

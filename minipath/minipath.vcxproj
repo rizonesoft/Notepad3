@@ -101,6 +101,7 @@
       <OmitFramePointers />
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
@@ -162,6 +163,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
@@ -221,6 +223,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -261,6 +264,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
@@ -274,6 +278,7 @@
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Dialogs.c" />
     <ClCompile Include="src\Dlapi.c" />
     <ClCompile Include="src\DropSource.cpp" />
@@ -282,12 +287,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="language\common_res.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Dialogs.h" />
     <ClInclude Include="src\Dlapi.h" />
     <ClInclude Include="src\DropSource.h" />
     <ClInclude Include="src\Helpers.h" />
     <ClInclude Include="src\minipath.h" />
     <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\SimpleIni.h" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>
   <ItemGroup>

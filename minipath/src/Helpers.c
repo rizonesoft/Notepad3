@@ -25,78 +25,11 @@
 #include <uxtheme.h>
 #include <strsafe.h>
 #include "dlapi.h"
-#include "helpers.h"
+#include "config.h"
 #include "resource.h"
 
 extern LANGID    g_iPrefLANGID;
-
-//=============================================================================
-//
-//  Manipulation of (cached) ini file sections
-//
-int IniSectionGetString(
-      LPCWSTR lpCachedIniSection,
-      LPCWSTR lpName,
-      LPCWSTR lpDefault,
-      LPWSTR lpReturnedString,
-      int cchReturnedString)
-{
-  LPWSTR p = (LPWSTR)lpCachedIniSection;
-  if (p) {
-    int const ich = lstrlen(lpName);
-    while (*p) {
-      if ((StrCmpNI(p,lpName,ich) == 0) && (p[ich] == L'=')) {
-        lstrcpyn(lpReturnedString,(p+ich+1),cchReturnedString);
-        return lstrlen(lpReturnedString);
-      }
-      else
-        p = StrEnd(p) + 1;
-    }
-  }
-  lstrcpyn(lpReturnedString,lpDefault,cchReturnedString);
-  return lstrlen(lpReturnedString);
-}
-
-
-int IniSectionGetInt(
-      LPCWSTR lpCachedIniSection,
-      LPCWSTR lpName,
-      int iDefault)
-{
-  LPWSTR p = (LPWSTR)lpCachedIniSection;
-  if (p) {
-    int const ich = lstrlen(lpName);
-    while (*p) {
-      if ((StrCmpNI(p,lpName,ich) == 0) && (p[ich] == L'=')) {
-        int  i;
-        if (swscanf_s((p+ich+1),L"%i",&i) == 1)
-          return(i);
-        else
-          return(iDefault);
-      }
-      else
-        p = StrEnd(p) + 1;
-    }
-  }
-  return(iDefault);
-}
-
-
-BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
-{
-  LPWSTR p = lpCachedIniSection;
-  if (p) {
-    while (*p) {
-      p = StrEnd(p) + 1;
-    }
-    wsprintf(p,L"%s=%s",lpName,lpString);
-    p = StrEnd(p) + 1;
-    *p = 0;
-    return(TRUE);
-  }
-  return(FALSE);
-}
-
+extern WCHAR     g_wchIniFile[MAX_PATH];
 
 //=============================================================================
 //
@@ -448,6 +381,7 @@ BOOL SetWindowPathTitle(HWND hwnd,LPCWSTR lpszFile)
     if (!PathIsRoot(lpszFile))
     {
       SHFILEINFO shfi;
+      ZeroMemory(&shfi, sizeof(SHFILEINFO));
       if (SHGetFileInfo(lpszFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME))
         lstrcpy(szTitle, shfi.szDisplayName);
       else
@@ -1584,56 +1518,51 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
 
 BOOL MRU_Load(LPMRULIST pmru) {
 
-  int i,n = 0;
+  int i, n = 0;
   WCHAR tchName[32];
   WCHAR tchItem[1024];
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
 
   MRU_Empty(pmru);
-  LoadIniSection(pmru->szRegKey,pIniSection,(int)LocalSize(pIniSection)/sizeof(WCHAR));
+  LoadIniFile(g_wchIniFile);
+
+  const WCHAR* const RegKey_Section = pmru->szRegKey;
 
   for (i = 0; i < pmru->iSize; i++) {
-    wsprintf(tchName,L"%.2i",i+1);
-    if (IniSectionGetString(pIniSection,tchName,L"",tchItem,COUNTOF(tchItem))) {
-      /*if (pmru->iFlags & MRU_UTF8) {
-        WCHAR wchItem[1024];
-        int cbw = MultiByteToWideChar(CP_UTF7,0,tchItem,-1,wchItem,COUNTOF(wchItem));
-        WideCharToMultiByte(CP_UTF8,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-        pmru->pszItems[n++] = StrDup(tchItem);
+    StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+    if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
+      size_t const len = (size_t)lstrlen(tchItem);
+      if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
+        MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
+        tchItem[len - 2] = L'\0'; // clear dangling '"'
       }
-      else*/
-        pmru->pszItems[n++] = StrDup(tchItem);
+      pmru->pszItems[n++] = StrDup(tchItem);
     }
   }
-  LocalFree(pIniSection);
+  ReleaseIniFile();
   return(1);
 }
 
 BOOL MRU_Save(LPMRULIST pmru) {
 
-  int i;
-  WCHAR tchName[32];
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  if (LoadIniFile(g_wchIniFile)) {
 
-  //IniDeleteSection(pmru->szRegKey);
+    WCHAR tchName[32];
+    WCHAR tchItem[1024] = { L'\0' };
 
-  for (i = 0; i < pmru->iSize; i++) {
-    if (pmru->pszItems[i]) {
-      wsprintf(tchName,L"%.2i",i+1);
-      /*if (pmru->iFlags & MRU_UTF8) {
-        WCHAR  tchItem[1024];
-        WCHAR wchItem[1024];
-        int cbw = MultiByteToWideChar(CP_UTF8,0,pmru->pszItems[i],-1,wchItem,COUNTOF(wchItem));
-        WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-        IniSectionSetString(pIniSection,tchName,tchItem);
+    const WCHAR* const RegKey_Section = pmru->szRegKey;
+    IniSectionClear(pmru->szRegKey, FALSE);
+
+    for (int i = 0; i < pmru->iSize; i++) {
+      if (pmru->pszItems[i]) {
+        StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+        StringCchPrintf(tchItem, COUNTOF(tchItem), L"\"%s\"", pmru->pszItems[i]);
+        IniSectionSetString(RegKey_Section, tchName, tchItem);
       }
-      else*/
-        IniSectionSetString(pIniSection,tchName,pmru->pszItems[i]);
     }
+    SaveIniFile(g_wchIniFile);
+    return TRUE;
   }
-  SaveIniSection(pmru->szRegKey,pIniSection);
-  LocalFree(pIniSection);
-  return(1);
+  return FALSE;
 }
 
 void MRU_LoadToCombobox(HWND hwnd,LPCWSTR pszKey)

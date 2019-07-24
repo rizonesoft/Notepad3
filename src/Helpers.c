@@ -1588,17 +1588,17 @@ bool MRU_Save(LPMRULIST pmru)
 {
   if (LoadIniFile(Globals.IniFile)) {
 
+    WCHAR tchName[32] = { L'\0' };
+    WCHAR tchItem[2048] = { L'\0' };
+
     const WCHAR* const RegKey_Section = pmru->szRegKey;
     IniSectionClear(pmru->szRegKey, false);
 
-    WCHAR tchValue[2048] = { L'\0' };
-
     for (int i = 0; i < pmru->iSize; i++) {
       if (pmru->pszItems[i]) {
-        WCHAR tchName[32] = { L'\0' };
         StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-        StringCchPrintf(tchValue, COUNTOF(tchValue), L"\"%s\"", pmru->pszItems[i]);
-        IniSectionSetString(RegKey_Section, tchName, tchValue);
+        StringCchPrintf(tchItem, COUNTOF(tchItem), L"\"%s\"", pmru->pszItems[i]);
+        IniSectionSetString(RegKey_Section, tchName, tchItem);
 
         if (pmru->iEncoding[i] > 0) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);

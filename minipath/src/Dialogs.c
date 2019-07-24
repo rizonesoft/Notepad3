@@ -28,7 +28,7 @@
 #include <strsafe.h>
 #include "minipath.h"
 #include "dlapi.h"
-#include "helpers.h"
+#include "config.h"
 #include "dialogs.h"
 #include "resource.h"
 
@@ -496,7 +496,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
              CB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,CB_GETCURSEL,0,0)));
 
           if (HIWORD(wParam) == CBN_CLOSEUP) {
-            LONG lSelEnd;
+            LONG lSelEnd = 0;
             SendDlgItemMessage(hwnd,IDC_GOTO,CB_GETEDITSEL,0,(LPARAM)&lSelEnd);
             SendDlgItemMessage(hwnd,IDC_GOTO,CB_SETEDITSEL,0,MAKELPARAM(lSelEnd,lSelEnd));
           }
@@ -700,9 +700,9 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       if (bMinimizeToTray)
         CheckDlgButton(hwnd,IDC_MINIMIZETOTRAY,BST_CHECKED);
 
-      if (IniGetInt(L"Settings2",L"ReuseWindow",1))
-        CheckDlgButton(hwnd,IDC_REUSEWINDOW,BST_CHECKED);
-
+      if (IniFileGetInt(g_wchIniFile, L"Settings2", L"ReuseWindow", 1)) {
+        CheckDlgButton(hwnd, IDC_REUSEWINDOW, BST_CHECKED);
+      }
       return TRUE;
 
 
@@ -750,10 +750,8 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           else
             bMinimizeToTray = 0;
 
-          if (IsDlgButtonChecked(hwnd,IDC_REUSEWINDOW))
-            IniSetInt(L"Settings2",L"ReuseWindow",1);
-          else
-            IniSetInt(L"Settings2",L"ReuseWindow",0);
+          int const rw = IsDlgButtonChecked(hwnd, IDC_REUSEWINDOW) ? 1 : 0;
+          IniFileSetInt(g_wchIniFile, L"Settings2", L"ReuseWindow", rw);
 
           SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
@@ -1354,9 +1352,30 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
 //  GetFilterDlgProc()
 //
 //
-
 extern WCHAR tchFilter[DL_FILTER_BUFSIZE];
 extern BOOL bNegFilter;
+
+static HWND  s_hWnd = NULL;
+static HMENU s_hMenu = NULL;
+static DWORD s_dwIndex = 0;
+static DWORD s_dwCheck = 0xFFFF; // index of current filter
+static WCHAR s_szTypedFilter[512];
+
+
+static void CALLBACK _AppendFilterMenu(LPCWSTR pszFilterName, LPCWSTR pszFilterValue)
+{
+  AppendMenu(s_hMenu, MF_ENABLED | MF_STRING, 1234 + s_dwIndex, pszFilterName);
+
+  // Find description for current filter
+
+  if ((!lstrcmpi(pszFilterValue,           s_szTypedFilter) && IsDlgButtonChecked(s_hWnd, IDC_NEGFILTER) != BST_CHECKED) ||
+      (!lstrcmpi(CharNext(pszFilterValue), s_szTypedFilter) && IsDlgButtonChecked(s_hWnd, IDC_NEGFILTER) == BST_CHECKED && *pszFilterValue == L'-')) 
+  {
+    s_dwCheck = s_dwIndex;
+  }
+  s_dwIndex++;
+}
+
 
 INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -1389,71 +1408,37 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
       switch(LOWORD(wParam))
       {
-
         case IDC_BROWSEFILTER:
           {
-            HMENU hMenu;
-            int   cbIniSection = 0;
-            WCHAR *pszFilterName;
-            WCHAR *pszFilterValue;
-            WCHAR  szTypedFilter[512];
-            DWORD dwIndex = 0;
-            DWORD dwCheck = 0xFFFF; // index of current filter
+            s_hWnd = hwnd;
+            s_dwIndex = 0;
+            s_dwCheck = 0xFFFF; // index of current filter
+            s_hMenu = CreatePopupMenu();
+            GetDlgItemText(hwnd, IDC_FILTER, s_szTypedFilter, COUNTOF(s_szTypedFilter));
 
-            GetDlgItemText(hwnd,IDC_FILTER,szTypedFilter,COUNTOF(szTypedFilter));
+            IniFileIterateSection(g_wchIniFile, L"Filters", _AppendFilterMenu);
 
-            hMenu = CreatePopupMenu();
-
-            WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-            cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-            LoadIniSection(L"Filters",pIniSection,cbIniSection);
-
-            pszFilterName = pIniSection;
-            while (*pszFilterName)
-            {
-              pszFilterValue = CharNext(StrChr(pszFilterName,L'='));
-              if (*pszFilterValue) {
-
-                *CharPrev(pszFilterName,pszFilterValue) = 0;
-                AppendMenu(hMenu,MF_ENABLED|MF_STRING,1234+dwIndex,pszFilterName);
-
-                // Find description for current filter
-
-                if ( (!lstrcmpi(pszFilterValue,szTypedFilter) && IsDlgButtonChecked(hwnd,IDC_NEGFILTER) != BST_CHECKED) ||
-                      (!lstrcmpi(CharNext(pszFilterValue),szTypedFilter) &&
-                        IsDlgButtonChecked(hwnd,IDC_NEGFILTER) == BST_CHECKED &&
-                        *pszFilterValue == L'-') )
-                  dwCheck = dwIndex;
-              }
-
-              dwIndex++;
-              pszFilterName = StrEnd(pszFilterValue) + 1;
+            if (s_dwCheck != 0xFFFF) { // check description for current filter
+              CheckMenuRadioItem(s_hMenu, 0, s_dwIndex, s_dwCheck, MF_BYPOSITION);
             }
-            LocalFree(pIniSection);
-
-            if (dwCheck != 0xFFFF) // check description for current filter
-              CheckMenuRadioItem(hMenu,0,dwIndex,dwCheck,MF_BYPOSITION);
-
-            if (dwIndex) // at least 1 item exists
+            if (s_dwIndex > 0) // at least 1 item exists
             {
-              DWORD dwCmd;
               RECT rc;
-
               GetWindowRect(GetDlgItem(hwnd,IDC_BROWSEFILTER),&rc);
               //MapWindowPoints(hwnd,NULL,(POINT*)&rc,2);
               // Seems that TrackPopupMenuEx() works with client coords...?
 
-              dwCmd = TrackPopupMenuEx(hMenu,
+              DWORD const dwCmd = TrackPopupMenuEx(s_hMenu,
                                TPM_RETURNCMD|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,
                                rc.left+1,rc.bottom+1,hwnd,NULL);
 
-              if (dwCmd)
+              if (dwCmd > 0)
               {
                 WCHAR tchName[256];
                 WCHAR tchValue[256];
-                GetMenuString(hMenu,dwCmd,tchName,COUNTOF(tchName),MF_BYCOMMAND);
+                GetMenuString(s_hMenu,dwCmd,tchName,COUNTOF(tchName),MF_BYCOMMAND);
 
-                if (IniGetString(L"Filters",tchName,L"",tchValue,COUNTOF(tchValue)))
+                if (IniFileGetString(g_wchIniFile, L"Filters", tchName, L"", tchValue, COUNTOF(tchValue)))
                 {
                   if (tchValue[0] == L'-') // Negative Filter
                   {
@@ -1461,23 +1446,26 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
                       SetDlgItemText(hwnd,IDC_FILTER,&tchValue[1]);
                       CheckDlgButton(hwnd,IDC_NEGFILTER,BST_CHECKED);
                     }
-                    else
+                    else {
                       MessageBeep(0);
+                    }
                   }
                   else {
                     SetDlgItemText(hwnd,IDC_FILTER,tchValue);
                     CheckDlgButton(hwnd,IDC_NEGFILTER,BST_UNCHECKED);
                   }
                 }
-
-                else
+                else {
                   MessageBeep(0);
+                }
               }
             }
             else
               ErrorMessage(0,IDS_ERR_FILTER);
 
-            DestroyMenu(hMenu);
+            DestroyMenu(s_hMenu);
+            s_hMenu = NULL;
+
             PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_FILTER)),1);
           }
           break;
@@ -2467,7 +2455,7 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           }
           else
           {
-            WCHAR tch[256] = L"";
+            WCHAR tch[MAX_PATH] = L"";
             if (LOWORD(wParam) == IDOK) {
               if (GetDlgItemText(hwnd,IDC_WINMODULE,tch,COUNTOF(tch))) {
                 PathRelativeToApp(tch,tch,COUNTOF(tch),TRUE,TRUE,flagPortableMyDocs);
@@ -2744,12 +2732,13 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
               ErrorMessage(1,IDS_ERR_INVALIDTARGET);
 
               else {
-                WCHAR  *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-                //int    cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+
+                LoadIniFile(g_wchIniFile);
+                const WCHAR* const TargetApp_Section = L"Target Application";
 
                 i = IsDlgButtonChecked(hwnd,IDC_LAUNCH);
                 iUseTargetApplication = i ? 0:1;
-                IniSectionSetInt(pIniSection,L"UseTargetApplication",iUseTargetApplication);
+                IniSectionSetInt(TargetApp_Section,L"UseTargetApplication",iUseTargetApplication);
 
                 if (iUseTargetApplication) {
                   GetDlgItemText(hwnd,IDC_TARGETPATH,tch,COUNTOF(tch));
@@ -2759,35 +2748,35 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                   lstrcpy(szTargetApplication,L"");
                   lstrcpy(szTargetApplicationParams,L"");
                 }
-                IniSectionSetString(pIniSection,L"TargetApplicationPath",szTargetApplication);
-                IniSectionSetString(pIniSection,L"TargetApplicationParams",szTargetApplicationParams);
+                IniSectionSetString(TargetApp_Section,L"TargetApplicationPath",szTargetApplication);
+                IniSectionSetString(TargetApp_Section,L"TargetApplicationParams",szTargetApplicationParams);
 
                 if (!iUseTargetApplication) {
                   iTargetApplicationMode = 0;
-                  IniSectionSetInt(pIniSection,L"TargetApplicationMode",iTargetApplicationMode);
+                  IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
                 }
                 else {
                   if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_ALWAYSRUN)) {
                     iTargetApplicationMode = 0;
-                    IniSectionSetInt(pIniSection,L"TargetApplicationMode",iTargetApplicationMode);
+                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
                   }
                   else if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG)) {
                     iTargetApplicationMode = 1;
-                    IniSectionSetInt(pIniSection,L"TargetApplicationMode",iTargetApplicationMode);
+                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
                   }
                   else {
                     iTargetApplicationMode = 2;
-                    IniSectionSetInt(pIniSection,L"TargetApplicationMode",iTargetApplicationMode);
+                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
                   }
                 }
 
                 if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG) && !i) {
                   lstrcpy(szTargetApplicationWndClass,szTargetWndClass);
-                  IniSectionSetString(pIniSection,L"TargetApplicationWndClass",szTargetApplicationWndClass);
+                  IniSectionSetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass);
                 }
                 else {
                   lstrcpy(szTargetApplicationWndClass,L"");
-                  IniSectionSetString(pIniSection,L"TargetApplicationWndClass",szTargetApplicationWndClass);
+                  IniSectionSetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass);
                 }
 
                 i = (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_USEDDE));
@@ -2795,22 +2784,21 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                   GetDlgItemText(hwnd,IDC_DDEMSG,szDDEMsg,COUNTOF(szDDEMsg));
                 else
                   lstrcpy(szDDEMsg,L"");
-                IniSectionSetString(pIniSection,L"DDEMessage",szDDEMsg);
+                IniSectionSetString(TargetApp_Section,L"DDEMessage",szDDEMsg);
 
                 if (i)
                   GetDlgItemText(hwnd,IDC_DDEAPP,szDDEApp,COUNTOF(szDDEApp));
                 else
                   lstrcpy(szDDEApp,L"");
-                IniSectionSetString(pIniSection,L"DDEApplication",szDDEApp);
+                IniSectionSetString(TargetApp_Section,L"DDEApplication",szDDEApp);
 
                 if (i)
                   GetDlgItemText(hwnd,IDC_DDETOPIC,szDDETopic,COUNTOF(szDDETopic));
                 else
                   lstrcpy(szDDETopic,L"");
-                IniSectionSetString(pIniSection,L"DDETopic",szDDETopic);
+                IniSectionSetString(TargetApp_Section,L"DDETopic",szDDETopic);
 
-                SaveIniSection(L"Target Application",pIniSection);
-                LocalFree(pIniSection);
+                SaveIniFile(g_wchIniFile);
 
                 EndDialog(hwnd,IDOK);
               }

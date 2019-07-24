@@ -126,7 +126,7 @@ extern "C" size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, 
 extern "C" int IniSectionGetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
   bool bHasMultiple = false;
-  int const iValue = (int)s_INI.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
+  auto const iValue = (int)s_INI.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
   //assert(!bHasMultiple);
   return iValue;
 }
@@ -258,7 +258,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
     if (SI_SUCCESS(rc)) {
       Ini.SetSpaces(s_bSetSpaces);
-      rc = Ini.SaveFile(Globals.IniFile, true);
+      rc = Ini.SaveFile(lpFilePath, true);
     }
   }
   return SI_SUCCESS(rc);
@@ -288,7 +288,7 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
   if (SI_SUCCESS(rc)) {
     Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
     Ini.SetSpaces(s_bSetSpaces);
-    rc = Ini.SaveFile(Globals.IniFile, true);
+    rc = Ini.SaveFile(lpFilePath, true);
   }
   return SI_SUCCESS(rc);
 }
@@ -317,7 +317,7 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
   if (SI_SUCCESS(rc)) {
     Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
     Ini.SetSpaces(s_bSetSpaces);
-    rc = Ini.SaveFile(Globals.IniFile, true);
+    rc = Ini.SaveFile(lpFilePath, true);
   }
   return SI_SUCCESS(rc);
 }
@@ -332,11 +332,35 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
   {
     Ini.Delete(lpSectionName, lpKeyName, bRemoveEmpty);
     Ini.SetSpaces(s_bSetSpaces);
-    rc = Ini.SaveFile(Globals.IniFile, true);
+    rc = Ini.SaveFile(lpFilePath, true);
   }
   return SI_SUCCESS(rc);
 }
 // ============================================================================
+
+
+
+extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
+{
+  CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  SI_Error rc = Ini.LoadFile(lpFilePath);
+  if (SI_SUCCESS(rc))
+  {
+    bool bHasMultiple = false;
+
+    // get all keys in a section
+    CSimpleIniW::TNamesDepend keyList;
+    Ini.GetAllKeys(lpSectionName, keyList);
+
+    for (const auto& key : keyList)
+    {
+      callBack(key.pItem, Ini.GetValue(lpSectionName, key.pItem, L"", &bHasMultiple));
+    }
+  }
+  return SI_SUCCESS(rc);
+}
+// ============================================================================
+
 
 
 //=============================================================================
@@ -831,7 +855,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    cpi_enc_t const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_UTF8);
+    auto const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_UTF8);
     GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, true);
@@ -924,9 +948,7 @@ void LoadSettings()
     IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
     ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
 
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      s_iStatusbarVisible[i] = false;
-    }
+    for (bool & sbv : s_iStatusbarVisible) { sbv = false; }
     int cnt = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
       s_vSBSOrder[i] = -1;

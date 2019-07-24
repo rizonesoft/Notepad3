@@ -34,6 +34,9 @@
     <ClCompile Include="src\DropSource.cpp">
       <Filter>C/C++ Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Config.cpp">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dialogs.h">
@@ -58,6 +61,12 @@
       <Filter>H Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DropSource.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SimpleIni.h">
       <Filter>H Source Files</Filter>
     </ClInclude>
   </ItemGroup>

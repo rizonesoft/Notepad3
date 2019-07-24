@@ -1024,14 +1024,16 @@ bool EditLoadFile(
   cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :
     ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
 
+  #define IS_ENC_ENFORCED() (!Encoding_IsNONE(iForcedEncoding))
+
   // --- 2nd Use Encoding Analysis if applicable
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
   float confidence = 0.0f;
-  cpi_enc_t iAnalyzedEncoding = iForcedEncoding;
+  cpi_enc_t iAnalyzedEncoding = iAnalyzeFallback;
 
-  if (Encoding_IsNONE(iForcedEncoding) || bForceEncDetection)
+  if (!IS_ENC_ENFORCED() || bForceEncDetection)
   {
     iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
 
@@ -1091,7 +1093,6 @@ bool EditLoadFile(
 
   // --- 3rd Unicode Checks
 
-  bool const bIsForced = !Encoding_IsNONE(iForcedEncoding);
   bool const bIsUnicodeForced = Encoding_IsUNICODE(iForcedEncoding);
 
   // choose best encoding guess
@@ -1100,7 +1101,7 @@ bool EditLoadFile(
   // set Preferred Encoding
   cpi_enc_t iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
 
-  if (bIsForced) {
+  if (IS_ENC_ENFORCED()) {
     iPreferredEncoding = iForcedEncoding;
   }
   else if (!Encoding_IsNONE(iFileEncWeak)) {
@@ -1119,19 +1120,19 @@ bool EditLoadFile(
 
   bool bBOM = false;
   bool bReverse = false;
-  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
+  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !IS_ENC_ENFORCED() && !bSkipUTFDetection && !bIsUTF8Sig);
 
   cpi_enc_t const encUnicode = bSkipUTFDetection ? CPI_NONE : GetUnicodeEncoding(lpData, cbData, &bBOM, &bReverse);
 
   if (cbData == 0) {
     FileVars_Init(NULL, 0, &Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = bIsForced ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding);
+    status->iEncoding = IS_ENC_ENFORCED() ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding);
     EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
-  else if (bIsUnicodeForced || (!bIsForced && (bIsUnicodeAnalyzed || !Encoding_IsNONE(encUnicode))))
+  else if (bIsUnicodeForced || (!IS_ENC_ENFORCED() && (bIsUnicodeAnalyzed || !Encoding_IsNONE(encUnicode))))
   {
     // ===  UNICODE  ===
     if (Encoding_IsNONE(encUnicode)) 
@@ -1187,24 +1188,31 @@ bool EditLoadFile(
 
   else { // ===  ALL OTHERS  ===
 
+    // force file vars ?
     FileVars_Init(lpData, cbData, &Globals.fvCurFile);
+    cpi_enc_t const iFileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile) && !Settings.NoEncodingTags) ?
+      FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
+
+    if (!Encoding_IsNONE(iFileVarEncoding)) { 
+      iForcedEncoding = (Globals.fvCurFile.mask & FV_ENCODING) ? iFileVarEncoding : iForcedEncoding;
+    }
 
     if (Flags.bDevDebugMode) {
-      if (FileVars_IsValidEncoding(&Globals.fvCurFile)) {
+      if (!Encoding_IsNONE(iFileVarEncoding) && FileVars_IsValidEncoding(&Globals.fvCurFile)) {
         WCHAR wchBuf[128] = { L'\0' };
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"FileVarEncoding='%s'", 
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FileVarEncoding='%s'",
           g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
-        SetAdditionalTitleInfo(wchBuf);
+        AppendAdditionalTitleInfo(wchBuf);
       }
     }
 
-    // ===  UTF-8  ===
+    // ===  UTF-8 ? ===
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
-    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
+    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
     bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && Encoding_IsUTF8(iPreferredEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = !bValidUTF8 || (!bIsUTF8Sig && bSkipUTFDetection);
+    bool const bRejectUTF8 = IS_ENC_ENFORCED() || !bValidUTF8 || (!bIsUTF8Sig && bSkipUTFDetection);
 
     if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
@@ -1220,19 +1228,13 @@ bool EditLoadFile(
       }
       FreeMem(lpData);
     }
-
     else { // ===  ALL OTHER  ===
 
-      if (bIsForced)
-        status->iEncoding = iForcedEncoding;
+      // ----------------------------------------------------------------------
+      status->iEncoding = IS_ENC_ENFORCED() ? iForcedEncoding : 
+        (!Encoding_IsNONE(iPreferredEncoding) ? iPreferredEncoding : CPI_ANSI_DEFAULT);
+      // ----------------------------------------------------------------------
 
-      else {
-        status->iEncoding = FileVars_GetEncoding(&Globals.fvCurFile);
-        if (Encoding_IsNONE(status->iEncoding))
-        {
-          status->iEncoding = ((Globals.fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferredEncoding);
-        }
-      }
 
       if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
         ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData, cbData))) {
@@ -1285,7 +1287,7 @@ bool EditLoadFile(
 
   if (Flags.bDevDebugMode) {
     WCHAR wcBuf[128] = { L'\0' };
-    StringCchPrintf(wcBuf, ARRAYSIZE(wcBuf), L"  OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
+    StringCchPrintf(wcBuf, ARRAYSIZE(wcBuf), L" - OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
     AppendAdditionalTitleInfo(wcBuf);
   }
 
