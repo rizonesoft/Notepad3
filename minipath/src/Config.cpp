@@ -25,61 +25,9 @@ extern "C" {
 }
 
 extern "C" HWND      hwndMain;
-
 extern "C" WCHAR     g_wchIniFile[MAX_PATH];
 extern "C" WCHAR     g_wchIniFile2[MAX_PATH];
 extern "C" WCHAR     g_wchNP3IniFile[MAX_PATH];
-
-extern "C" BOOL      bSaveSettings;
-extern "C" WCHAR     szQuickview[MAX_PATH];
-extern "C" WCHAR     szQuickviewParams[MAX_PATH];
-extern "C" WCHAR     g_tchFavoritesDir[MAX_PATH];
-extern "C" BOOL      bNP3sFavoritesSettings;
-extern "C" WCHAR     tchOpenWithDir[MAX_PATH];
-extern "C" WCHAR     tchToolbarButtons[512];
-extern "C" WCHAR     tchToolbarBitmap[MAX_PATH];
-extern "C" WCHAR     tchToolbarBitmapHot[MAX_PATH];
-extern "C" WCHAR     tchToolbarBitmapDisabled[MAX_PATH];
-extern "C" BOOL      bClearReadOnly;
-extern "C" BOOL      bRenameOnCollision;
-extern "C" BOOL      bSingleClick;
-extern "C" BOOL      bTrackSelect;
-extern "C" BOOL      bFullRowSelect;
-extern "C" int       iStartupDir;
-extern "C" int       iEscFunction;
-extern "C" BOOL      bFocusEdit;
-extern "C" BOOL      bAlwaysOnTop;
-extern "C" BOOL      g_bTransparentMode;
-extern "C" BOOL      bMinimizeToTray;
-extern "C" BOOL      fUseRecycleBin;
-extern "C" BOOL      fNoConfirmDelete;
-extern "C" BOOL      bShowToolbar;
-extern "C" BOOL      bShowStatusbar;
-extern "C" BOOL      bShowDriveBox;
-extern "C" int       cxGotoDlg;
-extern "C" int       cxOpenWithDlg;
-extern "C" int       cyOpenWithDlg;
-extern "C" int       cxCopyMoveDlg;
-
-extern "C" BOOL      bHasQuickview;
-
-extern "C" WCHAR     tchFilter[DL_FILTER_BUFSIZE];
-extern "C" BOOL      bNegFilter;
-extern "C" BOOL      bDefCrNoFilt;
-extern "C" BOOL      bDefCrFilter;
-extern "C" COLORREF  crNoFilt;
-extern "C" COLORREF  crFilter;
-extern "C" COLORREF  crCustom[16];
-
-extern "C" LPWSTR    lpPathArg;
-extern "C" LPWSTR    lpFilterArg;
-
-extern "C" WININFO   wi;
-
-extern "C" WCHAR     szCurDir[MAX_PATH + 40];
-extern "C" DWORD     dwFillMask;
-extern "C" int       nSortFlags;
-extern "C" BOOL      fSortRev;
 
 extern "C" WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 extern "C" LANGID    g_iPrefLANGID;
@@ -400,6 +348,43 @@ extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 
 
 
+
+//=============================================================================
+//
+//  InitDefaultSettings()
+//
+//
+void InitDefaultSettings()
+{
+  Defaults.szQuickview[0] = L'\0';
+  Defaults.szQuickviewParams[0] = L'\0';
+  Defaults.g_tchFavoritesDir[0] = L'\0';
+  Defaults.tchOpenWithDir[0] = L'\0';
+  Defaults.tchToolbarButtons[0] = L'\0';
+  Defaults.tchToolbarBitmap[0] = L'\0';
+  Defaults.tchToolbarBitmapHot[0] = L'\0';
+  Defaults.tchToolbarBitmapDisabled[0] = L'\0';
+  Defaults.tchFilter[0] = L'\0';
+  Defaults.szCurDir[0] = L'\0';
+
+  // Initialize custom colors for ChooseColor()
+  Defaults.crCustom[0] = RGB(0, 0, 128);                   Defaults.crCustom[8] = RGB(255, 255, 226);
+  Defaults.crCustom[1] = GetSysColor(COLOR_WINDOWTEXT);    Defaults.crCustom[9] = GetSysColor(COLOR_WINDOW);
+  Defaults.crCustom[2] = GetSysColor(COLOR_INFOTEXT);      Defaults.crCustom[10] = GetSysColor(COLOR_INFOBK);
+  Defaults.crCustom[3] = GetSysColor(COLOR_HIGHLIGHTTEXT); Defaults.crCustom[11] = GetSysColor(COLOR_HIGHLIGHT);
+  Defaults.crCustom[4] = GetSysColor(COLOR_ACTIVECAPTION); Defaults.crCustom[12] = GetSysColor(COLOR_DESKTOP);
+  Defaults.crCustom[5] = GetSysColor(COLOR_3DFACE);        Defaults.crCustom[13] = GetSysColor(COLOR_3DFACE);
+  Defaults.crCustom[6] = GetSysColor(COLOR_3DFACE);        Defaults.crCustom[14] = GetSysColor(COLOR_3DFACE);
+  Defaults.crCustom[7] = GetSysColor(COLOR_3DFACE);        Defaults.crCustom[15] = GetSysColor(COLOR_3DFACE);
+
+  Defaults.wi.x = CW_USEDEFAULT;
+  Defaults.wi.y = CW_USEDEFAULT;
+  Defaults.wi.cx = CW_USEDEFAULT;
+  Defaults.wi.cy = CW_USEDEFAULT;
+}
+
+
+
 //=============================================================================
 //
 //  CreateIniFile()
@@ -684,162 +669,129 @@ void LoadFlags()
 //  LoadSettings()
 //
 //
+extern "C" LPWSTR lpFilterArg;
+
+#define GET_BOOL_VALUE_FROM_INISECTION(VARNAME,KEYNAME,DEFAULT) \
+  Defaults.VARNAME = DEFAULT;                           \
+  Settings.VARNAME = IniSectionGetBool(Settings_Section, KEYNAME, Defaults.VARNAME)
+
+#define GET_INT_VALUE_FROM_INISECTION(VARNAME,KEYNAME,DEFAULT,MIN,MAX) \
+  Defaults.VARNAME = DEFAULT;                                  \
+  Settings.VARNAME = clampi(IniSectionGetInt(Settings_Section, KEYNAME, Defaults.VARNAME),MIN,MAX)
+
+// -----------------------------------------------------------
+
 void LoadSettings()
 {
   LoadIniFile(g_wchIniFile);
 
   const WCHAR* const Settings_Section = L"Settings";
 
-  bSaveSettings = IniSectionGetInt(Settings_Section, L"SaveSettings", 1);
-  if (bSaveSettings) bSaveSettings = 1;
+  GET_BOOL_VALUE_FROM_INISECTION(bSaveSettings, L"SaveSettings", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bSingleClick, L"SingleClick", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bTrackSelect, L"TrackSelect", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bFullRowSelect, L"FullRowSelect", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(fUseRecycleBin, L"UseRecycleBin", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(fNoConfirmDelete, L"NoConfirmDelete", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(bClearReadOnly, L"ClearReadOnly", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bRenameOnCollision, L"RenameOnCollision", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(bFocusEdit, L"FocusEdit", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bAlwaysOnTop, L"AlwaysOnTop", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(bMinimizeToTray, L"MinimizeToTray", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(g_bTransparentMode, L"TransparentMode", FALSE);
+  GET_INT_VALUE_FROM_INISECTION(iEscFunction, L"EscFunction", 2, 0, 2);
+  GET_INT_VALUE_FROM_INISECTION(iStartupDir, L"StartupDirectory", 2, 0, 2);
 
-  bSingleClick = IniSectionGetInt(Settings_Section, L"SingleClick", 1);
-  if (bSingleClick) bSingleClick = 1;
-
-  bTrackSelect = IniSectionGetInt(Settings_Section, L"TrackSelect", 1);
-  if (bTrackSelect) bTrackSelect = 1;
-
-  bFullRowSelect = IniSectionGetInt(Settings_Section, L"FullRowSelect", 0);
-  if (bFullRowSelect) bFullRowSelect = 1;
-
-  fUseRecycleBin = IniSectionGetInt(Settings_Section, L"UseRecycleBin", 0);
-  if (fUseRecycleBin) fUseRecycleBin = 1;
-
-  fNoConfirmDelete = IniSectionGetInt(Settings_Section, L"NoConfirmDelete", 0);
-  if (fNoConfirmDelete) fNoConfirmDelete = 1;
-
-  bClearReadOnly = IniSectionGetInt(Settings_Section, L"ClearReadOnly", 1);
-  if (bClearReadOnly) bClearReadOnly = 1;
-
-  bRenameOnCollision = IniSectionGetInt(Settings_Section, L"RenameOnCollision", 0);
-  if (bRenameOnCollision) bRenameOnCollision = 1;
-
-  bFocusEdit = IniSectionGetInt(Settings_Section, L"FocusEdit", 1);
-  if (bFocusEdit) bFocusEdit = 1;
-
-  bAlwaysOnTop = IniSectionGetInt(Settings_Section, L"AlwaysOnTop", 0);
-  if (bAlwaysOnTop) bAlwaysOnTop = 1;
-
-  bMinimizeToTray = IniSectionGetInt(Settings_Section, L"MinimizeToTray", 0);
-  if (bMinimizeToTray) bMinimizeToTray = 1;
-
-  g_bTransparentMode = IniSectionGetInt(Settings_Section, L"TransparentMode", 0);
-  if (g_bTransparentMode) g_bTransparentMode = 1;
-
-  iEscFunction = IniSectionGetInt(Settings_Section, L"EscFunction", 2);
-  iEscFunction = max(min(iEscFunction, 2), 0);
-
-  iStartupDir = IniSectionGetInt(Settings_Section, L"StartupDirectory", 2);
-  iStartupDir = max(min(iStartupDir, 2), 0);
-
-  if (!IniSectionGetString(Settings_Section, L"Favorites", L"",
-    g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir))) {
+  Defaults.g_tchFavoritesDir[0] = L'\0';
+  if (!IniSectionGetString(Settings_Section, L"Favorites", Defaults.g_tchFavoritesDir,
+    Settings.g_tchFavoritesDir, COUNTOF(Settings.g_tchFavoritesDir))) {
     // try to fetch Favorites dir from Notepad3.ini
     if (StrIsNotEmpty(g_wchNP3IniFile)) {
-      bNP3sFavoritesSettings = TRUE;
-      IniFileGetString(g_wchNP3IniFile, L"Settings", L"Favorites", L"", g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir));
+      Settings.bNP3sFavoritesSettings = TRUE;
+      IniFileGetString(g_wchNP3IniFile, L"Settings", L"Favorites", L"", Settings.g_tchFavoritesDir, COUNTOF(Settings.g_tchFavoritesDir));
     }
   }
-  if (StrIsEmpty(g_tchFavoritesDir))
-    SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, g_tchFavoritesDir);
+  if (StrIsEmpty(Settings.g_tchFavoritesDir))
+    SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, Settings.g_tchFavoritesDir);
   else
-    PathAbsoluteFromApp(g_tchFavoritesDir, nullptr, COUNTOF(g_tchFavoritesDir), TRUE);
+    PathAbsoluteFromApp(Settings.g_tchFavoritesDir, nullptr, COUNTOF(Settings.g_tchFavoritesDir), TRUE);
 
-  if (!IniSectionGetString(Settings_Section, L"Quikview.exe", L"",
-    szQuickview, COUNTOF(szQuickview))) {
-    GetSystemDirectory(szQuickview, COUNTOF(szQuickview));
-    PathAddBackslash(szQuickview);
-    lstrcat(szQuickview, L"Viewers\\Quikview.exe");
+
+  Defaults.szQuickview[0] = L'\0';
+  if (!IniSectionGetString(Settings_Section, L"Quikview.exe", Defaults.szQuickview,
+    Settings.szQuickview, COUNTOF(Settings.szQuickview))) {
+    GetSystemDirectory(Settings.szQuickview, COUNTOF(Settings.szQuickview));
+    PathAddBackslash(Settings.szQuickview);
+    lstrcat(Settings.szQuickview, L"Viewers\\Quikview.exe");
   }
   else
-    PathAbsoluteFromApp(szQuickview, nullptr, COUNTOF(szQuickview), TRUE);
+    PathAbsoluteFromApp(Settings.szQuickview, nullptr, COUNTOF(Settings.szQuickview), TRUE);
 
-  bHasQuickview = PathFileExists(szQuickview);
+  Settings.bHasQuickview = PathFileExists(Settings.szQuickview);
 
-  IniSectionGetString(Settings_Section, L"QuikviewParams", L"", szQuickviewParams, COUNTOF(szQuickviewParams));
+  Defaults.szQuickviewParams[0] = L'\0';
+  IniSectionGetString(Settings_Section, L"QuikviewParams", Defaults.szQuickviewParams,
+    Settings.szQuickviewParams, COUNTOF(Settings.szQuickviewParams));
 
-  if (!IniSectionGetString(Settings_Section, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
+
+  lstrcpy(Defaults.tchOpenWithDir, L"%USERPROFILE%\\Desktop");
+  if (IniSectionGetString(Settings_Section, L"OpenWithDir", L"",
+    Settings.tchOpenWithDir, COUNTOF(Settings.tchOpenWithDir)) == 0) {
     // try to fetch Open With dir from Notepad3.ini
-    IniFileGetString(g_wchNP3IniFile, L"Settings", L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir));
+    IniFileGetString(g_wchNP3IniFile, L"Settings", L"OpenWithDir", L"", Settings.tchOpenWithDir, COUNTOF(Settings.tchOpenWithDir));
   }
-  if (StrIsEmpty(tchOpenWithDir))
-    SHGetSpecialFolderPath(nullptr, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
+  if (StrIsEmpty(Settings.tchOpenWithDir))
+    SHGetSpecialFolderPath(nullptr, Settings.tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
   else
-    PathAbsoluteFromApp(tchOpenWithDir, nullptr, COUNTOF(tchOpenWithDir), TRUE);
+    PathAbsoluteFromApp(Settings.tchOpenWithDir, nullptr, COUNTOF(Settings.tchOpenWithDir), TRUE);
 
-  dwFillMask = IniSectionGetInt(Settings_Section, L"FillMask", DL_ALLOBJECTS);
-  if (dwFillMask & ~DL_ALLOBJECTS) dwFillMask = DL_ALLOBJECTS;
+  GET_INT_VALUE_FROM_INISECTION(dwFillMask, L"FillMask", DL_ALLOBJECTS, DL_FOLDERS, DL_ALLOBJECTS);
+  GET_INT_VALUE_FROM_INISECTION(nSortFlags, L"SortOptions", DS_TYPE, 0, 3);
+  GET_BOOL_VALUE_FROM_INISECTION(fSortRev, L"SortReverse", FALSE);
 
-  nSortFlags = IniSectionGetInt(Settings_Section, L"SortOptions", DS_TYPE);
-  nSortFlags = min(3, max(nSortFlags, 0));
-
-  fSortRev = IniSectionGetInt(Settings_Section, L"SortReverse", 0);
-  if (fSortRev) fSortRev = 1;
-
+  lstrcpy(Defaults.tchFilter, L"*.*");
   if (!lpFilterArg) {
-    if (!IniSectionGetString(Settings_Section, L"FileFilter", L"",
-      tchFilter, COUNTOF(tchFilter)))
-      lstrcpy(tchFilter, L"*.*");
-
-    bNegFilter = IniSectionGetInt(Settings_Section, L"NegativeFilter", 0);
-    if (bNegFilter) bNegFilter = 1;
+    IniSectionGetString(Settings_Section, L"FileFilter", Defaults.tchFilter, Settings.tchFilter, COUNTOF(Settings.tchFilter));
   }
-
   else { // ignore filter if /m was specified
-    if (*lpFilterArg == L'-') {
-      bNegFilter = TRUE;
-      lstrcpyn(tchFilter, lpFilterArg + 1, COUNTOF(tchFilter));
+    if (*(lpFilterArg) == L'-') {
+      Settings.bNegFilter = TRUE;
+      (void)lstrcpyn(Settings.tchFilter, lpFilterArg + 1, COUNTOF(Settings.tchFilter));
     }
     else {
-      bNegFilter = FALSE;
-      lstrcpyn(tchFilter, lpFilterArg, COUNTOF(tchFilter));
+      Settings.bNegFilter = FALSE;
+      (void)lstrcpyn(Settings.tchFilter, lpFilterArg, COUNTOF(Settings.tchFilter));
     }
   }
+  GET_BOOL_VALUE_FROM_INISECTION(bNegFilter, L"NegativeFilter", FALSE);
+  GET_BOOL_VALUE_FROM_INISECTION(bDefCrNoFilt, L"DefColorNoFilter", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bDefCrFilter, L"DefColorFilter", TRUE);
+  GET_INT_VALUE_FROM_INISECTION(crNoFilt, L"ColorNoFilter", GetSysColor(COLOR_WINDOWTEXT), 0, INT_MAX);
+  GET_INT_VALUE_FROM_INISECTION(crFilter, L"ColorFilter", GetSysColor(COLOR_HIGHLIGHT), 0, INT_MAX);
 
-  bDefCrNoFilt = IniSectionGetInt(Settings_Section, L"DefColorNoFilter", 1);
-  if (bDefCrNoFilt) bDefCrNoFilt = 1;
-  bDefCrFilter = IniSectionGetInt(Settings_Section, L"DefColorFilter", 1);
-  if (bDefCrFilter) bDefCrFilter = 1;
-
-  crNoFilt = IniSectionGetInt(Settings_Section, L"ColorNoFilter", GetSysColor(COLOR_WINDOWTEXT));
-  crFilter = IniSectionGetInt(Settings_Section, L"ColorFilter", GetSysColor(COLOR_HIGHLIGHT));
-
-  if (IniSectionGetString(Settings_Section, L"ToolbarButtons", L"", tchToolbarButtons, COUNTOF(tchToolbarButtons)) == 0) {
-    lstrcpy(tchToolbarButtons, L"1 2 3 4 5 0 8");
+  lstrcpy(Defaults.tchToolbarButtons, L"1 2 3 4 5 0 8");
+  if (IniSectionGetString(Settings_Section, L"ToolbarButtons", Defaults.tchToolbarButtons, Settings.tchToolbarButtons, COUNTOF(Settings.tchToolbarButtons)) == 0) {
+    lstrcpy(Settings.tchToolbarButtons, Defaults.tchToolbarButtons);
   }
-  bShowToolbar = IniSectionGetInt(Settings_Section, L"ShowToolbar", 1);
-  if (bShowToolbar) bShowToolbar = 1;
 
-  bShowStatusbar = IniSectionGetInt(Settings_Section, L"ShowStatusbar", 1);
-  if (bShowStatusbar) bShowStatusbar = 1;
+  GET_BOOL_VALUE_FROM_INISECTION(bShowToolbar, L"ShowToolbar", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bShowStatusbar, L"ShowStatusbar", TRUE);
+  GET_BOOL_VALUE_FROM_INISECTION(bShowDriveBox, L"ShowDriveBox", TRUE);
+  GET_INT_VALUE_FROM_INISECTION(cxGotoDlg, L"GotoDlgSizeX", 0, 0, INT_MAX);
+  GET_INT_VALUE_FROM_INISECTION(cxOpenWithDlg, L"OpenWithDlgSizeX", 0, 0, INT_MAX);
+  GET_INT_VALUE_FROM_INISECTION(cyOpenWithDlg, L"OpenWithDlgSizeY", 0, 0, INT_MAX);
+  GET_INT_VALUE_FROM_INISECTION(cxCopyMoveDlg, L"CopyMoveDlgSizeX", 0, 0, INT_MAX);
 
-  bShowDriveBox = IniSectionGetInt(Settings_Section, L"ShowDriveBox", 1);
-  if (bShowDriveBox) bShowDriveBox = 1;
-
-  cxGotoDlg = IniSectionGetInt(Settings_Section, L"GotoDlgSizeX", 0);
-  cxGotoDlg = max(cxGotoDlg, 0);
-
-  cxOpenWithDlg = IniSectionGetInt(Settings_Section, L"OpenWithDlgSizeX", 0);
-  cxOpenWithDlg = max(cxOpenWithDlg, 0);
-
-  cyOpenWithDlg = IniSectionGetInt(Settings_Section, L"OpenWithDlgSizeY", 0);
-  cyOpenWithDlg = max(cyOpenWithDlg, 0);
-
-  cxCopyMoveDlg = IniSectionGetInt(Settings_Section, L"CopyMoveDlgSizeX", 0);
-  cxCopyMoveDlg = max(cxCopyMoveDlg, 0);
+  // --------------------------------------------------------------------------
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
   int ResY = GetSystemMetrics(SM_CYSCREEN);
-
   
   const WCHAR* const ToolbarImages_Section = L"Toolbar Images";
 
-  IniSectionGetString(ToolbarImages_Section, L"BitmapDefault", L"",
-    tchToolbarBitmap, COUNTOF(tchToolbarBitmap));
-  IniSectionGetString(ToolbarImages_Section, L"BitmapHot", L"",
-    tchToolbarBitmapHot, COUNTOF(tchToolbarBitmap));
-  IniSectionGetString(ToolbarImages_Section, L"BitmapDisabled", L"",
-    tchToolbarBitmapDisabled, COUNTOF(tchToolbarBitmap));
+  IniSectionGetString(ToolbarImages_Section, L"BitmapDefault", L"", Settings.tchToolbarBitmap, COUNTOF(Settings.tchToolbarBitmap));
+  IniSectionGetString(ToolbarImages_Section, L"BitmapHot", L"", Settings.tchToolbarBitmapHot, COUNTOF(Settings.tchToolbarBitmap));
+  IniSectionGetString(ToolbarImages_Section, L"BitmapDisabled", L"", Settings.tchToolbarBitmapDisabled, COUNTOF(Settings.tchToolbarBitmap));
 
   if (!flagPosParam) { // ignore window position if /p was specified
 
@@ -852,31 +804,45 @@ void LoadSettings()
 
     const WCHAR* const Window_Section = L"Window";
 
-    wi.x = IniSectionGetInt(Window_Section, tchPosX, CW_USEDEFAULT);
-    wi.y = IniSectionGetInt(Window_Section, tchPosY, CW_USEDEFAULT);
-    wi.cx = IniSectionGetInt(Window_Section, tchSizeX, CW_USEDEFAULT);
-    wi.cy = IniSectionGetInt(Window_Section, tchSizeY, CW_USEDEFAULT);
+    Settings.wi.x = IniSectionGetInt(Window_Section, tchPosX, Defaults.wi.x);
+    Settings.wi.y = IniSectionGetInt(Window_Section, tchPosY, Defaults.wi.y);
+    Settings.wi.cx = IniSectionGetInt(Window_Section, tchSizeX, Defaults.wi.cx);
+    Settings.wi.cy = IniSectionGetInt(Window_Section, tchSizeY, Defaults.wi.cy);
   }
 
-
   // Initialize custom colors for ChooseColor()
-  crCustom[0] = RGB(0, 0, 128);                     crCustom[8] = RGB(255, 255, 226);
-  crCustom[1] = GetSysColor(COLOR_WINDOWTEXT);    crCustom[9] = GetSysColor(COLOR_WINDOW);
-  crCustom[2] = GetSysColor(COLOR_INFOTEXT);      crCustom[10] = GetSysColor(COLOR_INFOBK);
-  crCustom[3] = GetSysColor(COLOR_HIGHLIGHTTEXT); crCustom[11] = GetSysColor(COLOR_HIGHLIGHT);
-  crCustom[4] = GetSysColor(COLOR_ACTIVECAPTION); crCustom[12] = GetSysColor(COLOR_DESKTOP);
-  crCustom[5] = GetSysColor(COLOR_3DFACE);        crCustom[13] = GetSysColor(COLOR_3DFACE);
-  crCustom[6] = GetSysColor(COLOR_3DFACE);        crCustom[14] = GetSysColor(COLOR_3DFACE);
-  crCustom[7] = GetSysColor(COLOR_3DFACE);        crCustom[15] = GetSysColor(COLOR_3DFACE);
-
+  for (int i = 0; i < COUNTOF(Settings.crCustom); ++i) {
+    Settings.crCustom[i] = Defaults.crCustom[i];
+  }
+  
   ReleaseIniFile();
 }
+
 
 //=============================================================================
 //
 //  SaveSettings()
 //
 //
+
+#define SAVE_VALUE_IF_NOT_EQ_DEFAULT(TYPE,KEYNAME,VARNAME)             \
+  if (Settings.VARNAME != Defaults.VARNAME) {                          \
+    IniSectionSet##TYPE(Settings_Section, KEYNAME, Settings.VARNAME);  \
+  }                                                                    \
+  else {                                                               \
+    IniSectionDelete(Settings_Section, KEYNAME, false);                \
+  }
+
+#define SAVE_STRING_IF_NOT_EQ_DEFAULT(KEYNAME,VARNAME)                 \
+  if (lstrcmp(Settings.VARNAME, Defaults.VARNAME) != 0) {              \
+    IniSectionSetString(Settings_Section, KEYNAME, Settings.VARNAME);  \
+  }                                                                    \
+  else {                                                               \
+    IniSectionDelete(Settings_Section, KEYNAME, false);                \
+  }
+
+// ----------------------------------------------------------------------------
+
 void SaveSettings(BOOL bSaveSettingsNow)
 {
   WCHAR wchTmp[MAX_PATH];
@@ -885,11 +851,11 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
   CreateIniFile();
 
-  if (!bSaveSettings && !bSaveSettingsNow) {
-    if (iStartupDir == 1) {
-      IniFileSetString(g_wchIniFile, L"Settings", L"MRUDirectory", szCurDir);
+  if (!Settings.bSaveSettings && !bSaveSettingsNow) {
+    if (Settings.iStartupDir == 1) {
+      IniFileSetString(g_wchIniFile, L"Settings", L"MRUDirectory", Settings.szCurDir);
     }
-    IniFileSetBool(g_wchIniFile, L"Settings", L"SaveSettings", bSaveSettings);
+    IniFileSetBool(g_wchIniFile, L"Settings", L"SaveSettings", Settings.bSaveSettings);
     return;
   }
 
@@ -897,49 +863,59 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
   const WCHAR* const Settings_Section = L"Settings";
 
-  IniSectionSetInt(Settings_Section, L"SaveSettings", bSaveSettings);
-  IniSectionSetInt(Settings_Section, L"SingleClick", bSingleClick);
-  IniSectionSetInt(Settings_Section, L"TrackSelect", bTrackSelect);
-  IniSectionSetInt(Settings_Section, L"FullRowSelect", bFullRowSelect);
-  IniSectionSetInt(Settings_Section, L"UseRecycleBin", fUseRecycleBin);
-  IniSectionSetInt(Settings_Section, L"NoConfirmDelete", fNoConfirmDelete);
-  IniSectionSetInt(Settings_Section, L"ClearReadOnly", bClearReadOnly);
-  IniSectionSetInt(Settings_Section, L"RenameOnCollision", bRenameOnCollision);
-  IniSectionSetInt(Settings_Section, L"FocusEdit", bFocusEdit);
-  IniSectionSetInt(Settings_Section, L"AlwaysOnTop", bAlwaysOnTop);
-  IniSectionSetInt(Settings_Section, L"MinimizeToTray", bMinimizeToTray);
-  IniSectionSetInt(Settings_Section, L"TransparentMode", g_bTransparentMode);
-  IniSectionSetInt(Settings_Section, L"EscFunction", iEscFunction);
-  IniSectionSetInt(Settings_Section, L"StartupDirectory", iStartupDir);
-  if (iStartupDir == 1) {
-    IniSectionSetString(Settings_Section, L"MRUDirectory", szCurDir);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SaveSettings", bSaveSettings);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SingleClick", bSingleClick);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TrackSelect", bTrackSelect);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FullRowSelect", bFullRowSelect);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"UseRecycleBin", fUseRecycleBin);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"NoConfirmDelete", fNoConfirmDelete);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ClearReadOnly", bClearReadOnly);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"RenameOnCollision", bRenameOnCollision);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FocusEdit", bFocusEdit);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"AlwaysOnTop", bAlwaysOnTop);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"MinimizeToTray", bMinimizeToTray);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TransparentMode", g_bTransparentMode);
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"EscFunction", iEscFunction);
+  
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"StartupDirectory", iStartupDir);
+  if (Settings.iStartupDir == 1) {
+    IniSectionSetString(Settings_Section, L"MRUDirectory", Settings.szCurDir);
   }
-  if (!bNP3sFavoritesSettings) {
-    PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+  if (!Settings.bNP3sFavoritesSettings) {
+    PathRelativeToApp(Settings.g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
     IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
   }
-  PathRelativeToApp(szQuickview, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+
+  PathRelativeToApp(Settings.szQuickview, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
   IniSectionSetString(Settings_Section, L"Quikview.exe", wchTmp);
-  IniSectionSetString(Settings_Section, L"QuikviewParams", szQuickviewParams);
-  PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
-  IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
-  IniSectionSetInt(Settings_Section, L"FillMask", dwFillMask);
-  IniSectionSetInt(Settings_Section, L"SortOptions", nSortFlags);
-  IniSectionSetInt(Settings_Section, L"SortReverse", fSortRev);
-  IniSectionSetString(Settings_Section, L"FileFilter", tchFilter);
-  IniSectionSetInt(Settings_Section, L"NegativeFilter", bNegFilter);
-  IniSectionSetInt(Settings_Section, L"DefColorNoFilter", bDefCrNoFilt);
-  IniSectionSetInt(Settings_Section, L"DefColorFilter", bDefCrFilter);
-  IniSectionSetInt(Settings_Section, L"ColorNoFilter", crNoFilt);
-  IniSectionSetInt(Settings_Section, L"ColorFilter", crFilter);
-  IniSectionSetString(Settings_Section, L"ToolbarButtons", tchToolbarButtons);
-  IniSectionSetInt(Settings_Section, L"ShowToolbar", bShowToolbar);
-  IniSectionSetInt(Settings_Section, L"ShowStatusbar", bShowStatusbar);
-  IniSectionSetInt(Settings_Section, L"ShowDriveBox", bShowDriveBox);
-  IniSectionSetInt(Settings_Section, L"GotoDlgSizeX", cxGotoDlg);
-  IniSectionSetInt(Settings_Section, L"OpenWithDlgSizeX", cxOpenWithDlg);
-  IniSectionSetInt(Settings_Section, L"OpenWithDlgSizeY", cyOpenWithDlg);
-  IniSectionSetInt(Settings_Section, L"CopyMoveDlgSizeX", cxCopyMoveDlg);
+  SAVE_STRING_IF_NOT_EQ_DEFAULT(L"Quikview.exe", szQuickviewParams);
+  
+  PathRelativeToApp(Settings.tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+  if (lstrcmp(wchTmp, Defaults.tchOpenWithDir) != 0) {
+    IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
+  }
+
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"FillMask", dwFillMask);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"SortOptions", nSortFlags);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SortReverse", fSortRev);
+  SAVE_STRING_IF_NOT_EQ_DEFAULT(L"FileFilter", tchFilter);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"NegativeFilter", bNegFilter);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"DefColorNoFilter", bDefCrNoFilt);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"DefColorFilter", bDefCrFilter);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"ColorNoFilter", crNoFilt);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"ColorFilter", crFilter);
+  SAVE_STRING_IF_NOT_EQ_DEFAULT(L"ToolbarButtons", tchToolbarButtons);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowToolbar", bShowToolbar);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowStatusbar", bShowStatusbar);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowDriveBox", bShowDriveBox);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"GotoDlgSizeX", cxGotoDlg);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"OpenWithDlgSizeX", cxOpenWithDlg);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"OpenWithDlgSizeY", cyOpenWithDlg);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"CopyMoveDlgSizeX", cxCopyMoveDlg);
+
+  // cleanup
+  IniSectionDelete(Settings_Section, L"WriteTest", FALSE);
 
   /*
     SaveSettingsNow(): query Window Dimensions
@@ -948,15 +924,15 @@ void SaveSettings(BOOL bSaveSettingsNow)
   if (bSaveSettingsNow)
   {
     WINDOWPLACEMENT wndpl;
-
+    ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
     // GetWindowPlacement
     wndpl.length = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(hwndMain, &wndpl);
 
-    wi.x = wndpl.rcNormalPosition.left;
-    wi.y = wndpl.rcNormalPosition.top;
-    wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-    wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
+    Settings.wi.x = wndpl.rcNormalPosition.left;
+    Settings.wi.y = wndpl.rcNormalPosition.top;
+    Settings.wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
+    Settings.wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
   }
 
   WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
@@ -970,10 +946,10 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
   const WCHAR* const Windows_Section = L"Window";
 
-  IniSectionSetInt(Windows_Section, tchPosX, wi.x);
-  IniSectionSetInt(Windows_Section, tchPosY, wi.y);
-  IniSectionSetInt(Windows_Section, tchSizeX, wi.cx);
-  IniSectionSetInt(Windows_Section, tchSizeY, wi.cy);
+  IniSectionSetInt(Windows_Section, tchPosX, Settings.wi.x);
+  IniSectionSetInt(Windows_Section, tchPosY, Settings.wi.y);
+  IniSectionSetInt(Windows_Section, tchSizeX, Settings.wi.cx);
+  IniSectionSetInt(Windows_Section, tchSizeY, Settings.wi.cy);
 
   SaveIniFile(g_wchIniFile);
 }

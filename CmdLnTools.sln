@@ -1,0 +1,46 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3encrypt", "np3encrypt\np3encrypt.vcxproj", "{0210F830-26C6-40FC-BFD1-6ED833B90830}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ced", "ced\ced.vcxproj", "{12BD16A7-3BD9-4205-99B0-75E821EA7449}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E5B87EB-C468-4334-8384-E9A3F0F6FBDA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Build\Changes.txt = Build\Changes.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|Win32.Build.0 = Debug|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|x64.ActiveCfg = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|x64.Build.0 = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.ActiveCfg = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.Build.0 = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.Build.0 = Release|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|Win32.ActiveCfg = Debug|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|Win32.Build.0 = Debug|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|x64.ActiveCfg = Debug|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|x64.Build.0 = Debug|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|Win32.ActiveCfg = Release|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|Win32.Build.0 = Release|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|x64.ActiveCfg = Release|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0B8FE68-ECBC-4173-9027-E1EC2C9B5BDF}
+	EndGlobalSection
+EndGlobal

@@ -143,6 +143,7 @@ inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
 //==== History Functions ======================================================
 #define HISTORY_ITEMS 50
 
+
 typedef struct tagHISTORY
 {
   WCHAR *psz[HISTORY_ITEMS]; // Strings
