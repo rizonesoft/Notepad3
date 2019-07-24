@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.723.#(build) (2019-07-23)
+Current BETA Version 5.19.724.#(build) (2019-07-24)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Complete impl. of UTF-8Sig MinPath.ini file handler
 - Use double-quotes as MRU list string limiter
 - Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
 - Update to Oniguruma v.6.9.3

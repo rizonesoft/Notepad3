@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FreeFileSync XmlType="GUI" XmlFormat="14">
+    <Compare>
+        <Variant>TimeAndSize</Variant>
+        <Symlinks>Exclude</Symlinks>
+        <IgnoreTimeShift/>
+    </Compare>
+    <Synchronize>
+        <Variant>Mirror</Variant>
+        <DetectMovedFiles>false</DetectMovedFiles>
+        <DeletionPolicy>Versioning</DeletionPolicy>
+        <VersioningFolder Threads="12" Style="Replace">E:\Data_D\Versioning</VersioningFolder>
+    </Synchronize>
+    <Filter>
+        <Include>
+            <Item>*</Item>
+        </Include>
+        <Exclude>
+            <Item>\System Volume Information\</Item>
+            <Item>\$Recycle.Bin\</Item>
+            <Item>\RECYCLER\</Item>
+            <Item>\RECYCLED\</Item>
+            <Item>*\desktop.ini</Item>
+            <Item>*\thumbs.db</Item>
+        </Exclude>
+        <TimeSpan Type="None">0</TimeSpan>
+        <SizeMin Unit="None">0</SizeMin>
+        <SizeMax Unit="None">0</SizeMax>
+    </Filter>
+    <FolderPairs>
+        <Pair>
+            <Left Threads="12">D:\Rizonesoft</Left>
+            <Right Threads="12">E:\Data_D\Rizonesoft</Right>
+            <Synchronize>
+                <Variant>Mirror</Variant>
+                <DetectMovedFiles>false</DetectMovedFiles>
+                <DeletionPolicy>Versioning</DeletionPolicy>
+                <VersioningFolder Threads="12" Style="Replace">E:\Data_D\Versioning\Rizonesoft</VersioningFolder>
+            </Synchronize>
+            <Filter>
+                <Include>
+                    <Item>*</Item>
+                </Include>
+                <Exclude>
+                    <Item>\Develop\Notepad3\Bin\</Item>
+                    <Item>\Develop\Notepad3\.git\</Item>
+                    <Item>\Develop\Notepad3\.vs\</Item>
+                    <Item>\Develop\Notepad3\np3portableapp\*.paf.exe</Item>
+                    <Item>\Develop\Notepad3\np3portableapp\Notepad3Portable\App\Notepad3\</Item>
+                    <Item>\Notepad++\Notepad++Portable\</Item>
+                    <Item>\Notepad2\Notepad2-zufuliu\</Item>
+                    <Item>\NP3Portable\Notepad3Portable\</Item>
+                    <Item>\EditPadLite7\EditPadLite7Portable\</Item>
+                </Exclude>
+                <TimeSpan Type="None">0</TimeSpan>
+                <SizeMin Unit="None">0</SizeMin>
+                <SizeMax Unit="None">0</SizeMax>
+            </Filter>
+        </Pair>
+    </FolderPairs>
+    <Errors Ignore="false" Retry="0" Delay="5"/>
+    <LogFolder/>
+    <PostSyncCommand Condition="Completion"/>
+    <Gui>
+        <MiddleGridView>Action</MiddleGridView>
+    </Gui>
+</FreeFileSync>
