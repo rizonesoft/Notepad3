@@ -32,7 +32,7 @@ KEYWORDLIST KeyWords_LUA = {
 
 
 EDITLEXER lexLUA = { 
-SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua", L"", 
+SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua; wlua; nse; luadoc; luax", L"", 
 &KeyWords_LUA, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_LUA_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

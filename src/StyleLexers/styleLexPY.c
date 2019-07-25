@@ -10,7 +10,7 @@ KEYWORDLIST KeyWords_PY = {
 
 
 EDITLEXER lexPY = { 
-SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw", L"", 
+SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw; pyx; pxd; pxi; boo; empy; cobra; gs", L"", 
 &KeyWords_PY, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_P_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

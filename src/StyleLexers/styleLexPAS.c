@@ -13,7 +13,7 @@ KEYWORDLIST KeyWords_PAS = {
 
 
 EDITLEXER lexPAS = { 
-SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; inc; pp", L"", 
+SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; pp; lfm; lpr; fpd", L"", 
 &KeyWords_PAS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_PAS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
