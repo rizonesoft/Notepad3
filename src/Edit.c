@@ -760,8 +760,8 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE const hOld   = GetClipboardData(CF_UNICODETEXT);
   const WCHAR* pszOld = GlobalLock(hOld);
 
-  int const _eol_mode = SciCall_GetEOLMode();
-  const WCHAR *pszSep = ((_eol_mode == SC_EOL_CRLF) ? L"\r\n" : ((_eol_mode == SC_EOL_CR) ? L"\r" : L"\n"));
+  WCHAR pszSep[3] = { L'\0' };
+  Sci_GetCurrentEOL_W(pszSep);
 
   size_t cchNewText = cchTextW;
   if (pszOld && *pszOld) {
@@ -3922,14 +3922,8 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
     return;
   }
 
-  int cchEOL = 2;
-  WCHAR wszEOL[] = L"\r\n";
-  int const cEOLMode = SciCall_GetEOLMode();
-  if (cEOLMode == SC_EOL_CR)
-    cchEOL = 1;
-  else if (cEOLMode == SC_EOL_LF) {
-    cchEOL = 1; wszEOL[0] = L'\n';
-  }
+  WCHAR wszEOL[3] = { L'\0' };
+  int const cchEOL = Sci_GetCurrentEOL_W(wszEOL);
 
   int cchConvW = 0;
   DocPos iLineLength = 0;
@@ -4084,23 +4078,8 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
     return;
   }
 
-  char szEOL[] = "\r\n";
-  int  cchEOL = 2;
-  switch (SciCall_GetEOLMode())
-  {
-  case SC_EOL_LF:
-    szEOL[0] = '\n';
-    szEOL[1] = '\0';
-    cchEOL = 1;
-    break;
-  case SC_EOL_CR:
-    szEOL[1] = '\0';
-    cchEOL = 1;
-    break;
-  case SC_EOL_CRLF:
-  default:
-    break;
-  }
+  char szEOL[3] = { '\0' };
+  int const cchEOL = Sci_GetCurrentEOL_A(szEOL);
 
   for (int i = 0; i < iSelLength; ++i)
   {
@@ -4227,15 +4206,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
   DocLn const iLineCount = iLineEnd - iLineStart + 1;
 
-  int const cEOLMode = SciCall_GetEOLMode();
-  char mszEOL[] = "\r\n";
-  if (cEOLMode == SC_EOL_CR) {
-    mszEOL[1] = '\0';
-  }
-  else if (cEOLMode == SC_EOL_LF) {
-    mszEOL[0] = '\n';
-    mszEOL[1] = '\0';
-  }
+  char mszEOL[3] = { '\0' };
+  Sci_GetCurrentEOL_A(mszEOL);
 
   int const _iTabWidth = SciCall_GetTabWidth();
 

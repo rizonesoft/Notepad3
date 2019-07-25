@@ -539,8 +539,6 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 
 #define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
 
-#define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
-
 #define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
 
@@ -568,6 +566,46 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 #define Sci_ApplyLexerStyle(B, E) SciCall_Colourise((B), (E));
 
 #define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)  
+
+// ----------------------------------------------------------------------------
+
+#define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
+
+
+inline int Sci_GetCurrentEOL_A(LPCH eol) {
+  switch (SciCall_GetEOLMode()) {
+    case SC_EOL_CRLF:
+      eol[0] = '\r'; eol[1] = '\n'; eol[2] = '\0';
+      return 2;
+    case SC_EOL_CR:
+      eol[0] = '\r'; eol[1] = '\0';
+      return 1;
+    case SC_EOL_LF:
+      eol[0] = '\n'; eol[1] = '\0';
+      return 1;
+    default:
+      return 0;
+  }
+}
+// ----------------------------------------------------------------------------
+
+inline int Sci_GetCurrentEOL_W(LPWCH eol) {
+  switch (SciCall_GetEOLMode()) {
+    case SC_EOL_CRLF:
+      eol[0] = L'\r'; eol[1] = L'\n'; eol[2] = L'\0';
+      return 2;
+    case SC_EOL_CR:
+      eol[0] = L'\r'; eol[1] = L'\0';
+      return 1;
+    case SC_EOL_LF:
+      eol[0] = L'\n'; eol[1] = L'\0';
+      return 1;
+    default:
+      return 0;
+  }
+}
+// ----------------------------------------------------------------------------
+
 
 //=============================================================================
 
