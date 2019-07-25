@@ -27,7 +27,7 @@ KEYWORDLIST KeyWords_PL = {
 
 
 EDITLEXER lexPL = { 
-SCLEX_PERL, IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod", L"", 
+SCLEX_PERL, IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod; plx; stp", L"", 
 &KeyWords_PL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_PL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

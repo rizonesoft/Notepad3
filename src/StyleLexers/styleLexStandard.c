@@ -71,7 +71,7 @@ SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"",
 
 
 EDITLEXER lexLATEX = { 
-SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty", L"", 
+SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty; texi; texinfo; txi", L"", 
 &KeyWords_NULL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_L_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -30,13 +30,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.724.#(build) (2019-07-24)
+Current BETA Version 5.19.725.#(build) (2019-07-25)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Add Web Template Action to context menu
+- Add settings for allowed AutoComplete fill-up chars
 - Advanced TOML Lexer
 - Multiselect Edit Indicator
 - Color hover and picker (HTML color def only #RRGGBB)
@@ -44,14 +44,12 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Complete impl. of UTF-8Sig MinPath.ini file handler
 - Use double-quotes as MRU list string limiter
 - Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
 - Update to Oniguruma v.6.9.3
 - Scintilla Library (SCI) version 4.2.0 (2019-Jul-5)
 - To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding
 - Allow Fixedsys font for GDI rendering
-- Support Compiler version (VC v1921) 192127702 - VS2019 v16.1.(0-6)
 - Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
 - Oniguruma: support static build
 - Merge current (v.6.9.2) Oniguruma docs
@@ -61,8 +59,9 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
-- Use UTF-8 for themes files
-- Use UTF-8 for .ini-File Handler (Initial Version)
+- Complete implementation of UTF-8-Sig MinPath.ini file handler
+- Use UTF-8-Sig for themes files
+- Use UTF-8-Sig for .ini-File Handler (Initial Version)
 - Multi-Selection with selection restore on undo
 - Bookmark margin click
 - Some multi-selection enhancements
@@ -70,6 +69,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Send NewLine to sci control, if this id no AutoComplete fill-up char
 - Obsolete newline after .ini-file sections with comments
 - Enhanced Unicode detection
 - Oniguruma allow CRLF as newline token
@@ -81,6 +81,7 @@ FIXES:
 --------------------------------------------------
 REMOVED:
 --------------------------------------------------
+- Disable "NewLine" for AutoComplete fill-up
 - Remove (old) AHK Lexer in favour of modern AHK_L Lexer
 
 --------------------------------------------------
@@ -306,7 +307,7 @@ CHANGES:
 - Default ini for Notepad3Portable.
 - Scintilla library to v4.04.
 - uthash library updated to current GitHub dev.
-- Encoding of Notepad3 sources to UTF-8 (Sig).
+- Encoding of Notepad3 sources to UTF-8-Sig.
 - Focus View icon.
 - Prep Scintilla "Position" value type changes for large file support.
 - Rebases internally used code page on UTF-8 (Scintilla multi-byte conversions).
@@ -885,7 +886,7 @@ Version 3.17.1210.729 (10 December 2017)
 - New: URL Hotspot (first version).
 - Changed: [Settings2] section default values (and comment out if not changed) of initially distributed Notepad3.ini
 - Enhancement: Code Cleanup
-- Fix: Edit/Special : URL encoding/decoding for full UTF8 (non ASCII) characters.
+- Fix: Edit/Special : URL encoding/decoding for full UTF-8 (non ASCII) characters.
 - Fix: flashing of Search text-box of find/replace dialog in case of Win7 Classic theme
 - Fix: Gibberish output if URL decoded again (2nd time).
 - Fix: URL decoding, if encoding has "%#nnn" formatted ASCII chars.
@@ -955,7 +956,7 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix: Issue regarding find/replace empty-string.
 - Fix: Adapt DeelX RE interface according to enhanced find/replace dialog.
 - Fix: Issue #173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
-- Fix: Recoding minipath's version.h to UTF-8 (Sig), because it contains codepage dependant copyright sign.
+- Fix: Recoding minipath's version.h to UTF-8-Sig, because it contains codepage dependant copyright sign.
 - Fix: Corrections to .vcproj settings inconsistencies (reported in release build process).
 - Fix: undo/redo issues (if no selection choosen).
 - Fix: Consecutive DEL/BACKSP undo/redo broken (wrapped by unconditional selection undo/redo).

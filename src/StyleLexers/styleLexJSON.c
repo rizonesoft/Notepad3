@@ -9,7 +9,7 @@ KEYWORDLIST KeyWords_JSON = {
 
 
 EDITLEXER lexJSON = { 
-SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", 
+SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; eslintrc; jshintrc; jsonld; har; ipynb; wxcp; arcconfig", L"", 
 &KeyWords_JSON, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

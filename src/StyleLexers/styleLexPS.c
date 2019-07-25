@@ -59,7 +59,7 @@ KEYWORDLIST KeyWords_PS = {
 
 
 EDITLEXER lexPS = { 
-SCLEX_POWERSHELL, IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1", L"", 
+SCLEX_POWERSHELL, IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1; psc1", L"", 
 &KeyWords_PS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_POWERSHELL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
