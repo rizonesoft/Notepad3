@@ -64,6 +64,9 @@ static char WordCharsAccelerated[ANSI_CHAR_BUFFER] = { '\0' };
 static char WhiteSpaceCharsAccelerated[ANSI_CHAR_BUFFER] = { '\0' };
 static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
+static char AutoCompleteFillUpChars[64] = { '\0' };
+static bool s_ACFillUpCharsHaveNewLn = false;
+
 // Default Codepage and Character Set
 #define W_AUTOC_WORD_ANSI1252 L"#$%&@0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
 static char AutoCompleteWordCharSet[ANSI_CHAR_BUFFER] = { L'\0' };
@@ -254,6 +257,22 @@ void EditInitWordDelimiter(HWND hwnd)
   // construct accelerated delimiters
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
+
+  if (StrIsNotEmpty(Settings2.AutoCompleteFillUpChars))
+  {
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteFillUpChars, -1, AutoCompleteFillUpChars, COUNTOF(AutoCompleteFillUpChars), NULL, NULL);
+    UnSlash(AutoCompleteFillUpChars, Encoding_SciCP);
+
+    s_ACFillUpCharsHaveNewLn = false;
+    int i = 0;
+    while (AutoCompleteFillUpChars[i]) {
+      if ((AutoCompleteFillUpChars[i] == '\r') || (AutoCompleteFillUpChars[i] == '\n')) {
+        s_ACFillUpCharsHaveNewLn = true;
+        break;
+      }
+      ++i;
+    }
+  }
 
   if (StrIsNotEmpty(Settings2.AutoCompleteWordCharSet))
   {
@@ -6707,6 +6726,16 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
 //=============================================================================
 //
+//  EditCheckNewLineInACFillUps()
+//
+bool EditCheckNewLineInACFillUps()
+{
+  return s_ACFillUpCharsHaveNewLn;
+}
+
+
+//=============================================================================
+//
 //  EditAutoCompleteWord()
 //  Auto-complete words (by Aleksandar Lekov)
 //
@@ -6901,9 +6930,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     SciCall_AutoCSetIgnoreCase(true);
     //SendMessage(hwnd, SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, (WPARAM)SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 0);
     SciCall_AutoCSetChooseSingle(autoInsert);
-    //SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
-    SciCall_AutoCSetFillups("\t\n\r");
-    //SciCall_AutoCSetFillups(Settings.AccelWordNavigation ? WhiteSpaceCharsDefault : WhiteSpaceCharsAccelerated);
+    //~SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
+    SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
 
     ++iWListSize; // zero termination
     char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);

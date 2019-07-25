@@ -7015,6 +7015,32 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_CALLTIPCLICK:
       return 0;
 
+    case SCN_AUTOCSELECTION:
+    {
+      switch (scn->listCompletionMethod) 
+      {
+        case SC_AC_TAB:
+        case SC_AC_COMMAND:
+        case SC_AC_DOUBLECLICK:
+          // accepted
+          break;
+
+        case SC_AC_FILLUP:
+          // see: SciCall_AutoCSetFillups() -> accepted
+          break;
+
+        case SC_AC_NEWLINE:
+          if (!EditCheckNewLineInACFillUps()) {
+            SciCall_AutoCCancel(); // rejected
+          }
+          break;
+
+        default:
+          SciCall_AutoCCancel(); // rejected
+          break;
+      }
+    }
+    break;
 
     case SCN_MODIFIED:
     {

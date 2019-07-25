@@ -110,6 +110,7 @@ void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 void  EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClearOnly);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd,bool);
+bool  EditCheckNewLineInACFillUps();
 void  EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
 void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
