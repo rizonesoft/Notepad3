@@ -347,6 +347,7 @@ bool      MRU_MergeSave(LPMRULIST pmru,bool,bool,bool);
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 //==== UnSlash Functions ======================================================
+unsigned int UnSlash(char* s, UINT cpEdit);
 void TransformBackslashes(char* pszInput,bool,UINT cpEdit,int* iReplaceMsg);
 void TransformMetaChars(char* pszInput,bool,int iEOLMode);
 

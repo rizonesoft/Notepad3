@@ -3091,11 +3091,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
   CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
 
-  int const _eol_mode = SciCall_GetEOLMode();
-  if (_eol_mode == SC_EOL_CRLF) {
+  int const eol_mode = SciCall_GetEOLMode();
+  if (eol_mode == SC_EOL_CRLF) {
     i = IDM_LINEENDINGS_CRLF;
   }
-  else if (_eol_mode == SC_EOL_CR) {
+  else if (eol_mode == SC_EOL_CR) {
     i = IDM_LINEENDINGS_CR;
   }
   else {
@@ -6787,8 +6787,8 @@ static void  _HandleAutoIndent(int const charAdded)
 {
   // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
   // in CRLF mode handle LF only...
-  int const _eol_mode = SciCall_GetEOLMode();
-  if (((SC_EOL_CRLF == _eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != _eol_mode))
+  int const eol_mode = SciCall_GetEOLMode();
+  if (((SC_EOL_CRLF == eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != eol_mode))
   {
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
@@ -7015,6 +7015,33 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_CALLTIPCLICK:
       return 0;
 
+    case SCN_AUTOCSELECTION:
+    {
+      switch (scn->listCompletionMethod) 
+      {
+        case SC_AC_TAB:
+        case SC_AC_COMMAND:
+        case SC_AC_DOUBLECLICK:
+          // accepted
+          break;
+
+        case SC_AC_FILLUP:
+          // see: SciCall_AutoCSetFillups() -> accepted
+          break;
+
+        case SC_AC_NEWLINE:
+          if (!EditCheckNewLineInACFillUps()) {
+            SciCall_AutoCCancel(); // rejected
+            PostMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
+          }
+          break;
+
+        default:
+          SciCall_AutoCCancel(); // rejected
+          break;
+      }
+    }
+    break;
 
     case SCN_MODIFIED:
     {
@@ -7394,10 +7421,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_EOLMODE:
                 {
                   int i;
-                  int const _eol_mode = SciCall_GetEOLMode();
-                  if (_eol_mode == SC_EOL_CRLF)
+                  int const eol_mode = SciCall_GetEOLMode();
+                  if (eol_mode == SC_EOL_CRLF)
                     i = IDM_LINEENDINGS_CRLF;
-                  else if (_eol_mode == SC_EOL_CR)
+                  else if (eol_mode == SC_EOL_CR)
                     i = IDM_LINEENDINGS_CR;
                   else
                     i = IDM_LINEENDINGS_LF;
@@ -8632,17 +8659,17 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_EOLMODE]) 
   {
     static int s_iEOLMode = -1;
-    int const _eol_mode = SciCall_GetEOLMode();
+    int const eol_mode = SciCall_GetEOLMode();
 
-    if (bForceRedraw || (s_iEOLMode != _eol_mode))
+    if (bForceRedraw || (s_iEOLMode != eol_mode))
     {
       static WCHAR tchEOL[16] = { L'\0' };
-      if (_eol_mode == SC_EOL_LF) 
+      if (eol_mode == SC_EOL_LF) 
       {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _LFi_f : _LF_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      else if (_eol_mode == SC_EOL_CR) 
+      else if (eol_mode == SC_EOL_CR) 
       {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRi_f : _CR_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
@@ -8651,7 +8678,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRLFi_f : _CRLF_f),
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      s_iEOLMode = _eol_mode;
+      s_iEOLMode = eol_mode;
       bIsUpdateNeeded = true;
     }
   }
