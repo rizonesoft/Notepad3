@@ -1,0 +1,1284 @@
+================================================================================
+=                                                                              =
+=            Notepad3 - light-weight Scintilla-based text editor for Windows   =
+=                                                                              =
+=                                                   (c) Rizonesoft 2008-2019   =
+=                                                 https://www.rizonesoft.com   =
+=                                                                              =
+================================================================================
+Rizonesoft Notepad3 --- CHANGELOG ---
+================================================================================
+
+--------------------------------------------------
+LEGEND:
+--------------------------------------------------
+1) NEW: (Added, Feature)
+2) CHANGES:
+3) ENHANCEMENT: (Optimize)
+4) FIXES: (Debug)
+5) REMOVED: 
+6) TRANSLATIONS (MUI): (New Language)
+
+--------------------------------------------------
+ABBREVIATIONS:
+--------------------------------------------------
+CED - (C)ompact (E)ncoding (D)etection (by Google)
+MUI - (M)ultilingual (U)ser (I)nterface
+NLS - (N)ew (L)anguage (S)trings (need for translation)
+SCI - (SCI)ntilla Library
+UCD - (UCD)ARDET is an Encoding Detector Library
+
+
+==================================================
+Current BETA Version 5.19.726.#(build) (2019-07-26)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Add settings for allowed AutoComplete fill-up chars
+- Advanced TOML Lexer
+- Multiselect Edit Indicator
+- Color hover and picker (HTML color def only #RRGGBB)
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Sync Minipath Filter-Lines list with Notepad3 Lexers list
+- Use double-quotes as MRU list string limiter
+- Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
+- Update to Oniguruma v.6.9.3
+- Scintilla Library (SCI) version 4.2.0 (2019-Jul-5)
+- To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding
+- Allow Fixedsys font for GDI rendering
+- Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
+- Oniguruma: support static build
+- Merge current (v.6.9.2) Oniguruma docs
+- Replace Onigmo by Oniguruma
+- CED -> UCHARDET license and acknowledgement
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Complete implementation of UTF-8-Sig MinPath.ini file handler
+- Use UTF-8-Sig for themes files
+- Use UTF-8-Sig for .ini-File Handler (Initial Version)
+- Multi-Selection with selection restore on undo
+- Bookmark margin click
+- Some multi-selection enhancements
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Send NewLine to sci control, if this id no AutoComplete fill-up char
+- Obsolete newline after .ini-file sections with comments
+- Enhanced Unicode detection
+- Oniguruma allow CRLF as newline token
+- Notepad3.ini file, remove some keys with default values (styles)
+- Extended encoding detection debug information
+- Encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced)
+- Multi-Selection while Mark-Occurrences of current word is active
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+- Disable "NewLine" for AutoComplete fill-up
+- Remove (old) AHK Lexer in favour of modern AHK_L Lexer
+
+--------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------
+- Polish (pl-PL) Translation
+- Turkish (tr-TR) Translation (In progress)
+
+
+==================================================
+Version 5.19.630.2381 (30 June 2019)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Add another Dark Theme "Obsidian"
+- Add option to disable Hyperlink Tooltip
+- ToolTip for Hyperlinks
+- 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
+- Menu entry to mute MessageBox beeps
+- Theme Menu to load exported styles "on the fly" (e.g.: "Dark" or "Obsidian")
+  Factory Default, Standard Settings, a Dark Theme
+- Close Zoom Info Bubble after ~3 sec.
+- Recent History button in Toolbar
+- [Settings2] key-values (internal) to control concurrent encoding detection
+- 2nd Encoding-Detector "Mozilla's UCHARDET" concurrent to 
+    CED (Google's Compact Encoding Detection)
+- Language selection in Main Menu 
+- Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
+- Customize Schemes: Caret style 'ovrbar' (default) to switch caret style between BAR and BLOCK 
+- Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings)
+- Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
+- Add CED reliability option (NLS: dialogs)
+- Indentation consistency check on file open (NLS: dialogs)
+- End-of-Line (EOL) consistency check on file open (NLS: dialogs)
+- Checkbox for transparent Find/Replace Dialogbox on losing focus
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Enable Undo on FileRevert / AutoReload
+- Adapt warning dialog according to new FileRevert / AutoReload undo/redo history
+- Add an "Always On Top" toolbar button
+- Rename "Doc Tail Chasing" => "Monitoring Log"
+- Optimized FileWatching interval for "Chasing Tail" mode
+- Make "Add to Favorites" dialog resizable
+- Make Custom.Schemes and Find/Replace dialog resizable
+- BOOKMARK (margin flag) style changed to vertical flavor
+- Auto-Save after elevating user right
+- Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
+- Make international language menu (language independent)
+- Start dual encoding detectors in (thread) parallel for large files
+    (disabled, due to lack of performance profiling)
+- Support (internal) DevDebugMode
+- Menu item "HighDPI Toolbar" -> "Toggle Toolbar"
+- Train Dutch (CP-1252) for UCD language detection models
+- Train Belarusian (CP-1251) for UCD language detection models
+- Train Africaans (CP-1252) for UCD language detection models
+- Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
+- Menu Languange Selector to Dynamic Language Selector
+- Up-to-Date SCI (GitHub Mirror 2019-May-10)
+- Update of CED (2019-Feb-01)
+- SpeedUp of RegEx Replace (in case of const replace pattern)
+- Update of Onigmo RegEx engine (2019-Jan-24)
+- Optimized file search for items (filebrowser, .ini file, dirs)
+- Goto-Dlg (Line/Column) shows max line number
+- SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Allow customizable fileName-RegEx to extensionlist
+	( \rc$; = all filenames (incl. ext) which ends on 'rc')
+- Hand cursor coupled with indicator hover style only on modifier keys
+- Allow indicator styling for Hyperlink hover rendering
+- Find/Replace dialog <-> "Focused View" enhancements
+- Rework inconsistent line-breaks in status bar
+- Rework EOL and Indentation check with dialogs
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Load external Toolbars (clear config on error, path relative to be portable)
+- Focused View: refolding by lexer
+- Focused View started from Find/Replace dialog
+- Do not ignore notify change for Paste/Swap/Undo/Redo
+- Colourise bug on find next (w/ mark occurrences)
+- Indentation warning dialog
+- Reworked: Consistent EOL and Indentation checks
+- Fix to support external Hot- and Disabled- Toolbar icons 
+- Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
+- MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
+- Write Language change to Settings2 on change immediately
+- Focused View not working for some Lexers
+- Find correct window for "Single File Instance"
+- Single file instance: find correct window for real paths
+- Minor issue on UTF-8 encoding detection
+- High quality icon for Taskbar (big icons)
+- Support high-definition icon for taskbar
+- .vcxproj files supporting VS2019 (vc142)
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+- Compact Encoding Detection (CED) as 2nd encoding detector 
+    (rely on UCHARDET only)
+
+--------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------
+- Hungarian (hu-HU) Translation
+- Italian (it-IT) Translation
+- Korean (ko-KR) Translation
+- Polish (pl-PL) Translation (In progress)
+
+
+==================================================
+Version 5.19.108.1602 (8 January 2019)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Added initial "minipath.ini" to Visual Studio Project.
+- Read undefined MiniPath settings from Notepad3.ini 
+    (Preferred language and Favorites directory).
+- MiniPath Multilingual support.
+- Handle zero-length lines in line-sorting algorithm.
+- Support for "Rust" source code syntax highlighting.
+- Multilingual support.
+- The TinyExpr module.
+- Add schema related keywords Auto Completion & IME.
+- Rebuilding the "Command Line Help" dialog.
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- MiniPath About dialog: visual adjustments.
+- Optimize icon resource handling.
+- Optimized MiniPath resource file (icon/bitmap placement).
+- Enhanced MiniPath.
+- Small design change of MiniPath's Copy/Move dialog box.
+- Print option "Screen Colors" now prints with the same colors
+    used on screen including line numbers.
+- Changed behavior of removing duplicate lines (ignore EOL/EOF chars).
+- Line sorting: Move empty lines to end of selection (always, if not removed).
+- Adapted PortableApps.com creator script to MUI structure.
+- STD/2ND sync with DefaultText/2ndDefaultText handling.
+- Reorganization of Menus in more sub-menu to shorter the Menus Lists.
+- Show Zoom Percentage on magnification changes.
+- Tidy Notepad3.ini to remove all defaulted [Setting] items
+- Change Default settings to make the first experience of Notepad3 
+    more attractive...
+- Open Find/Replace: Use most recent search pattern instead of clipboard 
+    (if selection eis empty)
+- Encoding affinity: UTF-8 instead of local ANSI code-page.
+- Replace dialog: tmp disable "mark all occ" in case of multi-line selection.
+- Adaptations for MS Visual Studio 2019 Preview.
+- Scintilla updated to 412. 
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Do not reset scroll-width tracking on saving file 
+    (issue #539: https://github.com/rizonesoft/Notepad3/issues/539).
+- Fixed portable MiniPath redirector .ini files.
+- Support Scintilla's new indicator box styles 
+    ("INDIC_GRADIENT" and "INDIC_CRADIENTCENTRE").
+- Fixed incremental search on find/replace dialog.
+- Fixed line sorting.
+- Center commandline help dialog.
+- In case of STD lexer only display "Default Text" in statusbar 
+    (indicator shows which one).
+- Fixed resource file problem (preproc defines).
+- Fixed save window Position (Default and Initial switch)
+- Fixed problem with bad brace highlighting (indicator)
+- if activated, ESC will close/minimize program immediately 
+    w/o canceling selection/tooltip first.
+- Fixed broken links in About dialog.
+- fixed behavior of replace (dialog) in case of multi-line selection.
+- Fixed disable accelerator-key interception for universal Unicode input method.
+- Fixed ASCII fallback only for selected encodings.
+- Fixed Onigmo RegEx Interface: bug in returning correct matching range.
+
+--------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------
+- Afrikaans (af-ZA) Translation.
+- Belarusian (be-BY) Translation.
+- German (de-DE) Translation.
+- English (en-GB) Translation.
+- Spanish (es-ES) Translation.
+- French (fr-FR) Translation.
+- Japanese (ja-JP) Translation
+- Dutch (nl-NL) Translation.
+- Russian (ru-RU) Translation.
+- Chinese Simplified (zh-CN) Translation.
+
+
+==================================================
+Version 4.18.511.992 (12 May 2018)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Menu entries for (hidden) Accelerator Keys.
+- Method to remove duplicate lines.
+- Names under Acknowledgments on About box.
+- Version info for Microsoft Visual C++ 2017 v15.7.(0-1) (VC v191426428).
+- X-CaretPolicy ([Settings2] CurrentLineHorizontalSlop=0).
+- 1st draft of "Toggle Visible" (hide non occurences lines).
+- Initial version of Doc tail Chasing.
+- StatusBar dynamic configuration.
+- DPI awarenes on manual font scaling.
+- Menu entry for switching HighDPI toolbar.
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Incremental match for search/replace dialog box.
+- Default ini for Notepad3Portable.
+- Scintilla library to v4.04.
+- uthash library updated to current GitHub dev.
+- Encoding of Notepad3 sources to UTF-8-Sig.
+- Focus View icon.
+- Prep Scintilla "Position" value type changes for large file support.
+- Rebases internally used code page on UTF-8 (Scintilla multi-byte conversions).
+- Renamed "Toggle View" to "Focused View".
+- Replaced Tellenc by "Compact Encoding Detection" CED.
+- Current Scintilla (404 : 05-May-2018) development.
+- Focus View and Tail Function icons.
+- Disabling UpdateChecker menu entry if no executable is configured.
+- Adapted test to new Aboutbox calling.
+- Menu Help instead of "?" 
+  (move File History (Recent File List) to Accel-Key Ctrl+Alt+H).
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Latest compiler tool chain recognition.
+- Pad with Spaces in Rectangular Selection.
+- Handling of default/standard lexer styles.
+- Notepad3.ini redirection to avoid overriding settings by zipped  distribution.
+- Added last find pattern to file history.
+- Added option to remove blank lines (containing blanks/tabs only).
+- Added option to skip ANSI Code Page detection (tellenc) 
+  (default is ON to preserve historic behavior).
+- Added "Toggle View" button to toolbar.
+- Compress White Spaces within rectangular selection.
+- Consistent rectangular selection restauration after block operations.
+- Enable "Toggle View" for main window.
+- Enable "Customize Schemes" Preview button only
+    if selected lexer corresponds to opened file.
+- External cmd tool using Google's "Compact Encoding Detection" 
+    for encoding analysis.
+- F/R dialog - enable "Ctrl+BS" to delete word in search string.
+- File history dependent last search pattern option combined 
+    with search history on/off option.
+- Handling of F3 (find next - no F/R dialog).
+- Kind of "incremental search" : Find/Replace "Mark All Occ" active: 
+    typing search pattern scrolls to first match.
+- Make Find Next Selected, Find Prev Selected as expected 
+    using modern Scintilla API methods (instead of hand made operation).
+- Int to DocPos type changes.
+- Indication of find/replace state in FR dialog status bar.
+- Non Modal Customize Schemes... dialog.
+- Show or hide passphrase in dialog box.
+- Selectable (and copy-able) version info header of About-Box.
+- Statusbar segmentation resizing.
+- Strip First/Last Char within rectangular selection.
+- Strip Trailing Spaces within rectangular selection.
+- "Toggle All Folds" -> "Toggle Folds" (works on selection only too now).
+- "Toggle Folds": Selection range (really) toggles folds.
+- "Toggle View" coop main window vs. F/R dialog.
+- Delayed "mark occurrences" multi-triggering.
+- Performance tuning after profiling std. handling.
+- Delayed execution of time consuming update/redraw operation.
+- Added user definable relative status width configuration.
+- Added settings to user defined prefix strings for StatusBar sections.
+- Delayed "Spinning Circle" transaction.
+- Added "Extra Line Spacing" style option to ANSI Art (e.g. .nfo files) 
+    (predefined -4).
+- Minor speedup on notify changed event.
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Memory leakage in selection undo/redo stack.
+- Remember initial search start position for incremental search.
+- Some .ini-file handling stuff.
+- Handling of "Mark Occ." and "Focused View" 
+    in cooperation with find/replace dialog.
+- Select initial default standard lexer.
+- Missing document modified call.
+- Pad with Spaces in Rectangular Selection 
+    (correction for pure virtual space and skip empty lines).
+- Renaming of UpdateChecker => Administration Tool.
+- Issue regarding selection of default and 2nd default styling.
+- Clear all occurrences marker on no matching search expression.
+- Restore inital selection on search dialog canceling.
+- Broken Hyperlink Hotspot handling.
+- Brace matching for Batch Lexer.
+- Y-CaretPolicy ([Settings2] CurrentLineVerticalSlop=0) default.
+- Show replacement count info-box after UI update 
+    (extended selection, replaced pattern).
+- Issue regarding "Auto Complete Word" feature.
+- Slow pasting of multiline clipboard.
+- Style_SetLexer() should update line number margin width.
+- Minor issues regarding selection anchor/current_caret in Find Next/Previous.
+- Remember last search pattern on new files.
+- Notepad3 window positioning.
+- Initial window position handling (command line option "/pos").
+- Search Next (F3) handling (ver II).
+- Reset scroll width on font (size) changes (automatically adapted).
+- Missing menu shortcut for "Remove Duplicate Lines" ("o").
+- "Remove Duplicate Lines": wrong last line handling in case of no selection.
+- Using process heap allocation instead of global memory allocation method 
+    (according to MSDN guidelines).
+- "Remove Duplicate Lines": skipping line on progress to next compare 
+    when removing previous duplicate.
+- Toggle line comment on empty line.
+- Issue in Strip First/Last Char within rectangular selection.
+- Update Toolbar,Statusbar and LinNumber Margin 
+    on Observe NotifyEvent reactivation.
+- Endless loop on "zero length match" at EOF.
+- Reverting file from storage - Preserve view, cancel selection.
+- Minor issue on display indication of find/replace state in FR dialog status bar.
+- Small issues on Find/Replace Next/Previous operations.
+- Pad with spaces in case of rectangular selection.
+- HyperlinkHotspot handling while "Toggle Visibility" changes view.
+- Issue with "Toggle Visibility" drawing a selection on clicking into view.
+- Concurrency issue: main window vs. Find/Replace dialog.
+- Folding level issue to hide non-occurrence match lines.
+- Possible Deadlock.
+- Avoid deadlock of occurence marker task scheduler.
+- Enable FR state reset call from outside.
+- Enhance indicator (redraw needed) of re-apply "Mark All Occurrences".
+- "Compressed View": re-apply lexer styles on changed marked word.
+- Proper view reset after reverting from compressed view.
+- "Compressed View" - minor issues.
+- UTF-16 LE BOM (Unicode) for Notepad3.ini. - Notepad3.ini should have 
+    encoding UTF-16 LE BOM (Unicode) not the smaller UTF-8 Sig encoding format.
+- Scroll-to issue in case of incremental search.
+- Bug replacing reverse stream selection.
+- Remove file-system/URL auto-completion from search box.
+- F/R dialog : minor corrections.
+- Occurrences marker counting.
+- default "Slop" values changed.
+- Undo/Redo handling in case of discarding U/R-Stack.
+- Check "Toggle View" button in case of activation.
+- Restore correct fold margin.
+- Optimized "notify change" observation on clearing file buffer.
+- Consistent "checked" for button and menu.
+- "Focused View": disable encoding identifier insertion menu entry.
+- Bug in toggle mechanism of "Toggle All Folds"
+- "Toggle Folds": exclude fold point (headers) which have no children.
+- "Toggle Folds": selection must span at least two lines.
+- Matched Rizonesoft logo background with About dialog background.
+- Replace in selection: Selection enlargement.
+- Version to folding issue on hiding invisible/non-marked lines.
+- Toggle Folds of complete document.
+- Small issue reverting from "Focused View".
+- Correct WordWrap after reverting from "Focused view".
+- Small bug preventing Statusbar relative width settings 
+    smaller than 1/10 of width.
+- Missing last entry of statusbar configuration (ID=11).
+- Bug while reading String to Vector.
+- Switching modes (EOL,OVR, some other), 
+    statusbar has not been updated accordingly.
+- Deactivate "Focused View": set FoldingLevel to default 
+    before applying Lexer's Style (-> speed-up).
+- RAII (__try/__finally) for target transactions and 
+    notify changed observation guards.
+- StatusBar handling and display of "Default text" vs. "2nd Default Text".
+- Added parameter to force update of Stausbar (e.g. theme change).
+- Fractional font settings: add bias of 2%.
+- Minor fixes and default value adjustments.
+- Choose correct font size for deactivated "Hyperlink Hotspot" style.
+- Force initial default position only if no window position is specified.
+- Insert key into rectangular selection.
+- Undo/Redo in case of selection insert/delete.
+- Cleanup obsolete rectangular pasting helpers.
+- Ignore notify change event on pasting rectangular selection.
+- Leave Alt-Key-Down mode if keyboard focus lost.
+- Broken Undo/Redo stack (in case of selection).
+- Issue on recording initial selection Undo/Redo.
+- Recording selection Redo/Undo action only for non empty selection.
+- Statusbar line counting display.
+- Modified document flag set unneccessaryly.
+- Bug, where styling stopped after hotspot highligting.
+
+--------------------------------------------------
+REMOVED:
+--------------------------------------------------
+- wyUpdate stuff from portable installation.
+
+
+==================================================
+Version 3.18.311.928 (11 March 2018)
+==================================================
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Accelerator-Key to toggle tranparency mode (Alt+0 => Alt+G).
+
+
+==================================================
+Version 3.18.311.925 (11 March 2018)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- New: About Box (RichEdit library 2.0)
+- New: Version string patching commands for different local builds.
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Accelerator Keys: (Alt+0: Toggle Transparency), 
+    (Alt+Shift+N: Launch new empty window).
+- Added "tellenc" acknowledgement to About test.
+- Move "About..." dialog call to end of Help menu.
+- New compiler version.
+- Version info in About text.
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Pressing F3 at Find/Replace dialog performs a find and 
+    switches focus to main window.
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Activation of Undo TB-Icon on operations, that can't be undone.
+- Onigmo: use CR (\r) as mono line-break symbol too.
+- Format number with thousand seperator and digit grouping 
+    acording to regional settings.
+- Integration of "tellenc" encoding detection ideas.
+- Use Windows regional ANSI Code Page settings for fallback in case of file 
+    encoding detection failure (instead of default encoding for created files).
+- Use all ASCII line breaks for line termination ($) meta char.
+- Onigmo backward search.
+- Consider "load 7-bit ASCII as UTF-8" settings on encoding detection.
+- Added BOM detection to encoding analysis.
+- Issue regarding hyperlink positioning of AboutBoy in case of 
+    none standard sytem font styling.
+- Swap clipboard while pasting into selection.
+
+
+==================================================
+Version 3.18.223.908 (23 February 2018)
+==================================================
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Critical error with automatic updates.
+- Swap clipboard bug while pasting into selection.
+
+
+==================================================
+Version 3.18.222.905 (22 February 2018)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Accelerator Key (Alt+A) to switch ON/OFF occurrences marker/counter.
+- Feature "Scroll Past End of File" (settings).
+- Menu entry to check Rizonesoft.com directly for updates.
+- PortableApps AppCompactor call for UPX compression of NP3 binaries.
+- R-Statistics Code lexer.
+- Status/info bar in find/replace dialog.
+- Seperator on help menu update entries.
+- Styling for folding marks (charset:1 -> circles / case:U -> double lines).
+- wyUpdate's client configuration to PortableApps version.
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Executables now compressed with NRV2E method. 
+- Scintilla version 4.0.3 and documentation update.
+- Adapted VS compiler version string for About dialog.
+- Change start of project on GitHub (date) to 2015 (Version.h).
+- Compiler optimization flags for release build.
+- Encoding type of Version.h from UTF-8 (Signature) to UTF-16 LE, 
+    to get Copyright sign right
+- Folding STyle: case:L/U for box vs. circle style; 
+    charset:0/1/2 single line after/before/enclosing.
+- Registry files lexer to support eolfilled on "Added Keys".
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Added "Shift+F1" Accelerator Key to open "About..." box.
+- Allow negative values for Extra Line Spacing (compact line view).
+- Automatic Updates and incorporated launch of update installer "wyUpdate.exe".
+- Changed tab-stop order while navigating several dialogs.
+- Dynamic horizontal scroll bar width adaption.
+- More prominent replace dialog button "In Selection".
+- "Registry Files" lexer: enable attribute "eolfilled" for all styles of this lexer.
+- Replace (virtual) rectangular (empty) selection.
+- Wrap to Column allowed w/o selection (use complete text)
+- Undo/redo stack does not need to store virtual space options.
+- Check for Alt-Key down/up to allow drawing rectangular selection in virtual space.
+- Use faster method (SCI direct call) to set/reset virtual space access option.
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Minor issues in context of undo/redo (virtual) rectangular (empty) selection.
+- Static URL string to open version check website.
+- Tidy up menu navigation via keyboard.
+- Paste multi-line clipboard into rectangular selection.
+- Copy/paste and redo/undo on empty/virtual rectangular selection.
+- Prepare (i) for Scintilla's Position type change to 64-bit.
+- Corrupted "Page Setup..." dialog layout (after changing tab-stop order).
+- Pasting into rectangular selections.
+- Tab-key and indentation handling.
+- Indentation and rectangular selection (final solution still open).
+- "Single line selection" criteria.
+- Synchronized updates for Toolbar & Statusbar.
+- Empty settings string, if ToolbarButtons are reset to defaults.
+- Changed navigation keys for "Edit" menu.
+- Set virtual space option "SCVS_NOWRAPLINESTART" for 
+    Alt-Key down rectangular selection only.
+- Bug in calculating position for thousand separator.
+- Handle case: virtual space user access not allowed.
+- Selected default lexer has not been used as default startup lexer.
+- Code folding integrated in margin.
+- unique Style IDs.
+- Disable folding operations for lexers, which don't support it.
+- Default Folding Style: single line after heading.
+- Bug in changed "Windows Registry Files" lexer.
+- Undo/Redo action w/o selection sets/preserves selection mode (bug).
+- Support styler attribute "eolfilled" in any Reg-Key case (Windows Registry Lexer).
+- Small datatype correction.
+- Map Toolbar Labels according to bitmap/settings file.
+- "Registry Files lexer: bug in GUID in Key Path with eolfilled attribute.
+- Broken swap clipboard w/ selection.
+- Restore selection set/replaced by replace dialog.
+- Fill find/replace search box with selection/clipboard on non switching Ctrl+F/H.
+- Bug detecting find/replace dialog is foreground or not.
+- Initial .ini file: corrections for labeling toolbar icons.
+- Performance issue: Replace All - delay status update until transaction finished.
+
+
+==================================================
+Version 3.18.131.862 (31 January 2018)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- Accelerator Key "Ctrl+Alt+J" -> Fuse Lines 
+    (:= Join Lines, line-breaks NOT replaced by Space).
+- Setting2 parameter to adjust "Mark Occ" and "Hyperlink" styling delay.
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Highlight current line stuff gathered.
+- Customize Schemes... Style Names.
+- Added Accelerator Keys: Alt+LEFT/RIGHT to FOLD/EXPAND folding section.
+- add empty sections to initial settings file (.ini) to force a canonical order.
+- Canonical initial Notepad3.ini.
+- Make selection block indentation similar to VisualStudio's.
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Performance for several modify text operations.
+- Correct in-memory encoding/re-coding of text.
+- Join Lines (preserve paragraphs) issue.
+- Byte counting for selection.
+- Bug in joining lines algorithm.
+- Alt+H should open history file access dialog not help menu 
+    (add ? to revert to known access key).
+- Revisit usage of "Mark Occurrences" and "Hyperlink Styling" delay usage.
+- Rectangular selection: (virtual empty) selection persists after clear.
+- Sentencecase some strings in "Customize Schemes...".
+- SpeedUp undo/redo action collections.
+- Lock NotifyUpdate and TargetSelection in case of multi action 
+    redo/undo and target replacements.
+- Handling of document modified flag in case of NotifyChange bypass.
+- Redo/undo and jump-to behavior having an active selection.
+- Wrong test on rectangular selection.
+- More select and replace target issues.
+- Toggle All folds behavior.
+- TAB indentation handling according to predecessors (NP2).
+- selection (anchor and current caret position) handling.
+- Enh: Version check for Visual Studio 2017 v.15.5.5.
+- "Line Comment" id noselection and current pos == indent pos.
+- Initial .ini-file: unused section removed.
+- Support scintilla msg: SCN_NEEDSHOWN (EXPAND folded sections if needed).
+- Avoid some issues regarding folding, using SCI_SETAUTOMATICFOLD.
+- Revert TAB + Selection action corresponding to VisualStudio's behavior.
+- Sensible handling of "Block -> (Un)Indent" for different kinds of selections.
+- Font selection dialog does not reset some styles correctly.
+- Preserve selection on Line Comment toggle.
+- Char2Hex: Remove limit single byte selection.
+
+
+==================================================
+Version 3.18.113.828 (13 January 2018)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- "Customize Schemes..." UI change to represent "relative sizing hierarchy".
+- Initial version of Nim Lexer. Added Scintilla project and header for Nim lexer.
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+- Compiler version 191225834 (VS2017 v15.5.3).
+- Executables not compressed with UPX.
+- Menu "Mark Occurrences" whole word matching: radio button behavior.
+- Onigmo RegEx syntax dialect.
+- Onigmo regex engine: use PERL 5.10 syntax + 
+    enable "\<" and "\>" word boundary matching.
+- Option "after visible" for styling in background (idle time).
+- Replace Windows Notepad Installer version only.
+- View "2nd Default Style" as (dbl-clickable) status bar item.
+- Word Wrap mode from WORD to SPACE to avoid wrapping at style change edges.
+- Force position progress in case of zero-length matches.
+- Re-introduce "max mark occurrence counter" to avoid lazy UI. 
+    (Set .ini section [Settings2] MarkOccurrencesMaxCount=-1 for unlimited (MAX_INT)).
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- NimLexer = NimrodLexer -> rely on Scintilla distribution for Nim(rod) lexer.
+- Reasonable assumption for memory allocation of style handling (backup, save, load).
+- statusbar: information about usage of 2nd Default Style.
+- Statusbar: Count number of bytes in current encoding.
+- structured "Mark Occurrences" menu hierarchy.
+- Statusbar Partitioning.
+- Cache page instead of line only.
+- Mark Occurrence triggers enhancements.
+- Non visible styling during idle time.
+- Tuning delay parameter of "Mark Occurrences" (instantly).
+- Remove test for set already, if indicator does not change.
+- Redraw indicator ranges (Mark Occurrences) only if needed - 
+    avoiding recursive SCN_UPDATEUI notifications.
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Several Mark Occurrences (instantly) issues.
+- Regarding Scheme customizing (rel. size) and View Menu (Mark Occ.).
+- Onigmo regex engine PERL syntax: supporting named groups referencing 
+    in replacement text.
+- Correct counting of found matches.
+- Broken find/replace (regex) on groups.
+- Some customizing scheme issues (relative font size hierarchy).
+- Document modified flag not set properly (title, toolbar & statusbar only).
+- Renaming menu entries Edit: "Clear" -> "Delete"
+- Menu "Mark Occurrences" whole word matching: add check indicator if 
+    one of word matching options (selected/current) is used.
+- Regex replacement on look-ahead assertion.
+- relative font sizing of non-default-style entries in custom schemes.
+- Font selection box title display.
+- clean coding for "relative sizing hierarchy".
+- Update view on style change in "Customize schemes..."
+- Bug regarding "Reset" button in "Customizing Schemes..." dialog.
+- Bug in detect and style Hyperlink Hotspot.
+- Losing state of "Transform Backslashes" while switching regex/wildcard search.
+- Block "mark occurrences" event on transaction pair: 
+    (SCI_TARGETFROMSELECTIO, SCI_REPLACETARGET).
+- protect SCI target transactions by a guard to break recursion of 
+    Mark Occurrences caused by ChangeNotification() events.
+- Handle "2nd Default Styles" as separate standard (2nd) lexer module.
+- Handling initial 1st or 2nd default style in case of "Default Text", 
+    shown on int "Customize Schemes...".
+- Crash on navigation between schemes beyond start/end of tree view.
+- Disable (using 1st Default Style) 
+    "Associated filename extensions" for "2nd Default Style".
+- Clone associated filename extension list of Default Style (for 2nd Default Style).
+- move word wrap start symbol to margin (new WW mode SPACE (instead of WORD))".
+- Mark Occurrences timeout on Find/Replace.
+- Optimized status bar partitioning.
+- Revert naming for "2nd Default Text".
+- Bug on switching between 1st and 2nd standard lexers.
+- Selection of 1st or 2nd standard lexer (Default Text) based on Use2ndStandard flag.
+
+
+==================================================
+Version 3.18.105.802 (5 January 2018)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- New: Hyperlink Hotspot Style updates on UpdateUI event (visible area only)
+- New: Switch to draw all occurrences in visible area only.
+- New: (Mark Occurences) instant word highligting.
+
+--------------------------------------------------
+ENHANCEMENT:
+--------------------------------------------------
+- Async mark all occurrences via timer (UI response).
+- Delayed mark all occurrences for better UI response.
+- Fixed some issuses, which eat up CPU.
+- Optimizing timer handling to avoid multiple calls of complex methods.
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+- Custom toolbar images ini settings added.
+- Add hints for free text style properties in "Customize Schemes...".
+- Test version numbers for month Jan - Sep (mono digit).
+- Redundant echo of expected version string.
+- Toggle line comments were placed at line end.
+- "Match Current Word" should not highlight partial word matches in other lines.
+- Fetching wrong visible document line number in case of hidden or wrapped lines.
+- Ignoring queued timer event, if timer has been killed.
+- use current lexer's default text font size as base font size for 
+    relative sizing of other styles.
+- mark occurrences counter not updated in time.
+
+
+==================================================
+Version 3.17.1228.783 (28 December 2017)
+==================================================
+- New: Added batch script to bulk encrypt files of given directory with encryption tool.
+- New: inticator style used for matching braces too.
+- New: Java sourcecode to compile a class which acts as a standalone tool for decrypting Notepad3's encrypted files.
+- New: Regex - "Dot matches all" vs. "Dot does not match line-breaks" switchable by option in find/replace dialog.
+- Fix: Update coloring on window message WM_SYSCOLORCHANGE, including Hyperlink hotspot colors.
+- Fix: Crash on empty password for encryption tool.
+- Fix: Existing bash test script for encryption tool.
+- Fix: Onigmo regex: . matches any charakter and does not stop at line breaks.
+- Fix: Onigmo regex: remove extend mode, where # is used as line rest comment.
+- Fix: Change hard coded default values for matching brace styling according to new style (indicator).
+- Fix: font styling of Hyperlinks are not reset to default if feature is switched off.
+
+
+==================================================
+Version 3.17.1223.778 (23 December 2017)
+==================================================
+- New: More triggers for Hyperlink style updated.
+- New: Online Documentation menu item.
+- New: Added Scintilla's indicator styles to scheme config for "Mark Occurences".
+- New: Dual configuration of Default Text Font or Current Scheme's Default Text Font.
+- New: Replaced DeelX with Onigmo regular expression engine.
+- Changed: uthash to version 2.0.2.
+- Changed: Enhanced style copy method.
+- Fix: Minor fixes for Onigmo interface class.
+- Fix: Hyperlink feature related delay of font changing.
+- Fix: Last hyperlink was restyled to lexer's style (not desired hotspot style).
+- Fix: Default lexer style changed a litle bit after first UI update.
+- Fix: Redraw bug in case of SCI_COLOURISE.
+- Fix: Removed some Hyperlink dection triggerpoints, which might be collide with SEARCHINTARGET and REPLACETARGET race conditions (seperate threads).
+- Fix: Removed unneccessary Hyperlink trigger-point from InitInstance().
+- Fix: Performance issue while pasting long text from clipboard.
+- Fix: Local memory freeing.
+- Fix: Complete set of font weights for syntax scheme.
+- Fix: Prepare fixing race-condition search/replace target vs. selection.
+- Fix: Set target range only for search/replace and not for paste after modifying selection (race-condition search/replace target vs. selection).
+- Fix: Transform backslashes for regex find/replace.
+- Fix: Out of range fallback for indicator string retrieval.
+- Fix: Issue regarding TransformBackslash handler (regex vs. std & find vs. replace).
+- Fix: Replace dialog: Resize regex text box to not overlay other control.
+- Fix: Enable more hyperlink styling trigger points, since "replace target" race-conditions have been fixed and fast regex engine (Onigmo) is integrated.
+- Fix: Issue regarding applying lexer style while hyperlink feature is active.
+- Fix: Reverting to buffered draw, until screen flickering issues are clarified.
+- Fix: Onigmo regex engine handling string/line end meta char '$' independent of EOL mode.
+- Fix: Replace-all with look-behind assertion.
+- Fix: Onigmo word boundaries issues (incl. "double" escaped esc) (not solved yet: multi escaped esc).
+- Fix: Customize schemes issues (now Default Font: is applied to "Default Text" and "Current Lexers" Default Font).
+- Fix: Allow (horiz.)TAB chars in selection copied to find/replace dialog search box on pop up time (Ctrl+F).
+- Fix: Setting "Default Font..." will clear current lexer's default font - inherits global default font then.
+- Fix: "Default Font..." configuration issue.
+- Fix: "Default Font..." add check for current scheme is not default text already.
+- Fix: Schemes in alphabetical order (displayed names).
+- Fix: Bug on font selection - global vs. current scheme.
+- Fix: More bugs regarding standard lexer handling.
+- Fix: Using WYSIWYG fonts (screen vs. printer).
+- Fix: Inconsistencies: cut,copy,replace,... mainmenu and context menu vs. toolbar.
+- Fix: New Font selection New: 2nd Default Font not supported completely.
+- Fix: setting/changing encryption pass-phrase did not trigger "file modified" flag.
+- Fix: Problem with 1st vs. 2nd Default Text Scheme selection.
+- Fix: Inconsistency 1st vs. 2nd Default Text Font selection.
+- Fix: Use Standard Lexer on new (empty) files.
+- Fix: General bug fixes and code cleanup.
+
+
+==================================================
+Version 3.17.1210.729 (10 December 2017)
+==================================================
+- New: Added Awk Script syntax highlighting (Python lexer based)
+- New: Enhanced URL Hotspot highlighting.
+- New: open Hyperlink in NP3 (if applicable: "file://...").
+- New: Update notification in Notepad3 setup.
+- New: URL Hotspot (first version).
+- Changed: [Settings2] section default values (and comment out if not changed) of initially distributed Notepad3.ini
+- Enhancement: Code Cleanup
+- Fix: Edit/Special : URL encoding/decoding for full UTF-8 (non ASCII) characters.
+- Fix: flashing of Search text-box of find/replace dialog in case of Win7 Classic theme
+- Fix: Gibberish output if URL decoded again (2nd time).
+- Fix: URL decoding, if encoding has "%#nnn" formatted ASCII chars.
+- Fix: HTML character encoding starts with ampersand, not percent char.
+- Fix: URL encoding: Added flag URL_ESCAPE_PERCENT for UrlEscape().
+- Fix: Added version info for VS2017 v.15.5
+- Fix: Consistent texts for "Hyperlink Hotspots".
+- Fix: Hyperlink Hotspots turned off by default. (not stable enough to force the feature).
+- Fix: Normal setup can now clean replace Windows Notepad registry keys.
+- Fix: Added some more places, where Hotspot style redrawing does not slow down responsiveness.
+
+
+==================================================
+Version 3.17.1202.715 (2 December 2017)
+==================================================
+- New: Additionally show full path to current directory in windows title.
+- Changed: Move "Mark Occurrences" check box from menu to find/replace dialog options.
+- Changed: Renaming of drag n' drop methods.
+- Fix: Removed unused mouse wheel message interception.
+- Fix: Disabling buffered draw. (Scintilla: "Current platforms perform window buffering so it is almost always better for this option to be turned off.")
+- Fix: Font Smoothing: [Settings2] SciFontQuality=n has no effect on some special fonts (preserving old behavior if not defined).
+- Fix: Adapt text for messagebox: no valid drop-file.
+- Fix: issue regarding Accelerator keys for find/replace dialog.
+- Fix: Minipath full path display in titlebar (no dbl-slash in case of drive letter only).
+- Fix: Mark occurrences: Outline frame of indicator box shouls have same aplpha channel color (configurable alpha2:nnn).
+- Fix: Find/replace dialog: mark occurrences: use standard save/restore settings behavior.
+- Fix: #192 Drag n' drop from 32-bit process on Notepad3 x64 window
+
+
+==================================================
+Version 3.17.1124.690 (24 November 2017)
+==================================================
+- Added Book Mark style (Color Background and Alpha) to customize schemes...
+- New "D" and "Go" programming language support.
+- Update: Compiler version detection.
+- Update: Scintilla Lib v.4.0.2 (402).
+- Adapt: C/C++ styles - keyword vs. typedefs.
+- Changed SDK version target to 10.0.16299.0
+- Major refactoring of find/replace regex evaluation.
+- Optimized DeelX regex interface.
+- Minor fix for DeelX RegEx engine.
+- Move position after replacement (EditReplace()).
+- Refactoring of "Replace All" methods.
+- Split C++ Keywords in two parts (1st: standard keywords, 2nd: keywords starting with double underscore "__xxx").
+- Minor polish of Readme.md.
+  Put changes compared to Notepad2-mod into Readme.md.
+- Repair empty resource file (Notepad3.rc).
+- Bookmark Enhancements
+- Replaced old bookmark pixmap (visible margin) by Scintilla's BOOKMARK marker style.
+- Swap text fields in Find/Replace dialog.
+- Enhance: comments with useful web links.
+- Enhance: Increase buffers for edit box in "Customize Schemes..." dialog.
+- New: Auto remember bookmarks in recent file history.
+- New: find/replace mark occurrences.
+- New: Indicator in find text box, if search string is matched in document.
+- New: Mark occurrences coloring is now configurable via "Customize Schemes...".
+- New: "Swap Strings" button in Find/Replace dialog.
+- New: validate regexpr.
+- Fix: Revert to Scintilla's default mouse down and mouse wheel capture mode.
+- Fix: "Mark All Occurrences" setting of find/replace dialog should only be persisted, if "Save Settings on Exit" is enabled.
+- Fix:  UpdateLineNumberWidth() triggers cleanup.
+- Fix: Issue with update of line number margin width.
+- Fix: Transform backslash issues.
+- Fix: C/C++ keywords and types.
+- Timer call for mark occurrences during find/replace.
+- Fix: lookaround regex (DeelX) matches were not replaced.
+- Fix: Issue regarding find/replace empty-string.
+- Fix: Adapt DeelX RE interface according to enhanced find/replace dialog.
+- Fix: Issue #173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
+- Fix: Recoding minipath's version.h to UTF-8-Sig, because it contains codepage dependant copyright sign.
+- Fix: Corrections to .vcproj settings inconsistencies (reported in release build process).
+- Fix: undo/redo issues (if no selection choosen).
+- Fix: Consecutive DEL/BACKSP undo/redo broken (wrapped by unconditional selection undo/redo).
+- Fix: Issues found by static code analysis.
+- Fix: Bug in getting string length from dialog box readout.
+- Fix: Break criteria for "replace all in range".
+- Fix: Issues found regarding zero-length matches using regex anchors, including infinite loops on replace all.
+- Fix: RegEx start anchor adjustment.
+- Fix: Problem with regex line start and replacements at line end.
+- Fix: Issues regarding selection undo/redo.
+- Fix: Issues regarding margins configuration.
+- Fix: Issue #139 and #143 (remove selection undo/redo for non-text-changing operations on selections).
+- Fix: issue #144 (Left arrow no longer moves to previous line).
+- Fix: issue #145 (Mark Occurrences Counter is broken).
+- Fix: Pasting clipboard content into selection box should replace text and cancel selection then.
+- Minor bug fixes and more...
+
+
+==================================================
+Version 2.17.1023.632 (23 October 2017)
+==================================================
+- Add code snippet (activation only prepare for future extensions).
+- Added switch ([Settings2] UseOldStyleBraceMatching) to preserve old style 
+  brace matching behavior.
+- Applied patch from Neil Hodgson (Master of Scintilla Lib - respond to 
+  scintilla lib issue report #1976).
+- Changed buffers for operating edit box in customize schemes.
+- Documentation: Minor changes to Notepad3.txt.
+- Documentation: doc/Notepad3.txt - add description of [Section2] .ini settings 
+  (mostly taken from orig. Notepad2 FAQs).
+- Default to modern displays settings, using Scintilla's new technology 
+  : SciDirectWriteTech=1, SciFontQuality=3
+- First prottotype of VirtualSpace RectangularSelection by default (very old 
+  behavior can be turned on by [Settings2] DenyVirtualSpaceAccess=1).
+- Implemented Feature Request #51 (buffer size of file extension edit box).
+- New: Show warning before loading file with unknown (custom schemes) file 
+  name extension.
+- License.txt: switch to UTF-8 encoding.
+- Restore wrongly discarded np3portableapps .ini files for NP3Portable, 
+  redirecting .ini reading to correct path.
+- Small code refactoring (replacing deprecated methods).
+- Settings [Section2] (cannot be set via GUI) add all possible names and 
+  default values, if applicable.
+- Fixed .ini paths for np3portableapps.
+- Fix: Crash in Favorites management.
+- Fix: pasting clipboard content into selection box should replace text and 
+  cancel selection then (in case of swapping clipboard, the selection is preserved).
+- Remove settings for "Favorites" directory -> NP3 uses then users system 
+  default folder (%USERPROFILE%\Favorites).
+
+
+==================================================
+Version 2.17.1016.610 (16 October 2017)
+==================================================
+- Added remove button for list items.
+- Checkbox for "preserve caret position" settings.
+- File History Dlg: rename button "Remove" -> "Discard" 
+  (discard selected item from file history list).
+- Minor bugfixes for session feature 
+  (file history: remember caret pos and encoding).
+- Removed unnecessary build artifacts from np3portable.
+
+
+==================================================
+Version 2 Build 605 (15 October 2017)
+==================================================
+- Fix: Crash on accessing UndoRedo structure while NP3 instance has 
+  not been initialized completely (.LOG file opening bug).
+
+
+==================================================
+Version 2 Build 600 (15 October 2017)
+==================================================
+- Fix: Virtual space access: column indicator.
+- Fix: Customize Schemes... Font... selection: bold/italic now detected 
+  (bold: if selection >= FW_SEMIBOLD)
+
+
+==================================================
+Version 2 Build 583 (11 October 2017)
+==================================================
+- Cleanup AHK testing script, add test artifacts.
+- Generalized internal multi-byte codepage definitions (code cleanup).
+- Fix: syntax error on exit script.
+- Fix: Try to retrieve correct file version for Notepad3Portable creator.
+- Fix: StatusBar Col display is not correct in case of Virtual Space Access.
+- Fix: locale / language independant version patching batch for Notepad3Portable
+- Fix: version patching for Notepad3 PortableApps build batch.
+- Fix: Recode to ANSI (in case of Chinese ANSI code-page)
+
+
+==================================================
+Version 2 Build 568 (8 October 2017)
+==================================================
+- Updated the Run Dialog icon.
+- Code comment for completeness.
+- Enhanced clipboard recoding detection.
+- Prettier Browse Icon.
+- StatusBar information enhancements.
+- Fix: Reverting "reload as UTF-8 not work bugfix".
+- Fix: Texture glitch on "Browse" button.
+- Fix: Binary directory to build portable app.
+- Fix: In-text encoding (convert encoding).
+- Fix: minor StatusBar string corrections.
+- Fix: Support pasting position at virtual space.
+- Fix: Move caret to convenient position after pasting clipboard 
+  (no current selection).
+- Fix: Virtual space navigation and rectangular selection (minor issues) 
+  (allow "Virtual Space Rectangular Selection" 
+  also allows moving Caret into virtual space (beyond line end))
+- Fix: Copy/Cut & Paste of current line (in case of no selection - 
+  Visual Studio behavior - using SCI's MSDEVLineSelect).
+- Fix: Bug in code-page related text conversion.
+
+
+==================================================
+Version 2 Build 548 (3 October 2017)
+==================================================
+- Code cleanup
+- Fix: Made corrections to build 505 change log (spelling, grammar, etc).
+- Fix: FILE status becomes [MODIFIED] when doing CONTROL+A to select ALL.
+- Fix: Paste from clipboard to ANSI code page: 
+  unnecessary switching encoding to UTF-8.
+- Fix: Undo/Redo of virtual space selection rectangle not correct.
+- Fix: StatusBar SelectionCount (Sel) : count chars instead of bytes.
+- Fix: Punctuation chars for "Accelerated Word Navigation" (Settings2: 
+  ExtendedWhiteSpaceChars= add non word chars here).
+- Fix: Do mouse wheel scrolling in editor area only.
+- Fix: DPI awareness in manifest.
+- Fix: word delimiter in case of "Accelerated Word Navigation".
+- Correct UFT Spelling on Encoding menu.
+
+
+==================================================
+Version 2 Build 505 (23 September 2017)
+==================================================
+- 1st chunk of StrSafe migration.
+- Some more StrSafe changes
+- Fix: manually edited settings (SciDirectWriteTech, SciFontQuality) 
+  should be placed in settings section [Settings2].
+- Extended default "space char set" for "Accelerated Word Navigation" to avoid 
+  unexpected "accelerated word navigation" behavior, space-char extension is 
+  restricted to 7-bit ASCII char set (ignoring specified non-7-bit-ASCII chars).
+- StrSafe adaptions
+- Fixed: settings SciFontQuality have been overwritten by Scheme configuration.
+  (Fonts: Calibri, Cambria, Candara, Consolas, Constantia, Corbel, Segoe UI are using 
+  'cleartype smoothing' (SC_EFF_QUALITY_LCD_OPTIMIZED) by default, if not 
+  configured in Schema definition for Lexer)
+- Added font "Source Code Pro" to list of special fonts for cleartype smoothing.
+- Fix: undo destructive operation on selection (rectangle) does not restore 
+  selection or preserves selection mode (extends selection on caret movement)
+  -> need to send SCI_CANCEL at the end of restored selection.
+- Found bug caused by StrSafe migration 
+  (COUNTOF() for buffer size must not be used on buffer pointer)
+- migrate StrCpyN() and StrCatBuff() to corresponding StrSafe.h methods
+- Adapted lstrcpyn() calls according to StrSafe.h requirements.
+- Refactoring of "Accelerated Word Navigation" to be compliant with Scintillas 
+  WhiteSpace and Punctuation defines.
+- "Accelerated Word Navigation" activation influences "Mark Occurrences" (whole word) if set
+- Extended: Remember selection undo / redo
+- Added undo / redo selection to more operations
+- Found Scintilla 400 method "SCI_CUT" (cut selection) broken: lost last char
+  replaced by SCI_COPY & SCI_CLEAR combination (for now).
+- changes to EditGetClipboardText() solved the SCI_CUT problem, so it can be 
+  switched back from SCI_COPY & SCI_CLEAR to SCI_CUT 
+  (byte alignment in 64-bit, i am nut sure)
+- switching Scintilla internal codepage to UTF-8 only (resp. Japanese, 
+  Chinese and Korean DBCS) single-byte encoding is supported externally and 
+  converted (fore and back) to UTF-8 internally, this simplifies 
+  i.e. clipboard exchange, etc.
+- Removed support for obsolete Korean Johab (1361) codepage.
+- Fixed ConvertText() according to internal SCI codepage
+- Refactoring: Encoding handling
+- More operations for selections undo/redo.
+- Enabled "unlimited" (as in Scintilla Lib: dep. on memory and INT_MAX) 
+  undo / redo selection history using utarray from uthash header library 
+  (https://troydhanson.github.io/uthash/index.html)
+- Moved crypto readme to doc dir
+- remove internal codepage support for Chinese, Japan, Korean DBCS use 
+  generalized UTF-8 codepage instead 
+  (conversions do not work as expected within scintilla lib)
+- Dropping Windows XP support , using compiler toolset vc141 Win SDK 10.0. 
+  (current VC++ redistributable needed?)
+- Replaced lstrcmp() and lstrcmpi() by StrSafe (helper.h defined) methods.
+- Relaunch elevated keeping current changes in a buffer.
+- Fixed some problems for feature "relaunch elevated preserve changes".
+- First AppVeyor config
+- Remember window position in case of "relaunch elevated".
+- Fixed memory initialization problem during InitInstance()
+- Enhanced consistency between toolbar (save button) and titlebar (modified marker)
+- "Relaunch elevated": use current .ini-file instead of new user's (Admin's) .ini
+- Cleanup tmp filebuffer, if elevation has been rejected.
+- Fixed crash in case of wrong Encoding (detection)
+- Changed version display on Help/About.
+- New Powershell script to patch version numbers
+- appveyor.yml using same powershell commands to patch version
+- Remove FindReplaceDlg handle declared as external from compilation unit 
+  Edit.c - not really needed here. (externals (handles / pointers) seemed to 
+  be a problem on module init instance time in 64-bit)
+- Fixed: Open find dialog the first time (new NP3 instance) while
+  clipboard is empty, NP3 crashes (try to LocalFree() static allocated memory)
+- Fixed: RegExpr "Find previous" corrected (find mode "left to right" has been 
+  used, which has not the intended behavior).
+- Updated Compiler Info.
+- Added build.txt (and .ps1 changes) for Local Build Version patching 
+  (common AppVeyor/Local script).
+- Fixed issue "Convert to Title Case" while selected text is all upper case.
+- Fixed broken "Complete Word" feature (Ctrl+Enter/Return).
+- Changed accelerator key for feature "Complete Word" from Ctrl+Enter to Ctrl+Alt+Enter.
+- Added feature "Insert New (empty) Line above current line Ctrl+Enter (as in VisualStudio).
+- Code cleanup
+- Added new Settings "Virtual Space on Rectangular Selection" used to select. 
+  rectangle not delimited by line endings (but including virtual space).
+- Readme.txt Updated. (Thanks Will)
+
+
+==================================================
+Version 2 Build 450 (18 August 2017)
+==================================================
+- Update to Scintilla 400 (early bird) pre-release.
+- Renamed encoding menu item: "Recode No FileVars" (Alt+F8) =>> "Ignore Encoding Tags" (Alt-F8)
+- UTF-8 encoding of License.txt (fixing: different ANSI codepage for copyright sign)
+- Fixed "file modified" flag not set on Ctrl+X actions
+- Fixed re-enable accidentally disabled toolbar buttons (find, replace, clear, toggle-folds, file-launch)
+- Fixed remove obsolete settings entry, never read (SciDrawTechnology)
+- Fixed crash: not a good idea to make char array (char*) external to other compilation unit.
+- Fixed wrong shortcut in menu on word navigation (Ctrl+LEFT/RIGHT)
+
+
+==================================================
+Version 2 Build 440 (16 August 2017)
+==================================================
+- Added Enabling/Disabling Save-Button in toolbar according to file modified indicator.
+- Added Del/Back Selection preserving on Undo/Redo
+- Cut Selection (Ctrl-X) will preserve Selection on Undo/Redo
+- Zero initializing string buffers (hardening code while searching an issue regarding "Recent Files" list in "relative paths" mode
+- Menu integration of "hidden" commands
+- Fixed unicode conversion error fixed in .rc
+- Fixed Toolbar Button "Save" has to be enabled on encoding changes
+- Fixed bug on path compare for editing own settings file (.ini) to disable "save settings" menu entries (should be case insensitive)
+- Fixed: restore "rectangular" selection too on "Selection Cut" Undo/Redo
+- Fixing and cleanup build for Notepad3Portable
+
+
+==================================================
+Version 2 Build 432 (10 August 2017)
+==================================================
+- Added command line option ( /v ) to print file immediately and quit (like Window's original notepad.exe /p option).
+- Added printing additional option /v dialog to allow access to the Printer dialog (as on Menu: Print... ).
+- Enlarge some string buffers for dialogs.
+- Initial version of PortableApps.com Launche and Installer build.
+- Build environment, to create Notepad3Portable (according to Portableapps.com) (x86/x64).
+- Fixed issue #35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).
+- Fixed np3encrypt vcxproj files.
+
+
+==================================================
+Version 2 Build 422 (10 August 2017)
+==================================================
+- Cleanup manifest handling
+- Minipath DPI aware false
+
+
+==================================================
+Version 2 Build 411 (9 August 2017)
+==================================================
+- Added VisualStudio's Editor Behaviour for Ctrl-C and Ctrl-X
+- Added VS2017 .vcproj files and adapted Compiler Tool Set accordingly
+- Reintroduce HighDPI toolbar
+- Integrate Scintillas DirectWrite technology
+- Minor cleanups reported by CppCheck v.1.79
+- Fixed nullptr access while pressing "favorites" toolbar button on 'virgin' Notepad3 ToolBar
+- Fixed broken Ctrl-Q (toggle line comments)
+
+
+==================================================
+Version 2 Build 398 (13 June 2017)
+==================================================
+- Added Microsoft Visual C++ 2017 (vc141) support.
+- Updated Scintilla to version 3.7.5
+- Don't use 2nd default syntax scheme by default. (Issue #21)
+- Bigger Toolbar Buttons (24px). Should be big enough now. (Issue #21)
+
+
+==================================================
+Version 1 Build 388 (06 January 2017)
+==================================================
+- Updated Scintilla to version 3.7.2
+- MiniPath now works on Windows XP
+
+
+==================================================
+Version 1 Build 386 (08 December 2016)
+==================================================
+- Added RaPeHoff to the contributors list.
+- Update to Scintilla 371 (NP2 adaption due to deprecated data types).
+- clean-code Solution (instead of "magic numbers").
+- Crypto Module: code cleanup 
+- Crypto Module: Replaced LocalAlloc/GlobalAlloc by HeapAlloc methods.
+- Integration of DeelX RegExpr engine (http://www.regexlab.com/en/deelx/) 
+- Fixed block selecting cause crash.
+
+
+==================================================
+Version 1 Build 350 (05 September 2016)
+==================================================
+- Added Microsoft Visual C++ Update 3 version number
+- Updated HTML Keywords
+- Updated Scintilla to version 3.6.7
+
+
+==================================================
+Version 1 Build 330 (24 June 2016)
+==================================================
+- Added Visual Studio 2015 Update 2 version number
+- Added Support for Inno Setup 5.5.9
+- Implemented a new versioning scheme
+- Updated Apache Keywords for version 2.4
+- Updated to Scintilla 3.6.6
+- Updated Rizonesoft Versions Program
+- Fixed Compiler warnings
+- Fixed Favorites Function
+- Removed Visual Studio 2010 to 2013 Support
+
