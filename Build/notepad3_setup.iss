@@ -20,20 +20,12 @@
   #error Compile MiniPath x86 first
 #endif
 
-#ifnexist bindir + "\Release_x86_v142\np3encrypt.exe"
-  #error Compile np3encrypt.exe x86 first
-#endif
-
 #ifnexist bindir + "\Release_x64_v142\Notepad3.exe"
   #error Compile Notepad3 x64 first
 #endif
 
 #ifnexist bindir + "\Release_x64_v142\minipath.exe"
   #error Compile MiniPath x64 first
-#endif
-
-#ifnexist bindir + "\Release_x64_v142\np3encrypt.exe"
-  #error Compile np3encrypt.exe x64 first
 #endif
 
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
