@@ -41,9 +41,9 @@
 //
 //  L"Title\nMessage Text"
 //
-extern HWND hwndMain;
-extern LANGID g_iPrefLANGID;
-extern HICON  g_hDlgIcon;
+extern HWND    hwndMain;
+extern HICON   g_hDlgIcon;
+extern LANGID  g_iPrefLANGID;
 
 
 int ErrorMessage(int iLevel, UINT uIdMsg, ...)
@@ -57,7 +57,7 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
     return(0);
 
   //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
-  int t = vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  int const t = clampi(vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1)), 0, 1023);
   szTitle[t] = L'\0';
 
   WCHAR* c = StrChr(szTitle,L'\n');
@@ -179,8 +179,6 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
   return fOk;
 }
 
-
-extern WCHAR szCurDir[MAX_PATH + 40];
 
 //=============================================================================
 //
@@ -316,7 +314,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 sei.lpVerb = NULL;
                 sei.lpFile = arg1;
                 sei.lpParameters = arg2;
-                sei.lpDirectory = szCurDir;
+                sei.lpDirectory = Settings.szCurDir;
                 sei.nShow = SW_SHOWNORMAL;
 
                 if (ShellExecuteEx(&sei))
@@ -363,8 +361,8 @@ INT_PTR RunDlg(HWND hwnd)
 //  GotoDlgProc()
 //
 //
-extern HISTORY mHistory;
-extern int cxGotoDlg;
+
+extern HISTORY g_mHistory;
 
 INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -390,9 +388,9 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
-        if (cxGotoDlg < (rc.right-rc.left))
-          cxGotoDlg = rc.right-rc.left;
-        SetWindowPos(hwnd,NULL,rc.left,rc.top,cxGotoDlg,rc.bottom-rc.top,SWP_NOZORDER);
+        if (Settings.cxGotoDlg < (rc.right-rc.left))
+          Settings.cxGotoDlg = rc.right-rc.left;
+        SetWindowPos(hwnd,NULL,rc.left,rc.top, Settings.cxGotoDlg,rc.bottom-rc.top,SWP_NOZORDER);
 
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
@@ -414,13 +412,13 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SendDlgItemMessage(hwnd,IDC_GOTO,CB_SETEXTENDEDUI,TRUE,0);
 
         for (int i = 0; i < HISTORY_ITEMS; i++) {
-          if (mHistory.psz[i]) {
+          if (g_mHistory.psz[i]) {
             int iItem = (int)SendDlgItemMessage(hwnd,IDC_GOTO,
-                          CB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)mHistory.psz[i]);
+                          CB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)g_mHistory.psz[i]);
             if (iItem != LB_ERR)
               SendDlgItemMessage(hwnd,IDC_GOTO,CB_DELETESTRING,iItem,0);
             SendDlgItemMessage(hwnd,IDC_GOTO,CB_INSERTSTRING,0,
-                               (LPARAM)mHistory.psz[i]);
+                               (LPARAM)g_mHistory.psz[i]);
           }
         }
 
@@ -438,7 +436,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         RECT rc;
         GetWindowRect(hwnd,&rc);
-        cxGotoDlg = rc.right-rc.left;
+        Settings.cxGotoDlg = rc.right-rc.left;
       }
       return FALSE;
 
@@ -647,23 +645,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 //
 extern WCHAR g_wchIniFile[MAX_PATH];
-extern BOOL bSaveSettings;
-extern WCHAR szQuickview[MAX_PATH];
-extern WCHAR szQuickviewParams[MAX_PATH];
-extern WCHAR g_tchFavoritesDir[MAX_PATH];
-extern BOOL bNP3sFavoritesSettings;
-extern BOOL bClearReadOnly;
-extern BOOL bRenameOnCollision;
-extern BOOL bSingleClick;
-extern BOOL bTrackSelect;
-extern BOOL bFullRowSelect;
-extern BOOL bFocusEdit;
-extern BOOL bAlwaysOnTop;
-extern BOOL bMinimizeToTray;
-extern BOOL fUseRecycleBin;
-extern BOOL fNoConfirmDelete;
-extern int  iStartupDir;
-extern int  iEscFunction;
 
 INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -676,28 +657,28 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
       if (StrIsNotEmpty(g_wchIniFile)) {
-        if (bSaveSettings)
+        if (Settings.bSaveSettings)
           CheckDlgButton(hwnd,IDC_SAVESETTINGS,BST_CHECKED);
       }
       else
         EnableWindow(GetDlgItem(hwnd,IDC_SAVESETTINGS),FALSE);
 
-      if (bSingleClick)
+      if (Settings.bSingleClick)
         CheckDlgButton(hwnd,IDC_SINGLECLICK,BST_CHECKED);
 
-      if (bTrackSelect)
+      if (Settings.bTrackSelect)
         CheckDlgButton(hwnd,IDC_TRACKSELECT,BST_CHECKED);
 
-      if (bFullRowSelect)
+      if (Settings.bFullRowSelect)
         CheckDlgButton(hwnd,IDC_FULLROWSELECT,BST_CHECKED);
 
-      if (bFocusEdit)
+      if (Settings.bFocusEdit)
         CheckDlgButton(hwnd,IDC_FOCUSEDIT,BST_CHECKED);
 
-      if (bAlwaysOnTop)
+      if (Settings.bAlwaysOnTop)
         CheckDlgButton(hwnd,IDC_ALWAYSONTOP,BST_CHECKED);
 
-      if (bMinimizeToTray)
+      if (Settings.bMinimizeToTray)
         CheckDlgButton(hwnd,IDC_MINIMIZETOTRAY,BST_CHECKED);
 
       if (IniFileGetInt(g_wchIniFile, L"Settings2", L"ReuseWindow", 1)) {
@@ -715,40 +696,40 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
           if (IsWindowEnabled(GetDlgItem(hwnd,IDC_SAVESETTINGS))) {
             if (IsDlgButtonChecked(hwnd,IDC_SAVESETTINGS))
-              bSaveSettings = 1;
+              Settings.bSaveSettings = 1;
             else
-              bSaveSettings = 0;
+              Settings.bSaveSettings = 0;
           }
 
           if (IsDlgButtonChecked(hwnd,IDC_SINGLECLICK))
-            bSingleClick = 1;
+            Settings.bSingleClick = 1;
           else
-            bSingleClick = 0;
+            Settings.bSingleClick = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_TRACKSELECT))
-            bTrackSelect = 1;
+            Settings.bTrackSelect = 1;
           else
-            bTrackSelect = 0;
+            Settings.bTrackSelect = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_FULLROWSELECT))
-            bFullRowSelect = 1;
+            Settings.bFullRowSelect = 1;
           else
-            bFullRowSelect  = 0;
+            Settings.bFullRowSelect  = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_FOCUSEDIT))
-            bFocusEdit = 1;
+            Settings.bFocusEdit = 1;
           else
-            bFocusEdit = 0;
+            Settings.bFocusEdit = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_ALWAYSONTOP))
-            bAlwaysOnTop = 1;
+            Settings.bAlwaysOnTop = 1;
           else
-            bAlwaysOnTop = 0;
+            Settings.bAlwaysOnTop = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_MINIMIZETOTRAY))
-            bMinimizeToTray = 1;
+            Settings.bMinimizeToTray = 1;
           else
-            bMinimizeToTray = 0;
+            Settings.bMinimizeToTray = 0;
 
           int const rw = IsDlgButtonChecked(hwnd, IDC_REUSEWINDOW) ? 1 : 0;
           IniFileSetInt(g_wchIniFile, L"Settings2", L"ReuseWindow", rw);
@@ -782,22 +763,22 @@ INT_PTR CALLBACK AdvancedPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
       if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
-      if (bClearReadOnly)
+      if (Settings.bClearReadOnly)
         CheckDlgButton(hwnd,IDC_CLEARREADONLY,BST_CHECKED);
 
-      if (bRenameOnCollision)
+      if (Settings.bRenameOnCollision)
         CheckDlgButton(hwnd,IDC_RENAMEONCOLLISION,BST_CHECKED);
 
-      if (fUseRecycleBin)
+      if (Settings.fUseRecycleBin)
         CheckDlgButton(hwnd,IDC_USERECYCLEBIN,BST_CHECKED);
 
-      if (fNoConfirmDelete)
+      if (Settings.fNoConfirmDelete)
         CheckDlgButton(hwnd,IDC_NOCONFIRMDELETE,BST_CHECKED);
 
-      if (iStartupDir)
+      if (Settings.iStartupDir)
       {
         CheckDlgButton(hwnd,IDC_STARTUPDIR,BST_CHECKED);
-        if (iStartupDir == 1)
+        if (Settings.iStartupDir == 1)
           CheckRadioButton(hwnd,IDC_GOTOMRU,IDC_GOTOFAV,IDC_GOTOMRU);
         else
           CheckRadioButton(hwnd,IDC_GOTOMRU,IDC_GOTOFAV,IDC_GOTOFAV);
@@ -809,10 +790,10 @@ INT_PTR CALLBACK AdvancedPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         EnableWindow(GetDlgItem(hwnd,IDC_GOTOFAV),FALSE);
       }
 
-      if (iEscFunction)
+      if (Settings.iEscFunction)
       {
         CheckDlgButton(hwnd,IDC_ESCFUNCTION,BST_CHECKED);
-        if (iEscFunction == 1)
+        if (Settings.iEscFunction == 1)
           CheckRadioButton(hwnd,IDC_ESCMIN,IDC_ESCEXIT,IDC_ESCMIN);
         else
           CheckRadioButton(hwnd,IDC_ESCMIN,IDC_ESCEXIT,IDC_ESCEXIT);
@@ -868,42 +849,42 @@ INT_PTR CALLBACK AdvancedPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         case PSN_APPLY:
 
           if (IsDlgButtonChecked(hwnd,IDC_CLEARREADONLY))
-            bClearReadOnly = 1;
+            Settings.bClearReadOnly = 1;
           else
-            bClearReadOnly = 0;
+            Settings.bClearReadOnly = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_RENAMEONCOLLISION))
-            bRenameOnCollision = 1;
+            Settings.bRenameOnCollision = 1;
           else
-            bRenameOnCollision = 0;
+            Settings.bRenameOnCollision = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_USERECYCLEBIN))
-            fUseRecycleBin = 1;
+            Settings.fUseRecycleBin = 1;
           else
-            fUseRecycleBin = 0;
+            Settings.fUseRecycleBin = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_NOCONFIRMDELETE))
-            fNoConfirmDelete = 1;
+            Settings.fNoConfirmDelete = 1;
           else
-            fNoConfirmDelete = 0;
+            Settings.fNoConfirmDelete = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_STARTUPDIR)) {
             if (IsDlgButtonChecked(hwnd,IDC_GOTOMRU))
-              iStartupDir = 1;
+              Settings.iStartupDir = 1;
             else
-              iStartupDir = 2;
+              Settings.iStartupDir = 2;
           }
           else
-            iStartupDir = 0;
+            Settings.iStartupDir = 0;
 
           if (IsDlgButtonChecked(hwnd,IDC_ESCFUNCTION)) {
             if (IsDlgButtonChecked(hwnd,IDC_ESCMIN))
-              iEscFunction = 1;
+              Settings.iEscFunction = 1;
             else
-              iEscFunction = 2;
+              Settings.iEscFunction = 2;
           }
           else
-            iEscFunction = 0;
+            Settings.iEscFunction = 0;
 
           SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
@@ -923,11 +904,6 @@ INT_PTR CALLBACK AdvancedPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 //  ItemsPageProc
 //
 //
-extern BOOL     bDefCrNoFilt;
-extern BOOL     bDefCrFilter;
-extern COLORREF crNoFilt;
-extern COLORREF crFilter;
-extern COLORREF crCustom[16];
 
 INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -950,11 +926,11 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
       if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
-      m_bDefCrNoFilt = bDefCrNoFilt;
-      m_bDefCrFilter = bDefCrFilter;
+      m_bDefCrNoFilt = Settings.bDefCrNoFilt;
+      m_bDefCrFilter = Settings.bDefCrFilter;
 
-      m_crNoFilt = crNoFilt;
-      m_crFilter = crFilter;
+      m_crNoFilt = Settings.crNoFilt;
+      m_crFilter = Settings.crFilter;
 
       m_hbrNoFilt = CreateSolidBrush(m_crNoFilt);
       m_hbrFilter = CreateSolidBrush(m_crFilter);
@@ -1024,7 +1000,7 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           cc.lStructSize = sizeof(CHOOSECOLOR);
           cc.hwndOwner = hwnd;
           cc.rgbResult = m_crNoFilt;
-          cc.lpCustColors = crCustom;
+          cc.lpCustColors = Settings.crCustom;
           cc.Flags = CC_RGBINIT | CC_SOLIDCOLOR;
 
           if (ChooseColor(&cc)) {
@@ -1042,7 +1018,7 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           cc.lStructSize = sizeof(CHOOSECOLOR);
           cc.hwndOwner = hwnd;
           cc.rgbResult = m_crFilter;
-          cc.lpCustColors = crCustom;
+          cc.lpCustColors = Settings.crCustom;
           cc.Flags = CC_RGBINIT | CC_SOLIDCOLOR;
 
           if (ChooseColor(&cc)) {
@@ -1065,11 +1041,11 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case PSN_APPLY:
 
-          bDefCrNoFilt = m_bDefCrNoFilt;
-          bDefCrFilter = m_bDefCrFilter;
+          Settings.bDefCrNoFilt = m_bDefCrNoFilt;
+          Settings.bDefCrFilter = m_bDefCrFilter;
 
-          crNoFilt = m_crNoFilt;
-          crFilter = m_crFilter;
+          Settings.crNoFilt = m_crNoFilt;
+          Settings.crFilter = m_crFilter;
 
           SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
 
@@ -1116,18 +1092,18 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         MakeBitmapButton(hwnd,IDC_BROWSE_Q,g_hInstance,IDB_OPEN);
         MakeBitmapButton(hwnd,IDC_BROWSE_F,g_hInstance,IDB_OPEN);
 
-        lstrcpy(tch,szQuickview);
+        lstrcpy(tch, Settings.szQuickview);
         PathQuoteSpaces(tch);
-        if (StrIsNotEmpty(szQuickviewParams)) {
+        if (StrIsNotEmpty(Settings.szQuickviewParams)) {
           StrCatBuff(tch,L" ",COUNTOF(tch));
-          StrCatBuff(tch,szQuickviewParams,COUNTOF(tch));
+          StrCatBuff(tch, Settings.szQuickviewParams,COUNTOF(tch));
         }
         SendDlgItemMessage(hwnd,IDC_QUICKVIEW,EM_LIMITTEXT,MAX_PATH - 2,0);
         SetDlgItemText(hwnd,IDC_QUICKVIEW,tch);
         SHAutoComplete(GetDlgItem(hwnd,IDC_QUICKVIEW),SHACF_FILESYSTEM);
 
         SendDlgItemMessage(hwnd,IDC_FAVORITES,EM_LIMITTEXT,MAX_PATH - 2,0);
-        SetDlgItemText(hwnd,IDC_FAVORITES,g_tchFavoritesDir);
+        SetDlgItemText(hwnd,IDC_FAVORITES, Settings.g_tchFavoritesDir);
         SHAutoComplete(GetDlgItem(hwnd,IDC_FAVORITES),SHACF_FILESYSTEM);
       }
       return TRUE;
@@ -1215,23 +1191,23 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             if (!GetDlgItemText(hwnd,IDC_QUICKVIEW,tch,MAX_PATH)) {
 
-              GetSystemDirectory(szQuickview,MAX_PATH);
-              PathAddBackslash(szQuickview);
-              lstrcat(szQuickview,L"Viewers\\Quikview.exe");
-              PathQuoteSpaces(szQuickview);
-              lstrcpy(szQuickviewParams,L"");
+              GetSystemDirectory(Settings.szQuickview,MAX_PATH);
+              PathAddBackslash(Settings.szQuickview);
+              lstrcat(Settings.szQuickview,L"Viewers\\Quikview.exe");
+              PathQuoteSpaces(Settings.szQuickview);
+              lstrcpy(Settings.szQuickviewParams,L"");
             }
             else
-              ExtractFirstArgument(tch,szQuickview,szQuickviewParams);
+              ExtractFirstArgument(tch, Settings.szQuickview, Settings.szQuickviewParams);
 
-            lstrcpy(tch, g_tchFavoritesDir);
-            if (!GetDlgItemText(hwnd, IDC_FAVORITES, g_tchFavoritesDir, MAX_PATH)) {
-              GetDefaultFavoritesDir(g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir));
+            lstrcpy(tch, Settings.g_tchFavoritesDir);
+            if (!GetDlgItemText(hwnd, IDC_FAVORITES, Settings.g_tchFavoritesDir, MAX_PATH)) {
+              GetDefaultFavoritesDir(Settings.g_tchFavoritesDir, COUNTOF(Settings.g_tchFavoritesDir));
             }
             else
-              StrTrim(g_tchFavoritesDir,L" \"");
+              StrTrim(Settings.g_tchFavoritesDir,L" \"");
 
-            if (lstrcmpi(tch, g_tchFavoritesDir) != 0) { bNP3sFavoritesSettings = FALSE; }
+            if (lstrcmpi(tch, Settings.g_tchFavoritesDir) != 0) { Settings.bNP3sFavoritesSettings = FALSE; }
 
             SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
             
@@ -1249,10 +1225,6 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 //
 extern HWND hwndStatus;
-extern int nIdFocus;
-
-extern WCHAR tchFilter[DL_FILTER_BUFSIZE];
-extern BOOL bNegFilter;
 
 INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
 {
@@ -1306,12 +1278,12 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
   // Apply the results
   if (nResult)
   {
-    if (bAlwaysOnTop)
+    if (Settings.bAlwaysOnTop)
       SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
     else
       SetWindowPos(hwnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 
-    if (bTrackSelect)
+    if (Settings.bTrackSelect)
       ListView_SetExtendedListViewStyleEx(hwndDirList,
         LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE,
         LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE);
@@ -1319,7 +1291,7 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
       ListView_SetExtendedListViewStyleEx(hwndDirList,
         LVS_EX_TRACKSELECT|LVS_EX_ONECLICKACTIVATE,0);
 
-    if (bFullRowSelect) {
+    if (Settings.bFullRowSelect) {
       ListView_SetExtendedListViewStyleEx(hwndDirList,
         LVS_EX_FULLROWSELECT,
         LVS_EX_FULLROWSELECT);
@@ -1333,12 +1305,12 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
         SetTheme(hwndDirList,L"Listview");
     }
 
-    if (lstrcmp(tchFilter,L"*.*") || bNegFilter) {
-      ListView_SetTextColor(hwndDirList,(bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : crFilter);
+    if (lstrcmp(Settings.tchFilter,L"*.*") || Settings.bNegFilter) {
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrFilter) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crFilter);
       ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
     }
     else {
-      ListView_SetTextColor(hwndDirList,(bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : crNoFilt);
+      ListView_SetTextColor(hwndDirList,(Settings.bDefCrNoFilt) ? GetSysColor(COLOR_WINDOWTEXT) : Settings.crNoFilt);
       ListView_RedrawItems(hwndDirList,0,ListView_GetItemCount(hwndDirList)-1);
     }
 
@@ -1352,8 +1324,6 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
 //  GetFilterDlgProc()
 //
 //
-extern WCHAR tchFilter[DL_FILTER_BUFSIZE];
-extern BOOL bNegFilter;
 
 static HWND  s_hWnd = NULL;
 static HMENU s_hMenu = NULL;
@@ -1389,10 +1359,10 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         MakeBitmapButton(hwnd,IDC_BROWSEFILTER,NULL,OBM_COMBO);
 
-        SendDlgItemMessage(hwnd,IDC_FILTER,EM_LIMITTEXT,COUNTOF(tchFilter)-1,0);
-        SetDlgItemText(hwnd,IDC_FILTER,tchFilter);
+        SendDlgItemMessage(hwnd,IDC_FILTER,EM_LIMITTEXT,COUNTOF(Settings.tchFilter)-1,0);
+        SetDlgItemText(hwnd,IDC_FILTER, Settings.tchFilter);
 
-        CheckDlgButton(hwnd,IDC_NEGFILTER, DlgBtnChk(bNegFilter));
+        CheckDlgButton(hwnd,IDC_NEGFILTER, DlgBtnChk(Settings.bNegFilter));
 
         CenterDlgInParent(hwnd);
       }
@@ -1472,12 +1442,12 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
 
         case IDOK:
-          if (GetDlgItemText(hwnd,IDC_FILTER,tchFilter,COUNTOF(tchFilter)-1)) {
-            bNegFilter = IsDlgButtonChecked(hwnd,IDC_NEGFILTER)?TRUE:FALSE;
+          if (GetDlgItemText(hwnd,IDC_FILTER, Settings.tchFilter,COUNTOF(Settings.tchFilter)-1)) {
+            Settings.bNegFilter = IsDlgButtonChecked(hwnd,IDC_NEGFILTER)?TRUE:FALSE;
           }
           else {
-            lstrcpy(tchFilter,L"*.*");
-            bNegFilter = FALSE;
+            lstrcpy(Settings.tchFilter,L"*.*");
+            Settings.bNegFilter = FALSE;
           }
           EndDialog(hwnd,IDOK);
           break;
@@ -1510,12 +1480,12 @@ BOOL GetFilterDlg(HWND hwnd)
   WCHAR tchOldFilter[DL_FILTER_BUFSIZE];
   BOOL bOldNegFilter;
 
-  lstrcpy(tchOldFilter,tchFilter);
-  bOldNegFilter = bNegFilter;
+  lstrcpy(tchOldFilter, Settings.tchFilter);
+  bOldNegFilter = Settings.bNegFilter;
 
   if (IDOK == ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_FILTER),hwnd,GetFilterDlgProc))
   {
-    if (!lstrcmpi(tchFilter,tchOldFilter) && (bOldNegFilter == bNegFilter))
+    if (!lstrcmpi(Settings.tchFilter,tchOldFilter) && (bOldNegFilter == Settings.bNegFilter))
       return(FALSE); // Old and new filters are identical
     else
       return(TRUE);
@@ -1669,8 +1639,6 @@ BOOL RenameFileDlg(HWND hwnd)
 //  CopyMoveDlgProc()
 //
 //
-extern int cxCopyMoveDlg;
-
 INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
@@ -1700,9 +1668,9 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
-        if (cxCopyMoveDlg < (rc.right-rc.left))
-          cxCopyMoveDlg = rc.right-rc.left;
-        SetWindowPos(hwnd,NULL,rc.left,rc.top,cxCopyMoveDlg,rc.bottom-rc.top,SWP_NOZORDER);
+        if (Settings.cxCopyMoveDlg < (rc.right-rc.left))
+          Settings.cxCopyMoveDlg = rc.right-rc.left;
+        SetWindowPos(hwnd,NULL,rc.left,rc.top, Settings.cxCopyMoveDlg,rc.bottom-rc.top,SWP_NOZORDER);
 
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
@@ -1751,7 +1719,7 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       {
         RECT rc;
         GetWindowRect(hwnd,&rc);
-        cxCopyMoveDlg = rc.right-rc.left;
+        Settings.cxCopyMoveDlg = rc.right-rc.left;
 
         DeleteBitmapButton(hwnd,IDC_BROWSEDESTINATION);
       }
@@ -1903,7 +1871,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
     shfos.pFrom = tchSource;
     shfos.pTo = tchDestination;
     shfos.fFlags = FOF_NO_CONNECTED_ELEMENTS | FOF_ALLOWUNDO;
-    if (shfos.wFunc == FO_COPY && bRenameOnCollision)
+    if (shfos.wFunc == FO_COPY && Settings.bRenameOnCollision)
       shfos.fFlags |= FOF_RENAMEONCOLLISION;
 
     // Save item
@@ -1930,7 +1898,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
 
     if (SHFileOperation(&shfos) == 0) // success
     {
-      if (bClearReadOnly)
+      if (Settings.bClearReadOnly)
       {
         DWORD dwFileAttributes = GetFileAttributes(tchDestination);
         if (dwFileAttributes & FILE_ATTRIBUTE_READONLY)
@@ -1952,12 +1920,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
 
 }
 
-
-extern WCHAR tchOpenWithDir[MAX_PATH];
-extern int  flagNoFadeHidden;
-
-extern int cxOpenWithDlg;
-extern int cyOpenWithDlg;
+extern int flagNoFadeHidden;
 
 INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -1985,11 +1948,11 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
-        if (cxOpenWithDlg < (rc.right-rc.left))
-          cxOpenWithDlg = rc.right-rc.left;
-        if (cyOpenWithDlg < (rc.bottom-rc.top))
-          cyOpenWithDlg = rc.bottom-rc.top;
-        SetWindowPos(hwnd,NULL,rc.left,rc.top,cxOpenWithDlg,cyOpenWithDlg,SWP_NOZORDER);
+        if (Settings.cxOpenWithDlg < (rc.right-rc.left))
+          Settings.cxOpenWithDlg = rc.right-rc.left;
+        if (Settings.cyOpenWithDlg < (rc.bottom-rc.top))
+          Settings.cyOpenWithDlg = rc.bottom-rc.top;
+        SetWindowPos(hwnd,NULL,rc.left,rc.top, Settings.cxOpenWithDlg, Settings.cyOpenWithDlg,SWP_NOZORDER);
 
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
@@ -2013,7 +1976,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_OPENWITHDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,&lvc);
         DirList_Init(GetDlgItem(hwnd,IDC_OPENWITHDIR),NULL);
-        DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),tchOpenWithDir,DL_ALLOBJECTS,NULL,FALSE,flagNoFadeHidden,DS_NAME,FALSE);
+        DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR), Settings.tchOpenWithDir,DL_ALLOBJECTS,NULL,FALSE, flagNoFadeHidden,DS_NAME,FALSE);
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -2032,8 +1995,8 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         DeleteBitmapButton(hwnd,IDC_GETOPENWITHDIR);
 
         GetWindowRect(hwnd,&rc);
-        cxOpenWithDlg = rc.right-rc.left;
-        cyOpenWithDlg = rc.bottom-rc.top;
+        Settings.cxOpenWithDlg = rc.right-rc.left;
+        Settings.cyOpenWithDlg = rc.bottom-rc.top;
       }
       return FALSE;
 
@@ -2130,9 +2093,9 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         case IDC_GETOPENWITHDIR:
           {
-            if (GetDirectory(hwnd,IDS_OPENWITH,tchOpenWithDir,tchOpenWithDir,TRUE))
+            if (GetDirectory(hwnd,IDS_OPENWITH,Settings.tchOpenWithDir, Settings.tchOpenWithDir,TRUE))
             {
-              DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),tchOpenWithDir,DL_ALLOBJECTS,NULL,FALSE,flagNoFadeHidden,DS_NAME,FALSE);
+              DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR), Settings.tchOpenWithDir,DL_ALLOBJECTS,NULL,FALSE,flagNoFadeHidden,DS_NAME,FALSE);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
               ListView_EnsureVisible(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,FALSE);
               ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -2208,7 +2171,7 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
 
       if (SHFileOperation(&shfos) == 0) // success
       {
-        if (bClearReadOnly)
+        if (Settings.bClearReadOnly)
         {
           DWORD dwFileAttributes = GetFileAttributes(szDestination);
           if (dwFileAttributes & FILE_ATTRIBUTE_READONLY)
@@ -2234,7 +2197,7 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
       sei.lpVerb = NULL;
       sei.lpFile = dliOpenWith.szFileName;
       sei.lpParameters = szParam;
-      sei.lpDirectory = szCurDir;
+      sei.lpDirectory = Settings.szCurDir;
       sei.nShow = SW_SHOWNORMAL;
 
       // resolve links and get short path name
@@ -2498,6 +2461,7 @@ extern WCHAR szDDEMsg[256];
 extern WCHAR szDDEApp[256];
 extern WCHAR szDDETopic[256];
 
+
 INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
@@ -2564,11 +2528,11 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         else
           CheckRadioButton(hwnd,IDC_LAUNCH,IDC_TARGET,IDC_LAUNCH);
 
-        lstrcpy(wch,szTargetApplication);
+        lstrcpy(wch, szTargetApplication);
         PathQuoteSpaces(wch);
         if (StrIsNotEmpty(szTargetApplicationParams)) {
           StrCatBuff(wch,L" ",COUNTOF(wch));
-          StrCatBuff(wch,szTargetApplicationParams,COUNTOF(wch));
+          StrCatBuff(wch, szTargetApplicationParams,COUNTOF(wch));
         }
         SetDlgItemText(hwnd,IDC_TARGETPATH,wch);
 
@@ -2578,11 +2542,11 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
           CheckRadioButton(hwnd,IDC_ALWAYSRUN,IDC_USEDDE,IDC_ALWAYSRUN + i);
         }
 
-        lstrcpy(szTargetWndClass,szTargetApplicationWndClass);
+        lstrcpy(szTargetWndClass, szTargetApplicationWndClass);
 
-        SetDlgItemText(hwnd,IDC_DDEMSG,szDDEMsg);
-        SetDlgItemText(hwnd,IDC_DDEAPP,szDDEApp);
-        SetDlgItemText(hwnd,IDC_DDETOPIC,szDDETopic);
+        SetDlgItemText(hwnd,IDC_DDEMSG, szDDEMsg);
+        SetDlgItemText(hwnd,IDC_DDEAPP, szDDEApp);
+        SetDlgItemText(hwnd,IDC_DDETOPIC, szDDETopic);
 
         CenterDlgInParent(hwnd);
 

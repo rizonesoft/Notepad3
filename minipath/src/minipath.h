@@ -89,6 +89,65 @@ typedef struct _wi
   int cy;
 } WININFO;
 
+// ----------------------------------------------------------------------------
+
+#define DL_FILTER_BUFSIZE 256  // should correspond to Dlapi.h def
+
+typedef struct _settings_t
+{
+  BOOL      bSaveSettings;
+  WCHAR     szQuickview[MAX_PATH];
+  WCHAR     szQuickviewParams[MAX_PATH];
+  WCHAR     g_tchFavoritesDir[MAX_PATH];
+  BOOL      bNP3sFavoritesSettings;
+  WCHAR     tchOpenWithDir[MAX_PATH];
+  WCHAR     tchToolbarButtons[512];
+  WCHAR     tchToolbarBitmap[MAX_PATH];
+  WCHAR     tchToolbarBitmapHot[MAX_PATH];
+  WCHAR     tchToolbarBitmapDisabled[MAX_PATH];
+  BOOL      bClearReadOnly;
+  BOOL      bRenameOnCollision;
+  BOOL      bSingleClick;
+  BOOL      bTrackSelect;
+  BOOL      bFullRowSelect;
+  int       iStartupDir;
+  int       iEscFunction;
+  BOOL      bFocusEdit;
+  BOOL      bAlwaysOnTop;
+  BOOL      g_bTransparentMode;
+  BOOL      bMinimizeToTray;
+  BOOL      fUseRecycleBin;
+  BOOL      fNoConfirmDelete;
+  BOOL      bShowToolbar;
+  BOOL      bShowStatusbar;
+  BOOL      bShowDriveBox;
+  int       cxGotoDlg;
+  int       cxOpenWithDlg;
+  int       cyOpenWithDlg;
+  int       cxCopyMoveDlg;
+  
+  BOOL      bHasQuickview;
+  
+  WCHAR     tchFilter[DL_FILTER_BUFSIZE];
+  BOOL      bNegFilter;
+  BOOL      bDefCrNoFilt;
+  BOOL      bDefCrFilter;
+  COLORREF  crNoFilt;
+  COLORREF  crFilter;
+  COLORREF  crCustom[16];
+  
+  WININFO   wi;
+  
+  WCHAR     szCurDir[MAX_PATH + 40];
+  DWORD     dwFillMask;
+  int       nSortFlags;
+  BOOL      fSortRev;
+  
+} SETTINGS_T, * PSETTINGS_T;
+
+extern SETTINGS_T Settings;
+extern SETTINGS_T Defaults;
+
 
 //==== Function Declarations ==================================================
 BOOL InitApplication(HINSTANCE);

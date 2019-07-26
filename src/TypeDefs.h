@@ -502,6 +502,7 @@ typedef struct _settings2_t
 
   WCHAR FileBrowserPath[MAX_PATH];
   WCHAR AppUserModelID[32];
+  WCHAR AutoCompleteFillUpChars[64];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
   WCHAR TimeStamp[128];

@@ -64,6 +64,9 @@ static char WordCharsAccelerated[ANSI_CHAR_BUFFER] = { '\0' };
 static char WhiteSpaceCharsAccelerated[ANSI_CHAR_BUFFER] = { '\0' };
 static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
+static char AutoCompleteFillUpChars[64] = { '\0' };
+static bool s_ACFillUpCharsHaveNewLn = false;
+
 // Default Codepage and Character Set
 #define W_AUTOC_WORD_ANSI1252 L"#$%&@0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
 static char AutoCompleteWordCharSet[ANSI_CHAR_BUFFER] = { L'\0' };
@@ -254,6 +257,22 @@ void EditInitWordDelimiter(HWND hwnd)
   // construct accelerated delimiters
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
+
+  if (StrIsNotEmpty(Settings2.AutoCompleteFillUpChars))
+  {
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteFillUpChars, -1, AutoCompleteFillUpChars, COUNTOF(AutoCompleteFillUpChars), NULL, NULL);
+    UnSlash(AutoCompleteFillUpChars, Encoding_SciCP);
+
+    s_ACFillUpCharsHaveNewLn = false;
+    int i = 0;
+    while (AutoCompleteFillUpChars[i]) {
+      if ((AutoCompleteFillUpChars[i] == '\r') || (AutoCompleteFillUpChars[i] == '\n')) {
+        s_ACFillUpCharsHaveNewLn = true;
+        break;
+      }
+      ++i;
+    }
+  }
 
   if (StrIsNotEmpty(Settings2.AutoCompleteWordCharSet))
   {
@@ -741,8 +760,8 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE const hOld   = GetClipboardData(CF_UNICODETEXT);
   const WCHAR* pszOld = GlobalLock(hOld);
 
-  int const _eol_mode = SciCall_GetEOLMode();
-  const WCHAR *pszSep = ((_eol_mode == SC_EOL_CRLF) ? L"\r\n" : ((_eol_mode == SC_EOL_CR) ? L"\r" : L"\n"));
+  WCHAR pszSep[3] = { L'\0' };
+  Sci_GetCurrentEOL_W(pszSep);
 
   size_t cchNewText = cchTextW;
   if (pszOld && *pszOld) {
@@ -3903,14 +3922,8 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
     return;
   }
 
-  int cchEOL = 2;
-  WCHAR wszEOL[] = L"\r\n";
-  int const cEOLMode = SciCall_GetEOLMode();
-  if (cEOLMode == SC_EOL_CR)
-    cchEOL = 1;
-  else if (cEOLMode == SC_EOL_LF) {
-    cchEOL = 1; wszEOL[0] = L'\n';
-  }
+  WCHAR wszEOL[3] = { L'\0' };
+  int const cchEOL = Sci_GetCurrentEOL_W(wszEOL);
 
   int cchConvW = 0;
   DocPos iLineLength = 0;
@@ -4065,23 +4078,8 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
     return;
   }
 
-  char szEOL[] = "\r\n";
-  int  cchEOL = 2;
-  switch (SciCall_GetEOLMode())
-  {
-  case SC_EOL_LF:
-    szEOL[0] = '\n';
-    szEOL[1] = '\0';
-    cchEOL = 1;
-    break;
-  case SC_EOL_CR:
-    szEOL[1] = '\0';
-    cchEOL = 1;
-    break;
-  case SC_EOL_CRLF:
-  default:
-    break;
-  }
+  char szEOL[3] = { '\0' };
+  int const cchEOL = Sci_GetCurrentEOL_A(szEOL);
 
   for (int i = 0; i < iSelLength; ++i)
   {
@@ -4208,15 +4206,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
   DocLn const iLineCount = iLineEnd - iLineStart + 1;
 
-  int const cEOLMode = SciCall_GetEOLMode();
-  char mszEOL[] = "\r\n";
-  if (cEOLMode == SC_EOL_CR) {
-    mszEOL[1] = '\0';
-  }
-  else if (cEOLMode == SC_EOL_LF) {
-    mszEOL[0] = '\n';
-    mszEOL[1] = '\0';
-  }
+  char mszEOL[3] = { '\0' };
+  Sci_GetCurrentEOL_A(mszEOL);
 
   int const _iTabWidth = SciCall_GetTabWidth();
 
@@ -6707,6 +6698,16 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
 //=============================================================================
 //
+//  EditCheckNewLineInACFillUps()
+//
+bool EditCheckNewLineInACFillUps()
+{
+  return s_ACFillUpCharsHaveNewLn;
+}
+
+
+//=============================================================================
+//
 //  EditAutoCompleteWord()
 //  Auto-complete words (by Aleksandar Lekov)
 //
@@ -6901,9 +6902,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     SciCall_AutoCSetIgnoreCase(true);
     //SendMessage(hwnd, SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, (WPARAM)SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 0);
     SciCall_AutoCSetChooseSingle(autoInsert);
-    //SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
-    SciCall_AutoCSetFillups("\t\n\r");
-    //SciCall_AutoCSetFillups(Settings.AccelWordNavigation ? WhiteSpaceCharsDefault : WhiteSpaceCharsAccelerated);
+    //~SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
+    SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
 
     ++iWListSize; // zero termination
     char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);

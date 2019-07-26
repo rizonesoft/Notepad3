@@ -51,7 +51,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
 
 
 EDITLEXER lexTEXT = {
-SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
+SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx; csv", L"",
 &KeyWords_NULL,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
@@ -71,7 +71,7 @@ SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"",
 
 
 EDITLEXER lexLATEX = { 
-SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty", L"", 
+SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty; texi; texinfo; txi", L"", 
 &KeyWords_NULL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_L_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

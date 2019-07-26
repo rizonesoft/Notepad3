@@ -728,6 +728,10 @@ void LoadSettings()
     IniSectionGetString(Settings2_Section, L"AutoCompleteWordCharSet", Defaults2.AutoCompleteWordCharSet,
       Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
 
+    Defaults2.AutoCompleteFillUpChars[0] = L'\0';
+    IniSectionGetString(Settings2_Section, L"AutoCompleteFillUpChars", Defaults2.AutoCompleteFillUpChars,
+      Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
+
     StringCchCopyW(Defaults2.TimeStamp, COUNTOF(Defaults2.TimeStamp), L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $");
     IniSectionGetString(Settings2_Section, L"TimeStamp", Defaults2.TimeStamp, Settings2.TimeStamp, COUNTOF(Settings2.TimeStamp));
 
@@ -742,7 +746,6 @@ void LoadSettings()
 
     StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
     IniSectionGetString(Settings2_Section, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
-
 
     // --------------------------------------------------------------------------
     const WCHAR* const Settings_Section = L"Settings";
