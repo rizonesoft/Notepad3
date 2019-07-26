@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.725.#(build) (2019-07-25)
+Current BETA Version 5.19.726.#(build) (2019-07-26)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Sync Minipath Filter-Lines list with Notepad3 Lexers list
 - Use double-quotes as MRU list string limiter
 - Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
 - Update to Oniguruma v.6.9.3
