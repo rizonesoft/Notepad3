@@ -12,7 +12,7 @@ KEYWORDLIST KeyWords_JS = {
 
 
 EDITLEXER lexJS = { 
-SCLEX_CPP, IDS_LEX_J_SCR, L"JavaScript", L"js; jse; jsm; as", L"", 
+SCLEX_CPP, IDS_LEX_J_SCR, L"JavaScript", L"js; jse; jsm; as; mjs; qs", L"", 
 &KeyWords_JS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

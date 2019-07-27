@@ -6,7 +6,7 @@ KEYWORDLIST KeyWords_COFFEESCRIPT = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexCOFFEESCRIPT = { 
-SCLEX_COFFEESCRIPT, IDS_LEX_COFFEE_SCR, L"Coffeescript", L"coffee; Cakefile", L"", 
+SCLEX_COFFEESCRIPT, IDS_LEX_COFFEE_SCR, L"Coffeescript", L"coffee; cakefile", L"", 
 &KeyWords_COFFEESCRIPT, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_COFFEESCRIPT_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

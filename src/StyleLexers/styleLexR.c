@@ -79,7 +79,7 @@ KEYWORDLIST KeyWords_R = {
 
 
 EDITLEXER lexR = { 
-SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"R", L"", 
+SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"r, rdata, rds, rda", L"", 
 &KeyWords_R,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_R_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
