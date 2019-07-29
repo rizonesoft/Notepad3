@@ -336,6 +336,7 @@ extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
     // get all keys in a section
     CSimpleIniW::TNamesDepend keyList;
     Ini.GetAllKeys(lpSectionName, keyList);
+    keyList.sort(CSimpleIniW::Entry::LoadOrder());
 
     for (const auto& key : keyList)
     {
