@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current RC Version 5.19.729.#(build) (2019-07-29)
+Current RC2 Version 5.19.730.#(build) (2019-07-30)
 ==================================================
 
 --------------------------------------------------
@@ -71,6 +71,11 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Load set localized menu before displaying dialog
+- Manual entry for "Suppressed Messages" set as '-1' will hide checkbox for "Don't display again"
+- Issues regarding "no Notepad3.ini" file (defaults)
+- The checkbox "Don't show this DialogBox again" now remembers positive answers only
+- Message "Large File Warning" now default value for large files > 256MB
 - Send NewLine to sci control, if this id no AutoComplete fill-up char
 - Obsolete newline after .ini-file sections with comments
 - Enhanced Unicode detection
