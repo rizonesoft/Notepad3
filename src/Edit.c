@@ -1521,7 +1521,7 @@ void EditInvertCase(HWND hwnd)
 
   if (iCurPos != iAnchorPos)
   {
-    if (!Sci_IsMultiOrRectangleSelection())
+    if (Sci_IsMultiOrRectangleSelection())
     {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
       return;
@@ -1580,7 +1580,7 @@ void EditTitleCase(HWND hwnd)
 
   if (iCurPos != iAnchorPos)
   {
-    if (!Sci_IsMultiOrRectangleSelection())
+    if (Sci_IsMultiOrRectangleSelection())
     {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
       return;
@@ -1641,7 +1641,7 @@ void EditSentenceCase(HWND hwnd)
 
   if (iCurPos != iAnchorPos)
   {
-    if (!Sci_IsMultiOrRectangleSelection())
+    if (Sci_IsMultiOrRectangleSelection())
     {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
       return;
@@ -2478,7 +2478,7 @@ void EditJumpToSelectionEnd(HWND hwnd)
 //
 void EditModifyLines(HWND hwnd, LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
 {
-  if (!Sci_IsMultiOrRectangleSelection())
+  if (Sci_IsMultiOrRectangleSelection())
   {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
     return;
@@ -3636,7 +3636,7 @@ void EditCompressBlanks(HWND hwnd)
       SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
     }
   }
-  else if (Sci_IsMultiSelection()) {
+  else if (Sci_IsMultiOrRectangleSelection()) {
     // @@@ not implemented
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
   }
@@ -6477,7 +6477,7 @@ bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 //
 bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 {
-  if (SciCall_IsSelectionRectangle()) {
+  if (Sci_IsMultiOrRectangleSelection()) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
     return false;
   }

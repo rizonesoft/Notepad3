@@ -31,7 +31,7 @@
 #if defined(_WIN64)
 #define  VERSION_FILEVERSION_LONG    APPNAME (64-bit)  _V(VERSION_FILEVERSION)  VERSION_PATCH
 #else
-#define  VERSION_FILEVERSION_LONG    APPNAME  _V(VERSION_FILEVERSION)  VERSION_PATCH
+#define  VERSION_FILEVERSION_LONG    APPNAME (32-bit) _V(VERSION_FILEVERSION)  VERSION_PATCH
 #endif
 
 
@@ -55,7 +55,11 @@
 #define _SCI_BUILD                     L"Scintilla "
 #endif
 
-#define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER))) L"  (RegEx: Oniguruma v" _W(_STRG(ONIGURUMA_REGEX_VER)) L")"
+#define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER)))
+#define VERSION_ONIGURUMA              L"Oniguruma " _W(_STRG(_V(ONIGURUMA_REGEX_VER)))
+#define VERSION_UCHARDET               L"UChardet " _W(_STRG(_V(UCHARDET_VER)))
+#define VERSION_TINYEXPR               L"TinyExpr " _W(_STRG(_V(TINYEXPR_VER)))
+#define VERSION_UTHASH                 L"UTHash " _W(_STRG(_V(UTHASH_VER)))
 
 // ============================================================================
 

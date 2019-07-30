@@ -19,6 +19,7 @@
 
 #include <shlobj.h>
 #include <shellapi.h>
+
 //#include <pathcch.h>
 
 #include "resource.h"
@@ -133,6 +134,107 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
     ++t;
   }
   return n;
+}
+
+
+//=============================================================================
+//
+//  GetWinVersionString()
+//
+
+static OSVERSIONINFOEX s_OSversion = { 0 };
+
+static void _GetTrueWindowsVersion()
+{
+  // clear
+  ZeroMemory(&s_OSversion, sizeof(OSVERSIONINFOEX));
+  s_OSversion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+
+  // Function pointer to driver function
+  void (WINAPI *pRtlGetVersion)(PRTL_OSVERSIONINFOW lpVersionInformation) = NULL;
+
+  // load the System-DLL
+  HINSTANCE hNTdllDll = LoadLibrary(L"ntdll.dll");
+
+  if (hNTdllDll != NULL)
+  {
+    // get the function pointer to RtlGetVersion
+    pRtlGetVersion = (void (WINAPI*)(PRTL_OSVERSIONINFOW)) GetProcAddress(hNTdllDll, "RtlGetVersion");
+
+    if (pRtlGetVersion != NULL) {
+      pRtlGetVersion((PRTL_OSVERSIONINFOW)& s_OSversion);
+    }
+    FreeLibrary(hNTdllDll);
+  } // if (hNTdllDll != NULL)
+
+#pragma warning ( push )
+#pragma warning ( disable: 4996 )
+  // if function failed, use fallback to old version
+  if (pRtlGetVersion == NULL) {
+    GetVersionEx((OSVERSIONINFO*)& s_OSversion);
+  }
+#pragma warning ( pop )
+
+}
+// ----------------------------------------------------------------------------
+
+static DWORD _Win10BuildToReleaseId(DWORD build)
+{
+  if (build >= 18362) {
+    return 1903;
+  }
+  else if (build >= 17763) {
+    return 1809;
+  }
+  else if (build >= 17134) {
+    return 1803;
+  }
+  else if (build >= 16299) {
+    return 1709;
+  }
+  else if (build >= 15063) {
+    return 1809;
+  }
+  else if (build >= 14393) {
+    return 1607;
+  }
+  else {
+    return 1507;
+  }
+}
+// ----------------------------------------------------------------------------
+
+void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
+{
+  StringCchCopy(szVersionStr, cchVersionStr, L"OS Version: Windows ");
+  
+  if (IsWin10()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2016 " : L"10 ");
+  }
+  else if (IsWin81()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 R2 " : L"8.1");
+  }
+  else if (IsWin8()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 " : L"8");
+  }
+  else if (IsWin71()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 R2 " : L"7 (SP1)");
+  }
+  else if (IsWin7()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 " : L"7");
+  }
+  else {
+    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Unkown Server " : L"?");
+  }
+  
+  if (IsWin10()) {
+    WCHAR win10ver[80] = { L'\0' };
+    if (s_OSversion.dwOSVersionInfoSize == 0) { _GetTrueWindowsVersion(); }
+    DWORD const build = s_OSversion.dwBuildNumber;
+    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)", 
+      _Win10BuildToReleaseId(build) , build);
+    StringCchCat(szVersionStr, cchVersionStr, win10ver);
+  }
 }
 
 
