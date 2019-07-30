@@ -272,6 +272,7 @@ typedef struct _constants_t
 {
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
+  const WCHAR* const SectionSuppressedMessages;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 

@@ -351,6 +351,7 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
     // get all keys in a section
     CSimpleIniW::TNamesDepend keyList;
     Ini.GetAllKeys(lpSectionName, keyList);
+    keyList.sort(CSimpleIniW::Entry::LoadOrder());
 
     for (const auto& key : keyList)
     {
@@ -705,7 +706,7 @@ void LoadSettings()
       Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
     bool const bExplicitDefaultWinPos = (StringCchLenW(Settings2.DefaultWindowPosition, 0) != 0);
 
-    Defaults2.FileLoadWarningMB = 1;
+    Defaults2.FileLoadWarningMB = 256;
     Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(Settings2_Section, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
 
     Defaults2.OpacityLevel = 75;

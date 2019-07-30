@@ -48,7 +48,11 @@
 * Local and global Variables for Notepad3.c
 *
 */
-CONSTANTS_T const Constants = { 2, L"minipath.exe" };
+CONSTANTS_T const Constants = { 
+    2                           // StdDefaultLexerID
+  , L"minipath.exe"             // FileBrowserMiniPath
+  , L"Suppressed Messages"      // SectionSuppressedMessages
+};
 
 FLAGS_T     Flags;
 FLAGS_T     DefaultFlags;

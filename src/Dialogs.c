@@ -221,8 +221,8 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
 
     if (lpMsgBox->bDisableCheckBox) {
-      DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
-      DialogHideWindow(hwnd, IDC_INFOBOXCHECK, true);
+      DialogEnableControl(hwnd, IDC_INFOBOXCHECK, false);
+      DialogHideControl(hwnd, IDC_INFOBOXCHECK, true);
     }
 
     CenterDlgInParent(hwnd);
@@ -243,20 +243,25 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     switch (LOWORD(wParam))
     {
     case IDOK:
-    case IDCANCEL:
     case IDYES:
-    case IDNO:
+    case IDCONTINUE:
       if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
-        IniFileSetInt(Globals.IniFile, L"Suppressed Messages", lpMsgBox->lpstrSetting, LOWORD(wParam));
+        IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
       }
+    case IDCANCEL:
+    case IDNO:
     case IDABORT:
     case IDRETRY:
     case IDIGNORE:
     case IDCLOSE:
     case IDTRYAGAIN:
-    case IDCONTINUE:
       EndDialog(hwnd, LOWORD(wParam));
       return true;
+
+    case IDC_INFOBOXCHECK:
+      DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+      DialogEnableControl(hwnd, IDCANCEL, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+      break;
 
     default:
       break;
@@ -274,8 +279,18 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 //
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-  int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Globals.IniFile, L"Suppressed Messages", lpstrSetting, 0);
-  if (iMode > 0) { return iMode; }
+  int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
+  switch (iMode) {
+    case IDOK:
+    case IDYES:
+    case IDCONTINUE:
+      return iMode;
+    case 0:
+      break;
+    default:
+      IniFileDelete(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
+      break;
+  }
 
   WCHAR wchMessage[LARGE_BUFFER];
   if (!GetLngString(uidMsg, wchMessage, COUNTOF(wchMessage))) { return -1LL; }
@@ -320,7 +335,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   }
 
   msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
-  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
+  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting)) ? true : false;
 
 
   int idDlg;
@@ -944,7 +959,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                 }
               }
             }
-            DialogEnableWindow(hwnd,IDOK,bEnableOK);
+            DialogEnableControl(hwnd,IDOK,bEnableOK);
           }
           break;
 
@@ -1118,7 +1133,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
             case LVN_ITEMCHANGED: {
                 NM_LISTVIEW *pnmlv = (NM_LISTVIEW*)lParam;
-                DialogEnableWindow(hwnd,IDOK,(pnmlv->uNewState & LVIS_SELECTED));
+                DialogEnableControl(hwnd,IDOK,(pnmlv->uNewState & LVIS_SELECTED));
               }
               break;
 
@@ -1317,7 +1332,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
             case LVN_ITEMCHANGED: {
                 NM_LISTVIEW *pnmlv = (NM_LISTVIEW*)lParam;
-                DialogEnableWindow(hwnd,IDOK,(pnmlv->uNewState & LVIS_SELECTED));
+                DialogEnableControl(hwnd,IDOK,(pnmlv->uNewState & LVIS_SELECTED));
               }
               break;
 
@@ -1462,7 +1477,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     switch (LOWORD(wParam)) 
     {
     case IDC_ADDFAV_FILES:
-      DialogEnableWindow(hwnd, IDOK, GetWindowTextLength(GetDlgItem(hwnd, IDC_ADDFAV_FILES)));
+      DialogEnableControl(hwnd, IDOK, GetWindowTextLength(GetDlgItem(hwnd, IDC_ADDFAV_FILES)));
       break;
 
     case IDOK:
@@ -1810,8 +1825,8 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         case LVN_DELETEITEM:
             {
               UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
-              DialogEnableWindow(hwnd, IDOK, (cnt > 0));
-              DialogEnableWindow(hwnd, IDC_REMOVE, (cnt > 0));
+              DialogEnableControl(hwnd, IDOK, (cnt > 0));
+              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
             }
             break;
           }
@@ -1934,8 +1949,8 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
                   //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
 
                   cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
-                  DialogEnableWindow(hwnd, IDOK, (cnt > 0));
-                  DialogEnableWindow(hwnd, IDC_REMOVE, (cnt > 0));
+                  DialogEnableControl(hwnd, IDOK, (cnt > 0));
+                  DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
                 }
               }
 
@@ -2505,7 +2520,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
     CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(Settings.SkipUnicodeDetection));
     CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(Settings.SkipANSICodePageDetection));
 
-    DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+    DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
 
     CenterDlgInParent(hwnd);
   }
@@ -2533,11 +2548,11 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
       if (s_iEnc == CPI_UTF8) {
         if (s_bUseAsFallback) {
           CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
-          DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
+          DialogEnableControl(hwnd, IDC_ASCIIASUTF8, false);
         }
         else
         {
-          DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
+          DialogEnableControl(hwnd, IDC_ASCIIASUTF8, true);
           CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         }
       }
@@ -2551,24 +2566,24 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
       if (s_iEnc == CPI_UTF8) {
         if (s_bUseAsFallback) {
-          DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
+          DialogEnableControl(hwnd, IDC_ASCIIASUTF8, false);
           CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
         }
-        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+        DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
       else if (s_iEnc == CPI_ANSI_DEFAULT) {
-        DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
+        DialogEnableControl(hwnd, IDC_ASCIIASUTF8, true);
         CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
         s_bUseAsFallback = true;
-        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, false);
+        DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, false);
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
       else {
         s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
-        DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
+        DialogEnableControl(hwnd, IDC_ASCIIASUTF8, true);
         CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
-        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+        DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
       }
     }
@@ -2729,7 +2744,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
           case LVN_ITEMCHANGED:
           case LVN_DELETEITEM: {
               int i = ListView_GetNextItem(hwndLV,-1,LVNI_ALL | LVNI_SELECTED);
-              DialogEnableWindow(hwnd,IDOK,i != -1);
+              DialogEnableControl(hwnd,IDOK,i != -1);
             }
             break;
           }
