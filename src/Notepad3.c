@@ -918,15 +918,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     return 1; 
   }
 
-  if (Globals.hIcon128) {
-      SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)Globals.hIcon128);
-  }
-  if (Globals.hDlgIcon) {
-    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon);
-  }
-
-  if (Globals.hMainMenu) { SetMenu(hwnd, Globals.hMainMenu); }
-
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
   DragAndDropInit(NULL);
 #endif
@@ -1187,6 +1178,13 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
   //UpdateWindowLayoutForDPI(Globals.hwndMain, 0, 0, 0, 0);
 
+  if (Globals.hIcon128) {
+    SendMessage(Globals.hwndMain, WM_SETICON, ICON_BIG, (LPARAM)Globals.hIcon128);
+  }
+  if (Globals.hDlgIcon) {
+    SendMessage(Globals.hwndMain, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon);
+  }
+
   if (Settings.TransparentMode) {
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
   }
@@ -1194,6 +1192,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if (s_WinInfo.zoom) {
     SciCall_SetZoom(s_WinInfo.zoom);
   }
+
+  SetMenu(Globals.hwndMain, Globals.hMainMenu);
 
   // Current file information -- moved in front of ShowWindow()
   FileLoad(true,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,false,L"");
