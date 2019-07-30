@@ -611,6 +611,11 @@ bool Style_ImportFromFile(const WCHAR* szFile)
       IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
         g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
 
+      // don't allow empty extensions settings => use default ext
+      if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
+        StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
+      }
+
       unsigned i = 0;
       while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
       {
@@ -627,13 +632,13 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0)
         {
           if (StrIsNotEmpty(g_pLexArray[0]->szExtensions)) {
-            StringCchCopyW(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
+            StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[0]->szExtensions);
             StrTrim(g_pLexArray[iLexer]->szExtensions, L"; ");
           }
           lexStandard.szExtensions[0] = L'\0';
           lexStandard2nd.szExtensions[0] = L'\0';
           // copy default style
-          StringCchCopyW(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
+          StringCchCopy(g_pLexArray[iLexer]->Styles[0].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[0].szValue), g_pLexArray[0]->Styles[0].szValue);
         }
       }
     }
