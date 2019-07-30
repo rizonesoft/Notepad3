@@ -969,19 +969,18 @@ bool EditLoadFile(
     INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile));
     if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
-      status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
     }
   }
   else {
-    status->bUnknownExt = true;
+    status->bUnknownExt = false;
   }
 
   // Check if a warning message should be displayed for large files
-  DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
-  if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
+  DWORD dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
+  if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
     if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
       status->bFileTooBig = true;
@@ -5171,7 +5170,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_CHECKED);
         CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
-        DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, true);
+        DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, true);
       }
 
       if (sg_pefrData->bDotMatchAll) {
@@ -5181,7 +5180,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       if (sg_pefrData->bWildcardSearch) {
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_CHECKED);
-        DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
+        DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
       }
 
       if (sg_pefrData->bMarkOccurences) {
@@ -5195,10 +5194,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
-        DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
+        DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
       }
       else {
-        DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
+        DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
       }
 
       if (sg_pefrData->bNoFindWrap) {
@@ -5397,7 +5396,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           }
 
           bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
-          DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
+          DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
           _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
 
@@ -5504,12 +5503,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
         bool const bEnableIS = !(SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection());
 
-        DialogEnableWindow(hwnd, IDOK, bEnableF);
-        DialogEnableWindow(hwnd, IDC_FINDPREV, bEnableF);
-        DialogEnableWindow(hwnd, IDC_REPLACE, bEnableF);
-        DialogEnableWindow(hwnd, IDC_REPLACEALL, bEnableF);
-        DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableF && bEnableIS);
-        DialogEnableWindow(hwnd, IDC_SWAPSTRG, bEnableF || bEnableR);
+        DialogEnableControl(hwnd, IDOK, bEnableF);
+        DialogEnableControl(hwnd, IDC_FINDPREV, bEnableF);
+        DialogEnableControl(hwnd, IDC_REPLACE, bEnableF);
+        DialogEnableControl(hwnd, IDC_REPLACEALL, bEnableF);
+        DialogEnableControl(hwnd, IDC_REPLACEINSEL, bEnableF && bEnableIS);
+        DialogEnableControl(hwnd, IDC_SWAPSTRG, bEnableF || bEnableR);
 
         if (!bEnableF) { s_anyMatch = s_fwrdMatch = NO_MATCH; }
 
@@ -5579,11 +5578,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
           if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES))
           {
-            DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
+            DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, true);
             _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
           }
           else {  // switched OFF
-            DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
+            DialogEnableControl(hwnd, IDC_TOGGLE_VISIBILITY, false);
             if (FocusedView.HideNonMatchedLines) {
               EditToggleView(sg_pefrData->hwnd);
             }
@@ -5609,15 +5608,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       case IDC_FINDREGEXP:
         if (IsButtonChecked(hwnd, IDC_FINDREGEXP))
         {
-          DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, true);
+          DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, true);
           CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED); // Can not use wildcard search together with regexp
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED); // transform BS handled by regex
-          DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
+          DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
-          DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
-          DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
+          DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
+          DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, true);
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
@@ -5633,13 +5632,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH))
         {
           CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
-          DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
+          DialogEnableControl(hwnd, IDC_DOT_MATCH_ALL, false);
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);  // transform BS handled by regex
-          DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
+          DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
-          DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
+          DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, true);
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, SetBtn(s_SaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
@@ -5693,13 +5692,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
         if (!s_bSwitchedFindReplace &&
           !GetDlgItemTextW2MB(hwnd, IDC_FINDTEXT, sg_pefrData->szFind, COUNTOF(sg_pefrData->szFind))) {
-          DialogEnableWindow(hwnd, IDOK, false);
-          DialogEnableWindow(hwnd, IDC_FINDPREV, false);
-          DialogEnableWindow(hwnd, IDC_REPLACE, false);
-          DialogEnableWindow(hwnd, IDC_REPLACEALL, false);
-          DialogEnableWindow(hwnd, IDC_REPLACEINSEL, false);
+          DialogEnableControl(hwnd, IDOK, false);
+          DialogEnableControl(hwnd, IDC_FINDPREV, false);
+          DialogEnableControl(hwnd, IDC_REPLACE, false);
+          DialogEnableControl(hwnd, IDC_REPLACEALL, false);
+          DialogEnableControl(hwnd, IDC_REPLACEINSEL, false);
           if (!GetDlgItemTextW2MB(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace, COUNTOF(sg_pefrData->szReplace)))
-            DialogEnableWindow(hwnd, IDC_SWAPSTRG, false);
+            DialogEnableControl(hwnd, IDC_SWAPSTRG, false);
           return true;
         }
 
@@ -7805,13 +7804,13 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         }
         else if (*piSortFlags & SORT_SHUFFLE) {
           CheckRadioButton(hwnd,100,102,102);
-          DialogEnableWindow(hwnd,103,false);
-          DialogEnableWindow(hwnd,104,false);
-          DialogEnableWindow(hwnd,105,false);
-          DialogEnableWindow(hwnd,106,false);
-          DialogEnableWindow(hwnd,107,false);
-          DialogEnableWindow(hwnd,108,false);
-          DialogEnableWindow(hwnd,109,false);
+          DialogEnableControl(hwnd,103,false);
+          DialogEnableControl(hwnd,104,false);
+          DialogEnableControl(hwnd,105,false);
+          DialogEnableControl(hwnd,106,false);
+          DialogEnableControl(hwnd,107,false);
+          DialogEnableControl(hwnd,108,false);
+          DialogEnableControl(hwnd,109,false);
         }
         else {
           CheckRadioButton(hwnd, 100, 102, 100);
@@ -7821,7 +7820,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         }
         if (*piSortFlags & SORT_UNIQDUP) {
           CheckDlgButton(hwnd, 104, BST_CHECKED);
-          DialogEnableWindow(hwnd, 103, false);
+          DialogEnableControl(hwnd, 103, false);
         }
         if (*piSortFlags & SORT_UNIQUNIQ) {
           CheckDlgButton(hwnd, 105, BST_CHECKED);
@@ -7832,7 +7831,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         if (*piSortFlags & SORT_REMWSPACELN) {
           CheckDlgButton(hwnd, 107, BST_CHECKED);
           CheckDlgButton(hwnd, 106, BST_CHECKED);
-          DialogEnableWindow(hwnd, 106, false);
+          DialogEnableControl(hwnd, 106, false);
         }
         if (*piSortFlags & SORT_NOCASE) {
           CheckDlgButton(hwnd, 108, BST_CHECKED);
@@ -7842,7 +7841,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         }
         if (!Sci_IsMultiOrRectangleSelection()) {
           *piSortFlags &= ~SORT_COLUMN;
-          DialogEnableWindow(hwnd,110,false);
+          DialogEnableControl(hwnd,110,false);
         }
         else {
           *piSortFlags |= SORT_COLUMN;
@@ -7893,33 +7892,33 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
         case 100:
         case 101:
-          DialogEnableWindow(hwnd,103, IsButtonUnchecked(hwnd,105));
-          DialogEnableWindow(hwnd,104,true);
-          DialogEnableWindow(hwnd,105,true);
-          DialogEnableWindow(hwnd,106,true);
-          DialogEnableWindow(hwnd,107,true);
-          DialogEnableWindow(hwnd,108,true);
-          DialogEnableWindow(hwnd,109,true);
+          DialogEnableControl(hwnd,103, IsButtonUnchecked(hwnd,105));
+          DialogEnableControl(hwnd,104,true);
+          DialogEnableControl(hwnd,105,true);
+          DialogEnableControl(hwnd,106,true);
+          DialogEnableControl(hwnd,107,true);
+          DialogEnableControl(hwnd,108,true);
+          DialogEnableControl(hwnd,109,true);
           break;
         case 102:
-          DialogEnableWindow(hwnd,103,false);
-          DialogEnableWindow(hwnd,104,false);
-          DialogEnableWindow(hwnd,105,false);
-          DialogEnableWindow(hwnd,106,false);
-          DialogEnableWindow(hwnd,107,false);
-          DialogEnableWindow(hwnd,108,false);
-          DialogEnableWindow(hwnd,109,false);
+          DialogEnableControl(hwnd,103,false);
+          DialogEnableControl(hwnd,104,false);
+          DialogEnableControl(hwnd,105,false);
+          DialogEnableControl(hwnd,106,false);
+          DialogEnableControl(hwnd,107,false);
+          DialogEnableControl(hwnd,108,false);
+          DialogEnableControl(hwnd,109,false);
           break;
         case 104:
-          DialogEnableWindow(hwnd,103,IsButtonUnchecked(hwnd,104));
+          DialogEnableControl(hwnd,103,IsButtonUnchecked(hwnd,104));
           break;
         case 107:
           if (IsButtonChecked(hwnd, 107)) {
             CheckDlgButton(hwnd, 106, BST_CHECKED);
-            DialogEnableWindow(hwnd, 106, false);
+            DialogEnableControl(hwnd, 106, false);
           }
           else {
-            DialogEnableWindow(hwnd, 106, true);
+            DialogEnableControl(hwnd, 106, true);
           }
           break;
         default:
