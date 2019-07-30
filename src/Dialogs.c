@@ -285,8 +285,13 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     case IDYES:
     case IDCONTINUE:
       return iMode;
+
     case 0:
+      // no entry found
+    case -1:
+      // disable "Don't display again" check-box
       break;
+
     default:
       IniFileDelete(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
       break;
@@ -335,7 +340,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   }
 
   msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
-  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting)) ? true : false;
+  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || (iMode < 0) ? true : false;
 
 
   int idDlg;
