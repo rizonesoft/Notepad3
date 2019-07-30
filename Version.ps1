@@ -47,6 +47,12 @@ try
 	if (!$SciVer) { $SciVer = 0 }
 	$OnigVer = [string](Get-Content "oniguruma\version.txt")
 	if (!$OnigVer) { $OnigVer = "0.0.0" }
+	$UChardetVer = [string](Get-Content "uchardet\version.txt")
+	if (!$UChardetVer) { $UChardetVer = "0.0.0" }
+	$TinyExprVer = [string](Get-Content "tinyexpr\version.txt")
+	if (!$TinyExprVer) { $TinyExprVer = "0.0.0" }
+	$UtHashVer = [string](Get-Content "uthash\version.txt")
+	if (!$UtHashVer) { $UtHashVer = "0.0.0" }
 	
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Version number: 'v$CompleteVer $VerPatch'")
@@ -61,6 +67,9 @@ try
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGURUMAVER\$', "$OnigVer" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UCHARDETVER\$', "$UChardetVer" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$TINYEXPRVER\$', "$TinyExprVer" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UTHASHVER\$', "$UtHashVer" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "src\VersionEx.h"
 	
 	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force

@@ -853,14 +853,37 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     case IDC_COPYVERSTRG:
       {
-        WCHAR wchVerInfo[1024] = { L'\0' };
-        WCHAR wchAuthInfo[128] = { L'\0' };
+        WCHAR wchBuf[128] = { L'\0' };
+        WCHAR wchBuf2[128] = { L'\0' };
+        WCHAR wchVerInfo[2048] = { L'\0' };
+
         StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), _W(_STRG(VERSION_FILEVERSION_LONG)));
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
+
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
-        GetLngString(IDS_MUI_TRANSL_AUTHOR, wchAuthInfo, COUNTOF(wchAuthInfo));
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchAuthInfo);
+        GetWinVersionString(wchBuf, COUNTOF(wchBuf));
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+        //GetLngString(IDS_MUI_TRANSL_AUTHOR, wchBuf, COUNTOF(wchBuf));
+        StringCchCopy(wchBuf, COUNTOF(wchBuf), L"en-US");
+        for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+          if (MUI_LanguageDLLs[lng].bIsActive) {
+            StringCchCopy(wchBuf, COUNTOF(wchBuf), MUI_LanguageDLLs[lng].szLocaleName);
+            break;
+          }
+        }
+        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\nLocale: %s (Codepage: '%s')", 
+          wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
+
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UCHARDET);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_TINYEXPR);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UTHASH);
+
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
+
         SetClipboardTextW(Globals.hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
       }
       break;
