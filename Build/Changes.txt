@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current RC2 Version 5.19.730.#(build) (2019-07-30)
+Current RC2 Version 5.19.731.#(build) (2019-07-31)
 ==================================================
 
 --------------------------------------------------
@@ -61,6 +61,7 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
+- Additional information on using copy version info button of About Dialog
 - Complete implementation of UTF-8-Sig MinPath.ini file handler
 - Use UTF-8-Sig for themes files
 - Use UTF-8-Sig for .ini-File Handler (Initial Version)
@@ -71,6 +72,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Multiple checks for (invalid) operations on rectangular selection
+- Lexers with empty "associated filename ext" will be intialized with default extentions
 - Load set localized menu before displaying dialog
 - Manual entry for "Suppressed Messages" set as '-1' will hide checkbox for "Don't display again"
 - Issues regarding "no Notepad3.ini" file (defaults)
