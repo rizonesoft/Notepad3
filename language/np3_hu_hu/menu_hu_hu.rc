@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "S&zínkiemelés sablon...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&2. Common Base\tShift+F12",                         IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2. általános alap\tShift+F12",                          IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Általános betûtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "&Jelenlegi sablon alap betûtípusa...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Aktuális be&csukás váltása",  IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",          CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",          CMD_WEBACTION2
+        MENUITEM "Webes mûvelet &1",          CMD_WEBACTION1
+        MENUITEM "Webes mûvelet &2",          CMD_WEBACTION2
         MENUITEM "Hiperhivat&kozás megnyitása", CMD_OPEN_HYPERLINK
     END
     POPUP "+"
