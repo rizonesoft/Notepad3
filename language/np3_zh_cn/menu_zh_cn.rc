@@ -77,8 +77,8 @@ BEGIN
             MENUITEM "打开方式(&O)...\tAlt+L",                 IDM_FILE_OPENWITH
             MENUITEM "命令(&C)...\tCtrl+R",                    IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web 模板 1(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
-            MENUITEM "Web 模板 2(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
+            MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "自定义语法高亮方案(&C)...\tCtrl+F12",          IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "选择语法高亮方案(&X)...\tF12",                 IDM_VIEW_SCHEME
-        MENUITEM "2nd Common Base(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "使用备选基本方案(&2)\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "全局默认字体(&D)...\tAlt+F12",                 IDM_VIEW_FONT
         MENUITEM "当前方案默认字体(&H)...\tCtrl+Alt+F12",        IDM_VIEW_CURRENTSCHEME
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "折叠/展开(&T)",                             IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",                       CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",                       CMD_WEBACTION2
+        MENUITEM "用超链接模板 1 打开(&1)",                       CMD_WEBACTION1
+        MENUITEM "用超链接模板 2 打开(&2)",                       CMD_WEBACTION2
         MENUITEM "打开超链接(&H)",                            CMD_OPEN_HYPERLINK
     END
     POPUP "+"
