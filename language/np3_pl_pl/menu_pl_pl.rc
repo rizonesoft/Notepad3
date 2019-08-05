@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Dostosuj schematy...\tCtrl+F12",                        IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "&Wybierz schemat sk³adni...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&2nd Common Base\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2. Wspólna baza\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Domyœlna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
         MENUITEM "Domyœlna &czcionka bie¿¹cego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Prze³¹cz Current Fold",                    IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",                        CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",                        CMD_WEBACTION2
+        MENUITEM "Otwórz Web Action &1",                        CMD_WEBACTION1
+        MENUITEM "Otwórz Web Action &2",                        CMD_WEBACTION2
         MENUITEM "Otwórz ³¹cze",                              CMD_OPEN_HYPERLINK
     END
     POPUP "+"
