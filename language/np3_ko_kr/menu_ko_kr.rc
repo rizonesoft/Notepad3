@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "스키마 편집(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "구문 스키마 선택(&X)...\tF12",                  IDM_VIEW_SCHEME
-        MENUITEM "&2nd Common Base\tShift+F12",               IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2nd 기본 설정\tShift+F12",                    IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "전체 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
         MENUITEM "현재 스키마 기본 글꼴(&H)...\tCtrl+Alt+F12",      IDM_VIEW_CURRENTSCHEME
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "현재 접기 전환(&T)",                       IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",                      CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",                      CMD_WEBACTION2
+        MENUITEM "웹 작업 열기 &1",                          CMD_WEBACTION1
+        MENUITEM "웹 작업 열기 &2",                          CMD_WEBACTION2
         MENUITEM "하이퍼 링크 열기(&H)",                      CMD_OPEN_HYPERLINK
     END
     POPUP "+"
