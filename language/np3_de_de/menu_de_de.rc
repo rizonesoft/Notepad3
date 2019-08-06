@@ -365,13 +365,13 @@ BEGIN
     END
     POPUP "&Aussehen"
     BEGIN
-        MENUITEM "&Schemata anpassen...\tCtrl+F12",           IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Schemata anpassen...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Synta&x Schema wählen...\tF12",             IDM_VIEW_SCHEME
-        MENUITEM "&2tes Common Base\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "Synta&x Schema wählen...\tF12",               IDM_VIEW_SCHEME
+        MENUITEM "&2tes Basis Schema\tShift+F12",               IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
-        MENUITEM "Globaler &Standard Font...\tAlt+F12",       IDM_VIEW_FONT
-        MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",    IDM_VIEW_CURRENTSCHEME
+        MENUITEM "Globaler &Standard Font...\tAlt+F12",         IDM_VIEW_FONT
+        MENUITEM "Aktueller Schema Font...\tCtrl+Alt+F12",      IDM_VIEW_CURRENTSCHEME
     END
     POPUP "&Einstellungen"
     BEGIN
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Aktuelle Falte umschalten",  IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",          CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",          CMD_WEBACTION2
+        MENUITEM "Öffne Web-Aktion &1",         CMD_WEBACTION1
+        MENUITEM "Öffne Web Aktion &2",         CMD_WEBACTION2
         MENUITEM "Öffne &Hyperlink",            CMD_OPEN_HYPERLINK
     END
     POPUP "+"
