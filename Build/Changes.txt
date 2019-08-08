@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current RC2 Version 5.19.731.#(build) (2019-07-31)
+Current RC2 Version 5.19.808.#(build) (2019-08-08)
 ==================================================
 
 --------------------------------------------------
@@ -98,6 +98,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------
 - Polish (pl-PL) Translation
+- Portuguese Brazilian (pt-BR) Translation (In progress)
 - Turkish (tr-TR) Translation (In progress)
 
 
