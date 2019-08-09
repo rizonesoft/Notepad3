@@ -2544,9 +2544,9 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
     CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
     CheckDlgButton(hwnd, IDC_RELIABLE_DETECTION_RES, SetBtn(Settings.UseReliableCEDonly));
     CheckDlgButton(hwnd, IDC_NFOASOEM, SetBtn(Settings.LoadNFOasOEM));
-    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, SetBtn(Settings.NoEncodingTags));
-    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(Settings.SkipUnicodeDetection));
-    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(Settings.SkipANSICodePageDetection));
+    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, SetBtn(!Settings.NoEncodingTags));
+    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(!Settings.SkipUnicodeDetection));
+    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(!Settings.SkipANSICodePageDetection));
 
     DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
 
@@ -2629,9 +2629,9 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
           Settings.LoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
           Settings.UseReliableCEDonly = IsButtonChecked(hwnd, IDC_RELIABLE_DETECTION_RES);
           Settings.LoadNFOasOEM = IsButtonChecked(hwnd, IDC_NFOASOEM);
-          Settings.NoEncodingTags = IsButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS);
-          Settings.SkipUnicodeDetection = IsButtonChecked(hwnd, IDC_NOUNICODEDETECTION);
-          Settings.SkipANSICodePageDetection = IsButtonChecked(hwnd, IDC_NOANSICPDETECTION);
+          Settings.NoEncodingTags = !IsButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS);
+          Settings.SkipUnicodeDetection = !IsButtonChecked(hwnd, IDC_NOUNICODEDETECTION);
+          Settings.SkipANSICodePageDetection = !IsButtonChecked(hwnd, IDC_NOANSICPDETECTION);
           EndDialog(hwnd, IDOK);
         }
       }

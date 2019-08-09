@@ -44,7 +44,6 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- MiniPath file name extension "Filter" config as "LoadOrder"
 - Sync Minipath Filter-Lines list with Notepad3 Lexers list
 - Use double-quotes as MRU list string limiter
 - Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
@@ -53,8 +52,6 @@ CHANGES:
 - To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding
 - Allow Fixedsys font for GDI rendering
 - Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
-- Oniguruma: support static build
-- Merge current (v.6.9.2) Oniguruma docs
 - Replace Onigmo by Oniguruma
 - CED -> UCHARDET license and acknowledgement
 
