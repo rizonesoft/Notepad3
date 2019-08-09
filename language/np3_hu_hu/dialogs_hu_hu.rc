@@ -191,11 +191,14 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
     CONTROL         "A 8-bit *.&nfo/diz fájlok megnyitása DOS-437 módban.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,170,10
-    CONTROL         "Ne dolgozza fel a kódolási f&ájlok címkéit.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
+//  CONTROL         "Ne dolgozza fel a kódolási f&ájlok címkéit.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
-    CONTROL         "&ANSI kódlap detektálás kihagyása.",IDC_NOANSICPDETECTION,
+    CONTROL         "&Perform &ANSI Code Page analysis.",IDC_NOANSICPDETECTION,
+//  CONTROL         "&ANSI kódlap detektálás kihagyása.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "&UNICODE detektálás kihagyása.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Enable &UNICODE detection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+//  CONTROL         "&UNICODE detektálás kihagyása.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,140,151,50,14
 END
