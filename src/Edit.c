@@ -1211,7 +1211,7 @@ bool EditLoadFile(
     cpi_enc_t const iFileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile) && !Settings.NoEncodingTags) ?
       FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
 
-    if (!Encoding_IsNONE(iFileVarEncoding)) { 
+    if (!Encoding_IsNONE(iFileVarEncoding) && !bForceEncDetection) {
       iForcedEncoding = (Globals.fvCurFile.mask & FV_ENCODING) ? iFileVarEncoding : iForcedEncoding;
     }
 
