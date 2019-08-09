@@ -9,6 +9,7 @@ onig-config
 libtool
 aclocal.m4
 Makefile.in
+.python-version
 *.o
 *.obj
 *.so
@@ -31,9 +32,9 @@ Makefile.in
 m4/*.m4
 /coverage
 /coverage.info
+/fuzzers
 
 # src/
-/src/CaseFolding.txt
 /src/unicode_fold?_key.gperf
 /src/unicode_unfold_key.gperf
 /src/UNICODE_PROPERTIES
@@ -61,3 +62,13 @@ m4/*.m4
 /sample/count
 /sample/bug_fix
 /sample/log*
+
+/harnesses/utf16*.dict
+/harnesses/*-libfuzzer
+/harnesses/main-*
+/harnesses/libfuzzer-onig
+/harnesses/libfuzzer-onig-full
+/harnesses/slow-unit-*
+/harnesses/timeout-*
+/harnesses/crash-*
+/harnesses/oom-*

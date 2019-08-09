@@ -2,7 +2,7 @@
   utf8.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako  <sndgk393 AT ybb DOT ne DOT jp>
+ * Copyright (c) 2002-2019  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -97,23 +97,25 @@ is_valid_mbc_string(const UChar* p, const UChar* end)
   return TRUE;
 }
 
+
 #if 0
 static int
-is_mbc_newline(const UChar* p, const UChar* end)
+is_mbc_newline(const UChar * p, const UChar * end)
 {
   if (p < end) {
     if (*p == 0x0a) return 1;
 
-#ifdef USE_UNICODE_ALL_LINE_TERMINATORS
-#ifndef USE_CRNL_AS_LINE_TERMINATOR
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
     if (*p == 0x0d) return 1;
 #endif
+
+#ifdef USE_UNICODE_ALL_LINE_TERMINATORS
     if (p + 1 < end) {
-      if (*(p+1) == 0x85 && *p == 0xc2) /* U+0085 */
+      if (*(p + 1) == 0x85 && *p == 0xc2) /* U+0085 */
         return 1;
       if (p + 2 < end) {
-        if ((*(p+2) == 0xa8 || *(p+2) == 0xa9)
-            && *(p+1) == 0x80 && *p == 0xe2)  /* U+2028, U+2029 */
+        if ((*(p + 2) == 0xa8 || *(p + 2) == 0xa9)
+          && *(p + 1) == 0x80 && *p == 0xe2)  /* U+2028, U+2029 */
           return 1;
       }
     }
@@ -123,6 +125,7 @@ is_mbc_newline(const UChar* p, const UChar* end)
   return 0;
 }
 #endif
+
 
 static OnigCodePoint
 mbc_to_code(const UChar* p, const UChar* end)
@@ -298,6 +301,7 @@ OnigEncodingType OnigEncodingUTF8 = {
 #endif
   1,           /* min enc length */
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
+  //is_mbc_newline,
   onigenc_is_mbc_newline_0x0a_or_0x0d,
 #else
   onigenc_is_mbc_newline_0x0a,

@@ -1,5 +1,17 @@
 History
 
+2019/08/06: Version 6.9.3 (secirity fix release)
+
+2019/07/30: add ONIG_SYN_ALLOW_INVALID_CODE_END_OF_RANGE
+2019/07/29: add STK_PREC_READ_START/END stack type
+2019/07/29: Fix #147: Stack Exhaustion Problem caused by some parsing functions
+2019/07/11: add a dictionary file for libfuzzer
+2019/07/07: add harnesses directory
+2019/07/05-2019/07/29: fix many problems found by libfuzzer programs
+2019/06/27: deprecate onig_new_deluxe()
+2019/06/27: Fix CVE-2019-13224: don't allow different encodings for onig_new_deluxe()
+2019/06/27: Fix CVE-2019-13225: problem in converting if-then-else pattern
+
 2019/05/07: Version 6.9.2 (same as Release Candidate 3)
 
 2019/04/23: Release Candidate 3 for 6.9.2
