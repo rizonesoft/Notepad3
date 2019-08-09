@@ -191,11 +191,14 @@ BEGIN
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "Maak 8-bit *.&nfo/diz lêers in DOS-437 wyse oop.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Moenie enkoderinglêer &tags ontleed nie.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Parse encoding file &tags..",IDC_ENCODINGFROMFILEVARS,
+//  CONTROL         "Moenie enkoderinglêer &tags ontleed nie.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
-    CONTROL         "Slaan &ANSI-kode opsporing oor.",IDC_NOANSICPDETECTION,
+    CONTROL         "Perform &ANSI Code Page analysis.",IDC_NOANSICPDETECTION,
+//  CONTROL         "Slaan &ANSI-kode opsporing oor.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
-    CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
+    CONTROL         "Enable &UNICODE detection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
+//  CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,140,151,50,14
 END

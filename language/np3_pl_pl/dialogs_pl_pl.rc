@@ -191,11 +191,14 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "Otwórz 8-bitowe pliki *.&nfo/diz w trybie DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Nie uwzglêdniaj znaczników kodowania.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
+//  CONTROL         "Nie uwzglêdniaj znaczników kodowania.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
-    CONTROL         "Nie wykrywaj strony kodowej &ANSI.",IDC_NOANSICPDETECTION,
+    CONTROL         "Perform &ANSI Code Page analysis.",IDC_NOANSICPDETECTION,
+//  CONTROL         "Nie wykrywaj strony kodowej &ANSI.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Pomiñ wykrywanie &UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Enable &UNICODE detection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+//  CONTROL         "Pomiñ wykrywanie &UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Anuluj",IDCANCEL,140,151,50,14
 END
