@@ -191,11 +191,14 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,167,10
     CONTROL         "Открывать 8-битные файлы *.&nfo/diz как DOS-437",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,189,10
-    CONTROL         "Не парсить &теги кодировки файла",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Parse encoding file &tags",IDC_ENCODINGFROMFILEVARS,
+//  CONTROL         "Не парсить &теги кодировки файла",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,133,10
-    CONTROL         "Не определять кодовую страницу &ANSI",IDC_NOANSICPDETECTION,
+    CONTROL         "Perform &ANSI Code Page analysis",IDC_NOANSICPDETECTION,
+//  CONTROL         "Не определять кодовую страницу &ANSI",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,151,10
-    CONTROL         "Пропускать определение &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,135,10
+    CONTROL         "Enable &UNICODE detection",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,135,10
+//  CONTROL         "Пропускать определение &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,135,10
     DEFPUSHBUTTON   "OK",IDOK,101,151,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,154,151,50,14
 END

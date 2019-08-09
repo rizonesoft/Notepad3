@@ -191,11 +191,14 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,1155,10
     CONTROL         "Apri file 8-bit *.&nfo/diz in DOS-437 mode.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Non fare il parsing degli encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
+//  CONTROL         "Non fare il parsing degli encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
-    CONTROL         "Salta il riconoscimento della &ANSI Code Page.",IDC_NOANSICPDETECTION,
+    CONTROL         "Perform &ANSI Code Page analysis.",IDC_NOANSICPDETECTION,
+//  CONTROL         "Salta il riconoscimento della &ANSI Code Page.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
-    CONTROL         "Salta il riconoscimento dell'&UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Enable &UNICODE detection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+//  CONTROL         "Salta il riconoscimento dell'&UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,97,151,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,150,151,50,14
 END
