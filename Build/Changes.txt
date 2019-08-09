@@ -30,7 +30,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current RC2 Version 5.19.808.#(build) (2019-08-08)
+Current RC2 Version 5.19.809.#(build) (2019-08-09)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Encoding (Default) Settings dialog: use positive wording for all items
 - Sync Minipath Filter-Lines list with Notepad3 Lexers list
 - Use double-quotes as MRU list string limiter
 - Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
