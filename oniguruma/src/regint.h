@@ -1,10 +1,10 @@
-﻿#ifndef REGINT_H
+#ifndef REGINT_H
 #define REGINT_H
 /**********************************************************************
   regint.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako  <sndgk393 AT ybb DOT ne DOT jp>
+ * Copyright (c) 2002-2019  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@
 #define USE_CALL
 #define USE_CALLOUT
 #define USE_BACKREF_WITH_LEVEL        /* \k<name+n>, \k<name-n> */
-#define USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT    /* /(?:()|())*\2/ */
+#define USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT     /* /(?:()|())*\2/ */
 #define USE_NEWLINE_AT_END_OF_STRING_HAS_EMPTY_LINE     /* /\n$/ =~ "\n" */
 #define USE_WARNING_REDUNDANT_NESTED_REPEAT_OPERATOR
 #define USE_RETRY_LIMIT_IN_MATCH
@@ -348,8 +348,8 @@ typedef unsigned int  MemStatusType;
 #define DISABLE_CASE_FOLD_MULTI_CHAR(case_fold_flag) \
   ((case_fold_flag) & ~INTERNAL_ONIGENC_CASE_FOLD_MULTI_CHAR)
 
-#define REPEAT_INFINITE         -1
-#define IS_REPEAT_INFINITE(n)   ((n) == REPEAT_INFINITE)
+#define INFINITE_REPEAT         -1
+#define IS_INFINITE_REPEAT(n)   ((n) == INFINITE_REPEAT)
 
 /* bitset */
 #define BITS_PER_BYTE      8
@@ -662,49 +662,6 @@ typedef int ModeType;
 
 
 /* op-code + arg size */
-#if 0
-#define SIZE_OP_ANYCHAR_STAR            SIZE_OPCODE
-#define SIZE_OP_ANYCHAR_STAR_PEEK_NEXT (SIZE_OPCODE + 1)
-#define SIZE_OP_JUMP                   (SIZE_OPCODE + SIZE_RELADDR)
-#define SIZE_OP_PUSH                   (SIZE_OPCODE + SIZE_RELADDR)
-#define SIZE_OP_PUSH_SUPER             (SIZE_OPCODE + SIZE_RELADDR)
-#define SIZE_OP_POP_OUT                 SIZE_OPCODE
-#ifdef USE_OP_PUSH_OR_JUMP_EXACT
-#define SIZE_OP_PUSH_OR_JUMP_EXACT1    (SIZE_OPCODE + SIZE_RELADDR + 1)
-#endif
-#define SIZE_OP_PUSH_IF_PEEK_NEXT      (SIZE_OPCODE + SIZE_RELADDR + 1)
-#define SIZE_OP_REPEAT_INC             (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_REPEAT_INC_NG          (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_WORD_BOUNDARY          (SIZE_OPCODE + SIZE_MODE)
-#define SIZE_OP_PREC_READ_START         SIZE_OPCODE
-#define SIZE_OP_PREC_READ_NOT_START    (SIZE_OPCODE + SIZE_RELADDR)
-#define SIZE_OP_PREC_READ_END           SIZE_OPCODE
-#define SIZE_OP_PREC_READ_NOT_END       SIZE_OPCODE
-#define SIZE_OP_FAIL                    SIZE_OPCODE
-#define SIZE_OP_MEMORY_START           (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_MEMORY_START_PUSH      (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_MEMORY_END_PUSH        (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_MEMORY_END_PUSH_REC    (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_MEMORY_END             (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_MEMORY_END_REC         (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_ATOMIC_START            SIZE_OPCODE
-#define SIZE_OP_ATOMIC_END              SIZE_OPCODE
-#define SIZE_OP_EMPTY_CHECK_START       (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_EMPTY_CHECK_END         (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_LOOK_BEHIND            (SIZE_OPCODE + SIZE_LENGTH)
-#define SIZE_OP_LOOK_BEHIND_NOT_START  (SIZE_OPCODE + SIZE_RELADDR + SIZE_LENGTH)
-#define SIZE_OP_LOOK_BEHIND_NOT_END     SIZE_OPCODE
-#define SIZE_OP_CALL                   (SIZE_OPCODE + SIZE_ABSADDR)
-#define SIZE_OP_RETURN                  SIZE_OPCODE
-#define SIZE_OP_PUSH_SAVE_VAL          (SIZE_OPCODE + SIZE_SAVE_TYPE + SIZE_MEMNUM)
-#define SIZE_OP_UPDATE_VAR             (SIZE_OPCODE + SIZE_UPDATE_VAR_TYPE + SIZE_MEMNUM)
-
-#ifdef USE_CALLOUT
-#define SIZE_OP_CALLOUT_CONTENTS       (SIZE_OPCODE + SIZE_MEMNUM)
-#define SIZE_OP_CALLOUT_NAME           (SIZE_OPCODE + SIZE_MEMNUM + SIZE_MEMNUM)
-#endif
-
-#else  /* if 0 */
 
 /* for relative address increment to go next op. */
 #define SIZE_INC_OP                     1
@@ -751,7 +708,6 @@ typedef int ModeType;
 #define SIZE_OP_CALLOUT_CONTENTS        1
 #define SIZE_OP_CALLOUT_NAME            1
 #endif
-#endif /* if 0 */
 
 
 #define MC_ESC(syn)               (syn)->meta_char_table.esc

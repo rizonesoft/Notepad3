@@ -2,7 +2,7 @@
   regerror.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako  <sndgk393 AT ybb DOT ne DOT jp>
+ * Copyright (c) 2002-2019  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -256,6 +256,23 @@ static int to_ascii(OnigEncoding enc, UChar *s, UChar *end,
   return len;
 }
 
+
+extern int
+onig_is_error_code_needs_param(int code)
+{
+  switch (code) {
+  case ONIGERR_UNDEFINED_NAME_REFERENCE:
+  case ONIGERR_UNDEFINED_GROUP_REFERENCE:
+  case ONIGERR_MULTIPLEX_DEFINED_NAME:
+  case ONIGERR_MULTIPLEX_DEFINITION_NAME_CALL:
+  case ONIGERR_INVALID_GROUP_NAME:
+  case ONIGERR_INVALID_CHAR_IN_GROUP_NAME:
+  case ONIGERR_INVALID_CHAR_PROPERTY_NAME:
+    return 1;
+  default:
+    return 0;
+  }
+}
 
 /* for ONIG_MAX_ERROR_MESSAGE_LEN */
 #define MAX_ERROR_PAR_LEN   30
