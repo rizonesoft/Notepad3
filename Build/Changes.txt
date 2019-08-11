@@ -39,7 +39,7 @@ NEW:
 - Add settings for allowed AutoComplete fill-up chars
 - Advanced TOML Lexer
 - Multiselect Edit Indicator
-- Color hover and picker (HTML color def only #RRGGBB)
+- Color hover and picker (HTML color def only #RRGGBB. Call the color-picker : Alt+MouseClick)
 
 --------------------------------------------------
 CHANGES:

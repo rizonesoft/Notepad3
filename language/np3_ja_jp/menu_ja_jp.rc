@@ -77,8 +77,8 @@ BEGIN
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
             MENUITEM "ファイル名を指定して実行(&C)...\tCtrl+R",    IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web検索1 (&1)\tCtrl+Shift+1",           CMD_WEBACTION1
-            MENUITEM "Web検索2 (&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM "ウェブ1で開く(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
+            MENUITEM "ウェブ2で開く(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "文字コード(&E)"
@@ -265,8 +265,8 @@ BEGIN
             MENUITEM "次の検索一致まで選択(&N)\tCtrl+Alt+F2",       IDM_EDIT_SELTONEXT
             MENUITEM "前の検索一致まで選択(&P)\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "単語や行を選択(&W)\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "一致する文字列すべてにマルチカーソル(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
         END
         MENUITEM SEPARATOR
         POPUP "ブックマーク(しおり)(&K)"
@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Color Definition Hotspots",               IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "色をプレビュー(&C)",               IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "文書の種類を選択(&X)...\tF12",              IDM_VIEW_SCHEME
-        MENUITEM "2nd Common Base(&2)\tShift+F12",          IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "標準配色2で表示(&2)\tShift+F12",          IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "フォント設定/適用中(&H)...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "ここの折りたたみを切り替え(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",                        CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",                        CMD_WEBACTION2
+        MENUITEM "ウェブ1で開く(&1)",                        CMD_WEBACTION1
+        MENUITEM "ウェブ2で開く(&2)",                        CMD_WEBACTION2
         MENUITEM "リンクを開く(&H)",                              CMD_OPEN_HYPERLINK
     END
     POPUP "+"
