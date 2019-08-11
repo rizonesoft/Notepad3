@@ -191,14 +191,11 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "8-bit のnfo/dizファイルはDOS-437モードで開く(&N)",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,165,10
-    CONTROL         "Parse encoding file &tags(&T)",IDC_ENCODINGFROMFILEVARS,
-//  CONTROL         "タグ中の文字コードの指定を解析しない(&T)",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "タグ中の文字コードの指定を解析する(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,153,10
-    CONTROL         "Perform &ANSI Code Page analysis(&A)",IDC_NOANSICPDETECTION,
-//  CONTROL         "ANSIの判別を省略(&A)",IDC_NOANSICPDETECTION,
+    CONTROL         "ANSIを判別する(&A)",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Enable &UNICODE detection(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
-//  CONTROL         "Unicodeの判別を省略(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Unicodeを判別する(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,140,151,50,14
 END
