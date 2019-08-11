@@ -191,14 +191,11 @@ BEGIN
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "用 DOS-437 模式打开 .nfo 和 .diz 文件(&N)",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,166,10
-    CONTROL         "Parse encoding file &tags(&T)",IDC_ENCODINGFROMFILEVARS,
-//  CONTROL         "不要分析编码标记(&T)",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "解析编码文件标记(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,166,10
-    CONTROL         "Perform &ANSI Code Page analysis(&A)",IDC_NOANSICPDETECTION,
-//  CONTROL         "跳过 ANSI 代码页检测(&A)",IDC_NOANSICPDETECTION,
+    CONTROL         "分析 ANSI 代码页(&A)",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,166,10
-    CONTROL         "Enable &UNICODE detection(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,166,10
-//  CONTROL         "跳过 Unicode 检测(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,166,10
+    CONTROL         "检测 Unicode(&U)",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,166,10
     DEFPUSHBUTTON   "确定",IDOK,87,151,50,14
     PUSHBUTTON      "取消",IDCANCEL,140,151,50,14
 END
