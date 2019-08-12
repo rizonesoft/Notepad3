@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "기본 설정"
+    IDS_LEX_DEF_TXT         "기본 구성"
     IDS_LEX_WEB_SRC         "웹 소스 코드"
     IDS_LEX_XML_DOC         "XML 문서"
     IDS_LEX_CSS_STYLE       "CSS 스타일 시트"
@@ -337,7 +337,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "하이퍼 링크 핫스팟"
     IDS_LEX_STR_63265       "2nd 하이퍼 링크 핫스팟"
-    IDS_LEX_STR_63266       "2nd 기본 설정"
+    IDS_LEX_STR_63266       "2nd 기본 구성"
     IDS_LEX_STR_63267       "문자열 내 변수"
     IDS_LEX_STR_63268       "순서 있는 목록"
     IDS_LEX_STR_63269       "Infix"
