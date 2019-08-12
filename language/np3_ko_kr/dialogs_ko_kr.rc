@@ -191,14 +191,11 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,164,10
     CONTROL         "8-bit *.&Nfo/Diz 파일을 DOS-437 모드로 열기.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,164,10
-    CONTROL         "Parse encoding file &tags(&T).",IDC_ENCODINGFROMFILEVARS,
-//  CONTROL         "인코딩 태그를 해석 하지 않기(&T).",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "인코딩 파일 태그 구문 분석(&T).",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,164,10
-    CONTROL         "Perform &ANSI Code Page analysis(&A).",IDC_NOANSICPDETECTION,
-//  CONTROL         "ANSI 코드 페이지 판별 생략(&A).",IDC_NOANSICPDETECTION,
+    CONTROL         "ANSI 코드 페이지 분석(&A).",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,164,10
-    CONTROL         "Enable &UNICODE detection(&U).",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,164,10
-//  CONTROL         "유니코드 판별 생략(&U).",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,164,10
+    CONTROL         "유니코드 감지 사용(&U).",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,164,10
     DEFPUSHBUTTON   "확인",IDOK,87,151,50,14
     PUSHBUTTON      "취소",IDCANCEL,140,151,50,14
 END
