@@ -203,7 +203,7 @@ BEGIN
             MENUITEM "Выраўнаваць &прабеламі\tAlt+B",   IDM_EDIT_PADWITHSPACES
             MENUITEM "Выдаліць першы сімвал\tAlt+Z",    IDM_EDIT_STRIP1STCHAR
             MENUITEM "Выдаліць апошні сімвал\tAlt+U",   IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Выдаліць прабелы навокал\tAlt+W", IDM_EDIT_TRIMLINES
+            MENUITEM "Выдаліць прабелы ў канцы\tAlt+W", IDM_EDIT_TRIMLINES
             MENUITEM "Аб'яднаць прабелы\tCtrl+Alt+P",   IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Змяніць радкі...\tAlt+M",        IDM_EDIT_MODIFYLINES
@@ -295,8 +295,8 @@ BEGIN
     POPUP "&Выгляд"
     BEGIN
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
-        MENUITEM "&Метка доўгіх радкоў\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Л&інія водступа\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "&Маркер доўгіх радкоў\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
+        MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Паказваць &сімвалы пераносаў\tCtrl+Shift+7",  IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Паказваць пра&бельныя сімвалы\tCtrl+Shift+8", IDM_VIEW_SHOWBLANKS
@@ -305,7 +305,7 @@ BEGIN
         MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Адзначаць рэгіёны вылучэння &колера",         IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
-        POPUP "Падсвечваць ак&тыўны радок\tCtrl+Shift+I"
+        POPUP "Па&дсвечванне ак&тыўнага радка\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&Без падсвечвання",                   IDM_VIEW_HILITCURLN_NONE
             MENUITEM "&Фонавы колер",                       IDM_VIEW_HILITCURLN_BACK
@@ -368,7 +368,7 @@ BEGIN
         MENUITEM "&Налады схемаў...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Выбраць с&хему сінтаксісу...\tF12",           IDM_VIEW_SCHEME
-        MENUITEM "&2nd Common Base\tShift+F12",                 IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&Другая базая схема\tShift+F12",              IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Агульны прадвызначаны &шрыфт...\tAlt+F12",    IDM_VIEW_FONT
         MENUITEM "&Прадвызначаны шрыфт для выбранай схемы...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Згарнуць/разгарнуць &блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",          CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",          CMD_WEBACTION2
+        MENUITEM "Адкрыць вэб-дзеянне &1",      CMD_WEBACTION1
+        MENUITEM "Адкрыць вэб-дзеянне &2",      CMD_WEBACTION2
         MENUITEM "Адкрыць &гіперспасылку",      CMD_OPEN_HYPERLINK
     END
     POPUP "+"
