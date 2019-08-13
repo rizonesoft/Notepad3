@@ -191,14 +191,11 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,141,10
     CONTROL         "Адкрываць 8-бітныя файлы *.&nfo/diz як DOS-437",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,182,10
-    CONTROL         "Parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
-//  CONTROL         "Не разбіраць &тэгі кадоўкі файла",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,125,10
-    CONTROL         "Perform &ANSI Code Page analysis.",IDC_NOANSICPDETECTION,
-//  CONTROL         "Не вызначаць кодавую старонку &ANSI",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,147,10
-    CONTROL         "Enable &UNICODE detection",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,96,10
-//  CONTROL         "Не вызначаць &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,96,10
+    CONTROL         "Разбіраць &тэгі кадоўкі файла",IDC_ENCODINGFROMFILEVARS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,114,10
+    CONTROL         "Вызначаць кодавую старонку &ANSI",IDC_NOANSICPDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,137,10
+    CONTROL         "Уключыць вызначэнне &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,127,10
     DEFPUSHBUTTON   "OK",IDOK,101,151,50,14
     PUSHBUTTON      "Скасаваць",IDCANCEL,154,151,50,14
 END

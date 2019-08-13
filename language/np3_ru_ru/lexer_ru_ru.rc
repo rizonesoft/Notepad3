@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Common Base"
+    IDS_LEX_DEF_TXT         "Базовая схема"
     IDS_LEX_WEB_SRC         "Web Source Code"
     IDS_LEX_XML_DOC         "XML Document"
     IDS_LEX_CSS_STYLE       "CSS Style Sheets"
@@ -121,46 +121,46 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
     IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
-    IDS_LEX_TEXT_FILES      "Text Files"
+    IDS_LEX_TEXT_FILES      "Текстовые файлы"
     IDS_LEX_TOML_CFG        "TOML"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Default Style"
-    IDS_LEX_STD_MARGIN      "Margins and Line Numbers"
-    IDS_LEX_STD_BRACE       "Matching Braces (Indicator)"
-    IDS_LEX_STD_BRACE_FAIL  "Matching Braces Error (Indicator)"
+    IDS_LEX_STD_STYLE       "Стиль по умолчанию"
+    IDS_LEX_STD_MARGIN      "Отступы и номера строк"
+    IDS_LEX_STD_BRACE       "Парные скобки (индикатор)"
+    IDS_LEX_STD_BRACE_FAIL  "Ошибка парных скобок (индикатор)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CTRL_CHAR   "Control Characters (Font)"
-    IDS_LEX_STD_INDENT      "Indentation Guide (Color)"
-    IDS_LEX_STD_SEL         "Selected Text (Colors)"
-    IDS_LEX_STD_WSPC        "Whitespace (Colors, Size 0-12)"
-    IDS_LEX_STD_LN_BACKGR   "Highlight Current Line"
-    IDS_LEX_STD_CARET       "Caret (Color, Size 1-3)"
-    IDS_LEX_STD_LONG_LN     "Long Line Marker (Colors)"
-    IDS_LEX_STD_X_SPC       "Extra Line Spacing (Size)"
-    IDS_LEX_2ND_STYLE       "2nd Default Style"
-    IDS_LEX_2ND_MARGIN      "2nd Margins and Line Numbers"
-    IDS_LEX_2ND_BRACE       "2nd Matching Braces (Indicator)"
-    IDS_LEX_2ND_BRACE_FAIL  "2nd Matching Braces Error (Indicator)"
-    IDS_LEX_2ND_CTRL_CHAR   "2nd Control Characters (Font)"
-    IDS_LEX_2ND_INDENT      "2nd Indentation Guide (Color)"
-    IDS_LEX_2ND_SEL         "2nd Selected Text (Colors)"
-    IDS_LEX_2ND_WSPC        "2nd Whitespace (Colors, Size 0-12)"
+    IDS_LEX_STD_CTRL_CHAR   "Управляющие символы (шрифт)"
+    IDS_LEX_STD_INDENT      "Направляющие отступов (цвет)"
+    IDS_LEX_STD_SEL         "Выделенный текст (цвета)"
+    IDS_LEX_STD_WSPC        "Пробельный символ (цвета, размер 0-12)"
+    IDS_LEX_STD_LN_BACKGR   "Подсветка текущей строки"
+    IDS_LEX_STD_CARET       "Каретка (цвет, размер 1-3)"
+    IDS_LEX_STD_LONG_LN     "Маркер длинных строк (цвета)"
+    IDS_LEX_STD_X_SPC       "Дополнительный межстрочный интервал (размер)"
+    IDS_LEX_2ND_STYLE       "Стиль по умолчанию второй схемы"
+    IDS_LEX_2ND_MARGIN      "Отступы и номера строк второй схемы"
+    IDS_LEX_2ND_BRACE       "Парные скобки второй схемы (индикатор)"
+    IDS_LEX_2ND_BRACE_FAIL  "Ошибка парных скобок второй схемы (индикатор)"
+    IDS_LEX_2ND_CTRL_CHAR   "Управляющие символы второй схемы (шрифт)"
+    IDS_LEX_2ND_INDENT      "Направляющие отступов второй схемы (цвет)"
+    IDS_LEX_2ND_SEL         "Выделенный текст второй схемы (цвета)"
+    IDS_LEX_2ND_WSPC        "Пробельный символ второй схемы (цвета, размер 0-12)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_2ND_LN_BACKGR   "2nd Highlight Current Line"
-    IDS_LEX_2ND_CARET       "2nd Caret (Color, Size 1-3)"
-    IDS_LEX_2ND_LONG_LN     "2nd Long Line Marker (Colors)"
-    IDS_LEX_2ND_X_SPC       "2nd Extra Line Spacing (Size)"
-    IDS_LEX_STD_BKMRK       "Bookmarks and Folding (Colors, Size)"
-    IDS_LEX_2ND_BKMRK       "2nd Bookmarks and Folding (Colors, Size)"
+    IDS_LEX_2ND_LN_BACKGR   "Подсветка текущей строки второй схемы"
+    IDS_LEX_2ND_CARET       "Каретка второй схемы (цвет, размер 1-3)"
+    IDS_LEX_2ND_LONG_LN     "Линия длинных строк второй схемы (цвета)"
+    IDS_LEX_2ND_X_SPC       "Доп. межстрочный интервал второй схемы (размер)"
+    IDS_LEX_STD_BKMRK       "Закладки и сворачивание (цвета, размер)"
+    IDS_LEX_2ND_BKMRK       "Закладки и сворачивание второй схемы (цвета, размер)"
     IDS_LEX_STR_63126       "Default"
     IDS_LEX_STR_63127       "Comment"
     IDS_LEX_STR_63128       "Keyword"
@@ -329,15 +329,15 @@ BEGIN
     IDS_LEX_STR_63259       "Comment Doc"
     IDS_LEX_STR_63260       "Keyword 2nd"
     IDS_LEX_STR_63261       "Error"
-    IDS_LEX_STR_63262       "Mark Occurrences (Indicator)"
-    IDS_LEX_STR_63263       "2nd Mark Occurrences (Indicator)"
+    IDS_LEX_STR_63262       "Подсветка совпадений (индикатор)"
+    IDS_LEX_STR_63263       "Подсветка совпадений второй схемы (индикатор)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63264       "Hyperlink Hotspots"
-    IDS_LEX_STR_63265       "2nd Hyperlink Hotspots"
-    IDS_LEX_STR_63266       "2nd Common Base"
+    IDS_LEX_STR_63264       "Места гиперссылок"
+    IDS_LEX_STR_63265       "Места гиперссылок второй схемы"
+    IDS_LEX_STR_63266       "Вторая базовая схема"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"
@@ -443,10 +443,10 @@ BEGIN
     IDS_LEX_STR_63349       "HotKey"
     IDS_LEX_STR_63350       "HotString"
     IDS_LEX_STR_63351       "HotStringOption"
-    IDS_LEX_STR_63352       "Inline-IME Color"
-    IDS_LEX_STR_63353       "2nd Inline-IME Color"
-    IDS_LEX_STR_63354       "Multi Edit Indicator"
-    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63352       "Цвет встроенного IME"
+    IDS_LEX_STR_63353       "Цвет встроенного IME второй схемы"
+    IDS_LEX_STR_63354       "Индикатор мультиредактирования"
+    IDS_LEX_STR_63355       "Индикатор мультиредактирования второй схемы"
     IDS_LEX_STR_63356       "Date-Time"
 END
 

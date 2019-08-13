@@ -210,7 +210,7 @@ BEGIN
     IDS_MUI_PASS_FAILURE    "Парольная фраза недействительна.\nПопробовать с другой?"
     IDS_MUI_NOPASS          "Расшифровка отменена!\nПрочитать зашифрованные данные как есть?"
     IDS_MUI_STY_BASESTD     "БАЗОВЫЙ (стиль по умолчанию):"
-    IDS_MUI_STY_BASE2ND     "БАЗОВЫЙ (доп. стиль по умолчанию):"
+    IDS_MUI_STY_BASE2ND     "БАЗОВЫЙ (стиль по умолчанию второй схемы):"
     IDS_MUI_STY_LEXDEF      "%s - стиль по умолчанию:"
     IDS_MUI_STY_LEXSTYLE    "Стиль %s:"
     IDS_MUI_TITLE_RELBASE   " +++ БАЗОВЫЙ (%s) +++"
