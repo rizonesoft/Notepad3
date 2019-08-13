@@ -210,7 +210,7 @@ BEGIN
     IDS_MUI_PASS_FAILURE    "Парольны сказ несапраўдны.\nПаспрабаваць з іншым?"
     IDS_MUI_NOPASS          "Расшыфраванне скасавана!\nПрачытаць шыфраваныя дадзеныя як ёсць?"
     IDS_MUI_STY_BASESTD     "БАЗАВЫ (прадвызначаны стыль):"
-    IDS_MUI_STY_BASE2ND     "БАЗАВЫ (другі прадвызначаны стыль):"
+    IDS_MUI_STY_BASE2ND     "БАЗАВЫ (прадвызначаны стыль другой схемы):"
     IDS_MUI_STY_LEXDEF      "%s - прадвызначаны стыль:"
     IDS_MUI_STY_LEXSTYLE    "Стыль %s:"
     IDS_MUI_TITLE_RELBASE   " +++ БАЗАВЫ (%s) +++"
