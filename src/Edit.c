@@ -1067,18 +1067,20 @@ bool EditLoadFile(
       Globals.CallTipType = CT_ENC_INFO;
 #endif
     }
-  }
-  else {
-    if (Flags.bDevDebugMode) {
-      WCHAR wchBuf[128] = { L'\0' };
-      StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[iForcedEncoding].wchLabel);
-      SetAdditionalTitleInfo(wchBuf);
+    if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
+      iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
     }
+  }
+
+  if (Flags.bDevDebugMode && IS_ENC_ENFORCED()) {
+    WCHAR wchBuf[128] = { L'\0' };
+    StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[iForcedEncoding].wchLabel);
+    SetAdditionalTitleInfo(wchBuf);
   }
 
   // ------------------------------------------------------
 
-  if (!bForceEncDetection)
+  if (!IS_ENC_ENFORCED())
   {
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
@@ -1101,12 +1103,6 @@ bool EditLoadFile(
 
   bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
 
-  // --------------------------------------------------------------------------
-
-  if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) 
-  {
-    iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
-  }
   // --------------------------------------------------------------------------
 
   // --- 3rd Unicode Checks
@@ -1145,7 +1141,7 @@ bool EditLoadFile(
   if (cbData == 0) {
     FileVars_Init(NULL, 0, &Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = IS_ENC_ENFORCED() ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding);
+    status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding;
     EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
@@ -1211,14 +1207,15 @@ bool EditLoadFile(
     cpi_enc_t const iFileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile) && !Settings.NoEncodingTags) ?
       FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
 
-    if (!Encoding_IsNONE(iFileVarEncoding) && !bForceEncDetection) {
+    if (!IS_ENC_ENFORCED() && !Encoding_IsNONE(iFileVarEncoding)) {
       iForcedEncoding = (Globals.fvCurFile.mask & FV_ENCODING) ? iFileVarEncoding : iForcedEncoding;
+      iPreferredEncoding = IS_ENC_ENFORCED() ? iForcedEncoding : iPreferredEncoding;
     }
 
     if (Flags.bDevDebugMode) {
       if (!Encoding_IsNONE(iFileVarEncoding) && FileVars_IsValidEncoding(&Globals.fvCurFile)) {
         WCHAR wchBuf[128] = { L'\0' };
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FileVarEncoding='%s'",
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FilEncTag='%s'",
           g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
         AppendAdditionalTitleInfo(wchBuf);
       }
@@ -1249,10 +1246,8 @@ bool EditLoadFile(
     else { // ===  ALL OTHER  ===
 
       // ----------------------------------------------------------------------
-      status->iEncoding = IS_ENC_ENFORCED() ? iForcedEncoding : 
-        (!Encoding_IsNONE(iPreferredEncoding) ? iPreferredEncoding : CPI_ANSI_DEFAULT);
+      status->iEncoding = Encoding_IsValid(iPreferredEncoding) ? iPreferredEncoding : CPI_ANSI_DEFAULT;
       // ----------------------------------------------------------------------
-
 
       if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
         ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData, cbData))) {
@@ -1290,7 +1285,6 @@ bool EditLoadFile(
         }
       }
       else {
-        status->iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferredEncoding;
         EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
         EditDetectEOLMode(lpData, cbData, status);
         FreeMem(lpData);
