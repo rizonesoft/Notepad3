@@ -23,32 +23,31 @@
 
 //=============================================================================
 
-//NUM_OF_MUI_LANGUAGES
-
 MUILANGUAGE MUI_LanguageDLLs[] =
 {
-  { IDS_MUI_LANG_EN_US, L"en-US", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
+  { IDS_MUI_LANG_EN_US, L"en-US", L"English (United States)\t\t\t[%s]",  MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
   // ----------------------------
-  { IDS_MUI_LANG_AF_ZA, L"af-ZA", MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
-  { IDS_MUI_LANG_BE_BY, L"be-BY", MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
-  { IDS_MUI_LANG_DE_DE, L"de-DE", MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
-  { IDS_MUI_LANG_EN_GB, L"en-GB", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
-  { IDS_MUI_LANG_ES_ES, L"es-ES", MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
-  { IDS_MUI_LANG_FR_FR, L"fr-FR", MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
-  { IDS_MUI_LANG_HU_HU, L"hu-HU", MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
-  { IDS_MUI_LANG_IT_IT, L"it-IT", MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
-  { IDS_MUI_LANG_JP_JP, L"ja-JP", MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
-  { IDS_MUI_LANG_KO_KR, L"ko-KR", MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
-  { IDS_MUI_LANG_NL_NL, L"nl-NL", MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
-  { IDS_MUI_LANG_PL_PL, L"pl-PL", MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
-  { IDS_MUI_LANG_PT_BR, L"pt-BR", MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
-  { IDS_MUI_LANG_RU_RU, L"ru-RU", MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
-  { IDS_MUI_LANG_TR_TR, L"tr-TR", MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
-  { IDS_MUI_LANG_ZH_CN, L"zh-CN", MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
+  { IDS_MUI_LANG_AF_ZA, L"af-ZA", L"Afrikaans (Suid-Afrika)\t\t\t[%s]",  MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
+  { IDS_MUI_LANG_BE_BY, L"be-BY", L"Беларуская (Беларусь)\t\t\t[%s]",    MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
+  { IDS_MUI_LANG_DE_DE, L"de-DE", L"Deutsch (Deutschland)\t\t\t[%s]",    MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
+  { IDS_MUI_LANG_EN_GB, L"en-GB", L"English (United Kingdom)\t\t\t[%s]", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
+  { IDS_MUI_LANG_ES_ES, L"es-ES", L"Español (España)\t\t\t[%s]",         MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
+  { IDS_MUI_LANG_FR_FR, L"fr-FR", L"Français (France)\t\t\t[%s]",        MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
+  { IDS_MUI_LANG_HU_HU, L"hu-HU", L"Magyar (Magyarország)\t\t\t[%s]",    MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
+  { IDS_MUI_LANG_IT_IT, L"it-IT", L"Italiano (Italia)\t\t\t[%s]",        MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
+  { IDS_MUI_LANG_JP_JP, L"ja-JP", L"日本語（日本）\t\t\t[%s]",            MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
+  { IDS_MUI_LANG_KO_KR, L"ko-KR", L"한국어 (대한민국)\t\t\t[%s]",         MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
+  { IDS_MUI_LANG_NL_NL, L"nl-NL", L"Nederlands (Nederland)\t\t\t[%s]",   MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
+  { IDS_MUI_LANG_PL_PL, L"pl-PL", L"Polski (Polska)\t\t\t[%s]",          MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
+  { IDS_MUI_LANG_PT_BR, L"pt-BR", L"Português (Brasil)\t\t\t[%s]",       MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
+  { IDS_MUI_LANG_RU_RU, L"ru-RU", L"Русский (Pоссия)\t\t\t[%s]",         MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
+  { IDS_MUI_LANG_SV_SE, L"sv-SE", L"Swedish (Sweden)\t\t\t[%s]",         MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), false, false },
+  { IDS_MUI_LANG_TR_TR, L"tr-TR", L"Türk (Türkiye)\t\t\t[%s]",           MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
+  { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"中文（中国）\t\t\t[%s]",             MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
 };
 
+//NUM_OF_MUI_LANGUAGES
 int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
-
 
 //=============================================================================
 //
