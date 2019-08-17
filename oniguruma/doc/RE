@@ -1,4 +1,4 @@
-Oniguruma Regular Expressions Version 6.9.2    2019/03/29
+Oniguruma Regular Expressions Version 6.9.2    2019/08/08
 
 syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
@@ -338,7 +338,7 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
                      This works like .* (more precisely \O*), but it is
                      limited by the range that does not include the string
                      match with <absent>.
-                     This is a written abbreviation of (?~|absent|\O*).
+                     This is a written abbreviation of (?~|(?:absent)|\O*).
                      \O* is used as a repeater.
 
   (?~|absent|exp)    Absent expression  (* original)

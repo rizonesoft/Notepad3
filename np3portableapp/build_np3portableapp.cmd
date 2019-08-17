@@ -28,7 +28,7 @@ setlocal enableextensions
 
 :: ====================================================================================================================
 
-set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pl-PL pt-BR ru-RU tr-TR zh-CN
+set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pl-PL pt-BR ru-RU sv-SE tr-TR zh-CN
 
 :: ====================================================================================================================
 

@@ -680,8 +680,6 @@ typedef struct _lng_menu_t {
 
 static HMENU s_hmenuLanguage = NULL;
 
-#include "../language/language_menus.hpp"
-
 static bool _InsertLanguageMenu(HMENU hMenuBar)
 {
   // check, if we need a language switching menu
@@ -698,19 +696,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
   {
     if (MUI_LanguageDLLs[lng].bHasDLL) 
     {
-      // GetLngString(MUI_LanguageDLLs[lng].rid, wchMenuItemFmt, COUNTOF(wchMenuItemFmt));
-      bool found = false;
-      for (int i = 0; i < COUNTOF(s_LanguageMenu); ++i) {
-        if (MUI_LanguageDLLs[lng].LangId == s_LanguageMenu[i].LangID)
-        {
-          StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), s_LanguageMenu[i].MenuItem);
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), L"Lang-(Sub)\t\t\t[%s]");
-      }
+      StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].szMenuItem);
       StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
       AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
     }

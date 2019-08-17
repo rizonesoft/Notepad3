@@ -210,9 +210,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8FD783D5-8709-432D-A88E-6E3073AFF220}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}"
-	ProjectSection(SolutionItems) = preProject
-		language\language_menus.hpp = language\language_menus.hpp
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_pl_pl", "language\np3_pl_pl\np3_pl_pl.vcxproj", "{E99EA1C1-B4DE-454B-9500-C98F817C0D6A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -233,6 +230,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_tr_tr", "minipath\langua
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_sv_se", "minipath\language\mp_sv_se\mp_sv_se.vcxproj", "{3E19AA6A-0935-4320-962A-C1E9378B387C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_sv_se", "language\np3_sv_se\np3_sv_se.vcxproj", "{07C218D7-D510-4D63-95E8-F661F62ED418}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -542,6 +543,22 @@ Global
 		{6503214A-CE25-45B5-84BB-61EEFB35D1A9}.Release|Win32.Build.0 = Release|Win32
 		{6503214A-CE25-45B5-84BB-61EEFB35D1A9}.Release|x64.ActiveCfg = Release|x64
 		{6503214A-CE25-45B5-84BB-61EEFB35D1A9}.Release|x64.Build.0 = Release|x64
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Debug|Win32.Build.0 = Debug|Win32
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Debug|x64.ActiveCfg = Debug|x64
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Debug|x64.Build.0 = Debug|x64
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Release|Win32.ActiveCfg = Release|Win32
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Release|Win32.Build.0 = Release|Win32
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Release|x64.ActiveCfg = Release|x64
+		{3E19AA6A-0935-4320-962A-C1E9378B387C}.Release|x64.Build.0 = Release|x64
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Debug|Win32.ActiveCfg = Debug|Win32
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Debug|Win32.Build.0 = Debug|Win32
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Debug|x64.ActiveCfg = Debug|x64
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Debug|x64.Build.0 = Debug|x64
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Release|Win32.ActiveCfg = Release|Win32
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Release|Win32.Build.0 = Release|Win32
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Release|x64.ActiveCfg = Release|x64
+		{07C218D7-D510-4D63-95E8-F661F62ED418}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -587,6 +604,8 @@ Global
 		{7924E6DE-69F4-40C2-951A-44AD3A54152D} = {8FD783D5-8709-432D-A88E-6E3073AFF220}
 		{15428F5A-16F1-4DA5-9F12-0411183E3DC0} = {8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}
 		{6503214A-CE25-45B5-84BB-61EEFB35D1A9} = {8FD783D5-8709-432D-A88E-6E3073AFF220}
+		{3E19AA6A-0935-4320-962A-C1E9378B387C} = {8FD783D5-8709-432D-A88E-6E3073AFF220}
+		{07C218D7-D510-4D63-95E8-F661F62ED418} = {8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0B8FE68-ECBC-4173-9027-E1EC2C9B5BDF}

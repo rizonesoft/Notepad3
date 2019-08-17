@@ -2,7 +2,7 @@
   regcomp.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako  <sndgk393 AT ybb DOT ne DOT jp>
+ * Copyright (c) 2002-2019  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -599,12 +599,34 @@ select_str_opcode(int mb_len, int str_len, int ignore_case)
 }
 
 static int
-compile_tree_empty_check(Node* node, regex_t* reg, int empty_info, ScanEnv* env)
+is_strict_real_node(Node* node)
+{
+  switch (NODE_TYPE(node)) {
+  case NODE_STRING:
+    {
+      StrNode* sn = STR_(node);
+      return (sn->end != sn->s);
+    }
+    break;
+
+  case NODE_CCLASS:
+  case NODE_CTYPE:
+    return 1;
+    break;
+
+  default:
+    return 0;
+    break;
+  }
+}
+
+static int
+compile_tree_empty_check(Node* node, regex_t* reg, int emptiness, ScanEnv* env)
 {
   int r;
   int saved_num_null_check = reg->num_null_check;
 
-  if (empty_info != BODY_IS_NOT_EMPTY) {
+  if (emptiness != BODY_IS_NOT_EMPTY) {
     r = add_op(reg, OP_EMPTY_CHECK_START);
     if (r != 0) return r;
     COP(reg)->empty_check_start.mem = reg->num_null_check; /* NULL CHECK ID */
@@ -614,12 +636,12 @@ compile_tree_empty_check(Node* node, regex_t* reg, int empty_info, ScanEnv* env)
   r = compile_tree(node, reg, env);
   if (r != 0) return r;
 
-  if (empty_info != BODY_IS_NOT_EMPTY) {
-    if (empty_info == BODY_IS_EMPTY)
+  if (emptiness != BODY_IS_NOT_EMPTY) {
+    if (emptiness == BODY_IS_EMPTY_POSSIBILITY)
       r = add_op(reg, OP_EMPTY_CHECK_END);
-    else if (empty_info == BODY_IS_EMPTY_MEM)
+    else if (emptiness == BODY_IS_EMPTY_POSSIBILITY_MEM)
       r = add_op(reg, OP_EMPTY_CHECK_END_MEMST);
-    else if (empty_info == BODY_IS_EMPTY_REC)
+    else if (emptiness == BODY_IS_EMPTY_POSSIBILITY_REC)
       r = add_op(reg, OP_EMPTY_CHECK_END_MEMST_PUSH);
 
     if (r != 0) return r;
@@ -895,12 +917,12 @@ entry_repeat_range(regex_t* reg, int id, int lower, int upper)
   }
 
   p[id].lower = lower;
-  p[id].upper = (IS_REPEAT_INFINITE(upper) ? 0x7fffffff : upper);
+  p[id].upper = (IS_INFINITE_REPEAT(upper) ? 0x7fffffff : upper);
   return 0;
 }
 
 static int
-compile_range_repeat_node(QuantNode* qn, int target_len, int empty_info,
+compile_range_repeat_node(QuantNode* qn, int target_len, int emptiness,
                           regex_t* reg, ScanEnv* env)
 {
   int r;
@@ -915,7 +937,7 @@ compile_range_repeat_node(QuantNode* qn, int target_len, int empty_info,
   r = entry_repeat_range(reg, num_repeat, qn->lower, qn->upper);
   if (r != 0) return r;
 
-  r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, empty_info, env);
+  r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
   if (r != 0) return r;
 
   if (
@@ -937,7 +959,7 @@ compile_range_repeat_node(QuantNode* qn, int target_len, int empty_info,
 static int
 is_anychar_infinite_greedy(QuantNode* qn)
 {
-  if (qn->greedy && IS_REPEAT_INFINITE(qn->upper) &&
+  if (qn->greedy && IS_INFINITE_REPEAT(qn->upper) &&
       NODE_IS_ANYCHAR(NODE_QUANT_BODY(qn)))
     return 1;
   else
@@ -951,8 +973,8 @@ static int
 compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
 {
   int len, mod_tlen;
-  int infinite = IS_REPEAT_INFINITE(qn->upper);
-  enum BodyEmpty empty_info = qn->empty_info;
+  int infinite = IS_INFINITE_REPEAT(qn->upper);
+  enum BodyEmptyType emptiness = qn->emptiness;
   int tlen = compile_length_tree(NODE_QUANT_BODY(qn), reg);
 
   if (tlen < 0) return tlen;
@@ -969,10 +991,9 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
     }
   }
 
-  if (empty_info == BODY_IS_NOT_EMPTY)
-    mod_tlen = tlen;
-  else
-    mod_tlen = tlen + (SIZE_OP_EMPTY_CHECK_START + SIZE_OP_EMPTY_CHECK_END);
+  mod_tlen = tlen;
+  if (emptiness != BODY_IS_NOT_EMPTY)
+    mod_tlen += SIZE_OP_EMPTY_CHECK_START + SIZE_OP_EMPTY_CHECK_END;
 
   if (infinite &&
       (qn->lower <= 1 ||
@@ -1026,8 +1047,8 @@ static int
 compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
 {
   int i, r, mod_tlen;
-  int infinite = IS_REPEAT_INFINITE(qn->upper);
-  enum BodyEmpty empty_info = qn->empty_info;
+  int infinite = IS_INFINITE_REPEAT(qn->upper);
+  enum BodyEmptyType emptiness = qn->emptiness;
   int tlen = compile_length_tree(NODE_QUANT_BODY(qn), reg);
 
   if (tlen < 0) return tlen;
@@ -1055,10 +1076,9 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
     }
   }
 
-  if (empty_info == BODY_IS_NOT_EMPTY)
-    mod_tlen = tlen;
-  else
-    mod_tlen = tlen + (SIZE_OP_EMPTY_CHECK_START + SIZE_OP_EMPTY_CHECK_END);
+  mod_tlen = tlen;
+  if (emptiness != BODY_IS_NOT_EMPTY)
+    mod_tlen += SIZE_OP_EMPTY_CHECK_START + SIZE_OP_EMPTY_CHECK_END;
 
   if (infinite &&
       (qn->lower <= 1 ||
@@ -1096,7 +1116,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
         COP(reg)->push_or_jump_exact1.addr = SIZE_INC_OP + mod_tlen + SIZE_OP_JUMP;
         COP(reg)->push_or_jump_exact1.c    = STR_(qn->head_exact)->s[0];
 
-        r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, empty_info, env);
+        r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
         if (r != 0) return r;
 
         addr = -(mod_tlen + (int )SIZE_OP_PUSH_OR_JUMP_EXACT1);
@@ -1109,7 +1129,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
         COP(reg)->push_if_peek_next.addr = SIZE_INC_OP + mod_tlen + SIZE_OP_JUMP;
         COP(reg)->push_if_peek_next.c    = STR_(qn->next_head_exact)->s[0];
 
-        r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, empty_info, env);
+        r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
         if (r != 0) return r;
 
         addr = -(mod_tlen + (int )SIZE_OP_PUSH_IF_PEEK_NEXT);
@@ -1119,7 +1139,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
         if (r != 0) return r;
         COP(reg)->push.addr = SIZE_INC_OP + mod_tlen + SIZE_OP_JUMP;
 
-        r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, empty_info, env);
+        r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
         if (r != 0) return r;
 
         addr = -(mod_tlen + (int )SIZE_OP_PUSH);
@@ -1134,7 +1154,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
       if (r != 0) return r;
       COP(reg)->jump.addr = mod_tlen + SIZE_INC_OP;
 
-      r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, empty_info, env);
+      r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
       if (r != 0) return r;
 
       r = add_op(reg, OP_PUSH);
@@ -1188,7 +1208,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
     r = compile_tree(NODE_QUANT_BODY(qn), reg, env);
   }
   else {
-    r = compile_range_repeat_node(qn, mod_tlen, empty_info, reg, env);
+    r = compile_range_repeat_node(qn, mod_tlen, emptiness, reg, env);
   }
   return r;
 }
@@ -1273,7 +1293,7 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
     break;
 
   case BAG_STOP_BACKTRACK:
-    if (NODE_IS_STOP_BT_SIMPLE_REPEAT(node)) {
+    if (NODE_IS_STRICT_REAL_REPEAT(node)) {
       int v;
       QuantNode* qn;
 
@@ -1424,7 +1444,7 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
     break;
 
   case BAG_STOP_BACKTRACK:
-    if (NODE_IS_STOP_BT_SIMPLE_REPEAT(node)) {
+    if (NODE_IS_STRICT_REAL_REPEAT(node)) {
       QuantNode* qn = QUANT_(NODE_BAG_BODY(node));
       r = compile_tree_n_times(NODE_QUANT_BODY(qn), qn->lower, reg, env);
       if (r != 0) return r;
@@ -3044,7 +3064,7 @@ tree_max_len(Node* node, ScanEnv* env)
       if (qn->upper != 0) {
         len = tree_max_len(NODE_BODY(node), env);
         if (len != 0) {
-          if (! IS_REPEAT_INFINITE(qn->upper))
+          if (! IS_INFINITE_REPEAT(qn->upper))
             len = distance_multiply(len, qn->upper);
           else
             len = INFINITE_LEN;
@@ -3590,7 +3610,7 @@ next_setup(Node* node, Node* next_node, regex_t* reg)
   type = NODE_TYPE(node);
   if (type == NODE_QUANT) {
     QuantNode* qn = QUANT_(node);
-    if (qn->greedy && IS_REPEAT_INFINITE(qn->upper)) {
+    if (qn->greedy && IS_INFINITE_REPEAT(qn->upper)) {
 #ifdef USE_QUANT_PEEK_NEXT
       Node* n = get_head_value_node(next_node, 1, reg);
       /* '\0': for UTF-16BE etc... */
@@ -3600,7 +3620,7 @@ next_setup(Node* node, Node* next_node, regex_t* reg)
 #endif
       /* automatic posseivation a*b ==> (?>a*)b */
       if (qn->lower <= 1) {
-        if (NODE_IS_SIMPLE_TYPE(NODE_BODY(node))) {
+        if (is_strict_real_node(NODE_BODY(node))) {
           Node *x, *y;
           x = get_head_value_node(NODE_BODY(node), 0, reg);
           if (IS_NOT_NULL(x)) {
@@ -3608,7 +3628,7 @@ next_setup(Node* node, Node* next_node, regex_t* reg)
             if (IS_NOT_NULL(y) && is_exclusive(x, y, reg)) {
               Node* en = onig_node_new_bag(BAG_STOP_BACKTRACK);
               CHECK_NULL_RETURN_MEMERR(en);
-              NODE_STATUS_ADD(en, STOP_BT_SIMPLE_REPEAT);
+              NODE_STATUS_ADD(en, STRICT_REAL_REPEAT);
               swap_node(node, en);
               NODE_BODY(node) = en;
             }
@@ -4010,11 +4030,11 @@ expand_case_fold_string(Node* node, regex_t* reg, int state)
   return r;
 }
 
-#ifdef USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT
-static enum BodyEmpty
+#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
+static enum BodyEmptyType
 quantifiers_memory_node_info(Node* node)
 {
-  int r = BODY_IS_EMPTY;
+  int r = BODY_IS_EMPTY_POSSIBILITY;
 
   switch (NODE_TYPE(node)) {
   case NODE_LIST:
@@ -4031,7 +4051,7 @@ quantifiers_memory_node_info(Node* node)
 #ifdef USE_CALL
   case NODE_CALL:
     if (NODE_IS_RECURSION(node)) {
-      return BODY_IS_EMPTY_REC; /* tiny version */
+      return BODY_IS_EMPTY_POSSIBILITY_REC; /* tiny version */
     }
     else
       r = quantifiers_memory_node_info(NODE_BODY(node));
@@ -4053,9 +4073,9 @@ quantifiers_memory_node_info(Node* node)
       switch (en->type) {
       case BAG_MEMORY:
         if (NODE_IS_RECURSION(node)) {
-          return BODY_IS_EMPTY_REC;
+          return BODY_IS_EMPTY_POSSIBILITY_REC;
         }
-        return BODY_IS_EMPTY_MEM;
+        return BODY_IS_EMPTY_POSSIBILITY_MEM;
         break;
 
       case BAG_OPTION:
@@ -4092,7 +4112,7 @@ quantifiers_memory_node_info(Node* node)
 
   return r;
 }
-#endif /* USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT */
+#endif /* USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT */
 
 
 #ifdef USE_CALL
@@ -4360,7 +4380,7 @@ setup_called_state_call(Node* node, int state)
     {
       QuantNode* qn = QUANT_(node);
 
-      if (IS_REPEAT_INFINITE(qn->upper) || qn->upper >= 2)
+      if (IS_INFINITE_REPEAT(qn->upper) || qn->upper >= 2)
         state |= IN_REAL_REPEAT;
       if (qn->lower != qn->upper)
         state |= IN_VAR_REPEAT;
@@ -4477,7 +4497,7 @@ setup_called_state(Node* node, int state)
     {
       QuantNode* qn = QUANT_(node);
 
-      if (IS_REPEAT_INFINITE(qn->upper) || qn->upper >= 2)
+      if (IS_INFINITE_REPEAT(qn->upper) || qn->upper >= 2)
         state |= IN_REAL_REPEAT;
       if (qn->lower != qn->upper)
         state |= IN_VAR_REPEAT;
@@ -4609,24 +4629,24 @@ setup_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
     NODE_STATUS_ADD(node, IN_MULTI_ENTRY);
   }
 
-  if (IS_REPEAT_INFINITE(qn->upper) || qn->upper >= 1) {
+  if (IS_INFINITE_REPEAT(qn->upper) || qn->upper >= 1) {
     d = tree_min_len(body, env);
     if (d == 0) {
-#ifdef USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT
-      qn->empty_info = quantifiers_memory_node_info(body);
-      if (qn->empty_info == BODY_IS_EMPTY_REC) {
+#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
+      qn->emptiness = quantifiers_memory_node_info(body);
+      if (qn->emptiness == BODY_IS_EMPTY_POSSIBILITY_REC) {
         if (NODE_TYPE(body) == NODE_BAG &&
             BAG_(body)->type == BAG_MEMORY) {
           MEM_STATUS_ON(env->bt_mem_end, BAG_(body)->m.regnum);
         }
       }
 #else
-      qn->empty_info = BODY_IS_EMPTY;
+      qn->emptiness = BODY_IS_EMPTY_POSSIBILITY;
 #endif
     }
   }
 
-  if (IS_REPEAT_INFINITE(qn->upper) || qn->upper >= 2)
+  if (IS_INFINITE_REPEAT(qn->upper) || qn->upper >= 2)
     state |= IN_REAL_REPEAT;
   if (qn->lower != qn->upper)
     state |= IN_VAR_REPEAT;
@@ -4637,7 +4657,7 @@ setup_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
   /* expand string */
 #define EXPAND_STRING_MAX_LENGTH  100
   if (NODE_TYPE(body) == NODE_STRING) {
-    if (!IS_REPEAT_INFINITE(qn->lower) && qn->lower == qn->upper &&
+    if (!IS_INFINITE_REPEAT(qn->lower) && qn->lower == qn->upper &&
         qn->lower > 1 && qn->lower <= EXPAND_STRING_MAX_LENGTH) {
       int len = NODE_STRING_LEN(body);
       StrNode* sn = STR_(body);
@@ -4655,7 +4675,7 @@ setup_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
     }
   }
 
-  if (qn->greedy && (qn->empty_info == BODY_IS_NOT_EMPTY)) {
+  if (qn->greedy && (qn->emptiness == BODY_IS_NOT_EMPTY)) {
     if (NODE_TYPE(body) == NODE_QUANT) {
       QuantNode* tqn = QUANT_(body);
       if (IS_NOT_NULL(tqn->head_exact)) {
@@ -4672,7 +4692,7 @@ setup_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
 }
 
 /* setup_tree does the following work.
- 1. check empty loop. (set qn->empty_info)
+ 1. check empty loop. (set qn->emptiness)
  2. expand ignore-case in char class.
  3. set memory status bit flags. (reg->mem_stats)
  4. set qn->head_exact for [push, exact] -> [push_or_jump_exact1, exact].
@@ -4761,10 +4781,10 @@ setup_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
           r = setup_tree(target, reg, state, env);
           if (NODE_TYPE(target) == NODE_QUANT) {
             QuantNode* tqn = QUANT_(target);
-            if (IS_REPEAT_INFINITE(tqn->upper) && tqn->lower <= 1 &&
+            if (IS_INFINITE_REPEAT(tqn->upper) && tqn->lower <= 1 &&
                 tqn->greedy != 0) {  /* (?>a*), a*+ etc... */
-              if (NODE_IS_SIMPLE_TYPE(NODE_BODY(target)))
-                NODE_STATUS_ADD(node, STOP_BT_SIMPLE_REPEAT);
+              if (is_strict_real_node(NODE_BODY(target)))
+                NODE_STATUS_ADD(node, STRICT_REAL_REPEAT);
             }
           }
         }
@@ -5761,7 +5781,7 @@ optimize_nodes(Node* node, OptNode* opt, OptEnv* env)
           opt->sm.reach_end = 0;
       }
 
-      if (IS_REPEAT_INFINITE(qn->upper)) {
+      if (IS_INFINITE_REPEAT(qn->upper)) {
         if (env->mmd.max == 0 &&
             NODE_IS_ANYCHAR(NODE_BODY(node)) && qn->greedy != 0) {
           if (IS_MULTILINE(CTYPE_OPTION(NODE_QUANT_BODY(qn), env)))
@@ -6681,6 +6701,7 @@ onig_is_code_in_cc(OnigEncoding enc, OnigCodePoint code, CClassNode* cc)
   }
   else {
     len = ONIGENC_CODE_TO_MBCLEN(enc, code);
+    if (len < 0) return 0;
   }
   return onig_is_code_in_cc_len(len, code, cc);
 }

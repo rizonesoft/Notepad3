@@ -1,8 +1,8 @@
-﻿/**********************************************************************
+/**********************************************************************
   regexec.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako  <sndgk393 AT ybb DOT ne DOT jp>
+ * Copyright (c) 2002-2019  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -980,6 +980,8 @@ onig_region_copy(OnigRegion* to, OnigRegion* from)
 #define STK_CALL_FRAME             0x0400
 #define STK_RETURN                 0x0500
 #define STK_SAVE_VAL               0x0600
+#define STK_PREC_READ_START        0x0700
+#define STK_PREC_READ_END          0x0800
 
 /* stack type check mask */
 #define STK_MASK_POP_USED          STK_ALT_FLAG
@@ -1544,8 +1546,8 @@ stack_double(int is_alloca, char** arg_alloc_base,
 
 #define STACK_PUSH_ALT(pat,s,sprev)       STACK_PUSH(STK_ALT,pat,s,sprev)
 #define STACK_PUSH_SUPER_ALT(pat,s,sprev) STACK_PUSH(STK_SUPER_ALT,pat,s,sprev)
-#define STACK_PUSH_POS(s,sprev) \
-  STACK_PUSH(STK_TO_VOID_START,(Operation* )0,s,sprev)
+#define STACK_PUSH_PREC_READ_START(s,sprev) \
+  STACK_PUSH(STK_PREC_READ_START,(Operation* )0,s,sprev)
 #define STACK_PUSH_ALT_PREC_READ_NOT(pat,s,sprev) \
   STACK_PUSH(STK_ALT_PREC_READ_NOT,pat,s,sprev)
 #define STACK_PUSH_TO_VOID_START        STACK_PUSH_TYPE(STK_TO_VOID_START)
@@ -1887,6 +1889,27 @@ stack_double(int is_alloca, char** arg_alloc_base,
   }\
 } while(0)
 
+#define STACK_GET_PREC_READ_START(k) do {\
+  int level = 0;\
+  k = stk;\
+  while (1) {\
+    k--;\
+    STACK_BASE_CHECK(k, "STACK_GET_PREC_READ_START");\
+    if (IS_TO_VOID_TARGET(k)) {\
+      k->type = STK_VOID;\
+    }\
+    else if (k->type == STK_PREC_READ_START) {\
+      if (level == 0) {\
+        break;\
+      }\
+      level--;\
+    }\
+    else if (k->type == STK_PREC_READ_END) {\
+      level++;\
+    }\
+  }\
+} while(0)
+
 #define STACK_EMPTY_CHECK(isnull,sid,s) do {\
   StackType* k = stk;\
   while (1) {\
@@ -1913,7 +1936,7 @@ stack_double(int is_alloca, char** arg_alloc_base,
   }\
 } while (0)
 
-#ifdef USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT
+#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
 #define STACK_EMPTY_CHECK_MEM(isnull,sid,s,reg) do {\
   StackType* k = stk;\
   while (1) {\
@@ -1927,9 +1950,10 @@ stack_double(int is_alloca, char** arg_alloc_base,
         }\
         else {\
           UChar* endp;\
+          int level = 0;\
           (isnull) = 1;\
           while (k < stk) {\
-            if (k->type == STK_MEM_START) {\
+            if (k->type == STK_MEM_START && level == 0) {\
               STACK_MEM_START_GET_PREV_END_ADDR(k, reg, endp);\
               if (endp == 0) {\
                 (isnull) = 0; break;\
@@ -1940,6 +1964,12 @@ stack_double(int is_alloca, char** arg_alloc_base,
               else if (endp != s) {\
                 (isnull) = -1; /* empty, but position changed */ \
               }\
+            }\
+            else if (k->type == STK_PREC_READ_START) {\
+              level++;\
+            }\
+            else if (k->type == STK_PREC_READ_END) {\
+              level--;\
             }\
             k++;\
           }\
@@ -1965,10 +1995,11 @@ stack_double(int is_alloca, char** arg_alloc_base,
           }\
           else {\
             UChar* endp;\
+            int prec_level = 0;\
             (isnull) = 1;\
             while (k < stk) {\
               if (k->type == STK_MEM_START) {\
-                if (level == 0) {\
+                if (level == 0 && prec_level == 0) {\
                   STACK_MEM_START_GET_PREV_END_ADDR(k, reg, endp);\
                   if (endp == 0) {\
                     (isnull) = 0; break;\
@@ -1986,6 +2017,12 @@ stack_double(int is_alloca, char** arg_alloc_base,
               }\
               else if (k->type == STK_EMPTY_CHECK_END) {\
                 if (k->zid == (sid)) level--;\
+              }\
+              else if (k->type == STK_PREC_READ_START) {\
+                prec_level++;\
+              }\
+              else if (k->type == STK_PREC_READ_END) {\
+                prec_level--;\
               }\
               k++;\
             }\
@@ -2023,7 +2060,7 @@ stack_double(int is_alloca, char** arg_alloc_base,
     }\
   }\
 } while(0)
-#endif /* USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT */
+#endif /* USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT */
 
 #define STACK_GET_REPEAT(sid, k) do {\
   int level = 0;\
@@ -2968,6 +3005,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       NEXT_OUT;
 
     CASE_OP(CCLASS_MB)
+      DATA_ENSURE(1);
       if (! ONIGENC_IS_MBC_HEAD(encode, s)) goto fail;
 
     cclass_mb:
@@ -3441,11 +3479,13 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
                 ? STACK_AT(mem_end_stk[mem])->u.mem.pstr
                 : (UChar* )((void* )mem_end_stk[mem]));
         n = (int )(pend - pstart);
-        DATA_ENSURE(n);
-        sprev = s;
-        STRING_CMP(pstart, s, n);
-        while (sprev + (len = enclen(encode, sprev)) < s)
-          sprev += len;
+        if (n != 0) {
+          DATA_ENSURE(n);
+          sprev = s;
+          STRING_CMP(s, pstart, n);
+          while (sprev + (len = enclen(encode, sprev)) < s)
+            sprev += len;
+        }
       }
       INC_OP;
       JUMP_OUT;
@@ -3468,11 +3508,13 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
                 ? STACK_AT(mem_end_stk[mem])->u.mem.pstr
                 : (UChar* )((void* )mem_end_stk[mem]));
         n = (int )(pend - pstart);
-        DATA_ENSURE(n);
-        sprev = s;
-        STRING_CMP_IC(case_fold_flag, pstart, &s, n);
-        while (sprev + (len = enclen(encode, sprev)) < s)
-          sprev += len;
+        if (n != 0) {
+          DATA_ENSURE(n);
+          sprev = s;
+          STRING_CMP_IC(case_fold_flag, pstart, &s, n);
+          while (sprev + (len = enclen(encode, sprev)) < s)
+            sprev += len;
+        }
       }
       INC_OP;
       JUMP_OUT;
@@ -3498,15 +3540,16 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
                   ? STACK_AT(mem_end_stk[mem])->u.mem.pstr
                   : (UChar* )((void* )mem_end_stk[mem]));
           n = (int )(pend - pstart);
-          DATA_ENSURE(n);
-          sprev = s;
-          swork = s;
-          STRING_CMP_VALUE(pstart, swork, n, is_fail);
-          if (is_fail) continue;
-          s = swork;
-          while (sprev + (len = enclen(encode, sprev)) < s)
-            sprev += len;
-
+          if (n != 0) {
+            DATA_ENSURE(n);
+            sprev = s;
+            swork = s;
+            STRING_CMP_VALUE(swork, pstart, n, is_fail);
+            if (is_fail) continue;
+            s = swork;
+            while (sprev + (len = enclen(encode, sprev)) < s)
+              sprev += len;
+          }
           break; /* success */
         }
         if (i == tlen) goto fail;
@@ -3535,15 +3578,16 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
                   ? STACK_AT(mem_end_stk[mem])->u.mem.pstr
                   : (UChar* )((void* )mem_end_stk[mem]));
           n = (int )(pend - pstart);
-          DATA_ENSURE(n);
-          sprev = s;
-          swork = s;
-          STRING_CMP_VALUE_IC(case_fold_flag, pstart, &swork, n, is_fail);
-          if (is_fail) continue;
-          s = swork;
-          while (sprev + (len = enclen(encode, sprev)) < s)
-            sprev += len;
-
+          if (n != 0) {
+            DATA_ENSURE(n);
+            sprev = s;
+            swork = s;
+            STRING_CMP_VALUE_IC(case_fold_flag, pstart, &swork, n, is_fail);
+            if (is_fail) continue;
+            s = swork;
+            while (sprev + (len = enclen(encode, sprev)) < s)
+              sprev += len;
+          }
           break; /* success */
         }
         if (i == tlen) goto fail;
@@ -3560,6 +3604,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         int len;
         int level;
         MemNumType* mems;
+        UChar* ssave;
 
         n = 0;
       backref_with_level:
@@ -3567,10 +3612,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         tlen  = p->backref_general.num;
         mems = tlen == 1 ? &(p->backref_general.n1) : p->backref_general.ns;
 
-        sprev = s;
+        ssave = s;
         if (backref_match_at_nested_level(reg, stk, stk_base, n,
                     case_fold_flag, level, (int )tlen, mems, &s, end)) {
-          if (sprev < end) {
+          if (ssave != s) {
+            sprev = ssave;
             while (sprev + (len = enclen(encode, sprev)) < s)
               sprev += len;
           }
@@ -3658,7 +3704,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       }
       JUMP_OUT;
 
-#ifdef USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT
+#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
     CASE_OP(EMPTY_CHECK_END_MEMST)
       {
         int is_empty;
@@ -3683,7 +3729,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         int is_empty;
 
         mem = p->empty_check_end.mem;  /* mem: null check id */
-#ifdef USE_INSISTENT_CHECK_CAPTURES_IN_EMPTY_REPEAT
+#ifdef USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT
         STACK_EMPTY_CHECK_MEM_REC(is_empty, mem, s, reg);
 #else
         STACK_EMPTY_CHECK_REC(is_empty, mem, s);
@@ -3851,14 +3897,15 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       goto repeat_inc_ng;
 
     CASE_OP(PREC_READ_START)
-      STACK_PUSH_POS(s, sprev);
+      STACK_PUSH_PREC_READ_START(s, sprev);
       INC_OP;
       JUMP_OUT;
 
     CASE_OP(PREC_READ_END)
-      STACK_EXEC_TO_VOID(stkp);
+      STACK_GET_PREC_READ_START(stkp);
       s     = stkp->u.state.pstr;
       sprev = stkp->u.state.pstr_prev;
+      STACK_PUSH(STK_PREC_READ_END,0,0,0);
       INC_OP;
       JUMP_OUT;
 
@@ -5376,14 +5423,6 @@ onig_get_capture_range_in_callout(OnigCalloutArgs* a, int mem_num, int* begin, i
       *begin = *end = ONIG_REGION_NOTPOS;
     }
   }
-  else if (i == 0) {
-#if 0
-    *begin = a->start   - str;
-    *end   = a->current - str;
-#else
-    return ONIGERR_INVALID_ARGUMENT;
-#endif
-  }
   else
     return ONIGERR_INVALID_ARGUMENT;
 
@@ -5421,14 +5460,6 @@ onig_builtin_mismatch(OnigCalloutArgs* args ARG_UNUSED, void* user_data ARG_UNUS
   return ONIG_MISMATCH;
 }
 
-#if 0
-extern int
-onig_builtin_success(OnigCalloutArgs* args ARG_UNUSED, void* user_data ARG_UNUSED)
-{
-  return ONIG_CALLOUT_SUCCESS;
-}
-#endif
-
 extern int
 onig_builtin_error(OnigCalloutArgs* args, void* user_data ARG_UNUSED)
 {
@@ -5441,6 +5472,9 @@ onig_builtin_error(OnigCalloutArgs* args, void* user_data ARG_UNUSED)
 
   n = (int )val.l;
   if (n >= 0) {
+    n = ONIGERR_INVALID_CALLOUT_BODY;
+  }
+  else if (onig_is_error_code_needs_param(n)) {
     n = ONIGERR_INVALID_CALLOUT_BODY;
   }
 
