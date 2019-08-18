@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.8xx.#(build) (2019-08-xx)
+Current BETA Version 5.19.818.#(build) (2019-08-18)
 ==================================================
 
 --------------------------------------------------
@@ -42,8 +42,8 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Update Oniguruma Regex (ONI) engine (v.6.9.3+)
-- Scintilla Library (SCI) version 4.2.1 (2019-Jul-5)
+- Update Oniguruma Regex (ONI) engine (v.6.9.3+).
+- Scintilla Library (SCI) version 4.2.1 (2019-Jul-5).
 
 --------------------------------------------------
 ENHANCEMENT:
@@ -63,9 +63,9 @@ REMOVED:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Portuguese Brazilian (pt-BR) Translation (In progress)
-- Swedish (sv-SE) Translation (In progress)
-- Turkish (tr-TR) Translation (In progress)
+- Portuguese Brazilian (pt-BR) (in progress).
+- Swedish (sv-SE) (in progress).
+- Turkish (tr-TR) (in progress).
 
 
 ==================================================
@@ -75,68 +75,68 @@ Version 5.19.815.2595 (15 August 2019)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Add settings for allowed AutoComplete fill-up chars
-- Advanced TOML Lexer
-- Multiselect Edit Indicator
-- Color hover and picker (HTML color def only #RRGGBB, to call color-picker: Alt+MouseClick)
+- Add settings for allowed AutoComplete fill-up chars.
+- Advanced TOML Lexer.
+- Multiselect Edit Indicator.
+- Color hover and picker (HTML color def only #RRGGBB, to call color-picker: Alt+MouseClick).
 
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Encoding (Default) Settings dialog: use positive wording for all items
-- Sync Minipath Filter-Lines list with Notepad3 Lexers list
-- Use double-quotes as MRU list string limiter
-- Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text")
-- Update to Oniguruma (ONI) v.6.9.3
-- Scintilla Library (SCI) version 4.2.0 (2019-Jul-5)
-- To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding
-- Allow Fixedsys font for GDI rendering
-- Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60)
-- Replace Onigmo by Oniguruma (ONI)
-- CED -> UCHARDET license and acknowledgement
+- Encoding (Default) Settings dialog: use positive wording for all items.
+- Sync Minipath Filter-Lines list with Notepad3 Lexers list.
+- Use double-quotes as MRU list string limiter.
+- Keep .ini backward compatibility for moved "Text Files" lexer (from "Default Text").
+- Update to Oniguruma (ONI) v.6.9.3.
+- Scintilla Library (SCI) version 4.2.0 (2019-Jul-5).
+- To force UTF-8 as preffered encoding: activate encoding detection failure fallback for default encoding.
+- Allow Fixedsys font for GDI rendering.
+- Color MarkOccurrences refactoring: use System's HighLight color as default (alpha:60).
+- Replace Onigmo by Oniguruma (ONI).
+- CED -> UCHARDET license and acknowledgement.
 
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
-- Additional information on using copy version info button of About Dialog
-- Complete implementation of UTF-8-Sig MinPath.ini file handler
-- Use UTF-8-Sig for themes files
-- Use UTF-8-Sig for .ini-File Handler (Initial Version)
-- Multi-Selection with selection restore on undo
-- Bookmark margin click
-- Some multi-selection enhancements
+- Additional information on using copy version info button of About Dialog.
+- Complete implementation of UTF-8-Sig MinPath.ini file handler.
+- Use UTF-8-Sig for themes files.
+- Use UTF-8-Sig for .ini-File Handler (Initial Version).
+- Multi-Selection with selection restore on undo.
+- Bookmark margin click.
+- Some multi-selection enhancements.
 
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- Multiple checks for (invalid) operations on rectangular selection
-- Lexers with empty "associated filename ext" will be intialized with default extentions
-- Load set localized menu before displaying dialog
-- Manual entry for "Suppressed Messages" set as '-1' will hide checkbox for "Don't display again"
-- Issues regarding "no Notepad3.ini" file (defaults)
-- The checkbox "Don't show this DialogBox again" now remembers positive answers only
-- Message "Large File Warning" now default value for large files > 256MB
-- Send NewLine to sci control, if this id no AutoComplete fill-up char
-- Obsolete newline after .ini-file sections with comments
-- Enhanced Unicode detection
-- Oniguruma (ONI) allow CRLF as newline token
-- Notepad3.ini file, remove some keys with default values (styles)
-- Extended encoding detection debug information
-- Encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced)
-- Multi-Selection while Mark-Occurrences of current word is active
+- Multiple checks for (invalid) operations on rectangular selection.
+- Lexers with empty "associated filename ext" will be intialized with default extentions.
+- Load set localized menu before displaying dialog.
+- Manual entry for "Suppressed Messages" set as '-1' will hide checkbox for "Don't display again".
+- Issues regarding "no Notepad3.ini" file (defaults).
+- The checkbox "Don't show this DialogBox again" now remembers positive answers only.
+- Message "Large File Warning" now default value for large files > 256MB.
+- Send NewLine to sci control, if this id no AutoComplete fill-up char.
+- Obsolete newline after .ini-file sections with comments.
+- Enhanced Unicode detection.
+- Oniguruma (ONI) allow CRLF as newline token.
+- Notepad3.ini file, remove some keys with default values (styles).
+- Extended encoding detection debug information.
+- Encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced).
+- Multi-Selection while Mark-Occurrences of current word is active.
 
 --------------------------------------------------
 REMOVED:
 --------------------------------------------------
-- Disable "NewLine" for AutoComplete fill-up
-- Remove (old) AHK Lexer in favour of modern AHK_L Lexer
+- Disable "NewLine" for AutoComplete fill-up.
+- Remove (old) AHK Lexer in favour of modern AHK_L Lexer.
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Polish (pl-PL) Translation
-- Portuguese Brazilian (pt-BR) Translation (In progress)
-- Turkish (tr-TR) Translation (In progress)
+- Polish (pl-PL).
+- Portuguese Brazilian (pt-BR) (in progress).
+- Turkish (tr-TR) (in progress).
 
 
 ==================================================
@@ -146,105 +146,105 @@ Version 5.19.630.2381 (30 June 2019)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Add another Dark Theme "Obsidian"
-- Add option to disable Hyperlink Tooltip
-- ToolTip for Hyperlinks
-- 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3
-- Menu entry to mute MessageBox beeps
-- Theme Menu to load exported styles "on the fly" (e.g.: "Dark" or "Obsidian")
-  Factory Default, Standard Settings, a Dark Theme
-- Close Zoom Info Bubble after ~3 sec.
-- Recent History button in Toolbar
-- [Settings2] key-values (internal) to control concurrent encoding detection
+- Add another Dark Theme "Obsidian".
+- Add option to disable Hyperlink Tooltip.
+- ToolTip for Hyperlinks.
+- 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3.
+- Menu entry to mute MessageBox beeps.
+- Theme Menu to load exported styles "on the fly" (e.g.: "Dark" or "Obsidian") 
+  Factory Default, Standard Settings, a Dark Theme.
+- Close Zoom Info Bubble after ~3 sec..
+- Recent History button in Toolbar.
+- [Settings2] key-values (internal) to control concurrent encoding detection.
 - 2nd Encoding-Detector "Mozilla's UCHARDET" concurrent to 
-    CED (Google's Compact Encoding Detection)
-- Language selection in Main Menu 
-- Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
-- Customize Schemes: Caret style 'ovrbar' (default) to switch caret style between BAR and BLOCK 
-- Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings)
-- Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
-- Add CED reliability option (NLS: dialogs)
-- Indentation consistency check on file open (NLS: dialogs)
-- End-of-Line (EOL) consistency check on file open (NLS: dialogs)
-- Checkbox for transparent Find/Replace Dialogbox on losing focus
+    CED (Google's Compact Encoding Detection).
+- Language selection in Main Menu .
+- Command line option [/Y] to search env PATH for relative filename  (NLS: strings).
+- Customize Schemes: Caret style 'ovrbar' (default) to switch caret style between BAR and BLOCK .
+- Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings).
+- Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes).
+- Add CED reliability option (NLS: dialogs).
+- Indentation consistency check on file open (NLS: dialogs).
+- End-of-Line (EOL) consistency check on file open (NLS: dialogs).
+- Checkbox for transparent Find/Replace Dialogbox on losing focus.
 
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Enable Undo on FileRevert / AutoReload
-- Adapt warning dialog according to new FileRevert / AutoReload undo/redo history
-- Add an "Always On Top" toolbar button
-- Rename "Doc Tail Chasing" => "Monitoring Log"
-- Optimized FileWatching interval for "Chasing Tail" mode
-- Make "Add to Favorites" dialog resizable
-- Make Custom.Schemes and Find/Replace dialog resizable
-- BOOKMARK (margin flag) style changed to vertical flavor
-- Auto-Save after elevating user right
-- Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection
-- Make international language menu (language independent)
-- Start dual encoding detectors in (thread) parallel for large files
-    (disabled, due to lack of performance profiling)
-- Support (internal) DevDebugMode
-- Menu item "HighDPI Toolbar" -> "Toggle Toolbar"
-- Train Dutch (CP-1252) for UCD language detection models
-- Train Belarusian (CP-1251) for UCD language detection models
-- Train Africaans (CP-1252) for UCD language detection models
-- Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7
-- Menu Languange Selector to Dynamic Language Selector
-- Up-to-Date SCI (GitHub Mirror 2019-May-10)
-- Update of CED (2019-Feb-01)
-- SpeedUp of RegEx Replace (in case of const replace pattern)
-- Update of Onigmo RegEx engine (2019-Jan-24)
-- Optimized file search for items (filebrowser, .ini file, dirs)
-- Goto-Dlg (Line/Column) shows max line number
-- SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
+- Enable Undo on FileRevert / AutoReload.
+- Adapt warning dialog according to new FileRevert / AutoReload undo/redo history.
+- Add an "Always On Top" toolbar button.
+- Rename "Doc Tail Chasing" => "Monitoring Log".
+- Optimized FileWatching interval for "Chasing Tail" mode.
+- Make "Add to Favorites" dialog resizable.
+- Make Custom.Schemes and Find/Replace dialog resizable.
+- BOOKMARK (margin flag) style changed to vertical flavor.
+- Auto-Save after elevating user right.
+- Rework Chinese encoding (GBK,GB2312,GB18030) detection and selection.
+- Make international language menu (language independent).
+- Start dual encoding detectors in (thread) parallel for large files 
+    (disabled, due to lack of performance profiling).
+- Support (internal) DevDebugMode.
+- Menu item "HighDPI Toolbar" -> "Toggle Toolbar".
+- Train Dutch (CP-1252) for UCD language detection models.
+- Train Belarusian (CP-1251) for UCD language detection models.
+- Train Africaans (CP-1252) for UCD language detection models.
+- Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7.
+- Menu Languange Selector to Dynamic Language Selector.
+- Up-to-Date SCI (GitHub Mirror 2019-May-10).
+- Update of CED (2019-Feb-01).
+- SpeedUp of RegEx Replace (in case of const replace pattern).
+- Update of Onigmo RegEx engine (2019-Jan-24).
+- Optimized file search for items (filebrowser, .ini file, dirs).
+- Goto-Dlg (Line/Column) shows max line number.
+- SCI new Nim lexer replaces old Nimrod lexer (new highlighting).
 
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
-- Allow customizable fileName-RegEx to extensionlist
-	( \rc$; = all filenames (incl. ext) which ends on 'rc')
-- Hand cursor coupled with indicator hover style only on modifier keys
-- Allow indicator styling for Hyperlink hover rendering
-- Find/Replace dialog <-> "Focused View" enhancements
-- Rework inconsistent line-breaks in status bar
-- Rework EOL and Indentation check with dialogs
+- Allow customizable fileName-RegEx to extensionlist 
+	( \rc$; = all filenames (incl. ext) which ends on 'rc').
+- Hand cursor coupled with indicator hover style only on modifier keys.
+- Allow indicator styling for Hyperlink hover rendering.
+- Find/Replace dialog <-> "Focused View" enhancements.
+- Rework inconsistent line-breaks in status bar.
+- Rework EOL and Indentation check with dialogs.
 
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- Load external Toolbars (clear config on error, path relative to be portable)
-- Focused View: refolding by lexer
-- Focused View started from Find/Replace dialog
-- Do not ignore notify change for Paste/Swap/Undo/Redo
-- Colourise bug on find next (w/ mark occurrences)
-- Indentation warning dialog
-- Reworked: Consistent EOL and Indentation checks
-- Fix to support external Hot- and Disabled- Toolbar icons 
-- Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle
-- MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue)
-- Write Language change to Settings2 on change immediately
-- Focused View not working for some Lexers
-- Find correct window for "Single File Instance"
-- Single file instance: find correct window for real paths
-- Minor issue on UTF-8 encoding detection
-- High quality icon for Taskbar (big icons)
-- Support high-definition icon for taskbar
-- .vcxproj files supporting VS2019 (vc142)
+- Load external Toolbars (clear config on error, path relative to be portable).
+- Focused View: refolding by lexer.
+- Focused View started from Find/Replace dialog.
+- Do not ignore notify change for Paste/Swap/Undo/Redo.
+- Colourise bug on find next (w/ mark occurrences).
+- Indentation warning dialog.
+- Reworked: Consistent EOL and Indentation checks.
+- Fix to support external Hot- and Disabled- Toolbar icons .
+- Broken open hyperlink in web-browser (Ctrl+Click) and broken toolbar toggle.
+- MUI - Replace Horizontal Ellipsis by 3 final point (ANSI Detection Issue).
+- Write Language change to Settings2 on change immediately.
+- Focused View not working for some Lexers.
+- Find correct window for "Single File Instance".
+- Single file instance: find correct window for real paths.
+- Minor issue on UTF-8 encoding detection.
+- High quality icon for Taskbar (big icons).
+- Support high-definition icon for taskbar.
+- .vcxproj files supporting VS2019 (vc142).
 
 --------------------------------------------------
 REMOVED:
 --------------------------------------------------
-- Compact Encoding Detection (CED) as 2nd encoding detector 
-    (rely on UCHARDET only)
+- Compact Encoding Detection (CED) as 2nd encoding detector
+    (rely on UCHARDET only).
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Hungarian (hu-HU) Translation
-- Italian (it-IT) Translation
-- Korean (ko-KR) Translation
-- Polish (pl-PL) Translation (In progress)
+- Hungarian (hu-HU).
+- Italian (it-IT).
+- Korean (ko-KR).
+- Polish (pl-PL) (in progress).
 
 
 ==================================================
@@ -273,7 +273,7 @@ CHANGES:
 - Optimized MiniPath resource file (icon/bitmap placement).
 - Enhanced MiniPath.
 - Small design change of MiniPath's Copy/Move dialog box.
-- Print option "Screen Colors" now prints with the same colors
+- Print option "Screen Colors" now prints with the same colors 
     used on screen including line numbers.
 - Changed behavior of removing duplicate lines (ignore EOL/EOF chars).
 - Line sorting: Move empty lines to end of selection (always, if not removed).
@@ -318,16 +318,16 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Afrikaans (af-ZA) Translation.
-- Belarusian (be-BY) Translation.
-- German (de-DE) Translation.
-- English (en-GB) Translation.
-- Spanish (es-ES) Translation.
-- French (fr-FR) Translation.
-- Japanese (ja-JP) Translation
-- Dutch (nl-NL) Translation.
-- Russian (ru-RU) Translation.
-- Chinese Simplified (zh-CN) Translation.
+- Afrikaans (af-ZA).
+- Belarusian (be-BY).
+- German (de-DE).
+- English (en-GB).
+- Spanish (es-ES).
+- French (fr-FR).
+- Japanese (ja-JP).
+- Dutch (nl-NL).
+- Russian (ru-RU).
+- Chinese Simplified (zh-CN).
 
 
 ==================================================
