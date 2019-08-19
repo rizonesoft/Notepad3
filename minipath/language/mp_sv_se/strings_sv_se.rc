@@ -131,7 +131,7 @@ BEGIN
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Swedish (Sweden) translation by ThreeLightsBeyond"
+    IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Svensk översättning av ThreeLightsBeyond"
 END
 
 
