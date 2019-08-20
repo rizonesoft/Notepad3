@@ -54,8 +54,10 @@
 #define PLATFORM_UNALIGNED_WORD_ACCESS
 #endif
 
+#ifndef ONIG_DISABLE_DIRECT_THREADING
 #ifdef __GNUC__
 #define USE_GOTO_LABELS_AS_VALUES
+#endif
 #endif
 
 /* config */
@@ -234,12 +236,12 @@ typedef unsigned int  uintptr_t;
 #ifdef USE_CALLOUT
 
 typedef struct {
-  int           flag;
-  OnigCalloutOf of;
-  int           in;
-  int           name_id;
-  const UChar*  tag_start;
-  const UChar*  tag_end;
+  int             flag;
+  OnigCalloutOf   of;
+  int             in;
+  int             name_id;
+  const UChar*    tag_start;
+  const UChar*    tag_end;
   OnigCalloutType type;
   OnigCalloutFunc start_func;
   OnigCalloutFunc end_func;
@@ -389,11 +391,13 @@ typedef struct _BBuf {
 
 #define BB_INIT(buf,size)    bbuf_init((BBuf* )(buf), (size))
 
+/*
 #define BB_SIZE_INC(buf,inc) do{\
   (buf)->alloc += (inc);\
   (buf)->p = (UChar* )xrealloc((buf)->p, (buf)->alloc);\
   if (IS_NULL((buf)->p)) return(ONIGERR_MEMORY);\
 } while (0)
+*/
 
 #define BB_EXPAND(buf,low) do{\
   do { (buf)->alloc *= 2; } while ((buf)->alloc < (unsigned int )low);\
@@ -493,7 +497,6 @@ typedef struct _BBuf {
 enum OpCode {
   OP_FINISH = 0,        /* matching process terminator (no more alternative) */
   OP_END    = 1,        /* pattern code terminator (success end) */
-
   OP_EXACT1 = 2,        /* single byte, N = 1 */
   OP_EXACT2,            /* single byte, N = 2 */
   OP_EXACT3,            /* single byte, N = 3 */
@@ -506,24 +509,20 @@ enum OpCode {
   OP_EXACTMB2N,         /* mb-length = 2 */
   OP_EXACTMB3N,         /* mb-length = 3 */
   OP_EXACTMBN,          /* other length */
-
   OP_EXACT1_IC,         /* single byte, N = 1, ignore case */
   OP_EXACTN_IC,         /* single byte,        ignore case */
-
   OP_CCLASS,
   OP_CCLASS_MB,
   OP_CCLASS_MIX,
   OP_CCLASS_NOT,
   OP_CCLASS_MB_NOT,
   OP_CCLASS_MIX_NOT,
-
   OP_ANYCHAR,                 /* "."  */
   OP_ANYCHAR_ML,              /* "."  multi-line */
   OP_ANYCHAR_STAR,            /* ".*" */
   OP_ANYCHAR_ML_STAR,         /* ".*" multi-line */
   OP_ANYCHAR_STAR_PEEK_NEXT,
   OP_ANYCHAR_ML_STAR_PEEK_NEXT,
-
   OP_WORD,
   OP_WORD_ASCII,
   OP_NO_WORD,
@@ -532,16 +531,13 @@ enum OpCode {
   OP_NO_WORD_BOUNDARY,
   OP_WORD_BEGIN,
   OP_WORD_END,
-
   OP_TEXT_SEGMENT_BOUNDARY,
-
   OP_BEGIN_BUF,
   OP_END_BUF,
   OP_BEGIN_LINE,
   OP_END_LINE,
   OP_SEMI_END_BUF,
   OP_BEGIN_POSITION,
-
   OP_BACKREF1,
   OP_BACKREF2,
   OP_BACKREF_N,
@@ -552,34 +548,31 @@ enum OpCode {
   OP_BACKREF_WITH_LEVEL_IC,     /* \k<xxx+n>, \k<xxx-n> */
   OP_BACKREF_CHECK,             /* (?(n)), (?('name')) */
   OP_BACKREF_CHECK_WITH_LEVEL,  /* (?(n-level)), (?('name-level')) */
-
   OP_MEMORY_START,
   OP_MEMORY_START_PUSH,   /* push back-tracker to stack */
   OP_MEMORY_END_PUSH,     /* push back-tracker to stack */
   OP_MEMORY_END_PUSH_REC, /* push back-tracker to stack */
   OP_MEMORY_END,
   OP_MEMORY_END_REC,      /* push marker to stack */
-
   OP_FAIL,               /* pop stack and move */
   OP_JUMP,
   OP_PUSH,
   OP_PUSH_SUPER,
   OP_POP_OUT,
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
-  OP_PUSH_OR_JUMP_EXACT1,  /* if match exact then push, else jump. */
+  OP_PUSH_OR_JUMP_EXACT1,   /* if match exact then push, else jump. */
 #endif
-  OP_PUSH_IF_PEEK_NEXT,    /* if match exact then push, else none. */
-  OP_REPEAT,               /* {n,m} */
-  OP_REPEAT_NG,            /* {n,m}? (non greedy) */
+  OP_PUSH_IF_PEEK_NEXT,     /* if match exact then push, else none. */
+  OP_REPEAT,                /* {n,m} */
+  OP_REPEAT_NG,             /* {n,m}? (non greedy) */
   OP_REPEAT_INC,
-  OP_REPEAT_INC_NG,        /* non greedy */
-  OP_REPEAT_INC_SG,        /* search and get in stack */
-  OP_REPEAT_INC_NG_SG,     /* search and get in stack (non greedy) */
+  OP_REPEAT_INC_NG,         /* non greedy */
+  OP_REPEAT_INC_SG,         /* search and get in stack */
+  OP_REPEAT_INC_NG_SG,      /* search and get in stack (non greedy) */
   OP_EMPTY_CHECK_START,     /* null loop checker start */
   OP_EMPTY_CHECK_END,       /* null loop checker end   */
   OP_EMPTY_CHECK_END_MEMST, /* null loop checker end (with capture status) */
   OP_EMPTY_CHECK_END_MEMST_PUSH, /* with capture status and push check-end */
-
   OP_PREC_READ_START,       /* (?=...)  start */
   OP_PREC_READ_END,         /* (?=...)  end   */
   OP_PREC_READ_NOT_START,   /* (?!...)  start */
@@ -589,7 +582,6 @@ enum OpCode {
   OP_LOOK_BEHIND,           /* (?<=...) start (no needs end opcode) */
   OP_LOOK_BEHIND_NOT_START, /* (?<!...) start */
   OP_LOOK_BEHIND_NOT_END,   /* (?<!...) end   */
-
   OP_CALL,                  /* \g<name> */
   OP_RETURN,
   OP_PUSH_SAVE_VAL,
@@ -601,8 +593,8 @@ enum OpCode {
 };
 
 enum SaveType {
-  SAVE_KEEP = 0, /* SAVE S */
-  SAVE_S = 1,
+  SAVE_KEEP        = 0, /* SAVE S */
+  SAVE_S           = 1,
   SAVE_RIGHT_RANGE = 2,
 };
 
@@ -664,49 +656,49 @@ typedef int ModeType;
 /* op-code + arg size */
 
 /* for relative address increment to go next op. */
-#define SIZE_INC_OP                     1
+#define SIZE_INC                       1
 
-#define SIZE_OP_ANYCHAR_STAR            1
-#define SIZE_OP_ANYCHAR_STAR_PEEK_NEXT  1
-#define SIZE_OP_JUMP                    1
-#define SIZE_OP_PUSH                    1
-#define SIZE_OP_PUSH_SUPER              1
-#define SIZE_OP_POP_OUT                 1
+#define OPSIZE_ANYCHAR_STAR            1
+#define OPSIZE_ANYCHAR_STAR_PEEK_NEXT  1
+#define OPSIZE_JUMP                    1
+#define OPSIZE_PUSH                    1
+#define OPSIZE_PUSH_SUPER              1
+#define OPSIZE_POP_OUT                 1
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
-#define SIZE_OP_PUSH_OR_JUMP_EXACT1     1
+#define OPSIZE_PUSH_OR_JUMP_EXACT1     1
 #endif
-#define SIZE_OP_PUSH_IF_PEEK_NEXT       1
-#define SIZE_OP_REPEAT                  1
-#define SIZE_OP_REPEAT_INC              1
-#define SIZE_OP_REPEAT_INC_NG           1
-#define SIZE_OP_WORD_BOUNDARY           1
-#define SIZE_OP_PREC_READ_START         1
-#define SIZE_OP_PREC_READ_NOT_START     1
-#define SIZE_OP_PREC_READ_END           1
-#define SIZE_OP_PREC_READ_NOT_END       1
-#define SIZE_OP_BACKREF                 1
-#define SIZE_OP_FAIL                    1
-#define SIZE_OP_MEMORY_START            1
-#define SIZE_OP_MEMORY_START_PUSH       1
-#define SIZE_OP_MEMORY_END_PUSH         1
-#define SIZE_OP_MEMORY_END_PUSH_REC     1
-#define SIZE_OP_MEMORY_END              1
-#define SIZE_OP_MEMORY_END_REC          1
-#define SIZE_OP_ATOMIC_START            1
-#define SIZE_OP_ATOMIC_END              1
-#define SIZE_OP_EMPTY_CHECK_START       1
-#define SIZE_OP_EMPTY_CHECK_END         1
-#define SIZE_OP_LOOK_BEHIND             1
-#define SIZE_OP_LOOK_BEHIND_NOT_START   1
-#define SIZE_OP_LOOK_BEHIND_NOT_END     1
-#define SIZE_OP_CALL                    1
-#define SIZE_OP_RETURN                  1
-#define SIZE_OP_PUSH_SAVE_VAL           1
-#define SIZE_OP_UPDATE_VAR              1
+#define OPSIZE_PUSH_IF_PEEK_NEXT       1
+#define OPSIZE_REPEAT                  1
+#define OPSIZE_REPEAT_INC              1
+#define OPSIZE_REPEAT_INC_NG           1
+#define OPSIZE_WORD_BOUNDARY           1
+#define OPSIZE_PREC_READ_START         1
+#define OPSIZE_PREC_READ_NOT_START     1
+#define OPSIZE_PREC_READ_END           1
+#define OPSIZE_PREC_READ_NOT_END       1
+#define OPSIZE_BACKREF                 1
+#define OPSIZE_FAIL                    1
+#define OPSIZE_MEMORY_START            1
+#define OPSIZE_MEMORY_START_PUSH       1
+#define OPSIZE_MEMORY_END_PUSH         1
+#define OPSIZE_MEMORY_END_PUSH_REC     1
+#define OPSIZE_MEMORY_END              1
+#define OPSIZE_MEMORY_END_REC          1
+#define OPSIZE_ATOMIC_START            1
+#define OPSIZE_ATOMIC_END              1
+#define OPSIZE_EMPTY_CHECK_START       1
+#define OPSIZE_EMPTY_CHECK_END         1
+#define OPSIZE_LOOK_BEHIND             1
+#define OPSIZE_LOOK_BEHIND_NOT_START   1
+#define OPSIZE_LOOK_BEHIND_NOT_END     1
+#define OPSIZE_CALL                    1
+#define OPSIZE_RETURN                  1
+#define OPSIZE_PUSH_SAVE_VAL           1
+#define OPSIZE_UPDATE_VAR              1
 
 #ifdef USE_CALLOUT
-#define SIZE_OP_CALLOUT_CONTENTS        1
-#define SIZE_OP_CALLOUT_NAME            1
+#define OPSIZE_CALLOUT_CONTENTS        1
+#define OPSIZE_CALLOUT_NAME            1
 #endif
 
 

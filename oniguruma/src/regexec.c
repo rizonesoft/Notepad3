@@ -129,7 +129,7 @@ typedef struct {
 } MatchArg;
 
 
-#ifdef ONIG_DEBUG
+#if defined(ONIG_DEBUG_COMPILE) || defined(ONIG_DEBUG_MATCH)
 
 /* arguments type */
 typedef enum {
@@ -375,7 +375,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_CCLASS_MB_NOT:
     {
       OnigCodePoint ncode;
-      OnigCodePoint* codes;      
+      OnigCodePoint* codes;
 
       codes = (OnigCodePoint* )p->cclass_mb.mb;
       GET_CODE_POINT(ncode, codes);
@@ -615,7 +615,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
     break;
   }
 }
-#endif /* ONIG_DEBUG */
+#endif /* defined(ONIG_DEBUG_COMPILE) || defined(ONIG_DEBUG_MATCH) */
 
 #ifdef ONIG_DEBUG_COMPILE
 extern void
@@ -4196,6 +4196,7 @@ str_lower_case_match(OnigEncoding enc, int case_fold_flag,
     lowlen = ONIGENC_MBC_CASE_FOLD(enc, case_fold_flag, &p, end, lowbuf);
     q = lowbuf;
     while (lowlen > 0) {
+      if (t >= tend)    return 0;
       if (*t++ != *q++) return 0;
       lowlen--;
     }
