@@ -218,7 +218,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 (완성형) 번역 testinsovr"
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역 testinsovr"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s - 스타일 +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s - 스타일"

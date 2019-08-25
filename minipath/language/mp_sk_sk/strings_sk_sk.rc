@@ -131,11 +131,11 @@ BEGIN
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(sk-SK) Slovak (Slovakia) translation by Dylino"
+    IDS_MUI_TRANSL_AUTHOR   "Slovenský preklad od Dylina"
 END
 
 
-#endif    // English (United Kingdom) resources
+#endif    // Slovak (Slovakia) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
