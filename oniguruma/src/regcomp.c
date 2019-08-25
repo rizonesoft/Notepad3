@@ -932,7 +932,7 @@ compile_range_repeat_node(QuantNode* qn, int target_len, int emptiness,
   if (r != 0) return r;
 
   COP(reg)->repeat.id   = num_repeat;
-  COP(reg)->repeat.addr = SIZE_INC_OP + target_len + SIZE_OP_REPEAT_INC;
+  COP(reg)->repeat.addr = SIZE_INC + target_len + OPSIZE_REPEAT_INC;
 
   r = entry_repeat_range(reg, num_repeat, qn->lower, qn->upper);
   if (r != 0) return r;
@@ -985,21 +985,21 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
     if (qn->lower <= 1 ||
         int_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0) {
       if (IS_NOT_NULL(qn->next_head_exact))
-        return SIZE_OP_ANYCHAR_STAR_PEEK_NEXT + tlen * qn->lower;
+        return OPSIZE_ANYCHAR_STAR_PEEK_NEXT + tlen * qn->lower;
       else
-        return SIZE_OP_ANYCHAR_STAR + tlen * qn->lower;
+        return OPSIZE_ANYCHAR_STAR + tlen * qn->lower;
     }
   }
 
   mod_tlen = tlen;
   if (emptiness != BODY_IS_NOT_EMPTY)
-    mod_tlen += SIZE_OP_EMPTY_CHECK_START + SIZE_OP_EMPTY_CHECK_END;
+    mod_tlen += OPSIZE_EMPTY_CHECK_START + OPSIZE_EMPTY_CHECK_END;
 
   if (infinite &&
       (qn->lower <= 1 ||
        int_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     if (qn->lower == 1 && tlen > QUANTIFIER_EXPAND_LIMIT_SIZE) {
-      len = SIZE_OP_JUMP;
+      len = OPSIZE_JUMP;
     }
     else {
       len = tlen * qn->lower;
@@ -1008,36 +1008,36 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
     if (qn->greedy) {
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
       if (IS_NOT_NULL(qn->head_exact))
-        len += SIZE_OP_PUSH_OR_JUMP_EXACT1 + mod_tlen + SIZE_OP_JUMP;
+        len += OPSIZE_PUSH_OR_JUMP_EXACT1 + mod_tlen + OPSIZE_JUMP;
       else
 #endif
       if (IS_NOT_NULL(qn->next_head_exact))
-        len += SIZE_OP_PUSH_IF_PEEK_NEXT + mod_tlen + SIZE_OP_JUMP;
+        len += OPSIZE_PUSH_IF_PEEK_NEXT + mod_tlen + OPSIZE_JUMP;
       else
-        len += SIZE_OP_PUSH + mod_tlen + SIZE_OP_JUMP;
+        len += OPSIZE_PUSH + mod_tlen + OPSIZE_JUMP;
     }
     else
-      len += SIZE_OP_JUMP + mod_tlen + SIZE_OP_PUSH;
+      len += OPSIZE_JUMP + mod_tlen + OPSIZE_PUSH;
   }
   else if (qn->upper == 0) {
     if (qn->is_refered != 0) { /* /(?<n>..){0}/ */
-      len = SIZE_OP_JUMP + tlen;
+      len = OPSIZE_JUMP + tlen;
     }
     else
       len = 0;
   }
   else if (!infinite && qn->greedy &&
            (qn->upper == 1 ||
-            int_multiply_cmp(tlen + SIZE_OP_PUSH, qn->upper,
+            int_multiply_cmp(tlen + OPSIZE_PUSH, qn->upper,
                              QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     len = tlen * qn->lower;
-    len += (SIZE_OP_PUSH + tlen) * (qn->upper - qn->lower);
+    len += (OPSIZE_PUSH + tlen) * (qn->upper - qn->lower);
   }
   else if (!qn->greedy && qn->upper == 1 && qn->lower == 0) { /* '??' */
-    len = SIZE_OP_PUSH + SIZE_OP_JUMP + tlen;
+    len = OPSIZE_PUSH + OPSIZE_JUMP + tlen;
   }
   else {
-    len = SIZE_OP_REPEAT_INC + mod_tlen + SIZE_OP_REPEAT;
+    len = OPSIZE_REPEAT_INC + mod_tlen + OPSIZE_REPEAT;
   }
 
   return len;
@@ -1078,7 +1078,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
 
   mod_tlen = tlen;
   if (emptiness != BODY_IS_NOT_EMPTY)
-    mod_tlen += SIZE_OP_EMPTY_CHECK_START + SIZE_OP_EMPTY_CHECK_END;
+    mod_tlen += OPSIZE_EMPTY_CHECK_START + OPSIZE_EMPTY_CHECK_END;
 
   if (infinite &&
       (qn->lower <= 1 ||
@@ -1091,16 +1091,16 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
       if (qn->greedy) {
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
         if (IS_NOT_NULL(qn->head_exact))
-          COP(reg)->jump.addr = SIZE_OP_PUSH_OR_JUMP_EXACT1 + SIZE_INC_OP;
+          COP(reg)->jump.addr = OPSIZE_PUSH_OR_JUMP_EXACT1 + SIZE_INC;
         else
 #endif
         if (IS_NOT_NULL(qn->next_head_exact))
-          COP(reg)->jump.addr = SIZE_OP_PUSH_IF_PEEK_NEXT + SIZE_INC_OP;
+          COP(reg)->jump.addr = OPSIZE_PUSH_IF_PEEK_NEXT + SIZE_INC;
         else
-          COP(reg)->jump.addr = SIZE_OP_PUSH + SIZE_INC_OP;
+          COP(reg)->jump.addr = OPSIZE_PUSH + SIZE_INC;
       }
       else {
-        COP(reg)->jump.addr = SIZE_OP_JUMP + SIZE_INC_OP;
+        COP(reg)->jump.addr = OPSIZE_JUMP + SIZE_INC;
       }
     }
     else {
@@ -1113,36 +1113,36 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
       if (IS_NOT_NULL(qn->head_exact)) {
         r = add_op(reg, OP_PUSH_OR_JUMP_EXACT1);
         if (r != 0) return r;
-        COP(reg)->push_or_jump_exact1.addr = SIZE_INC_OP + mod_tlen + SIZE_OP_JUMP;
+        COP(reg)->push_or_jump_exact1.addr = SIZE_INC + mod_tlen + OPSIZE_JUMP;
         COP(reg)->push_or_jump_exact1.c    = STR_(qn->head_exact)->s[0];
 
         r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
         if (r != 0) return r;
 
-        addr = -(mod_tlen + (int )SIZE_OP_PUSH_OR_JUMP_EXACT1);
+        addr = -(mod_tlen + (int )OPSIZE_PUSH_OR_JUMP_EXACT1);
       }
       else
 #endif
       if (IS_NOT_NULL(qn->next_head_exact)) {
         r = add_op(reg, OP_PUSH_IF_PEEK_NEXT);
         if (r != 0) return r;
-        COP(reg)->push_if_peek_next.addr = SIZE_INC_OP + mod_tlen + SIZE_OP_JUMP;
+        COP(reg)->push_if_peek_next.addr = SIZE_INC + mod_tlen + OPSIZE_JUMP;
         COP(reg)->push_if_peek_next.c    = STR_(qn->next_head_exact)->s[0];
 
         r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
         if (r != 0) return r;
 
-        addr = -(mod_tlen + (int )SIZE_OP_PUSH_IF_PEEK_NEXT);
+        addr = -(mod_tlen + (int )OPSIZE_PUSH_IF_PEEK_NEXT);
       }
       else {
         r = add_op(reg, OP_PUSH);
         if (r != 0) return r;
-        COP(reg)->push.addr = SIZE_INC_OP + mod_tlen + SIZE_OP_JUMP;
+        COP(reg)->push.addr = SIZE_INC + mod_tlen + OPSIZE_JUMP;
 
         r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
         if (r != 0) return r;
 
-        addr = -(mod_tlen + (int )SIZE_OP_PUSH);
+        addr = -(mod_tlen + (int )OPSIZE_PUSH);
       }
 
       r = add_op(reg, OP_JUMP);
@@ -1152,7 +1152,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
     else {
       r = add_op(reg, OP_JUMP);
       if (r != 0) return r;
-      COP(reg)->jump.addr = mod_tlen + SIZE_INC_OP;
+      COP(reg)->jump.addr = mod_tlen + SIZE_INC;
 
       r = compile_tree_empty_check(NODE_QUANT_BODY(qn), reg, emptiness, env);
       if (r != 0) return r;
@@ -1166,7 +1166,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
     if (qn->is_refered != 0) { /* /(?<n>..){0}/ */
       r = add_op(reg, OP_JUMP);
       if (r != 0) return r;
-      COP(reg)->jump.addr = tlen + SIZE_INC_OP;
+      COP(reg)->jump.addr = tlen + SIZE_INC;
 
       r = compile_tree(NODE_QUANT_BODY(qn), reg, env);
     }
@@ -1177,7 +1177,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
   }
   else if (! infinite && qn->greedy &&
            (qn->upper == 1 ||
-            int_multiply_cmp(tlen + SIZE_OP_PUSH, qn->upper,
+            int_multiply_cmp(tlen + OPSIZE_PUSH, qn->upper,
                              QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     int n = qn->upper - qn->lower;
 
@@ -1185,7 +1185,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
     if (r != 0) return r;
 
     for (i = 0; i < n; i++) {
-      int v = onig_positive_int_multiply(n - i, tlen + SIZE_OP_PUSH);
+      int v = onig_positive_int_multiply(n - i, tlen + OPSIZE_PUSH);
       if (v < 0) return ONIGERR_TOO_BIG_NUMBER_FOR_REPEAT_RANGE;
 
       r = add_op(reg, OP_PUSH);
@@ -1199,11 +1199,11 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
   else if (! qn->greedy && qn->upper == 1 && qn->lower == 0) { /* '??' */
     r = add_op(reg, OP_PUSH);
     if (r != 0) return r;
-    COP(reg)->push.addr = SIZE_INC_OP + SIZE_OP_JUMP;
+    COP(reg)->push.addr = SIZE_INC + OPSIZE_JUMP;
 
     r = add_op(reg, OP_JUMP);
     if (r != 0) return r;
-    COP(reg)->jump.addr = tlen + SIZE_INC_OP;
+    COP(reg)->jump.addr = tlen + SIZE_INC;
 
     r = compile_tree(NODE_QUANT_BODY(qn), reg, env);
   }
@@ -1260,35 +1260,35 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
 #ifdef USE_CALL
 
     if (node->m.regnum == 0 && NODE_IS_CALLED(node)) {
-      len = tlen + SIZE_OP_CALL + SIZE_OP_JUMP + SIZE_OP_RETURN;
+      len = tlen + OPSIZE_CALL + OPSIZE_JUMP + OPSIZE_RETURN;
       return len;
     }
 
     if (NODE_IS_CALLED(node)) {
-      len = SIZE_OP_MEMORY_START_PUSH + tlen
-        + SIZE_OP_CALL + SIZE_OP_JUMP + SIZE_OP_RETURN;
+      len = OPSIZE_MEMORY_START_PUSH + tlen
+        + OPSIZE_CALL + OPSIZE_JUMP + OPSIZE_RETURN;
       if (MEM_STATUS_AT0(reg->bt_mem_end, node->m.regnum))
         len += (NODE_IS_RECURSION(node)
-                ? SIZE_OP_MEMORY_END_PUSH_REC : SIZE_OP_MEMORY_END_PUSH);
+                ? OPSIZE_MEMORY_END_PUSH_REC : OPSIZE_MEMORY_END_PUSH);
       else
         len += (NODE_IS_RECURSION(node)
-                ? SIZE_OP_MEMORY_END_REC : SIZE_OP_MEMORY_END);
+                ? OPSIZE_MEMORY_END_REC : OPSIZE_MEMORY_END);
     }
     else if (NODE_IS_RECURSION(node)) {
-      len = SIZE_OP_MEMORY_START_PUSH;
+      len = OPSIZE_MEMORY_START_PUSH;
       len += tlen + (MEM_STATUS_AT0(reg->bt_mem_end, node->m.regnum)
-                     ? SIZE_OP_MEMORY_END_PUSH_REC : SIZE_OP_MEMORY_END_REC);
+                     ? OPSIZE_MEMORY_END_PUSH_REC : OPSIZE_MEMORY_END_REC);
     }
     else
 #endif
     {
       if (MEM_STATUS_AT0(reg->bt_mem_start, node->m.regnum))
-        len = SIZE_OP_MEMORY_START_PUSH;
+        len = OPSIZE_MEMORY_START_PUSH;
       else
-        len = SIZE_OP_MEMORY_START;
+        len = OPSIZE_MEMORY_START;
 
       len += tlen + (MEM_STATUS_AT0(reg->bt_mem_end, node->m.regnum)
-                     ? SIZE_OP_MEMORY_END_PUSH : SIZE_OP_MEMORY_END);
+                     ? OPSIZE_MEMORY_END_PUSH : OPSIZE_MEMORY_END);
     }
     break;
 
@@ -1303,10 +1303,10 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
 
       v = onig_positive_int_multiply(qn->lower, tlen);
       if (v < 0) return ONIGERR_TOO_BIG_NUMBER_FOR_REPEAT_RANGE;
-      len = v + SIZE_OP_PUSH + tlen + SIZE_OP_POP_OUT + SIZE_OP_JUMP;
+      len = v + OPSIZE_PUSH + tlen + OPSIZE_POP_OUT + OPSIZE_JUMP;
     }
     else {
-      len = SIZE_OP_ATOMIC_START + tlen + SIZE_OP_ATOMIC_END;
+      len = OPSIZE_ATOMIC_START + tlen + OPSIZE_ATOMIC_END;
     }
     break;
 
@@ -1318,8 +1318,8 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
 
       len = compile_length_tree(cond, reg);
       if (len < 0) return len;
-      len += SIZE_OP_PUSH;
-      len += SIZE_OP_ATOMIC_START + SIZE_OP_ATOMIC_END;
+      len += OPSIZE_PUSH;
+      len += OPSIZE_ATOMIC_START + OPSIZE_ATOMIC_END;
 
       if (IS_NOT_NULL(Then)) {
         tlen = compile_length_tree(Then, reg);
@@ -1327,7 +1327,7 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
         len += tlen;
       }
 
-      len += SIZE_OP_JUMP + SIZE_OP_ATOMIC_END;
+      len += OPSIZE_JUMP + OPSIZE_ATOMIC_END;
 
       if (IS_NOT_NULL(Else)) {
         tlen = compile_length_tree(Else, reg);
@@ -1359,17 +1359,17 @@ compile_bag_memory_node(BagNode* node, regex_t* reg, ScanEnv* env)
     r = add_op(reg, OP_CALL);
     if (r != 0) return r;
 
-    node->m.called_addr = COP_CURR_OFFSET(reg) + 1 + SIZE_OP_JUMP;
+    node->m.called_addr = COP_CURR_OFFSET(reg) + 1 + OPSIZE_JUMP;
     NODE_STATUS_ADD(node, ADDR_FIXED);
     COP(reg)->call.addr = (int )node->m.called_addr;
 
     if (node->m.regnum == 0) {
       len = compile_length_tree(NODE_BAG_BODY(node), reg);
-      len += SIZE_OP_RETURN;
+      len += OPSIZE_RETURN;
 
       r = add_op(reg, OP_JUMP);
       if (r != 0) return r;
-      COP(reg)->jump.addr = len + SIZE_INC_OP;
+      COP(reg)->jump.addr = len + SIZE_INC;
 
       r = compile_tree(NODE_BAG_BODY(node), reg, env);
       if (r != 0) return r;
@@ -1379,17 +1379,17 @@ compile_bag_memory_node(BagNode* node, regex_t* reg, ScanEnv* env)
     }
     else {
       len = compile_length_tree(NODE_BAG_BODY(node), reg);
-      len += (SIZE_OP_MEMORY_START_PUSH + SIZE_OP_RETURN);
+      len += (OPSIZE_MEMORY_START_PUSH + OPSIZE_RETURN);
       if (MEM_STATUS_AT0(reg->bt_mem_end, node->m.regnum))
         len += (NODE_IS_RECURSION(node)
-                ? SIZE_OP_MEMORY_END_PUSH_REC : SIZE_OP_MEMORY_END_PUSH);
+                ? OPSIZE_MEMORY_END_PUSH_REC : OPSIZE_MEMORY_END_PUSH);
       else
         len += (NODE_IS_RECURSION(node)
-                ? SIZE_OP_MEMORY_END_REC : SIZE_OP_MEMORY_END);
+                ? OPSIZE_MEMORY_END_REC : OPSIZE_MEMORY_END);
 
       r = add_op(reg, OP_JUMP);
       if (r != 0) return r;
-      COP(reg)->jump.addr = len + SIZE_INC_OP;
+      COP(reg)->jump.addr = len + SIZE_INC;
     }
   }
 #endif
@@ -1454,7 +1454,7 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
 
       r = add_op(reg, OP_PUSH);
       if (r != 0) return r;
-      COP(reg)->push.addr = SIZE_INC_OP + len + SIZE_OP_POP_OUT + SIZE_OP_JUMP;
+      COP(reg)->push.addr = SIZE_INC + len + OPSIZE_POP_OUT + OPSIZE_JUMP;
 
       r = compile_tree(NODE_QUANT_BODY(qn), reg, env);
       if (r != 0) return r;
@@ -1463,7 +1463,7 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
 
       r = add_op(reg, OP_JUMP);
       if (r != 0) return r;
-      COP(reg)->jump.addr = -((int )SIZE_OP_PUSH + len + (int )SIZE_OP_POP_OUT);
+      COP(reg)->jump.addr = -((int )OPSIZE_PUSH + len + (int )OPSIZE_POP_OUT);
     }
     else {
       r = add_op(reg, OP_ATOMIC_START);
@@ -1493,11 +1493,11 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
       else
         then_len = 0;
 
-      jump_len = cond_len + then_len + SIZE_OP_ATOMIC_END + SIZE_OP_JUMP;
+      jump_len = cond_len + then_len + OPSIZE_ATOMIC_END + OPSIZE_JUMP;
 
       r = add_op(reg, OP_PUSH);
       if (r != 0) return r;
-      COP(reg)->push.addr = SIZE_INC_OP + jump_len;
+      COP(reg)->push.addr = SIZE_INC + jump_len;
 
       r = compile_tree(cond, reg, env);
       if (r != 0) return r;
@@ -1518,7 +1518,7 @@ compile_bag_node(BagNode* node, regex_t* reg, ScanEnv* env)
 
       r = add_op(reg, OP_JUMP);
       if (r != 0) return r;
-      COP(reg)->jump.addr = SIZE_OP_ATOMIC_END + else_len + SIZE_INC_OP;
+      COP(reg)->jump.addr = OPSIZE_ATOMIC_END + else_len + SIZE_INC;
 
       r = add_op(reg, OP_ATOMIC_END);
       if (r != 0) return r;
@@ -1546,16 +1546,16 @@ compile_length_anchor_node(AnchorNode* node, regex_t* reg)
 
   switch (node->type) {
   case ANCR_PREC_READ:
-    len = SIZE_OP_PREC_READ_START + tlen + SIZE_OP_PREC_READ_END;
+    len = OPSIZE_PREC_READ_START + tlen + OPSIZE_PREC_READ_END;
     break;
   case ANCR_PREC_READ_NOT:
-    len = SIZE_OP_PREC_READ_NOT_START + tlen + SIZE_OP_PREC_READ_NOT_END;
+    len = OPSIZE_PREC_READ_NOT_START + tlen + OPSIZE_PREC_READ_NOT_END;
     break;
   case ANCR_LOOK_BEHIND:
-    len = SIZE_OP_LOOK_BEHIND + tlen;
+    len = OPSIZE_LOOK_BEHIND + tlen;
     break;
   case ANCR_LOOK_BEHIND_NOT:
-    len = SIZE_OP_LOOK_BEHIND_NOT_START + tlen + SIZE_OP_LOOK_BEHIND_NOT_END;
+    len = OPSIZE_LOOK_BEHIND_NOT_START + tlen + OPSIZE_LOOK_BEHIND_NOT_END;
     break;
 
   case ANCR_WORD_BOUNDARY:
@@ -1564,7 +1564,7 @@ compile_length_anchor_node(AnchorNode* node, regex_t* reg)
   case ANCR_WORD_BEGIN:
   case ANCR_WORD_END:
 #endif
-    len = SIZE_OP_WORD_BOUNDARY;
+    len = OPSIZE_WORD_BOUNDARY;
     break;
 
   case ANCR_TEXT_SEGMENT_BOUNDARY:
@@ -1648,7 +1648,7 @@ compile_anchor_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
 
     r = add_op(reg, OP_PREC_READ_NOT_START);
     if (r != 0) return r;
-    COP(reg)->prec_read_not_start.addr = SIZE_INC_OP + len + SIZE_OP_PREC_READ_NOT_END;
+    COP(reg)->prec_read_not_start.addr = SIZE_INC + len + OPSIZE_PREC_READ_NOT_END;
     r = compile_tree(NODE_ANCHOR_BODY(node), reg, env);
     if (r != 0) return r;
     r = add_op(reg, OP_PREC_READ_NOT_END);
@@ -1678,7 +1678,7 @@ compile_anchor_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
       len = compile_length_tree(NODE_ANCHOR_BODY(node), reg);
       r = add_op(reg, OP_LOOK_BEHIND_NOT_START);
       if (r != 0) return r;
-      COP(reg)->look_behind_not_start.addr = SIZE_INC_OP + len + SIZE_OP_LOOK_BEHIND_NOT_END;
+      COP(reg)->look_behind_not_start.addr = SIZE_INC + len + OPSIZE_LOOK_BEHIND_NOT_END;
 
       if (node->char_len < 0) {
         r = get_char_len_node(NODE_ANCHOR_BODY(node), reg, &n);
@@ -1764,25 +1764,25 @@ compile_length_gimmick_node(GimmickNode* node, regex_t* reg)
 
   switch (node->type) {
   case GIMMICK_FAIL:
-    len = SIZE_OP_FAIL;
+    len = OPSIZE_FAIL;
     break;
 
   case GIMMICK_SAVE:
-    len = SIZE_OP_PUSH_SAVE_VAL;
+    len = OPSIZE_PUSH_SAVE_VAL;
     break;
 
   case GIMMICK_UPDATE_VAR:
-    len = SIZE_OP_UPDATE_VAR;
+    len = OPSIZE_UPDATE_VAR;
     break;
 
 #ifdef USE_CALLOUT
   case GIMMICK_CALLOUT:
     switch (node->detail_type) {
     case ONIG_CALLOUT_OF_CONTENTS:
-      len = SIZE_OP_CALLOUT_CONTENTS;
+      len = OPSIZE_CALLOUT_CONTENTS;
       break;
     case ONIG_CALLOUT_OF_NAME:
-      len = SIZE_OP_CALLOUT_NAME;
+      len = OPSIZE_CALLOUT_NAME;
       break;
 
     default:
@@ -1821,7 +1821,7 @@ compile_length_tree(Node* node, regex_t* reg)
         r += compile_length_tree(NODE_CAR(node), reg);
         n++;
       } while (IS_NOT_NULL(node = NODE_CDR(node)));
-      r += (SIZE_OP_PUSH + SIZE_OP_JUMP) * (n - 1);
+      r += (OPSIZE_PUSH + OPSIZE_JUMP) * (n - 1);
     }
     break;
 
@@ -1841,12 +1841,12 @@ compile_length_tree(Node* node, regex_t* reg)
     break;
 
   case NODE_BACKREF:
-    r = SIZE_OP_BACKREF;
+    r = OPSIZE_BACKREF;
     break;
 
 #ifdef USE_CALL
   case NODE_CALL:
-    r = SIZE_OP_CALL;
+    r = OPSIZE_CALL;
     break;
 #endif
 
@@ -1893,7 +1893,7 @@ compile_tree(Node* node, regex_t* reg, ScanEnv* env)
       do {
         len += compile_length_tree(NODE_CAR(x), reg);
         if (IS_NOT_NULL(NODE_CDR(x))) {
-          len += SIZE_OP_PUSH + SIZE_OP_JUMP;
+          len += OPSIZE_PUSH + OPSIZE_JUMP;
         }
       } while (IS_NOT_NULL(x = NODE_CDR(x)));
       pos = COP_CURR_OFFSET(reg) + 1 + len;  /* goal position */
@@ -1904,7 +1904,7 @@ compile_tree(Node* node, regex_t* reg, ScanEnv* env)
           enum OpCode push = NODE_IS_SUPER(node) ? OP_PUSH_SUPER : OP_PUSH;
           r = add_op(reg, push);
           if (r != 0) break;
-          COP(reg)->push.addr = SIZE_INC_OP + len + SIZE_OP_JUMP;
+          COP(reg)->push.addr = SIZE_INC + len + OPSIZE_JUMP;
         }
         r = compile_tree(NODE_CAR(node), reg, env);
         if (r != 0) break;
@@ -5497,9 +5497,6 @@ concat_left_node_opt_info(OnigEncoding enc, OptNode* to, OptNode* add)
 
   if (to->spr.len > 0) {
     if (add->len.max > 0) {
-      if (to->spr.len > (int )add->len.max)
-        to->spr.len = add->len.max;
-
       if (to->spr.mmd.max == 0)
         select_opt_exact(enc, &to->sb, &to->spr);
       else
@@ -6758,6 +6755,7 @@ print_indent_tree(FILE* f, Node* node, int indent)
 
   case NODE_STRING:
     {
+      char* str;
       char* mode;
       char* dont;
       char* good;
@@ -6779,7 +6777,12 @@ print_indent_tree(FILE* f, Node* node, int indent)
       else
         dont = "";
 
-      fprintf(f, "<string%s%s%s:%p>", mode, good, dont, node);
+      if (STR_(node)->s == STR_(node)->end)
+        str = "empty-string";
+      else
+        str = "string";
+
+      fprintf(f, "<%s%s%s%s:%p>", str, mode, good, dont, node);
       for (p = STR_(node)->s; p < STR_(node)->end; p++) {
         if (*p >= 0x20 && *p < 0x7f)
           fputc(*p, f);
@@ -6901,6 +6904,34 @@ print_indent_tree(FILE* f, Node* node, int indent)
 
   case NODE_BAG:
     fprintf(f, "<bag:%p> ", node);
+    if (BAG_(node)->type == BAG_IF_ELSE) {
+      Node* Then;
+      Node* Else;
+      BagNode* bn;
+
+      bn = BAG_(node);
+      fprintf(f, "if-else\n");
+      print_indent_tree(f, NODE_BODY(node), indent + add);
+
+      Then = bn->te.Then;
+      Else = bn->te.Else;
+      if (IS_NULL(Then)) {
+        Indent(f, indent + add);
+        fprintf(f, "THEN empty\n");
+      }
+      else
+        print_indent_tree(f, Then, indent + add);
+
+      if (IS_NULL(Else)) {
+        Indent(f, indent + add);
+        fprintf(f, "ELSE empty\n");
+      }
+      else
+        print_indent_tree(f, Else, indent + add);
+
+      break;
+    }
+
     switch (BAG_(node)->type) {
     case BAG_OPTION:
       fprintf(f, "option:%d", BAG_(node)->o.options);
@@ -6911,8 +6942,7 @@ print_indent_tree(FILE* f, Node* node, int indent)
     case BAG_STOP_BACKTRACK:
       fprintf(f, "stop-bt");
       break;
-    case BAG_IF_ELSE:
-      fprintf(f, "if-else");
+    default:
       break;
     }
     fprintf(f, "\n");

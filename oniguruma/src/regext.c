@@ -156,6 +156,7 @@ conv_encoding(OnigEncoding from, OnigEncoding to, const UChar* s, const UChar* e
       goto swap32;
     }
   }
+
   return ONIGERR_NOT_SUPPORTED_ENCODING_COMBINATION;
 }
 #endif
