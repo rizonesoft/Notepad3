@@ -35,7 +35,7 @@ MUILANGUAGE MUI_LanguageDLLs[] =
   { IDS_MUI_LANG_FR_FR, L"fr-FR", L"Français (France)\t\t\t[%s]",        MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
   { IDS_MUI_LANG_HU_HU, L"hu-HU", L"Magyar (Magyarország)\t\t\t[%s]",    MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
   { IDS_MUI_LANG_IT_IT, L"it-IT", L"Italiano (Italia)\t\t\t[%s]",        MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
-  { IDS_MUI_LANG_JP_JP, L"ja-JP", L"日本語（日本）\t\t\t[%s]",            MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
+  { IDS_MUI_LANG_JP_JP, L"ja-JP", L"日本語 （日本）\t\t\t[%s]",           MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
   { IDS_MUI_LANG_KO_KR, L"ko-KR", L"한국어 (대한민국)\t\t\t[%s]",         MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
   { IDS_MUI_LANG_NL_NL, L"nl-NL", L"Nederlands (Nederland)\t\t\t[%s]",   MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
   { IDS_MUI_LANG_PL_PL, L"pl-PL", L"Polski (Polska)\t\t\t[%s]",          MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
@@ -44,7 +44,7 @@ MUILANGUAGE MUI_LanguageDLLs[] =
   { IDS_MUI_LANG_SV_SE, L"sk-SK", L"Slovenčina (Slovensko)\t\t\t[%s]",   MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), false, false },
   { IDS_MUI_LANG_SV_SE, L"sv-SE", L"Svenska (Sverige)\t\t\t[%s]",        MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), false, false },
   { IDS_MUI_LANG_TR_TR, L"tr-TR", L"Türkçe (Türkiye)\t\t\t[%s]",         MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
-  { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"中文（中国）\t\t\t[%s]",              MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
+  { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"简体中文 （中国）\t\t\t[%s]",         MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
 };
 
 //NUM_OF_MUI_LANGUAGES
