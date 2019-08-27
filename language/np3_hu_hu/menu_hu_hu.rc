@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "Másolat m&entése...\tCtrl+F6",    IDM_FILE_SAVECOPY
         MENUITEM "&Csak olvasható",                 IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time",  IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "Kódolási &jelmondat beállítása...", IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "In&dítás"
@@ -267,6 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Szó vag&y sorok kijelölése\tCtrl+Spc",       IDM_EDIT_SELECTWORD
             MENUITEM "Összes egyezés ki&jelölése\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Split Undo &Typing Sequence on Line Breaks", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Köny&vjelzõk"

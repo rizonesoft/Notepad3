@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "Со&хранить копию...\tCtrl+F6", IDM_FILE_SAVECOPY
         MENUITEM "&Только чтение",              IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "Задать парольную фразу...",   IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Запустить"
@@ -267,6 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Выбрать с&лово или строку\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "&Мультивыбор всех совпадений\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Split Undo &Typing Sequence on Line Breaks",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "&Закладки"

@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "保存副本(&C)...\tCtrl+F6",                  IDM_FILE_SAVECOPY
         MENUITEM "只读(&R)",                                  IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time",          IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "设置加密口令(&Y)...",                        IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "启动(&L)"
@@ -266,7 +268,9 @@ BEGIN
             MENUITEM "选定直到上一个查找匹配(&P)\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "选定单词或行(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
-            MENUITEM "选定全部匹配(&A)\tCtrl+Shift+Spc",   IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "选定全部匹配(&A)\tCtrl+Shift+Spc",       IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Split Undo &Typing Sequence on Line Breaks", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "书签(&K)"
