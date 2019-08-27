@@ -390,6 +390,7 @@ static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
 // ----------------------------------------------------------------------------
 
 static void  _DelayClearZoomCallTip(int delay);
+static void  _DelayUndoRedoTypingSequenceSplit(int delay);
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
@@ -3326,6 +3327,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, (Settings.RenderingTechnology > 0));
   
   CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
+  CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
   
   CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
   CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
@@ -3476,6 +3478,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_CLEAR_CALLTIP:
       CancelCallTip();
+      break;
+
+    case IDT_TIMER_UNDO_REDO_SPLIT:
+      SciCall_BeginUndoAction();
+      SciCall_EndUndoAction();
       break;
 
 
@@ -5526,6 +5533,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.MuteMessageBeep = !Settings.MuteMessageBeep;
       break;
 
+    case IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK:
+      Settings.SplitUndoTypingSeqOnLnBreak = !Settings.SplitUndoTypingSeqOnLnBreak;
+      break;
+
     //case IDM_SET_INLINE_IME:
     //  Settings2.IMEInteraction = (Settings2.IMEInteraction == SC_IME_WINDOWED) ? SC_IME_INLINE : SC_IME_WINDOWED;
     //  SciCall_SetIMEInteraction(Settings2.IMEInteraction);
@@ -6955,9 +6966,12 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
       int const iModType = scn->modificationType;
       if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
         if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction()) {
+          if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
             _SaveRedoSelection(_SaveUndoSelection());
           }
+        }
+        if (Settings2.UndoRedoSplitTimeout != 0) {
+          _DelayUndoRedoTypingSequenceSplit(Settings2.UndoRedoSplitTimeout);
         }
         bModified = false; // not yet
       }
@@ -7042,6 +7056,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
             _SaveRedoSelection(_SaveUndoSelection());
           }
+        }
+        if (Settings2.UndoRedoSplitTimeout != 0) {
+          _DelayUndoRedoTypingSequenceSplit(Settings2.UndoRedoSplitTimeout);
         }
         bModified = false; // not yet
       }
@@ -7189,6 +7206,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       switch (ich) {
         case '\r':
         case '\n':
+          if (Settings.SplitUndoTypingSeqOnLnBreak) { SciCall_BeginUndoAction(); SciCall_EndUndoAction(); }
           if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
           break;
         case '>':
@@ -7995,6 +8013,20 @@ static void  _DelayUpdateToolbar(int delay)
 static void  _DelayClearZoomCallTip(int delay)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
+  mqc.hwnd = Globals.hwndMain;
+  //mqc.lparam = (LPARAM)bForceRedraw;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+}
+
+
+//=============================================================================
+//
+//  _DelayClearZoomCallTip()
+//  
+//
+static void  _DelayUndoRedoTypingSequenceSplit(int delay)
+{
+  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_REDO_SPLIT, 0);
   mqc.hwnd = Globals.hwndMain;
   //mqc.lparam = (LPARAM)bForceRedraw;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
@@ -9178,19 +9210,20 @@ bool RestoreAction(int token, DoAction doAct)
             PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
             PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
           }
+          PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
           break;
 
         case SC_SEL_LINES:
         case SC_SEL_STREAM:
         default:
           PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+          PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
           break;
       }
     }
 
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
-    //~PostMessage(hwndedit, SCI_CANCEL, 0, 0);
   }
   return true;
 }

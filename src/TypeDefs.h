@@ -430,6 +430,7 @@ typedef struct _settings_t
   int CustomSchemesDlgPosX;
   int CustomSchemesDlgPosY;
   bool MuteMessageBeep;
+  bool SplitUndoTypingSeqOnLnBreak;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
@@ -482,6 +483,7 @@ typedef struct _settings2_t
   int    FindReplaceOpacityLevel;
   DWORD  FileCheckInverval;
   DWORD  AutoReloadTimeout;
+  DWORD  UndoRedoSplitTimeout;
   int    IMEInteraction;
   int    SciFontQuality;
 
