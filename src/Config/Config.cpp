@@ -630,6 +630,12 @@ void LoadSettings()
       Defaults2.AutoReloadTimeout), 250UL, 300000UL);
     FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
 
+    Defaults2.UndoRedoSplitTimeout = 0UL;
+    Settings2.UndoRedoSplitTimeout = IniSectionGetInt(Settings2_Section, L"UndoRedoSplitTimeout", Defaults2.UndoRedoSplitTimeout);
+    if (Settings2.UndoRedoSplitTimeout != 0) {
+      Settings2.UndoRedoSplitTimeout = clampul(Settings2.UndoRedoSplitTimeout, 100UL, 86400000UL); // max: 24h
+    }
+
     // deprecated
     Defaults.RenderingTechnology = IniSectionGetInt(Settings2_Section, L"SciDirectWriteTech", -111);
     if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
@@ -906,6 +912,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3);  // set before
     GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
     GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, false);
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
@@ -1375,6 +1382,7 @@ bool SaveSettings(bool bSaveSettingsNow)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RenderingTechnology);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, Bidirectional);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MuteMessageBeep);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SplitUndoTypingSeqOnLnBreak);
 
   ///~IniSectionSetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction);
 
