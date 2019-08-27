@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "&Kopie speichern...\tCtrl+F6",            IDM_FILE_SAVECOPY
         MENUITEM "&Nur lesend",                             IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "Keine Anpassung des &Zeitstempels",       IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "&Verschlüsselungs Passwort...",           IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Starte"

@@ -3050,6 +3050,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_FILE_READONLY,i);
   CheckCmd(hmenu,IDM_FILE_READONLY,s_bFileReadOnly);
+  CheckCmd(hmenu,IDM_FILE_PRESERVE_FILEMODTIME, Settings.PreserveOrigFileModifyTime);
 
   EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
   EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
@@ -5574,6 +5575,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SAVEBEFORERUNNINGTOOLS:
       Settings.SaveBeforeRunningTools = !Settings.SaveBeforeRunningTools;
+      break;
+
+
+    case IDM_FILE_PRESERVE_FILEMODTIME:
+      Settings.PreserveOrigFileModifyTime = !Settings.PreserveOrigFileModifyTime;
       break;
 
 

@@ -431,6 +431,7 @@ typedef struct _settings_t
   int CustomSchemesDlgPosY;
   bool MuteMessageBeep;
   bool SplitUndoTypingSeqOnLnBreak;
+  bool PreserveOrigFileModifyTime;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;

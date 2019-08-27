@@ -444,6 +444,7 @@
 #define IDM_FILE_MANAGEFAV              40020
 #define IDM_FILE_RECENT                 40021
 #define IDM_FILE_EXIT                   40022
+#define IDM_FILE_PRESERVE_FILEMODTIME   40023
 
 #define IDM_ENCODING_ANSI               40100
 #define IDM_ENCODING_UNICODE            40101
