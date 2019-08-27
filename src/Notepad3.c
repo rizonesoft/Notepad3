@@ -459,6 +459,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 }
 // ----------------------------------------------------------------------------
 
+#define _MQ_IMMEDIATE (2 * USER_TIMER_MINIMUM - 1)
 #define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
@@ -6976,7 +6977,7 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
             _SaveRedoSelection(_SaveUndoSelection());
           }
         }
-        if (Settings2.UndoRedoSplitTimeout != 0) {
+        if (Settings2.UndoRedoSplitTimeout > _MQ_IMMEDIATE) {
           _DelayUndoRedoTypingSequenceSplit(Settings2.UndoRedoSplitTimeout);
         }
         bModified = false; // not yet
@@ -6991,7 +6992,12 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
           RestoreAction(scn->token, REDO);
         }
       }
-      if (bModified) { _SetSaveNeededFlag(true); }
+      if (bModified) { 
+        if ((Settings2.UndoRedoSplitTimeout > 0UL) && (Settings2.UndoRedoSplitTimeout <= _MQ_IMMEDIATE)) {
+          SciCall_BeginUndoAction(); SciCall_EndUndoAction();
+        }
+        _SetSaveNeededFlag(true);
+      }
     }
     else if (pnmh->code == SCN_SAVEPOINTREACHED) {
       _SetSaveNeededFlag(false);
@@ -7063,7 +7069,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             _SaveRedoSelection(_SaveUndoSelection());
           }
         }
-        if (Settings2.UndoRedoSplitTimeout != 0) {
+        if (Settings2.UndoRedoSplitTimeout > _MQ_IMMEDIATE) {
           _DelayUndoRedoTypingSequenceSplit(Settings2.UndoRedoSplitTimeout);
         }
         bModified = false; // not yet
@@ -7084,6 +7090,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
         if (scn->linesAdded != 0) {
           UpdateMarginWidth();
+        }
+        if ((Settings2.UndoRedoSplitTimeout > 0UL) && (Settings2.UndoRedoSplitTimeout <= _MQ_IMMEDIATE)) {
+          SciCall_BeginUndoAction(); SciCall_EndUndoAction();
         }
         _SetSaveNeededFlag(true);
       }
