@@ -631,10 +631,8 @@ void LoadSettings()
     FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
 
     Defaults2.UndoRedoSplitTimeout = 0UL;
-    Settings2.UndoRedoSplitTimeout = IniSectionGetInt(Settings2_Section, L"UndoRedoSplitTimeout", Defaults2.UndoRedoSplitTimeout);
-    if (Settings2.UndoRedoSplitTimeout != 0) {
-      Settings2.UndoRedoSplitTimeout = clampul(Settings2.UndoRedoSplitTimeout, 100UL, 86400000UL); // max: 24h
-    }
+    Settings2.UndoRedoSplitTimeout = clampul(IniSectionGetInt(Settings2_Section, L"UndoRedoSplitTimeout", 
+      Defaults2.UndoRedoSplitTimeout), 0UL, 86400000UL);
 
     // deprecated
     Defaults.RenderingTechnology = IniSectionGetInt(Settings2_Section, L"SciDirectWriteTech", -111);
