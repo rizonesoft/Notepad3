@@ -1356,6 +1356,14 @@ bool EditSaveFile(
   if (hFile == INVALID_HANDLE_VALUE)
     return false;
 
+  //FILETIME createTime;
+  //FILETIME laccessTime;
+  FILETIME modTime;
+  //if (!GetFileTime(hFile, &createTime, &laccessTime, &modTime)) {
+  if (!GetFileTime(hFile, NULL, NULL, &modTime)) {
+    return false;
+  }
+
   // ensure consistent line endings
   if (Settings.FixLineEndings) {
     EditEnsureConsistentLineEndings(hwnd);
@@ -1491,6 +1499,9 @@ bool EditSaveFile(
     }
   }
 
+  if (Settings.PreserveOrigFileModifyTime) {
+    SetFileTime(hFile, NULL, NULL, &modTime);
+  }
   CloseHandle(hFile);
 
   if (bWriteSuccess) {

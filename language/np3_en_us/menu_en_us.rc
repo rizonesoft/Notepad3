@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "Save &Copy...\tCtrl+F6",          IDM_FILE_SAVECOPY
         MENUITEM "&Read Only",                      IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "Set Encr&yption Passphrase...",   IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Launch"
