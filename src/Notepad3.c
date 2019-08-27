@@ -386,6 +386,7 @@ static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
+static void  _SplitUndoTransaction();
 
 // ----------------------------------------------------------------------------
 
@@ -3483,8 +3484,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDT_TIMER_UNDO_REDO_SPLIT:
-      SciCall_BeginUndoAction();
-      SciCall_EndUndoAction();
+      _SplitUndoTransaction();
       break;
 
 
@@ -6977,9 +6977,6 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
             _SaveRedoSelection(_SaveUndoSelection());
           }
         }
-        if (Settings2.UndoRedoSplitTimeout > _MQ_IMMEDIATE) {
-          _DelayUndoRedoTypingSequenceSplit(Settings2.UndoRedoSplitTimeout);
-        }
         bModified = false; // not yet
       }
       // check for ADDUNDOACTION step
@@ -6992,9 +6989,17 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
           RestoreAction(scn->token, REDO);
         }
       }
-      if (bModified) { 
-        if ((Settings2.UndoRedoSplitTimeout > 0UL) && (Settings2.UndoRedoSplitTimeout <= _MQ_IMMEDIATE)) {
-          SciCall_BeginUndoAction(); SciCall_EndUndoAction();
+      if (bModified) {
+        DWORD const timeout = Settings2.UndoRedoSplitTimeout;
+        if (timeout != 0UL) {
+          if (timeout > _MQ_IMMEDIATE) {
+            _DelayUndoRedoTypingSequenceSplit(timeout);
+          }
+          else {
+            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+              _SplitUndoTransaction();
+            }
+          }
         }
         _SetSaveNeededFlag(true);
       }
@@ -7069,9 +7074,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             _SaveRedoSelection(_SaveUndoSelection());
           }
         }
-        if (Settings2.UndoRedoSplitTimeout > _MQ_IMMEDIATE) {
-          _DelayUndoRedoTypingSequenceSplit(Settings2.UndoRedoSplitTimeout);
-        }
         bModified = false; // not yet
       }
       if (iModType & SC_MOD_CONTAINER) {
@@ -7089,10 +7091,21 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         UpdateVisibleHotspotIndicators();
 
         if (scn->linesAdded != 0) {
+          if (Settings.SplitUndoTypingSeqOnLnBreak) { 
+            _SplitUndoTransaction();
+          }
           UpdateMarginWidth();
         }
-        if ((Settings2.UndoRedoSplitTimeout > 0UL) && (Settings2.UndoRedoSplitTimeout <= _MQ_IMMEDIATE)) {
-          SciCall_BeginUndoAction(); SciCall_EndUndoAction();
+        DWORD const timeout = Settings2.UndoRedoSplitTimeout;
+        if (timeout != 0UL) {
+          if (timeout > _MQ_IMMEDIATE) {
+            _DelayUndoRedoTypingSequenceSplit(timeout);
+          }
+          else {
+            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+              _SplitUndoTransaction();
+            }
+          }
         }
         _SetSaveNeededFlag(true);
       }
@@ -7221,7 +7234,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       switch (ich) {
         case '\r':
         case '\n':
-          if (Settings.SplitUndoTypingSeqOnLnBreak) { SciCall_BeginUndoAction(); SciCall_EndUndoAction(); }
           if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
           break;
         case '>':
@@ -9292,6 +9304,19 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
     uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
   }
   return token;
+}
+
+
+//=============================================================================
+//
+//  _SplitUndoTransaction()
+//
+//
+static void _SplitUndoTransaction() {
+  if (!_InUndoRedoTransaction()) {
+    SciCall_BeginUndoAction();
+    SciCall_EndUndoAction();
+  }
 }
 
 
