@@ -31,17 +31,19 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.825.#(build) (2019-08-25)
+Current BETA Version 5.19.827.#(build) (2019-08-27)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- 
+- Option to preserve origin file modification time.
 
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Allow each modification step to split undo typing sequence (set timeout < 20ms).
+- Split undo typing sequence (by line-breaks and/or timeout).
 - Update Oniguruma Regex (ONI) engine (v.6.9.3+).
 - Scintilla Library (SCI) version 4.2.1 (2019-Jul-5).
 
@@ -53,7 +55,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
-- 
+- Selection undo/redo in case of "lean" change notify event.
 
 --------------------------------------------------
 REMOVED:
@@ -63,10 +65,10 @@ REMOVED:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Portuguese Brazilian (pt-BR) (in progress).
+- Portuguese Brazilian (pt-BR) (on hold).
 - Slovak (sk-SK) (in progress).
 - Swedish (sv-SE) (in progress).
-- Turkish (tr-TR) (in progress).
+- Turkish (tr-TR) (on hold).
 
 
 ==================================================
