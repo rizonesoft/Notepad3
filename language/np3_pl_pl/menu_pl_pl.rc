@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "Zapisz &kopiê...\tCtrl+F6",             IDM_FILE_SAVECOPY
         MENUITEM "&Tylko do odczytu",                     IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time",      IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "Ustaw has³o szyfrowania...",            IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Uruchom"
@@ -267,6 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
             MENUITEM "Multiwybór-wszystko pasuj¹ce\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Split Undo &Typing Sequence on Line Breaks",    IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Zak³adki"

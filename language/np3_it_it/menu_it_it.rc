@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "Salva &copia...\tCtrl+F6",              IDM_FILE_SAVECOPY
         MENUITEM "Sola lettu&ra",                         IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time",      IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "Imposta passphrase per crittografia...", IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Esegui"
@@ -267,6 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Seleziona &Parola o Linea\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Selezione di &tutte le occorrenze\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Split Undo &Typing Sequence on Line Breaks",                 IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Boo&kmarks"

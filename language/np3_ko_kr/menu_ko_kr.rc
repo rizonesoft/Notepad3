@@ -64,6 +64,8 @@ BEGIN
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",              IDM_FILE_SAVECOPY
         MENUITEM "읽기 전용(&R)",                            IDM_FILE_READONLY
         MENUITEM SEPARATOR
+        MENUITEM "&Preserve File Modification Time",      IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "실행(&L)"
@@ -267,6 +269,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Split Undo &Typing Sequence on Line Breaks", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
