@@ -270,7 +270,7 @@ BEGIN
             MENUITEM "选定单词或行(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "选定全部匹配(&A)\tCtrl+Shift+Spc",       IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Typing Sequence on Line Breaks", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "书签(&K)"

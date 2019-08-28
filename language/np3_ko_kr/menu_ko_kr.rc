@@ -270,7 +270,7 @@ BEGIN
             MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Typing Sequence on Line Breaks", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"

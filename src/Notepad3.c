@@ -386,12 +386,12 @@ static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
-static void  _SplitUndoTransaction();
+static void  _SplitUndoTransaction(const int iModType);
 
 // ----------------------------------------------------------------------------
 
 static void  _DelayClearZoomCallTip(int delay);
-static void  _DelayUndoRedoTypingSequenceSplit(int delay);
+static void  _DelaySplitUndoTransaction(int delay, int iModType);
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
@@ -465,25 +465,22 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
+  if (!pMsgQCmd) { return; }
+
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
 
   if (!pmqc) { // NOT found
-    pmqc = AllocMem(sizeof(CmdMessageQueue_t), HEAP_ZERO_MEMORY);
-    pmqc->hwnd = pMsgQCmd->hwnd;
-    pmqc->cmd = pMsgQCmd->cmd;
-    pmqc->wparam = pMsgQCmd->wparam;
-    pmqc->lparam = pMsgQCmd->lparam;
+    pmqc = pMsgQCmd;
     pmqc->delay = cycles;
     DL_APPEND(MessageQueue, pmqc);
   }
-
-  if (cycles < 2) {
-    pmqc->delay = -1; // execute now (do not use PostMessage() here)
-    SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
-  }
   else {
     pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
+  }
+  if (pmqc->delay < 2) {
+    pmqc->delay = -1; // execute now (do not use PostMessage() here)
+    SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
   }
 }
 // ----------------------------------------------------------------------------
@@ -732,7 +729,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
   {
     DL_DELETE(MessageQueue, pmqc);
-    FreeMem(pmqc);
+    //~FreeMem(pmqc); // No AllocMem Anymore
   }
 
   if (UndoRedoSelectionUTArray != NULL) {
@@ -3484,7 +3481,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDT_TIMER_UNDO_REDO_SPLIT:
-      _SplitUndoTransaction();
+      _SplitUndoTransaction((int)lParam);
       break;
 
 
@@ -3864,17 +3861,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CUT:
       {
-        if (s_flagPasteBoard)
+        if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
-
-        _BEGIN_UNDO_ACTION_
-        if (!SciCall_IsSelectionEmpty())
-        {
-          SciCall_Cut();
         }
-        else { // VisualStudio behavior
+        _BEGIN_UNDO_ACTION_
+        if (SciCall_IsSelectionEmpty())
+        {
+          // VisualStudio behavior
           SciCall_CopyAllowLine();
           SciCall_LineDelete();
+        }
+        else {
+          SciCall_Cut();
         }
         _END_UNDO_ACTION_
         UpdateToolbar();
@@ -4028,13 +4026,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       _END_UNDO_ACTION_
       break;
 
+
     case IDM_EDIT_CUTLINE:
       {
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
         _BEGIN_UNDO_ACTION_
-        SendMessage(Globals.hwndEdit,SCI_LINECUT,0,0);
+        SciCall_LineCut();
         _END_UNDO_ACTION_
         UpdateToolbar();
       }
@@ -6993,12 +6992,10 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
         DWORD const timeout = Settings2.UndoRedoSplitTimeout;
         if (timeout != 0UL) {
           if (timeout > _MQ_IMMEDIATE) {
-            _DelayUndoRedoTypingSequenceSplit(timeout);
+            _DelaySplitUndoTransaction(timeout, iModType);
           }
           else {
-            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-              _SplitUndoTransaction();
-            }
+            _SplitUndoTransaction(iModType);
           }
         }
         _SetSaveNeededFlag(true);
@@ -7091,20 +7088,18 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         UpdateVisibleHotspotIndicators();
 
         if (scn->linesAdded != 0) {
-          if (Settings.SplitUndoTypingSeqOnLnBreak) { 
-            _SplitUndoTransaction();
+          if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1)) {
+            _SplitUndoTransaction(iModType);
           }
           UpdateMarginWidth();
         }
         DWORD const timeout = Settings2.UndoRedoSplitTimeout;
         if (timeout != 0UL) {
           if (timeout > _MQ_IMMEDIATE) {
-            _DelayUndoRedoTypingSequenceSplit(timeout);
+            _DelaySplitUndoTransaction(timeout, iModType);
           }
           else {
-            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-              _SplitUndoTransaction();
-            }
+            _SplitUndoTransaction(iModType);
           }
         }
         _SetSaveNeededFlag(true);
@@ -8051,11 +8046,11 @@ static void  _DelayClearZoomCallTip(int delay)
 //  _DelayClearZoomCallTip()
 //  
 //
-static void  _DelayUndoRedoTypingSequenceSplit(int delay)
+static void  _DelaySplitUndoTransaction(int delay, int iModType)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_REDO_SPLIT, 0);
   mqc.hwnd = Globals.hwndMain;
-  //mqc.lparam = (LPARAM)bForceRedraw;
+  mqc.lparam = (LPARAM)iModType;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -9312,10 +9307,13 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
 //  _SplitUndoTransaction()
 //
 //
-static void _SplitUndoTransaction() {
+static void _SplitUndoTransaction(const int iModType) 
+{
   if (!_InUndoRedoTransaction()) {
-    SciCall_BeginUndoAction();
-    SciCall_EndUndoAction();
+    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+      SciCall_BeginUndoAction();
+      SciCall_EndUndoAction();
+    }
   }
 }
 

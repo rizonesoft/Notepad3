@@ -270,7 +270,7 @@ BEGIN
             MENUITEM "Selektiere &Wort oder Zeile\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "Multiselektion &aller Fundstellen\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Neue Undo &Tippsequenz bei Zeilenumbruch",           IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Neue Undo &Transaktion bei Zeilenumbruch",           IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Lesezeichen"
