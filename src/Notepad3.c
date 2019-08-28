@@ -449,11 +449,11 @@ static int msgcmp(void* mqc1, void* mqc2)
   CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
   CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
 
-  if ((pMQC1->hwnd == pMQC2->hwnd)
-       && (pMQC1->cmd == pMQC2->cmd)
-       && (pMQC1->wparam == pMQC2->wparam)
-       && (pMQC1->lparam == pMQC2->lparam))
-  {
+  if ((pMQC1->cmd == pMQC2->cmd)
+       //&& (pMQC1->hwnd == pMQC2->hwnd)
+       && (pMQC1->wparam == pMQC2->wparam) // command
+       //&& (pMQC1->lparam == pMQC2->lparam)
+  ){
     return 0;
   }
   return 1;
@@ -479,8 +479,10 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
     pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
   }
   if (pmqc->delay < 2) {
-    pmqc->delay = -1; // execute now (do not use PostMessage() here)
+    // execute now (do not use PostMessage() here)
     SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+    pmqc->delay = -1;
+    pmqc->lparam = 0;
   }
 }
 // ----------------------------------------------------------------------------
@@ -510,7 +512,7 @@ static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 //
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-  UNUSED(hwnd);    // must be main wnd
+  UNUSED(hwnd);    // must be main window handle
   UNUSED(uMsg);    // must be WM_TIMER
   UNUSED(idEvent); // must be IDT_TIMER_MRKALL
   UNUSED(dwTime);  // This is the value returned by the GetTickCount function
@@ -520,11 +522,12 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
   DL_FOREACH(MessageQueue, pmqc) 
   {
     if (pmqc->delay == 0) {
-      pmqc->delay = -1;
       SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+      pmqc->delay = -1;
+      pmqc->lparam = 0;
     }
     else if (pmqc->delay >= 0) {
-      pmqc->delay -= 1;
+      pmqc->delay -= 1;  // decrease
     }
   }
 }
@@ -8008,7 +8011,9 @@ static void  _DelayUpdateStatusbar(int delay, bool bForceRedraw)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0);
   mqc.hwnd = Globals.hwndMain;
-  mqc.lparam = (LPARAM)bForceRedraw;
+  if (bForceRedraw) {
+    mqc.lparam = (LPARAM)bForceRedraw;
+  }
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -8022,7 +8027,7 @@ static void  _DelayUpdateToolbar(int delay)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0);
   mqc.hwnd = Globals.hwndMain;
-  //mqc.lparam = (LPARAM)bForceRedraw;
+  //mqc.lparam = (LPARAM)2nd_param;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -8036,7 +8041,7 @@ static void  _DelayClearZoomCallTip(int delay)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0);
   mqc.hwnd = Globals.hwndMain;
-  //mqc.lparam = (LPARAM)bForceRedraw;
+  //mqc.lparam = (LPARAM)2nd_param;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -8050,7 +8055,9 @@ static void  _DelaySplitUndoTransaction(int delay, int iModType)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_REDO_SPLIT, 0);
   mqc.hwnd = Globals.hwndMain;
-  mqc.lparam = (LPARAM)iModType;
+  if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+    mqc.lparam = (LPARAM)iModType;
+  }
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -8063,7 +8070,9 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 {
   static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_MAIN_MRKALL, 0);
   mqc.hwnd = Globals.hwndMain;
-  mqc.lparam = (LPARAM)bForceClear;
+  if (bForceClear) {
+    mqc.lparam = (LPARAM)bForceClear;
+  }
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
