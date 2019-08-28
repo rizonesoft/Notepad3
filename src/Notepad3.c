@@ -6992,7 +6992,7 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
         }
       }
       if (bModified) {
-        DWORD const timeout = Settings2.UndoRedoSplitTimeout;
+        DWORD const timeout = Settings2.UndoTransactionTimeout;
         if (timeout != 0UL) {
           if (timeout > _MQ_IMMEDIATE) {
             _DelaySplitUndoTransaction(timeout, iModType);
@@ -7096,7 +7096,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           }
           UpdateMarginWidth();
         }
-        DWORD const timeout = Settings2.UndoRedoSplitTimeout;
+        DWORD const timeout = Settings2.UndoTransactionTimeout;
         if (timeout != 0UL) {
           if (timeout > _MQ_IMMEDIATE) {
             _DelaySplitUndoTransaction(timeout, iModType);
