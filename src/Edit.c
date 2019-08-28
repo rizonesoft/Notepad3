@@ -2749,6 +2749,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     return;
   }
 
+  _BEGIN_UNDO_ACTION_
+
   DocPos const iInitialPos = SciCall_GetCurrentPos();
   if (bForceAll) { SciCall_SelectAll(); }
 
@@ -2820,6 +2822,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   else {
     EditSetSelectionEx(hwnd, iInitialPos, iInitialPos, -1, -1);
   }
+
+  _END_UNDO_ACTION_
 }
 
 
