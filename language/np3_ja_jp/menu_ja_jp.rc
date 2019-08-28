@@ -270,7 +270,7 @@ BEGIN
             MENUITEM "単語や行を選択(&W)\tCtrl+Spc",               IDM_EDIT_SELECTWORD
             MENUITEM "一致する文字列すべてにマルチカーソル(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Typing Sequence on Line Breaks", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Split Undo &Transaction at Line-Breaks",   IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "ブックマーク(しおり)(&K)"

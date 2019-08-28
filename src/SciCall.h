@@ -219,6 +219,7 @@ DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*,
 
 // Operations
 DeclareSciCallV0(Cut, CUT)
+DeclareSciCallV0(LineCut, LINECUT)
 DeclareSciCallV0(Copy, COPY)
 DeclareSciCallV0(Paste, PASTE)
 DeclareSciCallV0(Clear, CLEAR)
