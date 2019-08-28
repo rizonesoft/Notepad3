@@ -3483,7 +3483,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       CancelCallTip();
       break;
 
-    case IDT_TIMER_UNDO_REDO_SPLIT:
+    case IDT_TIMER_UNDO_TRANSACTION:
       _SplitUndoTransaction((int)lParam);
       break;
 
@@ -4072,45 +4072,35 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INDENT:
       {
-        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
-        _END_UNDO_ACTION_
       }
       break;
 
     case IDM_EDIT_UNINDENT:
       {
-        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
-        _END_UNDO_ACTION_
       }
       break;
 
     case CMD_TAB:
       {
-        _BEGIN_UNDO_ACTION_
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-        _END_UNDO_ACTION_
       }
       break;
 
     case CMD_BACKTAB:
     {
-      _BEGIN_UNDO_ACTION_
-        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-      _END_UNDO_ACTION_
+      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
     }
     break;
 
     case CMD_CTRLTAB:
     {
-      _BEGIN_UNDO_ACTION_
       SciCall_SetUseTabs(true);
       SciCall_SetTabIndents(false);
       EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
       SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
       SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
-      _END_UNDO_ACTION_
     }
     break;
 
@@ -8048,17 +8038,17 @@ static void  _DelayClearZoomCallTip(int delay)
 
 //=============================================================================
 //
-//  _DelayClearZoomCallTip()
+//  _DelaySplitUndoTransaction()
 //  
 //
 static void  _DelaySplitUndoTransaction(int delay, int iModType)
 {
-  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_REDO_SPLIT, 0);
-  mqc.hwnd = Globals.hwndMain;
+  static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_TRANSACTION, 0);
   if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+    mqc.hwnd = Globals.hwndMain;
     mqc.lparam = (LPARAM)iModType;
+    _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
   }
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
@@ -9186,7 +9176,8 @@ bool RestoreAction(int token, DoAction doAct)
     pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
     pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
 
-    if (pPosAnchor && pPosCur) {
+    if (pPosAnchor && pPosCur)
+    {
       // Ensure that the first and last lines of a selection are always unfolded
       // This needs to be done _before_ the SCI_SETSEL message
       DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
@@ -9203,16 +9194,19 @@ bool RestoreAction(int token, DoAction doAct)
       {
         case NP3_SEL_MULTI:
         {
+          unsigned int i = 0;
+
+          DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
+          DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
+
           PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
           if (pPosAnchorVS && pPosCurVS) {
             PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
             PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
           }
-          
-          DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
-          DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
-          
-          unsigned int i = 1;
+          PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+
+          ++i;
           while (i < selCount)
           {
             pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
@@ -9230,6 +9224,7 @@ bool RestoreAction(int token, DoAction doAct)
             }
             ++i;
           }
+          //~PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, (LPARAM)0);
         }
         break;
 
@@ -9393,10 +9388,8 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
       SciCall_SetBackSpaceUnIndents(true);
 
       BeginWaitCursor(NULL);
-      _BEGIN_UNDO_ACTION_
       EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
       EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
-      _END_UNDO_ACTION_
       EndWaitCursor();
 
       SciCall_SetUseTabs(useTabs);
