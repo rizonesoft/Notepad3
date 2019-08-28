@@ -90,7 +90,7 @@ IDS_MUI_ABOUT_CONTRIBS  "\
 
 IDS_MUI_ABOUT_LIBS  "\
 \\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
-\\cf0 K.Takata (Onigmo Regex)\\tab https://github.com/k-takata/Onigmo\\par\
+\\cf0 K.Kosako (Oniguruma Regex)\\tab https://github.com/kkos/oniguruma\\par\
 \\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash\\par\
 \\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet\\par\
@@ -112,7 +112,6 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 \\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
 \\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
 \\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
-\\cf0 pachicodes\\tab https://github.com/pachicodes\\par\
 \\cf0 RaffaeleBianc0\\tab https://github.com/RaffaeleBianc0\\par\
 \\cf0 rizonesoft\\tab https://github.com/rizonesoft\\par\
 \\cf0 testinsovr\\tab https://github.com/testinsovr\\par\
@@ -128,7 +127,7 @@ IDS_MUI_ABOUT_MORE  "\
 
 IDS_MUI_ABOUT_LICENSES  "\
 \\cf0 Scintilla\\tab https://www.scintilla.org/License.txt\\par\
-\\cf0 Onigmo Regex\\tab https://github.com/kkos/oniguruma/blob/master/COPYING\\par\
+\\cf0 Oniguruma Regex\\tab https://github.com/kkos/oniguruma/blob/master/COPYING\\par\
 \\cf0 uthash\\tab https://troydhanson.github.io/uthash/license.html\\par\
 \\cf0 uchardet\\tab https://www.freedesktop.org/wiki/Software/uchardet/#license\\par\
 \\cf0 TinyExpr\\tab https://github.com/codeplea/tinyexpr/blob/master/LICENSE\\par\
