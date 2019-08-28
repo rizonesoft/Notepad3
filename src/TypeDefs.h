@@ -484,7 +484,7 @@ typedef struct _settings2_t
   int    FindReplaceOpacityLevel;
   DWORD  FileCheckInverval;
   DWORD  AutoReloadTimeout;
-  DWORD  UndoRedoSplitTimeout;
+  DWORD  UndoTransactionTimeout;
   int    IMEInteraction;
   int    SciFontQuality;
 
