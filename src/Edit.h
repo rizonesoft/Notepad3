@@ -21,6 +21,7 @@
 #include "TypeDefs.h"
 
 void  EditInitializeSciCtrl(HWND);
+void  EditReplaceSelection(const char* text, bool bReselect);
 void  EditInitWordDelimiter(HWND hwnd);
 void  EditSetNewText(HWND hwnd,const char* lpstrText,DocPos lenText,bool);
 bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);

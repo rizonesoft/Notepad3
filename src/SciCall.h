@@ -230,6 +230,8 @@ DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
 DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
+DeclareSciCallV0(UpperCase, UPPERCASE)
+DeclareSciCallV0(LowerCase, LOWERCASE)
 
 //DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text)  // ::WideCharToMultiByte(Encoding_SciCP)
 // SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3)
