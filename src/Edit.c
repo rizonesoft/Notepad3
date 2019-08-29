@@ -911,7 +911,7 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status)
         break;
       case 0x20: // space
         ++subSpcCnt;
-        if (subSpcCnt >= indentWidth) {
+        if ((indentWidth > 0) && (subSpcCnt >= indentWidth)) {
           ++blankCount;
           subSpcCnt = 0;
         }
@@ -923,10 +923,10 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status)
 
     // analyze
     if (tabCount || blankCount) {
-      if (lineIndentDepth % tabWidth) {
+      if ((tabWidth > 0) && (lineIndentDepth % tabWidth)) {
         ++(status->indentCount[I_TAB_MOD_X]);
       }
-      if (lineIndentDepth % indentWidth) {
+      if ((indentWidth > 0) && (lineIndentDepth % indentWidth)) {
         ++(status->indentCount[I_SPC_MOD_X]);
       }
     }
