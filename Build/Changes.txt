@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.829.#(build) (2019-08-29)
+Current BETA Version 5.19.830.#(build) (2019-08-30)
 ==================================================
 
 --------------------------------------------------
@@ -50,11 +50,12 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
-- 
+- Hyperlink detection for Unicode.
 
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Insertion handling: keep selection if non empty selection is replaced.
 - TAB behavior after multi-selection undo sequence.
 - Encoding tag insertion (Ctrl+F8).
 - Division by zero exception (indentation and tab width).
