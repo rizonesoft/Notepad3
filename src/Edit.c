@@ -7769,28 +7769,37 @@ bool EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
 //
 //  Controls: 100 Input
 //            101 Input
+//            102 Times
 //
 typedef struct _tagsdata {
   LPWSTR pwsz1;
   LPWSTR pwsz2;
+  UINT   repeat;
 } TAGSDATA, *PTAGSDATA;
 
 
 static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   static PTAGSDATA pdata;
+  static WCHAR wchOpenTagStrg[256] = { L'\0' };
+  static WCHAR wchCloseTagStrg[256] = { L'\0' };
+
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
         pdata = (PTAGSDATA)lParam;
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,254,0);
-        SetDlgItemTextW(hwnd,100,L"<tag>");
-        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
-        SetDlgItemTextW(hwnd,101,L"</tag>");
+        if (!wchOpenTagStrg[0]) { StringCchCopy(wchOpenTagStrg, COUNTOF(wchOpenTagStrg), L"<tag>"); }
+        if (!wchCloseTagStrg[0]) { StringCchCopy(wchCloseTagStrg, COUNTOF(wchCloseTagStrg), L"</tag>"); }
+        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT, COUNTOF(wchOpenTagStrg)-1,0);
+        SetDlgItemTextW(hwnd,100, wchOpenTagStrg);
+        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT, COUNTOF(wchCloseTagStrg)-1,0);
+        SetDlgItemTextW(hwnd,101, wchCloseTagStrg);
+        pdata->repeat = 1;
+        SetDlgItemInt(hwnd, 102, pdata->repeat, FALSE);
         SetFocus(GetDlgItem(hwnd,100));
-        PostMessage(GetDlgItem(hwnd,100),EM_SETSEL,1,4);
+        PostMessage(GetDlgItem(hwnd,100),EM_SETSEL,1,(int)(StringCchLen(wchOpenTagStrg,0)-1));
         CenterDlgInParent(hwnd);
       }
       return false;
@@ -7806,15 +7815,15 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
             if (HIWORD(wParam) == EN_CHANGE) 
             {
               bool bClear = true;
-              WCHAR wchBuf[256] = { L'\0' };
-              GetDlgItemTextW(hwnd,100,wchBuf,256);
-              if (StringCchLenW(wchBuf,COUNTOF(wchBuf)) >= 3) {
+              GetDlgItemTextW(hwnd,100,wchOpenTagStrg, COUNTOF(wchOpenTagStrg));
+              if (StringCchLenW(wchOpenTagStrg,COUNTOF(wchOpenTagStrg)) >= 3) {
 
-                if (wchBuf[0] == L'<') 
+                if (wchOpenTagStrg[0] == L'<')
                 {
-                  WCHAR wchIns[256] = L"</";
+                  WCHAR wchIns[COUNTOF(wchCloseTagStrg)] = { L'\0' };
+                  StringCchCopy(wchIns, COUNTOF(wchIns), L"</");
                   int  cchIns = 2;
-                  const WCHAR* pwCur = &wchBuf[1];
+                  const WCHAR* pwCur = &wchOpenTagStrg[1];
                   while (
                     *pwCur &&
                     *pwCur != L'<' &&
@@ -7823,13 +7832,9 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
                     *pwCur != L'\t' &&
                     (StrChr(L":_-.",*pwCur) || IsCharAlphaNumericW(*pwCur)))
 
-                      wchIns[cchIns++] = *pwCur++;
+                    wchIns[cchIns++] = *pwCur++;
 
-                  while (
-                    *pwCur &&
-                    *pwCur != L'>')
-
-                      pwCur++;
+                  while (*pwCur && *pwCur != L'>') { pwCur++; }
 
                   if (*pwCur == L'>' && *(pwCur-1) != L'/') {
                     wchIns[cchIns++] = L'>';
@@ -7844,22 +7849,30 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
                         StringCchCompareXI(wchIns,L"</img>") &&
                         StringCchCompareXI(wchIns,L"</input>") &&
                         StringCchCompareXI(wchIns,L"</link>") &&
-                        StringCchCompareXI(wchIns,L"</meta>")) {
-
-                        SetDlgItemTextW(hwnd,101,wchIns);
+                        StringCchCompareXI(wchIns,L"</meta>")) 
+                    {
+                        SetDlgItemTextW(hwnd,101, wchIns);
                         bClear = false;
                     }
                   }
                 }
               }
-              if (bClear)
-                SetDlgItemTextW(hwnd,101,L"");
+              if (bClear) {
+                SetDlgItemTextW(hwnd, 101, L"");
+              }
             }
           }
           break;
         case IDOK: {
-            GetDlgItemTextW(hwnd,100,pdata->pwsz1,256);
-            GetDlgItemTextW(hwnd,101,pdata->pwsz2,256);
+            GetDlgItemTextW(hwnd, 100, wchOpenTagStrg, COUNTOF(wchOpenTagStrg));
+            GetDlgItemTextW(hwnd, 101, wchCloseTagStrg, COUNTOF(wchCloseTagStrg));
+            StringCchCopy(pdata->pwsz1, 256, wchOpenTagStrg);
+            StringCchCopy(pdata->pwsz2, 256, wchCloseTagStrg);
+            BOOL fTranslated = FALSE;
+            UINT const iTimes = GetDlgItemInt(hwnd, 102, &fTranslated, FALSE);
+            if (fTranslated) {
+              pdata->repeat = clampu(iTimes, 1, UINT_MAX);
+            }
             EndDialog(hwnd,IDOK);
           }
           break;
@@ -7877,12 +7890,12 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
 //
 //  EditInsertTagDlg()
 //
-bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
+bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose, UINT* pRepeat)
 {
 
   INT_PTR iResult;
   TAGSDATA data;
-  data.pwsz1 = pwszOpen;  data.pwsz2 = pwszClose;
+  data.pwsz1 = pwszOpen;  data.pwsz2 = pwszClose;  data.repeat = 1;
   
   iResult = ThemedDialogBoxParam(
               Globals.hLngResContainer,
@@ -7891,8 +7904,11 @@ bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
               EditInsertTagDlgProc,
               (LPARAM)&data);
 
-  return (iResult == IDOK) ? true : false;
-
+  if (iResult == IDOK) {
+    *pRepeat = data.repeat;
+    return true;
+  }
+  return false;
 }
 
 

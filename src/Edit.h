@@ -95,7 +95,7 @@ bool  EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);
 bool  EditLinenumDlg(HWND hwnd);
 bool  EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2);
 bool  EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose);
-bool  EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose);
+bool  EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose,UINT* pRepeat);
 bool  EditSortDlg(HWND hwnd,int* piSortFlags);
 bool  EditAlignDlg(HWND hwnd,int* piAlignMode);
 bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
