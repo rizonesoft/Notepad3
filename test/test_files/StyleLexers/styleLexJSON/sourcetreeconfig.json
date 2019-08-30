@@ -1,12 +1,12 @@
 {
-  "$id": "13",
+  "$id": "0",
   "AutoRefresh": true,
   "AutoRefreshRemotes": true,
   "CommitTextLinks": null,
   "DraftCommitMsg": "",
   "IncomingSavedCount": 0,
-  "LastCheckedRemotes": "2019-07-12T23:08:32.1713054+02:00",
-  "LastUsedView": 1,
+  "LastCheckedRemotes": "2099-01-01T00:00:00.0+0:00",
+  "LastUsedView": 0,
   "LogBranchFilterIndex": 0,
   "OutgoingSavedCount": 0,
   "SidebarExpandedItems": [
@@ -14,34 +14,34 @@
     "Remotes",
     "Stashes"
   ],
-  "SidebarWidth": 210.0,
+  "SidebarWidth": 0.0,
   "SubtreeLinks": [],
   "RemoteProjectLinks": [
     {
-      "$id": "14",
+      "$id": "0",
       "BaseUrl": "https://www.github.com",
-      "Identifier": "hpwamr/Notepad3",
-      "RemoteName": "hpwamr",
+      "Identifier": "xxx",
+      "RemoteName": "xxx",
       "Type": 0,
-      "Username": "hpwamr@outlook.com",
+      "Username": "xxx",
       "CloneUrl": null,
       "ProjectUrl": null,
       "AccountId": "",
       "AvatarUrl": null,
-      "DisplayName": "hpwamr: https://www.github.com"
+      "DisplayName": "xxx: https://www.github.com"
     },
     {
-      "$id": "15",
+      "$id": "0",
       "BaseUrl": "https://www.github.com",
-      "Identifier": "rizonesoft/Notepad3",
-      "RemoteName": "rizonesoft",
+      "Identifier": "xxx",
+      "RemoteName": "xxx",
       "Type": 0,
-      "Username": "hpwamr@outlook.com",
+      "Username": "xxx",
       "CloneUrl": null,
       "ProjectUrl": null,
       "AccountId": "",
       "AvatarUrl": null,
-      "DisplayName": "rizonesoft: https://www.github.com"
+      "DisplayName": "xxx: https://www.github.com"
     }
   ]
 }
