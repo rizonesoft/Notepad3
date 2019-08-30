@@ -50,6 +50,8 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
+- Enclosing selection with HTML-Tag - Remember last pattern (session).
+- Repeat selection enclosing (HTML-Tag) n-times control.
 - Hyperlink detection for Unicode.
 
 --------------------------------------------------
