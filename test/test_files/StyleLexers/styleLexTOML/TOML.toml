@@ -2,6 +2,11 @@
 # https://github.com/toml-lang/toml
 #
 
+# https://fr.wikipedia.org/wiki/Caractères_de_civilité
+# https://fr.wikipedia.org/wiki/Caract%C3%A8res_de_civilit%C3%A9
+#
+
+
 title = "TOML Example"
 
 [owner]

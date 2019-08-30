@@ -4344,7 +4344,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         cpi_enc_t const iEncoding = Encoding_Current(CPI_GET);
         char chEncStrg[128] = { '\0' };
         WideCharToMultiByte(Encoding_SciCP, 0, Encoding_GetLabel(iEncoding), -1, chEncStrg, COUNTOF(chEncStrg), NULL, NULL);
-        EditReplaceSelection(chEncStrg, true);
+        EditReplaceSelection(chEncStrg, false);
       }
       break;
 
@@ -4428,7 +4428,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             StrTrimW(tchMaxPathBuffer, L"{}");
             char chMaxPathBuffer[MAX_PATH] = { '\0' };
             if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
-              EditReplaceSelection(chMaxPathBuffer, true);
+              EditReplaceSelection(chMaxPathBuffer, false);
             }
           }
         }
@@ -6498,36 +6498,46 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
   if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) == 0) { return false; }
 
-  char chURL[HUGE_BUFFER] = { '\0' };
-
   bool bHandled = false;
   DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
   DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
-  DocPos const length = min_p(lastPos - firstPos, COUNTOF(chURL));
+  DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
 
-  StringCchCopyNA(chURL, COUNTOF(chURL), SciCall_GetRangePointer(firstPos, length), length);
-  StrTrimA(chURL, " \t\n\r");
+  const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
 
-  if (StrIsEmptyA(chURL)) { return bHandled; }
+  WCHAR szTextW[INTERNET_MAX_URL_LENGTH+1];
+  int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)length, szTextW, COUNTOF(szTextW));
+  szTextW[cchTextW] = L'\0';
 
-  WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
-  int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, COUNTOF(wchURL)) - 1;
+  const WCHAR* chkPreFix = L"file://";
 
   if (operation & COPY_HYPERLINK)
   {
-    if (lenHypLnk > 0) {
-      SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
+    if (cchTextW > 0) {
+
+      LPWSTR pszEscapedW = (LPWSTR)AllocMem(length * 3 * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+      if (pszEscapedW == NULL) {
+        return false;
+      }
+      DWORD cchEscapedW = (DWORD)(length * 3);
+      DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
+      UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
+
+      //SetClipboardTextW(Globals.hwndMain, szTextW, cchTextW);
+      SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
+
+      FreeMem(pszEscapedW);
       bHandled = true;
     }
   }
-  else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIA(chURL, "file://") == chURL))
+  else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW))
   {
-    const WCHAR* chkPreFix = L"file://";
     size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-    WCHAR* szFileName = &(wchURL[lenPfx]);
+    WCHAR* szFileName = &(szTextW[lenPfx]);
+    szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
     StrTrimW(szFileName, L"/");
 
-    PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(wchURL) - lenPfx));
+    PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
     if (PathIsDirectory(szFileName))
     {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
@@ -6555,7 +6565,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     sei.fMask = SEE_MASK_NOZONECHECKS;
     sei.hwnd = NULL;
     sei.lpVerb = NULL;
-    sei.lpFile = wchURL;
+    sei.lpFile = szTextW;
     sei.lpParameters = NULL;
     sei.lpDirectory = wchDirectory;
     sei.nShow = SW_SHOWNORMAL;

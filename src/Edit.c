@@ -204,12 +204,13 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 //
 //  EditReplaceSelection()
 //
-void EditReplaceSelection(const char* text, bool bReselect)
+void EditReplaceSelection(const char* text, bool bForceSel)
 {
   _BEGIN_UNDO_ACTION_
+  bool const bSelWasEmpty = SciCall_IsSelectionEmpty();
   DocPos const posSelBeg = SciCall_GetSelectionStart();
   SciCall_ReplaceSel(text);
-  if (bReselect) {
+  if (bForceSel || !bSelWasEmpty) {
     SciCall_SetSel(posSelBeg, SciCall_GetCurrentPos());
   }
   _END_UNDO_ACTION_
@@ -1754,30 +1755,26 @@ void EditURLEncode(HWND hwnd)
 
   const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelSize);
 
-  LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-  if (pszTextW == NULL) {
-    return;
-  }
-
-  /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)(iSelSize-1),
-                                         pszTextW, (MBWC_DocPos_Cast)iSelSize);
+  WCHAR szTextW[INTERNET_MAX_URL_LENGTH+1];
+  int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)(iSelSize-1), szTextW, INTERNET_MAX_URL_LENGTH);
+  szTextW[cchTextW] = L'\0';
 
   size_t const cchEscaped = iSelSize * 3;
   char* pszEscaped = (char*)AllocMem(cchEscaped, HEAP_ZERO_MEMORY);
   if (pszEscaped == NULL) {
-    FreeMem(pszTextW);
     return;
   }
 
   LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscaped * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszEscapedW == NULL) {
-    FreeMem(pszTextW);
     FreeMem(pszEscaped);
     return;
   }
 
   DWORD cchEscapedW = (DWORD)cchEscaped;
-  UrlEscape(pszTextW, pszEscapedW, &cchEscapedW, URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8);
+  DWORD const flags = (DWORD)(URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8);
+
+  UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
 
   DWORD const cchEscapedEnc = WideCharToMultiByte(Encoding_SciCP, 0, pszEscapedW, cchEscapedW, 
                                                   pszEscaped, (MBWC_DocPos_Cast)cchEscaped, NULL, NULL);
@@ -1807,7 +1804,6 @@ void EditURLEncode(HWND hwnd)
 
   _END_UNDO_ACTION_;
 
-  FreeMem(pszTextW);
   FreeMem(pszEscaped);
   FreeMem(pszEscapedW);
 }
@@ -2215,7 +2211,7 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
           StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%#0%ix", iWidth);
 
         StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
-        EditReplaceSelection(chNumber,false);
+        EditReplaceSelection(chNumber, false);
       }
     }
   }
@@ -7151,9 +7147,13 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
 
   if (Settings.HyperlinkHotspot) 
   {
-    static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-      "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
-      "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
+    //static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+    //  "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
+    //  "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
+
+    // https://mathiasbynens.be/demo/url-regex : @stephenhay
+    static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+
     _UpdateIndicators(hwnd, INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
   }
   
