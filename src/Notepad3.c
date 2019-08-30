@@ -4332,8 +4332,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         WCHAR wszOpen[256] = { L'\0' };
         WCHAR wszClose[256] = { L'\0' };
-        if (EditInsertTagDlg(hwnd, wszOpen, wszClose)) {
-          EditEncloseSelection(Globals.hwndEdit, wszOpen, wszClose);
+        UINT repeat = 1;
+        if (EditInsertTagDlg(hwnd, wszOpen, wszClose, &repeat)) {
+          while (repeat > 0) {
+            EditEncloseSelection(Globals.hwndEdit, wszOpen, wszClose);
+            --repeat;
+          }
         }
       }
       break;

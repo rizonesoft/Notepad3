@@ -2343,10 +2343,8 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
           UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
           *piNumber = iNewNumber;
           Settings.LongLineMode = IsButtonChecked(hwnd, 101) ? EDGE_LINE : EDGE_BACKGROUND;
-
           EndDialog(hwnd, IDOK);
         }
-
         else {
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, 100)), 1);
         }
