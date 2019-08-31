@@ -41,7 +41,7 @@ MUILANGUAGE MUI_LanguageDLLs[] =
   { IDS_MUI_LANG_PL_PL, L"pl-PL", L"Polski (Polska)\t\t\t[%s]",          MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
   { IDS_MUI_LANG_PT_BR, L"pt-BR", L"Português (Brasil)\t\t\t[%s]",       MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
   { IDS_MUI_LANG_RU_RU, L"ru-RU", L"Русский (Pоссия)\t\t\t[%s]",         MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
-  { IDS_MUI_LANG_SV_SE, L"sk-SK", L"Slovenčina (Slovensko)\t\t\t[%s]",   MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), false, false },
+  { IDS_MUI_LANG_SK_SK, L"sk-SK", L"Slovenčina (Slovensko)\t\t\t[%s]",   MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), false, false },
   { IDS_MUI_LANG_SV_SE, L"sv-SE", L"Svenska (Sverige)\t\t\t[%s]",        MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), false, false },
   { IDS_MUI_LANG_TR_TR, L"tr-TR", L"Türkçe (Türkiye)\t\t\t[%s]",         MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
   { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"简体中文 （中国）\t\t\t[%s]",         MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
