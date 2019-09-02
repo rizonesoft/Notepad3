@@ -2513,11 +2513,12 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   RECT* const rc = (RECT*)lParam;
   SendWMSize(hwnd, rc);
 
-  UpdateUI();
   EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
   MarkAllOccurrences(0, true);
-  UpdateAllBars(false);
-  
+  EditFinalizeStyling(Globals.hwndEdit, -1);
+  UpdateAllBars(true);
+  UpdateUI();
+
   return 0;
 }
 
@@ -2573,14 +2574,15 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   Toolbar_GetButtons(Globals.hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
 
   CreateBars(hwnd,hInstance);
-
   SendWMSize(hwnd, NULL);
 
   EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
   MarkAllOccurrences(0, true);
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+
+  EditFinalizeStyling(Globals.hwndEdit, -1);
+  UpdateAllBars(true);
   UpdateUI();
-  UpdateAllBars(false);
 
   return 0;
 }
@@ -3424,10 +3426,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
     SetMenu(Globals.hwndMain, Globals.hMainMenu);
     DrawMenuBar(Globals.hwndMain);
 
-    SendWMSize(Globals.hwndMain, NULL);
-    UpdateUI();
-    UpdateToolbar();
-    UpdateStatusbar(true);
+    MsgThemeChanged(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
   }
   return;
 }
@@ -10298,6 +10297,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
     if (s_bPrevFullWAFlag) { // snap to previous rect
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
+      //SetMenu(Globals.hwndMain, Globals.hMainMenu);
       wndpl = s_wndplPrev;
     }
     else {
@@ -10305,6 +10305,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
       s_bPrevShowToolbar = Settings.ShowToolbar;
       s_bPrevShowStatusbar = Settings.ShowStatusbar;
       Settings.ShowToolbar = Settings.ShowStatusbar = false;
+      //SetMenu(Globals.hwndMain, NULL);
       wndpl = WindowPlacementFromInfo(hwnd, NULL);
     }
     s_bPrevFullWAFlag = !s_bPrevFullWAFlag;
@@ -10324,9 +10325,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
   }
 
   SetWindowPlacement(hwnd, &wndpl);
-  SciCall_SetZoom(pWinInfo->zoom);
 
-  UpdateAllBars(false);
+  MsgThemeChanged(hwnd, (WPARAM)NULL, (LPARAM)NULL);
 }
 
 
