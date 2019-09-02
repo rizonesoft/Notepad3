@@ -129,7 +129,7 @@ const COLORREF s_colorDefault[16] =
 
 static bool s_bAutoSelect = true;
 
-#define STYLESELECTDLG_X 304
+#define STYLESELECTDLG_X 305
 #define STYLESELECTDLG_Y 344
 static int  s_cxStyleSelectDlg = STYLESELECTDLG_X;
 static int  s_cyStyleSelectDlg = STYLESELECTDLG_Y;
@@ -734,7 +734,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     WCHAR tch[32] = { L'\0' };
     WCHAR wch[32] = { L'\0' };
     StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-    if (bForceAll || (g_colorCustom[i] != s_colorDefault[i])) 
+    if ((g_colorCustom[i] != s_colorDefault[i]) || (bForceAll && !Globals.bIniFileFromScratch))
     {
       StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
         (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
@@ -774,6 +774,17 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     }
     bForceAll = !Globals.bIniFileFromScratch;
   }
+  // ----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
   // ----------------------------------------------------------------
 
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
@@ -2516,15 +2527,28 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
     if (Char2FloatW(tch, &fValue)) {
       WCHAR wchFloatVal[64];
       fValue = (float)fabs(fValue);
+      bool const isZero = (fValue == 0.0f);
       Float2String(fValue, wchFloatVal, COUNTOF(wchFloatVal));
 
-      if (tch[0] == L'+')
-        StringCchPrintf(lpszSize, cchSize, L"+%s", wchFloatVal);
-      else if (tch[0] == L'-')
-        StringCchPrintf(lpszSize, cchSize, L"-%s", wchFloatVal);
-      else
+      if (tch[0] == L'+') {
+        if (!isZero) {
+          StringCchPrintf(lpszSize, cchSize, L"+%s", wchFloatVal);
+        }
+        else {
+          return false;
+        }
+      }
+      else if (tch[0] == L'-') {
+        if (!isZero) {
+          StringCchPrintf(lpszSize, cchSize, L"-%s", wchFloatVal);
+        }
+        else {
+          return false;
+        }
+      }
+      else {
         StringCchPrintf(lpszSize, cchSize, L"%s", wchFloatVal);
-
+      }
       return true;
     }
   }
@@ -2778,7 +2802,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     if (!StrStrI(lpszStyleDest, L"font:")) {
       if (Style_StrGetFont(lpszStyleSrc, tch, COUNTOF(tch))) {
         Style_StrGetFont(L"font:Default", wchDefFontName, COUNTOF(wchDefFontName));
-        if (StringCchCompareXI(tch, wchDefFontName) == 0) {
+        if ((StringCchCompareXI(tch, L"Default") == 0) || (StringCchCompareXI(tch, wchDefFontName) == 0)) {
           StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:Default");
         }
         else {
@@ -2955,6 +2979,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 {
   // Map lpszStyle to LOGFONT
 
+  WCHAR wchDefaultFontName[64] = { L'\0' };
+  Style_StrGetFont(L"font:Default", wchDefaultFontName, COUNTOF(wchDefaultFontName));
+
   WCHAR wchFontName[64] = { L'\0' };
   if (!Style_StrGetFont(lpszStyle, wchFontName, COUNTOF(wchFontName))) 
   {
@@ -3105,12 +3132,22 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (StrStrI(lpszStyle, L"font:")) {
     StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:");
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
+    if (StringCchCompareXI(lf.lfFaceName, wchDefaultFontName) == 0) {
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"Default");
+    }
+    else {
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
+    }
   }
   else { // no font in source specified, 
     if (lstrcmpW(lf.lfFaceName, wchFontName) != 0) {
       StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:");
-      StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
+      if (StringCchCompareXI(lf.lfFaceName, wchDefaultFontName) == 0) {
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"Default");
+      }
+      else {
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
+      }
     }
   }
 
@@ -3135,16 +3172,26 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     float fNewRelSize = Round10th(fNewFontSize - fBaseFontSize);
 
     if (fNewRelSize >= 0.0) {
-      if (HasNonZeroFraction(fNewRelSize))
+      if (HasNonZeroFraction(fNewRelSize)) {
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%.3G", fNewRelSize);
-      else
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%i", float2int(fNewRelSize));
+      }
+      else {
+        int const iRelSize = float2int(fNewRelSize);
+        if (iRelSize) {
+          StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%i", iRelSize);
+        }
+      }
     }
     else {
-      if (HasNonZeroFraction(fNewRelSize))
+      if (HasNonZeroFraction(fNewRelSize)) {
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%.3G", (0.0f - fNewRelSize));
-      else 
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%i", float2int(0.0f - fNewRelSize));
+      }
+      else {
+        int const iRelSize = float2int(0.0f - fNewRelSize);
+        if (iRelSize) {
+          StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%i", iRelSize);
+        }
+      }
     }
   }
   else {
