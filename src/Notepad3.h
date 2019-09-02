@@ -170,11 +170,11 @@ bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 
 bool FileIO(bool fLoad, LPWSTR pszFileName,
             bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
-            EditFileIOStatus* status, bool bSaveCopy);
+            EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
 bool FileLoad(bool bDontSave, bool bNew, bool bReload,
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile);
 bool FileRevert(LPCWSTR szFileName, bool);
-bool FileSave(bool,bool,bool,bool);
+bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bPreserveTimeStamp);
 bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
 bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
 
