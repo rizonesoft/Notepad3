@@ -36,7 +36,7 @@ void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
                    bool bForceEncDetection, bool bClearUndoHistory, EditFileIOStatus* status);
-bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
+bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
 
 void  EditInvertCase(HWND hwnd);
 void  EditTitleCase(HWND hwnd);

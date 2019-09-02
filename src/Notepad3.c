@@ -1234,7 +1234,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           }
           SciCall_SetSavePoint();
           _SetSaveNeededFlag(true);
-          FileSave(true, false, false, false); // issued from elevation instances
+          FileSave(true, false, false, false, false); // issued from elevation instances
         }
         if (s_flagJumpTo) { // Jump to position
           EditJumpTo(Globals.hwndEdit,s_iInitialLine,s_iInitialColumn);
@@ -1462,13 +1462,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         PostMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
       }
-      if (FileSave(false, true, false, false)) {
+      if (FileSave(false, true, false, false, false)) {
         DestroyWindow(hwnd);
       }
       break;
 
     case WM_QUERYENDSESSION:
-      if (FileSave(false, true, false, false)) {
+      if (FileSave(false, true, false, false, false)) {
         return TRUE;
       }
       break;
@@ -2946,7 +2946,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   else {
     INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
     if ((IDOK == answer) || (IDYES == answer)) {
-      FileSave(true, false, false, false);
+      FileSave(true, false, false, false, false);
     }
   }
 
@@ -3052,7 +3052,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_FILE_READONLY,i);
   CheckCmd(hmenu,IDM_FILE_READONLY,s_bFileReadOnly);
-  CheckCmd(hmenu,IDM_FILE_PRESERVE_FILEMODTIME, Settings.PreserveOrigFileModifyTime);
 
   EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
   EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
@@ -3513,17 +3512,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_SAVE:
-      FileSave(true,false,false,false);
+      FileSave(true, false, false, false, false);
       break;
 
 
     case IDM_FILE_SAVEAS:
-      FileSave(true,false,true,false);
+      FileSave(true, false, true, false, false);
       break;
 
 
     case IDM_FILE_SAVECOPY:
-      FileSave(true,false,true,true);
+      FileSave(true, false, true, true, false);
+      break;
+
+
+    case IDM_FILE_PRESERVE_FILEMODTIME:
+      FileSave(true, false, false, false, true);
       break;
 
 
@@ -3571,7 +3575,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
           break;
 
-        if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false))
+        if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false, false))
           break;
 
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
@@ -3612,7 +3616,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_RUN:
       {
-        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false)) {
+        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, false)) {
           break;
         }
         StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
@@ -3623,7 +3627,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_FILE_OPENWITH:
-      if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false))
+      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, false))
         break;
       OpenWithDlg(hwnd,Globals.CurrentFile);
       break;
@@ -3689,7 +3693,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_OPENFAV:
-      if (FileSave(false,true,false,false)) {
+      if (FileSave(false, true, false, false, false)) {
         if (FavoritesDlg(hwnd,tchMaxPathBuffer))
         {
           if (PathIsLnkToDirectory(tchMaxPathBuffer,NULL,0))
@@ -3736,7 +3740,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_RECENT:
       if (MRU_Count(Globals.pFileMRU) > 0) {
-        if (FileSave(false, true, false, false)) {
+        if (FileSave(false, true, false, false, false)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd, tchFile)) {
             FileLoad(true, false, false, false, true, false, tchFile);
@@ -5424,12 +5428,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.SaveBeforeRunningTools = !Settings.SaveBeforeRunningTools;
       break;
 
-
-    case IDM_FILE_PRESERVE_FILEMODTIME:
-      Settings.PreserveOrigFileModifyTime = !Settings.PreserveOrigFileModifyTime;
-      break;
-
-
     case IDM_VIEW_CHANGENOTIFY:
       if (ChangeNotifyDlg(hwnd))
         InstallFileWatching(Globals.CurrentFile);
@@ -5540,7 +5538,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_SHIFTESC:
-      if (FileSave(true, false, false, false)) {
+      if (FileSave(true, false, false, false, false)) {
         PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
       break;
@@ -6410,6 +6408,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       }
 
       // ----------------------------------------------------------------------
+
+      if (position < 0) { prevPosition = -1;  return; }
 
       //SciCall_SetCursor(SC_NP3_CURSORHAND);
 
@@ -9179,7 +9179,7 @@ static void _SplitUndoTransaction(const int iModType)
 //
 bool FileIO(bool fLoad,LPWSTR pszFileName,
             bool bSkipUnicodeDetect,bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
-            EditFileIOStatus* status, bool bSaveCopy)
+            EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp)
 {
   WCHAR tch[MAX_PATH+40];
   bool fSuccess;
@@ -9204,7 +9204,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
       }
       Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
     }
-    fSuccess = EditSaveFile(Globals.hwndEdit,pszFileName, status, bSaveCopy);
+    fSuccess = EditSaveFile(Globals.hwndEdit,pszFileName, status, bSaveCopy, bPreserveTimeStamp);
   }
 
   dwFileAttributes = GetFileAttributes(pszFileName);
@@ -9276,7 +9276,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   if (!bDontSave)
   {
-    if (!FileSave(false, true, false, false)) {
+    if (!FileSave(false, true, false, false, false)) {
       return false;
     }
   }
@@ -9387,11 +9387,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (bReload && !FileWatching.MonitoringLog) 
     {
       _BEGIN_UNDO_ACTION_
-      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false);
+      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
       _END_UNDO_ACTION_
     }
     else {
-      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, true, &fioStatus, false);
+      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, true, &fioStatus, false, false);
     }
   }
 
@@ -9632,7 +9632,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
         StringCchCopy(p, (MAX_PATH - len), q);
       }
 
-      if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true))
+      if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true, false))
       {
         // preserve encoding
         WCHAR wchEncoding[80];
@@ -9672,7 +9672,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
 //  FileSave()
 //
 //
-bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
+bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bPreserveTimeStamp)
 {
   bool fSuccess = false;
 
@@ -9762,7 +9762,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
 
     if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), tchInitialDir))
     {
-      fSuccess = FileIO(false, tchFile, true, true, false, true, &fioStatus, bSaveCopy);
+      fSuccess = FileIO(false, tchFile, true, true, false, true, &fioStatus, bSaveCopy, bPreserveTimeStamp);
       if (fSuccess)
       {
         if (!bSaveCopy)
@@ -9786,7 +9786,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy)
     }
   }
   else {
-    fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, true, &fioStatus, false);
+    fSuccess = FileIO(false, Globals.CurrentFile, true, true, false, true, &fioStatus, false, bPreserveTimeStamp);
   }
 
   if (fSuccess)

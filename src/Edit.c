@@ -1334,7 +1334,8 @@ bool EditSaveFile(
        HWND hwnd,
        LPCWSTR pszFile,
        EditFileIOStatus* status,
-       bool bSaveCopy)
+       bool bSaveCopy,
+       bool bPreserveTimeStamp)
 {
 
   HANDLE hFile;
@@ -1518,7 +1519,7 @@ bool EditSaveFile(
     }
   }
 
-  if (Settings.PreserveOrigFileModifyTime) {
+  if (bPreserveTimeStamp) {
     SetFileTime(hFile, NULL, NULL, &modTime);
   }
   CloseHandle(hFile);
@@ -6324,6 +6325,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 void EditSelectionMultiSelectAll()
 {
   DocPos const iSelSize = SciCall_GetSelText(NULL);
+
   if ((iSelSize > 1))
   {
     char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
@@ -6341,6 +6343,7 @@ void EditSelectionMultiSelectAll()
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
+
     if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) 
     {
       // get visible lines for update
@@ -6353,7 +6356,15 @@ void EditSelectionMultiSelectAll()
     }
     SciCall_MultipleSelectAddEach();
     SciCall_SetMainSelection(0);
-    SciCall_ScrollRange(SciCall_GetSelectionNAnchor(0), SciCall_GetSelectionNCaret(0));
+    DocPos const iMainAnchor = SciCall_GetSelectionNAnchor(0);
+    DocPos const iMainCaret = SciCall_GetSelectionNCaret(0);
+    if (iMainAnchor > iMainCaret) {
+      SciCall_SwapMainAnchorCaret();
+      SciCall_ScrollRange(iMainCaret, iMainAnchor);
+    }
+    else {
+      SciCall_ScrollRange(iMainAnchor, iMainCaret);
+    }
     SciCall_ChooseCaretX();
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
@@ -7128,7 +7139,7 @@ static void _UpdateIndicators(HWND hwnd, const int indicator, const int indicato
     end = endPos;
 
   } while (start < end);
-
+  
 }
 
 //=============================================================================
@@ -7156,12 +7167,19 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
 
     _UpdateIndicators(hwnd, INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
   }
+  else {
+    _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
+  }
   
   if (Settings.ColorDefHotspot) 
   {
     static const char* pColorRegEx = "#([0-9a-fA-F]){6}";
     _UpdateIndicators(hwnd, INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
   }
+  else {
+    _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
+  }
+  EditFinalizeStyling(hwnd, -1);
 }
 
 

@@ -911,7 +911,6 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
     GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
     GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, false);
-    GET_BOOL_VALUE_FROM_INISECTION(PreserveOrigFileModifyTime, false);
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
@@ -1382,7 +1381,6 @@ bool SaveSettings(bool bSaveSettingsNow)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, Bidirectional);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MuteMessageBeep);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SplitUndoTypingSeqOnLnBreak);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveOrigFileModifyTime);
 
   ///~IniSectionSetInt(Settings_Section, L"IMEInteraction", Settings2.IMEInteraction);
 
