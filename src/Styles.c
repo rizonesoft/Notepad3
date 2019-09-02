@@ -776,17 +776,6 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   }
   // ----------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-  // ----------------------------------------------------------------
-
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
 
   for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
