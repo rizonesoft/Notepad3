@@ -31,13 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.901.#(build) (2019-09-01)
+Current BETA Version 5.19.902.#(build) (2019-09-02)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Option to preserve origin file modification time.
+- Save with Original File Date/Time - Ctrl+Alt+F6.
 
 --------------------------------------------------
 CHANGES:
