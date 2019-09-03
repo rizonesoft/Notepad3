@@ -56,15 +56,15 @@ IDR_MUI_MAINMENU MENU
 BEGIN
     POPUP "文件(&F)"
     BEGIN
-        MENUITEM "新建(&N)\tCtrl+N",                          IDM_FILE_NEW
-        MENUITEM "打开(&O)...\tCtrl+O",                       IDM_FILE_OPEN
-        MENUITEM "还原(&V)\tF5",                              IDM_FILE_REVERT
-        MENUITEM "保存(&S)\tCtrl+S",                          IDM_FILE_SAVE
-        MENUITEM "另存为(&A)...\tF6",                         IDM_FILE_SAVEAS
-        MENUITEM "保存副本(&C)...\tCtrl+F6",                  IDM_FILE_SAVECOPY
-        MENUITEM "只读(&R)",                                  IDM_FILE_READONLY
+        MENUITEM "新建(&N)\tCtrl+N",                                IDM_FILE_NEW
+        MENUITEM "打开(&O)...\tCtrl+O",                             IDM_FILE_OPEN
+        MENUITEM "还原(&V)\tF5",                                    IDM_FILE_REVERT
+        MENUITEM "保存(&S)\tCtrl+S",                                IDM_FILE_SAVE
+        MENUITEM "另存为(&A)...\tF6",                               IDM_FILE_SAVEAS
+        MENUITEM "保存副本(&C)...\tCtrl+F6",                        IDM_FILE_SAVECOPY
+        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Preserve File Modification Time",          IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "只读(&R)",                                  IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "设置加密口令(&Y)...",                        IDM_SETPASS
         MENUITEM SEPARATOR
@@ -161,8 +161,11 @@ BEGIN
             MENUITEM "上移行(&U)\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
             MENUITEM "下移行(&M)\tCtrl+Shift+Down",            IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "剪切行(&L)\tCtrl[+Shift]+X",             IDM_EDIT_CUTLINE
-            MENUITEM "复制行(&C)\tCtrl[+Shift]+C",             IDM_EDIT_COPYLINE
+            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM SEPARATOR
             MENUITEM "复写上一行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "删除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
@@ -226,6 +229,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "转换行首空格为制表符(&B)\tCtrl+Alt+T",    IDM_EDIT_CONVERTSPACES2
             MENUITEM "转换行首制表符为空格(&F)\tCtrl+Alt+S",    IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "URL 编码(&U)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
+            MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
+            MENUITEM SEPARATOR
+            MENUITEM "转换为十六进制(&C)\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
+            MENUITEM "从十六进制转换(&H)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
         END
         POPUP "插入(&I)"
         BEGIN
@@ -249,14 +258,8 @@ BEGIN
             MENUITEM "切换行注释(&L)\tCtrl+Q",                 IDM_EDIT_LINECOMMENT
             MENUITEM "添加块注释(&S)\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "URL 编码(&U)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
-            MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
             MENUITEM "C 转义(&E)\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
             MENUITEM "C 反转义(&K)\tCtrl+Alt+R",               IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "转换为十六进制(&C)\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
-            MENUITEM "从十六进制转换(&H)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "增大数值(&+)\tCtrl+Alt+NK+",            CMD_INCREASENUM
             MENUITEM "减小数值(&+)\tCtrl+Alt+NK-",            CMD_DECREASENUM

@@ -56,15 +56,15 @@ IDR_MUI_MAINMENU MENU
 BEGIN
     POPUP "&Bestand"
     BEGIN
-        MENUITEM "&Nieuw\tCtrl+N",                          IDM_FILE_NEW
-        MENUITEM "&Openen...\tCtrl+O",                      IDM_FILE_OPEN
-        MENUITEM "&Herladen\tF5",                           IDM_FILE_REVERT
-        MENUITEM "&Opslaan\tCtrl+S",                        IDM_FILE_SAVE
-        MENUITEM "Op&slaan als...\tF6",                     IDM_FILE_SAVEAS
-        MENUITEM "Opslaan &kopiëren...\tCtrl+F6",           IDM_FILE_SAVECOPY
-        MENUITEM "&Alleen-lezen",                           IDM_FILE_READONLY
+        MENUITEM "&Nieuw\tCtrl+N",                                  IDM_FILE_NEW
+        MENUITEM "&Openen...\tCtrl+O",                              IDM_FILE_OPEN
+        MENUITEM "&Herladen\tF5",                                   IDM_FILE_REVERT
+        MENUITEM "&Opslaan\tCtrl+S",                                IDM_FILE_SAVE
+        MENUITEM "Op&slaan als...\tF6",                             IDM_FILE_SAVEAS
+        MENUITEM "Opslaan &kopiëren...\tCtrl+F6",                   IDM_FILE_SAVECOPY
+        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Preserve File Modification Time",        IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "&Alleen-lezen",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Instellen encryptie wachtwoord...",       IDM_SETPASS
         MENUITEM SEPARATOR
@@ -161,8 +161,11 @@ BEGIN
             MENUITEM "Naar &boven verplaatsen\tCtrl+Shift+Up",      IDM_EDIT_MOVELINEUP
             MENUITEM "&Naar beneden verplaatsen\tCtrl+Shift+Down",  IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Knippen &lijn\tCtrl[+Shift]+X",               IDM_EDIT_CUTLINE
-            MENUITEM "&Kopiëren lijn\tCtrl[+Shift]+C",              IDM_EDIT_COPYLINE
+            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM SEPARATOR
             MENUITEM "&Dupliceren lijn/selectie\tCtrl+D",           IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Permuteren lijnen\tAlt+D",                   IDM_EDIT_LINETRANSPOSE
             MENUITEM "&Verwijderen lijn\tCtrl+Shift+D",             IDM_EDIT_DELETELINE
@@ -226,6 +229,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ta&b inspringen\tCtrl+Alt+T",             IDM_EDIT_CONVERTSPACES2
             MENUITEM "Untab ins&pringen\tCtrl+Alt+S",           IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
+            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
+            MENUITEM SEPARATOR
+            MENUITEM "&Char naar Hex\tCtrl+Alt+X",                      IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex naar Char\tCtrl+Alt+C",                      IDM_EDIT_HEX2CHAR
         END
         POPUP "&Invoegen"
         BEGIN
@@ -249,14 +258,8 @@ BEGIN
             MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
             MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",                     IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",                   IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "&Char naar Hex\tCtrl+Alt+X",                      IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex naar Char\tCtrl+Alt+C",                      IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "Verhogen het getal\tCtrl+Alt+NK+",                CMD_INCREASENUM
             MENUITEM "Verminderen het getal\tCtrl+Alt+NK-",             CMD_DECREASENUM
@@ -345,7 +348,7 @@ BEGIN
         POPUP "&Werkbalk"
         BEGIN
             MENUITEM "&Werkbalk tonen",                                 IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle werkbalk",                                IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle werkbalken",                              IDM_VIEW_TOGGLETB
             MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Laden een werkbalk thema...",                    IDM_VIEW_LOADTHEMETB
             MENUITEM "Toon &statusbalk",                                IDM_VIEW_STATUSBAR
@@ -478,7 +481,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Werk&balk tonen",                         IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle werkbalk",                        IDM_VIEW_TOGGLETB
+        MENUITEM "To&ggle werkbalken",                      IDM_VIEW_TOGGLETB
         MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Laden een werkbalk thema...",            IDM_VIEW_LOADTHEMETB
         MENUITEM "Toon &statusbalk",                        IDM_VIEW_STATUSBAR

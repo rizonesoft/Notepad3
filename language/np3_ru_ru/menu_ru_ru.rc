@@ -62,9 +62,9 @@ BEGIN
         MENUITEM "&Сохранить\tCtrl+S",          IDM_FILE_SAVE
         MENUITEM "Сохранить &как...\tF6",       IDM_FILE_SAVEAS
         MENUITEM "Со&хранить копию...\tCtrl+F6", IDM_FILE_SAVECOPY
-        MENUITEM "&Только чтение",              IDM_FILE_READONLY
+        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Preserve File Modification Time", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "&Только чтение",              IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Задать парольную фразу...",   IDM_SETPASS
         MENUITEM SEPARATOR
@@ -161,8 +161,11 @@ BEGIN
             MENUITEM "Перейти &выше\tCtrl+Shift+Up",                IDM_EDIT_MOVELINEUP
             MENUITEM "Перейти &ниже\tCtrl+Shift+Down",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Вырезать &строку\tCtrl[+Shift]+X",            IDM_EDIT_CUTLINE
-            MENUITEM "&Копировать строку\tCtrl[+Shift]+C",          IDM_EDIT_COPYLINE
+            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM SEPARATOR
             MENUITEM "&Дублировать строку/выделение\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Поменять строки\tAlt+D",                     IDM_EDIT_LINETRANSPOSE
             MENUITEM "&Удалить строку\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
@@ -226,6 +229,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Т&абуляции вместо пробелов в отступах\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
             MENUITEM "Про&белы вместо табуляции в отступах\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
+            MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
+            MENUITEM SEPARATOR
+            MENUITEM "&Символ в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
+            MENUITEM "&Шестнадцатеричный код в символ\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
         END
         POPUP "Вставка"
         BEGIN
@@ -249,14 +258,8 @@ BEGIN
             MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
             MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",              IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
-            MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
             MENUITEM "&Экранировать символы C\tCtrl+Alt+E",             IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Убрать экранирование символов C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "&Символ в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
-            MENUITEM "&Шестнадцатеричный код в символ\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "Увеличить число\tCtrl+Alt+NK+",                   CMD_INCREASENUM
             MENUITEM "Уменьшить число\tCtrl+Alt+NK-",                   CMD_DECREASENUM
@@ -345,7 +348,7 @@ BEGIN
         POPUP "Панель инстр&ументов"
         BEGIN
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-            MENUITEM "Пе&реключить панель инструментов",    IDM_VIEW_TOGGLETB
+            MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
             MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
@@ -478,7 +481,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "Пе&реключить панель инструментов",    IDM_VIEW_TOGGLETB
+        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
         MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
