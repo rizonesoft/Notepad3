@@ -426,7 +426,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    UpdateVisibleHotspotIndicators();
+    UpdateVisibleIndicators();
     UpdateAllBars(false);
   }
 }
@@ -2513,11 +2513,13 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   RECT* const rc = (RECT*)lParam;
   SendWMSize(hwnd, rc);
 
-  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
   MarkAllOccurrences(0, true);
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+
   EditFinalizeStyling(Globals.hwndEdit, -1);
   UpdateAllBars(true);
   UpdateUI();
+  UpdateVisibleIndicators();
 
   return 0;
 }
@@ -2574,15 +2576,16 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   Toolbar_GetButtons(Globals.hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
 
   CreateBars(hwnd,hInstance);
+
   SendWMSize(hwnd, NULL);
 
-  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
   MarkAllOccurrences(0, true);
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
 
   EditFinalizeStyling(Globals.hwndEdit, -1);
   UpdateAllBars(true);
   UpdateUI();
+  UpdateVisibleIndicators();
 
   return 0;
 }
@@ -3458,7 +3461,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   switch(iLoWParam)
   {
     case SCEN_CHANGE:
-      UpdateVisibleHotspotIndicators();
+      UpdateVisibleIndicators();
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       break;
 
@@ -5148,14 +5151,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      EditUpdateIndicators(Globals.hwndEdit, 0, -1, true);
-      EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+      UpdateVisibleIndicators();
       break;
 
     case IDM_VIEW_COLORDEFHOTSPOTS:
       Settings.ColorDefHotspot = !Settings.ColorDefHotspot;
-      EditUpdateIndicators(Globals.hwndEdit, 0, -1, true);
-      EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+      UpdateVisibleIndicators();
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -6927,7 +6928,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         if (IsMarkOccurrencesEnabled()) {
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
         }
-        UpdateVisibleHotspotIndicators();
+        UpdateVisibleIndicators();
 
         if (scn->linesAdded != 0) {
           if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1)) {
@@ -6997,7 +6998,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
           // using WM_COMMAND -> SCEN_CHANGE  instead!
           //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-          //~~~UpdateVisibleHotspotIndicators();
+          //~~~UpdateVisibleIndicators();
         //}
         HandlePosChange();
         UpdateToolbar();
@@ -7009,7 +7010,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
         }
       }
-      UpdateVisibleHotspotIndicators();
+      UpdateVisibleIndicators();
     }
     break;
 
@@ -7104,7 +7105,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       DocLn const iFirstLine = SciCall_LineFromPosition(scn->position);
       DocLn const iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
       for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-      UpdateVisibleHotspotIndicators();
+      UpdateVisibleIndicators();
     }
     break;
 
@@ -7918,9 +7919,9 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 
 //=============================================================================
 //
-//  UpdateVisibleHotspotIndicators()
+//  UpdateVisibleIndicators()
 // 
-void UpdateVisibleHotspotIndicators()
+void UpdateVisibleIndicators()
 {
   DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
   DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));

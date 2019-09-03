@@ -7061,10 +7061,15 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   UNUSED(hwnd);
-  DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
-  DocPos const endPos = (iEndPos < 0) ? (DocPos)-1 : SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
-  if (startPos < endPos) {
-    Sci_ApplyLexerStyle(startPos, endPos);
+  if (iEndPos < 0) {
+    Sci_ApplyLexerStyle(0, -1);
+  }
+  else {
+    DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
+    DocPos const endPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
+    if (startPos < endPos) {
+      Sci_ApplyLexerStyle(startPos, endPos);
+    }
   }
 }
 
@@ -7179,7 +7184,7 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
   else {
     _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
   }
-  EditFinalizeStyling(hwnd, -1);
+  EditFinalizeStyling(hwnd, endPos);
 }
 
 
