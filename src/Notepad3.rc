@@ -108,7 +108,7 @@ BEGIN
     "C",            IDM_EDIT_COPY,                    VIRTKEY, CONTROL, NOINVERT
     "C",            IDM_EDIT_COPYALL,                 VIRTKEY, ALT, NOINVERT  /// NO Menu
     "C",            IDM_EDIT_HEX2CHAR,                VIRTKEY, CONTROL, ALT, NOINVERT
-    "C",            IDM_EDIT_COPY,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "C",            IDM_EDIT_COPYLINE,                VIRTKEY, SHIFT, CONTROL, NOINVERT
     "D",            IDM_EDIT_DUPLINEORSELECTION,      VIRTKEY, CONTROL, NOINVERT
     "D",            IDM_EDIT_LINETRANSPOSE,           VIRTKEY, ALT, NOINVERT  /// NO Menu
     "D",            IDM_EDIT_DELETELINE,              VIRTKEY, SHIFT, CONTROL, NOINVERT
