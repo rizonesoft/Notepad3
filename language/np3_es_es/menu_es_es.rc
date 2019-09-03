@@ -56,15 +56,15 @@ IDR_MUI_MAINMENU MENU
 BEGIN
     POPUP "&Archivo"
     BEGIN
-        MENUITEM "&Nuevo\tCtrl+N",                          IDM_FILE_NEW
-        MENUITEM "&Abrir...\tCtrl+O",                       IDM_FILE_OPEN
-        MENUITEM "&Recargar\tF5",                           IDM_FILE_REVERT
-        MENUITEM "&Guardar\tCtrl+S",                        IDM_FILE_SAVE
-        MENUITEM "G&uardar como...\tF6",                    IDM_FILE_SAVEAS
-        MENUITEM "Guardar &copia...\tCtrl+F6",              IDM_FILE_SAVECOPY
-        MENUITEM "Sólo &lectura",                           IDM_FILE_READONLY
+        MENUITEM "&Nuevo\tCtrl+N",                                  IDM_FILE_NEW
+        MENUITEM "&Abrir...\tCtrl+O",                               IDM_FILE_OPEN
+        MENUITEM "&Recargar\tF5",                                   IDM_FILE_REVERT
+        MENUITEM "&Guardar\tCtrl+S",                                IDM_FILE_SAVE
+        MENUITEM "G&uardar como...\tF6",                            IDM_FILE_SAVEAS
+        MENUITEM "Guardar &copia...\tCtrl+F6",                      IDM_FILE_SAVECOPY
+        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Preserve File Modification Time",        IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Sólo &lectura",                             IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Establecer contraseña de encriptación...", IDM_SETPASS
         MENUITEM SEPARATOR
@@ -161,8 +161,11 @@ BEGIN
             MENUITEM "Mover &hacia arriba\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
             MENUITEM "&Mover hacia abajo\tCtrl+Shift+Down",             IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cortar la &línea\tCtrl[+Shift]+X",                IDM_EDIT_CUTLINE
-            MENUITEM "&Copiar la línea\tCtrl[+Shift]+C",                IDM_EDIT_COPYLINE
+            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM SEPARATOR
             MENUITEM "&Duplicar la línea/Selection\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Permutar las líneas\tAlt+D",                     IDM_EDIT_LINETRANSPOSE
             MENUITEM "&Eliminar la línea\tCtrl+Shift+D",                IDM_EDIT_DELETELINE
@@ -226,6 +229,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ta&bular la sangría\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
             MENUITEM "Destabular la &sangría\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
+            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
+            MENUITEM SEPARATOR
+            MENUITEM "Char To He&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex To Char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insertar"
         BEGIN
@@ -249,14 +258,8 @@ BEGIN
             MENUITEM "&Comentario de línea (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
             MENUITEM "Comentario &multilíneas\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",                     IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",                   IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Char To He&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "Aument&ar el número\tCtrl+Alt+NK+",               CMD_INCREASENUM
             MENUITEM "Disminu&ir el número\tCtrl+Alt+NK-",              CMD_DECREASENUM
@@ -345,7 +348,7 @@ BEGIN
         POPUP "Barra de herram&ientas"
         BEGIN
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
-            MENUITEM "Al&ternar la barra de herramientas",              IDM_VIEW_TOGGLETB
+            MENUITEM "Al&ternar les barras de herramientas",            IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Cargar un tema de herramientas...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
@@ -478,7 +481,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
-        MENUITEM "Al&ternar la barra de herramientas",          IDM_VIEW_TOGGLETB
+        MENUITEM "Al&ternar las barras de herramientas",        IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Cargar un tema de herramientas...",          IDM_VIEW_LOADTHEMETB
         MENUITEM "Mostrar la barra de &estado",                 IDM_VIEW_STATUSBAR

@@ -348,7 +348,7 @@ BEGIN
         POPUP "&Toolbar"
         BEGIN
             MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
             MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
             MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
@@ -481,7 +481,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbar",             IDM_VIEW_TOGGLETB
+        MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
         MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
