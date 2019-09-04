@@ -145,7 +145,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
                                WordList **, Accessor &styler) {
     Sci_PositionU endPos = startPos + length;
     int precharCount = 0;
-    static bool isLinkNameDetecting = false;
+    bool isLinkNameDetecting = false;
     // Don't advance on a new loop iteration and retry at the same position.
     // Useful in the corner case of having to start at the beginning file position
     // in the default state.
@@ -352,10 +352,10 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
               freezeCursor = true;
             }
             else if (isLinkNameDetecting && sc.ch == ')' && sc.GetRelative(-1) != '\\') {
-              isLinkNameDetecting = false;
               sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
               freezeCursor = true;
-            }
+			  isLinkNameDetecting = false;
+			}
         }
 
         // New state anywhere in doc
@@ -366,10 +366,10 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
             }
             // Links and Images
             if (sc.Match("![")) {
-              sc.ForwardSetState(SCE_MARKDOWN_LINK);
+              sc.SetState(SCE_MARKDOWN_LINK);
+              sc.Forward();
             }
-            //else if (sc.ch == '[' && sc.GetRelative(-1) != '\\') {
-            else if (sc.ch == '[') {
+            else if (sc.ch == '[' && sc.GetRelative(-1) != '\\') {
               sc.SetState(SCE_MARKDOWN_LINK);
             }
             // Code - also a special case for alternate inside spacing
