@@ -349,11 +349,13 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
             }
             else if (!isLinkNameDetecting && sc.ch == ']' && sc.GetRelative(-1) != '\\') {
               sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
+              freezeCursor = true;
             }
             else if (isLinkNameDetecting && sc.ch == ')' && sc.GetRelative(-1) != '\\') {
               sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
-              isLinkNameDetecting = false;
-            }
+              freezeCursor = true;
+			  isLinkNameDetecting = false;
+			}
         }
 
         // New state anywhere in doc
@@ -382,7 +384,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
             else if (sc.Match("**") && sc.GetRelative(2) != ' ' && AtTermStart(sc)) {
                 sc.SetState(SCE_MARKDOWN_STRONG1);
                 sc.Forward();
-           }
+            }
             else if (sc.Match("__") && sc.GetRelative(2) != ' ' && AtTermStart(sc)) {
                 sc.SetState(SCE_MARKDOWN_STRONG2);
                 sc.Forward();
@@ -404,10 +406,12 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
                 sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
             }
         }
+
         // Advance if not holding back the cursor for this iteration.
         if (!freezeCursor)
             sc.Forward();
-        freezeCursor = false;
+        else
+           freezeCursor = false;
     }
     sc.Complete();
 }
