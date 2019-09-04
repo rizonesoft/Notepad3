@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.902.#(build) (2019-09-02)
+Current BETA Version 5.19.903.#(build) (2019-09-03)
 ==================================================
 
 --------------------------------------------------
@@ -42,6 +42,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
 - Update Oniguruma Regex (ONI) engine (v.6.9.3+).
@@ -57,6 +58,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Hyperlink Regex detection and Update visible indicator issue.
 - Correct resource id for language sk-SK.
 - Insertion handling: keep selection if non empty selection is replaced.
 - TAB behavior after multi-selection undo sequence.

@@ -62,9 +62,9 @@ BEGIN
         MENUITEM "저장(&S)\tCtrl+S",                       IDM_FILE_SAVE
         MENUITEM "다른 이름으로 저장(&A)...\tF6",              IDM_FILE_SAVEAS
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",              IDM_FILE_SAVECOPY
-        MENUITEM "읽기 전용(&R)",                            IDM_FILE_READONLY
+        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Preserve File Modification Time",      IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "읽기 전용(&R)",                            IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
@@ -161,8 +161,11 @@ BEGIN
             MENUITEM "위로 옮김(&U)\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
             MENUITEM "아래로 옮김(&M)\tCtrl+Shift+Down",           IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "줄 잘라내기(&L)\tCtrl[+Shift]+X",            IDM_EDIT_CUTLINE
-            MENUITEM "줄 복사(&C)\tCtrl[+Shift]+C",               IDM_EDIT_COPYLINE
+            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM SEPARATOR
             MENUITEM "줄/선택 영역 복제(&D)\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "윗줄과 맞바꾸기(&T)\tAlt+D",                  IDM_EDIT_LINETRANSPOSE
             MENUITEM "줄 삭제(&E)\tCtrl+Shift+D",                 IDM_EDIT_DELETELINE
@@ -226,6 +229,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "들여쓰기를 탭으로(&B)\tCtrl+Alt+T",            IDM_EDIT_CONVERTSPACES2
             MENUITEM "들여쓰기를 공백으로(&F)\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
+            MENUITEM SEPARATOR
+            MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
+            MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
+            MENUITEM SEPARATOR
+            MENUITEM "문자를 Hex 값으로 변환(&H)\tCtrl+Alt+X",        IDM_EDIT_CHAR2HEX
+            MENUITEM "Hex 값을 문자로 변환(&R)\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
         END
         POPUP "삽입(&N)"
         BEGIN
@@ -249,14 +258,8 @@ BEGIN
             MENUITEM "줄 주석 (전환)(&T)\tCtrl+Q",                 IDM_EDIT_LINECOMMENT
             MENUITEM "주석 기호 삽입(&C)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "URL 인코딩(&E)\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
-            MENUITEM "URL 디코딩(&D)\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
             MENUITEM "C언어 이스케이프 시퀀스 변환(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
             MENUITEM "C언어 이스케이프 시퀀스 복원(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "문자를 Hex 값으로 변환(&H)\tCtrl+Alt+X",        IDM_EDIT_CHAR2HEX
-            MENUITEM "Hex 값을 문자로 변환(&R)\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
             MENUITEM "번호 증가\tCtrl+Alt+NK+",               CMD_INCREASENUM
             MENUITEM "번호 감소\tCtrl+Alt+NK-",               CMD_DECREASENUM

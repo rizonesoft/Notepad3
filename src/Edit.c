@@ -7061,10 +7061,15 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   UNUSED(hwnd);
-  DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
-  DocPos const endPos = (iEndPos < 0) ? (DocPos)-1 : SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
-  if (startPos < endPos) {
-    Sci_ApplyLexerStyle(startPos, endPos);
+  if (iEndPos < 0) {
+    Sci_ApplyLexerStyle(0, -1);
+  }
+  else {
+    DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
+    DocPos const endPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
+    if (startPos < endPos) {
+      Sci_ApplyLexerStyle(startPos, endPos);
+    }
   }
 }
 
@@ -7158,12 +7163,12 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
 
   if (Settings.HyperlinkHotspot) 
   {
-    //static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-    //  "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
-    //  "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
-
     // https://mathiasbynens.be/demo/url-regex : @stephenhay
-    static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+    //static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)[^\\s/$.?#].[^\\s]*";
+
+    static const char* pUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+      "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
+      "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
 
     _UpdateIndicators(hwnd, INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
   }
@@ -7179,7 +7184,7 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
   else {
     _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
   }
-  EditFinalizeStyling(hwnd, -1);
+  EditFinalizeStyling(hwnd, endPos);
 }
 
 
