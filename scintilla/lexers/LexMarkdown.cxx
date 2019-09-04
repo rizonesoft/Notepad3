@@ -341,20 +341,17 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
         // Any link
         if (sc.state == SCE_MARKDOWN_LINK) {
             if (sc.Match("](") && sc.GetRelative(-1) != '\\') {
-              sc.Forward(2);
+              sc.Forward();
               isLinkNameDetecting = true;
             }
             else if (sc.Match("]:") && sc.GetRelative(-1) != '\\') {
-              sc.Forward(2);
-              sc.SetState(SCE_MARKDOWN_DEFAULT);
+              sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
             }
             else if (!isLinkNameDetecting && sc.ch == ']' && sc.GetRelative(-1) != '\\') {
-              sc.Forward();
-              sc.SetState(SCE_MARKDOWN_DEFAULT);
+              sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
             }
             else if (isLinkNameDetecting && sc.ch == ')' && sc.GetRelative(-1) != '\\') {
-              sc.Forward();
-              sc.SetState(SCE_MARKDOWN_DEFAULT);
+              sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
               isLinkNameDetecting = false;
             }
         }
@@ -368,11 +365,10 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
             // Links and Images
             if (sc.Match("![")) {
               sc.SetState(SCE_MARKDOWN_LINK);
-              sc.Forward(2);
+              sc.Forward();
             }
             else if (sc.ch == '[' && sc.GetRelative(-1) != '\\') {
               sc.SetState(SCE_MARKDOWN_LINK);
-              sc.Forward();
             }
             // Code - also a special case for alternate inside spacing
             else if (sc.Match("``") && sc.GetRelative(3) != ' ' && AtTermStart(sc)) {
