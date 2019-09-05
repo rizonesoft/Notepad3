@@ -3322,7 +3322,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 {
-  if (bSaveOnRunTools && !FileSave(false, true, false, false, false)) { return; }
+  if (bSaveOnRunTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) { return; }
 
   WCHAR szModuleName[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
