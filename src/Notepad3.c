@@ -1234,7 +1234,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           }
           SciCall_SetSavePoint();
           _SetSaveNeededFlag(true);
-          FileSave(true, false, false, false, false); // issued from elevation instances
+          FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
         }
         if (s_flagJumpTo) { // Jump to position
           EditJumpTo(Globals.hwndEdit,s_iInitialLine,s_iInitialColumn);
@@ -1462,13 +1462,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         PostMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
       }
-      if (FileSave(false, true, false, false, false)) {
+      if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
         DestroyWindow(hwnd);
       }
       break;
 
     case WM_QUERYENDSESSION:
-      if (FileSave(false, true, false, false, false)) {
+      if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
         return TRUE;
       }
       break;
@@ -2951,7 +2951,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   else {
     INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2);
     if ((IDOK == answer) || (IDYES == answer)) {
-      FileSave(true, false, false, false, false);
+      FileSave(true, false, false, false, Flags.bPreserveFileModTime);
     }
   }
 
@@ -3054,9 +3054,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_FILE_PROPERTIES,i);
   EnableCmd(hmenu,IDM_FILE_CREATELINK,i);
   EnableCmd(hmenu,IDM_FILE_ADDTOFAV,i);
-
+  
   EnableCmd(hmenu,IDM_FILE_READONLY,i);
   CheckCmd(hmenu,IDM_FILE_READONLY,s_bFileReadOnly);
+  CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
 
   EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
   EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
@@ -3514,22 +3515,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_SAVE:
-      FileSave(true, false, false, false, false);
+      FileSave(true, false, false, false, Flags.bPreserveFileModTime);
       break;
 
 
     case IDM_FILE_SAVEAS:
-      FileSave(true, false, true, false, false);
+      FileSave(true, false, true, false, Flags.bPreserveFileModTime);
       break;
 
 
     case IDM_FILE_SAVECOPY:
-      FileSave(true, false, true, true, false);
+      FileSave(true, false, true, true, Flags.bPreserveFileModTime);
       break;
 
 
     case IDM_FILE_PRESERVE_FILEMODTIME:
-      FileSave(true, false, false, false, true);
+      Flags.bPreserveFileModTime = true;
+      FileSave(true, false, false, false, Flags.bPreserveFileModTime);
       break;
 
 
@@ -3577,7 +3579,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
           break;
 
-        if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false, false))
+        if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false,Flags.bPreserveFileModTime))
           break;
 
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
@@ -3618,7 +3620,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_RUN:
       {
-        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, false)) {
+        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
           break;
         }
         StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
@@ -3629,7 +3631,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_FILE_OPENWITH:
-      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, false))
+      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
         break;
       OpenWithDlg(hwnd,Globals.CurrentFile);
       break;
@@ -3695,7 +3697,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_OPENFAV:
-      if (FileSave(false, true, false, false, false)) {
+      if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
         if (FavoritesDlg(hwnd,tchMaxPathBuffer))
         {
           if (PathIsLnkToDirectory(tchMaxPathBuffer,NULL,0))
@@ -3742,7 +3744,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_RECENT:
       if (MRU_Count(Globals.pFileMRU) > 0) {
-        if (FileSave(false, true, false, false, false)) {
+        if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd, tchFile)) {
             FileLoad(true, false, false, false, true, false, tchFile);
@@ -5563,7 +5565,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_SHIFTESC:
-      if (FileSave(true, false, false, false, false)) {
+      if (FileSave(true, false, false, false, Flags.bPreserveFileModTime)) {
         PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
       break;
@@ -9305,11 +9307,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   if (bNew || bReload) {
     if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+    Flags.bPreserveFileModTime = false;
   }
 
   if (!bDontSave)
   {
-    if (!FileSave(false, true, false, false, false)) {
+    if (!FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
       return false;
     }
   }
@@ -9444,6 +9447,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SciCall_SetEOLMode(fioStatus.iEOLMode);
     Encoding_Current(fioStatus.iEncoding); // load may change encoding
     Encoding_HasChanged(fioStatus.iEncoding);
+
+    Flags.bPreserveFileModTime = false;
 
     int idx = 0;
     DocPos iCaretPos = 0;

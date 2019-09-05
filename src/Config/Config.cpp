@@ -1164,6 +1164,7 @@ void LoadFlags()
   Flags.NoFileVariables = IniSectionGetInt(Settings2_Section, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
   Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
+  Flags.bPreserveFileModTime = false;
 
   ReleaseIniFile();
 }
