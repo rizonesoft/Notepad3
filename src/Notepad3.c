@@ -3861,6 +3861,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+
     case IDM_EDIT_REDO:
       if (SciCall_CanRedo()) {
         SciCall_Redo();
@@ -3907,13 +3908,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        if (!SciCall_IsSelectionEmpty() ||
-          !HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK))
-        {
-          _BEGIN_UNDO_ACTION_
-          SciCall_CopyAllowLine();
-          _END_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_
+        if (SciCall_IsSelectionEmpty()) {
+          if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK))
+          {
+            // VisualStudio behavior
+            SciCall_CopyAllowLine();
+          }
         }
+        else {
+          SciCall_Copy();
+        }
+        _END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
@@ -3925,13 +3931,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           s_bLastCopyFromMe = true;
         }
         _BEGIN_UNDO_ACTION_
-        if (SciCall_IsSelectionEmpty()) {
-          SciCall_CopyAllowLine();
-        }
-        else {
-          SciCall_CopyRange(SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetSelectionStart())),
-                            SciCall_GetLineEndPosition(SciCall_LineFromPosition(SciCall_GetSelectionEnd())));
-        }
+        DocPos const iSelLnStart = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetSelectionStart()));
+        DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+        // copy incl last line-breaks
+        DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
+        SciCall_CopyRange(iSelLnStart, iSelLnEnd);
         _END_UNDO_ACTION_
     }
       break;

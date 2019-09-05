@@ -6893,7 +6893,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     return false;
   }
 
-  DocPos const iMinWdChCnt = 2;  // min number of typed chars before AutoC
+  DocPos const iMinWdChCnt = autoInsert ? 0 : 2;  // min number of typed chars before AutoC
 
   char const* const pchAllowdWordChars = 
     ((Globals.bIsCJKInputCodePage || Globals.bUseLimitedAutoCCharSet) ? AutoCompleteWordCharSet :
@@ -6907,11 +6907,10 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   DocPos const iPosBefore = SciCall_PositionBefore(iCurrentPos);
   DocPos const iWordStartPos = SciCall_WordStartPosition(iPosBefore, true);
 
-  if ((iWordStartPos == iPosBefore) || (iCol < iMinWdChCnt) || ((iCurrentPos - iWordStartPos) < iMinWdChCnt)) {
+  if (((iPosBefore - iWordStartPos) < iMinWdChCnt) || (iCol < iMinWdChCnt) || ((iCurrentPos - iWordStartPos) < iMinWdChCnt)) {
     EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
     return true;
   }
-
   DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
   while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
@@ -6921,11 +6920,10 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     }
     iPos = SciCall_PositionAfter(iPos);
   }
-  if (bWordAllNumbers) {
+  if (!autoInsert && bWordAllNumbers) {
     EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
     return true;
   }
-
 
   char pRoot[_MAX_AUTOC_WORD_LEN];
   DocPos const iRootLen = (iCurrentPos - iWordStartPos);
@@ -6936,7 +6934,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
   PWLIST pListHead = NULL;
 
-  if (Settings.AutoCompleteWords)
+  if (Settings.AutoCompleteWords || autoInsert)
   {
     struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
     ft.lpstrText = pRoot;
@@ -6979,7 +6977,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
   }
   // --------------------------------------------------------------------------
-  if (Settings.AutoCLexerKeyWords)
+  if (Settings.AutoCLexerKeyWords || autoInsert)
   // --------------------------------------------------------------------------
   {
     PKEYWORDLIST const pKeyWordList = Style_GetCurrentLexerPtr()->pKeyWords;
@@ -7043,7 +7041,6 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         LL_DELETE(pListHead, pWLItem);
         FreeMem(pWLItem);
       }
-      
       SciCall_AutoCShow(iRootLen, (pList + 1));
       FreeMem(pList);
     }
@@ -8122,8 +8119,9 @@ void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
     SciCall_SetWhitespaceChars(WhiteSpaceCharsAccelerated);
     SciCall_SetPunctuationChars(PunctuationCharsAccelerated);
   }
-  else
+  else {
     SciCall_SetCharsDefault();
+  }
 }
 
 
