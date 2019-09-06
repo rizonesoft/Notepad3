@@ -342,7 +342,7 @@ BEGIN
             MENUITEM "&Toggle Folds\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Focused View\tCtrl+Alt+V",        IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoring Log",                 IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "Scroll Past End of &File",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Scroll Past End of File",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Toolbar"
