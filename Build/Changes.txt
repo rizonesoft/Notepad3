@@ -31,17 +31,20 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.903.#(build) (2019-09-03)
+Current BETA Version 5.19.906.#(build) (2019-09-06)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Preserve File Modification Date/Time: Option stays until new Session is loaded.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
 
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Ctrl+Alt+Enter AutoCompletion behaviour.
+- Changed version of MarkDown-Lexer.
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
@@ -58,6 +61,9 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Ctrl+Shift-C/X and Paste behaviour.
+- Markdown highlight overflow.
+- Redo initial selection after replace (ins/del).
 - Hyperlink Regex detection and Update visible indicator issue.
 - Correct resource id for language sk-SK.
 - Insertion handling: keep selection if non empty selection is replaced.
