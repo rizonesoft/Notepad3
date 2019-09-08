@@ -290,6 +290,8 @@ typedef unsigned int  MemStatusType;
 #define MEM_STATUS_AT0(stats,n) \
   ((n) > 0 && (n) < (int )MEM_STATUS_BITS_NUM  ?  ((stats) & ((MemStatusType )1 << n)) : ((stats) & 1))
 
+#define MEM_STATUS_IS_ALL_ON(stats)  (((stats) & 1) != 0)
+
 #define MEM_STATUS_ON(stats,n) do {\
   if ((n) < (int )MEM_STATUS_BITS_NUM) {\
     if ((n) != 0)\
@@ -302,6 +304,14 @@ typedef unsigned int  MemStatusType;
 #define MEM_STATUS_ON_SIMPLE(stats,n) do {\
     if ((n) < (int )MEM_STATUS_BITS_NUM)\
     (stats) |= ((MemStatusType )1 << (n));\
+} while (0)
+
+#define MEM_STATUS_LIMIT_AT(stats,n) \
+  ((n) < (int )MEM_STATUS_BITS_NUM  ?  ((stats) & ((MemStatusType )1 << n)) : 0)
+#define MEM_STATUS_LIMIT_ON(stats,n) do {\
+  if ((n) < (int )MEM_STATUS_BITS_NUM && (n) != 0) {\
+    (stats) |= ((MemStatusType )1 << (n));\
+  }\
 } while (0)
 
 
@@ -887,28 +897,29 @@ struct re_pattern_buffer {
 #ifdef USE_DIRECT_THREADED_CODE
   enum OpCode* ocs;
 #endif
-  Operation*   ops_curr;
-  unsigned int ops_used;    /* used space for ops */
-  unsigned int ops_alloc;   /* allocated space for ops */
+  Operation*     ops_curr;
+  unsigned int   ops_used;    /* used space for ops */
+  unsigned int   ops_alloc;   /* allocated space for ops */
   unsigned char* string_pool;
   unsigned char* string_pool_end;
 
-  int num_mem;                   /* used memory(...) num counted from 1 */
-  int num_repeat;                /* OP_REPEAT/OP_REPEAT_NG id-counter */
-  int num_null_check;            /* OP_EMPTY_CHECK_START/END id counter */
-  int num_call;                  /* number of subexp call */
-  unsigned int capture_history;  /* (?@...) flag (1-31) */
-  unsigned int bt_mem_start;     /* need backtrack flag */
-  unsigned int bt_mem_end;       /* need backtrack flag */
-  int stack_pop_level;
-  int repeat_range_alloc;
+  int            num_mem;          /* used memory(...) num counted from 1 */
+  int            num_repeat;       /* OP_REPEAT/OP_REPEAT_NG id-counter */
+  int            num_null_check;   /* OP_EMPTY_CHECK_START/END id counter */
+  int            num_call;         /* number of subexp call */
+  MemStatusType  capture_history;  /* (?@...) flag (1-31) */
+  MemStatusType  push_mem_start;   /* need backtrack flag */
+  MemStatusType  push_mem_end;     /* need backtrack flag */
+  MemStatusType  empty_status_mem;
+  int            stack_pop_level;
+  int              repeat_range_alloc;
   OnigRepeatRange* repeat_range;
 
-  OnigEncoding      enc;
-  OnigOptionType    options;
-  OnigSyntaxType*   syntax;
-  OnigCaseFoldType  case_fold_flag;
-  void*             name_table;
+  OnigEncoding     enc;
+  OnigOptionType   options;
+  OnigSyntaxType*  syntax;
+  OnigCaseFoldType case_fold_flag;
+  void*            name_table;
 
   /* optimization info (string search, char-map and anchors) */
   int            optimize;          /* optimize flag */
