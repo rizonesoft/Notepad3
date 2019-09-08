@@ -884,10 +884,6 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 {
   switch (lexerId)
   {
-    case SCLEX_XML:
-      SciCall_SetProperty("lexer.xml.allow.scripts", "1");
-      break;
-
     case SCLEX_CPP:
       SciCall_SetProperty("styling.within.preprocessor", "1");
       SciCall_SetProperty("lexer.cpp.track.preprocessor", "0");
@@ -920,6 +916,10 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 
     case SCLEX_PYTHON:
       SciCall_SetProperty("tab.timmy.whinge.level", "1");
+      break;
+
+    case SCLEX_XML:
+      SciCall_SetProperty("lexer.xml.allow.scripts", "1");
       break;
 
     default:
