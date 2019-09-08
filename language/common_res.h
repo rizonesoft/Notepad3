@@ -81,6 +81,7 @@
 #define IDS_MUI_EOLMODENAME_CRLF        13017
 #define IDS_MUI_EOLMODENAME_CR          13018
 #define IDS_MUI_EOLMODENAME_LF          13019
+#define IDS_MUI_INF_PRSVFILEMODTM       13020
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001

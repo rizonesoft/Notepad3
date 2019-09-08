@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
 END
 
 STRINGTABLE

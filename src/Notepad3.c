@@ -3530,6 +3530,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_PRESERVE_FILEMODTIME:
+      if (!Flags.bPreserveFileModTime) {
+        InfoBoxLng(MB_OK, L"PreserveFileModTime", IDS_MUI_INF_PRSVFILEMODTM);
+      }
       Flags.bPreserveFileModTime = true;
       FileSave(true, false, false, false, Flags.bPreserveFileModTime);
       break;
