@@ -6934,7 +6934,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
   PWLIST pListHead = NULL;
 
-  if (Settings.AutoCompleteWords || autoInsert)
+  if (Settings.AutoCompleteWords || (autoInsert && !Settings.AutoCLexerKeyWords))
   {
     struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
     ft.lpstrText = pRoot;
@@ -6977,7 +6977,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
   }
   // --------------------------------------------------------------------------
-  if (Settings.AutoCLexerKeyWords || autoInsert)
+  if (Settings.AutoCLexerKeyWords || (autoInsert && !Settings.AutoCompleteWords))
   // --------------------------------------------------------------------------
   {
     PKEYWORDLIST const pKeyWordList = Style_GetCurrentLexerPtr()->pKeyWords;
