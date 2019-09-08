@@ -357,8 +357,7 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
-//
-// Added to get the same number of rows for all "strings_xx_yy.rc" files.
+// Lines added to synchronize the number of lines of all "strings_xx_yy.rc" files.
 //
 #endif    // Polish (Poland) resources
 /////////////////////////////////////////////////////////////////////////////
