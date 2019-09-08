@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE
@@ -355,6 +357,9 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
+//
+// Added to get the same number of rows for all "strings_xx_yy.rc" files.
+//
 #endif    // Slovak (Slovakia) resources
 /////////////////////////////////////////////////////////////////////////////
 

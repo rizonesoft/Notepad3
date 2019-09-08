@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click, чтобы открыть файл."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, чтобы открыть ссылку в браузере."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE
@@ -355,6 +357,9 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
+//
+// Added to get the same number of rows for all "strings_xx_yy.rc" files.
+//
 #endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -342,7 +342,7 @@ BEGIN
             MENUITEM "모든 접기 전환(&T)\tCtrl+Shift+F",    IDM_VIEW_TOGGLEFOLDS
             MENUITEM "집중\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
             MENUITEM "열람(&M)",                          IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "파일 끝 스크롤(&F)",                  IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "파일 끝 스크롤(&S)",                  IDM_VIEW_SCROLLPASTEOF
             MENUITEM "하이퍼 링크 툴팁 보이기(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "도구 모음(&T)"

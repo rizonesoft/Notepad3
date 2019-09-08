@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik om het bestand te openen."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om de link in de browser te openen."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE

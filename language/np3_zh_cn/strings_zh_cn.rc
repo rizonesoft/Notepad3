@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件。"
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接。"
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE
@@ -355,6 +357,9 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
+//
+// Added to get the same number of rows for all "strings_xx_yy.rc" files.
+//
 #endif    // Simplified Chinese (China) resources
 /////////////////////////////////////////////////////////////////////////////
 

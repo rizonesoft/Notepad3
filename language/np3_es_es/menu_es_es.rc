@@ -340,7 +340,7 @@ BEGIN
         BEGIN
             MENUITEM "&Código plegable\tCtrl+Shift+Alt+F",              IDM_VIEW_FOLDING
             MENUITEM "&Alternar pliegues\tCtrl+Shift+F",                IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "&Vista enfocada\tCtrl+Alt+V",                     IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Vista enfocada\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoreo de Log",                               IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar información de &hipervínculos",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
