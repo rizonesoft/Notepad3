@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Cliquear para abrir el archivo."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquear para abrir el enlace en navegador."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE
@@ -356,6 +358,8 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
+// Added to get the same number of rows for all "strings_xx_yy.rc" files.
+//
 #endif    // Spanish (Spain, International Sort) resources
 /////////////////////////////////////////////////////////////////////////////
 

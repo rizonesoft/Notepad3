@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré.\nSi une application 32 bits est utilisée,\nessayer de faire glisser le fichier sur la barre d'outils de Notepad3."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Cliquer pour ouvrir le fichier."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquer pour ouvrir le lien dans navigateur."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE

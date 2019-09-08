@@ -342,7 +342,7 @@ BEGIN
             MENUITEM "&Attiva/Disattiva Folds\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Visualizzazione focalizzata\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoraggio log",                          IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "Scorri oltre la fine del file (EOF)",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Scorri oltre la fine del file (EOF)",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostra Tooltip &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Toolbar"

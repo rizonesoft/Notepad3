@@ -183,6 +183,8 @@ BEGIN
     IDS_MUI_DROP_NO_FILE     "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click 파일 열기."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click 브라우저에서 링크 열기."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
 END
 
 STRINGTABLE
@@ -355,6 +357,9 @@ IDS_MUI_ABOUT_RTF_6  "\
 
 END
 
+//
+// Added to get the same number of rows for all "strings_xx_yy.rc" files.
+//
 #endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
