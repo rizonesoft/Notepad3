@@ -1945,9 +1945,8 @@ callout_tag_entry(ScanEnv* env, regex_t* reg, UChar* name, UChar* name_end,
 static void
 scan_env_clear(ScanEnv* env)
 {
-  MEM_STATUS_CLEAR(env->capture_history);
-  MEM_STATUS_CLEAR(env->bt_mem_start);
-  MEM_STATUS_CLEAR(env->bt_mem_end);
+  MEM_STATUS_CLEAR(env->cap_history);
+  MEM_STATUS_CLEAR(env->backtrack_mem);
   MEM_STATUS_CLEAR(env->backrefed_mem);
   env->error      = (UChar* )NULL;
   env->error_end  = (UChar* )NULL;
@@ -1966,6 +1965,7 @@ scan_env_clear(ScanEnv* env)
   xmemset(env->mem_env_static, 0, sizeof(env->mem_env_static));
 
   env->parse_depth         = 0;
+  env->backref_num         = 0;
   env->keep_num            = 0;
   env->save_num            = 0;
   env->save_alloc_num      = 0;
@@ -1997,7 +1997,8 @@ scan_env_add_mem_entry(ScanEnv* env)
       }
 
       for (i = env->num_mem + 1; i < alloc; i++) {
-        p[i].node = NULL_NODE;
+        p[i].mem_node = NULL_NODE;
+        p[i].empty_repeat_node = NULL_NODE;
       }
 
       env->mem_env_dynamic = p;
@@ -2013,7 +2014,7 @@ static int
 scan_env_set_mem_node(ScanEnv* env, int num, Node* node)
 {
   if (env->num_mem >= num)
-    SCANENV_MEMENV(env)[num].node = node;
+    SCANENV_MEMENV(env)[num].mem_node = node;
   else
     return ONIGERR_PARSER_BUG;
   return 0;
@@ -2326,7 +2327,7 @@ node_new_backref(int back_num, int* backrefs, int by_name,
 
   for (i = 0; i < back_num; i++) {
     if (backrefs[i] <= env->num_mem &&
-        IS_NULL(SCANENV_MEMENV(env)[backrefs[i]].node)) {
+        IS_NULL(SCANENV_MEMENV(env)[backrefs[i]].mem_node)) {
       NODE_STATUS_ADD(node, RECURSION);   /* /...(\1).../ */
       break;
     }
@@ -2346,6 +2347,8 @@ node_new_backref(int back_num, int* backrefs, int by_name,
     for (i = 0; i < back_num; i++)
       p[i] = backrefs[i];
   }
+
+  env->backref_num++;
   return node;
 }
 
@@ -2393,13 +2396,13 @@ node_new_quantifier(int lower, int upper, int by_number)
   CHECK_NULL_RETURN(node);
 
   NODE_SET_TYPE(node, NODE_QUANT);
-  QUANT_(node)->lower           = lower;
-  QUANT_(node)->upper           = upper;
-  QUANT_(node)->greedy          = 1;
-  QUANT_(node)->emptiness       = BODY_IS_NOT_EMPTY;
-  QUANT_(node)->head_exact      = NULL_NODE;
-  QUANT_(node)->next_head_exact = NULL_NODE;
-  QUANT_(node)->is_refered      = 0;
+  QUANT_(node)->lower            = lower;
+  QUANT_(node)->upper            = upper;
+  QUANT_(node)->greedy           = 1;
+  QUANT_(node)->emptiness        = BODY_IS_NOT_EMPTY;
+  QUANT_(node)->head_exact       = NULL_NODE;
+  QUANT_(node)->next_head_exact  = NULL_NODE;
+  QUANT_(node)->include_referred = 0;
   if (by_number != 0)
     NODE_STATUS_ADD(node, BY_NUMBER);
 
@@ -5270,7 +5273,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       if (IS_SYNTAX_OP(syn, ONIG_SYN_OP_DECIMAL_BACKREF) &&
           (num <= env->num_mem || num <= 9)) { /* This spec. from GNU regex */
         if (IS_SYNTAX_BV(syn, ONIG_SYN_STRICT_CHECK_BACKREF)) {
-          if (num > env->num_mem || IS_NULL(SCANENV_MEMENV(env)[num].node))
+          if (num > env->num_mem || IS_NULL(SCANENV_MEMENV(env)[num].mem_node))
             return ONIGERR_INVALID_BACKREF;
         }
 
@@ -5341,7 +5344,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
             if (IS_SYNTAX_BV(syn, ONIG_SYN_STRICT_CHECK_BACKREF)) {
               if (back_num > env->num_mem ||
-                  IS_NULL(SCANENV_MEMENV(env)[back_num].node))
+                  IS_NULL(SCANENV_MEMENV(env)[back_num].mem_node))
                 return ONIGERR_INVALID_BACKREF;
             }
             tok->type = TK_BACKREF;
@@ -5358,7 +5361,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
               int i;
               for (i = 0; i < num; i++) {
                 if (backs[i] > env->num_mem ||
-                    IS_NULL(SCANENV_MEMENV(env)[backs[i]].node))
+                    IS_NULL(SCANENV_MEMENV(env)[backs[i]].mem_node))
                   return ONIGERR_INVALID_BACKREF;
               }
             }
@@ -6045,10 +6048,12 @@ fetch_char_property_to_ctype(UChar** src, UChar* end, ScanEnv* env)
 {
   int r;
   OnigCodePoint c;
-  OnigEncoding enc = env->enc;
-  UChar *prev, *start, *p = *src;
+  OnigEncoding enc;
+  UChar *prev, *start, *p;
 
-  r = 0;
+  p = *src;
+  enc = env->enc;
+  r = ONIGERR_END_PATTERN_WITH_UNMATCHED_PARENTHESIS;
   start = prev = p;
 
   while (!PEND) {
@@ -6056,18 +6061,20 @@ fetch_char_property_to_ctype(UChar** src, UChar* end, ScanEnv* env)
     PFETCH_S(c);
     if (c == '}') {
       r = ONIGENC_PROPERTY_NAME_TO_CTYPE(enc, start, prev);
-      if (r < 0) break;
+      if (r >= 0) {
+        *src = p;
+      }
+      else {
+        onig_scan_env_set_error_string(env, r, *src, prev);
+      }
 
-      *src = p;
       return r;
     }
     else if (c == '(' || c == ')' || c == '{' || c == '|') {
-      r = ONIGERR_INVALID_CHAR_PROPERTY_NAME;
       break;
     }
   }
 
-  onig_scan_env_set_error_string(env, r, *src, prev);
   return r;
 }
 
@@ -6230,12 +6237,13 @@ parse_char_class(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
   Node* node;
   CClassNode *cc, *prev_cc;
   CClassNode work_cc;
-
-  enum CCSTATE state;
-  enum CCVALTYPE val_type, in_type;
   int val_israw, in_israw;
+  enum CCSTATE state;
+  enum CCVALTYPE in_type;
+  enum CCVALTYPE val_type;
 
   *np = NULL_NODE;
+  val_type = -1;
   env->parse_depth++;
   if (env->parse_depth > ParseDepthLimit)
     return ONIGERR_PARSE_DEPTH_LIMIT_OVER;
@@ -6741,7 +6749,8 @@ parse_long(OnigEncoding enc, UChar* s, UChar* end, int sign_on, long max, long* 
 
 static int
 parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
-                   unsigned int types[], OnigValue vals[], ScanEnv* env)
+                   int max_arg_num, unsigned int types[], OnigValue vals[],
+                   ScanEnv* env)
 {
 #define MAX_CALLOUT_ARG_BYTE_LENGTH   128
 
@@ -6760,9 +6769,9 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
 
   if (PEND) return ONIGERR_INVALID_CALLOUT_PATTERN;
 
+  c = 0;
   n = 0;
   while (n < ONIG_CALLOUT_MAX_ARGS_NUM) {
-    c   = 0;
     cn  = 0;
     esc = 0;
     eesc = 0;
@@ -6809,6 +6818,9 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
     }
 
     if (cn != 0) {
+      if (max_arg_num >= 0 && n >= max_arg_num)
+        return ONIGERR_INVALID_CALLOUT_ARG;
+
       if (skip_mode == 0) {
         if ((types[n] & ONIG_TYPE_LONG) != 0) {
           int fixed = 0;
@@ -6941,7 +6953,7 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
 
     /* read for single check only */
     save = p;
-    arg_num = parse_callout_args(1, '}', &p, end, 0, 0, env);
+    arg_num = parse_callout_args(1, '}', &p, end, -1, 0, 0, env);
     if (arg_num < 0) return arg_num;
 
     is_not_single = PPEEK_IS(cterm) ?  0 : 1;
@@ -6955,7 +6967,7 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
       types[i] = get_callout_arg_type_by_name_id(name_id, i);
     }
 
-    arg_num = parse_callout_args(0, '}', &p, end, types, vals, env);
+    arg_num = parse_callout_args(0, '}', &p, end, max_arg_num, types, vals, env);
     if (arg_num < 0) return arg_num;
 
     if (PEND) return ONIGERR_END_PATTERN_IN_GROUP;
@@ -7115,7 +7127,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           CHECK_NULL_RETURN_MEMERR(*np);
           BAG_(*np)->m.regnum = num;
           if (list_capture != 0)
-            MEM_STATUS_ON_SIMPLE(env->capture_history, num);
+            MEM_STATUS_ON_SIMPLE(env->cap_history, num);
           env->num_named++;
         }
         else {
@@ -7257,7 +7269,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
             if (IS_SYNTAX_BV(env->syntax, ONIG_SYN_STRICT_CHECK_BACKREF)) {
               if (back_num > env->num_mem ||
-                  IS_NULL(SCANENV_MEMENV(env)[back_num].node))
+                  IS_NULL(SCANENV_MEMENV(env)[back_num].mem_node))
                 return ONIGERR_INVALID_BACKREF;
             }
 
@@ -7279,7 +7291,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
               int i;
               for (i = 0; i < num; i++) {
                 if (backs[i] > env->num_mem ||
-                    IS_NULL(SCANENV_MEMENV(env)[backs[i]].node))
+                    IS_NULL(SCANENV_MEMENV(env)[backs[i]].mem_node))
                   return ONIGERR_INVALID_BACKREF;
               }
             }
@@ -7434,7 +7446,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           return ONIGERR_GROUP_NUMBER_OVER_FOR_CAPTURE_HISTORY;
         }
         BAG_(*np)->m.regnum = num;
-        MEM_STATUS_ON_SIMPLE(env->capture_history, num);
+        MEM_STATUS_ON_SIMPLE(env->cap_history, num);
       }
       else {
         return ONIGERR_UNDEFINED_GROUP_OPTION;

@@ -168,7 +168,7 @@ Oniguruma API  Version 6.9.3  2019/07/06
 # int onig_new_deluxe(regex_t** reg, const UChar* pattern, const UChar* pattern_end,
                       OnigCompileInfo* ci, OnigErrorInfo* einfo)
 
-  This function is deprecate, and it does not allow the case where
+  This function is deprecated, and it does not allow the case where
   the encoding of pattern and target is different.
 
   Create a regex object.

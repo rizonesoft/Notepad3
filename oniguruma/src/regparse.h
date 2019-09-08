@@ -73,9 +73,12 @@ enum BodyEmptyType {
   BODY_IS_EMPTY_POSSIBILITY_REC = 3
 };
 
+struct _Node;
+
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
 
   UChar* s;
   UChar* end;
@@ -87,6 +90,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
 
   unsigned int flags;
   BitSet bs;
@@ -96,6 +100,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
   struct _Node* body;
 
   int lower;
@@ -104,12 +109,13 @@ typedef struct {
   enum BodyEmptyType emptiness;
   struct _Node* head_exact;
   struct _Node* next_head_exact;
-  int is_refered;     /* include called node. don't eliminate even if {0} */
+  int include_referred;   /* include called node. don't eliminate even if {0} */
 } QuantNode;
 
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
   struct _Node* body;
 
   enum BagType type;
@@ -152,6 +158,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
   struct _Node* body; /* to BagNode : BAG_MEMORY */
 
   int     by_number;
@@ -166,6 +173,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
 
   int  back_num;
   int  back_static[NODE_BACKREFS_SIZE];
@@ -176,6 +184,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
   struct _Node* body;
 
   int type;
@@ -186,6 +195,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
 
   struct _Node* car;
   struct _Node* cdr;
@@ -194,6 +204,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
 
   int ctype;
   int not;
@@ -204,6 +215,7 @@ typedef struct {
 typedef struct {
   NodeType node_type;
   int status;
+  struct _Node* parent;
 
   enum GimmickType type;
   int  detail_type;
@@ -216,6 +228,7 @@ typedef struct _Node {
     struct {
       NodeType node_type;
       int status;
+      struct _Node* parent;
       struct _Node* body;
     } base;
 
@@ -326,6 +339,7 @@ typedef struct _Node {
 #define NODE_ST_FIXED_OPTION          (1<<18)
 #define NODE_ST_PROHIBIT_RECURSION    (1<<19)
 #define NODE_ST_SUPER                 (1<<20)
+#define NODE_ST_EMPTY_STATUS_CHECK    (1<<21)
 
 
 #define NODE_STATUS(node)           (((Node* )node)->u.base.status)
@@ -355,7 +369,10 @@ typedef struct _Node {
     ((NODE_STATUS(node) & NODE_ST_PROHIBIT_RECURSION) != 0)
 #define NODE_IS_STRICT_REAL_REPEAT(node) \
     ((NODE_STATUS(node) & NODE_ST_STRICT_REAL_REPEAT) != 0)
+#define NODE_IS_EMPTY_STATUS_CHECK(node) \
+    ((NODE_STATUS(node) & NODE_ST_EMPTY_STATUS_CHECK) != 0)
 
+#define NODE_PARENT(node)         ((node)->u.base.parent)
 #define NODE_BODY(node)           ((node)->u.base.body)
 #define NODE_QUANT_BODY(node)     ((node)->body)
 #define NODE_BAG_BODY(node)       ((node)->body)
@@ -368,7 +385,8 @@ typedef struct _Node {
     (senv)->mem_env_dynamic : (senv)->mem_env_static)
 
 typedef struct {
-  Node* node;
+  Node* mem_node;
+  Node* empty_repeat_node;
 } MemEnv;
 
 typedef struct {
@@ -380,9 +398,8 @@ typedef struct {
   OnigCaseFoldType case_fold_flag;
   OnigEncoding     enc;
   OnigSyntaxType*  syntax;
-  MemStatusType    capture_history;
-  MemStatusType    bt_mem_start;
-  MemStatusType    bt_mem_end;
+  MemStatusType    cap_history;
+  MemStatusType    backtrack_mem; /* backtrack/recursion */
   MemStatusType    backrefed_mem;
   UChar*           pattern;
   UChar*           pattern_end;
@@ -400,7 +417,7 @@ typedef struct {
   MemEnv           mem_env_static[SCANENV_MEMENV_SIZE];
   MemEnv*          mem_env_dynamic;
   unsigned int     parse_depth;
-
+  int backref_num;
   int keep_num;
   int save_num;
   int save_alloc_num;

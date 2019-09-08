@@ -3194,7 +3194,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
-      i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
+      i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
       i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD || i == SCLEX_TOML) && !ro);
@@ -3530,6 +3530,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_PRESERVE_FILEMODTIME:
+      if (!Flags.bPreserveFileModTime) {
+        InfoBoxLng(MB_OK, L"PreserveFileModTime", IDS_MUI_INF_PRSVFILEMODTM);
+      }
       Flags.bPreserveFileModTime = true;
       FileSave(true, false, false, false, Flags.bPreserveFileModTime);
       break;
@@ -4520,8 +4523,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_REGISTRY:
           EditToggleLineComments(Globals.hwndEdit, L";", true);
           break;
-        case SCLEX_SQL:
         case SCLEX_LUA:
+        case SCLEX_SQL:
         case SCLEX_VHDL:
           EditToggleLineComments(Globals.hwndEdit, L"--", true);
           break;
@@ -4549,7 +4552,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_MAKEFILE:
         case SCLEX_VB:
         case SCLEX_ASM:
-        case SCLEX_SQL:
         case SCLEX_PERL:
         case SCLEX_PYTHON:
         case SCLEX_PROPERTIES:
@@ -4571,17 +4573,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         case SCLEX_NIMROD:
         case SCLEX_TOML:
           break;
-        case SCLEX_HTML:
-        case SCLEX_XML:
-        case SCLEX_CSS:
-        case SCLEX_CPP:
-        case SCLEX_NSIS:
         case SCLEX_AVS:
+        case SCLEX_CPP:
+        case SCLEX_CSS:
+        case SCLEX_HTML:
+        case SCLEX_NSIS:
+        case SCLEX_SQL:
         case SCLEX_VHDL:
+        case SCLEX_XML:
           EditEncloseSelection(Globals.hwndEdit, L"/*", L"*/");
           break;
-        case SCLEX_PASCAL:
         case SCLEX_INNOSETUP:
+        case SCLEX_PASCAL:
           EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
           break;
         case SCLEX_LUA:

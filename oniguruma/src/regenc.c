@@ -182,7 +182,8 @@ onigenc_get_right_adjust_char_head_with_prev(OnigEncoding enc,
     p += enclen(enc, p);
   }
   else {
-    if (prev) *prev = (const UChar* )NULL; /* Sorry */
+    if (prev)
+      *prev = onigenc_get_prev_char_head(enc, start, p);
   }
   return p;
 }
