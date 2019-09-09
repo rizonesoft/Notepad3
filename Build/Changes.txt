@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.908.#(build) (2019-09-08)
+Current BETA Version 5.19.909.#(build) (2019-09-09)
 ==================================================
 
 --------------------------------------------------
@@ -43,6 +43,8 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Relax UTF-8 orientation (lower confidence level for UCHARDET 
+    and use system's code-page as detection fallback by default)
 - Ctrl+Alt+Enter AutoCompletion behaviour.
 - Changed version of MarkDown-Lexer.
 - Menu and behavior for copy/paste and copy/paste line.
@@ -141,7 +143,7 @@ FIXES:
 - Oniguruma (ONI) allow CRLF as newline token.
 - Notepad3.ini file, remove some keys with default values (styles).
 - Extended encoding detection debug information.
-- Encoding detection failure fallback:  current code-page or default encoding on new (if fallback forced).
+- Encoding detection failure fallback: current code-page or default encoding on new (if fallback forced).
 - Multi-Selection while Mark-Occurrences of current word is active.
 
 --------------------------------------------------
@@ -171,14 +173,14 @@ NEW:
 - 2nd Solution to build a shared library (DLL) (C++ runtime & Scintilla) version of Notepad3.
 - Menu entry to mute MessageBox beeps.
 - Theme Menu to load exported styles "on the fly" (e.g.: "Dark" or "Obsidian") 
-  Factory Default, Standard Settings, a Dark Theme.
+    Factory Default, Standard Settings, a Dark Theme.
 - Close Zoom Info Bubble after ~3 sec..
 - Recent History button in Toolbar.
 - [Settings2] key-values (internal) to control concurrent encoding detection.
 - 2nd Encoding-Detector "Mozilla's UCHARDET" concurrent to 
     CED (Google's Compact Encoding Detection).
 - Language selection in Main Menu .
-- Command line option [/Y] to search env PATH for relative filename  (NLS: strings).
+- Command line option [/Y] to search env PATH for relative filename (NLS: strings).
 - Customize Schemes: Caret style 'ovrbar' (default) to switch caret style between BAR and BLOCK .
 - Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings).
 - Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes).
@@ -385,7 +387,7 @@ CHANGES:
 - Disabling UpdateChecker menu entry if no executable is configured.
 - Adapted test to new Aboutbox calling.
 - Menu Help instead of "?" 
-  (move File History (Recent File List) to Accel-Key Ctrl+Alt+H).
+- Move File History (Recent File List) to Accel-Key Ctrl+Alt+H.
 
 --------------------------------------------------
 ENHANCEMENT:
@@ -393,11 +395,11 @@ ENHANCEMENT:
 - Latest compiler tool chain recognition.
 - Pad with Spaces in Rectangular Selection.
 - Handling of default/standard lexer styles.
-- Notepad3.ini redirection to avoid overriding settings by zipped  distribution.
+- Notepad3.ini redirection to avoid overriding settings by zipped distribution.
 - Added last find pattern to file history.
 - Added option to remove blank lines (containing blanks/tabs only).
 - Added option to skip ANSI Code Page detection (tellenc) 
-  (default is ON to preserve historic behavior).
+    (default is ON to preserve historic behavior).
 - Added "Toggle View" button to toolbar.
 - Compress White Spaces within rectangular selection.
 - Consistent rectangular selection restauration after block operations.
@@ -692,7 +694,7 @@ FIXES:
 - Support styler attribute "eolfilled" in any Reg-Key case (Windows Registry Lexer).
 - Small datatype correction.
 - Map Toolbar Labels according to bitmap/settings file.
-- "Registry Files lexer: bug in GUID in Key Path with eolfilled attribute.
+- Registry Files lexer: bug in GUID in Key Path with eolfilled attribute.
 - Broken swap clipboard w/ selection.
 - Restore selection set/replaced by replace dialog.
 - Fill find/replace search box with selection/clipboard on non switching Ctrl+F/H.
@@ -999,7 +1001,7 @@ Version 3.17.1124.690 (24 November 2017)
 - Refactoring of "Replace All" methods.
 - Split C++ Keywords in two parts (1st: standard keywords, 2nd: keywords starting with double underscore "__xxx").
 - Minor polish of Readme.md.
-  Put changes compared to Notepad2-mod into Readme.md.
+- Put changes compared to Notepad2-mod into Readme.md.
 - Repair empty resource file (Notepad3.rc).
 - Bookmark Enhancements
 - Replaced old bookmark pixmap (visible margin) by Scintilla's BOOKMARK marker style.
@@ -1014,7 +1016,7 @@ Version 3.17.1124.690 (24 November 2017)
 - New: validate regexpr.
 - Fix: Revert to Scintilla's default mouse down and mouse wheel capture mode.
 - Fix: "Mark All Occurrences" setting of find/replace dialog should only be persisted, if "Save Settings on Exit" is enabled.
-- Fix:  UpdateLineNumberWidth() triggers cleanup.
+- Fix: UpdateLineNumberWidth() triggers cleanup.
 - Fix: Issue with update of line number margin width.
 - Fix: Transform backslash issues.
 - Fix: C/C++ keywords and types.
@@ -1047,32 +1049,31 @@ Version 2.17.1023.632 (23 October 2017)
 ==================================================
 - Add code snippet (activation only prepare for future extensions).
 - Added switch ([Settings2] UseOldStyleBraceMatching) to preserve old style 
-  brace matching behavior.
+    brace matching behavior.
 - Applied patch from Neil Hodgson (Master of Scintilla Lib - respond to 
-  scintilla lib issue report #1976).
+    scintilla lib issue report #1976).
 - Changed buffers for operating edit box in customize schemes.
 - Documentation: Minor changes to Notepad3.txt.
 - Documentation: doc/Notepad3.txt - add description of [Section2] .ini settings 
-  (mostly taken from orig. Notepad2 FAQs).
+    (mostly taken from orig. Notepad2 FAQs).
 - Default to modern displays settings, using Scintilla's new technology 
-  : SciDirectWriteTech=1, SciFontQuality=3
+    : SciDirectWriteTech=1, SciFontQuality=3
 - First prottotype of VirtualSpace RectangularSelection by default (very old 
-  behavior can be turned on by [Settings2] DenyVirtualSpaceAccess=1).
+    behavior can be turned on by [Settings2] DenyVirtualSpaceAccess=1).
 - Implemented Feature Request #51 (buffer size of file extension edit box).
-- New: Show warning before loading file with unknown (custom schemes) file 
-  name extension.
+- New: Show warning before loading file with unknown (custom schemes) file name extension.
 - License.txt: switch to UTF-8 encoding.
 - Restore wrongly discarded np3portableapps .ini files for NP3Portable, 
-  redirecting .ini reading to correct path.
+    redirecting .ini reading to correct path.
 - Small code refactoring (replacing deprecated methods).
 - Settings [Section2] (cannot be set via GUI) add all possible names and 
-  default values, if applicable.
+    default values, if applicable.
 - Fixed .ini paths for np3portableapps.
 - Fix: Crash in Favorites management.
 - Fix: pasting clipboard content into selection box should replace text and 
-  cancel selection then (in case of swapping clipboard, the selection is preserved).
+    cancel selection then (in case of swapping clipboard, the selection is preserved).
 - Remove settings for "Favorites" directory -> NP3 uses then users system 
-  default folder (%USERPROFILE%\Favorites).
+    default folder (%USERPROFILE%\Favorites).
 
 
 ==================================================
@@ -1081,9 +1082,9 @@ Version 2.17.1016.610 (16 October 2017)
 - Added remove button for list items.
 - Checkbox for "preserve caret position" settings.
 - File History Dlg: rename button "Remove" -> "Discard" 
-  (discard selected item from file history list).
+    (discard selected item from file history list).
 - Minor bugfixes for session feature 
-  (file history: remember caret pos and encoding).
+    (file history: remember caret pos and encoding).
 - Removed unnecessary build artifacts from np3portable.
 
 
@@ -1091,7 +1092,7 @@ Version 2.17.1016.610 (16 October 2017)
 Version 2 Build 605 (15 October 2017)
 ==================================================
 - Fix: Crash on accessing UndoRedo structure while NP3 instance has 
-  not been initialized completely (.LOG file opening bug).
+    not been initialized completely (.LOG file opening bug).
 
 
 ==================================================
@@ -1099,7 +1100,7 @@ Version 2 Build 600 (15 October 2017)
 ==================================================
 - Fix: Virtual space access: column indicator.
 - Fix: Customize Schemes... Font... selection: bold/italic now detected 
-  (bold: if selection >= FW_SEMIBOLD)
+    (bold: if selection >= FW_SEMIBOLD)
 
 
 ==================================================
@@ -1129,13 +1130,11 @@ Version 2 Build 568 (8 October 2017)
 - Fix: In-text encoding (convert encoding).
 - Fix: minor StatusBar string corrections.
 - Fix: Support pasting position at virtual space.
-- Fix: Move caret to convenient position after pasting clipboard 
-  (no current selection).
-- Fix: Virtual space navigation and rectangular selection (minor issues) 
-  (allow "Virtual Space Rectangular Selection" 
-  also allows moving Caret into virtual space (beyond line end))
-- Fix: Copy/Cut & Paste of current line (in case of no selection - 
-  Visual Studio behavior - using SCI's MSDEVLineSelect).
+- Fix: Move caret to convenient position after pasting clipboard (no current selection).
+- Fix: Virtual space navigation and rectangular selection (allow "Virtual Space Rectangular Selection" 
+    also allows moving Caret into virtual space (beyond line end))
+- Fix: Copy/Cut & Paste of current line (in case of no selection 
+- Visual Studio behavior - using SCI's MSDEVLineSelect).
 - Fix: Bug in code-page related text conversion.
 
 
@@ -1146,11 +1145,11 @@ Version 2 Build 548 (3 October 2017)
 - Fix: Made corrections to build 505 change log (spelling, grammar, etc).
 - Fix: FILE status becomes [MODIFIED] when doing CONTROL+A to select ALL.
 - Fix: Paste from clipboard to ANSI code page: 
-  unnecessary switching encoding to UTF-8.
+    unnecessary switching encoding to UTF-8.
 - Fix: Undo/Redo of virtual space selection rectangle not correct.
 - Fix: StatusBar SelectionCount (Sel) : count chars instead of bytes.
 - Fix: Punctuation chars for "Accelerated Word Navigation" (Settings2: 
-  ExtendedWhiteSpaceChars= add non word chars here).
+    ExtendedWhiteSpaceChars= add non word chars here).
 - Fix: Do mouse wheel scrolling in editor area only.
 - Fix: DPI awareness in manifest.
 - Fix: word delimiter in case of "Accelerated Word Navigation".
@@ -1163,50 +1162,48 @@ Version 2 Build 505 (23 September 2017)
 - 1st chunk of StrSafe migration.
 - Some more StrSafe changes
 - Fix: manually edited settings (SciDirectWriteTech, SciFontQuality) 
-  should be placed in settings section [Settings2].
+    should be placed in settings section [Settings2].
 - Extended default "space char set" for "Accelerated Word Navigation" to avoid 
-  unexpected "accelerated word navigation" behavior, space-char extension is 
-  restricted to 7-bit ASCII char set (ignoring specified non-7-bit-ASCII chars).
+    unexpected "accelerated word navigation" behavior, space-char extension is 
+    restricted to 7-bit ASCII char set (ignoring specified non-7-bit-ASCII chars).
 - StrSafe adaptions
 - Fixed: settings SciFontQuality have been overwritten by Scheme configuration.
-  (Fonts: Calibri, Cambria, Candara, Consolas, Constantia, Corbel, Segoe UI are using 
-  'cleartype smoothing' (SC_EFF_QUALITY_LCD_OPTIMIZED) by default, if not 
-  configured in Schema definition for Lexer)
+    (Fonts: Calibri, Cambria, Candara, Consolas, Constantia, Corbel, Segoe UI are using 
+    'cleartype smoothing' (SC_EFF_QUALITY_LCD_OPTIMIZED) by default, if not 
+    configured in Schema definition for Lexer)
 - Added font "Source Code Pro" to list of special fonts for cleartype smoothing.
 - Fix: undo destructive operation on selection (rectangle) does not restore 
-  selection or preserves selection mode (extends selection on caret movement)
-  -> need to send SCI_CANCEL at the end of restored selection.
+    selection or preserves selection mode (extends selection on caret movement)
+    -> need to send SCI_CANCEL at the end of restored selection.
 - Found bug caused by StrSafe migration 
-  (COUNTOF() for buffer size must not be used on buffer pointer)
+    (COUNTOF() for buffer size must not be used on buffer pointer)
 - migrate StrCpyN() and StrCatBuff() to corresponding StrSafe.h methods
 - Adapted lstrcpyn() calls according to StrSafe.h requirements.
 - Refactoring of "Accelerated Word Navigation" to be compliant with Scintillas 
-  WhiteSpace and Punctuation defines.
+    WhiteSpace and Punctuation defines.
 - "Accelerated Word Navigation" activation influences "Mark Occurrences" (whole word) if set
 - Extended: Remember selection undo / redo
 - Added undo / redo selection to more operations
 - Found Scintilla 400 method "SCI_CUT" (cut selection) broken: lost last char
-  replaced by SCI_COPY & SCI_CLEAR combination (for now).
-- changes to EditGetClipboardText() solved the SCI_CUT problem, so it can be 
-  switched back from SCI_COPY & SCI_CLEAR to SCI_CUT 
-  (byte alignment in 64-bit, i am nut sure)
+    replaced by SCI_COPY & SCI_CLEAR combination (for now).
+- changes to EditGetClipboardText() solved the SCI_CUT problem, so it can be switched back 
+    from SCI_COPY & SCI_CLEAR to SCI_CUT (byte alignment in 64-bit, i am nut sure)
 - switching Scintilla internal codepage to UTF-8 only (resp. Japanese, 
-  Chinese and Korean DBCS) single-byte encoding is supported externally and 
-  converted (fore and back) to UTF-8 internally, this simplifies 
-  i.e. clipboard exchange, etc.
+    Chinese and Korean DBCS) single-byte encoding is supported externally and 
+    converted (fore and back) to UTF-8 internally, this simplifies i.e. clipboard exchange, etc.
 - Removed support for obsolete Korean Johab (1361) codepage.
 - Fixed ConvertText() according to internal SCI codepage
 - Refactoring: Encoding handling
 - More operations for selections undo/redo.
 - Enabled "unlimited" (as in Scintilla Lib: dep. on memory and INT_MAX) 
-  undo / redo selection history using utarray from uthash header library 
-  (https://troydhanson.github.io/uthash/index.html)
+    undo / redo selection history using utarray from uthash header library 
+    (https://troydhanson.github.io/uthash/index.html)
 - Moved crypto readme to doc dir
 - remove internal codepage support for Chinese, Japan, Korean DBCS use 
-  generalized UTF-8 codepage instead 
-  (conversions do not work as expected within scintilla lib)
+    generalized UTF-8 codepage instead 
+    (conversions do not work as expected within scintilla lib)
 - Dropping Windows XP support , using compiler toolset vc141 Win SDK 10.0. 
-  (current VC++ redistributable needed?)
+    (current VC++ redistributable needed?)
 - Replaced lstrcmp() and lstrcmpi() by StrSafe (helper.h defined) methods.
 - Relaunch elevated keeping current changes in a buffer.
 - Fixed some problems for feature "relaunch elevated preserve changes".
@@ -1220,23 +1217,22 @@ Version 2 Build 505 (23 September 2017)
 - Changed version display on Help/About.
 - New Powershell script to patch version numbers
 - appveyor.yml using same powershell commands to patch version
-- Remove FindReplaceDlg handle declared as external from compilation unit 
-  Edit.c - not really needed here. (externals (handles / pointers) seemed to 
-  be a problem on module init instance time in 64-bit)
+- Remove FindReplaceDlg handle declared as external from compilation unit Edit.c not really needed here.
+    (externals (handles / pointers) seemed to be a problem on module init instance time in 64-bit)
 - Fixed: Open find dialog the first time (new NP3 instance) while
-  clipboard is empty, NP3 crashes (try to LocalFree() static allocated memory)
+    clipboard is empty, NP3 crashes (try to LocalFree() static allocated memory)
 - Fixed: RegExpr "Find previous" corrected (find mode "left to right" has been 
-  used, which has not the intended behavior).
+    used, which has not the intended behavior).
 - Updated Compiler Info.
 - Added build.txt (and .ps1 changes) for Local Build Version patching 
-  (common AppVeyor/Local script).
+    (common AppVeyor/Local script).
 - Fixed issue "Convert to Title Case" while selected text is all upper case.
 - Fixed broken "Complete Word" feature (Ctrl+Enter/Return).
 - Changed accelerator key for feature "Complete Word" from Ctrl+Enter to Ctrl+Alt+Enter.
 - Added feature "Insert New (empty) Line above current line Ctrl+Enter (as in VisualStudio).
 - Code cleanup
 - Added new Settings "Virtual Space on Rectangular Selection" used to select. 
-  rectangle not delimited by line endings (but including virtual space).
+    rectangle not delimited by line endings (but including virtual space).
 - Readme.txt Updated. (Thanks Will)
 
 
@@ -1320,7 +1316,7 @@ Version 1 Build 386 (08 December 2016)
 ==================================================
 - Added RaPeHoff to the contributors list.
 - Update to Scintilla 371 (NP2 adaption due to deprecated data types).
-- clean-code Solution (instead of "magic numbers").
+- Clean-code Solution (instead of "magic numbers").
 - Crypto Module: code cleanup 
 - Crypto Module: Replaced LocalAlloc/GlobalAlloc by HeapAlloc methods.
 - Integration of DeelX RegExpr engine (http://www.regexlab.com/en/deelx/) 
