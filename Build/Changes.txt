@@ -78,7 +78,7 @@ FIXES:
 --------------------------------------------------
 REMOVED:
 --------------------------------------------------
-- "Ctrl+Shift+Alt+F" (Code Folding) because no longer works with Win10 1903.
+- "Ctrl+Shift+Alt+F" (Code Folding) no longer works from Windows 10 v1903.
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
