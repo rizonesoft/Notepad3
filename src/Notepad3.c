@@ -1035,7 +1035,10 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
 {
   WININFO winfo = *pWinInfo;
 
-  if (flagsPos == 1) {
+  if (flagsPos == 0) {
+    winfo = s_WinInfo;
+  }
+  else if (flagsPos == 1) {
     winfo.x = winfo.y = winfo.cx = winfo.cy = CW_USEDEFAULT;
     winfo.max = false;
     winfo.zoom = 100;
@@ -7668,7 +7671,7 @@ void ParseCommandLine()
               }
             }
             else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-              WININFO wi;
+              WININFO wi = INIT_WININFO;
               int bMaximize = 0;
               int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &bMaximize);
               if (itok == 4 || itok == 5) { // scan successful
@@ -9647,6 +9650,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
   lpArgs = StrCutI(lpArgs, L"-u ");
   WCHAR wchFlags[32] = { L'\0' };
   if (s_flagAppIsClosing) { StringCchCopy(wchFlags, COUNTOF(wchFlags), L"/UC"); }
+
   WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
   if (s_lpOrigFileArg) {
