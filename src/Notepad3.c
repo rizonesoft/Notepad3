@@ -130,7 +130,7 @@ static int       s_iSortOptions = 0;
 static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
 static UINT      s_msgTaskbarCreated = 0;
-static bool      s_dwChangeNotifyTime = 0;
+static DWORD     s_dwChangeNotifyTime = 0;
 static HANDLE    s_hChangeHandle = NULL;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
@@ -2927,13 +2927,15 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(wParam);
   UNUSED(lParam);
 
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+
   if (FileWatching.FileWatchingMode == FWM_MSGBOX || IsSaveNeeded(ISN_GET)) {
     SetForegroundWindow(hwnd);
   }
 
   if (PathFileExists(Globals.CurrentFile)) 
   {
-    bool bRevertFile = (FileWatching.FileWatchingMode == 2 && !IsSaveNeeded(ISN_GET));
+    bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !IsSaveNeeded(ISN_GET));
 
     if (!bRevertFile) {
       INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
@@ -2947,7 +2949,8 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
         //SetForegroundWindow(hwnd);
-        SciCall_ScrollToEnd(); 
+        //~SciCall_ScrollToEnd();
+        SciCall_GotoPos(iCurPos);
       }
     }
   }
@@ -5241,8 +5244,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         InstallFileWatching(Globals.CurrentFile); // force
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
-        //~SciCall_DocumentEnd();
-        SciCall_ScrollToEnd();
+
         UpdateToolbar();
       }
       break;
@@ -10486,36 +10488,33 @@ void CancelCallTip()
 //  InstallFileWatching()
 //
 //
+static void _TerminateFileWatching()
+{
+  if (s_bRunningWatch)
+  {
+    if (s_hChangeHandle) {
+      FindCloseChangeNotification(s_hChangeHandle);
+      s_hChangeHandle = NULL;
+    }
+    KillTimer(NULL, ID_WATCHTIMER);
+    s_bRunningWatch = false;
+    s_dwChangeNotifyTime = 0;
+  }
+}
+
+
 void InstallFileWatching(LPCWSTR lpszFile)
 {
   // Terminate
   if ((FileWatching.FileWatchingMode == FWM_NONE) || StrIsEmpty(lpszFile))
   {
-    if (s_bRunningWatch)
-    {
-      if (s_hChangeHandle) {
-        FindCloseChangeNotification(s_hChangeHandle);
-        s_hChangeHandle = NULL;
-      }
-      KillTimer(NULL,ID_WATCHTIMER);
-      s_bRunningWatch = false;
-      s_dwChangeNotifyTime = 0;
-    }
+    _TerminateFileWatching();
   }
   else  // Install
   {
     // Terminate previous watching
-    if (s_bRunningWatch) {
-      if (s_hChangeHandle) {
-        FindCloseChangeNotification(s_hChangeHandle);
-        s_hChangeHandle = NULL;
-      }
-      s_dwChangeNotifyTime = 0;
-    }
-    // No previous watching installed, so launch the timer first
-    else {
-      SetTimer(NULL, ID_WATCHTIMER, FileWatching.FileCheckInverval, WatchTimerProc);
-    }
+    _TerminateFileWatching();
+
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory,COUNTOF(tchDirectory),lpszFile);
     PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
@@ -10534,9 +10533,14 @@ void InstallFileWatching(LPCWSTR lpszFile)
       FILE_NOTIFY_CHANGE_SIZE | \
       FILE_NOTIFY_CHANGE_LAST_WRITE);
 
+    // No previous watching installed, so launch the timer first
+    if (!s_bRunningWatch) {
+      SetTimer(NULL, ID_WATCHTIMER, FileWatching.FileCheckInverval, WatchTimerProc);
+    }
     s_bRunningWatch = true;
     s_dwChangeNotifyTime = 0;
   }
+
   UpdateToolbar();
 }
 
@@ -10555,18 +10559,14 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
   
   if (s_bRunningWatch)
   {
-    if ((s_dwChangeNotifyTime > 0) && ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout))
-    {
-      if (s_hChangeHandle) {
-        FindCloseChangeNotification(s_hChangeHandle);
-        s_hChangeHandle = NULL;
+    if (FileWatching.MonitoringLog) {
+      if ((s_dwChangeNotifyTime > 0) && ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout))
+      {
+        _TerminateFileWatching();
+        //SendMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
+        MsgChangeNotify(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
       }
-      KillTimer(NULL,ID_WATCHTIMER);
-      s_bRunningWatch = false;
-      s_dwChangeNotifyTime = 0;
-      SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
     }
-
     // Check Change Notification Handle
     else if (WAIT_OBJECT_0 == WaitForSingleObject(s_hChangeHandle,0))
     {
@@ -10583,23 +10583,13 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       // Check if the file has been changed
       if (CompareFileTime(&s_fdCurFile.ftLastWriteTime,&fdUpdated.ftLastWriteTime) != 0 ||
             s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow ||
-            s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
+            s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh ||
+            FileWatching.MonitoringLog /* force */)
       {
         // Shutdown current watching and give control to main window
-        if (s_hChangeHandle) {
-          FindCloseChangeNotification(s_hChangeHandle);
-          s_hChangeHandle = NULL;
-        }
-        if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-          s_bRunningWatch = true; /* ! */
-          s_dwChangeNotifyTime = GetTickCount();
-        }
-        else {
-          KillTimer(NULL,ID_WATCHTIMER);
-          s_bRunningWatch = false;
-          s_dwChangeNotifyTime = 0;
-          SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
-        }
+        _TerminateFileWatching();
+        //SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
+        MsgChangeNotify(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
       }
       else {
         FindNextChangeNotification(s_hChangeHandle);
