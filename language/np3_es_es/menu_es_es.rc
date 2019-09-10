@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Mos&trar"
         BEGIN
-            MENUITEM "&Código plegable\tCtrl+Shift+Alt+F",              IDM_VIEW_FOLDING
+            MENUITEM "&Código plegable",                                IDM_VIEW_FOLDING
             MENUITEM "&Alternar pliegues\tCtrl+Shift+F",                IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Vista enfocada\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoreo de Log",                               IDM_VIEW_CHASING_DOCTAIL

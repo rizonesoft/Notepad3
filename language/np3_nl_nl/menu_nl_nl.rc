@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Tonen"
         BEGIN
-            MENUITEM "Sectie &samenvouwen\tCtrl+Shift+Alt+F",           IDM_VIEW_FOLDING
+            MENUITEM "Sectie &samenvouwen",                             IDM_VIEW_FOLDING
             MENUITEM "&Toggle vouwen\tCtrl+Shift+F",                    IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Gefocust zicht\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Log &Monitoren",                                  IDM_VIEW_CHASING_DOCTAIL

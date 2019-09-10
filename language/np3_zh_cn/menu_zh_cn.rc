@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "ÏÔÊ¾(&D)"
         BEGIN
-            MENUITEM "´úÂëÕÛµþ(&F)\tCtrl+Shift+Alt+F",       IDM_VIEW_FOLDING
+            MENUITEM "´úÂëÕÛµþ(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "ÇÐ»»ÕÛµþ(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM "ÇÐ»»¾Û½¹\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "ÈÕÖ¾¼à¿Ø(&M)",                         IDM_VIEW_CHASING_DOCTAIL
