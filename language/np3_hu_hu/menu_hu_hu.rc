@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Megjelenítés"
         BEGIN
-            MENUITEM "&Kódblokk összecsukás\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
+            MENUITEM "&Kódblokk összecsukás",                   IDM_VIEW_FOLDING
             MENUITEM "Kódblokk &váltás\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Fókuszált nézet\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Naplófájl követése",                     IDM_VIEW_CHASING_DOCTAIL

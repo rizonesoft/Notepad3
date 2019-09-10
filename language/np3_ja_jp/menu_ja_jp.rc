@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみや表示(&D)"
         BEGIN
-            MENUITEM "コード折りたたみを表示(&F)\tCtrl+Shift+Alt+F",  IDM_VIEW_FOLDING
+            MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
             MENUITEM "すべて折りたたみ(&T)\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL

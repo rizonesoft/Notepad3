@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Mostra"
         BEGIN
-            MENUITEM "Code &Folding\tCtrl+Shift+Alt+F",            IDM_VIEW_FOLDING
+            MENUITEM "Code &Folding",                              IDM_VIEW_FOLDING
             MENUITEM "&Attiva/Disattiva Folds\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Visualizzazione focalizzata\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoraggio log",                          IDM_VIEW_CHASING_DOCTAIL

@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Poka¿"
         BEGIN
-            MENUITEM "Sk³adanie kodu\tCtrl+Shift+Alt+F",            IDM_VIEW_FOLDING
+            MENUITEM "Sk³adanie kodu",                              IDM_VIEW_FOLDING
             MENUITEM "&Prze³¹cz sk³adanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Widok skupiony\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Dziennik &monitorowania",                     IDM_VIEW_CHASING_DOCTAIL

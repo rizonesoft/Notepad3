@@ -338,7 +338,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Afficher"
         BEGIN
-            MENUITEM "&Code Pliages\tCtrl+Shift+Alt+F",     IDM_VIEW_FOLDING
+            MENUITEM "&Code Pliages",                       IDM_VIEW_FOLDING
             MENUITEM "&Alterner Pliages\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Vue Focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Surveillance de Log",                IDM_VIEW_CHASING_DOCTAIL
