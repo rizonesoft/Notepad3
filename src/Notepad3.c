@@ -92,6 +92,7 @@ int       s_flagSingleFileInstance = 0;
 int       s_flagMultiFileArg = 0;
 int       s_flagShellUseSystemMRU = 0;
 int       s_flagPrintFileAndLeave = 0;
+bool      s_flagRelaunchElevated = false;
 
 
 // ------------------------------------
@@ -556,7 +557,6 @@ static int        s_flagMatchText = 0;
 static int        s_flagChangeNotify = 0;
 static bool       s_flagQuietCreate = false;
 static bool       s_flagLexerSpecified = false;
-static bool       s_flagRelaunchElevated = false;
 static bool       s_flagAppIsClosing = false;
 static bool       s_flagSearchPathIfRelative = false;
 static bool       s_flagDisplayHelp = false;
@@ -10574,9 +10574,13 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
     // Check Change Notification Handle
     else if (WAIT_OBJECT_0 == WaitForSingleObject(s_hChangeHandle,0))
     {
+      bool const bHasFileName = StrIsNotEmpty(Globals.CurrentFile);
+
       // Check if the changes affect the current file
       WIN32_FIND_DATA fdUpdated;
-      HANDLE hFind = FindFirstFile(Globals.CurrentFile,&fdUpdated);
+      ZeroMemory(&fdUpdated, sizeof(WIN32_FIND_DATA));
+
+      HANDLE const hFind = bHasFileName ? FindFirstFile(Globals.CurrentFile, &fdUpdated) : INVALID_HANDLE_VALUE;
       if (INVALID_HANDLE_VALUE != hFind) {
         FindClose(hFind);
       }
@@ -10584,19 +10588,22 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
         // The current file has been removed
         ZeroMemory(&fdUpdated, sizeof(WIN32_FIND_DATA));
       }
+
       // Check if the file has been changed
-      if (CompareFileTime(&s_fdCurFile.ftLastWriteTime,&fdUpdated.ftLastWriteTime) != 0 ||
-            s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow ||
-            s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh ||
-            FileWatching.MonitoringLog /* force */)
-      {
-        // Shutdown current watching and give control to main window
-        _TerminateFileWatching();
-        //SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
-        MsgChangeNotify(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
-      }
-      else {
-        FindNextChangeNotification(s_hChangeHandle);
+      if (bHasFileName) {
+        if (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0 ||
+          s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow ||
+          s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh ||
+          FileWatching.MonitoringLog /* force */)
+        {
+          // Shutdown current watching and give control to main window
+          _TerminateFileWatching();
+          //SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
+          MsgChangeNotify(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
+        }
+        else {
+          FindNextChangeNotification(s_hChangeHandle);
+        }
       }
     }
   }

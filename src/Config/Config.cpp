@@ -54,6 +54,7 @@ extern "C" int       s_flagSingleFileInstance;
 extern "C" int       s_flagMultiFileArg;
 extern "C" int       s_flagShellUseSystemMRU;
 extern "C" int       s_flagPrintFileAndLeave;
+extern "C" bool      s_flagRelaunchElevated;
 
 
 // ----------------------------------------------------------------------------
@@ -1187,7 +1188,7 @@ void LoadFlags()
 
 bool SaveSettings(bool bSaveSettingsNow)
 {
-  if (StrIsEmpty(Globals.IniFile) || !s_bEnableSaveSettings) { return false; }
+  if (StrIsEmpty(Globals.IniFile) || !s_bEnableSaveSettings || s_flagRelaunchElevated) { return false; }
 
   CreateIniFile();
   LoadIniFile(Globals.IniFile);
