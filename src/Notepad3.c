@@ -826,7 +826,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   if (s_flagPasteBoard) {
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
   }
-  // Relaunch with elevated privileges
+  // Try to Relaunch with elevated privileges
   if (RelaunchElevated(NULL)) {
     return 0;
   }
@@ -1237,7 +1237,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           }
           SciCall_SetSavePoint();
           _SetSaveNeededFlag(true);
-          FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
+          if (StrIsNotEmpty(Globals.CurrentFile)) {
+            FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
+          }
         }
         if (s_flagJumpTo) { // Jump to position
           EditJumpTo(Globals.hwndEdit,s_iInitialLine,s_iInitialColumn);
@@ -9653,49 +9655,55 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
   WCHAR wchFlags[32] = { L'\0' };
   if (s_flagAppIsClosing) { StringCchCopy(wchFlags, COUNTOF(wchFlags), L"/UC"); }
 
-  WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  int const iCurLn = (int)SciCall_LineFromPosition(iCurPos) + 1;
+  int const iCurCol = (int)SciCall_GetColumn(iCurPos) + 1;
+  WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
   if (s_lpOrigFileArg) {
     lpArgs = StrCutI(lpArgs, s_lpOrigFileArg); // remove file from argument list
   }
   StringCchPrintf(szArguments, COUNTOF(szArguments),
-    L"%s /pos %i,%i,%i,%i,%i %s", wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, lpArgs);
+    L"%s /pos %i,%i,%i,%i,%i /g %i,%i %s", wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, lpArgs);
 
   WCHAR lpTempPathBuffer[MAX_PATH] = { L'\0' };
   WCHAR szTempFileName[MAX_PATH] = { L'\0' };
 
-  if (StrIsNotEmpty(Globals.CurrentFile)) 
+  const WCHAR* szCurFile = StrIsNotEmpty(Globals.CurrentFile) ? Globals.CurrentFile : L".\\Untitled.txt";
+
+  WCHAR tchBase[MAX_PATH] = { L'\0' };
+  StringCchCopy(tchBase, COUNTOF(tchBase), szCurFile);
+  PathStripPath(tchBase);
+
+  if (GetTempPath(MAX_PATH, lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer, TEXT("NP3"), 0, szTempFileName))
   {
-    WCHAR tchBase[MAX_PATH] = { L'\0' };
-    StringCchCopy(tchBase, COUNTOF(tchBase), Globals.CurrentFile);
-    PathStripPath(tchBase);
+    size_t const len = StringCchLen(szTempFileName, MAX_PATH); // replace possible unknown extension
+      LPWSTR p = PathFindExtension(szTempFileName);
+      LPCWSTR q = PathFindExtension(szCurFile);
+    if ((p && *p) && (q && *q)) {
+      StringCchCopy(p, (MAX_PATH - len), q);
+    }
 
-    if (GetTempPath(MAX_PATH, lpTempPathBuffer) && GetTempFileName(lpTempPathBuffer, TEXT("NP3"), 0, szTempFileName))
+    if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true, false))
     {
-      size_t const len = StringCchLen(szTempFileName, MAX_PATH); // replace possible unknown extension
-        LPWSTR p = PathFindExtension(szTempFileName);
-        LPCWSTR q = PathFindExtension(Globals.CurrentFile);
-      if ((p && *p) && (q && *q)) {
-        StringCchCopy(p, (MAX_PATH - len), q);
-      }
+      // preserve encoding
+      WCHAR wchEncoding[80];
+      Encoding_GetNameW(Encoding_Current(CPI_GET), wchEncoding, COUNTOF(wchEncoding));
 
-      if (pFioStatus && FileIO(false, szTempFileName, true, true, false, true, pFioStatus, true, false))
-      {
-        // preserve encoding
-        WCHAR wchEncoding[80];
-        Encoding_GetNameW(Encoding_Current(CPI_GET), wchEncoding, COUNTOF(wchEncoding));
+      StringCchPrintf(szArguments, COUNTOF(szArguments),
+        L"/%s %s /pos %i,%i,%i,%i,%i /g %i,%i /tmpfbuf=\"%s\" %s", wchEncoding, wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, szTempFileName, lpArgs);
 
-        StringCchPrintf(szArguments, COUNTOF(szArguments),
-          L"/%s %s /pos %i,%i,%i,%i,%i /tmpfbuf=\"%s\" %s", wchEncoding, wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, szTempFileName, lpArgs);
-
-        if (!StrStrI(szArguments, tchBase)) {
+      if (!StrStrI(szArguments, tchBase)) {
+        if (StrIsNotEmpty(Globals.CurrentFile)) {
           StringCchPrintf(szArguments, COUNTOF(szArguments), L"%s \"%s\"", szArguments, Globals.CurrentFile);
         }
       }
-      FreeMem(lpExe);
-      FreeMem(lpArgs);
     }
+    FreeMem(lpExe);
+    FreeMem(lpArgs);
   }
+
+  SaveSettings(false);
 
   if (RelaunchElevated(szArguments)) {
     // set no change and quit
@@ -10274,7 +10282,7 @@ bool RelaunchMultiInst() {
 //  RelaunchElevated()
 //
 //
-bool RelaunchElevated(LPWSTR lpArgs) 
+bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
   if (!IsVista() || s_bIsElevated || !s_flagRelaunchElevated || s_flagDisplayHelp) { return false; }
 
@@ -10282,30 +10290,26 @@ bool RelaunchElevated(LPWSTR lpArgs)
   si.cb = sizeof(STARTUPINFO);
   GetStartupInfo(&si);
 
+  WCHAR lpExe[MAX_PATH] = { L'\0' };
+  WCHAR szOrigArgs[2032] = { L'\0' };
+
   LPWSTR lpCmdLine = GetCommandLine();
   size_t wlen = StringCchLenW(lpCmdLine, 0) + 2UL;
+  ExtractFirstArgument(lpCmdLine, lpExe, szOrigArgs, (int)wlen);
+  // override
+  GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
+  if (lpNewCmdLnArgs) {
+    StringCchCopy(szOrigArgs, COUNTOF(szOrigArgs), lpNewCmdLnArgs);
+  }
 
-  WCHAR lpExe[MAX_PATH] = { L'\0' };
-  WCHAR szArgs[2032] = { L'\0' };
   WCHAR szArguments[2032] = { L'\0' };
 
-  ExtractFirstArgument(lpCmdLine, lpExe, szArgs, (int)wlen);
-
-  if (lpArgs) {
-    StringCchCopy(szArgs, COUNTOF(szArgs), lpArgs); // override
-  }
-
-  if (StrStrI(szArgs, L"/f ") || StrStrI(szArgs, L"-f ")) 
+  if (StrStrI(szOrigArgs, L"/f ") || StrStrI(szOrigArgs, L"-f ") || StrIsEmpty(Globals.IniFile))
   {
-    StringCchCopy(szArguments, COUNTOF(szArguments), szArgs);
+    StringCchCopy(szArguments, COUNTOF(szArguments), szOrigArgs);
   }
   else {
-    if (StrIsNotEmpty(Globals.IniFile)) {
-      StringCchPrintf(szArguments, COUNTOF(szArguments), L"/f \"%s\" %s", Globals.IniFile, szArgs);
-    }
-    else {
-      StringCchCopy(szArguments, COUNTOF(szArguments), szArgs);
-    }
+    StringCchPrintf(szArguments, COUNTOF(szArguments), L"/f \"%s\" %s", Globals.IniFile, szOrigArgs);
   }
 
   if (StrIsNotEmpty(szArguments)) {
