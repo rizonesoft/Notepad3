@@ -1550,46 +1550,47 @@ void EditInvertCase(HWND hwnd)
     if (Sci_IsMultiOrRectangleSelection())
     {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
-      return;
     }
-    const DocPos iSelStart = SciCall_GetSelectionStart();
-    const DocPos iSelEnd = SciCall_GetSelectionEnd();
-    const DocPos iSelSize = SciCall_GetSelText(NULL);
+    else {
+      const DocPos iSelStart = SciCall_GetSelectionStart();
+      const DocPos iSelEnd = SciCall_GetSelectionEnd();
+      const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-    LPSTR pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
-    LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    if (!pszText || !pszTextW) {
-      FreeMem(pszText);
-      FreeMem(pszTextW);
-      return;
-    }
-
-    SciCall_GetSelText(pszText);
-
-    int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)(iSelSize - 1),
-      pszTextW, (MBWC_DocPos_Cast)iSelSize);
-
-    bool bChanged = false;
-    for (int i = 0; i < cchTextW; i++) {
-      if (IsCharUpperW(pszTextW[i])) {
-        pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
-        bChanged = true;
+      LPSTR pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+      LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+      if (!pszText || !pszTextW) {
+        FreeMem(pszText);
+        FreeMem(pszTextW);
       }
-      else if (IsCharLowerW(pszTextW[i])) {
-        pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
-        bChanged = true;
+      else {
+        SciCall_GetSelText(pszText);
+
+        int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)(iSelSize - 1),
+          pszTextW, (MBWC_DocPos_Cast)iSelSize);
+
+        bool bChanged = false;
+        for (int i = 0; i < cchTextW; i++) {
+          if (IsCharUpperW(pszTextW[i])) {
+            pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
+            bChanged = true;
+          }
+          else if (IsCharLowerW(pszTextW[i])) {
+            pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
+            bChanged = true;
+          }
+        }
+
+        if (bChanged) {
+          WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW,
+            pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
+          SciCall_Clear();
+          SciCall_AddText((iSelEnd - iSelStart), pszText);
+          SciCall_SetSel(iAnchorPos, iCurPos);
+        }
+        FreeMem(pszText);
+        FreeMem(pszTextW);
       }
     }
-
-    if (bChanged) {
-      WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW,
-        pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
-      SciCall_Clear();
-      SciCall_AddText((iSelEnd - iSelStart), pszText);
-      SciCall_SetSel(iAnchorPos, iCurPos);
-    }
-    FreeMem(pszText);
-    FreeMem(pszTextW);
     _END_UNDO_ACTION_
   }
 }
@@ -2041,53 +2042,51 @@ void EditHex2Char(HWND hwnd)
   char ch[32] = { L'\0' };
   if (SciCall_GetSelText(NULL) <= COUNTOF(ch))
   {
-    _BEGIN_UNDO_ACTION_
-    
     bool bTrySelExpand = false;
 
     SciCall_GetSelText(ch);
 
-    if (StrChrIA(ch, ' ') || StrChrIA(ch, '\t') || StrChrIA(ch, '\r') || StrChrIA(ch, '\n') || StrChrIA(ch, '-')) {
-      return;
-    }
-
-    if (StrCmpNIA(ch, "0x", 2) == 0 || StrCmpNIA(ch, "\\x", 2) == 0 || StrCmpNIA(ch, "\\u", 2) == 0) {
-      ch[0] = '0';
-      ch[1] = 'x';
-    }
-    else if (StrChrIA("xu", ch[0])) {
-      ch[0] = '0';
-      bTrySelExpand = true;
-    }
-    else
-      return;
-
-    unsigned int i = 0;
-    if (sscanf_s(ch, "%x", &i) == 1) {
-      int cch = 0;
-      if (i == 0) {
-        ch[0] = 0;
-        cch = 1;
+    if (!((StrChrIA(ch, ' ') || StrChrIA(ch, '\t') || StrChrIA(ch, '\r') || StrChrIA(ch, '\n') || StrChrIA(ch, '-'))))
+    {
+      if (StrCmpNIA(ch, "0x", 2) == 0 || StrCmpNIA(ch, "\\x", 2) == 0 || StrCmpNIA(ch, "\\u", 2) == 0) {
+        ch[0] = '0';
+        ch[1] = 'x';
+      }
+      else if (StrChrIA("xu", ch[0])) {
+        ch[0] = '0';
+        bTrySelExpand = true;
       }
       else {
-        WCHAR wch[8] = { L'\0' };
-        StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)i);
-        cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, COUNTOF(ch), NULL, NULL) - 1;
-
-        if (bTrySelExpand && (SciCall_GetCharAt(iSelStart - 1) == '\\')) {
-          --iSelStart;
-          if (iCurPos < iAnchorPos) { --iCurPos; } else { --iAnchorPos; }
-        }
+        return;
       }
-      EditSetSelectionEx(hwnd, iSelStart, iSelEnd, -1, -1);
-      SciCall_ReplaceSel(ch);
-      if (iCurPos < iAnchorPos)
-        EditSetSelectionEx(hwnd, iCurPos + cch, iCurPos, -1, -1);
-      else
-        EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cch, -1, -1);
+      _BEGIN_UNDO_ACTION_
+      unsigned int i = 0;
+      if (sscanf_s(ch, "%x", &i) == 1) {
+        int cch = 0;
+        if (i == 0) {
+          ch[0] = 0;
+          cch = 1;
+        }
+        else {
+          WCHAR wch[8] = { L'\0' };
+          StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)i);
+          cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, COUNTOF(ch), NULL, NULL) - 1;
 
+          if (bTrySelExpand && (SciCall_GetCharAt(iSelStart - 1) == '\\')) {
+            --iSelStart;
+            if (iCurPos < iAnchorPos) { --iCurPos; }
+            else { --iAnchorPos; }
+          }
+        }
+        EditSetSelectionEx(hwnd, iSelStart, iSelEnd, -1, -1);
+        SciCall_ReplaceSel(ch);
+        if (iCurPos < iAnchorPos)
+          EditSetSelectionEx(hwnd, iCurPos + cch, iCurPos, -1, -1);
+        else
+          EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cch, -1, -1);
+      }
+      _END_UNDO_ACTION_
     }
-    _END_UNDO_ACTION_
   }
 }
 
@@ -3666,8 +3665,6 @@ void EditCompressBlanks(HWND hwnd)
   const DocLn iLineStart = SciCall_LineFromPosition(iSelStartPos);
   const DocLn iLineEnd = SciCall_LineFromPosition(iSelEndPos);
 
-  _BEGIN_UNDO_ACTION_
-
   if (SciCall_IsSelectionRectangle())
   {
     if (bIsSelEmpty) { return; }
@@ -3677,6 +3674,7 @@ void EditCompressBlanks(HWND hwnd)
     const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
     const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
+    _BEGIN_UNDO_ACTION_
     _IGNORE_NOTIFY_CHANGE_;
 
     DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
@@ -3727,6 +3725,7 @@ void EditCompressBlanks(HWND hwnd)
       SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
     }
     _OBSERVE_NOTIFY_CHANGE_;
+    _END_UNDO_ACTION_
   }
   else if (Sci_IsMultiOrRectangleSelection()) {
     // @@@ not implemented
@@ -3734,6 +3733,7 @@ void EditCompressBlanks(HWND hwnd)
   }
   else   // SC_SEL_LINES | SC_SEL_STREAM
   {
+    _BEGIN_UNDO_ACTION_
     _IGNORE_NOTIFY_CHANGE_;
 
     const DocPos iCurPos = SciCall_GetCurrentPos();
@@ -3825,8 +3825,8 @@ void EditCompressBlanks(HWND hwnd)
     if (pszOut) { FreeMem(pszOut); }
 
     _OBSERVE_NOTIFY_CHANGE_;
+    _END_UNDO_ACTION_
   }
-  _END_UNDO_ACTION_
 }
 
 
