@@ -2065,6 +2065,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
       if (!FileWatching.MonitoringLog) { FileWatching.FileWatchingMode = Settings.FileWatchingMode; }
 
       Settings.ResetFileWatching = IsButtonChecked(hwnd, 103);
+
       if (!FileWatching.MonitoringLog) { FileWatching.ResetFileWatching = Settings.ResetFileWatching; }
 
       if (FileWatching.MonitoringLog) { PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL); }

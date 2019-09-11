@@ -1031,9 +1031,9 @@ void LoadSettings()
 
     // 2nd set initial window position
 
-    s_WinInfo = s_DefWinInfo;
-
     if (!s_flagPosParam /*|| g_bStickyWinPos*/) {
+
+      s_WinInfo = s_DefWinInfo;
 
       WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
@@ -1049,7 +1049,6 @@ void LoadSettings()
       s_WinInfo.cx = IniSectionGetInt(Window_Section, tchSizeX, CW_USEDEFAULT);
       s_WinInfo.cy = IniSectionGetInt(Window_Section, tchSizeY, CW_USEDEFAULT);
       s_WinInfo.max = IniSectionGetBool(Window_Section, tchMaximized, false);
-      s_WinInfo.max = clampi(s_WinInfo.max, 0, 1);
       s_WinInfo.zoom = IniSectionGetInt(Window_Section, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
       if (Globals.iCfgVersionRead < CFG_VER_0001) { s_WinInfo.zoom = (s_WinInfo.zoom + 10) * 10; }
       s_WinInfo.zoom = clampi(s_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
