@@ -4,6 +4,7 @@
 
 #define SCLEX_AHKL  200
 #define SCLEX_TOML  201
+#define SCLEX_CSV   202
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
@@ -55,5 +56,17 @@
 #define SCE_TOML_STR_LITERAL 10
 #define SCE_TOML_PARSINGERROR 11
 
+
+#define SCE_CSV_DEFAULT 0
+#define SCE_CSV_COLUMN_0 1
+#define SCE_CSV_COLUMN_1 2
+#define SCE_CSV_COLUMN_2 3
+#define SCE_CSV_COLUMN_3 4
+#define SCE_CSV_COLUMN_4 5
+#define SCE_CSV_COLUMN_5 6
+#define SCE_CSV_COLUMN_6 7
+#define SCE_CSV_COLUMN_7 8
+#define SCE_CSV_COLUMN_8 9
+#define SCE_CSV_COLUMN_9 10
 
 #endif //_SCIXLEXER_H_

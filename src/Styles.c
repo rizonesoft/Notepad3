@@ -67,6 +67,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexCOFFEESCRIPT,  // Coffeescript
   &lexPROPS,         // Configuration Files
   &lexCSS,           // CSS Style Sheets
+  &lexCSV,           // CSV Prism Color Lexer
   &lexD,             // D Source Code
   &lexDIFF,          // Diff Files
   &lexGo,            // Go Source Code
