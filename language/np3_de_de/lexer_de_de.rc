@@ -465,7 +465,7 @@ BEGIN
     IDS_LEX_CSV_COL_9       "Column 9"
 END
 
-#endif    // English (United States) resources
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
