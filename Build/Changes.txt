@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.910.#(build) (2019-09-10)
+Current BETA Version 5.19.912.#(build) (2019-09-12)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- CSV Prism Color Lexer.
 - Preserve File Modification Date/Time: Option stays until new Session is loaded.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
 
@@ -63,6 +64,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Small fixes on "Relaunch Elevated" functionality.
+- Minor fixes for window positioning by cmdline parameter.
 - Minor correction of HotKey.
 - Ctrl+Shift-C/X and Paste behaviour.
 - Markdown highlight overflow.
@@ -78,7 +81,7 @@ FIXES:
 --------------------------------------------------
 REMOVED:
 --------------------------------------------------
-- "Ctrl+Shift+Alt+F" (Code Folding) no longer works from Windows 10 v1903.
+- "Ctrl+Shift+Alt+F" (Code Folding) no longer works from Windows 10 19H1 1903.
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
