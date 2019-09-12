@@ -246,6 +246,7 @@
     <ClCompile Include="..\oniguruma\src\utf8.c" />
     <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx" />
+    <ClCompile Include="..\sciXlexers\LexCSV.cxx" />
     <ClCompile Include="..\sciXlexers\LexTOML.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
     <ClCompile Include="lexers\LexAU3.cxx" />

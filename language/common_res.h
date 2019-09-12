@@ -780,6 +780,7 @@
 #define IDS_LEX_AHKL                    63047
 #define IDS_LEX_TEXT_FILES              63048
 #define IDS_LEX_TOML_CFG                63049
+#define IDS_LEX_PRISM_CSV               63050
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -1039,6 +1040,17 @@
 #define IDS_LEX_STR_63354               63354
 #define IDS_LEX_STR_63355               63355
 #define IDS_LEX_STR_63356               63356
+
+#define IDS_LEX_CSV_COL_0               63400
+#define IDS_LEX_CSV_COL_1               63401
+#define IDS_LEX_CSV_COL_2               63402
+#define IDS_LEX_CSV_COL_3               63403
+#define IDS_LEX_CSV_COL_4               63404
+#define IDS_LEX_CSV_COL_5               63405
+#define IDS_LEX_CSV_COL_6               63406
+#define IDS_LEX_CSV_COL_7               63407
+#define IDS_LEX_CSV_COL_8               63408
+#define IDS_LEX_CSV_COL_9               63409
 
 #define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
 

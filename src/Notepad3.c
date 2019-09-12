@@ -827,7 +827,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
   }
   // Try to Relaunch with elevated privileges
-  if (RelaunchElevated(NULL)) {
+  s_flagDoRelaunchElevated = RelaunchElevated(NULL);
+  if (s_flagDoRelaunchElevated) {
     return 0;
   }
   // Try to run multiple instances
@@ -1232,8 +1233,18 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
             Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
           }
           // check for temp file and delete
-          if (s_bIsElevated && PathFileExists(s_wchTmpFilePath)) {
+          if (s_IsThisAnElevatedRelaunch && PathFileExists(s_wchTmpFilePath)) 
+          {
             DeleteFile(s_wchTmpFilePath);
+            // delete possible .tmp guard
+            size_t const len = StringCchLen(s_wchTmpFilePath, MAX_PATH);
+            LPWSTR p = PathFindExtension(s_wchTmpFilePath);
+            if (p && *p) {
+              StringCchCopy(p, (MAX_PATH - len), L".tmp");
+            }
+            if (PathFileExists(s_wchTmpFilePath)) {
+              DeleteFile(s_wchTmpFilePath);
+            }
           }
           SciCall_SetSavePoint();
           _SetSaveNeededFlag(true);
@@ -7575,7 +7586,7 @@ void ParseCommandLine()
                          lp1 + CSTRLEN(L"tmpfbuf="), len - CSTRLEN(L"tmpfbuf="));
           TrimSpcW(s_wchTmpFilePath);
           NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
-          s_IsThisAnElevatedRelaunch = true;
+          s_bIsElevated = s_IsThisAnElevatedRelaunch = true;
         }
 
         else switch (*CharUpper(lp1)) {
@@ -9646,11 +9657,13 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
   s_flagDoRelaunchElevated = true;
 
   LPWSTR lpCmdLine = GetCommandLine();
-  size_t const wlen = StringCchLenW(lpCmdLine, 0) + 2;
+  size_t const wlen = StringCchLen(lpCmdLine, 0) + 2;
   LPWSTR lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
   LPWSTR lpArgs = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
   ExtractFirstArgument(lpCmdLine, lpExe, lpArgs, (int)wlen);
+
   // remove relaunch elevated, we are doing this here already
+  lpArgs[StringCchLen(lpArgs, 0)] = L' '; // add a space
   lpArgs = StrCutI(lpArgs, L"/u ");
   lpArgs = StrCutI(lpArgs, L"-u ");
   WCHAR wchFlags[32] = { L'\0' };
@@ -10285,7 +10298,13 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVista() || s_bIsElevated || !s_flagDoRelaunchElevated || s_flagDisplayHelp) { return false; }
+  if (!IsVista() || 
+    !s_flagDoRelaunchElevated ||
+    s_bIsElevated || s_IsThisAnElevatedRelaunch ||
+    s_flagDisplayHelp) 
+  {
+    return false; 
+  }
 
   STARTUPINFO si;
   si.cb = sizeof(STARTUPINFO);
@@ -10302,9 +10321,14 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
   if (lpNewCmdLnArgs) {
     StringCchCopy(szOrigArgs, COUNTOF(szOrigArgs), lpNewCmdLnArgs);
   }
+  size_t const len = StringCchLen(szOrigArgs, 0);
+  szOrigArgs[len] = L' '; // add a space
+  szOrigArgs[len+1] = L'\0'; // ensure termination
+  // remove relaunch elevated, we are doing this here already
+  StrCutI(szOrigArgs, L"/u ");
+  StrCutI(szOrigArgs, L"-u ");
 
   WCHAR szArguments[2032] = { L'\0' };
-
   if (StrStrI(szOrigArgs, L"/f ") || StrStrI(szOrigArgs, L"-f ") || StrIsEmpty(Globals.IniFile))
   {
     StringCchCopy(szArguments, COUNTOF(szArguments), szOrigArgs);
@@ -10317,7 +10341,7 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
     SHELLEXECUTEINFO sei;
     ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
     sei.cbSize = sizeof(SHELLEXECUTEINFO);
-    sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_UNICODE | SEE_MASK_HMONITOR | SEE_MASK_NOZONECHECKS;
+    sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_UNICODE | SEE_MASK_HMONITOR | SEE_MASK_NOZONECHECKS | SEE_MASK_WAITFORINPUTIDLE;
     sei.hwnd = GetForegroundWindow();
     sei.hMonitor = MonitorFromWindow(sei.hwnd, MONITOR_DEFAULTTONEAREST);
     sei.lpVerb = L"runas";

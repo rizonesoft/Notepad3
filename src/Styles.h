@@ -26,7 +26,7 @@
 #define MARGIN_SCI_FOLDING 2
 
 // Number of Lexers in pLexArray
-#define NUMLEXERS 50
+#define NUMLEXERS 51
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
 void   Style_Load();
@@ -34,6 +34,7 @@ bool   Style_Import(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);
 void   Style_Save();
 bool   Style_Export(HWND hwnd);
+void   Style_ToIniSection(bool bForceAll);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();

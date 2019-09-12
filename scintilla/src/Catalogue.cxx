@@ -102,6 +102,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmCPPNoCase);
 	//LINK_LEXER(lmCsound);
 	LINK_LEXER(lmCss);
+	LINK_LEXER(lmCSV);
 	LINK_LEXER(lmD);
 	//LINK_LEXER(lmDataflex);
 	LINK_LEXER(lmDiff);

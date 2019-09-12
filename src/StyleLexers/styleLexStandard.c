@@ -51,7 +51,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
 
 
 EDITLEXER lexTEXT = {
-SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx; csv", L"",
+SCLEX_NULL, IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; wtx", L"",
 &KeyWords_NULL,{
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },

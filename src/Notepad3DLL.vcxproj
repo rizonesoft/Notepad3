@@ -454,6 +454,7 @@
     <ClCompile Include="StyleLexers\styleLexCPP.c" />
     <ClCompile Include="StyleLexers\styleLexCS.c" />
     <ClCompile Include="StyleLexers\styleLexCSS.c" />
+    <ClCompile Include="StyleLexers\styleLexCSV.c" />
     <ClCompile Include="StyleLexers\styleLexD.c" />
     <ClCompile Include="StyleLexers\styleLexDIFF.c" />
     <ClCompile Include="StyleLexers\styleLexGo.c" />

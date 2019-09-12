@@ -402,6 +402,9 @@
     <ClCompile Include="StyleLexers\styleLexTOML.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCSV.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">

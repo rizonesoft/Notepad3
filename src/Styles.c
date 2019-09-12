@@ -67,6 +67,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexCOFFEESCRIPT,  // Coffeescript
   &lexPROPS,         // Configuration Files
   &lexCSS,           // CSS Style Sheets
+  &lexCSV,           // CSV Prism Color Lexer
   &lexD,             // D Source Code
   &lexDIFF,          // Diff Files
   &lexGo,            // Go Source Code
@@ -704,7 +705,7 @@ bool Style_Export(HWND hwnd)
 
 //=============================================================================
 //
-//  Style_ExportToFile()
+//  Style_Export()
 //
 
 #define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)        \
@@ -716,18 +717,9 @@ bool Style_Export(HWND hwnd)
 // ----------------------------------------------------------------------------
 
 
-bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
+void Style_ToIniSection(bool bForceAll)
 {
-  if (StrIsEmpty(szFile)) {
-    if (s_idxSelectedTheme != 0) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
-    }
-    return false;
-  }
-
-  LoadIniFile(szFile); // reset
-
-    // Custom colors
+  // Custom colors
   const WCHAR* const CustomColors_Section = L"Custom Colors";
 
   for (int i = 0; i < 16; i++) {
@@ -814,6 +806,27 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   // cleanup old (< v4) stuff 
   IniSectionDelete(L"Default Text", NULL, true);
   IniSectionDelete(L"2nd Default Text", NULL, true);
+
+}
+
+
+//=============================================================================
+//
+//  Style_ExportToFile()
+//
+
+bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
+{
+  if (StrIsEmpty(szFile)) {
+    if (s_idxSelectedTheme != 0) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
+    }
+    return false;
+  }
+
+  LoadIniFile(szFile); // reset
+
+  Style_ToIniSection(bForceAll);
 
   return SaveIniFile(szFile);
 }
