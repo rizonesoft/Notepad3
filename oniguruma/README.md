@@ -32,7 +32,8 @@ Version 6.9.3 (security fix release)
 
 * Fixed CVE-2019-13224
 * Fixed CVE-2019-13225
-* Fixed many problems (found by libfuzzer programs)
+* Fixed CVE-2019-16163
+* Fixed many problems (found by libFuzzer programs)
 
 
 Version 6.9.2 (Reiwa)

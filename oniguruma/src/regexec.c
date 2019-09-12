@@ -211,12 +211,12 @@ static OpInfoType OpInfo[] = {
   { OP_BACKREF_WITH_LEVEL_IC, "backref_with_level-c" },
   { OP_BACKREF_CHECK,         "backref_check"        },
   { OP_BACKREF_CHECK_WITH_LEVEL, "backref_check_with_level" },
-  { OP_MEMORY_START_PUSH,     "mem-start-push"        },
-  { OP_MEMORY_START,          "mem-start"             },
-  { OP_MEMORY_END_PUSH,       "mem-end-push"          },
-  { OP_MEMORY_END_PUSH_REC,   "mem-end-push-rec"      },
-  { OP_MEMORY_END,            "mem-end"               },
-  { OP_MEMORY_END_REC,        "mem-end-rec"           },
+  { OP_MEM_START_PUSH,        "mem-start-push"        },
+  { OP_MEM_START,             "mem-start"             },
+  { OP_MEM_END_PUSH,          "mem-end-push"          },
+  { OP_MEM_END_PUSH_REC,      "mem-end-push-rec"      },
+  { OP_MEM_END,               "mem-end"               },
+  { OP_MEM_END_REC,           "mem-end-rec"           },
   { OP_FAIL,                  "fail"                  },
   { OP_JUMP,                  "jump"                  },
   { OP_PUSH,                  "push"                  },
@@ -456,15 +456,15 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
     }
     break;
 
-  case OP_MEMORY_START:
-  case OP_MEMORY_START_PUSH:
+  case OP_MEM_START:
+  case OP_MEM_START_PUSH:
     mem = p->memory_start.num;
     fprintf(f, ":%d", mem);
     break;
-  case OP_MEMORY_END_PUSH:
-  case OP_MEMORY_END_PUSH_REC:
-  case OP_MEMORY_END:
-  case OP_MEMORY_END_REC:
+  case OP_MEM_END_PUSH:
+  case OP_MEM_END_PUSH_REC:
+  case OP_MEM_END:
+  case OP_MEM_END_REC:
     mem = p->memory_end.num;
     fprintf(f, ":%d", mem);
     break;
@@ -2548,12 +2548,12 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
   &&L_BACKREF_WITH_LEVEL_IC,
   &&L_BACKREF_CHECK,
   &&L_BACKREF_CHECK_WITH_LEVEL,
-  &&L_MEMORY_START,
-  &&L_MEMORY_START_PUSH,
-  &&L_MEMORY_END_PUSH,
-  &&L_MEMORY_END_PUSH_REC,
-  &&L_MEMORY_END,
-  &&L_MEMORY_END_REC,
+  &&L_MEM_START,
+  &&L_MEM_START_PUSH,
+  &&L_MEM_END_PUSH,
+  &&L_MEM_END_PUSH_REC,
+  &&L_MEM_END,
+  &&L_MEM_END_REC,
   &&L_FAIL,
   &&L_JUMP,
   &&L_PUSH,
@@ -3387,32 +3387,32 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       INC_OP;
       JUMP_OUT;
 
-    CASE_OP(MEMORY_START_PUSH)
+    CASE_OP(MEM_START_PUSH)
       mem = p->memory_start.num;
       STACK_PUSH_MEM_START(mem, s);
       INC_OP;
       JUMP_OUT;
 
-    CASE_OP(MEMORY_START)
+    CASE_OP(MEM_START)
       mem = p->memory_start.num;
       mem_start_stk[mem] = (StackIndex )((void* )s);
       INC_OP;
       JUMP_OUT;
 
-    CASE_OP(MEMORY_END_PUSH)
+    CASE_OP(MEM_END_PUSH)
       mem = p->memory_end.num;
       STACK_PUSH_MEM_END(mem, s);
       INC_OP;
       JUMP_OUT;
 
-    CASE_OP(MEMORY_END)
+    CASE_OP(MEM_END)
       mem = p->memory_end.num;
       mem_end_stk[mem] = (StackIndex )((void* )s);
       INC_OP;
       JUMP_OUT;
 
 #ifdef USE_CALL
-    CASE_OP(MEMORY_END_PUSH_REC)
+    CASE_OP(MEM_END_PUSH_REC)
       mem = p->memory_end.num;
       STACK_GET_MEM_START(mem, stkp); /* should be before push mem-end. */
       si = GET_STACK_INDEX(stkp);
@@ -3421,7 +3421,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       INC_OP;
       JUMP_OUT;
 
-    CASE_OP(MEMORY_END_REC)
+    CASE_OP(MEM_END_REC)
       mem = p->memory_end.num;
       mem_end_stk[mem] = (StackIndex )((void* )s);
       STACK_GET_MEM_START(mem, stkp);
