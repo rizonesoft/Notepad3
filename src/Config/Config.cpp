@@ -54,7 +54,7 @@ extern "C" int       s_flagSingleFileInstance;
 extern "C" int       s_flagMultiFileArg;
 extern "C" int       s_flagShellUseSystemMRU;
 extern "C" int       s_flagPrintFileAndLeave;
-extern "C" int       s_flagDoRelaunchElevated;
+extern "C" bool      s_flagDoRelaunchElevated;
 
 
 // ----------------------------------------------------------------------------
@@ -250,6 +250,8 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
 extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
+  if (s_flagDoRelaunchElevated) { return false; }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_SUCCESS(rc)) 
@@ -261,6 +263,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
       Ini.SetSpaces(s_bSetSpaces);
       rc = Ini.SaveFile(lpFilePath, true);
     }
+    Ini.Reset();
   }
   return SI_SUCCESS(rc);
 }
@@ -284,6 +287,8 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
 extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
+  if (s_flagDoRelaunchElevated) { return false; }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_SUCCESS(rc)) {
@@ -291,6 +296,7 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
     Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, true);
   }
+  Ini.Reset();
   return SI_SUCCESS(rc);
 }
 // ============================================================================
@@ -313,6 +319,8 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue)
 {
+  if (s_flagDoRelaunchElevated) { return false; }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_SUCCESS(rc)) {
@@ -320,6 +328,7 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
     Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, true);
   }
+  Ini.Reset();
   return SI_SUCCESS(rc);
 }
 // ============================================================================
@@ -327,6 +336,8 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty)
 {
+  if (s_flagDoRelaunchElevated) { return false; }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_SUCCESS(rc))
@@ -335,6 +346,7 @@ extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
     Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, true);
   }
+  Ini.Reset();
   return SI_SUCCESS(rc);
 }
 // ============================================================================
@@ -1188,14 +1200,14 @@ void LoadFlags()
 
 bool SaveSettings(bool bSaveSettingsNow)
 {
-  if (StrIsEmpty(Globals.IniFile) || !s_bEnableSaveSettings || s_flagDoRelaunchElevated) { return false; }
+  if (StrIsEmpty(Globals.IniFile) || s_flagDoRelaunchElevated) { return false; }
 
   CreateIniFile();
   LoadIniFile(Globals.IniFile);
 
   const WCHAR* const Settings_Section = L"Settings";
 
-  if (!(Settings.SaveSettings || bSaveSettingsNow))
+  if (!Settings.SaveSettings && !bSaveSettingsNow)
   {
     if (Settings.SaveSettings != Defaults.SaveSettings) {
       IniSectionSetBool(Settings_Section, L"SaveSettings", Settings.SaveSettings);
@@ -1450,12 +1462,17 @@ bool SaveSettings(bool bSaveSettingsNow)
     IniSectionDelete(Window_Section, tchZoom, false);
   }
 
+
+
   bool const ok = SaveIniFile(Globals.IniFile);
 
   if (ok) {
     Style_Save();  // Scintilla Styles
     Globals.bIniFileFromScratch = false;
   }
+
+  ReleaseIniFile();
+
   return ok;
 }
 //=============================================================================

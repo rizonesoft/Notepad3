@@ -405,6 +405,7 @@ public:
         FILE * m_file;
     public:
         explicit FileWriter(FILE * a_file) : m_file(a_file) { }
+        ~FileWriter() { fflush(m_file); }
         void Write(const char * a_pBuf) override {
             fputs(a_pBuf, m_file);
         }
@@ -2440,9 +2441,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #ifdef _WIN32
     FILE * fp = nullptr;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
-    _wfopen_s(&fp, a_pwszFile, L"wb");
+    _wfopen_s(&fp, a_pwszFile, L"wbc");
 #else // !__STDC_WANT_SECURE_LIB__
-    fp = _wfopen(a_pwszFile, L"wb");
+    fp = _wfopen(a_pwszFile, L"wbc");
 #endif // __STDC_WANT_SECURE_LIB__
     if (!fp) return SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
