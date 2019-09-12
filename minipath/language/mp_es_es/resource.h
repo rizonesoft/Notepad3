@@ -1,4 +1,4 @@
-﻿//{{NO_DEPENDENCIES}}
+﻿Unicode (UTF-8) Signature//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by mp_en_gb.rc
 //

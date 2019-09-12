@@ -1,4 +1,4 @@
-﻿//{{NO_DEPENDENCIES}}
+//{{NO_DEPENDENCIES}}
 // Von Microsoft Visual C++ generierte Includedatei.
 // Verwendet durch menu_tr_tr.rc
 //

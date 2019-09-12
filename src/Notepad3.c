@@ -92,7 +92,7 @@ int       s_flagSingleFileInstance = 0;
 int       s_flagMultiFileArg = 0;
 int       s_flagShellUseSystemMRU = 0;
 int       s_flagPrintFileAndLeave = 0;
-bool      s_flagRelaunchElevated = false;
+bool      s_flagDoRelaunchElevated = false;
 
 
 // ------------------------------------
@@ -546,7 +546,7 @@ static WCHAR      s_lpFileArg[MAX_PATH+1];
 
 static cpi_enc_t  s_flagSetEncoding = CPI_NONE;
 static int        s_flagSetEOLMode = 0;
-static bool       s_flagIsElevatedRelaunch = false;
+static bool       s_IsThisAnElevatedRelaunch = false;
 static bool       s_flagStartAsTrayIcon = false;
 static int        s_flagAlwaysOnTop = 0;
 static bool       s_flagKeepTitleExcerpt = false;
@@ -1205,21 +1205,21 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Pathname parameter
-  if (s_flagIsElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
+  if (s_IsThisAnElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
   {
     bool bOpened = false;
 
     // Open from Directory
-    if (!s_flagIsElevatedRelaunch && PathIsDirectory(s_lpFileArg)) {
+    if (!s_IsThisAnElevatedRelaunch && PathIsDirectory(s_lpFileArg)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
       if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), s_lpFileArg))
         bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
     }
     else {
-      LPCWSTR lpFileToOpen = s_flagIsElevatedRelaunch ? s_wchTmpFilePath : s_lpFileArg;
+      LPCWSTR lpFileToOpen = s_IsThisAnElevatedRelaunch ? s_wchTmpFilePath : s_lpFileArg;
       bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, lpFileToOpen);
       if (bOpened) {
-        if (s_flagIsElevatedRelaunch) {
+        if (s_IsThisAnElevatedRelaunch) {
           if (StrIsNotEmpty(s_lpFileArg)) {
             InstallFileWatching(NULL); // Terminate file watching
             StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),s_lpFileArg);
@@ -7575,7 +7575,7 @@ void ParseCommandLine()
                          lp1 + CSTRLEN(L"tmpfbuf="), len - CSTRLEN(L"tmpfbuf="));
           TrimSpcW(s_wchTmpFilePath);
           NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
-          s_flagIsElevatedRelaunch = true;
+          s_IsThisAnElevatedRelaunch = true;
         }
 
         else switch (*CharUpper(lp1)) {
@@ -7808,7 +7808,7 @@ void ParseCommandLine()
             s_flagAppIsClosing = true;
           }
           else {
-            s_flagRelaunchElevated = true;
+            s_flagDoRelaunchElevated = true;
           }
           break;
 
@@ -9467,7 +9467,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       iCaretPos = Globals.pFileMRU->iCaretPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
-    if (!(s_flagRelaunchElevated || s_flagIsElevatedRelaunch)) {
+    if (!(s_flagDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
       MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, pszBookMarks);
     }
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
@@ -9642,8 +9642,9 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 //
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
 {
-  WCHAR szArguments[2048] = { L'\0' };
-  s_flagRelaunchElevated = true;
+  SaveSettings(false);
+  s_flagDoRelaunchElevated = true;
+
   LPWSTR lpCmdLine = GetCommandLine();
   size_t const wlen = StringCchLenW(lpCmdLine, 0) + 2;
   LPWSTR lpExe = AllocMem(sizeof(WCHAR) * wlen, HEAP_ZERO_MEMORY);
@@ -9663,6 +9664,8 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
   if (s_lpOrigFileArg) {
     lpArgs = StrCutI(lpArgs, s_lpOrigFileArg); // remove file from argument list
   }
+
+  WCHAR szArguments[2048] = { L'\0' };
   StringCchPrintf(szArguments, COUNTOF(szArguments),
     L"%s /pos %i,%i,%i,%i,%i /g %i,%i %s", wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, lpArgs);
 
@@ -9703,22 +9706,20 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
     FreeMem(lpArgs);
   }
 
-  SaveSettings(false);
-
   if (RelaunchElevated(szArguments)) {
     // set no change and quit
     SciCall_SetSavePoint();
     _SetSaveNeededFlag(false);
-    return true;
   }
   else {
     Globals.dwLastError = GetLastError();
     if (PathFileExists(szTempFileName)) {
       DeleteFile(szTempFileName);
     }
+    s_flagDoRelaunchElevated = false;
   }
-  s_flagRelaunchElevated = false;
-  return false;
+
+  return s_flagDoRelaunchElevated;
 }
 
 
@@ -9846,7 +9847,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
   if (fSuccess)
   {
-    if (!(bSaveCopy || s_flagRelaunchElevated))
+    if (!(bSaveCopy || s_flagDoRelaunchElevated))
     {
       cpi_enc_t iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
@@ -10284,7 +10285,7 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVista() || s_bIsElevated || !s_flagRelaunchElevated || s_flagDisplayHelp) { return false; }
+  if (!IsVista() || s_bIsElevated || !s_flagDoRelaunchElevated || s_flagDisplayHelp) { return false; }
 
   STARTUPINFO si;
   si.cb = sizeof(STARTUPINFO);
