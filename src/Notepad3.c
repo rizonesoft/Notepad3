@@ -148,6 +148,7 @@ static int       s_cyReBarFrame;
 static int       s_cxEditFrame;
 static int       s_cyEditFrame;
 static bool      s_bUndoRedoScroll = false;
+static bool      s_bPrevFullScreenFlag = false;
 
 // for tiny expression calculation
 static double    s_dExpression = 0.0;
@@ -1100,7 +1101,7 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
     RECT const rc = RectFromWinInfo(&winfo);
     GetMonitorInfoFromRect(&rc, &mi);
     WININFO wi = winfo; wi.cx = wi.cy = 16; // really small
-    FitIntoMonitorWorkArea(&(mi.rcWork), &wi, false);
+    FitIntoMonitorGeometry(&(mi.rcWork), &wi, SCR_NORMAL);
     winfo.x = wi.x;
     winfo.y = wi.y;
   }
@@ -2426,6 +2427,10 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   static bool bShutdownOK = false;
 
   if (!bShutdownOK) {
+
+    if (s_bPrevFullScreenFlag) {
+      SendWMCommand(hwnd, CMD_FULLSCRWINPOS);
+    }
 
     // Terminate file watching
     InstallFileWatching(NULL);
@@ -6052,18 +6057,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INITIALWINPOS:
-      SnapToWinInfoPos(hwnd, &s_WinInfo, false);
+      SnapToWinInfoPos(hwnd, &s_WinInfo, SCR_NORMAL);
       break;
 
     case CMD_FULLSCRWINPOS:
       {
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
-        SnapToWinInfoPos(hwnd, &wi, true);
+        SnapToWinInfoPos(hwnd, &wi, SCR_FULL_SCREEN);
       }
       break;
 
     case CMD_DEFAULTWINPOS:
-      SnapToWinInfoPos(hwnd, &s_DefWinInfo, false);
+      SnapToWinInfoPos(hwnd, &s_DefWinInfo, SCR_NORMAL);
       break;
 
     case CMD_SAVEASDEFWINPOS:
@@ -10360,21 +10365,26 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 //  SnapToWinInfoPos()
 //  Aligns Notepad3 to the default window position on the current screen
 //
-void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
+void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
   static WINDOWPLACEMENT s_wndplPrev;
-  static bool s_bPrevFullWAFlag = false;
-  static bool s_bPrevShowToolbar = true;
-  static bool s_bPrevShowStatusbar = true;
+  static bool s_bPrevShowToolbar = false;
+  static bool s_bPrevShowStatusbar = false;
 
   WINDOWPLACEMENT wndpl;
   RECT rcCurrent; GetWindowRect(hwnd, &rcCurrent);
 
-  if (bFullWorkArea) {
-    if (s_bPrevFullWAFlag) { // snap to previous rect
+  if ((mode == SCR_FULL_WORKAREA) || (mode == SCR_FULL_SCREEN)) {
+    if (s_bPrevFullScreenFlag) { // snap to previous rect
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
       //SetMenu(Globals.hwndMain, Globals.hMainMenu);
+      if (Settings.AlwaysOnTop) {
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+      }
+      else {
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+      }
       wndpl = s_wndplPrev;
     }
     else {
@@ -10383,17 +10393,26 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
       s_bPrevShowStatusbar = Settings.ShowStatusbar;
       Settings.ShowToolbar = Settings.ShowStatusbar = false;
       //SetMenu(Globals.hwndMain, NULL);
-      wndpl = WindowPlacementFromInfo(hwnd, NULL);
+      wndpl = WindowPlacementFromInfo(hwnd, NULL, mode);
+      if (mode == SCR_FULL_SCREEN) {
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+      }
     }
-    s_bPrevFullWAFlag = !s_bPrevFullWAFlag;
+    s_bPrevFullScreenFlag = !s_bPrevFullScreenFlag;
   }
   else {
-    wndpl = WindowPlacementFromInfo(hwnd, pWinInfo);
-    if (s_bPrevFullWAFlag) {
+    if (Settings.AlwaysOnTop) {
+      SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    }
+    else {
+      SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    }
+    wndpl = WindowPlacementFromInfo(hwnd, pWinInfo, SCR_NORMAL);
+    if (s_bPrevFullScreenFlag) {
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
     }
-    s_bPrevFullWAFlag = false;
+    s_bPrevFullScreenFlag = false;
   }
 
   if (GetDoAnimateMinimize()) {

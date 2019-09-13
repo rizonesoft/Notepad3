@@ -3240,20 +3240,28 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 
 //=============================================================================
 //
-//  FitIntoMonitorWorkArea()
+//  FitIntoMonitorGeometry()
 //
-void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
+void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
 {
   MONITORINFO mi;
   GetMonitorInfoFromRect(pRect, &mi);
 
-  if (bFullWorkArea) {
+  if (mode == SCR_FULL_WORKAREA) {
     SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
     // monitor coord -> work area coord
     pWinInfo->x = mi.rcWork.left - (mi.rcWork.left - mi.rcMonitor.left);
     pWinInfo->y = mi.rcWork.top - (mi.rcWork.top - mi.rcMonitor.top);
     pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left);
     pWinInfo->cy = (mi.rcWork.bottom - mi.rcWork.top);
+  }
+  else if (mode == SCR_FULL_SCREEN) {
+    SetRect(pRect, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right, mi.rcMonitor.bottom);
+    // monitor coord -> screen coord
+    pWinInfo->x = mi.rcMonitor.left - (mi.rcWork.left - mi.rcMonitor.left);
+    pWinInfo->y = mi.rcMonitor.top - (mi.rcWork.top - mi.rcMonitor.top);
+    pWinInfo->cx = (mi.rcMonitor.right - mi.rcMonitor.left);
+    pWinInfo->cy = (mi.rcMonitor.bottom - mi.rcMonitor.top);
   }
   else {
     WININFO wi = *pWinInfo;
@@ -3287,7 +3295,7 @@ void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
 //  WindowPlacementFromInfo()
 //
 //
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
   WINDOWPLACEMENT wndpl;
   ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
@@ -3298,7 +3306,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
   if (pWinInfo) {
     RECT rc = RectFromWinInfo(pWinInfo);
     winfo = *pWinInfo;
-    FitIntoMonitorWorkArea(&rc, &winfo, false);
+    FitIntoMonitorGeometry(&rc, &winfo, SCR_NORMAL);
     if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
   }
   else {
@@ -3308,7 +3316,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
     else
       GetWindowRect(GetDesktopWindow(), &rc);
 
-    FitIntoMonitorWorkArea(&rc, &winfo, true);
+    FitIntoMonitorGeometry(&rc, &winfo, mode);
     // TODO: maximize ?
   }
   wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
