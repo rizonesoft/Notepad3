@@ -417,6 +417,9 @@ typedef struct {
   MemEnv           mem_env_static[SCANENV_MEMENV_SIZE];
   MemEnv*          mem_env_dynamic;
   unsigned int     parse_depth;
+#ifdef ONIG_DEBUG_PARSE
+  unsigned int     max_parse_depth;
+#endif
   int backref_num;
   int keep_num;
   int save_num;

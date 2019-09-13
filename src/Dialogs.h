@@ -41,8 +41,8 @@ bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo);
 void WinInfoToScreen(WININFO* pWinInfo);
 WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO * hMonitorInfo);
-void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool);
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo);
+void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode);
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
 void DialogNewWindow(HWND hwnd,bool,bool);
 void DialogFileBrowse(HWND hwnd);

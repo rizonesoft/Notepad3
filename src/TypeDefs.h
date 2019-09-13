@@ -86,6 +86,8 @@ typedef struct _wi
 
 #define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100 }
 
+typedef enum { SCR_NORMAL = 0, SCR_FULL_WORKAREA = 1, SCR_FULL_SCREEN = 2 } SCREEN_MODE;
+
 inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
   RECT rc; SetRect(&rc, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy); return rc;
 }

@@ -199,6 +199,24 @@ onig_set_parse_depth_limit(unsigned int depth)
   return 0;
 }
 
+#ifdef ONIG_DEBUG_PARSE
+#define INC_PARSE_DEPTH(d) do {\
+  (d)++;\
+  if (env->max_parse_depth < (d)) env->max_parse_depth = d;\
+  if ((d) > ParseDepthLimit) \
+    return ONIGERR_PARSE_DEPTH_LIMIT_OVER;\
+} while (0)
+#else
+#define INC_PARSE_DEPTH(d) do {\
+  (d)++;\
+  if ((d) > ParseDepthLimit) \
+    return ONIGERR_PARSE_DEPTH_LIMIT_OVER;\
+} while (0)
+#endif
+
+#define DEC_PARSE_DEPTH(d)  (d)--
+
+
 static int
 bbuf_init(BBuf* buf, int size)
 {
@@ -1965,6 +1983,9 @@ scan_env_clear(ScanEnv* env)
   xmemset(env->mem_env_static, 0, sizeof(env->mem_env_static));
 
   env->parse_depth         = 0;
+#ifdef ONIG_DEBUG_PARSE
+  env->max_parse_depth     = 0;
+#endif
   env->backref_num         = 0;
   env->keep_num            = 0;
   env->save_num            = 0;
@@ -6244,9 +6265,7 @@ parse_char_class(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
   *np = NULL_NODE;
   val_type = -1;
-  env->parse_depth++;
-  if (env->parse_depth > ParseDepthLimit)
-    return ONIGERR_PARSE_DEPTH_LIMIT_OVER;
+  INC_PARSE_DEPTH(env->parse_depth);
 
   prev_cc = (CClassNode* )NULL;
   r = fetch_token_in_cc(tok, src, end, env);
@@ -6568,7 +6587,7 @@ parse_char_class(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
     }
   }
   *src = p;
-  env->parse_depth--;
+  DEC_PARSE_DEPTH(env->parse_depth);
   return 0;
 
  err:
@@ -7773,7 +7792,8 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len, void* arg)
 #ifdef CASE_FOLD_IS_APPLIED_INSIDE_NEGATIVE_CCLASS
     if ((is_in != 0 && !IS_NCCLASS_NOT(cc)) ||
         (is_in == 0 &&  IS_NCCLASS_NOT(cc))) {
-      if (ONIGENC_MBC_MINLEN(env->enc) > 1 || *to >= SINGLE_BYTE_SIZE) {
+      if (ONIGENC_MBC_MINLEN(env->enc) > 1 ||
+          ONIGENC_CODE_TO_MBCLEN(env->enc, *to) != 1) {
         add_code_range(&(cc->mbuf), env, *to, *to);
       }
       else {
@@ -7782,7 +7802,8 @@ i_apply_case_fold(OnigCodePoint from, OnigCodePoint to[], int to_len, void* arg)
     }
 #else
     if (is_in != 0) {
-      if (ONIGENC_MBC_MINLEN(env->enc) > 1 || *to >= SINGLE_BYTE_SIZE) {
+      if (ONIGENC_MBC_MINLEN(env->enc) > 1 ||
+          ONIGENC_CODE_TO_MBCLEN(env->enc, *to) != 1) {
         if (IS_NCCLASS_NOT(cc)) clear_not_flag_cclass(cc, env->enc);
         add_code_range(&(cc->mbuf), env, *to, *to);
       }
@@ -8167,9 +8188,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       if (is_invalid_quantifier_target(*tp))
         return ONIGERR_TARGET_OF_REPEAT_OPERATOR_INVALID;
 
-      parse_depth++;
-      if (parse_depth > ParseDepthLimit)
-        return ONIGERR_PARSE_DEPTH_LIMIT_OVER;
+      INC_PARSE_DEPTH(parse_depth);
 
       qn = node_new_quantifier(tok->u.repeat.lower, tok->u.repeat.upper,
                                r == TK_INTERVAL);
@@ -8237,6 +8256,8 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
   Node *node, **headp;
 
   *top = NULL;
+  INC_PARSE_DEPTH(env->parse_depth);
+
   r = parse_exp(&node, tok, term, src, end, env, group_head);
   if (r < 0) {
     onig_node_free(node);
@@ -8247,7 +8268,7 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
     *top = node;
   }
   else {
-    *top  = node_new_list(node, NULL);
+    *top = node_new_list(node, NULL);
     if (IS_NULL(*top)) {
       onig_node_free(node);
       return ONIGERR_MEMORY;
@@ -8273,6 +8294,7 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
     }
   }
 
+  DEC_PARSE_DEPTH(env->parse_depth);
   return r;
 }
 
@@ -8285,9 +8307,7 @@ parse_subexp(Node** top, PToken* tok, int term, UChar** src, UChar* end,
   Node *node, **headp;
 
   *top = NULL;
-  env->parse_depth++;
-  if (env->parse_depth > ParseDepthLimit)
-    return ONIGERR_PARSE_DEPTH_LIMIT_OVER;
+  INC_PARSE_DEPTH(env->parse_depth);
 
   r = parse_branch(&node, tok, term, src, end, env, group_head);
   if (r < 0) {
@@ -8336,7 +8356,7 @@ parse_subexp(Node** top, PToken* tok, int term, UChar** src, UChar* end,
       return ONIGERR_PARSER_BUG;
   }
 
-  env->parse_depth--;
+  DEC_PARSE_DEPTH(env->parse_depth);
   return r;
 }
 

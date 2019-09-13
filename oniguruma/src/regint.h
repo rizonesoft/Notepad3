@@ -558,12 +558,12 @@ enum OpCode {
   OP_BACKREF_WITH_LEVEL_IC,     /* \k<xxx+n>, \k<xxx-n> */
   OP_BACKREF_CHECK,             /* (?(n)), (?('name')) */
   OP_BACKREF_CHECK_WITH_LEVEL,  /* (?(n-level)), (?('name-level')) */
-  OP_MEMORY_START,
-  OP_MEMORY_START_PUSH,   /* push back-tracker to stack */
-  OP_MEMORY_END_PUSH,     /* push back-tracker to stack */
-  OP_MEMORY_END_PUSH_REC, /* push back-tracker to stack */
-  OP_MEMORY_END,
-  OP_MEMORY_END_REC,      /* push marker to stack */
+  OP_MEM_START,
+  OP_MEM_START_PUSH,     /* push back-tracker to stack */
+  OP_MEM_END_PUSH,       /* push back-tracker to stack */
+  OP_MEM_END_PUSH_REC,   /* push back-tracker to stack */
+  OP_MEM_END,
+  OP_MEM_END_REC,        /* push marker to stack */
   OP_FAIL,               /* pop stack and move */
   OP_JUMP,
   OP_PUSH,
@@ -688,12 +688,12 @@ typedef int ModeType;
 #define OPSIZE_PREC_READ_NOT_END       1
 #define OPSIZE_BACKREF                 1
 #define OPSIZE_FAIL                    1
-#define OPSIZE_MEMORY_START            1
-#define OPSIZE_MEMORY_START_PUSH       1
-#define OPSIZE_MEMORY_END_PUSH         1
-#define OPSIZE_MEMORY_END_PUSH_REC     1
-#define OPSIZE_MEMORY_END              1
-#define OPSIZE_MEMORY_END_REC          1
+#define OPSIZE_MEM_START               1
+#define OPSIZE_MEM_START_PUSH          1
+#define OPSIZE_MEM_END_PUSH            1
+#define OPSIZE_MEM_END_PUSH_REC        1
+#define OPSIZE_MEM_END                 1
+#define OPSIZE_MEM_END_REC             1
 #define OPSIZE_ATOMIC_START            1
 #define OPSIZE_ATOMIC_END              1
 #define OPSIZE_EMPTY_CHECK_START       1
