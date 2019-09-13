@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.912.#(build) (2019-09-12)
+Current BETA Version 5.19.913.#(build) (2019-09-13)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Full Work Area Mode (F11) -> Full Screen Mode.
 - Relax UTF-8 orientation (lower confidence level for UCHARDET 
     and use system's code-page as detection fallback by default)
 - Ctrl+Alt+Enter AutoCompletion behaviour.
