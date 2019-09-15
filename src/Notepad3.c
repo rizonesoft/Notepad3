@@ -52,6 +52,7 @@ CONSTANTS_T const Constants = {
     2                           // StdDefaultLexerID
   , L"minipath.exe"             // FileBrowserMiniPath
   , L"Suppressed Messages"      // SectionSuppressedMessages
+  , L"ThemeFileName"            // StylingThemeName
 };
 
 FLAGS_T     Flags;
@@ -116,10 +117,6 @@ static int       s_WinCurrentWidth = 0;
 static LPWSTR    s_lpFileList[FILE_LIST_SIZE] = { NULL };
 static int       s_cFileList = 0;
 static int       s_cchiFileList = 0;
-
-static WCHAR* const _s_RecentFiles = L"Recent Files";
-static WCHAR* const _s_RecentFind = L"Recent Find";
-static WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 static WCHAR     s_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 
@@ -627,6 +624,9 @@ static void _InitGlobals()
   ZeroMemory(&(Globals.fvBackup), sizeof(FILEVARS));
   
   Globals.hMainMenu = NULL;
+  Globals.pFileMRU = NULL;
+  Globals.pMRUfind = NULL;
+  Globals.pMRUreplace = NULL;
   Globals.CallTipType = CT_NONE;
   Globals.iAvailLngCount = 1;
   Globals.iWrapCol = 0;
@@ -643,6 +643,7 @@ static void _InitGlobals()
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
   Globals.bDocHasInconsistentEOLs = false;
+  Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
 
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
   Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
@@ -1608,8 +1609,51 @@ bool SaveAllSettings(bool bSaveSettingsNow)
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
+  
+  bool ok = OpenSettingsFile();
 
-  bool const ok = SaveSettings(bSaveSettingsNow);
+  if (ok) {
+
+    ok = SaveSettings(bSaveSettingsNow);
+
+    if (StrIsNotEmpty(Globals.IniFile))
+    {
+      // Cleanup unwanted MRU'selEmpty
+      if (!Settings.SaveRecentFiles) {
+        MRU_Empty(Globals.pFileMRU);
+        MRU_Save(Globals.pFileMRU);
+      }
+      else {
+        MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
+      }
+      MRU_Destroy(Globals.pFileMRU);
+      Globals.pFileMRU = NULL;
+
+      if (!Settings.SaveFindReplace) {
+        MRU_Empty(Globals.pMRUfind);
+        MRU_Empty(Globals.pMRUreplace);
+        MRU_Save(Globals.pMRUfind);
+        MRU_Save(Globals.pMRUreplace);
+      }
+      else {
+        MRU_MergeSave(Globals.pMRUfind, false, false, false);
+        MRU_MergeSave(Globals.pMRUreplace, false, false, false);
+      }
+      MRU_Destroy(Globals.pMRUfind);
+      Globals.pMRUfind = NULL;
+      MRU_Destroy(Globals.pMRUreplace);
+      Globals.pMRUreplace = NULL;
+    }
+  }
+
+  if (ok) {
+    ok = CloseSettingsFile();
+  }
+
+  // separate INI files for Style-Themes
+  if (Globals.idxSelectedTheme >= 2) {
+    Style_SaveSettings();
+  }
 
   EndWaitCursor();
   return ok;
@@ -2006,17 +2050,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
   pDropTarget = RegisterDragAndDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)Globals.hwndEdit);
 #endif
-
-  // File MRU
-  Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);
-  MRU_Load(Globals.pFileMRU);
-
-  Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUfind);
-  SetFindPattern(Globals.pMRUfind->pszItems[0]);
-
-  Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUreplace);
 
   if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
     Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL) {
@@ -2455,34 +2488,8 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       DestroyWindow(Globals.hwndDlgCustomizeSchemes);
     }
     
-    // call SaveSettings() when Globals.hwndToolbar is still valid
+    // call SaveAllSettings() when Globals.hwndToolbar is still valid
     SaveAllSettings(false);
-
-    if (StrIsNotEmpty(Globals.IniFile))
-    {
-      // Cleanup unwanted MRU'selEmpty
-      if (!Settings.SaveRecentFiles) {
-        MRU_Empty(Globals.pFileMRU);
-        MRU_Save(Globals.pFileMRU);
-      }
-      else {
-        MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
-      }
-      MRU_Destroy(Globals.pFileMRU);
-
-      if (!Settings.SaveFindReplace) {
-        MRU_Empty(Globals.pMRUfind);
-        MRU_Empty(Globals.pMRUreplace);
-        MRU_Save(Globals.pMRUfind);
-        MRU_Save(Globals.pMRUreplace);
-      }
-      else {
-        MRU_MergeSave(Globals.pMRUfind, false, false, false);
-        MRU_MergeSave(Globals.pMRUreplace, false, false, false);
-      }
-      MRU_Destroy(Globals.pMRUfind);
-      MRU_Destroy(Globals.pMRUreplace);
-    }
 
     // Remove tray icon if necessary
     ShowNotifyIcon(hwnd, false);
@@ -9453,7 +9460,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       _END_UNDO_ACTION_
     }
     else {
-      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, true, &fioStatus, false, false);
+      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, &fioStatus, false, false);
     }
   }
 
@@ -9658,7 +9665,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 //
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus)
 {
-  SaveSettings(false);
+  SaveAllSettings(false);
+
   s_flagDoRelaunchElevated = true;
 
   LPWSTR lpCmdLine = GetCommandLine();

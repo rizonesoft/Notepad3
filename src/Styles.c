@@ -138,15 +138,7 @@ static int  s_cyStyleSelectDlg = STYLESELECTDLG_Y;
 
 //=============================================================================
 
-typedef struct _themeFiles
-{
-  UINT    rid;
-  WCHAR   szName[80];
-  WCHAR   szFilePath[MAX_PATH];
-
-} THEMEFILES, * PTHEMEFILES;
-
-static THEMEFILES Theme_Files[] =
+THEMEFILES Theme_Files[] =
 {
   { 0, L"Default", L"" },
   { 0, L"Standard", L"" },
@@ -176,9 +168,6 @@ static THEMEFILES Theme_Files[] =
   { 0, L"", L"" }
 };
 unsigned ThemeItems_CountOf() { return COUNTOF(Theme_Files); }
-static unsigned s_idxSelectedTheme = 1;  // Default(0), Standard(1)
-
-const WCHAR* const STYLING_THEME_NAME = L"ThemeFileName";
 
 static void _FillThemesMenuTable()
 {
@@ -282,17 +271,17 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
   }
 
   // --- insert ---
-  WCHAR wchMenuItemStrg[80] = { L'\0' };
+  WCHAR wchMenuItemStrg[128] = { L'\0' };
   GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
 
   //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
   bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
 
-  CheckCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, true);
+  CheckCmd(hMenuBar, Theme_Files[Globals.idxSelectedTheme].rid, true);
 
-  if (StrIsEmpty(Theme_Files[s_idxSelectedTheme].szFilePath)) 
+  if (StrIsEmpty(Theme_Files[Globals.idxSelectedTheme].szFilePath))
   {
-    EnableCmd(hMenuBar, Theme_Files[s_idxSelectedTheme].rid, false);
+    EnableCmd(hMenuBar, Theme_Files[Globals.idxSelectedTheme].rid, false);
   }
 
   return res;
@@ -317,15 +306,15 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
   if ((iThemeIdx < 0) || (iThemeIdx >= ThemeItems_CountOf())) {
     return;
   }
-  if (iThemeIdx == s_idxSelectedTheme) { return; }
+  if (iThemeIdx == Globals.idxSelectedTheme) { return; }
 
-  CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, false);
+  CheckCmd(Globals.hMainMenu, Theme_Files[Globals.idxSelectedTheme].rid, false);
 
   if (Settings.SaveSettings) {
-    if (s_idxSelectedTheme == 0) {
+    if (Globals.idxSelectedTheme == 0) {
       // internal defaults
     }
-    else if (s_idxSelectedTheme == 1) {
+    else if (Globals.idxSelectedTheme == 1) {
       if (bEnableSaveSettings) {
         CreateIniFile();
         if (StrIsNotEmpty(Globals.IniFile)) {
@@ -333,21 +322,22 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
         }
       }
     }
-    else if (PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
+    else if (PathFileExists(Theme_Files[Globals.idxSelectedTheme].szFilePath))
     {
       bool const bIndependentFromStandardSettings = true;
-      Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, bIndependentFromStandardSettings);
+      Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, bIndependentFromStandardSettings);
     }
   }
 
-  s_idxSelectedTheme = iThemeIdx;
+  Globals.idxSelectedTheme = iThemeIdx;
+  StringCchCopy(Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName), Theme_Files[Globals.idxSelectedTheme].szName);
 
   bool result = true;
-  if ((s_idxSelectedTheme > 1) && PathFileExists(Theme_Files[s_idxSelectedTheme].szFilePath))
+  if ((Globals.idxSelectedTheme > 1) && PathFileExists(Theme_Files[Globals.idxSelectedTheme].szFilePath))
   {
-    result = Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
+    result = Style_ImportFromFile(Theme_Files[Globals.idxSelectedTheme].szFilePath);
   }
-  else if (s_idxSelectedTheme == 1) {
+  else if (Globals.idxSelectedTheme == 1) {
     result = Style_ImportFromFile(Globals.IniFile);
   }
   else {
@@ -358,11 +348,11 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
     Style_ResetCurrentLexer(Globals.hwndEdit);
     SendWMSize(Globals.hwndMain, NULL);
     UpdateUI();
-    _EnableSchemeConfig(s_idxSelectedTheme != 0);
+    _EnableSchemeConfig(Globals.idxSelectedTheme != 0);
     UpdateAllBars(true);
   }
 
-  CheckCmd(Globals.hMainMenu, Theme_Files[s_idxSelectedTheme].rid, true);
+  CheckCmd(Globals.hMainMenu, Theme_Files[Globals.idxSelectedTheme].rid, true);
 }
 
 
@@ -489,19 +479,18 @@ void Style_Load()
   _FillThemesMenuTable();
 
   // get theme name from settings
-  WCHAR wchThemeName[80];
-  IniFileGetString(Globals.IniFile, L"Styles", STYLING_THEME_NAME, L"", wchThemeName, COUNTOF(wchThemeName));
 
   unsigned iTheme = 1;
-  if (StrIsNotEmpty(wchThemeName)) {
+  if (StrIsNotEmpty(Globals.SelectedThemeName)) {
     for (; iTheme < ThemeItems_CountOf(); ++iTheme)
     {
-      if (StringCchCompareXI(wchThemeName, Theme_Files[iTheme].szName) == 0) { break; }
+      if (StringCchCompareXI(Globals.SelectedThemeName, Theme_Files[iTheme].szName) == 0) { break; }
     }
   }
-  s_idxSelectedTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
+  Globals.idxSelectedTheme = (iTheme < ThemeItems_CountOf()) ? iTheme : 1;
+  StringCchCopy(Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName), Theme_Files[Globals.idxSelectedTheme].szName);
 
-  Style_ImportFromFile(Theme_Files[s_idxSelectedTheme].szFilePath);
+  Style_ImportFromFile(Theme_Files[Globals.idxSelectedTheme].szFilePath);
 }
 
 
@@ -653,18 +642,11 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 
 //=============================================================================
 //
-//  Style_Save()
+//  Style_SaveSettings()
 //
-void Style_Save()
+void Style_SaveSettings()
 {
-  Style_ExportToFile(Theme_Files[s_idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
-
-  if (s_idxSelectedTheme > 1) {
-    IniFileSetString(Globals.IniFile, L"Styles", STYLING_THEME_NAME, Theme_Files[s_idxSelectedTheme].szName);
-  }
-  else {
-    IniFileDelete(Globals.IniFile, L"Styles", STYLING_THEME_NAME, false);
-  }
+  Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
 }
 
 
@@ -705,7 +687,7 @@ bool Style_Export(HWND hwnd)
 
 //=============================================================================
 //
-//  Style_Export()
+//  Style_ToIniSection()
 //
 
 #define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)        \
@@ -714,7 +696,6 @@ bool Style_Export(HWND hwnd)
   } else {                                                                 \
     IniSectionDelete(Styles_Section, _W(_STRG(VARNAME)), false);           \
   }
-// ----------------------------------------------------------------------------
 
 
 void Style_ToIniSection(bool bForceAll)
@@ -818,7 +799,7 @@ void Style_ToIniSection(bool bForceAll)
 bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
   if (StrIsEmpty(szFile)) {
-    if (s_idxSelectedTheme != 0) {
+    if (Globals.idxSelectedTheme != 0) {
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
     }
     return false;
@@ -4332,7 +4313,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-            if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[s_idxSelectedTheme].szFilePath)) && (s_idxSelectedTheme > 0)) 
+            if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[Globals.idxSelectedTheme].szFilePath)) && (Globals.idxSelectedTheme > 0))
             {
               InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
               bWarnedNoIniFile = true;

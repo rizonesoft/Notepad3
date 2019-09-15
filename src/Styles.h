@@ -32,7 +32,7 @@
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);
-void   Style_Save();
+void   Style_SaveSettings();
 bool   Style_Export(HWND hwnd);
 void   Style_ToIniSection(bool bForceAll);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
