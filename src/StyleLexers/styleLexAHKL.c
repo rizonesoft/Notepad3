@@ -1,126 +1,30 @@
-﻿#include "StyleLexers.h"
+#include "StyleLexers.h"
 
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_AHKL = {
 // Directives
-"#allowsamelinecomments #clipboardtimeout #commentflag #errorstdout #escapechar #hotkeyinterval "
-"#hotkeymodifiertimeout #hotstring #if #iftimeout #ifwinactive #ifwinexist #include #includeagain "
-"#installkeybdhook #installmousehook #keyhistory #ltrim #maxhotkeysperinterval #maxmem #maxthreads "
-"#maxthreadsbuffer #maxthreadsperhotkey #menumaskkey #noenv #notrayicon #persistent #singleinstance "
-"#usehook #warn #winactivateforce",
+"#AllowSameLineComments #ClipboardTimeout #CommentFlag #ErrorStdOut #EscapeChar #HotkeyInterval #HotkeyModifierTimeout #Hotstring #If #IfTimeout #IfWinActive #IfWinExist #IfWinNotActive #IfWinNotExist #Include #IncludeAgain #InputLevel #InstallKeybdHook #InstallMouseHook #KeyHistory #LTrim #MaxHotkeysPerInterval #MaxMem #MaxThreads #MaxThreadsBuffer #MaxThreadsPerHotkey #MenuMaskKey #NoEnv #NoTrayIcon #Persistent #SingleInstance #UseHook #Warn #WinActivateForce",
 // Commands
-"autotrim blockinput clipwait control controlclick controlfocus controlget controlgetfocus "
-"controlgetpos controlgettext controlmove controlsend controlsendraw controlsettext coordmode "
-"critical detecthiddentext detecthiddenwindows drive driveget drivespacefree edit endrepeat envadd "
-"envdiv envget envmult envset envsub envupdate fileappend filecopy filecopydir filecreatedir "
-"filecreateshortcut filedelete filegetattrib filegetshortcut filegetsize filegettime filegetversion "
-"fileinstall filemove filemovedir fileread filereadline filerecycle filerecycleempty fileremovedir "
-"fileselectfile fileselectfolder filesetattrib filesettime formattime getkeystate groupactivate "
-"groupadd groupclose groupdeactivate gui guicontrol guicontrolget hideautoitwin hotkey if ifequal "
-"ifexist ifgreater ifgreaterorequal ifinstring ifless iflessorequal ifmsgbox ifnotequal ifnotexist "
-"ifnotinstring ifwinactive ifwinexist ifwinnotactive ifwinnotexist imagesearch inidelete iniread "
-"iniwrite input inputbox keyhistory keywait listhotkeys listlines listvars menu mouseclick "
-"mouseclickdrag mousegetpos mousemove msgbox outputdebug pixelgetcolor pixelsearch postmessage "
-"process progress random regdelete regread regwrite reload run runas runwait send sendevent "
-"sendinput sendmessage sendmode sendplay sendraw setbatchlines setcapslockstate setcontroldelay "
-"setdefaultmousespeed setenv setformat setkeydelay setmousedelay setnumlockstate setscrolllockstate "
-"setstorecapslockmode settitlematchmode setwindelay setworkingdir shutdown sort soundbeep soundget "
-"soundgetwavevolume soundplay soundset soundsetwavevolume splashimage splashtextoff splashtexton "
-"splitpath statusbargettext statusbarwait stringcasesense stringgetpos stringleft stringlen "
-"stringlower stringmid stringreplace stringright stringsplit stringtrimleft stringtrimright "
-"stringupper sysget thread tooltip transform traytip urldownloadtofile winactivate winactivatebottom "
-"winclose winget wingetactivestats wingetactivetitle wingetclass wingetpos wingettext wingettitle "
-"winhide winkill winmaximize winmenuselectitem winminimize winminimizeall winminimizeallundo winmove "
-"winrestore winset winsettitle winshow winwait winwaitactive winwaitclose winwaitnotactive "
-"fileencoding",
+"AutoTrim BlockInput Click ClipWait Control ControlClick ControlFocus ControlGet ControlGetFocus ControlGetPos ControlGetText ControlMove ControlSend ControlSendRaw ControlSetText CoordMode Critical DetectHiddenText DetectHiddenWindows Drive DriveGet DriveSpaceFree Edit EnvAdd EnvDiv EnvGet EnvMult EnvSet EnvSub EnvUpdate FileAppend FileCopy FileCopyDir FileCreateDir FileCreateShortcut FileDelete FileEncoding FileGetAttrib FileGetShortcut FileGetSize FileGetTime FileGetVersion FileInstall FileMove FileMoveDir FileRead FileReadLine FileRecycle FileRecycleEmpty FileRemoveDir FileSelectFile FileSelectFolder FileSetAttrib FileSetTime FormatTime GetKeyState GroupActivate GroupAdd GroupClose GroupDeactivate Gui GuiControl GuiControlGet Hotkey IfEqual IfExist IfGreater IfGreaterOrEqual IfInString IfLess IfLessOrEqual IfMsgBox IfNotEqual IfNotExist IfNotInString IfWinActive IfWinExist IfWinNotActive IfWinNotExist ImageSearch IniDelete IniRead IniWrite Input InputBox KeyHistory KeyWait ListHotkeys ListLines ListVars Menu MouseClick MouseClickDrag MouseGetPos MouseMove MsgBox OutputDebug PixelGetColor PixelSearch PostMessage Process Progress Random RegDelete RegRead RegWrite Reload Run RunAs RunWait Send SendEvent SendInput SendLevel SendMessage SendMode SendPlay	 SendRaw SetBatchLines SetCapslockState SetControlDelay SetDefaultMouseSpeed SetEnv SetFormat SetKeyDelay SetMouseDelay SetNumlockState SetRegView SetScrollLockState SetStoreCapslockMode SetTitleMatchMode SetWinDelay SetWorkingDir Shutdown Sort SoundBeep SoundGet SoundGetWaveVolume SoundPlay SoundSet SoundSetWaveVolume SplashImage SplashTextOff SplashTextOn SplitPath StatusBarGetText StatusBarWait StringCaseSense StringGetPos StringLeft StringLen StringLower StringMid StringReplace StringRight StringSplit StringTrimLeft StringTrimRight StringUpper SysGet Thread Throw ToolTip Transform TrayTip URLDownloadToFile WinActivate WinActivateBottom WinClose WinGet WinGetActiveStats WinGetActiveTitle WinGetClass WinGetPos WinGetText WinGetTitle WinHide WinKill WinMaximize WinMenuSelectItem WinMinimize WinMinimizeAll WinMinimizeAllUndo WinMove WinRestore WinSet WinSetTitle WinShow WinWait WinWaitActive WinWaitClose WinWaitNotActive",
 // Command Parameters
-"ltrim rtrim join ahk_id ahk_pid ahk_class ahk_group processname minmax controllist statuscd "
-"filesystem setlabel alwaysontop mainwindow nomainwindow useerrorlevel altsubmit hscroll vscroll "
-"imagelist wantctrla wantf2 vis visfirst wantreturn backgroundtrans minimizebox maximizebox "
-"sysmenu toolwindow exstyle check3 checkedgray readonly notab lastfound lastfoundexist alttab "
-"shiftalttab alttabmenu alttabandmenu alttabmenudismiss controllisthwnd hwnd deref pow bitnot "
-"bitand bitor bitxor bitshiftleft bitshiftright sendandmouse mousemove mousemoveoff "
-"hkey_local_machine hkey_users hkey_current_user hkey_classes_root hkey_current_config hklm hku "
-"hkcu hkcr hkcc reg_sz reg_expand_sz reg_multi_sz reg_dword reg_qword reg_binary reg_link "
-"reg_resource_list reg_full_resource_descriptor caret reg_resource_requirements_list "
-"reg_dword_big_endian regex pixel mouse screen relative rgb low belownormal normal abovenormal "
-"high realtime between contains in is integer float number digit xdigit alpha upper lower alnum "
-"time date not or and topmost top bottom transparent transcolor redraw region id idlast count "
-"list capacity eject lock unlock label serial type status seconds minutes hours days read parse "
-"logoff close error single shutdown menu exit reload tray add rename check uncheck togglecheck "
-"enable disable toggleenable default nodefault standard nostandard color delete deleteall icon "
-"noicon tip click show edit progress hotkey text picture pic groupbox button checkbox radio "
-"dropdownlist ddl combobox statusbar treeview listbox listview datetime monthcal updown slider "
-"tab tab2 iconsmall tile report sortdesc nosort nosorthdr grid hdr autosize range xm ym ys xs xp "
-"yp font resize owner submit nohide minimize maximize restore noactivate na cancel destroy "
-"center margin owndialogs guiescape guiclose guisize guicontextmenu guidropfiles tabstop section "
-"wrap border top bottom buttons expand first lines number uppercase lowercase limit password "
-"multi group background bold italic strike underline norm theme caption delimiter flash style "
-"checked password hidden left right center section move focus hide choose choosestring text pos "
-"enabled disabled visible notimers interrupt priority waitclose unicode tocodepage fromcodepage "
-"yes no ok cancel abort retry ignore force on off all send wanttab monitorcount monitorprimary "
-"monitorname monitorworkarea pid base useunsetlocal useunsetglobal localsameasglobal str astr wstr "
-"int64 int short char uint64 uint ushort uchar float double int64p intp shortp charp uint64p uintp "
-"ushortp ucharp floatp doublep ptr",
+"Pixel Mouse Screen Relative RGB Caret Menu LTrim RTrim Join Low BelowNormal Normal AboveNormal High Realtime ahk_class ahk_exe ahk_id ahk_group ahk_pid Between Contains In Is Integer Float Number Digit Xdigit Alpha Upper Lower Alnum Time Date not or and AlwaysOnTop Topmost Top Bottom Transparent TransColor Redraw Region ID IDLast ProcessName MinMax ControlList Count List Capacity StatusCD Eject Lock Unlock Label FileSystem Label SetLabel Serial Type Status static global local ByRef Seconds Minutes Hours Days Read Parse Logoff Close Error Single Tray Add Rename Check UnCheck ToggleCheck Enable Disable ToggleEnable Default NoDefault Standard NoStandard Color Delete DeleteAll Icon NoIcon Tip Click Show MainWindow NoMainWindow UseErrorLevel Text Picture Pic GroupBox Button Checkbox Radio DropDownList DDL ComboBox ListBox ListView DateTime MonthCal Slider StatusBar Tab Tab2 TreeView UpDown ActiveX Link Custom IconSmall Tile Report SortDesc NoSort NoSortHdr Grid Hdr AutoSize Range xm ym ys xs xp yp Font Resize Owner Submit NoHide Minimize Maximize Restore NoActivate NA Cancel Destroy Center DPIScale Margin MaxSize MinSize OwnDialogs GuiEscape GuiClose GuiSize GuiContextMenu GuiDropFiles OnClipboardChange TabStop Section AltSubmit Wrap HScroll VScroll Border Top Bottom Buttons Expand First ImageList Lines WantCtrlA WantF2 Vis VisFirst Number Uppercase Lowercase Limit Password Multi WantReturn Group Background bold italic strike underline norm BackgroundTrans Theme Caption Delimiter MinimizeBox MaximizeBox SysMenu ToolWindow Flash Style ExStyle Check3 Checked CheckedGray ReadOnly Password Hidden Left Right Center NoTab Section Move Focus Hide Choose ChooseString Text Pos Enabled Disabled Visible LastFound LastFoundExist AltTab ShiftAltTab AltTabMenu AltTabAndMenu AltTabMenuDismiss NoTimers Interrupt Priority WaitClose Wait Exist Close {Blind} {Click} {Raw} {AltDown} {AltUp} {ShiftDown} {ShiftUp} {CtrlDown} {CtrlUp} {LWinDown} {LWinUp} {RWinDown} {RWinUp} Unicode Asc Chr Deref Mod Pow Exp Sqrt Log Ln Round Ceil Floor Abs Sin Cos Tan ASin ACos ATan BitNot BitAnd BitOr BitXOr BitShiftLeft BitShiftRight ToCodePage FromCodePage Yes No Ok Cancel Abort Retry Ignore TryAgain On Off All HKEY_LOCAL_MACHINE HKEY_USERS HKEY_CURRENT_USER HKEY_CLASSES_ROOT HKEY_CURRENT_CONFIG HKLM HKU HKCU HKCR HKCC REG_SZ REG_EXPAND_SZ REG_MULTI_SZ REG_DWORD REG_BINARY class new extends",
 // Control Flow
-"break continue else exit exitapp gosub goto loop onexit pause repeat return settimer sleep "
-"suspend static global local byref while until for",
+"Break Continue If Else Exit ExitApp GoSub Goto Loop Pause Return SetTimer Sleep Suspend While Until For Try Catch Finally",
 // Built-in Functions
-"abs acos asc asin atan ceil chr cos dllcall exp fileexist floor getkeystate numget numput "
-"registercallback il_add il_create il_destroy instr islabel isfunc ln log lv_add lv_delete "
-"lv_deletecol lv_getcount lv_getnext lv_gettext lv_insert lv_insertcol lv_modify lv_modifycol "
-"lv_setimagelist mod onmessage round regexmatch regexreplace sb_seticon sb_setparts sb_settext "
-"sin sqrt strlen substr tan tv_add tv_delete tv_getchild tv_getcount tv_getnext tv_get tv_getparent "
-"tv_getprev tv_getselection tv_gettext tv_modify varsetcapacity winactive winexist trim ltrim rtrim "
-"fileopen strget strput object isobject objinsert objremove objminindex objmaxindex objsetcapacity "
-"objgetcapacity objgetaddress objnewenum objaddref objrelease objclone _insert _remove _minindex "
-"_maxindex _setcapacity _getcapacity _getaddress _newenum _addref _release _clone comobjcreate "
-"comobjget comobjconnect comobjerror comobjactive comobjenwrap comobjunwrap comobjparameter "
-"comobjmissing comobjtype comobjvalue comobjarray",
+"Abs ACos Asc ASin ATan Ceil Chr Cos DllCall Exp FileExist Floor Format Func IsByRef IsFunc IsLabel Ln Log FileExist FileOpen GetKeyState GetKeyName GetKeyVK GetKeySC InStr IL_Add IL_Create IL_Destroy LV_Add LV_Delete LV_DeleteCol LV_GetCount LV_GetNext LV_GetText LV_Insert LV_InsertCol LV_Modify LV_ModifyCol LV_SetImageList Trim LTrim RTrim Mod NumGet NumPut OnMessage Ord RegExMatch RegExReplace RegisterCallback Round SB_SetIcon SB_SetParts SB_SetText Sin Sqrt StrGet StrLen StrPut StrReplace StrSplit SubStr Tan TV_Add TV_Delete TV_GetChild TV_GetCount TV_GetNext TV_Get TV_GetParent TV_GetPrev TV_GetSelection TV_GetText TV_Modify TV_SetImageList VarSetCapacity WinActive WinExist Object Array IsObject ObjInsert _Insert ObjRemove _Remove ObjMinIndex _MinIndex ObjMaxIndex _MaxIndex ObjSetCapacity _SetCapacity ObjGetCapacity _GetCapacity ObjGetAddress _GetAddress ObjNewEnum _NewEnum ObjAddRef _AddRef ObjRelease _Release ObjHasKey _HasKey ObjClone _Clone __Get __Set __Call __Delete __New ComObjCreate ComObjGet ComObjConnect ComObjError ComObjActive ComObjEnwrap ComObjUnwrap ComObjParameter ComObjType ComObjValue ComObjMissing ComObjArray ComObjQuery ComObjFlags",
 // Built-in Variables
-"a_ahkpath a_ahkversion a_appdata a_appdatacommon a_autotrim a_batchlines a_caretx a_carety "
-"a_computername a_controldelay a_cursor a_dd a_ddd a_dddd a_defaultmousespeed a_desktop "
-"a_desktopcommon a_detecthiddentext a_detecthiddenwindows a_endchar a_eventinfo a_exitreason "
-"a_formatfloat a_formatinteger a_gui a_guievent a_guicontrol a_guicontrolevent a_guiheight "
-"a_guiwidth a_guix a_guiy a_hour a_iconfile a_iconhidden a_iconnumber a_icontip a_index a_ipaddress1 "
-"a_ipaddress2 a_ipaddress3 a_ipaddress4 a_isadmin a_iscompiled a_issuspended a_keydelay a_language "
-"a_lasterror a_linefile a_linenumber a_loopfield a_loopfileattrib a_loopfiledir a_loopfileext "
-"a_loopfilefullpath a_loopfilelongpath a_loopfilename a_loopfileshortname a_loopfileshortpath "
-"a_loopfilesize a_loopfilesizekb a_loopfilesizemb a_loopfiletimeaccessed a_loopfiletimecreated "
-"a_loopfiletimemodified a_loopreadline a_loopregkey a_loopregname a_loopregsubkey "
-"a_loopregtimemodified a_loopregtype a_mday a_min a_mm a_mmm a_mmmm a_mon a_mousedelay a_msec "
-"a_mydocuments a_now a_nowutc a_numbatchlines a_ostype a_osversion a_priorhotkey a_programfiles "
-"a_programs a_programscommon a_screenheight a_screenwidth a_scriptdir a_scriptfullpath a_scriptname "
-"a_sec a_space a_startmenu a_startmenucommon a_startup a_startupcommon a_stringcasesense a_tab a_temp "
-"a_thishotkey a_thismenu a_thismenuitem a_thismenuitempos a_tickcount a_timeidle a_timeidlephysical "
-"a_timesincepriorhotkey a_timesincethishotkey a_titlematchmode a_titlematchmodespeed a_username "
-"a_wday a_windelay a_windir a_workingdir a_yday a_year a_yweek a_yyyy clipboard clipboardall comspec "
-"programfiles a_thisfunc a_thislabel a_ispaused a_iscritical a_isunicode a_ptrsize errorlevel "
-"true false",
+"A_AhkPath A_AhkVersion A_AppData A_AppDataCommon A_AutoTrim A_BatchLines A_CaretX A_CaretY A_ComputerName A_ControlDelay A_Cursor A_DD A_DDD A_DDDD A_DefaultMouseSpeed A_Desktop A_DesktopCommon A_DetectHiddenText A_DetectHiddenWindows A_EndChar A_EventInfo A_ExitReason A_FileEncoding A_FormatFloat A_FormatInteger A_Gui A_GuiEvent A_GuiControl A_GuiControlEvent A_GuiHeight A_GuiWidth A_GuiX A_GuiY A_Hour A_IconFile A_IconHidden A_IconNumber A_IconTip A_Index A_IPAddress1 A_IPAddress2 A_IPAddress3 A_IPAddress4 A_Is64bitOS A_IsAdmin A_IsCompiled A_IsCritical A_IsPaused A_IsSuspended A_IsUnicode A_KeyDelay A_Language A_LastError A_LineFile A_LineNumber A_LoopField A_LoopFileAttrib A_LoopFileDir A_LoopFileExt A_LoopFileFullPath A_LoopFileLongPath A_LoopFileName A_LoopFileShortName A_LoopFileShortPath A_LoopFileSize A_LoopFileSizeKB A_LoopFileSizeMB A_LoopFileTimeAccessed A_LoopFileTimeCreated A_LoopFileTimeModified A_LoopReadLine A_LoopRegKey A_LoopRegName A_LoopRegSubkey A_LoopRegTimeModified A_LoopRegType A_MDAY A_Min A_MM A_MMM A_MMMM A_Mon A_MouseDelay A_MSec A_MyDocuments A_Now A_NowUTC A_NumBatchLines A_OSType A_OSVersion A_PriorHotkey A_PriorKey A_ProgramFiles A_Programs A_ProgramsCommon A_PtrSize A_RegView A_ScreenDPI A_ScreenHeight A_ScreenWidth A_ScriptDir A_ScriptFullPath A_ScriptHwnd A_ScriptName A_Sec A_Space A_StartMenu A_StartMenuCommon A_Startup A_StartupCommon A_StringCaseSense A_Tab A_Temp A_ThisFunc A_ThisHotkey A_ThisLabel A_ThisMenu A_ThisMenuItem A_ThisMenuItemPos A_TickCount A_TimeIdle A_TimeIdlePhysical A_TimeSincePriorHotkey A_TimeSinceThisHotkey A_TitleMatchMode A_TitleMatchModeSpeed A_UserName A_WDay A_WinDelay A_WinDir A_WorkingDir A_YDay A_YEAR A_YWeek A_YYYY Clipboard ClipboardAll ComSpec ErrorLevel ProgramFiles true false",
 // Keyboard & Mouse Keys
-"shift lshift rshift alt lalt ralt control lcontrol rcontrol ctrl lctrl rctrl lwin rwin appskey "
-"altdown altup shiftdown shiftup ctrldown ctrlup lwindown lwinup rwindown rwinup lbutton rbutton "
-"mbutton wheelup wheeldown xbutton1 xbutton2 joy1 joy2 joy3 joy4 joy5 joy6 joy7 joy8 joy9 joy10 joy11 "
-"joy12 joy13 joy14 joy15 joy16 joy17 joy18 joy19 joy20 joy21 joy22 joy23 joy24 joy25 joy26 joy27 "
-"joy28 joy29 joy30 joy31 joy32 joyx joyy joyz joyr joyu joyv joypov joyname joybuttons joyaxes "
-"joyinfo space tab enter escape esc backspace bs delete del insert ins pgup pgdn home end up down "
-"left right printscreen ctrlbreak pause scrolllock capslock numlock numpad0 numpad1 numpad2 numpad3 "
-"numpad4 numpad5 numpad6 numpad7 numpad8 numpad9 numpadmult numpadadd numpadsub numpaddiv numpaddot "
-"numpaddel numpadins numpadclear numpadup numpaddown numpadleft numpadright numpadhome numpadend "
-"numpadpgup numpadpgdn numpadenter f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 f16 f17 f18 f19 "
-"f20 f21 f22 f23 f24 browser_back browser_forward browser_refresh browser_stop browser_search "
-"browser_favorites browser_home volume_mute volume_down volume_up media_next media_prev media_stop "
-"media_play_pause launch_mail launch_media launch_app1 launch_app2 blind click raw wheelleft "
-"wheelright",
+"^ + ! # ~ $ ` Shift LShift RShift Alt LAlt RAlt Control LControl RControl Ctrl LCtrl RCtrl LWin RWin AppsKey AltDown AltUp ShiftDown ShiftUp CtrlDown CtrlUp LWinDown LWinUp RWinDown RWinUp LButton RButton MButton WheelUp WheelDown XButton1 XButton2 Joy1 Joy2 Joy3 Joy4 Joy5 Joy6 Joy7 Joy8 Joy9 Joy10 Joy11 Joy12 Joy13 Joy14 Joy15 Joy16 Joy17 Joy18 Joy19 Joy20 Joy21 Joy22 Joy23 Joy24 Joy25 Joy26 Joy27 Joy28 Joy29 Joy30 Joy31 Joy32 JoyX JoyY JoyZ JoyR JoyU JoyV JoyPOV JoyName JoyButtons JoyAxes JoyInfo Space Tab Enter Escape Esc BackSpace BS Delete Del Insert Ins PGUP PGDN Home End Up Down Left Right PrintScreen CtrlBreak Pause ScrollLock CapsLock NumLock Numpad0 Numpad1 Numpad2 Numpad3 Numpad4 Numpad5 Numpad6 Numpad7 Numpad8 Numpad9 NumpadMult NumpadAdd NumpadSub NumpadDiv NumpadDot NumpadDel NumpadIns NumpadClear NumpadUp NumpadDown NumpadLeft NumpadRight NumpadHome NumpadEnd NumpadPgup NumpadPgdn NumpadEnter F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 F13 F14 F15 F16 F17 F18 F19 F20 F21 F22 F23 F24 Browser_Back Browser_Forward Browser_Refresh Browser_Stop Browser_Search Browser_Favorites Browser_Home Volume_Mute Volume_Down Volume_Up Media_Next Media_Prev Media_Stop Media_Play_Pause Launch_Mail Launch_Media Launch_App1 Launch_App2",
 // User Defined 1
 "",
 // User Defined 2
 "" };
 
 
-EDITLEXER lexAHKL = { 
-SCLEX_AHKL, IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L"", 
+EDITLEXER lexAHKL = {
+SCLEX_AHKL, IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L"",
 &KeyWords_AHKL, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_AHK_NEUTRAL}, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -139,7 +43,7 @@ SCLEX_AHKL, IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L
     { {SCE_AHKL_USERFUNCTION}, IDS_LEX_STR_63305, L"User-Defined Function", L"fore:#0000DD", L"" },
     { {SCE_AHKL_DIRECTIVE}, IDS_LEX_STR_63203, L"Directive", L"italic; fore:#4A0000", L"" },
     { {SCE_AHKL_COMMAND}, IDS_LEX_STR_63236, L"Command", L"bold; fore:#0000DD", L"" },
-    { {SCE_AHKL_PARAM}, IDS_LEX_STR_63281, L"Parameter", L"fore:#0085DD", L"" },   
+    { {SCE_AHKL_PARAM}, IDS_LEX_STR_63281, L"Parameter", L"fore:#0085DD", L"" },
     { {SCE_AHKL_CONTROLFLOW}, IDS_LEX_STR_63310, L"Flow of Control", L"fore:#0000DD", L"" },
     { {SCE_AHKL_BUILTINFUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#DD00DD", L"" },
     { {SCE_AHKL_BUILTINVAR}, IDS_LEX_STR_63312, L"Built-In Variables", L"bold; fore:#EE3010", L"" },
