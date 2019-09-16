@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
-#include <cctype>
 
 #include <algorithm>
 #include <iterator>
@@ -118,15 +117,24 @@ static void SortWordList(char **words, unsigned int len) {
 
 #endif
 
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+constexpr char asciitolower(const char ch) noexcept {
+	if ((ch >= 'A') && (ch <= 'Z')) {
+		return (ch - ('Z' - 'z'));
+	}
+	return ch;
+}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
+
 void WordList::Set(const char *s) {
 	Clear();
 	const size_t lenS = strlen(s) + 1;
 	list = new char[lenS];
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-    //~memcpy(list, s, lenS);
-	for (size_t i = 0; i < lenS; ++i) {
-		list[i] = static_cast<char>(std::tolower(static_cast<unsigned char>(s[i])));
-	}
+	//~memcpy(list, s, lenS);
+	for (size_t i = 0; i < lenS; ++i) { list[i] = asciitolower(s[i]); }
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	words = ArrayFromWordList(list, &len, onlyLineEnds);
 #ifdef _MSC_VER
