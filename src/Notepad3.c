@@ -10375,64 +10375,54 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 //  SnapToWinInfoPos()
 //  Aligns Notepad3 to the default window position on the current screen
 //
+
 void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
   static WINDOWPLACEMENT s_wndplPrev;
   static bool s_bPrevShowToolbar = false;
   static bool s_bPrevShowStatusbar = false;
 
-  WINDOWPLACEMENT wndpl;
-  RECT rcCurrent; GetWindowRect(hwnd, &rcCurrent);
+  static UINT const fFScrFlags = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
+  static UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
 
-  if ((mode == SCR_FULL_WORKAREA) || (mode == SCR_FULL_SCREEN)) {
-    if (s_bPrevFullScreenFlag) { // snap to previous rect
-      Settings.ShowToolbar = s_bPrevShowToolbar;
-      Settings.ShowStatusbar = s_bPrevShowStatusbar;
-      //SetMenu(Globals.hwndMain, Globals.hMainMenu);
-      if (Settings.AlwaysOnTop) {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-      }
-      else {
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-      }
-      wndpl = s_wndplPrev;
-    }
-    else {
-      GetWindowPlacement(hwnd, &s_wndplPrev);
-      s_bPrevShowToolbar = Settings.ShowToolbar;
-      s_bPrevShowStatusbar = Settings.ShowStatusbar;
-      Settings.ShowToolbar = Settings.ShowStatusbar = false;
-      //SetMenu(Globals.hwndMain, NULL);
-      wndpl = WindowPlacementFromInfo(hwnd, NULL, mode);
-      if (mode == SCR_FULL_SCREEN) {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-      }
-    }
-    s_bPrevFullScreenFlag = !s_bPrevFullScreenFlag;
-  }
-  else {
-    if (Settings.AlwaysOnTop) {
-      SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    }
-    else {
-      SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    }
-    wndpl = WindowPlacementFromInfo(hwnd, pWinInfo, SCR_NORMAL);
+  HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
+
+  RECT rcCurrent; GetWindowRect(hWindow, &rcCurrent);
+  DWORD const dwStyle = GetWindowLong(hWindow, GWL_STYLE);
+
+  if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag) 
+  { 
+    SetWindowLong(hWindow, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
     if (s_bPrevFullScreenFlag) {
+      SetWindowPlacement(hWindow, &s_wndplPrev);
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
     }
+    else {
+      WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, pWinInfo, mode);
+      if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
+      SetWindowPlacement(hWindow, &wndpl);
+    }
+    SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, fPrevFlags);
     s_bPrevFullScreenFlag = false;
   }
-
-  if (GetDoAnimateMinimize()) {
-    DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
-    //OffsetRect(&wndpl.rcNormalPosition,mi.rcMonitor.left - mi.rcWork.left,mi.rcMonitor.top - mi.rcWork.top);
+  else { // full screen mode
+    GetWindowPlacement(hWindow, &s_wndplPrev);
+    MONITORINFO mi = { sizeof(mi) };
+    GetMonitorInfo(MonitorFromWindow(hWindow, MONITOR_DEFAULTTOPRIMARY), &mi);
+    SetWindowLong(hWindow, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
+    WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, NULL, mode);
+    if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
+    SetWindowPlacement(hWindow, &wndpl);
+    SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
+      mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, fFScrFlags);
+    s_bPrevShowToolbar = Settings.ShowToolbar;
+    s_bPrevShowStatusbar = Settings.ShowStatusbar;
+    Settings.ShowToolbar = Settings.ShowStatusbar = false;
+    s_bPrevFullScreenFlag = true;
   }
-
-  SetWindowPlacement(hwnd, &wndpl);
-
-  MsgThemeChanged(hwnd, (WPARAM)NULL, (LPARAM)NULL);
+  //SetMenu(Globals.hwndMain, NULL);
+  MsgThemeChanged(hWindow, (WPARAM)NULL, (LPARAM)NULL);
 }
 
 

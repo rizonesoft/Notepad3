@@ -3246,16 +3246,7 @@ void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
   MONITORINFO mi;
   GetMonitorInfoFromRect(pRect, &mi);
 
-  if (mode == SCR_FULL_WORKAREA) {
-    SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
-    // monitor coord -> work area coord
-    pWinInfo->x = mi.rcWork.left - (mi.rcWork.left - mi.rcMonitor.left);
-    pWinInfo->y = mi.rcWork.top - (mi.rcWork.top - mi.rcMonitor.top);
-    pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left);
-    pWinInfo->cy = (mi.rcWork.bottom - mi.rcWork.top);
-    pWinInfo->max = false;
-  }
-  else if (mode == SCR_FULL_SCREEN) {
+  if (mode == SCR_FULL_SCREEN) {
     SetRect(pRect, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right, mi.rcMonitor.bottom);
     // monitor coord -> screen coord
     pWinInfo->x = mi.rcMonitor.left - (mi.rcWork.left - mi.rcMonitor.left);
@@ -3321,7 +3312,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
     FitIntoMonitorGeometry(&rc, &winfo, mode);
 
-    wndpl.showCmd = (mode == SCR_FULL_WORKAREA) ? SW_MAXIMIZE : SW_SHOW;
+    wndpl.showCmd = SW_SHOW;
   }
   wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
   return wndpl;
