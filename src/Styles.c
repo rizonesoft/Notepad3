@@ -736,7 +736,7 @@ void Style_ToIniSection(bool bForceAll)
   SAVE_STYLE_IF_NOT_EQ_DEFAULT(Int, SelectDlgSizeY, s_cyStyleSelectDlg, STYLESELECTDLG_Y);
 
   // create canonical order of lexer sections 
-  if (bForceAll) {
+  if (bForceAll || Globals.bIniFileFromScratch) {
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++)
     {
       IniSectionClear(g_pLexArray[iLexer]->pszName, true);

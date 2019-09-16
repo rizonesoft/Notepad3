@@ -3253,6 +3253,7 @@ void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
     pWinInfo->y = mi.rcWork.top - (mi.rcWork.top - mi.rcMonitor.top);
     pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left);
     pWinInfo->cy = (mi.rcWork.bottom - mi.rcWork.top);
+    pWinInfo->max = false;
   }
   else if (mode == SCR_FULL_SCREEN) {
     SetRect(pRect, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right, mi.rcMonitor.bottom);
@@ -3261,6 +3262,7 @@ void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
     pWinInfo->y = mi.rcMonitor.top - (mi.rcWork.top - mi.rcMonitor.top);
     pWinInfo->cx = (mi.rcMonitor.right - mi.rcMonitor.left);
     pWinInfo->cy = (mi.rcMonitor.bottom - mi.rcMonitor.top);
+    pWinInfo->max = true;
   }
   else {
     WININFO wi = *pWinInfo;
@@ -3284,6 +3286,7 @@ void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode)
     pWinInfo->y = wi.y - (mi.rcWork.top - mi.rcMonitor.top);
     pWinInfo->cx = wi.cx;
     pWinInfo->cy = wi.cy;
+    //pWinInfo->max = true;
   }
 }
 // ----------------------------------------------------------------------------
@@ -3300,13 +3303,14 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
   ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
   wndpl.length = sizeof(WINDOWPLACEMENT);
   wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
-  wndpl.showCmd = SW_RESTORE;
+
   WININFO winfo = INIT_WININFO;
   if (pWinInfo) {
     RECT rc = RectFromWinInfo(pWinInfo);
     winfo = *pWinInfo;
-    FitIntoMonitorGeometry(&rc, &winfo, SCR_NORMAL);
+    FitIntoMonitorGeometry(&rc, &winfo, mode);
     if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
+    wndpl.showCmd = SW_RESTORE;
   }
   else {
     RECT rc; 
@@ -3316,7 +3320,8 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
       GetWindowRect(GetDesktopWindow(), &rc);
 
     FitIntoMonitorGeometry(&rc, &winfo, mode);
-    // TODO: maximize ?
+
+    wndpl.showCmd = (mode == SCR_FULL_WORKAREA) ? SW_MAXIMIZE : SW_SHOW;
   }
   wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
   return wndpl;
