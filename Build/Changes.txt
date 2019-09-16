@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.913.#(build) (2019-09-13)
+Current BETA Version 5.19.916.#(build) (2019-09-16)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,8 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Borderless in Full Screen Mode.
+- Maximize window if "full work area" is requested.
 - Full Work Area Mode (F11) -> Full Screen Mode.
 - Relax UTF-8 orientation (lower confidence level for UCHARDET 
     and use system's code-page as detection fallback by default)
@@ -58,6 +60,8 @@ CHANGES:
 --------------------------------------------------
 ENHANCEMENT:
 --------------------------------------------------
+- Apply Start Case to AutoHotkey Lexer.
+- Change to 1-pass (file open/close) to save settings in Notepad3.ini.
 - Enclosing selection with HTML-Tag - Remember last pattern (session).
 - Repeat selection enclosing (HTML-Tag) n-times control.
 - Hyperlink detection for Unicode.
@@ -65,6 +69,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Canonical ini-file style section order for settings from scratch.
+- Prevent concurrent settings-file-access (re-launch elevated).
 - Small fixes on "Relaunch Elevated" functionality.
 - Minor fixes for window positioning by cmdline parameter.
 - Minor correction of HotKey.
