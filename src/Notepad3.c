@@ -895,7 +895,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   
   _InsertLanguageMenu(Globals.hMainMenu);
-
   Style_InsertThemesMenu(Globals.hMainMenu);
 
   if (!InitApplication(Globals.hInstance)) 
@@ -909,6 +908,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     _CleanUpResources(hwnd, true);
     return 1; 
   }
+  DrawMenuBar(hwnd);
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
   DragAndDropInit(NULL);
@@ -1189,6 +1189,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
+  DrawMenuBar(Globals.hwndMain);
 
   // Current file information -- moved in front of ShowWindow()
   FileLoad(true,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,false,L"");
@@ -1417,7 +1418,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   if (s_flagAppIsClosing || s_flagPrintFileAndLeave) {
-    PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+    CloseApplication();
   }
 
   return(Globals.hwndMain);
@@ -1450,6 +1451,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_WINDOWPOSCHANGED:
     case WM_TIMER:
     case WM_KILLFOCUS:
+    case WM_ENTERIDLE:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     // never send 
@@ -1474,12 +1476,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_CLOSE:
       s_flagAppIsClosing = true;
-      if (IsWindow(Globals.hwndDlgFindReplace)) {
-        PostMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
-      }
-      if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-        PostMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
-      }
+      CloseNonModalDialogs();
       if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
         DestroyWindow(hwnd);
       }
@@ -2606,7 +2603,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   Toolbar_GetButtons(Globals.hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
 
   CreateBars(hwnd,hInstance);
-
   SendWMSize(hwnd, NULL);
 
   MarkAllOccurrences(0, true);
@@ -3034,7 +3030,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       else if (iCmd == IDM_TRAY_EXIT) {
         //ShowNotifyIcon(hwnd,false);
-        PostMessage(hwnd, WM_CLOSE, 0, 0);
+        CloseApplication();
       }
     }
     break;
@@ -3435,12 +3431,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
   }
   if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
   {
-    if (IsWindow(Globals.hwndDlgFindReplace)) {
-      PostMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
-    }
-    if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-      PostMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
-    }
+    CloseNonModalDialogs();
 
     StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
     IniFileSetString(Globals.IniFile, L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
@@ -3452,7 +3443,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
       GetLastErrorToMsgBox(L"LoadMenu()", 0);
-      PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+      CloseApplication();
       return;
     }
 
@@ -3645,7 +3636,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         fioStatus.iEOLMode = SciCall_GetEOLMode();
 
         if (DoElevatedRelaunch(&fioStatus)) {
-          PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+          CloseApplication();
         }
         else {
           InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
@@ -3792,7 +3783,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_EXIT:
-      PostMessage(hwnd,WM_CLOSE,0,0);
+      CloseApplication();
       break;
 
 
@@ -5587,7 +5578,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
       else if (Settings.EscFunction == 2) {
-        PostMessage(hwnd, WM_CLOSE, 0, 0);
+        CloseApplication(true);
       }
       else {
         if (!SciCall_IsSelectionEmpty()) {
@@ -5600,9 +5591,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_SHIFTESC:
-      if (FileSave(true, false, false, false, Flags.bPreserveFileModTime)) {
-        PostMessage(hwnd, WM_CLOSE, 0, 0);
-      }
+      CloseApplication();
       break;
 
 
@@ -6267,7 +6256,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDT_FILE_EXIT:
-      PostMessage(hwnd,WM_CLOSE,0,0);
+      CloseApplication();
       break;
 
 
@@ -9799,7 +9788,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   {
     // File or "Untitled" ...
     WCHAR tch[MAX_PATH] = { L'\0' };
-    if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+    if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(tch, COUNTOF(tch), Globals.CurrentFile);
     }
     else {
@@ -9907,7 +9896,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       if ((IDOK == answer) || (IDYES == answer)) {
         if (DoElevatedRelaunch(&fioStatus))
         {
-          PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+          CloseApplication();
         }
         else {
           s_flagAppIsClosing = false;
@@ -10403,7 +10392,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
       if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
       SetWindowPlacement(hWindow, &wndpl);
     }
-    SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, fPrevFlags);
+    SetWindowPos(hWindow, NULL, 0, 0, 0, 0, fPrevFlags);
+    SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     s_bPrevFullScreenFlag = false;
   }
   else { // full screen mode
@@ -10421,7 +10411,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
     Settings.ShowToolbar = Settings.ShowStatusbar = false;
     s_bPrevFullScreenFlag = true;
   }
-  //SetMenu(Globals.hwndMain, NULL);
+
+  DrawMenuBar(Globals.hwndMain);
   MsgThemeChanged(hWindow, (WPARAM)NULL, (LPARAM)NULL);
 }
 
@@ -10658,7 +10649,6 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 //
 //  PasteBoardTimer()
 //
-//
 void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
   if ((s_dwLastCopyTime > 0) && ((GetTickCount() - s_dwLastCopyTime) > 200)) {
@@ -10686,5 +10676,32 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
   UNUSED(uMsg);
   UNUSED(hwnd);
 }
+
+
+//=============================================================================
+//
+//  CloseNonModalDialogs()
+//
+void CloseNonModalDialogs()
+{
+  if (IsWindow(Globals.hwndDlgFindReplace)) {
+    PostMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
+  }
+  if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
+    PostMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
+  }
+}
+
+
+//=============================================================================
+//
+//  CloseApplication()
+//
+void CloseApplication()
+{
+  CloseNonModalDialogs();
+  PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+}
+
 
 ///  End of Notepad3.c  ///
