@@ -179,6 +179,8 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
 
 void CreateBars(HWND hwnd, HINSTANCE hInstance);
+void CloseNonModalDialogs();
+void CloseApplication();
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCreate(HWND hwnd, WPARAM wParam, LPARAM lParam);

@@ -98,7 +98,7 @@ KEYWORDLIST KeyWords_AHKL = {
 "A_WinDir A_WorkingDir A_YDay A_YEAR A_YWeek A_YYYY Clipboard ClipboardAll ComSpec ErrorLevel "
 "ProgramFiles true false",
 // Keyboard & Mouse Keys
-"^ + ! # ~ $ ` Shift LShift RShift Alt LAlt RAlt Control LControl RControl Ctrl LCtrl RCtrl "
+"Shift LShift RShift Alt LAlt RAlt Control LControl RControl Ctrl LCtrl RCtrl "
 "LWin RWin AppsKey AltDown AltUp ShiftDown ShiftUp CtrlDown CtrlUp LWinDown LWinUp RWinDown "
 "RWinUp LButton RButton MButton WheelUp WheelDown XButton1 XButton2 Joy1 Joy2 Joy3 Joy4 Joy5 "
 "Joy6 Joy7 Joy8 Joy9 Joy10 Joy11 Joy12 Joy13 Joy14 Joy15 Joy16 Joy17 Joy18 Joy19 Joy20 Joy21 "
