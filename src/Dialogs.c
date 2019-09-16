@@ -1966,7 +1966,6 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
                 if ((IDOK == answer) || (IDYES == answer)) {
 
                   MRU_Delete(Globals.pFileMRU,lvi.iItem);
-                  MRU_DeleteFileFromStore(Globals.pFileMRU,tchFileName);
 
                   //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                   //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);

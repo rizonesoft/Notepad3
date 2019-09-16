@@ -275,6 +275,7 @@ typedef struct _constants_t
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
   const WCHAR* const SectionSuppressedMessages;
+  const WCHAR* const StylingThemeName;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 
@@ -326,6 +327,8 @@ typedef struct _globals_t
   bool      bFindReplCopySelOrClip;
   bool      bReplaceInitialized;
   bool      bDocHasInconsistentEOLs;
+  unsigned  idxSelectedTheme;
+  WCHAR     SelectedThemeName[128];
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -433,7 +436,7 @@ typedef struct _settings_t
   int CustomSchemesDlgPosY;
   bool MuteMessageBeep;
   bool SplitUndoTypingSeqOnLnBreak;
-
+  
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH];
@@ -595,6 +598,18 @@ typedef struct _docviewpos_t
 } DOCVIEWPOS_T, * PDOCVIEWPOS_T;
 
 #define INIT_DOCVIEWPOS { 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, false }
+
+//=============================================================================
+
+typedef struct _themeFiles
+{
+  UINT    rid;
+  WCHAR   szName[80];
+  WCHAR   szFilePath[MAX_PATH];
+
+} THEMEFILES, * PTHEMEFILES;
+
+//=============================================================================
 
 
 // ---------   common defines   --------

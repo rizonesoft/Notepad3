@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <shlwapi.h>
+#include <heapapi.h>
 #include <versionhelpers.h>
 
 // ============================================================================
@@ -331,22 +332,6 @@ LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
 UINT CodePageFromCharSet(UINT uCharSet);
 UINT CharSetFromCodePage(UINT uCodePage);
 
-
-//==== MRU Functions ==========================================================
-
-LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize);
-bool      MRU_Destroy(LPMRULIST pmru);
-bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
-bool      MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex);
-bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
-bool      MRU_Delete(LPMRULIST pmru,int iIndex);
-bool      MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile);
-bool      MRU_Empty(LPMRULIST pmru);
-int       MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem);
-bool      MRU_Load(LPMRULIST pmru);
-bool      MRU_Save(LPMRULIST pmru);
-bool      MRU_MergeSave(LPMRULIST pmru,bool,bool,bool);
-#define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 //==== UnSlash Functions ======================================================
 unsigned int UnSlash(char* s, UINT cpEdit);

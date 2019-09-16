@@ -27,11 +27,15 @@ extern "C" {
 
 bool FindIniFile();
 int  TestIniFile();
-bool  CreateIniFile();
+bool CreateIniFile();
 bool CreateIniFileEx(LPCWSTR lpszIniFile);
+
 void LoadSettings();
 void LoadFlags();
+
+bool OpenSettingsFile();
 bool SaveSettings(bool);
+bool CloseSettingsFile();
 
 // ----------------------------------------------------------------------------
 
@@ -108,9 +112,22 @@ bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName,
 typedef void (CALLBACK* IterSectionFunc_t)(LPCWSTR key, LPCWSTR value);
 bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack);
 
+//==== MRU Functions ==========================================================
+
+LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
+bool      MRU_Destroy(LPMRULIST pmru);
+bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
+bool      MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex);
+bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
+bool      MRU_Delete(LPMRULIST pmru, int iIndex);
+bool      MRU_Empty(LPMRULIST pmru);
+int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
+bool      MRU_Load(LPMRULIST pmru);
+bool      MRU_Save(LPMRULIST pmru);
+bool      MRU_MergeSave(LPMRULIST pmru, bool, bool, bool);
+#define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 // ----------------------------------------------------------------------------
-
 
 #ifdef __cplusplus
 }
