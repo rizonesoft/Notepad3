@@ -594,7 +594,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sort Lines"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -607,9 +607,11 @@ BEGIN
     CONTROL         "Remove &unique lines.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
     CONTROL         "Remove &empty lines.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Remove &white-space lines.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "&Case insensitive.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
-    CONTROL         "Logical &number comparison.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
-    CONTROL         "Column &sort (rectangular selection).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,70,10
+    CONTROL         "&Case insensitive.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,70,10
+    CONTROL         "Logical &number comparison.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Column &sort (rectangular selection).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,128,24,50,14
 END
@@ -913,7 +915,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 178
         TOPMARGIN, 7
-        BOTTOMMARGIN, 157
+        BOTTOMMARGIN, 181
     END
 
     IDD_MUI_RECODE, DIALOG
