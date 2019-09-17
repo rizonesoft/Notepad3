@@ -4271,8 +4271,13 @@ int CmpStdIRev(const void* s1, const void* s2) { return -1 * CmpStdI(s1, s2); }
 // ----------------------------------------------------------------------------
 
 int CmpLexicographical(const void *s1, const void *s2) {
-  int const cmp = wcscmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  return (cmp) ? cmp : wcscmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+  LPCWSTR const pwszSE1 = ((SORTLINE*)s1)->pwszSortEntry;
+  LPCWSTR const pwszSE2 = ((SORTLINE*)s2)->pwszSortEntry;
+  if (pwszSE1 && pwszSE2) {
+    int const cmp = wcscmp(pwszSE1, pwszSE2);
+    return (cmp) ? cmp : wcscmp(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
+  }
+  return pwszSE1 ? -1 : (pwszSE2 ? 1 : 0);
 }
 
 //int CmpLexicographicalI(const void* s1, const void* s2) {
