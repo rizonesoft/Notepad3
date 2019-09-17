@@ -38,8 +38,8 @@ KEYWORDLIST KeyWords_AHKL = {
 "High Realtime ahk_class ahk_exe ahk_id ahk_group ahk_pid Between Contains In Is Integer Float "
 "Number Digit Xdigit Alpha Upper Lower Alnum Time Date not or and AlwaysOnTop Topmost Top Bottom "
 "Transparent TransColor Redraw Region ID IDLast ProcessName MinMax ControlList Count List Capacity "
-"StatusCD Eject Lock Unlock Label FileSystem Label SetLabel Serial Type Status static global local "
-"ByRef Seconds Minutes Hours Days Read Parse Logoff Close Error Single Tray Add Rename Check UnCheck "
+"StatusCD Eject Lock Unlock Label FileSystem Label SetLabel Serial Type Status "
+"Seconds Minutes Hours Days Read Parse Logoff Close Error Single Tray Add Rename Check UnCheck "
 "ToggleCheck Enable Disable ToggleEnable Default NoDefault Standard NoStandard Color Delete DeleteAll "
 "Icon NoIcon Tip Click Show MainWindow NoMainWindow UseErrorLevel Text Picture Pic GroupBox Button "
 "Checkbox Radio DropDownList DDL ComboBox ListBox ListView DateTime MonthCal Slider StatusBar Tab Tab2 "
@@ -61,7 +61,7 @@ KEYWORDLIST KeyWords_AHKL = {
 "REG_MULTI_SZ REG_DWORD REG_BINARY class new extends",
 // Control Flow
 "Break Continue If Else Exit ExitApp GoSub Goto Loop Pause Return SetTimer Sleep Suspend While "
-"Until For Try Catch Finally",
+"Until For Try Catch Finally static global local ByRef",
 // Built-in Functions
 "Abs ACos Asc ASin ATan Ceil Chr Cos DllCall Exp FileExist Floor Format Func IsByRef IsFunc IsLabel "
 "Ln Log FileExist FileOpen GetKeyState GetKeyName GetKeyVK GetKeySC InStr IL_Add IL_Create "
