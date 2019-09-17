@@ -5566,24 +5566,37 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_ESCAPE:
-      if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
-        CancelCallTip();
-        SciCall_AutoCCancel();
-      }
-      else if (s_bIndicMultiEdit) {
-        SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
-        SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-        s_bIndicMultiEdit = false;
-      }
-      else if (Settings.EscFunction == 1) {
-        SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-      }
-      else if (Settings.EscFunction == 2) {
-        CloseApplication(true);
-      }
-      else {
+      {
+        DocPos const iCurPos = SciCall_GetCurrentPos();
+        
+        if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
+          CancelCallTip();
+          SciCall_AutoCCancel();
+          break;
+        }
+        else if (s_bIndicMultiEdit) {
+          _BEGIN_UNDO_ACTION_
+          SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
+          SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
+          SciCall_ClearSelections();
+          _END_UNDO_ACTION_
+          s_bIndicMultiEdit = false;
+        }
+        else if (Settings.EscFunction == 1) {
+          SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+          break;
+        }
+        else if (Settings.EscFunction == 2) {
+          CloseApplication(true);
+          break;
+        }
+
         if (!SciCall_IsSelectionEmpty()) {
-          DocPos const iCurPos = SciCall_GetCurrentPos();
+          _BEGIN_UNDO_ACTION_
+          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+          _END_UNDO_ACTION_
+        }
+        else {
           EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
         }
         SciCall_Cancel();
