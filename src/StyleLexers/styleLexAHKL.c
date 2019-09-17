@@ -60,7 +60,7 @@ KEYWORDLIST KeyWords_AHKL = {
 "HKEY_CURRENT_USER HKEY_CLASSES_ROOT HKEY_CURRENT_CONFIG HKLM HKU HKCU HKCR HKCC REG_SZ REG_EXPAND_SZ "
 "REG_MULTI_SZ REG_DWORD REG_BINARY class new extends",
 // Control Flow
-"Break Continue If Else Exit ExitApp GoSub Goto Loop Pause Return SetTimer Sleep Suspend While "
+"Break Continue If Else Exit ExitApp OnExit GoSub Goto Loop Pause Return SetTimer Sleep Suspend While "
 "Until For Try Catch Finally static global local ByRef",
 // Built-in Functions
 "Abs ACos Asc ASin ATan Ceil Chr Cos DllCall Exp FileExist Floor Format Func IsByRef IsFunc IsLabel "
