@@ -594,7 +594,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,140,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sortiere Zeilen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -607,9 +607,11 @@ BEGIN
     CONTROL         "Entferne ein&zigartige Zeilen.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74, 120,10
     CONTROL         "Entferne Leerzeilen.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     CONTROL         "Entferne Leerzeichen-Zeilen.", 107, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 98, 120, 10
-    CONTROL         "&Groﬂ-/Klein-Schreibung ignorieren.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115, 120,10
-    CONTROL         "Nummern-Logik vergleichen.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127, 120,10
-    CONTROL         "&Spalten-Sortierung (Rechteck-Auswahl).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,140,10
+    CONTROL         "Groﬂ-/Klein-Schreibung &beachten",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,120,10
+    CONTROL         "&Groﬂ-/Klein-Schreibung ignorieren.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127, 120,10
+    CONTROL         "Nummern-Logik vergleichen.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139, 120,10
+    CONTROL         "&Lexikographisch vergleichen.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,120,10
+    CONTROL         "&Spalten-Sortierung (Rechteck-Auswahl).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Abbrechen",IDCANCEL,128,24,50,14
 END

@@ -101,7 +101,8 @@ enum SortOrderMask {
   SORT_REMWSPACELN = 0x080,
   SORT_NOCASE      = 0x100,
   SORT_LOGICAL     = 0x200,
-  SORT_COLUMN      = 0x400 
+  SORT_LEXICOGRAPH = 0x400,
+  SORT_COLUMN      = 0x800 
 };
 
 
@@ -4250,48 +4251,58 @@ typedef struct _SORTLINE {
 typedef int (__stdcall * FNSTRCMP)(LPCWSTR,LPCWSTR);
 typedef int (__stdcall * FNSTRLOGCMP)(LPCWSTR, LPCWSTR);
 
+// ----------------------------------------------------------------------------
+
 int CmpStd(const void *s1, const void *s2) {
-  int cmp = StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
+  int const cmp = StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
   return (cmp) ? cmp : StrCmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
 }
 
-int CmpStdRev(const void *s1, const void *s2) {
-  int cmp = -1 * StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  return (cmp) ? cmp :  -1 * StrCmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+int CmpStdRev(const void* s1, const void* s2) { return -1 * CmpStd(s1, s2); }
+
+
+int CmpStdI(const void* s1, const void* s2) {
+  int const cmp = StrCmpI(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
+  return (cmp) ? cmp : StrCmpI(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
 }
 
-int CmpLogical(const void *s1, const void *s2) {
+int CmpStdIRev(const void* s1, const void* s2) { return -1 * CmpStdI(s1, s2); }
+
+// ----------------------------------------------------------------------------
+
+int CmpLexicographical(const void *s1, const void *s2) {
+  int const cmp = wcscmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
+  return (cmp) ? cmp : wcscmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+}
+
+//int CmpLexicographicalI(const void* s1, const void* s2) {
+//  int const cmp = _wcsicmp(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
+//  return (cmp) ? cmp : _wcsicmp(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
+//}
+
+int CmpLexicographicalRev(const void* s1, const void* s2) { return -1 * CmpLexicographical(s1, s2); }
+
+//int CmpLexicographicalIRev(const void* s1, const void* s2) { return -1 * CmpLexicographicalI(s1, s2); }
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+int CmpStdLogical(const void *s1, const void *s2) {
   int cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
   if (cmp == 0) {
     cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
   }
-  if (cmp) {
-    return cmp;
-  }
-  cmp = StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  return (cmp) ? cmp : StrCmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+  return (cmp) ? cmp : CmpStd(s1, s2);
 }
 
-int CmpLogicalRev(const void *s1, const void *s2) {
-  int cmp = -1 * StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  if (cmp == 0) {
-    cmp = -1 * StrCmpLogicalW(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
-  }
-  if (cmp) {
-    return cmp;
-  }
-  cmp = -1 * StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  return (cmp) ? cmp : -1 * StrCmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
-}
+int CmpStdLogicalRev(const void* s1, const void* s2) { return -1 * CmpStdLogical(s1, s2); }
 
+// ----------------------------------------------------------------------------
 
 void EditSortLines(HWND hwnd, int iSortFlags)
 {
-
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
   
-  FNSTRCMP pfnStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpIW : StrCmpW;
-
   bool const bIsMultiSel = Sci_IsMultiOrRectangleSelection();
 
   DocPos const iSelStart = SciCall_GetSelectionStart(); //iSelStart = SciCall_PositionFromLine(iLine);
@@ -4394,13 +4405,27 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   FreeMem(pmsz);
 
-  if (iSortFlags & SORT_DESCENDING) {
-    if (iSortFlags & SORT_LOGICAL)
-      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLogicalRev);
+  if (iSortFlags & SORT_ASCENDING) {
+    if (iSortFlags & SORT_NOCASE)
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
+    else if (iSortFlags & SORT_LOGICAL)
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
+    else if (iSortFlags & SORT_LEXICOGRAPH)
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
+    else
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
+  }
+  else if (iSortFlags & SORT_DESCENDING) {
+    if (iSortFlags & SORT_NOCASE)
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
+    else if (iSortFlags & SORT_LOGICAL)
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
+    else if (iSortFlags & SORT_LEXICOGRAPH)
+      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
     else
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
   }
-  else if (iSortFlags & SORT_SHUFFLE) {
+  else /*if (iSortFlags & SORT_SHUFFLE)*/ {
     srand((UINT)GetTickCount());
     for (DocLn i = (iLineCount - 1); i > 0; --i) {
       int j = rand() % i;
@@ -4412,17 +4437,15 @@ void EditSortLines(HWND hwnd, int iSortFlags)
       pLines[j].pwszSortEntry = sLine.pwszSortEntry;
     }
   }
-  else {
-    if ((iSortFlags & SORT_LOGICAL))
-      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLogical);
-    else
-      qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
-  }
 
   DocLn const lenRes = cchTotal + (2 * iLineCount) + 1;
   char* pmszResult = AllocMem(lenRes, HEAP_ZERO_MEMORY);
   char* pmszResOffset = pmszResult;
   char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
+
+  FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? 
+    ((iSortFlags & SORT_LEXICOGRAPH) ? _wcsicmp : StrCmpI) : 
+    ((iSortFlags & SORT_LEXICOGRAPH) ? wcscmp : StrCmp);
 
   bool bLastDup = false;
   for (DocLn i = 0; i < iLineCount; ++i) {
@@ -4431,7 +4454,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
       if (!(iSortFlags & SORT_SHUFFLE)) {
         if (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP || iSortFlags & SORT_UNIQUNIQ) {
           if (i < (iLineCount - 1)) {
-            if (pfnStrCmp(pLines[i].pwszLine, pLines[i + 1].pwszLine) == 0) {
+            if (pFctStrCmp(pLines[i].pwszLine, pLines[i + 1].pwszLine) == 0) {
               bLastDup = true;
               bDropLine = (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP);
             }
@@ -7966,6 +7989,8 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           DialogEnableControl(hwnd,107,false);
           DialogEnableControl(hwnd,108,false);
           DialogEnableControl(hwnd,109,false);
+          DialogEnableControl(hwnd,110,false);
+          DialogEnableControl(hwnd,111,false);
         }
         else {
           CheckRadioButton(hwnd, 100, 102, 100);
@@ -7988,19 +8013,25 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           CheckDlgButton(hwnd, 106, BST_CHECKED);
           DialogEnableControl(hwnd, 106, false);
         }
+        
+        CheckRadioButton(hwnd, 108, 111, 108);
+        
         if (*piSortFlags & SORT_NOCASE) {
-          CheckDlgButton(hwnd, 108, BST_CHECKED);
+          CheckRadioButton(hwnd, 108, 111, 109);
         }
-        if (*piSortFlags & SORT_LOGICAL) {
-          CheckDlgButton(hwnd, 109, BST_CHECKED);
+        else if (*piSortFlags & SORT_LOGICAL) {
+          CheckRadioButton(hwnd, 108, 111, 110);
+        }
+        else if (*piSortFlags & SORT_LEXICOGRAPH) {
+          CheckRadioButton(hwnd, 108, 111, 111);
         }
         if (!Sci_IsMultiOrRectangleSelection()) {
           *piSortFlags &= ~SORT_COLUMN;
-          DialogEnableControl(hwnd,110,false);
+          DialogEnableControl(hwnd,112,false);
         }
         else {
           *piSortFlags |= SORT_COLUMN;
-          CheckDlgButton(hwnd,110,BST_CHECKED);
+          CheckDlgButton(hwnd,112,BST_CHECKED);
         }
         CenterDlgInParent(hwnd);
       }
@@ -8032,10 +8063,14 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
             if (IsButtonChecked(hwnd,107))
               *piSortFlags |= SORT_REMWSPACELN;
             if (IsButtonChecked(hwnd,108))
-              *piSortFlags |= SORT_NOCASE;
+              *piSortFlags &= ~SORT_NOCASE;
             if (IsButtonChecked(hwnd,109))
-              *piSortFlags |= SORT_LOGICAL;
+              *piSortFlags |= SORT_NOCASE;
             if (IsButtonChecked(hwnd,110))
+              *piSortFlags |= SORT_LOGICAL;
+            if (IsButtonChecked(hwnd,111))
+              *piSortFlags |= SORT_LEXICOGRAPH;
+            if (IsButtonChecked(hwnd,112))
               *piSortFlags |= SORT_COLUMN;
             EndDialog(hwnd,IDOK);
           }
@@ -8054,6 +8089,8 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           DialogEnableControl(hwnd,107,true);
           DialogEnableControl(hwnd,108,true);
           DialogEnableControl(hwnd,109,true);
+          DialogEnableControl(hwnd,110,true);
+          DialogEnableControl(hwnd,111,true);
           break;
         case 102:
           DialogEnableControl(hwnd,103,false);
@@ -8063,6 +8100,8 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           DialogEnableControl(hwnd,107,false);
           DialogEnableControl(hwnd,108,false);
           DialogEnableControl(hwnd,109,false);
+          DialogEnableControl(hwnd,110,false);
+          DialogEnableControl(hwnd,111,false);
           break;
         case 104:
           DialogEnableControl(hwnd,103,IsButtonUnchecked(hwnd,104));

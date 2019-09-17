@@ -12,6 +12,7 @@
 *                                                                             *
 *******************************************************************************/
 
+//#include <locale.h>
 #include <strsafe.h>
 #include <shlobj.h>
 
@@ -617,6 +618,7 @@ void LoadSettings()
   Defaults2.PreferredLanguageLocaleName[0] = L'\0';
   IniSectionGetString(Settings2_Section, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
     Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
+  //_wsetlocale(LC_COLLATE, Settings2.PreferredLanguageLocaleName);
 
   StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
   IniSectionGetString(Settings2_Section, L"DefaultExtension", Defaults2.DefaultExtension,

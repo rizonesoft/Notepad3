@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 //#include <pathcch.h>
+//#include <locale.h>
 #include <time.h>
 
 #include "Edit.h"

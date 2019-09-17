@@ -15,6 +15,7 @@
 #include "Helpers.h"
 
 #include <muiload.h>
+#include <locale.h>
 
 #include "resource.h"
 #include "Dialogs.h"
@@ -204,6 +205,7 @@ LANGID LoadLanguageResources()
   if (_GetUserPreferredLanguage(wchLngLocalName, COUNTOF(wchLngLocalName), &languageID)) {
     // push-back (corrected) name found
     StringCchCopy(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), wchLngLocalName);
+    //_wsetlocale(LC_COLLATE, Settings2.PreferredLanguageLocaleName);
   }
 
   // set the appropriate fallback list
