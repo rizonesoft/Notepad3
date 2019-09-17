@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.916.#(build) (2019-09-16)
+Current BETA Version 5.19.917.#(build) (2019-09-17)
 ==================================================
 
 --------------------------------------------------
@@ -44,6 +44,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Scintilla (SCI): allow CamelCase/StartCase word lists.
 - Borderless in Full Screen Mode.
 - Maximize window if "full work area" is requested.
 - Full Work Area Mode (F11) -> Full Screen Mode.

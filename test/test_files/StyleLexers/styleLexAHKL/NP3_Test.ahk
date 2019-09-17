@@ -1,5 +1,5 @@
 ;
-; Window Spy
+; NP3_Test.ahk
 ;
 
 #NoEnv
