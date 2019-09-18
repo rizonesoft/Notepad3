@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Yes",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
     PUSHBUTTON      "&Yes",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
-    CONTROL         "&Always show this dialog.", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -599,16 +599,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Sort Lines"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Sort &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
-    CONTROL         "Sort &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "Shu&ffle lines.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
-    CONTROL         "&Merge duplicate lines.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
-    CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
-    CONTROL         "Remove &unique lines.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
+    CONTROL         "Sort &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Sort &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Shu&ffle lines.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "&Merge duplicate lines.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Remove &unique lines.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Remove &empty lines.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Remove &white-space lines.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,70,10
-    CONTROL         "&Case insensitive.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,70,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Case insensitive.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
     CONTROL         "Logical &number comparison.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
     CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
     CONTROL         "Column &sort (rectangular selection).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10

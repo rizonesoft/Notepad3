@@ -62,7 +62,7 @@ BEGIN
     LTEXT           "Scintilla Library Weergawe:",IDC_SCI_VERSION,80,24,219,8
     LTEXT           "Gebou met:",IDC_COMPILER,80,35,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,52,218,8
-    LTEXT           "IDC_TRANSL_AUTH", IDC_TRANSL_AUTH, 80, 64, 218, 8
+    LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,80,64,218,8
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
@@ -96,8 +96,8 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,65,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,73,10
-    CONTROL         "Deursigtige modus waneer fokus verloor", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
     PUSHBUTTON      "Maak toe",IDCANCEL,221,99,55,14
@@ -130,8 +130,8 @@ BEGIN
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,77,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,73,10
     CONTROL         "W&isselkarakterd Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,73,10
-    CONTROL         "Deursigtige modus waneer fokus verloor", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
+    CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,23,55,14
     PUSHBUTTON      "Ve&rvang",IDC_REPLACE,221,43,55,14
@@ -187,8 +187,8 @@ BEGIN
     GROUPBOX        "Kodering Deteksie: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Maak 7-bit &ASCII-lêers in UTF-8 wyse oop.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
-    CONTROL         "Gebruik &betroubare opsporing resultate alleenlik.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
+    CONTROL         "Gebruik &betroubare opsporing resultate alleenlik.",IDC_RELIABLE_DETECTION_RES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "Maak 8-bit *.&nfo/diz lêers in DOS-437 wyse oop.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "Ontleed enkoderinglêer &tags..",IDC_ENCODINGFROMFILEVARS,
@@ -209,7 +209,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Wys inkonsekwente lynbreukwaarskuwing.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "&Verseker konstante lyn eindes wanneer jy stoor.", IDC_CONSISTENT_EOLS,
+    CONTROL         "&Verseker konstante lyn eindes wanneer jy stoor.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
     CONTROL         "&Slaan agterliggende spasies oor wanneer jy stoor.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,64,173,10
@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Ja",IDOK,138,63,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,138,80,50,14
-    CONTROL         "&Toon altyd hierdie dialoog.", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Toon altyd hierdie dialoog.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s lyn(e) w/ onreëlmatige indentdiepte",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,134,98,50,14
-    CONTROL         "&Toon altyd hierdie dialoog.", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Toon altyd hierdie dialoog.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -594,22 +594,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,128,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sorteer Lyne"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Sorteer &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
-    CONTROL         "Sorteer &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "Skui&fel lyne.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
-    CONTROL         "Voeg &dubbele lyne saam.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
-    CONTROL         "&Verwyder dubbele lyne.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
-    CONTROL         "Verwyder &unieke lyne.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
-    CONTROL         "Verwyder &leë lyne.", 106, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 86, 104, 10
-    CONTROL         "Verwyder &wit-spasie lyne.", 107, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 98, 104, 10
-    CONTROL         "&Case onsensitief.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
-    CONTROL         "Logiese &getalvergelyking.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
-    CONTROL         "Kolom &sorteer (reghoekige seleksie).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
+    CONTROL         "Sorteer &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Sorteer &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Skui&fel lyne.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "Voeg &dubbele lyne saam.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Verwyder dubbele lyne.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Verwyder &unieke lyne.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Verwyder &leë lyne.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Verwyder &wit-spasie lyne.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Case onsensitief.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "Logiese &getalvergelyking.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Kolom &sorteer (reghoekige seleksie).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,128,24,50,14
 END

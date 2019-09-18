@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "I&gen",IDOK,138,63,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,138,80,50,14
-    CONTROL         "&Ez az ablak mindig megjelenik.", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Ez az ablak mindig megjelenik.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_SPC_MODX,60,84,124,8,SS_RIGHT
     PUSHBUTTON      "&Igen",IDOK,80,98,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,134,98,50,14
-    CONTROL         "&Ez az ablak mindig megjelenik.", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Ez az ablak mindig megjelenik.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -594,22 +594,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sorok rendezése"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "&Emelkedõ rendezés.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
-    CONTROL         "&Csökkenõ rendezés.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "Sorok &összekeverése.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,85,10
-    CONTROL         "&Dupla sorok összevonása.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
-    CONTROL         "D&upla sorok törlése.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
-    CONTROL         "E&gyedi sorok törlése.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
+    CONTROL         "&Emelkedõ rendezés.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "&Csökkenõ rendezés.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Sorok &összekeverése.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "&Dupla sorok összevonása.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "D&upla sorok törlése.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "E&gyedi sorok törlése.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "&Üres sorok törlése.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Üre&s karaktereket tartalmazó sorok törlése.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,144,10
-    CONTROL         "Kisbetû/Nag&ybetû nem számít.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,120,10
-    CONTROL         "Szá&mok logikai összehasonlítása.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,110,10
-    CONTROL         "&Oszlopos rendezés (függõleges kijelölés).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,144,10
+    CONTROL         "Üre&s karaktereket tartalmazó sorok törlése.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,140,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "Kisbetû/Nag&ybetû nem számít.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,110,10
+    CONTROL         "Szá&mok logikai összehasonlítása.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "&Oszlopos rendezés (függõleges kijelölés).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,128,24,50,14
 END

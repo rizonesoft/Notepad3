@@ -96,8 +96,8 @@ BEGIN
     CONTROL         "Ce&rrar tras encontrar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,80,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT, 
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Modo transparente al perder el foco",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Cerrar",IDCANCEL,211,99,55,14
@@ -130,8 +130,8 @@ BEGIN
     CONTROL         "Ce&rrar tras reemplazar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,80,77,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
+    CONTROL         "Modo transparente al perder el foco",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Reemplazar",IDC_REPLACE,211,43,55,14
@@ -187,8 +187,8 @@ BEGIN
     GROUPBOX        "Detección de codificación: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Abrir archivos 7-bit &ASCII en modo UTF-8.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Utilizar solo &resultados de detección confiables.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
+    CONTROL         "Utilizar solo &resultados de detección confiables.",IDC_RELIABLE_DETECTION_RES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "Abrir archivos 8-bit *.&nfo/diz en modo DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "Analizar las e&tiquetas de codificación de archivos.",IDC_ENCODINGFROMFILEVARS,
@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Sí",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Mostrar siempre este diálogo.", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Mostrar siempre este diálogo.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s línea(s) con sangría irregular",IDC_INDENT_SPC_MODX,50,84,124,8,SS_RIGHT
     PUSHBUTTON      "&Sí",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
-    CONTROL         "&Mostrar siempre este diálogo.", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Mostrar siempre este diálogo.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -594,22 +594,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Ordenar líneas"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Ordenar &ascendente.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,80,10
-    CONTROL         "Ordenar &descendente.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,80,10
-    CONTROL         "Mezclar líneas.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
-    CONTROL         "&Fusionar las líneas duplicadas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,100,10
-    CONTROL         "&Eliminar las líneas duplicadas.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,100,10
-    CONTROL         "Eliminar las líneas &únicas.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,100,10
-    CONTROL         "Eliminar las líneas &vacías.", 106, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 86, 104, 10
-    CONTROL         "Eliminar las líneas con espacios en blanco.", 107, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 98, 150, 10
-    CONTROL         "&Insensible a mayúsculas.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,100,10
-    CONTROL         "Comparación lógica de &números.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,110,10
-    CONTROL         "Ordenación &columna (selección rectangular).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,150,10
+    CONTROL         "Ordenar &ascendente.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Ordenar &descendente.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Mezclar líneas.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "&Fusionar las líneas duplicadas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Eliminar las líneas duplicadas.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Eliminar las líneas &únicas.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Eliminar las líneas &vacías.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Eliminar las líneas con espacios en blanco.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,140,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Insensible a mayúsculas.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "Comparación lógica de &números.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,120,10
+    CONTROL         "Ordenación &columna (selección rectangular).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,150,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,128,24,50,14
 END

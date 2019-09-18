@@ -96,8 +96,8 @@ BEGIN
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparante modus bij verlies van focus", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 134, 10
+    CONTROL         "Transparante modus bij verlies van focus",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,134,10
     DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
     PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Sluiten",IDCANCEL,211,99,55,14
@@ -130,8 +130,8 @@ BEGIN
     CONTROL         "S&luiten na vervangen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparante modus bij verlies van focus", IDC_TRANSPARENT,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 134, 10
+    CONTROL         "Transparante modus bij verlies van focus",IDC_TRANSPARENT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,134,10
     DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
     PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Vervangen",IDC_REPLACE,211,43,55,14
@@ -187,8 +187,8 @@ BEGIN
     GROUPBOX        "Encodering detectie: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Openen 7-bit &ASCII bestanden in UTF-8 modus.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
-    CONTROL         "Geb&ruik alleen betrouwbare detectieresultaten.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
+    CONTROL         "Geb&ruik alleen betrouwbare detectieresultaten.",IDC_RELIABLE_DETECTION_RES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
     CONTROL         "Openen 8-bit *.&nfo/diz bestanden in DOS-437 modus.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,175,10
     CONTROL         "Parseer codering van bestands&tags.",IDC_ENCODINGFROMFILEVARS,
@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Ja",IDOK,138,63,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,138,80,50,14
-    CONTROL         "&Dit dialoogvenster altijd tonen.", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Dit dialoogvenster altijd tonen.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s lijn(en) met onregelmatige inspringen",IDC_INDENT_SPC_MODX,50,84,130,8,SS_RIGHT
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,134,98,50,14
-    CONTROL         "&Dit dialoogvenster altijd tonen.", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Dit dialoogvenster altijd tonen.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -594,22 +594,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sorteren lijnen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Sorteer &oplopend.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,70,10
-    CONTROL         "Sorteer &aflopend.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "&Vermengen lijnen.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,70,10
+    CONTROL         "Sorteer &oplopend.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Sorteer &aflopend.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "&Vermengen lijnen.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
     CONTROL         "&Fusioneren dubbele lijnen.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "Ve&rwijderen dubbele lijnen.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
-    CONTROL         "Verwijderen &uniek lijnen.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
-    CONTROL         "Verwijderen l&ege lijnen.", 106, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 86, 104, 10
-    CONTROL         "Verwijderen &blanco lijnen.", 107, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 98, 104, 10
-    CONTROL         "&Niet-hoofdlettergevoelig.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,844,10
-    CONTROL         "Logische &nummer vergelijking.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
-    CONTROL         "Kolom &soort (rechthoekige selectie).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
+    CONTROL         "Ve&rwijderen dubbele lijnen.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Verwijderen &uniek lijnen.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Verwijderen l&ege lijnen.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Verwijderen &blanco lijnen.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Niet-hoofdlettergevoelig.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "Logische &nummer vergelijking.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Kolom &soort (rechthoekige selectie).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,128,24,50,14
 END
