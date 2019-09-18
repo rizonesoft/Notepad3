@@ -157,6 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "이 작업은 사각형 선택 내에서 수행 할 수 없습니다."
+    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
+    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
     IDS_MUI_BUFFERTOOSMALL  "이 작업은 수행 할 수 없습니다 (너무 긴 줄)."
     IDS_MUI_FIND_WRAPFW     "문서 끝에 도달하여 처음부터 다시 찾습니다."
     IDS_MUI_FIND_WRAPRE     "문서의 처음 부분에 도달하여 끝에서 부터 다시 찾습니다."

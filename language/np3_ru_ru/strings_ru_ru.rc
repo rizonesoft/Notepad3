@@ -157,6 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Эта операция не может быть выполнена с прямоугольным выделением."
+    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
+    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
     IDS_MUI_BUFFERTOOSMALL  "Эта операция не может быть выполнена (слишком длинные строки)."
     IDS_MUI_FIND_WRAPFW     "Достигнут конец документа, поиск будет продолжен с начала."
     IDS_MUI_FIND_WRAPRE     "Достигнуто начало документа, поиск будет продолжен с конца."

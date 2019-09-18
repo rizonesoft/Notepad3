@@ -157,6 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Cette opération ne peut pas être effectuée dans une sélection rectangulaire."
+    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
+    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
     IDS_MUI_BUFFERTOOSMALL  "Cette opération ne peut pas être effectuée (lignes trop longues)."
     IDS_MUI_FIND_WRAPFW     "La fin du document est atteinte, redémarrer la recherche au début."
     IDS_MUI_FIND_WRAPRE     "Le début du document est atteint, redémarrer la recherche à la fin."

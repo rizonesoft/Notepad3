@@ -3140,7 +3140,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   bool const se = SciCall_IsSelectionEmpty();
   bool const te = (SciCall_GetTextLength() <= 0);
   bool const pst = SciCall_CanPaste();
-  bool const mls = Sci_IsMultiLineSelection();
+  bool const mls = Sci_IsSelectionMultiLine();
 
   EnableCmd(hmenu,IDM_EDIT_CUT, !te && !ro);       // allow Ctrl-X w/o selection
   EnableCmd(hmenu,IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection
@@ -3938,7 +3938,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_
+        //~_BEGIN_UNDO_ACTION_
         if (SciCall_IsSelectionEmpty()) {
           if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK))
           {
@@ -3949,7 +3949,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         else {
           SciCall_Copy();
         }
-        _END_UNDO_ACTION_
+        //~_END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
