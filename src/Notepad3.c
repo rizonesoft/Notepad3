@@ -3938,7 +3938,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_
+        //~_BEGIN_UNDO_ACTION_
         if (SciCall_IsSelectionEmpty()) {
           if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK))
           {
@@ -3949,7 +3949,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         else {
           SciCall_Copy();
         }
-        _END_UNDO_ACTION_
+        //~_END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
