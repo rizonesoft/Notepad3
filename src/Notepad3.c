@@ -1190,6 +1190,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
+  //SetMenu(Globals.hwndMain, (Settings.ShowMenu ? Globals.hMainMenu : NULL));
   DrawMenuBar(Globals.hwndMain);
 
   // Current file information -- moved in front of ShowWindow()
@@ -1433,6 +1434,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 //  Messages are distributed to the MsgXXX-handlers
 //
 //
+//inline bool KeyboardIsKeyDown(int key) { return (GetKeyState(key) & 0x8000) != 0; }
+
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch(umsg)
@@ -3059,7 +3062,32 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  HMENU const hmenu = (HMENU)wParam;
+  HMENU hmenu = (HMENU)wParam;
+
+  LockWindowUpdate(hwnd); // prevent intermediate redrawing
+
+  //if (!Settings.ShowMenu) {
+  //  HMENU const hCurMenu = GetMenu(hwnd);
+  //  if (hCurMenu) {
+  //    SetMenu(hwnd, NULL);
+  //    LockWindowUpdate(NULL); // allow redrawing
+  //    DrawMenuBar(hwnd);
+  //    //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+  //    return FALSE;
+  //  }
+  //  else {
+  //    hmenu = Globals.hMainMenu;
+  //    SetMenu(hwnd, hmenu);
+  //  }
+  //}
+  //else {
+  //  HMENU const hCurMenu = GetMenu(hwnd);
+  //  if (!hCurMenu) {
+  //    hmenu = Globals.hMainMenu;
+  //    SetMenu(hwnd, hmenu);
+  //  }
+  //}
+
 
   bool const ro = SciCall_GetReadOnly();
   DocPos const iCurPos = SciCall_GetCurrentPos();
@@ -3414,6 +3442,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   UpdateSettingsCmds();
   
+  LockWindowUpdate(NULL); // allow redrawing
+  DrawMenuBar(hwnd);
+
   return FALSE;
 }
 
@@ -3437,6 +3468,8 @@ static void _DynamicLanguageMenuCmd(int cmd)
     StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
     IniFileSetString(Globals.IniFile, L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
 
+    LockWindowUpdate(Globals.hwndMain); // prevent intermediate redrawing
+
     DestroyMenu(Globals.hMainMenu);
     Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
     FreeLanguageResources();
@@ -3453,6 +3486,10 @@ static void _DynamicLanguageMenuCmd(int cmd)
     Style_InsertThemesMenu(Globals.hMainMenu);
 
     SetMenu(Globals.hwndMain, Globals.hMainMenu);
+    //SetMenu(Globals.hwndMain, (Settings.ShowMenu ? Globals.hMainMenu : NULL));
+
+    LockWindowUpdate(NULL); // allow redrawing
+
     DrawMenuBar(Globals.hwndMain);
 
     MsgThemeChanged(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
@@ -5282,6 +5319,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOOLBAR:
+      //Settings.ShowMenu = !Settings.ShowMenu;
+      //SetMenu(hwnd, (Settings.ShowMenu ? Globals.hMainMenu : NULL));
       Settings.ShowToolbar = !Settings.ShowToolbar;
       ShowWindow(s_hwndReBar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
       UpdateToolbar();
@@ -10382,22 +10421,26 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
   static WINDOWPLACEMENT s_wndplPrev;
-  static bool s_bPrevShowToolbar = false;
-  static bool s_bPrevShowStatusbar = false;
+  //static bool s_bPrevShowMenu = true;
+  static bool s_bPrevShowToolbar = true;
+  static bool s_bPrevShowStatusbar = true;
 
   static UINT const fFScrFlags = SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
   static UINT const fPrevFlags = SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED;
+  static DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
 
   HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
 
+  DWORD dwStyle = GetWindowLong(hWindow, GWL_STYLE);
   RECT rcCurrent; GetWindowRect(hWindow, &rcCurrent);
-  DWORD const dwStyle = GetWindowLong(hWindow, GWL_STYLE);
 
   if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag) 
   { 
-    SetWindowLong(hWindow, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
+    LockWindowUpdate(hwnd); // prevent intermediate redrawing
+    SetWindowLong(hWindow, GWL_STYLE, dwStyle | dwRmvFScrStyle);
     if (s_bPrevFullScreenFlag) {
       SetWindowPlacement(hWindow, &s_wndplPrev);
+      //Settings.ShowMenu = s_bPrevShowMenu;
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
     }
@@ -10406,6 +10449,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
       if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
       SetWindowPlacement(hWindow, &wndpl);
     }
+    LockWindowUpdate(NULL); // allow redrawing
     SetWindowPos(hWindow, NULL, 0, 0, 0, 0, fPrevFlags);
     SetWindowPos(hWindow, (Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST), 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     s_bPrevFullScreenFlag = false;
@@ -10414,17 +10458,22 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
     GetWindowPlacement(hWindow, &s_wndplPrev);
     MONITORINFO mi = { sizeof(mi) };
     GetMonitorInfo(MonitorFromWindow(hWindow, MONITOR_DEFAULTTOPRIMARY), &mi);
-    SetWindowLong(hWindow, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
+    LockWindowUpdate(hwnd); // prevent intermediate redrawing
+    SetWindowLong(hWindow, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
     WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, NULL, mode);
+    LockWindowUpdate(NULL); // allow redrawing
     if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
     SetWindowPlacement(hWindow, &wndpl);
     SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
       mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, fFScrFlags);
+    //s_bPrevShowMenu = Settings.ShowMenu;
     s_bPrevShowToolbar = Settings.ShowToolbar;
     s_bPrevShowStatusbar = Settings.ShowStatusbar;
-    Settings.ShowToolbar = Settings.ShowStatusbar = false;
+    /*Settings.ShowMenu = */Settings.ShowToolbar = Settings.ShowStatusbar = false;
     s_bPrevFullScreenFlag = true;
   }
+
+  LockWindowUpdate(NULL); // allow redrawing
 
   DrawMenuBar(Globals.hwndMain);
   MsgThemeChanged(hWindow, (WPARAM)NULL, (LPARAM)NULL);

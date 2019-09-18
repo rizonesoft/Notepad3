@@ -1484,8 +1484,10 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 					} else {
 						KeyCommand(SCI_ZOOMOUT);
 					}				
-					// send to main window too !
+					// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				    // send to main window too !
 					::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+					// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				} else {
 					// Scroll
 					ScrollTo(topLine + linesToScroll);
