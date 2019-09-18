@@ -157,6 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Diese Operation kann nicht mit einer Rechteck-Selektion durchgeführt werden."
+    IDS_MUI_SELMULTI        "Diese Operation kann nicht mit einer Multi-Selektion durchgeführt werden."
+    IDS_MUI_SELRECTORMULTI  "Diese Operation kann nicht mit einer Rechteck- oder Multi-Selektion durchgeführt werden."
     IDS_MUI_BUFFERTOOSMALL  "Diese Operation kann nicht durchgeführt werden (die Zeilen sind zu lang)."
     IDS_MUI_FIND_WRAPFW     "Das Ende des Dokumentes wurde erreicht, Vorwärtssuche vom Anfang her weiter führen."
     IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen."

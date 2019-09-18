@@ -3140,7 +3140,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   bool const se = SciCall_IsSelectionEmpty();
   bool const te = (SciCall_GetTextLength() <= 0);
   bool const pst = SciCall_CanPaste();
-  bool const mls = Sci_IsMultiLineSelection();
+  bool const mls = Sci_IsSelectionMultiLine();
 
   EnableCmd(hmenu,IDM_EDIT_CUT, !te && !ro);       // allow Ctrl-X w/o selection
   EnableCmd(hmenu,IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection

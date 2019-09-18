@@ -157,6 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Deze bewerking kan niet binnen een rechthoekige selectie worden uitgevoerd."
+    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
+    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
     IDS_MUI_BUFFERTOOSMALL  "Deze bewerking kan niet worden uitgevoerd (te lange lijnen)."
     IDS_MUI_FIND_WRAPFW     "Het einde van het document is bereikt, hestart de zoekopdracht aan het begin."
     IDS_MUI_FIND_WRAPRE     "Het einde van het document is bereikt, herstart de zoekopdracht aan het einde.."

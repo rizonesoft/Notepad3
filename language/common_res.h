@@ -102,6 +102,8 @@
 #define IDS_MUI_EXPORT_FAIL             14016
 #define IDS_MUI_REGEX_INVALID           14017
 #define IDS_MUI_DROP_NO_FILE            14018
+#define IDS_MUI_SELMULTI                14019
+#define IDS_MUI_SELRECTORMULTI          14020
 
 #define IDS_MUI_ASK_SAVE                15000
 #define IDS_MUI_ASK_REVERT              15001

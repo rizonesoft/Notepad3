@@ -736,7 +736,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 
   if (iSelStart != iSelEnd) {
     if (Sci_IsMultiOrRectangleSelection()) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
       return res;
     }
     length = (iSelEnd - iSelStart);
@@ -1547,50 +1547,49 @@ void EditInvertCase(HWND hwnd)
 
   if (iCurPos != iAnchorPos)
   {
+    if (Sci_IsMultiOrRectangleSelection()) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+      return;
+    }
+
     _BEGIN_UNDO_ACTION_
-    if (Sci_IsMultiOrRectangleSelection())
-    {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    const DocPos iSelStart = SciCall_GetSelectionStart();
+    const DocPos iSelEnd = SciCall_GetSelectionEnd();
+    const DocPos iSelSize = SciCall_GetSelText(NULL);
+
+    LPSTR pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+    LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (!pszText || !pszTextW) {
+      FreeMem(pszText);
+      FreeMem(pszTextW);
     }
     else {
-      const DocPos iSelStart = SciCall_GetSelectionStart();
-      const DocPos iSelEnd = SciCall_GetSelectionEnd();
-      const DocPos iSelSize = SciCall_GetSelText(NULL);
+      SciCall_GetSelText(pszText);
 
-      LPSTR pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
-      LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-      if (!pszText || !pszTextW) {
-        FreeMem(pszText);
-        FreeMem(pszTextW);
-      }
-      else {
-        SciCall_GetSelText(pszText);
+      int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)(iSelSize - 1),
+        pszTextW, (MBWC_DocPos_Cast)iSelSize);
 
-        int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)(iSelSize - 1),
-          pszTextW, (MBWC_DocPos_Cast)iSelSize);
-
-        bool bChanged = false;
-        for (int i = 0; i < cchTextW; i++) {
-          if (IsCharUpperW(pszTextW[i])) {
-            pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
-            bChanged = true;
-          }
-          else if (IsCharLowerW(pszTextW[i])) {
-            pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
-            bChanged = true;
-          }
+      bool bChanged = false;
+      for (int i = 0; i < cchTextW; i++) {
+        if (IsCharUpperW(pszTextW[i])) {
+          pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
+          bChanged = true;
         }
-
-        if (bChanged) {
-          WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW,
-            pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
-          SciCall_Clear();
-          SciCall_AddText((iSelEnd - iSelStart), pszText);
-          SciCall_SetSel(iAnchorPos, iCurPos);
+        else if (IsCharLowerW(pszTextW[i])) {
+          pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
+          bChanged = true;
         }
-        FreeMem(pszText);
-        FreeMem(pszTextW);
       }
+
+      if (bChanged) {
+        WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW,
+          pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
+        SciCall_Clear();
+        SciCall_AddText((iSelEnd - iSelStart), pszText);
+        SciCall_SetSel(iAnchorPos, iCurPos);
+      }
+      FreeMem(pszText);
+      FreeMem(pszTextW);
     }
     _END_UNDO_ACTION_
   }
@@ -1609,9 +1608,8 @@ void EditTitleCase(HWND hwnd)
 
   if (iCurPos != iAnchorPos)
   {
-    if (Sci_IsMultiOrRectangleSelection())
-    {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    if (Sci_IsMultiOrRectangleSelection()) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
       return;
     }
     const DocPos iSelStart = SciCall_GetSelectionStart();
@@ -1673,9 +1671,8 @@ void EditSentenceCase(HWND hwnd)
 
   if (iCurPos != iAnchorPos)
   {
-    if (Sci_IsMultiOrRectangleSelection())
-    {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    if (Sci_IsMultiOrRectangleSelection()) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
       return;
     }
     const DocPos iSelStart = SciCall_GetSelectionStart();
@@ -1748,7 +1745,7 @@ void EditURLEncode(HWND hwnd)
   if (SciCall_IsSelectionEmpty()) { return; }
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -1821,7 +1818,7 @@ void EditURLDecode(HWND hwnd)
   if (SciCall_IsSelectionEmpty()) { return; }
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -1897,9 +1894,8 @@ void EditEscapeCChars(HWND hwnd) {
 
   if (!SciCall_IsSelectionEmpty())
   {
-    if (Sci_IsMultiOrRectangleSelection())
-    {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    if (Sci_IsMultiOrRectangleSelection()) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
       return;
     }
 
@@ -1933,9 +1929,8 @@ void EditUnescapeCChars(HWND hwnd) {
 
   if (!SciCall_IsSelectionEmpty())
   {
-    if (Sci_IsMultiOrRectangleSelection())
-    {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    if (Sci_IsMultiOrRectangleSelection()) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
       return;
     }
 
@@ -1968,7 +1963,7 @@ void EditUnescapeCChars(HWND hwnd) {
 void EditChar2Hex(HWND hwnd) {
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -2031,7 +2026,7 @@ void EditHex2Char(HWND hwnd)
   if (SciCall_IsSelectionEmpty()) { return; }
     
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -2159,7 +2154,7 @@ void EditSelectToMatchingBrace(HWND hwnd)
 void EditModifyNumber(HWND hwnd,bool bIncrease) {
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -2229,7 +2224,7 @@ void EditTabsToSpaces(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -2327,7 +2322,7 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -2443,45 +2438,44 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
 static void  _EditMoveLines(bool bMoveUp)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+    return;
   }
-  else {
 
-    DocPos const iSelBeg = SciCall_GetSelectionStart();
-    DocPos const iSelEnd = SciCall_GetSelectionEnd();
-    DocLn  const iBegLine = SciCall_LineFromPosition(iSelBeg);
-    DocLn  const iEndLine = SciCall_LineFromPosition(iSelEnd);
+  DocPos const iSelBeg = SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
+  DocLn  const iBegLine = SciCall_LineFromPosition(iSelBeg);
+  DocLn  const iEndLine = SciCall_LineFromPosition(iSelEnd);
 
-    DocLn lastLine = Sci_GetLastDocLineNumber();
+  DocLn lastLine = Sci_GetLastDocLineNumber();
 
-    if (Sci_GetNetLineLength(lastLine) == 0) { --lastLine; }
+  if (Sci_GetNetLineLength(lastLine) == 0) { --lastLine; }
 
-    bool const bCanMove = bMoveUp ? (iBegLine > 0) : (iEndLine < lastLine);
-    if (bCanMove) {
+  bool const bCanMove = bMoveUp ? (iBegLine > 0) : (iEndLine < lastLine);
+  if (bCanMove) {
 
-      _BEGIN_UNDO_ACTION_
+    _BEGIN_UNDO_ACTION_
 
       bool const bForwardSelection = Sci_IsForwardSelection();
-      int const direction = (bMoveUp ? -1 : 1);
+    int const direction = (bMoveUp ? -1 : 1);
 
-      DocPos const iBegChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iBegLine), iSelBeg);
-      DocPos const iEndChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iEndLine), iSelEnd);
+    DocPos const iBegChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iBegLine), iSelBeg);
+    DocPos const iEndChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iEndLine), iSelEnd);
 
-      if (bMoveUp)
-        SciCall_MoveSelectedLinesUp();
-      else
-        SciCall_MoveSelectedLinesDown();
+    if (bMoveUp)
+      SciCall_MoveSelectedLinesUp();
+    else
+      SciCall_MoveSelectedLinesDown();
 
-      DocPos const iNewSelBeg = SciCall_PositionRelative(SciCall_PositionFromLine(iBegLine + direction), iBegChCount);
-      DocPos const iNewSelEnd = SciCall_PositionRelative(SciCall_PositionFromLine(iEndLine + direction), iEndChCount);
+    DocPos const iNewSelBeg = SciCall_PositionRelative(SciCall_PositionFromLine(iBegLine + direction), iBegChCount);
+    DocPos const iNewSelEnd = SciCall_PositionRelative(SciCall_PositionFromLine(iEndLine + direction), iEndChCount);
 
-      if (bForwardSelection)
-        SciCall_SetSel(iNewSelBeg, iNewSelEnd);
-      else
-        SciCall_SetSel(iNewSelEnd, iNewSelBeg);
+    if (bForwardSelection)
+      SciCall_SetSel(iNewSelBeg, iNewSelEnd);
+    else
+      SciCall_SetSel(iNewSelEnd, iNewSelBeg);
 
-      _END_UNDO_ACTION_
-    }
+    _END_UNDO_ACTION_
   }
 }
 
@@ -2543,9 +2537,8 @@ void EditJumpToSelectionEnd(HWND hwnd)
 //
 void EditModifyLines(HWND hwnd, LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
 {
-  if (Sci_IsMultiOrRectangleSelection())
-  {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+  if (Sci_IsMultiOrRectangleSelection()) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -2821,7 +2814,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 
   DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
   DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-  bool const bSingleLine = Sci_IsSingleLineSelection();
+  bool const bSingleLine = Sci_IsSelectionSingleLine();
 
   bool const _bTabIndents = SciCall_GetTabIndents();
   bool const _bBSpUnindents = SciCall_GetBackSpaceUnIndents();
@@ -2909,9 +2902,10 @@ void EditAlignText(HWND hwnd, int nMode)
   DocPos const iAnchorCol = SciCall_GetColumn(iAnchorPos);
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
+
   if (iLineEnd <= iLineStart) { return; }
 
   int iMinIndent = INT_MAX;
@@ -3131,7 +3125,7 @@ void EditAlignText(HWND hwnd, int nMode)
 void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -3182,12 +3176,12 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
 void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
   UNUSED(hwnd);
-  //const DocPos iCurPos = SciCall_GetCurrentPos();
-  //const DocPos iAnchorPos = SciCall_GetAnchor();
-  const DocPos iSelStart = SciCall_GetSelectionStart();
-  const DocPos iSelEnd = SciCall_GetSelectionEnd();
+  //~const DocPos iCurPos = SciCall_GetCurrentPos();
+  //~const DocPos iAnchorPos = SciCall_GetAnchor();
+  DocPos const iSelStart = SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
-  const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
+  //~const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
 
   char mszComment[32 * 3] = { '\0' };
 
@@ -3198,8 +3192,8 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 
   if (cchComment == 0) { return; }
 
-  if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+  if (Sci_IsMultiSelection()) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELMULTI);
     return;
   }
 
@@ -3207,8 +3201,9 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
   DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
   if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
-    if ((iLineEnd - iLineStart) >= 1)
+    if ((iLineEnd - iLineStart) >= 1) {
       --iLineEnd;
+    }
   }
 
   DocPos iCommentCol = 0;
@@ -3226,8 +3221,8 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
     }
   }
 
-  DocPos iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
-  DocPos iSelEndOffset = 0;
+  //~DocPos iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+  //~DocPos iSelEndOffset = 0;
 
   _BEGIN_UNDO_ACTION_
   _IGNORE_NOTIFY_CHANGE_;
@@ -3262,10 +3257,10 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
         case 2:
           SciCall_SetTargetRange(iIndentPos, iSelPos);
           SciCall_ReplaceTarget(0, "");
-          iSelEndOffset -= cchComment;
-          if (iLine == iLineStart) {
-            iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
-          }
+          //~iSelEndOffset -= cchComment;
+          //~if (iLine == iLineStart) {
+          //~  iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
+          //~}
           utarray_push_back(sel_positions, &iIndentPos);
           break;
         case 1:
@@ -3282,10 +3277,10 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
         {
           DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
           SciCall_InsertText(iPos, mszComment);
-          iSelEndOffset += cchComment;
-          if (iLine == iLineStart) {
-            iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
-          }
+          //~iSelEndOffset += cchComment;
+          //~if (iLine == iLineStart) {
+          //~  iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+          //~}
           DocPos const iSelPos = iIndentPos + cchComment;
           utarray_push_back(sel_positions, &iSelPos);
         }
@@ -3298,15 +3293,15 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
-  //if (iCurPos < iAnchorPos) {
-  //  EditSetSelectionEx(hwnd, iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
-  //}
-  //else if (iCurPos > iAnchorPos) {
-  //  EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
-  //}
-  //else {
-  //  EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
-  //}
+  //~if (iCurPos < iAnchorPos) {
+  //~  EditSetSelectionEx(hwnd, iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
+  //~}
+  //~else if (iCurPos > iAnchorPos) {
+  //~  EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
+  //~}
+  //~else {
+  //~  EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
+  //~}
 
   DocPos* p = (DocPos*)utarray_next(sel_positions, NULL);
   if (p) { SciCall_SetSelection(*p, *p); }
@@ -3750,9 +3745,9 @@ void EditCompressBlanks(HWND hwnd)
     _OBSERVE_NOTIFY_CHANGE_;
     _END_UNDO_ACTION_
   }
-  else if (Sci_IsMultiOrRectangleSelection()) {
+  else if (Sci_IsMultiSelection()) {
     // @@@ not implemented
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELMULTI);
   }
   else   // SC_SEL_LINES | SC_SEL_STREAM
   {
@@ -3862,7 +3857,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
   UNUSED(hwnd);
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -3937,7 +3932,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
   UNUSED(hwnd);
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
   
@@ -4010,7 +4005,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -4189,7 +4184,7 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
   if (SciCall_IsSelectionEmpty()) { return; }
 
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -5596,7 +5591,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           s_tchBuf[0] = L'\0';
 
           DocPos const cchSelection = SciCall_GetSelText(NULL);
-          if ((1 < cchSelection) && !(GetDlgItem(hwnd, IDC_REPLACE) && Sci_IsMultiLineSelection())) {
+          if ((1 < cchSelection) && !(GetDlgItem(hwnd, IDC_REPLACE) && Sci_IsSelectionMultiLine())) {
             lpszSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
             SciCall_GetSelText(lpszSelection);
           }
@@ -5700,7 +5695,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
               if (s_anyMatch != match) { s_anyMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
               DocPos const iStartPos = (DocPos)lParam;
-              if (!GetDlgItem(hwnd, IDC_REPLACE) || !Sci_IsMultiLineSelection()) {
+              if (!GetDlgItem(hwnd, IDC_REPLACE) || !Sci_IsSelectionMultiLine()) {
                 s_fwrdMatch = _FindHasMatch(sg_pefrData->hwnd, sg_pefrData, iStartPos, false, true);
               }
               else {
@@ -6652,7 +6647,7 @@ bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECT);
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return false;
   }
 
