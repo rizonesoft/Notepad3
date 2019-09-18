@@ -3,21 +3,25 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_VHDL = {
-"access after alias all architecture array assert attribute begin block body buffer bus case component configuration "
-"constant disconnect downto else elsif end entity exit file for function generate generic group guarded if impure in "
-"inertial inout is label library linkage literal loop map new next null of on open others out package port postponed "
-"procedure process pure range record register reject report return select severity shared signal subtype then "
-"to transport type unaffected units until use variable wait when while with",
+"access after alias all architecture array assert attribute begin block body buffer bus case component "
+"configuration constant disconnect downto else elsif end entity exit file for function generate generic "
+"group guarded if impure in inertial inout is label library linkage literal loop map new next null of on "
+"open others out package port postponed procedure process pure range record register reject report return "
+"select severity shared signal subtype then to transport type unaffected units until use variable wait "
+"when while with",
 "abs and mod nand nor not or rem rol ror sla sll sra srl xnor xor",
-"left right low high ascending image value pos val succ pred leftof rightof base range reverse_range length delayed stable "
-"quiet transaction event active last_event last_active last_value driving driving_value simple_name path_name instance_name",
-"now readline read writeline write endfile resolved to_bit to_bitvector to_stdulogic to_stdlogicvector to_stdulogicvector "
-"to_x01 to_x01z to_UX01 rising_edge falling_edge is_x shift_left shift_right rotate_left rotate_right resize to_integer "
-"to_unsigned to_signed std_match to_01",
-"std ieee work standard textio std_logic_1164 std_logic_arith std_logic_misc std_logic_signed std_logic_textio std_logic_unsigned "
-"numeric_bit numeric_std math_complex math_real vital_primitives vital_timing",
-"boolean bit character severity_level integer real time delay_length natural positive string bit_vector file_open_kind "
-"file_open_status line text side width std_ulogic std_ulogic_vector std_logic std_logic_vector X01 X01Z UX01 UX01Z unsigned signed",
+"active ascending base delayed driving driving_value endfile event falling_edge high image instance_name, "
+"is_x last_active last_event last_value left leftof length low now path_name pos pred quiet range read "
+"readline resize resolved reverse_range right rightof rising_edge rotate_left rotate_right shift_left "
+"shift_right simple_name stable std_match succ to_01 to_UX01 to_bit to_bitvector to_integer to_signed "
+"to_stdlogicvector to_stdulogic to_stdulogicvector to_unsigned to_x01 to_x01z transaction val value "
+"write writeline",
+"ieee math_complex math_real numeric_bit numeric_std standard std std_logic_1164 std_logic_arith "
+"std_logic_misc std_logic_signed std_logic_textio std_logic_unsigned textio vital_primitives "
+"vital_timing work",
+"UX01 UX01Z X01 X01Z bit bit_vector boolean character delay_length file_open_kind file_open_status integer "
+"line natural positive real severity_level side signed std_logic std_logic_vector std_ulogic "
+"std_ulogic_vector string text time unsigned width",
 "", "", "" };
 
 EDITLEXER lexVHDL = { 

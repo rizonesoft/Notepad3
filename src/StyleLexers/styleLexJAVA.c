@@ -3,16 +3,12 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_JAVA = {
-"@interface abstract assert boolean break byte case catch char class const "
-"continue default do double else enum extends final finally float for future "
-"generic goto if implements import inner instanceof int interface long "
-"native new null outer package private protected public rest return "
-"short static super switch synchronized this throw throws transient try "
-"var void volatile while "
-"@Deprecated @Documented @FlaskyTest @Inherited @JavascriptInterface "
-"@LargeTest @MediumTest @Override @Retention "
-"@SmallTest @Smoke @Supress @SupressLint @SupressWarnings @Target @TargetApi "
-"@TestTarget @TestTargetClass @UiThreadTest",
+"@Deprecated @Documented @FlaskyTest @Inherited @JavascriptInterface @LargeTest @MediumTest @Override "
+"@Retention @SmallTest @Smoke @Supress @SupressLint @SupressWarnings @Target @TargetApi @TestTarget "
+"@TestTargetClass @UiThreadTest @interface abstract assert boolean break byte case catch char class const "
+"continue default do double else enum extends final finally float for future generic goto if implements "
+"import inner instanceof int interface long native new null outer package private protected public rest "
+"return short static super switch synchronized this throw throws transient try var void volatile while",
 "", "", "", "", "", "", "", "" };
 
 

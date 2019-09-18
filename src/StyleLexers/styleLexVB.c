@@ -3,17 +3,16 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_VB = {
-"addhandler addressof alias and andalso ansi any as assembly auto boolean byref byte byval call "
-"case catch cbool cbyte cchar cdate cdbl cdec char cint class clng cobj compare const cshort csng "
-"cstr ctype date decimal declare default delegate dim directcast do double each else elseif end "
-"enum erase error event exit explicit externalsource false finally for friend function get "
-"gettype gosub goto handles if implements imports in inherits integer interface is let lib like "
-"long loop me mid mod module mustinherit mustoverride mybase myclass namespace new next not "
-"nothing notinheritable notoverridable object on option optional or orelse overloads overridable "
-"overrides paramarray preserve private property protected public raiseevent randomize readonly "
-"redim rem removehandler resume return select set shadows shared short single static step stop "
-"strict string structure sub synclock then throw to true try typeof unicode until variant when "
-"while with withevents writeonly xor",
+"addhandler addressof alias and andalso ansi any as assembly auto boolean byref byte byval call case catch "
+"cbool cbyte cchar cdate cdbl cdec char cint class clng cobj compare const cshort csng cstr ctype date "
+"decimal declare default delegate dim directcast do double each else elseif end enum erase error event "
+"exit explicit externalsource false finally for friend function get gettype gosub goto handles if "
+"implements imports in inherits integer interface is let lib like long loop me mid mod module mustinherit "
+"mustoverride mybase myclass namespace new next not nothing notinheritable notoverridable object on option "
+"optional or orelse overloads overridable overrides paramarray preserve private property protected public "
+"raiseevent randomize readonly redim rem removehandler resume return select set shadows shared short "
+"single static step stop strict string structure sub synclock then throw to true try typeof unicode until "
+"variant when while with withevents writeonly xor",
 "", "", "", "", "", "", "", "" };
 
 

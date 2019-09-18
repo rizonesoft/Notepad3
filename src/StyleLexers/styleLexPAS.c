@@ -3,12 +3,14 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_PAS = {
-"absolute abstract alias and array as asm assembler begin break case cdecl class const constructor continue cppdecl default "
-"destructor dispose div do downto else end end. except exit export exports external false far far16 file finalization finally for "
-"forward function goto if implementation in index inherited initialization inline interface is label library local message mod "
-"name near new nil nostackframe not object of oldfpccall on operator or out overload override packed pascal private procedure "
-"program property protected public published raise read record register reintroduce repeat resourcestring safecall self set shl "
-"shr softfloat stdcall stored string then threadvar to true try type unit until uses var virtual while with write xor",
+"absolute abstract alias and array as asm assembler begin break case cdecl class const constructor continue "
+"cppdecl default destructor dispose div do downto else end end. except exit export exports external false "
+"far far16 file finalization finally for forward function goto if implementation in index inherited "
+"initialization inline interface is label library local message mod name near new nil nostackframe not "
+"object of oldfpccall on operator or out overload override packed pascal private procedure program "
+"property protected public published raise read record register reintroduce repeat resourcestring safecall "
+"self set shl shr softfloat stdcall stored string then threadvar to true try type unit until uses var "
+"virtual while with write xor",
 "", "", "", "", "", "", "", "" };
 
 

@@ -3,31 +3,30 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_LUA = {
-"and break do else elseif end false for function goto if "
-"in local nil not or repeat return then true until while",
+"and break do else elseif end false for function goto if in local nil not or repeat return "
+"then true until while",
 // Basic Functions
-"_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring print rawget rawset "
-"require tonumber tostring type unpack _ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR "
-"_STDIN _STDOUT call dostring foreach foreachi getn globals newtype sort tinsert tremove "
-"_G getfenv getmetatable ipairs loadlib next pairs pcall rawequal setfenv setmetatable xpcall "
-"string table math coroutine io os debug load module select",
+"_ALERT _ERRORMESSAGE _G _INPUT _OUTPUT _PROMPT _STDERR _STDIN _STDOUT _VERSION assert call collectgarbage "
+"coroutine debug dofile dostring error foreach foreachi gcinfo getfenv getmetatable getn globals io ipairs "
+"load loadfile loadlib loadstring math module newtype next os pairs pcall print rawequal rawget rawset "
+"require select setfenv setmetatable sort string table tinsert tonumber tostring tremove type unpack xpcall",
 // String Manipulation, Table Manipulation, Mathematical Functions
-"abs acos asin atan atan2 ceil cos deg exp floor format frexp gsub ldexp log log10 max min "
-"mod rad random randomseed sin sqrt strbyte strchar strfind strlen strlower strrep strsub strupper tan "
-"string.byte string.char string.dump string.find string.len string.lower string.rep string.sub string.upper "
-"string.format string.gfind string.gsub table.concat table.foreach table.foreachi table.getn table.sort "
-"table.insert table.remove table.setn math.abs math.acos math.asin math.atan math.atan2 math.ceil math.cos "
-"math.deg math.exp math.floor math.frexp math.ldexp math.log math.log10 math.max math.min math.mod "
-"math.pi math.pow math.rad math.random math.randomseed math.sin math.sqrt math.tan string.gmatch "
-"string.match string.reverse table.maxn math.cosh math.fmod math.modf math.sinh math.tanh math.huge",
+"abs acos asin atan atan2 ceil cos deg exp floor format frexp gsub ldexp log log10 math.abs math.acos "
+"math.asin math.atan math.atan2 math.ceil math.cos math.cosh math.deg math.exp math.floor math.fmod "
+"math.frexp math.huge math.ldexp math.log math.log10 math.max math.min math.mod math.modf math.pi math.pow "
+"math.rad math.random math.randomseed math.sin math.sinh math.sqrt math.tan math.tanh max min mod rad "
+"random randomseed sin sqrt strbyte strchar strfind string.byte string.char string.dump string.find "
+"string.format string.gfind string.gmatch string.gsub string.len string.lower string.match string.rep "
+"string.reverse string.sub string.upper strlen strlower strrep strsub strupper table.concat table.foreach "
+"table.foreachi table.getn table.insert table.maxn table.remove table.setn table.sort tan",
 // Input and Output Facilities & System Facilities Coroutine Manipulation,
-//Input and Output Facilities, System Facilities (coroutine & io & os)
-"openfile closefile readfrom writeto appendto remove rename flush seek tmpfile tmpname read "
-"write clock date difftime execute exit getenv setlocale time coroutine.create coroutine.resume "
-"coroutine.status coroutine.wrap coroutine.yield io.close io.flush io.input io.lines io.open io.output "
-"io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr os.clock os.date os.difftime "
-"os.execute os.exit os.getenv os.remove os.rename os.setlocale os.time os.tmpname coroutine.running "
-"package.cpath package.loaded package.loadlib package.path package.preload package.seeall io.popen",
+// Input and Output Facilities, System Facilities (coroutine & io & os)
+"appendto clock closefile coroutine.create coroutine.resume coroutine.running coroutine.status "
+"coroutine.wrap coroutine.yield date difftime execute exit flush getenv io.close io.flush io.input "
+"io.lines io.open io.output io.popen io.read io.stderr io.stdin io.stdout io.tmpfile io.type io.write "
+"openfile os.clock os.date os.difftime os.execute os.exit os.getenv os.remove os.rename os.setlocale "
+"os.time os.tmpname package.cpath package.loaded package.loadlib package.path package.preload "
+"package.seeall read readfrom remove rename seek setlocale time tmpfile tmpname write writeto",
 "", "", "", "", "" };
 
 
