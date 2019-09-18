@@ -3,39 +3,44 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_INNO = {
-"code components custommessages dirs files icons ini installdelete langoptions languages messages "
-"registry run setup types tasks uninstalldelete uninstallrun _istool",
+"_istool code components custommessages dirs files icons ini installdelete langoptions languages messages "
+"registry run setup tasks types uninstalldelete uninstallrun",
 "allowcancelduringinstall allownetworkdrive allownoicons allowrootdirectory allowuncpath alwaysrestart "
-"alwaysshowcomponentslist alwaysshowdironreadypage alwaysshowgrouponreadypage alwaysusepersonalgroup appcomments "
-"appcontact appcopyright appenddefaultdirname appenddefaultgroupname appid appmodifypath appmutex appname apppublisher "
-"apppublisherurl appreadmefile appsupportphone appsupporturl appupdatesurl appvername appversion architecturesallowed "
-"architecturesinstallin64bitmode backcolor backcolor2 backcolordirection backsolid beveledlabel changesassociations "
-"changesenvironment closeapplications closeapplicationsfilter compression compressionthreads copyrightfontname "
-"copyrightfontsize createappdir createuninstallregkey defaultdirname defaultgroupname defaultuserinfoname "
-"defaultuserinfoorg defaultuserinfoserial dialogfontname dialogfontsize direxistswarning disabledirpage "
-"disablefinishedpage disableprogramgrouppage disablereadymemo disablereadypage disablestartupprompt "
-"disablewelcomepage diskclustersize diskslicesize diskspanning enabledirdoesntexistwarning encryption "
-"extradiskspacerequired flatcomponentslist infoafterfile infobeforefile internalcompresslevel languagedetectionmethod "
-"languagecodepage languageid languagename licensefile lzmaalgorithm lzmablocksize lzmadictionarysize lzmamatchfinder "
-"lzmanumblockthreads lzmanumfastbytes lzmauseseparateprocess mergeduplicatefiles minversion onlybelowversion "
-"outputbasefilename outputdir outputmanifestfile password privilegesrequired reservebytes restartapplications "
-"restartifneededbyrun righttoleft setupiconfile setuplogging setupmutex showcomponentsizes showlanguagedialog showtaskstreelines "
-"showundisplayablelanguages signeduninstaller signeduninstallerdir signtool signtoolretrycount slicesperdisk solidcompression "
-"sourcedir strongassemblyname timestamprounding timestampsinutc titlefontname titlefontsize touchdate touchtime uninstallable "
-"uninstalldisplayicon uninstalldisplayname uninstallfilesdir uninstalldisplaysize uninstalllogmode uninstallrestartcomputer "
-"updateuninstalllogappname usepreviousappdir usepreviousgroup usepreviouslanguage useprevioussetuptype useprevioustasks "
-"verb versioninfoproductname useprevioususerinfo userinfopage usesetupldr versioninfocompany versioninfocopyright "
-"versioninfodescription versioninfoproductversion versioninfotextversion versioninfoversion versioninfoproducttextversion "
-"welcomefontname welcomefontsize windowshowcaption windowstartmaximized windowresizable windowvisible wizardimagealphaformat "
+"alwaysshowcomponentslist alwaysshowdironreadypage alwaysshowgrouponreadypage alwaysusepersonalgroup "
+"appcomments appcontact appcopyright appenddefaultdirname appenddefaultgroupname appid appmodifypath "
+"appmutex appname apppublisher apppublisherurl appreadmefile appsupportphone appsupporturl appupdatesurl "
+"appvername appversion architecturesallowed architecturesinstallin64bitmode backcolor backcolor2 "
+"backcolordirection backsolid beveledlabel changesassociations changesenvironment closeapplications "
+"closeapplicationsfilter compression compressionthreads copyrightfontname copyrightfontsize createappdir "
+"createuninstallregkey defaultdirname defaultgroupname defaultuserinfoname defaultuserinfoorg "
+"defaultuserinfoserial dialogfontname dialogfontsize direxistswarning disabledirpage disablefinishedpage "
+"disableprogramgrouppage disablereadymemo disablereadypage disablestartupprompt disablewelcomepage "
+"diskclustersize diskslicesize diskspanning enabledirdoesntexistwarning encryption extradiskspacerequired "
+"flatcomponentslist infoafterfile infobeforefile internalcompresslevel languagecodepage "
+"languagedetectionmethod languageid languagename licensefile lzmaalgorithm lzmablocksize "
+"lzmadictionarysize lzmamatchfinder lzmanumblockthreads lzmanumfastbytes lzmauseseparateprocess "
+"mergeduplicatefiles minversion onlybelowversion outputbasefilename outputdir outputmanifestfile password "
+"privilegesrequired reservebytes restartapplications restartifneededbyrun righttoleft setupiconfile "
+"setuplogging setupmutex showcomponentsizes showlanguagedialog showtaskstreelines "
+"showundisplayablelanguages signeduninstaller signeduninstallerdir signtool signtoolretrycount "
+"slicesperdisk solidcompression sourcedir strongassemblyname timestamprounding timestampsinutc "
+"titlefontname titlefontsize touchdate touchtime uninstallable uninstalldisplayicon uninstalldisplayname "
+"uninstalldisplaysize uninstallfilesdir uninstalllogmode uninstallrestartcomputer "
+"updateuninstalllogappname usepreviousappdir usepreviousgroup usepreviouslanguage useprevioussetuptype "
+"useprevioustasks useprevioususerinfo userinfopage usesetupldr verb versioninfocompany "
+"versioninfocopyright versioninfodescription versioninfoproductname versioninfoproducttextversion "
+"versioninfoproductversion versioninfotextversion versioninfoversion welcomefontname welcomefontsize "
+"windowresizable windowshowcaption windowstartmaximized windowvisible wizardimagealphaformat "
 "wizardimagebackcolor wizardimagefile wizardimagestretch wizardsmallimagefile",
-"appusermodelid afterinstall attribs beforeinstall check comment components copymode description destdir destname excludes "
-"extradiskspacerequired filename flags fontinstall groupdescription hotkey infoafterfile infobeforefile iconfilename "
-"iconindex key languages licensefile messagesfile minversion name onlybelowversion parameters permissions root runonceid "
-"section source statusmsg string subkey tasks terminalservicesaware type types valuedata valuename valuetype workingdir",
-"append define dim else emit elif endif endsub error expr file for if ifdef ifexist ifndef ifnexist include insert pragma "
-"sub undef",
-"and begin break case const continue do downto else end except finally for function "
-"if not of or procedure repeat then to try type until uses var while with",
+"afterinstall appusermodelid attribs beforeinstall check comment components copymode description destdir "
+"destname excludes extradiskspacerequired filename flags fontinstall groupdescription hotkey iconfilename "
+"iconindex infoafterfile infobeforefile key languages licensefile messagesfile minversion name "
+"onlybelowversion parameters permissions root runonceid section source statusmsg string subkey tasks "
+"terminalservicesaware type types valuedata valuename valuetype workingdir",
+"append define dim elif else emit endif endsub error expr file for if ifdef ifexist ifndef ifnexist include "
+"insert pragma sub undef",
+"and begin break case const continue do downto else end except finally for function if not of or procedure "
+"repeat then to try type until uses var while with",
 "", "", "", "" };
 
 

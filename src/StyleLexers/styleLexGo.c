@@ -3,23 +3,23 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_Go = {
-  // Primary keywords and identifiers
-  "break default func interface select case defer go map struct chan else goto package switch const fallthrough if range type "
-  "continue for import return var",
-  // Secondary keywords and identifiers
-  "nil true false",
-  // Documentation comment keywords  (doxygen)
-  "",
-  // Type definitions and aliases
-  "bool int int8 int16 int32 int64 byte uint uint8 uint16 uint32 uint64 uintptr float float32 float64 string",
-  // Keywords 5
-  "",
-  // Keywords 6
-  "",
-  // Keywords 7
-  "",
-  // ---
-  "", ""
+// Primary keywords and identifiers
+"break case chan const continue default defer else fallthrough for func go goto if import interface map "
+"package range return select struct switch type var",
+// Secondary keywords and identifiers
+"false nil true",
+// Documentation comment keywords  (doxygen)
+"",
+// Type definitions and aliases
+"bool byte float float32 float64 int int16 int32 int64 int8 string uint uint16 uint32 uint64 uint8 uintptr",
+// Keywords 5
+"",
+// Keywords 6
+"",
+// Keywords 7
+"",
+// ---
+"", ""
 };
 
 

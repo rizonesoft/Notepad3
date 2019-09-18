@@ -3,26 +3,23 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_PL = {
-"__DATA__ __END__ __FILE__ __LINE__ __PACKAGE__ abs accept alarm and atan2 AUTOLOAD BEGIN "
-"bind binmode bless break caller chdir CHECK chmod chomp chop chown chr chroot close closedir "
-"cmp connect continue CORE cos crypt dbmclose dbmopen default defined delete DESTROY die do "
-"dump each else elsif END endgrent endhostent endnetent endprotoent endpwent endservent eof "
-"eq EQ eval exec exists exit exp fcntl fileno flock for foreach fork format formline ge GE "
-"getc getgrent getgrgid getgrnam gethostbyaddr gethostbyname gethostent getlogin "
-"getnetbyaddr getnetbyname getnetent getpeername getpgrp getppid getpriority getprotobyname "
-"getprotobynumber getprotoent getpwent getpwnam getpwuid getservbyname getservbyport "
-"getservent getsockname getsockopt given glob gmtime goto grep gt GT hex if index INIT int "
-"ioctl join keys kill last lc lcfirst le LE length link listen local localtime lock log "
-"lstat lt LT map mkdir msgctl msgget msgrcv msgsnd my ne NE next no not NULL oct open "
-"opendir or ord our pack package pipe pop pos print printf prototype push qu quotemeta rand "
-"read readdir readline readlink readpipe recv redo ref rename require reset return reverse "
-"rewinddir rindex rmdir say scalar seek seekdir select semctl semget semop send setgrent "
-"sethostent setnetent setpgrp setpriority setprotoent setpwent setservent setsockopt shift "
-"shmctl shmget shmread shmwrite shutdown sin sleep socket socketpair sort splice split "
-"sprintf sqrt srand stat state study sub substr symlink syscall sysopen sysread sysseek "
-"system syswrite tell telldir tie tied time times truncate uc ucfirst umask undef UNITCHECK "
-"unless unlink unpack unshift untie until use utime values vec wait waitpid wantarray warn "
-"when while write xor",
+"AUTOLOAD BEGIN CHECK CORE DESTROY END EQ GE GT INIT LE LT NE NULL UNITCHECK __DATA__ __END__ __FILE__ "
+"__LINE__ __PACKAGE__ abs accept alarm and atan2 bind binmode bless break caller chdir chmod chomp chop "
+"chown chr chroot close closedir cmp connect continue cos crypt dbmclose dbmopen default defined delete "
+"die do dump each else elsif endgrent endhostent endnetent endprotoent endpwent endservent eof eq eval "
+"exec exists exit exp fcntl fileno flock for foreach fork format formline ge getc getgrent getgrgid "
+"getgrnam gethostbyaddr gethostbyname gethostent getlogin getnetbyaddr getnetbyname getnetent getpeername "
+"getpgrp getppid getpriority getprotobyname getprotobynumber getprotoent getpwent getpwnam getpwuid "
+"getservbyname getservbyport getservent getsockname getsockopt given glob gmtime goto grep gt hex if index "
+"int ioctl join keys kill last lc lcfirst le length link listen local localtime lock log lstat lt map "
+"mkdir msgctl msgget msgrcv msgsnd my ne next no not oct open opendir or ord our pack package pipe pop pos "
+"print printf prototype push qu quotemeta rand read readdir readline readlink readpipe recv redo ref "
+"rename require reset return reverse rewinddir rindex rmdir say scalar seek seekdir select semctl semget "
+"semop send setgrent sethostent setnetent setpgrp setpriority setprotoent setpwent setservent setsockopt "
+"shift shmctl shmget shmread shmwrite shutdown sin sleep socket socketpair sort splice split sprintf sqrt "
+"srand stat state study sub substr symlink syscall sysopen sysread sysseek system syswrite tell telldir "
+"tie tied time times truncate uc ucfirst umask undef unless unlink unpack unshift untie until use utime "
+"values vec wait waitpid wantarray warn when while write xor",
 "", "", "", "", "", "", "", "" };
 
 

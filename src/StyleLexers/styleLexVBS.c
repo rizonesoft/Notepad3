@@ -3,12 +3,12 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_VBS = {
-"alias and as attribute begin boolean byref byte byval call case class compare const continue "
-"currency date declare dim do double each else elseif empty end enum eqv erase error event exit "
-"explicit false for friend function get global gosub goto if imp implement in integer is let lib "
-"load long loop lset me mid mod module new next not nothing null object on option optional or "
-"preserve private property public raiseevent redim rem resume return rset select set single "
-"static stop string sub then to true type unload until variant wend while with withevents xor",
+"alias and as attribute begin boolean byref byte byval call case class compare const continue currency date "
+"declare dim do double each else elseif empty end enum eqv erase error event exit explicit false for "
+"friend function get global gosub goto if imp implement in integer is let lib load long loop lset me mid "
+"mod module new next not nothing null object on option optional or preserve private property public "
+"raiseevent redim rem resume return rset select set single static stop string sub then to true type unload "
+"until variant wend while with withevents xor",
 "", "", "", "", "", "", "", "" };
 
 

@@ -3,30 +3,32 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_D = {
-  // Primary keywords and identifiers
-  "abstract alias align asm assert auto body break case cast catch class const continue "
-  "debug default delegate delete deprecated do else enum export extern final finally for foreach foreach_reverse function "
-  "goto if import in inout interface invariant is lazy mixin module new out override "
-  "package pragma private protected public return scope static struct super switch synchronized "
-  "template this throw try typedef typeid typeof union unittest version volatile while with",
-  // Secondary keywords and identifiers
-  "false null true",
-  // Documentation comment keywords  (doxygen)
-  "a addindex addtogroup anchor arg attention author b brief bug c class code date def defgroup deprecated dontinclude "
-  "e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception f$ f[f] file fn hideinitializer htmlinclude htmlonly "
-  "if image include ingroup internal invariant interface latexonly li line link mainpage name namespace nosubgrouping note overload "
-  "p page par param post pre ref relates remarks return retval sa section see showinitializer since skip skipline struct subsection "
-  "test throw todo typedef union until var verbatim verbinclude version warning weakgroup",
-  // Type definitions and aliases
-  "bool byte cdouble cent cfloat char creal dchar double float idouble ifloat int ireal long real short ubyte ucent uint ulong ushort void wchar",
-  // Keywords 5
-  "",
-  // Keywords 6
-  "",
-  // Keywords 7
-  "",
-  // ---
-  "", ""
+// Primary keywords and identifiers
+"abstract alias align asm assert auto body break case cast catch class const continue debug default "
+"delegate  delete deprecated do else enum export extern final finally for foreach foreach_reverse function "
+"goto if import  in inout interface invariant is lazy mixin module new out override package pragma private "
+"protected public  return scope static struct super switch synchronized template this throw try typedef "
+"typeid typeof union  unittest version volatile while with",
+// Secondary keywords and identifiers
+"false null true",
+// Documentation comment keywords  (doxygen)
+"a addindex addtogroup anchor arg attention author b brief bug c class code date def defgroup deprecated "
+"dontinclude e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception f$ "
+"f[f] file fn hideinitializer htmlinclude htmlonly if image include ingroup interface internal invariant "
+"latexonly li line link mainpage name namespace nosubgrouping note overload p page par param post pre ref "
+"relates remarks return retval sa section see showinitializer since skip skipline struct subsection test "
+"throw todo typedef union until var verbatim verbinclude version warning weakgroup",
+// Type definitions and aliases
+"bool byte cdouble cent cfloat char creal dchar double float idouble ifloat int ireal long real short ubyte "
+"ucent uint ulong ushort void wchar",
+// Keywords 5
+"",
+// Keywords 6
+"",
+// Keywords 7
+"",
+// ---
+"", ""
 };
 
 

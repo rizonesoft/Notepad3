@@ -3,25 +3,24 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_Rust = {
-  // Primary keywords and identifiers
-  "as be break const continue crate else enum extern false fn for "
-  "if impl in let loop match mod mut once pub ref return self "
-  "static struct super trait true type unsafe use while",
-  // Built in types
-  "bool char f32 f64 i16 i32 i64 i8 int str u16 u32 u64 u8 uint",
-  // Other keywords
-  "abstract alignof become box do final macro offsetof override "
-  "priv proc pure sizeof typeof unsized virtual yield",
-  // Keywords 4
-  "",
-  // Keywords 5
-  "",
-  // Keywords 6
-  "", 
-  // Keywords 7
-  "",
-  // 0
-  "", "" };
+// Primary keywords and identifiers
+"as be break const continue crate else enum extern false fn for if impl in let loop match mod mut once pub "
+"ref return self static struct super trait true type unsafe use while",
+// Built in types
+"bool char f32 f64 i16 i32 i64 i8 int str u16 u32 u64 u8 uint",
+// Other keywords
+"abstract alignof become box do final macro offsetof override priv proc pure sizeof typeof unsized "
+"virtual yield",
+// Keywords 4
+"",
+// Keywords 5
+"",
+// Keywords 6
+"", 
+// Keywords 7
+"",
+// 0
+"", "" };
 
 
 EDITLEXER lexRust = { 

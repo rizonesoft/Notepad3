@@ -3,8 +3,8 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_JSON = {
-"false true null",
-"@id @context @type @value @language @container @list @set @reverse @index @base @vocab @graph",
+"false null true",
+"@base @container @context @graph @id @index @language @list @reverse @set @type @value @vocab",
 "", "", "", "", "", "", "" };
 
 
