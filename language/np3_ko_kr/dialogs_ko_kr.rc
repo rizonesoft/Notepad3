@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "예(&Y)",IDOK,138,63,50,14
     PUSHBUTTON      "아니오(&N)",IDCANCEL,138,80,50,14
-    CONTROL         "항상 이 대화 상자를 표시합니다(&A).", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "항상 이 대화 상자를 표시합니다(&A).",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s 줄 w/ 불규칙 들여쓰기 수준",IDC_INDENT_SPC_MODX,50,84,124,8,SS_RIGHT
     PUSHBUTTON      "예(&Y)",IDOK,80,98,50,14
     PUSHBUTTON      "아니오(&N)",IDCANCEL,134,98,50,14
-    CONTROL         "항상 이 대화 상자를 표시합니다(&A).", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "항상 이 대화 상자를 표시합니다(&A).",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -594,22 +594,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,120,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "줄 정렬"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "오름차순으로 정렬(&A).",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,8,88,8
-    CONTROL         "내림차순으로 정렬(&D).",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,20,88,8
-    CONTROL         "줄 섞기(&F).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,32,88,8
-    CONTROL         "중복된 줄 합치기(&M).",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,99,10
-    CONTROL         "중복된 줄 제거(&R).",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,64,99,10
-    CONTROL         "연관성 없는 줄 제거(&U).",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,99,10
-    CONTROL         "빈 줄 제거(&E).",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,92,99,10
-    CONTROL         "공백 줄 제거(&W).",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,106,99,10
-    CONTROL         "대소문자 구분 안함(&C).",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,120,99,10
-    CONTROL         "논리적 숫자 비교(&N).",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,134,99,10
-    CONTROL         "열 정렬 (사각형 선택)(&S).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,148,99,10
+    CONTROL         "오름차순으로 정렬(&A).",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "내림차순으로 정렬(&D).",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "줄 섞기(&F).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "중복된 줄 합치기(&M).",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "중복된 줄 제거(&R).",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "연관성 없는 줄 제거(&U).",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "빈 줄 제거(&E).",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "공백 줄 제거(&W).",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "대소문자 구분 안함(&C).",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "논리적 숫자 비교(&N).",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "열 정렬 (사각형 선택)(&S).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "확인",IDOK,128,7,50,14
     PUSHBUTTON      "취소",IDCANCEL,128,24,50,14
 END

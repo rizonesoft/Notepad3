@@ -233,7 +233,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "はい(&Y)",IDOK,138,63,50,14
     PUSHBUTTON      "いいえ(&N)",IDCANCEL,138,80,50,14
-    CONTROL         "常にこのダイアログを表示する(&A)", IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "常にこのダイアログを表示する(&A)",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -362,7 +362,7 @@ BEGIN
     LTEXT           "%s 行 w/ 不規則なインデントの深さ",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
     PUSHBUTTON      "はい(&Y)",IDOK,80,98,50,14
     PUSHBUTTON      "いいえ(&N)",IDCANCEL,134,98,50,14
-    CONTROL         "常にこのダイアログを表示する(&A)", IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "常にこのダイアログを表示する(&A)",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -594,22 +594,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
-IDD_MUI_SORT DIALOGEX 0, 0, 185, 164
+IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "行の並べ替え"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "昇順ソート(&A)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,66,10
-    CONTROL         "降順ソート(&D)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,70,10
-    CONTROL         "シャッフル(&F)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,57,10
-    CONTROL         "重複行を合併(&M)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,125,10
-    CONTROL         "重複行を削除(&R)",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,125,10
-    CONTROL         "それしかない行を削除(&U)",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,125,10
-    CONTROL         "空行を削除(&E)",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,125,10
-    CONTROL         "空白文字の行を削除(&W)",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,125,10
-    CONTROL         "大文字/小文字を区別しない(&C)",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,127,10
-    CONTROL         "論理番号で比較(&N)",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
-    CONTROL         "列でソート (Altで矩形選択) (&S)",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
+    CONTROL         "昇順ソート(&A)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "降順ソート(&D)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "シャッフル(&F)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "重複行を合併(&M)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "重複行を削除(&R)",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "それしかない行を削除(&U)",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "空行を削除(&E)",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "空白文字の行を削除(&W)",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "大文字/小文字を区別しない(&C)",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "論理番号で比較(&N)",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "列でソート (Altで矩形選択) (&S)",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,128,24,50,14
 END

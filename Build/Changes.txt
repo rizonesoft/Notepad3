@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.917.#(build) (2019-09-17)
+Current BETA Version 5.19.918.#(build) (2019-09-18)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
 - Preserve File Modification Date/Time: Option stays until new Session is loaded.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
@@ -44,6 +45,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Thin rectangular (multi) selection after toggeling line-comment block.
 - Scintilla (SCI): allow CamelCase/StartCase word lists.
 - Borderless in Full Screen Mode.
 - Maximize window if "full work area" is requested.
