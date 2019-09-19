@@ -37,17 +37,17 @@ using namespace Scintilla;
 
 static inline bool IsAWordChar(int ch, bool sqlAllowDottedWord) {
 	if (!sqlAllowDottedWord)
-		return (ch < 0x80) && (isalnum(ch) || ch == '_');
+		return IsASCII(ch) && (isalnum(ch) || ch == '_');
 	else
-		return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '.');
+		return IsASCII(ch) && (isalnum(ch) || ch == '_' || ch == '.');
 }
 
 static inline bool IsAWordStart(int ch) {
-	return (ch < 0x80) && (isalpha(ch) || ch == '_');
+	return IsASCII(ch) && (isalpha(ch) || ch == '_');
 }
 
 static inline bool IsADoxygenChar(int ch) {
-	return (islower(ch) || ch == '$' || ch == '@' ||
+	return ((IsASCII(ch) && islower(ch)) || ch == '$' || ch == '@' ||
 	        ch == '\\' || ch == '&' || ch == '<' ||
 	        ch == '>' || ch == '#' || ch == '{' ||
 	        ch == '}' || ch == '[' || ch == ']');
@@ -56,7 +56,7 @@ static inline bool IsADoxygenChar(int ch) {
 static inline bool IsANumberChar(int ch, int chPrev) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
-	return (ch < 0x80) &&
+	return IsASCII(ch) &&
 	       (isdigit(ch) || toupper(ch) == 'E' ||
 	        ch == '.' || ((ch == '-' || ch == '+') && chPrev < 0x80 && toupper(chPrev) == 'E'));
 }

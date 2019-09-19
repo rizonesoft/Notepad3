@@ -40,12 +40,12 @@ static void ColouriseVHDLDoc(
 
 /***************************************/
 static inline bool IsAWordChar(const int ch) {
-  return (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_' );
+  return IsASCII(ch) && (isalnum(ch) || ch == '.' || ch == '_' );
 }
 
 /***************************************/
 static inline bool IsAWordStart(const int ch) {
-  return (ch < 0x80) && (isalnum(ch) || ch == '_');
+  return IsASCII(ch) && (isalnum(ch) || ch == '_');
 }
 
 /***************************************/

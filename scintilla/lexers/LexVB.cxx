@@ -40,18 +40,18 @@ static inline bool IsTypeCharacter(int ch) {
 // Extended to accept accented characters
 static inline bool IsAWordChar(int ch) {
 	return ch >= 0x80 ||
-	       (isalnum(ch) || ch == '.' || ch == '_');
+	       (isalnum(ch & 0xFF) || ch == '.' || ch == '_');
 }
 
 static inline bool IsAWordStart(int ch) {
 	return ch >= 0x80 ||
-	       (isalpha(ch) || ch == '_');
+	       (isalpha(ch & 0xFF) || ch == '_');
 }
 
 static inline bool IsANumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
-	return (ch < 0x80) &&
+	return IsASCII(ch) &&
 	        (isdigit(ch) || toupper(ch) == 'E' ||
              ch == '.' || ch == '-' || ch == '+' || ch == '_');
 }
