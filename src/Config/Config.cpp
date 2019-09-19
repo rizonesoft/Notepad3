@@ -931,7 +931,7 @@ void LoadSettings()
   StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
   IniSectionGetString(Settings_Section, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-  //GET_BOOL_VALUE_FROM_INISECTION(ShowMenu, true);
+  GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);
   GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
   GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
 
@@ -1440,7 +1440,7 @@ bool SaveSettings(bool bSaveSettingsNow)
   else {
     IniSectionDelete(Settings_Section, L"ToolbarButtons", false);
   }
-  //SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowMenu);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowMenubar);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowToolbar);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowStatusbar);
 

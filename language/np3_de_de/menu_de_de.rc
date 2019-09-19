@@ -347,6 +347,7 @@ BEGIN
             END
         POPUP "&Werkzeugleiste"
         BEGIN
+            MENUITEM "Zeige &Menüleiste",                       IDM_VIEW_MENUBAR
             MENUITEM "Zeige &Werkzeugleiste",                   IDM_VIEW_TOOLBAR
             MENUITEM "Werkzeugleisten &Umschalten",             IDM_VIEW_TOGGLETB
             MENUITEM "Werkzeugleiste &anpassen...",             IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Zeige &Menüleiste",           IDM_VIEW_MENUBAR
         MENUITEM "Zeige &Werkzeugleiste",       IDM_VIEW_TOOLBAR
         MENUITEM "Werkzeugleisten &Umschalten", IDM_VIEW_TOGGLETB
         MENUITEM "&Werkzeugleiste anpassen...", IDM_VIEW_CUSTOMIZETB

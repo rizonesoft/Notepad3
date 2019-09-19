@@ -144,7 +144,7 @@ void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleIndicators();
-inline void UpdateAllBars(bool force) { UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
+inline void UpdateAllBars(bool force) { DrawMenuBar(Globals.hwndMain); UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
@@ -191,7 +191,9 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
+LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam);
 LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam);
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
 LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam);

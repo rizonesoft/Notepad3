@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "&Eszköztár"
         BEGIN
+            MENUITEM "Show &Menubar",                           IDM_VIEW_MENUBAR
             MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
             MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
             MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                     IDM_VIEW_MENUBAR
         MENUITEM "&Eszköztár megjelenítése",          IDM_VIEW_TOOLBAR
         MENUITEM "Váltás &Eszköztárak",               IDM_VIEW_TOGGLETB
         MENUITEM "Eszköztár testre&szabása...",       IDM_VIEW_CUSTOMIZETB

@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "&Werkbalk"
         BEGIN
+            MENUITEM "Show &Menubar",                                   IDM_VIEW_MENUBAR
             MENUITEM "&Werkbalk tonen",                                 IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle werkbalken",                              IDM_VIEW_TOGGLETB
             MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                           IDM_VIEW_MENUBAR
         MENUITEM "Werk&balk tonen",                         IDM_VIEW_TOOLBAR
         MENUITEM "To&ggle werkbalken",                      IDM_VIEW_TOGGLETB
         MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB

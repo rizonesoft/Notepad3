@@ -1190,7 +1190,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
-  //SetMenu(Globals.hwndMain, (Settings.ShowMenu ? Globals.hMainMenu : NULL));
+  SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
   DrawMenuBar(Globals.hwndMain);
 
   // Current file information -- moved in front of ShowWindow()
@@ -1520,8 +1520,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_CONTEXTMENU:
       return MsgContextMenu(hwnd, umsg, wParam, lParam);
 
+    case WM_ENTERMENULOOP:
+      return MsgEnterMenuLoop(hwnd, wParam);
+
     case WM_INITMENU:
       return MsgInitMenu(hwnd, wParam, lParam);
+
+    case WM_EXITMENULOOP:
+      return MsgExitMenuLoop(hwnd, wParam);
 
     case WM_NOTIFY:
       return MsgNotify(hwnd, wParam, lParam);
@@ -3055,6 +3061,49 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
+//  MsgEnterMenuLoop() - Handles WM_ENTERMENULOOP
+//
+//
+LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam)
+{
+  if ((BOOL)wParam == FALSE) // is main menu
+  {
+    HMENU const hCurMenu = GetMenu(hwnd);
+    if (!hCurMenu)
+    {
+      SetMenu(hwnd, Globals.hMainMenu);
+      DrawMenuBar(hwnd);
+      //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+    }
+  }
+  return (LRESULT)wParam;
+}
+
+
+
+//=============================================================================
+//
+//  MsgExitMenuLoop() - Handles WM_EXITMENULOOP
+//
+//
+LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
+{
+  if ((BOOL)wParam == FALSE) // is main menu
+  {
+    HMENU const hCurMenu = GetMenu(hwnd);
+    if (hCurMenu && !Settings.ShowMenubar)
+    {
+      SetMenu(hwnd, NULL);
+      DrawMenuBar(hwnd);
+      //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+    }
+  }
+  return (LRESULT)wParam;
+}
+
+
+//=============================================================================
+//
 //  MsgInitMenu() - Handles WM_INITMENU
 //
 //
@@ -3062,32 +3111,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  HMENU hmenu = (HMENU)wParam;
+  HMENU const hmenu = wParam ? (HMENU)wParam : GetMenu(hwnd);
+  if (!hmenu) { return 0; }
 
   LockWindowUpdate(hwnd); // prevent intermediate redrawing
-
-  //if (!Settings.ShowMenu) {
-  //  HMENU const hCurMenu = GetMenu(hwnd);
-  //  if (hCurMenu) {
-  //    SetMenu(hwnd, NULL);
-  //    LockWindowUpdate(NULL); // allow redrawing
-  //    DrawMenuBar(hwnd);
-  //    //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-  //    return FALSE;
-  //  }
-  //  else {
-  //    hmenu = Globals.hMainMenu;
-  //    SetMenu(hwnd, hmenu);
-  //  }
-  //}
-  //else {
-  //  HMENU const hCurMenu = GetMenu(hwnd);
-  //  if (!hCurMenu) {
-  //    hmenu = Globals.hMainMenu;
-  //    SetMenu(hwnd, hmenu);
-  //  }
-  //}
-
 
   bool const ro = SciCall_GetReadOnly();
   DocPos const iCurPos = SciCall_GetCurrentPos();
@@ -3350,6 +3377,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,Settings.ViewEOLs);
   CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,Settings.ShowWordWrapSymbols);
   CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,Settings.MatchBraces);
+  CheckCmd(hmenu,IDM_VIEW_MENUBAR,Settings.ShowMenubar);
   CheckCmd(hmenu,IDM_VIEW_TOOLBAR,Settings.ShowToolbar);
   EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
   CheckCmd(hmenu,IDM_VIEW_STATUSBAR,Settings.ShowStatusbar);
@@ -3485,8 +3513,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
 
     Style_InsertThemesMenu(Globals.hMainMenu);
 
-    SetMenu(Globals.hwndMain, Globals.hMainMenu);
-    //SetMenu(Globals.hwndMain, (Settings.ShowMenu ? Globals.hMainMenu : NULL));
+    SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
 
     LockWindowUpdate(NULL); // allow redrawing
 
@@ -5318,9 +5345,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Sci_DisableMouseDWellNotification();
       break;
 
+    case IDM_VIEW_MENUBAR:
+      Settings.ShowMenubar = !Settings.ShowMenubar;
+      SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+      DrawMenuBar(Globals.hwndMain);
+      break;
+
     case IDM_VIEW_TOOLBAR:
-      //Settings.ShowMenu = !Settings.ShowMenu;
-      //SetMenu(hwnd, (Settings.ShowMenu ? Globals.hMainMenu : NULL));
       Settings.ShowToolbar = !Settings.ShowToolbar;
       ShowWindow(s_hwndReBar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
       UpdateToolbar();
@@ -10421,7 +10452,7 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
 {
   static WINDOWPLACEMENT s_wndplPrev;
-  //static bool s_bPrevShowMenu = true;
+  static bool s_bPrevShowMenubar = true;
   static bool s_bPrevShowToolbar = true;
   static bool s_bPrevShowStatusbar = true;
 
@@ -10440,7 +10471,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
     SetWindowLong(hWindow, GWL_STYLE, dwStyle | dwRmvFScrStyle);
     if (s_bPrevFullScreenFlag) {
       SetWindowPlacement(hWindow, &s_wndplPrev);
-      //Settings.ShowMenu = s_bPrevShowMenu;
+      Settings.ShowMenubar = s_bPrevShowMenubar;
       Settings.ShowToolbar = s_bPrevShowToolbar;
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
     }
@@ -10466,10 +10497,10 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
     SetWindowPlacement(hWindow, &wndpl);
     SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
       mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, fFScrFlags);
-    //s_bPrevShowMenu = Settings.ShowMenu;
+    s_bPrevShowMenubar = Settings.ShowMenubar;
     s_bPrevShowToolbar = Settings.ShowToolbar;
     s_bPrevShowStatusbar = Settings.ShowStatusbar;
-    /*Settings.ShowMenu = */Settings.ShowToolbar = Settings.ShowStatusbar = false;
+    Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
     s_bPrevFullScreenFlag = true;
   }
 

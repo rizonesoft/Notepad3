@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "Barra de herram&ientas"
         BEGIN
+            MENUITEM "Show &Menubar",                                   IDM_VIEW_MENUBAR
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
             MENUITEM "Al&ternar les barras de herramientas",            IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                               IDM_VIEW_MENUBAR
         MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
         MENUITEM "Al&ternar las barras de herramientas",        IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB

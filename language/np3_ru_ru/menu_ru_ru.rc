@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "Панель инстр&ументов"
         BEGIN
+            MENUITEM "Show &Menubar",                       IDM_VIEW_MENUBAR
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
             MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
             MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                       IDM_VIEW_MENUBAR
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
         MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
         MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB

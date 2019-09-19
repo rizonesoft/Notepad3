@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "&Barre à outils"
         BEGIN
+            MENUITEM "Show &Menubar",                       IDM_VIEW_MENUBAR
             MENUITEM "&Afficher la barre à outils",         IDM_VIEW_TOOLBAR
             MENUITEM "Al&terner les barres à outils",       IDM_VIEW_TOGGLETB
             MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                           IDM_VIEW_MENUBAR
         MENUITEM "A&fficher la barre à outils",             IDM_VIEW_TOOLBAR
         MENUITEM "Al&terner les barres à outils",           IDM_VIEW_TOGGLETB
         MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
