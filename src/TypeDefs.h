@@ -414,6 +414,7 @@ typedef struct _settings_t
   bool FindReplaceTransparentMode;
   int RenderingTechnology;
   int Bidirectional;
+  bool ShowMenubar;
   bool ShowToolbar;
   bool ShowStatusbar;
   int EncodingDlgSizeX;

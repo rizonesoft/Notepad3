@@ -54,7 +54,7 @@ static inline bool isSafeWordcharOrHigh(char ch) {
     // Error: scintilla's KeyWords.h includes '.' as a word-char
     // we want to separate things that can take methods from the
     // methods.
-    return isHighBitChar(ch) || isalnum(ch) || ch == '_';
+    return isHighBitChar(ch) || isalnum(ch & 0xFF) || ch == '_';
 }
 
 static bool inline iswhitespace(char ch) {

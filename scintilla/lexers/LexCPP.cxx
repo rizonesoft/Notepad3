@@ -1151,7 +1151,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (! inRERange && sc.ch == '/') {
 					sc.Forward();
-					while ((sc.ch < 0x80) && islower(sc.ch))
+					while (IsASCII(sc.ch) && islower(sc.ch))
 						sc.Forward();    // gobble regex flags
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '\\' && ((sc.currentPos+1) < lineEndNext)) {

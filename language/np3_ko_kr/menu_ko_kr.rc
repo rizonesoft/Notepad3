@@ -347,9 +347,10 @@ BEGIN
         END
         POPUP "도구 모음(&T)"
         BEGIN
+            MENUITEM "Show &Menubar",                     IDM_VIEW_MENUBAR
             MENUITEM "도구 모음 보이기(&T)",               IDM_VIEW_TOOLBAR
             MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
-            MENUITEM "도구 모음 사용자 지정(&U)...",         IDM_VIEW_CUSTOMIZETB
+            MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
             MENUITEM "도구 모음 테마 변경(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "상태 표시 줄 보이기(&S)",             IDM_VIEW_STATUSBAR
         END
@@ -480,8 +481,9 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                             IDM_VIEW_MENUBAR
         MENUITEM "도구 모음 보이기(&T)",                       IDM_VIEW_TOOLBAR
-        MENUITEM "도구 모음 전환(&G)",                        IDM_VIEW_TOGGLETB
+        MENUITEM "도구 모음 전환(&G)",                         IDM_VIEW_TOGGLETB
         MENUITEM "도구 모음 사용자 지정(&C)...",                IDM_VIEW_CUSTOMIZETB
         MENUITEM "도구 모음 테마 변경(&L)...",                 IDM_VIEW_LOADTHEMETB
         MENUITEM "상태 표시 줄 보이기(&S)",                    IDM_VIEW_STATUSBAR

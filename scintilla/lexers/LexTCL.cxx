@@ -28,11 +28,11 @@ using namespace Scintilla;
 // Extended to accept accented characters
 static inline bool IsAWordChar(int ch) {
 	return ch >= 0x80 ||
-	       (isalnum(ch) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
+	       (isalnum(ch & 0xFF) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
 }
 
 static inline bool IsAWordStart(int ch) {
-	return ch >= 0x80 || (ch ==':' || isalpha(ch) || ch == '_');
+	return ch >= 0x80 || (ch ==':' || isalpha(ch & 0xFF) || ch == '_');
 }
 
 static inline bool IsANumberChar(int ch) {

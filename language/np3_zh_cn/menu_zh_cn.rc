@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "工具栏(&T)"
         BEGIN
+            MENUITEM "Show &Menubar",                       IDM_VIEW_MENUBAR
             MENUITEM "显示工具栏(&T)",                       IDM_VIEW_TOOLBAR
             MENUITEM "切换工具栏(&G)",                       IDM_VIEW_TOGGLETB
             MENUITEM "自定义工具栏(&C)...",                  IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                            IDM_VIEW_MENUBAR
         MENUITEM "显示工具栏(&T)",                            IDM_VIEW_TOOLBAR
         MENUITEM "切换工具栏(&G)",                            IDM_VIEW_TOGGLETB
         MENUITEM "自定义工具栏(&C)...",                       IDM_VIEW_CUSTOMIZETB

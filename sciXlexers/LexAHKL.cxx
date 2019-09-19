@@ -409,7 +409,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
 				} else if ((OnlySpaces || isspace(sc.chPrev)) &&
-						 ((sc.ch == '@' && isalnum(sc.chNext)) || valDocComment.Contains(sc.ch))) {
+						 ((sc.ch == '@' && isalnum(sc.chNext & 0xFF)) || valDocComment.Contains(sc.ch))) {
 
 					if (valDocComment.Contains(sc.ch))
 						inDocComment = true;
@@ -442,7 +442,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 				if (isspace(sc.ch) || SynOperator.Contains(sc.ch))
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
-				else if (!isxdigit(sc.ch))
+				else if (!isxdigit(sc.ch & 0xFF))
 					sc.ChangeState(SCE_AHKL_IDENTIFIER);
 			break;
 			}

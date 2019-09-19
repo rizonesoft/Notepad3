@@ -39,11 +39,11 @@ enum script_type { eScriptNone = 0, eScriptJS, eScriptVBS, eScriptPython, eScrip
 enum script_mode { eHtml = 0, eNonHtmlScript, eNonHtmlPreProc, eNonHtmlScriptPreProc };
 
 inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_');
+	return IsASCII(ch) && (isalnum(ch) || ch == '.' || ch == '_');
 }
 
 inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_');
+	return IsASCII(ch) && (isalnum(ch) || ch == '_');
 }
 
 inline bool IsOperator(int ch) {
@@ -1676,7 +1676,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		case SCE_H_SGML_SPECIAL:
 			if (!(IsASCII(ch) && isupper(ch))) {
 				styler.ColourTo(i - 1, StateToPrint);
-				if (isalnum(ch)) {
+				if (isalnum(ch & 0xFF)) {
 					state = SCE_H_SGML_ERROR;
 				} else {
 					state = SCE_H_SGML_DEFAULT;

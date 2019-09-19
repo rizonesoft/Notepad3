@@ -35,17 +35,17 @@
 using namespace Scintilla;
 
 static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '.' ||
+	return IsASCII(ch) && (isalnum(ch) || ch == '.' ||
 		ch == '_' || ch == '?');
 }
 
 static inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '.' ||
+	return IsASCII(ch) && (isalnum(ch) || ch == '_' || ch == '.' ||
 		ch == '%' || ch == '@' || ch == '$' || ch == '?');
 }
 
 static inline bool IsAsmOperator(const int ch) {
-	if ((ch < 0x80) && (isalnum(ch)))
+	if (IsASCII(ch) && (isalnum(ch)))
 		return false;
 	// '.' left out as it is used to make up numbers
 	if (ch == '*' || ch == '/' || ch == '-' || ch == '+' ||

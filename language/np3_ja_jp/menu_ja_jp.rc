@@ -347,11 +347,12 @@ BEGIN
         END
         POPUP "ツールバー(&T)"
         BEGIN
+            MENUITEM "Show &Menubar",                           IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
             MENUITEM "アイコン大小の切り替え(&G)",                    IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
             MENUITEM "ツールバー用独自アイコンを設定(&L)...",          IDM_VIEW_LOADTHEMETB
-            MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
+            MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
         END
         POPUP "拡大縮小(&Z)"
         BEGIN
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                            IDM_VIEW_MENUBAR
         MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
         MENUITEM "アイコン大小の切り替え(&G)",                     IDM_VIEW_TOGGLETB
         MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB

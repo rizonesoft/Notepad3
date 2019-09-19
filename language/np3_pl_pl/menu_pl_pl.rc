@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "&Pasek narzêdzi"
         BEGIN
+            MENUITEM "Show &Menubar",                               IDM_VIEW_MENUBAR
             MENUITEM "Poka¿ pasek narzêdzi",                        IDM_VIEW_TOOLBAR
             MENUITEM "Prze³¹cz paski narzêdzi",                     IDM_VIEW_TOGGLETB
             MENUITEM "Dostosuj pasek narzêdzi...",                  IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                             IDM_VIEW_MENUBAR
         MENUITEM "Poka¿ pasek narzêdzi",                      IDM_VIEW_TOOLBAR
         MENUITEM "Prze³¹cz pasek narzêdzi",                   IDM_VIEW_TOGGLETB
         MENUITEM "&Domyœlny paski narzêdzi...",               IDM_VIEW_CUSTOMIZETB

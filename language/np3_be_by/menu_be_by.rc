@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "Паліца пры&ладаў"
         BEGIN
+            MENUITEM "Show &Menubar",                 IDM_VIEW_MENUBAR
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
             MENUITEM "Пе&раключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
             MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                 IDM_VIEW_MENUBAR
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
         MENUITEM "Пе&раключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
         MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB

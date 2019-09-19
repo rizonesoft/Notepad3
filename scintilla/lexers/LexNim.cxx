@@ -60,7 +60,7 @@ constexpr bool IsLetter(const int ch) noexcept {
 }
 
 bool IsAWordChar(const int ch) noexcept {
-    return ch < 0x80 && (isalnum(ch) || ch == '_' || ch == '.');
+    return IsASCII(ch) && (isalnum(ch) || ch == '_' || ch == '.');
 }
 
 int IsNumHex(const StyleContext &sc) noexcept {

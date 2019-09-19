@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "Nu&tsbalk"
         BEGIN
+            MENUITEM "Show &Menubar",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
             MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                           IDM_VIEW_MENUBAR
         MENUITEM "Wys &Nutsbalk",                           IDM_VIEW_TOOLBAR
         MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
         MENUITEM "&Pas Nutsbalk...",                        IDM_VIEW_CUSTOMIZETB

@@ -186,7 +186,7 @@ int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 }
 
 inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
-	if (ch < 0x80)
+	if (IsASCII(ch))
 		return (isalnum(ch) || ch == '.' || ch == '_');
 
 	if (!unicodeIdentifiers)
@@ -197,7 +197,7 @@ inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
 }
 
 inline bool IsAWordStart(int ch, bool unicodeIdentifiers) {
-	if (ch < 0x80)
+	if (IsASCII(ch))
 		return (isalpha(ch) || ch == '_');
 
 	if (!unicodeIdentifiers)

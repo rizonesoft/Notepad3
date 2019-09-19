@@ -347,6 +347,7 @@ BEGIN
         END
         POPUP "&Toolbar"
         BEGIN
+            MENUITEM "Show &Menubar",                 IDM_VIEW_MENUBAR
             MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "Ca&mbia Toolbars",              IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
@@ -480,6 +481,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show &Menubar",                  IDM_VIEW_MENUBAR
         MENUITEM "Mostra &Toolbar",                IDM_VIEW_TOOLBAR
         MENUITEM "Ca&mbia Toolbars",               IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
