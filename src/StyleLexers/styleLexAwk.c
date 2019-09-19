@@ -3,19 +3,16 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_Awk = {
-  // Keywords
-  "break case continue default do else exit function for if in next return switch while "
-  "@include delete nextfile print printf BEGIN BEGINFILE END "
-  "atan2 cos exp int log rand sin sqrt srand asort asorti gensub gsub index "
-  "length match patsplit split sprintf strtonum sub substr tolower toupper close "
-  "fflush system mktime strftime systime and compl lshift rshift xor "
-  "isarray bindtextdomain dcgettext dcngettext",
+// Keywords
+"@include BEGIN BEGINFILE END and asort asorti atan2 bindtextdomain break case close compl continue cos "
+"dcgettext dcngettext default delete do else exit exp fflush for function gensub gsub if in index int "
+"isarray length log lshift match mktime next nextfile patsplit print printf rand return rshift sin split "
+"sprintf sqrt srand strftime strtonum sub substr switch system systime tolower toupper while xor",
+// Highlighted identifiers (Keywords 2nd)
+"ARGC ARGIND ARGV BINMODE CONVFMT ENVIRON ERRNO FIELDWIDTHS FILENAME FNR FPAT FS IGNORECASE LINT NF NR "
+"OFMT OFS ORS PROCINFO RLENGTH RS RSTART RT SUBSEP TEXTDOMAIN",
 
-  // Highlighted identifiers (Keywords 2nd)
-  "ARGC ARGIND ARGV FILENAME FNR FS NF NR OFMT OFS ORS RLENGTH RS RSTART SUBSEP TEXTDOMAIN "
-  "BINMODE CONVFMT FIELDWIDTHS FPAT IGNORECASE LINT TEXTDOMAiN ENVIRON ERRNO PROCINFO RT",
-
-  "", "", "", "", "", "" ,""
+"", "", "", "", "", "" ,""
 };
 
 

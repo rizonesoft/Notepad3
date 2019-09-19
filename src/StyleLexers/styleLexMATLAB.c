@@ -3,8 +3,8 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_MATLAB = {
-"break case catch continue else elseif end for function global if otherwise "
-"persistent return switch try while ",
+"break case catch continue else elseif end for function global if otherwise persistent return "
+"switch try while",
 "", "", "", "", "", "", "", "" };
 
 
