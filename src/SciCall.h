@@ -317,10 +317,12 @@ DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool)
 DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE)
 DeclareSciCallV0(AutoCCancel, AUTOCCANCEL)
 DeclareSciCallV1(AutoCSetIgnoreCase, AUTOCSETIGNORECASE, bool, flag)
+DeclareSciCallV1(AutoCSetCaseInsensitiveBehaviour, AUTOCSETCASEINSENSITIVEBEHAVIOUR, int, options)
 DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator)
 DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text)
 DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag)
 DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options)
+DeclareSciCallV1(AutoCSetMulti, AUTOCSETMULTI, int, options)
 DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list)
 
 

@@ -7066,10 +7066,11 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     // cppcheck-suppress constArgument
     SciCall_AutoCSetSeperator(sep[0]);
     SciCall_AutoCSetIgnoreCase(true);
-    //SendMessage(hwnd, SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, (WPARAM)SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 0);
+    //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     SciCall_AutoCSetChooseSingle(autoInsert);
     //~SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
     SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
+    //~SciCall_AutoCSetMulti(SC_MULTIAUTOC_EACH);
 
     ++iWListSize; // zero termination
     char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);
