@@ -191,7 +191,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        """%s"" の編集を保存しますか？"
+    IDS_MUI_ASK_SAVE        """%s""\nの編集を保存しますか？"
     IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします？"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます。"
     IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"

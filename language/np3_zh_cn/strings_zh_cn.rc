@@ -191,7 +191,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "将修改保存到“%s”？"
+    IDS_MUI_ASK_SAVE        "将修改保存到:\n“%s”？"
     IDS_MUI_ASK_REVERT      "还原文件到上次保存的状态吗？"
     IDS_MUI_ASK_RECODE      "更改编码并重新加载吗？\n\n警告：所有未保存的修改将丢失。"
     IDS_MUI_ASK_CREATE      "文件“%s”未找到。是否创建一个新的文件？"

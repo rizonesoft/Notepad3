@@ -191,7 +191,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Mentsük ""%s"" módosításait?"
+    IDS_MUI_ASK_SAVE        "Mentsük módosításait?\n""%s"""
     IDS_MUI_ASK_REVERT      "Viszaállítsuk a fájlt az utolsó mentett állapotra? A változtatások elvesznek!"
     IDS_MUI_ASK_RECODE      "A felvételhez a fájl újra be kell olvasni lemezrõl, így a nem mentett változtatások el fognak veszni!"
     IDS_MUI_ASK_CREATE      """%s"" nem található.\nSzeretné létrehozni a fájlt?"

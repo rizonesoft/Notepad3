@@ -213,12 +213,14 @@
 #define IDD_MUI_INFOBOX                 17027
 #define IDD_MUI_INFOBOX2                17028
 #define IDD_MUI_INFOBOX3                17029
-#define IDD_MUI_SORT                    17030
-#define IDD_MUI_RECODE                  17031
-#define IDD_MUI_ENCODING                17032
-#define IDD_MUI_ALIGN                   17033
-#define IDD_MUI_CHOOSEFONT              17034
-#define IDD_MUI_CMDLINEHELP             17035
+#define IDD_MUI_INFOBOX4                17030
+#define IDD_MUI_INFOBOX5                17031
+#define IDD_MUI_SORT                    17032
+#define IDD_MUI_RECODE                  17033
+#define IDD_MUI_ENCODING                17034
+#define IDD_MUI_ALIGN                   17035
+#define IDD_MUI_CHOOSEFONT              17036
+#define IDD_MUI_CMDLINEHELP             17037
 
 #define IDC_COMMANDLINE                 18000
 #define IDC_SEARCHEXE                   18001
