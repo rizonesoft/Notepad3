@@ -157,12 +157,17 @@ int ScintillaBase::KeyCommand(unsigned int iMessage) {
 		case SCI_PAGEUP:
 			AutoCompleteMove(-ac.lb->GetVisibleRows());
 			return 0;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		case SCI_VCHOME:
-			AutoCompleteMove(-5000);
+		case SCI_HOMEWRAP:
+		case SCI_VCHOMEWRAP:
+			AutoCompleteMove(-10000);
 			return 0;
 		case SCI_LINEEND:
-			AutoCompleteMove(5000);
+		case SCI_LINEENDWRAP:
+			AutoCompleteMove(10000);
 			return 0;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		case SCI_DELETEBACK:
 			DelCharBack(true);
 			AutoCompleteCharacterDeleted();

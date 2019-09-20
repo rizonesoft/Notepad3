@@ -223,7 +223,7 @@ void AutoComplete::Move(int delta) {
 		current = (current == count ? 0 : count - 1);
 	if (current < 0)
 		current = (current == -1 ? count - 1 : 0);
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	lb->Select(current);
 }
 
