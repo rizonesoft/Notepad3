@@ -9871,14 +9871,15 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   if (bAsk)
   {
     // File or "Untitled" ...
-    WCHAR tch[MAX_PATH] = { L'\0' };
+    WCHAR tch[80] = { L'\0' };
     if (StrIsNotEmpty(Globals.CurrentFile)) {
-      StringCchCopy(tch, COUNTOF(tch), Globals.CurrentFile);
+      StringCchCopyN(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile), 56);
     }
     else {
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
-    switch (MessageBoxLng(MB_YESNOCANCEL | MB_ICONINFORMATION, IDS_MUI_ASK_SAVE, tch)) {
+
+    switch (InfoBoxLng(MB_YESNOCANCEL | MB_ICONINFORMATION, NULL, IDS_MUI_ASK_SAVE, tch)) {
     case IDCANCEL:
       return false;
     case IDNO:

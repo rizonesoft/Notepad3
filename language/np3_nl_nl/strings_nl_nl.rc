@@ -191,7 +191,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Wijzigingen opslaan in ""%s""?"
+    IDS_MUI_ASK_SAVE        "Wijzigingen opslaan in:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Herladen naar de laatst opgeslagen staat?"
     IDS_MUI_ASK_RECODE      "Voor hercoderen moet het bestand opnieuw van de schijf worden geladen, niet-opgeslagen wijzigingen gaan verloren!"
     IDS_MUI_ASK_CREATE      """%s"" niet gevonden.\nWilt u dit bestand maken??"
