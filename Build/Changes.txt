@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.918.#(build) (2019-09-18)
+Current BETA Version 5.19.923.#(build) (2019-09-23)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
 - Preserve File Modification Date/Time: Option stays until new Session is loaded.
