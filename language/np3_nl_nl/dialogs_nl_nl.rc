@@ -562,8 +562,8 @@ CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41
-    DEFPUSHBUTTON   "OK",IDOK,187,50,50,14
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
+    DEFPUSHBUTTON   "&OK",IDOK,187,50,50,14
     CONTROL         "&Dit bericht niet meer weergeven.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
@@ -574,7 +574,7 @@ CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
     PUSHBUTTON      "&Ja",IDYES,131,50,50,14
     PUSHBUTTON      "&Nee",IDNO,187,50,50,14
     CONTROL         "&Dit bericht niet meer weergeven.",IDC_INFOBOXCHECK,
@@ -587,9 +587,9 @@ CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41
-    DEFPUSHBUTTON   "OK",IDOK,131,50,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,187,50,50,14
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
+    DEFPUSHBUTTON   "&OK",IDOK,131,50,50,14
+    PUSHBUTTON      "&Annuleren",IDCANCEL,187,50,50,14
     CONTROL         "&Dit bericht niet meer weergeven.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
@@ -600,11 +600,11 @@ CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41
-    DEFPUSHBUTTON   "Yes",IDOK,75,50,50,14
-    PUSHBUTTON      "&No",IDNO,131,50,50,14
-    PUSHBUTTON      "&Cancel",IDCANCEL,187,50,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
+    DEFPUSHBUTTON   "&Ja",IDOK,75,50,50,14
+    PUSHBUTTON      "&Nee",IDNO,131,50,50,14
+    PUSHBUTTON      "&Annuleren",IDCANCEL,187,50,50,14
+    CONTROL         "&Dit bericht niet meer weergeven.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -614,10 +614,10 @@ CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
     DEFPUSHBUTTON   "Retry",IDRETRY,131,50,50,14
-    PUSHBUTTON      "&Cancel",IDCANCEL,187,50,50,14
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    PUSHBUTTON      "&Annuleren",IDCANCEL,187,50,50,14
+    CONTROL         "&Dit bericht niet meer weergeven.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
