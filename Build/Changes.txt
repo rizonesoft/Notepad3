@@ -46,6 +46,8 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Hidden option ([Settings2] NoCopyLineOnEmptySelection)
+- Appearance of INFOBOX4 (MB_YESNOCANCEL).
 - Thin rectangular (multi) selection after toggeling line-comment block.
 - Scintilla (SCI): allow CamelCase/StartCase word lists.
 - Borderless in Full Screen Mode.
