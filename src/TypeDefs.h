@@ -498,6 +498,7 @@ typedef struct _settings2_t
   bool   UseOldStyleBraceMatching;
   int    CurrentLineHorizontalSlop;
   int    CurrentLineVerticalSlop;
+  bool   NoCopyLineOnEmptySelection;
 
   float  AnalyzeReliableConfidenceLevel;
   //~float  ReliableCEDConfidenceMapping;   // = 0.85f;

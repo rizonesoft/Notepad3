@@ -696,6 +696,9 @@ void LoadSettings()
   Defaults2.CurrentLineVerticalSlop = 5;
   Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(Settings2_Section, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
 
+  Defaults2.NoCopyLineOnEmptySelection = false;
+  Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(Settings2_Section, L"NoCopyLineOnEmptySelection", Defaults2.NoCopyLineOnEmptySelection);
+    
 
   int const iARCLdef = 50;
   Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
