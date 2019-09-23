@@ -245,20 +245,22 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     case IDYES:
     case IDRETRY:
     case IDIGNORE:
+    case IDTRYAGAIN:
     case IDCONTINUE:
       if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
         IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
       }
-    case IDCANCEL:
     case IDNO:
     case IDABORT:
     case IDCLOSE:
-    case IDTRYAGAIN:
+    case IDCANCEL:
       EndDialog(hwnd, LOWORD(wParam));
       return true;
 
     case IDC_INFOBOXCHECK:
       DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+      DialogEnableControl(hwnd, IDABORT, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+      DialogEnableControl(hwnd, IDCLOSE, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
       DialogEnableControl(hwnd, IDCANCEL, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
       break;
 
