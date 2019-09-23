@@ -4004,7 +4004,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         //~_BEGIN_UNDO_ACTION_
         if (SciCall_IsSelectionEmpty()) {
-          if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK))
+          if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) && 
+              !Settings2.NoCopyLineOnEmptySelection)
           {
             // VisualStudio behavior
             SciCall_CopyAllowLine();
