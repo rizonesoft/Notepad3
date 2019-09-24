@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
   regexec.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
@@ -4570,7 +4570,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
     }
     else {
       if (reg->dmax != INFINITE_LEN) {
-        if (p - str < reg->dmax) {
+        if ((OnigLen)(p - str) < reg->dmax) {
           *low = (UChar* )str;
           if (low_prev)
             *low_prev = onigenc_get_prev_char_head(reg->enc, str, *low);
@@ -5741,7 +5741,7 @@ onig_builtin_monitor(OnigCalloutArgs* args, void* user_data)
     xsnprintf(buf, sizeof(buf), "#%d", num);
   else {
     /* CAUTION: tag string is not terminated with NULL. */
-    int i;
+    size_t i;
 
     tag_len = tag_end - tag_start;
     if (tag_len >= sizeof(buf)) tag_len = sizeof(buf) - 1;
