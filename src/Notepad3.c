@@ -3968,17 +3968,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_
         if (SciCall_IsSelectionEmpty())
         {
-          // VisualStudio behavior
-          SciCall_CopyAllowLine();
-          SciCall_LineDelete();
+          if (!Settings2.NoCutLineOnEmptySelection) {
+            _BEGIN_UNDO_ACTION_
+            // VisualStudio behavior
+            //~SciCall_CopyAllowLine();
+            //~SciCall_LineDelete();
+            SciCall_LineCut();
+            _END_UNDO_ACTION_
+          }
         }
         else {
+          _BEGIN_UNDO_ACTION_
           SciCall_Cut();
+          _END_UNDO_ACTION_
         }
-        _END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
@@ -4025,11 +4030,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_
         DocPos const iSelLnStart = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetSelectionStart()));
         DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         // copy incl last line-breaks
         DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
+        _BEGIN_UNDO_ACTION_
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
         _END_UNDO_ACTION_
     }

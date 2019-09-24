@@ -699,6 +699,9 @@ void LoadSettings()
   Defaults2.NoCopyLineOnEmptySelection = false;
   Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(Settings2_Section, L"NoCopyLineOnEmptySelection", Defaults2.NoCopyLineOnEmptySelection);
     
+  Defaults2.NoCutLineOnEmptySelection = false;
+  Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(Settings2_Section, L"NoCutLineOnEmptySelection", Defaults2.NoCutLineOnEmptySelection);
+    
 
   int const iARCLdef = 50;
   Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;

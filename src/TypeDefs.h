@@ -499,6 +499,7 @@ typedef struct _settings2_t
   int    CurrentLineHorizontalSlop;
   int    CurrentLineVerticalSlop;
   bool   NoCopyLineOnEmptySelection;
+  bool   NoCutLineOnEmptySelection;
 
   float  AnalyzeReliableConfidenceLevel;
   //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
