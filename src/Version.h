@@ -69,22 +69,28 @@
 
 // Compiler specific
 
+#undef VER_CPL
+
 #if defined(_MSC_VER)
-    #if (_MSC_VER >= 1922)
+    #if (_MSC_VER == 1923)
+        #if(_MSC_FULL_VER >= 192328105) 
+            #define VER_CPL     MS Visual C++ 2019 v16.3.0
+        #endif
+    #elif (_MSC_VER == 1922)
         #if(_MSC_FULL_VER >= 192227905) 
             #define VER_CPL     MS Visual C++ 2019 v16.2.(0-5)
         #endif
-    #elif (_MSC_VER >= 1921)
+    #elif (_MSC_VER == 1921)
         #if(_MSC_FULL_VER >= 192127702) 
             #define VER_CPL     MS Visual C++ 2019 v16.1.(0-6)
         #endif
-    #elif (_MSC_VER >= 1920)
+    #elif (_MSC_VER == 1920)
         #if(_MSC_FULL_VER >= 192027508)
             #define VER_CPL     MS Visual C++ 2019 v16.0.(0-4)
         #elif(_MSC_FULL_VER >= 192027027)
             #define VER_CPL     MS Visual C++ 2019 v16.0.Prev(1-4)
         #endif
-    #elif (_MSC_VER >= 1916)
+    #elif (_MSC_VER == 1916)
         #if(_MSC_FULL_VER >= 191627032)
             #define VER_CPL     MS Visual C++ 2017 v15.9.14
         #elif(_MSC_FULL_VER >= 191627031)
@@ -102,7 +108,7 @@
         #elif(_MSC_FULL_VER >= 191627023) 
             #define VER_CPL     MS Visual C++ 2017 v15.9.(0-1)
         #endif
-    #elif (_MSC_VER >= 1915)
+    #elif (_MSC_VER == 1915)
         #if(_MSC_FULL_VER >= 191526732)
             #define VER_CPL     MS Visual C++ 2017 v15.8.(8-9)
         #elif(_MSC_FULL_VER >= 191526730)
@@ -112,7 +118,7 @@
         #elif(_MSC_FULL_VER >= 191526726)
             #define VER_CPL     MS Visual C++ 2017 v15.8.(0-3)
         #endif
-    #elif (_MSC_VER >= 1914)
+    #elif (_MSC_VER == 1914)
         #if(_MSC_FULL_VER >= 191426433)
             #define VER_CPL     MS Visual C++ 2017 v15.7.(5-6)
         #elif(_MSC_FULL_VER >= 191426431)
@@ -124,7 +130,7 @@
         #elif(_MSC_FULL_VER >= 191426428)
             #define VER_CPL     MS Visual C++ 2017 v15.7.(0-1)
         #endif
-    #elif (_MSC_VER >= 1913)
+    #elif (_MSC_VER == 1913)
         #if (_MSC_FULL_VER >= 191326132)
             #define VER_CPL     MS Visual C++ 2017 v15.6.7
         #elif(_MSC_FULL_VER >= 191326131)
@@ -134,7 +140,7 @@
         #elif(_MSC_FULL_VER >= 191326128)
             #define VER_CPL     MS Visual C++ 2017 v15.6.(0-2)
         #endif
-    #elif (_MSC_VER >= 1912)
+    #elif (_MSC_VER == 1912)
         #if(_MSC_FULL_VER >= 191225835)
             #define VER_CPL     MS Visual C++ 2017 v15.5.(5-7)
         #elif(_MSC_FULL_VER >= 191225834)
@@ -146,7 +152,7 @@
         #else
             #define VER_CPL     MS Visual C++ 2017 (version unknown)
         #endif
-    #elif (_MSC_VER >= 1911)
+    #elif (_MSC_VER == 1911)
         #if((_MSC_FULL_VER >= 191125542) && (_MSC_FULL_VER <= 191125547))
            #define VER_CPL     MS Visual C++ 2017 v15.4
         #elif((_MSC_FULL_VER >= 191125506) && (_MSC_FULL_VER <= 191125508))
@@ -154,7 +160,7 @@
         #else
            #define VER_CPL     MS Visual C++ 2017 (version unknown)
         #endif
-    #elif (_MSC_VER >= 1910)
+    #elif (_MSC_VER == 1910)
         #if ((_MSC_FULL_VER >= 191025017) && (_MSC_FULL_VER <= 191025019))
            #define VER_CPL     MS Visual C++ 2017 v15.2
         #else
@@ -173,10 +179,14 @@
             #define VER_CPL    MS Visual C++ (version unknown)
         #endif
     #else
-        #define VER_CPL        MS Visual C++ (version unknown)
+        #ifdef _MSC_VER
+           #define VER_CPL        MS Visual C++ (version unknown)
+        #endif
     #endif
-#else
-    #define VER_CPL            (Unknown Compiler)
+#endif
+
+#ifndef VER_CPL
+    #define VER_CPL  (Unknown Compiler)
 #endif
 
 #pragma message("Compiler " _STRG(VER_CPL) "  (v" _STRG(_MSC_FULL_VER) ")")
