@@ -248,13 +248,13 @@ BEGIN
             MENUITEM "Zeit/Datum (&Langform)\tCtrl+Shift+F5",            IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Aktualisiere Zeitstempel\tShift+F5",              CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Dateiname\tCtrl+F9",                              IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Pfad und Dateiname\tCtrl+Shift+F9",               IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
             MENUITEM "&GUID\tCtrl+Shift+.",                              IDM_EDIT_INSERT_GUID
         END
         POPUP "&Verschiedenes"
         BEGIN
+            MENUITEM "Kopiere &Dateiname in die Zwischenablage\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Kopiere &Pfad in die Zwischenablage\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM SEPARATOR
             MENUITEM "&Einzeilenkommentar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
             MENUITEM "&Mehrzeilenkommentar\tCtrl+Shift+Q",                 IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR

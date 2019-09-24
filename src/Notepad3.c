@@ -4546,9 +4546,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
-        char chPath[MAX_PATH];
-        WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
-        EditReplaceSelection(chPath, false);
+        //char chPath[MAX_PATH];
+        //WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
+        //EditReplaceSelection(chPath, false);
+        SetClipboardTextW(hwnd, pszInsert, StringCchLen(pszInsert, 0));
       }
       break;
 
@@ -4559,10 +4560,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
-            char chMaxPathBuffer[MAX_PATH] = { '\0' };
-            if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
-              EditReplaceSelection(chMaxPathBuffer, false);
-            }
+            //char chMaxPathBuffer[MAX_PATH] = { '\0' };
+            //if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
+            //  EditReplaceSelection(chMaxPathBuffer, false);
+            //}
+            SetClipboardTextW(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
           }
         }
       }
