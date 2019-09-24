@@ -2,8 +2,8 @@
 setlocal enableextensions
 set SCRIPT_DIR=%~dp0
 
-set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141\
-set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141\
+set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v142\
+set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v142\
 set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
 
 :: --------------------------------------------------------------------------------------------------------------------

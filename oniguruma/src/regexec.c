@@ -47,6 +47,8 @@
   (MEM_STATUS_AT((reg)->push_mem_end, (i)) != 0 ? \
    STACK_AT(mem_end_stk[i])->u.mem.pstr : (UChar* )((void* )(mem_end_stk[i])))
 
+static int forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start, UChar* range, UChar** low, UChar** high, UChar** low_prev);
+
 
 #ifdef USE_CALLOUT
 typedef struct {
@@ -1072,26 +1074,26 @@ struct OnigCalloutArgsStruct {
 
 
 #ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
-#define MATCH_ARG_INIT(msa, reg, arg_option, arg_region, arg_start, mp) do { \
+#define MATCH_ARG_INIT(msa, reg, arg_option, arg_region, arg_start, mpv) do { \
   (msa).stack_p  = (void* )0;\
   (msa).options  = (arg_option);\
   (msa).region   = (arg_region);\
   (msa).start    = (arg_start);\
-  (msa).match_stack_limit  = (mp)->match_stack_limit;\
-  (msa).retry_limit_in_match = (mp)->retry_limit_in_match;\
-  (msa).mp = mp;\
+  (msa).match_stack_limit  = (mpv)->match_stack_limit;\
+  (msa).retry_limit_in_match = (mpv)->retry_limit_in_match;\
+  (msa).mp = mpv;\
   (msa).best_len = ONIG_MISMATCH;\
   (msa).ptr_num  = (reg)->num_repeat + ((reg)->num_mem + 1) * 2; \
 } while(0)
 #else
-#define MATCH_ARG_INIT(msa, reg, arg_option, arg_region, arg_start, mp) do { \
+#define MATCH_ARG_INIT(msa, reg, arg_option, arg_region, arg_start, mpv) do { \
   (msa).stack_p  = (void* )0;\
   (msa).options  = (arg_option);\
   (msa).region   = (arg_region);\
   (msa).start    = (arg_start);\
-  (msa).match_stack_limit  = (mp)->match_stack_limit;\
-  (msa).retry_limit_in_match = (mp)->retry_limit_in_match;\
-  (msa).mp = mp;\
+  (msa).match_stack_limit  = (mpv)->match_stack_limit;\
+  (msa).retry_limit_in_match = (mpv)->retry_limit_in_match;\
+  (msa).mp = mpv;\
   (msa).ptr_num  = (reg)->num_repeat + ((reg)->num_mem + 1) * 2; \
 } while(0)
 #endif
@@ -3757,7 +3759,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
         addr = p->push_if_peek_next.addr;
         c    = p->push_if_peek_next.c;
-        if (c == *s) {
+        if (DATA_ENSURE_CHECK1 && c == *s) {
           STACK_PUSH_ALT(p + addr, s, sprev);
           INC_OP;
           JUMP_OUT;
