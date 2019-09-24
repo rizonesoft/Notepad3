@@ -39,10 +39,12 @@ max_jobs: 2
 #---------------------------------#
 
 # Operating system (build VM template)
-os: Windows Server 2012
+#os: Windows Server 2012
+os: Windows Server 2019
 
 image:
-  - Visual Studio 2017
+  - Visual Studio 2019
+#  - Visual Studio 2017
 #  - Visual Studio 2015
 
 # build Configuration, i.e. Debug, Release, etc.
