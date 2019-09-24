@@ -615,6 +615,54 @@ void LoadSettings()
   // --------------------------------------------------------------------------
   const WCHAR* const Settings2_Section = L"Settings2";
 
+  Flags.bDevDebugMode = IniSectionGetBool(Settings2_Section, L"DevDebugMode", DefaultFlags.bDevDebugMode);
+  Flags.bStickyWindowPosition = IniSectionGetBool(Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
+
+  if (s_flagReuseWindow == 0) {
+    Flags.bReuseWindow = IniSectionGetBool(Settings2_Section, L"ReuseWindow", DefaultFlags.bReuseWindow);
+  }
+  else {
+    Flags.bReuseWindow = (s_flagReuseWindow == 2);
+  }
+
+  if (s_flagSingleFileInstance == 0) {
+    Flags.bSingleFileInstance = IniSectionGetBool(Settings2_Section, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
+  }
+  else {
+    Flags.bSingleFileInstance = (s_flagSingleFileInstance == 2);
+  }
+
+  if (s_flagMultiFileArg == 0) {
+    Flags.MultiFileArg = IniSectionGetBool(Settings2_Section, L"MultiFileArg", DefaultFlags.MultiFileArg);
+  }
+  else {
+    Flags.MultiFileArg = (s_flagMultiFileArg == 2);
+  }
+
+  if (s_flagShellUseSystemMRU == 0) {
+    Flags.ShellUseSystemMRU = IniSectionGetBool(Settings2_Section, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
+  }
+  else {
+    Flags.ShellUseSystemMRU = (s_flagShellUseSystemMRU == 2);
+  }
+
+  Flags.RelativeFileMRU = IniSectionGetBool(Settings2_Section, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
+  Flags.PortableMyDocs = IniSectionGetBool(Settings2_Section, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
+  Flags.NoFadeHidden = IniSectionGetBool(Settings2_Section, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
+
+  Flags.ToolbarLook = IniSectionGetInt(Settings2_Section, L"ToolbarLook", DefaultFlags.ToolbarLook);
+  Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
+
+  Flags.SimpleIndentGuides = IniSectionGetBool(Settings2_Section, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
+  Flags.NoHTMLGuess = IniSectionGetBool(Settings2_Section, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
+  Flags.NoCGIGuess = IniSectionGetBool(Settings2_Section, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
+  Flags.NoFileVariables = IniSectionGetInt(Settings2_Section, L"NoFileVariables", DefaultFlags.NoFileVariables);
+
+  Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
+  Flags.bPreserveFileModTime = false;
+
+  // --------------------------------------------------------------------------
+
   Defaults2.PreferredLanguageLocaleName[0] = L'\0';
   IniSectionGetString(Settings2_Section, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
     Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
@@ -1142,68 +1190,6 @@ void LoadSettings()
   Style_Load();
 }
 //=============================================================================
-
-
-
-//=============================================================================
-//
-//  LoadFlags()
-//
-//
-void LoadFlags()
-{
-  LoadIniFile(Globals.IniFile);
-
-  const WCHAR* const Settings2_Section = L"Settings2";
-
-  Flags.bDevDebugMode = IniSectionGetBool(Settings2_Section, L"DevDebugMode", DefaultFlags.bDevDebugMode);
-  Flags.bStickyWindowPosition = IniSectionGetBool(Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
-
-  if (s_flagReuseWindow == 0) {
-    Flags.bReuseWindow = IniSectionGetBool(Settings2_Section, L"ReuseWindow", DefaultFlags.bReuseWindow);
-  }
-  else {
-    Flags.bReuseWindow = (s_flagReuseWindow == 2);
-  }
-
-  if (s_flagSingleFileInstance == 0) {
-    Flags.bSingleFileInstance = IniSectionGetBool(Settings2_Section, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
-  }
-  else {
-    Flags.bSingleFileInstance = (s_flagSingleFileInstance == 2);
-  }
-
-  if (s_flagMultiFileArg == 0) {
-    Flags.MultiFileArg = IniSectionGetBool(Settings2_Section, L"MultiFileArg", DefaultFlags.MultiFileArg);
-  }
-  else {
-    Flags.MultiFileArg = (s_flagMultiFileArg == 2);
-  }
-
-  if (s_flagShellUseSystemMRU == 0) {
-    Flags.ShellUseSystemMRU = IniSectionGetBool(Settings2_Section, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
-  }
-  else {
-    Flags.ShellUseSystemMRU = (s_flagShellUseSystemMRU == 2);
-  }
-
-  Flags.RelativeFileMRU = IniSectionGetBool(Settings2_Section, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
-  Flags.PortableMyDocs = IniSectionGetBool(Settings2_Section, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
-  Flags.NoFadeHidden = IniSectionGetBool(Settings2_Section, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
-
-  Flags.ToolbarLook = IniSectionGetInt(Settings2_Section, L"ToolbarLook", DefaultFlags.ToolbarLook);
-  Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
-
-  Flags.SimpleIndentGuides = IniSectionGetBool(Settings2_Section, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
-  Flags.NoHTMLGuess = IniSectionGetBool(Settings2_Section, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
-  Flags.NoCGIGuess = IniSectionGetBool(Settings2_Section, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
-  Flags.NoFileVariables = IniSectionGetInt(Settings2_Section, L"NoFileVariables", DefaultFlags.NoFileVariables);
-
-  Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
-  Flags.bPreserveFileModTime = false;
-
-  ReleaseIniFile();
-}
 
 
 

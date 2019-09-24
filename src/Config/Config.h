@@ -31,7 +31,6 @@ bool CreateIniFile();
 bool CreateIniFileEx(LPCWSTR lpszIniFile);
 
 void LoadSettings();
-void LoadFlags();
 
 bool OpenSettingsFile();
 bool SaveSettings(bool);

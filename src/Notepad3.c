@@ -817,7 +817,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   FindIniFile();
   TestIniFile();
   CreateIniFile();
-  LoadFlags();
+  LoadSettings();
 
   // set AppUserModelID
   PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
@@ -851,8 +851,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   InitCommonControlsEx(&icex);
 
   Scintilla_RegisterClasses(hInstance);
-
-  LoadSettings();
 
   // ----------------------------------------------------
   // MultiLingual
