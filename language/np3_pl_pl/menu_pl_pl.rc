@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "A&utouzupe³nianie wyrazów",                       IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Autouzupe³nianie Lekserem",               IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",                 IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Przyk³ad pojedyñczego pliku",                     IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY

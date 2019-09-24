@@ -3342,6 +3342,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
   
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,Settings.AccelWordNavigation);
+  CheckCmd(hmenu,IDM_VIEW_EDIT_LINECOMMENT,Settings.EditLineCommentBlock);
 
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
@@ -5168,6 +5169,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
       break;
 
+    case IDM_VIEW_EDIT_LINECOMMENT:
+      Settings.EditLineCommentBlock = !Settings.EditLineCommentBlock;
+      break;
+      
     case IDM_VIEW_MARKOCCUR_ONOFF:
       Settings.MarkOccurrences = !Settings.MarkOccurrences;
       if (!Settings.MarkOccurrences && FocusedView.HideNonMatchedLines) {

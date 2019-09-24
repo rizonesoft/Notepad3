@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "Auto Wort &Vorschläge",                       IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Beschleunigte Wort Navigation\tCtrl+Alt+A",  IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Editierbarer &Zeilen Block Kommentar",        IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Eine &Instanz per Datei",                     IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY

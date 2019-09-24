@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "Completamento a&utomatico delle parole",           IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Completamento automatico &keywords lexer",         IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Navi&gazione accelerata delle parole\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",                  IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Im&pedisci di riaprire lo stesso file",            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY

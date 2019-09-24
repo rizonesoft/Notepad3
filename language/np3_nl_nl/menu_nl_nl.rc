@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "A&uto vervolledigen woorden",                         IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto &vervolledigen 'Lexer' sleutelwoorden",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Versnelde woordnavi&gatie\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",                     IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "En&kel bestand instantie",                            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Bestandswijziging notifi&catie...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY

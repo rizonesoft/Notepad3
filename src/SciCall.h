@@ -613,6 +613,31 @@ inline int Sci_GetCurrentEOL_W(LPWCH eol) {
 // ----------------------------------------------------------------------------
 
 
+inline DocPos Sci_GetSelectionStartEx() {
+  if (!Sci_IsMultiSelection()) { return SciCall_GetSelectionStart(); }
+  DocPosU const nsel = SciCall_GetSelections();
+  DocPos selStart = SciCall_GetTextLength() + 1;
+  for (DocPosU i = 0; i < nsel; ++i) {
+    DocPos const iStart = SciCall_GetSelectionNStart(i);
+    if (iStart < selStart) { selStart = iStart; }
+  }
+  return selStart;
+}
+// ----------------------------------------------------------------------------
+
+inline DocPos Sci_GetSelectionEndEx() {
+  if (!Sci_IsMultiSelection()) { return SciCall_GetSelectionEnd(); }
+  DocPosU const nsel = SciCall_GetSelections();
+  DocPos selEnd = 0;
+  for (DocPosU i = 0; i < nsel; ++i) {
+    DocPos const iEnd = SciCall_GetSelectionNEnd(i);
+    if (iEnd > selEnd) { selEnd = iEnd; }
+  }
+  return selEnd;
+}
+// ----------------------------------------------------------------------------
+
+
 //=============================================================================
 
 #endif //_NP3_SCICALL_H_

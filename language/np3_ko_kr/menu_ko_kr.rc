@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "자동 단어 완성(&U)",                      IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Lexer-Key-Words 자동 완성(&K)",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "단어 탐색 가속(&G)\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",     IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "단일 파일 인스턴스(&F)",                   IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_VIEW_CHANGENOTIFY

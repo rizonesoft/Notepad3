@@ -3171,17 +3171,17 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
 
 //=============================================================================
 //
-//  EditToggleLineComments()
+//  EditToggleLineCommentsSimple()
 //
-void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
+void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 {
   UNUSED(hwnd);
-  //~const DocPos iCurPos = SciCall_GetCurrentPos();
-  //~const DocPos iAnchorPos = SciCall_GetAnchor();
+  const DocPos iCurPos = SciCall_GetCurrentPos();
+  const DocPos iAnchorPos = SciCall_GetAnchor();
   DocPos const iSelStart = SciCall_GetSelectionStart();
   DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
-  //~const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
+  const DocPos iSelBegCol = SciCall_GetColumn(iSelStart);
 
   char mszComment[32 * 3] = { '\0' };
 
@@ -3192,8 +3192,8 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 
   if (cchComment == 0) { return; }
 
-  if (Sci_IsMultiSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELMULTI);
+  if (Sci_IsMultiOrRectangleSelection()) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
@@ -3221,8 +3221,120 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
     }
   }
 
-  //~DocPos iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
-  //~DocPos iSelEndOffset = 0;
+  DocPos iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+  DocPos iSelEndOffset = 0;
+
+  _BEGIN_UNDO_ACTION_
+  _IGNORE_NOTIFY_CHANGE_;
+  DocPos const saveTargetBeg = SciCall_GetTargetStart();
+  DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+
+  int iAction = 0;
+
+    for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine)
+  {
+    DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
+
+    if (iIndentPos == SciCall_GetLineEndPosition(iLine)) {
+      // don't set comment char on "empty" (white-space only) lines
+      //~iAction = 1;
+      continue;
+    }
+
+    const char* tchBuf = SciCall_GetRangePointer(iIndentPos, cchComment + 1);
+    if (StrCmpNIA(tchBuf, mszComment, (int)cchComment) == 0) 
+    {
+      // remove comment chars
+      DocPos const iSelPos = iIndentPos + cchComment;
+      switch (iAction) {
+        case 0:
+          iAction = 2;
+        case 2:
+          SciCall_SetTargetRange(iIndentPos, iSelPos);
+          SciCall_ReplaceTarget(0, "");
+          iSelEndOffset -= cchComment;
+          if (iLine == iLineStart) {
+            iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
+          }
+          break;
+        case 1:
+          break;
+      }
+    }
+    else {
+      // set comment chars at indent pos
+      switch (iAction) {
+        case 0:
+          iAction = 1;
+        case 1:
+        {
+          DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
+          SciCall_InsertText(iPos, mszComment);
+          iSelEndOffset += cchComment;
+          if (iLine == iLineStart) {
+            iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+          }
+        }
+        break;
+        case 2:
+          break;
+      }
+    }
+  }
+
+  SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
+  if (iCurPos < iAnchorPos) {
+    EditSetSelectionEx(hwnd, iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
+  }
+  else if (iCurPos > iAnchorPos) {
+    EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
+  }
+  else {
+    EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
+  }
+
+  _OBSERVE_NOTIFY_CHANGE_;
+  _END_UNDO_ACTION_
+}
+
+
+//=============================================================================
+//
+//  EditToggleLineCommentsExtended()
+//
+void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
+{
+  UNUSED(hwnd);
+  DocPos const iSelStart = Sci_GetSelectionStartEx();
+  DocPos const iSelEnd = Sci_GetSelectionEndEx();
+
+  char mszComment[32 * 3] = { '\0' };
+
+  if (StrIsNotEmpty(pwszComment)) {
+    WideCharToMultiByte(Encoding_SciCP, 0, pwszComment, -1, mszComment, COUNTOF(mszComment), NULL, NULL);
+  }
+  DocPos const cchComment = (DocPos)StringCchLenA(mszComment, COUNTOF(mszComment));
+
+  if (cchComment == 0) { return; }
+
+  const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
+  DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
+
+  DocPos iCommentCol = 0;
+
+  if (!bInsertAtStart) {
+    iCommentCol = (DocPos)INT_MAX;
+    for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++)
+    {
+      const DocPos iLineEndPos = SciCall_GetLineEndPosition(iLine);
+      const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
+      if (iLineIndentPos != iLineEndPos) {
+        const DocPos iIndentColumn = SciCall_GetColumn(iLineIndentPos);
+        iCommentCol = min_p(iCommentCol, iIndentColumn);
+      }
+    }
+  }
 
   _BEGIN_UNDO_ACTION_
   _IGNORE_NOTIFY_CHANGE_;
@@ -3257,10 +3369,6 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
         case 2:
           SciCall_SetTargetRange(iIndentPos, iSelPos);
           SciCall_ReplaceTarget(0, "");
-          //~iSelEndOffset -= cchComment;
-          //~if (iLine == iLineStart) {
-          //~  iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
-          //~}
           utarray_push_back(sel_positions, &iIndentPos);
           break;
         case 1:
@@ -3277,10 +3385,6 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
         {
           DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
           SciCall_InsertText(iPos, mszComment);
-          //~iSelEndOffset += cchComment;
-          //~if (iLine == iLineStart) {
-          //~  iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
-          //~}
           DocPos const iSelPos = iIndentPos + cchComment;
           utarray_push_back(sel_positions, &iSelPos);
         }
@@ -3293,16 +3397,6 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
-  //~if (iCurPos < iAnchorPos) {
-  //~  EditSetSelectionEx(hwnd, iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
-  //~}
-  //~else if (iCurPos > iAnchorPos) {
-  //~  EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
-  //~}
-  //~else {
-  //~  EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
-  //~}
-
   DocPos* p = (DocPos*)utarray_next(sel_positions, NULL);
   if (p) { SciCall_SetSelection(*p, *p); }
   while (p) {
@@ -3310,12 +3404,25 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
     if (p) { SciCall_AddSelection(*p, *p); }
   }
   utarray_free(sel_positions);
-
-
+  
   _OBSERVE_NOTIFY_CHANGE_;
   _END_UNDO_ACTION_
 }
 
+
+//=============================================================================
+//
+//  EditToggleLineComments()
+//
+void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
+{
+  if (Settings.EditLineCommentBlock) {
+    EditToggleLineCommentsExtended(hwnd, pwszComment, bInsertAtStart);
+  }
+  else {
+    EditToggleLineCommentsSimple(hwnd, pwszComment, bInsertAtStart);
+  }
+}
 
 //=============================================================================
 //

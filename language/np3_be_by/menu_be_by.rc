@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "Cамадавяр&шэнне слоў",                        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Cамадавяршэнне на аснове &лексемаў",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Паскораная навігацыя па слова&х\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",             IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Адзін &экзэмпляр файла",                      IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY

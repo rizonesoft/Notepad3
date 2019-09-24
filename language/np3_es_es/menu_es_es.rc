@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "A&uto completar palabras",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",                     IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Ins&tancia de archivo único",                         IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
