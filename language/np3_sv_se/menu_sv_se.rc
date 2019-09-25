@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "A&uto Complete Words",                     IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto Complete Lexer-&Key-Words",           IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerated Word Navi&gation\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",          IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Single &File Instance",                    IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5",     IDM_VIEW_CHANGENOTIFY

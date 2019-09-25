@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "単語選択を広くする(&G)\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",             IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "単一のインスタンスでファイルを開く(&F)",               IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知する(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY

@@ -3342,6 +3342,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
   
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,Settings.AccelWordNavigation);
+  CheckCmd(hmenu,IDM_VIEW_EDIT_LINECOMMENT,Settings.EditLineCommentBlock);
 
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
@@ -4546,9 +4547,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
-        char chPath[MAX_PATH];
-        WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
-        EditReplaceSelection(chPath, false);
+        //char chPath[MAX_PATH];
+        //WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
+        //EditReplaceSelection(chPath, false);
+        SetClipboardTextW(hwnd, pszInsert, StringCchLen(pszInsert, 0));
       }
       break;
 
@@ -4559,10 +4561,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
-            char chMaxPathBuffer[MAX_PATH] = { '\0' };
-            if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
-              EditReplaceSelection(chMaxPathBuffer, false);
-            }
+            //char chMaxPathBuffer[MAX_PATH] = { '\0' };
+            //if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
+            //  EditReplaceSelection(chMaxPathBuffer, false);
+            //}
+            SetClipboardTextW(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
           }
         }
       }
@@ -5166,6 +5169,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
       break;
 
+    case IDM_VIEW_EDIT_LINECOMMENT:
+      Settings.EditLineCommentBlock = !Settings.EditLineCommentBlock;
+      break;
+      
     case IDM_VIEW_MARKOCCUR_ONOFF:
       Settings.MarkOccurrences = !Settings.MarkOccurrences;
       if (!Settings.MarkOccurrences && FocusedView.HideNonMatchedLines) {

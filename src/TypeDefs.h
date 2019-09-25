@@ -328,6 +328,7 @@ typedef struct _globals_t
   bool      bReplaceInitialized;
   bool      bDocHasInconsistentEOLs;
   unsigned  idxSelectedTheme;
+
   WCHAR     SelectedThemeName[128];
 
   FR_STATES FindReplaceMatchFoundState;
@@ -367,6 +368,7 @@ typedef struct _settings_t
   bool AutoCompleteWords;
   bool AutoCLexerKeyWords;
   bool AccelWordNavigation;
+  bool EditLineCommentBlock;
   bool ShowIndentGuides;
   bool TabsAsSpaces;
   bool TabIndents;

@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "Szó kie&gészítés",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Lexer kul&csszavak kiegészítése",             IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "G&yorsított szó navigálás\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",             IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Egyetlen fá&jl példány",                      IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_VIEW_CHANGENOTIFY

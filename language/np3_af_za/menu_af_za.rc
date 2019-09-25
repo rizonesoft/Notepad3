@@ -392,6 +392,7 @@ BEGIN
         MENUITEM "O&uto-Voltooi Woorde",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Outo-Voltooi Le&xer-Sleutel-Woorde",              IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Versnelde Woord Navi&gasie\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Enable Line &Comment Block Edit",                 IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Enkel &Lêer Instansie",                           IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY

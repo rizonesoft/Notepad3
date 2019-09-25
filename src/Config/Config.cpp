@@ -908,6 +908,7 @@ void LoadSettings()
   GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
   GET_BOOL_VALUE_FROM_INISECTION(AutoCLexerKeyWords, false);
   GET_BOOL_VALUE_FROM_INISECTION(AccelWordNavigation, false);
+  GET_BOOL_VALUE_FROM_INISECTION(EditLineCommentBlock, false);
   GET_BOOL_VALUE_FROM_INISECTION(ShowIndentGuides, false);
   GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
   GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
@@ -1350,6 +1351,7 @@ bool SaveSettings(bool bSaveSettingsNow)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCompleteWords);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCLexerKeyWords);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AccelWordNavigation);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EditLineCommentBlock);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowIndentGuides);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoDetectIndentSettings);
