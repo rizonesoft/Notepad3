@@ -238,25 +238,25 @@ BEGIN
         END
         POPUP "&Einfügen"
         BEGIN
-            MENUITEM "&Neue Zeile (vor aktueller)\tCtrl+Enter",          CMD_CTRLENTER
+            MENUITEM "&Neue Zeile (vor aktueller)\tCtrl+Enter",            CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "&HTML/XML Tag...\tAlt+X",                          IDM_EDIT_INSERT_TAG
+            MENUITEM "&HTML/XML Tag...\tAlt+X",                            IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Codierungs Identifikator\tCtrl+F8",               IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Codierungs Identifikator\tCtrl+F8",                 IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "&Zeit/Datum (Kurzform)\tCtrl+F5",                  IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Zeit/Datum (&Langform)\tCtrl+Shift+F5",            IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Aktualisiere Zeitstempel\tShift+F5",              CMD_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",                              IDM_EDIT_INSERT_GUID
-        END
-        POPUP "&Verschiedenes"
-        BEGIN
-            MENUITEM "Kopiere &Dateiname in die Zwischenablage\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Kopiere &Pfad in die Zwischenablage\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "&Zeit/Datum (Kurzform)\tCtrl+F5",                    IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Zeit/Datum (&Langform)\tCtrl+Shift+F5",              IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Aktualisiere Zeitstempel\tShift+F5",                CMD_TIMESTAMPS
             MENUITEM SEPARATOR
             MENUITEM "&Einzeilenkommentar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
             MENUITEM "&Mehrzeilenkommentar\tCtrl+Shift+Q",                 IDM_EDIT_STREAMCOMMENT
+        END
+        POPUP "&Verschiedenes"
+        BEGIN
+            MENUITEM "Kopiere &GUID in die Zwischenablage\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Kopiere &Dateiname in die Zwischenablage\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Kopiere &Pfad in die Zwischenablage\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Zeichen\tCtrl+Alt+E",                      IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Zeichen\tCtrl+Alt+R",                    IDM_EDIT_UNESCAPECCHARS

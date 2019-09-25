@@ -82,7 +82,7 @@ static int s_iStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
 // ----------------------------------------------------------------------------
 
-#define SI_SUCCESS(RC) ((RC) >= SI_OK)
+#define SI_SUCCESS(RC) ((RC) >= SI_Error::SI_OK)
 
 // ============================================================================
 
@@ -262,7 +262,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
   if (SI_SUCCESS(rc)) 
   {
     SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
-    rc = SI_SUCCESS(res) ? SI_OK : SI_FAIL;
+    rc = SI_SUCCESS(res) ? SI_Error::SI_OK : SI_Error::SI_FAIL;
 
     if (SI_SUCCESS(rc)) {
       Ini.SetSpaces(s_bSetSpaces);
@@ -598,7 +598,7 @@ extern "C" bool CreateIniFileEx(LPCWSTR lpszIniFile)
 //
 void LoadSettings()
 {
-  int const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
+  CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
   LoadIniFile(Globals.IniFile);
 

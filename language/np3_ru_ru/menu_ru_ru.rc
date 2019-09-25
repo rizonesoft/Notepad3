@@ -248,15 +248,20 @@ BEGIN
             MENUITEM "Время/&дата (длинная форма)\tCtrl+Shift+F5",  IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Обновить метки времени\tShift+F5",           CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "Имя &файла\tCtrl+F9",                         IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Путь и имя файла\tCtrl+Shift+F9",            IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",                         IDM_EDIT_INSERT_GUID
+            MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
+            MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
+            //MENUITEM SEPARATOR
+            //MENUITEM "Имя &файла\tCtrl+F9",                         IDM_EDIT_INSERT_FILENAME
+            //MENUITEM "&Путь и имя файла\tCtrl+Shift+F9",            IDM_EDIT_INSERT_PATHNAME
+            //MENUITEM SEPARATOR
+            //MENUITEM "&GUID\tCtrl+Shift+.",                         IDM_EDIT_INSERT_GUID
         END
         POPUP "Разное"
         BEGIN
-            MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-            MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",              IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&Экранировать символы C\tCtrl+Alt+E",             IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Убрать экранирование символов C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS

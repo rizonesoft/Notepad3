@@ -248,15 +248,20 @@ BEGIN
             MENUITEM "Ora/Data (formato &lungo)\tCtrl+Shift+F5",  IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Aggiorna Timestamps\tShift+F5",            CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Nome file\tCtrl+F9",                       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Path e Nome file\tCtrl+Shift+F9",          IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",                       IDM_EDIT_INSERT_GUID
+            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q", IDM_EDIT_LINECOMMENT
+            MENUITEM "&Commento multi-riga\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
+            //MENUITEM SEPARATOR
+            //MENUITEM "&Nome file\tCtrl+F9",                       IDM_EDIT_INSERT_FILENAME
+            //MENUITEM "&Path e Nome file\tCtrl+Shift+F9",          IDM_EDIT_INSERT_PATHNAME
+            //MENUITEM SEPARATOR
+            //MENUITEM "&GUID\tCtrl+Shift+.",                       IDM_EDIT_INSERT_GUID
         END
         POPUP "&Altro"
         BEGIN
-            MENUITEM "&Commenta riga (attiva/disattiva)\tCtrl+Q", IDM_EDIT_LINECOMMENT
-            MENUITEM "&Commento multi-riga\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",      IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",    IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",               IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",             IDM_EDIT_UNESCAPECCHARS
