@@ -248,15 +248,20 @@ BEGIN
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
             MENUITEM "更新时间戳(&U)\tShift+F5",                CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "文件名(&F)\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
-            MENUITEM "完整文件路径(&P)\tCtrl+Shift+F9",          IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "GUID(&G)\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
+            MENUITEM "切换行注释(&L)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
+            MENUITEM "添加块注释(&S)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
+            //MENUITEM SEPARATOR
+            //MENUITEM "文件名(&F)\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
+            //MENUITEM "完整文件路径(&P)\tCtrl+Shift+F9",          IDM_EDIT_INSERT_PATHNAME
+            //MENUITEM SEPARATOR
+            //MENUITEM "GUID(&G)\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
         END
         POPUP "杂项(&M)"
         BEGIN
-            MENUITEM "切换行注释(&L)\tCtrl+Q",                 IDM_EDIT_LINECOMMENT
-            MENUITEM "添加块注释(&S)\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "C 转义(&E)\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
             MENUITEM "C 反转义(&K)\tCtrl+Alt+R",               IDM_EDIT_UNESCAPECCHARS

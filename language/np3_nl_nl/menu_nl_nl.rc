@@ -248,15 +248,20 @@ BEGIN
             MENUITEM "Tijd/Datum (&Lange vorm)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Tijdstempels bijwerken\tShift+F5",               CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Bestandsnaam\tCtrl+F9",                          IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Bestandslocatie en bestandsnaam\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",                             IDM_EDIT_INSERT_GUID
+            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+            MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
+            //MENUITEM SEPARATOR
+            //MENUITEM "&Bestandsnaam\tCtrl+F9",                          IDM_EDIT_INSERT_FILENAME
+            //MENUITEM "&Bestandslocatie en bestandsnaam\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            //MENUITEM SEPARATOR
+            //MENUITEM "&GUID\tCtrl+Shift+.",                             IDM_EDIT_INSERT_GUID
         END
         POPUP "&Overig"
         BEGIN
-            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-            MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",                     IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",                   IDM_EDIT_UNESCAPECCHARS

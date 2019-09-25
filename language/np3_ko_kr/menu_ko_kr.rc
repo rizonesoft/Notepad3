@@ -245,18 +245,23 @@ BEGIN
             MENUITEM "인코딩 식별자(&E)\tCtrl+F8",                 IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "날짜/시간(짧은 형식)(&S)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "날짜/시간(긴 형식)(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "날짜/시간(긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
             MENUITEM "타임 스탬프 업데이트(&T)\tShift+F5",           CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "파일 이름(&F)\tCtrl+F9",                    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "경로 및 파일 이름(&P)\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
+            MENUITEM "줄 주석 (전환)(&T)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
+            MENUITEM "주석 기호 삽입(&C)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
+            //MENUITEM SEPARATOR
+            //MENUITEM "파일 이름(&F)\tCtrl+F9",                    IDM_EDIT_INSERT_FILENAME
+            //MENUITEM "경로 및 파일 이름(&P)\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
+            //MENUITEM SEPARATOR
+            //MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
         END
         POPUP "특수 기능(&I)"
         BEGIN
-            MENUITEM "줄 주석 (전환)(&T)\tCtrl+Q",                 IDM_EDIT_LINECOMMENT
-            MENUITEM "주석 기호 삽입(&C)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "C언어 이스케이프 시퀀스 변환(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
             MENUITEM "C언어 이스케이프 시퀀스 복원(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS

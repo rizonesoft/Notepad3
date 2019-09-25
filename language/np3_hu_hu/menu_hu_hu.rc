@@ -238,25 +238,30 @@ BEGIN
         END
         POPUP "&Beillesztés"
         BEGIN
-            MENUITEM "&Fölé egy új sor\tCtrl+Enter",          CMD_CTRLENTER
+            MENUITEM "&Fölé egy új sor\tCtrl+Enter",            CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "&HTML/XML elem...\tAlt+X",              IDM_EDIT_INSERT_TAG
+            MENUITEM "&HTML/XML elem...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Kódolás azonosító\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Kódolás azonosító\tCtrl+F8",             IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "&Dátum/Idõ (rövid)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Dátum/Idõ (&hosszú)\tCtrl+Shift+F5",    IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Idõbélye&gek frissítése\tShift+F5",     CMD_TIMESTAMPS
+            MENUITEM "&Dátum/Idõ (rövid)\tCtrl+F5",             IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Dátum/Idõ (&hosszú)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "Idõbélye&gek frissítése\tShift+F5",       CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Fájlnév\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Útvonal és fájlnév\tCtrl+Shift+F9",    IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",                   IDM_EDIT_INSERT_GUID
+            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
+            MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
+            //MENUITEM SEPARATOR
+            //MENUITEM "&Fájlnév\tCtrl+F9",                       IDM_EDIT_INSERT_FILENAME
+            //MENUITEM "&Útvonal és fájlnév\tCtrl+Shift+F9",      IDM_EDIT_INSERT_PATHNAME
+            //MENUITEM SEPARATOR
+            //MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
         END
         POPUP "&Vegyes"
         BEGIN
-            MENUITEM "&Sor megjegyzés (váltás)\tCtrl+Q", IDM_EDIT_LINECOMMENT
-            MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",  IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+            MENUITEM SEPARATOR
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "Vezérlõkar.-ek v&édelme\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
             MENUITEM "Vezérlõkar.-ek védelem t&örlése\tCtrl+Alt+R", IDM_EDIT_UNESCAPECCHARS
