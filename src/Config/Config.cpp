@@ -804,6 +804,11 @@ void LoadSettings()
   IniSectionGetString(Settings2_Section, L"AutoCompleteFillUpChars", Defaults2.AutoCompleteFillUpChars,
     Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
 
+  Defaults2.LineCommentPostfixStrg[0] = L'\0';
+  IniSectionGetString(Settings2_Section, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
+    Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
+  StrTrimW(Settings2.LineCommentPostfixStrg, L"\"");
+
   StringCchCopyW(Defaults2.TimeStamp, COUNTOF(Defaults2.TimeStamp), L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $");
   IniSectionGetString(Settings2_Section, L"TimeStamp", Defaults2.TimeStamp, Settings2.TimeStamp, COUNTOF(Settings2.TimeStamp));
 
