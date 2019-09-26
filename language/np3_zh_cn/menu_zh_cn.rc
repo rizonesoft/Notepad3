@@ -68,8 +68,16 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "设置加密口令(&Y)...",                        IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Path to Clipboard"
+        BEGIN
+            MENUITEM "Copy &Filename only\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path only",             IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "启动(&L)"
         BEGIN
+            MENUITEM "Open File &Explorer",                   IDM_FILE_EXPLORE_DIR
+            MENUITEM SEPARATOR
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
@@ -246,28 +254,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "日期和时间（短格式）(&T)\tCtrl+F5",         IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "更新时间戳(&U)\tShift+F5",                CMD_TIMESTAMPS
+            MENUITEM "更新时间戳(&U)\tShift+F5",                 CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "切换行注释(&L)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
-            MENUITEM "添加块注释(&S)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
-            //MENUITEM SEPARATOR
-            //MENUITEM "文件名(&F)\tCtrl+F9",                     IDM_EDIT_INSERT_FILENAME
-            //MENUITEM "完整文件路径(&P)\tCtrl+Shift+F9",          IDM_EDIT_INSERT_PATHNAME
-            //MENUITEM SEPARATOR
-            //MENUITEM "GUID(&G)\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
+            MENUITEM "切换行注释(&L)\tCtrl+Q",                   IDM_EDIT_LINECOMMENT
+            MENUITEM "添加块注释(&S)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
         END
         POPUP "杂项(&M)"
         BEGIN
             MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "C 转义(&E)\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C 转义(&E)\tCtrl+Alt+E",                 IDM_EDIT_ESCAPECCHARS
             MENUITEM "C 反转义(&K)\tCtrl+Alt+R",               IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "增大数值(&+)\tCtrl+Alt+NK+",            CMD_INCREASENUM
-            MENUITEM "减小数值(&+)\tCtrl+Alt+NK-",            CMD_DECREASENUM
+            MENUITEM "增大数值(&+)\tCtrl+Alt+NK+",             CMD_INCREASENUM
+            MENUITEM "减小数值(&+)\tCtrl+Alt+NK-",             CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "查找配对的括号(&F)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "选定直到配对的括号(&M)\tCtrl+Shift+B",          IDM_EDIT_SELTOMATCHINGBRACE
