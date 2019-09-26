@@ -68,8 +68,16 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Stel Enkripsie &Wagwoordfrase...",        IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Path to Clipboard"
+        BEGIN
+            MENUITEM "Copy &Filename only\tCtrl+F9",        IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path only",           IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",      IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "&Begin"
         BEGIN
+            MENUITEM "Open File &Explorer",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM SEPARATOR
             MENUITEM "&Nuwe Venster\tAlt+N",                IDM_FILE_NEWWINDOW
             MENUITEM "Lê&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
@@ -250,18 +258,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Lyn Kommentaar (Toggle)\tCtrl+Q",        IDM_EDIT_LINECOMMENT
             MENUITEM "&Stroom Kommentaar\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
-            //MENUITEM SEPARATOR
-            //MENUITEM "&Lêernaam\tCtrl+F9",                      IDM_EDIT_INSERT_FILENAME
-            //MENUITEM "&Pad en Lêernaam\tCtrl+Shift+F9",         IDM_EDIT_INSERT_PATHNAME
-            //MENUITEM SEPARATOR
-            //MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
         END
         POPUP "&Diverse"
         BEGIN
             MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",        IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",         IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",       IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&Ontsnap C Karakters\tCtrl+Alt+E",             IDM_EDIT_ESCAPECCHARS
             MENUITEM "On-ontsnap C Ka&rakters\tCtrl+Alt+R",          IDM_EDIT_UNESCAPECCHARS

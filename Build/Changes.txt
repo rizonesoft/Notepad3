@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.926.#(build) (2019-09-26)
+Current BETA Version 5.19.927.#(build) (2019-09-27)
 ==================================================
 
 --------------------------------------------------
@@ -79,6 +79,7 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Bug in replace on single step find/replace.
 - Convert to Hex and vice versa: work on (stream-)selection (original source by ZuFuLiu).
 - Comparison warning: signed/unsignd mismatch.
 - Canonical ini-file style section order for settings from scratch.

@@ -64,12 +64,20 @@ BEGIN
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
         MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "読み取り専用(&R)",                            IDM_FILE_READONLY
+        MENUITEM "読み取り専用(&R)",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "暗号化パスワードの設定(&Y)...",                 IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Path to Clipboard"
+        BEGIN
+            MENUITEM "Copy &Filename only\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path only",             IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "起動(&L)"
         BEGIN
+            MENUITEM "Open File &Explorer",                   IDM_FILE_EXPLORE_DIR
+            MENUITEM SEPARATOR
             MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
@@ -250,18 +258,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "行コメント(切り替え)(&L)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
             MENUITEM "ブロックコメント(&S)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
-            //MENUITEM SEPARATOR
-            //MENUITEM "ファイル名(拡張子つき)(&F)\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
-            //MENUITEM "フルパス(&P)\tCtrl+Shift+F9",                IDM_EDIT_INSERT_PATHNAME
-            //MENUITEM SEPARATOR
-            //MENUITEM "&GUID\tCtrl+Shift+.",                      IDM_EDIT_INSERT_GUID
         END
         POPUP "プログラム(&M)"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "文字列型中のエスケープ文字を変換(&E)\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
             MENUITEM "文字列型中の上記アンエスケープ(&U)\tCtrl+Alt+R",   IDM_EDIT_UNESCAPECCHARS

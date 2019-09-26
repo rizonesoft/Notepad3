@@ -68,29 +68,37 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Задать парольную фразу...",   IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Path to Clipboard"
+        BEGIN
+            MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "&Запустить"
         BEGIN
-            MENUITEM "Копи&ю окна\tAlt+N",          IDM_FILE_NEWWINDOW
-            MENUITEM "&Пустое окно\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "Open File &Explorer",                IDM_FILE_EXPLORE_DIR
+            MENUITEM SEPARATOR
+            MENUITEM "Копи&ю окна\tAlt+N",                 IDM_FILE_NEWWINDOW
+            MENUITEM "&Пустое окно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть &с повышенными правами", IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "&Выполнить документ\tCtrl+L", IDM_FILE_LAUNCH
-            MENUITEM "&Открыть с помощью...\tAlt+L", IDM_FILE_OPENWITH
-            MENUITEM "&Команда...\tCtrl+R",         IDM_FILE_RUN
+            MENUITEM "&Выполнить документ\tCtrl+L",        IDM_FILE_LAUNCH
+            MENUITEM "&Открыть с помощью...\tAlt+L",       IDM_FILE_OPENWITH
+            MENUITEM "&Команда...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Веб-шаблон &1\tCtrl+Shift+1", CMD_WEBACTION1
-            MENUITEM "Веб-шаблон &2\tCtrl+Shift+2", CMD_WEBACTION2
+            MENUITEM "Веб-шаблон &1\tCtrl+Shift+1",        CMD_WEBACTION1
+            MENUITEM "Веб-шаблон &2\tCtrl+Shift+2",        CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "Ко&дировка"
         BEGIN
-            MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",         IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 с BO&M",                IDM_ENCODING_UTF8SIGN
-            MENUITEM "Е&щё...\tF9",                 IDM_ENCODING_SELECT
+            MENUITEM "&ANSI",                              IDM_ENCODING_ANSI
+            MENUITEM "&Unicode",                           IDM_ENCODING_UNICODE
+            MENUITEM "Unicode &Big Endian",                IDM_ENCODING_UNICODEREV
+            MENUITEM "UTF-&8\tShift+F8",                   IDM_ENCODING_UTF8
+            MENUITEM "UTF-8 с BO&M",                       IDM_ENCODING_UTF8SIGN
+            MENUITEM "Е&щё...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ко&дировке по умолчанию\tCtrl+Alt+F",   CMD_RECODEDEFAULT
             MENUITEM "Переоткрыть в A&NSI\tCtrl+Shift+A",                   CMD_RECODEANSI
@@ -238,30 +246,22 @@ BEGIN
         END
         POPUP "Вставка"
         BEGIN
-            MENUITEM "&Новая строка выше\tCtrl+Enter",              CMD_CTRLENTER
+            MENUITEM "&Новая строка выше\tCtrl+Enter",                  CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "Тег &HTML/XML...\tAlt+X",                     IDM_EDIT_INSERT_TAG
+            MENUITEM "Тег &HTML/XML...\tAlt+X",                         IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Идентификатор кодировки\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Идентификатор кодировки\tCtrl+F8",               IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "&Время/дата (короткая форма)\tCtrl+F5",       IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Время/&дата (длинная форма)\tCtrl+Shift+F5",  IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Обновить метки времени\tShift+F5",           CMD_TIMESTAMPS
+            MENUITEM "&Время/дата (короткая форма)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Время/&дата (длинная форма)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Обновить метки времени\tShift+F5",               CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
-            //MENUITEM SEPARATOR
-            //MENUITEM "Имя &файла\tCtrl+F9",                         IDM_EDIT_INSERT_FILENAME
-            //MENUITEM "&Путь и имя файла\tCtrl+Shift+F9",            IDM_EDIT_INSERT_PATHNAME
-            //MENUITEM SEPARATOR
-            //MENUITEM "&GUID\tCtrl+Shift+.",                         IDM_EDIT_INSERT_GUID
+            MENUITEM "&Комментарий (вкл./выкл.)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
+            MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",              IDM_EDIT_STREAMCOMMENT
         END
         POPUP "Разное"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "&Экранировать символы C\tCtrl+Alt+E",             IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Убрать экранирование символов C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS

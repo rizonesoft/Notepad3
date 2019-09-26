@@ -64,19 +64,27 @@ BEGIN
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",              IDM_FILE_SAVECOPY
         MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "읽기 전용(&R)",                            IDM_FILE_READONLY
+        MENUITEM "읽기 전용(&R)",                              IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 문구 설정(&Y)...",                IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Path to Clipboard"
+        BEGIN
+            MENUITEM "Copy &Filename only\tCtrl+F9",        IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path only",           IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",      IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "실행(&L)"
         BEGIN
+            MENUITEM "Open File &Explorer",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM SEPARATOR
             MENUITEM "새 창에 열기(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "빈 창 열기(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "관리자 권한으로 다시 열기(&R)",            IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "관리자 권한으로 다시 열기(&R)",         IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "문서 실행(&D)\tCtrl+L",                IDM_FILE_LAUNCH
-            MENUITEM "다른 프로그램으로 열기(&O)...\tAlt+L",     IDM_FILE_OPENWITH
+            MENUITEM "다른 프로그램으로 열기(&O)...\tAlt+L",  IDM_FILE_OPENWITH
             MENUITEM "명령행(&C)...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "웹 템플릿 1(&1)\tCtrl+Shift+1",        CMD_WEBACTION1
@@ -238,11 +246,11 @@ BEGIN
         END
         POPUP "삽입(&N)"
         BEGIN
-            MENUITEM "새 줄(&N)\tCtrl+Enter",                   CMD_CTRLENTER
+            MENUITEM "새 줄(&N)\tCtrl+Enter",                      CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "HTML/XML 태그(&H)...\tAlt+X",             IDM_EDIT_INSERT_TAG
+            MENUITEM "HTML/XML 태그(&H)...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "인코딩 식별자(&E)\tCtrl+F8",                 IDM_EDIT_INSERT_ENCODING
+            MENUITEM "인코딩 식별자(&E)\tCtrl+F8",                  IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "날짜/시간(짧은 형식)(&S)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "날짜/시간(긴 형식)(&L)\tCtrl+Shift+F5",       IDM_EDIT_INSERT_LONGDATE
@@ -250,18 +258,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "줄 주석 (전환)(&T)\tCtrl+Q",                  IDM_EDIT_LINECOMMENT
             MENUITEM "주석 기호 삽입(&C)\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
-            //MENUITEM SEPARATOR
-            //MENUITEM "파일 이름(&F)\tCtrl+F9",                    IDM_EDIT_INSERT_FILENAME
-            //MENUITEM "경로 및 파일 이름(&P)\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
-            //MENUITEM SEPARATOR
-            //MENUITEM "&GUID\tCtrl+Shift+.",                     IDM_EDIT_INSERT_GUID
         END
         POPUP "특수 기능(&I)"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "C언어 이스케이프 시퀀스 변환(&P)\tCtrl+Alt+E",     IDM_EDIT_ESCAPECCHARS
             MENUITEM "C언어 이스케이프 시퀀스 복원(&U)\tCtrl+Alt+R",     IDM_EDIT_UNESCAPECCHARS
@@ -275,15 +275,15 @@ BEGIN
             MENUITEM "다음 선택(&X)\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT
             MENUITEM "이전 선택(&V)\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "단어 또는 쥴 선택(&W)\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 항목 다중 선택(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Split Undo &Transaction at Line-Breaks",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "책갈피(&K)"
         BEGIN
-            MENUITEM "지정/해제(&T)\tCtrl+F2",                  BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "지정/해제(&T)\tCtrl+F2",                     BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
             MENUITEM "다음 책갈피로 바로가기(&N)\tF2",              BME_EDIT_BOOKMARKNEXT
             MENUITEM "이전 책갈피로 바로가기(&P)\tShift+F2",        BME_EDIT_BOOKMARKPREV

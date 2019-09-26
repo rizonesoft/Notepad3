@@ -64,20 +64,28 @@ BEGIN
         MENUITEM "Save &Copy...\tCtrl+F6",                          IDM_FILE_SAVECOPY
         MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Read Only",                      IDM_FILE_READONLY
+        MENUITEM "&Read Only",                             IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "Set Encr&yption Passphrase...",   IDM_SETPASS
+        MENUITEM "Set Encr&yption Passphrase...",          IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Path to Clipboard"
+        BEGIN
+            MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "&Launch"
         BEGIN
-            MENUITEM "&New Window\tAlt+N",          IDM_FILE_NEWWINDOW
-            MENUITEM "&Empty Window\tAlt+Shift+N",  IDM_FILE_NEWWINDOW2
+            MENUITEM "Open File &Explorer",                IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
-            MENUITEM "&Relaunch Elevated",          IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "&New Window\tAlt+N",                 IDM_FILE_NEWWINDOW
+            MENUITEM "&Empty Window\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "Execute &Document\tCtrl+L",   IDM_FILE_LAUNCH
-            MENUITEM "&Open with...\tAlt+L",        IDM_FILE_OPENWITH
-            MENUITEM "&Command...\tCtrl+R",         IDM_FILE_RUN
+            MENUITEM "&Relaunch Elevated",                 IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM SEPARATOR
+            MENUITEM "Execute &Document\tCtrl+L",          IDM_FILE_LAUNCH
+            MENUITEM "&Open with...\tAlt+L",               IDM_FILE_OPENWITH
+            MENUITEM "&Command...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Web Template &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Web Template &2\tCtrl+Shift+2",      CMD_WEBACTION2
@@ -254,9 +262,6 @@ BEGIN
         POPUP "&Miscellaneous"
         BEGIN
             MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",    IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",  IDM_EDIT_UNESCAPECCHARS
