@@ -256,7 +256,9 @@ BEGIN
             MENUITEM "Kopiere &GUID in die Zwischenablage\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "Kopiere &Dateiname in die Zwischenablage\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Kopiere &Pfad in die Zwischenablage\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Kopiere &Verzeichnispfad in die Zwischenablage",     IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Kopiere &Gesamtpfad in die Zwischenablage\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Öffne Verzeichnis im Datei-Explorer",                IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Zeichen\tCtrl+Alt+E",                      IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Zeichen\tCtrl+Alt+R",                    IDM_EDIT_UNESCAPECCHARS

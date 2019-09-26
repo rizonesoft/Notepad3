@@ -3371,7 +3371,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, MAX_PATH)) 
+  if (bSetCurFile && StrIsNotEmpty(Globals.CurrentFile))
   {
     WCHAR szFileName[MAX_PATH] = { L'\0' };
     StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);

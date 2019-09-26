@@ -255,8 +255,10 @@ BEGIN
         BEGIN
             MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",    IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copy &Filename to Clipboard\tCtrl+F9",         IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copy &Directory-Path to Clipboard",            IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copy &Full-Path to Clipboard\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Open Directory in &Explorer",                  IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",    IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",  IDM_EDIT_UNESCAPECCHARS

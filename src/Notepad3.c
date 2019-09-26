@@ -1401,7 +1401,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     WCHAR tchPageFmt[32] = { L'\0' };
     WCHAR szDisplayName[MAX_PATH];
 
-    if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+    if (StrIsNotEmpty(Globals.CurrentFile)) {
       PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
       pszTitle = szDisplayName;
     }
@@ -3120,7 +3120,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
   bool const mrs = Sci_IsMultiOrRectangleSelection();
 
-  int i = (int)StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile));
+  int i = StrIsEmpty(Globals.CurrentFile) ? FALSE : TRUE;
 
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
@@ -3627,7 +3627,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_READONLY:
-      if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
+      if (StrIsNotEmpty(Globals.CurrentFile))
       {
         DWORD dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
@@ -3667,16 +3667,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_LAUNCH:
       {
-        if (!StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
+        if (StrIsEmpty(Globals.CurrentFile))
           break;
 
         if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false,Flags.bPreserveFileModTime))
           break;
 
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
-          StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          PathCchRemoveFileSpec(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer));
-        }
+        StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
+        PathCchRemoveFileSpec(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer));
 
         SHELLEXECUTEINFO sei;
         ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
@@ -3691,6 +3689,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ShellExecuteEx(&sei);
       }
       break;
+
+
+    case IDM_FILE_EXPLORE_DIR:
+    {
+      if (StrIsEmpty(Globals.CurrentFile))
+        break;
+
+      if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
+        break;
+
+      PIDLIST_ABSOLUTE pidl = NULL;
+      DWORD rfg = 0;
+      SHILCreateFromPath(Globals.CurrentFile, &pidl, &rfg);
+      if (pidl) {
+        SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+        ILFree(pidl);
+      }
+    }
+    break;
 
 
     case IDM_FILE_LAUNCH_ELEVATED:
@@ -3739,7 +3756,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR tchPageFmt[32] = { L'\0' };
         WCHAR szDisplayName[MAX_PATH];
 
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
+        if (StrIsNotEmpty(Globals.CurrentFile))
         {
           PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
           pszTitle = szDisplayName;
@@ -3760,7 +3777,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_PROPERTIES:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) == 0)
+        if (StrIsEmpty(Globals.CurrentFile))
           break;
 
         SHELLEXECUTEINFO sei;
@@ -3777,7 +3794,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_CREATELINK:
       {
-        if (!StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+        if (StrIsEmpty(Globals.CurrentFile)) {
           break;
         }
         if (!PathCreateDeskLnk(Globals.CurrentFile)) {
@@ -3807,7 +3824,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_ADDTOFAV:
-      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+      if (StrIsNotEmpty(Globals.CurrentFile)) {
         WCHAR szDisplayName[MAX_PATH];
         PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
         AddToFavDlg(hwnd, szDisplayName, Globals.CurrentFile);
@@ -4528,15 +4545,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_INSERT_FILENAME:
+    case IDM_EDIT_INSERT_DIRNAME:
     case IDM_EDIT_INSERT_PATHNAME:
       {
         WCHAR *pszInsert;
         WCHAR tchUntitled[32];
         WCHAR szDisplayName[MAX_PATH];
 
-        if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
-          if (iLoWParam == IDM_EDIT_INSERT_FILENAME) {
+        if (StrIsNotEmpty(Globals.CurrentFile)) {
+          if (iLoWParam == IDM_EDIT_INSERT_FILENAME) 
+          {
             PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+            pszInsert = szDisplayName;
+          }
+          else if (iLoWParam == IDM_EDIT_INSERT_DIRNAME) 
+          {
+            StringCchCopy(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+            PathCchRemoveFileSpec(szDisplayName, COUNTOF(szDisplayName));
             pszInsert = szDisplayName;
           }
           else {
@@ -4547,9 +4572,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
-        //char chPath[MAX_PATH];
-        //WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
-        //EditReplaceSelection(chPath, false);
         SetClipboardTextW(hwnd, pszInsert, StringCchLen(pszInsert, 0));
       }
       break;
@@ -5819,7 +5841,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RECODEDEFAULT:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+        if (StrIsNotEmpty(Globals.CurrentFile)) {
           Encoding_SrcCmdLn(Encoding_MapUnicode(Settings.DefaultEncoding));
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true,true,true,false,tchMaxPathBuffer);
@@ -5830,7 +5852,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RECODEANSI:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+        if (StrIsNotEmpty(Globals.CurrentFile)) {
           Encoding_SrcCmdLn(CPI_ANSI_DEFAULT);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true,true,Settings.SkipANSICodePageDetection,false,tchMaxPathBuffer);
@@ -5841,7 +5863,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RECODEOEM:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+        if (StrIsNotEmpty(Globals.CurrentFile)) {
           Encoding_SrcCmdLn(CPI_OEM);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true,true,true,false,tchMaxPathBuffer);
@@ -5852,7 +5874,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RECODEGB18030:
     {
-      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+      if (StrIsNotEmpty(Globals.CurrentFile)) {
         Encoding_SrcCmdLn(Encoding_GetByCodePage(54936)); // GB18030
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
         FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
@@ -5863,7 +5885,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RELOADASCIIASUTF8:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
+        if (StrIsNotEmpty(Globals.CurrentFile))
         {
           Globals.bForceReLoadAsUTF8 = true;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
@@ -5876,7 +5898,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RELOADFORCEDETECTION:
     {
-      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) 
+      if (StrIsNotEmpty(Globals.CurrentFile))
       {
         Globals.bForceReLoadAsUTF8 = false;
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
@@ -5887,7 +5909,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RELOADNOFILEVARS:
       {
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
+        if (StrIsNotEmpty(Globals.CurrentFile))
         {
           bool const _fNoFileVariables = Flags.NoFileVariables;
           bool const _bNoEncodingTags = Settings.NoEncodingTags;
@@ -6011,7 +6033,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
 
               WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-              if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+              if (StrIsNotEmpty(Globals.CurrentFile)) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
                 PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
               }
@@ -6128,7 +6150,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         WCHAR *pszCopy;
         WCHAR tchUntitled[32] = { L'\0' };
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
+        if (StrIsNotEmpty(Globals.CurrentFile))
           pszCopy = Globals.CurrentFile;
         else {
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
@@ -6704,7 +6726,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
   else if (operation & OPEN_WITH_BROWSER) // open in web browser
   {
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-    if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+    if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
       PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
     }
@@ -8104,7 +8126,7 @@ static void  _UpdateToolbarDelayed()
 
   if (!Settings.ShowToolbar) { return; }
 
-  EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
+  EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
   EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsSaveNeeded(ISN_GET) /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
@@ -9849,7 +9871,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   fioStatus.iEOLMode = SciCall_GetEOLMode();
 
   bool bIsEmptyNewFile = false;
-  if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)) == 0) {
+  if (StrIsEmpty(Globals.CurrentFile)) {
     DocPos const cchText = SciCall_GetTextLength();
     if (cchText <= 0) {
       bIsEmptyNewFile = true;
@@ -9899,7 +9921,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   }
 
   // Read only...
-  if (!bSaveAs && !bSaveCopy && StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)))
+  if (!bSaveAs && !bSaveCopy && StrIsNotEmpty(Globals.CurrentFile))
   {
     DWORD dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
     if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
@@ -10026,7 +10048,7 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   Style_GetOpenDlgFilterStr(s_szFilter,COUNTOF(s_szFilter));
 
   if (!lpstrInitialDir) {
-    if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+    if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
       PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
     }
@@ -10080,7 +10102,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 
   if (StrIsNotEmpty(lpstrInitialDir))
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),lpstrInitialDir);
-  else if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+  else if (StrIsNotEmpty(Globals.CurrentFile)) {
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
     PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
   }
@@ -10573,8 +10595,7 @@ void SetNotifyIconTitle(HWND hwnd)
     GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
     StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
   }
-
-  else if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+  else if (StrIsNotEmpty(Globals.CurrentFile)) {
     WCHAR szDisplayName[MAX_PATH];
     PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
     PathCompactPathEx(tchTitle,szDisplayName,COUNTOF(tchTitle)-4,0);
