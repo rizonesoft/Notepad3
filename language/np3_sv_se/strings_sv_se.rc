@@ -191,7 +191,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Spara ändringar till ""%s""?"
+    IDS_MUI_ASK_SAVE        "Spara ändringar till:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Återgå till senast sparade fil?"
     IDS_MUI_ASK_RECODE      "Omkodning kräver att filen laddas om från disk och alla osparade ändringar förloras!"
     IDS_MUI_ASK_CREATE      """%s"" hittades inte.\nVilld du skapa denna fil?"

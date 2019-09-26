@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.923.#(build) (2019-09-23)
+Current BETA Version 5.19.926.#(build) (2019-09-26)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Copy directory to clipboard and Open path in explorer
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
@@ -46,7 +47,10 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Hidden option ([Settings2] NoCopyLineOnEmptySelection)
+- Copy instead of insert (filename, path, GUID).
+- Load (internal) Flags (Settings2) as part of LoadSettings() - one pass .ini-read.
+- Option [Settings2] LineCommentPortfixStrg= e.g. add a space to comment chars.
+- Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
 - Thin rectangular (multi) selection after toggeling line-comment block.
 - Scintilla (SCI): allow CamelCase/StartCase word lists.
@@ -54,7 +58,7 @@ CHANGES:
 - Maximize window if "full work area" is requested.
 - Full Work Area Mode (F11) -> Full Screen Mode.
 - Relax UTF-8 orientation (lower confidence level for UCHARDET 
-    and use system's code-page as detection fallback by default)
+    and use system's code-page as detection fallback by default).
 - Ctrl+Alt+Enter AutoCompletion behaviour.
 - Changed version of MarkDown-Lexer.
 - Menu and behavior for copy/paste and copy/paste line.
@@ -75,6 +79,8 @@ ENHANCEMENT:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- Convert to Hex and vice versa: work on (stream-)selection (original source by ZuFuLiu).
+- Comparison warning: signed/unsignd mismatch.
 - Canonical ini-file style section order for settings from scratch.
 - Prevent concurrent settings-file-access (re-launch elevated).
 - Small fixes on "Relaunch Elevated" functionality.
@@ -100,7 +106,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 --------------------------------------------------
 - Portuguese Brazilian (pt-BR) (on hold).
-- Slovak (sk-SK) (in progress).
+- Slovak (sk-SK) (on hold).
 - Swedish (sv-SE) (in progress).
 - Turkish (tr-TR) (on hold).
 
