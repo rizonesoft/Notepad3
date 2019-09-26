@@ -27,7 +27,7 @@ using namespace Scintilla;
 
 // Extended to accept accented characters
 static inline bool IsAWordChar(int ch) {
-	return IsASCII(ch) || isalnum(ch) || ch == '-' || ch == '_';
+	return ch >= 0x80 || isalnum(ch & 0xFF) || ch == '-' || ch == '_';
 }
 
 static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
