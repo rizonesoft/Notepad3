@@ -68,8 +68,16 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Verschlüsselungs Passwort...",           IDM_SETPASS
         MENUITEM SEPARATOR
+        POPUP "Pfad in Zwischenablage"
+        BEGIN
+            MENUITEM "Kopiere &Dateinamen\tCtrl+F9",        IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Kopiere &Verzeichnispfad",            IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Kopiere &Gesamtpfad\tCtrl+Shift+F9",  IDM_EDIT_INSERT_PATHNAME
+        END
         POPUP "&Starte"
         BEGIN
+            MENUITEM "Öffne Datei-&Explorer",               IDM_FILE_EXPLORE_DIR
+            MENUITEM SEPARATOR
             MENUITEM "&Neues Fenster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Leeres Fenster\tAlt+Shift+N",        IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
@@ -161,10 +169,10 @@ BEGIN
             MENUITEM "&Hoch schieben\tCtrl+Shift+Up",            IDM_EDIT_MOVELINEUP
             MENUITEM "&Runter schieben\tCtrl+Shift+Down",        IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "Selekt&ion oder aktuelle Zeile ausschneiden\tCtrl+X", IDM_EDIT_CUT
+            MENUITEM "Ganze &Zeilen ausschneiden\tCtrl+Shift+X", IDM_EDIT_CUTLINE
+            MENUITEM "&Kopiere Selektion oder aktuelle Zeile\tCtrl+C", IDM_EDIT_COPY
+            MENUITEM "Kopiere &ganze Zeilen\tCtrl+Shift+C",      IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "&Dupliziere Zeile/Selektion\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "Ver&tausche Zeilen\tAlt+D",                IDM_EDIT_LINETRANSPOSE
@@ -254,11 +262,6 @@ BEGIN
         POPUP "&Verschiedenes"
         BEGIN
             MENUITEM "Kopiere &GUID in die Zwischenablage\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Kopiere &Dateiname in die Zwischenablage\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Kopiere &Verzeichnispfad in die Zwischenablage",     IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Kopiere &Gesamtpfad in die Zwischenablage\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
-            MENUITEM "Öffne Verzeichnis im Datei-Explorer",                IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Zeichen\tCtrl+Alt+E",                      IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Zeichen\tCtrl+Alt+R",                    IDM_EDIT_UNESCAPECCHARS

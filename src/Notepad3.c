@@ -3119,26 +3119,30 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
   bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
   bool const mrs = Sci_IsMultiOrRectangleSelection();
+  bool const cf = StrIsNotEmpty(Globals.CurrentFile);
 
-  int i = StrIsEmpty(Globals.CurrentFile) ? FALSE : TRUE;
-
-  EnableCmd(hmenu,IDM_FILE_REVERT,i);
-  EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
-  EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, i);
-  EnableCmd(hmenu, CMD_RECODEANSI, i);
-  EnableCmd(hmenu, CMD_RECODEOEM, i);
-  EnableCmd(hmenu, CMD_RELOADNOFILEVARS, i);
-  EnableCmd(hmenu, CMD_RECODEDEFAULT, i);
-  EnableCmd(hmenu, CMD_RECODEGB18030, i);
-  EnableCmd(hmenu, IDM_FILE_LAUNCH, i);
+  EnableCmd(hmenu,IDM_FILE_REVERT, cf);
+  EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
+  EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, cf);
+  EnableCmd(hmenu, CMD_RECODEANSI, cf);
+  EnableCmd(hmenu, CMD_RECODEOEM, cf);
+  EnableCmd(hmenu, CMD_RELOADNOFILEVARS, cf);
+  EnableCmd(hmenu, CMD_RECODEDEFAULT, cf);
+  EnableCmd(hmenu, CMD_RECODEGB18030, cf);
+  EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
 
   EnableCmd(hmenu,IDM_FILE_LAUNCH_ELEVATED, !s_bIsElevated);
-  EnableCmd(hmenu,IDM_FILE_LAUNCH,i);
-  EnableCmd(hmenu,IDM_FILE_PROPERTIES,i);
-  EnableCmd(hmenu,IDM_FILE_CREATELINK,i);
-  EnableCmd(hmenu,IDM_FILE_ADDTOFAV,i);
+  EnableCmd(hmenu,IDM_FILE_LAUNCH,cf);
+  EnableCmd(hmenu,IDM_FILE_PROPERTIES,cf);
+  EnableCmd(hmenu,IDM_FILE_CREATELINK,cf);
+  EnableCmd(hmenu,IDM_FILE_ADDTOFAV,cf);
   
-  EnableCmd(hmenu,IDM_FILE_READONLY,i);
+  EnableCmd(hmenu,IDM_FILE_READONLY,cf);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_FILENAME, cf);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_DIRNAME, cf);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_PATHNAME, cf);
+  EnableCmd(hmenu, IDM_ENCODING_RECODE, cf);
+
   CheckCmd(hmenu,IDM_FILE_READONLY,s_bFileReadOnly);
   CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
 
@@ -3151,7 +3155,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_LINEENDINGS_LF,!ro);
   EnableCmd(hmenu,IDM_LINEENDINGS_CR,!ro);
 
-  EnableCmd(hmenu,IDM_ENCODING_RECODE,i);
+  int i;
 
   if (Encoding_IsUNICODE_REVERSE(Encoding_Current(CPI_GET))) {
     i = IDM_ENCODING_UNICODEREV;
@@ -3288,8 +3292,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!ro);
   EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!ro);
-  EnableCmd(hmenu,IDM_EDIT_INSERT_FILENAME,!ro);
-  EnableCmd(hmenu,IDM_EDIT_INSERT_PATHNAME,!ro);
 
   EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
 
@@ -3693,15 +3695,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_EXPLORE_DIR:
     {
-      if (StrIsEmpty(Globals.CurrentFile))
-        break;
-
       if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime))
         break;
 
       PIDLIST_ABSOLUTE pidl = NULL;
       DWORD rfg = 0;
-      SHILCreateFromPath(Globals.CurrentFile, &pidl, &rfg);
+      SHILCreateFromPath(StrIsEmpty(Globals.CurrentFile) ? Globals.WorkingDirectory : Globals.CurrentFile, &pidl, &rfg);
       if (pidl) {
         SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
         ILFree(pidl);
