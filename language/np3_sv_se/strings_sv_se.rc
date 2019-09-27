@@ -194,10 +194,10 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Spara ändringar till:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Återgå till senast sparade fil?"
     IDS_MUI_ASK_RECODE      "Omkodning kräver att filen laddas om från disk och alla osparade ändringar förloras!"
-    IDS_MUI_ASK_CREATE      """%s"" hittades inte.\nVilld du skapa denna fil?"
+    IDS_MUI_ASK_CREATE      """%s"" hittades inte.\nVill du skapa denna fil?"
     IDS_MUI_PRINT_HEADER    "Filnamn, aktuellt datum och tid|Filnamn aktuellt datum|Filenamn|Lämna tom"
     IDS_MUI_PRINT_FOOTER    "Sidnummer|Lämna tom"
-    IDS_MUI_PRINT_COLOR     "Normal|Mörk Invertera färger|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
+    IDS_MUI_PRINT_COLOR     "Normal|Mörk (Inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
     IDS_MUI_PRINT_PAGENUM   "Sida %i"
 END
 
