@@ -231,16 +231,17 @@ inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScree
   *pCYScreen = (mi.rcMonitor.bottom - mi.rcMonitor.top);
 }
 
-inline bool IsFullHDOrHigher(HWND hwnd, int resX, int resY) 
+// FullHD? =>   0:'==',   -1:'<',   +1:'>'
+inline int IsFullHD(HWND hwnd, int resX, int resY) 
 {
   int cxScreen, cyScreen;
   GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
   if (resX <= 0) { resX = cxScreen; }
-  if (resY <= 0) { resY = cxScreen; }
-  return ((resX >= 1920) && (resY >= 1080));
+  if (resY <= 0) { resY = cyScreen; }
+  return ((resX == 1920) && (resY == 1080)) ? 0 : (((resX < 1920) || (resY < 1080)) ? -1 : +1);
 }
 
-inline float GetBaseFontSize(HWND hwnd) { return (IsFullHDOrHigher(hwnd, -1, -1) ? 11.0f : 10.0f); }
+inline float GetBaseFontSize(HWND hwnd) { return ((IsFullHD(hwnd, -1, -1) < 0) ? 10.0f : 11.0f); }
 
 // ----------------------------------------------------------------------------
 

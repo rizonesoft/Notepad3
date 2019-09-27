@@ -502,6 +502,7 @@ typedef struct _settings2_t
   int    CurrentLineVerticalSlop;
   bool   NoCopyLineOnEmptySelection;
   bool   NoCutLineOnEmptySelection;
+  bool   LexerSQLNumberSignAsComment;
 
   float  AnalyzeReliableConfidenceLevel;
   //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
