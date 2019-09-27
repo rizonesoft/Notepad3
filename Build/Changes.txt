@@ -47,8 +47,10 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Initial default big toolbar only for monitors > Full-HD.
 - Copy instead of insert (filename, path, GUID).
 - Load (internal) Flags (Settings2) as part of LoadSettings() - one pass .ini-read.
+- Option [Settings2] LexerSQLNumberSignAsComment.
 - Option [Settings2] LineCommentPortfixStrg= e.g. add a space to comment chars.
 - Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
