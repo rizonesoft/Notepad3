@@ -3243,8 +3243,9 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
   const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
   DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
+  // don't consider (last) line where caret is before 1st column
   if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
-    if ((iLineEnd - iLineStart) >= 1) {
+    if ((iLineEnd - iLineStart) >= 1) { // except it is the only one
       --iLineEnd;
     }
   }
@@ -3382,6 +3383,15 @@ void EditToggleLineCommentsExtended(HWND hwnd, LPCWSTR pwszComment, bool bInsert
 
   const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
   DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
+
+  if (!Sci_IsMultiOrRectangleSelection()) {
+    // don't consider (last) line where caret is before 1st column
+    if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
+      if ((iLineEnd - iLineStart) >= 1) { // except it is the only one
+        --iLineEnd;
+      }
+    }
+  }
 
   DocPos iCommentCol = 0;
 
