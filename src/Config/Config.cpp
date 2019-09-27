@@ -824,6 +824,10 @@ void LoadSettings()
   StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
   IniSectionGetString(Settings2_Section, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
 
+  Defaults2.LexerSQLNumberSignAsComment = true;
+  Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(Settings2_Section, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
+
+
   // --------------------------------------------------------------------------
   const WCHAR* const Settings_Section = L"Settings";
   // --------------------------------------------------------------------------
@@ -1072,8 +1076,8 @@ void LoadSettings()
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
   s_iToolBarTheme = IniSectionGetInt(Window_Section, tchHighDpiToolBar, -1);
   s_iToolBarTheme = clampi(s_iToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
-  if (s_iToolBarTheme < 0) { // undefined: determine high DPI (higher than Full-HD)
-    s_iToolBarTheme = IsFullHDOrHigher(Globals.hwndMain, ResX, ResY) ? 1 : 0;
+  if (s_iToolBarTheme < 0) { // undefined: determine higher than Full-HD
+    s_iToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
   }
 
   // --------------------------------------------------------------

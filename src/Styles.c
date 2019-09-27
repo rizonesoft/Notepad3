@@ -891,7 +891,7 @@ void Style_SetLexerSpecificProperties(const int lexerId)
     case SCLEX_SQL:
       SciCall_SetProperty("sql.backslash.escapes", "1");
       SciCall_SetProperty("lexer.sql.backticks.identifier", "1");
-      SciCall_SetProperty("lexer.sql.numbersign.comment", "1");
+      SciCall_SetProperty("lexer.sql.numbersign.comment", Settings2.LexerSQLNumberSignAsComment ? "1" : "0");
       break;
 
     case SCLEX_NSIS:
