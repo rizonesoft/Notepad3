@@ -794,7 +794,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       RECT rt;
       GetWindowRect(hwnd, &rt);
       HDC hdc = GetWindowDC(hwnd);
-      DrawIconEx(hdc, 16, 32, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
+      DrawIconEx(hdc, 22, 44, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
       ReleaseDC(hwnd, hdc);
     }
     return false;
