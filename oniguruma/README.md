@@ -27,6 +27,12 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
+Master branch
+-------------
+
+* NEW API: RegSet (set of regexes)
+
+
 Version 6.9.3 (security fix release)
 ------------------------------------
 
@@ -40,6 +46,7 @@ Version 6.9.2 (Reiwa)
 ---------------------
 
 * add doc/SYNTAX.md
+* Direct threaded code (for GCC and Clang)
 * Update Unicode version 12.1.0
 * NEW: Unicode Text Segment mode option (?y{g}) (?y{w})  (*original)
 

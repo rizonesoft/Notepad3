@@ -13,18 +13,19 @@ PR_LINE_REG  = re.compile("([0-9A-Fa-f]+)(?:..([0-9A-Fa-f]+))?\s*;\s*(\w+)")
 PA_LINE_REG  = re.compile("(\w+)\s*;\s*(\w+)")
 PVA_LINE_REG = re.compile("(sc|gc)\s*;\s*(\w+)\s*;\s*(\w+)(?:\s*;\s*(\w+))?")
 BL_LINE_REG  = re.compile("([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+)\s*;\s*(.*)")
-VERSION_REG  = re.compile("#\s*.*-(\d+\.\d+\.\d+)\.txt")
+VERSION_REG  = re.compile("#\s*.*-(\d+)\.(\d+)\.(\d+)\.txt")
 
-VERSION_INFO = None
+VERSION_INFO = [-1, -1, -1]
 DIC  = { }
 PROPS = []
 PropIndex = { }
 
 def check_version_info(s):
-  global VERSION_INFO
   m = VERSION_REG.match(s)
   if m is not None:
-    VERSION_INFO = m.group(1)
+    VERSION_INFO[0] = int(m.group(1))
+    VERSION_INFO[1] = int(m.group(2))
+    VERSION_INFO[2] = int(m.group(3))
 
 def print_ranges(ranges):
   for (start, end) in ranges:
@@ -160,7 +161,7 @@ def parse_properties(path):
         continue
 
       if s[0] == '#':
-        if VERSION_INFO is None:
+        if VERSION_INFO[0] < 0:
           check_version_info(s)
 
       m = PR_LINE_REG.match(s)
@@ -222,9 +223,11 @@ COPYRIGHT = '''
 
 print COPYRIGHT
 print ''
-if VERSION_INFO is not None:
-  print "#define GRAPHEME_BREAK_PROPERTY_VERSION  %s" % re.sub(r'[\.-]', '_', VERSION_INFO)
-  print ''
+if VERSION_INFO[0] < 0:
+  raise RuntimeError("Version is not found")
+
+print "#define GRAPHEME_BREAK_PROPERTY_VERSION  %02d%02d%02d" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2])
+print ''
 
 ranges = []
 for prop in PROPS:

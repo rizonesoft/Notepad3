@@ -1,4 +1,4 @@
-﻿/**********************************************************************
+/**********************************************************************
   regexec.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
@@ -48,6 +48,9 @@
    STACK_AT(mem_end_stk[i])->u.mem.pstr : (UChar* )((void* )(mem_end_stk[i])))
 
 static int forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start, UChar* range, UChar** low, UChar** high, UChar** low_prev);
+
+static int
+search_in_range(regex_t* reg, const UChar* str, const UChar* end, const UChar* start, const UChar* range, /* match range */ const UChar* data_range, /* subject string range */ OnigRegion* region, OnigOptionType option, OnigMatchParam* mp);
 
 
 #ifdef USE_CALLOUT
@@ -4114,6 +4117,461 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #endif
 }
 
+typedef struct {
+  regex_t*    reg;
+  OnigRegion* region;
+} RR;
+
+struct OnigRegSetStruct {
+  RR*          rs;
+  int          n;
+  int          alloc;
+  OnigEncoding enc;
+  int          anchor;      /* BEGIN_BUF, BEGIN_POS, (SEMI_)END_BUF */
+  OnigLen      anc_dmin;    /* (SEMI_)END_BUF anchor distance */
+  OnigLen      anc_dmax;    /* (SEMI_)END_BUF anchor distance */
+  int          all_low_high;
+  int          anychar_inf;
+};
+
+enum SearchRangeStatus {
+  SRS_DEAD      = 0,
+  SRS_LOW_HIGH  = 1,
+  SRS_ALL_RANGE = 2
+};
+
+typedef struct {
+  int    state;  /* value of enum SearchRangeStatus */
+  UChar* low;
+  UChar* high;
+  UChar* low_prev;
+  UChar* sch_range;
+} SearchRange;
+
+#define REGSET_MATCH_AND_RETURN_CHECK(upper_range) \
+  r = match_at(reg, str, end, (upper_range), s, prev, msas + i); \
+  if (r != ONIG_MISMATCH) {\
+    if (r >= 0) {\
+      goto match;\
+    }\
+    else goto finish; /* error */ \
+  }
+
+static inline int
+regset_search_body_position_lead(OnigRegSet* set,
+           const UChar* str, const UChar* end,
+           const UChar* start, const UChar* range, /* match start range */
+           const UChar* orig_range, /* data range */
+           OnigOptionType option, MatchArg* msas, int* rmatch_pos)
+{
+  int r, n, i;
+  UChar *s, *prev;
+  UChar *low, *high, *low_prev;
+  UChar* sch_range;
+  regex_t* reg;
+  OnigEncoding enc;
+  SearchRange* sr;
+
+  n   = set->n;
+  enc = set->enc;
+
+  s = (UChar* )start;
+  if (s > str)
+    prev = onigenc_get_prev_char_head(enc, str, s);
+  else
+    prev = (UChar* )NULL;
+
+  sr = (SearchRange* )xmalloc(sizeof(*sr) * n);
+  CHECK_NULL_RETURN_MEMERR(sr);
+
+  for (i = 0; i < n; i++) {
+    reg = set->rs[i].reg;
+
+    sr[i].state = SRS_DEAD;
+    if (reg->optimize != OPTIMIZE_NONE) {
+      if (reg->dmax != INFINITE_LEN) {
+        sch_range = (UChar* )range + reg->dmax;
+        if (sch_range > end) sch_range = (UChar* )end;
+
+        if (forward_search(reg, str, end, s, sch_range, &low, &high, &low_prev)) {
+          sr[i].state = SRS_LOW_HIGH;
+          sr[i].low  = low;
+          sr[i].high = high;
+          sr[i].low_prev = low_prev;
+          sr[i].sch_range = sch_range;
+        }
+      }
+      else {
+        sch_range = (UChar* )end;
+        if (forward_search(reg, str, end, s, sch_range,
+                           &low, &high, (UChar** )NULL)) {
+          goto total_active;
+        }
+      }
+    }
+    else {
+    total_active:
+      sr[i].state    = SRS_ALL_RANGE;
+      sr[i].low      = s;
+      sr[i].high     = (UChar* )range;
+      sr[i].low_prev = prev;
+    }
+  }
+
+#define ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN   500
+
+  if (set->all_low_high != 0
+      && range - start > ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN) {
+    do {
+      int try_count = 0;
+      for (i = 0; i < n; i++) {
+        if (sr[i].state == SRS_DEAD) continue;
+
+        if (s <  sr[i].low) continue;
+        if (s >= sr[i].high) {
+          if (forward_search(set->rs[i].reg, str, end, s, sr[i].sch_range,
+                             &low, &high, &low_prev) != 0) {
+            sr[i].low      = low;
+            sr[i].high     = high;
+            sr[i].low_prev = low_prev;
+            if (s < low) continue;
+          }
+          else {
+            sr[i].state = SRS_DEAD;
+            continue;
+          }
+        }
+
+        reg = set->rs[i].reg;
+        REGSET_MATCH_AND_RETURN_CHECK(orig_range);
+        try_count++;
+      } /* for (i) */
+
+      if (s >= range) break;
+
+      if (try_count == 0) {
+        low = (UChar* )range;
+        for (i = 0; i < n; i++) {
+          if (sr[i].state == SRS_LOW_HIGH && low > sr[i].low) {
+            low = sr[i].low;
+            low_prev = sr[i].low_prev;
+          }
+        }
+        if (low == range) break;
+
+        s = low;
+        prev = low_prev;
+      }
+      else {
+        prev = s;
+        s += enclen(enc, s);
+      }
+    } while (1);
+  }
+  else {
+    int prev_is_newline = 1;
+    do {
+      for (i = 0; i < n; i++) {
+        if (sr[i].state == SRS_DEAD) continue;
+        if (sr[i].state == SRS_LOW_HIGH) {
+          if (s <  sr[i].low) continue;
+          if (s >= sr[i].high) {
+            if (forward_search(set->rs[i].reg, str, end, s, sr[i].sch_range,
+                               &low, &high, &low_prev) != 0) {
+              sr[i].low      = low;
+              sr[i].high     = high;
+              /* sr[i].low_prev = low_prev; */
+              if (s < low) continue;
+            }
+            else {
+              sr[i].state = SRS_DEAD;
+              continue;
+            }
+          }
+        }
+
+        reg = set->rs[i].reg;
+        if ((reg->anchor & ANCR_ANYCHAR_INF) == 0 || prev_is_newline != 0) {
+          REGSET_MATCH_AND_RETURN_CHECK(orig_range);
+        }
+      }
+
+      if (s >= range) break;
+
+      if (set->anychar_inf != 0)
+        prev_is_newline = ONIGENC_IS_MBC_NEWLINE(set->enc, s, end);
+
+      prev = s;
+      s += enclen(enc, s);
+    } while (1);
+  }
+
+  xfree(sr);
+  return ONIG_MISMATCH;
+
+ finish:
+  xfree(sr);
+  return r;
+
+ match:
+  xfree(sr);
+  *rmatch_pos = (int )(s - str);
+  return i;
+}
+
+static inline int
+regset_search_body_regex_lead(OnigRegSet* set,
+              const UChar* str, const UChar* end,
+              const UChar* start, const UChar* orig_range, OnigRegSetLead lead,
+              OnigOptionType option, OnigMatchParam* mps[], int* rmatch_pos)
+{
+  int r;
+  int i;
+  int n;
+  int match_index;
+  const UChar* ep;
+  regex_t* reg;
+  OnigRegion* region;
+
+  n = set->n;
+
+  match_index = ONIG_MISMATCH;
+  ep = orig_range;
+  for (i = 0; i < n; i++) {
+    reg    = set->rs[i].reg;
+    region = set->rs[i].region;
+    r = search_in_range(reg, str, end, start, ep, orig_range, region, option, mps[i]);
+    if (r > 0) {
+      if (str + r < ep) {
+        match_index = i;
+        *rmatch_pos = r;
+        if (lead == ONIG_REGSET_PRIORITY_TO_REGEX_ORDER)
+          break;
+
+        ep = str + r;
+      }
+    }
+    else if (r == 0) {
+      match_index = i;
+      *rmatch_pos = r;
+      break;
+    }
+  }
+
+  return match_index;
+}
+
+extern int
+onig_regset_search_with_param(OnigRegSet* set,
+           const UChar* str, const UChar* end,
+           const UChar* start, const UChar* range,
+           OnigRegSetLead lead, OnigOptionType option, OnigMatchParam* mps[],
+           int* rmatch_pos)
+{
+  int r;
+  int i;
+  UChar *s, *prev;
+  regex_t* reg;
+  OnigEncoding enc;
+  OnigRegion* region;
+  MatchArg* msas;
+  const UChar *orig_start = start;
+  const UChar *orig_range = range;
+
+  if (set->n == 0)
+    return ONIG_MISMATCH;
+
+  if (IS_POSIX_REGION(option))
+    return ONIGERR_INVALID_ARGUMENT;
+
+  r = 0;
+  enc = set->enc;
+  msas = (MatchArg* )NULL;
+
+  for (i = 0; i < set->n; i++) {
+    reg    = set->rs[i].reg;
+    region = set->rs[i].region;
+    ADJUST_MATCH_PARAM(reg, mps[i]);
+    if (IS_NOT_NULL(region)) {
+      r = onig_region_resize_clear(region, reg->num_mem + 1);
+      if (r != 0) goto finish_no_msa;
+    }
+  }
+
+  if (start > end || start < str) goto mismatch_no_msa;
+  if (str < end) {
+    /* forward search only */
+    if (range <= start)
+      return ONIGERR_INVALID_ARGUMENT;
+  }
+
+  if (ONIG_IS_OPTION_ON(option, ONIG_OPTION_CHECK_VALIDITY_OF_STRING)) {
+    if (! ONIGENC_IS_VALID_MBC_STRING(enc, str, end)) {
+      r = ONIGERR_INVALID_WIDE_CHAR_VALUE;
+      goto finish_no_msa;
+    }
+  }
+
+  if (set->anchor != OPTIMIZE_NONE && str < end) {
+    UChar *min_semi_end, *max_semi_end;
+
+    if ((set->anchor & ANCR_BEGIN_POSITION) != 0) {
+      /* search start-position only */
+    begin_position:
+      range = start + 1;
+    }
+    else if ((set->anchor & ANCR_BEGIN_BUF) != 0) {
+      /* search str-position only */
+      if (start != str) goto mismatch_no_msa;
+      range = str + 1;
+    }
+    else if ((set->anchor & ANCR_END_BUF) != 0) {
+      min_semi_end = max_semi_end = (UChar* )end;
+
+    end_buf:
+      if ((OnigLen )(max_semi_end - str) < set->anc_dmin)
+        goto mismatch_no_msa;
+
+      if ((OnigLen )(min_semi_end - start) > set->anc_dmax) {
+        start = min_semi_end - set->anc_dmax;
+        if (start < end)
+          start = onigenc_get_right_adjust_char_head(enc, str, start);
+      }
+      if ((OnigLen )(max_semi_end - (range - 1)) < set->anc_dmin) {
+        range = max_semi_end - set->anc_dmin + 1;
+      }
+      if (start > range) goto mismatch_no_msa;
+    }
+    else if ((set->anchor & ANCR_SEMI_END_BUF) != 0) {
+      UChar* pre_end = ONIGENC_STEP_BACK(enc, str, end, 1);
+
+      max_semi_end = (UChar* )end;
+      if (ONIGENC_IS_MBC_NEWLINE(enc, pre_end, end)) {
+        min_semi_end = pre_end;
+
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
+        pre_end = ONIGENC_STEP_BACK(enc, str, pre_end, 1);
+        if (IS_NOT_NULL(pre_end) &&
+            ONIGENC_IS_MBC_CRNL(enc, pre_end, end)) {
+          min_semi_end = pre_end;
+        }
+#endif
+        if (min_semi_end > str && start <= min_semi_end) {
+          goto end_buf;
+        }
+      }
+      else {
+        min_semi_end = (UChar* )end;
+        goto end_buf;
+      }
+    }
+    else if ((set->anchor & ANCR_ANYCHAR_INF_ML) != 0) {
+      goto begin_position;
+    }
+  }
+  else if (str == end) { /* empty string */
+    start = end = str;
+    s = (UChar* )start;
+    prev = (UChar* )NULL;
+
+    msas = (MatchArg* )xmalloc(sizeof(*msas) * set->n);
+    CHECK_NULL_RETURN_MEMERR(msas);
+    for (i = 0; i < set->n; i++) {
+      reg = set->rs[i].reg;
+      MATCH_ARG_INIT(msas[i], reg, option, set->rs[i].region, start, mps[i]);
+    }
+    for (i = 0; i < set->n; i++) {
+      reg = set->rs[i].reg;
+      if (reg->threshold_len == 0) {
+        REGSET_MATCH_AND_RETURN_CHECK(end);
+      }
+    }
+
+    goto mismatch;
+  }
+
+  if (lead == ONIG_REGSET_POSITION_LEAD) {
+    msas = (MatchArg* )xmalloc(sizeof(*msas) * set->n);
+    CHECK_NULL_RETURN_MEMERR(msas);
+
+    for (i = 0; i < set->n; i++) {
+      MATCH_ARG_INIT(msas[i], set->rs[i].reg, option, set->rs[i].region,
+                     orig_start, mps[i]);
+    }
+
+    r = regset_search_body_position_lead(set, str, end, start, range,
+                                         orig_range, option, msas, rmatch_pos);
+  }
+  else {
+    r = regset_search_body_regex_lead(set, str, end, start, orig_range,
+                                      lead, option, mps, rmatch_pos);
+  }
+  if (r < 0) goto finish;
+  else       goto match2;
+
+ mismatch:
+  r = ONIG_MISMATCH;
+ finish:
+  for (i = 0; i < set->n; i++) {
+    if (IS_NOT_NULL(msas))
+      MATCH_ARG_FREE(msas[i]);
+    if (IS_FIND_NOT_EMPTY(set->rs[i].reg->options) &&
+        IS_NOT_NULL(set->rs[i].region)) {
+      onig_region_clear(set->rs[i].region);
+    }
+  }
+  if (IS_NOT_NULL(msas)) xfree(msas);
+  return r;
+
+ mismatch_no_msa:
+  r = ONIG_MISMATCH;
+ finish_no_msa:
+  return r;
+
+ match:
+  *rmatch_pos = (int )(s - str);
+ match2:
+  for (i = 0; i < set->n; i++) {
+    if (IS_NOT_NULL(msas))
+      MATCH_ARG_FREE(msas[i]);
+    if (IS_FIND_NOT_EMPTY(set->rs[i].reg->options) &&
+        IS_NOT_NULL(set->rs[i].region)) {
+      onig_region_clear(set->rs[i].region);
+    }
+  }
+  if (IS_NOT_NULL(msas)) xfree(msas);
+  return r; /* regex index */
+}
+
+extern int
+onig_regset_search(OnigRegSet* set, const UChar* str, const UChar* end,
+                   const UChar* start, const UChar* range,
+                   OnigRegSetLead lead, OnigOptionType option, int* rmatch_pos)
+{
+  int r;
+  int i;
+  OnigMatchParam* mp;
+  OnigMatchParam** mps;
+
+  mps = (OnigMatchParam** )xmalloc((sizeof(OnigMatchParam*) + sizeof(OnigMatchParam)) * set->n);
+  CHECK_NULL_RETURN_MEMERR(mps);
+
+  mp = (OnigMatchParam* )(mps + set->n);
+
+  for (i = 0; i < set->n; i++) {
+    onig_initialize_match_param(mp + i);
+    mps[i] = mp + i;
+  }
+
+  r = onig_regset_search_with_param(set, str, end, start, range, lead, option, mps,
+                                    rmatch_pos);
+  for (i = 0; i < set->n; i++)
+    onig_free_match_param_content(mp + i);
+
+  xfree(mps);
+
+  return r;
+}
 
 static UChar*
 slow_search(OnigEncoding enc, UChar* target, UChar* target_end,
@@ -4710,24 +5168,35 @@ onig_search(regex_t* reg, const UChar* str, const UChar* end,
 {
   int r;
   OnigMatchParam mp;
+  const UChar* data_range;
 
   onig_initialize_match_param(&mp);
-  r = onig_search_with_param(reg, str, end, start, range, region, option, &mp);
+
+  /* The following is an expanded code of onig_search_with_param()  */
+  if (range > start)
+    data_range = range;
+  else
+    data_range = end;
+
+  r = search_in_range(reg, str, end, start, range, data_range, region,
+                      option, &mp);
+
   onig_free_match_param_content(&mp);
   return r;
 
 }
 
-extern int
-onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
-                       const UChar* start, const UChar* range, OnigRegion* region,
-                       OnigOptionType option, OnigMatchParam* mp)
+static int
+search_in_range(regex_t* reg, const UChar* str, const UChar* end,
+                const UChar* start, const UChar* range, /* match start range */
+                const UChar* data_range, /* subject string range */
+                OnigRegion* region,
+                OnigOptionType option, OnigMatchParam* mp)
 {
   int r;
   UChar *s, *prev;
   MatchArg msa;
   const UChar *orig_start = start;
-  const UChar *orig_range = range;
 
 #ifdef ONIG_DEBUG_SEARCH
   fprintf(stderr,
@@ -4923,7 +5392,7 @@ onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
             prev = low_prev;
           }
           while (s <= high) {
-            MATCH_AND_RETURN_CHECK(orig_range);
+            MATCH_AND_RETURN_CHECK(data_range);
             prev = s;
             s += enclen(reg->enc, s);
           }
@@ -4936,7 +5405,7 @@ onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
 
         if ((reg->anchor & ANCR_ANYCHAR_INF) != 0) {
           do {
-            MATCH_AND_RETURN_CHECK(orig_range);
+            MATCH_AND_RETURN_CHECK(data_range);
             prev = s;
             s += enclen(reg->enc, s);
 
@@ -4953,13 +5422,13 @@ onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
     }
 
     do {
-      MATCH_AND_RETURN_CHECK(orig_range);
+      MATCH_AND_RETURN_CHECK(data_range);
       prev = s;
       s += enclen(reg->enc, s);
     } while (s < range);
 
     if (s == range) { /* because empty match with /$/. */
-      MATCH_AND_RETURN_CHECK(orig_range);
+      MATCH_AND_RETURN_CHECK(data_range);
     }
   }
   else {  /* backward search */
@@ -4980,7 +5449,9 @@ onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
           (end - range) >= reg->threshold_len) {
         do {
           sch_start = s + reg->dmax;
-          if (sch_start > end) sch_start = (UChar* )end;
+          if (sch_start >= end)
+            sch_start = onigenc_get_prev_char_head(reg->enc, str, end);
+
           if (backward_search(reg, str, end, sch_start, range, adjrange,
                               &low, &high) <= 0)
             goto mismatch;
@@ -5005,11 +5476,13 @@ onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
             sch_start = (UChar* )end;
           else {
             sch_start += reg->dmax;
-            if (sch_start > end) sch_start = (UChar* )end;
+            if (sch_start >= end) sch_start = (UChar* )end;
             else
               sch_start = ONIGENC_LEFT_ADJUST_CHAR_HEAD(reg->enc,
                                                         start, sch_start);
           }
+          if (sch_start >= end)
+            sch_start = onigenc_get_prev_char_head(reg->enc, str, end);
         }
         if (backward_search(reg, str, end, sch_start, range, adjrange,
                             &low, &high) <= 0) goto mismatch;
@@ -5065,6 +5538,22 @@ onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
  match:
   MATCH_ARG_FREE(msa);
   return (int )(s - str);
+}
+
+extern int
+onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
+                       const UChar* start, const UChar* range, OnigRegion* region,
+                       OnigOptionType option, OnigMatchParam* mp)
+{
+  const UChar* data_range;
+
+  if (range > start)
+    data_range = range;
+  else
+    data_range = end;
+
+  return search_in_range(reg, str, end, start, range, data_range, region,
+                         option, mp);
 }
 
 extern int
@@ -5168,6 +5657,202 @@ onig_copy_encoding(OnigEncoding to, OnigEncoding from)
 {
   *to = *from;
 }
+
+extern int
+onig_regset_new(OnigRegSet** rset, int n, regex_t* regs[])
+{
+#define REGSET_INITIAL_ALLOC_SIZE   10
+
+  int i;
+  int r;
+  int alloc;
+  OnigRegSet* set;
+  RR* rs;
+
+  *rset = 0;
+
+  set = (OnigRegSet* )xmalloc(sizeof(*set));
+  CHECK_NULL_RETURN_MEMERR(set);
+
+  alloc = n > REGSET_INITIAL_ALLOC_SIZE ? n : REGSET_INITIAL_ALLOC_SIZE;
+  rs = (RR* )xmalloc(sizeof(set->rs[0]) * alloc);
+  if (IS_NULL(rs)) {
+    xfree(set);
+    return ONIGERR_MEMORY;
+  }
+
+  set->rs    = rs;
+  set->n     = 0;
+  set->alloc = alloc;
+
+  for (i = 0; i < n; i++) {
+    regex_t* reg = regs[i];
+
+    r = onig_regset_add(set, reg);
+    if (r != 0) {
+      for (i = 0; i < set->n; i++) {
+        OnigRegion* region = set->rs[i].region;
+        if (IS_NOT_NULL(region))
+          onig_region_free(region, 1);
+      }
+      xfree(set->rs);
+      xfree(set);
+      return r;
+    }
+  }
+
+  *rset = set;
+  return 0;
+}
+
+static void
+update_regset_by_reg(OnigRegSet* set, regex_t* reg)
+{
+  if (set->n == 1) {
+    set->enc          = reg->enc;
+    set->anchor       = reg->anchor;
+    set->anc_dmin     = reg->anchor_dmin;
+    set->anc_dmax     = reg->anchor_dmax;
+    set->all_low_high =
+      (reg->optimize == OPTIMIZE_NONE || reg->dmax == INFINITE_LEN) ? 0 : 1;
+    set->anychar_inf  = (reg->anchor & ANCR_ANYCHAR_INF) != 0 ? 1 : 0;
+  }
+  else {
+    int anchor;
+
+    anchor = set->anchor & reg->anchor;
+    if (anchor != 0) {
+      OnigLen anc_dmin;
+      OnigLen anc_dmax;
+
+      anc_dmin = set->anc_dmin;
+      anc_dmax = set->anc_dmax;
+      if (anc_dmin > reg->anchor_dmin) anc_dmin = reg->anchor_dmin;
+      if (anc_dmax < reg->anchor_dmax) anc_dmax = reg->anchor_dmax;
+      set->anc_dmin = anc_dmin;
+      set->anc_dmax = anc_dmax;
+    }
+
+    set->anchor = anchor;
+
+    if (reg->optimize == OPTIMIZE_NONE || reg->dmax == INFINITE_LEN)
+      set->all_low_high = 0;
+
+    if ((reg->anchor & ANCR_ANYCHAR_INF) != 0)
+      set->anychar_inf = 1;
+  }
+}
+
+extern int
+onig_regset_add(OnigRegSet* set, regex_t* reg)
+{
+  OnigRegion* region;
+
+  if (IS_FIND_LONGEST(reg->options))
+    return ONIGERR_INVALID_ARGUMENT;
+
+  if (set->n != 0 && reg->enc != set->enc)
+    return ONIGERR_INVALID_ARGUMENT;
+
+  if (set->n >= set->alloc) {
+    RR* nrs;
+    int new_alloc;
+
+    new_alloc = set->alloc * 2;
+    nrs = (RR* )xrealloc(set->rs, sizeof(set->rs[0]) * new_alloc);
+    CHECK_NULL_RETURN_MEMERR(nrs);
+
+    set->rs    = nrs;
+    set->alloc = new_alloc;
+  }
+
+  region = onig_region_new();
+  CHECK_NULL_RETURN_MEMERR(region);
+
+  set->rs[set->n].reg    = reg;
+  set->rs[set->n].region = region;
+  set->n++;
+
+  update_regset_by_reg(set, reg);
+  return 0;
+}
+
+extern int
+onig_regset_replace(OnigRegSet* set, int at, regex_t* reg)
+{
+  int i;
+
+  if (at < 0 || at >= set->n)
+    return ONIGERR_INVALID_ARGUMENT;
+
+  if (IS_NULL(reg)) {
+    onig_region_free(set->rs[at].region, 1);
+    for (i = at; i < set->n - 1; i++) {
+      set->rs[i].reg    = set->rs[i+1].reg;
+      set->rs[i].region = set->rs[i+1].region;
+    }
+    set->n--;
+  }
+  else {
+    if (IS_FIND_LONGEST(reg->options))
+      return ONIGERR_INVALID_ARGUMENT;
+
+    if (set->n > 1 && reg->enc != set->enc)
+      return ONIGERR_INVALID_ARGUMENT;
+
+    set->rs[at].reg = reg;
+  }
+
+  for (i = 0; i < set->n; i++)
+    update_regset_by_reg(set, set->rs[i].reg);
+
+  return 0;
+}
+
+extern void
+onig_regset_free(OnigRegSet* set)
+{
+  int i;
+
+  for (i = 0; i < set->n; i++) {
+    regex_t* reg;
+    OnigRegion* region;
+
+    reg    = set->rs[i].reg;
+    region = set->rs[i].region;
+    onig_free(reg);
+    if (IS_NOT_NULL(region))
+      onig_region_free(region, 1);
+  }
+
+  xfree(set->rs);
+  xfree(set);
+}
+
+extern int
+onig_regset_number_of_regex(OnigRegSet* set)
+{
+  return set->n;
+}
+
+extern regex_t*
+onig_regset_get_regex(OnigRegSet* set, int at)
+{
+  if (at < 0 || at >= set->n)
+    return (regex_t* )0;
+
+  return set->rs[at].reg;
+}
+
+extern OnigRegion*
+onig_regset_get_region(OnigRegSet* set, int at)
+{
+  if (at < 0 || at >= set->n)
+    return (OnigRegion* )0;
+
+  return set->rs[at].region;
+}
+
 
 #ifdef USE_DIRECT_THREADED_CODE
 extern int

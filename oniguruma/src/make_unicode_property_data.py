@@ -22,9 +22,9 @@ PR_LINE_REG  = re.compile("([0-9A-Fa-f]+)(?:..([0-9A-Fa-f]+))?\s*;\s*(\w+)")
 PA_LINE_REG  = re.compile("(\w+)\s*;\s*(\w+)")
 PVA_LINE_REG = re.compile("(sc|gc)\s*;\s*(\w+)\s*;\s*(\w+)(?:\s*;\s*(\w+))?")
 BL_LINE_REG  = re.compile("([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+)\s*;\s*(.*)")
-VERSION_REG  = re.compile("#\s*.*-(\d+\.\d+\.\d+)\.txt")
+VERSION_REG  = re.compile("#\s*.*-(\d+)\.(\d+)\.(\d+)\.txt")
 
-VERSION_INFO = None
+VERSION_INFO = [-1, -1, -1]
 DIC  = { }
 KDIC = { }
 PropIndex = { }
@@ -41,10 +41,11 @@ def fix_block_name(name):
   return 'In_' + s
 
 def check_version_info(s):
-  global VERSION_INFO
   m = VERSION_REG.match(s)
   if m is not None:
-    VERSION_INFO = m.group(1)
+    VERSION_INFO[0] = int(m.group(1))
+    VERSION_INFO[1] = int(m.group(2))
+    VERSION_INFO[2] = int(m.group(3))
 
 
 def print_ranges(ranges):
@@ -244,7 +245,7 @@ def parse_properties(path, klass, prop_prefix = None):
         continue
 
       if s[0] == '#':
-        if VERSION_INFO is None:
+        if VERSION_INFO[0] < 0:
           check_version_info(s)
 
       m = PR_LINE_REG.match(s)
@@ -533,9 +534,11 @@ sys.stdout.write(s)
 
 if OUTPUT_LIST_MODE:
   UPF = open("UNICODE_PROPERTIES", "w")
-  if VERSION_INFO is not None:
-    print >> UPF, "Unicode Properties (from Unicode Version: %s)" % VERSION_INFO
-    print >> UPF, ''
+  if VERSION_INFO[0] < 0:
+    raise RuntimeError("Version is not found")
+
+  print >> UPF, "Unicode Properties (from Unicode Version: %d.%d.%d)" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2])
+  print >> UPF, ''
 
 index = -1
 for prop in POSIX_LIST:
@@ -569,9 +572,11 @@ if not(POSIX_ONLY):
 print '%%'
 print ''
 if not(POSIX_ONLY):
-  if VERSION_INFO is not None:
-    print "#define UNICODE_PROPERTY_VERSION  %s" % re.sub(r'[\.-]', '_', VERSION_INFO)
-    print ''
+  if VERSION_INFO[0] < 0:
+    raise RuntimeError("Version is not found")
+
+  print "#define UNICODE_PROPERTY_VERSION  %02d%02d%02d" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2])
+  print ''
 
 print "#define PROPERTY_NAME_MAX_SIZE  %d" % (PROPERTY_NAME_MAX_LEN + 10)
 print "#define CODE_RANGES_NUM         %d" % (index + 1)

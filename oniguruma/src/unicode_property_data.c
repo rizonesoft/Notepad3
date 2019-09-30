@@ -29580,7 +29580,7 @@ unicode_lookup_property_name (register const char *str, register size_t len)
 
 
 
-#define UNICODE_PROPERTY_VERSION  12_1_0
+#define UNICODE_PROPERTY_VERSION  120100
 
 #define PROPERTY_NAME_MAX_SIZE  59
 #define CODE_RANGES_NUM         568

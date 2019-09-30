@@ -46,6 +46,8 @@ m4/*.m4
 /test/testc
 /test/testcu
 /test/testp
+/test/test_regset
+/test/kofu-utf8.txt
 
 # sample/
 /sample/crnl
@@ -61,6 +63,7 @@ m4/*.m4
 /sample/echo
 /sample/count
 /sample/bug_fix
+/sample/regset
 /sample/log*
 
 /harnesses/utf16*.dict
