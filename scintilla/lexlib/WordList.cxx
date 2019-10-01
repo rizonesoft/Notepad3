@@ -20,7 +20,7 @@ using namespace Scintilla;
  * Creates an array that points into each word in the string and puts \0 terminators
  * after each word.
  */
-static char **ArrayFromWordList(char *wordlist, int *len, bool onlyLineEnds = false) {
+static char **ArrayFromWordList(char *wordlist, size_t slen, int *len, bool onlyLineEnds = false) {
 	int prev = '\n';
 	int words = 0;
 	// For rapid determination of whether a character is a separator, build
@@ -40,7 +40,6 @@ static char **ArrayFromWordList(char *wordlist, int *len, bool onlyLineEnds = fa
 	}
 	char **keywords = new char *[words + 1];
 	int wordsStore = 0;
-	const size_t slen = strlen(wordlist);
 	if (words) {
 		prev = '\0';
 		for (size_t k = 0; k < slen; k++) {
@@ -127,26 +126,46 @@ constexpr char asciitolower(const char ch) noexcept {
 }
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
-
-void WordList::Set(const char *s) {
-	Clear();
+bool WordList::Set(const char *s) {
 	const size_t lenS = strlen(s) + 1;
-	list = new char[lenS];
+	char *listTemp = new char[lenS];
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~memcpy(list, s, lenS);
-	for (size_t i = 0; i < lenS; ++i) { list[i] = asciitolower(s[i]); }
+	//~memcpy(listTemp, s, lenS);
+	for (size_t i = 0; i < lenS; ++i) { listTemp[i] = asciitolower(s[i]); }
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-	words = ArrayFromWordList(list, &len, onlyLineEnds);
+	int lenTemp = 0;
+	char **wordsTemp = ArrayFromWordList(listTemp, lenS - 1, &lenTemp, onlyLineEnds);
 #ifdef _MSC_VER
-	std::sort(words, words + len, cmpWords);
+	std::sort(wordsTemp, wordsTemp + lenTemp, cmpWords);
 #else
-	SortWordList(words, len);
+	SortWordList(wordsTemp, lenTemp);
 #endif
+
+	if (lenTemp == len) {
+		bool changed = false;
+		for (int i = 0; i < lenTemp; i++) {
+			if (strcmp(words[i], wordsTemp[i]) != 0) {
+				changed = true;
+				break;
+			}
+		}
+		if (!changed) {
+			delete []listTemp;
+			delete []wordsTemp;
+			return false;
+		}
+	}
+
+	Clear();
+	words = wordsTemp;
+	list = listTemp;
+	len = lenTemp;
 	std::fill(starts, std::end(starts), -1);
 	for (int l = len - 1; l >= 0; l--) {
 		unsigned char indexChar = words[l][0];
 		starts[indexChar] = l;
 	}
+	return true;
 }
 
 /** Check whether a string is in the list.
@@ -154,7 +173,6 @@ void WordList::Set(const char *s) {
  * Prefix elements start with '^' and match all strings that start with the rest of the element
  * so '^GTK_' matches 'GTK_X', 'GTK_MAJOR_VERSION', and 'GTK_'.
  */
-
 bool WordList::InList(const char *s) const {
 	if (0 == words)
 		return false;

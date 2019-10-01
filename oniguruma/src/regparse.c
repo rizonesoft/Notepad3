@@ -467,14 +467,14 @@ static int
 str_end_hash(st_str_end_key* x)
 {
   UChar *p;
-  int val = 0;
+  unsigned val = 0;
 
   p = x->s;
   while (p < x->end) {
-    val = val * 997 + (int )*p++;
+    val = val * 997 + (unsigned )*p++;
   }
 
-  return val + (val >> 5);
+  return (int) (val + (val >> 5));
 }
 
 extern hash_table_type*
@@ -4075,7 +4075,7 @@ enum TokenSyms {
   /* in cc */
   TK_CC_CLOSE,
   TK_CC_RANGE,
-  TK_POSIX_BRACKET_OPEN,
+  TK_CC_POSIX_BRACKET_OPEN,
   TK_CC_AND,             /* && */
   TK_CC_CC_OPEN          /* [ */
 };
@@ -4910,7 +4910,7 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       PINC;
       if (str_exist_check_with_esc(send, 2, p, end,
                                    (OnigCodePoint )']', enc, syn)) {
-        tok->type = TK_POSIX_BRACKET_OPEN;
+        tok->type = TK_CC_POSIX_BRACKET_OPEN;
       }
       else {
         PUNFETCH;
@@ -6396,7 +6396,7 @@ parse_char_class(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       if (r != 0) goto err;
       break;
 
-    case TK_POSIX_BRACKET_OPEN:
+    case TK_CC_POSIX_BRACKET_OPEN:
       r = parse_posix_bracket(cc, &p, end, env);
       if (r < 0) goto err;
       if (r == 1) {  /* is not POSIX bracket */

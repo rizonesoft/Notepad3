@@ -385,7 +385,7 @@ typedef Bits*          BitSetRef;
 } while (0)
 
 #define BS_ROOM(bs,pos)            (bs)[pos / BITS_IN_ROOM]
-#define BS_BIT(pos)                (1 << (pos % BITS_IN_ROOM))
+#define BS_BIT(pos)                (1u << (pos % BITS_IN_ROOM))
 
 #define BITSET_AT(bs, pos)         (BS_ROOM(bs,pos) & BS_BIT(pos))
 #define BITSET_SET_BIT(bs, pos)     BS_ROOM(bs,pos) |= BS_BIT(pos)
