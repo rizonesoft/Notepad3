@@ -31,13 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.927.#(build) (2019-09-27)
+Current BETA Version 5.19.1001.#(build) (2019-10-01)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Copy directory to clipboard and Open path in explorer
+- Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
@@ -47,6 +47,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
 - Copy instead of insert (filename, path, GUID).
 - Load (internal) Flags (Settings2) as part of LoadSettings() - one pass .ini-read.
