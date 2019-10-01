@@ -259,7 +259,7 @@
 # define SI_ASSERT(x)
 #endif
 
-enum class SI_Error {
+enum class SI_Error : int {
     SI_OK       =  0,   //!< No error
     SI_UPDATED  =  1,   //!< An existing value was updated
     SI_INSERTED =  2,   //!< A new value was inserted
