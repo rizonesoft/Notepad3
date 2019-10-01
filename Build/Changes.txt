@@ -37,7 +37,7 @@ Current BETA Version 5.19.1001.#(build) (2019-10-01)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
-- Copy directory to clipboard and Open path in explorer
+- Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
