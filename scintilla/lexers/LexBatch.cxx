@@ -137,6 +137,29 @@ static void ColouriseBatchLine(
 			styler.ColourTo(endPos, SCE_BAT_COMMENT);
 			return;
 		}
+		else if ((wbl > 2) && (wordBuffer[0] == '&') && (wordBuffer[1] == ':') && (wordBuffer[2] == ':') && (continueProcessing)) {
+			styler.ColourTo(endPos, SCE_BAT_COMMENT);
+			return;
+		}
+		else if (wordBuffer[0] == '&') {
+			// check for comment
+			Sci_PositionU cmntLoc = offset - wbl + 1;
+			// Skip next spaces
+			while ((cmntLoc < lengthLine) &&
+				(isspacechar(lineBuffer[cmntLoc]))) {
+				cmntLoc++;
+			}
+			int p = 0;
+			char buffer[5];
+			while ((cmntLoc < lengthLine) && (p < 4)) {
+				buffer[p++] = lineBuffer[cmntLoc++];
+			}
+			buffer[p] = '\0';
+			if ((((buffer[0] == ':') && (buffer[1] == ':')) || (CompareCaseInsensitive(buffer, "rem ") == 0)) && (continueProcessing)) {
+				styler.ColourTo(endPos, SCE_BAT_COMMENT);
+				return;
+			}
+		}
 		// Check for Separator
 		if (IsBSeparator(wordBuffer[0])) {
 			// Check for External Command / Program
@@ -147,7 +170,7 @@ static void ColouriseBatchLine(
 				// Reset Offset to re-process remainder of word
 				offset -= (wbl - 1);
 				// Colorize External Command / Program
-				if (!keywords2) {
+                if (!keywords2) {
 					styler.ColourTo(startLine + offset - 1, SCE_BAT_COMMAND);
 				} else if (keywords2.InList(wordBuffer)) {
 					styler.ColourTo(startLine + offset - 1, SCE_BAT_COMMAND);
