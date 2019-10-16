@@ -294,21 +294,25 @@ typedef struct _Node {
 #define ANCR_END_BUF_MASK      (ANCR_END_BUF | ANCR_SEMI_END_BUF)
 
 #define NODE_STRING_RAW                (1<<0) /* by backslashed number */
-#define NODE_STRING_AMBIG              (1<<1)
-#define NODE_STRING_GOOD_AMBIG         (1<<2)
-#define NODE_STRING_DONT_GET_OPT_INFO  (1<<3)
+#define NODE_STRING_CASE_EXPANDED      (1<<1)
+#define NODE_STRING_CASE_FOLD_MATCH    (1<<2)
+#define NODE_STRING_GOOD_AMBIG         (1<<3)
+#define NODE_STRING_DONT_GET_OPT_INFO  (1<<4)
 
 #define NODE_STRING_LEN(node)            (int )((node)->u.str.end - (node)->u.str.s)
-#define NODE_STRING_SET_RAW(node)        (node)->u.str.flag |= NODE_STRING_RAW
-#define NODE_STRING_CLEAR_RAW(node)      (node)->u.str.flag &= ~NODE_STRING_RAW
-#define NODE_STRING_SET_AMBIG(node)      (node)->u.str.flag |= NODE_STRING_AMBIG
+#define NODE_STRING_SET_RAW(node)           (node)->u.str.flag |= NODE_STRING_RAW
+#define NODE_STRING_CLEAR_RAW(node)         (node)->u.str.flag &= ~NODE_STRING_RAW
+#define NODE_STRING_SET_CASE_EXPANDED(node) (node)->u.str.flag |= NODE_STRING_CASE_EXPANDED
+#define NODE_STRING_SET_CASE_FOLD_MATCH(node) (node)->u.str.flag |= NODE_STRING_CASE_FOLD_MATCH
 #define NODE_STRING_SET_GOOD_AMBIG(node) (node)->u.str.flag |= NODE_STRING_GOOD_AMBIG
 #define NODE_STRING_SET_DONT_GET_OPT_INFO(node) \
   (node)->u.str.flag |= NODE_STRING_DONT_GET_OPT_INFO
 #define NODE_STRING_IS_RAW(node) \
   (((node)->u.str.flag & NODE_STRING_RAW) != 0)
-#define NODE_STRING_IS_AMBIG(node) \
-  (((node)->u.str.flag & NODE_STRING_AMBIG) != 0)
+#define NODE_STRING_IS_CASE_EXPANDED(node) \
+  (((node)->u.str.flag & NODE_STRING_CASE_EXPANDED) != 0)
+#define NODE_STRING_IS_CASE_FOLD_MATCH(node) \
+  (((node)->u.str.flag & NODE_STRING_CASE_FOLD_MATCH) != 0)
 #define NODE_STRING_IS_GOOD_AMBIG(node) \
   (((node)->u.str.flag & NODE_STRING_GOOD_AMBIG) != 0)
 #define NODE_STRING_IS_DONT_GET_OPT_INFO(node) \
@@ -441,7 +445,6 @@ extern int    onig_renumber_name_table P_((regex_t* reg, GroupNumRemap* map));
 extern int    onig_strncmp P_((const UChar* s1, const UChar* s2, int n));
 extern void   onig_strcpy P_((UChar* dest, const UChar* src, const UChar* end));
 extern void   onig_scan_env_set_error_string P_((ScanEnv* env, int ecode, UChar* arg, UChar* arg_end));
-extern int    onig_scan_unsigned_number P_((UChar** src, const UChar* end, OnigEncoding enc));
 extern void   onig_reduce_nested_quantifier P_((Node* pnode, Node* cnode));
 extern void   onig_node_conv_to_str_node P_((Node* node, int raw));
 extern int    onig_node_str_cat P_((Node* node, const UChar* s, const UChar* end));
@@ -451,7 +454,6 @@ extern Node*  onig_node_new_bag P_((enum BagType type));
 extern Node*  onig_node_new_anchor P_((int type, int ascii_mode));
 extern Node*  onig_node_new_str P_((const UChar* s, const UChar* end));
 extern Node*  onig_node_new_list P_((Node* left, Node* right));
-extern Node*  onig_node_list_add P_((Node* list, Node* x));
 extern Node*  onig_node_new_alt P_((Node* left, Node* right));
 extern void   onig_node_str_clear P_((Node* node));
 extern int    onig_names_free P_((regex_t* reg));
