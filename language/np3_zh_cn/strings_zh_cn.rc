@@ -157,8 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "该操作不能在矩形选区上执行。"
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELMULTI        "该操作不能在多个选区上执行。"
+    IDS_MUI_SELRECTORMULTI  "该操作不能在矩形或多个选区上执行。"
     IDS_MUI_BUFFERTOOSMALL  "该操作不能执行，因为有些行太长了。"
     IDS_MUI_FIND_WRAPFW     "已到达文件结尾，将从开头开始重新查找。"
     IDS_MUI_FIND_WRAPRE     "已到达文件开头，将从结尾开始重新查找。"
@@ -186,7 +186,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件。"
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接。"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "已启用维持文件最后修改时间功能。\n\n本选项将在当前会话期间生效。"
 END
 
 STRINGTABLE

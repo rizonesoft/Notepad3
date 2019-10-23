@@ -65,7 +65,7 @@ BEGIN
     IDS_LEX_WEB_SRC         "Web 源代码"
     IDS_LEX_XML_DOC         "XML 文件"
     IDS_LEX_CSS_STYLE       "CSS 样式表"
-    IDS_LEX_PRISM_CSV       "CSV Prism"
+    IDS_LEX_PRISM_CSV       "彩色 CSV 表格"
     IDS_LEX_CPP_SRC         "C/C++ 源代码"
     IDS_LEX_CSHARP_SRC      "C# 源代码"
     IDS_LEX_RESOURCE_SCR    "资源脚本"
