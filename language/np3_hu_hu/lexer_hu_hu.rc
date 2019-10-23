@@ -81,12 +81,12 @@ BEGIN
     IDS_LEX_PASCAL_SRC      "Pascal Source Code"
     IDS_LEX_ASM_SCR         "Assembly Script"
     IDS_LEX_PERL_SCR        "Perl Script"
-    IDS_LEX_CONF            "Konfigurációs fájlok"
+    IDS_LEX_CONF            "Konfigurációs fájl"
     IDS_LEX_BATCH           "Batch fájlok"
     IDS_LEX_DIFF            "Diff fájlok"
     IDS_LEX_SQL             "SQL lekérdezés"
     IDS_LEX_PYTHON          "Python script"
-    IDS_LEX_APC_CFG         "Apache konfigurációs fájlok"
+    IDS_LEX_APC_CFG         "Apache konfigurációs fájl"
     IDS_LEX_PWRSHELL        "PowerShell Script"
     IDS_LEX_D_SRC           "D forráskód"
     IDS_LEX_GO_SRC          "Go forráskód"
@@ -97,7 +97,7 @@ BEGIN
     IDS_LEX_AWK_SCR         "Awk Script"
     IDS_LEX_ANSI_ART        "ANSI Art"
     IDS_LEX_SHELL_SCR       "Shell Script"
-    IDS_LEX_REG_FILES       "Registry fájlok"
+    IDS_LEX_REG_FILES       "Registry fájl"
     IDS_LEX_VHDL            "VHDL"
     IDS_LEX_JSON            "JSON"
     IDS_LEX_NSIS            "NSIS"
@@ -119,7 +119,7 @@ BEGIN
     IDS_LEX_COFFEE_SCR      "Coffeescript"
     IDS_LEX_MATLAB          "MATLAB"
     IDS_LEX_NIM_SRC         "Nim forráskód"
-    IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
+    IDS_LEX_R_STAT          "R-S-SPlus statisztika kód"
     IDS_LEX_RUST_SRC        "Rust forráskód"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Szövegfájlok"
@@ -151,7 +151,7 @@ BEGIN
     IDS_LEX_2ND_CTRL_CHAR   "2. vezérlõkarakterek (betû)"
     IDS_LEX_2ND_INDENT      "2. behúzási segéd (szín)"
     IDS_LEX_2ND_SEL         "2. kijelölt szöveg (színek)"
-    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méretqxqx 0-12)"
+    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méret 0-12)"
 END
 
 STRINGTABLE
@@ -251,7 +251,7 @@ BEGIN
     IDS_LEX_STR_63196       "Tag-attriútum"
     IDS_LEX_STR_63197       "Pszeudo-osztály"
     IDS_LEX_STR_63198       "Ismeretlen pszeudo-osztály"
-    IDS_LEX_STR_63199       "CSS Property"
+    IDS_LEX_STR_63199       "CSS tulajdonság"
 END
 
 STRINGTABLE
@@ -326,7 +326,7 @@ BEGIN
     IDS_LEX_STR_63255       "Formátum tartalom"
     IDS_LEX_STR_63256       "HTML elem szöveg"
     IDS_LEX_STR_63257       "XML elem szöveg"
-    IDS_LEX_STR_63258       "Typedefs/Classes"
+    IDS_LEX_STR_63258       "Típusdef./Osztályok"
     IDS_LEX_STR_63259       "Megjegyzés szöveg"
     IDS_LEX_STR_63260       "2. kulcsszó"
     IDS_LEX_STR_63261       "Hiba"
@@ -358,7 +358,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63280       "Makró definíció"
     IDS_LEX_STR_63281       "Paraméter"
-    IDS_LEX_STR_63282       "Inline Expansion"
+    IDS_LEX_STR_63282       "Soron belüli kiterjesztés"
     IDS_LEX_STR_63283       "Pascal megjegyzés"
     IDS_LEX_STR_63284       "Pascal kulcsszó"
     IDS_LEX_STR_63285       "Érték név"
@@ -379,7 +379,7 @@ BEGIN
     IDS_LEX_STR_63296       "Osztály változó"
     IDS_LEX_STR_63297       "Adat szakasz"
     IDS_LEX_STR_63298       "Alap függvények"
-    IDS_LEX_STR_63299       "Szöveg, táblaés Mat. függvények"
+    IDS_LEX_STR_63299       "Szöveg, tábla és Mat. függvények"
     IDS_LEX_STR_63300       "Input, Output és rendszer lehetõségek"
     IDS_LEX_STR_63301       "Betû szerinti szöveg"
     IDS_LEX_STR_63302       "Pszeudo-elem"
@@ -416,7 +416,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63328       "Block Quote"
+    IDS_LEX_STR_63328       "Idézet blokk"
     IDS_LEX_STR_63329       "Áthúzott"
     IDS_LEX_STR_63330       "Vízszintes vonal"
     IDS_LEX_STR_63331       "Hivatkozás"
@@ -448,21 +448,21 @@ BEGIN
     IDS_LEX_STR_63353       "2nd Inline-IME Color"
     IDS_LEX_STR_63354       "Multi Edit Indicator"
     IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
-    IDS_LEX_STR_63356       "Date-Time"
+    IDS_LEX_STR_63356       "Dátum-Id?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0       "Column 0"
-    IDS_LEX_CSV_COL_1       "Column 1"
-    IDS_LEX_CSV_COL_2       "Column 2"
-    IDS_LEX_CSV_COL_3       "Column 3"
-    IDS_LEX_CSV_COL_4       "Column 4"
-    IDS_LEX_CSV_COL_5       "Column 5"
-    IDS_LEX_CSV_COL_6       "Column 6"
-    IDS_LEX_CSV_COL_7       "Column 7"
-    IDS_LEX_CSV_COL_8       "Column 8"
-    IDS_LEX_CSV_COL_9       "Column 9"
+    IDS_LEX_CSV_COL_0       "Oszlop 0"
+    IDS_LEX_CSV_COL_1       "Oszlop 1"
+    IDS_LEX_CSV_COL_2       "Oszlop 2"
+    IDS_LEX_CSV_COL_3       "Oszlop 3"
+    IDS_LEX_CSV_COL_4       "Oszlop 4"
+    IDS_LEX_CSV_COL_5       "Oszlop 5"
+    IDS_LEX_CSV_COL_6       "Oszlop 6"
+    IDS_LEX_CSV_COL_7       "Oszlop 7"
+    IDS_LEX_CSV_COL_8       "Oszlop 8"
+    IDS_LEX_CSV_COL_9       "Oszlop 9"
 END
 
 #endif    // Hungarian (Hungary) resources
