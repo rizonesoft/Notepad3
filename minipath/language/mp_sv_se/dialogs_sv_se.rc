@@ -208,7 +208,7 @@ BEGIN
     CONTROL         "Radera filer utan att bekräfta (ej rekommenderad).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Aktivera Esc-tangenten för att ...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Aktivera Esc-tangenten för att...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "Minimera fönstret.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
     CONTROL         "Avsluta MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
@@ -225,7 +225,7 @@ BEGIN
     CONTROL         "Standardfärg för fönster.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Anpassad färg:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Välj färg ...",IDC_COLOR_PICK1,119,80,50,14
+    PUSHBUTTON      "Välj färg...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Använd denna textfärg när ett FILTER ÄR AKTIVERAT:",IDC_STATIC,20,105,146,8
     CONTROL         "Anpassad fönsterfärg.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Anpassad färg:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
@@ -267,7 +267,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "Kör DDE-kommando:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Applikation:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Hitta fönster ...",IDC_FINDWIN,204,91,60,14
+    PUSHBUTTON      "Hitta fönster...",IDC_FINDWIN,204,91,60,14
     LTEXT           "Ämne:",IDC_STATIC,198,120,20,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL

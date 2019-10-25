@@ -400,7 +400,7 @@ BEGIN
         MENUITEM "Aktivera redigering av radkommentar",             IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Endast en instans per fil",                       IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Notifiering vid filändring..\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"
         BEGIN
