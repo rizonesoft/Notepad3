@@ -1,0 +1,15 @@
+@echo off
+exit
+echo 输入u盘目录
+echo 输入u盘目录
+echo 输入u盘目录
+echo 输入u盘目录
+echo 输入u盘目录
+set /p DriveU=
+echo on
+attrib "%DriveU%:\System Volume Information" -s
+rd /s /q "%DriveU%:\System Volume Information"
+del /f /q /A:RH "%DriveU%:\System Volume Information"
+echo. >"%DriveU%:\System Volume Information"
+attrib "%DriveU%:\System Volume Information" +R +H
+pause
