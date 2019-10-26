@@ -99,10 +99,10 @@ BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s（管理员权限）"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 剪贴板收集模式"
     IDS_MUI_UNTITLED        "未命名"
-    IDS_MUI_TITLEEXCERPT    "“%s”"
+    IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "（只读）"
-    IDS_MUI_LOADFILE        "正在加载“%s”..."
-    IDS_MUI_SAVEFILE        "正在保存“%s”..."
+    IDS_MUI_LOADFILE        "正在加载""%s""..."
+    IDS_MUI_SAVEFILE        "正在保存""%s""..."
     IDS_MUI_PRINTFILE       "正在打印第 %i 页..."
     IDS_MUI_SAVINGSETTINGS  "正在保存设置..."
     IDS_MUI_LINKDESCRIPTION "用 Notepad3 编辑"
@@ -123,8 +123,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "加载“%s”时遇到错误。"
-    IDS_MUI_ERR_SAVEFILE    "保存“%s”时遇到错误。"
+    IDS_MUI_ERR_LOADFILE    "加载""%s""时遇到错误。"
+    IDS_MUI_ERR_SAVEFILE    "保存""%s""时遇到错误。"
     IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载。"
     IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
     IDS_MUI_ERR_CREATELINK  "创建桌面快捷方式时遇到错误。"
@@ -132,7 +132,7 @@ BEGIN
                             "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 Notepad3 窗口吗？"
     IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用。"
     IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失。"
-    IDS_MUI_ERR_BITMAP      "加载位图文件失败“%s”。\n需求尺寸：%i × %i（宽度 ≥ %i × 高度）"
+    IDS_MUI_ERR_BITMAP      "加载位图文件失败""%s""。\n需求尺寸：%i × %i（宽度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升用户权限时出错。"
 END
@@ -142,12 +142,12 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
     IDS_MUI_ERR_DROP        "一次只能拖放一个文件。"
     IDS_MUI_ERR_ACCESSDENIED
-                            "文件“%s”不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
+                            "文件""%s""不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否确实要打开一个如此庞大的文件？"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
+                            "扩展名""%s""不是已知的文本文件。仍然要尝试打开吗？"
     IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -166,7 +166,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "已完成 %i 处替换。"
     IDS_MUI_ASK_ENCODING    "切换文件编码可能导致部分无法表示的字符被替换为其它字符，并且该操作会清空撤销历史。是否继续？"
     IDS_MUI_ASK_ENCODING2   "切换文件编码会清空撤销历史。是否继续？"
-    IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
+    IDS_MUI_READONLY_SAVE   """%s""是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
                             "当前文件已被其它程序修改。是否重新加载？"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
@@ -180,7 +180,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误。"
+    IDS_MUI_EXPORT_FAIL      "导出样式设置到文件""%s""时遇到错误。"
     IDS_MUI_REGEX_INVALID    "正则表达式无效。"
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件。"
@@ -191,10 +191,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "将修改保存到:\n“%s”？"
+    IDS_MUI_ASK_SAVE        "将修改保存到:\n""%s""？"
     IDS_MUI_ASK_REVERT      "还原文件到上次保存的状态吗？"
     IDS_MUI_ASK_RECODE      "更改编码并重新加载吗？\n\n警告：所有未保存的修改将丢失。"
-    IDS_MUI_ASK_CREATE      "文件“%s”未找到。是否创建一个新的文件？"
+    IDS_MUI_ASK_CREATE      "文件""%s""未找到。是否创建一个新的文件？"
     IDS_MUI_PRINT_HEADER    "文件名，当前日期和时间|文件名，当前日期|文件名|留空"
     IDS_MUI_PRINT_FOOTER    "页码|留空"
     IDS_MUI_PRINT_COLOR     "标准|反色（暗色背景）|白底黑字|白底彩字|白底彩字（除行号以外）|和屏幕颜色相同"
@@ -204,10 +204,10 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "该文件不包含任何可打印文本。"
-    IDS_MUI_PRINT_ERROR     "打印文件“%s”时遇到错误。"
+    IDS_MUI_PRINT_ERROR     "打印文件""%s""时遇到错误。"
     IDS_MUI_FAV_SUCCESS     "已成功在收藏夹中创建了当前文件的快捷方式。"
     IDS_MUI_FAV_FAILURE     "无法在收藏夹中创建当前文件的快捷方式。请先从收藏夹中删除同名文件。"
-    IDS_MUI_READONLY_MODIFY "文件“%s”的属性无法被修改。"
+    IDS_MUI_READONLY_MODIFY "文件""%s""的属性无法被修改。"
     IDS_MUI_SAVEPOS         "保存位置(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "重置位置(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "预览设置(&P)\tCtrl+P"
@@ -263,9 +263,9 @@ Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /l\t自动重新加载被修改的文件。\r\n\
 /q\t如果文件不存在就创建之而不提示。\r\n\
 /s\t选择语法高亮方案。\r\n\
-/d\t选择“默认文本”方案。\r\n\
-/h\t选择“Web 源代码”方案。\r\n\
-/x\t选择“XML 文件”方案。\r\n\
+/d\t选择""默认文本""方案。\r\n\
+/h\t选择""Web 源代码""方案。\r\n\
+/x\t选择""XML 文件""方案。\r\n\
 /c\t打开新窗口并粘贴剪贴板内容。\r\n\
 /b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）。\r\n\
 /n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）。\r\n\
@@ -294,7 +294,7 @@ IDS_MUI_STYLEEDIT_HELP "\
 样式格式：\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-样式属性可以复制粘贴或拖放。\r\n\r\n“预览”按钮不会应用修改。\
+样式属性可以复制粘贴或拖放。\r\n\r\n""预览""按钮不会应用修改。\
 "
 
 END
