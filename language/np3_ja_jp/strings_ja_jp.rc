@@ -147,7 +147,7 @@ BEGIN
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "%s は設定のない拡張子です。\n読み込みますか？"
+                            "%s は設定のない拡張子です。\n読み込みますか ？"
     IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -181,7 +181,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
-    IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません"
+    IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません!"
     IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます。"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
@@ -191,9 +191,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        """%s""\nの編集を保存しますか？"
+    IDS_MUI_ASK_SAVE        "の編集を保存しますか:\n""%s""?"
     IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします？"
-    IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます。"
+    IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます!"
     IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"
     IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄とする"
     IDS_MUI_PRINT_FOOTER    "ページ番号|空欄とする"
@@ -204,7 +204,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "この文書には、印刷のための文章が含まれていません。"
-    IDS_MUI_PRINT_ERROR     "印刷失敗 ""%s"""
+    IDS_MUI_PRINT_ERROR     "印刷失敗 ""%s""!"
     IDS_MUI_FAV_SUCCESS     "このファイルへのショートカットが、お気に入りフォルダ内に作成されました。"
     IDS_MUI_FAV_FAILURE     "このファイルへのショートカットは作成できませんでした。\n同じ名前の他のファイルがないことを確認してください。"
     IDS_MUI_READONLY_MODIFY """%s""の属性は変更できませんでした。"
