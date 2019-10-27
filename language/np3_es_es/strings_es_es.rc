@@ -157,8 +157,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Esta operación no se puede realizar en una selección rectangular."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELMULTI        "TEsta operación no se puede realizar en una selección múltiple."
+    IDS_MUI_SELRECTORMULTI  "Esta operación no se puede realizar en un rectángulo o selección múltiple."
     IDS_MUI_BUFFERTOOSMALL  "Esta operación no se puede realizar (líneas demasiado largas)."
     IDS_MUI_FIND_WRAPFW     "Se llegó al final del documento, reiniciando la búsqueda desde el principio."
     IDS_MUI_FIND_WRAPRE     "Se llegó al principio del documento, reiniciando la búsqueda desde el final."
@@ -186,7 +186,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Cliquear para abrir el archivo."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquear para abrir el enlace en navegador."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "Conservar la marca de tiempo de modificación del archivo original habilitada.\n¡Esta opción permanecerá para esta sesión!"
 END
 
 STRINGTABLE
