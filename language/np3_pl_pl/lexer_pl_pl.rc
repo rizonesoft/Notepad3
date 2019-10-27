@@ -65,7 +65,7 @@ BEGIN
     IDS_LEX_WEB_SRC         "Kod Ÿród³owy strony"
     IDS_LEX_XML_DOC         "Dokument XML"
     IDS_LEX_CSS_STYLE       "Arkusze stylu CSS"
-    IDS_LEX_PRISM_CSV       "CSV Prism"
+    IDS_LEX_PRISM_CSV       "Pryzmat CSV"
     IDS_LEX_CPP_SRC         "Kod Ÿród³owy C/C++"
     IDS_LEX_CSHARP_SRC      "Kod Ÿród³owy C#"
     IDS_LEX_RESOURCE_SCR    "Skrypt zasobu"
