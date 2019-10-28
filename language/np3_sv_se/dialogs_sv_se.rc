@@ -357,7 +357,7 @@ BEGIN
     LTEXT           "%s rad(er)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
     GROUPBOX        "Gör om indrag för alla ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "Tabbar",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
+    CONTROL         "Tomrum",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
     LTEXT           "%s rad(er) med oregelbundet indragsdjup",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
     LTEXT           "%s rad(er) med oregelbundet indragsdjup",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
     PUSHBUTTON      "Ja",IDOK,80,98,50,14
@@ -634,10 +634,10 @@ BEGIN
     CONTROL         "Ta bort unika rader.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Ta bort tomma rader.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Ta bort rader med blankstegstecken.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,120,10
-    CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "Skiftlägeskänslig.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
     CONTROL         "Ej skiftlägeskänslig.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
     CONTROL         "Jämför logiska nummer.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Lexikografisk jämförelse.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
     CONTROL         "Kolumnsortering (rektangulär markering).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,128,24,50,14
