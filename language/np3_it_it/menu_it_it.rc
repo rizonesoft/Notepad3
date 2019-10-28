@@ -62,21 +62,21 @@ BEGIN
         MENUITEM "&Salva\tCtrl+S",                                  IDM_FILE_SAVE
         MENUITEM "Salva con nome...\tF6",                           IDM_FILE_SAVEAS
         MENUITEM "Salva &copia...\tCtrl+F6",                        IDM_FILE_SAVECOPY
-        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Salva con &Data/Ora originali del file\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "Sola lettu&ra",                         IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Imposta passphrase per crittografia...", IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Path to Clipboard"
+        POPUP "Percorso negli Appunti"
         BEGIN
-            MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copia &Nome file\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copia solo &Percorso",          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copia il &Full-path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "&Esegui"
         BEGIN
-            MENUITEM "Open File &Explorer",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "Apri &Esplora File",                IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "&Nuova finestra\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Finestra vuota\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
@@ -169,10 +169,10 @@ BEGIN
             MENUITEM "Sposta &su\tCtrl+Shift+Up",         IDM_EDIT_MOVELINEUP
             MENUITEM "Sposta &giù\tCtrl+Shift+Down",      IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "&Taglia selezione o riga corrente\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Taglia righe intere\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copia selezione o riga corrente\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Copia righe intere\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "&Duplica riga/selezione\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Trasponi righe\tAlt+D",            IDM_EDIT_LINETRANSPOSE
@@ -261,7 +261,7 @@ BEGIN
         END
         POPUP "&Altro"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
+            MENUITEM "Copia &GUID negli Appunti\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",               IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",             IDM_EDIT_UNESCAPECCHARS
@@ -278,7 +278,7 @@ BEGIN
             MENUITEM "Seleziona &Parola o Linea\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Selezione di &tutte le occorrenze\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Separa &transazione Undo per ogni riga",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Boo&kmarks"
@@ -352,7 +352,7 @@ BEGIN
         END
         POPUP "&Toolbar"
         BEGIN
-            MENUITEM "Show &Menubar",                 IDM_VIEW_MENUBAR
+            MENUITEM "Mostra barra dei &Menu",        IDM_VIEW_MENUBAR
             MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "Ca&mbia Toolbars",              IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
@@ -397,7 +397,7 @@ BEGIN
         MENUITEM "Completamento a&utomatico delle parole",           IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Completamento automatico &keywords lexer",         IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Navi&gazione accelerata delle parole\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Enable Line &Comment Block Edit",                  IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "Abilita modifica blocco commenti di linea",        IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Im&pedisci di riaprire lo stesso file",            IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
@@ -487,7 +487,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Menubar",                  IDM_VIEW_MENUBAR
+        MENUITEM "Mostra barra dei &Menu",         IDM_VIEW_MENUBAR
         MENUITEM "Mostra &Toolbar",                IDM_VIEW_TOOLBAR
         MENUITEM "Ca&mbia Toolbars",               IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
