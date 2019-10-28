@@ -453,16 +453,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0       "Column 0"
-    IDS_LEX_CSV_COL_1       "Column 1"
-    IDS_LEX_CSV_COL_2       "Column 2"
-    IDS_LEX_CSV_COL_3       "Column 3"
-    IDS_LEX_CSV_COL_4       "Column 4"
-    IDS_LEX_CSV_COL_5       "Column 5"
-    IDS_LEX_CSV_COL_6       "Column 6"
-    IDS_LEX_CSV_COL_7       "Column 7"
-    IDS_LEX_CSV_COL_8       "Column 8"
-    IDS_LEX_CSV_COL_9       "Column 9"
+    IDS_LEX_CSV_COL_0       "Columna 0"
+    IDS_LEX_CSV_COL_1       "Columna 1"
+    IDS_LEX_CSV_COL_2       "Columna 2"
+    IDS_LEX_CSV_COL_3       "Columna 3"
+    IDS_LEX_CSV_COL_4       "Columna 4"
+    IDS_LEX_CSV_COL_5       "Columna 5"
+    IDS_LEX_CSV_COL_6       "Columna 6"
+    IDS_LEX_CSV_COL_7       "Columna 7"
+    IDS_LEX_CSV_COL_8       "Columna 8"
+    IDS_LEX_CSV_COL_9       "Columna 9"
 END
 
 #endif    // Spanish (Spain, International Sort) resources

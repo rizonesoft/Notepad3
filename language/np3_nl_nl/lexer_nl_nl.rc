@@ -453,16 +453,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0       "Column 0"
-    IDS_LEX_CSV_COL_1       "Column 1"
-    IDS_LEX_CSV_COL_2       "Column 2"
-    IDS_LEX_CSV_COL_3       "Column 3"
-    IDS_LEX_CSV_COL_4       "Column 4"
-    IDS_LEX_CSV_COL_5       "Column 5"
-    IDS_LEX_CSV_COL_6       "Column 6"
-    IDS_LEX_CSV_COL_7       "Column 7"
-    IDS_LEX_CSV_COL_8       "Column 8"
-    IDS_LEX_CSV_COL_9       "Column 9"
+    IDS_LEX_CSV_COL_0       "Kolom 0"
+    IDS_LEX_CSV_COL_1       "Kolom 1"
+    IDS_LEX_CSV_COL_2       "Kolom 2"
+    IDS_LEX_CSV_COL_3       "Kolom 3"
+    IDS_LEX_CSV_COL_4       "Kolom 4"
+    IDS_LEX_CSV_COL_5       "Kolom 5"
+    IDS_LEX_CSV_COL_6       "Kolom 6"
+    IDS_LEX_CSV_COL_7       "Kolom 7"
+    IDS_LEX_CSV_COL_8       "Kolom 8"
+    IDS_LEX_CSV_COL_9       "Kolom 9"
 END
 
 #endif    // Dutch (Netherlands) resources
