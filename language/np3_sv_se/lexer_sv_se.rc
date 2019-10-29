@@ -170,7 +170,7 @@ BEGIN
     IDS_LEX_STR_63131       "Sträng"
     IDS_LEX_STR_63132       "Operator"
     IDS_LEX_STR_63133       "Förprocessor"
-    IDS_LEX_STR_63134       "Verbatim sträng"
+    IDS_LEX_STR_63134       "Längre sträng"
     IDS_LEX_STR_63135       "Regex"
 END
 
@@ -251,7 +251,7 @@ BEGIN
     IDS_LEX_STR_63196       "Tag-attribut"
     IDS_LEX_STR_63197       "Pseudo-klass"
     IDS_LEX_STR_63198       "Okänd Pseudo-klass"
-    IDS_LEX_STR_63199       "CSS Property"
+    IDS_LEX_STR_63199       "CSS egenskap"
 END
 
 STRINGTABLE
@@ -281,15 +281,15 @@ BEGIN
     IDS_LEX_STR_63218       "Symboltabell *var"
     IDS_LEX_STR_63219       "Regex /re/ or m{re}"
     IDS_LEX_STR_63220       "Ersättning s/re/ore/"
-    IDS_LEX_STR_63221       "Back Ticks"
+    IDS_LEX_STR_63221       "Baklängescitationstecken "
     IDS_LEX_STR_63222       "Datasektion"
-    IDS_LEX_STR_63223       "Here-Doc (Delimiter)"
+    IDS_LEX_STR_63223       "Here-Doc (avgränsare)"
     IDS_LEX_STR_63224       "Here-Doc (enkelciterad, q)"
     IDS_LEX_STR_63225       "Here-Doc (dubbelciterad, qq)"
     IDS_LEX_STR_63226       "Here-Doc (Back Ticks, qx)"
     IDS_LEX_STR_63227       "Enkelciterad sträng (generisk, q)"
     IDS_LEX_STR_63228       "Double Quoted sträng (qq)"
-    IDS_LEX_STR_63229       "Back Ticks (qx)"
+    IDS_LEX_STR_63229       "Baklängescitationstecken (qx)"
     IDS_LEX_STR_63230       "Regex (qr)"
     IDS_LEX_STR_63231       "Array (qw)"
 END
@@ -387,9 +387,9 @@ BEGIN
     IDS_LEX_STR_63304       "Global klass"
     IDS_LEX_STR_63305       "User-Defined Funktion"
     IDS_LEX_STR_63306       "Specialtecken"
-    IDS_LEX_STR_63307       "Verbatim Segment"
-    IDS_LEX_STR_63308       "Expression Operator"
-    IDS_LEX_STR_63309       "Variabel Dereferencing"
+    IDS_LEX_STR_63307       "Längre segment"
+    IDS_LEX_STR_63308       "Operatoruttryck"
+    IDS_LEX_STR_63309       "Avreferera  variabel"
     IDS_LEX_STR_63310       "Flödeskontroll"
     IDS_LEX_STR_63311       "Tangenter och knappar"
 END
@@ -453,16 +453,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0       "Column 0"
-    IDS_LEX_CSV_COL_1       "Column 1"
-    IDS_LEX_CSV_COL_2       "Column 2"
-    IDS_LEX_CSV_COL_3       "Column 3"
-    IDS_LEX_CSV_COL_4       "Column 4"
-    IDS_LEX_CSV_COL_5       "Column 5"
-    IDS_LEX_CSV_COL_6       "Column 6"
-    IDS_LEX_CSV_COL_7       "Column 7"
-    IDS_LEX_CSV_COL_8       "Column 8"
-    IDS_LEX_CSV_COL_9       "Column 9"
+    IDS_LEX_CSV_COL_0       "Kolumn 0"
+    IDS_LEX_CSV_COL_1       "Kolumn 1"
+    IDS_LEX_CSV_COL_2       "Kolumn 2"
+    IDS_LEX_CSV_COL_3       "Kolumn 3"
+    IDS_LEX_CSV_COL_4       "Kolumn 4"
+    IDS_LEX_CSV_COL_5       "Kolumn 5"
+    IDS_LEX_CSV_COL_6       "Kolumn 6"
+    IDS_LEX_CSV_COL_7       "Kolumn 7"
+    IDS_LEX_CSV_COL_8       "Kolumn 8"
+    IDS_LEX_CSV_COL_9       "Kolumn 9"
 END
 
 #endif    // Swedish (Sweden) resources

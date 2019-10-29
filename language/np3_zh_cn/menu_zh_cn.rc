@@ -319,7 +319,7 @@ BEGIN
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
         POPUP "高亮当前行(&G)\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "清除高亮(&N)",                          IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "无高亮(&N)",                          IDM_VIEW_HILITCURLN_NONE
             MENUITEM "背景颜色(&C)",                          IDM_VIEW_HILITCURLN_BACK
             MENUITEM "边框(&F)",                              IDM_VIEW_HILITCURLN_FRAME
         END
