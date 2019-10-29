@@ -1,6 +1,5 @@
 // Microsoft Visual C++ generated resource script.
 // encoding: CP-1250
-
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -20,6 +19,33 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SKY)
 LANGUAGE LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA
 #pragma code_page(1250)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#include ""../common_res.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -55,22 +81,22 @@ BEGIN
         MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
         POPUP "&Show"
         BEGIN
-            MENUITEM "&Directories",                IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                      IDM_VIEW_FILES
-            MENUITEM "&System Objects",             IDM_VIEW_HIDDEN
+            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
+            MENUITEM "&Files",                  IDM_VIEW_FILES
+            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
         END
         POPUP "S&ort"
         BEGIN
-            MENUITEM "by &Name",                    IDM_SORT_NAME
-            MENUITEM "by &Size",                    IDM_SORT_SIZE
-            MENUITEM "by &Type",                    IDM_SORT_TYPE
-            MENUITEM "by &Date",                    IDM_SORT_DATE
+            MENUITEM "by &Name",                IDM_SORT_NAME
+            MENUITEM "by &Size",                IDM_SORT_SIZE
+            MENUITEM "by &Type",                IDM_SORT_TYPE
+            MENUITEM "by &Date",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                    IDM_SORT_REVERSE
+            MENUITEM "&Reverse",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Goto Favourites",            IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",            IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
+        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
         MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
@@ -99,42 +125,6 @@ BEGIN
     END
 END
 
-#endif    // Slovak (Slovakia) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Slovak (Slovakia) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SKY)
-LANGUAGE LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA
-#pragma code_page(1250)
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#include ""winresrc.h""\r\n"
-    "#include ""../common_res.h""\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
 
 #endif    // Slovak (Slovakia) resources
 /////////////////////////////////////////////////////////////////////////////
