@@ -1797,7 +1797,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);  // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
 
   int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS;
@@ -1873,9 +1873,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MULTI_EDIT, RGB(0xFF, 0xA5, 0x00));
   SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MULTI_EDIT, 60);
   SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MULTI_EDIT, 180);
-
-  // paste into rectangular selection
-  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
 
   // No SC_AUTOMATICFOLD_CLICK, performed by 
   SendMessage(hwndEditCtrl, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
@@ -4078,12 +4075,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_EDIT_PASTE:
-      {
+      if (SciCall_CanPaste()) {
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
         _BEGIN_UNDO_ACTION_
-        SciCall_Paste();
+          if (SciCall_IsSelectionRectangle()) {
+            //SciCall_SetMultiPaste(SC_MULTIPASTE_ONCE);
+            //SciCall_RotateSelection();
+          } else {
+            //SciCall_SetMultiPaste(SC_MULTIPASTE_EACH);
+          }
+          //if (!Sci_IsMultiOrRectangleSelection()) {
+          //  SciCall_PositionBefore(SciCall_PositionAfter(SciCall_GetCurrentPos()));
+          //}
+          SciCall_Paste();
         _END_UNDO_ACTION_
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -4091,7 +4097,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_EDIT_SWAP:
-      {
+      if (!SciCall_IsSelectionEmpty() && SciCall_CanPaste()) {
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }

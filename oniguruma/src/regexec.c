@@ -395,7 +395,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       GET_CODE_POINT(ncode, codes);
       codes++;
       GET_CODE_POINT(code, codes);
-      fprintf(f, ":%u:%u", code, ncode);
+      fprintf(f, ":%d:0x%x", ncode, code);
     }
     break;
   case OP_CCLASS_MIX:
@@ -2889,6 +2889,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
           DATA_ENSURE(0);
           q = lowbuf;
           while (len-- > 0) {
+            if (ps >= endp) goto fail;
             if (*ps != *q) goto fail;
             ps++; q++;
           }
@@ -4613,6 +4614,7 @@ str_lower_case_match(OnigEncoding enc, int case_fold_flag,
   UChar *q, lowbuf[ONIGENC_MBC_CASE_FOLD_MAXLEN];
 
   while (t < tend) {
+    if (p >= end) return 0;
     lowlen = ONIGENC_MBC_CASE_FOLD(enc, case_fold_flag, &p, end, lowbuf);
     q = lowbuf;
     while (lowlen > 0) {
@@ -4630,16 +4632,11 @@ slow_search_ic(OnigEncoding enc, int case_fold_flag,
                UChar* target, UChar* target_end,
                const UChar* text, const UChar* text_end, UChar* text_range)
 {
-  UChar *s, *end;
-
-  end = (UChar* )text_end;
-  end -= target_end - target - 1;
-  if (end > text_range)
-    end = text_range;
+  UChar *s;
 
   s = (UChar* )text;
 
-  while (s < end) {
+  while (s < text_range) {
     if (str_lower_case_match(enc, case_fold_flag, target, target_end,
                              s, text_end))
       return s;

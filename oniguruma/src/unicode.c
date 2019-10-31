@@ -356,16 +356,15 @@ onigenc_unicode_get_case_fold_codes_by_str(OnigEncoding enc,
         for (fn = 0; fn < 2; fn++) {
           int index;
           cs[fn][0] = FOLDS2_FOLD(buk->index)[fn];
+          ncs[fn] = 1;
           index = onigenc_unicode_fold1_key(&cs[fn][0]);
           if (index >= 0) {
             int m = FOLDS1_UNFOLDS_NUM(index);
             for (i = 0; i < m; i++) {
               cs[fn][i+1] = FOLDS1_UNFOLDS(index)[i];
             }
-            ncs[fn] = m + 1;
+            ncs[fn] += m;
           }
-          else
-            ncs[fn] = 1;
         }
 
         for (i = 0; i < ncs[0]; i++) {
@@ -393,16 +392,15 @@ onigenc_unicode_get_case_fold_codes_by_str(OnigEncoding enc,
         for (fn = 0; fn < 3; fn++) {
           int index;
           cs[fn][0] = FOLDS3_FOLD(buk->index)[fn];
+          ncs[fn] = 1;
           index = onigenc_unicode_fold1_key(&cs[fn][0]);
           if (index >= 0) {
             int m = FOLDS1_UNFOLDS_NUM(index);
             for (i = 0; i < m; i++) {
               cs[fn][i+1] = FOLDS1_UNFOLDS(index)[i];
             }
-            ncs[fn] = m + 1;
+            ncs[fn] += m;
           }
-          else
-            ncs[fn] = 1;
         }
 
         for (i = 0; i < ncs[0]; i++) {
