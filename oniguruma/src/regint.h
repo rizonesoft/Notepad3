@@ -315,8 +315,6 @@ typedef unsigned int  MemStatusType;
 } while (0)
 
 
-#define INT_MAX_LIMIT           ((1UL << (SIZEOF_INT * 8 - 1)) - 1)
-
 #define IS_CODE_WORD_ASCII(enc,code) \
   (ONIGENC_IS_CODE_ASCII(code) && ONIGENC_IS_CODE_WORD(enc,code))
 #define IS_CODE_DIGIT_ASCII(enc, code) \

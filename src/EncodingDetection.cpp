@@ -837,10 +837,12 @@ extern "C" cpi_enc_t Encoding_AnalyzeText
 
 cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
 {
+  cpi_enc_t iEncoding = CPI_NONE;
+
   size_t const enoughData = 2048LL;
   size_t const cb = (len < enoughData) ? len : enoughData;
 
-  if (!pBuffer || cb < 2) { return false; }
+  if (!pBuffer || cb < 2) { return iEncoding; }
 
   // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
   // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
@@ -864,8 +866,6 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
   bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
 
   //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
-
-  cpi_enc_t iEncoding = CPI_NONE;
 
   if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse)))
   {
