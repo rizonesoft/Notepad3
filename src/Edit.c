@@ -1088,7 +1088,7 @@ bool EditLoadFile(
 #endif
     }
     if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
-      iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
+      iForcedEncoding = (iAnalyzedEncoding == CPI_ASCII_7BIT) ? CPI_ANSI_DEFAULT : iAnalyzedEncoding; // no bIsReliable check (forced unreliable detection)
     }
   }
 
@@ -1111,7 +1111,7 @@ bool EditLoadFile(
     }
     else if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
       iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+      confidence = 1.0;
     }
     else {
       if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
