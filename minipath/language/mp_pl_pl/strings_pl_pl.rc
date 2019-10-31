@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
 LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -55,17 +56,17 @@ STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Cofnij"
     IDT_HISTORY_FORWARD     "Do przodu"
-    IDT_UPDIR               "Katalog nadrzêdny"
-    IDT_ROOT                "Katalog g³ówny"
+    IDT_UPDIR               "Katalog nadrzÄ™dny"
+    IDT_ROOT                "Katalog gÅ‚Ã³wny"
     IDT_VIEW_FAVORITES      "Ulubione"
     IDT_FILE_PREV           "Poprzedni plik"
-    IDT_FILE_NEXT           "Nastêpny plik"
+    IDT_FILE_NEXT           "NastÄ™pny plik"
     IDT_FILE_RUN            "Uruchom"
-    IDT_FILE_QUICKVIEW      "Szybki podgl¹d"
+    IDT_FILE_QUICKVIEW      "Szybki podglÄ…d"
     IDT_FILE_SAVEAS         "Zapisz jako"
-    IDT_FILE_COPYMOVE       "Kopiuj/Przenieœ"
-    IDT_FILE_DELETE         "Usuñ"
-    IDT_FILE_DELETE2        "Usuñ (Bez mo¿liwoœci odzyskania)"
+    IDT_FILE_COPYMOVE       "Kopiuj/PrzenieÅ›"
+    IDT_FILE_DELETE         "UsuÅ„"
+    IDT_FILE_DELETE2        "UsuÅ„ (Bez moÅ¼liwoÅ›ci odzyskania)"
     IDT_VIEW_FILTER         "Filtr"
 END
 
@@ -75,48 +76,48 @@ BEGIN
     IDS_NUMFILES            "%s objekt(y)"
     IDS_NUMFILES2           "%s objekt(y) | Filtr"
     IDS_SAVEFILE            "Zapisywanie ""%s""..."
-    IDS_OPEN_FILE_WITH      "Otwórz za pomoc¹ %s"
+    IDS_OPEN_FILE_WITH      "OtwÃ³rz za pomocÄ… %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "B³¹d dostêpu do katalogu\nBrak dostêpu do katalogu.\nSprawdŸ dysk lub po³¹czenie sieciowe."
-    IDS_ERR_FILE            "B³¹d dostêpu do pliku\nBrak dostêpu do ""%s"".\nPlik mo¿e byæ u¿ywany przez inn¹ aplikacjê.\nSprawdŸ dysk lub po³¹czenie sieciowe."
-    IDS_ERR_NEW             "B³¹d dostêpu do pliku\nNie mo¿na utworzyæ pliku.\nSprawdŸ dysk lub po³¹czenie sieciowe."
-    IDS_ERR_NEWDIR          "B³¹d dostêpu do katalogu\nNie mo¿na utworzyæ katalogu.\nSprawdŸ dysk lub po³¹czenie sieciowe."
-    IDS_ERR_SAVEAS1         "B³¹d zapisu pliku\nB³¹d przy zapisie ""%s"".\nPlik prawdopodobnie zabezpieczony przed zapisem."
-    IDS_ERR_SAVEAS2         "B³¹d zapisu pliku\nB³¹d przy usuwaniu atrybutu Tylko do zapisu w zapisanym pliku."
-    IDS_ERR_CMDLINE         "MiniPath\nB³¹d dostêpu do pliku lub katalogu okreœlonego w linii komend."
-    IDS_ERR_STARTUPDIR      "MiniPath\nBrak dostêpu aby uruchomiæ katalog."
-    IDS_ERR_DROP1           "MiniPath\nBrak dostêpu aby upuœciæ plik lub katalog."
-    IDS_ERR_DROP2           "MiniPath\nTylko jeden plik lub katalog mo¿na upuœciæ w tym samym czasie."
-    IDS_ERR_FAVORITES       "Ulubione\nBtak dostêpu do ""Ulubionych"".\nOkreœl w³aœciwy katalog w ""Opcjach""."
-    IDS_ERR_LNK_GETPATH     "B³¹d linku\nBrak dostêpnej œcie¿ki systemu plików dla tego obiektu.\nPrawdopodobnie ten link nie odsy³a do pliku lub katalogu."
-    IDS_ERR_LNK_NOACCESS    "B³¹d linku\nBrak dostêpnej œcie¿ki systemu plików dla tego obiektu.\nSprawdŸ dysk lub po³¹czenie sieciowe."
-    IDS_ERR_CREATELINK      "B³¹d linku\nB³¹d podczas tworzenia okreœlonego linku.\nPrawdopodobnie katalog docelowy jest zabezpieczony przed zapisem."
-    IDS_ERR_FILTER          "B³¹d filtra pliku\nNie okreœlono dodatkowych filtrów.\nSprawdŸ w pliku readme aby uzyskac wiêcej informacji."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nIstniej¹ce okno MiniPath jest zajête lub ma aktywne okno dialogowe.\nCzy chcesz otworzyæ kolejne okno MiniPath?"
+    IDS_ERR_CD              "BÅ‚Ä…d dostÄ™pu do katalogu\nBrak dostÄ™pu do katalogu.\nSprawdÅº dysk lub poÅ‚Ä…czenie sieciowe."
+    IDS_ERR_FILE            "BÅ‚Ä…d dostÄ™pu do pliku\nBrak dostÄ™pu do ""%s"".\nPlik moÅ¼e byÄ‡ uÅ¼ywany przez innÄ… aplikacjÄ™.\nSprawdÅº dysk lub poÅ‚Ä…czenie sieciowe."
+    IDS_ERR_NEW             "BÅ‚Ä…d dostÄ™pu do pliku\nNie moÅ¼na utworzyÄ‡ pliku.\nSprawdÅº dysk lub poÅ‚Ä…czenie sieciowe."
+    IDS_ERR_NEWDIR          "BÅ‚Ä…d dostÄ™pu do katalogu\nNie moÅ¼na utworzyÄ‡ katalogu.\nSprawdÅº dysk lub poÅ‚Ä…czenie sieciowe."
+    IDS_ERR_SAVEAS1         "BÅ‚Ä…d zapisu pliku\nBÅ‚Ä…d przy zapisie ""%s"".\nPlik prawdopodobnie zabezpieczony przed zapisem."
+    IDS_ERR_SAVEAS2         "BÅ‚Ä…d zapisu pliku\nBÅ‚Ä…d przy usuwaniu atrybutu Tylko do zapisu w zapisanym pliku."
+    IDS_ERR_CMDLINE         "MiniPath\nBÅ‚Ä…d dostÄ™pu do pliku lub katalogu okreÅ›lonego w linii komend."
+    IDS_ERR_STARTUPDIR      "MiniPath\nBrak dostÄ™pu aby uruchomiÄ‡ katalog."
+    IDS_ERR_DROP1           "MiniPath\nBrak dostÄ™pu aby upuÅ›ciÄ‡ plik lub katalog."
+    IDS_ERR_DROP2           "MiniPath\nTylko jeden plik lub katalog moÅ¼na upuÅ›ciÄ‡ w tym samym czasie."
+    IDS_ERR_FAVORITES       "Ulubione\nBtak dostÄ™pu do ""Ulubionych"".\nOkreÅ›l wÅ‚aÅ›ciwy katalog w ""Opcjach""."
+    IDS_ERR_LNK_GETPATH     "BÅ‚Ä…d linku\nBrak dostÄ™pnej Å›cieÅ¼ki systemu plikÃ³w dla tego obiektu.\nPrawdopodobnie ten link nie odsyÅ‚a do pliku lub katalogu."
+    IDS_ERR_LNK_NOACCESS    "BÅ‚Ä…d linku\nBrak dostÄ™pnej Å›cieÅ¼ki systemu plikÃ³w dla tego obiektu.\nSprawdÅº dysk lub poÅ‚Ä…czenie sieciowe."
+    IDS_ERR_CREATELINK      "BÅ‚Ä…d linku\nBÅ‚Ä…d podczas tworzenia okreÅ›lonego linku.\nPrawdopodobnie katalog docelowy jest zabezpieczony przed zapisem."
+    IDS_ERR_FILTER          "BÅ‚Ä…d filtra pliku\nNie okreÅ›lono dodatkowych filtrÃ³w.\nSprawdÅº w pliku readme aby uzyskac wiÄ™cej informacji."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nIstniejÄ…ce okno MiniPath jest zajÄ™te lub ma aktywne okno dialogowe.\nCzy chcesz otworzyÄ‡ kolejne okno MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nIstniej¹ce okno docelowe jest zajête lub ma aktywne okno dialogowe.\nCzy chcesz otworzyæ nowe okno?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nUpewnij siê, ¿e wszystkie wymagane pola s¹ kompletne.\nMusisz te¿ znaleŸæ okno docelowe jeœli odpowiednia opcja jest w³¹czona."
-    IDS_ERR_INIOPEN         "MiniPath\nBrak dostêpu do pliku konfiguracujnego MiniPath."
-    IDS_ERR_INICREATE       "Zapis ustawieñ\nB³¹d podczas tworzenia pliku konfiguracyjnego."
-    IDS_ERR_INIWRITE        "Zapis ustawieñ\nNie zapisano ustawieñ!\nBrak dostêpu zapisu w pliku konfiguracyjnym."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nIstniejÄ…ce okno docelowe jest zajÄ™te lub ma aktywne okno dialogowe.\nCzy chcesz otworzyÄ‡ nowe okno?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nUpewnij siÄ™, Å¼e wszystkie wymagane pola sÄ… kompletne.\nMusisz teÅ¼ znaleÅºÄ‡ okno docelowe jeÅ›li odpowiednia opcja jest wÅ‚Ä…czona."
+    IDS_ERR_INIOPEN         "MiniPath\nBrak dostÄ™pu do pliku konfiguracujnego MiniPath."
+    IDS_ERR_INICREATE       "Zapis ustawieÅ„\nBÅ‚Ä…d podczas tworzenia pliku konfiguracyjnego."
+    IDS_ERR_INIWRITE        "Zapis ustawieÅ„\nNie zapisano ustawieÅ„!\nBrak dostÄ™pu zapisu w pliku konfiguracyjnym."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "ZnajdŸ wykonywalny"
-    IDS_GETQUICKVIEWER      "ZnajdŸ Quickview"
+    IDS_SEARCHEXE           "ZnajdÅº wykonywalny"
+    IDS_GETQUICKVIEWER      "ZnajdÅº Quickview"
     IDS_GETTARGET           "Find Edytor"
     IDS_NEWFILE             "Nowy plik"
     IDS_FILTER_ALL          "Wszystkie pliki (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Pliki wykonywalne (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nWszystkie pliki (*.*)\n*.*\n"
     IDS_GETDIRECTORY        "Wybierz nowy katalog."
-    IDS_FAVORITES           "Okreœl katalog ""Ulubione"" ."
+    IDS_FAVORITES           "OkreÅ›l katalog ""Ulubione"" ."
 END
 
 STRINGTABLE
@@ -131,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie t³umaczenie: Crane70"
+    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie tÅ‚umaczenie: Crane70"
 END
 
 

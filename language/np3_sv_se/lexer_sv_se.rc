@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+Ôªø// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -62,12 +63,12 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_DEF_TXT         "Gemensam bas"
-    IDS_LEX_WEB_SRC         "Web k‰llkod"
+    IDS_LEX_WEB_SRC         "Web k√§llkod"
     IDS_LEX_XML_DOC         "XML Document"
     IDS_LEX_CSS_STYLE       "CSS stilmallar"
     IDS_LEX_PRISM_CSV       "CSV Prism"
-    IDS_LEX_CPP_SRC         "C/C++ k‰llkod"
-    IDS_LEX_CSHARP_SRC      "C# k‰llkod"
+    IDS_LEX_CPP_SRC         "C/C++ k√§llkod"
+    IDS_LEX_CSHARP_SRC      "C# k√§llkod"
     IDS_LEX_RESOURCE_SCR    "Resource-skript"
     IDS_LEX_MAKEFILES       "Make-filer"
 END
@@ -77,8 +78,8 @@ BEGIN
     IDS_LEX_VB_SCR          "VBScript"
     IDS_LEX_VIS_BAS         "Visual Basic"
     IDS_LEX_J_SCR           "JavaScript"
-    IDS_LEX_JAVA_SRC        "Java k‰llkod"
-    IDS_LEX_PASCAL_SRC      "Pascal k‰llkod"
+    IDS_LEX_JAVA_SRC        "Java k√§llkod"
+    IDS_LEX_PASCAL_SRC      "Pascal k√§llkod"
     IDS_LEX_ASM_SCR         "Assembly-skript"
     IDS_LEX_PERL_SCR        "Perl-skript"
     IDS_LEX_CONF            "Konfigurationsfiler"
@@ -88,8 +89,8 @@ BEGIN
     IDS_LEX_PYTHON          "Python skript"
     IDS_LEX_APC_CFG         "Apache konfigurationsfiler"
     IDS_LEX_PWRSHELL        "PowerShell-skript"
-    IDS_LEX_D_SRC           "D k‰llkod"
-    IDS_LEX_GO_SRC          "Go k‰llkod"
+    IDS_LEX_D_SRC           "D k√§llkod"
+    IDS_LEX_GO_SRC          "Go k√§llkod"
 END
 
 STRINGTABLE
@@ -118,9 +119,9 @@ BEGIN
     IDS_LEX_YAML            "YAML"
     IDS_LEX_COFFEE_SCR      "Coffeescript"
     IDS_LEX_MATLAB          "MATLAB"
-    IDS_LEX_NIM_SRC         "Nim k‰llkod"
+    IDS_LEX_NIM_SRC         "Nim k√§llkod"
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
-    IDS_LEX_RUST_SRC        "Rust k‰llkod"
+    IDS_LEX_RUST_SRC        "Rust k√§llkod"
     IDS_LEX_AHKL            "AutoHotkey_L-skript"
     IDS_LEX_TEXT_FILES      "Text-filer"
     IDS_LEX_TOML_CFG        "TOML"
@@ -128,7 +129,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Fˆrvald stil"
+    IDS_LEX_STD_STYLE       "F√∂rvald stil"
     IDS_LEX_STD_MARGIN      "Marginaler och radnummer"
     IDS_LEX_STD_BRACE       "Matcha klamrar (indikator)"
     IDS_LEX_STD_BRACE_FAIL  "Matcha klamrar fel (indikator)"
@@ -136,62 +137,62 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CTRL_CHAR   "Kontrolbokst‰ver (teckensnitt)"
-    IDS_LEX_STD_INDENT      "Indragsguide (f‰rg)"
-    IDS_LEX_STD_SEL         "markerad stil (f‰rger)"
-    IDS_LEX_STD_WSPC        "Blanktecken (f‰rger, storlek 0-12)"
+    IDS_LEX_STD_CTRL_CHAR   "Kontrolbokst√§ver (teckensnitt)"
+    IDS_LEX_STD_INDENT      "Indragsguide (f√§rg)"
+    IDS_LEX_STD_SEL         "markerad stil (f√§rger)"
+    IDS_LEX_STD_WSPC        "Blanktecken (f√§rger, storlek 0-12)"
     IDS_LEX_STD_LN_BACKGR   "Markera Rad"
-    IDS_LEX_STD_CARET       "Textmarkˆr (f‰rg, storlek 1-3)"
-    IDS_LEX_STD_LONG_LN     "Markˆr fˆr lÂnga rader (f‰rger)"
+    IDS_LEX_STD_CARET       "Textmark√∂r (f√§rg, storlek 1-3)"
+    IDS_LEX_STD_LONG_LN     "Mark√∂r f√∂r l√•nga rader (f√§rger)"
     IDS_LEX_STD_X_SPC       "Extra radmarginal (storlek)"
-    IDS_LEX_2ND_STYLE       "2:a fˆrvald stil"
+    IDS_LEX_2ND_STYLE       "2:a f√∂rvald stil"
     IDS_LEX_2ND_MARGIN      "2:a marginaler och radnummer"
     IDS_LEX_2ND_BRACE       "2:a Matcha klamrar (indikator)"
     IDS_LEX_2ND_BRACE_FAIL  "2:a Matcha klamrar Fel (indikator)"
     IDS_LEX_2ND_CTRL_CHAR   "2:a kontrolltecken (teckensnitt)"
-    IDS_LEX_2ND_INDENT      "2:a indragsguide (f‰rg)"
-    IDS_LEX_2ND_SEL         "2:a markerad stil (f‰rger)"
-    IDS_LEX_2ND_WSPC        "2:a blanktecken (f‰rger, storlek 0-12)"
+    IDS_LEX_2ND_INDENT      "2:a indragsguide (f√§rg)"
+    IDS_LEX_2ND_SEL         "2:a markerad stil (f√§rger)"
+    IDS_LEX_2ND_WSPC        "2:a blanktecken (f√§rger, storlek 0-12)"
 END
 
 STRINGTABLE
 BEGIN
     IDS_LEX_2ND_LN_BACKGR   "2:a markera rad"
-    IDS_LEX_2ND_CARET       "2:a textmarkˆr (f‰rg, storlek 1-3)"
-    IDS_LEX_2ND_LONG_LN     "2:a narkˆr fˆr lÂnga rader (f‰rger)"
+    IDS_LEX_2ND_CARET       "2:a textmark√∂r (f√§rg, storlek 1-3)"
+    IDS_LEX_2ND_LONG_LN     "2:a nark√∂r f√∂r l√•nga rader (f√§rger)"
     IDS_LEX_2ND_X_SPC       "2:a extra radmarginal (storlek)"
-    IDS_LEX_STD_BKMRK       "Bokm‰rken (f‰rger, storlek)"
-    IDS_LEX_2ND_BKMRK       "2:a Bokm‰rken (f‰rger, storlek)"
-    IDS_LEX_STR_63126       "Fˆrvald"
+    IDS_LEX_STD_BKMRK       "Bokm√§rken (f√§rger, storlek)"
+    IDS_LEX_2ND_BKMRK       "2:a Bokm√§rken (f√§rger, storlek)"
+    IDS_LEX_STR_63126       "F√∂rvald"
     IDS_LEX_STR_63127       "Kommentar"
     IDS_LEX_STR_63128       "Nyckelord"
     IDS_LEX_STR_63129       "Identifierare"
     IDS_LEX_STR_63130       "Nummer"
-    IDS_LEX_STR_63131       "Str‰ng"
+    IDS_LEX_STR_63131       "Str√§ng"
     IDS_LEX_STR_63132       "Operator"
-    IDS_LEX_STR_63133       "Fˆrprocessor"
-    IDS_LEX_STR_63134       "L‰ngre str‰ng"
+    IDS_LEX_STR_63133       "F√∂rprocessor"
+    IDS_LEX_STR_63134       "L√§ngre str√§ng"
     IDS_LEX_STR_63135       "Regex"
 END
 
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63136       "HTML tag"
-    IDS_LEX_STR_63137       "HTML ok‰nd tag"
+    IDS_LEX_STR_63137       "HTML ok√§nd tag"
     IDS_LEX_STR_63138       "HTML attribut"
-    IDS_LEX_STR_63139       "HTML ok‰nt attribut"
-    IDS_LEX_STR_63140       "HTML v‰rde"
-    IDS_LEX_STR_63141       "HTML str‰ng"
-    IDS_LEX_STR_63142       "HTML annan inv‰ndig tag"
+    IDS_LEX_STR_63139       "HTML ok√§nt attribut"
+    IDS_LEX_STR_63140       "HTML v√§rde"
+    IDS_LEX_STR_63141       "HTML str√§ng"
+    IDS_LEX_STR_63142       "HTML annan inv√§ndig tag"
     IDS_LEX_STR_63143       "HTML kommentar"
     IDS_LEX_STR_63144       "HTML enhet"
     IDS_LEX_STR_63145       "XML identifierare"
     IDS_LEX_STR_63146       "ASP starttag"
     IDS_LEX_STR_63147       "CDATA"
     IDS_LEX_STR_63148       "PHP starttag"
-    IDS_LEX_STR_63149       "PHP fˆrvald"
-    IDS_LEX_STR_63150       "PHP str‰ng"
-    IDS_LEX_STR_63151       "PHP enkel str‰ng"
+    IDS_LEX_STR_63149       "PHP f√∂rvald"
+    IDS_LEX_STR_63150       "PHP str√§ng"
+    IDS_LEX_STR_63151       "PHP enkel str√§ng"
 END
 
 STRINGTABLE
@@ -199,19 +200,19 @@ BEGIN
     IDS_LEX_STR_63152       "PHP nyckelord"
     IDS_LEX_STR_63153       "PHP nummer"
     IDS_LEX_STR_63154       "PHP variabel"
-    IDS_LEX_STR_63155       "PHP str‰ng variabel"
+    IDS_LEX_STR_63155       "PHP str√§ng variabel"
     IDS_LEX_STR_63156       "PHP komplex variabel"
     IDS_LEX_STR_63157       "PHP kommentar"
     IDS_LEX_STR_63158       "PHP operator"
-    IDS_LEX_STR_63159       "JS fˆrvald"
+    IDS_LEX_STR_63159       "JS f√∂rvald"
     IDS_LEX_STR_63160       "JS kommentar"
     IDS_LEX_STR_63161       "JS nummer"
     IDS_LEX_STR_63162       "JS identifierare"
     IDS_LEX_STR_63163       "JS nyckelord"
-    IDS_LEX_STR_63164       "JS str‰ng"
+    IDS_LEX_STR_63164       "JS str√§ng"
     IDS_LEX_STR_63165       "JS symboler"
     IDS_LEX_STR_63166       "JS Regex"
-    IDS_LEX_STR_63167       "ASP JS fˆrvald"
+    IDS_LEX_STR_63167       "ASP JS f√∂rvald"
 END
 
 STRINGTABLE
@@ -220,16 +221,16 @@ BEGIN
     IDS_LEX_STR_63169       "ASP JS nummer"
     IDS_LEX_STR_63170       "ASP JS identifierare"
     IDS_LEX_STR_63171       "ASP JS nyckelord"
-    IDS_LEX_STR_63172       "ASP JS str‰ng"
+    IDS_LEX_STR_63172       "ASP JS str√§ng"
     IDS_LEX_STR_63173       "ASP JS symboler"
     IDS_LEX_STR_63174       "ASP JS Regex"
-    IDS_LEX_STR_63175       "VBS fˆrvald"
+    IDS_LEX_STR_63175       "VBS f√∂rvald"
     IDS_LEX_STR_63176       "VBS kommentar"
     IDS_LEX_STR_63177       "VBS nummer"
     IDS_LEX_STR_63178       "VBS nyckelord"
-    IDS_LEX_STR_63179       "VBS str‰ng"
+    IDS_LEX_STR_63179       "VBS str√§ng"
     IDS_LEX_STR_63180       "VBS identifierare"
-    IDS_LEX_STR_63181       "ASP VBS fˆrvald"
+    IDS_LEX_STR_63181       "ASP VBS f√∂rvald"
     IDS_LEX_STR_63182       "ASP VBS kommentar"
     IDS_LEX_STR_63183       "ASP VBS nummer"
 END
@@ -237,27 +238,27 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63184       "ASP VBS nyckelord"
-    IDS_LEX_STR_63185       "ASP VBS str‰ng"
+    IDS_LEX_STR_63185       "ASP VBS str√§ng"
     IDS_LEX_STR_63186       "ASP VBS identifierare"
     IDS_LEX_STR_63187       "XML tag"
     IDS_LEX_STR_63188       "XML attribut"
-    IDS_LEX_STR_63189       "XML v‰rde"
-    IDS_LEX_STR_63190       "XML str‰ng"
-    IDS_LEX_STR_63191       "XML annan in‰ndig tag"
+    IDS_LEX_STR_63189       "XML v√§rde"
+    IDS_LEX_STR_63190       "XML str√§ng"
+    IDS_LEX_STR_63191       "XML annan in√§ndig tag"
     IDS_LEX_STR_63192       "XML kommentar"
     IDS_LEX_STR_63193       "XML enhet"
     IDS_LEX_STR_63194       "Tag-klass"
     IDS_LEX_STR_63195       "Tag-ID"
     IDS_LEX_STR_63196       "Tag-attribut"
     IDS_LEX_STR_63197       "Pseudo-klass"
-    IDS_LEX_STR_63198       "Ok‰nd Pseudo-klass"
+    IDS_LEX_STR_63198       "Ok√§nd Pseudo-klass"
     IDS_LEX_STR_63199       "CSS egenskap"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63200       "Ok‰nd egenskap"
-    IDS_LEX_STR_63201       "V‰rde"
+    IDS_LEX_STR_63200       "Ok√§nd egenskap"
+    IDS_LEX_STR_63201       "V√§rde"
     IDS_LEX_STR_63202       "Viktigt"
     IDS_LEX_STR_63203       "Direktiv"
     IDS_LEX_STR_63204       "Target"
@@ -266,12 +267,12 @@ BEGIN
     IDS_LEX_STR_63207       "FPU instruktion"
     IDS_LEX_STR_63208       "Register"
     IDS_LEX_STR_63209       "Direktiv-operand"
-    IDS_LEX_STR_63210       "Utˆkad instruktion"
-    IDS_LEX_STR_63211       "Str‰ng dubbelt citerad"
-    IDS_LEX_STR_63212       "Str‰ng enkelt citerad"
+    IDS_LEX_STR_63210       "Ut√∂kad instruktion"
+    IDS_LEX_STR_63211       "Str√§ng dubbelt citerad"
+    IDS_LEX_STR_63212       "Str√§ng enkelt citerad"
     IDS_LEX_STR_63213       "POD (gemensam)"
     IDS_LEX_STR_63214       "POD (verbatim)"
-    IDS_LEX_STR_63215       "Skal‰r $var"
+    IDS_LEX_STR_63215       "Skal√§r $var"
 END
 
 STRINGTABLE
@@ -280,16 +281,16 @@ BEGIN
     IDS_LEX_STR_63217       "Hash %var"
     IDS_LEX_STR_63218       "Symboltabell *var"
     IDS_LEX_STR_63219       "Regex /re/ or m{re}"
-    IDS_LEX_STR_63220       "Ers‰ttning s/re/ore/"
-    IDS_LEX_STR_63221       "Bakl‰ngescitationstecken "
+    IDS_LEX_STR_63220       "Ers√§ttning s/re/ore/"
+    IDS_LEX_STR_63221       "Bakl√§ngescitationstecken "
     IDS_LEX_STR_63222       "Datasektion"
-    IDS_LEX_STR_63223       "Here-Doc (avgr‰nsare)"
+    IDS_LEX_STR_63223       "Here-Doc (avgr√§nsare)"
     IDS_LEX_STR_63224       "Here-Doc (enkelciterad, q)"
     IDS_LEX_STR_63225       "Here-Doc (dubbelciterad, qq)"
     IDS_LEX_STR_63226       "Here-Doc (Back Ticks, qx)"
-    IDS_LEX_STR_63227       "Enkelciterad str‰ng (generisk, q)"
-    IDS_LEX_STR_63228       "Double Quoted str‰ng (qq)"
-    IDS_LEX_STR_63229       "Bakl‰ngescitationstecken (qx)"
+    IDS_LEX_STR_63227       "Enkelciterad str√§ng (generisk, q)"
+    IDS_LEX_STR_63228       "Double Quoted str√§ng (qq)"
+    IDS_LEX_STR_63229       "Bakl√§ngescitationstecken (qx)"
     IDS_LEX_STR_63230       "Regex (qr)"
     IDS_LEX_STR_63231       "Array (qw)"
 END
@@ -298,18 +299,18 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63232       "Sektion"
     IDS_LEX_STR_63233       "Tilldelning"
-    IDS_LEX_STR_63234       "Fˆrvalt v‰rde"
+    IDS_LEX_STR_63234       "F√∂rvalt v√§rde"
     IDS_LEX_STR_63235       "Etikett"
     IDS_LEX_STR_63236       "Kommando"
     IDS_LEX_STR_63237       "SGML"
-    IDS_LEX_STR_63238       "K‰lla och destination"
-    IDS_LEX_STR_63239       "Positionsinst‰llningar"
+    IDS_LEX_STR_63238       "K√§lla och destination"
+    IDS_LEX_STR_63239       "Positionsinst√§llningar"
     IDS_LEX_STR_63240       "Rad tillagd"
     IDS_LEX_STR_63241       "Rad borttagen"
-    IDS_LEX_STR_63242       "Rad ‰ndrad"
+    IDS_LEX_STR_63242       "Rad √§ndrad"
     IDS_LEX_STR_63243       "Quoted Identifierare"
-    IDS_LEX_STR_63244       "Str‰ng dubbelciterad"
-    IDS_LEX_STR_63245       "Str‰ng trippelciterad"
+    IDS_LEX_STR_63244       "Str√§ng dubbelciterad"
+    IDS_LEX_STR_63245       "Str√§ng trippelciterad"
     IDS_LEX_STR_63246       "Klassnamn"
     IDS_LEX_STR_63247       "Funktionsnamn"
 END
@@ -330,8 +331,8 @@ BEGIN
     IDS_LEX_STR_63259       "Kommentar Doc"
     IDS_LEX_STR_63260       "Nyckelord 2:a"
     IDS_LEX_STR_63261       "Fel"
-    IDS_LEX_STR_63262       "Markera fˆrekomster (indikator)"
-    IDS_LEX_STR_63263       "2:a markera fˆrekomster (indikator)"
+    IDS_LEX_STR_63262       "Markera f√∂rekomster (indikator)"
+    IDS_LEX_STR_63263       "2:a markera f√∂rekomster (indikator)"
 END
 
 STRINGTABLE
@@ -339,7 +340,7 @@ BEGIN
     IDS_LEX_STR_63264       "Hyperlink Hotspots"
     IDS_LEX_STR_63265       "2:a Hyperlink Hotspot"
     IDS_LEX_STR_63266       "2:a gemensam bas"
-    IDS_LEX_STR_63267       "Variabel inom str‰ng"
+    IDS_LEX_STR_63267       "Variabel inom str√§ng"
     IDS_LEX_STR_63268       "Ordnad lista"
     IDS_LEX_STR_63269       "Infix"
     IDS_LEX_STR_63270       "Infix EOL"
@@ -361,8 +362,8 @@ BEGIN
     IDS_LEX_STR_63282       "Infogad expansion"
     IDS_LEX_STR_63283       "Pascal kommentar"
     IDS_LEX_STR_63284       "Pascal Nyckelord"
-    IDS_LEX_STR_63285       "V‰rdenamn"
-    IDS_LEX_STR_63286       "V‰rdetyp"
+    IDS_LEX_STR_63285       "V√§rdenamn"
+    IDS_LEX_STR_63286       "V√§rdetyp"
     IDS_LEX_STR_63287       "Hex"
     IDS_LEX_STR_63288       "Tillagd nyckel"
     IDS_LEX_STR_63289       "Borttagen nyckel"
@@ -378,19 +379,19 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63296       "Klass Var"
     IDS_LEX_STR_63297       "Datasektion"
-    IDS_LEX_STR_63298       "Grundl‰ggande funktioner"
-    IDS_LEX_STR_63299       "Str‰ng, tabell och matematikfunktioner"
+    IDS_LEX_STR_63298       "Grundl√§ggande funktioner"
+    IDS_LEX_STR_63299       "Str√§ng, tabell och matematikfunktioner"
     IDS_LEX_STR_63300       "Inmatning, utmatning och system"
-    IDS_LEX_STR_63301       "Oparsad str‰ng"
+    IDS_LEX_STR_63301       "Oparsad str√§ng"
     IDS_LEX_STR_63302       "Pseudoelement"
     IDS_LEX_STR_63303       "Media"
     IDS_LEX_STR_63304       "Global klass"
     IDS_LEX_STR_63305       "User-Defined Funktion"
     IDS_LEX_STR_63306       "Specialtecken"
-    IDS_LEX_STR_63307       "L‰ngre segment"
+    IDS_LEX_STR_63307       "L√§ngre segment"
     IDS_LEX_STR_63308       "Operatoruttryck"
     IDS_LEX_STR_63309       "Avreferera  variabel"
-    IDS_LEX_STR_63310       "Flˆdeskontroll"
+    IDS_LEX_STR_63310       "Fl√∂deskontroll"
     IDS_LEX_STR_63311       "Tangenter och knappar"
 END
 
@@ -401,7 +402,7 @@ BEGIN
     IDS_LEX_STR_63314       "Filter"
     IDS_LEX_STR_63315       "Plugin"
     IDS_LEX_STR_63316       "Klippegenskaper"
-    IDS_LEX_STR_63317       "Radens bˆrjan"
+    IDS_LEX_STR_63317       "Radens b√∂rjan"
     IDS_LEX_STR_63318       "Stark"
     IDS_LEX_STR_63319       "Betoning"
     IDS_LEX_STR_63320       "Rubrik 1"
@@ -418,8 +419,8 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63328       "Blockcitat"
     IDS_LEX_STR_63329       "Genomstruken"
-    IDS_LEX_STR_63330       "VÂgr‰t linje"
-    IDS_LEX_STR_63331       "L‰nk"
+    IDS_LEX_STR_63330       "V√•gr√§t linje"
+    IDS_LEX_STR_63331       "L√§nk"
     IDS_LEX_STR_63332       "Kod"
     IDS_LEX_STR_63333       "Referens"
     IDS_LEX_STR_63334       "Dokument"
@@ -436,16 +437,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63344       "Byta str‰ng"
+    IDS_LEX_STR_63344       "Byta str√§ng"
     IDS_LEX_STR_63345       "Annat nyckelord"
     IDS_LEX_STR_63346       "Rust Lifetime"
     IDS_LEX_STR_63347       "Objekt"
     IDS_LEX_STR_63348       "Tanget"
     IDS_LEX_STR_63349       "Snabbtangent"
-    IDS_LEX_STR_63350       "Snabbstr‰ng"
-    IDS_LEX_STR_63351       "Snabbstr‰ngsval"
+    IDS_LEX_STR_63350       "Snabbstr√§ng"
+    IDS_LEX_STR_63351       "Snabbstr√§ngsval"
     IDS_LEX_STR_63352       "Inline-IME Color"
-    IDS_LEX_STR_63353       "2:a Inline-IME f‰rg"
+    IDS_LEX_STR_63353       "2:a Inline-IME f√§rg"
     IDS_LEX_STR_63354       "Multiredigeringsindikator"
     IDS_LEX_STR_63355       "2:a Multiredigeringsindikator"
     IDS_LEX_STR_63356       "Datum-tid"

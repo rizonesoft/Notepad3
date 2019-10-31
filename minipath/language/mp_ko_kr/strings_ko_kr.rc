@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: UHC
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_KOREAN
-#pragma code_page(949)  // Korean (Unified Hangul Code, UHC) (Windows-949)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,85 +54,85 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "µÚ·Î"
-    IDT_HISTORY_FORWARD     "¾ÕÀ¸·Î"
-    IDT_UPDIR               "»óÀ§ µð·ºÅä¸®"
-    IDT_ROOT                "ÃÖ»óÀ§ µð·ºÅä¸®"
-    IDT_VIEW_FAVORITES      "Áñ°ÜÃ£±â"
-    IDT_FILE_PREV           "ÀÌÀü ÆÄÀÏ"
-    IDT_FILE_NEXT           "´ÙÀ½ ÆÄÀÏ"
-    IDT_FILE_RUN            "½ÇÇà"
-    IDT_FILE_QUICKVIEW      "ºü¸¥º¸±â"
-    IDT_FILE_SAVEAS         "´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå"
-    IDT_FILE_COPYMOVE       "º¹»ç/ÀÌµ¿"
-    IDT_FILE_DELETE         "»èÁ¦"
-    IDT_FILE_DELETE2        "»èÁ¦ (ÈÞÁöÅë »ç¿ë ¾ÈÇÔ)"
-    IDT_VIEW_FILTER         "ÇÊÅÍ"
+    IDT_HISTORY_BACK        "ë’¤ë¡œ"
+    IDT_HISTORY_FORWARD     "ì•žìœ¼ë¡œ"
+    IDT_UPDIR               "ìƒìœ„ ë””ë ‰í† ë¦¬"
+    IDT_ROOT                "ìµœìƒìœ„ ë””ë ‰í† ë¦¬"
+    IDT_VIEW_FAVORITES      "ì¦ê²¨ì°¾ê¸°"
+    IDT_FILE_PREV           "ì´ì „ íŒŒì¼"
+    IDT_FILE_NEXT           "ë‹¤ìŒ íŒŒì¼"
+    IDT_FILE_RUN            "ì‹¤í–‰"
+    IDT_FILE_QUICKVIEW      "ë¹ ë¥¸ë³´ê¸°"
+    IDT_FILE_SAVEAS         "ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ìž¥"
+    IDT_FILE_COPYMOVE       "ë³µì‚¬/ì´ë™"
+    IDT_FILE_DELETE         "ì‚­ì œ"
+    IDT_FILE_DELETE2        "ì‚­ì œ (íœ´ì§€í†µ ì‚¬ìš© ì•ˆí•¨)"
+    IDT_VIEW_FILTER         "í•„í„°"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s ÆÄÀÏ(µé)"
-    IDS_NUMFILES2           "%s ÆÄÀÏ(µé) | ÇÊÅÍ"
-    IDS_SAVEFILE            """%s"" ÀúÀå Áß..."
-    IDS_OPEN_FILE_WITH      "%s (À¸)·Î ¿­±â"
+    IDS_NUMFILES            "%s íŒŒì¼(ë“¤)"
+    IDS_NUMFILES2           "%s íŒŒì¼(ë“¤) | í•„í„°"
+    IDS_SAVEFILE            """%s"" ì €ìž¥ ì¤‘..."
+    IDS_OPEN_FILE_WITH      "%s (ìœ¼)ë¡œ ì—´ê¸°"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "µð·ºÅä¸® Á¢±Ù ¿À·ù\n¼±ÅÃÇÑ µð·ºÅä¸®¿¡ Á¢±ÙÇÒ ¼ö ¾ø½À´Ï´Ù.\nµð½ºÅ© È¤Àº ³×Æ®¿öÅ© ¿¬°áÀ» È®ÀÎÇÏ¼¼¿ä."
-    IDS_ERR_FILE            "ÆÄÀÏ Á¢±Ù ¿À·ù\n""%s"" ¿¡ Á¢±ÙÇÒ ¼ö ¾ø½À´Ï´Ù.\n´Ù¸¥ ÇÁ·Î±×·¥¿¡¼­ »ç¿ëÇÏ°í ÀÖÀ» ¼ö ÀÖ½À´Ï´Ù.\nµð½ºÅ© È¤Àº ³×Æ®¿öÅ© ¿¬°áÀ» È®ÀÎÇÏ¼¼¿ä."
-    IDS_ERR_NEW             "ÆÄÀÏ Á¢±Ù ¿À·ù\nÆÄÀÏÀ» ¸¸µé ¼ö ¾ø½À´Ï´Ù.\nµð½ºÅ© È¤Àº ³×Æ®¿öÅ© ¿¬°áÀ» È®ÀÎÇÏ¼¼¿ä."
-    IDS_ERR_NEWDIR          "µð·ºÅä¸® Á¢±Ù ¿À·ù\nµð·ºÅä¸®¸¦ ¸¸µé ¼ö ¾ø½À´Ï´Ù.\nµð½ºÅ© È¤Àº ³×Æ®¿öÅ© ¿¬°áÀ» È®ÀÎÇÏ¼¼¿ä."
-    IDS_ERR_SAVEAS1         "ÆÄÀÏ ÀúÀå ¿À·ù\n""%s"" ÀúÀå ¿À·ù.\nÀÌ¹Ì Á¸ÀçÇÏ´Â ÆÄÀÏÀÌ ¾²±â ±ÝÁöµÇ¾î ÀÖÀ» ¼ö ÀÖ½À´Ï´Ù."
-    IDS_ERR_SAVEAS2         "ÆÄÀÏ ÀúÀå ¿À·ù\nÀúÀåµÈ ÆÄÀÏÀÇ ÀÐ±â Àü¿ë ¼Ó¼ºÀ» Á¦°ÅÇÏ´Â Áß ¿À·ù°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù."
-    IDS_ERR_CMDLINE         "MiniPath\n¸í·ÉÁÙ¿¡¼­ ÁöÁ¤ÇÑ ÆÄÀÏ ¶Ç´Â µð·ºÅÍ¸®¿¡ Á¢±Ù ÇÏ´Â µ¿¾È ¿À·ù°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù."
-    IDS_ERR_STARTUPDIR      "MiniPath\n½ÃÀÛ µð·ºÅä¸®¿¡ Á¢±Ù ÇÒ ¼ö ¾ø½À´Ï´Ù."
-    IDS_ERR_DROP1           "MiniPath\n²ø¾î ¿Â ÆÄÀÏ ¶Ç´Â µð·ºÅä¸®¿¡ Á¢±Ù ÇÒ ¼ö ¾ø½À´Ï´Ù."
-    IDS_ERR_DROP2           "MiniPath\nÇÑ ¹ø¿¡ ÇÏ³ªÀÇ ÆÄÀÏ ¶Ç´Â µð·ºÅä¸®¸¸ ²ø¾î ¿Ã ¼ö ÀÖ½À´Ï´Ù."
-    IDS_ERR_FAVORITES       """Áñ°Ü Ã£±â"" Æú´õ¿¡ Á¢±Ù ÇÒ ¼ö ¾ø½À´Ï´Ù.\n""¿É¼Ç"" ´ëÈ­ »óÀÚ¿¡¼­ ¿Ã¹Ù¸¥ µð·ºÅä¸®¸¦ ÁöÁ¤ÇÏ¼¼¿ä."
-    IDS_ERR_LNK_GETPATH     "¸µÅ© ¿À·ù\n¸µÅ© µÈ °´Ã¼¿¡ À¯È¿ÇÑ ÆÄÀÏ ½Ã½ºÅÛ °æ·Î°¡ ¾ø½À´Ï´Ù.\n¸µÅ©°¡ ÆÄÀÏÀÌ³ª µð·ºÅä¸®¸¦ ÂüÁ¶ÇÏÁö ¾Ê´Â °Í °°½À´Ï´Ù."
-    IDS_ERR_LNK_NOACCESS    "¸µÅ© ¿À·ù\n¸µÅ© µÈ °´Ã¼¿¡ ÆÄÀÏ ½Ã½ºÅÛ °æ·Î¿¡ ´ëÇÑ Á¢±Ù ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.\nµð½ºÅ© È¤Àº ³×Æ®¿öÅ© ¿¬°áÀ» È®ÀÎÇÏ¼¼¿ä."
-    IDS_ERR_CREATELINK      "¸µÅ© ¿À·ù\nÁöÁ¤ÇÑ ¸µÅ©¸¦ ¸¸µå´Â Áß ¿À·ù°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù.\nÁöÁ¤ÇÑ µð·ºÅä¸®°¡ ¾²±â ±ÝÁöµÇ¾îÀÖÀ» ¼ö ÀÖ½À´Ï´Ù."
-    IDS_ERR_FILTER          "ÆÄÀÏ ÇÊÅÍ ¿À·ù\nÃß°¡ ÇÊÅÍ¸¦ ÁöÁ¤ÇÏÁö ¾Ê¾Ò½À´Ï´Ù.\nÀÚ¼¼ÇÑ ³»¿ëÀº MiniPath readme ÆÄÀÏÀ» ÂüÁ¶ÇÏ¼¼¿ä."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath Ã¢ÀÌ ÀÌ¹Ì »ç¿ë ÁßÀÌ°Å³ª È°¼º µÈ ´ëÈ­ »óÀÚ°¡ ÀÖ½À´Ï´Ù.\n´Ù¸¥ MiniPath Ã¢À» ¿­°Ú½À´Ï±î?"
+    IDS_ERR_CD              "ë””ë ‰í† ë¦¬ ì ‘ê·¼ ì˜¤ë¥˜\nì„ íƒí•œ ë””ë ‰í† ë¦¬ì— ì ‘ê·¼í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\në””ìŠ¤í¬ í˜¹ì€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„ í™•ì¸í•˜ì„¸ìš”."
+    IDS_ERR_FILE            "íŒŒì¼ ì ‘ê·¼ ì˜¤ë¥˜\n""%s"" ì— ì ‘ê·¼í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\në‹¤ë¥¸ í”„ë¡œê·¸ëž¨ì—ì„œ ì‚¬ìš©í•˜ê³  ìžˆì„ ìˆ˜ ìžˆìŠµë‹ˆë‹¤.\në””ìŠ¤í¬ í˜¹ì€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„ í™•ì¸í•˜ì„¸ìš”."
+    IDS_ERR_NEW             "íŒŒì¼ ì ‘ê·¼ ì˜¤ë¥˜\níŒŒì¼ì„ ë§Œë“¤ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\në””ìŠ¤í¬ í˜¹ì€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„ í™•ì¸í•˜ì„¸ìš”."
+    IDS_ERR_NEWDIR          "ë””ë ‰í† ë¦¬ ì ‘ê·¼ ì˜¤ë¥˜\në””ë ‰í† ë¦¬ë¥¼ ë§Œë“¤ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\në””ìŠ¤í¬ í˜¹ì€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„ í™•ì¸í•˜ì„¸ìš”."
+    IDS_ERR_SAVEAS1         "íŒŒì¼ ì €ìž¥ ì˜¤ë¥˜\n""%s"" ì €ìž¥ ì˜¤ë¥˜.\nì´ë¯¸ ì¡´ìž¬í•˜ëŠ” íŒŒì¼ì´ ì“°ê¸° ê¸ˆì§€ë˜ì–´ ìžˆì„ ìˆ˜ ìžˆìŠµë‹ˆë‹¤."
+    IDS_ERR_SAVEAS2         "íŒŒì¼ ì €ìž¥ ì˜¤ë¥˜\nì €ìž¥ëœ íŒŒì¼ì˜ ì½ê¸° ì „ìš© ì†ì„±ì„ ì œê±°í•˜ëŠ” ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤."
+    IDS_ERR_CMDLINE         "MiniPath\nëª…ë ¹ì¤„ì—ì„œ ì§€ì •í•œ íŒŒì¼ ë˜ëŠ” ë””ë ‰í„°ë¦¬ì— ì ‘ê·¼ í•˜ëŠ” ë™ì•ˆ ì˜¤ë¥˜ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤."
+    IDS_ERR_STARTUPDIR      "MiniPath\nì‹œìž‘ ë””ë ‰í† ë¦¬ì— ì ‘ê·¼ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+    IDS_ERR_DROP1           "MiniPath\nëŒì–´ ì˜¨ íŒŒì¼ ë˜ëŠ” ë””ë ‰í† ë¦¬ì— ì ‘ê·¼ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+    IDS_ERR_DROP2           "MiniPath\ní•œ ë²ˆì— í•˜ë‚˜ì˜ íŒŒì¼ ë˜ëŠ” ë””ë ‰í† ë¦¬ë§Œ ëŒì–´ ì˜¬ ìˆ˜ ìžˆìŠµë‹ˆë‹¤."
+    IDS_ERR_FAVORITES       """ì¦ê²¨ ì°¾ê¸°"" í´ë”ì— ì ‘ê·¼ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n""ì˜µì…˜"" ëŒ€í™” ìƒìžì—ì„œ ì˜¬ë°”ë¥¸ ë””ë ‰í† ë¦¬ë¥¼ ì§€ì •í•˜ì„¸ìš”."
+    IDS_ERR_LNK_GETPATH     "ë§í¬ ì˜¤ë¥˜\në§í¬ ëœ ê°ì²´ì— ìœ íš¨í•œ íŒŒì¼ ì‹œìŠ¤í…œ ê²½ë¡œê°€ ì—†ìŠµë‹ˆë‹¤.\në§í¬ê°€ íŒŒì¼ì´ë‚˜ ë””ë ‰í† ë¦¬ë¥¼ ì°¸ì¡°í•˜ì§€ ì•ŠëŠ” ê²ƒ ê°™ìŠµë‹ˆë‹¤."
+    IDS_ERR_LNK_NOACCESS    "ë§í¬ ì˜¤ë¥˜\në§í¬ ëœ ê°ì²´ì— íŒŒì¼ ì‹œìŠ¤í…œ ê²½ë¡œì— ëŒ€í•œ ì ‘ê·¼ ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤.\në””ìŠ¤í¬ í˜¹ì€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„ í™•ì¸í•˜ì„¸ìš”."
+    IDS_ERR_CREATELINK      "ë§í¬ ì˜¤ë¥˜\nì§€ì •í•œ ë§í¬ë¥¼ ë§Œë“œëŠ” ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤.\nì§€ì •í•œ ë””ë ‰í† ë¦¬ê°€ ì“°ê¸° ê¸ˆì§€ë˜ì–´ìžˆì„ ìˆ˜ ìžˆìŠµë‹ˆë‹¤."
+    IDS_ERR_FILTER          "íŒŒì¼ í•„í„° ì˜¤ë¥˜\nì¶”ê°€ í•„í„°ë¥¼ ì§€ì •í•˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\nìžì„¸í•œ ë‚´ìš©ì€ MiniPath readme íŒŒì¼ì„ ì°¸ì¡°í•˜ì„¸ìš”."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath ì°½ì´ ì´ë¯¸ ì‚¬ìš© ì¤‘ì´ê±°ë‚˜ í™œì„± ëœ ëŒ€í™” ìƒìžê°€ ìžˆìŠµë‹ˆë‹¤.\në‹¤ë¥¸ MiniPath ì°½ì„ ì—´ê² ìŠµë‹ˆê¹Œ?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nÃ¢ÀÌ ÀÌ¹Ì »ç¿ë ÁßÀÌ°Å³ª È°¼º µÈ ´ëÈ­ »óÀÚ°¡ ÀÖ½À´Ï´Ù.\n»õ Ã¢À» ¿­°Ú½À´Ï±î?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nÇÊ¼ö ÀÔ·Â¶õÀÌ ¸ðµÎ ¿Ï·áµÇ¾ú´ÂÁö È®ÀÎÇÏ¼¼¿ä.\n¿É¼ÇÀÌ ÀûÀýÇÏ°Ô Àû¿ë µÇ¾ú´Ù¸é ÁöÁ¤ÇÒ ÇÁ·Î±×·¥ Ã¢À» Ã£¾Æ¾ß ÇÕ´Ï´Ù."
-    IDS_ERR_INIOPEN         "MiniPath\nMiniPath ¼³Á¤ ÆÄÀÏ¿¡ Á¢±Ù ÇÒ ¼ö ¾ø½À´Ï´Ù."
-    IDS_ERR_INICREATE       "¼³Á¤ ÀúÀå\n¼³¼º ÆÄÀÏÀ» ¸¸µå´Â Áß ¿À·ù°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù."
-    IDS_ERR_INIWRITE        "¼³Á¤ ÀúÀå\n¼³Á¤ÀÌ ÀúÀåµÇÁö ¾Ê¾Ò½À´Ï´Ù!\n¼³Á¤ ÆÄÀÏ¿¡ ´ëÇÑ ¾²±â ±ÇÇÑÀÌ ¾ø½À´Ï´Ù."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nì°½ì´ ì´ë¯¸ ì‚¬ìš© ì¤‘ì´ê±°ë‚˜ í™œì„± ëœ ëŒ€í™” ìƒìžê°€ ìžˆìŠµë‹ˆë‹¤.\nìƒˆ ì°½ì„ ì—´ê² ìŠµë‹ˆê¹Œ?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\ní•„ìˆ˜ ìž…ë ¥ëž€ì´ ëª¨ë‘ ì™„ë£Œë˜ì—ˆëŠ”ì§€ í™•ì¸í•˜ì„¸ìš”.\nì˜µì…˜ì´ ì ì ˆí•˜ê²Œ ì ìš© ë˜ì—ˆë‹¤ë©´ ì§€ì •í•  í”„ë¡œê·¸ëž¨ ì°½ì„ ì°¾ì•„ì•¼ í•©ë‹ˆë‹¤."
+    IDS_ERR_INIOPEN         "MiniPath\nMiniPath ì„¤ì • íŒŒì¼ì— ì ‘ê·¼ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
+    IDS_ERR_INICREATE       "ì„¤ì • ì €ìž¥\nì„¤ì„± íŒŒì¼ì„ ë§Œë“œëŠ” ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤."
+    IDS_ERR_INIWRITE        "ì„¤ì • ì €ìž¥\nì„¤ì •ì´ ì €ìž¥ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!\nì„¤ì • íŒŒì¼ì— ëŒ€í•œ ì“°ê¸° ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "½ÇÇà ÆÄÀÏ Ã£±â"
-    IDS_GETQUICKVIEWER      "ºü¸¥º¸±â Ã£±â"
-    IDS_GETTARGET           "ÆíÁý±â Ã£±â"
-    IDS_NEWFILE             "»õ ÆÄÀÏ"
-    IDS_FILTER_ALL          "¸ðµç ÆÄÀÏ (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "½ÇÇà ÆÄÀÏ (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\n¸ðµç ÆÄÀÏ (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "»õ µð·ºÅä¸® ¼±ÅÃ."
-    IDS_FAVORITES           """Áñ°Ü Ã£±â"" µð·ºÅä¸® ÁöÁ¤."
+    IDS_SEARCHEXE           "ì‹¤í–‰ íŒŒì¼ ì°¾ê¸°"
+    IDS_GETQUICKVIEWER      "ë¹ ë¥¸ë³´ê¸° ì°¾ê¸°"
+    IDS_GETTARGET           "íŽ¸ì§‘ê¸° ì°¾ê¸°"
+    IDS_NEWFILE             "ìƒˆ íŒŒì¼"
+    IDS_FILTER_ALL          "ëª¨ë“  íŒŒì¼ (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "ì‹¤í–‰ íŒŒì¼ (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nëª¨ë“  íŒŒì¼ (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "ìƒˆ ë””ë ‰í† ë¦¬ ì„ íƒ."
+    IDS_FAVORITES           """ì¦ê²¨ ì°¾ê¸°"" ë””ë ‰í† ë¦¬ ì§€ì •."
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "Ç×»ó À§¿¡(&K)"
-    SC_ABOUT                "Á¤º¸(&I)..."
+    SC_ALWAYSONTOP          "í•­ìƒ ìœ„ì—(&K)"
+    SC_ABOUT                "ì •ë³´(&I)..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "¼±È£ÇÏ´Â ÇÁ·Î±×·¥ ¸µÅ©µéÀÇ µð·ºÅä¸®¸¦ Á¤ÇÏ¼¼¿ä."
-    IDS_COPYMOVE            "ÁöÁ¤ ÇÁ·Î±×·¥ µð·ºÅä¸® ¼±ÅÃ."
-    IDS_CREATELINK          "»õ·Î ¸¸µé ¸µÅ©ÀÇ µð·ºÅä¸®¸¦ ¼±ÅÃÇÏ¼¼¿ä."
-    IDS_SAVESETTINGS        "¼³Á¤ ÀúÀå\nÇöÀçÀÇ ÇÁ·Î±×·¥ ¼³Á¤ÀÌ ÀúÀå µÇ¾ú½À´Ï´Ù."
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) ÇÑ±¹¾î ¹ø¿ª testinsovr"
+    IDS_OPENWITH            "ì„ í˜¸í•˜ëŠ” í”„ë¡œê·¸ëž¨ ë§í¬ë“¤ì˜ ë””ë ‰í† ë¦¬ë¥¼ ì •í•˜ì„¸ìš”."
+    IDS_COPYMOVE            "ì§€ì • í”„ë¡œê·¸ëž¨ ë””ë ‰í† ë¦¬ ì„ íƒ."
+    IDS_CREATELINK          "ìƒˆë¡œ ë§Œë“¤ ë§í¬ì˜ ë””ë ‰í† ë¦¬ë¥¼ ì„ íƒí•˜ì„¸ìš”."
+    IDS_SAVESETTINGS        "ì„¤ì • ì €ìž¥\ní˜„ìž¬ì˜ í”„ë¡œê·¸ëž¨ ì„¤ì •ì´ ì €ìž¥ ë˜ì—ˆìŠµë‹ˆë‹¤."
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) í•œêµ­ì–´ ë²ˆì—­ testinsovr"
 END
 
 

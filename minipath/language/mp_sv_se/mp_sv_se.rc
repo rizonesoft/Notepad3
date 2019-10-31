@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+﻿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

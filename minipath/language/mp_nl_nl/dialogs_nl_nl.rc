@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -148,7 +149,7 @@ END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Kopiëren/Verplaatsen"
+CAPTION "KopiÃ«ren/Verplaatsen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Bron:",IDC_STATIC,7,7,26,8
@@ -157,7 +158,7 @@ BEGIN
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "Actie:",IDC_STATIC,7,66,24,8
-    CONTROL         "&Kopiëren",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
+    CONTROL         "&KopiÃ«ren",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
     CONTROL         "&Verplaatsen",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,50,10
     DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "Annuleren",IDCANCEL,173,74,50,14

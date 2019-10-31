@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -55,12 +56,12 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_NEW            "Ny"
-    IDT_FILE_OPEN           "Öppna"
-    IDT_FILE_BROWSE         "Bläddra"
+    IDT_FILE_OPEN           "Ã–ppna"
+    IDT_FILE_BROWSE         "BlÃ¤ddra"
     IDT_FILE_SAVE           "Spara"
     IDT_FILE_RECENT         "Historik"
-    IDT_EDIT_UNDO           "Ångra"
-    IDT_EDIT_REDO           "Gör om"
+    IDT_EDIT_UNDO           "Ã…ngra"
+    IDT_EDIT_REDO           "GÃ¶r om"
     IDT_EDIT_CUT            "Klipp ut"
     IDT_EDIT_COPY           "Kopiera"
 END
@@ -71,9 +72,9 @@ BEGIN
     IDT_EDIT_FIND           "Hitta"
     IDT_EDIT_REPLACE        "Byt ut"
     IDT_VIEW_WORDWRAP       "Radbryt"
-    IDT_VIEW_ZOOMIN         "Förstora"
-    IDT_VIEW_ZOOMOUT        "Förminska"
-    IDT_VIEW_SCHEME         "Välj schema"
+    IDT_VIEW_ZOOMIN         "FÃ¶rstora"
+    IDT_VIEW_ZOOMOUT        "FÃ¶rminska"
+    IDT_VIEW_SCHEME         "VÃ¤lj schema"
     IDT_VIEW_SCHEMECONFIG   "Anpassa schema"
     IDT_FILE_EXIT           "Avsluta"
     IDT_FILE_SAVEAS         "Spara som"
@@ -81,30 +82,30 @@ BEGIN
     IDT_EDIT_CLEAR          "Radera"
     IDT_FILE_PRINT          "Skriv ut"
     IDT_FILE_OPENFAV        "Favoriter"
-    IDT_FILE_ADDTOFAV       "Lägg till favoriter"
-    IDT_VIEW_TOGGLEFOLDS    "Växla utvikning"
+    IDT_FILE_ADDTOFAV       "LÃ¤gg till favoriter"
+    IDT_VIEW_TOGGLEFOLDS    "VÃ¤xla utvikning"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Kör fil"
-    IDT_VIEW_TOGGLE_VIEW     "Växla vy"
-    IDT_VIEW_CHASING_DOCTAIL "Övervaknigslogg"
-    IDT_VIEW_PIN_ON_TOP      "Alltid överst"
+    IDT_FILE_LAUNCH          "KÃ¶r fil"
+    IDT_VIEW_TOGGLE_VIEW     "VÃ¤xla vy"
+    IDT_VIEW_CHASING_DOCTAIL "Ã–vervaknigslogg"
+    IDT_VIEW_PIN_ON_TOP      "Alltid Ã¶verst"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (administratör)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (administratÃ¶r)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : urklipp"
-    IDS_MUI_UNTITLED        "Odöpt"
+    IDS_MUI_UNTITLED        "OdÃ¶pt"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(skrivskyddad)"
     IDS_MUI_LOADFILE        "Laddar ""%s""..."
     IDS_MUI_SAVEFILE        "Sparar ""%s""..."
     IDS_MUI_PRINTFILE       "Skriver ut sida %i..."
-    IDS_MUI_SAVINGSETTINGS  "Sparar inställningar..."
+    IDS_MUI_SAVINGSETTINGS  "Sparar instÃ¤llningar..."
     IDS_MUI_LINKDESCRIPTION "Redigera med Notepad3"
 END
 
@@ -114,40 +115,40 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Exekverbara filer (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfigurationsfiler (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmap filer (*.bmp)|*.bmp|Alla filer (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram."
-    IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler."
-    IDS_MUI_BACKSLASHHELP   "Bakåtlutande snedstreck transformation\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBaksteg (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNyrad (LF, Ascii 10)\n\\r\tVagnretur (CR, Ascii 13)\n\\t\tHorisontell tab (HT, Ascii 9)\n\\v\tVertikal tab (VT, Ascii 11)\n\\0oo\tOktalt värde\n\\u####\tHexadecimalt värde\n\\xhh\tHexadecimalt värde\n\\\\\tBakåtlutande snedstreck"
-    IDS_MUI_REGEXPHELP      "RegExp Matcning Syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad före radslut\n\\<\tBörjan av ord\n\\>\tSlut av ord\n\\b\tOrdgräns\n[...]\tEn mängd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLägg till bakåtlutande snedstreck till tecken med speciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar föregående 0 eller 1 gånger\n*\tMatchar föregående 0 eller mer än 1 gånger\n+\tMatchar föregående 1 eller fler gånger\n*? eller +?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbörjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersättning (n är 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Sökning med jokertecken\n\n*\tMatchar noll eller fler tecken.\n?\tMatchar exakt ett tecken. "
+    IDS_MUI_OPENWITH        "VÃ¤lj mappen med lÃ¤nkar till dina favoritprogram."
+    IDS_MUI_FAVORITES       "VÃ¤lj mappen med lÃ¤nkar till dina favoritfiler."
+    IDS_MUI_BACKSLASHHELP   "BakÃ¥tlutande snedstreck transformation\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBaksteg (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNyrad (LF, Ascii 10)\n\\r\tVagnretur (CR, Ascii 13)\n\\t\tHorisontell tab (HT, Ascii 9)\n\\v\tVertikal tab (VT, Ascii 11)\n\\0oo\tOktalt vÃ¤rde\n\\u####\tHexadecimalt vÃ¤rde\n\\xhh\tHexadecimalt vÃ¤rde\n\\\\\tBakÃ¥tlutande snedstreck"
+    IDS_MUI_REGEXPHELP      "RegExp Matcning Syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad fÃ¶re radslut\n\\<\tBÃ¶rjan av ord\n\\>\tSlut av ord\n\\b\tOrdgrÃ¤ns\n[...]\tEn mÃ¤ngd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLÃ¤gg till bakÃ¥tlutande snedstreck till tecken med speciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar fÃ¶regÃ¥ende 0 eller 1 gÃ¥nger\n*\tMatchar fÃ¶regÃ¥ende 0 eller mer Ã¤n 1 gÃ¥nger\n+\tMatchar fÃ¶regÃ¥ende 1 eller fler gÃ¥nger\n*? eller +?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbÃ¶rjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersÃ¤ttning (n Ã¤r 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "SÃ¶kning med jokertecken\n\n*\tMatchar noll eller fler tecken.\n?\tMatchar exakt ett tecken. "
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fel vid laddning ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fel vid sparande ""%s""."
-    IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades.\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "Tillgång saknas för vald fil!\nVill du ta bort den från listan?"
-    IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk."
+    IDS_MUI_ERR_BROWSE      "Inget plugin fÃ¶r filblÃ¤ddring hittades.\nMinipath filblÃ¤ddrare kan laddas ner frÃ¥n https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "TillgÃ¥ng saknas fÃ¶r vald fil!\nVill du ta bort den frÃ¥n listan?"
+    IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslÃ¤nk."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Fönstret för Notepad3 är uppdaget eller har en öppe aktiv dialogruta.\nVill du öppna ett nytt Notepad3-fönster?"
-    IDS_MUI_ERR_ENCODINGNA  "Tabeller för teckenkodning för vald teckenkodning saknas på ditt system."
-    IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil.\nData kommer att förloras om filen sparas!"
-    IDS_MUI_ERR_BITMAP      "Bitmappen ""%s"" kunde inte laddas.\nKrävt format: %i x %i (höjd >= %i x bredd)."
+                            "FÃ¶nstret fÃ¶r Notepad3 Ã¤r uppdaget eller har en Ã¶ppe aktiv dialogruta.\nVill du Ã¶ppna ett nytt Notepad3-fÃ¶nster?"
+    IDS_MUI_ERR_ENCODINGNA  "Tabeller fÃ¶r teckenkodning fÃ¶r vald teckenkodning saknas pÃ¥ ditt system."
+    IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil.\nData kommer att fÃ¶rloras om filen sparas!"
+    IDS_MUI_ERR_BITMAP      "Bitmappen ""%s"" kunde inte laddas.\nKrÃ¤vt format: %i x %i (hÃ¶jd >= %i x bredd)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Användarrättigheter kunde inte höjas!"
+                            "AnvÃ¤ndarrÃ¤ttigheter kunde inte hÃ¶jas!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Vissa tecken stöds inte av vald teckenkodning och kommer att ersättas av platshållare när filen sparas. Vi rekommenderar att du väljer en annan teckenkodning. Vill du fortsätta?"
-    IDS_MUI_ERR_DROP        "Endast en fil kan slängas på en gång!"
+    IDS_MUI_ERR_UNICODE2    "Vissa tecken stÃ¶ds inte av vald teckenkodning och kommer att ersÃ¤ttas av platshÃ¥llare nÃ¤r filen sparas. Vi rekommenderar att du vÃ¤ljer en annan teckenkodning. Vill du fortsÃ¤tta?"
+    IDS_MUI_ERR_DROP        "Endast en fil kan slÃ¤ngas pÃ¥ en gÃ¥ng!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra Notepad3 som Administratör?"
-    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com ?"
+                            "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du kÃ¶ra Notepad3 som AdministratÃ¶r?"
+    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil fÃ¶r administratÃ¶r kan hittas.\nGÃ¥ till websidan https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Vill du öppna denna stora fil?"
+                            "Vill du Ã¶ppna denna stora fil?"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Okändt filnamnstillägg (%s) !\nVill du fortsätta ändå ?"
+                            "OkÃ¤ndt filnamnstillÃ¤gg (%s) !\nVill du fortsÃ¤tta Ã¤ndÃ¥ ?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -156,63 +157,63 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Åtgärden kan inte utföras inom en rektangulär markering."
+    IDS_MUI_SELRECT         "Ã…tgÃ¤rden kan inte utfÃ¶ras inom en rektangulÃ¤r markering."
     IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
     IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
-    IDS_MUI_BUFFERTOOSMALL  "Åtgärden kan inte utföras eftersom raderna är för långa."
-    IDS_MUI_FIND_WRAPFW     "Kommit till slutet av dokumentet, börjar från början."
-    IDS_MUI_FIND_WRAPRE     "Kommit till slutet av dokumentet, startar om sökning från slutet."
+    IDS_MUI_BUFFERTOOSMALL  "Ã…tgÃ¤rden kan inte utfÃ¶ras eftersom raderna Ã¤r fÃ¶r lÃ¥nga."
+    IDS_MUI_FIND_WRAPFW     "Kommit till slutet av dokumentet, bÃ¶rjar frÃ¥n bÃ¶rjan."
+    IDS_MUI_FIND_WRAPRE     "Kommit till slutet av dokumentet, startar om sÃ¶kning frÃ¥n slutet."
     IDS_MUI_NOTFOUND        "Angiven text kan inte hittas."
-    IDS_MUI_REPLCOUNT       "%i förekomster av angiven text har ersatts."
-    IDS_MUI_ASK_ENCODING    "Att byta teckenkodning från en kodning till en annan kommer att ersätta tecken som inte stöds med standardtecken och ångerhistoriken kommer att rensas. Vill du fortsätta?"
-    IDS_MUI_ASK_ENCODING2   "Du kommer att ändra teckenkodning i en tom fil. Notera att detta kommer att rensa ångerhistoriken. Vill du fortsätta?"
-    IDS_MUI_READONLY_SAVE   """%s"" är inte skrivbar. Vill du spara till en annan fil?"
+    IDS_MUI_REPLCOUNT       "%i fÃ¶rekomster av angiven text har ersatts."
+    IDS_MUI_ASK_ENCODING    "Att byta teckenkodning frÃ¥n en kodning till en annan kommer att ersÃ¤tta tecken som inte stÃ¶ds med standardtecken och Ã¥ngerhistoriken kommer att rensas. Vill du fortsÃ¤tta?"
+    IDS_MUI_ASK_ENCODING2   "Du kommer att Ã¤ndra teckenkodning i en tom fil. Notera att detta kommer att rensa Ã¥ngerhistoriken. Vill du fortsÃ¤tta?"
+    IDS_MUI_READONLY_SAVE   """%s"" Ã¤r inte skrivbar. Vill du spara till en annan fil?"
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuell fil har modifierats av ett externt program. Vill du ladda om?"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuell fil har tagits bort. Vill du spara nu?"
-    IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar."
-    IDS_MUI_SAVEDSETTINGS   "Inställningarna har sparats."
+    IDS_MUI_STICKYWINPOS    "Fast fÃ¶nsterposition Ã¤r aktiverad. Alla nya Notepad3-fÃ¶nster kommer att anvÃ¤nda aktuella fÃ¶sterplaceringsinstÃ¤llningar."
+    IDS_MUI_SAVEDSETTINGS   "InstÃ¤llningarna har sparats."
     IDS_MUI_CREATEINI_FAIL  "Kunde inte skapa konfigurationsfil."
-    IDS_MUI_WRITEINI_FAIL   "Kunde inte skriva inställningar till konigurationsfil."
+    IDS_MUI_WRITEINI_FAIL   "Kunde inte skriva instÃ¤llningar till konigurationsfil."
     IDS_MUI_SETTINGSNOTSAVED
-                            "Inga existerande konfigurationsfiler kunde hittas.\nFör att spara dina stiländringar, spara nu (F7) eller gå tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall."
+                            "Inga existerande konfigurationsfiler kunde hittas.\nFÃ¶r att spara dina stilÃ¤ndringar, spara nu (F7) eller gÃ¥ tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s""."
-    IDS_MUI_REGEX_INVALID    "Fil vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
-    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren."
+    IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinstÃ¤llningar ""%s""."
+    IDS_MUI_REGEX_INVALID    "Fil vid utvÃ¤rdering av reguljÃ¤rt uttryck. Uttrycket Ã¤r ogiltigt!"
+    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-slÃ¤pper frÃ¥n en 32-bits applikation,\nvar vÃ¤nligt slÃ¤pp pÃ¥ Notepad3s verktygsfÃ¤lt."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka fÃ¶r att Ã¶ppna fil."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka fÃ¶r att Ã¶ppna lÃ¤nken i webblÃ¤saren."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Bevarande av tidsstämpel för filmodifiering är aktiverad.\nInställningen är giltig för denna session!"
+                             "Bevarande av tidsstÃ¤mpel fÃ¶r filmodifiering Ã¤r aktiverad.\nInstÃ¤llningen Ã¤r giltig fÃ¶r denna session!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Spara ändringar till:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Återgå till senast sparade fil?"
-    IDS_MUI_ASK_RECODE      "Omkodning kräver att filen laddas om från disk och alla osparade ändringar förloras!"
+    IDS_MUI_ASK_SAVE        "Spara Ã¤ndringar till:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Ã…tergÃ¥ till senast sparade fil?"
+    IDS_MUI_ASK_RECODE      "Omkodning krÃ¤ver att filen laddas om frÃ¥n disk och alla osparade Ã¤ndringar fÃ¶rloras!"
     IDS_MUI_ASK_CREATE      """%s"" hittades inte.\nVill du skapa denna fil?"
-    IDS_MUI_PRINT_HEADER    "Filnamn, aktuellt datum och tid|Filnamn aktuellt datum|Filenamn|Lämna tom"
-    IDS_MUI_PRINT_FOOTER    "Sidnummer|Lämna tom"
-    IDS_MUI_PRINT_COLOR     "Normal|Mörk (Inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
+    IDS_MUI_PRINT_HEADER    "Filnamn, aktuellt datum och tid|Filnamn aktuellt datum|Filenamn|LÃ¤mna tom"
+    IDS_MUI_PRINT_FOOTER    "Sidnummer|LÃ¤mna tom"
+    IDS_MUI_PRINT_COLOR     "Normal|MÃ¶rk (Inverterade fÃ¤rger)|Svart pÃ¥ vit|FÃ¤rg pÃ¥ vit|FÃ¤rg pÃ¥ vit (fÃ¶rutom radnummer)|SkÃ¤rmfÃ¤rger"
     IDS_MUI_PRINT_PAGENUM   "Sida %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Detta dokument inehåller ingen text att skriva ut"
+    IDS_MUI_PRINT_EMPTY     "Detta dokument inehÃ¥ller ingen text att skriva ut"
     IDS_MUI_PRINT_ERROR     "Fel vid utskrift ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "En snabblänk till denna fil har lagts till dina favoriter."
-    IDS_MUI_FAV_FAILURE     "En snabblänk till denna fil kunde inte sparas.\nFörsäkra dig att det inte redan finns en fil med samma filnamn."
-    IDS_MUI_READONLY_MODIFY "Attribut för ""%s"" kunde inte ändras."
+    IDS_MUI_FAV_SUCCESS     "En snabblÃ¤nk till denna fil har lagts till dina favoriter."
+    IDS_MUI_FAV_FAILURE     "En snabblÃ¤nk till denna fil kunde inte sparas.\nFÃ¶rsÃ¤kra dig att det inte redan finns en fil med samma filnamn."
+    IDS_MUI_READONLY_MODIFY "Attribut fÃ¶r ""%s"" kunde inte Ã¤ndras."
     IDS_MUI_SAVEPOS         "Spara position\tCtrl+S"
-    IDS_MUI_RESETPOS        "Återställ position\tCtrl+R"
-    IDS_MUI_PREVIEW         "Förhandsgranska\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Lösenfrasen är fel.\nVill du försöka med en annan lösenfras?"
-    IDS_MUI_NOPASS          "Avkryptering avbruten!\nVill du läsa krypterad rådata?"
+    IDS_MUI_RESETPOS        "Ã…terstÃ¤ll position\tCtrl+R"
+    IDS_MUI_PREVIEW         "FÃ¶rhandsgranska\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "LÃ¶senfrasen Ã¤r fel.\nVill du fÃ¶rsÃ¶ka med en annan lÃ¶senfras?"
+    IDS_MUI_NOPASS          "Avkryptering avbruten!\nVill du lÃ¤sa krypterad rÃ¥data?"
     IDS_MUI_STY_BASESTD     "BASE (standardstil):"
     IDS_MUI_STY_BASE2ND     "BASE (2a standardstil):"
     IDS_MUI_STY_LEXDEF      "%s - standardstil:"
@@ -222,25 +223,25 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Svensk översättning av ThreeLightsBeyond"
+    IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Svensk Ã¶versÃ¤ttning av ThreeLightsBeyond"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s stil +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s stil"
     IDS_MUI_TITLE_RELARB    " +++ Stil '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " stil '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associerade filnamnstillägg:"
-    IDS_MUI_EXAMPLE_TEXT    "Doften av nybakt bröd fyller luften, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH  "^ nolllängdsträff"
+    IDS_MUI_ASSOCIATED_EXT  "Associerade filnamnstillÃ¤gg:"
+    IDS_MUI_EXAMPLE_TEXT    "Doften av nybakt brÃ¶d fyller luften, 0123456789."
+    IDS_MUI_ZERO_LEN_MATCH  "^ nolllÃ¤ngdstrÃ¤ff"
     IDS_MUI_GOTO_LINE       "Rad (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "Kolumn (1 - %ti):"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Språk"
+    IDS_MUI_MENU_LANGUAGE   "SprÃ¥k"
     IDS_MUI_MENU_THEMES     "Schemasamling"
-    IDM_THEMES_DEFAULT      "Fabriksåterställning"
-    IDM_THEMES_FILE_ITEM    "Standardinställningar"
+    IDM_THEMES_DEFAULT      "FabriksÃ¥terstÃ¤llning"
+    IDM_THEMES_FILE_ITEM    "StandardinstÃ¤llningar"
 END
 
 STRINGTABLE

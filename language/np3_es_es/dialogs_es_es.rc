@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -59,20 +60,20 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,330,256,50,14
     EDITTEXT        IDC_VERSION,77,7,220,14,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    LTEXT           "Scintilla Versión Biblioteca:",IDC_SCI_VERSION,80,24,219,8
+    LTEXT           "Scintilla VersiÃ³n Biblioteca:",IDC_SCI_VERSION,80,24,219,8
     LTEXT           "Compilado con:",IDC_COMPILER,80,35,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,52,218,8
     LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,80,64,218,8
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Copiar Versión Texto",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
+    PUSHBUTTON      "Copiar VersiÃ³n Texto",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ayuda de la línea de comando"
+CAPTION "Ayuda de la lÃ­nea de comando"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
@@ -86,16 +87,16 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "&Buscar:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Respetar Mayúsculas/minúsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
+    CONTROL         "&Respetar MayÃºsculas/minÃºsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
     CONTROL         "Respetar la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,100,10
     CONTROL         "Re&spetar principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transformar backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Con &Expresión Regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
+    CONTROL         "Con &ExpresiÃ³n Regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "P&unto coincide con todos",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
     CONTROL         "No &hacer bucle",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "Ce&rrar tras encontrar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,80,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "Con comodÃ­n",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
     CONTROL         "Modo transparente al perder el foco",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
@@ -120,22 +121,22 @@ BEGIN
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Reempla&zar con:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Respetar Mayúsculas/minúsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
+    CONTROL         "&Respetar MayÃºsculas/minÃºsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
     CONTROL         "Respetar la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,100,10
     CONTROL         "Re&spetar principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transformar backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Con &Expresión Regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "Con &ExpresiÃ³n Regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "P&unto coincide con todos",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,90,10
     CONTROL         "&No &hacer bucle",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "Ce&rrar tras reemplazar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,80,77,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "Con comodÃ­n",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
     CONTROL         "Modo transparente al perder el foco",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Reemplazar",IDC_REPLACE,211,43,55,14
-    PUSHBUTTON      "En selección",IDC_REPLACEINSEL,211,59,55,14
+    PUSHBUTTON      "En selecciÃ³n",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Reemplazar &todo",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Alternar textos",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Cerrar",IDCANCEL,211,126,55,14
@@ -155,7 +156,7 @@ CAPTION "Ejecutar"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Teclee el nombre de un programa, carpeta, documento o recurso de Internet, y Windows lo abrirá para usted.",IDC_STATIC,39,7,179,17
+    LTEXT           "Teclee el nombre de un programa, carpeta, documento o recurso de Internet, y Windows lo abrirÃ¡ para usted.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Examinar...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
@@ -169,7 +170,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Cliquear aquí para especificar la carpeta con enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,162,18
+    LTEXT           "Cliquear aquÃ­ para especificar la carpeta con enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,162,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -177,39 +178,39 @@ END
 
 IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 172
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Codificación"
+CAPTION "CodificaciÃ³n"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Codificación por defecto (nuevo archivo):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "CodificaciÃ³n por defecto (nuevo archivo):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Utilizar como alternativa en caso de &fallo de detección.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Utilizar como alternativa en caso de &fallo de detecciÃ³n.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,180,10
-    GROUPBOX        "Detección de codificación: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "DetecciÃ³n de codificaciÃ³n: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Abrir archivos 7-bit &ASCII en modo UTF-8.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Utilizar solo &resultados de detección confiables.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Utilizar solo &resultados de detecciÃ³n confiables.",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "Abrir archivos 8-bit *.&nfo/diz en modo DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Analizar las e&tiquetas de codificación de archivos.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Analizar las e&tiquetas de codificaciÃ³n de archivos.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,180,10
-    CONTROL         "Realizar el análisis de la página de códigos ANSI.",IDC_NOANSICPDETECTION,
+    CONTROL         "Realizar el anÃ¡lisis de la pÃ¡gina de cÃ³digos ANSI.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,180,10
-    CONTROL         "Habilitar la detección &UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Habilitar la detecciÃ³n &UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,140,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Finales de línea"
+CAPTION "Finales de lÃ­nea"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Modo de final de línea pre&determinado:",IDC_STATIC,7,7,136,8
+    LTEXT           "Modo de final de lÃ­nea pre&determinado:",IDC_STATIC,7,7,136,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Mostrar aviso de saltos de línea inconsistentes.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Mostrar aviso de saltos de lÃ­nea inconsistentes.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "&Asegure los finales de línea consistentes al guardar.",IDC_CONSISTENT_EOLS,
+    CONTROL         "&Asegure los finales de lÃ­nea consistentes al guardar.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
     CONTROL         "&Elimine los espacios en blanco finales al guardar.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
@@ -219,21 +220,21 @@ END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Fines de línea inconsistentes"
+CAPTION "Fines de lÃ­nea inconsistentes"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Finales de línea inconsistentes encontrados en el archivo:",IDC_STATIC,7,7,180,8
+    LTEXT           "Finales de lÃ­nea inconsistentes encontrados en el archivo:",IDC_STATIC,7,7,180,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
-    LTEXT           "%s línea(s).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s línea(s).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s línea(s).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "¿Quie&res normalizar los finales de línea?",IDC_STATIC,7,52,180,8
+    LTEXT           "%s lÃ­nea(s).",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s lÃ­nea(s).",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s lÃ­nea(s).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "Â¿Quie&res normalizar los finales de lÃ­nea?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Sí",IDOK,138,63,50,14
+    PUSHBUTTON      "&SÃ­",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Mostrar siempre este diálogo.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Mostrar siempre este diÃ¡logo.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -242,7 +243,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ir a"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Línea:",IDC_LINE_TEXT,7,8,101,8
+    LTEXT           "&LÃ­nea:",IDC_LINE_TEXT,7,8,101,8
     EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
     LTEXT           "&Columna:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
@@ -256,9 +257,9 @@ CAPTION "Abrir archivo reciente"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Preservar la posición de caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
+    CONTROL         "&Preservar la posiciÃ³n de caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "&Guardar la lista de archivos recientes al salir.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,180,10
-    CONTROL         "&Recordar patrón de búsqueda.",IDC_REMEMBERSEARCHPATTERN,
+    CONTROL         "&Recordar patrÃ³n de bÃºsqueda.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,120,10
     PUSHBUTTON      "Eliminar",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
@@ -268,7 +269,7 @@ END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Notificación de cambio de archivo"
+CAPTION "NotificaciÃ³n de cambio de archivo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Nada.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
@@ -287,7 +288,7 @@ BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
     CONTROL         "Establecer esquema seleccionado por &defecto.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,155,10
-    CONTROL         "Selección &automática por extensión de archivo.",IDC_AUTOSELECT,
+    CONTROL         "SelecciÃ³n &automÃ¡tica por extensiÃ³n de archivo.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,155,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,113,50,14
@@ -315,7 +316,7 @@ BEGIN
     PUSHBUTTON      "E&xportar...",IDC_EXPORT,237,233,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,233,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,410,233,50,14
-    GROUPBOX        "Información",IDC_INFO_GROUPBOX,180,7,280,127
+    GROUPBOX        "InformaciÃ³n",IDC_INFO_GROUPBOX,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Personalizar esquemas",IDC_TITLE,220,25,200,12
     EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
@@ -324,20 +325,20 @@ END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Configuración de tabulación"
+CAPTION "ConfiguraciÃ³n de tabulaciÃ³n"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "&Ancho de tabul.:",IDC_STATIC,7,10,60,8
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "&Tamaño sangría:",IDC_STATIC,7,30,60,8
+    LTEXT           "&TamaÃ±o sangrÃ­a:",IDC_STATIC,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Insertar tabulación como e&spacios.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tecla &Tab vuelve a formatear la sangría.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Tecla &Retroceso vuelve a formatear la sangría.",IDC_BACKTAB_INDENTS,
+    CONTROL         "Insertar tabulaciÃ³n como e&spacios.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Tecla &Tab vuelve a formatear la sangrÃ­a.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tecla &Retroceso vuelve a formatear la sangrÃ­a.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Advertencia sobre sangría inconsistente.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Advertencia sobre sangrÃ­a inconsistente.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Autodetectar tabulación o espacio de sangría.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Autodetectar tabulaciÃ³n o espacio de sangrÃ­a.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,117,27,50,14
@@ -345,35 +346,35 @@ END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sangría inconsistente"
+CAPTION "SangrÃ­a inconsistente"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Estadística: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    GROUPBOX        "EstadÃ­stica: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabul.[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
     LTEXT           "Blancos[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
     LTEXT           "Mixto[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
-    LTEXT           "%s línea(s)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
-    LTEXT           "%s línea(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
-    LTEXT           "%s línea(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
-    GROUPBOX        "Re-sangría todo ? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    LTEXT           "%s lÃ­nea(s)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
+    LTEXT           "%s lÃ­nea(s)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
+    LTEXT           "%s lÃ­nea(s)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
+    GROUPBOX        "Re-sangrÃ­a todo ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,30,10
     CONTROL         "&Blancos",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,33,10
-    LTEXT           "%s línea(s) con sangría irregular",IDC_INDENT_TAB_MODX,50,72,124,8,SS_RIGHT
-    LTEXT           "%s línea(s) con sangría irregular",IDC_INDENT_SPC_MODX,50,84,124,8,SS_RIGHT
-    PUSHBUTTON      "&Sí",IDOK,80,98,50,14
+    LTEXT           "%s lÃ­nea(s) con sangrÃ­a irregular",IDC_INDENT_TAB_MODX,50,72,124,8,SS_RIGHT
+    LTEXT           "%s lÃ­nea(s) con sangrÃ­a irregular",IDC_INDENT_SPC_MODX,50,84,124,8,SS_RIGHT
+    PUSHBUTTON      "&SÃ­",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
-    CONTROL         "&Mostrar siempre este diálogo.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Mostrar siempre este diÃ¡logo.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Líneas largas"
+CAPTION "LÃ­neas largas"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Límite líneas largas:",IDC_STATIC,7,10,60,8
+    LTEXT           "&LÃ­mite lÃ­neas largas:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Mostrar la lín&ea de borde.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,100,10
+    CONTROL         "Mostrar la lÃ­n&ea de borde.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,100,10
     CONTROL         "Cambiar el color de fondo.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
@@ -381,7 +382,7 @@ END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Configuración ajuste de líneas"
+CAPTION "ConfiguraciÃ³n ajuste de lÃ­neas"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -390,26 +391,26 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,139,79,50,14
-    LTEXT           "Sin ajuste de sangría|Ajustar sangría por 1 carácter|Ajustar sangría por 2 caracteres|Ajustar sangría por 1 nivel|Ajustar sangría por 2 niveles|Ajustar sangría como primera línea secundaria|Ajustar sangría 1 nivel más que la primera línea secundaria",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "Sin indicador antes del avance de línea|Mostrar indicador antes del avance de línea (cerca texto)|Mostrar indicador antes del avance de línea (cerca bordes)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "Sin indicador después de ajuste|Mostrar indicador después de ajuste (cerca del texto)|Mostrar indicador después de ajuste (cerca del borde)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "Romper el texto sólo entre palabras|Romper el texto en cualquier lugar",203,0,0,187,8,NOT WS_VISIBLE
+    LTEXT           "Sin ajuste de sangrÃ­a|Ajustar sangrÃ­a por 1 carÃ¡cter|Ajustar sangrÃ­a por 2 caracteres|Ajustar sangrÃ­a por 1 nivel|Ajustar sangrÃ­a por 2 niveles|Ajustar sangrÃ­a como primera lÃ­nea secundaria|Ajustar sangrÃ­a 1 nivel mÃ¡s que la primera lÃ­nea secundaria",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Sin indicador antes del avance de lÃ­nea|Mostrar indicador antes del avance de lÃ­nea (cerca texto)|Mostrar indicador antes del avance de lÃ­nea (cerca bordes)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "Sin indicador despuÃ©s de ajuste|Mostrar indicador despuÃ©s de ajuste (cerca del texto)|Mostrar indicador despuÃ©s de ajuste (cerca del borde)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "Romper el texto sÃ³lo entre palabras|Romper el texto en cualquier lugar",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Configurar página"
+CAPTION "Configurar pÃ¡gina"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Papel",1073,8,8,224,56,WS_GROUP
-    LTEXT           "&Tamaño:",1089,16,24,36,8
+    LTEXT           "&TamaÃ±o:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Origen:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Orientación",1072,8,69,64,56,WS_GROUP
+    GROUPBOX        "OrientaciÃ³n",1072,8,69,64,56,WS_GROUP
     CONTROL         "&Vertical",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
     CONTROL         "&Horizontal",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
-    GROUPBOX        "Márgenes",1075,80,69,152,56,WS_GROUP
+    GROUPBOX        "MÃ¡rgenes",1075,80,69,152,56,WS_GROUP
     LTEXT           "&Izquierdo:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
     LTEXT           "&Derecho:",1103,164,85,32,8
@@ -418,12 +419,12 @@ BEGIN
     EDITTEXT        1156,120,103,28,12,WS_GROUP
     LTEXT           "&Inferior:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
-    GROUPBOX        "Encabezados y pies de página",1074,8,130,224,56,WS_GROUP
+    GROUPBOX        "Encabezados y pies de pÃ¡gina",1074,8,130,224,56,WS_GROUP
     LTEXT           "&Encabezado:",IDC_STATIC,16,146,40,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Pie de página:",IDC_STATIC,16,167,50,8
+    LTEXT           "&Pie de pÃ¡gina:",IDC_STATIC,16,167,50,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Colores de impresión",1076,8,191,224,37,WS_GROUP
+    GROUPBOX        "Colores de impresiÃ³n",1076,8,191,224,37,WS_GROUP
     LTEXT           "Mo&do:",IDC_STATIC,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Escala",IDC_STATIC,240,170,108,58,WS_GROUP
@@ -446,7 +447,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Cliquear aquí para especificar la carpeta con enlaces a sus archivos favoritos.",IDC_FAVORITESDESCR,26,83,142,18
+    LTEXT           "Cliquear aquÃ­ para especificar la carpeta con enlaces a sus archivos favoritos.",IDC_FAVORITESDESCR,26,83,142,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -454,7 +455,7 @@ END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Añadir a Favoritos"
+CAPTION "AÃ±adir a Favoritos"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Teclee el nombre del nuevo elemento favorito:",IDC_FAVORITESDESCR,7,7,158,8
@@ -466,7 +467,7 @@ END
 
 IDD_MUI_PASSWORDS DIALOGEX 0, 0, 311, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Encriptación de archivos"
+CAPTION "EncriptaciÃ³n de archivos"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
@@ -475,10 +476,10 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Clave Maestra opcional:",IDC_STATIC,17,61,88,10,NOT WS_GROUP
-    CONTROL         "Cifrar usando la Frase de Contraseña",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,140,10
+    CONTROL         "Cifrar usando la Frase de ContraseÃ±a",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,140,10
     CONTROL         "Reutilizar la Clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
-    GROUPBOX        "Frase de Contraseña",IDC_STATIC,7,7,297,108
-    CONTROL         "Mostrar la Frase de Contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,120,10
+    GROUPBOX        "Frase de ContraseÃ±a",IDC_STATIC,7,7,297,108
+    CONTROL         "Mostrar la Frase de ContraseÃ±a",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,120,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -491,8 +492,8 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "Descifrar utilizando la Clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,125,10
     LTEXT           "Este archivo tiene una Clave Maestra",IDC_PWD_STATMPW,16,41,120,11,NOT WS_GROUP
-    GROUPBOX        "Frase de Contraseña",IDC_STATIC,8,6,283,69
-    CONTROL         "Mostrar la Frase de Contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,120,10
+    GROUPBOX        "Frase de ContraseÃ±a",IDC_STATIC,8,6,283,69
+    CONTROL         "Mostrar la Frase de ContraseÃ±a",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,120,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
@@ -500,7 +501,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Columna ajustada"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Límite:",IDC_STATIC,7,7,34,8
+    LTEXT           "&LÃ­mite:",IDC_STATIC,7,7,34,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,73,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,73,24,50,14
@@ -508,24 +509,24 @@ END
 
 IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 110
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Modificar líneas"
+CAPTION "Modificar lÃ­neas"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Prefijo texto a líneas:",IDC_STATIC,7,7,62,8
+    LTEXT           "&Prefijo texto a lÃ­neas:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Añadir texto a líneas:",IDC_STATIC,7,37,68,8
+    LTEXT           "&AÃ±adir texto a lÃ­neas:",IDC_STATIC,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Documento número de línea.",IDC_STATIC,57,72,100,8
+    LTEXT           "Documento nÃºmero de lÃ­nea.",IDC_STATIC,57,72,100,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Números continuos.",IDC_STATIC,57,82,66,8
+    LTEXT           "NÃºmeros continuos.",IDC_STATIC,57,82,66,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Números continuos (base cero).",IDC_STATIC,57,92,109,8
+    LTEXT           "NÃºmeros continuos (base cero).",IDC_STATIC,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -545,12 +546,12 @@ END
 
 IDD_MUI_ENCLOSESELECTION DIALOGEX 0, 0, 182, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Incluir selección"
+CAPTION "Incluir selecciÃ³n"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Insertar &antes selección:",IDC_STATIC,7,7,76,8
+    LTEXT           "Insertar &antes selecciÃ³n:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Insertar después selección:",IDC_STATIC,7,37,90,8
+    LTEXT           "Insertar despuÃ©s selecciÃ³n:",IDC_STATIC,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
@@ -575,7 +576,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
-    PUSHBUTTON      "&sí",IDYES,131,50,50,14
+    PUSHBUTTON      "&sÃ­",IDYES,131,50,50,14
     PUSHBUTTON      "&No",IDNO,187,50,50,14
     CONTROL         "&No mostrar este mensaje otra vez.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
@@ -601,7 +602,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,126,41,SS_EDITCONTROL | SS_NOPREFIX
-    DEFPUSHBUTTON   "&sí",IDOK,7,70,50,14
+    DEFPUSHBUTTON   "&sÃ­",IDOK,7,70,50,14
     PUSHBUTTON      "&No",IDNO,61,70,50,14
     PUSHBUTTON      "&Cancelar",IDCANCEL,115,70,50,14
     CONTROL         "&No mostrar este mensaje otra vez.",IDC_INFOBOXCHECK,
@@ -623,22 +624,22 @@ END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ordenar líneas"
+CAPTION "Ordenar lÃ­neas"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Ordenar &ascendente.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Ordenar &descendente.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "Mezclar líneas.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Fusionar las líneas duplicadas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Eliminar las líneas duplicadas.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Eliminar las líneas &únicas.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Eliminar las líneas &vacías.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Eliminar las líneas con espacios en blanco.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,140,10
-    CONTROL         "Sensible a &mayúsculas.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "&Insensible a mayúsculas.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "Comparación lógica de &números.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
-    CONTROL         "Comparación &lexicográfica.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,120,10
-    CONTROL         "Ordenación &columna (selección rectangular).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,150,10
+    CONTROL         "Mezclar lÃ­neas.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "&Fusionar las lÃ­neas duplicadas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Eliminar las lÃ­neas duplicadas.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Eliminar las lÃ­neas &Ãºnicas.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Eliminar las lÃ­neas &vacÃ­as.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Eliminar las lÃ­neas con espacios en blanco.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,140,10
+    CONTROL         "Sensible a &mayÃºsculas.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Insensible a mayÃºsculas.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "ComparaciÃ³n lÃ³gica de &nÃºmeros.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
+    CONTROL         "ComparaciÃ³n &lexicogrÃ¡fica.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,120,10
+    CONTROL         "OrdenaciÃ³n &columna (selecciÃ³n rectangular).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,150,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,128,24,50,14
 END
@@ -648,7 +649,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Recodificar"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Seleccionar codificación fuente para recargar:",IDC_STATIC,7,7,155,8
+    LTEXT           "Seleccionar codificaciÃ³n fuente para recargar:",IDC_STATIC,7,7,155,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,114,50,14
@@ -657,10 +658,10 @@ END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Codificación"
+CAPTION "CodificaciÃ³n"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "S&eleccionar la codificación del archivo actual:",IDC_STATIC,7,7,150,8
+    LTEXT           "S&eleccionar la codificaciÃ³n del archivo actual:",IDC_STATIC,7,7,150,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,114,50,14
@@ -669,14 +670,14 @@ END
 
 IDD_MUI_ALIGN DIALOGEX 0, 0, 184, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Alinear líneas"
+CAPTION "Alinear lÃ­neas"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Izquierda.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,40,10
     CONTROL         "&Derecha.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,40,10
     CONTROL         "&Centro.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
     CONTROL         "&Justificado.",103,"Button",BS_AUTORADIOBUTTON,7,43,50,10
-    CONTROL         "Justificado (Modo de &párrafo).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "Justificado (Modo de &pÃ¡rrafo).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
 END
@@ -690,7 +691,7 @@ BEGIN
     COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Estil&o de fuente:",IDC_STATIC,154,7,72,8
     COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Tamaño:",IDC_STATIC,247,7,40,8
+    LTEXT           "&TamaÃ±o:",IDC_STATIC,247,7,40,8
     COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Ejemplo",IDC_STATIC,7,102,284,68,BS_BITMAP
     CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54

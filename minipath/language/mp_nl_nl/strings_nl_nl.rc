@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ BEGIN
     IDT_FILE_RUN            "Uitvoeren"
     IDT_FILE_QUICKVIEW      "Snelle kijk"
     IDT_FILE_SAVEAS         "Opslaan als"
-    IDT_FILE_COPYMOVE       "Kopiëren/&Verplaatsen"
+    IDT_FILE_COPYMOVE       "KopiÃ«ren/&Verplaatsen"
     IDT_FILE_DELETE         "Verwijderen"
     IDT_FILE_DELETE2        "Verwijderen (Permanent)"
     IDT_VIEW_FILTER         "Filter"
@@ -89,7 +90,7 @@ BEGIN
     IDS_ERR_CMDLINE         "MiniPath\nFout bij het openen van bestand of map opgegeven op de opdrachtregel."
     IDS_ERR_STARTUPDIR      "MiniPath\nGeen toegang tot opstartmap."
     IDS_ERR_DROP1           "MiniPath\nGeen toegang tot het verwijderde bestand of map."
-    IDS_ERR_DROP2           "MiniPath\nEr kan slechts één bestand of map tegelijk worden verwijderd."
+    IDS_ERR_DROP2           "MiniPath\nEr kan slechts Ã©Ã©n bestand of map tegelijk worden verwijderd."
     IDS_ERR_FAVORITES       "Favorieten\nGeen toegang tot de map ""Favorieten"".\nGeef een geldige map op in het dialoogvenster ""Opties""."
     IDS_ERR_LNK_GETPATH     "Link Error\nGeen geldig bestandssysteempad beschikbaar voor gekoppeld object.\nWaarschijnlijk verwijst de link niet naar een bestand of directory."
     IDS_ERR_LNK_NOACCESS    "Link Error\nGeen toegang tot bestandssysteempad van gekoppeld object.\nControleer de schijf of de netwerkverbinding."

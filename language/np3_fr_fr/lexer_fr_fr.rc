@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -128,7 +129,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Défaut Style"
+    IDS_LEX_STD_STYLE       "DÃ©faut Style"
     IDS_LEX_STD_MARGIN      "Margins and Line Numbers"
     IDS_LEX_STD_BRACE       "Matching Braces (Indicator)"
     IDS_LEX_STD_BRACE_FAIL  "Matching Braces Error (Indicator)"
@@ -144,7 +145,7 @@ BEGIN
     IDS_LEX_STD_CARET       "Caret (Color, Size 1-3)"
     IDS_LEX_STD_LONG_LN     "Long Line Marker (Colors)"
     IDS_LEX_STD_X_SPC       "Extra Line Spacing (Size)"
-    IDS_LEX_2ND_STYLE       "2ème Défaut Style"
+    IDS_LEX_2ND_STYLE       "2Ã¨me DÃ©faut Style"
     IDS_LEX_2ND_MARGIN      "2nd Margins and Line Numbers"
     IDS_LEX_2ND_BRACE       "2nd Matching Braces (Indicator)"
     IDS_LEX_2ND_BRACE_FAIL  "2nd Matching Braces Error (Indicator)"
@@ -162,11 +163,11 @@ BEGIN
     IDS_LEX_2ND_X_SPC       "2nd Extra Line Spacing (Size)"
     IDS_LEX_STD_BKMRK       "Bookmarks and Folding (Colors, Size)"
     IDS_LEX_2ND_BKMRK       "2nd Bookmarks and Folding (Colors, Size)"
-    IDS_LEX_STR_63126       "Défaut"
+    IDS_LEX_STR_63126       "DÃ©faut"
     IDS_LEX_STR_63127       "Commentaire"
     IDS_LEX_STR_63128       "Keyword"
     IDS_LEX_STR_63129       "Identifier"
-    IDS_LEX_STR_63130       "Numéro"
+    IDS_LEX_STR_63130       "NumÃ©ro"
     IDS_LEX_STR_63131       "String"
     IDS_LEX_STR_63132       "Operator"
     IDS_LEX_STR_63133       "Preprocessor"
@@ -338,7 +339,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "Hyperlink Hotspots"
     IDS_LEX_STR_63265       "2nd Hyperlink Hotspots"
-    IDS_LEX_STR_63266       "2ème Base Commune"
+    IDS_LEX_STR_63266       "2Ã¨me Base Commune"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"
