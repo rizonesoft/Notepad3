@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1251
+п»ї// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
 LANGUAGE LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA
-#pragma code_page(1251) // Cyrillic (Windows-1251)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +62,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Базовая схема"
+    IDS_LEX_DEF_TXT         "Р‘Р°Р·РѕРІР°СЏ СЃС…РµРјР°"
     IDS_LEX_WEB_SRC         "Web Source Code"
     IDS_LEX_XML_DOC         "XML Document"
     IDS_LEX_CSS_STYLE       "CSS Style Sheets"
@@ -122,46 +123,46 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
     IDS_LEX_RUST_SRC        "Rust Source Code"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
-    IDS_LEX_TEXT_FILES      "Текстовые файлы"
+    IDS_LEX_TEXT_FILES      "РўРµРєСЃС‚РѕРІС‹Рµ С„Р°Р№Р»С‹"
     IDS_LEX_TOML_CFG        "TOML"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Стиль по умолчанию"
-    IDS_LEX_STD_MARGIN      "Отступы и номера строк"
-    IDS_LEX_STD_BRACE       "Парные скобки (индикатор)"
-    IDS_LEX_STD_BRACE_FAIL  "Ошибка парных скобок (индикатор)"
+    IDS_LEX_STD_STYLE       "РЎС‚РёР»СЊ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ"
+    IDS_LEX_STD_MARGIN      "РћС‚СЃС‚СѓРїС‹ Рё РЅРѕРјРµСЂР° СЃС‚СЂРѕРє"
+    IDS_LEX_STD_BRACE       "РџР°СЂРЅС‹Рµ СЃРєРѕР±РєРё (РёРЅРґРёРєР°С‚РѕСЂ)"
+    IDS_LEX_STD_BRACE_FAIL  "РћС€РёР±РєР° РїР°СЂРЅС‹С… СЃРєРѕР±РѕРє (РёРЅРґРёРєР°С‚РѕСЂ)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CTRL_CHAR   "Управляющие символы (шрифт)"
-    IDS_LEX_STD_INDENT      "Направляющие отступов (цвет)"
-    IDS_LEX_STD_SEL         "Выделенный текст (цвета)"
-    IDS_LEX_STD_WSPC        "Пробельный символ (цвета, размер 0-12)"
-    IDS_LEX_STD_LN_BACKGR   "Подсветка текущей строки"
-    IDS_LEX_STD_CARET       "Каретка (цвет, размер 1-3)"
-    IDS_LEX_STD_LONG_LN     "Маркер длинных строк (цвета)"
-    IDS_LEX_STD_X_SPC       "Дополнительный межстрочный интервал (размер)"
-    IDS_LEX_2ND_STYLE       "Стиль по умолчанию второй схемы"
-    IDS_LEX_2ND_MARGIN      "Отступы и номера строк второй схемы"
-    IDS_LEX_2ND_BRACE       "Парные скобки второй схемы (индикатор)"
-    IDS_LEX_2ND_BRACE_FAIL  "Ошибка парных скобок второй схемы (индикатор)"
-    IDS_LEX_2ND_CTRL_CHAR   "Управляющие символы второй схемы (шрифт)"
-    IDS_LEX_2ND_INDENT      "Направляющие отступов второй схемы (цвет)"
-    IDS_LEX_2ND_SEL         "Выделенный текст второй схемы (цвета)"
-    IDS_LEX_2ND_WSPC        "Пробельный символ второй схемы (цвета, размер 0-12)"
+    IDS_LEX_STD_CTRL_CHAR   "РЈРїСЂР°РІР»СЏСЋС‰РёРµ СЃРёРјРІРѕР»С‹ (С€СЂРёС„С‚)"
+    IDS_LEX_STD_INDENT      "РќР°РїСЂР°РІР»СЏСЋС‰РёРµ РѕС‚СЃС‚СѓРїРѕРІ (С†РІРµС‚)"
+    IDS_LEX_STD_SEL         "Р’С‹РґРµР»РµРЅРЅС‹Р№ С‚РµРєСЃС‚ (С†РІРµС‚Р°)"
+    IDS_LEX_STD_WSPC        "РџСЂРѕР±РµР»СЊРЅС‹Р№ СЃРёРјРІРѕР» (С†РІРµС‚Р°, СЂР°Р·РјРµСЂ 0-12)"
+    IDS_LEX_STD_LN_BACKGR   "РџРѕРґСЃРІРµС‚РєР° С‚РµРєСѓС‰РµР№ СЃС‚СЂРѕРєРё"
+    IDS_LEX_STD_CARET       "РљР°СЂРµС‚РєР° (С†РІРµС‚, СЂР°Р·РјРµСЂ 1-3)"
+    IDS_LEX_STD_LONG_LN     "РњР°СЂРєРµСЂ РґР»РёРЅРЅС‹С… СЃС‚СЂРѕРє (С†РІРµС‚Р°)"
+    IDS_LEX_STD_X_SPC       "Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РјРµР¶СЃС‚СЂРѕС‡РЅС‹Р№ РёРЅС‚РµСЂРІР°Р» (СЂР°Р·РјРµСЂ)"
+    IDS_LEX_2ND_STYLE       "РЎС‚РёР»СЊ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹"
+    IDS_LEX_2ND_MARGIN      "РћС‚СЃС‚СѓРїС‹ Рё РЅРѕРјРµСЂР° СЃС‚СЂРѕРє РІС‚РѕСЂРѕР№ СЃС…РµРјС‹"
+    IDS_LEX_2ND_BRACE       "РџР°СЂРЅС‹Рµ СЃРєРѕР±РєРё РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (РёРЅРґРёРєР°С‚РѕСЂ)"
+    IDS_LEX_2ND_BRACE_FAIL  "РћС€РёР±РєР° РїР°СЂРЅС‹С… СЃРєРѕР±РѕРє РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (РёРЅРґРёРєР°С‚РѕСЂ)"
+    IDS_LEX_2ND_CTRL_CHAR   "РЈРїСЂР°РІР»СЏСЋС‰РёРµ СЃРёРјРІРѕР»С‹ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С€СЂРёС„С‚)"
+    IDS_LEX_2ND_INDENT      "РќР°РїСЂР°РІР»СЏСЋС‰РёРµ РѕС‚СЃС‚СѓРїРѕРІ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С†РІРµС‚)"
+    IDS_LEX_2ND_SEL         "Р’С‹РґРµР»РµРЅРЅС‹Р№ С‚РµРєСЃС‚ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С†РІРµС‚Р°)"
+    IDS_LEX_2ND_WSPC        "РџСЂРѕР±РµР»СЊРЅС‹Р№ СЃРёРјРІРѕР» РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С†РІРµС‚Р°, СЂР°Р·РјРµСЂ 0-12)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_2ND_LN_BACKGR   "Подсветка текущей строки второй схемы"
-    IDS_LEX_2ND_CARET       "Каретка второй схемы (цвет, размер 1-3)"
-    IDS_LEX_2ND_LONG_LN     "Линия длинных строк второй схемы (цвета)"
-    IDS_LEX_2ND_X_SPC       "Доп. межстрочный интервал второй схемы (размер)"
-    IDS_LEX_STD_BKMRK       "Закладки и сворачивание (цвета, размер)"
-    IDS_LEX_2ND_BKMRK       "Закладки и сворачивание второй схемы (цвета, размер)"
+    IDS_LEX_2ND_LN_BACKGR   "РџРѕРґСЃРІРµС‚РєР° С‚РµРєСѓС‰РµР№ СЃС‚СЂРѕРєРё РІС‚РѕСЂРѕР№ СЃС…РµРјС‹"
+    IDS_LEX_2ND_CARET       "РљР°СЂРµС‚РєР° РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С†РІРµС‚, СЂР°Р·РјРµСЂ 1-3)"
+    IDS_LEX_2ND_LONG_LN     "Р›РёРЅРёСЏ РґР»РёРЅРЅС‹С… СЃС‚СЂРѕРє РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С†РІРµС‚Р°)"
+    IDS_LEX_2ND_X_SPC       "Р”РѕРї. РјРµР¶СЃС‚СЂРѕС‡РЅС‹Р№ РёРЅС‚РµСЂРІР°Р» РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (СЂР°Р·РјРµСЂ)"
+    IDS_LEX_STD_BKMRK       "Р—Р°РєР»Р°РґРєРё Рё СЃРІРѕСЂР°С‡РёРІР°РЅРёРµ (С†РІРµС‚Р°, СЂР°Р·РјРµСЂ)"
+    IDS_LEX_2ND_BKMRK       "Р—Р°РєР»Р°РґРєРё Рё СЃРІРѕСЂР°С‡РёРІР°РЅРёРµ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (С†РІРµС‚Р°, СЂР°Р·РјРµСЂ)"
     IDS_LEX_STR_63126       "Default"
     IDS_LEX_STR_63127       "Comment"
     IDS_LEX_STR_63128       "Keyword"
@@ -330,15 +331,15 @@ BEGIN
     IDS_LEX_STR_63259       "Comment Doc"
     IDS_LEX_STR_63260       "Keyword 2nd"
     IDS_LEX_STR_63261       "Error"
-    IDS_LEX_STR_63262       "Подсветка совпадений (индикатор)"
-    IDS_LEX_STR_63263       "Подсветка совпадений второй схемы (индикатор)"
+    IDS_LEX_STR_63262       "РџРѕРґСЃРІРµС‚РєР° СЃРѕРІРїР°РґРµРЅРёР№ (РёРЅРґРёРєР°С‚РѕСЂ)"
+    IDS_LEX_STR_63263       "РџРѕРґСЃРІРµС‚РєР° СЃРѕРІРїР°РґРµРЅРёР№ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹ (РёРЅРґРёРєР°С‚РѕСЂ)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63264       "Места гиперссылок"
-    IDS_LEX_STR_63265       "Места гиперссылок второй схемы"
-    IDS_LEX_STR_63266       "Вторая базовая схема"
+    IDS_LEX_STR_63264       "РњРµСЃС‚Р° РіРёРїРµСЂСЃСЃС‹Р»РѕРє"
+    IDS_LEX_STR_63265       "РњРµСЃС‚Р° РіРёРїРµСЂСЃСЃС‹Р»РѕРє РІС‚РѕСЂРѕР№ СЃС…РµРјС‹"
+    IDS_LEX_STR_63266       "Р’С‚РѕСЂР°СЏ Р±Р°Р·РѕРІР°СЏ СЃС…РµРјР°"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"
@@ -444,10 +445,10 @@ BEGIN
     IDS_LEX_STR_63349       "HotKey"
     IDS_LEX_STR_63350       "HotString"
     IDS_LEX_STR_63351       "HotStringOption"
-    IDS_LEX_STR_63352       "Цвет встроенного IME"
-    IDS_LEX_STR_63353       "Цвет встроенного IME второй схемы"
-    IDS_LEX_STR_63354       "Индикатор мультиредактирования"
-    IDS_LEX_STR_63355       "Индикатор мультиредактирования второй схемы"
+    IDS_LEX_STR_63352       "Р¦РІРµС‚ РІСЃС‚СЂРѕРµРЅРЅРѕРіРѕ IME"
+    IDS_LEX_STR_63353       "Р¦РІРµС‚ РІСЃС‚СЂРѕРµРЅРЅРѕРіРѕ IME РІС‚РѕСЂРѕР№ СЃС…РµРјС‹"
+    IDS_LEX_STR_63354       "РРЅРґРёРєР°С‚РѕСЂ РјСѓР»СЊС‚РёСЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ"
+    IDS_LEX_STR_63355       "РРЅРґРёРєР°С‚РѕСЂ РјСѓР»СЊС‚РёСЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РІС‚РѕСЂРѕР№ СЃС…РµРјС‹"
     IDS_LEX_STR_63356       "Date-Time"
 END
 

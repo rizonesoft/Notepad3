@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+Ôªø// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
 LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,7 @@ CAPTION "Uruchom"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Wpisz nazwÍ pliku,\na folderu lub dokumentu, aby go otworzyÊ.",IDC_STATIC,35,7,188,17
+    LTEXT           "Wpisz nazwƒô pliku,\na folderu lub dokumentu, aby go otworzyƒá.",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -84,12 +85,12 @@ END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OtwÛrz za pomocπ..."
+CAPTION "Otw√≥rz za pomocƒÖ..."
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Kliknij aby okreúliÊ katalog z linkami do ulubionych programÛw.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Kliknij aby okre≈õliƒá katalog z linkami do ulubionych program√≥w.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Anuluj",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -97,11 +98,11 @@ END
 
 IDD_GOTO DIALOGEX 0, 0, 224, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Idü do"
+CAPTION "Id≈∫ do"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Wpisz nazwÍ pliku lub katalogu, aby otworzyÊ,\nlub wybraÊ ostatnio odwiedzony katalog z listy.",IDC_STATIC,35,7,182,17
+    LTEXT           "Wpisz nazwƒô pliku lub katalogu, aby otworzyƒá,\nlub wybraƒá ostatnio odwiedzony katalog z listy.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Anuluj",IDCANCEL,167,66,50,14
@@ -113,10 +114,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filtr pliku"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Okreúl nowy filtr pliku. Oddziel poszczegÛlne filty znakiem ;",IDC_STATIC,7,7,170,8
+    LTEXT           "Okre≈õl nowy filtr pliku. Oddziel poszczeg√≥lne filty znakiem ;",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
-    CONTROL         "&Wyklucz pliki pasujπce do filtra.",IDC_NEGFILTER,
+    CONTROL         "&Wyklucz pliki pasujƒÖce do filtra.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
     DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
     PUSHBUTTON      "Anuluj",IDCANCEL,127,58,50,14
@@ -124,7 +125,7 @@ END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "ZmieÒ nazwÍ"
+CAPTION "Zmie≈Ñ nazwƒô"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Aktualna:",IDC_STATIC,7,9,28,8
@@ -140,7 +141,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Nowy katalog"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Wpisz nazwÍ nowego katalogu:",IDC_STATIC,7,7,158,8
+    LTEXT           "Wpisz nazwƒô nowego katalogu:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Anuluj",IDCANCEL,115,45,50,14
@@ -148,17 +149,17 @@ END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Kopiuj/Przenieú"
+CAPTION "Kopiuj/Przenie≈õ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "èrÛd≥o:",IDC_STATIC,7,7,26,8
+    LTEXT           "≈πr√≥d≈Ço:",IDC_STATIC,7,7,26,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "&Docelowo:",IDC_STATIC,7,37,40,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "Akcja:",IDC_STATIC,7,66,24,8
     CONTROL         "&Kopiuj",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "&Przenieú",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    CONTROL         "&Przenie≈õ",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
     DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "Anuluj",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
@@ -166,26 +167,26 @@ END
 
 IDPP_GENERAL DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OgÛlne"
+CAPTION "Og√≥lne"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Okreúl ogÛlne ustawienia MiniPath.",IDC_STATIC,40,15,153,8
-    CONTROL         "&Pojedyncze klikniÍcie aby otworzyÊ objekt.",IDC_SINGLECLICK,
+    LTEXT           "Okre≈õl og√≥lne ustawienia MiniPath.",IDC_STATIC,40,15,153,8
+    CONTROL         "&Pojedyncze klikniƒôcie aby otworzyƒá objekt.",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
-    CONTROL         "&W≥πcz wybÛr úcieøki.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "W≥πcz wybÛr ca≥ego rzÍdu.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "&W≈ÇƒÖcz wyb√≥r ≈õcie≈ºki.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
+    CONTROL         "W≈ÇƒÖcz wyb√≥r ca≈Çego rzƒôdu.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "Zawsze aktywuj okno docelowe gdy plik jest otwarty.",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "Okno MiniPath zawsze na wierzchu.",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "&Minimalizuj do zasobnika (kliknij aby reaktywowaÊ).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Minimalizuj do zasobnika (kliknij aby reaktywowaƒá).",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "&Uøyj ponownie istniejπcego okna kiedy MiniPath zostanie uruchomiony.",IDC_REUSEWINDOW,
+    CONTROL         "&U≈ºyj ponownie istniejƒÖcego okna kiedy MiniPath zostanie uruchomiony.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Zapisz ustawienia przy wyjúciu.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "&Zapisz ustawienia przy wyj≈õciu.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,40 +196,40 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "Ustawienia zaawansowane dla MiniPath.",IDC_STATIC,40,15,160,8
-    CONTROL         "&Uøyj katalogu do uruchomienia:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "Ostatnio uøywane.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
+    CONTROL         "&U≈ºyj katalogu do uruchomienia:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
+    CONTROL         "Ostatnio u≈ºywane.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
     CONTROL         """&Ulubione"" folder.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&WyczyúÊ Tylko do odczytu w zapisanych plikach.",IDC_CLEARREADONLY,
+    CONTROL         "&Wyczy≈õƒá Tylko do odczytu w zapisanych plikach.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
-    CONTROL         "ZmieÒ nazwÍ kopiowanych plikÛw jeúli wystπpi≥ konflikt nazw.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Zmie≈Ñ nazwƒô kopiowanych plik√≥w je≈õli wystƒÖpi≈Ç konflikt nazw.",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
-    CONTROL         "&Przenieú usuniÍte pliki do kosza.",IDC_USERECYCLEBIN,
+    CONTROL         "&Przenie≈õ usuniƒôte pliki do kosza.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
-    CONTROL         "&Nie potwierdzaj usuniÍcia pliku (niezalecane).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Nie potwierdzaj usuniƒôcia pliku (niezalecane).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "W≥πcz klawisz ""&Esc"" aby...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "ZminimalizowaÊ okno.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "ZamknπÊ MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "W≈ÇƒÖcz klawisz ""&Esc"" aby...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Zminimalizowaƒá okno.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
+    CONTROL         "ZamknƒÖƒá MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sk≥adniki"
+CAPTION "Sk≈Çadniki"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Pojawienie sie na liúcie katalogÛw.",IDC_STATIC,40,15,118,8
+    LTEXT           "Pojawienie sie na li≈õcie katalog√≥w.",IDC_STATIC,40,15,118,8
     GROUPBOX        "Kolory",IDC_STATIC,10,41,205,134
-    LTEXT           "Uøyj tego koloru tekstu gdy NIE WYBRANO FILTRA:",IDC_STATIC,20,54,136,8
-    CONTROL         "D&omyúlny kolor okna.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "Kolory uøytkownika:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    LTEXT           "U≈ºyj tego koloru tekstu gdy NIE WYBRANO FILTRA:",IDC_STATIC,20,54,136,8
+    CONTROL         "D&omy≈õlny kolor okna.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "Kolory u≈ºytkownika:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Wybierz kolor...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Uøyj tego koloru tekstu gdy FILTR jest w≥πczony:",IDC_STATIC,20,105,146,8
-    CONTROL         "D&omyúlny kolor okna.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
-    CONTROL         "Kolory uøytkownika:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    LTEXT           "U≈ºyj tego koloru tekstu gdy FILTR jest w≈ÇƒÖczony:",IDC_STATIC,20,105,146,8
+    CONTROL         "D&omy≈õlny kolor okna.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Kolory u≈ºytkownika:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Wybierz kolor...",IDC_COLOR_PICK2,120,130,50,14
 END
@@ -239,8 +240,8 @@ CAPTION "Lokalizacja"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Okreúl zewnÍtrzne programy i úcieøki.",IDC_STATIC,40,15,122,8
-    LTEXT           "&Domyúlnie ""Szybki podglπd"" (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "Okre≈õl zewnƒôtrzne programy i ≈õcie≈ºki.",IDC_STATIC,40,15,122,8
+    LTEXT           "&Domy≈õlnie ""Szybki podglƒÖd"" (Ctrl+Q):",IDC_STATIC,10,41,126,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "&Folder Ulubione (F11):",IDC_STATIC,10,76,76,8
@@ -253,21 +254,21 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Aplikacja docelowa"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Nie uøywaj øadnej aplikacji docelowej, tylko uruchom wybrany plik.",IDC_LAUNCH,
+    CONTROL         "Nie u≈ºywaj ≈ºadnej aplikacji docelowej, tylko uruchom wybrany plik.",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
-    CONTROL         "Uøyj nastÍp. aplikacji docelowej:",IDC_TARGET,
+    CONTROL         "U≈ºyj nastƒôp. aplikacji docelowej:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Okreúl dzia≥anie gdy aplikacja jest uruchomiona:",IDC_STATIC,7,64,196,8
+    LTEXT           "Okre≈õl dzia≈Çanie gdy aplikacja jest uruchomiona:",IDC_STATIC,7,64,196,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
-    LTEXT           "WiadomoúÊ:",IDC_STATIC,20,120,32,8
+    LTEXT           "Wiadomo≈õƒá:",IDC_STATIC,20,120,32,8
     CONTROL         "None, uruchom aplikacje zawsze gdy plik jest otwarty.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "Wyúlij wiadomoúÊ do okna aplikacji docelowej:",IDC_SENDDROPMSG,
+    CONTROL         "Wy≈õlij wiadomo≈õƒá do okna aplikacji docelowej:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
-    CONTROL         "Wykonaj nastÍp. komendÍ DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
+    CONTROL         "Wykonaj nastƒôp. komendƒô DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Aplikacja:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Znajdü okno...",IDC_FINDWIN,204,91,60,14
+    PUSHBUTTON      "Znajd≈∫ okno...",IDC_FINDWIN,204,91,60,14
     LTEXT           "Temat:",IDC_STATIC,198,120,20,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
@@ -278,11 +279,11 @@ END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Znajdü okno"
+CAPTION "Znajd≈∫ okno"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Przeciπgnij celownik do okna jeúli chcesz wybrac nowy cel, lub naciúnij Esc aby anulowaÊ.",IDC_STATIC,35,7,168,22
+    LTEXT           "PrzeciƒÖgnij celownik do okna je≈õli chcesz wybrac nowy cel, lub naci≈õnij Esc aby anulowaƒá.",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

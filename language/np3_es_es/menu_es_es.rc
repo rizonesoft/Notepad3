@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -64,9 +65,9 @@ BEGIN
         MENUITEM "Guardar &copia...\tCtrl+F6",                                IDM_FILE_SAVECOPY
         MENUITEM "Guardar con &fecha/hora original del archivo\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Sólo &lectura",                                 IDM_FILE_READONLY
+        MENUITEM "SÃ³lo &lectura",                                 IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "&Establecer contraseña de encriptación...",     IDM_SETPASS
+        MENUITEM "&Establecer contraseÃ±a de encriptaciÃ³n...",     IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Camino al portapapeles"
         BEGIN
@@ -79,7 +80,7 @@ BEGIN
             MENUITEM "Abrir &Explorador de archivos",       IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
-            MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
+            MENUITEM "V&entana vacÃ­a\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Relanzar con privilegios elevados",  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -91,28 +92,28 @@ BEGIN
             MENUITEM "Plantilla Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
-        POPUP "C&odificación"
+        POPUP "C&odificaciÃ³n"
         BEGIN
             MENUITEM "&ANSI",                               IDM_ENCODING_ANSI
             MENUITEM "&Unicode",                            IDM_ENCODING_UNICODE
             MENUITEM "Unicode &Big Endian",                 IDM_ENCODING_UNICODEREV
             MENUITEM "UTF-&8\tShift+F8",                    IDM_ENCODING_UTF8
             MENUITEM "UTF-8 con &signatura",                IDM_ENCODING_UTF8SIGN
-            MENUITEM "&Más...\tF9",                         IDM_ENCODING_SELECT
+            MENUITEM "&MÃ¡s...\tF9",                         IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
             MENUITEM "Recodificar a &Defecto\tCtrl+Alt+F",      CMD_RECODEDEFAULT
             MENUITEM "Recodificar a &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
             MENUITEM "Recodificar a &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Recodificar a &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
-            MENUITEM "Recodificar a análisis UCHARDET",         CMD_RELOADFORCEDETECTION
+            MENUITEM "Recodificar a anÃ¡lisis UCHARDET",         CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",    CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignorar Codificación &Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
+            MENUITEM "Ignorar CodificaciÃ³n &Tags\tAlt+F8",  CMD_RELOADNOFILEVARS
             MENUITEM "&Recodificar...\tF8",                 IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
             MENUITEM "Establecer Defecto...",               IDM_ENCODING_SETDEFAULT
         END
-        POPUP "&Finales de línea"
+        POPUP "&Finales de lÃ­nea"
         BEGIN
             MENUITEM "&Windows (CR+LF)",                    IDM_LINEENDINGS_CRLF
             MENUITEM "&Mac (CR)",                           IDM_LINEENDINGS_CR
@@ -121,9 +122,9 @@ BEGIN
             MENUITEM "&Defecto...",                         IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Comprobar la sangría...",                CMD_CHECK_INDENTATION
+        MENUITEM "&Comprobar la sangrÃ­a...",                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Configurar &página...",                   IDM_FILE_PAGESETUP
+        MENUITEM "Configurar &pÃ¡gina...",                   IDM_FILE_PAGESETUP
         MENUITEM "&Imprimir...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Propie&dades...",                         IDM_FILE_PROPERTIES
@@ -133,14 +134,14 @@ BEGIN
         POPUP "Fa&voritos"
         BEGIN
             MENUITEM "Abrir favor&itos...\tAlt+I",          IDM_FILE_OPENFAV
-            MENUITEM "&Añadir el archivo actual...\tAlt+K", IDM_FILE_ADDTOFAV
+            MENUITEM "&AÃ±adir el archivo actual...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Gestionar...\tAlt+F9",               IDM_FILE_MANAGEFAV
         END
         MENUITEM "Reciente (&Historial)...\tCtrl+Alt+H",    IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "&Salir\tAlt+F4",                          IDM_FILE_EXIT
     END
-    POPUP "&Edición"
+    POPUP "&EdiciÃ³n"
     BEGIN
         MENUITEM "&Deshacer\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Re&hacer\tCtrl+Y",                        IDM_EDIT_REDO
@@ -148,7 +149,7 @@ BEGIN
         MENUITEM "Cor&tar\tCtrl+X",                         IDM_EDIT_CUT
         MENUITEM "&Copiar\tCtrl+C",                         IDM_EDIT_COPY
         MENUITEM "C&opiar todo\tAlt+C",                     IDM_EDIT_COPYALL
-        MENUITEM "Copiar A&ñadir\tCtrl+E",                  IDM_EDIT_COPYADD
+        MENUITEM "Copiar A&Ã±adir\tCtrl+E",                  IDM_EDIT_COPYADD
         MENUITEM "&Pegar\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "Perm&utar\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "E&liminar\tDel",                          IDM_EDIT_CLEAR
@@ -164,41 +165,41 @@ BEGIN
             MENUITEM "&Eliminar la palabra a la izquierda\tCtrl+Back",  CMD_CTRLBACK
             MENUITEM "Eliminar la &palabra a la derecha\tCtrl+Del",     CMD_CTRLDEL
         END
-        POPUP "Lí&neas"
+        POPUP "LÃ­&neas"
         BEGIN
             MENUITEM "Mover &hacia arriba\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
             MENUITEM "&Mover hacia abajo\tCtrl+Shift+Down",             IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cortar selecc&ión o línea actual\tCtrl+X",                 IDM_EDIT_CUT
-            MENUITEM "Cortar selección de &línea(s) completa(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Copiar selección o línea actual\tCtrl+C",                 IDM_EDIT_COPY
-            MENUITEM "C&opiar selección de línea(s) completa(s)\tCtrl+Shift+C",  IDM_EDIT_COPYLINE
+            MENUITEM "Cortar selecc&iÃ³n o lÃ­nea actual\tCtrl+X",                 IDM_EDIT_CUT
+            MENUITEM "Cortar selecciÃ³n de &lÃ­nea(s) completa(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Copiar selecciÃ³n o lÃ­nea actual\tCtrl+C",                 IDM_EDIT_COPY
+            MENUITEM "C&opiar selecciÃ³n de lÃ­nea(s) completa(s)\tCtrl+Shift+C",  IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Duplicar la línea/Selection\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Permutar las líneas\tAlt+D",                     IDM_EDIT_LINETRANSPOSE
-            MENUITEM "&Eliminar la línea\tCtrl+Shift+D",                IDM_EDIT_DELETELINE
+            MENUITEM "&Duplicar la lÃ­nea/Selection\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Permutar las lÃ­neas\tAlt+D",                     IDM_EDIT_LINETRANSPOSE
+            MENUITEM "&Eliminar la lÃ­nea\tCtrl+Shift+D",                IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Eliminar la línea a la izquierda\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
-            MENUITEM "Eliminar la línea a la derecha\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Eliminar la lÃ­nea a la izquierda\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
+            MENUITEM "Eliminar la lÃ­nea a la derecha\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Columna &ajustada...\tCtrl+Shift+W",              IDM_EDIT_COLUMNWRAP
-            MENUITEM "Corta&r las líneas\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "&Unir las líneas\tCtrl+J",                        IDM_EDIT_JOINLINES
-            MENUITEM "&Fusionar las líneas\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preservar los párrafos\tCtrl+Shift+J",           IDM_EDIT_JOINLINES_PARA
+            MENUITEM "Corta&r las lÃ­neas\tCtrl+I",                      IDM_EDIT_SPLITLINES
+            MENUITEM "&Unir las lÃ­neas\tCtrl+J",                        IDM_EDIT_JOINLINES
+            MENUITEM "&Fusionar las lÃ­neas\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Preservar los pÃ¡rrafos\tCtrl+Shift+J",           IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Fusionar las líneas &vacías\tAlt+Y",              IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Fusionar las líneas con blanco\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Eliminar las &líneas vacías\tAlt+R",              IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Eliminar las líneas con blanco\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Elimin&ar las líneas duplicadas\tCtrl+Alt+D",     IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Fusionar las lÃ­neas &vacÃ­as\tAlt+Y",              IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Fusionar las lÃ­neas con blanco\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "Eliminar las &lÃ­neas vacÃ­as\tAlt+R",              IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Eliminar las lÃ­neas con blanco\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Elimin&ar las lÃ­neas duplicadas\tCtrl+Alt+D",     IDM_EDIT_REMOVEDUPLICATELINES
         END
-        POPUP "&Selección"
+        POPUP "&SelecciÃ³n"
         BEGIN
-            MENUITEM "&Aumentar la sangría",                IDM_EDIT_INDENT
-            MENUITEM "&Reducir la sangría",                 IDM_EDIT_UNINDENT
+            MENUITEM "&Aumentar la sangrÃ­a",                IDM_EDIT_INDENT
+            MENUITEM "&Reducir la sangrÃ­a",                 IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "&Incluir selección"
+            POPUP "&Incluir selecciÃ³n"
             BEGIN
                 MENUITEM "Comillas simples\tCtrl+1",        CMD_STRINGIFY
                 MENUITEM "Comillas &dobles\tCtrl+2",        CMD_STRINGIFY2
@@ -211,32 +212,32 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Con...\tAlt+Q",                  IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicar Selección/Línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplicar SelecciÃ³n/LÃ­nea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Bloc con blancos\tAlt+B",                        IDM_EDIT_PADWITHSPACES
-            MENUITEM "Eliminar el &primer carácter\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Eliminar el ú&ltimo carácter\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Eliminar los blancos al &final de línea\tAlt+W",  IDM_EDIT_TRIMLINES
+            MENUITEM "Eliminar el &primer carÃ¡cter\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Eliminar el Ãº&ltimo carÃ¡cter\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Eliminar los blancos al &final de lÃ­nea\tAlt+W",  IDM_EDIT_TRIMLINES
             MENUITEM "Comprimir &blancos\tCtrl+Alt+P",                  IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Modificar líneas...\tAlt+M",                     IDM_EDIT_MODIFYLINES
-            MENUITEM "&Alinear líneas...\tAlt+J",                       IDM_EDIT_ALIGN
-            MENUITEM "&Ordenar líneas...\tAlt+O",                       IDM_EDIT_SORTLINES
+            MENUITEM "&Modificar lÃ­neas...\tAlt+M",                     IDM_EDIT_MODIFYLINES
+            MENUITEM "&Alinear lÃ­neas...\tAlt+J",                       IDM_EDIT_ALIGN
+            MENUITEM "&Ordenar lÃ­neas...\tAlt+O",                       IDM_EDIT_SORTLINES
         END
         POPUP "Conve&rtir"
         BEGIN
-            MENUITEM "En &mayúsculas\tCtrl+Shift+U",                    IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "En minúsc&ulas\tCtrl+U",                          IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "En &mayÃºsculas\tCtrl+Shift+U",                    IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "En minÃºsc&ulas\tCtrl+U",                          IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Invertir mayúsculas/minúsculas\tCtrl+Alt+U",     IDM_EDIT_INVERTCASE
-            MENUITEM "Mo&do de título en mayúsculas\tCtrl+Alt+I",       IDM_EDIT_TITLECASE
-            MENUITEM "&Mayúscula la primera letra de una frase\tCtrl+Alt+O", IDM_EDIT_SENTENCECASE
+            MENUITEM "&Invertir mayÃºsculas/minÃºsculas\tCtrl+Alt+U",     IDM_EDIT_INVERTCASE
+            MENUITEM "Mo&do de tÃ­tulo en mayÃºsculas\tCtrl+Alt+I",       IDM_EDIT_TITLECASE
+            MENUITEM "&MayÃºscula la primera letra de una frase\tCtrl+Alt+O", IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "&Tabular la selección\tCtrl+Shift+T",             IDM_EDIT_CONVERTSPACES
-            MENUITEM "&Destbular la selección\tCtrl+Shift+S",           IDM_EDIT_CONVERTTABS
+            MENUITEM "&Tabular la selecciÃ³n\tCtrl+Shift+T",             IDM_EDIT_CONVERTSPACES
+            MENUITEM "&Destbular la selecciÃ³n\tCtrl+Shift+S",           IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Ta&bular la sangría\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Destabular la &sangría\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
+            MENUITEM "Ta&bular la sangrÃ­a\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Destabular la &sangrÃ­a\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
             MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
@@ -246,18 +247,18 @@ BEGIN
         END
         POPUP "&Insertar"
         BEGIN
-            MENUITEM "&Nueva línea arriba\tCtrl+Enter",                 CMD_CTRLENTER
+            MENUITEM "&Nueva lÃ­nea arriba\tCtrl+Enter",                 CMD_CTRLENTER
             MENUITEM SEPARATOR
             MENUITEM "Etiqueta HTML/&XML...\tAlt+X",                    IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Identificador de codificación\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Identificador de codificaciÃ³n\tCtrl+F8",         IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "&Hora/Fecha (formato corto)\tCtrl+F5",            IDM_EDIT_INSERT_SHORTDATE
             MENUITEM "Hora/Fecha (&formato largo)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Actualización &Timestamps\tShift+F5",             CMD_TIMESTAMPS
+            MENUITEM "ActualizaciÃ³n &Timestamps\tShift+F5",             CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Comentario de línea (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "Comentario &multilíneas\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
+            MENUITEM "&Comentario de lÃ­nea (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
+            MENUITEM "Comentario &multilÃ­neas\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
         END
         POPUP "Div&erso"
         BEGIN
@@ -266,19 +267,19 @@ BEGIN
             MENUITEM "&Escape C Chars\tCtrl+Alt+E",                     IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C Chars\tCtrl+Alt+R",                   IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "Aument&ar el número\tCtrl+Alt+NK+",               CMD_INCREASENUM
-            MENUITEM "Disminu&ir el número\tCtrl+Alt+NK-",              CMD_DECREASENUM
+            MENUITEM "Aument&ar el nÃºmero\tCtrl+Alt+NK+",               CMD_INCREASENUM
+            MENUITEM "Disminu&ir el nÃºmero\tCtrl+Alt+NK-",              CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "&Buscar coincidencia de llave\tCtrl+B",           IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Selección coincidencia de &llave\tCtrl+Shift+B",  IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "SelecciÃ³n coincidencia de &llave\tCtrl+Shift+B",  IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "Seleccionar siguie&nte\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
             MENUITEM "Seleccionar an&terior\tCtrl+Alt+Shift+F2",        IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Seleccionar &palabra o líneas\tCtrl+Spc",              IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-selección &todas coincidencias\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "Seleccionar &palabra o lÃ­neas\tCtrl+Spc",              IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-selecciÃ³n &todas coincidencias\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Dividir &transacción de deshacer en saltos de línea",  IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Dividir &transacciÃ³n de deshacer en saltos de lÃ­nea",  IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "&Marcadores"
@@ -294,11 +295,11 @@ BEGIN
         POPUP "&Buscar"
         BEGIN
             MENUITEM "&Buscar...\tCtrl+F",                              IDM_EDIT_FIND
-            MENUITEM "&Guardar búsqueda de texto\tAlt+F3",              IDM_EDIT_SAVEFIND
+            MENUITEM "&Guardar bÃºsqueda de texto\tAlt+F3",              IDM_EDIT_SAVEFIND
             MENUITEM "Buscar &siguiente\tF3",                           IDM_EDIT_FINDNEXT
             MENUITEM "Buscar &anterior\tShift+F3",                      IDM_EDIT_FINDPREV
-            MENUITEM "Buscar siguient&e selección\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Buscar anteri&or selección\tCtrl+Shift+F3",       CMD_FINDPREVSEL
+            MENUITEM "Buscar siguient&e selecciÃ³n\tCtrl+F3",            CMD_FINDNEXTSEL
+            MENUITEM "Buscar anteri&or selecciÃ³n\tCtrl+Shift+F3",       CMD_FINDPREVSEL
             MENUITEM "&Reemplazar...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
@@ -306,18 +307,18 @@ BEGIN
     END
     POPUP "&Vista"
     BEGIN
-        MENUITEM "&Ajuste automático de línea\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "&Marcador de línea larga\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
-        MENUITEM "&Guías de Sangría\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "&Ajuste automÃ¡tico de lÃ­nea\tCtrl+W",                 IDM_VIEW_WORDWRAP
+        MENUITEM "&Marcador de lÃ­nea larga\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&GuÃ­as de SangrÃ­a\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Mostrar &símbolos de ajuste\tCtrl+Shift+7",           IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Mostrar &sÃ­mbolos de ajuste\tCtrl+Shift+7",           IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Mostrar los &Blancos\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
-        MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
+        MENUITEM "Mostrar &fin de lÃ­nea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "Indicar &hipervínculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Definición color Hotspots",                          IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Indicar &hipervÃ­nculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&DefiniciÃ³n color Hotspots",                          IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "&Visual coincidencia de llave\tCtrl+Shift+V",         IDM_VIEW_MATCHBRACES
-        POPUP "&Resaltar la línea actual\tCtrl+Shift+I"
+        POPUP "&Resaltar la lÃ­nea actual\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&No resaltar",                        IDM_VIEW_HILITCURLN_NONE
             MENUITEM "&Color de fondo",                     IDM_VIEW_HILITCURLN_BACK
@@ -327,9 +328,9 @@ BEGIN
         BEGIN
             MENUITEM "&Activo\tAlt+A",                      IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
-            MENUITEM "&Coincidir sólo visible",             IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "&Coincidir sÃ³lo visible",             IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "Coincidir &sensible a mayúsculas",    IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "Coincidir &sensible a mayÃºsculas",    IDM_VIEW_MARKOCCUR_CASE
             POPUP "Coincidir &palabra completa solo"
             BEGIN
                 MENUITEM "&OFF",                            IDM_VIEW_MARKOCCUR_WNONE
@@ -338,21 +339,21 @@ BEGIN
             END
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Números de línea\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Selección de&l margen\tCtrl+Shift+M",     IDM_VIEW_MARGIN
+        MENUITEM "&NÃºmeros de lÃ­nea\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
+        MENUITEM "SelecciÃ³n de&l margen\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
         POPUP "Mos&trar"
         BEGIN
-            MENUITEM "&Código plegable",                                IDM_VIEW_FOLDING
+            MENUITEM "&CÃ³digo plegable",                                IDM_VIEW_FOLDING
             MENUITEM "&Alternar pliegues\tCtrl+Shift+F",                IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Vista enfocada\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoreo de Log",                               IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Mostrar información de &hipervínculos",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "&Desplazarse despuÃ©s del final de archivo",       IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Mostrar informaciÃ³n de &hipervÃ­nculos",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "Barra de herram&ientas"
         BEGIN
-            MENUITEM "Mostrar la barra de &menú",                       IDM_VIEW_MENUBAR
+            MENUITEM "Mostrar la barra de &menÃº",                       IDM_VIEW_MENUBAR
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
             MENUITEM "Al&ternar les barras de herramientas",            IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
@@ -365,15 +366,15 @@ BEGIN
             MENUITEM "Zoom A&lejar\tCtrl+-",                            IDM_VIEW_ZOOMOUT
             MENUITEM "Restablecer el &Zoom\tCtrl+0",                    IDM_VIEW_RESETZOOM
         END
-        POPUP "&Posición"
+        POPUP "&PosiciÃ³n"
         BEGIN
-            MENUITEM "&Copiar argumentos de posición\tCtrl+Shift+K",    CMD_COPYWINPOS
-            MENUITEM "&Restablecer la posición por defecto\tCtrl+Shift+P", CMD_DEFAULTWINPOS
-            MENUITEM "&Guardar como posición por defecto",              CMD_SAVEASDEFWINPOS
-            MENUITEM "&Borrar guardado como posición por defecto",      CMD_CLEARSAVEDWINPOS
-            MENUITEM "Restablecer a la posición &inicial\tCtrl+F11",    CMD_INITIALWINPOS
-            MENUITEM "&Alternar posición de área completa\tF11",        CMD_FULLSCRWINPOS
-            MENUITEM "&Fijar la posición de la ventana",                IDM_VIEW_STICKYWINPOS
+            MENUITEM "&Copiar argumentos de posiciÃ³n\tCtrl+Shift+K",    CMD_COPYWINPOS
+            MENUITEM "&Restablecer la posiciÃ³n por defecto\tCtrl+Shift+P", CMD_DEFAULTWINPOS
+            MENUITEM "&Guardar como posiciÃ³n por defecto",              CMD_SAVEASDEFWINPOS
+            MENUITEM "&Borrar guardado como posiciÃ³n por defecto",      CMD_CLEARSAVEDWINPOS
+            MENUITEM "Restablecer a la posiciÃ³n &inicial\tCtrl+F11",    CMD_INITIALWINPOS
+            MENUITEM "&Alternar posiciÃ³n de Ã¡rea completa\tF11",        CMD_FULLSCRWINPOS
+            MENUITEM "&Fijar la posiciÃ³n de la ventana",                IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "A&pariencia"
@@ -381,28 +382,28 @@ BEGIN
         MENUITEM "&Personalizar Esquemas...\tCtrl+F12",             IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Seleccionar Esquema Sinta&xis...\tF12",           IDM_VIEW_SCHEME
-        MENUITEM "&2º Base Común\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2Âº Base ComÃºn\tShift+F12",                       IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Fuente global por defecto...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "Fuente del Esquema &actual por defecto...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
     END
-    POPUP "&Configuración"
+    POPUP "&ConfiguraciÃ³n"
     BEGIN
-        MENUITEM "&Insertar tabulación como espacios",                  IDM_VIEW_TABSASSPACES
-        MENUITEM "&Configuración de tabulación...\tCtrl+T",             IDM_VIEW_TABSETTINGS
-        MENUITEM "Configuración &ajuste de línea...",                   IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Configuración de &larga línea...",                    IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "&Sangría texto automático",                           IDM_VIEW_AUTOINDENTTEXT
+        MENUITEM "&Insertar tabulaciÃ³n como espacios",                  IDM_VIEW_TABSASSPACES
+        MENUITEM "&ConfiguraciÃ³n de tabulaciÃ³n...\tCtrl+T",             IDM_VIEW_TABSETTINGS
+        MENUITEM "ConfiguraciÃ³n &ajuste de lÃ­nea...",                   IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "ConfiguraciÃ³n de &larga lÃ­nea...",                    IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "&SangrÃ­a texto automÃ¡tico",                           IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "Auto Cierre &HTML/XML\tCtrl+Shift+H",                 IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "A&uto completar palabras",                            IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Habilitar edición de bloque de &comentario de línea", IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "&NavegaciÃ³n por palabra acelerada\tCtrl+Alt+A",       IDM_VIEW_ACCELWORDNAV
+        MENUITEM "Habilitar ediciÃ³n de bloque de &comentario de lÃ­nea", IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
-        MENUITEM "Ins&tancia de archivo único",                         IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Ins&tancia de archivo Ãºnico",                         IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "N&otificaciÃ³n de cambios en archivo...\tAlt+F5",      IDM_VIEW_CHANGENOTIFY
         MENUITEM "Silenciar sonidos de aviso",                          IDM_VIEW_MUTE_MESSAGEBEEP
-        POPUP "&Función de la tecla 'Esc'"
+        POPUP "&FunciÃ³n de la tecla 'Esc'"
         BEGIN
             MENUITEM "&Ninguna",                            IDM_VIEW_NOESCFUNC
             MENUITEM "&Minimizar Notepad3",                 IDM_VIEW_ESCMINIMIZE
@@ -413,12 +414,12 @@ BEGIN
         POPUP "&Recordar"
         BEGIN
             MENUITEM "&Recordar archivos recientes",         IDM_VIEW_NOSAVERECENT
-            MENUITEM "&Preservar la posición del cursor",    IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Recordar los &argumentos de búsqueda", IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "&Preservar la posiciÃ³n del cursor",    IDM_VIEW_NOPRESERVECARET
+            MENUITEM "Recordar los &argumentos de bÃºsqueda", IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Ventana"
         BEGIN
-            POPUP "Mostrar en el &título de la ventana"
+            POPUP "Mostrar en el &tÃ­tulo de la ventana"
             BEGIN
                 MENUITEM "&Solo el nombre del archivo",     IDM_VIEW_SHOWFILENAMEONLY
                 MENUITEM "&Nombre de archivo y carpeta",    IDM_VIEW_SHOWFILENAMEFIRST
@@ -430,7 +431,7 @@ BEGIN
             MENUITEM "Minimi&zar en la barra de tareas",    IDM_VIEW_MINTOTRAY
             MENUITEM "&Modo transparente\tAlt+G",           IDM_VIEW_TRANSPARENT
         END
-        POPUP "T&ecnología"
+        POPUP "T&ecnologÃ­a"
         BEGIN
             POPUP "&Renderizado"
             BEGIN
@@ -448,19 +449,19 @@ BEGIN
         END
         POPUP "Configuracion avan&zada"
         BEGIN
-            MENUITEM "Guardar la configuración al &salir",              IDM_VIEW_SAVESETTINGS
-            MENUITEM "&Guardar la configuración ahora\tF7",             IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Abrir el archivo de configuración\tCtrl+F7",     CMD_OPENINIFILE
+            MENUITEM "Guardar la configuraciÃ³n al &salir",              IDM_VIEW_SAVESETTINGS
+            MENUITEM "&Guardar la configuraciÃ³n ahora\tF7",             IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Abrir el archivo de configuraciÃ³n\tCtrl+F7",     CMD_OPENINIFILE
         END
     END
     POPUP "Ay&uda"
     BEGIN
-        MENUITEM "&Documentación en línea\tF1",                         IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "&DocumentaciÃ³n en lÃ­nea\tF1",                         IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Lanzar la herramien&ta de administración...",         IDM_HELP_ADMINEXE
-        MENUITEM "Consultar &Website para la actualización",            IDM_HELP_UPDATEWEBSITE
+        MENUITEM "Lanzar la herramien&ta de administraciÃ³n...",         IDM_HELP_ADMINEXE
+        MENUITEM "Consultar &Website para la actualizaciÃ³n",            IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "Ayuda de la línea de &comando...",                    IDM_HELP_CMD
+        MENUITEM "Ayuda de la lÃ­nea de &comando...",                    IDM_HELP_CMD
         MENUITEM "&Acerca de...\tShift+F1",                             IDM_HELP_ABOUT
     END
 END
@@ -487,7 +488,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar la barra de &menú",                   IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar la barra de &menÃº",                   IDM_VIEW_MENUBAR
         MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
         MENUITEM "Al&ternar las barras de herramientas",        IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB

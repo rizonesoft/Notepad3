@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+Ôªø// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
 LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,84 +55,84 @@ END
 STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Vissza"
-    IDT_HISTORY_FORWARD     "Elıre"
-    IDT_UPDIR               "Egy mapp·val feljebb"
-    IDT_ROOT                "GyˆkÈr mappa"
+    IDT_HISTORY_FORWARD     "El≈ëre"
+    IDT_UPDIR               "Egy mapp√°val feljebb"
+    IDT_ROOT                "Gy√∂k√©r mappa"
     IDT_VIEW_FAVORITES      "Kedvencek"
-    IDT_FILE_PREV           "Elızı f·jl"
-    IDT_FILE_NEXT           "Kˆvetkezı f·jl"
-    IDT_FILE_RUN            "Futtat·s"
-    IDT_FILE_QUICKVIEW      "GyorsnÈzet"
-    IDT_FILE_SAVEAS         "MentÈs m·skÈnt"
-    IDT_FILE_COPYMOVE       "M·sol·s/Mozgat·s"
-    IDT_FILE_DELETE         "TˆrlÈs"
-    IDT_FILE_DELETE2        "TˆrlÈs (Lomt·r kihagy·s)"
-    IDT_VIEW_FILTER         "Sz˚rı"
+    IDT_FILE_PREV           "El≈ëz≈ë f√°jl"
+    IDT_FILE_NEXT           "K√∂vetkez≈ë f√°jl"
+    IDT_FILE_RUN            "Futtat√°s"
+    IDT_FILE_QUICKVIEW      "Gyorsn√©zet"
+    IDT_FILE_SAVEAS         "Ment√©s m√°sk√©nt"
+    IDT_FILE_COPYMOVE       "M√°sol√°s/Mozgat√°s"
+    IDT_FILE_DELETE         "T√∂rl√©s"
+    IDT_FILE_DELETE2        "T√∂rl√©s (Lomt√°r kihagy√°s)"
+    IDT_VIEW_FILTER         "Sz≈±r≈ë"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
     IDS_NUMFILES            "%s objektum"
-    IDS_NUMFILES2           "%s Objektum | Sz˚rı"
-    IDS_SAVEFILE            " ""%s"" mentÈse..."
-    IDS_OPEN_FILE_WITH      "Megnyit·s ezzel: %s"
+    IDS_NUMFILES2           "%s Objektum | Sz≈±r≈ë"
+    IDS_SAVEFILE            " ""%s"" ment√©se..."
+    IDS_OPEN_FILE_WITH      "Megnyit√°s ezzel: %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Mappa hozz·fÈrÈsi hiba\nNincs hozz·fÈrÈsem a megadott mapp·hoz.\nEllenırizze a lemezt vagy a h·lÛzati kapcsoaltot."
-    IDS_ERR_FILE            "F·j hozz·fÈrÈsi hiba\nNincs hozz·fÈrÈsem ehhez: ""%s"".\nLehet, hogy a f·jlt egy m·sik alkalmaz·s haszn·lja.\nEllenırizze a lemezt vagy a h·lÛzati kapcsolatot."
-    IDS_ERR_NEW             "F·j hozz·fÈrÈsi hiba\nA f·jlt nem lehet lÈtrehozni.\nEllenırizze a lemezt vagy a h·lÛzati kapcsolatot."
-    IDS_ERR_NEWDIR          "Mappa hozz·fÈrÈsi hiba\nA mapp·t nem lehet lÈtrehozni.\nEllenırizze a lemezt vagy a h·lÛzati kapcsolatot."
-    IDS_ERR_SAVEAS1         "F·jl mentÈsi hiba\nHiba ""%s"" mentÈsekor.\nLehet, hogy egy m·r lÈtezı f·jl Ìr·svÈdett."
-    IDS_ERR_SAVEAS2         "F·jl mentÈsi hiba\nHiba a mentett f·jln·l a csak-olvashatÛ attrib˙tum tˆrlÈsekor."
-    IDS_ERR_CMDLINE         "MiniPath\nHiba a parancssorban megadott f·jl vagy mappa elÈrÈsekor."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNincs hozz·fÈrÈs az indÌt·si mapp·hoz."
-    IDS_ERR_DROP1           "MiniPath\nNincs hozz·fÈrÈs az ejtett f·jlhoz vagy mapp·hoz."
-    IDS_ERR_DROP2           "MiniPath\nEgyszerre csak egy f·jlt vagy mapp·t lehet az ablakra ejteni."
-    IDS_ERR_FAVORITES       "Kedvencek\nNincs hozz·fÈrÈs a ""Kedvencek"" mapp·hoz.\nAdjon meg egy ÈrvÈnyes mapp·t a ""Be·llÌt·sok"" ablakban."
-    IDS_ERR_LNK_GETPATH     "Hivatkoz·si hiba\nNincs ÈrvÈnyes f·jlrendszer-˙tvonal a hivatkozott objektumhoz.\nTal·n a hivatkoz·s nem egy f·jlra vagy mapp·ra mutat."
-    IDS_ERR_LNK_NOACCESS    "Hivatkoz·si hiba\nNincs hozz·fÈrÈsem a hivatkozott objektum f·jlrendszeri ˙tvonal·hoz.\nEllenırizze a lemezt vagy a h·lÛzati kapcsolatot."
-    IDS_ERR_CREATELINK      "Hivatkoz·si hiba\nHiba a megadott hivatkoz·s lÈtrehoz·sakor.\nTal·n a cÈlmappa Ìr·svÈdett."
-    IDS_ERR_FILTER          "F·jlsz˚rı hiba\nNincs tov·bbi sz˚rı megadva.\nKÈrem, nÈzze meg a MiniPath readme f·jlban a tov·bbi inform·ciÛkat."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nA m·r futÛ MiniPath ablak foglalt vagy nyitva van egy p·rbeszÈdablaka.\nSzeretne egy ˙jabb Minipath ablakot megnyitni?"
+    IDS_ERR_CD              "Mappa hozz√°f√©r√©si hiba\nNincs hozz√°f√©r√©sem a megadott mapp√°hoz.\nEllen≈ërizze a lemezt vagy a h√°l√≥zati kapcsoaltot."
+    IDS_ERR_FILE            "F√°j hozz√°f√©r√©si hiba\nNincs hozz√°f√©r√©sem ehhez: ""%s"".\nLehet, hogy a f√°jlt egy m√°sik alkalmaz√°s haszn√°lja.\nEllen≈ërizze a lemezt vagy a h√°l√≥zati kapcsolatot."
+    IDS_ERR_NEW             "F√°j hozz√°f√©r√©si hiba\nA f√°jlt nem lehet l√©trehozni.\nEllen≈ërizze a lemezt vagy a h√°l√≥zati kapcsolatot."
+    IDS_ERR_NEWDIR          "Mappa hozz√°f√©r√©si hiba\nA mapp√°t nem lehet l√©trehozni.\nEllen≈ërizze a lemezt vagy a h√°l√≥zati kapcsolatot."
+    IDS_ERR_SAVEAS1         "F√°jl ment√©si hiba\nHiba ""%s"" ment√©sekor.\nLehet, hogy egy m√°r l√©tez≈ë f√°jl √≠r√°sv√©dett."
+    IDS_ERR_SAVEAS2         "F√°jl ment√©si hiba\nHiba a mentett f√°jln√°l a csak-olvashat√≥ attrib√∫tum t√∂rl√©sekor."
+    IDS_ERR_CMDLINE         "MiniPath\nHiba a parancssorban megadott f√°jl vagy mappa el√©r√©sekor."
+    IDS_ERR_STARTUPDIR      "MiniPath\nNincs hozz√°f√©r√©s az ind√≠t√°si mapp√°hoz."
+    IDS_ERR_DROP1           "MiniPath\nNincs hozz√°f√©r√©s az ejtett f√°jlhoz vagy mapp√°hoz."
+    IDS_ERR_DROP2           "MiniPath\nEgyszerre csak egy f√°jlt vagy mapp√°t lehet az ablakra ejteni."
+    IDS_ERR_FAVORITES       "Kedvencek\nNincs hozz√°f√©r√©s a ""Kedvencek"" mapp√°hoz.\nAdjon meg egy √©rv√©nyes mapp√°t a ""Be√°ll√≠t√°sok"" ablakban."
+    IDS_ERR_LNK_GETPATH     "Hivatkoz√°si hiba\nNincs √©rv√©nyes f√°jlrendszer-√∫tvonal a hivatkozott objektumhoz.\nTal√°n a hivatkoz√°s nem egy f√°jlra vagy mapp√°ra mutat."
+    IDS_ERR_LNK_NOACCESS    "Hivatkoz√°si hiba\nNincs hozz√°f√©r√©sem a hivatkozott objektum f√°jlrendszeri √∫tvonal√°hoz.\nEllen≈ërizze a lemezt vagy a h√°l√≥zati kapcsolatot."
+    IDS_ERR_CREATELINK      "Hivatkoz√°si hiba\nHiba a megadott hivatkoz√°s l√©trehoz√°sakor.\nTal√°n a c√©lmappa √≠r√°sv√©dett."
+    IDS_ERR_FILTER          "F√°jlsz≈±r≈ë hiba\nNincs tov√°bbi sz≈±r≈ë megadva.\nK√©rem, n√©zze meg a MiniPath readme f√°jlban a tov√°bbi inform√°ci√≥kat."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nA m√°r fut√≥ MiniPath ablak foglalt vagy nyitva van egy p√°rbesz√©dablaka.\nSzeretne egy √∫jabb Minipath ablakot megnyitni?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nA lÈtezı cÈl-ablak foglalt vagy nyitva van egy p·rbeszÈdablaka.\nSzeretne egy ˙jabb ablakot megnyitni?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nKÈrem, gyızıdjˆn meg rÛla, hogy minden sz¸ksÈges mezı ki van tˆltve.\nUgyancsak tal·lnia kell egy cÈl ablakot, ha a megfelelı opciÛ be van kapcsolva.."
-    IDS_ERR_INIOPEN         "MiniPath\nNincs hozz·fÈrÈsem a MiniPath konfigur·ciÛs f·jlj·hoz."
-    IDS_ERR_INICREATE       "Be·llÌt·sok mentÈse\nHiba a konfigur·ciÛs f·jl lÈtrehoz·sakor."
-    IDS_ERR_INIWRITE        "Be·llÌt·sok mentÈse\nA be·llÌt·sok nincsenek mentve!\nNincs Ìr·si jogom a konfigur·ciÛs f·jlhoz."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nA l√©tez≈ë c√©l-ablak foglalt vagy nyitva van egy p√°rbesz√©dablaka.\nSzeretne egy √∫jabb ablakot megnyitni?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nK√©rem, gy≈ëz≈ëdj√∂n meg r√≥la, hogy minden sz√ºks√©ges mez≈ë ki van t√∂ltve.\nUgyancsak tal√°lnia kell egy c√©l ablakot, ha a megfelel≈ë opci√≥ be van kapcsolva.."
+    IDS_ERR_INIOPEN         "MiniPath\nNincs hozz√°f√©r√©sem a MiniPath konfigur√°ci√≥s f√°jlj√°hoz."
+    IDS_ERR_INICREATE       "Be√°ll√≠t√°sok ment√©se\nHiba a konfigur√°ci√≥s f√°jl l√©trehoz√°sakor."
+    IDS_ERR_INIWRITE        "Be√°ll√≠t√°sok ment√©se\nA be√°ll√≠t√°sok nincsenek mentve!\nNincs √≠r√°si jogom a konfigur√°ci√≥s f√°jlhoz."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "VÈgrehajthatÛ keresÈse"
-    IDS_GETQUICKVIEWER      "GyorsnÈzet keresÈse"
-    IDS_GETTARGET           "Szerkesztı keresÈse"
-    IDS_NEWFILE             "⁄j f·jl"
-    IDS_FILTER_ALL          "Minden f·jl (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "VÈgrehajthatÛ f·jlok (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nMinden f·jl (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "V·lasszon egy ˙j mapp·t."
-    IDS_FAVORITES           "Adja meg a ""Kedvencek"" mapp·t."
+    IDS_SEARCHEXE           "V√©grehajthat√≥ keres√©se"
+    IDS_GETQUICKVIEWER      "Gyorsn√©zet keres√©se"
+    IDS_GETTARGET           "Szerkeszt≈ë keres√©se"
+    IDS_NEWFILE             "√öj f√°jl"
+    IDS_FILTER_ALL          "Minden f√°jl (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "V√©grehajthat√≥ f√°jlok (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nMinden f√°jl (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "V√°lasszon egy √∫j mapp√°t."
+    IDS_FAVORITES           "Adja meg a ""Kedvencek"" mapp√°t."
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "Maradjon &fel¸l"
+    SC_ALWAYSONTOP          "Maradjon &fel√ºl"
     SC_ABOUT                "&Info..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "V·lassza ki a kedvenc alkalmaz·saira mutatÛ mapp·t."
-    IDS_COPYMOVE            "V·lasszon egy cÈlmapp·t."
-    IDS_CREATELINK          "V·lasszon egy cÈlmapp·t az ˙j hivatkoz·snak."
-    IDS_SAVESETTINGS        "Be·llÌt·sok mentÈse\nA jelenlegi program be·llÌt·sok el lettek mentve."
-    IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Magyar fordÌt·s: xsak"
+    IDS_OPENWITH            "V√°lassza ki a kedvenc alkalmaz√°saira mutat√≥ mapp√°t."
+    IDS_COPYMOVE            "V√°lasszon egy c√©lmapp√°t."
+    IDS_CREATELINK          "V√°lasszon egy c√©lmapp√°t az √∫j hivatkoz√°snak."
+    IDS_SAVESETTINGS        "Be√°ll√≠t√°sok ment√©se\nA jelenlegi program be√°ll√≠t√°sok el lettek mentve."
+    IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Magyar ford√≠t√°s: xsak"
 END
 
 

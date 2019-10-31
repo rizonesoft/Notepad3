@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_AFK)
 LANGUAGE LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,7 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "&Lêer"
+    POPUP "&LÃªer"
     BEGIN
         MENUITEM "&Nuwe\tCtrl+N",                                   IDM_FILE_NEW
         MENUITEM "Maak &Oop...\tCtrl+O",                            IDM_FILE_OPEN
@@ -79,7 +80,7 @@ BEGIN
             MENUITEM "Open File &Explorer",                 IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "&Nuwe Venster\tAlt+N",                IDM_FILE_NEWWINDOW
-            MENUITEM "Lê&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM "LÃª&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Herlaai Verhoogde",                  IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -133,7 +134,7 @@ BEGIN
         POPUP "&Gunstelinge"
         BEGIN
             MENUITEM "Maak Gunstelinge &Oop...\tAlt+I",     IDM_FILE_OPENFAV
-            MENUITEM "&Voeg Huidige Lêer By...\tAlt+K",     IDM_FILE_ADDTOFAV
+            MENUITEM "&Voeg Huidige LÃªer By...\tAlt+K",     IDM_FILE_ADDTOFAV
             MENUITEM "&Bestuur...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
         MENUITEM "Onlangse (&Geskiedenis)...\tCtrl+Alt+H",  IDM_FILE_RECENT
@@ -187,9 +188,9 @@ BEGIN
             MENUITEM "Smel&t Lyne Saam\tCtrl+Alt+J",         IDM_EDIT_JOINLN_NOSP
             MENUITEM "Behou &Paragrawe\tCtrl+Shift+J",       IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Voeg Lêer Lyne &Saam\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Voeg LÃªer Lyne &Saam\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Voeg &Blank Lyne Saam\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Verw&yder Lêer Lyne\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Verw&yder LÃªer Lyne\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Ver&wyder Blank Lyne\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "Verwyder D&uplikaatlyne\tCtrl+Alt+D",  IDM_EDIT_REMOVEDUPLICATELINES
         END
@@ -347,7 +348,7 @@ BEGIN
             MENUITEM "&Wissel Voue\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Gefokusde Aansig\tCtrl+Alt+V",        IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoring Log",                     IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Rol na Einde Van Die &LÃªer",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Wys &Hiperskakel Nutsmiddelwenk",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "Nu&tsbalk"
@@ -399,8 +400,8 @@ BEGIN
         MENUITEM "Versnelde Woord Navi&gasie\tCtrl+Alt+A",          IDM_VIEW_ACCELWORDNAV
         MENUITEM "Enable Line &Comment Block Edit",                 IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
-        MENUITEM "Enkel &Lêer Instansie",                           IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
+        MENUITEM "Enkel &LÃªer Instansie",                           IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "LÃªerverandering-&Kennisgewing...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
         MENUITEM "Mute Message &Beeps",                             IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc &Sleutel Funksie"
         BEGIN
@@ -412,7 +413,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Ont&hou"
         BEGIN
-            MENUITEM "Onthou Onlangse &Lêers",              IDM_VIEW_NOSAVERECENT
+            MENUITEM "Onthou Onlangse &LÃªers",              IDM_VIEW_NOSAVERECENT
             MENUITEM "&Bewaar Caret Posisie",               IDM_VIEW_NOPRESERVECARET
             MENUITEM "Onthou So&ekpatroon",                 IDM_VIEW_NOSAVEFINDREPL
         END
@@ -420,8 +421,8 @@ BEGIN
         BEGIN
             POPUP "Venster Titel &Vertoning"
             BEGIN
-                MENUITEM "Slegs &Lêernaam",                 IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Leêrnaam en &Gids",               IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Slegs &LÃªernaam",                 IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "LeÃªrnaam en &Gids",               IDM_VIEW_SHOWFILENAMEFIRST
                 MENUITEM "Volle &Padnaam",                  IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Teks Uittreksel\tCtrl+9",        IDM_VIEW_SHOWEXCERPT
             END
@@ -450,7 +451,7 @@ BEGIN
         BEGIN
             MENUITEM "Stoor Instellings op &Uitgang",       IDM_VIEW_SAVESETTINGS
             MENUITEM "Stoor Instellings &Nou\tF7",          IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "Maak Stellings Lêer &Oop\tCtrl+F7",   CMD_OPENINIFILE
+            MENUITEM "Maak Stellings LÃªer &Oop\tCtrl+F7",   CMD_OPENINIFILE
         END
     END
     POPUP "&Help"

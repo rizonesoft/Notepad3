@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+ï»¿// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ITA)
 LANGUAGE LANG_ITALIAN, SUBLANG_ITALIAN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -126,7 +127,7 @@ BEGIN
         MENUITEM "Impos&tazione pagina...",               IDM_FILE_PAGESETUP
         MENUITEM "Stam&pa...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "Propr&ietà...",                         IDM_FILE_PROPERTIES
+        MENUITEM "Propr&ietÃ ...",                         IDM_FILE_PROPERTIES
         MENUITEM "Crea collegamento su &Desktop",         IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "S&foglia... (&MiniPath)\tCtrl+M",       IDM_FILE_BROWSE
@@ -167,7 +168,7 @@ BEGIN
         POPUP "&Righe"
         BEGIN
             MENUITEM "Sposta &su\tCtrl+Shift+Up",         IDM_EDIT_MOVELINEUP
-            MENUITEM "Sposta &giù\tCtrl+Shift+Down",      IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Sposta &giÃ¹\tCtrl+Shift+Down",      IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "&Taglia selezione o riga corrente\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Taglia righe intere\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -381,7 +382,7 @@ BEGIN
         MENUITEM "&Personalizza Schemi...\tCtrl+F12",                      IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "Seleziona Schema Sintassi...\tF12",                      IDM_VIEW_SCHEME
-        MENUITEM "&2° Base comune\tShift+F12",                             IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2Â° Base comune\tShift+F12",                             IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Font Globale di &Default...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Font di Default dello Schema corrente...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -428,7 +429,7 @@ BEGIN
             MENUITEM "&Riusa finestra",                   IDM_VIEW_REUSEWINDOW
             MENUITEM "&Sempre in primo piano\tAlt+T",     IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&zza nella Tray",             IDM_VIEW_MINTOTRAY
-            MENUITEM "Modalità &trasparente\tAlt+G",      IDM_VIEW_TRANSPARENT
+            MENUITEM "ModalitÃ  &trasparente\tAlt+G",      IDM_VIEW_TRANSPARENT
         END
         POPUP "&Tecnologia"
         BEGIN

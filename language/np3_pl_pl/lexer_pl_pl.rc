@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+Ôªø// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
 LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -61,13 +62,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "WspÛlna baza"
-    IDS_LEX_WEB_SRC         "Kod ürÛd≥owy strony"
+    IDS_LEX_DEF_TXT         "Wsp√≥lna baza"
+    IDS_LEX_WEB_SRC         "Kod ≈∫r√≥d≈Çowy strony"
     IDS_LEX_XML_DOC         "Dokument XML"
     IDS_LEX_CSS_STYLE       "Arkusze stylu CSS"
     IDS_LEX_PRISM_CSV       "Pryzmat CSV"
-    IDS_LEX_CPP_SRC         "Kod ürÛd≥owy C/C++"
-    IDS_LEX_CSHARP_SRC      "Kod ürÛd≥owy C#"
+    IDS_LEX_CPP_SRC         "Kod ≈∫r√≥d≈Çowy C/C++"
+    IDS_LEX_CSHARP_SRC      "Kod ≈∫r√≥d≈Çowy C#"
     IDS_LEX_RESOURCE_SCR    "Skrypt zasobu"
     IDS_LEX_MAKEFILES       "Makefiles"
 END
@@ -77,8 +78,8 @@ BEGIN
     IDS_LEX_VB_SCR          "VBScript"
     IDS_LEX_VIS_BAS         "Visual Basic"
     IDS_LEX_J_SCR           "JavaScript"
-    IDS_LEX_JAVA_SRC        "Kod ürÛd≥owy Java"
-    IDS_LEX_PASCAL_SRC      "Kod ürÛd≥owy Pascal"
+    IDS_LEX_JAVA_SRC        "Kod ≈∫r√≥d≈Çowy Java"
+    IDS_LEX_PASCAL_SRC      "Kod ≈∫r√≥d≈Çowy Pascal"
     IDS_LEX_ASM_SCR         "Skrypt Assembly"
     IDS_LEX_PERL_SCR        "Skrypt Perl"
     IDS_LEX_CONF            "Pliki konfiguracyjne"
@@ -88,8 +89,8 @@ BEGIN
     IDS_LEX_PYTHON          "Skrypt Python"
     IDS_LEX_APC_CFG         "Pliki konfiguracyjne Apache"
     IDS_LEX_PWRSHELL        "Skrypt PowerShell"
-    IDS_LEX_D_SRC           "Kod ürÛd≥owy D"
-    IDS_LEX_GO_SRC          "Kod ürÛd≥owy Go"
+    IDS_LEX_D_SRC           "Kod ≈∫r√≥d≈Çowy D"
+    IDS_LEX_GO_SRC          "Kod ≈∫r√≥d≈Çowy Go"
 END
 
 STRINGTABLE
@@ -118,9 +119,9 @@ BEGIN
     IDS_LEX_YAML            "YAML"
     IDS_LEX_COFFEE_SCR      "Coffeescript"
     IDS_LEX_MATLAB          "MATLAB"
-    IDS_LEX_NIM_SRC         "Kod ürÛd≥owy Nim"
+    IDS_LEX_NIM_SRC         "Kod ≈∫r√≥d≈Çowy Nim"
     IDS_LEX_R_STAT          "R-S-SPlus Statistics Code"
-    IDS_LEX_RUST_SRC        "Kod ürÛd≥owy Rust"
+    IDS_LEX_RUST_SRC        "Kod ≈∫r√≥d≈Çowy Rust"
     IDS_LEX_AHKL            "AutoHotkey_L Script"
     IDS_LEX_TEXT_FILES      "Pliki tekstowe"
     IDS_LEX_TOML_CFG        "TOML"
@@ -128,7 +129,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Styl domyúlny"
+    IDS_LEX_STD_STYLE       "Styl domy≈õlny"
     IDS_LEX_STD_MARGIN      "Margins and Line Numbers"
     IDS_LEX_STD_BRACE       "Matching Braces (Indicator)"
     IDS_LEX_STD_BRACE_FAIL  "Matching Braces Error (Indicator)"
@@ -336,9 +337,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63264       "Hotspoty hiper≥πcza"
-    IDS_LEX_STR_63265       "2. hotspot hiper≥πcza"
-    IDS_LEX_STR_63266       "2. wspÛlna baza"
+    IDS_LEX_STR_63264       "Hotspoty hiper≈ÇƒÖcza"
+    IDS_LEX_STR_63265       "2. hotspot hiper≈ÇƒÖcza"
+    IDS_LEX_STR_63266       "2. wsp√≥lna baza"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"

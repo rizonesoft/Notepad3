@@ -1,5 +1,6 @@
-// Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+Ôªø// Microsoft Visual C++ generated resource script.
+// encoding="utf-8"
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
 LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -71,146 +72,146 @@ END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Futtat·s"
+CAPTION "Futtat√°s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Adja meg a futtathatÛ programf·jl nevÈt,\negy mapp·t vagy egy dokumentumot megnyit·sra.",IDC_STATIC,35,7,188,17
+    LTEXT           "Adja meg a futtathat√≥ programf√°jl nev√©t,\negy mapp√°t vagy egy dokumentumot megnyit√°sra.",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
-    PUSHBUTTON      "MÈgsem",IDCANCEL,167,64,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,167,64,50,14
 END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Megnyit·s ezzel..."
+CAPTION "Megnyit√°s ezzel..."
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Kattinson ide a kedvenc alkalmaz·saira mutatÛ hivatkoz·sokat tartalmazÛ mappa megad·s·hoz.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Kattinson ide a kedvenc alkalmaz√°saira mutat√≥ hivatkoz√°sokat tartalmaz√≥ mappa megad√°s√°hoz.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "MÈgsem",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
 IDD_GOTO DIALOGEX 0, 0, 224, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ugr·s"
+CAPTION "Ugr√°s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Adja meg a megnyitandÛ f·jl vagy mappa nevÈt,\nvagy v·lasszon egyet a kor·bban megl·togatott kˆnyvt·rak list·j·bÛl.",IDC_STATIC,35,7,182,17
+    LTEXT           "Adja meg a megnyitand√≥ f√°jl vagy mappa nev√©t,\nvagy v√°lasszon egyet a kor√°bban megl√°togatott k√∂nyvt√°rak list√°j√°b√≥l.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
-    PUSHBUTTON      "MÈgsem",IDCANCEL,167,66,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,167,66,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
 IDD_FILTER DIALOGEX 0, 0, 184, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "F·jl sz˚rı"
+CAPTION "F√°jl sz≈±r≈ë"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Adjon meg egy ˙j f·jl s&z˚rıt. Tˆbb sz˚rıt ;-vel v·lassza el.",IDC_STATIC,7,7,170,8
+    LTEXT           "Adjon meg egy √∫j f√°jl s&z≈±r≈ët. T√∂bb sz≈±r≈ët ;-vel v√°lassza el.",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
-    CONTROL         "Sz˚rıre illeszkedı f·jlok ki&hagy·sa.",IDC_NEGFILTER,
+    CONTROL         "Sz≈±r≈ëre illeszked≈ë f√°jlok ki&hagy√°sa.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
     DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "MÈgsem",IDCANCEL,127,58,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,127,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "¡tnevezÈs"
+CAPTION "√Åtnevez√©s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Aktu·lis:",IDC_STATIC,7,9,28,8
+    LTEXT           "Aktu√°lis:",IDC_STATIC,7,9,28,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&⁄j:",IDC_STATIC,7,26,18,8
+    LTEXT           "&√öj:",IDC_STATIC,7,26,18,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,53,50,14,WS_DISABLED
-    PUSHBUTTON      "MÈgsem",IDCANCEL,115,53,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,115,53,50,14
 END
 
 IDD_NEWDIR DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "⁄j mappa"
+CAPTION "√öj mappa"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Adja meg az ˙j mappa nevÈt:",IDC_STATIC,7,7,158,8
+    LTEXT           "Adja meg az √∫j mappa nev√©t:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
-    PUSHBUTTON      "MÈgsem",IDCANCEL,115,45,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,115,45,50,14
 END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "M·sol·s/Mozgat·s"
+CAPTION "M√°sol√°s/Mozgat√°s"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Forr·s:",IDC_STATIC,7,7,26,8
+    LTEXT           "Forr√°s:",IDC_STATIC,7,7,26,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&CÈl:",IDC_STATIC,7,37,40,8
+    LTEXT           "&C√©l:",IDC_STATIC,7,37,40,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
-    LTEXT           "M˚velet:",IDC_STATIC,7,66,24,8
-    CONTROL         "&M·sol·s",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "Mo&zgat·s",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    LTEXT           "M≈±velet:",IDC_STATIC,7,66,24,8
+    CONTROL         "&M√°sol√°s",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
+    CONTROL         "Mo&zgat√°s",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
     DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
-    PUSHBUTTON      "MÈgsem",IDCANCEL,173,74,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
 END
 
 IDPP_GENERAL DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "¡ltal·nos"
+CAPTION "√Åltal√°nos"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Adja meg a MiniPath ·ltal·nos be·llÌt·sait.",IDC_STATIC,40,15,153,8
-    CONTROL         "&Egyszeres kattint·ssal nyitja meg az objektumokat.",IDC_SINGLECLICK,
+    LTEXT           "Adja meg a MiniPath √°ltal√°nos be√°ll√≠t√°sait.",IDC_STATIC,40,15,153,8
+    CONTROL         "&Egyszeres kattint√°ssal nyitja meg az objektumokat.",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
-    CONTROL         "&Track kiv·laszt·s engedÈlyezÈse.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Teljes s&oros kijelˆlÈs.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
-    CONTROL         "Mindig aktiv·lja a cÈlablakot, amikor a f·jl nyitva van.",IDC_FOCUSEDIT,
+    CONTROL         "&Track kiv√°laszt√°s enged√©lyez√©se.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
+    CONTROL         "Teljes s&oros kijel√∂l√©s.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "Mindig aktiv√°lja a c√©lablakot, amikor a f√°jl nyitva van.",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "Tartsa a &MiniPath ablakot mindig fel¸l.",IDC_ALWAYSONTOP,
+    CONTROL         "Tartsa a &MiniPath ablakot mindig fel√ºl.",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "&LekicsinyÌtÈs az Ûra mellÈ (kattint·s az ˙jranyit·shoz).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Lekicsiny√≠t√©s az √≥ra mell√© (kattint√°s az √∫jranyit√°shoz).",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "&PrÛb·lja meg a lÈtezı ablakot haszn·lni, amikor a MiniPath elindul.",IDC_REUSEWINDOW,
+    CONTROL         "&Pr√≥b√°lja meg a l√©tez≈ë ablakot haszn√°lni, amikor a MiniPath elindul.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Be·llÌt·sok mentÈse kilÈpÈskor.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "&Be√°ll√≠t√°sok ment√©se kil√©p√©skor.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "HaladÛ"
+CAPTION "Halad√≥"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Adja meg a MiniPath haladÛ be·llÌt·sait.",IDC_STATIC,40,15,160,8
-    CONTROL         "&Kezdımappa haszn·lata:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "Legutolj·ra &haszn·ltak.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
+    LTEXT           "Adja meg a MiniPath halad√≥ be√°ll√≠t√°sait.",IDC_STATIC,40,15,160,8
+    CONTROL         "&Kezd≈ëmappa haszn√°lata:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
+    CONTROL         "Legutolj√°ra &haszn√°ltak.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
     CONTROL         """&Kedvencek"" mappa.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Csak olvashatÛ attrib˙tum tˆrlÈse a mentett f·jlokrÛl.",IDC_CLEARREADONLY,
+    CONTROL         "&Csak olvashat√≥ attrib√∫tum t√∂rl√©se a mentett f√°jlokr√≥l.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
-    CONTROL         "M·sol·shor ·tne&vezÈs, ha a nÈv egyezik.",IDC_RENAMEONCOLLISION,
+    CONTROL         "M√°sol√°shor √°tne&vez√©s, ha a n√©v egyezik.",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
-    CONTROL         "&Tˆrˆlt f·jlok mozgat·sa a Lomt·rba.",IDC_USERECYCLEBIN,
+    CONTROL         "&T√∂r√∂lt f√°jlok mozgat√°sa a Lomt√°rba.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
-    CONTROL         "&Ne kÈrjen megerısÌtÈst tˆrlÈskor (nem aj·nlott).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Ne k√©rjen meger≈ës√≠t√©st t√∂rl√©skor (nem aj√°nlott).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Az ""&Esc"" gombbal...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Ablak le&kicsinyÌtÈse.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "KilÈ&pÈs a MiniPath-bÛl.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "Ablak le&kicsiny√≠t√©se.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
+    CONTROL         "Kil√©&p√©s a MiniPath-b√≥l.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -219,18 +220,18 @@ CAPTION "Elemek"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Az elemek megjelenÈse a mappalist·ban.",IDC_STATIC,40,15,118,8
-    GROUPBOX        "SzÌnek",IDC_STATIC,10,41,205,134
-    LTEXT           "Haszn·lja ezt a szˆveg szÌnt, amikor NINCS SZ€R’ be·llÌtva:",IDC_STATIC,20,54,136,8
-    CONTROL         "AlapÈrtelmezett a&blak szÌn.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "&Egyedi szÌn:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    LTEXT           "Az elemek megjelen√©se a mappalist√°ban.",IDC_STATIC,40,15,118,8
+    GROUPBOX        "Sz√≠nek",IDC_STATIC,10,41,205,134
+    LTEXT           "Haszn√°lja ezt a sz√∂veg sz√≠nt, amikor NINCS SZ≈∞R≈ê be√°ll√≠tva:",IDC_STATIC,20,54,136,8
+    CONTROL         "Alap√©rtelmezett a&blak sz√≠n.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "&Egyedi sz√≠n:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "SzÌn v·laszt·sa...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Haszn·lja ezt a szˆveg szÌnt, amikor egy SZ€R’ AKTÕV:",IDC_STATIC,20,105,146,8
-    CONTROL         "AlapÈrtelme&zett ablak szÌn.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
-    CONTROL         "E&gyedi szÌn:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    PUSHBUTTON      "Sz√≠n v√°laszt√°sa...",IDC_COLOR_PICK1,119,80,50,14
+    LTEXT           "Haszn√°lja ezt a sz√∂veg sz√≠nt, amikor egy SZ≈∞R≈ê AKT√çV:",IDC_STATIC,20,105,146,8
+    CONTROL         "Alap√©rtelme&zett ablak sz√≠n.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "E&gyedi sz√≠n:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "SzÌn v·laszt·sa...",IDC_COLOR_PICK2,120,130,50,14
+    PUSHBUTTON      "Sz√≠n v√°laszt√°sa...",IDC_COLOR_PICK2,120,130,50,14
 END
 
 IDPP_PROG DIALOGEX 0, 0, 226, 185
@@ -239,8 +240,8 @@ CAPTION "Helyek"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Adja meg a k¸lsı programokat Ès ˙tvonalakat.",IDC_STATIC,40,15,122,8
-    LTEXT           "&AlapÈtrelmezett ""GyorsnÈzet"" program (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "Adja meg a k√ºls≈ë programokat √©s √∫tvonalakat.",IDC_STATIC,40,15,122,8
+    LTEXT           "&Alap√©trelmezett ""Gyorsn√©zet"" program (Ctrl+Q):",IDC_STATIC,10,41,126,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "&Kedvencek mappa (F11):",IDC_STATIC,10,76,76,8
@@ -250,44 +251,44 @@ END
 
 IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "CÈl alkalmaz·s"
+CAPTION "C√©l alkalmaz√°s"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Ne haszn·ljon m·s cÈl alkalmaz·st, csak egyszer˚en indÌtsa el a kijelˆlt f·jlt.",IDC_LAUNCH,
+    CONTROL         "Ne haszn√°ljon m√°s c√©l alkalmaz√°st, csak egyszer≈±en ind√≠tsa el a kijel√∂lt f√°jlt.",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
-    CONTROL         "A kˆvetkezı cÈl alkalmaz·s haszn·lata:",IDC_TARGET,
+    CONTROL         "A k√∂vetkez≈ë c√©l alkalmaz√°s haszn√°lata:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "M˚velet megad·sa, ha a cÈl alkalmaz·s m·r fut:",IDC_STATIC,7,64,196,8
+    LTEXT           "M≈±velet megad√°sa, ha a c√©l alkalmaz√°s m√°r fut:",IDC_STATIC,7,64,196,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
-    LTEXT           "‹zenet:",IDC_STATIC,20,120,32,8
-    CONTROL         "Semmi, indÌtsa a cÈl alkalmaz·st minden alkalommal, amikor megnyitjuk a f·jlt.",IDC_ALWAYSRUN,
+    LTEXT           "√úzenet:",IDC_STATIC,20,120,32,8
+    CONTROL         "Semmi, ind√≠tsa a c√©l alkalmaz√°st minden alkalommal, amikor megnyitjuk a f√°jlt.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "K¸ldjˆn egy megnyit·s ¸zenetet a cÈl alkalmaz·sablaknak:",IDC_SENDDROPMSG,
+    CONTROL         "K√ºldj√∂n egy megnyit√°s √ºzenetet a c√©l alkalmaz√°sablaknak:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
-    CONTROL         "A kˆvetkezı DDE parancs vÈgrehajt·sa:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Alkalmaz·s:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Ablak keresÈse...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "TÈma:",IDC_STATIC,198,120,20,8
+    CONTROL         "A k√∂vetkez≈ë DDE parancs v√©grehajt√°sa:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
+    LTEXT           "Alkalmaz√°s:",IDC_STATIC,128,120,38,8
+    PUSHBUTTON      "Ablak keres√©se...",IDC_FINDWIN,204,91,60,14
+    LTEXT           "T√©ma:",IDC_STATIC,198,120,20,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "MÈgsem",IDCANCEL,214,159,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,214,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "KeresÈs ablak"
+CAPTION "Keres√©s ablak"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "H˙zza a cÈlkeresztet arra az ablakra, amit ˙j cÈlkÈnt szeretne kiv·lasztani, vagy nyomja meg az Esc gombot az elvetÈshez.",IDC_STATIC,35,7,168,22
+    LTEXT           "H√∫zza a c√©lkeresztet arra az ablakra, amit √∫j c√©lk√©nt szeretne kiv√°lasztani, vagy nyomja meg az Esc gombot az elvet√©shez.",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "Ablak oszt·ly",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
+    LTEXT           "Ablak oszt√°ly",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Ablak modul",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
     DEFPUSHBUTTON   "OK",IDOK,99,64,50,14,WS_DISABLED
-    PUSHBUTTON      "MÈgsem",IDCANCEL,153,64,50,14
+    PUSHBUTTON      "M√©gsem",IDCANCEL,153,64,50,14
 END
 
 
