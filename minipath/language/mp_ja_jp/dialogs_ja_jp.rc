@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding="utf-8"
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -171,7 +171,7 @@ CAPTION "一般"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "MiniPathの一般設定",IDC_STATIC,40,15,153,8
+    LTEXT           "MiniPath 一般設定",IDC_STATIC,40,15,153,8
     CONTROL         "開くのにシングルクリックのみを使う(&A)",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
     CONTROL         "マウスオーバーで選択状態に(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,120,10
@@ -179,11 +179,11 @@ BEGIN
     CONTROL         "ファイルが開かれていれば対象ウインドウをアクティブにする(&C)",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,208,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "常に最前面にMiniPathを表示(&K)",IDC_ALWAYSONTOP,
+    CONTROL         "常に最前面に MiniPath を表示(&K)",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "システムトレイに最小化する(&M) (クリックで復帰)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "MiniPathの開始時にウインドウの再利用を試みる(&T)",IDC_REUSEWINDOW,
+    CONTROL         "MiniPath の開始時にウインドウの再利用を試みる(&T)",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
     CONTROL         "終了時に設定を保存(&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,92,10
@@ -191,11 +191,11 @@ END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "アドバンスド"
+CAPTION "拡張"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "MiniPathのアドバンスド設定",IDC_STATIC,40,15,160,8
+    LTEXT           "MiniPath 拡張設定",IDC_STATIC,40,15,160,8
     CONTROL         "起動時に表示するフォルダ(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,113,10
     CONTROL         "よく使用するもの(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,125,46,79,10
     CONTROL         "「お気に入り」(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,125,58,75,10
@@ -236,7 +236,7 @@ END
 
 IDPP_PROG DIALOGEX 0, 0, 226, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "パスの設定"
+CAPTION "パス"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
