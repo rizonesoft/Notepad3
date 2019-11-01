@@ -62,7 +62,7 @@ BEGIN
         MENUITEM "上書き保存(&S)\tCtrl+S",                           IDM_FILE_SAVE
         MENUITEM "名前を付けて保存(&A)...\tF6",                        IDM_FILE_SAVEAS
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
-        MENUITEM "更新日時を更新しない(&D)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "更新日時を更新しない(&D)\tCtrl+Alt+F6",       IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "読み取り専用(&R)",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
@@ -70,8 +70,8 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "パスをクリップボードへ"
         BEGIN
-            MENUITEM "コピー/ファイル名のみ(&F)\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
-            MENUITEM "コピー/フォルダのパスのみ(&D)",             IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "コピー/ファイル名のみ(&F)\tCtrl+F9",         IDM_EDIT_INSERT_FILENAME
+            MENUITEM "コピー/フォルダのパスのみ(&D)",               IDM_EDIT_INSERT_DIRNAME
             MENUITEM "コピー/フルパス(&F)\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "起動(&L)"
@@ -79,7 +79,7 @@ BEGIN
             MENUITEM "エクスプローラーを開く(&E)",                   IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
-            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
+            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "管理者権限で再起動(&R)",                 IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -107,8 +107,8 @@ BEGIN
             MENUITEM "UCHARDET解析で検出し読み直し",              CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "ASCIIをUTF-8として開く(&8)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
-            MENUITEM "文字コードを無視(&T)\tAlt+F8",              CMD_RELOADNOFILEVARS
-            MENUITEM "文字コードを指定して読み直し(&R)...\tF8",     IDM_ENCODING_RECODE
+            MENUITEM "文字コードを無視(&T)\tAlt+F8",               CMD_RELOADNOFILEVARS
+            MENUITEM "文字コードを指定して読み直し(&R)...\tF8",      IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
             MENUITEM "デフォルトを設定する(&D)...",                 IDM_ENCODING_SETDEFAULT
         END
@@ -127,14 +127,14 @@ BEGIN
         MENUITEM "印刷(&P)...\tCtrl+P",                       IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "プロパティ(&I)...",                            IDM_FILE_PROPERTIES
-        MENUITEM "デスクトップにショートカット作成(&D)",              IDM_FILE_CREATELINK
+        MENUITEM "デスクトップにショートカット作成(&D)",               IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "ファイラでブラウズ(&B)...\tCtrl+M",               IDM_FILE_BROWSE
         POPUP "お気に入り(&F)"
         BEGIN
             MENUITEM "お気に入りを開く(&O)...\tAlt+I",           IDM_FILE_OPENFAV
             MENUITEM "現在のファイルを追加(&A)...\tAlt+K",        IDM_FILE_ADDTOFAV
-            MENUITEM "エクスプローラーで開く(&M)...\tAlt+F9",       IDM_FILE_MANAGEFAV
+            MENUITEM "エクスプローラーで開く(&M)...\tAlt+F9",        IDM_FILE_MANAGEFAV
         END
         MENUITEM "最近開いたファイル(&H)...\tCtrl+Alt+H",         IDM_FILE_RECENT
         MENUITEM SEPARATOR
@@ -146,21 +146,21 @@ BEGIN
         MENUITEM "やり直し(&R)\tCtrl+Y",                        IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "切り取り(&T)\tCtrl+X",                        IDM_EDIT_CUT
-        MENUITEM "コピー(&C)\tCtrl+C",                          IDM_EDIT_COPY
-        MENUITEM "すべてコピー(&A)\tAlt+C",                      IDM_EDIT_COPYALL
-        MENUITEM "クリップボード末尾に追加(&Y)\tCtrl+E",        IDM_EDIT_COPYADD
+        MENUITEM "コピー(&C)\tCtrl+C",                           IDM_EDIT_COPY
+        MENUITEM "すべてコピー(&A)\tAlt+C",                       IDM_EDIT_COPYALL
+        MENUITEM "クリップボード末尾に追加(&Y)\tCtrl+E",            IDM_EDIT_COPYADD
         MENUITEM "貼り付け(&P)\tCtrl+V",                        IDM_EDIT_PASTE
-        MENUITEM "クリップボードと入替(&W)\tCtrl+K",             IDM_EDIT_SWAP
+        MENUITEM "クリップボードと入替(&W)\tCtrl+K",                IDM_EDIT_SWAP
         MENUITEM "削除(&D)\tDel",                              IDM_EDIT_CLEAR
         MENUITEM "クリップボードをクリア(&E)",                        IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "すべて選択(&S)\tCtrl+A",                      IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "単語(&O)"
         BEGIN
-            MENUITEM "単語補完(&C)\tCtrl+Alt+Enter",           IDM_EDIT_COMPLETEWORD
+            MENUITEM "単語補完(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "カーソルを単語の左へ(&L)\tCtrl+Left",         CMD_CTRLLEFT
-            MENUITEM "カーソルを単語の右へ(&R)\tCtrl+Right",        CMD_CTRLRIGHT
+            MENUITEM "カーソルを単語の左へ(&L)\tCtrl+Left",       CMD_CTRLLEFT
+            MENUITEM "カーソルを単語の右へ(&R)\tCtrl+Right",      CMD_CTRLRIGHT
             MENUITEM "カーソル左の単語を削除(&D)\tCtrl+Back",     CMD_CTRLBACK
             MENUITEM "カーソル右の単語を削除(&W)\tCtrl+Del",      CMD_CTRLDEL
         END
@@ -169,9 +169,9 @@ BEGIN
             MENUITEM "上へ移動(&U)\tCtrl+Shift+Up",            IDM_EDIT_MOVELINEUP
             MENUITEM "下へ移動(&M)\tCtrl+Shift+Down",          IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "切り取り/選択範囲か行(&I)\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "切り取り/選択範囲か行(&I)\tCtrl+X",        IDM_EDIT_CUT
             MENUITEM "切り取り/選択範囲の行全体(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "コピー/選択範囲か行(&C)\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "コピー/選択範囲か行(&C)\tCtrl+C",           IDM_EDIT_COPY
             MENUITEM "コピー/選択範囲の行全体(&Y)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "複製/行(&D)\tCtrl+D",                    IDM_EDIT_DUPLINEORSELECTION
@@ -182,13 +182,13 @@ BEGIN
             MENUITEM "カーソルから行末まで削除\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "空白で折り返し(&W)...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
-            MENUITEM "長い行を分割し折り返し(&S)\tCtrl+I",        IDM_EDIT_SPLITLINES
+            MENUITEM "長い行を分割し折り返し(&S)\tCtrl+I",       IDM_EDIT_SPLITLINES
             MENUITEM "行を結合(空白で)(&J)\tCtrl+J",           IDM_EDIT_JOINLINES
             MENUITEM "行を融合(空白なし)(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
             MENUITEM "段落を温存して結合(&P)\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "空の行をまとめる(&G)\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "スペースの行もまとめる\tCtrl+Alt+Y",          IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "空の行をまとめる(&G)\tAlt+Y",              IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "スペースの行もまとめる\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
             MENUITEM "空の行を削除(&R)\tAlt+R",                IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "スペースの行も削除\tCtrl+Alt+B",           IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "重複内容の行を削除(&O)\tCtrl+Alt+D",     IDM_EDIT_REMOVEDUPLICATELINES
@@ -261,24 +261,24 @@ BEGIN
         END
         POPUP "プログラム(&M)"
         BEGIN
-            MENUITEM "GUIDをクリップボードにコピー(&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+            MENUITEM "GUIDをクリップボードにコピー(&G)\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "文字列型中のエスケープ文字を変換(&E)\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
             MENUITEM "文字列型中の上記アンエスケープ(&U)\tCtrl+Alt+R",   IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "数値を1増加\tCtrl+Alt+NK+",                 CMD_INCREASENUM
-            MENUITEM "数値を1減少\tCtrl+Alt+NK-",                 CMD_DECREASENUM
+            MENUITEM "数値を1増加\tCtrl+Alt+NK+",                    CMD_INCREASENUM
+            MENUITEM "数値を1減少\tCtrl+Alt+NK-",                    CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "対応括弧に移動(&F)\tCtrl+B",                IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "対応括弧まで選択(&M)\tCtrl+Shift+B",         IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "対応括弧に移動(&F)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "対応括弧まで選択(&M)\tCtrl+Shift+B",             IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "次の検索一致まで選択(&N)\tCtrl+Alt+F2",       IDM_EDIT_SELTONEXT
-            MENUITEM "前の検索一致まで選択(&P)\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "次の検索一致まで選択(&N)\tCtrl+Alt+F2",           IDM_EDIT_SELTONEXT
+            MENUITEM "前の検索一致まで選択(&P)\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "単語や行を選択(&W)\tCtrl+Spc",               IDM_EDIT_SELECTWORD
+            MENUITEM "単語や行を選択(&W)\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
             MENUITEM "一致文字列すべてに複数カーソル(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "改行で「元に戻す」の履歴を区切る(&T)",   IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "改行で「元に戻す」の履歴を区切る(&T)",                IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "ブックマーク(しおり)(&K)"
@@ -315,7 +315,7 @@ BEGIN
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "色をプレビュー(&C)",               IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "色をプレビュー(&C)",                           IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
@@ -352,9 +352,9 @@ BEGIN
         END
         POPUP "ツールバー(&T)"
         BEGIN
-            MENUITEM "メニューバーを表示(&M)",                           IDM_VIEW_MENUBAR
+            MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "アイコン大小の切り替え(&G)",                    IDM_VIEW_TOGGLETB
+            MENUITEM "アイコン大小の切り替え(&G)",                   IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
             MENUITEM "ツールバー用独自アイコンを設定(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
@@ -381,14 +381,14 @@ BEGIN
         MENUITEM "配色の編集(&C)...\tCtrl+F12",              IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "文書の種類を選択(&X)...\tF12",              IDM_VIEW_SCHEME
-        MENUITEM "標準配色2で表示(&2)\tShift+F12",          IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "標準配色2で表示(&2)\tShift+F12",           IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "フォント設定/共通(&D)...\tAlt+F12",          IDM_VIEW_FONT
         MENUITEM "フォント設定/適用中(&H)...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
         END
     POPUP "設定(&S)"
     BEGIN
-        MENUITEM "タブキーで空白を入力(&S)",                       IDM_VIEW_TABSASSPACES
+        MENUITEM "タブキーで空白を入力(&S)",                        IDM_VIEW_TABSASSPACES
         MENUITEM "タブキーの設定(&T)...\tCtrl+T",                  IDM_VIEW_TABSETTINGS
         MENUITEM "折り返し方の設定(&W)...",                        IDM_VIEW_WORDWRAPSETTINGS
         MENUITEM "行の長さのガイド設定(&L)...",                     IDM_VIEW_LONGLINESETTINGS
@@ -397,18 +397,18 @@ BEGIN
         MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "単語選択を広くする(&G)\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
-        MENUITEM "矩形/複数選択時もコメント切替(&C)",             IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "矩形/複数選択時もコメント切替(&C)",               IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
-        MENUITEM "単一インスタンスでファイルを開く(&F)",               IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "単一インスタンスでファイルを開く(&F)",                IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知する(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
-        MENUITEM "メッセージ時の効果音をミュート(&B)",               IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "メッセージ時の効果音をミュート(&B)",                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
             MENUITEM "何もしない(&N)",                          IDM_VIEW_NOESCFUNC
             MENUITEM "最小化(&M)",                            IDM_VIEW_ESCMINIMIZE
             MENUITEM "終了(&X)",                              IDM_VIEW_ESCEXIT
         END
-        MENUITEM "ツール実行前に保存(&B)",                  IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "ツール実行前に保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
         BEGIN
@@ -427,7 +427,7 @@ BEGIN
             END
             MENUITEM "新しいウィンドウを開かない(&R)",              IDM_VIEW_REUSEWINDOW
             MENUITEM "常に手前に表示(&A)\tAlt+T",              IDM_VIEW_ALWAYSONTOP
-            MENUITEM "システムトレイに最小化(&Z)",                IDM_VIEW_MINTOTRAY
+            MENUITEM "システムトレイに最小化(&Z)",                 IDM_VIEW_MINTOTRAY
             MENUITEM "ウィンドウ透化(&M)\tAlt+G",                IDM_VIEW_TRANSPARENT
         END
         POPUP "文字の描画(&T)"
@@ -458,10 +458,10 @@ BEGIN
         MENUITEM "オンラインヘルプの表示(英)(&O)\tF1",             IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
         MENUITEM "管理ツールの実行(自動更新用)(&T)...",          IDM_HELP_ADMINEXE
-        MENUITEM "オンラインで更新内容を表示(英)(&W)",    IDM_HELP_UPDATEWEBSITE
+        MENUITEM "オンラインで更新内容を表示(英)(&W)",             IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "コマンドラインのヘルプ(&C)...",                   IDM_HELP_CMD
-        MENUITEM "バージョン情報(&A)...\tShift+F1",             IDM_HELP_ABOUT
+        MENUITEM "バージョン情報(&A)...\tShift+F1",              IDM_HELP_ABOUT
     END
 END
 
@@ -481,23 +481,23 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "ここの折りたたみを切り替え(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "ウェブ1で開く(&1)",                        CMD_WEBACTION1
-        MENUITEM "ウェブ2で開く(&2)",                        CMD_WEBACTION2
+        MENUITEM "ウェブ1で開く(&1)",                             CMD_WEBACTION1
+        MENUITEM "ウェブ2で開く(&2)",                             CMD_WEBACTION2
         MENUITEM "リンクを開く(&H)",                              CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "メニューバーを表示(&M)",                           IDM_VIEW_MENUBAR
+        MENUITEM "メニューバーを表示(&M)",                        IDM_VIEW_MENUBAR
         MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "アイコン大小の切り替え(&G)",                     IDM_VIEW_TOGGLETB
+        MENUITEM "アイコン大小の切り替え(&G)",                    IDM_VIEW_TOGGLETB
         MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
         MENUITEM "ツールバー用独自アイコンを設定(&L)...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "ステータスバーの表示(&S)",                      IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3 を開く(&O)",                             IDM_TRAY_RESTORE
-        MENUITEM "終了(&X)",                            IDM_TRAY_EXIT
+        MENUITEM "Notepad3 を開く(&O)",                        IDM_TRAY_RESTORE
+        MENUITEM "終了(&X)",                                  IDM_TRAY_EXIT
     END
 END
 

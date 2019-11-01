@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ==================================================
-Current BETA Version 5.19.1031.#(build) (2019-10-31)
+Current BETA Version 5.19.1101.#(build) (2019-11-01)
 ==================================================
 
 --------------------------------------------------
@@ -47,7 +47,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- All *.RC files encoded as UTF-8 Signature
+- Convertion all *.RC files to encoding UTF-8 (no BOM/Signature).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
 - Copy instead of insert (filename, path, GUID).
