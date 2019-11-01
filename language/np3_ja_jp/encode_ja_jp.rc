@@ -61,7 +61,7 @@ BEGIN
     IDS_ENC_UTF16LE                "A4;Unicode (UTF-16 LE);Unicode (UTF-16) LE"
     IDS_ENC_UTF16BE                "A5;Unicode (UTF-16 BE);Unicode (UTF-16) BE"
     IDS_ENC_UTF8                   "A6;UTF-8;Unicode (UTF-8)"
-    IDS_ENC_UTF8SIG                "A7;UTF-8 Signature;Unicode (UTF-8) Signature"
+    IDS_ENC_UTF8SIG                "A7;UTF-8 シグネチャ付;Unicode (UTF-8) シグネチャ付"
 END
 
 STRINGTABLE

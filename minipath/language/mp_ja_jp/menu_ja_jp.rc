@@ -120,8 +120,8 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "MiniPathを開く",                IDM_TRAY_RESTORE
-        MENUITEM "MiniPathの終了",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath を開く(&O)",                IDM_TRAY_RESTORE
+        MENUITEM "終了(&X)",               IDM_TRAY_EXIT
     END
 END
 

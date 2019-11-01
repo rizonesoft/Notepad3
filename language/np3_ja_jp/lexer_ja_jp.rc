@@ -65,7 +65,7 @@ BEGIN
     IDS_LEX_WEB_SRC         "Webソースコード"
     IDS_LEX_XML_DOC         "XML文書"
     IDS_LEX_CSS_STYLE       "CSSスタイルシート"
-    IDS_LEX_PRISM_CSV       "CSV Prism"
+    IDS_LEX_PRISM_CSV       "CSV 虹色"
     IDS_LEX_CPP_SRC         "C/C++コード"
     IDS_LEX_CSHARP_SRC      "C#コード"
     IDS_LEX_RESOURCE_SCR    "Resourceファイル"
@@ -122,7 +122,7 @@ BEGIN
     IDS_LEX_R_STAT          "R-S-SPlus Statisticsコード"
     IDS_LEX_RUST_SRC        "Rustコード"
     IDS_LEX_AHKL            "AutoHotkey_Lスクリプト"
-    IDS_LEX_TEXT_FILES      "Text Files"
+    IDS_LEX_TEXT_FILES      "テキストファイル"
     IDS_LEX_TOML_CFG        "TOML"
 END
 
@@ -448,21 +448,21 @@ BEGIN
     IDS_LEX_STR_63353       "第2 インライン入力時のIME変換"
     IDS_LEX_STR_63354       "マルチ編集の表示"
     IDS_LEX_STR_63355       "第2 マルチ編集の表示"
-    IDS_LEX_STR_63356       "Date-Time"
+    IDS_LEX_STR_63356       "日時"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0       "Column 0"
-    IDS_LEX_CSV_COL_1       "Column 1"
-    IDS_LEX_CSV_COL_2       "Column 2"
-    IDS_LEX_CSV_COL_3       "Column 3"
-    IDS_LEX_CSV_COL_4       "Column 4"
-    IDS_LEX_CSV_COL_5       "Column 5"
-    IDS_LEX_CSV_COL_6       "Column 6"
-    IDS_LEX_CSV_COL_7       "Column 7"
-    IDS_LEX_CSV_COL_8       "Column 8"
-    IDS_LEX_CSV_COL_9       "Column 9"
+    IDS_LEX_CSV_COL_0       "列 0"
+    IDS_LEX_CSV_COL_1       "列 1"
+    IDS_LEX_CSV_COL_2       "列 2"
+    IDS_LEX_CSV_COL_3       "列 3"
+    IDS_LEX_CSV_COL_4       "列 4"
+    IDS_LEX_CSV_COL_5       "列 5"
+    IDS_LEX_CSV_COL_6       "列 6"
+    IDS_LEX_CSV_COL_7       "列 7"
+    IDS_LEX_CSV_COL_8       "列 8"
+    IDS_LEX_CSV_COL_9       "列 9"
 END
 
 #endif    // Japanese (Japan) resources
