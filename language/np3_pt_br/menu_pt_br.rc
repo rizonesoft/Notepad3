@@ -55,32 +55,32 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "&File"
+    POPUP "&Arquivo"
     BEGIN
-        MENUITEM "&New\tCtrl+N",                                    IDM_FILE_NEW
-        MENUITEM "&Open...\tCtrl+O",                                IDM_FILE_OPEN
-        MENUITEM "Re&vert\tF5",                                     IDM_FILE_REVERT
-        MENUITEM "&Save\tCtrl+S",                                   IDM_FILE_SAVE
-        MENUITEM "Save &As...\tF6",                                 IDM_FILE_SAVEAS
-        MENUITEM "Save &Copy...\tCtrl+F6",                          IDM_FILE_SAVECOPY
-        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "&Novo\tCtrl+N",                                           IDM_FILE_NEW
+        MENUITEM "&Abrir...\tCtrl+O",                                       IDM_FILE_OPEN
+        MENUITEM "Re&verter\tF5",                                           IDM_FILE_REVERT
+        MENUITEM "&Salvar\tCtrl+S",                                         IDM_FILE_SAVE
+        MENUITEM "Salvar &Como...\tF6",                                     IDM_FILE_SAVEAS
+        MENUITEM "Salvar &Copia...\tCtrl+F6",                               IDM_FILE_SAVECOPY
+        MENUITEM "Salvar com &Data/Hora do Arquivo Original\tCtrl+Alt+F6",  IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Read Only",                             IDM_FILE_READONLY
+        MENUITEM "Apenas &Leitura",                                         IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "Set Encr&yption Passphrase...",          IDM_SETPASS
+        MENUITEM "Definir Senha de Cr&iptografia...",                       IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Path to Clipboard"
+        POPUP "Caminho para Área de Transferência"
         BEGIN
-            MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copiar Apenas &Nome do Arquivo\tCtrl+F9",         IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Copiar Apenas &Caminho do Diretório",             IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Copiar &Caminho Completo\tCtrl+Shift+F9",         IDM_EDIT_INSERT_PATHNAME
         END
-        POPUP "&Launch"
+        POPUP "&Executar"
         BEGIN
-            MENUITEM "Open File &Explorer",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "Abri &Gerenciador de Arquivos",                   IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
-            MENUITEM "&New Window\tAlt+N",                 IDM_FILE_NEWWINDOW
-            MENUITEM "&Empty Window\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
+            MENUITEM "&Nova Janela\tAlt+N",                IDM_FILE_NEWWINDOW
+            MENUITEM "Janela &Vazia\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Relaunch Elevated",                 IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -92,95 +92,95 @@ BEGIN
             MENUITEM "Web Template &2\tCtrl+Shift+2",      CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
-        POPUP "&Encoding"
+        POPUP "&Codificação"
         BEGIN
             MENUITEM "&ANSI",                              IDM_ENCODING_ANSI
             MENUITEM "&Unicode",                           IDM_ENCODING_UNICODE
             MENUITEM "Unicode &Big Endian",                IDM_ENCODING_UNICODEREV
             MENUITEM "UTF-&8\tShift+F8",                   IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
-            MENUITEM "&More...\tF9",                       IDM_ENCODING_SELECT
+            MENUITEM "UTF-8 com &Assinatura",              IDM_ENCODING_UTF8SIGN
+            MENUITEM "&Mais...\tF9",                       IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Recode to &Default\tCtrl+Alt+F",     CMD_RECODEDEFAULT
-            MENUITEM "Recode to &ANSI\tCtrl+Shift+A",      CMD_RECODEANSI
-            MENUITEM "Recode to &OEM\tCtrl+Shift+O",       CMD_RECODEOEM
-            MENUITEM "Recode to &GB18030\tCtrl+Shift+F10", CMD_RECODEGB18030
-            MENUITEM "Recode to UCHARDET Analysis",        CMD_RELOADFORCEDETECTION
+            MENUITEM "Recodificar para o &Padrão\tCtrl+Alt+F",      CMD_RECODEDEFAULT
+            MENUITEM "Recodificar para &ANSI\tCtrl+Shift+A",        CMD_RECODEANSI
+            MENUITEM "Recodificar para &OEM\tCtrl+Shift+O",         CMD_RECODEOEM
+            MENUITEM "Recodificar para &GB18030\tCtrl+Shift+F10",   CMD_RECODEGB18030
+            MENUITEM "Recodificar para Análise UCHARDET",           CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "ASCII as UTF-&8\tCtrl+Shift+F8",     CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignore Encoding &Tags\tAlt+F8",      CMD_RELOADNOFILEVARS
-            MENUITEM "&Recode...\tF8",                     IDM_ENCODING_RECODE
+            MENUITEM "ASCII como UTF-&8\tCtrl+Shift+F8",        CMD_RELOADASCIIASUTF8
+            MENUITEM "Ignorar &Tags de Codificação\tAlt+F8",    CMD_RELOADNOFILEVARS
+            MENUITEM "&Recodificar...\tF8",                     IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "Set &Default...",                    IDM_ENCODING_SETDEFAULT
+            MENUITEM "Definir &Padrão...",                      IDM_ENCODING_SETDEFAULT
         END
-        POPUP "Line Endin&gs"
+        POPUP "Fin&ais de Linha Line"
         BEGIN
-            MENUITEM "&Windows (CR+LF)",            IDM_LINEENDINGS_CRLF
-            MENUITEM "&Mac (CR)",                   IDM_LINEENDINGS_CR
-            MENUITEM "&Unix (LF)",                  IDM_LINEENDINGS_LF
+            MENUITEM "&Windows (CR+LF)",        IDM_LINEENDINGS_CRLF
+            MENUITEM "&Mac (CR)",               IDM_LINEENDINGS_CR
+            MENUITEM "&Unix (LF)",              IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "&Padrão...",              IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Check &Indentation...",           CMD_CHECK_INDENTATION
+        MENUITEM "Verificar &Indentação...",            CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Page Se&tup...",                  IDM_FILE_PAGESETUP
-        MENUITEM "&Print...\tCtrl+P",               IDM_FILE_PRINT
+        MENUITEM "Config&urar Página...",               IDM_FILE_PAGESETUP
+        MENUITEM "&Imprimir...\tCtrl+P",                IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "Propert&ies...",                  IDM_FILE_PROPERTIES
-        MENUITEM "Create &Desktop Link",            IDM_FILE_CREATELINK
+        MENUITEM "Propr&iedades...",                    IDM_FILE_PROPERTIES
+        MENUITEM "Criar Atalho na Área de &Trabalho",   IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "&Browse...\tCtrl+M",              IDM_FILE_BROWSE
-        POPUP "&Favourites"
+        MENUITEM "&Procurar...\tCtrl+M",                IDM_FILE_BROWSE
+        POPUP "&Favoritos"
         BEGIN
-            MENUITEM "&Open Favourites...\tAlt+I",    IDM_FILE_OPENFAV
-            MENUITEM "&Add Current File...\tAlt+K",   IDM_FILE_ADDTOFAV
-            MENUITEM "&Manage...\tAlt+F9",            IDM_FILE_MANAGEFAV
+            MENUITEM "&Abrir Favoritos...\tAlt+I",              IDM_FILE_OPENFAV
+            MENUITEM "&Adicionar o Arquivo Atual...\tAlt+K",    IDM_FILE_ADDTOFAV
+            MENUITEM "&Gerenciar...\tAlt+F9",                   IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recent (&History)...\tCtrl+Alt+H",  IDM_FILE_RECENT
+        MENUITEM "Recentes (&Histórico)...\tCtrl+Alt+H",        IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "E&xit\tAlt+F4",                     IDM_FILE_EXIT
+        MENUITEM "S&air\tAlt+F4",                               IDM_FILE_EXIT
     END
-    POPUP "&Edit"
+    POPUP "&Editar"
     BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
-        MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "&Desfazer\tCtrl+Z",               IDM_EDIT_UNDO
+        MENUITEM "&Refazer\tCtrl+Y",                IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               IDM_EDIT_COPY
-        MENUITEM "Copy &All\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Cop&y Add\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "S&wap\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "&Delete\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Cl&ear Clipboard",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "Cor&tar\tCtrl+X",                 IDM_EDIT_CUT
+        MENUITEM "&Copiar\tCtrl+C",                 IDM_EDIT_COPY
+        MENUITEM "Copiar &Tudo\tAlt+C",             IDM_EDIT_COPYALL
+        MENUITEM "Cop&iar Add\tCtrl+E",             IDM_EDIT_COPYADD
+        MENUITEM "&Colar\tCtrl+V",                  IDM_EDIT_PASTE
+        MENUITEM "T&rocar\tCtrl+K",                 IDM_EDIT_SWAP
+        MENUITEM "&Apagar\tDel",                    IDM_EDIT_CLEAR
+        MENUITEM "L&impar Área de Transferência",   IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "&Selecionar Tudo\tCtrl+A",        IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "W&ords"
+        POPUP "P&alavras"
         BEGIN
-            MENUITEM "&Complete Word\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
+            MENUITEM "Palavra &Completa\tCtrl+Alt+Enter",             IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Cursor Word &Left\tCtrl+Left",        CMD_CTRLLEFT
-            MENUITEM "Cursor Word &Right\tCtrl+Right",      CMD_CTRLRIGHT
-            MENUITEM "&Delete Word Left\tCtrl+Back",        CMD_CTRLBACK
-            MENUITEM "Delete &Word Right\tCtrl+Del",        CMD_CTRLDEL
+            MENUITEM "Cursor a &Esquerda da Palavra\tCtrl+Left",      CMD_CTRLLEFT
+            MENUITEM "Cursor a &Direita da Palavra\tCtrl+Right",      CMD_CTRLRIGHT
+            MENUITEM "&Apagar Palavra a Esquerda\tCtrl+Back",         CMD_CTRLBACK
+            MENUITEM "Apagar &Palavra a Direita\tCtrl+Del",           CMD_CTRLDEL
         END
-        POPUP "&Lines"
+        POPUP "&Linhas"
         BEGIN
-            MENUITEM "Move &Up\tCtrl+Shift+Up",             IDM_EDIT_MOVELINEUP
-            MENUITEM "&Move Down\tCtrl+Shift+Down",         IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mover para &Cima\tCtrl+Shift+Up",               IDM_EDIT_MOVELINEUP
+            MENUITEM "&Mover para Baixo\tCtrl+Shift+Down",            IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",        IDM_EDIT_CUT
+            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",    IDM_EDIT_CUTLINE
+            MENUITEM "&Copiar Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Cop&iar Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Duplicate Line/Selection\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Transpose Lines\tAlt+D",             IDM_EDIT_LINETRANSPOSE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "&Duplicar Linha/Seleção\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Transpor Linhas\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
+            MENUITEM "A&pagar Linha\tCtrl+Shift+D",                IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Delete Line Left\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "Delete Line Right\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Apagar Linha a Esquerda\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
+            MENUITEM "Apagar Linha a Direita\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Column &Wrap...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
@@ -194,15 +194,15 @@ BEGIN
             MENUITEM "Remove Blank Lines\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
-        POPUP "&Selection"
+        POPUP "&Seleção"
         BEGIN
-            MENUITEM "&Indent",                           IDM_EDIT_INDENT
-            MENUITEM "&Unindent",                         IDM_EDIT_UNINDENT
+            MENUITEM "&Indentar",                           IDM_EDIT_INDENT
+            MENUITEM "&Unindent",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
-                MENUITEM "&Single Quotes\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "&Double Quotes\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "Aspas &Simples\tCtrl+1",        CMD_STRINGIFY
+                MENUITEM "Aspas &Duplas\tCtrl+2",         CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
@@ -210,7 +210,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Backticks\tCtrl+6",            CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&With...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Com...\tAlt+Q",                IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "&Duplicate Selection/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
@@ -239,11 +239,11 @@ BEGIN
             MENUITEM "Ta&bify Indent\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
             MENUITEM "Untabi&fy Indent\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",      IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",      IDM_EDIT_URLDECODE
+            MENUITEM "&URL Encode\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
+            MENUITEM "URL &Decode\tCtrl+Shift+R",         IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Char To Hex\tCtrl+Alt+X",       IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",       IDM_EDIT_HEX2CHAR
+            MENUITEM "&Char To Hex\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex To Char\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insert"
         BEGIN
@@ -262,21 +262,21 @@ BEGIN
         END
         POPUP "&Miscellaneous"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",    IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",  IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "&Escape C Chars\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "Increase Number\tCtrl+Alt+NK+",  CMD_INCREASENUM
-            MENUITEM "Decrease Number\tCtrl+Alt+NK-",  CMD_DECREASENUM
+            MENUITEM "Aumentar Número\tCtrl+Alt+NK+",              CMD_INCREASENUM
+            MENUITEM "Diminuir Número\tCtrl+Alt+NK-",              CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "&Find Matching Brace\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Select To &Matching Brace\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Select To &Next\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
-            MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
+            MENUITEM "Selecionar &Próximo\tCtrl+Alt+F2",           IDM_EDIT_SELTONEXT
+            MENUITEM "Selecionar &Anterior\tCtrl+Alt+Shift+F2",    IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Select &Word or Lines\tCtrl+Spc",            IDM_EDIT_SELECTWORD
+            MENUITEM "Selecionar &Palavras ou Linhas\tCtrl+Spc",   IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Select &All Matches\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
             MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
@@ -347,13 +347,13 @@ BEGIN
             MENUITEM "Code &Folding",                   IDM_VIEW_FOLDING
             MENUITEM "&Toggle Folds\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Focused View\tCtrl+Alt+V",        IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "&Monitoring Log",                 IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Log de &Monitoramento",           IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Scroll Past End of File",        IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "Mostrar Dica de &Hyperlink",      IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "&Toolbar"
         BEGIN
-            MENUITEM "Show &Menubar",               IDM_VIEW_MENUBAR
+            MENUITEM "Mostra &Menu",                IDM_VIEW_MENUBAR
             MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
             MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
             MENUITEM "C&ustomise Toolbar...",       IDM_VIEW_CUSTOMIZETB
@@ -362,9 +362,9 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
-            MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
+            MENUITEM "&Mais Zoom\tCtrl++",          IDM_VIEW_ZOOMIN
+            MENUITEM "&Menos Zoom\tCtrl+-",         IDM_VIEW_ZOOMOUT
+            MENUITEM "&Zoom Padrão\tCtrl+0",        IDM_VIEW_RESETZOOM
         END
         POPUP "&Position"
         BEGIN
@@ -417,52 +417,52 @@ BEGIN
             MENUITEM "Preser&ve Caret Position",    IDM_VIEW_NOPRESERVECARET
             MENUITEM "Remember S&earch Pattern",    IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "W&indow"
+        POPUP "J&anela"
         BEGIN
-            POPUP "Window Title Displa&y"
+            POPUP "Mostra&r Título da Janela"
             BEGIN
-                MENUITEM "Filename &Only",              IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Filename and &Directory",     IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Full &Pathname",              IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Text Excerpt\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Apenas Nome do Arquivo",              IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "&Diretório e Nome do Arquivo",         IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Mostrar &Caminho Completo",            IDM_VIEW_SHOWFULLPATH
+                MENUITEM "Extrair &Texto\tCtrl+9",               IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reuse Window",                   IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Always On Top\tAlt+T",           IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&se To Tray",               IDM_VIEW_MINTOTRAY
-            MENUITEM "Transparent &Mode\tAlt+G",        IDM_VIEW_TRANSPARENT
+            MENUITEM "&Reusar Janela",                           IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Sempre no Topo\tAlt+T",                   IDM_VIEW_ALWAYSONTOP
+            MENUITEM "Minimi&zar para a Bandeja",                IDM_VIEW_MINTOTRAY
+            MENUITEM "&Modo Transparente\tAlt+G",                IDM_VIEW_TRANSPARENT
         END
-        POPUP "&Technology"
+        POPUP "&Tecnologia"
         BEGIN
-            POPUP "&Rendering"
+            POPUP "&Renderização"
             BEGIN
-                MENUITEM "Default &GDI",                IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Padrão &GDI",                           IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",               IDM_SET_RENDER_TECH_D2D
+                MENUITEM "&Reter DirectWrite",                    IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",                   IDM_SET_RENDER_TECH_D2DDC
             END
-            POPUP "Bidirectional"
+            POPUP "Bidirecional"
             BEGIN
-                MENUITEM "None",                        IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Left to Right",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Right to Left",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Nenhum",                                IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Esquerda para a Direita",               IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Direita para a Esquerda",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "&Advanced Configuration"
+        POPUP "Configurações &Avançadas"
         BEGIN
-            MENUITEM "Save Settings On E&xit",          IDM_VIEW_SAVESETTINGS
-            MENUITEM "Save Settings &Now\tF7",          IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Open Settings File\tCtrl+F7",    CMD_OPENINIFILE
+            MENUITEM "Salvar Configurações ao S&air",             IDM_VIEW_SAVESETTINGS
+            MENUITEM "Salvar Configurações &Agora\tF7",           IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Abrir Arquivo de Configurações\tCtrl+F7",  CMD_OPENINIFILE
         END
     END
-    POPUP "&Help"
+    POPUP "&Ajuda"
     BEGIN
-        MENUITEM "&Online Documentation\tF1",           IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "&Documentação Online\tF1",                      IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Launch Administration &Tool...",      IDM_HELP_ADMINEXE
-        MENUITEM "Check &Website for Update",           IDM_HELP_UPDATEWEBSITE
+        MENUITEM "Carregar &Ferramentas de Administração...",     IDM_HELP_ADMINEXE
+        MENUITEM "Visitar &Website para Atualizações",            IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "&Command Line Help...",               IDM_HELP_CMD
-        MENUITEM "&About...\tShift+F1",                 IDM_HELP_ABOUT
+        MENUITEM "Ajuda para Linha de &Comando...",               IDM_HELP_CMD
+        MENUITEM "&Sobre...\tShift+F1",                           IDM_HELP_ABOUT
     END
 END
 
@@ -470,35 +470,35 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Undo",                       IDM_EDIT_UNDO
-        MENUITEM "&Redo",                       IDM_EDIT_REDO
+        MENUITEM "&Desfazer",                   IDM_EDIT_UNDO
+        MENUITEM "&Refazer",                    IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t",                        IDM_EDIT_CUT
-        MENUITEM "&Copy",                       IDM_EDIT_COPY
-        MENUITEM "&Paste",                      IDM_EDIT_PASTE
-        MENUITEM "&Delete",                     IDM_EDIT_CLEAR
+        MENUITEM "Recor&tar",                   IDM_EDIT_CUT
+        MENUITEM "&Copiar",                     IDM_EDIT_COPY
+        MENUITEM "&Colar",                      IDM_EDIT_PASTE
+        MENUITEM "&Apagar",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "&Select All",                 IDM_EDIT_SELECTALL
+        MENUITEM "&Selecionar Tudo",            IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "&Toggle Current Fold",        IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "&Tocar Dobra Atual",          IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action &1",          CMD_WEBACTION1
-        MENUITEM "Open Web Action &2",          CMD_WEBACTION2
-        MENUITEM "Open &Hyperlink",             CMD_OPEN_HYPERLINK
+        MENUITEM "Abrir Ação Web &1",           CMD_WEBACTION1
+        MENUITEM "Abrir Ação Web &2",           CMD_WEBACTION2
+        MENUITEM "Abrir &Hyperlink",            CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Menubar",               IDM_VIEW_MENUBAR
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
-        MENUITEM "&Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar &Menu",                                   IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar Barra de &Ferramentas",                   IDM_VIEW_TOOLBAR
+        MENUITEM "Tro&car Barra de &Ferramentas",                   IDM_VIEW_TOGGLETB
+        MENUITEM "&Personalizar Barra de Ferramentas...",           IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Carregar Tema da Barra de &Ferramentas...",      IDM_VIEW_LOADTHEMETB
+        MENUITEM "Mostrar Barra de &Status",                        IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open Notepad3",               IDM_TRAY_RESTORE
-        MENUITEM "Exit Notepad3",               IDM_TRAY_EXIT
+        MENUITEM "Abrir o Notepad3",               IDM_TRAY_RESTORE
+        MENUITEM "Sair do Notepad3",               IDM_TRAY_EXIT
     END
 END
 
