@@ -37,6 +37,7 @@
 #endif
 #define HAVE_DECL_SYS_NERR 1
 #define STDC_HEADERS 1
+#define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRING_H 1
 #define HAVE_LIMITS_H 1

@@ -2173,7 +2173,7 @@ node_new_ctype(int type, int not, OnigOptionType options)
 static Node*
 node_new_anychar(void)
 {
-  Node* node = node_new_ctype(CTYPE_ANYCHAR, 0, ONIG_OPTION_NONE);
+  Node* node = node_new_ctype(CTYPE_ANYCHAR, FALSE, ONIG_OPTION_NONE);
   return node;
 }
 
@@ -2691,7 +2691,7 @@ make_text_segment(Node** node, ScanEnv* env)
   ns[1] = NULL_NODE;
 
   r = ONIGERR_MEMORY;
-  ns[0] = onig_node_new_anchor(ANCR_NO_TEXT_SEGMENT_BOUNDARY, 0);
+  ns[0] = onig_node_new_anchor(ANCR_NO_TEXT_SEGMENT_BOUNDARY, FALSE);
   if (IS_NULL(ns[0])) goto err;
 
   r = node_new_true_anychar(&ns[1], env);
@@ -2702,7 +2702,7 @@ make_text_segment(Node** node, ScanEnv* env)
   ns[0] = x;
   ns[1] = NULL_NODE;
 
-  x = node_new_quantifier(0, INFINITE_REPEAT, 1);
+  x = node_new_quantifier(0, INFINITE_REPEAT, TRUE);
   if (IS_NULL(x)) goto err;
 
   NODE_BODY(x) = ns[0];
@@ -2771,7 +2771,7 @@ make_absent_engine(Node** node, int pre_save_right_id, Node* absent,
 
   ns[0] = x;
 
-  x = node_new_quantifier(lower, upper, 0);
+  x = node_new_quantifier(lower, upper, FALSE);
   if (IS_NULL(x)) goto err0;
 
   NODE_BODY(x) = ns[0];
@@ -2800,7 +2800,7 @@ make_absent_engine(Node** node, int pre_save_right_id, Node* absent,
   x = make_alt(2, ns);
   if (IS_NULL(x)) goto err0;
 
-  if (is_range_cutter != 0)
+  if (is_range_cutter != FALSE)
     NODE_STATUS_ADD(x, SUPER);
 
   *node = x;
@@ -2890,7 +2890,10 @@ make_range_clear(Node** node, ScanEnv* env)
 
   ns[0] = NULL_NODE; ns[1] = x;
 
-  r = node_new_update_var_gimmick(&ns[0], UPDATE_VAR_RIGHT_RANGE_INIT, 0, env);
+#define ID_NOT_USED_DONT_CARE_ME   0
+
+  r = node_new_update_var_gimmick(&ns[0], UPDATE_VAR_RIGHT_RANGE_INIT,
+                                  ID_NOT_USED_DONT_CARE_ME, env);
   if (r != 0) goto err;
 
   x = make_alt(2, ns);
@@ -3009,7 +3012,7 @@ make_absent_tree_for_simple_one_char_repeat(Node** node, Node* absent, Node* qua
   id1 = GIMMICK_(ns[0])->id;
 
   r = make_absent_engine(&ns[1], id1, absent, body, lower, upper, possessive,
-                         0, env);
+                         FALSE, env);
   if (r != 0) goto err;
 
   ns[2] = ns[3] = NULL_NODE;
@@ -3052,7 +3055,7 @@ make_absent_tree(Node** node, Node* absent, Node* expr, int is_range_cutter,
 
     if (expr == NULL_NODE) {
       /* default expr \O* */
-      quant = node_new_quantifier(0, INFINITE_REPEAT, 0);
+      quant = node_new_quantifier(0, INFINITE_REPEAT, FALSE);
       if (IS_NULL(quant)) goto err0;
 
       r = node_new_true_anychar(&body, env);
@@ -3179,16 +3182,6 @@ node_str_cat_char(Node* node, UChar c)
 }
 
 extern void
-onig_node_conv_to_str_node(Node* node, int flag)
-{
-  NODE_SET_TYPE(node, NODE_STRING);
-  STR_(node)->flag     = flag;
-  STR_(node)->capacity = 0;
-  STR_(node)->s        = STR_(node)->buf;
-  STR_(node)->end      = STR_(node)->buf;
-}
-
-extern void
 onig_node_str_clear(Node* node)
 {
   if (STR_(node)->capacity != 0 &&
@@ -3196,10 +3189,11 @@ onig_node_str_clear(Node* node)
     xfree(STR_(node)->s);
   }
 
-  STR_(node)->capacity = 0;
   STR_(node)->flag     = 0;
   STR_(node)->s        = STR_(node)->buf;
   STR_(node)->end      = STR_(node)->buf;
+  STR_(node)->capacity = 0;
+  STR_(node)->case_min_len = 0;
 }
 
 static Node*
@@ -3209,10 +3203,12 @@ node_new_str(const UChar* s, const UChar* end)
   CHECK_NULL_RETURN(node);
 
   NODE_SET_TYPE(node, NODE_STRING);
-  STR_(node)->capacity = 0;
   STR_(node)->flag     = 0;
   STR_(node)->s        = STR_(node)->buf;
   STR_(node)->end      = STR_(node)->buf;
+  STR_(node)->capacity = 0;
+  STR_(node)->case_min_len = 0;
+
   if (onig_node_str_cat(node, s, end)) {
     onig_node_free(node);
     return NULL;
@@ -3227,11 +3223,11 @@ onig_node_new_str(const UChar* s, const UChar* end)
 }
 
 static Node*
-node_new_str_raw(UChar* s, UChar* end)
+node_new_str_crude(UChar* s, UChar* end)
 {
   Node* node = node_new_str(s, end);
   CHECK_NULL_RETURN(node);
-  NODE_STRING_SET_RAW(node);
+  NODE_STRING_SET_CRUDE(node);
   return node;
 }
 
@@ -3242,14 +3238,14 @@ node_new_empty(void)
 }
 
 static Node*
-node_new_str_raw_char(UChar c)
+node_new_str_crude_char(UChar c)
 {
   int i;
   UChar p[1];
   Node* node;
 
   p[0] = c;
-  node = node_new_str_raw(p, p + 1);
+  node = node_new_str_crude(p, p + 1);
 
   /* clear buf tail */
   for (i = 1; i < NODE_STRING_BUF_SIZE; i++)
@@ -3272,8 +3268,8 @@ str_node_split_last_char(Node* node, OnigEncoding enc)
     if (p && p > sn->s) { /* can be split. */
       rn = node_new_str(p, sn->end);
       CHECK_NULL_RETURN(rn);
-      if (NODE_STRING_IS_RAW(node))
-        NODE_STRING_SET_RAW(rn);
+      if (NODE_STRING_IS_CRUDE(node))
+        NODE_STRING_SET_CRUDE(rn);
 
       sn->end = (UChar* )p;
     }
@@ -4004,7 +4000,7 @@ node_new_general_newline(Node** node, ScanEnv* env)
   alen = ONIGENC_CODE_TO_MBC(env->enc, 0x0a, buf + dlen);
   if (alen < 0) return alen;
 
-  crnl = node_new_str_raw(buf, buf + dlen + alen);
+  crnl = node_new_str_crude(buf, buf + dlen + alen);
   CHECK_NULL_RETURN_MEMERR(crnl);
 
   ncc = node_new_cclass();
@@ -4032,7 +4028,7 @@ node_new_general_newline(Node** node, ScanEnv* env)
     if (r != 0) goto err1;
   }
 
-  x = node_new_bag_if_else(crnl, 0, ncc);
+  x = node_new_bag_if_else(crnl, NULL_NODE, ncc);
   if (IS_NULL(x)) goto err1;
 
   *node = x;
@@ -4041,7 +4037,7 @@ node_new_general_newline(Node** node, ScanEnv* env)
 
 enum TokenSyms {
   TK_EOT      = 0,   /* end of token */
-  TK_RAW_BYTE = 1,
+  TK_CRUDE_BYTE = 1,
   TK_CHAR,
   TK_STRING,
   TK_CODE_POINT,
@@ -4454,7 +4450,7 @@ fetch_name_with_level(OnigCodePoint start_code, UChar** src, UChar* end,
 static int
 fetch_name(OnigCodePoint start_code, UChar** src, UChar* end,
            UChar** rname_end, ScanEnv* env, int* rback_num,
-           enum REF_NUM* num_type, int ref)
+           enum REF_NUM* num_type, int is_ref)
 {
   int r, sign;
   int digit_count;
@@ -4484,7 +4480,7 @@ fetch_name(OnigCodePoint start_code, UChar** src, UChar* end,
       return ONIGERR_EMPTY_GROUP_NAME;
 
     if (IS_CODE_DIGIT_ASCII(enc, c)) {
-      if (ref == 1)
+      if (is_ref == TRUE)
         *num_type = IS_ABS_NUM;
       else {
         r = ONIGERR_INVALID_GROUP_NAME;
@@ -4492,7 +4488,7 @@ fetch_name(OnigCodePoint start_code, UChar** src, UChar* end,
       digit_count++;
     }
     else if (c == '-') {
-      if (ref == 1) {
+      if (is_ref == TRUE) {
         *num_type = IS_REL_NUM;
         sign = -1;
         pnum_head = p;
@@ -4502,7 +4498,7 @@ fetch_name(OnigCodePoint start_code, UChar** src, UChar* end,
       }
     }
     else if (c == '+') {
-      if (ref == 1) {
+      if (is_ref == TRUE) {
         *num_type = IS_REL_NUM;
         sign = 1;
         pnum_head = p;
@@ -4843,7 +4839,7 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
         }
-        tok->type = TK_RAW_BYTE;
+        tok->type = TK_CRUDE_BYTE;
         tok->base = 16;
         tok->u.byte = (UChar )code;
       }
@@ -4876,7 +4872,7 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
         }
-        tok->type = TK_RAW_BYTE;
+        tok->type = TK_CRUDE_BYTE;
         tok->base = 8;
         tok->u.byte = (UChar )code;
       }
@@ -5246,7 +5242,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
         }
-        tok->type = TK_RAW_BYTE;
+        tok->type = TK_CRUDE_BYTE;
         tok->base = 16;
         tok->u.byte = (UChar )code;
       }
@@ -5311,7 +5307,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
         }
-        tok->type = TK_RAW_BYTE;
+        tok->type = TK_CRUDE_BYTE;
         tok->base = 8;
         tok->u.byte = (UChar )code;
       }
@@ -5338,7 +5334,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           if (r == 1) tok->u.backref.exist_level = 1;
           else        tok->u.backref.exist_level = 0;
 #else
-          r = fetch_name(c, &p, end, &name_end, env, &back_num, &num_type, 1);
+          r = fetch_name(c, &p, end, &name_end, env, &back_num, &num_type, TRUE);
 #endif
           if (r < 0) return r;
 
@@ -5401,7 +5397,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
           prev = p;
           r = fetch_name((OnigCodePoint )c, &p, end, &name_end, env,
-                         &gnum, &num_type, 1);
+                         &gnum, &num_type, TRUE);
           if (r < 0) return r;
 
           if (num_type != IS_NOT_NUM) {
@@ -5464,7 +5460,6 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         PUNFETCH;
         r = fetch_escaped_value(&p, end, env, &c2);
         if (r < 0) return r;
-        /* set_raw: */
         if (tok->u.code != c2) {
           tok->type = TK_CODE_POINT;
           tok->u.code = c2;
@@ -5590,8 +5585,8 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
               {
                 PINC;
                 name = p;
-                r = fetch_name((OnigCodePoint )'(', &p, end, &name_end, env, &gnum,
-                               &num_type, 0);
+                r = fetch_name((OnigCodePoint )'(', &p, end, &name_end, env,
+                               &gnum, &num_type, FALSE);
                 if (r < 0) return r;
 
                 tok->type = TK_CALL;
@@ -5623,7 +5618,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
               {
                 name = p;
                 r = fetch_name((OnigCodePoint )'(', &p, end, &name_end, env,
-                               &gnum, &num_type, 1);
+                               &gnum, &num_type, TRUE);
                 if (r < 0) return r;
 
                 if (num_type == IS_NOT_NUM) {
@@ -6097,7 +6092,7 @@ parse_char_property(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* en
   *np = node_new_cclass();
   CHECK_NULL_RETURN_MEMERR(*np);
   cc = CCLASS_(*np);
-  r = add_ctype_to_cc(cc, ctype, 0, env);
+  r = add_ctype_to_cc(cc, ctype, FALSE, env);
   if (r != 0) return r;
   if (tok->u.prop.not != 0) NCCLASS_SET_NOT(cc);
 
@@ -6297,7 +6292,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       goto val_entry2;
       break;
 
-    case TK_RAW_BYTE:
+    case TK_CRUDE_BYTE:
       /* tok->base != 0 : octal or hexadec. */
       if (! ONIGENC_IS_SINGLEBYTE(env->enc) && tok->base != 0) {
         int i, j;
@@ -6310,7 +6305,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         for (i = 1; i < ONIGENC_MBC_MAXLEN(env->enc); i++) {
           r = fetch_token_in_cc(tok, &p, end, env);
           if (r < 0) goto err;
-          if (r != TK_RAW_BYTE || tok->base != base) {
+          if (r != TK_CRUDE_BYTE || tok->base != base) {
             fetched = 1;
             break;
           }
@@ -6340,7 +6335,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
         if (i == 1) {
           in_code = (OnigCodePoint )buf[0];
-          goto raw_single;
+          goto crude_single;
         }
         else {
           in_code = ONIGENC_MBC_TO_CODE(env->enc, buf, bufe);
@@ -6349,7 +6344,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       }
       else {
         in_code = (OnigCodePoint )tok->u.byte;
-      raw_single:
+      crude_single:
         in_type = CV_SB;
       }
       in_raw = 1;
@@ -6815,7 +6810,7 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
           size_t clen;
 
         add_char:
-          if (skip_mode == 0) {
+          if (skip_mode == FALSE) {
             clen = p - e;
             if (bufend + clen > buf + MAX_CALLOUT_ARG_BYTE_LENGTH)
               return ONIGERR_INVALID_CALLOUT_ARG; /* too long argument */
@@ -6832,7 +6827,7 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
       if (max_arg_num >= 0 && n >= max_arg_num)
         return ONIGERR_INVALID_CALLOUT_ARG;
 
-      if (skip_mode == 0) {
+      if (skip_mode == FALSE) {
         if ((types[n] & ONIG_TYPE_LONG) != 0) {
           int fixed = 0;
           if (cn > 0) {
@@ -6964,7 +6959,7 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
 
     /* read for single check only */
     save = p;
-    arg_num = parse_callout_args(1, '}', &p, end, -1, 0, 0, env);
+    arg_num = parse_callout_args(TRUE, '}', &p, end, -1, NULL, NULL, env);
     if (arg_num < 0) return arg_num;
 
     is_not_single = PPEEK_IS(cterm) ?  0 : 1;
@@ -6978,7 +6973,7 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
       types[i] = get_callout_arg_type_by_name_id(name_id, i);
     }
 
-    arg_num = parse_callout_args(0, '}', &p, end, max_arg_num, types, vals, env);
+    arg_num = parse_callout_args(FALSE, '}', &p, end, max_arg_num, types, vals, env);
     if (arg_num < 0) return arg_num;
 
     if (PEND) return ONIGERR_END_PATTERN_IN_GROUP;
@@ -7078,17 +7073,17 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
     group:
       r = fetch_token(tok, &p, end, env);
       if (r < 0) return r;
-      r = parse_alts(np, tok, term, &p, end, env, 0);
+      r = parse_alts(np, tok, term, &p, end, env, FALSE);
       if (r < 0) return r;
       *src = p;
       return 1; /* group */
       break;
 
     case '=':
-      *np = onig_node_new_anchor(ANCR_PREC_READ, 0);
+      *np = onig_node_new_anchor(ANCR_PREC_READ, FALSE);
       break;
     case '!':  /*         preceding read */
-      *np = onig_node_new_anchor(ANCR_PREC_READ_NOT, 0);
+      *np = onig_node_new_anchor(ANCR_PREC_READ_NOT, FALSE);
       break;
     case '>':            /* (?>...) stop backtrack */
       *np = node_new_bag(BAG_STOP_BACKTRACK);
@@ -7106,9 +7101,9 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       if (PEND) return ONIGERR_END_PATTERN_WITH_UNMATCHED_PARENTHESIS;
       PFETCH(c);
       if (c == '=')
-        *np = onig_node_new_anchor(ANCR_LOOK_BEHIND, 0);
+        *np = onig_node_new_anchor(ANCR_LOOK_BEHIND, FALSE);
       else if (c == '!')
-        *np = onig_node_new_anchor(ANCR_LOOK_BEHIND_NOT, 0);
+        *np = onig_node_new_anchor(ANCR_LOOK_BEHIND_NOT, FALSE);
       else {
         if (IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_QMARK_LT_NAMED_GROUP)) {
           UChar *name;
@@ -7124,7 +7119,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
         named_group2:
           name = p;
           r = fetch_name((OnigCodePoint )c, &p, end, &name_end, env, &num,
-                         &num_type, 0);
+                         &num_type, FALSE);
           if (r < 0) return r;
 
           num = scan_env_add_mem_entry(env);
@@ -7173,7 +7168,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
         r = fetch_token(tok, &p, end, env);
         if (r < 0) return r;
-        r = parse_alts(&absent, tok, term, &p, end, env, 1);
+        r = parse_alts(&absent, tok, term, &p, end, env, TRUE);
         if (r < 0) {
           onig_node_free(absent);
           return r;
@@ -7260,7 +7255,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           if (r == 1) exist_level = 1;
 #else
           r = fetch_name((OnigCodePoint )(is_enclosed != 0 ? c : '('),
-                         &p, end, &name_end, env, &back_num, &num_type, 1);
+                         &p, end, &name_end, env, &back_num, &num_type, TRUE);
 #endif
           if (r < 0) {
             if (is_enclosed == 0) {
@@ -7284,7 +7279,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
                 return ONIGERR_INVALID_BACKREF;
             }
 
-            condition = node_new_backref_checker(1, &back_num, 0,
+            condition = node_new_backref_checker(1, &back_num, FALSE,
 #ifdef USE_BACKREF_WITH_LEVEL
                                                  exist_level, level,
 #endif
@@ -7307,7 +7302,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
               }
             }
 
-            condition = node_new_backref_checker(num, backs, 1,
+            condition = node_new_backref_checker(num, backs, TRUE,
 #ifdef USE_BACKREF_WITH_LEVEL
                                                  exist_level, level,
 #endif
@@ -7349,7 +7344,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           condition_is_checker = 0;
           r = fetch_token(tok, &p, end, env);
           if (r < 0) return r;
-          r = parse_alts(&condition, tok, term, &p, end, env, 0);
+          r = parse_alts(&condition, tok, term, &p, end, env, FALSE);
           if (r < 0) {
             onig_node_free(condition);
             return r;
@@ -7392,7 +7387,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
             onig_node_free(condition);
             return r;
           }
-          r = parse_alts(&target, tok, term, &p, end, env, 1);
+          r = parse_alts(&target, tok, term, &p, end, env, TRUE);
           if (r < 0) {
             onig_node_free(condition);
             onig_node_free(target);
@@ -7493,7 +7488,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
           case 'm':
             if (IS_SYNTAX_OP2(env->syntax, ONIG_SYN_OP2_OPTION_PERL)) {
-              OPTION_NEGATE(option, ONIG_OPTION_SINGLELINE, (neg == 0 ? 1 : 0));
+              OPTION_NEGATE(option, ONIG_OPTION_SINGLELINE, (neg == 0 ? TRUE : FALSE));
             }
             else if (IS_SYNTAX_OP2(env->syntax,
                         ONIG_SYN_OP2_OPTION_ONIGURUMA|ONIG_SYN_OP2_OPTION_RUBY)) {
@@ -7529,16 +7524,16 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
                 if (! ONIGENC_IS_UNICODE_ENCODING(enc))
                   return ONIGERR_UNDEFINED_GROUP_OPTION;
 
-                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER, 0);
-                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_WORD, 1);
+                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER, FALSE);
+                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_WORD, TRUE);
                 break;
 #ifdef USE_UNICODE_WORD_BREAK
               case 'w':
                 if (! ONIGENC_IS_UNICODE_ENCODING(enc))
                   return ONIGERR_UNDEFINED_GROUP_OPTION;
 
-                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_WORD, 0);
-                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER, 1);
+                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_WORD, FALSE);
+                OPTION_NEGATE(option, ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER, TRUE);
                 break;
 #endif
               default:
@@ -7568,7 +7563,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
             env->options = option;
             r = fetch_token(tok, &p, end, env);
             if (r < 0) return r;
-            r = parse_alts(&target, tok, term, &p, end, env, 0);
+            r = parse_alts(&target, tok, term, &p, end, env, FALSE);
             env->options = prev;
             if (r < 0) {
               onig_node_free(target);
@@ -7615,7 +7610,7 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   CHECK_NULL_RETURN_MEMERR(*np);
   r = fetch_token(tok, &p, end, env);
   if (r < 0) return r;
-  r = parse_alts(&target, tok, term, &p, end, env, 0);
+  r = parse_alts(&target, tok, term, &p, end, env, FALSE);
   if (r < 0) {
     onig_node_free(target);
     return r;
@@ -7767,6 +7762,29 @@ clear_not_flag_cclass(CClassNode* cc, OnigEncoding enc)
     BITSET_SET_BIT((cc)->bs, code);\
   }\
 } while (0)
+
+extern int
+onig_new_cclass_with_code_list(Node** rnode, OnigEncoding enc,
+                               int n, OnigCodePoint codes[])
+{
+  int i;
+  Node* node;
+  CClassNode* cc;
+
+  *rnode = NULL_NODE;
+
+  node = node_new_cclass();
+  CHECK_NULL_RETURN_MEMERR(node);
+
+  cc = CCLASS_(node);
+
+  for (i = 0; i < n; i++) {
+    ADD_CODE_INTO_CC(cc, codes[i], enc);
+  }
+
+  *rnode = node;
+  return 0;
+}
 
 typedef struct {
   ScanEnv*    env;
@@ -7927,7 +7945,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       env->options = BAG_(*np)->o.options;
       r = fetch_token(tok, src, end, env);
       if (r < 0) return r;
-      r = parse_alts(&target, tok, term, src, end, env, 0);
+      r = parse_alts(&target, tok, term, src, end, env, FALSE);
       env->options = prev;
       if (r < 0) {
         onig_node_free(target);
@@ -7942,7 +7960,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
     if (! IS_SYNTAX_BV(env->syntax, ONIG_SYN_ALLOW_UNMATCHED_CLOSE_SUBEXP))
       return ONIGERR_UNMATCHED_CLOSE_PARENTHESIS;
 
-    if (tok->escaped) goto tk_raw_byte;
+    if (tok->escaped) goto tk_crude_byte;
     else goto tk_byte;
     break;
 
@@ -7967,23 +7985,23 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
     }
     break;
 
-  case TK_RAW_BYTE:
-  tk_raw_byte:
+  case TK_CRUDE_BYTE:
+  tk_crude_byte:
     {
-      *np = node_new_str_raw_char(tok->u.byte);
+      *np = node_new_str_crude_char(tok->u.byte);
       CHECK_NULL_RETURN_MEMERR(*np);
       len = 1;
       while (1) {
         if (len >= ONIGENC_MBC_MINLEN(env->enc)) {
           if (len == enclen(env->enc, STR_(*np)->s)) {
             r = fetch_token(tok, src, end, env);
-            goto tk_raw_byte_end;
+            goto tk_crude_byte_end;
           }
         }
 
         r = fetch_token(tok, src, end, env);
         if (r < 0) return r;
-        if (r != TK_RAW_BYTE)
+        if (r != TK_CRUDE_BYTE)
           return ONIGERR_TOO_SHORT_MULTI_BYTE_STRING;
 
         r = node_str_cat_char(*np, tok->u.byte);
@@ -7992,11 +8010,11 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
         len++;
       }
 
-    tk_raw_byte_end:
+    tk_crude_byte_end:
       if (! ONIGENC_IS_VALID_MBC_STRING(env->enc, STR_(*np)->s, STR_(*np)->end))
         return ONIGERR_INVALID_WIDE_CHAR_VALUE;
 
-      NODE_STRING_CLEAR_RAW(*np);
+      NODE_STRING_CLEAR_CRUDE(*np);
       goto string_end;
     }
     break;
@@ -8007,7 +8025,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       len = ONIGENC_CODE_TO_MBC(env->enc, tok->u.code, buf);
       if (len < 0) return len;
 #ifdef NUMBERED_CHAR_IS_NOT_CASE_AMBIG
-      *np = node_new_str_raw(buf, buf + len);
+      *np = node_new_str_crude(buf, buf + len);
 #else
       *np = node_new_str(buf, buf + len);
 #endif
@@ -8050,7 +8068,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           *np = node_new_cclass();
           CHECK_NULL_RETURN_MEMERR(*np);
           cc = CCLASS_(*np);
-          add_ctype_to_cc(cc, tok->u.prop.ctype, 0, env);
+          add_ctype_to_cc(cc, tok->u.prop.ctype, FALSE, env);
           if (tok->u.prop.not != 0) NCCLASS_SET_NOT(cc);
         }
         break;
@@ -8109,7 +8127,7 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   case TK_ANYCHAR_ANYTIME:
     *np = node_new_anychar();
     CHECK_NULL_RETURN_MEMERR(*np);
-    qn = node_new_quantifier(0, INFINITE_REPEAT, 0);
+    qn = node_new_quantifier(0, INFINITE_REPEAT, FALSE);
     CHECK_NULL_RETURN_MEMERR(qn);
     NODE_BODY(qn) = *np;
     *np = qn;
@@ -8300,7 +8318,7 @@ parse_branch(Node** top, PToken* tok, int term, UChar** src, UChar* end,
 
     headp = &(NODE_CDR(*top));
     while (r != TK_EOT && r != term && r != TK_ALT) {
-      r = parse_exp(&node, tok, term, src, end, env, 0);
+      r = parse_exp(&node, tok, term, src, end, env, FALSE);
       if (r < 0) {
         onig_node_free(node);
         return r;
@@ -8353,7 +8371,7 @@ parse_alts(Node** top, PToken* tok, int term, UChar** src, UChar* end,
     while (r == TK_ALT) {
       r = fetch_token(tok, src, end, env);
       if (r < 0) return r;
-      r = parse_branch(&node, tok, term, src, end, env, 0);
+      r = parse_branch(&node, tok, term, src, end, env, FALSE);
       if (r < 0) {
         onig_node_free(node);
         return r;
@@ -8392,7 +8410,7 @@ parse_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
 
   r = fetch_token(&tok, src, end, env);
   if (r < 0) return r;
-  r = parse_alts(top, &tok, TK_EOT, src, end, env, 0);
+  r = parse_alts(top, &tok, TK_EOT, src, end, env, FALSE);
   if (r < 0) return r;
 
   return 0;
