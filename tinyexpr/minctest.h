@@ -1,4 +1,5 @@
-﻿/*
+// encoding: UTF8
+/*
  *
  * MINCTEST - Minimal C Test Library - 0.1
  *

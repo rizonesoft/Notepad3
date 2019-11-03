@@ -1,4 +1,5 @@
-﻿// Scintilla source code edit control
+// encoding: UTF8
+// Scintilla source code edit control
 /** @file LexCSV.cxx
 ** Rainbow clouring for CSV files
 ** Written by RaiKoHoff

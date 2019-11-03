@@ -1,4 +1,5 @@
-﻿// stdafx.cpp : source file that includes just the standard includes
+// encoding: UTF8
+// stdafx.cpp : source file that includes just the standard includes
 // np3_af_af.pch will be the pre-compiled header
 // stdafx.obj will contain the pre-compiled type information
 

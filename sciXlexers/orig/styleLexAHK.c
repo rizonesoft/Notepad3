@@ -1,4 +1,5 @@
-﻿#include "StyleLexers.h"
+// encoding: UTF8
+#include "StyleLexers.h"
 
 // ----------------------------------------------------------------------------
 

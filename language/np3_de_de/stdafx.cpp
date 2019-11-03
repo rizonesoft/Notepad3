@@ -1,4 +1,5 @@
-﻿// stdafx.cpp : Quelldatei, die nur die Standard-Includes einbindet.
+// encoding: UTF8
+// stdafx.cpp : Quelldatei, die nur die Standard-Includes einbindet.
 // np3_de_de.pch ist der vorkompilierte Header.
 // stdafx.obj enthält die vorkompilierten Typinformationen.
 

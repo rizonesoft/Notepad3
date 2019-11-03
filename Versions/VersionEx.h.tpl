@@ -1,3 +1,4 @@
+// encoding: UTF8
 // //////////////////////////////////////////////////////////
 //                                                         //
 // this file is generated - use template to apply changes  //

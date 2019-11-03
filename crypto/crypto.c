@@ -1,4 +1,4 @@
-﻿
+// encoding: UTF8
 /**
 *
 * Distributed under the terms of the GNU General Public License,

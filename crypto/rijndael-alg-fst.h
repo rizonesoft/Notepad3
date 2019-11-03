@@ -1,4 +1,5 @@
-﻿/**
+// encoding: UTF8
+/**
  * rijndael-alg-fst.h
  *
  * @version 3.0 (December 2000)

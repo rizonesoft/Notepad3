@@ -1,4 +1,5 @@
-﻿#pragma once
+// encoding: UTF8
+#pragma once
 #ifndef _CHARSETX_H_
 #define _CHARSETX_H_
 

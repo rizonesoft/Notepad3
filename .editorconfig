@@ -15,7 +15,6 @@ trim_trailing_whitespace = false
 # Matches multiple files with brace expansion notation
 [**.{h,c,cpp,hpp,cxx,rc}]
 # Set default charset
-#~charset = utf-8-bom
 charset = utf-8
 # 2 space indentation
 indent_style = space
