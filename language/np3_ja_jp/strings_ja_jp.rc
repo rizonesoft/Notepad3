@@ -55,101 +55,101 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "新規"
-    IDT_FILE_OPEN           "開く"
-    IDT_FILE_BROWSE         "ファイラでブラウズ"
-    IDT_FILE_SAVE           "保存"
-    IDT_FILE_RECENT         "閲覧履歴"
-    IDT_EDIT_UNDO           "元に戻す"
-    IDT_EDIT_REDO           "やり直し"
-    IDT_EDIT_CUT            "切り取り"
-    IDT_EDIT_COPY           "コピー"
+    IDT_FILE_NEW            "譁ｰ隕"
+    IDT_FILE_OPEN           "髢九￥"
+    IDT_FILE_BROWSE         "繝輔ぃ繧､繝ｩ縺ｧ繝悶Λ繧ｦ繧ｺ"
+    IDT_FILE_SAVE           "菫晏ｭ"
+    IDT_FILE_RECENT         "髢ｲ隕ｧ螻･豁ｴ"
+    IDT_EDIT_UNDO           "蜈�↓謌ｻ縺"
+    IDT_EDIT_REDO           "繧�ｊ逶ｴ縺"
+    IDT_EDIT_CUT            "蛻�ｊ蜿悶ｊ"
+    IDT_EDIT_COPY           "繧ｳ繝斐�"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "貼り付け"
-    IDT_EDIT_FIND           "検索"
-    IDT_EDIT_REPLACE        "置換"
-    IDT_VIEW_WORDWRAP       "右端で折り返す"
-    IDT_VIEW_ZOOMIN         "拡大"
-    IDT_VIEW_ZOOMOUT        "縮小"
-    IDT_VIEW_SCHEME         "文書の種類を選択"
-    IDT_VIEW_SCHEMECONFIG   "配色の編集"
-    IDT_FILE_EXIT           "終了"
-    IDT_FILE_SAVEAS         "名前を付けて保存"
-    IDT_FILE_SAVECOPY       "コピーして保存"
-    IDT_EDIT_CLEAR          "削除"
-    IDT_FILE_PRINT          "印刷"
-    IDT_FILE_OPENFAV        "お気に入り"
-    IDT_FILE_ADDTOFAV       "お気に入りに追加"
-    IDT_VIEW_TOGGLEFOLDS    "すべて折りたたみ"
+    IDT_EDIT_PASTE          "雋ｼ繧贋ｻ倥￠"
+    IDT_EDIT_FIND           "讀懃ｴ｢"
+    IDT_EDIT_REPLACE        "鄂ｮ謠"
+    IDT_VIEW_WORDWRAP       "蜿ｳ遶ｯ縺ｧ謚倥ｊ霑斐☆"
+    IDT_VIEW_ZOOMIN         "諡｡螟ｧ"
+    IDT_VIEW_ZOOMOUT        "邵ｮ蟆"
+    IDT_VIEW_SCHEME         "譁�嶌縺ｮ遞ｮ鬘槭ｒ驕ｸ謚"
+    IDT_VIEW_SCHEMECONFIG   "驟崎牡縺ｮ邱ｨ髮"
+    IDT_FILE_EXIT           "邨ゆｺ"
+    IDT_FILE_SAVEAS         "蜷榊燕繧剃ｻ倥￠縺ｦ菫晏ｭ"
+    IDT_FILE_SAVECOPY       "繧ｳ繝斐�縺励※菫晏ｭ"
+    IDT_EDIT_CLEAR          "蜑企勁"
+    IDT_FILE_PRINT          "蜊ｰ蛻ｷ"
+    IDT_FILE_OPENFAV        "縺頑ｰ励↓蜈･繧"
+    IDT_FILE_ADDTOFAV       "縺頑ｰ励↓蜈･繧翫↓霑ｽ蜉"
+    IDT_VIEW_TOGGLEFOLDS    "縺吶∋縺ｦ謚倥ｊ縺溘◆縺ｿ"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "開いている文書を実行"
-    IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
-    IDT_VIEW_CHASING_DOCTAIL "編集制限モード"
-    IDT_VIEW_PIN_ON_TOP      "常に手前に表示"
+    IDT_FILE_LAUNCH          "髢九＞縺ｦ縺�ｋ譁�嶌繧貞ｮ溯｡"
+    IDT_VIEW_TOGGLE_VIEW     "蜊倩ｪ樔ｸ譛帙Δ繝ｼ繝"
+    IDT_VIEW_CHASING_DOCTAIL "邱ｨ髮�宛髯舌Δ繝ｼ繝"
+    IDT_VIEW_PIN_ON_TOP      "蟶ｸ縺ｫ謇句燕縺ｫ陦ｨ遉ｺ"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (管理者権限)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : クリップボード履歴"
-    IDS_MUI_UNTITLED        "無題"
+    IDS_MUI_APPTITLE_ELEVATED "%s (邂｡逅��ｨｩ髯)"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 繧ｯ繝ｪ繝��繝懊�繝牙ｱ･豁ｴ"
+    IDS_MUI_UNTITLED        "辟｡鬘"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(読み取り専用)"
-    IDS_MUI_LOADFILE        "読み込み中 ""%s""..."
-    IDS_MUI_SAVEFILE        "保存中 ""%s""..."
-    IDS_MUI_PRINTFILE       "%iページを印刷..."
-    IDS_MUI_SAVINGSETTINGS  "設定保存中..."
-    IDS_MUI_LINKDESCRIPTION "Notepad3で編集"
+    IDS_MUI_READONLY        "(隱ｭ縺ｿ蜿悶ｊ蟆ら畑)"
+    IDS_MUI_LOADFILE        "隱ｭ縺ｿ霎ｼ縺ｿ荳ｭ ""%s""..."
+    IDS_MUI_SAVEFILE        "菫晏ｭ倅ｸｭ ""%s""..."
+    IDS_MUI_PRINTFILE       "%i繝壹�繧ｸ繧貞魂蛻ｷ..."
+    IDS_MUI_SAVINGSETTINGS  "險ｭ螳壻ｿ晏ｭ倅ｸｭ..."
+    IDS_MUI_LINKDESCRIPTION "Notepad3縺ｧ邱ｨ髮"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "すべてのファイル(*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "実行ファイル(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|すべてのファイル(*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "設定ファイル(*.ini)|*.ini|すべてのファイル(*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "ビットマップファイル (*.bmp)|*.bmp|すべてのファイル (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "開きたいプログラムがあるフォルダを指定してください。"
-    IDS_MUI_FAVORITES       "お気に入りのフォルダを指定してください。"
-    IDS_MUI_BACKSLASHHELP   "バックスラッシュ変換\n\n\\a\tアラート (BEL, Ascii 7, ベル)\n\\b\tバックスペース (BS, Ascii 8)\n\\f\t改ページ (FF, Ascii 12)\n\\n\t改行文字 (LF, Ascii 10)\n\\r\t復帰文字 (CR, Ascii 13, キャリッジリターン)\n\\t\tタブ (HT, Ascii 9, 水平タブ)\n\\v\t垂直タブ (VT, Ascii 11)\n\\0oo\t8進数表記\n\\u####\t16進数表記\n\\xhh\t16進数表記\n\\\\\tバックスラッシュ自体"
-    IDS_MUI_REGEXPHELP      "正規表現の構文 (複数行)\n\n.\t何らかの1文字\n^\t行の先頭\n$\t行の末尾\n\\<\t単語の先頭\n\\>\t単語の末尾\n\\b\t単語の区切り(アルファベットの単語)\n[...]\t指定した文字群 ([abc]) または - で範囲 ([a-z])\n[^...]\t上記で指定した文字ではない(^で除外)\n\\d\t10進数1文字(半角数字)\n\\D\t10進数ではない(上記以外)\n\\s\t空白文字(何らか)\n\\S\t空白文字ではない(上記以外)\n\\w\t言葉の1文字(日本語含む)\n\\W\t非言語文字(上記以外)\n\\x\t下記用のエスケープ文字\n\\xHH\t16進コードHHで1文字\n?\t直前の指定があるかないかに一致(0回か1回)\n*\t直前の指定の0回以上の繰り返しに合致\n+\t直前の指定の1回以上の繰り返しに合致\n*? か +?\t上記記号 ""?"" と ""+"" を最長マッチではなくする\n{n}\t繰り返し回数を指定 , 区切りで上限も\n(\t範囲指定の括弧開始\n)\t範囲指定の閉じ括弧\n|\tor 範囲括弧内でも使用可能\n\\n\t上記の括弧内を記憶し置換時に参照する\n\t\\1から\\9まで順に対応括弧内の文字列を呼び出す\n"
-    IDS_MUI_WILDCARDHELP    "ワイルドカード検索\n\n*\t0文字以上の文字列に合致\n?\tちょうど1文字に合致"
+    IDS_MUI_FILTER_ALL      "縺吶∋縺ｦ縺ｮ繝輔ぃ繧､繝ｫ(*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "螳溯｡後ヵ繧｡繧､繝ｫ(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|縺吶∋縺ｦ縺ｮ繝輔ぃ繧､繝ｫ(*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "險ｭ螳壹ヵ繧｡繧､繝ｫ(*.ini)|*.ini|縺吶∋縺ｦ縺ｮ繝輔ぃ繧､繝ｫ(*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "繝薙ャ繝医�繝��繝輔ぃ繧､繝ｫ (*.bmp)|*.bmp|縺吶∋縺ｦ縺ｮ繝輔ぃ繧､繝ｫ (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "髢九″縺溘＞繝励Ο繧ｰ繝ｩ繝縺後≠繧九ヵ繧ｩ繝ｫ繝繧呈欠螳壹＠縺ｦ縺上□縺輔＞縲"
+    IDS_MUI_FAVORITES       "縺頑ｰ励↓蜈･繧翫�繝輔か繝ｫ繝繧呈欠螳壹＠縺ｦ縺上□縺輔＞縲"
+    IDS_MUI_BACKSLASHHELP   "繝舌ャ繧ｯ繧ｹ繝ｩ繝�す繝･螟画鋤\n\n\\a\t繧｢繝ｩ繝ｼ繝 (BEL, Ascii 7, 繝吶Ν)\n\\b\t繝舌ャ繧ｯ繧ｹ繝壹�繧ｹ (BS, Ascii 8)\n\\f\t謾ｹ繝壹�繧ｸ (FF, Ascii 12)\n\\n\t謾ｹ陦梧枚蟄 (LF, Ascii 10)\n\\r\t蠕ｩ蟶ｰ譁�ｭ (CR, Ascii 13, 繧ｭ繝｣繝ｪ繝�ず繝ｪ繧ｿ繝ｼ繝ｳ)\n\\t\t繧ｿ繝 (HT, Ascii 9, 豌ｴ蟷ｳ繧ｿ繝)\n\\v\t蝙ら峩繧ｿ繝 (VT, Ascii 11)\n\\0oo\t8騾ｲ謨ｰ陦ｨ險禄n\\u####\t16騾ｲ謨ｰ陦ｨ險禄n\\xhh\t16騾ｲ謨ｰ陦ｨ險禄n\\\\\t繝舌ャ繧ｯ繧ｹ繝ｩ繝�す繝･閾ｪ菴"
+    IDS_MUI_REGEXPHELP      "豁｣隕剰｡ｨ迴ｾ縺ｮ讒区枚 (隍�焚陦)\n\n.\t菴輔ｉ縺九�1譁�ｭ予n^\t陦後�蜈磯ｭ\n$\t陦後�譛ｫ蟆ｾ\n\\<\t蜊倩ｪ槭�蜈磯ｭ\n\\>\t蜊倩ｪ槭�譛ｫ蟆ｾ\n\\b\t蜊倩ｪ槭�蛹ｺ蛻�ｊ(繧｢繝ｫ繝輔ぃ繝吶ャ繝医�蜊倩ｪ)\n[...]\t謖�ｮ壹＠縺滓枚蟄礼ｾ､ ([abc]) 縺ｾ縺溘� - 縺ｧ遽�峇 ([a-z])\n[^...]\t荳願ｨ倥〒謖�ｮ壹＠縺滓枚蟄励〒縺ｯ縺ｪ縺(^縺ｧ髯､螟)\n\\d\t10騾ｲ謨ｰ1譁�ｭ(蜊願ｧ呈焚蟄)\n\\D\t10騾ｲ謨ｰ縺ｧ縺ｯ縺ｪ縺(荳願ｨ倅ｻ･螟)\n\\s\t遨ｺ逋ｽ譁�ｭ(菴輔ｉ縺)\n\\S\t遨ｺ逋ｽ譁�ｭ励〒縺ｯ縺ｪ縺(荳願ｨ倅ｻ･螟)\n\\w\t險闡峨�1譁�ｭ(譌･譛ｬ隱槫性繧)\n\\W\t髱櫁ｨ隱樊枚蟄(荳願ｨ倅ｻ･螟)\n\\x\t荳玖ｨ倡畑縺ｮ繧ｨ繧ｹ繧ｱ繝ｼ繝玲枚蟄予n\\xHH\t16騾ｲ繧ｳ繝ｼ繝羽H縺ｧ1譁�ｭ予n?\t逶ｴ蜑阪�謖�ｮ壹′縺ゅｋ縺九↑縺�°縺ｫ荳閾ｴ(0蝗槭°1蝗)\n*\t逶ｴ蜑阪�謖�ｮ壹�0蝗樔ｻ･荳翫�郢ｰ繧願ｿ斐＠縺ｫ蜷郁�\n+\t逶ｴ蜑阪�謖�ｮ壹�1蝗樔ｻ･荳翫�郢ｰ繧願ｿ斐＠縺ｫ蜷郁�\n*? 縺 +?\t荳願ｨ倩ｨ伜捷 ""?"" 縺ｨ ""+"" 繧呈怙髟ｷ繝槭ャ繝√〒縺ｯ縺ｪ縺上☆繧欺n{n}\t郢ｰ繧願ｿ斐＠蝗樊焚繧呈欠螳 , 蛹ｺ蛻�ｊ縺ｧ荳企剞繧�n(\t遽�峇謖�ｮ壹�諡ｬ蠑ｧ髢句ｧ欺n)\t遽�峇謖�ｮ壹�髢峨§諡ｬ蠑ｧ\n|\tor 遽�峇諡ｬ蠑ｧ蜀�〒繧ゆｽｿ逕ｨ蜿ｯ閭ｽ\n\\n\t荳願ｨ倥�諡ｬ蠑ｧ蜀�ｒ險俶�縺礼ｽｮ謠帶凾縺ｫ蜿ら�縺吶ｋ\n\t\\1縺九ｉ\\9縺ｾ縺ｧ鬆�↓蟇ｾ蠢懈峡蠑ｧ蜀��譁�ｭ怜�繧貞他縺ｳ蜃ｺ縺兔n"
+    IDS_MUI_WILDCARDHELP    "繝ｯ繧､繝ｫ繝峨き繝ｼ繝画､懃ｴ｢\n\n*\t0譁�ｭ嶺ｻ･荳翫�譁�ｭ怜�縺ｫ蜷郁�\n?\t縺｡繧�≧縺ｩ1譁�ｭ励↓蜷郁�"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "読み込み失敗 ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s""."
-    IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は https://rizonesoft.com からダウンロードできます。"
-    IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか？"
-    IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
+    IDS_MUI_ERR_LOADFILE    "隱ｭ縺ｿ霎ｼ縺ｿ螟ｱ謨 ""%s""."
+    IDS_MUI_ERR_SAVEFILE    "菫晏ｭ伜､ｱ謨 ""%s""."
+    IDS_MUI_ERR_BROWSE      "繝輔ぃ繧､繝ｫ繝悶Λ繧ｦ繧ｶ繝励Λ繧ｰ繧､繝ｳ縺後≠繧翫∪縺帙ｓ縲�n縺薙�繝励Λ繧ｰ繧､繝ｳ MiniPath 縺ｯ https://rizonesoft.com 縺九ｉ繝繧ｦ繝ｳ繝ｭ繝ｼ繝峨〒縺阪∪縺吶"
+    IDS_MUI_ERR_MRUDLG      "驕ｸ謚槭＠縺溘ヵ繧｡繧､繝ｫ縺ｫ繧｢繧ｯ繧ｻ繧ｹ縺ｧ縺阪∪縺帙ｓ縲�n荳隕ｧ縺九ｉ髯､蜴ｻ縺励∪縺吶°�"
+    IDS_MUI_ERR_CREATELINK  "繝�せ繧ｯ繝医ャ繝励∈縺ｮ繧ｷ繝ｧ繝ｼ繝医き繝�ヨ菴懈�譎ゅ↓繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆縲"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "現在 Notepad3のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3のウィンドウを新たに開きますか？"
-    IDS_MUI_ERR_ENCODINGNA  "このコンピュータでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
-    IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
-    IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
+                            "迴ｾ蝨ｨ Notepad3縺ｮ繧ｦ繧｣繝ｳ繝峨え縺ｯ繝薙ず繝ｼ迥ｶ諷九°�､繝繧､繧｢繝ｭ繧ｰ繧定｡ｨ遉ｺ縺励※縺�∪縺吶�nNotepad3縺ｮ繧ｦ繧｣繝ｳ繝峨え繧呈眠縺溘↓髢九″縺ｾ縺吶°�"
+    IDS_MUI_ERR_ENCODINGNA  "縺薙�繧ｳ繝ｳ繝斐Η繝ｼ繧ｿ縺ｧ縺ｯ縲�∈謚槭＠縺滓枚蟄励さ繝ｼ繝臥畑縺ｮ繧ｳ繝ｼ繝峨�繝ｼ繧ｸ螟画鋤繝��繝悶Ν縺悟茜逕ｨ縺ｧ縺阪∪縺帙ｓ縲"
+    IDS_MUI_ERR_UNICODE     "Unicode縺ｸ縺ｮ螟画鋤荳ｭ縺ｫ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆縲�n繝輔ぃ繧､繝ｫ繧剃ｿ晏ｭ倥☆繧九→繝��繧ｿ縺悟､ｱ繧上ｌ繧九°繧ゅ＠繧後∪縺帙ｓ縲"
+    IDS_MUI_ERR_BITMAP      "繝薙ャ繝医�繝��繝輔ぃ繧､繝ｫ縺ｮ隱ｭ縺ｿ霎ｼ縺ｿ繧ｨ繝ｩ繝ｼ: %s\n蠢�ｦ√↑蟇ｸ豕: %i x %i (讓ｪ蟷 >= %i x 鬮倥＆)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "権限取得のエラー。"
+                            "讓ｩ髯仙叙蠕励�繧ｨ繝ｩ繝ｼ縲"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します。\n変換を続行しますか？"
-    IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません。"
+    IDS_MUI_ERR_UNICODE2    "迴ｾ蝨ｨ縺ｮ譁�嶌縺ｫ蜷ｫ縺ｾ繧後ｋ荳驛ｨ縺ｮ譁�ｭ励′縲�∈謚槭＠縺滓枚蟄励さ繝ｼ繝峨↓蟇ｾ蠢懊＠縺ｦ縺�∪縺帙ｓ縲ゆｿ晏ｭ倥＠縺溷ｴ蜷医∵園螳壹�譁�ｭ励↓鄂ｮ謠帙＆繧後ｋ蜿ｯ閭ｽ諤ｧ縺後≠繧翫∪縺吶ゆｻ悶�譁�ｭ励さ繝ｼ繝峨ｒ謗ｨ螂ｨ縺励∪縺吶�n螟画鋤繧堤ｶ夊｡後＠縺ｾ縺吶°�"
+    IDS_MUI_ERR_DROP        "荳蠎ｦ縺ｫ縺ｲ縺ｨ縺､縺ｮ繝輔ぃ繧､繝ｫ縺励°繝峨Ο繝��縺ｧ縺阪∪縺帙ｓ縲"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" を保存できませんでした。保護されている可能性があります。\n\n管理者権限でNotepad3を起動しますか？"
-    IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
+                            """%s"" 繧剃ｿ晏ｭ倥〒縺阪∪縺帙ｓ縺ｧ縺励◆縲ゆｿ晁ｭｷ縺輔ｌ縺ｦ縺�ｋ蜿ｯ閭ｽ諤ｧ縺後≠繧翫∪縺吶�n\n邂｡逅��ｨｩ髯舌〒Notepad3繧定ｵｷ蜍輔＠縺ｾ縺吶°�"
+    IDS_MUI_ERR_ADMINEXE    "邂｡逅�ヤ繝ｼ繝ｫ縺瑚ｦ九▽縺九ｊ縺ｾ縺帙ｓ縲�nNotepad3縺ｮ蜈ｬ蠑上し繧､繝医ｒ髢九″縺ｾ縺吶°� https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "大容量のファイルです。このファイルを開きますか？"
+                            "螟ｧ螳ｹ驥上�繝輔ぃ繧､繝ｫ縺ｧ縺吶ゅ％縺ｮ繝輔ぃ繧､繝ｫ繧帝幕縺阪∪縺吶°�"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "%s は設定のない拡張子です。\n読み込みますか ？"
-    IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
+                            "%s 縺ｯ險ｭ螳壹�縺ｪ縺�僑蠑ｵ蟄舌〒縺吶�n隱ｭ縺ｿ霎ｼ縺ｿ縺ｾ縺吶° �"
+    IDS_MUI_INDENT_CONSISTENT  "繧､繝ｳ繝�Φ繝医�荳雋ｫ縺励※縺�∪縺吶"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -169,133 +169,133 @@ BEGIN
     IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか？"
     IDS_MUI_READONLY_SAVE   """%s"" は読み取り専用です。別のファイル名で保存しますか？"
     IDS_MUI_FILECHANGENOTIFY
-                            "ファイルが他のプログラムによって変更されました。再読み込みしますか？"
-    IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか？"
-    IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
-    IDS_MUI_SAVEDSETTINGS   "設定が保存されました。"
-    IDS_MUI_CREATEINI_FAIL  "設定ファイルの作成に失敗しました。"
-    IDS_MUI_WRITEINI_FAIL   "設定ファイルへの書き込みに失敗しました。"
+                            "繝輔ぃ繧､繝ｫ縺御ｻ悶�繝励Ο繧ｰ繝ｩ繝縺ｫ繧医▲縺ｦ螟画峩縺輔ｌ縺ｾ縺励◆縲ょ�隱ｭ縺ｿ霎ｼ縺ｿ縺励∪縺吶°�"
+    IDS_MUI_FILECHANGENOTIFY2 "繝輔ぃ繧､繝ｫ縺悟炎髯､縺輔ｌ縺ｾ縺励◆縲ゆｿ晏ｭ倥＠縺ｾ縺吶°�"
+    IDS_MUI_STICKYWINPOS    "繧ｦ繧｣繝ｳ繝峨え菴咲ｽｮ縺ｮ蝗ｺ螳壹ｒ譛牙柑縺ｫ縺励∪縺吶よ眠縺励＞繧ｦ繧､繝ｳ繝峨え縺ｯ縲∫樟蝨ｨ縺ｮ繧ｦ繧､繝ｳ繝峨え菴咲ｽｮ縺ｮ險ｭ螳壹↓縺ｦ髢九°繧後∪縺吶"
+    IDS_MUI_SAVEDSETTINGS   "險ｭ螳壹′菫晏ｭ倥＆繧後∪縺励◆縲"
+    IDS_MUI_CREATEINI_FAIL  "險ｭ螳壹ヵ繧｡繧､繝ｫ縺ｮ菴懈�縺ｫ螟ｱ謨励＠縺ｾ縺励◆縲"
+    IDS_MUI_WRITEINI_FAIL   "險ｭ螳壹ヵ繧｡繧､繝ｫ縺ｸ縺ｮ譖ｸ縺崎ｾｼ縺ｿ縺ｫ螟ｱ謨励＠縺ｾ縺励◆縲"
     IDS_MUI_SETTINGSNOTSAVED
-                            "設定ファイルがありません。\n配色の変更を保つには、すぐに設定を保存するか(F7)、配色の設定(Ctrl+F12)から配色設定をエクスポートしてください。"
+                            "險ｭ螳壹ヵ繧｡繧､繝ｫ縺後≠繧翫∪縺帙ｓ縲�n驟崎牡縺ｮ螟画峩繧剃ｿ昴▽縺ｫ縺ｯ縲√☆縺舌↓險ｭ螳壹ｒ菫晏ｭ倥☆繧九°(F7)縲��濶ｲ縺ｮ險ｭ螳(Ctrl+F12)縺九ｉ驟崎牡險ｭ螳壹ｒ繧ｨ繧ｯ繧ｹ繝昴�繝医＠縺ｦ縺上□縺輔＞縲"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
-    IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません!"
-    IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます。"
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
+    IDS_MUI_EXPORT_FAIL      """%s"" 縺ｸ縺ｮ驟崎牡險ｭ螳壹�繧ｨ繧ｯ繧ｹ繝昴�繝医↓螟ｱ謨励＠縺ｾ縺励◆縲"
+    IDS_MUI_REGEX_INVALID    "豁｣隕剰｡ｨ迴ｾ縺ｮ讒区枚縺梧ｭ｣縺励￥縺ゅｊ縺ｾ縺帙ｓ!"
+    IDS_MUI_DROP_NO_FILE     "隱ｭ縺ｿ霎ｼ繧薙□繝輔ぃ繧､繝ｫ蜷阪′豁｣縺励￥縺ゅｊ縺ｾ縺帙ｓ縲(莉ｮ險ｳ)\n32-bit縺ｮ繝励Ο繧ｰ繝ｩ繝縺九ｉ繝峨Ο繝��縺励◆縺ｮ縺ｧ縺ゅｌ縺ｰ縲―nNotepad3縺ｮ繝��繝ｫ繝舌�縺ｫ繝峨Λ繝�げ&&繝峨Ο繝��縺励※縺上□縺輔＞縲"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + 繧ｯ繝ｪ繝�け : 繝輔ぃ繧､繝ｫ繧帝幕縺阪∪縺吶"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + 繧ｯ繝ｪ繝�け : 繝悶Λ繧ｦ繧ｶ繝ｼ縺ｧ繝ｪ繝ｳ繧ｯ繧帝幕縺阪∪縺吶"
     IDS_MUI_INF_PRSVFILEMODTM
                              "元ファイルの更新日時のままにします。\nこのセッションでのみ有効となります。"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "の編集を保存しますか:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします？"
-    IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます!"
-    IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"
-    IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄とする"
-    IDS_MUI_PRINT_FOOTER    "ページ番号|空欄とする"
-    IDS_MUI_PRINT_COLOR     "通常|明るさの反転 (暗い背景)|白背景に黒|白背景にカラー|白背景にカラー (行番号以外)|モニタ上の色"
-    IDS_MUI_PRINT_PAGENUM   "%iページ"
+    IDS_MUI_ASK_SAVE        "縺ｮ邱ｨ髮�ｒ菫晏ｭ倥＠縺ｾ縺吶°:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "譛蠕後↓菫晏ｭ倥＆繧後◆蜀�ｮｹ縺ｧ蜀崎ｪｭ縺ｿ霎ｼ縺ｿ縺励∪縺呻ｼ"
+    IDS_MUI_ASK_RECODE      "隱ｭ縺ｿ逶ｴ縺励�繝輔ぃ繧､繝ｫ繧貞�隱ｭ縺ｿ霎ｼ縺ｿ縺吶ｋ縺溘ａ縲∝､画峩蜀�ｮｹ縺ｯ螟ｱ繧上ｌ縺ｾ縺!"
+    IDS_MUI_ASK_CREATE      """%s""縺ｯ縺ゅｊ縺ｾ縺帙ｓ縲�n縺薙�繝輔ぃ繧､繝ｫ繧剃ｽ懈�縺励∪縺吶°�"
+    IDS_MUI_PRINT_HEADER    "繝輔ぃ繧､繝ｫ蜷, 迴ｾ蝨ｨ縺ｮ譌･莉倥→譎ょ綾|繝輔ぃ繧､繝ｫ蜷, 迴ｾ蝨ｨ縺ｮ譌･莉�繝輔ぃ繧､繝ｫ蜷鋼遨ｺ谺�→縺吶ｋ"
+    IDS_MUI_PRINT_FOOTER    "繝壹�繧ｸ逡ｪ蜿ｷ|遨ｺ谺�→縺吶ｋ"
+    IDS_MUI_PRINT_COLOR     "騾壼ｸｸ|譏弱ｋ縺輔�蜿崎ｻ｢ (證励＞閭梧勹)|逋ｽ閭梧勹縺ｫ鮟竹逋ｽ閭梧勹縺ｫ繧ｫ繝ｩ繝ｼ|逋ｽ閭梧勹縺ｫ繧ｫ繝ｩ繝ｼ (陦檎分蜿ｷ莉･螟)|繝｢繝九ち荳翫�濶ｲ"
+    IDS_MUI_PRINT_PAGENUM   "%i繝壹�繧ｸ"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "この文書には、印刷のための文章が含まれていません。"
-    IDS_MUI_PRINT_ERROR     "印刷失敗 ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "このファイルへのショートカットが、お気に入りフォルダ内に作成されました。"
-    IDS_MUI_FAV_FAILURE     "このファイルへのショートカットは作成できませんでした。\n同じ名前の他のファイルがないことを確認してください。"
-    IDS_MUI_READONLY_MODIFY """%s""の属性は変更できませんでした。"
-    IDS_MUI_SAVEPOS         "ウインドウ位置の保存(&S)\tCtrl+S"
-    IDS_MUI_RESETPOS        "ウインドウ位置のリセット(&R)\tCtrl+R"
-    IDS_MUI_PREVIEW         "設定のプレビュー(&P)\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "パスワードが正しくありません。\nほかのパスワードを試しますか？"
-    IDS_MUI_NOPASS          "複合化がキャンセルされました。\n暗号化されたままの生データを読み込みますか？"
-    IDS_MUI_STY_BASESTD     "ベース (標準配色):"
-    IDS_MUI_STY_BASE2ND     "ベース (標準配色2):"
-    IDS_MUI_STY_LEXDEF      "%s - 標準配色:"
-    IDS_MUI_STY_LEXSTYLE    "%sのスタイル:"
-    IDS_MUI_TITLE_RELBASE   " +++ ベース (%s) +++"
+    IDS_MUI_PRINT_EMPTY     "縺薙�譁�嶌縺ｫ縺ｯ縲∝魂蛻ｷ縺ｮ縺溘ａ縺ｮ譁�ｫ縺悟性縺ｾ繧後※縺�∪縺帙ｓ縲"
+    IDS_MUI_PRINT_ERROR     "蜊ｰ蛻ｷ螟ｱ謨 ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "縺薙�繝輔ぃ繧､繝ｫ縺ｸ縺ｮ繧ｷ繝ｧ繝ｼ繝医き繝�ヨ縺後√♀豌励↓蜈･繧翫ヵ繧ｩ繝ｫ繝蜀�↓菴懈�縺輔ｌ縺ｾ縺励◆縲"
+    IDS_MUI_FAV_FAILURE     "縺薙�繝輔ぃ繧､繝ｫ縺ｸ縺ｮ繧ｷ繝ｧ繝ｼ繝医き繝�ヨ縺ｯ菴懈�縺ｧ縺阪∪縺帙ｓ縺ｧ縺励◆縲�n蜷後§蜷榊燕縺ｮ莉悶�繝輔ぃ繧､繝ｫ縺後↑縺�％縺ｨ繧堤｢ｺ隱阪＠縺ｦ縺上□縺輔＞縲"
+    IDS_MUI_READONLY_MODIFY """%s""縺ｮ螻樊ｧ縺ｯ螟画峩縺ｧ縺阪∪縺帙ｓ縺ｧ縺励◆縲"
+    IDS_MUI_SAVEPOS         "繧ｦ繧､繝ｳ繝峨え菴咲ｽｮ縺ｮ菫晏ｭ(&S)\tCtrl+S"
+    IDS_MUI_RESETPOS        "繧ｦ繧､繝ｳ繝峨え菴咲ｽｮ縺ｮ繝ｪ繧ｻ繝�ヨ(&R)\tCtrl+R"
+    IDS_MUI_PREVIEW         "險ｭ螳壹�繝励Ξ繝薙Η繝ｼ(&P)\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "繝代せ繝ｯ繝ｼ繝峨′豁｣縺励￥縺ゅｊ縺ｾ縺帙ｓ縲�n縺ｻ縺九�繝代せ繝ｯ繝ｼ繝峨ｒ隧ｦ縺励∪縺吶°�"
+    IDS_MUI_NOPASS          "隍�粋蛹悶′繧ｭ繝｣繝ｳ繧ｻ繝ｫ縺輔ｌ縺ｾ縺励◆縲�n證怜捷蛹悶＆繧後◆縺ｾ縺ｾ縺ｮ逕溘ョ繝ｼ繧ｿ繧定ｪｭ縺ｿ霎ｼ縺ｿ縺ｾ縺吶°�"
+    IDS_MUI_STY_BASESTD     "繝吶�繧ｹ (讓呎ｺ夜�濶ｲ):"
+    IDS_MUI_STY_BASE2ND     "繝吶�繧ｹ (讓呎ｺ夜�濶ｲ2):"
+    IDS_MUI_STY_LEXDEF      "%s - 讓呎ｺ夜�濶ｲ:"
+    IDS_MUI_STY_LEXSTYLE    "%s縺ｮ繧ｹ繧ｿ繧､繝ｫ:"
+    IDS_MUI_TITLE_RELBASE   " +++ 繝吶�繧ｹ (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ja-JP) 日本語翻訳 maboroshin"
-    IDS_MUI_TITLE_FIXBASE   "ベース (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %sのスタイル +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %sのスタイル"
+    IDS_MUI_TRANSL_AUTHOR   "(ja-JP) 譌･譛ｬ隱樒ｿｻ險ｳ maboroshin"
+    IDS_MUI_TITLE_FIXBASE   "繝吶�繧ｹ (%s)"
+    IDS_MUI_TITLE_RELCUR    " +++ %s: %s縺ｮ繧ｹ繧ｿ繧､繝ｫ +++"
+    IDS_MUI_TITLE_FIXCUR    " %s: %s縺ｮ繧ｹ繧ｿ繧､繝ｫ"
     IDS_MUI_TITLE_RELARB    " +++ %s - %s +++"
-    IDS_MUI_TITLE_FIXARB    " %s のスタイル (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "関連付けるファイル拡張子:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\nいろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて あさきゆめみし ゑひもせす。\nとても綺麗な夕日、今日もたくさん動いて、ご飯もおいしい。よく眠れそうだ。"
-    IDS_MUI_ZERO_LEN_MATCH  "^ 空文字列に一致"
-    IDS_MUI_GOTO_LINE       "行 (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "列 (1 - %ti):"
+    IDS_MUI_TITLE_FIXARB    " %s 縺ｮ繧ｹ繧ｿ繧､繝ｫ (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "髢｢騾｣莉倥￠繧九ヵ繧｡繧､繝ｫ諡｡蠑ｵ蟄:"
+    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\n縺�ｍ縺ｯ縺ｫ縺ｻ縺ｸ縺ｨ 縺｡繧翫〓繧九ｒ 繧上°繧医◆繧後◎ 縺､縺ｭ縺ｪ繧峨� 縺�ｐ縺ｮ縺翫￥繧�∪ 縺代�縺薙∴縺ｦ 縺ゅ＆縺阪ｆ繧√∩縺 繧代�繧ゅ○縺吶�n縺ｨ縺ｦ繧らｶｺ鮗励↑螟墓律縲∽ｻ頑律繧ゅ◆縺上＆繧灘虚縺�※縲√＃鬟ｯ繧ゅ♀縺�＠縺�ゅｈ縺冗悛繧後◎縺�□縲"
+    IDS_MUI_ZERO_LEN_MATCH  "^ 遨ｺ譁�ｭ怜�縺ｫ荳閾ｴ"
+    IDS_MUI_GOTO_LINE       "陦 (1 - %ti):"
+    IDS_MUI_GOTO_COLUMN     "蛻 (1 - %ti):"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "言語(&L)"
-    IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
-    IDM_THEMES_DEFAULT      "初期設定"
-    IDM_THEMES_FILE_ITEM    "標準設定"
+    IDS_MUI_MENU_LANGUAGE   "險隱(&L)"
+    IDS_MUI_MENU_THEMES     "驟崎牡繝��繝(&S)"
+    IDM_THEMES_DEFAULT      "蛻晄悄險ｭ螳"
+    IDM_THEMES_FILE_ITEM    "讓呎ｺ冶ｨｭ螳"
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-記述法:\r\n\
-Notepad3 \t[/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\r\n\
+險倩ｿｰ豕:\r\n\
+Notepad3 \t[/?] [...[譁�ｭ励さ繝ｼ繝云] [...[謾ｹ陦後さ繝ｼ繝云] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[ドライブ:][パス]ファイル名[...]]\r\n\r\n\
-ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\tデフォルトでは空白があっても引用符は不要.\r\n\
-+\t複数のファイルの引数を許容 (要・引用符)\r\n\
--\tファイル引数をひとつだけ許容 (引用符不要)\r\n\r\n\
-引数（省略可）:\r\n\
-/?\tヘルプを表示\r\n\
-...\t文字コード (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
-...\t改行コード (/crlf, /cr, /lf)\r\n\
-/e\tファイルの文字コードを指定 [/e id]\r\n\
-/g\t指定位置にジャンプ (/g 行[,列] -1で終端)\r\n\
-/m\t文字列一致 [/m text] (/m- 最後, /mr 正規表現,\r\n\t/mb バックスラッシュ変換)\r\n\
-/l\tファイル変更時に自動で最新内容に再読み込み\r\n\
-/q\tファイルがない場合、問い合わせずファイル作成\r\n\
-/s\t配色設定を指定 [/s ext]\r\n\
-/d\t標準配色を指定\r\n\
-/h\tWEBソースコードの配色を指定\r\n\
-/x\tXML文書の配色を指定\r\n\
-/c\t新しいウインドウを開きクリップボードの内容を貼り付け\r\n\
-/b\tクリップボード履歴表示モードで開く\r\n\
-/n\t新しいウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
-/r\tひとつウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
-/p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max]] (/p0, /ps,\r\n\t/pf,l,t,r,b,m)\r\n\
-/t\tタイトルバーの文字列を指定 [/t text]\r\n\
-/i\tシステムトレイ内に起動\r\n\
-/o\t常に手前に表示\r\n\
-/f\t設定ファイルを指定 (/f0 設定不使用)\r\n\
-/u\t管理者権限で実行\r\n\
-/v\tすぐに印刷して終了する\r\n\
-/vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
-/y\t相対パスの場合に environment PATH を探す\r\n\
-/z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
-例:\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[繝峨Λ繧､繝:][繝代せ]繝輔ぃ繧､繝ｫ蜷梗...]]\r\n\r\n\
+繝輔ぃ繧､繝ｫ\t逶ｸ蟇ｾ繝代せ蜿ｯ閭ｽ. 譛蠕後�蠑墓焚縺ｫ縺吶ｋ蠢�ｦ√′縺ゅｋ.\r\n\t繝�ヵ繧ｩ繝ｫ繝医〒縺ｯ遨ｺ逋ｽ縺後≠縺｣縺ｦ繧ょｼ慕畑隨ｦ縺ｯ荳崎ｦ.\r\n\
++\t隍�焚縺ｮ繝輔ぃ繧､繝ｫ縺ｮ蠑墓焚繧定ｨｱ螳ｹ (隕√�蠑慕畑隨ｦ)\r\n\
+-\t繝輔ぃ繧､繝ｫ蠑墓焚繧偵�縺ｨ縺､縺縺題ｨｱ螳ｹ (蠑慕畑隨ｦ荳崎ｦ)\r\n\r\n\
+蠑墓焚�育怐逡･蜿ｯ�:\r\n\
+/?\t繝倥Ν繝励ｒ陦ｨ遉ｺ\r\n\
+...\t譁�ｭ励さ繝ｼ繝 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\t謾ｹ陦後さ繝ｼ繝 (/crlf, /cr, /lf)\r\n\
+/e\t繝輔ぃ繧､繝ｫ縺ｮ譁�ｭ励さ繝ｼ繝峨ｒ謖�ｮ [/e id]\r\n\
+/g\t謖�ｮ壻ｽ咲ｽｮ縺ｫ繧ｸ繝｣繝ｳ繝 (/g 陦啓,蛻余 -1縺ｧ邨らｫｯ)\r\n\
+/m\t譁�ｭ怜�荳閾ｴ [/m text] (/m- 譛蠕, /mr 豁｣隕剰｡ｨ迴ｾ,\r\n\t/mb 繝舌ャ繧ｯ繧ｹ繝ｩ繝�す繝･螟画鋤)\r\n\
+/l\t繝輔ぃ繧､繝ｫ螟画峩譎ゅ↓閾ｪ蜍輔〒譛譁ｰ蜀�ｮｹ縺ｫ蜀崎ｪｭ縺ｿ霎ｼ縺ｿ\r\n\
+/q\t繝輔ぃ繧､繝ｫ縺後↑縺�ｴ蜷医∝撫縺�粋繧上○縺壹ヵ繧｡繧､繝ｫ菴懈�\r\n\
+/s\t驟崎牡險ｭ螳壹ｒ謖�ｮ [/s ext]\r\n\
+/d\t讓呎ｺ夜�濶ｲ繧呈欠螳喀r\n\
+/h\tWEB繧ｽ繝ｼ繧ｹ繧ｳ繝ｼ繝峨�驟崎牡繧呈欠螳喀r\n\
+/x\tXML譁�嶌縺ｮ驟崎牡繧呈欠螳喀r\n\
+/c\t譁ｰ縺励＞繧ｦ繧､繝ｳ繝峨え繧帝幕縺阪け繝ｪ繝��繝懊�繝峨�蜀�ｮｹ繧定ｲｼ繧贋ｻ倥￠\r\n\
+/b\t繧ｯ繝ｪ繝��繝懊�繝牙ｱ･豁ｴ陦ｨ遉ｺ繝｢繝ｼ繝峨〒髢九￥\r\n\
+/n\t譁ｰ縺励＞繧ｦ繧｣繝ｳ繝峨え縺ｧ髢九￥ (/ns 繝輔ぃ繧､繝ｫ縺ｯ蜊倅ｸ縺ｮ繧､繝ｳ繧ｹ繧ｿ繝ｳ繧ｹ)\r\n\
+/r\t縺ｲ縺ｨ縺､繧ｦ繧､繝ｳ繝峨え繧貞�蛻ｩ逕ｨ (/rs 蜷後§縺丞腰荳縺ｮ繧､繝ｳ繧ｹ繧ｿ繝ｳ繧ｹ\r\n\
+/p\t繧ｦ繧｣繝ｳ繝峨え縺ｮ菴咲ｽｮ縺ｨ繧ｵ繧､繧ｺ繧呈欠螳 [/p x,y,sizex,y[,max]] (/p0, /ps,\r\n\t/pf,l,t,r,b,m)\r\n\
+/t\t繧ｿ繧､繝医Ν繝舌�縺ｮ譁�ｭ怜�繧呈欠螳 [/t text]\r\n\
+/i\t繧ｷ繧ｹ繝�Β繝医Ξ繧､蜀�↓襍ｷ蜍表r\n\
+/o\t蟶ｸ縺ｫ謇句燕縺ｫ陦ｨ遉ｺ\r\n\
+/f\t險ｭ螳壹ヵ繧｡繧､繝ｫ繧呈欠螳 (/f0 險ｭ螳壻ｸ堺ｽｿ逕ｨ)\r\n\
+/u\t邂｡逅��ｨｩ髯舌〒螳溯｡圭r\n\
+/v\t縺吶＄縺ｫ蜊ｰ蛻ｷ縺励※邨ゆｺ�☆繧欺r\n\
+/vd\t繝輔ぃ繧､繝ｫ縺ｮ蜊ｰ蛻ｷ(蜊ｰ蛻ｷ繝繧､繧｢繝ｭ繧ｰ繧帝幕縺)\r\n\
+/y\t逶ｸ蟇ｾ繝代せ縺ｮ蝣ｴ蜷医↓ environment PATH 繧呈爾縺兔r\n\
+/z\t縲梧ｬ｡縺ｸ縲阪ｒ逵∫払 (繝ｬ繧ｸ繧ｹ繝医Μ縺ｧ繝｡繝｢蟶ｳ繧堤ｽｮ謠帙＠縺ｦ縺�ｋ髫帙↓譛牙柑蛹)\r\n\r\n\
+萓:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... 新規ファイル Test.txt を開く: 文字コード UTF-8-BOM, 改行 CRLF\r\n\
+ \t... 譁ｰ隕上ヵ繧｡繧､繝ｫ Test.txt 繧帝幕縺: 譁�ｭ励さ繝ｼ繝 UTF-8-BOM, 謾ｹ陦 CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... すぐに Test.txt を印刷\
+ \t... 縺吶＄縺ｫ Test.txt 繧貞魂蛻ｷ\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-拡張子の区切りは ; です。\r\n\
-\\正規表現記法; という書式でファイル名の一致パターンを定義できます:\r\n\
-   例 \\xyz$;   ファイル名(ベースファイル名+拡張子)の末尾が xyz に合致\r\n\r\n\
-設定書式(各指定は省略可能, foreは文字色):\r\n\
-font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+諡｡蠑ｵ蟄舌�蛹ｺ蛻�ｊ縺ｯ ; 縺ｧ縺吶�r\n\
+\\豁｣隕剰｡ｨ迴ｾ險俶ｳ; 縺ｨ縺�≧譖ｸ蠑上〒繝輔ぃ繧､繝ｫ蜷阪�荳閾ｴ繝代ち繝ｼ繝ｳ繧貞ｮ夂ｾｩ縺ｧ縺阪∪縺:\r\n\
+   萓 \\xyz$;   繝輔ぃ繧､繝ｫ蜷(繝吶�繧ｹ繝輔ぃ繧､繝ｫ蜷+諡｡蠑ｵ蟄)縺ｮ譛ｫ蟆ｾ縺 xyz 縺ｫ蜷郁�\r\n\r\n\
+險ｭ螳壽嶌蠑(蜷�欠螳壹�逵∫払蜿ｯ閭ｽ, fore縺ｯ譁�ｭ苓牡):\r\n\
+font:繝輔か繝ｳ繝亥錐; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-コピー&ペーストやドラッグ&ドロップでも指定が変更できます。\
+繧ｳ繝斐�&繝壹�繧ｹ繝医ｄ繝峨Λ繝�げ&繝峨Ο繝��縺ｧ繧よ欠螳壹′螟画峩縺ｧ縺阪∪縺吶�
 "
 
 END
