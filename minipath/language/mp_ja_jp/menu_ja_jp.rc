@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding="utf-8"
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -121,8 +121,8 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "MiniPathを開く",                IDM_TRAY_RESTORE
-        MENUITEM "MiniPathの終了",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath を開く(&O)",                IDM_TRAY_RESTORE
+        MENUITEM "終了(&X)",               IDM_TRAY_EXIT
     END
 END
 

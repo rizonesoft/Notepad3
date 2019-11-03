@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding="utf-8"
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -158,8 +158,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "この操作は矩形選択では使えません"
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELMULTI        "この操作は複数選択では使えません。"
+    IDS_MUI_SELRECTORMULTI  "この操作は矩形選択や複数選択では使えません。"
     IDS_MUI_BUFFERTOOSMALL  "この操作は実行できません。行が長すぎます。"
     IDS_MUI_FIND_WRAPFW     "文書の最後に到達しました。先頭から検索しますか？"
     IDS_MUI_FIND_WRAPRE     "文書の先頭に到達しました。終端から検索しますか？"
@@ -187,7 +187,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます。"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "元ファイルの更新日時のままにします。\nこのセッションでのみ有効となります。"
 END
 
 STRINGTABLE

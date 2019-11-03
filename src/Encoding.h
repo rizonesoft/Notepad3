@@ -35,7 +35,7 @@
 #define NCP_EXTERNAL_8BIT   1024
 #define NCP_RECODE          2048
 
-#define CPI_ASCII_7BIT       (-3)
+#define CPI_ASCII_7BIT       (-7)
 #define CPI_GET              (-2)
 #define CPI_NONE             (-1)
 // following IDs must match with : NP2ENCODING g_Encodings[]
