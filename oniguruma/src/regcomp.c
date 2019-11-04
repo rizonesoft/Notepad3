@@ -1,5 +1,6 @@
 /**********************************************************************
   regcomp.c -  Oniguruma (regular expression library)
+  encoding: UTF8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2019  K.Kosako
@@ -452,6 +453,20 @@ swap_node(Node* a, Node* b)
   }
 }
 
+static int
+node_list_len(Node* list)
+{
+  int len;
+
+  len = 1;
+  while (IS_NOT_NULL(NODE_CDR(list))) {
+    list = NODE_CDR(list);
+    len++;
+  }
+
+  return len;
+}
+
 static Node*
 node_list_add(Node* list, Node* x)
 {
@@ -468,6 +483,49 @@ node_list_add(Node* list, Node* x)
   }
 
   return n;
+}
+
+static int
+node_str_node_cat(Node* node, Node* add)
+{
+  int r;
+
+  if (STR_(node)->flag != STR_(add)->flag)
+    return ONIGERR_TYPE_BUG;
+
+  r = onig_node_str_cat(node, STR_(add)->s, STR_(add)->end);
+  if (r != 0) return r;
+
+  if (NODE_STRING_IS_CASE_FOLD_MATCH(node))
+    STR_(node)->case_min_len += STR_(add)->case_min_len;
+
+  return 0;
+}
+
+static int
+node_str_cat_case_fold(Node* node, const UChar* s, const UChar* end, int case_min_len)
+{
+  int r;
+
+  if (! NODE_STRING_IS_CASE_FOLD_MATCH(node))
+    return ONIGERR_TYPE_BUG;
+
+  r = onig_node_str_cat(node, s, end);
+  if (r != 0) return r;
+
+  STR_(node)->case_min_len += case_min_len;
+  return 0;
+}
+
+static void
+node_conv_to_str_node(Node* node, int flag)
+{
+  NODE_SET_TYPE(node, NODE_STRING);
+  STR_(node)->flag     = flag;
+  STR_(node)->s        = STR_(node)->buf;
+  STR_(node)->end      = STR_(node)->buf;
+  STR_(node)->capacity = 0;
+  STR_(node)->case_min_len = 0;
 }
 
 static OnigLen
@@ -572,47 +630,40 @@ static int compile_tree(Node* node, regex_t* reg, ScanEnv* env);
     (op) == OP_EXACTMB3N || (op) == OP_EXACTMBN  || (op) == OP_EXACTN_IC)
 
 static int
-select_str_opcode(int mb_len, int str_len, int ignore_case)
+select_str_opcode(int mb_len, int str_len)
 {
   int op;
 
-  if (ignore_case) {
+  switch (mb_len) {
+  case 1:
     switch (str_len) {
-    case 1:  op = OP_EXACT1_IC; break;
-    default: op = OP_EXACTN_IC; break;
+    case 1:  op = OP_EXACT1; break;
+    case 2:  op = OP_EXACT2; break;
+    case 3:  op = OP_EXACT3; break;
+    case 4:  op = OP_EXACT4; break;
+    case 5:  op = OP_EXACT5; break;
+    default: op = OP_EXACTN; break;
     }
-  }
-  else {
-    switch (mb_len) {
-    case 1:
-      switch (str_len) {
-      case 1:  op = OP_EXACT1; break;
-      case 2:  op = OP_EXACT2; break;
-      case 3:  op = OP_EXACT3; break;
-      case 4:  op = OP_EXACT4; break;
-      case 5:  op = OP_EXACT5; break;
-      default: op = OP_EXACTN; break;
-      }
-      break;
+    break;
 
-    case 2:
-      switch (str_len) {
-      case 1:  op = OP_EXACTMB2N1; break;
-      case 2:  op = OP_EXACTMB2N2; break;
-      case 3:  op = OP_EXACTMB2N3; break;
-      default: op = OP_EXACTMB2N;  break;
-      }
-      break;
-
-    case 3:
-      op = OP_EXACTMB3N;
-      break;
-
-    default:
-      op = OP_EXACTMBN;
-      break;
+  case 2:
+    switch (str_len) {
+    case 1:  op = OP_EXACTMB2N1; break;
+    case 2:  op = OP_EXACTMB2N2; break;
+    case 3:  op = OP_EXACTMB2N3; break;
+    default: op = OP_EXACTMB2N;  break;
     }
+    break;
+
+  case 3:
+    op = OP_EXACTMB3N;
+    break;
+
+  default:
+    op = OP_EXACTMBN;
+    break;
   }
+
   return op;
 }
 
@@ -639,22 +690,22 @@ is_strict_real_node(Node* node)
 }
 
 static int
-compile_tree_empty_check(QuantNode* qn, regex_t* reg, ScanEnv* env)
+compile_quant_body_with_empty_check(QuantNode* qn, regex_t* reg, ScanEnv* env)
 {
   int r;
-  int saved_num_null_check;
+  int saved_num_empty_check;
   int emptiness;
   Node* body;
 
   body = NODE_BODY((Node* )qn);
   emptiness = qn->emptiness;
-  saved_num_null_check = reg->num_null_check;
+  saved_num_empty_check = reg->num_empty_check;
 
   if (emptiness != BODY_IS_NOT_EMPTY) {
     r = add_op(reg, OP_EMPTY_CHECK_START);
     if (r != 0) return r;
-    COP(reg)->empty_check_start.mem = reg->num_null_check; /* NULL CHECK ID */
-    reg->num_null_check++;
+    COP(reg)->empty_check_start.mem = reg->num_empty_check; /* NULL CHECK ID */
+    reg->num_empty_check++;
   }
 
   r = compile_tree(body, reg, env);
@@ -669,11 +720,13 @@ compile_tree_empty_check(QuantNode* qn, regex_t* reg, ScanEnv* env)
       else
         r = add_op(reg, OP_EMPTY_CHECK_END);
     }
+#ifdef USE_CALL
     else if (emptiness == BODY_IS_EMPTY_POSSIBILITY_REC)
       r = add_op(reg, OP_EMPTY_CHECK_END_MEMST_PUSH);
+#endif
 
     if (r != 0) return r;
-    COP(reg)->empty_check_end.mem = saved_num_null_check; /* NULL CHECK ID */
+    COP(reg)->empty_check_end.mem = saved_num_empty_check; /* NULL CHECK ID */
   }
   return r;
 }
@@ -710,14 +763,13 @@ compile_tree_n_times(Node* node, int n, regex_t* reg, ScanEnv* env)
 
 static int
 add_compile_string_length(UChar* s ARG_UNUSED, int mb_len, int str_len,
-                          regex_t* reg ARG_UNUSED, int ignore_case)
+                          regex_t* reg ARG_UNUSED)
 {
   return 1;
 }
 
 static int
-add_compile_string(UChar* s, int mb_len, int str_len,
-                   regex_t* reg, int ignore_case)
+add_compile_string(UChar* s, int mb_len, int str_len, regex_t* reg)
 {
   int op;
   int r;
@@ -725,7 +777,7 @@ add_compile_string(UChar* s, int mb_len, int str_len,
   UChar* p;
   UChar* end;
 
-  op = select_str_opcode(mb_len, str_len, ignore_case);
+  op = select_str_opcode(mb_len, str_len);
   r = add_op(reg, op);
   if (r != 0) return r;
 
@@ -762,7 +814,7 @@ add_compile_string(UChar* s, int mb_len, int str_len,
 static int
 compile_length_string_node(Node* node, regex_t* reg)
 {
-  int rlen, r, len, prev_len, slen, ambig;
+  int rlen, r, len, prev_len, slen;
   UChar *p, *prev;
   StrNode* sn;
   OnigEncoding enc = reg->enc;
@@ -771,10 +823,7 @@ compile_length_string_node(Node* node, regex_t* reg)
   if (sn->end <= sn->s)
     return 0;
 
-  ambig = NODE_STRING_IS_CASE_FOLD_MATCH(node);
-  if (ambig != 0) {
-    return 1;
-  }
+  if (NODE_STRING_IS_CASE_FOLD_MATCH(node) != 0) return 1;
 
   p = prev = sn->s;
   prev_len = enclen(enc, p);
@@ -788,7 +837,7 @@ compile_length_string_node(Node* node, regex_t* reg)
       slen++;
     }
     else {
-      r = add_compile_string_length(prev, prev_len, slen, reg, ambig);
+      r = add_compile_string_length(prev, prev_len, slen, reg);
       rlen += r;
       prev = p;
       slen = 1;
@@ -797,19 +846,19 @@ compile_length_string_node(Node* node, regex_t* reg)
     p += len;
   }
 
-  r = add_compile_string_length(prev, prev_len, slen, reg, ambig);
+  r = add_compile_string_length(prev, prev_len, slen, reg);
   rlen += r;
   return rlen;
 }
 
 static int
-compile_length_string_raw_node(StrNode* sn, regex_t* reg)
+compile_length_string_crude_node(StrNode* sn, regex_t* reg)
 {
   if (sn->end <= sn->s)
     return 0;
 
   return add_compile_string_length(sn->s, 1 /* sb */, (int )(sn->end - sn->s),
-                                   reg, 0);
+                                   reg);
 }
 
 static int
@@ -824,7 +873,7 @@ compile_ambig_string_node(Node* node, regex_t* reg)
 
   sn = STR_(node);
   len = enclen(enc, sn->s);
-  byte_len = (int)(sn->end - sn->s);
+  byte_len = (int )(sn->end - sn->s);
   if (len == byte_len) {
     r = add_op(reg, OP_EXACT1_IC);
     if (r != 0) return r;
@@ -849,7 +898,7 @@ compile_ambig_string_node(Node* node, regex_t* reg)
 static int
 compile_string_node(Node* node, regex_t* reg)
 {
-  int r, len, prev_len, slen, ambig;
+  int r, len, prev_len, slen;
   UChar *p, *prev, *end;
   StrNode* sn;
   OnigEncoding enc = reg->enc;
@@ -859,8 +908,7 @@ compile_string_node(Node* node, regex_t* reg)
     return 0;
 
   end = sn->end;
-  ambig = NODE_STRING_IS_CASE_FOLD_MATCH(node);
-  if (ambig != 0) {
+  if (NODE_STRING_IS_CASE_FOLD_MATCH(node) != 0) {
     return compile_ambig_string_node(node, reg);
   }
 
@@ -875,7 +923,7 @@ compile_string_node(Node* node, regex_t* reg)
       slen++;
     }
     else {
-      r = add_compile_string(prev, prev_len, slen, reg, ambig);
+      r = add_compile_string(prev, prev_len, slen, reg);
       if (r != 0) return r;
 
       prev  = p;
@@ -886,16 +934,16 @@ compile_string_node(Node* node, regex_t* reg)
     p += len;
   }
 
-  return add_compile_string(prev, prev_len, slen, reg, ambig);
+  return add_compile_string(prev, prev_len, slen, reg);
 }
 
 static int
-compile_string_raw_node(StrNode* sn, regex_t* reg)
+compile_string_crude_node(StrNode* sn, regex_t* reg)
 {
   if (sn->end <= sn->s)
     return 0;
 
-  return add_compile_string(sn->s, 1 /* sb */, (int )(sn->end - sn->s), reg, 0);
+  return add_compile_string(sn->s, 1 /* sb */, (int )(sn->end - sn->s), reg);
 }
 
 static void*
@@ -959,15 +1007,27 @@ compile_cclass_node(CClassNode* cc, regex_t* reg)
   return 0;
 }
 
+static void
+set_addr_in_repeat_range(regex_t* reg)
+{
+  int i;
+
+  for (i = 0; i < reg->num_repeat; i++) {
+    RepeatRange* p = reg->repeat_range + i;
+    int offset = p->u.offset;
+    p->u.pcode = reg->ops + offset;
+  }
+}
+
 static int
-entry_repeat_range(regex_t* reg, int id, int lower, int upper)
+entry_repeat_range(regex_t* reg, int id, int lower, int upper, int ops_index)
 {
 #define REPEAT_RANGE_ALLOC  4
 
-  OnigRepeatRange* p;
+  RepeatRange* p;
 
   if (reg->repeat_range_alloc == 0) {
-    p = (OnigRepeatRange* )xmalloc(sizeof(OnigRepeatRange) * REPEAT_RANGE_ALLOC);
+    p = (RepeatRange* )xmalloc(sizeof(RepeatRange) * REPEAT_RANGE_ALLOC);
     CHECK_NULL_RETURN_MEMERR(p);
     reg->repeat_range = p;
     reg->repeat_range_alloc = REPEAT_RANGE_ALLOC;
@@ -975,7 +1035,7 @@ entry_repeat_range(regex_t* reg, int id, int lower, int upper)
   else if (reg->repeat_range_alloc <= id) {
     int n;
     n = reg->repeat_range_alloc + REPEAT_RANGE_ALLOC;
-    p = (OnigRepeatRange* )xrealloc(reg->repeat_range, sizeof(OnigRepeatRange) * n);
+    p = (RepeatRange* )xrealloc(reg->repeat_range, sizeof(RepeatRange) * n);
     CHECK_NULL_RETURN_MEMERR(p);
     reg->repeat_range = p;
     reg->repeat_range_alloc = n;
@@ -984,8 +1044,9 @@ entry_repeat_range(regex_t* reg, int id, int lower, int upper)
     p = reg->repeat_range;
   }
 
-  p[id].lower = lower;
-  p[id].upper = (IS_INFINITE_REPEAT(upper) ? 0x7fffffff : upper);
+  p[id].lower    = lower;
+  p[id].upper    = (IS_INFINITE_REPEAT(upper) ? 0x7fffffff : upper);
+  p[id].u.offset = ops_index;
   return 0;
 }
 
@@ -1002,22 +1063,14 @@ compile_range_repeat_node(QuantNode* qn, int target_len, int emptiness,
   COP(reg)->repeat.id   = num_repeat;
   COP(reg)->repeat.addr = SIZE_INC + target_len + OPSIZE_REPEAT_INC;
 
-  r = entry_repeat_range(reg, num_repeat, qn->lower, qn->upper);
+  r = entry_repeat_range(reg, num_repeat, qn->lower, qn->upper,
+                         COP_CURR_OFFSET(reg) + OPSIZE_REPEAT);
   if (r != 0) return r;
 
-  r = compile_tree_empty_check(qn, reg, env);
+  r = compile_quant_body_with_empty_check(qn, reg, env);
   if (r != 0) return r;
 
-  if (
-#ifdef USE_CALL
-      NODE_IS_IN_MULTI_ENTRY(qn) ||
-#endif
-      NODE_IS_IN_REAL_REPEAT(qn)) {
-    r = add_op(reg, qn->greedy ? OP_REPEAT_INC_SG : OP_REPEAT_INC_NG_SG);
-  }
-  else {
-    r = add_op(reg, qn->greedy ? OP_REPEAT_INC : OP_REPEAT_INC_NG);
-  }
+  r = add_op(reg, qn->greedy ? OP_REPEAT_INC : OP_REPEAT_INC_NG);
   if (r != 0) return r;
 
   COP(reg)->repeat_inc.id = num_repeat;
@@ -1184,7 +1237,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
         COP(reg)->push_or_jump_exact1.addr = SIZE_INC + mod_tlen + OPSIZE_JUMP;
         COP(reg)->push_or_jump_exact1.c    = STR_(qn->head_exact)->s[0];
 
-        r = compile_tree_empty_check(qn, reg, env);
+        r = compile_quant_body_with_empty_check(qn, reg, env);
         if (r != 0) return r;
 
         addr = -(mod_tlen + (int )OPSIZE_PUSH_OR_JUMP_EXACT1);
@@ -1197,7 +1250,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
         COP(reg)->push_if_peek_next.addr = SIZE_INC + mod_tlen + OPSIZE_JUMP;
         COP(reg)->push_if_peek_next.c    = STR_(qn->next_head_exact)->s[0];
 
-        r = compile_tree_empty_check(qn, reg, env);
+        r = compile_quant_body_with_empty_check(qn, reg, env);
         if (r != 0) return r;
 
         addr = -(mod_tlen + (int )OPSIZE_PUSH_IF_PEEK_NEXT);
@@ -1207,7 +1260,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
         if (r != 0) return r;
         COP(reg)->push.addr = SIZE_INC + mod_tlen + OPSIZE_JUMP;
 
-        r = compile_tree_empty_check(qn, reg, env);
+        r = compile_quant_body_with_empty_check(qn, reg, env);
         if (r != 0) return r;
 
         addr = -(mod_tlen + (int )OPSIZE_PUSH);
@@ -1222,7 +1275,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
       if (r != 0) return r;
       COP(reg)->jump.addr = mod_tlen + SIZE_INC;
 
-      r = compile_tree_empty_check(qn, reg, env);
+      r = compile_quant_body_with_empty_check(qn, reg, env);
       if (r != 0) return r;
 
       r = add_op(reg, OP_PUSH);
@@ -1420,10 +1473,11 @@ static int
 compile_bag_memory_node(BagNode* node, regex_t* reg, ScanEnv* env)
 {
   int r;
-  int len;
 
 #ifdef USE_CALL
   if (NODE_IS_CALLED(node)) {
+    int len;
+
     r = add_op(reg, OP_CALL);
     if (r != 0) return r;
 
@@ -1893,8 +1947,8 @@ compile_length_tree(Node* node, regex_t* reg)
     break;
 
   case NODE_STRING:
-    if (NODE_STRING_IS_RAW(node))
-      r = compile_length_string_raw_node(STR_(node), reg);
+    if (NODE_STRING_IS_CRUDE(node))
+      r = compile_length_string_crude_node(STR_(node), reg);
     else
       r = compile_length_string_node(node, reg);
     break;
@@ -1986,8 +2040,8 @@ compile_tree(Node* node, regex_t* reg, ScanEnv* env)
     break;
 
   case NODE_STRING:
-    if (NODE_STRING_IS_RAW(node))
-      r = compile_string_raw_node(STR_(node), reg);
+    if (NODE_STRING_IS_CRUDE(node))
+      r = compile_string_crude_node(STR_(node), reg);
     else
       r = compile_string_node(node, reg);
     break;
@@ -2810,7 +2864,7 @@ get_head_value_node(Node* node, int exact, regex_t* reg)
         break;
 
       if (exact == 0 ||
-          ! IS_IGNORECASE(reg->options) || NODE_STRING_IS_RAW(node)) {
+          ! IS_IGNORECASE(reg->options) || NODE_STRING_IS_CRUDE(node)) {
         n = node;
       }
     }
@@ -3807,6 +3861,96 @@ recursive_call_check_trav(Node* node, ScanEnv* env, int state)
 
 #endif
 
+static void
+remove_from_list(Node* prev, Node* a)
+{
+  if (NODE_CDR(prev) != a) return ;
+
+  NODE_CDR(prev) = NODE_CDR(a);
+  NODE_CDR(a) = NULL_NODE;
+}
+
+static int
+reduce_string_list(Node* node)
+{
+  int r = 0;
+
+  switch (NODE_TYPE(node)) {
+  case NODE_LIST:
+    {
+      Node* prev;
+      Node* curr;
+      Node* prev_node;
+      Node* next_node;
+
+      prev = NULL_NODE;
+      do {
+        next_node = NODE_CDR(node);
+        curr = NODE_CAR(node);
+        if (NODE_TYPE(curr) == NODE_STRING) {
+          if (IS_NULL(prev) || STR_(curr)->flag != STR_(prev)->flag) {
+            prev = curr;
+            prev_node = node;
+          }
+          else {
+	    r = node_str_node_cat(prev, curr);
+            if (r != 0) return r;
+            remove_from_list(prev_node, node);
+            onig_node_free(node);
+          }
+        }
+        else {
+          prev = NULL_NODE;
+          prev_node = node;
+        }
+
+        node = next_node;
+      } while (r == 0 && IS_NOT_NULL(node));
+    }
+    break;
+
+  case NODE_ALT:
+    do {
+      r = reduce_string_list(NODE_CAR(node));
+    } while (r == 0 && IS_NOT_NULL(node = NODE_CDR(node)));
+    break;
+
+  case NODE_ANCHOR:
+    if (IS_NULL(NODE_BODY(node)))
+      break;
+    /* fall */
+  case NODE_QUANT:
+    r = reduce_string_list(NODE_BODY(node));
+    break;
+
+  case NODE_BAG:
+    {
+      BagNode* en = BAG_(node);
+
+      r = reduce_string_list(NODE_BODY(node));
+      if (r != 0) return r;
+
+      if (en->type == BAG_IF_ELSE) {
+        if (IS_NOT_NULL(en->te.Then)) {
+          r = reduce_string_list(en->te.Then);
+          if (r != 0) return r;
+        }
+        if (IS_NOT_NULL(en->te.Else)) {
+          r = reduce_string_list(en->te.Else);
+          if (r != 0) return r;
+        }
+      }
+    }
+    break;
+
+  default:
+    break;
+  }
+
+  return r;
+}
+
+
 #define IN_ALT          (1<<0)
 #define IN_NOT          (1<<1)
 #define IN_REAL_REPEAT  (1<<2)
@@ -3919,23 +4063,57 @@ next_setup(Node* node, Node* next_node, regex_t* reg)
 
 
 static int
-update_string_node_case_fold(regex_t* reg, Node *node)
+is_all_code_len_1_items(int n, OnigCaseFoldCodeItem items[])
 {
-  UChar *p, *end, buf[ONIGENC_MBC_CASE_FOLD_MAXLEN];
-  UChar *sbuf, *ebuf, *sp;
-  int r, i, len, sbuf_size;
-  StrNode* sn = STR_(node);
+  int i;
 
-  end = sn->end;
-  sbuf_size = (int )(end - sn->s) * 2;
+  for (i = 0; i < n; i++) {
+    OnigCaseFoldCodeItem* item = items + i;
+    if (item->code_len != 1) return 0;
+  }
+
+  return 1;
+}
+
+static int
+get_min_max_byte_len_case_fold_items(int n, OnigCaseFoldCodeItem items[], int* rmin, int* rmax)
+{
+  int i, len, minlen, maxlen;
+
+  minlen = INT_MAX;
+  maxlen = 0;
+  for (i = 0; i < n; i++) {
+    OnigCaseFoldCodeItem* item = items + i;
+
+    len = item->byte_len;
+    if (len < minlen) minlen = len;
+    if (len > maxlen) maxlen = len;
+  }
+
+  *rmin = minlen;
+  *rmax = maxlen;
+  return 0;
+}
+
+static int
+conv_string_case_fold(OnigEncoding enc, OnigCaseFoldType case_fold_flag,
+           UChar* s, UChar* end, UChar** rs, UChar** rend, int* rcase_min_len)
+{
+  UChar *p, buf[ONIGENC_MBC_CASE_FOLD_MAXLEN];
+  UChar *sbuf, *ebuf, *sp;
+  int i, n, len, sbuf_size;
+
+  *rs = NULL;
+  sbuf_size = (int )(end - s) * 2;
   sbuf = (UChar* )xmalloc(sbuf_size);
   CHECK_NULL_RETURN_MEMERR(sbuf);
   ebuf = sbuf + sbuf_size;
 
+  n = 0;
   sp = sbuf;
-  p = sn->s;
+  p = s;
   while (p < end) {
-    len = ONIGENC_MBC_CASE_FOLD(reg->enc, reg->case_fold_flag, &p, end, buf);
+    len = ONIGENC_MBC_CASE_FOLD(enc, case_fold_flag, &p, end, buf);
     for (i = 0; i < len; i++) {
       if (sp >= ebuf) {
         sbuf = (UChar* )xrealloc(sbuf, sbuf_size * 2);
@@ -3947,355 +4125,302 @@ update_string_node_case_fold(regex_t* reg, Node *node)
 
       *sp++ = buf[i];
     }
+    n++;
   }
 
-  r = onig_node_str_set(node, sbuf, sp);
-  if (r != 0) {
-    xfree(sbuf);
-    return r;
-  }
-
-  xfree(sbuf);
+  *rs = sbuf;
+  *rend = sp;
+  *rcase_min_len = n;
   return 0;
 }
 
 static int
-case_fold_remaining_string(Node** rnode, UChar *s, UChar *end, regex_t* reg)
+make_code_list_to_string(Node** rnode, OnigEncoding enc,
+                         int n, OnigCodePoint codes[])
 {
-  int r;
-  Node *node;
-
-  node = onig_node_new_str(s, end);
-  if (IS_NULL(node)) return ONIGERR_MEMORY;
-
-  r = update_string_node_case_fold(reg, node);
-  if (r != 0) {
-    onig_node_free(node);
-    return r;
-  }
-
-  NODE_STRING_SET_CASE_EXPANDED(node);
-  NODE_STRING_SET_CASE_FOLD_MATCH(node);
-  NODE_STRING_SET_DONT_GET_OPT_INFO(node);
-  *rnode = node;
-  return 0;
-}
-
-static int
-string_case_expand_to_alts(int item_num, OnigCaseFoldCodeItem items[], UChar* p,
-                            UChar* end, int plen, regex_t* reg, Node **rnode)
-{
-  int r, i, j;
-  int len;
-  int varlen;
-  Node *anode, *var_anode, *snode, *xnode, *an, *rem_node;
+  int r, i, len;
+  Node* node;
   UChar buf[ONIGENC_CODE_TO_MBC_MAXLEN];
 
-  *rnode = var_anode = NULL_NODE;
-
-  varlen = 0;
-  for (i = 0; i < item_num; i++) {
-    if (items[i].byte_len != plen) {
-      varlen = 1;
-      break;
-    }
-  }
-
-  if (varlen != 0) {
-    *rnode = var_anode = onig_node_new_alt(NULL_NODE, NULL_NODE);
-    if (IS_NULL(var_anode)) return ONIGERR_MEMORY;
-
-    xnode = onig_node_new_list(NULL, NULL);
-    if (IS_NULL(xnode)) goto mem_err;
-    NODE_CAR(var_anode) = xnode;
-
-    anode = onig_node_new_alt(NULL_NODE, NULL_NODE);
-    if (IS_NULL(anode)) goto mem_err;
-    NODE_CAR(xnode) = anode;
-  }
-  else {
-    *rnode = anode = onig_node_new_alt(NULL_NODE, NULL_NODE);
-    if (IS_NULL(anode)) return ONIGERR_MEMORY;
-  }
-
-  snode = onig_node_new_str(p, p + plen);
-  if (IS_NULL(snode)) goto mem_err;
-
-  NODE_CAR(anode) = snode;
-
-  for (i = 0; i < item_num; i++) {
-    snode = onig_node_new_str(NULL, NULL);
-    if (IS_NULL(snode)) goto mem_err;
-
-    for (j = 0; j < items[i].code_len; j++) {
-      len = ONIGENC_CODE_TO_MBC(reg->enc, items[i].code[j], buf);
-      if (len < 0) {
-        r = len;
-        goto mem_err2;
-      }
-
-      r = onig_node_str_cat(snode, buf, buf + len);
-      if (r != 0) goto mem_err2;
-    }
-
-    an = onig_node_new_alt(NULL_NODE, NULL_NODE);
-    if (IS_NULL(an)) {
-      goto mem_err2;
-    }
-
-    if (items[i].byte_len != plen) {
-      UChar *q = p + items[i].byte_len;
-
-      if (q < end) {
-        r = case_fold_remaining_string(&rem_node, q, end, reg);
-        if (r != 0) {
-          onig_node_free(an);
-          goto mem_err2;
-        }
-
-        xnode = node_list_add(NULL_NODE, snode);
-        if (IS_NULL(xnode)) goto mem_err3;
-        if (IS_NULL(node_list_add(xnode, rem_node))) {
-          onig_node_free(xnode);
-          snode = NULL_NODE;
-          goto mem_err3;
-        }
-
-        NODE_CAR(an) = xnode;
-      }
-      else {
-        NODE_CAR(an) = snode;
-      }
-
-      NODE_CDR(var_anode) = an;
-      var_anode = an;
-    }
-    else {
-      NODE_CAR(an)    = snode;
-      NODE_CDR(anode) = an;
-      anode = an;
-    }
-  }
-
-  return varlen;
-
- mem_err3:
-  onig_node_free(an);
-  onig_node_free(rem_node);
-
- mem_err2:
-  onig_node_free(snode);
-
- mem_err:
-  onig_node_free(*rnode);
-  return ONIGERR_MEMORY;
-}
-
-static int
-is_good_case_fold_items_for_search(OnigEncoding enc, int slen,
-                                   int n, OnigCaseFoldCodeItem items[])
-{
-  int i, len;
-  UChar buf[ONIGENC_MBC_CASE_FOLD_MAXLEN];
+  *rnode = NULL_NODE;
+  node = onig_node_new_str(NULL, NULL);
+  CHECK_NULL_RETURN_MEMERR(node);
 
   for (i = 0; i < n; i++) {
-    OnigCaseFoldCodeItem* item = items + i;
+    len = ONIGENC_CODE_TO_MBC(enc, codes[i], buf);
+    if (len < 0) {
+      r = len;
+      goto err;
+    }
 
-    if (item->code_len != 1)    return 0;
-    if (item->byte_len != slen) return 0;
-    len = ONIGENC_CODE_TO_MBC(enc, item->code[0], buf);
-    if (len != slen) return 0;
+    r = onig_node_str_cat(node, buf, buf + len);
+    if (r != 0) goto err;
   }
 
-  return 1;
+  *rnode = node;
+  return 0;
+
+ err:
+  onig_node_free(node);
+  return r;
 }
 
-#define THRESHOLD_CASE_FOLD_ALT_FOR_EXPANSION  8
+static int
+unravel_cf_node_add(Node** rlist, Node* add)
+{
+  Node *list;
+
+  list = *rlist;
+  if (IS_NULL(list)) {
+    list = onig_node_new_list(add, NULL);
+    CHECK_NULL_RETURN_MEMERR(list);
+    *rlist = list;
+  }
+  else {
+    Node* r = node_list_add(list, add);
+    CHECK_NULL_RETURN_MEMERR(r);
+  }
+
+  return 0;
+}
 
 static int
-expand_case_fold_string(Node* node, regex_t* reg, int state)
+unravel_cf_string_add(Node** rlist, Node** rsn, UChar* s, UChar* end,
+                      unsigned int flag, int case_min_len)
 {
-  int r, n, len, alt_num;
-  int fold_len;
-  int prev_fold, prev_is_good, is_good, is_in_look_behind;
-  UChar *start, *end, *p;
-  UChar* foldp;
-  Node *top, *root, *snode, *prev_node;
+  int r;
+  Node *sn, *list;
+
+  list = *rlist;
+  sn   = *rsn;
+
+  if (IS_NOT_NULL(sn) && STR_(sn)->flag == flag) {
+    if (NODE_STRING_IS_CASE_FOLD_MATCH(sn))
+      r = node_str_cat_case_fold(sn, s, end, case_min_len);
+    else
+      r = onig_node_str_cat(sn, s, end);
+  }
+  else {
+    sn = onig_node_new_str(s, end);
+    CHECK_NULL_RETURN_MEMERR(sn);
+
+    STR_(sn)->flag = flag;
+    STR_(sn)->case_min_len = case_min_len;
+    r = unravel_cf_node_add(&list, sn);
+  }
+
+  if (r == 0) {
+    *rlist = list;
+    *rsn = sn;
+  }
+  return r;
+}
+
+static int
+unravel_cf_string_fold_add(Node** rlist, Node** rsn, OnigEncoding enc,
+                      OnigCaseFoldType case_fold_flag, UChar* s, UChar* end)
+{
+  int r;
+  int case_min_len;
+  UChar *rs, *rend;
+
+  r = conv_string_case_fold(enc, case_fold_flag, s, end,
+                            &rs, &rend, &case_min_len);
+  if (r != 0) return r;
+
+  r = unravel_cf_string_add(rlist, rsn, rs, rend,
+                            NODE_STRING_CASE_FOLD_MATCH, case_min_len);
+  xfree(rs);
+
+  return r;
+}
+
+static int
+unravel_cf_string_alt_or_cc_add(Node** rlist, int n,
+            OnigCaseFoldCodeItem items[], int byte_len, OnigEncoding enc,
+            OnigCaseFoldType case_fold_flag, UChar* s, UChar* end)
+{
+  int r, i;
+  Node* node;
+
+  if (is_all_code_len_1_items(n, items)) {
+    OnigCodePoint codes[14];/* least ONIGENC_GET_CASE_FOLD_CODES_MAX_NUM + 1 */
+
+    codes[0] = ONIGENC_MBC_TO_CODE(enc, s, end);
+    for (i = 0; i < n; i++) {
+      OnigCaseFoldCodeItem* item = items + i;
+      codes[i+1] = item->code[0];
+    }
+    r = onig_new_cclass_with_code_list(&node, enc, n + 1, codes);
+    if (r != 0) return r;
+  }
+  else {
+    Node *snode, *alt, *curr;
+
+    snode = onig_node_new_str(s, end);
+    CHECK_NULL_RETURN_MEMERR(snode);
+    node = curr = onig_node_new_alt(snode, NULL_NODE);
+    if (IS_NULL(curr)) {
+      onig_node_free(snode);
+      return ONIGERR_MEMORY;
+    }
+
+    r = 0;
+    for (i = 0; i < n; i++) {
+      OnigCaseFoldCodeItem* item = items + i;
+      r = make_code_list_to_string(&snode, enc, item->code_len, item->code);
+      if (r != 0) {
+        onig_node_free(node);
+        return r;
+      }
+
+      alt = onig_node_new_alt(snode, NULL_NODE);
+      if (IS_NULL(alt)) {
+        onig_node_free(snode);
+        onig_node_free(node);
+        return ONIGERR_MEMORY;
+      }
+
+      NODE_CDR(curr) = alt;
+      curr = alt;
+    }
+  }
+
+  r = unravel_cf_node_add(rlist, node);
+  if (r != 0) onig_node_free(node);
+  return r;
+}
+
+static int
+unravel_cf_look_behind_add(Node** rlist, Node** rsn,
+                int n, OnigCaseFoldCodeItem items[], OnigEncoding enc,
+                UChar* s, int one_len)
+{
+  int r, i, found;
+
+  found = 0;
+  for (i = 0; i < n; i++) {
+    OnigCaseFoldCodeItem* item = items + i;
+    if (item->byte_len == one_len) {
+      if (item->code_len == 1) {
+        found = 1;
+      }
+    }
+  }
+
+  if (found == 0) {
+    r = unravel_cf_string_add(rlist, rsn, s, s + one_len, 0 /* flag */, 0);
+  }
+  else {
+    Node* node;
+    OnigCodePoint codes[14];/* least ONIGENC_GET_CASE_FOLD_CODES_MAX_NUM + 1 */
+
+    found = 0;
+    codes[found++] = ONIGENC_MBC_TO_CODE(enc, s, s + one_len);
+    for (i = 0; i < n; i++) {
+      OnigCaseFoldCodeItem* item = items + i;
+      if (item->byte_len == one_len) {
+        if (item->code_len == 1) {
+          codes[found++] = item->code[0];
+        }
+      }
+    }
+    r = onig_new_cclass_with_code_list(&node, enc, found, codes);
+    if (r != 0) return r;
+
+    r = unravel_cf_node_add(rlist, node);
+    if (r != 0) onig_node_free(node);
+
+    *rsn = NULL_NODE;
+  }
+
+  return r;
+}
+
+static int
+unravel_case_fold_string(Node* node, regex_t* reg, int state)
+{
+  int r, n, one_len, min_len, max_len, in_look_behind;
+  UChar *start, *end, *p, *q;
+  StrNode* snode;
+  Node *sn, *list;
+  OnigEncoding enc;
   OnigCaseFoldCodeItem items[ONIGENC_GET_CASE_FOLD_CODES_MAX_NUM];
-  UChar buf[ONIGENC_MBC_CASE_FOLD_MAXLEN];
-  StrNode* sn;
 
   if (NODE_STRING_IS_CASE_EXPANDED(node)) return 0;
 
-  sn = STR_(node);
+  snode = STR_(node);
 
-  start = sn->s;
-  end   = sn->end;
+  start = snode->s;
+  end   = snode->end;
   if (start >= end) return 0;
 
-  is_in_look_behind = (state & IN_LOOK_BEHIND) != 0;
+  in_look_behind = (state & IN_LOOK_BEHIND) != 0;
+  enc = reg->enc;
 
-  r = 0;
-  top = root = prev_node = snode = NULL_NODE;
-  alt_num = 1;
+  list = sn = NULL_NODE;
   p = start;
   while (p < end) {
-    n = ONIGENC_GET_CASE_FOLD_CODES_BY_STR(reg->enc, reg->case_fold_flag,
-                                           p, end, items);
+    n = ONIGENC_GET_CASE_FOLD_CODES_BY_STR(enc, reg->case_fold_flag, p, end,
+                                           items);
     if (n < 0) {
       r = n;
       goto err;
     }
 
-    len = enclen(reg->enc, p);
-    is_good = is_good_case_fold_items_for_search(reg->enc, len, n, items);
-
-    if (is_in_look_behind || IS_NOT_NULL(snode) ||
-        /* expand single char: ex. /(?i:a)/ */
-        (is_good && !(p == start && p + len >= end))) {
-      if (IS_NULL(snode)) {
-        if (IS_NULL(root) && IS_NOT_NULL(prev_node)) {
-          top = root = node_list_add(NULL_NODE, prev_node);
-          if (IS_NULL(root)) {
-            onig_node_free(prev_node);
-            goto mem_err;
-          }
-        }
-
-        prev_node = snode = onig_node_new_str(NULL, NULL);
-        if (IS_NULL(snode)) goto mem_err;
-        if (IS_NOT_NULL(root)) {
-          if (IS_NULL(node_list_add(root, snode))) {
-            onig_node_free(snode);
-            goto mem_err;
-          }
-        }
-
-        prev_fold    = -1; /* -1: new */
-        prev_is_good =  0; /* escape compiler warning */
-      }
-      else {
-        prev_fold    = NODE_STRING_IS_CASE_FOLD_MATCH(snode);
-        prev_is_good = NODE_STRING_IS_GOOD_AMBIG(snode);
-      }
-
-      if (n != 0) {
-        foldp = p;
-        fold_len = ONIGENC_MBC_CASE_FOLD(reg->enc, reg->case_fold_flag,
-                                         &foldp, end, buf);
-        foldp = buf;
-      }
-      else {
-        foldp = p; fold_len = len;
-      }
-
-      if ((prev_fold == 0 && n != 0) ||
-          (prev_fold > 0 && (n == 0 || prev_is_good != is_good))) {
-        if (IS_NULL(root) /* && IS_NOT_NULL(prev_node) */) {
-          top = root = node_list_add(NULL_NODE, prev_node);
-          if (IS_NULL(root)) {
-            onig_node_free(prev_node);
-            goto mem_err;
-          }
-        }
-
-        prev_node = snode = onig_node_new_str(foldp, foldp + fold_len);
-        if (IS_NULL(snode)) goto mem_err;
-        if (IS_NULL(node_list_add(root, snode))) {
-          onig_node_free(snode);
-          goto mem_err;
-        }
-      }
-      else {
-        r = onig_node_str_cat(snode, foldp, foldp + fold_len);
+    one_len = enclen(enc, p);
+    if (n == 0) {
+      q = p + one_len;
+      r = unravel_cf_string_add(&list, &sn, p, q, 0 /* flag */, 0);
+      if (r != 0) goto err;
+    }
+    else {
+      if (in_look_behind != 0) {
+        q = p + one_len;
+        r = unravel_cf_look_behind_add(&list, &sn, n, items, enc, p, one_len);
         if (r != 0) goto err;
       }
-
-      if (n != 0) {
-        NODE_STRING_SET_CASE_EXPANDED(snode);
-        NODE_STRING_SET_CASE_FOLD_MATCH(snode);
-      }
-      if (is_good != 0) NODE_STRING_SET_GOOD_AMBIG(snode);
-    }
-    else {
-      alt_num *= (n + 1);
-      if (alt_num > THRESHOLD_CASE_FOLD_ALT_FOR_EXPANSION) break;
-
-      if (IS_NULL(root) && IS_NOT_NULL(prev_node)) {
-        top = root = node_list_add(NULL_NODE, prev_node);
-        if (IS_NULL(root)) {
-          onig_node_free(prev_node);
-          goto mem_err;
-        }
-      }
-
-      r = string_case_expand_to_alts(n, items, p, end, len, reg, &prev_node);
-      if (r < 0) goto mem_err;
-      if (r == 1) {
-        if (IS_NULL(root)) {
-          top = prev_node;
+      else {
+        get_min_max_byte_len_case_fold_items(n, items, &min_len, &max_len);
+        q = p + max_len;
+        if (one_len == max_len && min_len == max_len) {
+          r = unravel_cf_string_alt_or_cc_add(&list, n, items, max_len, enc,
+                                              reg->case_fold_flag, p, q);
+          if (r != 0) goto err;
+          sn = NULL_NODE;
         }
         else {
-          if (IS_NULL(node_list_add(root, prev_node))) {
-            onig_node_free(prev_node);
-            goto mem_err;
-          }
-        }
-
-        root = NODE_CAR(prev_node);
-      }
-      else { /* r == 0 */
-        if (IS_NOT_NULL(root)) {
-          if (IS_NULL(node_list_add(root, prev_node))) {
-            onig_node_free(prev_node);
-            goto mem_err;
-          }
+          r = unravel_cf_string_fold_add(&list, &sn, enc, reg->case_fold_flag,
+                                         p, q);
+          if (r != 0) goto err;
         }
       }
     }
 
-    p += len;
+    p = q;
   }
 
-  if (p < end) {
-    Node* rem_node;
-
-    r = case_fold_remaining_string(&rem_node, p, end, reg);
-    if (r != 0) goto mem_err;
-
-    if (IS_NOT_NULL(prev_node) && IS_NULL(root)) {
-      top = root = node_list_add(NULL_NODE, prev_node);
-      if (IS_NULL(root)) {
-        onig_node_free(rem_node);
-        onig_node_free(prev_node);
-        goto mem_err;
-      }
-    }
-
-    if (IS_NULL(root)) {
-      prev_node = rem_node;
+  if (IS_NOT_NULL(list)) {
+    if (node_list_len(list) == 1) {
+      swap_node(node, NODE_CAR(list));
     }
     else {
-      if (IS_NULL(node_list_add(root, rem_node))) {
-        onig_node_free(rem_node);
-        goto mem_err;
-      }
+      swap_node(node, list);
     }
+    onig_node_free(list);
   }
-
-  /* ending */
-  if (IS_NULL(top))
-    top = prev_node;
-
-  swap_node(node, top);
-  onig_node_free(top);
+  else {
+    swap_node(node, sn);
+    onig_node_free(sn);
+  }
   return 0;
 
- mem_err:
-  r = ONIGERR_MEMORY;
-
  err:
-  onig_node_free(top);
+  if (IS_NOT_NULL(list))
+    onig_node_free(list);
+  else if (IS_NOT_NULL(sn))
+    onig_node_free(sn);
+
   return r;
 }
 
@@ -4926,13 +5051,12 @@ setup_quant(Node* node, regex_t* reg, int state, ScanEnv* env)
     if (!IS_INFINITE_REPEAT(qn->lower) && qn->lower == qn->upper &&
         qn->lower > 1 && qn->lower <= EXPAND_STRING_MAX_LENGTH) {
       int len = NODE_STRING_LEN(body);
-      StrNode* sn = STR_(body);
 
       if (len * qn->lower <= EXPAND_STRING_MAX_LENGTH) {
         int i, n = qn->lower;
-        onig_node_conv_to_str_node(node, STR_(body)->flag);
+        node_conv_to_str_node(node, STR_(body)->flag);
         for (i = 0; i < n; i++) {
-          r = onig_node_str_cat(node, sn->s, sn->end);
+	  r = node_str_node_cat(node, body);
           if (r != 0) return r;
         }
         onig_node_free(body);
@@ -4991,8 +5115,8 @@ setup_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
     break;
 
   case NODE_STRING:
-    if (IS_IGNORECASE(reg->options) && !NODE_STRING_IS_RAW(node)) {
-      r = expand_case_fold_string(node, reg, state);
+    if (IS_IGNORECASE(reg->options) && !NODE_STRING_IS_CRUDE(node)) {
+      r = unravel_case_fold_string(node, reg, state);
     }
     break;
 
@@ -5190,7 +5314,6 @@ typedef struct {
   OptAnc     anc;
   int        reach_end;
   int        case_fold;
-  int        good_case_fold;
   int        len;
   UChar      s[OPT_EXACT_MAXLEN];
 } OptStr;
@@ -5417,7 +5540,6 @@ clear_opt_exact(OptStr* e)
   clear_opt_anc_info(&e->anc);
   e->reach_end      = 0;
   e->case_fold      = 0;
-  e->good_case_fold = 0;
   e->len            = 0;
   e->s[0]           = '\0';
 }
@@ -5440,11 +5562,6 @@ concat_opt_exact(OptStr* to, OptStr* add, OnigEncoding enc)
       if (to->len > 1 || to->len >= add->len) return 0;  /* avoid */
 
       to->case_fold = 1;
-    }
-    else {
-      if (to->good_case_fold != 0) {
-        if (add->good_case_fold == 0) return 0;
-      }
     }
   }
 
@@ -5522,8 +5639,6 @@ alt_merge_opt_exact(OptStr* to, OptStr* add, OptEnv* env)
   to->len = i;
   if (add->case_fold != 0)
     to->case_fold = 1;
-  if (add->good_case_fold == 0)
-    to->good_case_fold = 0;
 
   alt_merge_opt_anc_info(&to->anc, &add->anc);
   if (! to->reach_end) to->anc.right = 0;
@@ -5555,9 +5670,6 @@ select_opt_exact(OnigEncoding enc, OptStr* now, OptStr* alt)
 
   if (now->case_fold == 0) vn *= 2;
   if (alt->case_fold == 0) va *= 2;
-
-  if (now->good_case_fold != 0) vn *= 4;
-  if (alt->good_case_fold != 0) va *= 4;
 
   if (comp_distance_value(&now->mmd, &alt->mmd, vn, va) > 0)
     copy_opt_exact(now, alt);
@@ -5657,10 +5769,7 @@ comp_opt_exact_or_map(OptStr* e, OptMap* m)
   if (m->value <= 0) return -1;
 
   if (e->case_fold != 0) {
-    if (e->good_case_fold != 0)
-      case_value = 2;
-    else
-      case_value = 1;
+    case_value = 1;
   }
   else
     case_value = 3;
@@ -5839,7 +5948,6 @@ optimize_nodes(Node* node, OptNode* opt, OptEnv* env)
     {
       StrNode* sn = STR_(node);
       int slen = (int )(sn->end - sn->s);
-      /* int is_raw = NODE_STRING_IS_RAW(node); */
 
       if (! NODE_STRING_IS_CASE_FOLD_MATCH(node)) {
         concat_opt_exact_str(&opt->sb, sn->s, sn->end, enc);
@@ -5849,28 +5957,20 @@ optimize_nodes(Node* node, OptNode* opt, OptEnv* env)
         set_mml(&opt->len, slen, slen);
       }
       else {
-        int max;
+        int max, min;
 
-        if (NODE_STRING_IS_DONT_GET_OPT_INFO(node)) {
-          int n = onigenc_strlen(enc, sn->s, sn->end);
-          max = ONIGENC_MBC_MAXLEN_DIST(enc) * n;
-        }
-        else {
-          concat_opt_exact_str(&opt->sb, sn->s, sn->end, enc);
-          opt->sb.case_fold = 1;
-          if (NODE_STRING_IS_GOOD_AMBIG(node))
-            opt->sb.good_case_fold = 1;
+        concat_opt_exact_str(&opt->sb, sn->s, sn->end, enc);
+        opt->sb.case_fold = 1;
 
-          if (slen > 0) {
-            r = add_char_amb_opt_map(&opt->map, sn->s, sn->end,
-                                     enc, env->case_fold_flag);
-            if (r != 0) break;
-          }
-
-          max = slen;
+        if (slen > 0) {
+          r = add_char_amb_opt_map(&opt->map, sn->s, sn->end,
+                                   enc, env->case_fold_flag);
+          if (r != 0) break;
         }
 
-        set_mml(&opt->len, slen, max);
+        max = slen;
+        min = sn->case_min_len * ONIGENC_MBC_MINLEN(enc);
+        set_mml(&opt->len, min, max);
       }
     }
     break;
@@ -6161,15 +6261,6 @@ set_optimize_exact(regex_t* reg, OptStr* e)
 
   if (e->case_fold) {
     reg->optimize = OPTIMIZE_STR_CASE_FOLD;
-    if (e->good_case_fold != 0) {
-      if (e->len >= 2) {
-        r = set_sunday_quick_search_or_bmh_skip_table(reg, 1,
-                             reg->exact, reg->exact_end,
-                             reg->map, &(reg->map_offset));
-        if (r != 0) return r;
-        reg->optimize = OPTIMIZE_STR_CASE_FOLD_FAST;
-      }
-    }
   }
   else {
     int allow_reverse;
@@ -6197,7 +6288,7 @@ set_optimize_exact(regex_t* reg, OptStr* e)
 
   if (reg->dmin != INFINITE_LEN) {
     int n;
-    if (e->case_fold != 0 && e->good_case_fold == 0)
+    if (e->case_fold != 0)
       n = 1;
     else
       n = (int )(reg->exact_end - reg->exact);
@@ -6419,7 +6510,7 @@ print_optimize_info(FILE* f, regex_t* reg)
 {
   static const char* on[] = { "NONE", "STR",
                               "STR_FAST", "STR_FAST_STEP_FORWARD",
-                              "STR_CASE_FOLD_FAST", "STR_CASE_FOLD", "MAP" };
+                              "STR_CASE_FOLD", "MAP" };
 
   fprintf(f, "optimize: %s\n", on[reg->optimize]);
   fprintf(f, "  anchor: "); print_anchor(f, reg->anchor);
@@ -6596,12 +6687,15 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
   reg->string_pool_end    = 0;
   reg->num_mem            = 0;
   reg->num_repeat         = 0;
-  reg->num_null_check     = 0;
+  reg->num_empty_check    = 0;
   reg->repeat_range_alloc = 0;
-  reg->repeat_range       = (OnigRepeatRange* )NULL;
+  reg->repeat_range       = (RepeatRange* )NULL;
   reg->empty_status_mem   = 0;
 
   r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
+  if (r != 0) goto err;
+
+  r = reduce_string_list(root);
   if (r != 0) goto err;
 
   /* mixed use named group and no-named group */
@@ -6716,7 +6810,13 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
     }
 #endif
 
-    if ((reg->num_repeat != 0) || (reg->push_mem_end != 0)
+    set_addr_in_repeat_range(reg);
+
+    if ((reg->push_mem_end != 0)
+#ifdef USE_REPEAT_AND_EMPTY_CHECK_LOCAL_VAR
+        || (reg->num_repeat      != 0)
+        || (reg->num_empty_check != 0)
+#endif
 #ifdef USE_CALLOUT
         || (IS_NOT_NULL(reg->extp) && reg->extp->callout_num != 0)
 #endif
@@ -7008,12 +7108,14 @@ onig_is_code_in_cc(OnigEncoding enc, OnigCodePoint code, CClassNode* cc)
 
 #ifdef ONIG_DEBUG_PARSE
 
+#ifdef USE_CALL
 static void
 p_string(FILE* f, int len, UChar* s)
 {
   fputs(":", f);
   while (len-- > 0) { fputc(*s++, f); }
 }
+#endif
 
 static void
 Indent(FILE* f, int indent)
@@ -7033,7 +7135,7 @@ print_indent_tree(FILE* f, Node* node, int indent)
   Indent(f, indent);
   if (IS_NULL(node)) {
     fprintf(f, "ERROR: null node!!!\n");
-    exit (0);
+    exit(0);
   }
 
   type = NODE_TYPE(node);
@@ -7059,32 +7161,20 @@ print_indent_tree(FILE* f, Node* node, int indent)
     {
       char* str;
       char* mode;
-      char* dont;
-      char* good;
 
-      if (NODE_STRING_IS_RAW(node))
-        mode = "-raw";
+      if (NODE_STRING_IS_CRUDE(node))
+        mode = "-crude";
       else if (NODE_STRING_IS_CASE_FOLD_MATCH(node))
         mode = "-case_fold_match";
       else
         mode = "";
-
-      if (NODE_STRING_IS_GOOD_AMBIG(node))
-        good = "-good";
-      else
-        good = "";
-
-      if (NODE_STRING_IS_DONT_GET_OPT_INFO(node))
-        dont = " (dont-opt)";
-      else
-        dont = "";
 
       if (STR_(node)->s == STR_(node)->end)
         str = "empty-string";
       else
         str = "string";
 
-      fprintf(f, "<%s%s%s%s:%p>", str, mode, good, dont, node);
+      fprintf(f, "<%s%s:%p>", str, mode, node);
       for (p = STR_(node)->s; p < STR_(node)->end; p++) {
         if (*p >= 0x20 && *p < 0x7f)
           fputc(*p, f);

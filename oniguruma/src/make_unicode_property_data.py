@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # make_unicode_property_data.py
-# Copyright (c) 2016-2018  K.Kosako
+# Copyright (c) 2016-2019  K.Kosako
 
 import sys
 import re
@@ -22,9 +22,12 @@ PR_LINE_REG  = re.compile("([0-9A-Fa-f]+)(?:..([0-9A-Fa-f]+))?\s*;\s*(\w+)")
 PA_LINE_REG  = re.compile("(\w+)\s*;\s*(\w+)")
 PVA_LINE_REG = re.compile("(sc|gc)\s*;\s*(\w+)\s*;\s*(\w+)(?:\s*;\s*(\w+))?")
 BL_LINE_REG  = re.compile("([0-9A-Fa-f]+)\.\.([0-9A-Fa-f]+)\s*;\s*(.*)")
-VERSION_REG  = re.compile("#\s*.*-(\d+)\.(\d+)\.(\d+)\.txt")
+UNICODE_VERSION_REG = re.compile("#\s*.*-(\d+)\.(\d+)\.(\d+)\.txt")
+EMOJI_VERSION_REG   = re.compile("(?i)#\s*Version:\s*(\d+)\.(\d+)")
 
 VERSION_INFO = [-1, -1, -1]
+EMOJI_VERSION_INFO = [-1, -1]
+
 DIC  = { }
 KDIC = { }
 PropIndex = { }
@@ -39,14 +42,6 @@ def normalize_prop_name(name):
 def fix_block_name(name):
   s = re.sub(r'[- ]+', '_', name)
   return 'In_' + s
-
-def check_version_info(s):
-  m = VERSION_REG.match(s)
-  if m is not None:
-    VERSION_INFO[0] = int(m.group(1))
-    VERSION_INFO[1] = int(m.group(2))
-    VERSION_INFO[2] = int(m.group(3))
-
 
 def print_ranges(ranges):
   for (start, end) in ranges:
@@ -234,7 +229,8 @@ def parse_unicode_data_file(f):
   normalize_ranges_in_dic(dic)
   return dic, assigned
 
-def parse_properties(path, klass, prop_prefix = None):
+def parse_properties(path, klass, prop_prefix = None, version_reg = None):
+  version_match = None
   with open(path, 'r') as f:
     dic = { }
     prop = None
@@ -244,9 +240,10 @@ def parse_properties(path, klass, prop_prefix = None):
       if len(s) == 0:
         continue
 
-      if s[0] == '#':
-        if VERSION_INFO[0] < 0:
-          check_version_info(s)
+      if s[0] == '#' and version_reg is not None and version_match is None:
+        version_match = version_reg.match(s)
+        if version_match is not None:
+          continue
 
       m = PR_LINE_REG.match(s)
       if m:
@@ -267,7 +264,7 @@ def parse_properties(path, klass, prop_prefix = None):
         props.append(prop)
 
   normalize_ranges_in_dic(dic)
-  return (dic, props)
+  return (dic, props, version_match)
 
 def parse_property_aliases(path):
   a = { }
@@ -415,11 +412,11 @@ def entry_and_print_prop_and_index(name, index):
   nname = normalize_prop_name(name)
   print_prop_and_index(nname, index)
 
-def parse_and_merge_properties(path, klass):
-  dic, props = parse_properties(path, klass)
+def parse_and_merge_properties(path, klass, prop_prefix = None, version_reg = None):
+  dic, props, ver_m = parse_properties(path, klass, prop_prefix, version_reg)
   merge_dic(DIC, dic)
   merge_props(PROPS, props)
-  return dic, props
+  return dic, props, ver_m
 
 ### main ###
 argv = sys.argv
@@ -448,11 +445,21 @@ with open('UnicodeData.txt', 'r') as f:
 PROPS = DIC.keys()
 PROPS = list_sub(PROPS, POSIX_LIST)
 
-parse_and_merge_properties('DerivedCoreProperties.txt', 'Derived Property')
-dic, props = parse_and_merge_properties('Scripts.txt', 'Script')
+_, _, ver_m = parse_and_merge_properties('DerivedCoreProperties.txt', 'Derived Property', None, UNICODE_VERSION_REG)
+if ver_m is not None:
+  VERSION_INFO[0] = int(ver_m.group(1))
+  VERSION_INFO[1] = int(ver_m.group(2))
+  VERSION_INFO[2] = int(ver_m.group(3))
+
+dic, props, _ = parse_and_merge_properties('Scripts.txt', 'Script')
 DIC['Unknown'] = inverse_ranges(add_ranges_in_dic(dic))
+
 parse_and_merge_properties('PropList.txt',   'Binary Property')
-parse_and_merge_properties('emoji-data.txt', 'Emoji Property')
+
+_, _, ver_m = parse_and_merge_properties('emoji-data.txt', 'Emoji Property', None, EMOJI_VERSION_REG)
+if ver_m is not None:
+  EMOJI_VERSION_INFO[0] = int(ver_m.group(1))
+  EMOJI_VERSION_INFO[1] = int(ver_m.group(2))
 
 PROPS.append('Unknown')
 KDIC['Unknown'] = 'Script'
@@ -465,9 +472,9 @@ dic, BLOCKS = parse_blocks('Blocks.txt')
 merge_dic(DIC, dic)
 
 if INCLUDE_GRAPHEME_CLUSTER_DATA:
-  dic, props = parse_properties('GraphemeBreakProperty.txt',
-                                'GraphemeBreak Property',
-                                GRAPHEME_CLUSTER_BREAK_NAME_PREFIX)
+  dic, props, _ = parse_properties('GraphemeBreakProperty.txt',
+                                   'GraphemeBreak Property',
+                                   GRAPHEME_CLUSTER_BREAK_NAME_PREFIX)
   merge_dic(DIC, dic)
   merge_props(PROPS, props)
   #prop = GRAPHEME_CLUSTER_BREAK_NAME_PREFIX + 'Other'
@@ -535,9 +542,11 @@ sys.stdout.write(s)
 if OUTPUT_LIST_MODE:
   UPF = open("UNICODE_PROPERTIES", "w")
   if VERSION_INFO[0] < 0:
-    raise RuntimeError("Version is not found")
+    raise RuntimeError("Unicode Version is not found")
+  if EMOJI_VERSION_INFO[0] < 0:
+    raise RuntimeError("Emoji Version is not found")
 
-  print >> UPF, "Unicode Properties (from Unicode Version: %d.%d.%d)" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2])
+  print >> UPF, "Unicode Properties (Unicode Version: %d.%d.%d,  Emoji: %d.%d)" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2], EMOJI_VERSION_INFO[0], EMOJI_VERSION_INFO[1])
   print >> UPF, ''
 
 index = -1
@@ -573,9 +582,12 @@ print '%%'
 print ''
 if not(POSIX_ONLY):
   if VERSION_INFO[0] < 0:
-    raise RuntimeError("Version is not found")
+    raise RuntimeError("Unicode Version is not found")
+  if EMOJI_VERSION_INFO[0] < 0:
+    raise RuntimeError("Emoji Version is not found")
 
   print "#define UNICODE_PROPERTY_VERSION  %02d%02d%02d" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2])
+  print "#define UNICODE_EMOJI_VERSION     %02d%02d" % (EMOJI_VERSION_INFO[0], EMOJI_VERSION_INFO[1])
   print ''
 
 print "#define PROPERTY_NAME_MAX_SIZE  %d" % (PROPERTY_NAME_MAX_LEN + 10)
