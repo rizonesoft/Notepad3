@@ -1430,13 +1430,24 @@ LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 //
 //  CodePageFromCharSet()
 //
-UINT CodePageFromCharSet(UINT uCharSet)
+UINT CodePageFromCharSet(const UINT uCharSet)
 {
-  CHARSETINFO ci;
-  if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCharSet, &ci, TCI_SRCCHARSET)) {
-    return(ci.ciACP);
+  if (ANSI_CHARSET == uCharSet) {
+    if (Globals.uConsoleCodePage != 0) {
+      return Globals.uConsoleCodePage;
+    }
+    CPINFOEX cpinfo; ZeroMemory(&cpinfo, sizeof(CPINFOEX));
+    if (GetCPInfoEx(CP_THREAD_ACP, 0, &cpinfo)) {
+      return cpinfo.CodePage;
+    }
   }
-  return(GetACP());
+  else {
+    CHARSETINFO ci; ZeroMemory(&ci, sizeof(CHARSETINFO));
+    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCharSet, &ci, TCI_SRCCHARSET)) {
+      return(ci.ciACP);
+    }
+  }
+  return GetACP(); // fallback: systems locale ANSI CP
 }
 
 
@@ -1444,7 +1455,7 @@ UINT CodePageFromCharSet(UINT uCharSet)
 //
 //  CharSetFromCodePage()
 //
-UINT CharSetFromCodePage(UINT uCodePage) {
+UINT CharSetFromCodePage(const UINT uCodePage) {
   CHARSETINFO ci;
   if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCodePage, &ci, TCI_SRCCODEPAGE)) {
     return(ci.ciCharset);  // corresponds to SCI: SC_CHARSET_XXX
