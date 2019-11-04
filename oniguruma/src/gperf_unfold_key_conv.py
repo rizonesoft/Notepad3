@@ -12,7 +12,7 @@ REG_STR_AT = re.compile('str\[(\d+)\]')
 REG_UNFOLD_KEY = re.compile('onigenc_unicode_unfold_key\s*\(register\s+const\s+char\s*\*\s*str,\s*register\s+size_t\s+len\)')
 REG_ENTRY = re.compile('\{".+?",\s*/\*(.+?)\*/\s*(-?\d+),\s*(\d)\}')
 REG_EMPTY_ENTRY = re.compile('\{"",\s*(-?\d+),\s*(\d)\}')
-REG_IF_LEN = re.compile('if\s*\(\s*len\s*<=\s*MAX_WORD_LENGTH.+')
+REG_IF_LEN = re.compile('\s*if\s*\(\s*len\s*<=\s*MAX_WORD_LENGTH.+')
 REG_GET_HASH = re.compile('(?:register\s+)?(?:unsigned\s+)?int\s+key\s*=\s*hash\s*\(str,\s*len\);')
 REG_GET_CODE = re.compile('(?:register\s+)?const\s+char\s*\*\s*s\s*=\s*wordlist\[key\]\.name;')
 REG_CODE_CHECK = re.compile('if\s*\(\*str\s*==\s*\*s\s*&&\s*!strncmp.+\)')
@@ -32,7 +32,7 @@ def parse_line(s):
     if r != s: return r
     r = re.sub(REG_EMPTY_ENTRY, '{0xffffffff, \\1, \\2}', s)
     if r != s: return r
-    r = re.sub(REG_IF_LEN, 'if (0 == 0)', s)
+    r = re.sub(REG_IF_LEN, '', s)
     if r != s: return r
     r = re.sub(REG_GET_HASH, 'int key = hash(&code);', s)
     if r != s: return r

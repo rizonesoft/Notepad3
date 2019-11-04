@@ -32,7 +32,7 @@
 #include "regint.h"
 
 #define NODE_STRING_MARGIN         16
-#define NODE_STRING_BUF_SIZE       24  /* sizeof(CClassNode) - sizeof(int)*4 */
+#define NODE_STRING_BUF_SIZE       20  /* sizeof(CClassNode) - sizeof(int)*4 */
 #define NODE_BACKREFS_SIZE          6
 
 /* node type */
@@ -83,8 +83,9 @@ typedef struct {
   UChar* s;
   UChar* end;
   unsigned int flag;
-  int    capacity;    /* (allocated size - 1) or 0: use buf[] */
   UChar  buf[NODE_STRING_BUF_SIZE];
+  int    capacity;    /* (allocated size - 1) or 0: use buf[] */
+  int    case_min_len;
 } StrNode;
 
 typedef struct {
@@ -293,30 +294,21 @@ typedef struct _Node {
 #define ANCR_ANYCHAR_INF_MASK  (ANCR_ANYCHAR_INF | ANCR_ANYCHAR_INF_ML)
 #define ANCR_END_BUF_MASK      (ANCR_END_BUF | ANCR_SEMI_END_BUF)
 
-#define NODE_STRING_RAW                (1<<0) /* by backslashed number */
+#define NODE_STRING_CRUDE              (1<<0)
 #define NODE_STRING_CASE_EXPANDED      (1<<1)
 #define NODE_STRING_CASE_FOLD_MATCH    (1<<2)
-#define NODE_STRING_GOOD_AMBIG         (1<<3)
-#define NODE_STRING_DONT_GET_OPT_INFO  (1<<4)
 
 #define NODE_STRING_LEN(node)            (int )((node)->u.str.end - (node)->u.str.s)
-#define NODE_STRING_SET_RAW(node)           (node)->u.str.flag |= NODE_STRING_RAW
-#define NODE_STRING_CLEAR_RAW(node)         (node)->u.str.flag &= ~NODE_STRING_RAW
+#define NODE_STRING_SET_CRUDE(node)         (node)->u.str.flag |= NODE_STRING_CRUDE
+#define NODE_STRING_CLEAR_CRUDE(node)       (node)->u.str.flag &= ~NODE_STRING_CRUDE
 #define NODE_STRING_SET_CASE_EXPANDED(node) (node)->u.str.flag |= NODE_STRING_CASE_EXPANDED
 #define NODE_STRING_SET_CASE_FOLD_MATCH(node) (node)->u.str.flag |= NODE_STRING_CASE_FOLD_MATCH
-#define NODE_STRING_SET_GOOD_AMBIG(node) (node)->u.str.flag |= NODE_STRING_GOOD_AMBIG
-#define NODE_STRING_SET_DONT_GET_OPT_INFO(node) \
-  (node)->u.str.flag |= NODE_STRING_DONT_GET_OPT_INFO
-#define NODE_STRING_IS_RAW(node) \
-  (((node)->u.str.flag & NODE_STRING_RAW) != 0)
+#define NODE_STRING_IS_CRUDE(node) \
+  (((node)->u.str.flag & NODE_STRING_CRUDE) != 0)
 #define NODE_STRING_IS_CASE_EXPANDED(node) \
   (((node)->u.str.flag & NODE_STRING_CASE_EXPANDED) != 0)
 #define NODE_STRING_IS_CASE_FOLD_MATCH(node) \
   (((node)->u.str.flag & NODE_STRING_CASE_FOLD_MATCH) != 0)
-#define NODE_STRING_IS_GOOD_AMBIG(node) \
-  (((node)->u.str.flag & NODE_STRING_GOOD_AMBIG) != 0)
-#define NODE_STRING_IS_DONT_GET_OPT_INFO(node) \
-  (((node)->u.str.flag & NODE_STRING_DONT_GET_OPT_INFO) != 0)
 
 #define BACKREFS_P(br) \
   (IS_NOT_NULL((br)->back_dynamic) ? (br)->back_dynamic : (br)->back_static)
@@ -446,7 +438,6 @@ extern int    onig_strncmp P_((const UChar* s1, const UChar* s2, int n));
 extern void   onig_strcpy P_((UChar* dest, const UChar* src, const UChar* end));
 extern void   onig_scan_env_set_error_string P_((ScanEnv* env, int ecode, UChar* arg, UChar* arg_end));
 extern void   onig_reduce_nested_quantifier P_((Node* pnode, Node* cnode));
-extern void   onig_node_conv_to_str_node P_((Node* node, int raw));
 extern int    onig_node_str_cat P_((Node* node, const UChar* s, const UChar* end));
 extern int    onig_node_str_set P_((Node* node, const UChar* s, const UChar* end));
 extern void   onig_node_free P_((Node* node));
@@ -460,6 +451,7 @@ extern int    onig_names_free P_((regex_t* reg));
 extern int    onig_parse_tree P_((Node** root, const UChar* pattern, const UChar* end, regex_t* reg, ScanEnv* env));
 extern int    onig_free_shared_cclass_table P_((void));
 extern int    onig_is_code_in_cc P_((OnigEncoding enc, OnigCodePoint code, CClassNode* cc));
+extern int    onig_new_cclass_with_code_list(Node** rnode, OnigEncoding enc, int n, OnigCodePoint codes[]);
 extern OnigLen onig_get_tiny_min_len(Node* node, unsigned int inhibit_node_types, int* invalid_node);
 
 #ifdef USE_CALLOUT

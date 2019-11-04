@@ -47,13 +47,6 @@
 #endif
 #endif
 
-#if defined(__i386) || defined(__i386__) || defined(_M_IX86) || \
-    (defined(__ppc__) && defined(__APPLE__)) || \
-    defined(__x86_64) || defined(__x86_64__) || \
-    defined(__mc68020__)
-#define PLATFORM_UNALIGNED_WORD_ACCESS
-#endif
-
 #ifndef ONIG_DISABLE_DIRECT_THREADING
 #ifdef __GNUC__
 #define USE_GOTO_LABELS_AS_VALUES
@@ -84,6 +77,8 @@
 #define USE_VARIABLE_META_CHARS
 #define USE_POSIX_API_REGION_OPTION
 #define USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
+/* #define USE_REPEAT_AND_EMPTY_CHECK_LOCAL_VAR */
+
 
 #include "regenc.h"
 
@@ -199,39 +194,6 @@ typedef unsigned int  uintptr_t;
 #define CHAR_MAP_SIZE       256
 #define INFINITE_LEN        ONIG_INFINITE_DISTANCE
 
-#ifdef PLATFORM_UNALIGNED_WORD_ACCESS
-
-#define PLATFORM_GET_INC(val,p,type) do{\
-  val  = *(type* )p;\
-  (p) += sizeof(type);\
-} while(0)
-
-#else
-
-#define PLATFORM_GET_INC(val,p,type) do{\
-  xmemcpy(&val, (p), sizeof(type));\
-  (p) += sizeof(type);\
-} while(0)
-
-/* sizeof(OnigCodePoint) */
-#ifdef SIZEOF_SIZE_T
-# define WORD_ALIGNMENT_SIZE     SIZEOF_SIZE_T
-#else
-# define WORD_ALIGNMENT_SIZE     SIZEOF_LONG
-#endif
-
-#define GET_ALIGNMENT_PAD_SIZE(addr,pad_size) do {\
-  (pad_size) = WORD_ALIGNMENT_SIZE - ((uintptr_t )(addr) % WORD_ALIGNMENT_SIZE);\
-  if ((pad_size) == WORD_ALIGNMENT_SIZE) (pad_size) = 0;\
-} while (0)
-
-#define ALIGNMENT_RIGHT(addr) do {\
-  (addr) += (WORD_ALIGNMENT_SIZE - 1);\
-  (addr) -= ((uintptr_t )(addr) % WORD_ALIGNMENT_SIZE);\
-} while (0)
-
-#endif /* PLATFORM_UNALIGNED_WORD_ACCESS */
-
 
 #ifdef USE_CALLOUT
 
@@ -274,7 +236,6 @@ enum OptimizeType {
   OPTIMIZE_STR,                   /* Slow Search */
   OPTIMIZE_STR_FAST,              /* Sunday quick search / BMH */
   OPTIMIZE_STR_FAST_STEP_FORWARD, /* Sunday quick search / BMH */
-  OPTIMIZE_STR_CASE_FOLD_FAST,    /* Sunday quick search / BMH (ignore case) */
   OPTIMIZE_STR_CASE_FOLD,         /* Slow Search (ignore case) */
   OPTIMIZE_MAP                    /* char map */
 };
@@ -364,16 +325,12 @@ typedef unsigned int  MemStatusType;
 /* bitset */
 #define BITS_PER_BYTE      8
 #define SINGLE_BYTE_SIZE   (1 << BITS_PER_BYTE)
-#define BITS_IN_ROOM       (sizeof(Bits) * BITS_PER_BYTE)
+#define BITS_IN_ROOM       32   /* 4 * BITS_PER_BYTE */
 #define BITSET_SIZE        (SINGLE_BYTE_SIZE / BITS_IN_ROOM)
 
-#ifdef PLATFORM_UNALIGNED_WORD_ACCESS
-typedef unsigned int   Bits;
-#else
-typedef unsigned char  Bits;
-#endif
-typedef Bits           BitSet[BITSET_SIZE];
-typedef Bits*          BitSetRef;
+typedef uint32_t  Bits;
+typedef Bits      BitSet[BITSET_SIZE];
+typedef Bits*     BitSetRef;
 
 #define SIZE_BITSET        sizeof(BitSet)
 
@@ -382,8 +339,8 @@ typedef Bits*          BitSetRef;
   for (i = 0; i < (int )BITSET_SIZE; i++) { (bs)[i] = 0; } \
 } while (0)
 
-#define BS_ROOM(bs,pos)            (bs)[pos / BITS_IN_ROOM]
-#define BS_BIT(pos)                (1u << (pos % BITS_IN_ROOM))
+#define BS_ROOM(bs,pos)            (bs)[(unsigned int )(pos) >> 5]
+#define BS_BIT(pos)                (1u << ((unsigned int )(pos) & 0x1f))
 
 #define BITSET_AT(bs, pos)         (BS_ROOM(bs,pos) & BS_BIT(pos))
 #define BITSET_SET_BIT(bs, pos)     BS_ROOM(bs,pos) |= BS_BIT(pos)
@@ -559,9 +516,13 @@ enum OpCode {
   OP_MEM_START,
   OP_MEM_START_PUSH,     /* push back-tracker to stack */
   OP_MEM_END_PUSH,       /* push back-tracker to stack */
+#ifdef USE_CALL
   OP_MEM_END_PUSH_REC,   /* push back-tracker to stack */
+#endif
   OP_MEM_END,
+#ifdef USE_CALL
   OP_MEM_END_REC,        /* push marker to stack */
+#endif
   OP_FAIL,               /* pop stack and move */
   OP_JUMP,
   OP_PUSH,
@@ -575,12 +536,12 @@ enum OpCode {
   OP_REPEAT_NG,             /* {n,m}? (non greedy) */
   OP_REPEAT_INC,
   OP_REPEAT_INC_NG,         /* non greedy */
-  OP_REPEAT_INC_SG,         /* search and get in stack */
-  OP_REPEAT_INC_NG_SG,      /* search and get in stack (non greedy) */
   OP_EMPTY_CHECK_START,     /* null loop checker start */
   OP_EMPTY_CHECK_END,       /* null loop checker end   */
   OP_EMPTY_CHECK_END_MEMST, /* null loop checker end (with capture status) */
+#ifdef USE_CALL
   OP_EMPTY_CHECK_END_MEMST_PUSH, /* with capture status and push check-end */
+#endif
   OP_PREC_READ_START,       /* (?=...)  start */
   OP_PREC_READ_END,         /* (?=...)  end   */
   OP_PREC_READ_NOT_START,   /* (?!...)  start */
@@ -590,10 +551,12 @@ enum OpCode {
   OP_LOOK_BEHIND,           /* (?<=...) start (no needs end opcode) */
   OP_LOOK_BEHIND_NOT_START, /* (?<!...) start */
   OP_LOOK_BEHIND_NOT_END,   /* (?<!...) end   */
-  OP_CALL,                  /* \g<name> */
-  OP_RETURN,
   OP_PUSH_SAVE_VAL,
   OP_UPDATE_VAR,
+#ifdef USE_CALL
+  OP_CALL,                  /* \g<name> */
+  OP_RETURN,
+#endif
 #ifdef USE_CALLOUT
   OP_CALLOUT_CONTENTS,      /* (?{...}) (?{{...}}) */
   OP_CALLOUT_NAME,          /* (*name) (*name[tag](args...)) */
@@ -642,23 +605,8 @@ typedef int ModeType;
 #define SIZE_UPDATE_VAR_TYPE  sizeof(UpdateVarType)
 #define SIZE_MODE             sizeof(ModeType)
 
-#define GET_RELADDR_INC(addr,p)    PLATFORM_GET_INC(addr,   p, RelAddrType)
-#define GET_ABSADDR_INC(addr,p)    PLATFORM_GET_INC(addr,   p, AbsAddrType)
-#define GET_LENGTH_INC(len,p)      PLATFORM_GET_INC(len,    p, LengthType)
-#define GET_MEMNUM_INC(num,p)      PLATFORM_GET_INC(num,    p, MemNumType)
-#define GET_REPEATNUM_INC(num,p)   PLATFORM_GET_INC(num,    p, RepeatNumType)
-#define GET_OPTION_INC(option,p)   PLATFORM_GET_INC(option, p, OnigOptionType)
-#define GET_POINTER_INC(ptr,p)     PLATFORM_GET_INC(ptr,    p, PointerType)
-#define GET_SAVE_TYPE_INC(type,p)       PLATFORM_GET_INC(type, p, SaveType)
-#define GET_UPDATE_VAR_TYPE_INC(type,p) PLATFORM_GET_INC(type, p, UpdateVarType)
-#define GET_MODE_INC(mode,p)            PLATFORM_GET_INC(mode, p, ModeType)
-
 /* code point's address must be aligned address. */
 #define GET_CODE_POINT(code,p)   code = *((OnigCodePoint* )(p))
-#define GET_BYTE_INC(byte,p) do{\
-  byte = *(p);\
-  (p)++;\
-} while(0)
 
 
 /* op-code + arg size */
@@ -838,7 +786,7 @@ typedef struct {
     } repeat; /* REPEAT, REPEAT_NG */
     struct {
       MemNumType  id;
-    } repeat_inc; /* REPEAT_INC, REPEAT_INC_SG, REPEAT_INC_NG, REPEAT_INC_NG_SG */
+    } repeat_inc; /* REPEAT_INC, REPEAT_INC_NG */
     struct {
       MemNumType mem;
     } empty_check_start;
@@ -889,6 +837,15 @@ typedef struct {
 #endif
 } RegexExt;
 
+typedef struct {
+  int lower;
+  int upper;
+  union {
+    Operation* pcode; /* address of repeated body */
+    int offset;
+  } u;
+} RepeatRange;
+
 struct re_pattern_buffer {
   /* common members of BBuf(bytes-buffer) */
   Operation*   ops;
@@ -903,15 +860,15 @@ struct re_pattern_buffer {
 
   int            num_mem;          /* used memory(...) num counted from 1 */
   int            num_repeat;       /* OP_REPEAT/OP_REPEAT_NG id-counter */
-  int            num_null_check;   /* OP_EMPTY_CHECK_START/END id counter */
+  int            num_empty_check;  /* OP_EMPTY_CHECK_START/END id counter */
   int            num_call;         /* number of subexp call */
   MemStatusType  capture_history;  /* (?@...) flag (1-31) */
   MemStatusType  push_mem_start;   /* need backtrack flag */
   MemStatusType  push_mem_end;     /* need backtrack flag */
   MemStatusType  empty_status_mem;
   int            stack_pop_level;
-  int              repeat_range_alloc;
-  OnigRepeatRange* repeat_range;
+  int            repeat_range_alloc;
+  RepeatRange*   repeat_range;
 
   OnigEncoding     enc;
   OnigOptionType   options;
