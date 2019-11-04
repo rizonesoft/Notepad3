@@ -1,4 +1,5 @@
-﻿/** @mainpage
+// encoding: UTF-8
+/** @mainpage
 
     <table>
         <tr><th>Library     <td>SimpleIni

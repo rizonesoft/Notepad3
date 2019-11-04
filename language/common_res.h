@@ -1,8 +1,9 @@
-#ifndef _COMMON_RES_H_
-#define _COMMON_RES_H_
 //{{NO_DEPENDENCIES}}
 // common language (MUI) defines
 //
+#ifndef _COMMON_RES_H_
+#define _COMMON_RES_H_
+
 #ifndef IDC_STATIC
 #define IDC_STATIC                       (-1)
 #endif

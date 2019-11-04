@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 #pragma once
 #ifndef _SCIXLEXER_H_
 #define _SCIXLEXER_H_

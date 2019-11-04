@@ -1,4 +1,3 @@
-
 Identifier          .NET Name                      Additional information
 -------------------------------------------------------------------------------
   037                IBM037                        IBM EBCDIC US-Canada

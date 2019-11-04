@@ -1,6 +1,6 @@
 /**********************************************************************
   onig_init.c -  Oniguruma (regular expression library)
-  encoding: UTF8
+  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2016-2019  K.Kosako

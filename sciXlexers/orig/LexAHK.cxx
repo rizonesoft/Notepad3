@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 // Scintilla source code edit control
 /** @file LexAHK.cxx
  ** Lexer for AutoHotkey, simplified version

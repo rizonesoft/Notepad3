@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 /*
  * TINYEXPR - Tiny recursive descent parser and evaluation engine in C
  *

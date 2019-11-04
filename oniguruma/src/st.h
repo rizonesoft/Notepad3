@@ -1,5 +1,5 @@
 /* This is a public domain general purpose hash table package written by Peter Moore @ UCB. */
-/* encoding: UTF8 */
+/* encoding: UTF-8 */
 /* @(#) st.h 5.1 89/12/14 */
 
 #ifndef ST_INCLUDED

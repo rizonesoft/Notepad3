@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
 

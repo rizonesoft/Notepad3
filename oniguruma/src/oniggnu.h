@@ -2,7 +2,7 @@
 #define ONIGGNU_H
 /**********************************************************************
   oniggnu.h - Oniguruma (regular expression library)
-  encoding: UTF8
+  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2019  K.Kosako

@@ -1,5 +1,5 @@
 /* This is a public domain general purpose hash table package written by Peter Moore @ UCB. */
-/* encoding: UTF8 */
+/* encoding: UTF-8 */
 
 /* static	char	sccsid[] = "@(#) st.c 5.1 89/12/14 Crucible"; */
 

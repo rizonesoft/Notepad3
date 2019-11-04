@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 #ifndef _SHA256_H
 #define _SHA256_H
 

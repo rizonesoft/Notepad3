@@ -1,4 +1,5 @@
-﻿#pragma once
+// encoding: UTF-8
+#pragma once
 
 // Durch Einbeziehen von"SDKDDKVer.h" wird die höchste verfügbare Windows-Plattform definiert.
 

@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 /**
  * @file  OnigurumaRegExEngine.cxx
  * @brief integrate Oniguruma regex engine for Scintilla library

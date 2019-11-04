@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 /*
  *  FIPS-180-2 compliant SHA-256 implementation
  *

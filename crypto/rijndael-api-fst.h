@@ -1,4 +1,4 @@
-// encoding: UTF8
+// encoding: UTF-8
 /**
  * rijndael-api-fst.h
  *
