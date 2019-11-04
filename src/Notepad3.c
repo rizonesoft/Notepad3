@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -95,7 +95,6 @@ int       s_flagMultiFileArg = 0;
 int       s_flagShellUseSystemMRU = 0;
 int       s_flagPrintFileAndLeave = 0;
 bool      s_flagDoRelaunchElevated = false;
-
 
 // ------------------------------------
 
@@ -629,6 +628,7 @@ static void _InitGlobals()
   Globals.pMRUfind = NULL;
   Globals.pMRUreplace = NULL;
   Globals.CallTipType = CT_NONE;
+  Globals.uConsoleCodePage = 0;
   Globals.iAvailLngCount = 1;
   Globals.iWrapCol = 0;
   Globals.bForceReLoadAsUTF8 = false;
@@ -780,6 +780,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
   _InitGlobals();
+
+  if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+    Globals.uConsoleCodePage = GetConsoleCP();
+    FreeConsole();
+  }
 
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;

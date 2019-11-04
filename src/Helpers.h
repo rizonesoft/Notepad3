@@ -331,8 +331,8 @@ UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
 LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
 
 
-UINT CodePageFromCharSet(UINT uCharSet);
-UINT CharSetFromCodePage(UINT uCodePage);
+UINT CodePageFromCharSet(const UINT uCharSet);
+UINT CharSetFromCodePage(const UINT uCodePage);
 
 
 //==== UnSlash Functions ======================================================

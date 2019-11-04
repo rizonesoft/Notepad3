@@ -113,10 +113,10 @@ void Encoding_InitDefaults()
     65001  // (UTF-8)
   };
 
-  UINT const ansiInputCP = GetACP();
-  ChangeEncodingCodePage(CPI_ANSI_DEFAULT, ansiInputCP); // set ANSI system CP ()
-  assert(g_Encodings[CPI_ANSI_DEFAULT].uCodePage == ansiInputCP);
-  StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", ansiInputCP);
+  UINT const ansiCP = CodePageFromCharSet(ANSI_CHARSET);
+  ChangeEncodingCodePage(CPI_ANSI_DEFAULT, ansiCP); // set ANSI system CP ()
+  assert(g_Encodings[CPI_ANSI_DEFAULT].uCodePage == ansiCP);
+  StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", ansiCP);
 
   Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
 
