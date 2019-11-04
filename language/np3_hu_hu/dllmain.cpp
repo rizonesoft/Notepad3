@@ -1,4 +1,5 @@
-﻿// dllmain.cpp : Definiert den Einstiegspunkt für die DLL-Anwendung.
+// encoding: UTF8
+// dllmain.cpp : Definiert den Einstiegspunkt für die DLL-Anwendung.
 #include "stdafx.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule,
