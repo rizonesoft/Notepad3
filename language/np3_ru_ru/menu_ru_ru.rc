@@ -63,7 +63,7 @@ BEGIN
         MENUITEM "&Сохранить\tCtrl+S",          IDM_FILE_SAVE
         MENUITEM "Сохранить &как...\tF6",       IDM_FILE_SAVEAS
         MENUITEM "Со&хранить копию...\tCtrl+F6", IDM_FILE_SAVECOPY
-        MENUITEM "Сохранять исходную &дату/время файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Сохранять исходну&ю дату/время файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Только чтение",              IDM_FILE_READONLY
         MENUITEM SEPARATOR
@@ -105,7 +105,7 @@ BEGIN
             MENUITEM "Переоткрыть в A&NSI\tCtrl+Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
             MENUITEM "Переоткрыть в &GB18030\tCtrl+Shift+F10",              CMD_RECODEGB18030
-            MENUITEM "Переоткрыть с &UCHARDET анализом",                    CMD_RELOADFORCEDETECTION
+            MENUITEM "Переоткрыть с UCHARDET &анализом",                    CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть в ASCII &как UTF-8\tCtrl+Shift+F8",       CMD_RELOADASCIIASUTF8
             MENUITEM "Игнорировать &теги кодировки\tAlt+F8",                CMD_RELOADNOFILEVARS
@@ -234,7 +234,7 @@ BEGIN
             MENUITEM "Пе&рвое слово с заглавной\tCtrl+Alt+O",   IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "&Табуляции вместо пробелов в выделении\tCtrl+Shift+T",    IDM_EDIT_CONVERTSPACES
-            MENUITEM "Пр&обелы вместо табуляции в выделении\tCtrl+Shift+S",     IDM_EDIT_CONVERTTABS
+            MENUITEM "Пробелы вместо табуляции в в&ыделении\tCtrl+Shift+S",     IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "Т&абуляции вместо пробелов в отступах\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
             MENUITEM "Про&белы вместо табуляции в отступах\tCtrl+Alt+S",        IDM_EDIT_CONVERTTABS2
@@ -242,7 +242,7 @@ BEGIN
             MENUITEM "Ко&дировать URL\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
             MENUITEM "Дек&одировать URL\tCtrl+Shift+R",                 IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Символ в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
+            MENUITEM "Символ &в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
             MENUITEM "&Шестнадцатеричный код в символ\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
         END
         POPUP "Вставка"

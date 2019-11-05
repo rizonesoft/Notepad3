@@ -63,7 +63,7 @@ BEGIN
         MENUITEM "За&хаваць\tCtrl+S",                               IDM_FILE_SAVE
         MENUITEM "Захаваць &як...\tF6",                             IDM_FILE_SAVEAS
         MENUITEM "Захаваць копі&ю...\tCtrl+F6",                     IDM_FILE_SAVECOPY
-        MENUITEM "Захоўваць зыходнюю &дату/час файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Захоўвац&ь зыходнюю дату/час файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Толькі чытанне",                        IDM_FILE_READONLY
         MENUITEM SEPARATOR
@@ -105,7 +105,7 @@ BEGIN
             MENUITEM "Пераадкрыць у A&NSI\tCtrl+Shift+A",                 CMD_RECODEANSI
             MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
             MENUITEM "Пераадкрыць у &GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
-            MENUITEM "Пераадкрыць з &UCHARDET аналізам",                  CMD_RELOADFORCEDETECTION
+            MENUITEM "Пераадкрыць з UCHARDET &аналізам",                  CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
             MENUITEM "Пераадкрыць у ASCII я&к UTF-8\tCtrl+Shift+F8",      CMD_RELOADASCIIASUTF8
             MENUITEM "Ігнараваць &тэгі кадоўкі\tAlt+F8",                  CMD_RELOADNOFILEVARS
@@ -240,7 +240,7 @@ BEGIN
             MENUITEM "Пра&белы замест табуляцыі ў водступах\tCtrl+Alt+S",    IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "Ка&даваць URL\tCtrl+Shift+E",                     IDM_EDIT_URLENCODE
-            MENUITEM "Дэк&адаваць URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
+            MENUITEM "Д&экадаваць URL\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
             MENUITEM "&Сімвал у шаснаццатковы код\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
             MENUITEM "&Шаснаццатковы код у сімвал\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
@@ -316,7 +316,7 @@ BEGIN
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Адзначаць рэгіёны вылучэння &колера",         IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "Адзначаць рэгі&ёны вылучэння колера",         IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES
         POPUP "Па&дсвечванне ак&тыўнага радка\tCtrl+Shift+I"
         BEGIN
@@ -324,7 +324,7 @@ BEGIN
             MENUITEM "&Фонавы колер",                       IDM_VIEW_HILITCURLN_BACK
             MENUITEM "&Контур",                             IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Па&дсвечванне супадзенняў"
+        POPUP "Падсвечванне супадзення&ў"
         BEGIN
             MENUITEM "&Задзейнічаць\tAlt+A",            IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
@@ -355,7 +355,7 @@ BEGIN
         BEGIN
             MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-            MENUITEM "Пе&раключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+            MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
             MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
@@ -402,7 +402,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Адзін &экзэмпляр файла",                      IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Заглу&шыць гук паведамленняў",                IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Заглуш&ыць гук паведамленняў",                IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "&Функцыя клавішы Esc"
         BEGIN
             MENUITEM "&Няма",                         IDM_VIEW_NOESCFUNC
@@ -490,7 +490,7 @@ BEGIN
     BEGIN
         MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "Пе&раключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
         MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
         MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
