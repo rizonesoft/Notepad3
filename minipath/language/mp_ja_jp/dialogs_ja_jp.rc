@@ -72,121 +72,121 @@ END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "実行"
+CAPTION "螳溯｡"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "実行するプログラム名、開くフォルダーやドキュメント名を\n入力してください。",IDC_STATIC,35,7,188,17
+    LTEXT           "螳溯｡後☆繧九�繝ｭ繧ｰ繝ｩ繝蜷阪�幕縺上ヵ繧ｩ繝ｫ繝繝ｼ繧�ラ繧ｭ繝･繝｡繝ｳ繝亥錐繧箪n蜈･蜉帙＠縺ｦ縺上□縺輔＞縲",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,167,64,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,167,64,50,14
 END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 191
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "プログラムから開く..."
+CAPTION "繝励Ο繧ｰ繝ｩ繝縺九ｉ髢九￥..."
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,129
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,143,13,13
-    LTEXT           "ここをクリックして開くプログラムのあるフォルダを指定します。",IDC_OPENWITHDESCR,26,143,132,18
+    LTEXT           "縺薙％繧偵け繝ｪ繝�け縺励※髢九￥繝励Ο繧ｰ繝ｩ繝縺ｮ縺ゅｋ繝輔か繝ｫ繝繧呈欠螳壹＠縺ｾ縺吶",IDC_OPENWITHDESCR,26,143,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,168,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,108,168,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,108,168,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,172,10,10
 END
 
 IDD_GOTO DIALOGEX 0, 0, 224, 87
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "開く"
+CAPTION "髢九￥"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "開くファイルやフォルダを入力するか、\n閲覧履歴から選択します。",IDC_STATIC,35,7,182,17
+    LTEXT           "髢九￥繝輔ぃ繧､繝ｫ繧�ヵ繧ｩ繝ｫ繝繧貞�蜉帙☆繧九°縲―n髢ｲ隕ｧ螻･豁ｴ縺九ｉ驕ｸ謚槭＠縺ｾ縺吶",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
-    PUSHBUTTON      "キャンセル",IDCANCEL,167,66,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,167,66,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
 IDD_FILTER DIALOGEX 0, 0, 184, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "ファイルフィルター"
+CAPTION "繝輔ぃ繧､繝ｫ繝輔ぅ繝ｫ繧ｿ繝ｼ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "フィルターの指定(&F) 複数指定には ; で区切ります。",IDC_STATIC,7,7,170,8
+    LTEXT           "繝輔ぅ繝ｫ繧ｿ繝ｼ縺ｮ謖�ｮ(&F) 隍�焚謖�ｮ壹↓縺ｯ ; 縺ｧ蛹ｺ蛻�ｊ縺ｾ縺吶",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
-    CONTROL         "マッチしたものを除外(&E)",IDC_NEGFILTER,
+    CONTROL         "繝槭ャ繝√＠縺溘ｂ縺ｮ繧帝勁螟(&E)",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
     DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,127,58,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,127,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "名前の変更"
+CAPTION "蜷榊燕縺ｮ螟画峩"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "現在:",IDC_STATIC,7,9,28,8
+    LTEXT           "迴ｾ蝨ｨ:",IDC_STATIC,7,9,28,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "新規(&N):",IDC_STATIC,7,26,29,8
+    LTEXT           "譁ｰ隕(&N):",IDC_STATIC,7,26,29,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,53,50,14,WS_DISABLED
-    PUSHBUTTON      "キャンセル",IDCANCEL,115,53,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,115,53,50,14
 END
 
 IDD_NEWDIR DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "フォルダの作成"
+CAPTION "繝輔か繝ｫ繝縺ｮ菴懈�"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "作成するフォルダ名を入力してください:",IDC_STATIC,7,7,158,8
+    LTEXT           "菴懈�縺吶ｋ繝輔か繝ｫ繝蜷阪ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
-    PUSHBUTTON      "キャンセル",IDCANCEL,115,45,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,115,45,50,14
 END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "コピー/移動"
+CAPTION "繧ｳ繝斐�/遘ｻ蜍"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "ここから:",IDC_STATIC,7,7,26,8
+    LTEXT           "縺薙％縺九ｉ:",IDC_STATIC,7,7,26,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "ここへ(&D):",IDC_STATIC,7,37,40,8
+    LTEXT           "縺薙％縺ｸ(&D):",IDC_STATIC,7,37,40,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
-    LTEXT           "動作:",IDC_STATIC,7,66,24,8
-    CONTROL         "コピー(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "移動(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    LTEXT           "蜍穂ｽ:",IDC_STATIC,7,66,24,8
+    CONTROL         "繧ｳ繝斐�(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
+    CONTROL         "遘ｻ蜍(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
     DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
-    PUSHBUTTON      "キャンセル",IDCANCEL,173,74,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
 END
 
 IDPP_GENERAL DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "一般"
+CAPTION "荳闊ｬ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath 一般設定",IDC_STATIC,40,15,153,8
     CONTROL         "開くのにシングルクリックのみを使う(&A)",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
-    CONTROL         "マウスオーバーで選択状態に(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,120,10
-    CONTROL         "選択状態を横幅いっぱいに(&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,120,10
-    CONTROL         "ファイルが開かれていれば対象ウインドウをアクティブにする(&C)",IDC_FOCUSEDIT,
+    CONTROL         "繝槭え繧ｹ繧ｪ繝ｼ繝舌�縺ｧ驕ｸ謚樒憾諷九↓(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,120,10
+    CONTROL         "驕ｸ謚樒憾諷九ｒ讓ｪ蟷�＞縺｣縺ｱ縺�↓(&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,120,10
+    CONTROL         "繝輔ぃ繧､繝ｫ縺碁幕縺九ｌ縺ｦ縺�ｌ縺ｰ蟇ｾ雎｡繧ｦ繧､繝ｳ繝峨え繧偵い繧ｯ繝�ぅ繝悶↓縺吶ｋ(&C)",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,208,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "常に最前面に MiniPath を表示(&K)",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "システムトレイに最小化する(&M) (クリックで復帰)",IDC_MINIMIZETOTRAY,
+    CONTROL         "繧ｷ繧ｹ繝�Β繝医Ξ繧､縺ｫ譛蟆丞喧縺吶ｋ(&M) (繧ｯ繝ｪ繝�け縺ｧ蠕ｩ蟶ｰ)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
     CONTROL         "MiniPath の開始時にウインドウの再利用を試みる(&T)",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "終了時に設定を保存(&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,92,10
+    CONTROL         "邨ゆｺ�凾縺ｫ險ｭ螳壹ｒ菫晏ｭ(&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,92,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -200,38 +200,38 @@ BEGIN
     CONTROL         "よく使用するもの(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,125,46,79,10
     CONTROL         "「お気に入り」(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,125,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "保存時にファイルの読み取り専用属性を消す(&C)",IDC_CLEARREADONLY,
+    CONTROL         "菫晏ｭ俶凾縺ｫ繝輔ぃ繧､繝ｫ縺ｮ隱ｭ縺ｿ蜿悶ｊ蟆ら畑螻樊ｧ繧呈ｶ医☆(&C)",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,166,10
-    CONTROL         "移動時などファイル名の衝突時に自動で改名する(&N)",IDC_RENAMEONCOLLISION,
+    CONTROL         "遘ｻ蜍墓凾縺ｪ縺ｩ繝輔ぃ繧､繝ｫ蜷阪�陦晉ｪ∵凾縺ｫ閾ｪ蜍輔〒謾ｹ蜷阪☆繧(&N)",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,185,10
-    CONTROL         "削除したファイルをごみ箱へ移動(&M) (注意:オフで直接削除)",IDC_USERECYCLEBIN,
+    CONTROL         "蜑企勁縺励◆繝輔ぃ繧､繝ｫ繧偵＃縺ｿ邂ｱ縺ｸ遘ｻ蜍(&M) (豕ｨ諢:繧ｪ繝輔〒逶ｴ謗･蜑企勁)",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,211,10
-    CONTROL         "削除時に確認しない(&D) (非推奨)",IDC_NOCONFIRMDELETE,
+    CONTROL         "蜑企勁譎ゅ↓遒ｺ隱阪＠縺ｪ縺(&D) (髱樊耳螂ｨ)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Escキーを有効(&E):",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "最小化(&W) (復帰高速)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,100,10
-    CONTROL         "終了(&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "Esc繧ｭ繝ｼ繧呈怏蜉ｹ(&E):",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "譛蟆丞喧(&W) (蠕ｩ蟶ｰ鬮倬)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,100,10
+    CONTROL         "邨ゆｺ(&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "一覧項目"
+CAPTION "荳隕ｧ鬆�岼"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "一覧項目のデザイン",IDC_STATIC,40,15,118,8
-    GROUPBOX        "配色",IDC_STATIC,10,41,205,134
-    LTEXT           "フィルター未使用時の文字色:",IDC_STATIC,20,54,136,8
-    CONTROL         "標準設定(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "カスタム(&C):",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    LTEXT           "荳隕ｧ鬆�岼縺ｮ繝�じ繧､繝ｳ",IDC_STATIC,40,15,118,8
+    GROUPBOX        "驟崎牡",IDC_STATIC,10,41,205,134
+    LTEXT           "繝輔ぅ繝ｫ繧ｿ繝ｼ譛ｪ菴ｿ逕ｨ譎ゅ�譁�ｭ苓牡:",IDC_STATIC,20,54,136,8
+    CONTROL         "讓呎ｺ冶ｨｭ螳(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "繧ｫ繧ｹ繧ｿ繝(&C):",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "色選択...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "フィルター時の文字色:",IDC_STATIC,20,105,146,8
-    CONTROL         "標準設定(&E)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
-    CONTROL         "カスタム(&U):",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    PUSHBUTTON      "濶ｲ驕ｸ謚...",IDC_COLOR_PICK1,119,80,50,14
+    LTEXT           "繝輔ぅ繝ｫ繧ｿ繝ｼ譎ゅ�譁�ｭ苓牡:",IDC_STATIC,20,105,146,8
+    CONTROL         "讓呎ｺ冶ｨｭ螳(&E)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "繧ｫ繧ｹ繧ｿ繝(&U):",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "色選択...",IDC_COLOR_PICK2,120,130,50,14
+    PUSHBUTTON      "濶ｲ驕ｸ謚...",IDC_COLOR_PICK2,120,130,50,14
 END
 
 IDPP_PROG DIALOGEX 0, 0, 226, 185
@@ -240,55 +240,55 @@ CAPTION "パス"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Quickview/お気に入りの設定",IDC_STATIC,40,15,122,8
-    LTEXT           "既定のQuick Viewプログラム名(&D) (Ctrl+Q):",IDC_STATIC,10,41,158,8
+    LTEXT           "Quickview/縺頑ｰ励↓蜈･繧翫�險ｭ螳",IDC_STATIC,40,15,122,8
+    LTEXT           "譌｢螳壹�Quick View繝励Ο繧ｰ繝ｩ繝蜷(&D) (Ctrl+Q):",IDC_STATIC,10,41,158,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "お気に入りフォルダ(&F) (F11):",IDC_STATIC,10,76,76,8
+    LTEXT           "縺頑ｰ励↓蜈･繧翫ヵ繧ｩ繝ｫ繝(&F) (F11):",IDC_STATIC,10,76,76,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
 IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "対象プログラム"
+CAPTION "蟇ｾ雎｡繝励Ο繧ｰ繝ｩ繝"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "対象とするプログラムを指定せず、単にファイラーとして使う。",IDC_LAUNCH,
+    CONTROL         "蟇ｾ雎｡縺ｨ縺吶ｋ繝励Ο繧ｰ繝ｩ繝繧呈欠螳壹○縺壹∝腰縺ｫ繝輔ぃ繧､繝ｩ繝ｼ縺ｨ縺励※菴ｿ縺�",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
-    CONTROL         "次のプログラムで開く:",IDC_TARGET,
+    CONTROL         "谺｡縺ｮ繝励Ο繧ｰ繝ｩ繝縺ｧ髢九￥:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "対象プログラムが既に実行済みの場合の動作:",IDC_STATIC,7,64,196,8
+    LTEXT           "蟇ｾ雎｡繝励Ο繧ｰ繝ｩ繝縺梧里縺ｫ螳溯｡梧ｸ医∩縺ｮ蝣ｴ蜷医�蜍穂ｽ:",IDC_STATIC,7,64,196,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
     LTEXT           "Message:",IDC_STATIC,20,120,32,8
-    CONTROL         "その都度、対象プログラムでファイルを開く。",IDC_ALWAYSRUN,
+    CONTROL         "縺昴�驛ｽ蠎ｦ縲∝ｯｾ雎｡繝励Ο繧ｰ繝ｩ繝縺ｧ繝輔ぃ繧､繝ｫ繧帝幕縺上",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "対象プログラムのウインドウでファイルを開く:",IDC_SENDDROPMSG,
+    CONTROL         "蟇ｾ雎｡繝励Ο繧ｰ繝ｩ繝縺ｮ繧ｦ繧､繝ｳ繝峨え縺ｧ繝輔ぃ繧､繝ｫ繧帝幕縺:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,185,10
-    CONTROL         "次のDDEコマンドを実行:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
+    CONTROL         "谺｡縺ｮDDE繧ｳ繝槭Φ繝峨ｒ螳溯｡:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Application:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "ウインドウの指定...",IDC_FINDWIN,197, 91, 67, 14
+    PUSHBUTTON      "繧ｦ繧､繝ｳ繝峨え縺ｮ謖�ｮ...",IDC_FINDWIN,197, 91, 67, 14
     LTEXT           "Topic:",IDC_STATIC,198,120,20,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,214,159,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,214,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "ウインドウの指定"
+CAPTION "繧ｦ繧､繝ｳ繝峨え縺ｮ謖�ｮ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "左の十字線をドラッグして、対象のウインドウを選択\nするか、Escでキャンセルします。",IDC_STATIC,35,7,168,22
+    LTEXT           "蟾ｦ縺ｮ蜊∝ｭ礼ｷ壹ｒ繝峨Λ繝�げ縺励※縲∝ｯｾ雎｡縺ｮ繧ｦ繧､繝ｳ繝峨え繧帝∈謚杤n縺吶ｋ縺九・sc縺ｧ繧ｭ繝｣繝ｳ繧ｻ繝ｫ縺励∪縺吶",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
     DEFPUSHBUTTON   "OK",IDOK,99,64,50,14,WS_DISABLED
-    PUSHBUTTON      "キャンセル",IDCANCEL,153,64,50,14
+    PUSHBUTTON      "繧ｭ繝｣繝ｳ繧ｻ繝ｫ",IDCANCEL,153,64,50,14
 END
 
 
