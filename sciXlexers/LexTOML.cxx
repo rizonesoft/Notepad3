@@ -1,4 +1,5 @@
-﻿// Scintilla source code edit control
+// encoding: UTF-8
+// Scintilla source code edit control
 /** @file LexTOML.cxx
 ** Lexer for TOML (Tom's Obvious Markup Language -> Tom's Obvious, Minimal Language
 ** Written by RaiKoHoff

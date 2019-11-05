@@ -1,4 +1,6 @@
 #pragma once
+/* encoding: UTF-8 */
+
 #ifndef _ONIGURUMA_CONFIG_H_
 #define _ONIGURUMA_CONFIG_H_
 

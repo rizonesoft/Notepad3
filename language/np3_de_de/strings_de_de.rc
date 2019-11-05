@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -55,11 +56,11 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_NEW            "Neu"
-    IDT_FILE_OPEN           "Öffnen"
+    IDT_FILE_OPEN           "Ã–ffnen"
     IDT_FILE_BROWSE         "Datei-Browser"
     IDT_FILE_SAVE           "Speichern"
     IDT_FILE_RECENT         "Historie"
-    IDT_EDIT_UNDO           "Rückgängig"
+    IDT_EDIT_UNDO           "RÃ¼ckgÃ¤ngig"
     IDT_EDIT_REDO           "Wiederholen"
     IDT_EDIT_CUT            "Ausschneiden"
     IDT_EDIT_COPY           "Kopieren"
@@ -67,27 +68,27 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Einfügen"
+    IDT_EDIT_PASTE          "EinfÃ¼gen"
     IDT_EDIT_FIND           "Suche"
     IDT_EDIT_REPLACE        "Ersetze"
     IDT_VIEW_WORDWRAP       "Wort Umbruch"
     IDT_VIEW_ZOOMIN         "Hinein Zoomen"
     IDT_VIEW_ZOOMOUT        "Heraus Zoomen"
-    IDT_VIEW_SCHEME         "Wähle Schema"
+    IDT_VIEW_SCHEME         "WÃ¤hle Schema"
     IDT_VIEW_SCHEMECONFIG   "Bearbeite Schemata"
     IDT_FILE_EXIT           "Beenden"
     IDT_FILE_SAVEAS         "Speichern unter"
     IDT_FILE_SAVECOPY       "Speichere Kopie"
-    IDT_EDIT_CLEAR          "Löschen"
+    IDT_EDIT_CLEAR          "LÃ¶schen"
     IDT_FILE_PRINT          "Drucken"
     IDT_FILE_OPENFAV        "Favoriten"
-    IDT_FILE_ADDTOFAV       "Zu Favoriten hinzufügen"
+    IDT_FILE_ADDTOFAV       "Zu Favoriten hinzufÃ¼gen"
     IDT_VIEW_TOGGLEFOLDS    "Toggle Code-Folding"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Dokument ausführen"
+    IDT_FILE_LAUNCH          "Dokument ausfÃ¼hren"
     IDT_VIEW_TOGGLE_VIEW     "Fokussierte Ansicht"
     IDT_VIEW_CHASING_DOCTAIL "Logfile Monitoring"
     IDT_VIEW_PIN_ON_TOP      "Immer im Vordergrung"
@@ -111,11 +112,11 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Alle Dateien (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Ausführbare Dateien (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "AusfÃ¼hrbare Dateien (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfigurations Dateien (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmap Dateien (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Wähle das Verzeichnis mit den Links zu den favorisierten Applikationen."
-    IDS_MUI_FAVORITES       "Wähle das Verzeichnis mit den Links zu den favorisierten Dateien."
+    IDS_MUI_OPENWITH        "WÃ¤hle das Verzeichnis mit den Links zu den favorisierten Applikationen."
+    IDS_MUI_FAVORITES       "WÃ¤hle das Verzeichnis mit den Links zu den favorisierten Dateien."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformationen\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Wildcard Suche\n\n*\tPasst zu keinem oder mehr Zeichen.\n?\tPasst zu genau einem Zeichen. "
@@ -126,29 +127,29 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Fehler beim laden ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fehler beim speichern ""%s""."
     IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDer MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden."
-    IDS_MUI_ERR_MRUDLG      "Es kann nicht auf die ausgewählte Datei zugegriffen werden!\nMöchtest Du den Eintrag aus der Liste entfernen?"
+    IDS_MUI_ERR_MRUDLG      "Es kann nicht auf die ausgewÃ¤hlte Datei zugegriffen werden!\nMÃ¶chtest Du den Eintrag aus der Liste entfernen?"
     IDS_MUI_ERR_CREATELINK  "Fehler beim erzeugen des Desktop-Links."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox.\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
-    IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind für die ausgewählte Codierung auf diesem System nicht vorhanden."
+                            "Die existierende Notepad3-Instanz ist entweder beschÃ¤ftigt oder hat eine geÃ¶ffnete Dialogbox.\nMÃ¶chtest Du eine andere Notepad3-Instanz Ã¶ffnen?"
+    IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind fÃ¼r die ausgewÃ¤hlte Codierung auf diesem System nicht vorhanden."
     IDS_MUI_ERR_UNICODE     "Fehler bei der Konvertierung dieser Unicode Datei.\nDaten werden verloren gehen, wenn diese Datei gespeichert wird!"
-    IDS_MUI_ERR_BITMAP      "Fehler beim laden der Bitmap ""%s"".\nNotwendige Dimensionen: %i x %i (Breite >= %i x Höhe)."
+    IDS_MUI_ERR_BITMAP      "Fehler beim laden der Bitmap ""%s"".\nNotwendige Dimensionen: %i x %i (Breite >= %i x HÃ¶he)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fehler beim anheben der Benutzerrechte!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Bestimmte Zeichen im aktuellen Text werden von der gewählten Codierung nicht unterstützt und werden evtl. durch Standardplatzhalter ersetzt wenn die Datei gespeichert wird. Es wird empfolen eine andere Codierung zu wählen. Weiter machen?"
+    IDS_MUI_ERR_UNICODE2    "Bestimmte Zeichen im aktuellen Text werden von der gewÃ¤hlten Codierung nicht unterstÃ¼tzt und werden evtl. durch Standardplatzhalter ersetzt wenn die Datei gespeichert wird. Es wird empfolen eine andere Codierung zu wÃ¤hlen. Weiter machen?"
     IDS_MUI_ERR_DROP        "Es kann immer nur eine Datei gleichzeitig verworfen werden!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du Notepad3 als Administrator starten?"
-    IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen."
+                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschÃ¼tzt.\n\nMÃ¶chtest Du Notepad3 als Administrator starten?"
+    IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prÃ¼fen."
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
+                            "Bist Du sicher, dass Du diese sehr groÃŸe Datei Ã¶ffnen mÃ¶chtest?"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unbekannte Dateierweiterung (%s) !\nSollen die Daten trotzdem geladen werden?"
-    IDS_MUI_INDENT_CONSISTENT  "Die Datei hat einheitliche Einrückungen!"
+    IDS_MUI_INDENT_CONSISTENT  "Die Datei hat einheitliche EinrÃ¼ckungen!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -156,63 +157,63 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Diese Operation kann nicht mit einer Rechteck-Selektion durchgeführt werden."
-    IDS_MUI_SELMULTI        "Diese Operation kann nicht mit einer Multi-Selektion durchgeführt werden."
-    IDS_MUI_SELRECTORMULTI  "Diese Operation kann nicht mit einer Rechteck- oder Multi-Selektion durchgeführt werden."
-    IDS_MUI_BUFFERTOOSMALL  "Diese Operation kann nicht durchgeführt werden (die Zeilen sind zu lang)."
-    IDS_MUI_FIND_WRAPFW     "Das Ende des Dokumentes wurde erreicht, Vorwärtssuche vom Anfang her weiter führen."
-    IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen."
+    IDS_MUI_SELRECT         "Diese Operation kann nicht mit einer Rechteck-Selektion durchgefÃ¼hrt werden."
+    IDS_MUI_SELMULTI        "Diese Operation kann nicht mit einer Multi-Selektion durchgefÃ¼hrt werden."
+    IDS_MUI_SELRECTORMULTI  "Diese Operation kann nicht mit einer Rechteck- oder Multi-Selektion durchgefÃ¼hrt werden."
+    IDS_MUI_BUFFERTOOSMALL  "Diese Operation kann nicht durchgefÃ¼hrt werden (die Zeilen sind zu lang)."
+    IDS_MUI_FIND_WRAPFW     "Das Ende des Dokumentes wurde erreicht, VorwÃ¤rtssuche vom Anfang her weiter fÃ¼hren."
+    IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, RÃ¼ckwÃ¤rtssuche vom Ende her weiter fÃ¼hren."
     IDS_MUI_NOTFOUND        "Der gegebene Suchbegriff wurde nicht gefunden."
     IDS_MUI_REPLCOUNT       "%i Fundstellen des gegebenen Suchbegriffs wurden ersetzt."
-    IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Historie gelöscht wird. Weiter machen?"
-    IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
-    IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschützt. Dokument unter einem anderen Dateipfad speichern?"
+    IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstÃ¼tzter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Historie gelÃ¶scht wird. Weiter machen?"
+    IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu Ã¤ndern. Beachte bitte, daÃŸ dabei die Historie gelÃ¶scht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
+    IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschÃ¼tzt. Dokument unter einem anderen Dateipfad speichern?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Neu laden?"
-    IDS_MUI_FILECHANGENOTIFY2 "Die geladene Datei wurde auf dem Datenträger gelöscht. Nochmals speichern?"
+                            "Die geladene Datei wurde durch ein anderes Programm auf dem DatentrÃ¤ger verÃ¤ndert. Neu laden?"
+    IDS_MUI_FILECHANGENOTIFY2 "Die geladene Datei wurde auf dem DatentrÃ¤ger gelÃ¶scht. Nochmals speichern?"
     IDS_MUI_STICKYWINPOS    "Eingefrorene Fensterpositionierung is eingeschaltet worden. Jede neue Notepad3 Instanz wird nun diese Fensterpositionierung initial verwenden."
     IDS_MUI_SAVEDSETTINGS   "Die aktuellen Notepad3 Einstellungen wurden gespeichert."
     IDS_MUI_CREATEINI_FAIL  "Fehler bei der Erzeugung einer Konfigurationsdatei."
     IDS_MUI_WRITEINI_FAIL   "Fehler beim schreiben der Einstellungen in die Konfigurationsdatei."
     IDS_MUI_SETTINGSNOTSAVED
-                            "Es wurde keine Konfigurationsdatei gefunden.\nUm die Veränderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder über die Schematakonfiguration (Ctrl+F12) exportiert werden."
+                            "Es wurde keine Konfigurationsdatei gefunden.\nUm die VerÃ¤nderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder Ã¼ber die Schematakonfiguration (Ctrl+F12) exportiert werden."
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s""."
-    IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulären Ausdrucks (RegEx), der Ausruck ist ungültig!"
-    IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen."
+    IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulÃ¤ren Ausdrucks (RegEx), der Ausruck ist ungÃ¼ltig!"
+    IDS_MUI_DROP_NO_FILE    "Es wurde kein gÃ¼ltiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  Ã¶ffnen."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu Ã¶ffnen."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
+                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun fÃ¼r die gesamte Sitzung (Datei)!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Speichere die Änderungen nach:\n""%s""?"
+    IDS_MUI_ASK_SAVE        "Speichere die Ã„nderungen nach:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Soll das Dokument aus dem zuletzt gespeicherten Zustand wieder hergestellt werden?"
-    IDS_MUI_ASK_RECODE      "Eine Recodierung erzwingt ein erneutes Laden der Datei vom Speichermedium, nicht gesicherte Änderungen werden verloren gehen!"
-    IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden.\nMöchtest Du diese Datei neu erzeugen?"
+    IDS_MUI_ASK_RECODE      "Eine Recodierung erzwingt ein erneutes Laden der Datei vom Speichermedium, nicht gesicherte Ã„nderungen werden verloren gehen!"
+    IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden.\nMÃ¶chtest Du diese Datei neu erzeugen?"
     IDS_MUI_PRINT_HEADER    "Dateiname, aktuelles Datum und Zeit|Dateiname, aktuelles Datum|Dateiname|Frei lassen"
     IDS_MUI_PRINT_FOOTER    "Seiten-Nummerierung|Frei lassen"
-    IDS_MUI_PRINT_COLOR     "Normal|Invertiere (dunkler Hintergrund)|Schwarz auf Weiss|Farbig auf Weiss|Farbig auf Weiss (außer Zeilennummerierung)|Bildschirmfarben"
+    IDS_MUI_PRINT_COLOR     "Normal|Invertiere (dunkler Hintergrund)|Schwarz auf Weiss|Farbig auf Weiss|Farbig auf Weiss (auÃŸer Zeilennummerierung)|Bildschirmfarben"
     IDS_MUI_PRINT_PAGENUM   "Seite %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Dieses Dokument enthält keinen Text der gedruckt werden kann."
+    IDS_MUI_PRINT_EMPTY     "Dieses Dokument enthÃ¤lt keinen Text der gedruckt werden kann."
     IDS_MUI_PRINT_ERROR     "Fehler beim Drucken ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Es wurde ein Link (Shortcut) zur geladenen Datei im Favoriten-Verzeichnis erzeugt."
-    IDS_MUI_FAV_FAILURE     "Es konnte kein Link (Shortcut) zur geladenen Datei erzeugt werden. Stelle sicher, daß keine andere Datei dort mit gleichem Namen existert."
-    IDS_MUI_READONLY_MODIFY "Die Attribute von ""%s"" konnten nicht verändert werden."
+    IDS_MUI_FAV_FAILURE     "Es konnte kein Link (Shortcut) zur geladenen Datei erzeugt werden. Stelle sicher, daÃŸ keine andere Datei dort mit gleichem Namen existert."
+    IDS_MUI_READONLY_MODIFY "Die Attribute von ""%s"" konnten nicht verÃ¤ndert werden."
     IDS_MUI_SAVEPOS         "&Speichere Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Position zurück setzen\tCtrl+R"
+    IDS_MUI_RESETPOS        "&Position zurÃ¼ck setzen\tCtrl+R"
     IDS_MUI_PREVIEW         "&Vorschau der Einstellungen\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Das Entschlüsselungs-Passwort ist nicht korrekt.\nEin anderes Passwort versuchen?"
-    IDS_MUI_NOPASS          "Entschlüsselung abgebrochen!\nSollen die verschlüsselten Rohdaten gelesen werden?"
+    IDS_MUI_PASS_FAILURE    "Das EntschlÃ¼sselungs-Passwort ist nicht korrekt.\nEin anderes Passwort versuchen?"
+    IDS_MUI_NOPASS          "EntschlÃ¼sselung abgebrochen!\nSollen die verschlÃ¼sselten Rohdaten gelesen werden?"
     IDS_MUI_STY_BASESTD     "BASIS (Standard Stil):"
     IDS_MUI_STY_BASE2ND     "BASIS (2nd Standard Stil):"
     IDS_MUI_STY_LEXDEF      "%s - Standard Stil:"
@@ -222,15 +223,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(de-DE) Deutsche Übersetzung von RaiKoHoff"
+    IDS_MUI_TRANSL_AUTHOR   "(de-DE) Deutsche Ãœbersetzung von RaiKoHoff"
     IDS_MUI_TITLE_FIXBASE   " BASIS (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Stil +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Stil"
     IDS_MUI_TITLE_RELARB    " +++ Stil '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Stil '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Zugeordnete Dateitypen:"
-    IDS_MUI_EXAMPLE_TEXT    "Zwölf laxe Typen qualmen verdächtig süße Objekte, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH  "^ Null-Längen-Fund"
+    IDS_MUI_EXAMPLE_TEXT    "ZwÃ¶lf laxe Typen qualmen verdÃ¤chtig sÃ¼ÃŸe Objekte, 0123456789."
+    IDS_MUI_ZERO_LEN_MATCH  "^ Null-LÃ¤ngen-Fund"
     IDS_MUI_GOTO_LINE       "Zeile (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "Spalte (1 - %ti):"
 END
@@ -260,36 +261,36 @@ Optionen:\r\n\
 /e\tDatei Quellen Codierung.\r\n\
 /g\tSpringe zur gegebenen Position (/g -1 Ende der Datei).\r\n\
 /m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex,\r\n\t/mb backslash).\r\n\
-/l\tAuto-Neu-Laden einer veränderten Datei.\r\n\
+/l\tAuto-Neu-Laden einer verÃ¤nderten Datei.\r\n\
 /q\tErzwinge die Erzeugung einer neuen Datei ohne Nachfrage.\r\n\
 /s\tSetze das gegebene Syntax Schema.\r\n\
 /d\tSetze das Standard-Text Schema.\r\n\
 /h\tSetze das Web Quellcode Schema.\r\n\
 /x\tSetze das XML Dokument Schema.\r\n\
-/c\tÖffne ein neues Fenster und füge den Inhalt\r\n\tder Zwischenablage ein.\r\n\
-/b\tÖffne ein neues 'Paste Board' um die Einträge\r\n\tder Zwischenablage zu sammeln.\r\n\
-/n\tÖffne immer ein neues Fenster (/ns single file instance).\r\n\
-/r\tBenutze geöffnetes Fenster erneut (/rs single file instance).\r\n\
-/p\tSetze Fenster: Position und Größe (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/c\tÃ–ffne ein neues Fenster und fÃ¼ge den Inhalt\r\n\tder Zwischenablage ein.\r\n\
+/b\tÃ–ffne ein neues 'Paste Board' um die EintrÃ¤ge\r\n\tder Zwischenablage zu sammeln.\r\n\
+/n\tÃ–ffne immer ein neues Fenster (/ns single file instance).\r\n\
+/r\tBenutze geÃ¶ffnetes Fenster erneut (/rs single file instance).\r\n\
+/p\tSetze Fenster: Position und GrÃ¶ÃŸe (/p0, /ps, /pf,l,t,r,b,m).\r\n\
 /t\tSetze Fenster-Titel.\r\n\
 /i\tStarte als 'Tray-Icon'.\r\n\
 /o\tHalte Fenster immer auf oberster Ebene.\r\n\
 /f\tSpezifiziere .ini-Datei (/f0 keine .ini-Datei).\r\n\
-/u\tStarte mit erhöhten Benutzerrechten.\r\n\
+/u\tStarte mit erhÃ¶hten Benutzerrechten.\r\n\
 /v\tDrucke Datei und beende Programm.\r\n\
-/vd\tDrucke Datei (öffne Drucker-Dialog).\r\n\
+/vd\tDrucke Datei (Ã¶ffne Drucker-Dialog).\r\n\
 /y\tSuche relative Dateinamen im Umgebungs PATH.\r\n\
-/z\tÜberspringe Nächstes (nützlich für Registy-Basierte\r\n\tNotepad Ersetzung).\r\n\r\n\
+/z\tÃœberspringe NÃ¤chstes (nÃ¼tzlich fÃ¼r Registy-Basierte\r\n\tNotepad Ersetzung).\r\n\r\n\
 Beispiele:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Eine neue Datei Ã¶ffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Drucke Datei: ""Test.txt"" direkt.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\
-nutze \\<regex>; um ein Regular Expression für Dateinamen zu definieren:\r\n\
+nutze \\<regex>; um ein Regular Expression fÃ¼r Dateinamen zu definieren:\r\n\
    \\xyz$;   => Dateinamen(basename+ext) mit 'xyz' am Ende.\r\n\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
@@ -331,33 +332,33 @@ IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
 \\cf0 Weiterverbreitung und Verwendung in nichtkompilierter oder kompilierter Form,\\par\
-\\cf0 mit oder ohne Veränderung, sind unter den folgenden Bedingungen zulässig:\\par\
+\\cf0 mit oder ohne VerÃ¤nderung, sind unter den folgenden Bedingungen zulÃ¤ssig:\\par\
 \\cf0 \\par\
-\\cf0 1. Weiterverbreitete Software-Quelltexte müssen den obigen Copyright-Vermerk,\\par\
+\\cf0 1. Weiterverbreitete Software-Quelltexte mÃ¼ssen den obigen Copyright-Vermerk,\\par\
 \\cf0 diese Liste der Bedingungen und die ihnen folgende Haftungsklausel enthalten.\\par\
 \\cf0 \\par\
-\\cf0 2. Weiterverbreitete kompilierte Exemplare müssen den obigen Copyright-Vermerk,\\par\
+\\cf0 2. Weiterverbreitete kompilierte Exemplare mÃ¼ssen den obigen Copyright-Vermerk,\\par\
 \\cf0 diese Liste der Bedingungen und die ihnen folgende Haftungsklausel in der Dokumentation \\par\
 \\cf0 und/oder anderen Materialien, die mit dem Exemplar verbreitet werden, enthalten.\\par\
 \\cf0 \\par\
-\\cf0 3. Weder der Name Florian Balmer noch die Namen der Mitwirkenden dürfen\\par\
+\\cf0 3. Weder der Name Florian Balmer noch die Namen der Mitwirkenden dÃ¼rfen\\par\
 \\cf0 zum Kennzeichnen oder Bewerben von Produkten, die von dieser Software abgeleitet wurden,\\par\
 \\cf0 ohne spezielle vorherige schriftliche Genehmigung verwendet werden.\\par\
 \\cf0 \\par\
 \\cf0 DIESE SOFTWARE WIRD VOM URHEBERRECHT INHABER UND DEN MITARBEITERN OHNE\\par\
-\\cf0 JEGLICHE  AUSDRÜCKLICHE  ODER IMPLIZIERTE GARANTIEN ZUR VERFÜGUNG\\par\
+\\cf0 JEGLICHE  AUSDRÃœCKLICHE  ODER IMPLIZIERTE GARANTIEN ZUR VERFÃœGUNG\\par\
 \\cf0 GESTELLT,  DIE UNTER  ANDEREM  EINSCHLIESSEN:  DIE IMPLIZIERTE GARANTIE DER\\par\
-\\cf0 VERWENDBARKEIT DER SOFTWARE FÜR  EINEN  BESTIMMTEN ZWECK. AUF  KEINEN FALL\\par\
-\\cf0 SIND DIE URHEBERRECHT INHABER ODER DIE  MITARBEITER  FÜR IRGENDWELCHE\\par\
-\\cf0 DIREKTEN,  INDIREKTEN, ZUFÄLLIGEN, SPEZIELLEN,   BEISPIELHAFTEN ODER\\par\
-\\cf0 FOLGESCHÄDEN  (UNTER ANDEREM VERSCHAFFEN VON ERSATZGÜTERN ODER\\par\
-\\cf0 DIENSTLEISTUNGEN;   EINSCHRÄNKUNG DER  NUTZUNGSFÄHIGKEIT; VERLUST VON\\par\
-\\cf0 NUTZUNGSFÄHIGKEIT, DATEN,  ODER  PROFIT;  ODER GESCHÄFTSUNTERBRECHUNG),\\par\
+\\cf0 VERWENDBARKEIT DER SOFTWARE FÃœR  EINEN  BESTIMMTEN ZWECK. AUF  KEINEN FALL\\par\
+\\cf0 SIND DIE URHEBERRECHT INHABER ODER DIE  MITARBEITER  FÃœR IRGENDWELCHE\\par\
+\\cf0 DIREKTEN,  INDIREKTEN, ZUFÃ„LLIGEN, SPEZIELLEN,   BEISPIELHAFTEN ODER\\par\
+\\cf0 FOLGESCHÃ„DEN  (UNTER ANDEREM VERSCHAFFEN VON ERSATZGÃœTERN ODER\\par\
+\\cf0 DIENSTLEISTUNGEN;   EINSCHRÃ„NKUNG DER  NUTZUNGSFÃ„HIGKEIT; VERLUST VON\\par\
+\\cf0 NUTZUNGSFÃ„HIGKEIT, DATEN,  ODER  PROFIT;  ODER GESCHÃ„FTSUNTERBRECHUNG),\\par\
 \\cf0 WIE  AUCH IMMER VERURSACHT UND  UNTER  WELCHER  VERPFLICHTUNG AUCH IMMER, OB\\par\
 \\cf0 IN  VERTRAG,  STRIKTER VERPFLICHTUNG ODER  UNERLAUBTER  HANDLUNG (INKLUSIVE\\par\
-\\cf0 FAHRLÄSSIGKEIT)  VERANTWORTLICH,  AUF WELCHEM WEG SIE  AUCH IMMER  DURCH\\par\
+\\cf0 FAHRLÃ„SSIGKEIT)  VERANTWORTLICH,  AUF WELCHEM WEG SIE  AUCH IMMER  DURCH\\par\
 \\cf0 DIE  BENUTZUNG DIESER SOFTWARE ENTSTANDEN SIND, SOGAR,  WENN SIE AUF  DIE\\par\
-\\cf0 MÖGLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.\\par\
+\\cf0 MÃ–GLICHKEIT EINES SOLCHEN SCHADENS HINGEWIESEN WORDEN SIND.\\par\
 }"
 
 END

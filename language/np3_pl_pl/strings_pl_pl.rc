@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
 LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -55,8 +56,8 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_NEW            "Nowy"
-    IDT_FILE_OPEN           "OtwÛrz"
-    IDT_FILE_BROWSE         "Przeglπdaj"
+    IDT_FILE_OPEN           "Otw√≥rz"
+    IDT_FILE_BROWSE         "PrzeglƒÖdaj"
     IDT_FILE_SAVE           "Zapisz"
     IDT_FILE_RECENT         "Historia"
     IDT_EDIT_UNDO           "Cofnij"
@@ -68,21 +69,21 @@ END
 STRINGTABLE
 BEGIN
     IDT_EDIT_PASTE          "Wklej"
-    IDT_EDIT_FIND           "Znajdü"
-    IDT_EDIT_REPLACE        "ZamieÒ"
+    IDT_EDIT_FIND           "Znajd≈∫"
+    IDT_EDIT_REPLACE        "Zamie≈Ñ"
     IDT_VIEW_WORDWRAP       "Zawijanie tekstu"
-    IDT_VIEW_ZOOMIN         "PowiÍksz"
+    IDT_VIEW_ZOOMIN         "Powiƒôksz"
     IDT_VIEW_ZOOMOUT        "Pomniejsz"
     IDT_VIEW_SCHEME         "Wybierz schemat"
     IDT_VIEW_SCHEMECONFIG   "Dostosuj schematy"
-    IDT_FILE_EXIT           "ZakoÒcz"
+    IDT_FILE_EXIT           "Zako≈Ñcz"
     IDT_FILE_SAVEAS         "Zapisz jako"
-    IDT_FILE_SAVECOPY       "Zapisz kopiÍ"
-    IDT_EDIT_CLEAR          "UsuÒ"
+    IDT_FILE_SAVECOPY       "Zapisz kopiƒô"
+    IDT_EDIT_CLEAR          "Usu≈Ñ"
     IDT_FILE_PRINT          "Drukuj"
     IDT_FILE_OPENFAV        "Ulubione"
     IDT_FILE_ADDTOFAV       "Dodaj do Ulubionych"
-    IDT_VIEW_TOGGLEFOLDS    "Prze≥πcz bloki kodu"
+    IDT_VIEW_TOGGLEFOLDS    "Prze≈ÇƒÖcz bloki kodu"
 END
 
 STRINGTABLE
@@ -101,11 +102,11 @@ BEGIN
     IDS_MUI_UNTITLED        "Bez nazwy"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Tylko do odczytu)"
-    IDS_MUI_LOADFILE        "£adowanie ""%s""..."
+    IDS_MUI_LOADFILE        "≈Åadowanie ""%s""..."
     IDS_MUI_SAVEFILE        "Zapisywanie ""%s""..."
     IDS_MUI_PRINTFILE       "Drukowanie strony %i..."
-    IDS_MUI_SAVINGSETTINGS  "Zapisywanie ustawieÒ..."
-    IDS_MUI_LINKDESCRIPTION "Edytuj za pomocπ Notepad3"
+    IDS_MUI_SAVINGSETTINGS  "Zapisywanie ustawie≈Ñ..."
+    IDS_MUI_LINKDESCRIPTION "Edytuj za pomocƒÖ Notepad3"
 END
 
 STRINGTABLE
@@ -114,41 +115,41 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Pliki wykonywalne (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Pliki konfiguracyjne (*.ini)|*.ini|Wszystkie pliki (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|Wszystkie pliki (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Wybierz katalog ze skrÛtami do ulubionych aplikacji."
-    IDS_MUI_FAVORITES       "Wybierz katalog ze skrÛtami do ulubionych plikÛw."
+    IDS_MUI_OPENWITH        "Wybierz katalog ze skr√≥tami do ulubionych aplikacji."
+    IDS_MUI_FAVORITES       "Wybierz katalog ze skr√≥tami do ulubionych plik√≥w."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tPasuje kaødy znak\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Szukaj wieloznacznika\n\n*\tPasuje zero lub wiÍcej znakÛw.\n?\tPasuje dok≥adnie jeden znak. "
+    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tPasuje ka≈ºdy znak\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Szukaj wieloznacznika\n\n*\tPasuje zero lub wiƒôcej znak√≥w.\n?\tPasuje dok≈Çadnie jeden znak. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "B≥πd podczas ≥adowania ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "B≥πd podczas zapisu ""%s""."
-    IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglπdarki pliku.\nWtyczkÍ przeglπdarki pliku do MiniPath moøna pobraÊ z https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "Brak dostÍpu do wybranego pliku!\nCzy chcesz usunπÊ go z listy?"
-    IDS_MUI_ERR_CREATELINK  "B≥πd podczas tworzenia skrÛtu na Pulpicie."
+    IDS_MUI_ERR_LOADFILE    "B≈ÇƒÖd podczas ≈Çadowania ""%s""."
+    IDS_MUI_ERR_SAVEFILE    "B≈ÇƒÖd podczas zapisu ""%s""."
+    IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglƒÖdarki pliku.\nWtyczkƒô przeglƒÖdarki pliku do MiniPath mo≈ºna pobraƒá z https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Brak dostƒôpu do wybranego pliku!\nCzy chcesz usunƒÖƒá go z listy?"
+    IDS_MUI_ERR_CREATELINK  "B≈ÇƒÖd podczas tworzenia skr√≥tu na Pulpicie."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Istniejπce okno Notepad3 jest zajÍte lub posiada aktywne okno dialogowe.\nCzy chcesz otworzyÊ kolejne okno Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA  "Tablice konwersji strony kodowej dla wybranego kodowania nie sπ dostÍpne na tym systemie."
-    IDS_MUI_ERR_UNICODE     "B≥πd podczas kodowania pliku Unicode.\nDane zostanπ utracone jeúli plik zapisano!"
-    IDS_MUI_ERR_BITMAP      "B≥πd podczas ≥adowania mapy bitowej ""%s"".\nWymagany rozmiar: %i x %i (szer. >= %i x wys.)."
+                            "IstniejƒÖce okno Notepad3 jest zajƒôte lub posiada aktywne okno dialogowe.\nCzy chcesz otworzyƒá kolejne okno Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA  "Tablice konwersji strony kodowej dla wybranego kodowania nie sƒÖ dostƒôpne na tym systemie."
+    IDS_MUI_ERR_UNICODE     "B≈ÇƒÖd podczas kodowania pliku Unicode.\nDane zostanƒÖ utracone je≈õli plik zapisano!"
+    IDS_MUI_ERR_BITMAP      "B≈ÇƒÖd podczas ≈Çadowania mapy bitowej ""%s"".\nWymagany rozmiar: %i x %i (szer. >= %i x wys.)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "B≥πd podczas nadawania praw uøytkownika!"
+                            "B≈ÇƒÖd podczas nadawania praw u≈ºytkownika!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "NiektÛre znaki w tym tekúcie nie sπ obs≥ugiwane przez wybrane kodowanie, i mogπ zostanie zamienione na standardowe znaki po zapisaniu. Zaleca siÍ wybraÊ inne kodowanie pliku. KontynuowaÊ?"
-    IDS_MUI_ERR_DROP        "Tylko jeden plik moøe byÊ upuszczony w tym samym czasie!"
+    IDS_MUI_ERR_UNICODE2    "Niekt√≥re znaki w tym tek≈õcie nie sƒÖ obs≈Çugiwane przez wybrane kodowanie, i mogƒÖ zostanie zamienione na standardowe znaki po zapisaniu. Zaleca siƒô wybraƒá inne kodowanie pliku. Kontynuowaƒá?"
+    IDS_MUI_ERR_DROP        "Tylko jeden plik mo≈ºe byƒá upuszczony w tym samym czasie!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Plik ""%s"" nie moøe zostaÊ zapisany i moøe byÊ zabezpieczony.\n\nCzy uruchomiÊ Notepad3 jako Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzÍdzia administracyjnego.\nSprawdü stronÍ https://rizonesoft.com ?"
+                            "Plik ""%s"" nie mo≈ºe zostaƒá zapisany i mo≈ºe byƒá zabezpieczony.\n\nCzy uruchomiƒá Notepad3 jako Administrator?"
+    IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzƒôdzia administracyjnego.\nSprawd≈∫ stronƒô https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Czy na pewno chcesz otworzyÊ ten duøy plik?"
+                            "Czy na pewno chcesz otworzyƒá ten du≈ºy plik?"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Nieznane rozszerzenie nazwy pliku (%s) !\nCzy mimo to za≥adowaÊ?"
-    IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wciÍcie!"
+                            "Nieznane rozszerzenie nazwy pliku (%s) !\nCzy mimo to za≈Çadowaƒá?"
+    IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wciƒôcie!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -156,80 +157,80 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Ta operacja nie moøe zostaÊ przeprowadzona w obrÍbie prostkπtnego zaznaczenia"
-    IDS_MUI_SELMULTI        "Nie moøna wykonaÊ tej operacji w obrÍbie multiwyboru."
-    IDS_MUI_SELRECTORMULTI  "Nie moøna wykonaÊ tej operacji w obrÍbie prostokπtnego multiwyboru."
-    IDS_MUI_BUFFERTOOSMALL  "Ta operacja nie moøe zostaÊ przeprowadzona (zbyt d≥ugie wiersze)."
-    IDS_MUI_FIND_WRAPFW     "Dotarto do koÒca dokumentu, ponowne przeszukiwanie od poczπtku."
-    IDS_MUI_FIND_WRAPRE     "Dotarto do poczπtku dokumentu, ponowne przeszukiwanie do koÒca."
-    IDS_MUI_NOTFOUND        "Nie znaleziono okreúlonego tekstu."
-    IDS_MUI_REPLCOUNT       "%i przyk≥ady okreúlonego tekstu zosta≥y zastπpione."
-    IDS_MUI_ASK_ENCODING    "Prze≥πczanie kodowania pliku z jednego kodowania na drugie moøe zamieniÊ tekst na domyúlne znaki, i przywrÛcenie historii zostanie wymazane. KontynuowaÊ?"
-    IDS_MUI_ASK_ENCODING2   "W≥aúnie chcesz zmieniÊ kodowanie pustego pliku. Spowoduje to wyczyszczenie historii, jak i rÛwnieø nie bÍdzie moøliwe zsynchronizowanie nowego kodowania. KontynuowaÊ?"
-    IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. ZapisaÊ do innego pliku?"
+    IDS_MUI_SELRECT         "Ta operacja nie mo≈ºe zostaƒá przeprowadzona w obrƒôbie prostkƒÖtnego zaznaczenia"
+    IDS_MUI_SELMULTI        "Nie mo≈ºna wykonaƒá tej operacji w obrƒôbie multiwyboru."
+    IDS_MUI_SELRECTORMULTI  "Nie mo≈ºna wykonaƒá tej operacji w obrƒôbie prostokƒÖtnego multiwyboru."
+    IDS_MUI_BUFFERTOOSMALL  "Ta operacja nie mo≈ºe zostaƒá przeprowadzona (zbyt d≈Çugie wiersze)."
+    IDS_MUI_FIND_WRAPFW     "Dotarto do ko≈Ñca dokumentu, ponowne przeszukiwanie od poczƒÖtku."
+    IDS_MUI_FIND_WRAPRE     "Dotarto do poczƒÖtku dokumentu, ponowne przeszukiwanie do ko≈Ñca."
+    IDS_MUI_NOTFOUND        "Nie znaleziono okre≈õlonego tekstu."
+    IDS_MUI_REPLCOUNT       "%i przyk≈Çady okre≈õlonego tekstu zosta≈Çy zastƒÖpione."
+    IDS_MUI_ASK_ENCODING    "Prze≈ÇƒÖczanie kodowania pliku z jednego kodowania na drugie mo≈ºe zamieniƒá tekst na domy≈õlne znaki, i przywr√≥cenie historii zostanie wymazane. Kontynuowaƒá?"
+    IDS_MUI_ASK_ENCODING2   "W≈Ça≈õnie chcesz zmieniƒá kodowanie pustego pliku. Spowoduje to wyczyszczenie historii, jak i r√≥wnie≈º nie bƒôdzie mo≈ºliwe zsynchronizowanie nowego kodowania. Kontynuowaƒá?"
+    IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisaƒá do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Bieøπcy plik zosta≥ zmieniony przez zewnÍtrzny program. Za≥adowaÊ ponownie?"
-    IDS_MUI_FILECHANGENOTIFY2 "Bieøπcy plik zosta≥ usuniÍty. ZapisaÊ teraz?"
-    IDS_MUI_STICKYWINPOS    "Zamroøona pozycja okna jest w≥πczona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieøπcego umiejscowienia okna."
-    IDS_MUI_SAVEDSETTINGS   "Bieøπce ustawienia programu zosta≥y zapisane."
-    IDS_MUI_CREATEINI_FAIL  "B≥πd podczas tworzenia pliku konfiguracyjnego."
-    IDS_MUI_WRITEINI_FAIL   "B≥πd zapisywania ustawieÒ do pliku konfiguracyjnego."
+                            "Bie≈ºƒÖcy plik zosta≈Ç zmieniony przez zewnƒôtrzny program. Za≈Çadowaƒá ponownie?"
+    IDS_MUI_FILECHANGENOTIFY2 "Bie≈ºƒÖcy plik zosta≈Ç usuniƒôty. Zapisaƒá teraz?"
+    IDS_MUI_STICKYWINPOS    "Zamro≈ºona pozycja okna jest w≈ÇƒÖczona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bie≈ºƒÖcego umiejscowienia okna."
+    IDS_MUI_SAVEDSETTINGS   "Bie≈ºƒÖce ustawienia programu zosta≈Çy zapisane."
+    IDS_MUI_CREATEINI_FAIL  "B≈ÇƒÖd podczas tworzenia pliku konfiguracyjnego."
+    IDS_MUI_WRITEINI_FAIL   "B≈ÇƒÖd zapisywania ustawie≈Ñ do pliku konfiguracyjnego."
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nie znaleziono istniejπcego pliku konfiguracyjnego.\nAby zachowaÊ zmiany stylÛw, zapisz ustawienia (F7) lub wrÛÊ do schematu konfiguracji (Ctrl+F12) i eksportuj style."
+                            "Nie znaleziono istniejƒÖcego pliku konfiguracyjnego.\nAby zachowaƒá zmiany styl√≥w, zapisz ustawienia (F7) lub wr√≥ƒá do schematu konfiguracji (Ctrl+F12) i eksportuj style."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL      "B≥πd podczas eksportowania ustawieÒ styu do ""%s""."
-    IDS_MUI_REGEX_INVALID    "B≥πd podczas oceny regularnego wyraøenia. Wyraøenie jest nieuzasadnione!"
-    IDS_MUI_DROP_NO_FILE     "Nie rozpoznano øadnej sensownej nazwy pliku.\nJeúli upuúcisz aplikacjÍ 32-bitowπ,\nprzeciπgnij i upuúÊ do paska narzÍdzi Notepad3'a."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyÊ plik."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyÊ link w przeglπdarce."
+    IDS_MUI_EXPORT_FAIL      "B≈ÇƒÖd podczas eksportowania ustawie≈Ñ styu do ""%s""."
+    IDS_MUI_REGEX_INVALID    "B≈ÇƒÖd podczas oceny regularnego wyra≈ºenia. Wyra≈ºenie jest nieuzasadnione!"
+    IDS_MUI_DROP_NO_FILE     "Nie rozpoznano ≈ºadnej sensownej nazwy pliku.\nJe≈õli upu≈õcisz aplikacjƒô 32-bitowƒÖ,\nprzeciƒÖgnij i upu≈õƒá do paska narzƒôdzi Notepad3'a."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyƒá plik."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyƒá link w przeglƒÖdarce."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "W≥πczono zachowanie znacznika czasu w modyfikacji pliku.\nTa opcja pozostanie dla tej sesji!"
+                             "W≈ÇƒÖczono zachowanie znacznika czasu w modyfikacji pliku.\nTa opcja pozostanie dla tej sesji!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "ZapisaÊ zmiany w:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "PrzywrÛciÊ plik do poprzedniego stanu? Zmiany zostanπ utracone!"
-    IDS_MUI_ASK_RECODE      "Ponowne kodowanie wymaga ponownego za≥adowania pliku z dysku, niezapisane zmiany zostanπ utracone!"
-    IDS_MUI_ASK_CREATE      """%s"" nie znaleziono.\nCzy chcesz utworzyÊ ten plik?"
-    IDS_MUI_PRINT_HEADER    "Nazwa pliku, bieøπca data i czas|Nazwa pliku, bieøπca data|Nazwa pliku|Zostaw czysty"
+    IDS_MUI_ASK_SAVE        "Zapisaƒá zmiany w:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Przywr√≥ciƒá plik do poprzedniego stanu? Zmiany zostanƒÖ utracone!"
+    IDS_MUI_ASK_RECODE      "Ponowne kodowanie wymaga ponownego za≈Çadowania pliku z dysku, niezapisane zmiany zostanƒÖ utracone!"
+    IDS_MUI_ASK_CREATE      """%s"" nie znaleziono.\nCzy chcesz utworzyƒá ten plik?"
+    IDS_MUI_PRINT_HEADER    "Nazwa pliku, bie≈ºƒÖca data i czas|Nazwa pliku, bie≈ºƒÖca data|Nazwa pliku|Zostaw czysty"
     IDS_MUI_PRINT_FOOTER    "Numer strony|Pozostaw czysty"
-    IDS_MUI_PRINT_COLOR     "Normalny|OdwrÛÊ jasne (ciemne t≥o)|Czarny na bia≥y|Kolorowy na bia≥y|Kolorowy na bia≥y (z wyjπtkiem numerÛw wierszy)|Kolory ekranu"
+    IDS_MUI_PRINT_COLOR     "Normalny|Odwr√≥ƒá jasne (ciemne t≈Ço)|Czarny na bia≈Çy|Kolorowy na bia≈Çy|Kolorowy na bia≈Çy (z wyjƒÖtkiem numer√≥w wierszy)|Kolory ekranu"
     IDS_MUI_PRINT_PAGENUM   "Strona %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Ten dokument nie zawiera øadnego tekstu do wydrukowania."
-    IDS_MUI_PRINT_ERROR     "B≥πd drukowania ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "SkrÛt do bieøπcego pliku utworzono w katalogu Ulubione."
-    IDS_MUI_FAV_FAILURE     "Nie moøna utworzyÊ skrÛtu do bieøπcego pliku.\nUpewnij siÍ, czy nie ma innego pliku o tej samej nazwie."
-    IDS_MUI_READONLY_MODIFY "Nie moøna zmieniÊ atrybutÛw  ""%s"" ."
-    IDS_MUI_SAVEPOS         "&Zapisz pozycjÍ\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Resetuj pozycjÍ\tCtrl+R"
+    IDS_MUI_PRINT_EMPTY     "Ten dokument nie zawiera ≈ºadnego tekstu do wydrukowania."
+    IDS_MUI_PRINT_ERROR     "B≈ÇƒÖd drukowania ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "Skr√≥t do bie≈ºƒÖcego pliku utworzono w katalogu Ulubione."
+    IDS_MUI_FAV_FAILURE     "Nie mo≈ºna utworzyƒá skr√≥tu do bie≈ºƒÖcego pliku.\nUpewnij siƒô, czy nie ma innego pliku o tej samej nazwie."
+    IDS_MUI_READONLY_MODIFY "Nie mo≈ºna zmieniƒá atrybut√≥w  ""%s"" ."
+    IDS_MUI_SAVEPOS         "&Zapisz pozycjƒô\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Resetuj pozycjƒô\tCtrl+R"
     IDS_MUI_PREVIEW         "&Zobacz ustawienia\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Has≥o nieprawid≥owe.\nWprowadziÊ ponownie has≥o?"
-    IDS_MUI_NOPASS          "Odkodowywanie anulowane!\nCzy odczytaÊ zakodowane pierwotne dane?"
-    IDS_MUI_STY_BASESTD     "BASE (Styl domyúlny):"
-    IDS_MUI_STY_BASE2ND     "BASE (drugi styl domyúlny):"
-    IDS_MUI_STY_LEXDEF      "%s - Styl domyúlny:"
+    IDS_MUI_PASS_FAILURE    "Has≈Ço nieprawid≈Çowe.\nWprowadziƒá ponownie has≈Ço?"
+    IDS_MUI_NOPASS          "Odkodowywanie anulowane!\nCzy odczytaƒá zakodowane pierwotne dane?"
+    IDS_MUI_STY_BASESTD     "BASE (Styl domy≈õlny):"
+    IDS_MUI_STY_BASE2ND     "BASE (drugi styl domy≈õlny):"
+    IDS_MUI_STY_LEXDEF      "%s - Styl domy≈õlny:"
     IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
     IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie t≥umaczenie: Crane70"
+    IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie t≈Çumaczenie: Crane70"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
     IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Skojarzone rozszerzenia nazwy plikÛw:"
-    IDS_MUI_EXAMPLE_TEXT    "W niøach mÛg≥ zjeúÊ truflÍ koÒ bπdü psy, 0123456789."
+    IDS_MUI_ASSOCIATED_EXT  "Skojarzone rozszerzenia nazwy plik√≥w:"
+    IDS_MUI_EXAMPLE_TEXT    "W ni≈ºach m√≥g≈Ç zje≈õƒá truflƒô ko≈Ñ bƒÖd≈∫ psy, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Linia (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Kolumna (1 - %lli):"
@@ -237,19 +238,19 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "&JÍzyk"
-    IDS_MUI_MENU_THEMES     "WybÛr &schematÛw"
-    IDM_THEMES_DEFAULT      "Domyúlne"
+    IDS_MUI_MENU_LANGUAGE   "&Jƒôzyk"
+    IDS_MUI_MENU_THEMES     "Wyb√≥r &schemat√≥w"
+    IDM_THEMES_DEFAULT      "Domy≈õlne"
     IDM_THEMES_FILE_ITEM    "Ustawienia standardowe"
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Uøycie:\r\n\
-Notepad3 \t[/?] [...[Kodowanie]] [...[Tryb koÒca wiersza]] [/e] [/g] [/m] [/l]\r\n\
+U≈ºycie:\r\n\
+Notepad3 \t[/?] [...[Kodowanie]] [...[Tryb ko≈Ñca wiersza]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[napÍd:][úcieøka]nazwa pliku[...]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[napƒôd:][≈õcie≈ºka]nazwa pliku[...]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
@@ -288,13 +289,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Rozszerzenia plikÛw naleøy oddzieliÊ ';'\r\n\
-zastosuj \\<regex>; aby zdefiniowaÊ nazwÍ pliku pasujπcπ do wzoru:\r\n\
+Rozszerzenia plik√≥w nale≈ºy oddzieliƒá ';'\r\n\
+zastosuj \\<regex>; aby zdefiniowaƒá nazwƒô pliku pasujƒÖcƒÖ do wzoru:\r\n\
    \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-W≥aúciwoúci stylu moøna kopiowaÊ uøywjπc Kopiuj i Wklej lub Przeciπgnij i UpuúÊ.\
+W≈Ça≈õciwo≈õci stylu mo≈ºna kopiowaƒá u≈ºywjƒÖc Kopiuj i Wklej lub PrzeciƒÖgnij i Upu≈õƒá.\
 "
 
 END

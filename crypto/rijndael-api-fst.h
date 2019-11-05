@@ -1,4 +1,5 @@
-﻿/**
+// encoding: UTF-8
+/**
  * rijndael-api-fst.h
  *
  * @version 2.9 (December 2000)

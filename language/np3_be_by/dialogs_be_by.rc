@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1251
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS
-#pragma code_page(1251) // Cyrillic (Windows-1251)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,25 +55,25 @@ END
 
 IDD_MUI_ABOUT DIALOGEX 0, 0, 400, 274
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Пра Notepad3"
+CAPTION "РџСЂР° Notepad3"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,330,256,50,14
     EDITTEXT        IDC_VERSION,77,7,220,14,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    LTEXT           "Версія бібліятэкі Scintilla:",IDC_SCI_VERSION,80,24,219,8
-    LTEXT           "Кампілятар:",IDC_COMPILER,80,35,218,8
+    LTEXT           "Р’РµСЂСЃС–СЏ Р±С–Р±Р»С–СЏС‚СЌРєС– Scintilla:",IDC_SCI_VERSION,80,24,219,8
+    LTEXT           "РљР°РјРїС–Р»СЏС‚Р°СЂ:",IDC_COMPILER,80,35,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,52,218,8
     LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,80,64,218,8
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Капіяваць версію",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
+    PUSHBUTTON      "РљР°РїС–СЏРІР°С†СЊ РІРµСЂСЃС–СЋ",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Параметры камандавага радку"
+CAPTION "РџР°СЂР°РјРµС‚СЂС‹ РєР°РјР°РЅРґР°РІР°РіР° СЂР°РґРєСѓ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
@@ -81,222 +82,222 @@ END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 313, 142
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Знайсці тэкст"
+CAPTION "Р—РЅР°Р№СЃС†С– С‚СЌРєСЃС‚"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Шукаць:",IDC_STATIC,7,7,30,8
+    LTEXT           "&РЁСѓРєР°С†СЊ:",IDC_STATIC,7,7,30,8
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Улічваць &рэгістр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,71,10
-    CONTROL         "Толькі &цэлыя словы",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,83,10
-    CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,82,10
-    CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,79,10
-    CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,84,10
-    CONTROL         "Кропка азначае &ўсё",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,83,10
-    CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,69,10
-    CONTROL         "&Закрыць пасля пошуку",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,94,10
-    CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,99,10
-    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,63,10
-    CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
+    CONTROL         "РЈР»С–С‡РІР°С†СЊ &СЂСЌРіС–СЃС‚СЂ",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,71,10
+    CONTROL         "РўРѕР»СЊРєС– &С†СЌР»С‹СЏ СЃР»РѕРІС‹",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,83,10
+    CONTROL         "РўРѕР»СЊРєС– РїР°&С‡Р°С‚РєС– СЃР»РѕСћ",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,82,10
+    CONTROL         "РЎ&С–РјРІР°Р»С‹ РєС–СЂР°РІР°РЅРЅСЏ",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,79,10
+    CONTROL         "Р СЌРіСѓР»СЏСЂРЅС‹СЏ &РІС‹СЂР°Р·С‹",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,84,10
+    CONTROL         "РљСЂРѕРїРєР° Р°Р·РЅР°С‡Р°Рµ &СћСЃС‘",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,83,10
+    CONTROL         "РќРµ Р·&Р°С†С‹РєР»С–РІР°С†СЊ",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,69,10
+    CONTROL         "&Р—Р°РєСЂС‹С†СЊ РїР°СЃР»СЏ РїРѕС€СѓРєСѓ",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,94,10
+    CONTROL         "РђРґР·РЅР°С‡С‹С†СЊ СѓРІР°&С…РѕРґР¶Р°РЅРЅС–",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,99,10
+    CONTROL         "&Wildcard РїРѕС€СѓРє",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,63,10
+    CONTROL         "РџСЂР°Р·СЂС‹СЃС‚Р°СЃС†СЊ, РєР°Р»С– РЅСЏРјР° С„РѕРєСѓСЃСѓ",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,127,10
-    DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
-    PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
-    PUSHBUTTON      "Закрыць",IDCANCEL,246,99,60,14
-    CONTROL         "<a>Замяніць (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
+    DEFPUSHBUTTON   "Р—РЅР°Р№СЃС†С– &РґР°Р»РµР№",IDOK,246,7,60,14
+    PUSHBUTTON      "&РџР°РїСЏСЂСЌРґРЅСЏРµ",IDC_FINDPREV,246,23,60,14
+    PUSHBUTTON      "Р—Р°РєСЂС‹С†СЊ",IDCANCEL,246,99,60,14
+    CONTROL         "<a>Р—Р°РјСЏРЅС–С†СЊ (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,133,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,199,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,299,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "&Факусаванне",IDC_TOGGLE_VISIBILITY,246,65,60,14
+    PUSHBUTTON      "&Р¤Р°РєСѓСЃР°РІР°РЅРЅРµ",IDC_TOGGLE_VISIBILITY,246,65,60,14
     SCROLLBAR       IDC_RESIZEGRIP,302,131,10,10
 END
 
 IDD_MUI_REPLACE DIALOGEX 0, 0, 313, 168
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Замяніць тэкст"
+CAPTION "Р—Р°РјСЏРЅС–С†СЊ С‚СЌРєСЃС‚"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Шукаць:",IDC_STATIC,7,7,30,8
+    LTEXT           "&РЁСѓРєР°С†СЊ:",IDC_STATIC,7,7,30,8
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Замяніц&ь на:",IDC_STATIC,7,36,43,8
+    LTEXT           "Р—Р°РјСЏРЅС–С†&СЊ РЅР°:",IDC_STATIC,7,36,43,8
     COMBOBOX        IDC_REPLACETEXT,7,47,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Улічваць &рэгістр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,71,10
-    CONTROL         "Толькі &цэлыя словы",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,83,10
-    CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,82,10
-    CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,79,10
-    CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,84,10
-    CONTROL         "Кропка азначае &ўсё",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,83,10
-    CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,69,10
-    CONTROL         "&Закрыць пасля замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
-    CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,99,10
-    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,67,10
-    CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
+    CONTROL         "РЈР»С–С‡РІР°С†СЊ &СЂСЌРіС–СЃС‚СЂ",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,71,10
+    CONTROL         "РўРѕР»СЊРєС– &С†СЌР»С‹СЏ СЃР»РѕРІС‹",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,83,10
+    CONTROL         "РўРѕР»СЊРєС– РїР°&С‡Р°С‚РєС– СЃР»РѕСћ",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,82,10
+    CONTROL         "РЎ&С–РјРІР°Р»С‹ РєС–СЂР°РІР°РЅРЅСЏ",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,79,10
+    CONTROL         "Р СЌРіСѓР»СЏСЂРЅС‹СЏ &РІС‹СЂР°Р·С‹",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,84,10
+    CONTROL         "РљСЂРѕРїРєР° Р°Р·РЅР°С‡Р°Рµ &СћСЃС‘",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,83,10
+    CONTROL         "РќРµ Р·&Р°С†С‹РєР»С–РІР°С†СЊ",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,69,10
+    CONTROL         "&Р—Р°РєСЂС‹С†СЊ РїР°СЃР»СЏ Р·Р°РјРµРЅС‹",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
+    CONTROL         "РђРґР·РЅР°С‡С‹С†СЊ СѓРІР°&С…РѕРґР¶Р°РЅРЅС–",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,99,10
+    CONTROL         "&Wildcard РїРѕС€СѓРє",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,67,10
+    CONTROL         "РџСЂР°Р·СЂС‹СЃС‚Р°СЃС†СЊ, РєР°Р»С– РЅСЏРјР° С„РѕРєСѓСЃСѓ",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,127,10
-    DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
-    PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
-    PUSHBUTTON      "За&мяніць",IDC_REPLACE,246,43,60,14
-    PUSHBUTTON      "У в&ылучэнні",IDC_REPLACEINSEL,246,59,60,14
-    PUSHBUTTON      "Замяніць у&сё",IDC_REPLACEALL,246,75,60,14
-    PUSHBUTTON      "Памяняць месцамі",IDC_SWAPSTRG,156,32,73,12
-    PUSHBUTTON      "Закрыць",IDCANCEL,246,126,60,14
-    CONTROL         "<a>Знайсці (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    DEFPUSHBUTTON   "Р—РЅР°Р№СЃС†С– &РґР°Р»РµР№",IDOK,246,7,60,14
+    PUSHBUTTON      "&РџР°РїСЏСЂСЌРґРЅСЏРµ",IDC_FINDPREV,246,23,60,14
+    PUSHBUTTON      "Р—Р°&РјСЏРЅС–С†СЊ",IDC_REPLACE,246,43,60,14
+    PUSHBUTTON      "РЈ РІ&С‹Р»СѓС‡СЌРЅРЅС–",IDC_REPLACEINSEL,246,59,60,14
+    PUSHBUTTON      "Р—Р°РјСЏРЅС–С†СЊ Сѓ&СЃС‘",IDC_REPLACEALL,246,75,60,14
+    PUSHBUTTON      "РџР°РјСЏРЅСЏС†СЊ РјРµСЃС†Р°РјС–",IDC_SWAPSTRG,156,32,73,12
+    PUSHBUTTON      "Р—Р°РєСЂС‹С†СЊ",IDCANCEL,246,126,60,14
+    CONTROL         "<a>Р—РЅР°Р№СЃС†С– (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,133,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,199,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,299,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "&Факусаванне",IDC_TOGGLE_VISIBILITY,246,94,60,14
+    PUSHBUTTON      "&Р¤Р°РєСѓСЃР°РІР°РЅРЅРµ",IDC_TOGGLE_VISIBILITY,246,94,60,14
     SCROLLBAR       IDC_RESIZEGRIP,302,157,10,10
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 235, 96
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Выканаць"
+CAPTION "Р’С‹РєР°РЅР°С†СЊ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,20,20
-    LTEXT           "Увядзіце імя праграмы, папкі, дакумента ці рэсурса інтэрнэту, якія патрэбна адкрыць.",IDC_STATIC,39,7,189,17
+    LTEXT           "РЈРІСЏРґР·С–С†Рµ С–РјСЏ РїСЂР°РіСЂР°РјС‹, РїР°РїРєС–, РґР°РєСѓРјРµРЅС‚Р° С†С– СЂСЌСЃСѓСЂСЃР° С–РЅС‚СЌСЂРЅСЌС‚Сѓ, СЏРєС–СЏ РїР°С‚СЂСЌР±РЅР° Р°РґРєСЂС‹С†СЊ.",IDC_STATIC,39,7,189,17
     EDITTEXT        IDC_COMMANDLINE,10,35,214,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "Агляд...",IDC_SEARCHEXE,169,69,55,16
+    PUSHBUTTON      "РђРіР»СЏРґ...",IDC_SEARCHEXE,169,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,53,69,55,16
-    PUSHBUTTON      "Скасаваць",IDCANCEL,111,69,55,16
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,111,69,55,16
 END
 
 IDD_MUI_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Адкрыць з дапамогай..."
+CAPTION "РђРґРєСЂС‹С†СЊ Р· РґР°РїР°РјРѕРіР°Р№..."
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Націсніце тут каб прызначыць папку\nз цэтлікамі абраных праграмаў",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "РќР°С†С–СЃРЅС–С†Рµ С‚СѓС‚ РєР°Р± РїСЂС‹Р·РЅР°С‡С‹С†СЊ РїР°РїРєСѓ\nР· С†СЌС‚Р»С–РєР°РјС– Р°Р±СЂР°РЅС‹С… РїСЂР°РіСЂР°РјР°Сћ",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
 IDD_MUI_DEFENCODING DIALOGEX 0, 0, 211, 172
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Кадоўка"
+CAPTION "РљР°РґРѕСћРєР°"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Прадвызначаная кадоўка (для новага файла):",IDC_STATIC,7,7,197,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "РџСЂР°РґРІС‹Р·РЅР°С‡Р°РЅР°СЏ РєР°РґРѕСћРєР° (РґР»СЏ РЅРѕРІР°РіР° С„Р°Р№Р»Р°):",IDC_STATIC,7,7,197,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,181,128
-    CONTROL         "Як &рэзервовая падчас памылкі вызначэння",IDC_USEASREADINGFALLBACK,
+    CONTROL         "РЇРє &СЂСЌР·РµСЂРІРѕРІР°СЏ РїР°РґС‡Р°СЃ РїР°РјС‹Р»РєС– РІС‹Р·РЅР°С‡СЌРЅРЅСЏ",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,162,10
-    GROUPBOX        "Вызначэнне кадоўкі:",IDC_STATIC,7,58,197,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Адкрываць 7-бітныя файлы A&SCII як UTF-8",IDC_ASCIIASUTF8,
+    GROUPBOX        "Р’С‹Р·РЅР°С‡СЌРЅРЅРµ РєР°РґРѕСћРєС–:",IDC_STATIC,7,58,197,88,0,WS_EX_TRANSPARENT
+    CONTROL         "РђРґРєСЂС‹РІР°С†СЊ 7-Р±С–С‚РЅС‹СЏ С„Р°Р№Р»С‹ A&SCII СЏРє UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,163,10
-    CONTROL         "Толькі &надзейныя вынікі вызначэння",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "РўРѕР»СЊРєС– &РЅР°РґР·РµР№РЅС‹СЏ РІС‹РЅС–РєС– РІС‹Р·РЅР°С‡СЌРЅРЅСЏ",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,141,10
-    CONTROL         "Адкрываць 8-бітныя файлы *.&nfo/diz як DOS-437",IDC_NFOASOEM,
+    CONTROL         "РђРґРєСЂС‹РІР°С†СЊ 8-Р±С–С‚РЅС‹СЏ С„Р°Р№Р»С‹ *.&nfo/diz СЏРє DOS-437",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,182,10
-    CONTROL         "Разбіраць &тэгі кадоўкі файла",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Р Р°Р·Р±С–СЂР°С†СЊ &С‚СЌРіС– РєР°РґРѕСћРєС– С„Р°Р№Р»Р°",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,114,10
-    CONTROL         "Вызначаць кодавую старонку &ANSI",IDC_NOANSICPDETECTION,
+    CONTROL         "Р’С‹Р·РЅР°С‡Р°С†СЊ РєРѕРґР°РІСѓСЋ СЃС‚Р°СЂРѕРЅРєСѓ &ANSI",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,137,10
-    CONTROL         "Уключыць вызначэнне &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,127,10
+    CONTROL         "РЈРєР»СЋС‡С‹С†СЊ РІС‹Р·РЅР°С‡СЌРЅРЅРµ &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,127,10
     DEFPUSHBUTTON   "OK",IDOK,101,151,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,154,151,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,154,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Фармат канчаткаў радкоў"
+CAPTION "Р¤Р°СЂРјР°С‚ РєР°РЅС‡Р°С‚РєР°Сћ СЂР°РґРєРѕСћ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Прадвызначаны &фармат:",IDC_STATIC,7,7,116,8
+    LTEXT           "РџСЂР°РґРІС‹Р·РЅР°С‡Р°РЅС‹ &С„Р°СЂРјР°С‚:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,98,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Паведамляць аб розных канчатках радкоў",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "РџР°РІРµРґР°РјР»СЏС†СЊ Р°Р± СЂРѕР·РЅС‹С… РєР°РЅС‡Р°С‚РєР°С… СЂР°РґРєРѕСћ",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,163,10
-    CONTROL         "&Правяраць аднолькавасць падчас захавання",IDC_CONSISTENT_EOLS,
+    CONTROL         "&РџСЂР°РІСЏСЂР°С†СЊ Р°РґРЅРѕР»СЊРєР°РІР°СЃС†СЊ РїР°РґС‡Р°СЃ Р·Р°С…Р°РІР°РЅРЅСЏ",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,170,10
-    CONTROL         "&Выдаляць прабелы ў канцы падчас захавання",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Р’С‹РґР°Р»СЏС†СЊ РїСЂР°Р±РµР»С‹ Сћ РєР°РЅС†С‹ РїР°РґС‡Р°СЃ Р·Р°С…Р°РІР°РЅРЅСЏ",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,174,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,139,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,139,24,50,14
 END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 211, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Розныя канчаткі радкоў"
+CAPTION "Р РѕР·РЅС‹СЏ РєР°РЅС‡Р°С‚РєС– СЂР°РґРєРѕСћ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "У файле знойдзены радкі з рознымі канчаткамі:",IDC_STATIC,7,7,163,8
+    LTEXT           "РЈ С„Р°Р№Р»Рµ Р·РЅРѕР№РґР·РµРЅС‹ СЂР°РґРєС– Р· СЂРѕР·РЅС‹РјС– РєР°РЅС‡Р°С‚РєР°РјС–:",IDC_STATIC,7,7,163,8
     LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
     LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
     LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
     LTEXT           "%s",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "Нар&малізаваць канчаткі радкоў?",IDC_STATIC,7,52,112,8
+    LTEXT           "РќР°СЂ&РјР°Р»С–Р·Р°РІР°С†СЊ РєР°РЅС‡Р°С‚РєС– СЂР°РґРєРѕСћ?",IDC_STATIC,7,52,112,8
     COMBOBOX        IDC_EOLMODELIST,7,64,133,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Так",IDOK,153,63,50,14
-    PUSHBUTTON      "&Не",IDCANCEL,153,80,50,14
-    CONTROL         "&Заўсёды паказваць гэты дыялог",IDC_WARN_INCONSISTENT_EOLS,
+    PUSHBUTTON      "&РўР°Рє",IDOK,153,63,50,14
+    PUSHBUTTON      "&РќРµ",IDCANCEL,153,80,50,14
+    CONTROL         "&Р—Р°СћСЃС‘РґС‹ РїР°РєР°Р·РІР°С†СЊ РіСЌС‚С‹ РґС‹СЏР»РѕРі",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,128,10
 END
 
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Перайсці"
+CAPTION "РџРµСЂР°Р№СЃС†С–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Радок:",IDC_LINE_TEXT,7,8,101,8
+    LTEXT           "&Р Р°РґРѕРє:",IDC_LINE_TEXT,7,8,101,8
     EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
-    LTEXT           "&Слупок:",IDC_COLUMN_TEXT,7,40,101,8
+    LTEXT           "&РЎР»СѓРїРѕРє:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,58,74,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,7,74,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,7,74,50,14
 END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Нядаўнія файлы"
+CAPTION "РќСЏРґР°СћРЅС–СЏ С„Р°Р№Р»С‹"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Аднаўляць пазіцыю карэткі",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,110,10
-    CONTROL         "&Захоўваць гісторыю адкрытых файлаў",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,150,10
-    CONTROL         "Захоўваць &пошукавыя запыты",IDC_REMEMBERSEARCHPATTERN,
+    CONTROL         "&РђРґРЅР°СћР»СЏС†СЊ РїР°Р·С–С†С‹СЋ РєР°СЂСЌС‚РєС–",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,110,10
+    CONTROL         "&Р—Р°С…РѕСћРІР°С†СЊ РіС–СЃС‚РѕСЂС‹СЋ Р°РґРєСЂС‹С‚С‹С… С„Р°Р№Р»Р°Сћ",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,150,10
+    CONTROL         "Р—Р°С…РѕСћРІР°С†СЊ &РїРѕС€СѓРєР°РІС‹СЏ Р·Р°РїС‹С‚С‹",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,121,10
-    PUSHBUTTON      "Прыняць",IDC_REMOVE,212,107,50,14,WS_DISABLED
+    PUSHBUTTON      "РџСЂС‹РЅСЏС†СЊ",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
-    PUSHBUTTON      "Скасаваць",IDCANCEL,212,139,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 213, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Паведамленне аб змяненні файла"
+CAPTION "РџР°РІРµРґР°РјР»РµРЅРЅРµ Р°Р± Р·РјСЏРЅРµРЅРЅС– С„Р°Р№Р»Р°"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "&Няма",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,33,10
-    CONTROL         "&Паказаць паведамленне",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,99,10
-    CONTROL         "&Аўтаабнаўленне (калі не было змен)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,140,10
-    CONTROL         "&Скінуць падчас адкрыцця новага файла",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,153,10
+    CONTROL         "&РќСЏРјР°",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,33,10
+    CONTROL         "&РџР°РєР°Р·Р°С†СЊ РїР°РІРµРґР°РјР»РµРЅРЅРµ",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,99,10
+    CONTROL         "&РђСћС‚Р°Р°Р±РЅР°СћР»РµРЅРЅРµ (РєР°Р»С– РЅРµ Р±С‹Р»Рѕ Р·РјРµРЅ)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,140,10
+    CONTROL         "&РЎРєС–РЅСѓС†СЊ РїР°РґС‡Р°СЃ Р°РґРєСЂС‹С†С†СЏ РЅРѕРІР°РіР° С„Р°Р№Р»Р°",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,153,10
     DEFPUSHBUTTON   "OK",IDOK,156,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,156,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,156,24,50,14
 END
 
 IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 134
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Выбраць схему"
+CAPTION "Р’С‹Р±СЂР°С†СЊ СЃС…РµРјСѓ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
-    CONTROL         "&Прадвызначыць схему",IDC_DEFAULTSCHEME,
+    CONTROL         "&РџСЂР°РґРІС‹Р·РЅР°С‡С‹С†СЊ СЃС…РµРјСѓ",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,93,10
-    CONTROL         "&Аўтавыбар згодна пашырэнню файла",IDC_AUTOSELECT,
+    CONTROL         "&РђСћС‚Р°РІС‹Р±Р°СЂ Р·РіРѕРґРЅР° РїР°С€С‹СЂСЌРЅРЅСЋ С„Р°Р№Р»Р°",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,145,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
-    PUSHBUTTON      "Скасаваць",IDCANCEL,108,113,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,117,10,10
 END
 
 IDD_MUI_STYLECONFIG DIALOGEX 0, 0, 467, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Налады схемаў"
+CAPTION "РќР°Р»Р°РґС‹ СЃС…РµРјР°Сћ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
@@ -304,84 +305,84 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Колер...",IDC_STYLEFORE,181,201,46,14
-    PUSHBUTTON      "&Фон...",IDC_STYLEBACK,232,201,46,14
-    PUSHBUTTON      "&Шрыфт...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "&Прагляд",IDC_PREVIEW,330,201,42,14
-    PUSHBUTTON      "&Скінуць",IDC_STYLEDEFAULT,377,201,42,14
+    PUSHBUTTON      "&РљРѕР»РµСЂ...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "&Р¤РѕРЅ...",IDC_STYLEBACK,232,201,46,14
+    PUSHBUTTON      "&РЁСЂС‹С„С‚...",IDC_STYLEFONT,283,201,42,14
+    PUSHBUTTON      "&РџСЂР°РіР»СЏРґ",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "&РЎРєС–РЅСѓС†СЊ",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
-    PUSHBUTTON      "&Імпарт...",IDC_IMPORT,181,233,50,14
-    PUSHBUTTON      "&Экспарт...",IDC_EXPORT,237,233,50,14
+    PUSHBUTTON      "&Р†РјРїР°СЂС‚...",IDC_IMPORT,181,233,50,14
+    PUSHBUTTON      "&Р­РєСЃРїР°СЂС‚...",IDC_EXPORT,237,233,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,233,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,410,233,50,14
-    GROUPBOX        "Інфармацыя",IDC_INFO_GROUPBOX,180,7,280,127
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,410,233,50,14
+    GROUPBOX        "Р†РЅС„Р°СЂРјР°С†С‹СЏ",IDC_INFO_GROUPBOX,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
-    LTEXT           "Налады схемаў",IDC_TITLE,220,25,200,12
+    LTEXT           "РќР°Р»Р°РґС‹ СЃС…РµРјР°Сћ",IDC_TITLE,220,25,200,12
     EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
     SCROLLBAR       IDC_RESIZEGRIP,7,233,10,10
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 192, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Налады табуляцыі"
+CAPTION "РќР°Р»Р°РґС‹ С‚Р°Р±СѓР»СЏС†С‹С–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Памер &табуляцыі:",IDC_STATIC,7,10,65,8
+    LTEXT           "РџР°РјРµСЂ &С‚Р°Р±СѓР»СЏС†С‹С–:",IDC_STATIC,7,10,65,8
     EDITTEXT        IDC_TAB_WIDTH,79,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "Памер в&одступа:",IDC_STATIC,7,30,56,8
+    LTEXT           "РџР°РјРµСЂ РІ&РѕРґСЃС‚СѓРїР°:",IDC_STATIC,7,30,56,8
     EDITTEXT        IDC_INDENT_DEPTH,79,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Замяняць прабеламі",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,83,10
-    CONTROL         "&Клавіша Tab перафарматуе водступ",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,139,10
-    CONTROL         "Клавіша Backspace &перафарматуе водступ",IDC_BACKTAB_INDENTS,
+    CONTROL         "&Р—Р°РјСЏРЅСЏС†СЊ РїСЂР°Р±РµР»Р°РјС–",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,83,10
+    CONTROL         "&РљР»Р°РІС–С€Р° Tab РїРµСЂР°С„Р°СЂРјР°С‚СѓРµ РІРѕРґСЃС‚СѓРї",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,139,10
+    CONTROL         "РљР»Р°РІС–С€Р° Backspace &РїРµСЂР°С„Р°СЂРјР°С‚СѓРµ РІРѕРґСЃС‚СѓРї",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,160,10
-    CONTROL         "&Паведамляць аб наяўнасці розных водступаў",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&РџР°РІРµРґР°РјР»СЏС†СЊ Р°Р± РЅР°СЏСћРЅР°СЃС†С– СЂРѕР·РЅС‹С… РІРѕРґСЃС‚СѓРїР°Сћ",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,171,10
-    CONTROL         "&Аўтаматычна вызначаць від водступаў",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&РђСћС‚Р°РјР°С‚С‹С‡РЅР° РІС‹Р·РЅР°С‡Р°С†СЊ РІС–Рґ РІРѕРґСЃС‚СѓРїР°Сћ",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,151,10
     DEFPUSHBUTTON   "OK",IDOK,135,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,135,27,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,135,27,50,14
 END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 231, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Розныя водступы"
+CAPTION "Р РѕР·РЅС‹СЏ РІРѕРґСЃС‚СѓРїС‹"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Статыстыка па радкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
-    LTEXT           "Табуляцыя[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8,SS_RIGHT
-    LTEXT           "Прабелы[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8,SS_RIGHT
-    LTEXT           "Змешаныя[x]:",IDC_STATIC,18,42,66,8,SS_RIGHT
+    GROUPBOX        "РЎС‚Р°С‚С‹СЃС‚С‹РєР° РїР° СЂР°РґРєР°Рј: ",IDC_STATIC,7,7,217,48,WS_GROUP
+    LTEXT           "РўР°Р±СѓР»СЏС†С‹СЏ[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8,SS_RIGHT
+    LTEXT           "РџСЂР°Р±РµР»С‹[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8,SS_RIGHT
+    LTEXT           "Р—РјРµС€Р°РЅС‹СЏ[x]:",IDC_STATIC,18,42,66,8,SS_RIGHT
     LTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     LTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     LTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
-    GROUPBOX        "Перафарматаваць усе? ",IDC_STATIC,7,60,217,56,WS_GROUP
-    CONTROL         "&Табуляцыя",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,52,10
-    CONTROL         "&Прабелы",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,52,10
-    LTEXT           "Радкоў з нестандартным памерам: %s",IDC_INDENT_TAB_MODX,71,72,145,8
-    LTEXT           "Радкоў з нестандартным памерам: %s",IDC_INDENT_SPC_MODX,71,84,145,8
-    PUSHBUTTON      "&Так",IDOK,115,98,50,14
-    PUSHBUTTON      "&Не",IDCANCEL,169,98,50,14
-    CONTROL         "&Заўсёды паказваць гэты дыялог",IDC_WARN_INCONSISTENT_INDENTS,
+    GROUPBOX        "РџРµСЂР°С„Р°СЂРјР°С‚Р°РІР°С†СЊ СѓСЃРµ? ",IDC_STATIC,7,60,217,56,WS_GROUP
+    CONTROL         "&РўР°Р±СѓР»СЏС†С‹СЏ",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,52,10
+    CONTROL         "&РџСЂР°Р±РµР»С‹",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,52,10
+    LTEXT           "Р Р°РґРєРѕСћ Р· РЅРµСЃС‚Р°РЅРґР°СЂС‚РЅС‹Рј РїР°РјРµСЂР°Рј: %s",IDC_INDENT_TAB_MODX,71,72,145,8
+    LTEXT           "Р Р°РґРєРѕСћ Р· РЅРµСЃС‚Р°РЅРґР°СЂС‚РЅС‹Рј РїР°РјРµСЂР°Рј: %s",IDC_INDENT_SPC_MODX,71,84,145,8
+    PUSHBUTTON      "&РўР°Рє",IDOK,115,98,50,14
+    PUSHBUTTON      "&РќРµ",IDCANCEL,169,98,50,14
+    CONTROL         "&Р—Р°СћСЃС‘РґС‹ РїР°РєР°Р·РІР°С†СЊ РіСЌС‚С‹ РґС‹СЏР»РѕРі",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,128,10
 END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Доўгія радкі"
+CAPTION "Р”РѕСћРіС–СЏ СЂР°РґРєС–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Мяжа:",IDC_STATIC,7,10,22,8
+    LTEXT           "&РњСЏР¶Р°:",IDC_STATIC,7,10,22,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Паказваць &лінію",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,71,10
-    CONTROL         "Змяняць &фонавы колер",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,95,10
+    CONTROL         "РџР°РєР°Р·РІР°С†СЊ &Р»С–РЅС–СЋ",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,71,10
+    CONTROL         "Р—РјСЏРЅСЏС†СЊ &С„РѕРЅР°РІС‹ РєРѕР»РµСЂ",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,95,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,127,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 231, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Налады пераносу радкоў"
+CAPTION "РќР°Р»Р°РґС‹ РїРµСЂР°РЅРѕСЃСѓ СЂР°РґРєРѕСћ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,217,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -389,51 +390,51 @@ BEGIN
     COMBOBOX        102,7,41,217,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        103,7,58,217,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,118,79,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,174,79,50,14
-    LTEXT           "Без водступа|Перанос з водступам у адзін сімвал|Перанос з водступам у два сімвалы|Перанос з водступам у адзін узровень|Перанос з водступам у два узроўні|Перанос з водступам як у першым падрадку|Перанос з водступам у адзін узровень у далейшых падрадках",200,0,0,914,8,NOT WS_VISIBLE
-    LTEXT           "Без індыкатара перад пераносам|Паказваць індыкатар перад пераносам (каля тэксту)|Паказваць індыкатар перад пераносам (каля мяжы)",201,0,0,478,8,NOT WS_VISIBLE
-    LTEXT           "Без індыкатара пасля пераноса|Паказваць індыкатар пасля пераноса (каля тэксту)|Паказваць індыкатар пасля пераноса (каля мяжы)",202,0,0,462,8,NOT WS_VISIBLE
-    LTEXT           "Перанос тэксту паміж словамі|Перанос тэксту паміж усякімі сімваламі",203,0,0,233,8,NOT WS_VISIBLE
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,174,79,50,14
+    LTEXT           "Р‘РµР· РІРѕРґСЃС‚СѓРїР°|РџРµСЂР°РЅРѕСЃ Р· РІРѕРґСЃС‚СѓРїР°Рј Сѓ Р°РґР·С–РЅ СЃС–РјРІР°Р»|РџРµСЂР°РЅРѕСЃ Р· РІРѕРґСЃС‚СѓРїР°Рј Сѓ РґРІР° СЃС–РјРІР°Р»С‹|РџРµСЂР°РЅРѕСЃ Р· РІРѕРґСЃС‚СѓРїР°Рј Сѓ Р°РґР·С–РЅ СѓР·СЂРѕРІРµРЅСЊ|РџРµСЂР°РЅРѕСЃ Р· РІРѕРґСЃС‚СѓРїР°Рј Сѓ РґРІР° СѓР·СЂРѕСћРЅС–|РџРµСЂР°РЅРѕСЃ Р· РІРѕРґСЃС‚СѓРїР°Рј СЏРє Сѓ РїРµСЂС€С‹Рј РїР°РґСЂР°РґРєСѓ|РџРµСЂР°РЅРѕСЃ Р· РІРѕРґСЃС‚СѓРїР°Рј Сѓ Р°РґР·С–РЅ СѓР·СЂРѕРІРµРЅСЊ Сѓ РґР°Р»РµР№С€С‹С… РїР°РґСЂР°РґРєР°С…",200,0,0,914,8,NOT WS_VISIBLE
+    LTEXT           "Р‘РµР· С–РЅРґС‹РєР°С‚Р°СЂР° РїРµСЂР°Рґ РїРµСЂР°РЅРѕСЃР°Рј|РџР°РєР°Р·РІР°С†СЊ С–РЅРґС‹РєР°С‚Р°СЂ РїРµСЂР°Рґ РїРµСЂР°РЅРѕСЃР°Рј (РєР°Р»СЏ С‚СЌРєСЃС‚Сѓ)|РџР°РєР°Р·РІР°С†СЊ С–РЅРґС‹РєР°С‚Р°СЂ РїРµСЂР°Рґ РїРµСЂР°РЅРѕСЃР°Рј (РєР°Р»СЏ РјСЏР¶С‹)",201,0,0,478,8,NOT WS_VISIBLE
+    LTEXT           "Р‘РµР· С–РЅРґС‹РєР°С‚Р°СЂР° РїР°СЃР»СЏ РїРµСЂР°РЅРѕСЃР°|РџР°РєР°Р·РІР°С†СЊ С–РЅРґС‹РєР°С‚Р°СЂ РїР°СЃР»СЏ РїРµСЂР°РЅРѕСЃР° (РєР°Р»СЏ С‚СЌРєСЃС‚Сѓ)|РџР°РєР°Р·РІР°С†СЊ С–РЅРґС‹РєР°С‚Р°СЂ РїР°СЃР»СЏ РїРµСЂР°РЅРѕСЃР° (РєР°Р»СЏ РјСЏР¶С‹)",202,0,0,462,8,NOT WS_VISIBLE
+    LTEXT           "РџРµСЂР°РЅРѕСЃ С‚СЌРєСЃС‚Сѓ РїР°РјС–Р¶ СЃР»РѕРІР°РјС–|РџРµСЂР°РЅРѕСЃ С‚СЌРєСЃС‚Сѓ РїР°РјС–Р¶ СѓСЃСЏРєС–РјС– СЃС–РјРІР°Р»Р°РјС–",203,0,0,233,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Налады старонкі"
+CAPTION "РќР°Р»Р°РґС‹ СЃС‚Р°СЂРѕРЅРєС–"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Папера",1073,8,8,224,56,WS_GROUP
-    LTEXT           "Па&мер:",1089,16,24,36,8
+    GROUPBOX        "РџР°РїРµСЂР°",1073,8,8,224,56,WS_GROUP
+    LTEXT           "РџР°&РјРµСЂ:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "Кр&ыніца:",1090,16,45,36,8
+    LTEXT           "РљСЂ&С‹РЅС–С†Р°:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Арыентацыя",1072,8,69,64,56,WS_GROUP
-    CONTROL         "&Кніжная",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
-    CONTROL         "&Альбомная",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
-    GROUPBOX        "Прымежкі",1075,80,69,152,56,WS_GROUP
-    LTEXT           "&Левы:",1102,88,85,32,8
+    GROUPBOX        "РђСЂС‹РµРЅС‚Р°С†С‹СЏ",1072,8,69,64,56,WS_GROUP
+    CONTROL         "&РљРЅС–Р¶РЅР°СЏ",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
+    CONTROL         "&РђР»СЊР±РѕРјРЅР°СЏ",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
+    GROUPBOX        "РџСЂС‹РјРµР¶РєС–",1075,80,69,152,56,WS_GROUP
+    LTEXT           "&Р›РµРІС‹:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
-    LTEXT           "&Правы:",1103,164,85,32,8
+    LTEXT           "&РџСЂР°РІС‹:",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
-    LTEXT           "В&ерхні:",1104,88,104,25,8
+    LTEXT           "Р’&РµСЂС…РЅС–:",1104,88,104,25,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
-    LTEXT           "Н&іжні:",1105,164,104,32,8
+    LTEXT           "Рќ&С–Р¶РЅС–:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
-    GROUPBOX        "Калонтытулы",1074,8,130,224,56,WS_GROUP
-    LTEXT           "&Верхні:",IDC_STATIC,16,147,36,8
+    GROUPBOX        "РљР°Р»РѕРЅС‚С‹С‚СѓР»С‹",1074,8,130,224,56,WS_GROUP
+    LTEXT           "&Р’РµСЂС…РЅС–:",IDC_STATIC,16,147,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Ніжні:",IDC_STATIC,16,167,36,8
+    LTEXT           "&РќС–Р¶РЅС–:",IDC_STATIC,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Каляровы друк",1076,8,191,224,37,WS_GROUP
-    LTEXT           "Рэ&жым:",IDC_STATIC,16,208,36,8
+    GROUPBOX        "РљР°Р»СЏСЂРѕРІС‹ РґСЂСѓРє",1076,8,191,224,37,WS_GROUP
+    LTEXT           "Р СЌ&Р¶С‹Рј:",IDC_STATIC,16,208,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Маштаб",IDC_STATIC,240,170,108,58,WS_GROUP
-    LTEXT           "&Ступень (10-500%):",IDC_STATIC,248,188,92,8
+    GROUPBOX        "РњР°С€С‚Р°Р±",IDC_STATIC,240,170,108,58,WS_GROUP
+    LTEXT           "&РЎС‚СѓРїРµРЅСЊ (10-500%):",IDC_STATIC,248,188,92,8
     EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
     CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
     DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
-    PUSHBUTTON      "Скасаваць",IDCANCEL,244,237,50,14
-    PUSHBUTTON      "&Друкач...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "Прадагляд",IDC_STATIC,240,8,108,157
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,244,237,50,14
+    PUSHBUTTON      "&Р”СЂСѓРєР°С‡...",IDC_PRINTER,298,237,50,14
+    GROUPBOX        "РџСЂР°РґР°РіР»СЏРґ",IDC_STATIC,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -441,119 +442,119 @@ END
 
 IDD_MUI_FAVORITES DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Абранае"
+CAPTION "РђР±СЂР°РЅР°Рµ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Націсніце тут каб прызначыць папку\nз цэтлікамі абраных файлаў",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "РќР°С†С–СЃРЅС–С†Рµ С‚СѓС‚ РєР°Р± РїСЂС‹Р·РЅР°С‡С‹С†СЊ РїР°РїРєСѓ\nР· С†СЌС‚Р»С–РєР°РјС– Р°Р±СЂР°РЅС‹С… С„Р°Р№Р»Р°Сћ",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Дадаць у абранае"
+CAPTION "Р”Р°РґР°С†СЊ Сѓ Р°Р±СЂР°РЅР°Рµ"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Надайце імя новага элемента ў абраным:",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "РќР°РґР°Р№С†Рµ С–РјСЏ РЅРѕРІР°РіР° СЌР»РµРјРµРЅС‚Р° Сћ Р°Р±СЂР°РЅС‹Рј:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
-    PUSHBUTTON      "Скасаваць",IDCANCEL,115,45,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,115,45,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,45,10,10
 END
 
 IDD_MUI_PASSWORDS DIALOGEX 0, 0, 311, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Шыфраванне"
+CAPTION "РЁС‹С„СЂР°РІР°РЅРЅРµ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,184,98,50,14
-    CONTROL         "Надать новы",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,139,60,61,10
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,184,98,50,14
+    CONTROL         "РќР°РґР°С‚СЊ РЅРѕРІС‹",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,139,60,61,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,277,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Дадатковы майстар-ключ:",IDC_STATIC,17,61,93,8,NOT WS_GROUP
-    CONTROL         "Шыфраваць парольным сказам",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,121,10
-    CONTROL         "Выкарыстаць былы",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,211,60,83,10
-    GROUPBOX        "Парольны сказ",IDC_STATIC,7,7,297,108
-    CONTROL         "Паказать парольны сказ",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,100,10
+    LTEXT           "Р”Р°РґР°С‚РєРѕРІС‹ РјР°Р№СЃС‚Р°СЂ-РєР»СЋС‡:",IDC_STATIC,17,61,93,8,NOT WS_GROUP
+    CONTROL         "РЁС‹С„СЂР°РІР°С†СЊ РїР°СЂРѕР»СЊРЅС‹Рј СЃРєР°Р·Р°Рј",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,121,10
+    CONTROL         "Р’С‹РєР°СЂС‹СЃС‚Р°С†СЊ Р±С‹Р»С‹",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,211,60,83,10
+    GROUPBOX        "РџР°СЂРѕР»СЊРЅС‹ СЃРєР°Р·",IDC_STATIC,7,7,297,108
+    CONTROL         "РџР°РєР°Р·Р°С‚СЊ РїР°СЂРѕР»СЊРЅС‹ СЃРєР°Р·",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,100,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Расшыфраваць файл"
+CAPTION "Р Р°СЃС€С‹С„СЂР°РІР°С†СЊ С„Р°Р№Р»"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,175,58,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "Расшыфраваць майстар-ключом",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,125,10
-    LTEXT           "У файла ёсць майстар-ключ",IDC_PWD_STATMPW,16,41,98,11,NOT WS_GROUP
-    GROUPBOX        "Парольны сказ",IDC_STATIC,8,6,283,69
-    CONTROL         "Паказать парольны сказ",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,100,10
+    CONTROL         "Р Р°СЃС€С‹С„СЂР°РІР°С†СЊ РјР°Р№СЃС‚Р°СЂ-РєР»СЋС‡РѕРј",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,125,10
+    LTEXT           "РЈ С„Р°Р№Р»Р° С‘СЃС†СЊ РјР°Р№СЃС‚Р°СЂ-РєР»СЋС‡",IDC_PWD_STATMPW,16,41,98,11,NOT WS_GROUP
+    GROUPBOX        "РџР°СЂРѕР»СЊРЅС‹ СЃРєР°Р·",IDC_STATIC,8,6,283,69
+    CONTROL         "РџР°РєР°Р·Р°С‚СЊ РїР°СЂРѕР»СЊРЅС‹ СЃРєР°Р·",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,100,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Разбіць па шырыні"
+CAPTION "Р Р°Р·Р±С–С†СЊ РїР° С€С‹СЂС‹РЅС–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Мяжа:",IDC_STATIC,7,7,22,8
+    LTEXT           "&РњСЏР¶Р°:",IDC_STATIC,7,7,22,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,73,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,73,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,73,24,50,14
 END
 
 IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 210, 110
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Змяніць радкі"
+CAPTION "Р—РјСЏРЅС–С†СЊ СЂР°РґРєС–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Уставіць тэкст перад радкамі:",IDC_STATIC,7,7,104,8
+    LTEXT           "&РЈСЃС‚Р°РІС–С†СЊ С‚СЌРєСЃС‚ РїРµСЂР°Рґ СЂР°РґРєР°РјС–:",IDC_STATIC,7,7,104,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
-    LTEXT           "&Дадаць тэкст у канец радкоў:",IDC_STATIC,7,37,105,8
+    LTEXT           "&Р”Р°РґР°С†СЊ С‚СЌРєСЃС‚ Сѓ РєР°РЅРµС† СЂР°РґРєРѕСћ:",IDC_STATIC,7,37,105,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,153,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,153,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,153,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Нумар радка дакумента",IDC_STATIC,57,72,83,8
+    LTEXT           "РќСѓРјР°СЂ СЂР°РґРєР° РґР°РєСѓРјРµРЅС‚Р°",IDC_STATIC,57,72,83,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Паслядоўны лік",IDC_STATIC,57,82,54,8
+    LTEXT           "РџР°СЃР»СЏРґРѕСћРЅС‹ Р»С–Рє",IDC_STATIC,57,82,54,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Паслядоўны лік (з нуля)",IDC_STATIC,57,92,83,8
+    LTEXT           "РџР°СЃР»СЏРґРѕСћРЅС‹ Р»С–Рє (Р· РЅСѓР»СЏ)",IDC_STATIC,57,92,83,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 210, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Уставіць тэг HTML/XML"
+CAPTION "РЈСЃС‚Р°РІС–С†СЊ С‚СЌРі HTML/XML"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Адчыняльны тэг (з атрыбутамі):",IDC_STATIC,7,7,119,8
+    LTEXT           "&РђРґС‡С‹РЅСЏР»СЊРЅС‹ С‚СЌРі (Р· Р°С‚СЂС‹Р±СѓС‚Р°РјС–):",IDC_STATIC,7,7,119,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
-    LTEXT           "&Зачыняльны тэг (можна рэдагаваць):",IDC_STATIC,7,37,134,8
+    LTEXT           "&Р—Р°С‡С‹РЅСЏР»СЊРЅС‹ С‚СЌРі (РјРѕР¶РЅР° СЂСЌРґР°РіР°РІР°С†СЊ):",IDC_STATIC,7,37,134,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X Times",IDC_STATIC,148,50,24,8
     DEFPUSHBUTTON   "OK",IDOK,153,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,153,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,153,24,50,14
 END
 
 IDD_MUI_ENCLOSESELECTION DIALOGEX 0, 0, 210, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Абгарнуць вылучэнне"
+CAPTION "РђР±РіР°СЂРЅСѓС†СЊ РІС‹Р»СѓС‡СЌРЅРЅРµ"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Уставіць п&ерад вылучэннем:",IDC_STATIC,7,7,98,8
+    LTEXT           "РЈСЃС‚Р°РІС–С†СЊ Рї&РµСЂР°Рґ РІС‹Р»СѓС‡СЌРЅРЅРµРј:",IDC_STATIC,7,7,98,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
-    LTEXT           "Уставіць п&асля вылучэння:",IDC_STATIC,7,37,93,8
+    LTEXT           "РЈСЃС‚Р°РІС–С†СЊ Рї&Р°СЃР»СЏ РІС‹Р»СѓС‡СЌРЅРЅСЏ:",IDC_STATIC,7,37,93,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,153,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,153,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,153,24,50,14
 END
 
 IDD_MUI_INFOBOX DIALOGEX 0, 0, 244, 71
@@ -564,7 +565,7 @@ BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,20,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
     DEFPUSHBUTTON   "&OK",IDOK,187,50,50,14
-    CONTROL         "Н&е паказваць зноў",IDC_INFOBOXCHECK,
+    CONTROL         "Рќ&Рµ РїР°РєР°Р·РІР°С†СЊ Р·РЅРѕСћ",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,79,10
 END
 
@@ -575,9 +576,9 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,20,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
-    PUSHBUTTON      "&Так",IDYES,131,50,50,14
-    PUSHBUTTON      "&Не",IDNO,187,50,50,14
-    CONTROL         "Н&е паказваць зноў",IDC_INFOBOXCHECK,
+    PUSHBUTTON      "&РўР°Рє",IDYES,131,50,50,14
+    PUSHBUTTON      "&РќРµ",IDNO,187,50,50,14
+    CONTROL         "Рќ&Рµ РїР°РєР°Р·РІР°С†СЊ Р·РЅРѕСћ",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,79,10
 END
 
@@ -589,8 +590,8 @@ BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,20,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
     DEFPUSHBUTTON   "&OK",IDOK,131,50,50,14
-    PUSHBUTTON      "&Скасаваць",IDCANCEL,187,50,50,14
-    CONTROL         "Н&е паказваць зноў",IDC_INFOBOXCHECK,
+    PUSHBUTTON      "&РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,187,50,50,14
+    CONTROL         "Рќ&Рµ РїР°РєР°Р·РІР°С†СЊ Р·РЅРѕСћ",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,79,10
 END
 
@@ -623,79 +624,79 @@ END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Сартаваць радкі"
+CAPTION "РЎР°СЂС‚Р°РІР°С†СЊ СЂР°РґРєС–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "У &прамым парадку.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
-    CONTROL         "У &адваротным парадку.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "Перамя&шаць радкі.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "А&б'яднаць дублікаты радкоў.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "Вы&даліць дублікаты радкоў.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Выдаліць &унікальныя радкі.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Выдал&іць пустыя радкі.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Выдаліць радкі толькі &з прабеламі.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,120,10
+    CONTROL         "РЈ &РїСЂР°РјС‹Рј РїР°СЂР°РґРєСѓ.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "РЈ &Р°РґРІР°СЂРѕС‚РЅС‹Рј РїР°СЂР°РґРєСѓ.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "РџРµСЂР°РјСЏ&С€Р°С†СЊ СЂР°РґРєС–.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "Рђ&Р±'СЏРґРЅР°С†СЊ РґСѓР±Р»С–РєР°С‚С‹ СЂР°РґРєРѕСћ.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "Р’С‹&РґР°Р»С–С†СЊ РґСѓР±Р»С–РєР°С‚С‹ СЂР°РґРєРѕСћ.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Р’С‹РґР°Р»С–С†СЊ &СѓРЅС–РєР°Р»СЊРЅС‹СЏ СЂР°РґРєС–.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Р’С‹РґР°Р»&С–С†СЊ РїСѓСЃС‚С‹СЏ СЂР°РґРєС–.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Р’С‹РґР°Р»С–С†СЊ СЂР°РґРєС– С‚РѕР»СЊРєС– &Р· РїСЂР°Р±РµР»Р°РјС–.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,120,10
     CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "&Не ўлічваць рэгістр.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "&Лагічнае параўнанне радкоў.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&РќРµ СћР»С–С‡РІР°С†СЊ СЂСЌРіС–СЃС‚СЂ.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "&Р›Р°РіС–С‡РЅР°Рµ РїР°СЂР°СћРЅР°РЅРЅРµ СЂР°РґРєРѕСћ.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
     CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "У &слупку (прамавугольнае вылучэнне).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
+    CONTROL         "РЈ &СЃР»СѓРїРєСѓ (РїСЂР°РјР°РІСѓРіРѕР»СЊРЅР°Рµ РІС‹Р»СѓС‡СЌРЅРЅРµ).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,128,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,128,24,50,14
 END
 
 IDD_MUI_RECODE DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Пераадкрыць у кадоўцы"
+CAPTION "РџРµСЂР°Р°РґРєСЂС‹С†СЊ Сѓ РєР°РґРѕСћС†С‹"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Зыходная кадоўка файла:",IDC_STATIC,7,7,92,8
+    LTEXT           "&Р—С‹С…РѕРґРЅР°СЏ РєР°РґРѕСћРєР° С„Р°Р№Р»Р°:",IDC_STATIC,7,7,92,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
-    PUSHBUTTON      "Скасаваць",IDCANCEL,108,114,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,108,114,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
 END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Кадоўка"
+CAPTION "РљР°РґРѕСћРєР°"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Выбраць дзейную &кадоўку файла:",IDC_STATIC,7,7,119,8
+    LTEXT           "Р’С‹Р±СЂР°С†СЊ РґР·РµР№РЅСѓСЋ &РєР°РґРѕСћРєСѓ С„Р°Р№Р»Р°:",IDC_STATIC,7,7,119,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
-    PUSHBUTTON      "Скасаваць",IDCANCEL,108,114,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,108,114,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
 END
 
 IDD_MUI_ALIGN DIALOGEX 0, 0, 184, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Выраўнаваць радкі"
+CAPTION "Р’С‹СЂР°СћРЅР°РІР°С†СЊ СЂР°РґРєС–"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Па &леваму краю",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,71,10
-    CONTROL         "Па &праваму краю",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,75,10
-    CONTROL         "Па &цэнтры",102,"Button",BS_AUTORADIOBUTTON,7,31,51,10
-    CONTROL         "Па &шырыні",103,"Button",BS_AUTORADIOBUTTON,7,43,52,10
-    CONTROL         "Па шырыні (&рэжым абзаца)",104,"Button",BS_AUTORADIOBUTTON,7,55,107,10
+    CONTROL         "РџР° &Р»РµРІР°РјСѓ РєСЂР°СЋ",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,71,10
+    CONTROL         "РџР° &РїСЂР°РІР°РјСѓ РєСЂР°СЋ",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,75,10
+    CONTROL         "РџР° &С†СЌРЅС‚СЂС‹",102,"Button",BS_AUTORADIOBUTTON,7,31,51,10
+    CONTROL         "РџР° &С€С‹СЂС‹РЅС–",103,"Button",BS_AUTORADIOBUTTON,7,43,52,10
+    CONTROL         "РџР° С€С‹СЂС‹РЅС– (&СЂСЌР¶С‹Рј Р°Р±Р·Р°С†Р°)",104,"Button",BS_AUTORADIOBUTTON,7,55,107,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,127,24,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_CHOOSEFONT DIALOGEX 0, 0, 300, 200
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Выбраць шрыфт"
+CAPTION "Р’С‹Р±СЂР°С†СЊ С€СЂС‹С„С‚"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    LTEXT           "&Шрыфт:",IDC_STATIC,7,7,127,8
+    LTEXT           "&РЁСЂС‹С„С‚:",IDC_STATIC,7,7,127,8
     COMBOBOX        IDC_FONT_FAMILY_NAMES,7,16,138,84,CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Стыль:",IDC_STATIC,154,7,72,8
+    LTEXT           "&РЎС‚С‹Р»СЊ:",IDC_STATIC,154,7,72,8
     COMBOBOX        IDC_FONT_FACE_NAMES,154,16,84,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Памер:",IDC_STATIC,247,7,40,8
+    LTEXT           "&РџР°РјРµСЂ:",IDC_STATIC,247,7,40,8
     COMBOBOX        IDC_FONT_SIZE,247,16,44,84,CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Прыклад",IDC_STATIC,7,102,284,68,BS_BITMAP
+    GROUPBOX        "РџСЂС‹РєР»Р°Рґ",IDC_STATIC,7,102,284,68,BS_BITMAP
     CONTROL         "",IDC_SAMPLE_BOX,"Static",SS_OWNERDRAW,10,112,276,54
     DEFPUSHBUTTON   "OK",IDOK,182,178,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,240,178,50,14
+    PUSHBUTTON      "РЎРєР°СЃР°РІР°С†СЊ",IDCANCEL,240,178,50,14
 END
 
 

@@ -1,4 +1,4 @@
-﻿;Copyright 2004-2016 John T. Haller of PortableApps.com
+;Copyright 2004-2016 John T. Haller of PortableApps.com
 
 ;Website: http://PortableApps.com/Notepad3Portable
 

@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_AFK)
 LANGUAGE LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -74,15 +75,15 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Nuwe Lêer...",               IDM_FILE_NEW
+        MENUITEM "&Nuwe LÃªer...",               IDM_FILE_NEW
         MENUITEM "Nu&we Gids...",           	IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "Lêer &Filter...",             IDM_VIEW_FILTER
+        MENUITEM "LÃªer &Filter...",             IDM_VIEW_FILTER
         MENUITEM "Stel Filte&r Terug",          IDM_VIEW_FILTERALL
         POPUP "Wy&s"
         BEGIN
             MENUITEM "&Gidse",           		IDM_VIEW_FOLDERS
-            MENUITEM "&Lêers",                  IDM_VIEW_FILES
+            MENUITEM "&LÃªers",                  IDM_VIEW_FILES
             MENUITEM "&Stelsel Voorwerpe",      IDM_VIEW_HIDDEN
         END
         POPUP "S&orteer"

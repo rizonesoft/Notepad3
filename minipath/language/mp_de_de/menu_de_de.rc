@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,19 +57,19 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Öffnen",                       IDM_FILE_OPEN
-        MENUITEM "Öffnen &mit Alternativ-App...", IDM_FILE_OPENWITH
+        MENUITEM "&Ã–ffnen",                       IDM_FILE_OPEN
+        MENUITEM "Ã–ffnen &mit Alternativ-App...", IDM_FILE_OPENWITH
         MENUITEM "Sch&nell-Ansicht",              IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
         MENUITEM "&Kopiere Namen",                IDM_POP_COPYNAME
         MENUITEM "Erzeuge &Link...",              IDM_FILE_CREATELINK
         MENUITEM "&Speichern als...",             IDM_FILE_SAVEAS
         MENUITEM "Kopieren/&Bewegen...",          IDM_FILE_COPYMOVE
-        MENUITEM "&Löschen...",                   IDM_FILE_DELETE
+        MENUITEM "&LÃ¶schen...",                   IDM_FILE_DELETE
         MENUITEM "&Umbenennen...",                IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "&Starten",                      IDM_FILE_LAUNCH
-        MENUITEM "&Ausführen mit Argumenten...",  IDM_FILE_RUN
+        MENUITEM "&AusfÃ¼hren mit Argumenten...",  IDM_FILE_RUN
         MENUITEM SEPARATOR
         MENUITEM "&Eigenschaften",                IDM_FILE_PROPERTIES
     END
@@ -78,7 +79,7 @@ BEGIN
         MENUITEM "Neues &Verzeichnis...",         IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
         MENUITEM "&Datei Filter...",              IDM_VIEW_FILTER
-        MENUITEM "Filter Zur&ücksetzen",          IDM_VIEW_FILTERALL
+        MENUITEM "Filter Zur&Ã¼cksetzen",          IDM_VIEW_FILTERALL
         POPUP "&Zeige"
         BEGIN
             MENUITEM "&Verzeichnisse",            IDM_VIEW_FOLDERS
@@ -88,7 +89,7 @@ BEGIN
         POPUP "S&ortieren"
         BEGIN
             MENUITEM "nach &Name",                IDM_SORT_NAME
-            MENUITEM "nach &Größe",               IDM_SORT_SIZE
+            MENUITEM "nach &GrÃ¶ÃŸe",               IDM_SORT_SIZE
             MENUITEM "nach &Typ",                 IDM_SORT_TYPE
             MENUITEM "nach &Datum",               IDM_SORT_DATE
             MENUITEM SEPARATOR
@@ -120,7 +121,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Öffne MiniPath",                IDM_TRAY_RESTORE
+        MENUITEM "Ã–ffne MiniPath",                IDM_TRAY_RESTORE
         MENUITEM "Verlasse MiniPath",             IDM_TRAY_EXIT
     END
 END

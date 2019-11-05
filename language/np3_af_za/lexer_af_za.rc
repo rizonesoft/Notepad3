@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_AFK)
 LANGUAGE LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -81,12 +82,12 @@ BEGIN
     IDS_LEX_PASCAL_SRC      "Pascal Bronkode"
     IDS_LEX_ASM_SCR         "Assembly Skrip"
     IDS_LEX_PERL_SCR        "Perl Skrip"
-    IDS_LEX_CONF            "Konfigurasie Lêers"
-    IDS_LEX_BATCH           "Batch Lêers"
-    IDS_LEX_DIFF            "Diff Lêers"
+    IDS_LEX_CONF            "Konfigurasie LÃªers"
+    IDS_LEX_BATCH           "Batch LÃªers"
+    IDS_LEX_DIFF            "Diff LÃªers"
     IDS_LEX_SQL             "SQL Query"
     IDS_LEX_PYTHON          "Python Skrip"
-    IDS_LEX_APC_CFG         "Apache Konfig Lêers"
+    IDS_LEX_APC_CFG         "Apache Konfig LÃªers"
     IDS_LEX_PWRSHELL        "PowerShell Skrip"
     IDS_LEX_D_SRC           "D Bronkode"
     IDS_LEX_GO_SRC          "Go Bronkode"
@@ -97,7 +98,7 @@ BEGIN
     IDS_LEX_AWK_SCR         "Awk Skrip"
     IDS_LEX_ANSI_ART        "ANSI Kuns"
     IDS_LEX_SHELL_SCR       "Shell Skrip"
-    IDS_LEX_REG_FILES       "Registry Lêers"
+    IDS_LEX_REG_FILES       "Registry LÃªers"
     IDS_LEX_VHDL            "VHDL"
     IDS_LEX_JSON            "JSON"
     IDS_LEX_NSIS            "NSIS"
@@ -106,7 +107,7 @@ BEGIN
     IDS_LEX_LUA             "Lua Skrip"
     IDS_LEX_TCL             "Tcl Skrip"
     IDS_LEX_AUTOIT3         "AutoIt3 Skrip"
-    IDS_LEX_LATEX           "LaTeX Lêers"
+    IDS_LEX_LATEX           "LaTeX LÃªers"
     IDS_LEX_AHK             "AutoHotkey Skrip"
     IDS_LEX_CMAKE           "Cmake Skrip"
     IDS_LEX_AVI_SYNTH       "AviSynth Skrip"
@@ -418,7 +419,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63328       "Blok Quote"
     IDS_LEX_STR_63329       "Halen"
-    IDS_LEX_STR_63330       "Horisontale Reël"
+    IDS_LEX_STR_63330       "Horisontale ReÃ«l"
     IDS_LEX_STR_63331       "Skakel"
     IDS_LEX_STR_63332       "Kode"
     IDS_LEX_STR_63333       "Verwysing"

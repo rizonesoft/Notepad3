@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +63,7 @@ BEGIN
     IDT_EDIT_UNDO           "Ongedaan maken"
     IDT_EDIT_REDO           "Opnieuw doen"
     IDT_EDIT_CUT            "Knippen"
-    IDT_EDIT_COPY           "KopiÎren"
+    IDT_EDIT_COPY           "Kopi√´ren"
 END
 
 STRINGTABLE
@@ -77,7 +78,7 @@ BEGIN
     IDT_VIEW_SCHEMECONFIG   "Aanpassen Schemes"
     IDT_FILE_EXIT           "Afsluiten"
     IDT_FILE_SAVEAS         "Opslaan als"
-    IDT_FILE_SAVECOPY       "Opslaan kopiÎren"
+    IDT_FILE_SAVECOPY       "Opslaan kopi√´ren"
     IDT_EDIT_CLEAR          "Verwijderen"
     IDT_FILE_PRINT          "Afdrukken"
     IDT_FILE_OPENFAV        "Favorieten"
@@ -118,7 +119,7 @@ BEGIN
     IDS_MUI_FAVORITES       "Selecteer de map met koppelingen naar uw favoriete bestanden."
     IDS_MUI_BACKSLASHHELP   "Backslash transformaties\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Zoeken met joker\n\n*\tMatches met nul of meer tekens.\n?\tmet precies ÈÈn karakter. "
+    IDS_MUI_WILDCARDHELP    "Zoeken met joker\n\n*\tMatches met nul of meer tekens.\n?\tmet precies √©√©n karakter. "
 END
 
 STRINGTABLE
@@ -140,7 +141,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Bepaalde tekens in de huidige tekst worden niet ondersteund door de geselecteerde codering, en kunnen worden vervangen door standaardplaatshouders bij het opslaan. Het wordt aanbevolen om een andere bestandscodering te kiezen. Doorgaan?"
-    IDS_MUI_ERR_DROP        "Er kan slechts ÈÈn bestand tegelijkertijd worden gedeponeerd!"
+    IDS_MUI_ERR_DROP        "Er kan slechts √©√©n bestand tegelijkertijd worden gedeponeerd!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Het bestand ""%s"" kan niet worden opgeslagen en kan worden beveiligd.\n\nWilt u Notepad3 als Administrator starten?"
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com ?"
@@ -268,8 +269,8 @@ Opties:\r\n\
 /x\tSelecteer XML-document scheme.\r\n\
 /c\tOpen een nieuw venster en plak inhoud van klembord.\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
-/n\tOpen altijd een nieuw venster (/ns ÈÈn bestand instantie).\r\n\
-/r\tHergebruik venster (/rs ÈÈn bestand instantie).\r\n\
+/n\tOpen altijd een nieuw venster (/ns √©√©n bestand instantie).\r\n\
+/r\tHergebruik venster (/rs √©√©n bestand instantie).\r\n\
 /p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m).\r\n\
 /t\tStel de titel van het venster in.\r\n\
 /i\tStart als systeemvak icoon.\r\n\
@@ -289,12 +290,12 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Bestand extensies moeten gescheiden door ';'\r\n\
-gebruiken \\<regex>; om een overeenkomstig bestandsnaam patroon te definiÎren:\r\n\
+gebruiken \\<regex>; om een overeenkomstig bestandsnaam patroon te defini√´ren:\r\n\
    \\xyz$;   => bestandsnamen(basename+ext) met 'xyz' als laatste tekens.\r\n\r\n\
 Stijl formaat:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Kopieer formaat: gebruik 'kopiÎren en plakken' of 'slepen en neerzetten'.\
+Kopieer formaat: gebruik 'kopi√´ren en plakken' of 'slepen en neerzetten'.\
 "
 
 END
@@ -345,7 +346,7 @@ IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 zijn afgeleid zonder voorafgaande schriftelijke toestemming.\\par\
 \\cf0 \\par\
 \\cf0 DEZE SOFTWARE WORDT DOOR DE COPYRIGHTHOUDERS OF CONTRIBUANTEN\\par\
-\\cf0 GELEVERD 'ZOALS DEZE IS' ENALLE UITDRUKKELIJK VERMELDE OF GEœMPLICEERDE\\par\
+\\cf0 GELEVERD 'ZOALS DEZE IS' ENALLE UITDRUKKELIJK VERMELDE OF GE√èMPLICEERDE\\par\
 \\cf0 GARANTIES, MET INBEGRIP VAN, MAAR NIET BEPERKT TOT, GARANTIES DAT HET\\par\
 \\cf0 PRODUCT VERHANDELBAAR IS EN GESCHIKT IS VOOR EEN BEPAALD DOEL, WORDEN\\par\
 \\cf0 VERWORPEN. ONDER GEEN BEDING ZAL DE COPYRIGHTHOUDERS OF CONTRIBUANTEN\\par\

@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: UHC
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_KOREAN
-#pragma code_page(949) // Korean (Unified Hangul Code, UHC) (Windows-949)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,72 +57,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "ø≠±‚(&O)",                       IDM_FILE_OPEN
-        MENUITEM "¥Ÿ∏• «¡∑Œ±◊∑•¿∏∑Œ ø≠±‚(&W)...",   IDM_FILE_OPENWITH
-        MENUITEM "∫¸∏• ∫∏±‚(&Q)",                  IDM_FILE_QUICKVIEW
+        MENUITEM "Ïó¥Í∏∞(&O)",                       IDM_FILE_OPEN
+        MENUITEM "Îã§Î•∏ ÌîÑÎ°úÍ∑∏Îû®ÏúºÎ°ú Ïó¥Í∏∞(&W)...",   IDM_FILE_OPENWITH
+        MENUITEM "Îπ†Î•∏ Î≥¥Í∏∞(&Q)",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "¿Ã∏ß ∫πªÁ(&C)",                  IDM_POP_COPYNAME
-        MENUITEM "∏µ≈© ∏∏µÈ±‚(&K)...",             IDM_FILE_CREATELINK
-        MENUITEM "¥Ÿ∏• ¿Ã∏ß¿∏∑Œ ¿˙¿Â(&S)...",       IDM_FILE_SAVEAS
-        MENUITEM "∫πªÁ/¿Ãµø(&M)...",               IDM_FILE_COPYMOVE
-        MENUITEM "ªË¡¶(D&)...",                    IDM_FILE_DELETE
-        MENUITEM "¿Ã∏ß ∫Ø∞Ê(&N)...",               IDM_FILE_RENAME
+        MENUITEM "Ïù¥Î¶Ñ Î≥µÏÇ¨(&C)",                  IDM_POP_COPYNAME
+        MENUITEM "ÎßÅÌÅ¨ ÎßåÎì§Í∏∞(&K)...",             IDM_FILE_CREATELINK
+        MENUITEM "Îã§Î•∏ Ïù¥Î¶ÑÏúºÎ°ú Ï†ÄÏû•(&S)...",       IDM_FILE_SAVEAS
+        MENUITEM "Î≥µÏÇ¨/Ïù¥Îèô(&M)...",               IDM_FILE_COPYMOVE
+        MENUITEM "ÏÇ≠Ï†ú(D&)...",                    IDM_FILE_DELETE
+        MENUITEM "Ïù¥Î¶Ñ Î≥ÄÍ≤Ω(&N)...",               IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "Ω««‡(&L)",                      IDM_FILE_LAUNCH
-        MENUITEM "¿Œºˆ ¡ˆ¡§ Ω««‡(&R)...",          IDM_FILE_RUN
+        MENUITEM "Ïã§Ìñâ(&L)",                      IDM_FILE_LAUNCH
+        MENUITEM "Ïù∏Ïàò ÏßÄÏ†ï Ïã§Ìñâ(&R)...",          IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "º”º∫(&P)",                      IDM_FILE_PROPERTIES
+        MENUITEM "ÏÜçÏÑ±(&P)",                      IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "ªı πÆº≠(&N)...",                IDM_FILE_NEW
-        MENUITEM "ªı µ∑∫≈‰∏Æ(&W)...",            IDM_FILE_NEWDIR
+        MENUITEM "ÏÉà Î¨∏ÏÑú(&N)...",                IDM_FILE_NEW
+        MENUITEM "ÏÉà ÎîîÎ†âÌÜ†Î¶¨(&W)...",            IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "∆ƒ¿œ « ≈Õ(&F)...",              IDM_VIEW_FILTER
-        MENUITEM "« ≈Õ √ ±‚»≠(&R)",               IDM_VIEW_FILTERALL
-        POPUP "∫∏±‚(&S)"
+        MENUITEM "ÌååÏùº ÌïÑÌÑ∞(&F)...",              IDM_VIEW_FILTER
+        MENUITEM "ÌïÑÌÑ∞ Ï¥àÍ∏∞Ìôî(&R)",               IDM_VIEW_FILTERALL
+        POPUP "Î≥¥Í∏∞(&S)"
         BEGIN
-            MENUITEM "µ∑∫≈‰∏Æ(&D)",              IDM_VIEW_FOLDERS
-            MENUITEM "∆ƒ¿œ(&F)",                  IDM_VIEW_FILES
-            MENUITEM "Ω√Ω∫≈€ ∆ƒ¿œ(&S)",           IDM_VIEW_HIDDEN
+            MENUITEM "ÎîîÎ†âÌÜ†Î¶¨(&D)",              IDM_VIEW_FOLDERS
+            MENUITEM "ÌååÏùº(&F)",                  IDM_VIEW_FILES
+            MENUITEM "ÏãúÏä§ÌÖú ÌååÏùº(&S)",           IDM_VIEW_HIDDEN
         END
-        POPUP "¡§∑ƒ(&O)"
+        POPUP "Ï†ïÎ†¨(&O)"
         BEGIN
-            MENUITEM "¿Ã∏ßº¯(&N)",                IDM_SORT_NAME
-            MENUITEM "≈©±‚º¯(&S)",                IDM_SORT_SIZE
-            MENUITEM "¡æ∑˘º¯(&T)",                IDM_SORT_TYPE
-            MENUITEM "≥Ø¬•º¯(&D)",                IDM_SORT_DATE
+            MENUITEM "Ïù¥Î¶ÑÏàú(&N)",                IDM_SORT_NAME
+            MENUITEM "ÌÅ¨Í∏∞Ïàú(&S)",                IDM_SORT_SIZE
+            MENUITEM "Ï¢ÖÎ•òÏàú(&T)",                IDM_SORT_TYPE
+            MENUITEM "ÎÇ†ÏßúÏàú(&D)",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "ø™º¯(&R)",                  IDM_SORT_REVERSE
+            MENUITEM "Ïó≠Ïàú(&R)",                  IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "¡Ò∞‹√£±‚∑Œ ¿Ãµø(&G)",           IDM_VIEW_FAVORITES
-        MENUITEM "¡Ò∞‹√£±‚ ∆Ì¡˝(&E)",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "µ∑∫≈‰∏Æ(&D)...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Ï¶êÍ≤®Ï∞æÍ∏∞Î°ú Ïù¥Îèô(&G)",           IDM_VIEW_FAVORITES
+        MENUITEM "Ï¶êÍ≤®Ï∞æÍ∏∞ Ìé∏Ïßë(&E)",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "ÎîîÎ†âÌÜ†Î¶¨(&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "µÂ∂Û¿Ã∫Í ∫∏¿Ã±‚(&V)",           IDM_VIEW_DRIVEBOX
+        MENUITEM "ÎìúÎùºÏù¥Î∏å Î≥¥Ïù¥Í∏∞(&V)",           IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "º≥¡§ ¿˙¿Â(&S)",                IDM_VIEW_SAVESETTINGS
-        MENUITEM "«¡∑Œ±◊∑• ¡ˆ¡§(&T)...",          IDM_VIEW_FINDTARGET
-        MENUITEM "ø…º«(&P)...",                  IDM_VIEW_OPTIONS
+        MENUITEM "ÏÑ§Ï†ï Ï†ÄÏû•(&S)",                IDM_VIEW_SAVESETTINGS
+        MENUITEM "ÌîÑÎ°úÍ∑∏Îû® ÏßÄÏ†ï(&T)...",          IDM_VIEW_FINDTARGET
+        MENUITEM "ÏòµÏÖò(&P)...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "µ∑∫≈‰∏Æ(&D)...",              IDM_FILE_CHANGEDIR
-        MENUITEM "µÂ∂Û¿Ã∫Í º”º∫(&P)",            IDM_FILE_DRIVEPROP
+        MENUITEM "ÎîîÎ†âÌÜ†Î¶¨(&D)...",              IDM_FILE_CHANGEDIR
+        MENUITEM "ÎìúÎùºÏù¥Î∏å ÏÜçÏÑ±(&P)",            IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "µÂ∂Û¿Ã∫Í ∫∏¿Ã±‚(&V)",          IDM_VIEW_DRIVEBOX
+        MENUITEM "ÎìúÎùºÏù¥Î∏å Î≥¥Ïù¥Í∏∞(&V)",          IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "µµ±∏ ∏¿Ω ∫∏¿Ã±‚(&T)",         IDM_VIEW_TOOLBAR
-        MENUITEM "µµ±∏ ∏¿Ω ∆Ì¡˝(&E)...",        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "ªÛ≈¬ «•Ω√ ¡Ÿ ∫∏¿Ã±‚(&S)",      IDM_VIEW_STATUSBAR
+        MENUITEM "ÎèÑÍµ¨ Î™®Ïùå Î≥¥Ïù¥Í∏∞(&T)",         IDM_VIEW_TOOLBAR
+        MENUITEM "ÎèÑÍµ¨ Î™®Ïùå Ìé∏Ïßë(&E)...",        IDM_VIEW_CUSTOMIZETB
+        MENUITEM "ÏÉÅÌÉú ÌëúÏãú Ï§Ñ Î≥¥Ïù¥Í∏∞(&S)",      IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "MiniPath ø≠±‚",               IDM_TRAY_RESTORE
-        MENUITEM "MiniPath ¡æ∑·",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath Ïó¥Í∏∞",               IDM_TRAY_RESTORE
+        MENUITEM "MiniPath Ï¢ÖÎ£å",               IDM_TRAY_EXIT
     END
 END
 

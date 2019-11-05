@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,13 +55,13 @@ END
 STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Tillbaka"
-    IDT_HISTORY_FORWARD     "Framåt"
-    IDT_UPDIR               "Översta mappen"
+    IDT_HISTORY_FORWARD     "FramÃ¥t"
+    IDT_UPDIR               "Ã–versta mappen"
     IDT_ROOT                "Rotmapp"
     IDT_VIEW_FAVORITES      "Favoriter"
-    IDT_FILE_PREV           "Föregående fil"
-    IDT_FILE_NEXT           "Nästa fil"
-    IDT_FILE_RUN            "Kör"
+    IDT_FILE_PREV           "FÃ¶regÃ¥ende fil"
+    IDT_FILE_NEXT           "NÃ¤sta fil"
+    IDT_FILE_RUN            "KÃ¶r"
     IDT_FILE_QUICKVIEW      "Quickview"
     IDT_FILE_SAVEAS         "Spara som"
     IDT_FILE_COPYMOVE       "Kopiera / flytta"
@@ -75,36 +76,36 @@ BEGIN
     IDS_NUMFILES            "%s Objekt"
     IDS_NUMFILES2           "%s Objekt | Filter"
     IDS_SAVEFILE            "Spara ""%s""..."
-    IDS_OPEN_FILE_WITH      "Öppna med %s"
+    IDS_OPEN_FILE_WITH      "Ã–ppna med %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Fel vid mappårkomst\nIngen mapp specificerades.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_FILE            "Fel vid filåtkomst\nIngen tillgång till ""%s"".\nFilen kanske används av ett annat program.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_NEW             "Fel vid filåtkomst\nFilen kunde inte skapas.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_NEWDIR          "Fel vid mappårkomst\nMappen kunde inte skapas.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_SAVEAS1         "Fel vid sparande\nFel vid sparande ""%s"".\nDet finns troligtvis en existerande fil som inte kan skrivas över."
+    IDS_ERR_CD              "Fel vid mappÃ¥rkomst\nIngen mapp specificerades.\nKontrollera disk eller nÃ¤tverkstillgÃ¥ng."
+    IDS_ERR_FILE            "Fel vid filÃ¥tkomst\nIngen tillgÃ¥ng till ""%s"".\nFilen kanske anvÃ¤nds av ett annat program.\nKontrollera disk eller nÃ¤tverkstillgÃ¥ng."
+    IDS_ERR_NEW             "Fel vid filÃ¥tkomst\nFilen kunde inte skapas.\nKontrollera disk eller nÃ¤tverkstillgÃ¥ng."
+    IDS_ERR_NEWDIR          "Fel vid mappÃ¥rkomst\nMappen kunde inte skapas.\nKontrollera disk eller nÃ¤tverkstillgÃ¥ng."
+    IDS_ERR_SAVEAS1         "Fel vid sparande\nFel vid sparande ""%s"".\nDet finns troligtvis en existerande fil som inte kan skrivas Ã¶ver."
     IDS_ERR_SAVEAS2         "Fel vid sparande\nKunde inte ta bort skrivskyddsflaggan."
-    IDS_ERR_CMDLINE         "MiniPath\nKunde inte komma åt fil eller mapp som angivits i kommandoraden."
-    IDS_ERR_STARTUPDIR      "MiniPath\nKunde inte komma åt startmapp."
-    IDS_ERR_DROP1           "MiniPath\nKunde inte komma åt borttagen fil eller mapp."
-    IDS_ERR_DROP2           "MiniPath\nBara en enstaka fil eller mapp kan tas bort åt gången."
-    IDS_ERR_FAVORITES       "Favoriter\nIngen tillgång till ""favoriter""-mappen.\nAnge en giltig mapp i ""alternativ""-rutan."
-    IDS_ERR_LNK_GETPATH     "Länkfel\nIngen giltig sökväg tillgänglig för länkat objekt.\nTroligtvis är sökvägen felaktig."
-    IDS_ERR_LNK_NOACCESS    "Länkfel\nIngen tillgång till sökväg till länkat objekt.\nKontrollera disk- eller nätverkstillgång."
-    IDS_ERR_CREATELINK      "Länkfel\nFel vid skapande av länk.\nTroligtvis är målmappen skrivskyddad."
-    IDS_ERR_FILTER          "Fel på filfilter\nInga ytterligare filter angavs.\nLäs MiniPath:s readme-fil för mer information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath fönstret är upptaget eller har en aktiv dialogruta.\nVill du öppna ett nytta MiniPath-fönster?"
+    IDS_ERR_CMDLINE         "MiniPath\nKunde inte komma Ã¥t fil eller mapp som angivits i kommandoraden."
+    IDS_ERR_STARTUPDIR      "MiniPath\nKunde inte komma Ã¥t startmapp."
+    IDS_ERR_DROP1           "MiniPath\nKunde inte komma Ã¥t borttagen fil eller mapp."
+    IDS_ERR_DROP2           "MiniPath\nBara en enstaka fil eller mapp kan tas bort Ã¥t gÃ¥ngen."
+    IDS_ERR_FAVORITES       "Favoriter\nIngen tillgÃ¥ng till ""favoriter""-mappen.\nAnge en giltig mapp i ""alternativ""-rutan."
+    IDS_ERR_LNK_GETPATH     "LÃ¤nkfel\nIngen giltig sÃ¶kvÃ¤g tillgÃ¤nglig fÃ¶r lÃ¤nkat objekt.\nTroligtvis Ã¤r sÃ¶kvÃ¤gen felaktig."
+    IDS_ERR_LNK_NOACCESS    "LÃ¤nkfel\nIngen tillgÃ¥ng till sÃ¶kvÃ¤g till lÃ¤nkat objekt.\nKontrollera disk- eller nÃ¤tverkstillgÃ¥ng."
+    IDS_ERR_CREATELINK      "LÃ¤nkfel\nFel vid skapande av lÃ¤nk.\nTroligtvis Ã¤r mÃ¥lmappen skrivskyddad."
+    IDS_ERR_FILTER          "Fel pÃ¥ filfilter\nInga ytterligare filter angavs.\nLÃ¤s MiniPath:s readme-fil fÃ¶r mer information."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath fÃ¶nstret Ã¤r upptaget eller har en aktiv dialogruta.\nVill du Ã¶ppna ett nytta MiniPath-fÃ¶nster?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisterande målfönster är upptaget eller har en aktiv dialogbox.\nVill du öppna ett nytt filfönster?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nFörsäkra dig om att alla fält är ifyllda.\nDu måste hitta ett målfönster om lämplig inställning är aktiv."
-    IDS_ERR_INIOPEN         "MiniPath\nIngen tillgång till konfigurationsfilen för MiniPath."
-    IDS_ERR_INICREATE       "Spara inställningar\nKunde inte skapa konfigurationsfil."
-    IDS_ERR_INIWRITE        "Spara inställningar\nInställningarna kunde inte sparas!\nIngen tillgång till konfigurationsfil."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExisterande mÃ¥lfÃ¶nster Ã¤r upptaget eller har en aktiv dialogbox.\nVill du Ã¶ppna ett nytt filfÃ¶nster?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nFÃ¶rsÃ¤kra dig om att alla fÃ¤lt Ã¤r ifyllda.\nDu mÃ¥ste hitta ett mÃ¥lfÃ¶nster om lÃ¤mplig instÃ¤llning Ã¤r aktiv."
+    IDS_ERR_INIOPEN         "MiniPath\nIngen tillgÃ¥ng till konfigurationsfilen fÃ¶r MiniPath."
+    IDS_ERR_INICREATE       "Spara instÃ¤llningar\nKunde inte skapa konfigurationsfil."
+    IDS_ERR_INIWRITE        "Spara instÃ¤llningar\nInstÃ¤llningarna kunde inte sparas!\nIngen tillgÃ¥ng till konfigurationsfil."
 END
 
 STRINGTABLE
@@ -121,17 +122,17 @@ END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "&Alltid överst"
+    SC_ALWAYSONTOP          "&Alltid Ã¶verst"
     SC_ABOUT                "&Info..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Välj mapp med länkar till dina favoritprogram."
-    IDS_COPYMOVE            "Välj målmapp."
-    IDS_CREATELINK          "Välj målmapp för den nya länken."
-    IDS_SAVESETTINGS        "Spara inställningar\nInställningarna kunde inte sparas."
-    IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Svensk översättning av ThreeLightsBeyond"
+    IDS_OPENWITH            "VÃ¤lj mapp med lÃ¤nkar till dina favoritprogram."
+    IDS_COPYMOVE            "VÃ¤lj mÃ¥lmapp."
+    IDS_CREATELINK          "VÃ¤lj mÃ¥lmapp fÃ¶r den nya lÃ¤nken."
+    IDS_SAVESETTINGS        "Spara instÃ¤llningar\nInstÃ¤llningarna kunde inte sparas."
+    IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Svensk Ã¶versÃ¤ttning av ThreeLightsBeyond"
 END
 
 

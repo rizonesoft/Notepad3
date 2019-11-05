@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
 LANGUAGE LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,72 +57,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Megnyit·s",                        IDM_FILE_OPEN
-        MENUITEM "Megnyit·s m&·sik alkalmaz·ssal...", IDM_FILE_OPENWITH
-        MENUITEM "&GyorsnÈzet",                       IDM_FILE_QUICKVIEW
+        MENUITEM "&Megnyit√°s",                        IDM_FILE_OPEN
+        MENUITEM "Megnyit√°s m&√°sik alkalmaz√°ssal...", IDM_FILE_OPENWITH
+        MENUITEM "&Gyorsn√©zet",                       IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&NÈv m·sol·sa",                     IDM_POP_COPYNAME
-        MENUITEM "&Hivatkoz·s kÈszÌtÈse...",          IDM_FILE_CREATELINK
-        MENUITEM "Ment&Ès m·skÈnt...",                IDM_FILE_SAVEAS
-        MENUITEM "M·s&ol·s/Mozgat·s...",              IDM_FILE_COPYMOVE
-        MENUITEM "&TˆrlÈs...",                        IDM_FILE_DELETE
-        MENUITEM "¡tn&evezÈs...",                     IDM_FILE_RENAME
+        MENUITEM "&N√©v m√°sol√°sa",                     IDM_POP_COPYNAME
+        MENUITEM "&Hivatkoz√°s k√©sz√≠t√©se...",          IDM_FILE_CREATELINK
+        MENUITEM "Ment&√©s m√°sk√©nt...",                IDM_FILE_SAVEAS
+        MENUITEM "M√°s&ol√°s/Mozgat√°s...",              IDM_FILE_COPYMOVE
+        MENUITEM "&T√∂rl√©s...",                        IDM_FILE_DELETE
+        MENUITEM "√Åtn&evez√©s...",                     IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&IndÌt·s",                          IDM_FILE_LAUNCH
-        MENUITEM "&Futtat·s argumentumokkal...",      IDM_FILE_RUN
+        MENUITEM "&Ind√≠t√°s",                          IDM_FILE_LAUNCH
+        MENUITEM "&Futtat√°s argumentumokkal...",      IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "T&ulajdons·gok",                    IDM_FILE_PROPERTIES
+        MENUITEM "T&ulajdons√°gok",                    IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&⁄j f·jl...",              IDM_FILE_NEW
-        MENUITEM "⁄j &mappa...",             IDM_FILE_NEWDIR
+        MENUITEM "&√öj f√°jl...",              IDM_FILE_NEW
+        MENUITEM "√öj &mappa...",             IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "F·jl s&z˚rı...",           IDM_VIEW_FILTER
-        MENUITEM "Sz˚rı &vissza·llÌt·sa",    IDM_VIEW_FILTERALL
-        POPUP "Me&gjelenÌtÈs"
+        MENUITEM "F√°jl s&z≈±r≈ë...",           IDM_VIEW_FILTER
+        MENUITEM "Sz≈±r≈ë &vissza√°ll√≠t√°sa",    IDM_VIEW_FILTERALL
+        POPUP "Me&gjelen√≠t√©s"
         BEGIN
-            MENUITEM "Ma&pp·k",              IDM_VIEW_FOLDERS
-            MENUITEM "F·jlo&k",              IDM_VIEW_FILES
+            MENUITEM "Ma&pp√°k",              IDM_VIEW_FOLDERS
+            MENUITEM "F√°jlo&k",              IDM_VIEW_FILES
             MENUITEM "&Rendszer objektumok", IDM_VIEW_HIDDEN
         END
-        POPUP "Ren&dezÈs"
+        POPUP "Ren&dez√©s"
         BEGIN
-            MENUITEM "&NÈv alapj·n",          IDM_SORT_NAME
-            MENUITEM "&MÈret alapj·n",        IDM_SORT_SIZE
-            MENUITEM "&TÌpus alapj·n",        IDM_SORT_TYPE
-            MENUITEM "&D·tum alapj·n",        IDM_SORT_DATE
+            MENUITEM "&N√©v alapj√°n",          IDM_SORT_NAME
+            MENUITEM "&M√©ret alapj√°n",        IDM_SORT_SIZE
+            MENUITEM "&T√≠pus alapj√°n",        IDM_SORT_TYPE
+            MENUITEM "&D√°tum alapj√°n",        IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&FordÌtva",             IDM_SORT_REVERSE
+            MENUITEM "&Ford√≠tva",             IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Ugr·s a Kedvencekhez",     IDM_VIEW_FAVORITES
-        MENUITEM "Kedvencek s&zerkesztÈse",   IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Ugr√°s a Kedvencekhez",     IDM_VIEW_FAVORITES
+        MENUITEM "Kedvencek s&zerkeszt√©se",   IDM_VIEW_EDITFAVORITES
         MENUITEM "&Mappa...",                 IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "MeghajtÛk m&egjelenÌtÈse",  IDM_VIEW_DRIVEBOX
+        MENUITEM "Meghajt√≥k m&egjelen√≠t√©se",  IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "Be·llÌt&·sok mentÈse",      IDM_VIEW_SAVESETTINGS
-        MENUITEM "&CÈl be·llÌt·sa...",        IDM_VIEW_FINDTARGET
-        MENUITEM "Be·llÌt·s&ok...",           IDM_VIEW_OPTIONS
+        MENUITEM "Be√°ll√≠t&√°sok ment√©se",      IDM_VIEW_SAVESETTINGS
+        MENUITEM "&C√©l be√°ll√≠t√°sa...",        IDM_VIEW_FINDTARGET
+        MENUITEM "Be√°ll√≠t√°s&ok...",           IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
         MENUITEM "&Mappa...",                 IDM_FILE_CHANGEDIR
-        MENUITEM "Meg&hajtÛ tulajdons·gok",   IDM_FILE_DRIVEPROP
+        MENUITEM "Meg&hajt√≥ tulajdons√°gok",   IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "MeghajtÛk me&gjelenÌtÈse",  IDM_VIEW_DRIVEBOX
+        MENUITEM "Meghajt√≥k me&gjelen√≠t√©se",  IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Esz&kˆzt·r megjelenÌtÈse",   IDM_VIEW_TOOLBAR
-        MENUITEM "Eszk&ˆzt·r szerkesztÈse...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "¡llapotso&r megjelenÌtÈse",  IDM_VIEW_STATUSBAR
+        MENUITEM "Esz&k√∂zt√°r megjelen√≠t√©se",   IDM_VIEW_TOOLBAR
+        MENUITEM "Eszk&√∂zt√°r szerkeszt√©se...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "√Ållapotso&r megjelen√≠t√©se",  IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "MiniPath megnyit·sa",        IDM_TRAY_RESTORE
-        MENUITEM "KilÈpÈs MiniPath-bÛl",       IDM_TRAY_EXIT
+        MENUITEM "MiniPath megnyit√°sa",        IDM_TRAY_RESTORE
+        MENUITEM "Kil√©p√©s MiniPath-b√≥l",       IDM_TRAY_EXIT
     END
 END
 

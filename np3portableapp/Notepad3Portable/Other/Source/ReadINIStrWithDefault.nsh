@@ -1,4 +1,4 @@
-﻿; ReadINIStrWithDefault 1.1 (2009-05-12)
+; ReadINIStrWithDefault 1.1 (2009-05-12)
 ;
 ; Substitutes a default value if the INI is undefined
 ; Copyright 2008-2009 John T. Haller of PortableApps.com

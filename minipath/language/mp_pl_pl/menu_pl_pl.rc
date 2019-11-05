@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
 LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,21 +57,21 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Otwórz",                         IDM_FILE_OPEN
-        MENUITEM "Otwórz &w/ kolejny program...",   IDM_FILE_OPENWITH
-        MENUITEM "&Szybki podgl¹d",                 IDM_FILE_QUICKVIEW
+        MENUITEM "&OtwÃ³rz",                         IDM_FILE_OPEN
+        MENUITEM "OtwÃ³rz &w/ kolejny program...",   IDM_FILE_OPENWITH
+        MENUITEM "&Szybki podglÄ…d",                 IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Kopiuj nazwê",                   IDM_POP_COPYNAME
-        MENUITEM "Utwórz link...",                  IDM_FILE_CREATELINK
+        MENUITEM "&Kopiuj nazwÄ™",                   IDM_POP_COPYNAME
+        MENUITEM "UtwÃ³rz link...",                  IDM_FILE_CREATELINK
         MENUITEM "&Zapisz jako...",                 IDM_FILE_SAVEAS
-        MENUITEM "Kopiuj/&Przenieœ...",             IDM_FILE_COPYMOVE
-        MENUITEM "Usuñ...",                         IDM_FILE_DELETE
-        MENUITEM "Zmieñ nazwê...",                  IDM_FILE_RENAME
+        MENUITEM "Kopiuj/&PrzenieÅ›...",             IDM_FILE_COPYMOVE
+        MENUITEM "UsuÅ„...",                         IDM_FILE_DELETE
+        MENUITEM "ZmieÅ„ nazwÄ™...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "&Uruchom",                        IDM_FILE_LAUNCH
         MENUITEM "&Uruchom w/ Argumenty...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&W³aœciwoœci",                    IDM_FILE_PROPERTIES
+        MENUITEM "&WÅ‚aÅ›ciwoÅ›ci",                    IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
@@ -79,27 +80,27 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Filtr pliku...",                 IDM_VIEW_FILTER
         MENUITEM "&Resetuj Filtr",                  IDM_VIEW_FILTERALL
-        POPUP "&Poka¿"
+        POPUP "&PokaÅ¼"
         BEGIN
             MENUITEM "&Katalogi",                   IDM_VIEW_FOLDERS
             MENUITEM "&Pliki",                      IDM_VIEW_FILES
             MENUITEM "&Obiekty systemowe",          IDM_VIEW_HIDDEN
         END
-        POPUP "S&krót"
+        POPUP "S&krÃ³t"
         BEGIN
             MENUITEM "&Nazwy",                      IDM_SORT_NAME
             MENUITEM "&Rozmiaru",                   IDM_SORT_SIZE
             MENUITEM "&Typu",                       IDM_SORT_TYPE
             MENUITEM "&Daty",                       IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Odwróæ",                     IDM_SORT_REVERSE
+            MENUITEM "&OdwrÃ³Ä‡",                     IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&PrzejdŸ do Ulubionych",          IDM_VIEW_FAVORITES
+        MENUITEM "&PrzejdÅº do Ulubionych",          IDM_VIEW_FAVORITES
         MENUITEM "&Edytuj Ulubione",                IDM_VIEW_EDITFAVORITES
         MENUITEM "&Katalog...",                     IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Poka¿ napêdy",                    IDM_VIEW_DRIVEBOX
+        MENUITEM "PokaÅ¼ napÄ™dy",                    IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "Zapisz ustawienia",               IDM_VIEW_SAVESETTINGS
         MENUITEM "Ustaw cel...",                    IDM_VIEW_FINDTARGET
@@ -108,19 +109,19 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Katalog...",                     IDM_FILE_CHANGEDIR
-        MENUITEM "W³aœciwoœci napêdu",              IDM_FILE_DRIVEPROP
+        MENUITEM "WÅ‚aÅ›ciwoÅ›ci napÄ™du",              IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Poka¿ napêdy",                    IDM_VIEW_DRIVEBOX
+        MENUITEM "PokaÅ¼ napÄ™dy",                    IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Poka¿ pasek narzêdzi",            IDM_VIEW_TOOLBAR
-        MENUITEM "&Edytuj pasek narzêdzi...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Poka¿ pasek statusu",             IDM_VIEW_STATUSBAR
+        MENUITEM "PokaÅ¼ pasek narzÄ™dzi",            IDM_VIEW_TOOLBAR
+        MENUITEM "&Edytuj pasek narzÄ™dzi...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "PokaÅ¼ pasek statusu",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Otwórz MiniPath",                 IDM_TRAY_RESTORE
+        MENUITEM "OtwÃ³rz MiniPath",                 IDM_TRAY_RESTORE
         MENUITEM "Zamknij MiniPath",                IDM_TRAY_EXIT
     END
 END

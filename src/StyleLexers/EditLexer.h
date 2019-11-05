@@ -1,4 +1,4 @@
-﻿#ifndef _EDIT_LEXER_H_
+#ifndef _EDIT_LEXER_H_
 #define _EDIT_LEXER_H_
 
 

@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: GBK
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE_SIMPLIFIED, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(936) // Chinese Simplified (GBK-936)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -61,107 +62,107 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "��������"
-    IDS_LEX_WEB_SRC         "Web Դ����"
-    IDS_LEX_XML_DOC         "XML �ļ�"
-    IDS_LEX_CSS_STYLE       "CSS ��ʽ��"
-    IDS_LEX_PRISM_CSV       "��ɫ CSV ����"
-    IDS_LEX_CPP_SRC         "C/C++ Դ����"
-    IDS_LEX_CSHARP_SRC      "C# Դ����"
-    IDS_LEX_RESOURCE_SCR    "��Դ�ű�"
+    IDS_LEX_DEF_TXT         "基本方案"
+    IDS_LEX_WEB_SRC         "Web 源代码"
+    IDS_LEX_XML_DOC         "XML 文件"
+    IDS_LEX_CSS_STYLE       "CSS 样式表"
+    IDS_LEX_PRISM_CSV       "彩色 CSV 表格"
+    IDS_LEX_CPP_SRC         "C/C++ 源代码"
+    IDS_LEX_CSHARP_SRC      "C# 源代码"
+    IDS_LEX_RESOURCE_SCR    "资源脚本"
     IDS_LEX_MAKEFILES       "Makefile"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_VB_SCR          "VBScript �ű�"
-    IDS_LEX_VIS_BAS         "Visual Basic Դ����"
-    IDS_LEX_J_SCR           "JavaScript �ű�"
-    IDS_LEX_JAVA_SRC        "Java Դ����"
-    IDS_LEX_PASCAL_SRC      "Pascal Դ����"
-    IDS_LEX_ASM_SCR         "�������Դ����"
-    IDS_LEX_PERL_SCR        "Perl �ű�"
-    IDS_LEX_CONF            "�����ļ�"
-    IDS_LEX_BATCH           "�������ļ�"
-    IDS_LEX_DIFF            "Diff �ļ�"
-    IDS_LEX_SQL             "SQL �ű�"
-    IDS_LEX_PYTHON          "Python �ű�"
-    IDS_LEX_APC_CFG         "Apache �����ļ�"
-    IDS_LEX_PWRSHELL        "PowerShell �ű�"
-    IDS_LEX_D_SRC           "D Դ����"
-    IDS_LEX_GO_SRC          "Go Դ����"
+    IDS_LEX_VB_SCR          "VBScript 脚本"
+    IDS_LEX_VIS_BAS         "Visual Basic 源代码"
+    IDS_LEX_J_SCR           "JavaScript 脚本"
+    IDS_LEX_JAVA_SRC        "Java 源代码"
+    IDS_LEX_PASCAL_SRC      "Pascal 源代码"
+    IDS_LEX_ASM_SCR         "汇编语言源代码"
+    IDS_LEX_PERL_SCR        "Perl 脚本"
+    IDS_LEX_CONF            "配置文件"
+    IDS_LEX_BATCH           "批处理文件"
+    IDS_LEX_DIFF            "Diff 文件"
+    IDS_LEX_SQL             "SQL 脚本"
+    IDS_LEX_PYTHON          "Python 脚本"
+    IDS_LEX_APC_CFG         "Apache 配置文件"
+    IDS_LEX_PWRSHELL        "PowerShell 脚本"
+    IDS_LEX_D_SRC           "D 源代码"
+    IDS_LEX_GO_SRC          "Go 源代码"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_AWK_SCR         "Awk �ű�"
-    IDS_LEX_ANSI_ART        "ANSI �ַ���"
-    IDS_LEX_SHELL_SCR       "Shell �ű�"
-    IDS_LEX_REG_FILES       "ע�����"
-    IDS_LEX_VHDL            "VHDL Դ����"
-    IDS_LEX_JSON            "JSON �ļ�"
-    IDS_LEX_NSIS            "NSIS �ű�"
-    IDS_LEX_INNO            "Inno �ű�"
-    IDS_LEX_RUBY            "Ruby �ű�"
-    IDS_LEX_LUA             "Lua �ű�"
-    IDS_LEX_TCL             "Tcl �ű�"
-    IDS_LEX_AUTOIT3         "AutoIt3 �ű�"
-    IDS_LEX_LATEX           "LaTeX Դ����"
-    IDS_LEX_AHK             "AutoHotkey �ű�"
-    IDS_LEX_CMAKE           "CMake �ű�"
-    IDS_LEX_AVI_SYNTH       "AviSynth �ű�"
+    IDS_LEX_AWK_SCR         "Awk 脚本"
+    IDS_LEX_ANSI_ART        "ANSI 字符画"
+    IDS_LEX_SHELL_SCR       "Shell 脚本"
+    IDS_LEX_REG_FILES       "注册表项"
+    IDS_LEX_VHDL            "VHDL 源代码"
+    IDS_LEX_JSON            "JSON 文件"
+    IDS_LEX_NSIS            "NSIS 脚本"
+    IDS_LEX_INNO            "Inno 脚本"
+    IDS_LEX_RUBY            "Ruby 脚本"
+    IDS_LEX_LUA             "Lua 脚本"
+    IDS_LEX_TCL             "Tcl 脚本"
+    IDS_LEX_AUTOIT3         "AutoIt3 脚本"
+    IDS_LEX_LATEX           "LaTeX 源代码"
+    IDS_LEX_AHK             "AutoHotkey 脚本"
+    IDS_LEX_CMAKE           "CMake 脚本"
+    IDS_LEX_AVI_SYNTH       "AviSynth 脚本"
 END
 
 STRINGTABLE
 BEGIN
     IDS_LEX_MARKDOWN        "Markdown"
-    IDS_LEX_YAML            "YAML �ļ�"
-    IDS_LEX_COFFEE_SCR      "Coffeescript �ű�"
-    IDS_LEX_MATLAB          "MATLAB Դ����"
-    IDS_LEX_NIM_SRC         "Nim Դ����"
-    IDS_LEX_R_STAT          "R-S-SPlus ͳ�ƴ���"
-    IDS_LEX_RUST_SRC        "Rust Դ����"
-    IDS_LEX_AHKL            "AutoHotkey_L �ű�"
-    IDS_LEX_TEXT_FILES      "�ı��ļ�"
+    IDS_LEX_YAML            "YAML 文件"
+    IDS_LEX_COFFEE_SCR      "Coffeescript 脚本"
+    IDS_LEX_MATLAB          "MATLAB 源代码"
+    IDS_LEX_NIM_SRC         "Nim 源代码"
+    IDS_LEX_R_STAT          "R-S-SPlus 统计代码"
+    IDS_LEX_RUST_SRC        "Rust 源代码"
+    IDS_LEX_AHKL            "AutoHotkey_L 脚本"
+    IDS_LEX_TEXT_FILES      "文本文件"
     IDS_LEX_TOML_CFG        "TOML"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "������ʽ"
-    IDS_LEX_STD_MARGIN      "ҳ�߾���к�"
-    IDS_LEX_STD_BRACE       "����Ե����ţ�ָʾ����"
-    IDS_LEX_STD_BRACE_FAIL  "δ��Ե����ţ�ָʾ����"
+    IDS_LEX_STD_STYLE       "基本样式"
+    IDS_LEX_STD_MARGIN      "页边距和行号"
+    IDS_LEX_STD_BRACE       "已配对的括号（指示符）"
+    IDS_LEX_STD_BRACE_FAIL  "未配对的括号（指示符）"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CTRL_CHAR   "�����ַ������壩"
-    IDS_LEX_STD_INDENT      "����ָ������ɫ��"
-    IDS_LEX_STD_SEL         "��ѡ�����ı�����ɫ��"
-    IDS_LEX_STD_WSPC        "�հ׷�����ɫ����С����Ϊ 0-5��"
-    IDS_LEX_STD_LN_BACKGR   "�����ĵ�ǰ��"
-    IDS_LEX_STD_CARET       "�����꣨��ɫ����С����Ϊ 1-3��"
-    IDS_LEX_STD_LONG_LN     "�г��ȱ�ǣ���ɫ��"
-    IDS_LEX_STD_X_SPC       "������м�ࣨ��С��"
-    IDS_LEX_2ND_STYLE       "��ѡ������ʽ"
-    IDS_LEX_2ND_MARGIN      "��ѡ��ҳ�߾���к�"
-    IDS_LEX_2ND_BRACE       "��ѡ������Ե����ţ�ָʾ����"
-    IDS_LEX_2ND_BRACE_FAIL  "��ѡ��δ��Ե����ţ�ָʾ����"
-    IDS_LEX_2ND_CTRL_CHAR   "��ѡ�������ַ������壩"
-    IDS_LEX_2ND_INDENT      "��ѡ������ָ������ɫ��"
-    IDS_LEX_2ND_SEL         "��ѡ����ѡ�����ı�����ɫ��"
-    IDS_LEX_2ND_WSPC        "��ѡ���հ׷�����ɫ����С����Ϊ 0-5��"
+    IDS_LEX_STD_CTRL_CHAR   "控制字符（字体）"
+    IDS_LEX_STD_INDENT      "缩进指引（颜色）"
+    IDS_LEX_STD_SEL         "已选定的文本（颜色）"
+    IDS_LEX_STD_WSPC        "空白符（颜色，大小必须为 0-5）"
+    IDS_LEX_STD_LN_BACKGR   "高亮的当前行"
+    IDS_LEX_STD_CARET       "插入光标（颜色，大小必须为 1-3）"
+    IDS_LEX_STD_LONG_LN     "行长度标记（颜色）"
+    IDS_LEX_STD_X_SPC       "额外的行间距（大小）"
+    IDS_LEX_2ND_STYLE       "备选基本样式"
+    IDS_LEX_2ND_MARGIN      "备选：页边距和行号"
+    IDS_LEX_2ND_BRACE       "备选：已配对的括号（指示符）"
+    IDS_LEX_2ND_BRACE_FAIL  "备选：未配对的括号（指示符）"
+    IDS_LEX_2ND_CTRL_CHAR   "备选：控制字符（字体）"
+    IDS_LEX_2ND_INDENT      "备选：缩进指引（颜色）"
+    IDS_LEX_2ND_SEL         "备选：已选定的文本（颜色）"
+    IDS_LEX_2ND_WSPC        "备选：空白符（颜色，大小必须为 0-5）"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_2ND_LN_BACKGR   "��ѡ�������ĵ�ǰ��"
-    IDS_LEX_2ND_CARET       "��ѡ�������꣨��ɫ����С����Ϊ 1-3��"
-    IDS_LEX_2ND_LONG_LN     "��ѡ���г��ȱ�ǣ���ɫ��"
-    IDS_LEX_2ND_X_SPC       "��ѡ��������м�ࣨ��С��"
-    IDS_LEX_STD_BKMRK       "��ǩ���۵�����ɫ, ��С��"
-    IDS_LEX_2ND_BKMRK       "��ѡ����ǩ���۵�����ɫ, ��С��"
+    IDS_LEX_2ND_LN_BACKGR   "备选：高亮的当前行"
+    IDS_LEX_2ND_CARET       "备选：插入光标（颜色，大小必须为 1-3）"
+    IDS_LEX_2ND_LONG_LN     "备选：行长度标记（颜色）"
+    IDS_LEX_2ND_X_SPC       "备选：额外的行间距（大小）"
+    IDS_LEX_STD_BKMRK       "书签和折叠（颜色, 大小）"
+    IDS_LEX_2ND_BKMRK       "备选：书签和折叠（颜色, 大小）"
     IDS_LEX_STR_63126       "Default"
     IDS_LEX_STR_63127       "Comment"
     IDS_LEX_STR_63128       "Keyword"
@@ -330,15 +331,15 @@ BEGIN
     IDS_LEX_STR_63259       "Comment Doc"
     IDS_LEX_STR_63260       "Keyword 2nd"
     IDS_LEX_STR_63261       "Error"
-    IDS_LEX_STR_63262       "������ƥ���ָʾ����"
-    IDS_LEX_STR_63263       "��ѡ��������ƥ���ָʾ����"
+    IDS_LEX_STR_63262       "高亮的匹配项（指示符）"
+    IDS_LEX_STR_63263       "备选：高亮的匹配项（指示符）"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63264       "��⵽�ĳ�����"
-    IDS_LEX_STR_63265       "��ѡ����⵽�ĳ�����"
-    IDS_LEX_STR_63266       "��ѡ��������"
+    IDS_LEX_STR_63264       "检测到的超链接"
+    IDS_LEX_STR_63265       "备选：检测到的超链接"
+    IDS_LEX_STR_63266       "备选基本方案"
     IDS_LEX_STR_63267       "Variable within String"
     IDS_LEX_STR_63268       "Ordered List"
     IDS_LEX_STR_63269       "Infix"
@@ -444,8 +445,8 @@ BEGIN
     IDS_LEX_STR_63349       "HotKey"
     IDS_LEX_STR_63350       "HotString"
     IDS_LEX_STR_63351       "HotStringOption"
-    IDS_LEX_STR_63352       "���뷨��ѡ�ı���ɫ"
-    IDS_LEX_STR_63353       "��ѡ�����뷨��ѡ�ı���ɫ"
+    IDS_LEX_STR_63352       "输入法候选文本颜色"
+    IDS_LEX_STR_63353       "备选：输入法候选文本颜色"
     IDS_LEX_STR_63354       "Multi Edit Indicator"
     IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
     IDS_LEX_STR_63356       "Date-Time"

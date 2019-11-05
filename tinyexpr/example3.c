@@ -1,4 +1,4 @@
-﻿#include "tinyexpr.h"
+#include "tinyexpr.h"
 #include <stdio.h>
 
 

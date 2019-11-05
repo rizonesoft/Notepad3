@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +73,7 @@ END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Hjälp för kommandorad"
+CAPTION "HjÃ¤lp fÃ¶r kommandorad"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
@@ -84,24 +85,24 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Hitta text"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Söksträng:",IDC_STATIC,7,7,46,8
+    LTEXT           "SÃ¶kstrÃ¤ng:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Matcha versaler och gemener",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
     CONTROL         "Matcha hela ord",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
-    CONTROL         "Matcha endast början av ordet",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
-    CONTROL         "Transformera bakåtlutande snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Sök med reguljära uttryck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
+    CONTROL         "Matcha endast bÃ¶rjan av ordet",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
+    CONTROL         "Transformera bakÃ¥tlutande snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
+    CONTROL         "SÃ¶k med reguljÃ¤ra uttryck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Punkt matchar alla",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
     CONTROL         "Omslut inte",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "Stäng efter träff",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Markera träffar",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Sökning med jokertecken",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Bli genomskinlig när fönstret inte har fokus",IDC_TRANSPARENT,
+    CONTROL         "StÃ¤ng efter trÃ¤ff",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
+    CONTROL         "Markera trÃ¤ffar",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
+    CONTROL         "SÃ¶kning med jokertecken",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "Bli genomskinlig nÃ¤r fÃ¶nstret inte har fokus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
-    DEFPUSHBUTTON   "Hitta nästa",IDOK,211,7,55,14
-    PUSHBUTTON      "Hitta föregående",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "Stäng",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Gå till utbyte (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
+    DEFPUSHBUTTON   "Hitta nÃ¤sta",IDOK,211,7,55,14
+    PUSHBUTTON      "Hitta fÃ¶regÃ¥ende",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "StÃ¤ng",IDCANCEL,211,99,55,14
+    CONTROL         "<a>GÃ¥ till utbyte (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
@@ -116,30 +117,30 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Replace Text"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Söksträng:",IDC_STATIC,7,7,46,8
+    LTEXT           "SÃ¶kstrÃ¤ng:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Byt ut med:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Matcha gementer och versaler",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
     CONTROL         "Matcha endast hela ord",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
-    CONTROL         "Matcha endast början",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "Transformera bakåtlutande snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Sök med reguljära uttryck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "Matcha endast bÃ¶rjan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
+    CONTROL         "Transformera bakÃ¥tlutande snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
+    CONTROL         "SÃ¶k med reguljÃ¤ra uttryck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Punkt matchar alla",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "Omslut inte",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "Stäng efter träff",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Markera träffar",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Sökning med jokertecken",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Bli genomskinlig när fönstret inte har fokus",IDC_TRANSPARENT,
+    CONTROL         "StÃ¤ng efter trÃ¤ff",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
+    CONTROL         "Markera trÃ¤ffar",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
+    CONTROL         "SÃ¶kning med jokertecken",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "Bli genomskinlig nÃ¤r fÃ¶nstret inte har fokus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "Hitta nästa",IDOK,211,7,55,14
-    PUSHBUTTON      "Hitta föregående",IDC_FINDPREV,211,23,55,14
-    PUSHBUTTON      "Ersätt",IDC_REPLACE,211,43,55,14
+    DEFPUSHBUTTON   "Hitta nÃ¤sta",IDOK,211,7,55,14
+    PUSHBUTTON      "Hitta fÃ¶regÃ¥ende",IDC_FINDPREV,211,23,55,14
+    PUSHBUTTON      "ErsÃ¤tt",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "I markeringen",IDC_REPLACEINSEL,211,59,55,14
-    PUSHBUTTON      "Ersätt alla",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Ersätt strängar",IDC_SWAPSTRG,150,32,49,12
-    PUSHBUTTON      "Stäng",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Gå till hitta (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
+    PUSHBUTTON      "ErsÃ¤tt alla",IDC_REPLACEALL,211,75,55,14
+    PUSHBUTTON      "ErsÃ¤tt strÃ¤ngar",IDC_SWAPSTRG,150,32,49,12
+    PUSHBUTTON      "StÃ¤ng",IDCANCEL,211,126,55,14
+    CONTROL         "<a>GÃ¥ till hitta (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
@@ -155,21 +156,21 @@ CAPTION "Run"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Skriv in namnet på ett program, dokument eller internetresurs så öppnar Windows den för dig.",IDC_STATIC,39,7,179,17
+    LTEXT           "Skriv in namnet pÃ¥ ett program, dokument eller internetresurs sÃ¥ Ã¶ppnar Windows den fÃ¶r dig.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "Bläddra...",IDC_SEARCHEXE,163,69,55,16
+    PUSHBUTTON      "BlÃ¤ddra...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
     PUSHBUTTON      "Avbryt",IDCANCEL,105,69,55,16
 END
 
 IDD_MUI_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Öppna med..."
+CAPTION "Ã–ppna med..."
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klicka här för att ange sökväg till mapp med dina favoritprogram.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klicka hÃ¤r fÃ¶r att ange sÃ¶kvÃ¤g till mapp med dina favoritprogram.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -180,20 +181,20 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Förvald kodning (nya filer):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "FÃ¶rvald kodning (nya filer):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Använd som förvald om identifiering misslyckas.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "AnvÃ¤nd som fÃ¶rvald om identifiering misslyckas.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "Identifiering av teckenkodning: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Öppna 7-bitars ASCII filer i UTF-8 läge.",IDC_ASCIIASUTF8,
+    CONTROL         "Ã–ppna 7-bitars ASCII filer i UTF-8 lÃ¤ge.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Använd endast pålitliga identifieringsresultat.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "AnvÃ¤nd endast pÃ¥litliga identifieringsresultat.",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
-    CONTROL         "Öppna 8-bit *.nfo/diz filer i DOS-437 läge.",IDC_NFOASOEM,
+    CONTROL         "Ã–ppna 8-bit *.nfo/diz filer i DOS-437 lÃ¤ge.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "Analysera taggar i kodad fil.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
-    CONTROL         "Gör analys av ANSI-kodsida.",IDC_NOANSICPDETECTION,
+    CONTROL         "GÃ¶r analys av ANSI-kodsida.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
     CONTROL         "Aktiviera UNICODE-identifiering.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
@@ -205,13 +206,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Radslut"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Förvalt läge för radslut:",IDC_STATIC,7,7,116,8
+    LTEXT           "FÃ¶rvalt lÃ¤ge fÃ¶r radslut:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Visa varning för inkonsekvent radslut.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Visa varning fÃ¶r inkonsekvent radslut.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "Tvinga konsekvent radslut när fil sparas.",IDC_CONSISTENT_EOLS,
+    CONTROL         "Tvinga konsekvent radslut nÃ¤r fil sparas.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
-    CONTROL         "Ta bort överflödiga mellanslag i slutet av radär när filen sparas.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "Ta bort Ã¶verflÃ¶diga mellanslag i slutet av radÃ¤r nÃ¤r filen sparas.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,139,24,50,14
@@ -229,7 +230,7 @@ BEGIN
     LTEXT           "%s rad(er).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s rad(er).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s rad(er).",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "Vill du ha samma radslut för hela filen?",IDC_STATIC,7,52,180,8
+    LTEXT           "Vill du ha samma radslut fÃ¶r hela filen?",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "Ja",IDOK,138,63,50,14
     PUSHBUTTON      "Nej",IDCANCEL,138,80,50,14
@@ -239,7 +240,7 @@ END
 
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Gå till"
+CAPTION "GÃ¥ till"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Rad:",IDC_LINE_TEXT,7,8,101,8
@@ -252,15 +253,15 @@ END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Öppna senaste fil"
+CAPTION "Ã–ppna senaste fil"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "Bevara textmarkörens position.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "Spara listan över senast öppnade filer vid avslut.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
-    CONTROL         "Kom ihåg sökmönster.",IDC_REMEMBERSEARCHPATTERN,
+    CONTROL         "Bevara textmarkÃ¶rens position.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
+    CONTROL         "Spara listan Ã¶ver senast Ã¶ppnade filer vid avslut.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
+    CONTROL         "Kom ihÃ¥g sÃ¶kmÃ¶nster.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
-    PUSHBUTTON      "Släng",IDC_REMOVE,212,107,50,14,WS_DISABLED
+    PUSHBUTTON      "SlÃ¤ng",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
     PUSHBUTTON      "Avbryt",IDCANCEL,212,139,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
@@ -268,26 +269,26 @@ END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Avisering vid ändring av filändelse"
+CAPTION "Avisering vid Ã¤ndring av filÃ¤ndelse"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Ingen.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
     CONTROL         "Visa meddelande.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
     CONTROL         "Ladda om automatiskt (omodifierad).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "Återställ om en ny fil öppnas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
+    CONTROL         "Ã…terstÃ¤ll om en ny fil Ã¶ppnas.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 134
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Välj schema"
+CAPTION "VÃ¤lj schema"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
-    CONTROL         "Välg schema som förval.",IDC_DEFAULTSCHEME,
+    CONTROL         "VÃ¤lg schema som fÃ¶rval.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,118,10
-    CONTROL         "Välj automatiskt beroende på filändelse.",IDC_AUTOSELECT,
+    CONTROL         "VÃ¤lj automatiskt beroende pÃ¥ filÃ¤ndelse.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Avbryt",IDCANCEL,108,113,50,14
@@ -304,11 +305,11 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Framåt...",IDC_STYLEFORE,181,201,46,14
-    PUSHBUTTON      "Bakåt...",IDC_STYLEBACK,232,201,46,14
+    PUSHBUTTON      "FramÃ¥t...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "BakÃ¥t...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "Teckensnitt...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "Förhandsvisa",IDC_PREVIEW,330,201,42,14
-    PUSHBUTTON      "Återställ",IDC_STYLEDEFAULT,377,201,42,14
+    PUSHBUTTON      "FÃ¶rhandsvisa",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "Ã…terstÃ¤ll",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
     PUSHBUTTON      "Importera...",IDC_IMPORT,181,233,50,14
@@ -324,7 +325,7 @@ END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Tabulatorinställningar"
+CAPTION "TabulatorinstÃ¤llningar"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Tabulaturbredd:",IDC_STATIC,7,10,54,8
@@ -355,7 +356,7 @@ BEGIN
     LTEXT           "%s rad(er)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
     LTEXT           "%s rad(er)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
     LTEXT           "%s rad(er)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
-    GROUPBOX        "Gör om indrag för alla ? ",IDC_STATIC,7,60,182,56,WS_GROUP
+    GROUPBOX        "GÃ¶r om indrag fÃ¶r alla ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "Tabbar",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "Tomrum",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
     LTEXT           "%s rad(er) med oregelbundet indragsdjup",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
@@ -368,20 +369,20 @@ END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Långa rader"
+CAPTION "LÃ¥nga rader"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Begränsning för långa rader:",IDC_STATIC,7,10,60,8
+    LTEXT           "BegrÃ¤nsning fÃ¶r lÃ¥nga rader:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Visa gränsrad.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
-    CONTROL         "Ändra bakgrundsfärg.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
+    CONTROL         "Visa grÃ¤nsrad.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
+    CONTROL         "Ã„ndra bakgrundsfÃ¤rg.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,127,24,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inställning för automatisk radbrytning"
+CAPTION "InstÃ¤llning fÃ¶r automatisk radbrytning"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     COMBOBOX        100,7,7,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -390,9 +391,9 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,139,79,50,14
-    LTEXT           "Omslut inte automatiskt indrag|Omslut indrag med en bokstav|Omslut indrag med två bokstäver|Omslut indrag med en nivå|Omslut indrag med två nivåer|Omslut indrag som första underrad|Omslut indrag en nivå mer än den första underraden",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "Inga visuella indikatorer innan automatisk radbrytning|Visa visuella indikatorer före automatisk radbrytning (nära texten)|Visa visuella indikatorer före automatisk radbrytning (nära kant)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "Inga visuella indikatorer efter automatisk radbrytning|Visa visuella indikatorer efter automatisk radbrytning (nära text)|Visa visuella indikatorer före automatisk radbrytning (nära kant)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "Omslut inte automatiskt indrag|Omslut indrag med en bokstav|Omslut indrag med tvÃ¥ bokstÃ¤ver|Omslut indrag med en nivÃ¥|Omslut indrag med tvÃ¥ nivÃ¥er|Omslut indrag som fÃ¶rsta underrad|Omslut indrag en nivÃ¥ mer Ã¤n den fÃ¶rsta underraden",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Inga visuella indikatorer innan automatisk radbrytning|Visa visuella indikatorer fÃ¶re automatisk radbrytning (nÃ¤ra texten)|Visa visuella indikatorer fÃ¶re automatisk radbrytning (nÃ¤ra kant)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "Inga visuella indikatorer efter automatisk radbrytning|Visa visuella indikatorer efter automatisk radbrytning (nÃ¤ra text)|Visa visuella indikatorer fÃ¶re automatisk radbrytning (nÃ¤ra kant)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Radbryt automatiskt mellan ord|Omslut text mellan glyfer",203,0,0,187,8,NOT WS_VISIBLE
 END
 
@@ -404,15 +405,15 @@ BEGIN
     GROUPBOX        "Papper",1073,8,8,224,56,WS_GROUP
     LTEXT           "Storlek:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "Källa:",1090,16,45,36,8
+    LTEXT           "KÃ¤lla:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Lägesorientering",1072,8,69,64,56,WS_GROUP
-    CONTROL         "Porträtt",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
+    GROUPBOX        "LÃ¤gesorientering",1072,8,69,64,56,WS_GROUP
+    CONTROL         "PortrÃ¤tt",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
     CONTROL         "Landskap",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
     GROUPBOX        "Marginaler",1075,80,69,152,56,WS_GROUP
-    LTEXT           "Vänster:",1102,88,85,32,8
+    LTEXT           "VÃ¤nster:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
-    LTEXT           "Höger:",1103,164,85,32,8
+    LTEXT           "HÃ¶ger:",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
     LTEXT           "Topp:",1104,88,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP
@@ -423,8 +424,8 @@ BEGIN
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "Sidfot:",IDC_STATIC,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Utskriftsfärger",1076,8,191,224,37,WS_GROUP
-    LTEXT           "Läge:",IDC_STATIC,16,207,36,8
+    GROUPBOX        "UtskriftsfÃ¤rger",1076,8,191,224,37,WS_GROUP
+    LTEXT           "LÃ¤ge:",IDC_STATIC,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Skalning",IDC_STATIC,240,170,108,58,WS_GROUP
     LTEXT           "Nivp (10% till 500%):",IDC_STATIC,248,188,92,8
@@ -433,7 +434,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
     PUSHBUTTON      "Avbryt",IDCANCEL,244,237,50,14
     PUSHBUTTON      "Skrivare...",IDC_PRINTER,298,237,50,14
-    GROUPBOX        "Förhandsgranskning",IDC_STATIC,240,8,108,157
+    GROUPBOX        "FÃ¶rhandsgranskning",IDC_STATIC,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
@@ -446,7 +447,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Klicka här för att ange den mappen med länkar till dina favoritfiler.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Klicka hÃ¤r fÃ¶r att ange den mappen med lÃ¤nkar till dina favoritfiler.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -454,10 +455,10 @@ END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Lägg till favoriter"
+CAPTION "LÃ¤gg till favoriter"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Ange namn för favorit:",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "Ange namn fÃ¶r favorit:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Avbryt",IDCANCEL,115,45,50,14
@@ -475,10 +476,10 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Optional Master Key:",IDC_STATIC,17,61,72,10,NOT WS_GROUP
-    CONTROL         "Kryptera med lösenordsfras",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Anvönd huvudnyckel igen",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
-    GROUPBOX        "Lösenordsfras",IDC_STATIC,7,7,297,108
-    CONTROL         "visa lösenordsfraser",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
+    CONTROL         "Kryptera med lÃ¶senordsfras",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
+    CONTROL         "AnvÃ¶nd huvudnyckel igen",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    GROUPBOX        "LÃ¶senordsfras",IDC_STATIC,7,7,297,108
+    CONTROL         "visa lÃ¶senordsfraser",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -490,17 +491,17 @@ BEGIN
     PUSHBUTTON      "Avbryt",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "avkryptera med huvudnyckel",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "Den här filen har en huvudnyckel",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
-    GROUPBOX        "Lösenordsfras",IDC_STATIC,8,6,283,69
-    CONTROL         "visa lösenordsfras",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
+    LTEXT           "Den hÃ¤r filen har en huvudnyckel",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    GROUPBOX        "LÃ¶senordsfras",IDC_STATIC,8,6,283,69
+    CONTROL         "visa lÃ¶senordsfras",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Automatiskt radbyte för kolumner"
+CAPTION "Automatiskt radbyte fÃ¶r kolumner"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Gräns:",IDC_STATIC,7,7,34,8
+    LTEXT           "GrÃ¤ns:",IDC_STATIC,7,7,34,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,73,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,73,24,50,14
@@ -513,7 +514,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Prefix till rader:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Lägg till i slutet av rader:",IDC_STATIC,7,37,68,8
+    LTEXT           "LÃ¤gg till i slutet av rader:",IDC_STATIC,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,125,24,50,14
@@ -522,10 +523,10 @@ BEGIN
     LTEXT           "Dokumentets radnummer.",IDC_STATIC,57,72,74,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "Löpande nummer.",IDC_STATIC,57,82,66,8
+    LTEXT           "LÃ¶pande nummer.",IDC_STATIC,57,82,66,8
     LTEXT           "$(I)",204,7,92,13,8
     LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Löpande nummer (nollbaserad).",IDC_STATIC,57,92,109,8
+    LTEXT           "LÃ¶pande nummer (nollbaserad).",IDC_STATIC,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -533,12 +534,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Infoga HTML/XML Tagg"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Öppna tagg (med attribut):",IDC_STATIC,7,7,97,8
+    LTEXT           "Ã–ppna tagg (med attribut):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Stäng tagg (kan redigeras):",IDC_STATIC,7,37,90,8
+    LTEXT           "StÃ¤ng tagg (kan redigeras):",IDC_STATIC,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X gånger",IDC_STATIC,148,50,24,8
+    LTEXT           "X gÃ¥nger",IDC_STATIC,148,50,24,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,125,24,50,14
 END
@@ -615,7 +616,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDR_MAINWND48,IDC_INFOBOXICON,7,7,21,20
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX
-    DEFPUSHBUTTON   "Försök igen",IDRETRY,131,50,50,14
+    DEFPUSHBUTTON   "FÃ¶rsÃ¶k igen",IDRETRY,131,50,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,187,50,50,14
     CONTROL         "Visa inte detta meddelande igen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
@@ -629,16 +630,16 @@ BEGIN
     CONTROL         "Sortera stigande.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Sortera fallande.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Blanda rader.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "Slå samman dubblettrader.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "SlÃ¥ samman dubblettrader.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
     CONTROL         "Ta bort dubblettrader.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "Ta bort unika rader.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Ta bort tomma rader.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Ta bort rader med blankstegstecken.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,120,10
-    CONTROL         "Skiftlägeskänslig.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "Ej skiftlägeskänslig.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "Jämför logiska nummer.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "Lexikografisk jämförelse.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "Kolumnsortering (rektangulär markering).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
+    CONTROL         "SkiftlÃ¤geskÃ¤nslig.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "Ej skiftlÃ¤geskÃ¤nslig.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "JÃ¤mfÃ¶r logiska nummer.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "Lexikografisk jÃ¤mfÃ¶relse.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Kolumnsortering (rektangulÃ¤r markering).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,140,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,128,24,50,14
 END
@@ -648,7 +649,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Recode"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Välj teckenkodning för källan:",IDC_STATIC,7,7,119,8
+    LTEXT           "VÃ¤lj teckenkodning fÃ¶r kÃ¤llan:",IDC_STATIC,7,7,119,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Avbryt",IDCANCEL,108,114,50,14
@@ -660,7 +661,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Välj teckenkodning:",IDC_STATIC,7,7,90,8
+    LTEXT           "VÃ¤lj teckenkodning:",IDC_STATIC,7,7,90,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Avbryt",IDCANCEL,108,114,50,14
@@ -672,11 +673,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Align Lines"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Vänster.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
-    CONTROL         "Höger.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
+    CONTROL         "VÃ¤nster.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
+    CONTROL         "HÃ¶ger.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
     CONTROL         "Mitten.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
     CONTROL         "Marginaler.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
-    CONTROL         "Marginaler (Paragrafläge).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "Marginaler (ParagraflÃ¤ge).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,127,24,50,14
 END

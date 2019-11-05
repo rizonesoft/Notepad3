@@ -1,4 +1,4 @@
-﻿#ifndef _STYLE_LEXERS_H_
+#ifndef _STYLE_LEXERS_H_
 #define _STYLE_LEXERS_H_
 
 // ----------------------------------------------------------------------------

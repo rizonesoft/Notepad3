@@ -1,4 +1,5 @@
-﻿// Scintilla source code edit control
+// encoding: UTF-8
+// Scintilla source code edit control
 /** @file LexAHKL.cxx
  ** Lexer AutoHotkey L
  ** Created by Isaias "RaptorX" Baez (graptorx@gmail.com)

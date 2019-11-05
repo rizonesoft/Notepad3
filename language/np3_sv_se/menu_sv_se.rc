@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -57,8 +58,8 @@ BEGIN
     POPUP "Fil"
     BEGIN
         MENUITEM "Ny\tCtrl+N",                                      IDM_FILE_NEW
-        MENUITEM "Öppna...\tCtrl+O",                                IDM_FILE_OPEN
-        MENUITEM "Gå tillbaka till\tF5",                            IDM_FILE_REVERT
+        MENUITEM "Ã–ppna...\tCtrl+O",                                IDM_FILE_OPEN
+        MENUITEM "GÃ¥ tillbaka till\tF5",                            IDM_FILE_REVERT
         MENUITEM "Spara\tCtrl+S",                                   IDM_FILE_SAVE
         MENUITEM "Spara som...\tF6",                                IDM_FILE_SAVEAS
         MENUITEM "Spara kopia...\tCtrl+F6",                         IDM_FILE_SAVECOPY
@@ -66,25 +67,25 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Skrivskyddad",                                    IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "Ange lösenfras...",                               IDM_SETPASS
+        MENUITEM "Ange lÃ¶senfras...",                               IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Sökväg till urklipp"
+        POPUP "SÃ¶kvÃ¤g till urklipp"
         BEGIN
             MENUITEM "Kopiera endast filnamn\tCtrl+F9",             IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Kopiera endast sökvärd",                      IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Kopiera hela sökvägen\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Kopiera endast sÃ¶kvÃ¤rd",                      IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Kopiera hela sÃ¶kvÃ¤gen\tCtrl+Shift+F9",        IDM_EDIT_INSERT_PATHNAME
         END
-        POPUP "Kör"
+        POPUP "KÃ¶r"
         BEGIN
-            MENUITEM "Öppna filutforskaren",                        IDM_FILE_EXPLORE_DIR
+            MENUITEM "Ã–ppna filutforskaren",                        IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
-            MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
-            MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
+            MENUITEM "Nytt fÃ¶nster\tAlt+N",                         IDM_FILE_NEWWINDOW
+            MENUITEM "Tomt fÃ¶nster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "Kör med förhöjda behörigheter",               IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "KÃ¶r med fÃ¶rhÃ¶jda behÃ¶righeter",               IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "Kör dokument\tCtrl+L",                        IDM_FILE_LAUNCH
-            MENUITEM "Öppna med...\tAlt+L",                         IDM_FILE_OPENWITH
+            MENUITEM "KÃ¶r dokument\tCtrl+L",                        IDM_FILE_LAUNCH
+            MENUITEM "Ã–ppna med...\tAlt+L",                         IDM_FILE_OPENWITH
             MENUITEM "Kommando...\tCtrl+R",                         IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Webbmall &1\tCtrl+Shift+1",                   CMD_WEBACTION1
@@ -127,13 +128,13 @@ BEGIN
         MENUITEM "Utskrift...\tCtrl+P",                             IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Egenskaper...",                                   IDM_FILE_PROPERTIES
-        MENUITEM "Skapa skrivbordslänk",                            IDM_FILE_CREATELINK
+        MENUITEM "Skapa skrivbordslÃ¤nk",                            IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "Bläddra...\tCtrl+M",                              IDM_FILE_BROWSE
+        MENUITEM "BlÃ¤ddra...\tCtrl+M",                              IDM_FILE_BROWSE
         POPUP "Favoriter"
         BEGIN
-            MENUITEM "Öppna favoriter...\tAlt+I",                   IDM_FILE_OPENFAV
-            MENUITEM "Lägg till aktiv fil...\tAlt+K",               IDM_FILE_ADDTOFAV
+            MENUITEM "Ã–ppna favoriter...\tAlt+I",                   IDM_FILE_OPENFAV
+            MENUITEM "LÃ¤gg till aktiv fil...\tAlt+K",               IDM_FILE_ADDTOFAV
             MENUITEM "Hantera...\tAlt+F9",                          IDM_FILE_MANAGEFAV
         END
         MENUITEM "Senaste historik...\tCtrl+Alt+H",                 IDM_FILE_RECENT
@@ -142,27 +143,27 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
-        MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
+        MENUITEM "Ã…ngra\tCtrl+Z",                                   IDM_EDIT_UNDO
+        MENUITEM "GÃ¶r om\tCtrl+Y",                                  IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Klipp ut\tCtrl+X",                                IDM_EDIT_CUT
         MENUITEM "Kopiera\tCtrl+C",                                 IDM_EDIT_COPY
         MENUITEM "Kopiera allt\tAlt+C",                             IDM_EDIT_COPYALL
-        MENUITEM "Lägg till urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
+        MENUITEM "LÃ¤gg till urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
         MENUITEM "Radera\tDel",                                     IDM_EDIT_CLEAR
         MENUITEM "Rensa urklipp",                                   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Välj allt\tCtrl+A",                               IDM_EDIT_SELECTALL
+        MENUITEM "VÃ¤lj allt\tCtrl+A",                               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "Ord"
                 BEGIN
                     MENUITEM "Komplettera ord\tCtrl+Alt+Enter",     IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Markör till ord till vänster\tCtrl+Left",     CMD_CTRLLEFT
-            MENUITEM "Markör till ord till höger\tCtrl+Right",      CMD_CTRLRIGHT
-            MENUITEM "Radera ord till vänster\tCtrl+Back",          CMD_CTRLBACK
-            MENUITEM "Radera ord till höger\tCtrl+Del",             CMD_CTRLDEL
+            MENUITEM "MarkÃ¶r till ord till vÃ¤nster\tCtrl+Left",     CMD_CTRLLEFT
+            MENUITEM "MarkÃ¶r till ord till hÃ¶ger\tCtrl+Right",      CMD_CTRLRIGHT
+            MENUITEM "Radera ord till vÃ¤nster\tCtrl+Back",          CMD_CTRLBACK
+            MENUITEM "Radera ord till hÃ¶ger\tCtrl+Del",             CMD_CTRLDEL
         END
         POPUP "Rader"
         BEGIN
@@ -178,12 +179,12 @@ BEGIN
             MENUITEM "Transponera rader\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
             MENUITEM "Radera rad\tCtrl+Shift+D",                    IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Radera till vänster\tCtrl+Shift+Back",        IDM_EDIT_DELETELINELEFT
-            MENUITEM "Radera till höger\tCtrl+Shift+Del",           IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Radera till vÃ¤nster\tCtrl+Shift+Back",        IDM_EDIT_DELETELINELEFT
+            MENUITEM "Radera till hÃ¶ger\tCtrl+Shift+Del",           IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Radbryt kolumn...\tCtrl+Shift+W",             IDM_EDIT_COLUMNWRAP
             MENUITEM "Dela rader\tCtrl+I",                          IDM_EDIT_SPLITLINES
-            MENUITEM "Slå ihop rader\tCtrl+J",                      IDM_EDIT_JOINLINES
+            MENUITEM "SlÃ¥ ihop rader\tCtrl+J",                      IDM_EDIT_JOINLINES
             MENUITEM "Sammanfoga rader\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
             MENUITEM "Bevara paragrafer\tCtrl+Shift+J",             IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
@@ -214,7 +215,7 @@ BEGIN
             MENUITEM "Duplicera rad eller markering\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "Utfyllnad med blanksteg\tAlt+B",              IDM_EDIT_PADWITHSPACES
-            MENUITEM "Ta bort första bokstav\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Ta bort fÃ¶rsta bokstav\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
             MENUITEM "Ta bort sista bokstav\tAlt+U",                IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Ta bort blankstek i slutet av rader\tAlt+W",  IDM_EDIT_TRIMLINES
             MENUITEM "Komprimera blanksteg\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
@@ -228,108 +229,108 @@ BEGIN
             MENUITEM "Versaler\tCtrl+Shift+U",                      IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "Gemener\tCtrl+U",                             IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invertera skriftläge\tCtrl+Alt+U",            IDM_EDIT_INVERTCASE
+            MENUITEM "Invertera skriftlÃ¤ge\tCtrl+Alt+U",            IDM_EDIT_INVERTCASE
             MENUITEM "Ordversal\tCtrl+Alt+I",                       IDM_EDIT_TITLECASE
             MENUITEM "Paragrafversal\tCtrl+Alt+O",                  IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "Indrag markering\tCtrl+Shift+T",              IDM_EDIT_CONVERTSPACES
-            MENUITEM "Ta bort indrag för markering\tCtrl+Shift+S",  IDM_EDIT_CONVERTTABS
+            MENUITEM "Ta bort indrag fÃ¶r markering\tCtrl+Shift+S",  IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "Konvertera indrag till tab\tCtrl+Alt+T",      IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Ta bort tab för indrag\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
+            MENUITEM "Ta bort tab fÃ¶r indrag\tCtrl+Alt+S",          IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "Koda URL\tCtrl+Shift+E",                      IDM_EDIT_URLENCODE
-            MENUITEM "Ta bort kodning för URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
+            MENUITEM "Ta bort kodning fÃ¶r URL\tCtrl+Shift+R",       IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
             MENUITEM "Tecken till Hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
             MENUITEM "Hex till tecken\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR
         END
         POPUP "Infoga"
         BEGIN
-            MENUITEM "Ny rad över\tCtrl+Enter",                     CMD_CTRLENTER
+            MENUITEM "Ny rad Ã¶ver\tCtrl+Enter",                     CMD_CTRLENTER
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML Tag...\tAlt+X",                      IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
             MENUITEM "Kodningsidentifierare\tCtrl+F8",              IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
             MENUITEM "Tid och datum (kort)\tCtrl+F5",               IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Tid och datum (lång)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "Uppdatera tidsstämplar\tShift+F5",            CMD_TIMESTAMPS
+            MENUITEM "Tid och datum (lÃ¥ng)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "Uppdatera tidsstÃ¤mplar\tShift+F5",            CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "Linjekommentar (växla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
-            MENUITEM "Strömkommentar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Linjekommentar (vÃ¤xla)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "StrÃ¶mkommentar\tCtrl+Shift+Q",                IDM_EDIT_STREAMCOMMENT
         END
-        POPUP "Övrigt"
+        POPUP "Ã–vrigt"
         BEGIN
             MENUITEM "Kopiera GUID till urklipp\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "Koda C tecken\tCtrl+Alt+E",                   IDM_EDIT_ESCAPECCHARS
-            MENUITEM "Ta bort kodning för C tecken\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "Ta bort kodning fÃ¶r C tecken\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "Öka nummer\tCtrl+Alt+NK+",                    CMD_INCREASENUM
+            MENUITEM "Ã–ka nummer\tCtrl+Alt+NK+",                    CMD_INCREASENUM
             MENUITEM "Minska nummber\tCtrl+Alt+NK-",                CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "Hitta matchande klammerparentes\tCtrl+B",     IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Markera till klammerparentes\tCtrl+Shift+B",  IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "Markera till nästa\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
-            MENUITEM "Markera till föregående\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM "Markera till nÃ¤sta\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
+            MENUITEM "Markera till fÃ¶regÃ¥ende\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Markera ord eller rader\tCtrl+Spc",           IDM_EDIT_SELECTWORD
             MENUITEM "Markera alla matchninar\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Dela Ã¥ngra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
-        POPUP "Bokmärken"
+        POPUP "BokmÃ¤rken"
         BEGIN
-            MENUITEM "Växla\tCtrl+F2",                              BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "VÃ¤xla\tCtrl+F2",                              BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "Gå till nästa\tF2",                           BME_EDIT_BOOKMARKNEXT
-            MENUITEM "Gå till föregående\tShift+F2",                BME_EDIT_BOOKMARKPREV
+            MENUITEM "GÃ¥ till nÃ¤sta\tF2",                           BME_EDIT_BOOKMARKNEXT
+            MENUITEM "GÃ¥ till fÃ¶regÃ¥ende\tShift+F2",                BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
             MENUITEM "Rensa alla\tAlt+F2",                          BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
-        POPUP "Sök"
+        POPUP "SÃ¶k"
         BEGIN
             MENUITEM "Hitta...\tCtrl+F",                            IDM_EDIT_FIND
             MENUITEM "Spara hittad text\tAlt+F3",                   IDM_EDIT_SAVEFIND
-            MENUITEM "Hitta nästa\tF3",                             IDM_EDIT_FINDNEXT
-            MENUITEM "Hitta föregående\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "Hitta nästa markering\tCtrl+F3",              CMD_FINDNEXTSEL
-            MENUITEM "Hitta föregående markering\tCtrl+Shift+F3",   CMD_FINDPREVSEL
-            MENUITEM "Ersätt...\tCtrl+H",                           IDM_EDIT_REPLACE
-            MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
-            MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
+            MENUITEM "Hitta nÃ¤sta\tF3",                             IDM_EDIT_FINDNEXT
+            MENUITEM "Hitta fÃ¶regÃ¥ende\tShift+F3",                  IDM_EDIT_FINDPREV
+            MENUITEM "Hitta nÃ¤sta markering\tCtrl+F3",              CMD_FINDNEXTSEL
+            MENUITEM "Hitta fÃ¶regÃ¥ende markering\tCtrl+Shift+F3",   CMD_FINDPREVSEL
+            MENUITEM "ErsÃ¤tt...\tCtrl+H",                           IDM_EDIT_REPLACE
+            MENUITEM "ErsÃ¤tt nÃ¤sta\tF4",                            IDM_EDIT_REPLACENEXT
+            MENUITEM "GÃ¥ till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
         END
     END
     POPUP "Visa"
     BEGIN
         MENUITEM "Automatiskt radbyte\tCtrl+W",                     IDM_VIEW_WORDWRAP
-        MENUITEM "Markering för långa rader\tCtrl+Shift+L",         IDM_VIEW_LONGLINEMARKER
+        MENUITEM "Markering fÃ¶r lÃ¥nga rader\tCtrl+Shift+L",         IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indragsguide\tCtrl+Shift+G",                      IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Visa radbrytsindikator\tCtrl+Shift+7",            IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Visa blanksteg\tCtrl+Shift+8",                    IDM_VIEW_SHOWBLANKS
         MENUITEM "Visa radslut\tCtrl+Shift+9",                      IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "Färgpunkter",                                     IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "HyperlÃ¤nkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "FÃ¤rgpunkter",                                     IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "Visuell klammermatchning\tCtrl+Shift+V",          IDM_VIEW_MATCHBRACES
         POPUP "Markera rad\tCtrl+Shift+I"
         BEGIN
             MENUITEM "Ingen markering",                             IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Bakgrundssfärg",                              IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "BakgrundssfÃ¤rg",                              IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Ramkontur",                                   IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Markera förekomster"
+        POPUP "Markera fÃ¶rekomster"
         BEGIN
             MENUITEM "Visa aktiva\tAlt+A",                          IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
             MENUITEM "Matcha endast synliga",                       IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "Matcha skriftslägeskänsligt",                 IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "Matcha skriftslÃ¤geskÃ¤nsligt",                 IDM_VIEW_MARKOCCUR_CASE
             POPUP "Matcha endast hela ord"
             BEGIN
                 MENUITEM "Av",                                      IDM_VIEW_MARKOCCUR_WNONE
@@ -344,89 +345,89 @@ BEGIN
         POPUP "Visa"
         BEGIN
             MENUITEM "Ihopvikning av kodsegment",                   IDM_VIEW_FOLDING
-            MENUITEM "Växla ihopvikning\tCtrl+Shift+F",             IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "VÃ¤xla ihopvikning\tCtrl+Shift+F",             IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Fokuserad vy\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Log",                                         IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "Rulla förbi slutet av filen",                 IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Visa verktygstips för hyperlänk",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "Rulla fÃ¶rbi slutet av filen",                 IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Visa verktygstips fÃ¶r hyperlÃ¤nk",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Verktygsfält"
+        POPUP "VerktygsfÃ¤lt"
         BEGIN
-            MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
-            MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
-            MENUITEM "Växla verktygsfält",                          IDM_VIEW_TOGGLETB
-            MENUITEM "Anpassa verktygsfält...",                     IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Ladda tema för verktygsfält...",              IDM_VIEW_LOADTHEMETB
-            MENUITEM "Visa statusfält",                             IDM_VIEW_STATUSBAR
+            MENUITEM "Visa menyfÃ¤lt",                               IDM_VIEW_MENUBAR
+            MENUITEM "Visa verktygsfÃ¤lt",                           IDM_VIEW_TOOLBAR
+            MENUITEM "VÃ¤xla verktygsfÃ¤lt",                          IDM_VIEW_TOGGLETB
+            MENUITEM "Anpassa verktygsfÃ¤lt...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Ladda tema fÃ¶r verktygsfÃ¤lt...",              IDM_VIEW_LOADTHEMETB
+            MENUITEM "Visa statusfÃ¤lt",                             IDM_VIEW_STATUSBAR
         END
-        POPUP "Förstoring"
+        POPUP "FÃ¶rstoring"
         BEGIN
-            MENUITEM "Förstora\tCtrl++",                            IDM_VIEW_ZOOMIN
-            MENUITEM "Förminska\tCtrl+-",                           IDM_VIEW_ZOOMOUT
-            MENUITEM "Nollställ förstoring\tCtrl+0",                IDM_VIEW_RESETZOOM
+            MENUITEM "FÃ¶rstora\tCtrl++",                            IDM_VIEW_ZOOMIN
+            MENUITEM "FÃ¶rminska\tCtrl+-",                           IDM_VIEW_ZOOMOUT
+            MENUITEM "NollstÃ¤ll fÃ¶rstoring\tCtrl+0",                IDM_VIEW_RESETZOOM
         END
         POPUP "Position"
         BEGIN
             MENUITEM "Kopiera positionsargument\tCtrl+Shift+K",     CMD_COPYWINPOS
-            MENUITEM "Fäst vid standardposition\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
+            MENUITEM "FÃ¤st vid standardposition\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
             MENUITEM "Spara som standardposition",                  CMD_SAVEASDEFWINPOS
-            MENUITEM "Nollställ sparad standardposition",           CMD_CLEARSAVEDWINPOS
-            MENUITEM "Fäst vid ursprunglig position\tCtrl+F11",     CMD_INITIALWINPOS
-            MENUITEM "Växla områdesposition\tF11",                  CMD_FULLSCRWINPOS
-            MENUITEM "Fast fönsterposition",                        IDM_VIEW_STICKYWINPOS
+            MENUITEM "NollstÃ¤ll sparad standardposition",           CMD_CLEARSAVEDWINPOS
+            MENUITEM "FÃ¤st vid ursprunglig position\tCtrl+F11",     CMD_INITIALWINPOS
+            MENUITEM "VÃ¤xla omrÃ¥desposition\tF11",                  CMD_FULLSCRWINPOS
+            MENUITEM "Fast fÃ¶nsterposition",                        IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "Utseende"
     BEGIN
         MENUITEM "Anpassa scheman...\tCtrl+F12",                    IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Välj syntaxschema...\tF12",                       IDM_VIEW_SCHEME
+        MENUITEM "VÃ¤lj syntaxschema...\tF12",                       IDM_VIEW_SCHEME
         MENUITEM "Andra gemensamma bas\tShift+F12",                 IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Global font...\tAlt+F12",                         IDM_VIEW_FONT
-        MENUITEM "Aktuell font för valt schema...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
+        MENUITEM "Aktuell font fÃ¶r valt schema...\tCtrl+Alt+F12",   IDM_VIEW_CURRENTSCHEME
     END
-    POPUP "Inställningar"
+    POPUP "InstÃ¤llningar"
     BEGIN
         MENUITEM "Infoga tabbar som blanksteg",                     IDM_VIEW_TABSASSPACES
-        MENUITEM "Tabulatorinställningar...\tCtrl+T",               IDM_VIEW_TABSETTINGS
+        MENUITEM "TabulatorinstÃ¤llningar...\tCtrl+T",               IDM_VIEW_TABSETTINGS
         MENUITEM "Automatiskt radbyte...",                          IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "Långa rader...",                                  IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "LÃ¥nga rader...",                                  IDM_VIEW_LONGLINESETTINGS
         MENUITEM "Automatiskt indrag",                              IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
+        MENUITEM "StÃ¤ng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "Kompletera ord automatiskt",                      IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
         MENUITEM "Aktivera redigering av radkommentar",             IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Endast en instans per fil",                       IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
-        MENUITEM "Stäng av ljud vid meddelande",                    IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "Notifiering vid filÃ¤ndring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
+        MENUITEM "StÃ¤ng av ljud vid meddelande",                    IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"
         BEGIN
             MENUITEM "Ingen",                                       IDM_VIEW_NOESCFUNC
             MENUITEM "Minimera Notepad3",                           IDM_VIEW_ESCMINIMIZE
             MENUITEM "Avsluta Notepad3",                            IDM_VIEW_ESCEXIT
         END
-        MENUITEM "Spara innan verktyg används",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Spara innan verktyg anvÃ¤nds",                     IDM_VIEW_SAVEBEFORERUNNINGTOOLS
         MENUITEM SEPARATOR
-        POPUP "Kom ihåg"
+        POPUP "Kom ihÃ¥g"
         BEGIN
-            MENUITEM "Kom ihåg senaste filer",                      IDM_VIEW_NOSAVERECENT
-            MENUITEM "Bevara markörposition",                       IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Kom ihåg sökmönster",                         IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Kom ihÃ¥g senaste filer",                      IDM_VIEW_NOSAVERECENT
+            MENUITEM "Bevara markÃ¶rposition",                       IDM_VIEW_NOPRESERVECARET
+            MENUITEM "Kom ihÃ¥g sÃ¶kmÃ¶nster",                         IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "Fönster"
+        POPUP "FÃ¶nster"
         BEGIN
-            POPUP "Fönstertitel"
+            POPUP "FÃ¶nstertitel"
             BEGIN
                 MENUITEM "Endast filnamn",                          IDM_VIEW_SHOWFILENAMEONLY
                 MENUITEM "Filnamn och mapp",                        IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Fullständig sökväg",                      IDM_VIEW_SHOWFULLPATH
+                MENUITEM "FullstÃ¤ndig sÃ¶kvÃ¤g",                      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "Återanvänd fönster",                          IDM_VIEW_REUSEWINDOW
-            MENUITEM "Alltid överst\tAlt+T",                        IDM_VIEW_ALWAYSONTOP
+            MENUITEM "Ã…teranvÃ¤nd fÃ¶nster",                          IDM_VIEW_REUSEWINDOW
+            MENUITEM "Alltid Ã¶verst\tAlt+T",                        IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimera till dolda ikoner",                  IDM_VIEW_MINTOTRAY
             MENUITEM "Genomskinlig\tAlt+G",                         IDM_VIEW_TRANSPARENT
         END
@@ -442,25 +443,25 @@ BEGIN
             POPUP "Dubbelriktad"
             BEGIN
                 MENUITEM "Ingen",                                   IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Vänster till höger",                      IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Höger till vänster",                      IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "VÃ¤nster till hÃ¶ger",                      IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "HÃ¶ger till vÃ¤nster",                      IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "Avancerade inställningar"
+        POPUP "Avancerade instÃ¤llningar"
         BEGIN
             MENUITEM "Spara vid avslut",                            IDM_VIEW_SAVESETTINGS
-            MENUITEM "Spara inställningar nu\tF7",                  IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "Öppna inställningsfilen\tCtrl+F7",            CMD_OPENINIFILE
+            MENUITEM "Spara instÃ¤llningar nu\tF7",                  IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "Ã–ppna instÃ¤llningsfilen\tCtrl+F7",            CMD_OPENINIFILE
         END
     END
-    POPUP "Hjälp"
+    POPUP "HjÃ¤lp"
     BEGIN
-        MENUITEM "Dokumentation på webben\tF1",                     IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "Dokumentation pÃ¥ webben\tF1",                     IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Kör administrationsverktyg...",                   IDM_HELP_ADMINEXE
+        MENUITEM "KÃ¶r administrationsverktyg...",                   IDM_HELP_ADMINEXE
         MENUITEM "Hitta uppdatering",                               IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "Hjälp för kommandorad...",                        IDM_HELP_CMD
+        MENUITEM "HjÃ¤lp fÃ¶r kommandorad...",                        IDM_HELP_CMD
         MENUITEM "Om...\tShift+F1",                                 IDM_HELP_ABOUT
     END
 END
@@ -469,34 +470,34 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Ångra",                                           IDM_EDIT_UNDO
-        MENUITEM "Gör om",                                          IDM_EDIT_REDO
+        MENUITEM "Ã…ngra",                                           IDM_EDIT_UNDO
+        MENUITEM "GÃ¶r om",                                          IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Klipp ut",                                        IDM_EDIT_CUT
         MENUITEM "Kopiera",                                         IDM_EDIT_COPY
         MENUITEM "Klistra in",                                      IDM_EDIT_PASTE
         MENUITEM "Radera",                                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Välj allt",                                       IDM_EDIT_SELECTALL
+        MENUITEM "VÃ¤lj allt",                                       IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Växla ihopvikning",                               IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "VÃ¤xla ihopvikning",                               IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Öppna webb &1",                                   CMD_WEBACTION1
-        MENUITEM "Öppna webb &2",                                   CMD_WEBACTION2
-        MENUITEM "Öppna hyperlänk",                                 CMD_OPEN_HYPERLINK
+        MENUITEM "Ã–ppna webb &1",                                   CMD_WEBACTION1
+        MENUITEM "Ã–ppna webb &2",                                   CMD_WEBACTION2
+        MENUITEM "Ã–ppna hyperlÃ¤nk",                                 CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Visa menyfält",                                   IDM_VIEW_MENUBAR
-        MENUITEM "Visa verktygsfält",                               IDM_VIEW_TOOLBAR
-        MENUITEM "Växla verktygsfält",                              IDM_VIEW_TOGGLETB
-        MENUITEM "Anpassa verktygsfält...",                         IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Ladda tema för verktygsfält...",                  IDM_VIEW_LOADTHEMETB
-        MENUITEM "Visa statusfält",                                 IDM_VIEW_STATUSBAR
+        MENUITEM "Visa menyfÃ¤lt",                                   IDM_VIEW_MENUBAR
+        MENUITEM "Visa verktygsfÃ¤lt",                               IDM_VIEW_TOOLBAR
+        MENUITEM "VÃ¤xla verktygsfÃ¤lt",                              IDM_VIEW_TOGGLETB
+        MENUITEM "Anpassa verktygsfÃ¤lt...",                         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Ladda tema fÃ¶r verktygsfÃ¤lt...",                  IDM_VIEW_LOADTHEMETB
+        MENUITEM "Visa statusfÃ¤lt",                                 IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Öppna Notepad3",                                  IDM_TRAY_RESTORE
+        MENUITEM "Ã–ppna Notepad3",                                  IDM_TRAY_RESTORE
         MENUITEM "Avsluta Notepad3",                                IDM_TRAY_EXIT
     END
 END

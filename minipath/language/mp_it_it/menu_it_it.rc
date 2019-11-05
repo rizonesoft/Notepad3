@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ITA)
 LANGUAGE LANG_ITALIAN, SUBLANG_ITALIAN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +71,7 @@ BEGIN
         MENUITEM "&Esegui",                     IDM_FILE_LAUNCH
         MENUITEM "&Esegui con argomenti...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Propriet‡",                 IDM_FILE_PROPERTIES
+        MENUITEM "&Propriet√†",                 IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
@@ -99,7 +100,7 @@ BEGIN
         MENUITEM "&Modifica Preferiti",             IDM_VIEW_EDITFAVORITES
         MENUITEM "&Cartella...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Mostra unit‡ disco",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Mostra unit√† disco",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "S&alva impostazioni",              IDM_VIEW_SAVESETTINGS
         MENUITEM "Imposta &destinazione...",            IDM_VIEW_FINDTARGET
@@ -108,9 +109,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Cartella...",               IDM_FILE_CHANGEDIR
-        MENUITEM "&Propriet‡ disco",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Propriet√† disco",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Mostra unit‡ disco",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Mostra unit√† disco",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN

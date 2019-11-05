@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1252
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
 LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
-#pragma code_page(1252) // Western European (Windows-1252)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -128,8 +129,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE       "Estilo Padr„o"
-    IDS_LEX_STD_MARGIN      "N˙meros de Margens e Linhas Numbers"
+    IDS_LEX_STD_STYLE       "Estilo Padr√£o"
+    IDS_LEX_STD_MARGIN      "N√∫meros de Margens e Linhas Numbers"
     IDS_LEX_STD_BRACE       "Par de Colchetes (Indicador)"
     IDS_LEX_STD_BRACE_FAIL  "Par de Colchetes Erro (Indicador)"
 END
@@ -137,21 +138,21 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STD_CTRL_CHAR   "Controle de Caracteres (Fonte)"
-    IDS_LEX_STD_INDENT      "Guia de IndentaÁ„o (Cor)"
+    IDS_LEX_STD_INDENT      "Guia de Indenta√ß√£o (Cor)"
     IDS_LEX_STD_SEL         "Texto Selecionado (Cores)"
-    IDS_LEX_STD_WSPC        "EspaÁo em branco (Cores, Tamanho 0-12)"
+    IDS_LEX_STD_WSPC        "Espa√ßo em branco (Cores, Tamanho 0-12)"
     IDS_LEX_STD_LN_BACKGR   "Marcar Linha Atual"
     IDS_LEX_STD_CARET       "Circunflexo (Cor, Tamanho 1-3)"
     IDS_LEX_STD_LONG_LN     "Marcador de Linha Longo (Cores)"
-    IDS_LEX_STD_X_SPC       "EspaÁamento de Linhas Extra (Tamanho)"
-    IDS_LEX_2ND_STYLE       "2nd estilo padr„o"
-    IDS_LEX_2ND_MARGIN      "2nd N˙mero de Margens e Linhas"
+    IDS_LEX_STD_X_SPC       "Espa√ßamento de Linhas Extra (Tamanho)"
+    IDS_LEX_2ND_STYLE       "2nd estilo padr√£o"
+    IDS_LEX_2ND_MARGIN      "2nd N√∫mero de Margens e Linhas"
     IDS_LEX_2ND_BRACE       "2nd Par de Colchetes (Indicador)"
     IDS_LEX_2ND_BRACE_FAIL  "2nd Par de Colchetes Erro (Indicador)"
     IDS_LEX_2ND_CTRL_CHAR   "2nd Controle de Caracteres (Fonte)"
-    IDS_LEX_2ND_INDENT      "2nd Guia de IdentaÁ„o (Cor)"
+    IDS_LEX_2ND_INDENT      "2nd Guia de Identa√ß√£o (Cor)"
     IDS_LEX_2ND_SEL         "2nd Texto Selecionado (Cores)"
-    IDS_LEX_2ND_WSPC        "2nd EspaÁo em branco (Cores, Tamanho 0-12)"
+    IDS_LEX_2ND_WSPC        "2nd Espa√ßo em branco (Cores, Tamanho 0-12)"
 END
 
 STRINGTABLE
@@ -159,14 +160,14 @@ BEGIN
     IDS_LEX_2ND_LN_BACKGR   "2nd Marcar Linha Atual"
     IDS_LEX_2ND_CARET       "2nd Circunflexo (Cor, Tamanho 1-3)"
     IDS_LEX_2ND_LONG_LN     "2nd Marcador de Linha Extra Longo (Cores)"
-    IDS_LEX_2ND_X_SPC       "2nd EspaÁamento de Linha Extra (Tamanho)"
-    IDS_LEX_STD_BKMRK       "Marca-P·gina e Folding (Cores, Tamanho)"
-    IDS_LEX_2ND_BKMRK       "2nd Marca-P·gina e Folding (Cores, Tamanho)"
-    IDS_LEX_STR_63126       "Padr„o"
-    IDS_LEX_STR_63127       "Coment·rio"
+    IDS_LEX_2ND_X_SPC       "2nd Espa√ßamento de Linha Extra (Tamanho)"
+    IDS_LEX_STD_BKMRK       "Marca-P√°gina e Folding (Cores, Tamanho)"
+    IDS_LEX_2ND_BKMRK       "2nd Marca-P√°gina e Folding (Cores, Tamanho)"
+    IDS_LEX_STR_63126       "Padr√£o"
+    IDS_LEX_STR_63127       "Coment√°rio"
     IDS_LEX_STR_63128       "Palavra-Chave"
     IDS_LEX_STR_63129       "Identificador"
-    IDS_LEX_STR_63130       "N˙bero"
+    IDS_LEX_STR_63130       "N√∫bero"
     IDS_LEX_STR_63131       "String"
     IDS_LEX_STR_63132       "Operador"
     IDS_LEX_STR_63133       "Preprocessor"
@@ -183,13 +184,13 @@ BEGIN
     IDS_LEX_STR_63140       "HTML Valor"
     IDS_LEX_STR_63141       "HTML String"
     IDS_LEX_STR_63142       "HTML Outra Tag Dentro"
-    IDS_LEX_STR_63143       "HTML Coment·rio"
+    IDS_LEX_STR_63143       "HTML Coment√°rio"
     IDS_LEX_STR_63144       "HTML Entidade"
     IDS_LEX_STR_63145       "XML Identificador"
     IDS_LEX_STR_63146       "ASP Tag de Inicio"
     IDS_LEX_STR_63147       "CDATA"
     IDS_LEX_STR_63148       "PHP Tag de Inicio"
-    IDS_LEX_STR_63149       "PHP Padr„o"
+    IDS_LEX_STR_63149       "PHP Padr√£o"
     IDS_LEX_STR_63150       "PHP String"
     IDS_LEX_STR_63151       "PHP Simple String"
 END
@@ -197,21 +198,21 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63152       "PHP Palavra-Chave"
-    IDS_LEX_STR_63153       "PHP N˙mero"
-    IDS_LEX_STR_63154       "PHP Vari·vel"
-    IDS_LEX_STR_63155       "PHP String Vari·vel"
-    IDS_LEX_STR_63156       "PHP Vari·vel Complexa"
-    IDS_LEX_STR_63157       "PHP Coment·rio"
+    IDS_LEX_STR_63153       "PHP N√∫mero"
+    IDS_LEX_STR_63154       "PHP Vari√°vel"
+    IDS_LEX_STR_63155       "PHP String Vari√°vel"
+    IDS_LEX_STR_63156       "PHP Vari√°vel Complexa"
+    IDS_LEX_STR_63157       "PHP Coment√°rio"
     IDS_LEX_STR_63158       "PHP Operador"
-    IDS_LEX_STR_63159       "JS Padr„o"
-    IDS_LEX_STR_63160       "JS Coment·rio"
-    IDS_LEX_STR_63161       "JS N˙mero"
+    IDS_LEX_STR_63159       "JS Padr√£o"
+    IDS_LEX_STR_63160       "JS Coment√°rio"
+    IDS_LEX_STR_63161       "JS N√∫mero"
     IDS_LEX_STR_63162       "JS Identificador"
     IDS_LEX_STR_63163       "JS Palavra-Chave"
     IDS_LEX_STR_63164       "JS String"
     IDS_LEX_STR_63165       "JS Simbolos"
     IDS_LEX_STR_63166       "JS Regex"
-    IDS_LEX_STR_63167       "ASP JS Padr„o"
+    IDS_LEX_STR_63167       "ASP JS Padr√£o"
 END
 
 STRINGTABLE

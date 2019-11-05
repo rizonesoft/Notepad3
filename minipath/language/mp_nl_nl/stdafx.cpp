@@ -1,4 +1,5 @@
-﻿// stdafx.cpp : Quelldatei, die nur die Standard-Includes einbindet.
+// encoding: UTF-8
+// stdafx.cpp : Quelldatei, die nur die Standard-Includes einbindet.
 // mp_nl_nl.pch ist der vorkompilierte Header.
 // stdafx.obj enthält die vorkompilierten Typinformationen.
 

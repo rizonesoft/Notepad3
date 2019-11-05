@@ -1,4 +1,5 @@
-﻿/**
+// encoding: UTF-8
+/**
  * @file  OnigurumaRegExEngine.cxx
  * @brief integrate Oniguruma regex engine for Scintilla library
  *        (Scintilla Lib is copyright 1998-2017 by Neil Hodgson <neilh@scintilla.org>)

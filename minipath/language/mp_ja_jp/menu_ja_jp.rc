@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: Shift_JIS
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN
-#pragma code_page(932) // Japanese (Shift-JIS)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,72 +57,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "�J��(&O)",                       IDM_FILE_OPEN
-        MENUITEM "�ʂ̃v���O�����ŊJ��(&W)...",        IDM_FILE_OPENWITH
+        MENUITEM "髢九￥(&O)",                       IDM_FILE_OPEN
+        MENUITEM "蛻･縺ｮ繝励Ο繧ｰ繝ｩ繝縺ｧ髢九￥(&W)...",        IDM_FILE_OPENWITH
         MENUITEM "Quickview(&Q)",                 IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "�t�@�C�������R�s�[(&C)",             IDM_POP_COPYNAME
-        MENUITEM "�V���[�g�J�b�g�쐬(&K)...",          IDM_FILE_CREATELINK
-        MENUITEM "���O��t���ĕۑ�(&S)...",         IDM_FILE_SAVEAS
-        MENUITEM "�R�s�[/�ړ�(&M)...",              IDM_FILE_COPYMOVE
-        MENUITEM "�폜(&E)...",                   IDM_FILE_DELETE
-        MENUITEM "���O�̕ύX(&N)...",              IDM_FILE_RENAME
+        MENUITEM "繝輔ぃ繧､繝ｫ蜷阪ｒ繧ｳ繝斐�(&C)",             IDM_POP_COPYNAME
+        MENUITEM "繧ｷ繝ｧ繝ｼ繝医き繝�ヨ菴懈�(&K)...",          IDM_FILE_CREATELINK
+        MENUITEM "蜷榊燕繧剃ｻ倥￠縺ｦ菫晏ｭ(&S)...",         IDM_FILE_SAVEAS
+        MENUITEM "繧ｳ繝斐�/遘ｻ蜍(&M)...",              IDM_FILE_COPYMOVE
+        MENUITEM "蜑企勁(&E)...",                   IDM_FILE_DELETE
+        MENUITEM "蜷榊燕縺ｮ螟画峩(&N)...",              IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "���s(&L)",                     IDM_FILE_LAUNCH
-        MENUITEM "�t�@�C�������w�肵�Ď��s(&R)...",   IDM_FILE_RUN
+        MENUITEM "螳溯｡(&L)",                     IDM_FILE_LAUNCH
+        MENUITEM "繝輔ぃ繧､繝ｫ蜷阪ｒ謖�ｮ壹＠縺ｦ螳溯｡(&R)...",   IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "�v���p�e�B(&P)",                  IDM_FILE_PROPERTIES
+        MENUITEM "繝励Ο繝代ユ繧｣(&P)",                  IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "�V�K�쐬(&N)",                 IDM_FILE_NEW
-        MENUITEM "�t�H���_�̍쐬(&W)...",          IDM_FILE_NEWDIR
+        MENUITEM "譁ｰ隕丈ｽ懈�(&N)",                 IDM_FILE_NEW
+        MENUITEM "繝輔か繝ｫ繝縺ｮ菴懈�(&W)...",          IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "�t�@�C���t�B���^�[(&F)...",         IDM_VIEW_FILTER
-        MENUITEM "�t�B���^�[����(&R)",              IDM_VIEW_FILTERALL
-        POPUP "�\��(&S)"
+        MENUITEM "繝輔ぃ繧､繝ｫ繝輔ぅ繝ｫ繧ｿ繝ｼ(&F)...",         IDM_VIEW_FILTER
+        MENUITEM "繝輔ぅ繝ｫ繧ｿ繝ｼ隗｣髯､(&R)",              IDM_VIEW_FILTERALL
+        POPUP "陦ｨ遉ｺ(&S)"
         BEGIN
-            MENUITEM "�t�H���_(&D)",              IDM_VIEW_FOLDERS
-            MENUITEM "�t�@�C��(&F)",              IDM_VIEW_FILES
-            MENUITEM "�V�X�e���֘A(&S)",          IDM_VIEW_HIDDEN
+            MENUITEM "繝輔か繝ｫ繝(&D)",              IDM_VIEW_FOLDERS
+            MENUITEM "繝輔ぃ繧､繝ｫ(&F)",              IDM_VIEW_FILES
+            MENUITEM "繧ｷ繧ｹ繝�Β髢｢騾｣(&S)",          IDM_VIEW_HIDDEN
         END
-        POPUP "�\����(&O)"
+        POPUP "陦ｨ遉ｺ鬆(&O)"
         BEGIN
-            MENUITEM "���O(&N)",                IDM_SORT_NAME
-            MENUITEM "�T�C�Y(&S)",                IDM_SORT_SIZE
-            MENUITEM "���(&T)",                IDM_SORT_TYPE
-            MENUITEM "���t(&D)",                IDM_SORT_DATE
+            MENUITEM "蜷榊燕(&N)",                IDM_SORT_NAME
+            MENUITEM "繧ｵ繧､繧ｺ(&S)",                IDM_SORT_SIZE
+            MENUITEM "遞ｮ鬘(&T)",                IDM_SORT_TYPE
+            MENUITEM "譌･莉(&D)",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "�t��(&R)",                IDM_SORT_REVERSE
+            MENUITEM "騾�(&R)",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "���C�ɓ����\��(&G)",             IDM_VIEW_FAVORITES
-        MENUITEM "���C�ɓ�����G�N�X�v���[���ŊJ��(&E)",   IDM_VIEW_EDITFAVORITES
-        MENUITEM "�t�H���_�I��(&D)...",              IDM_FILE_CHANGEDIR
+        MENUITEM "縺頑ｰ励↓蜈･繧翫ｒ陦ｨ遉ｺ(&G)",             IDM_VIEW_FAVORITES
+        MENUITEM "縺頑ｰ励↓蜈･繧翫ｒ繧ｨ繧ｯ繧ｹ繝励Ο繝ｼ繝ｩ縺ｧ髢九￥(&E)",   IDM_VIEW_EDITFAVORITES
+        MENUITEM "繝輔か繝ｫ繝驕ｸ謚(&D)...",              IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "�h���C�u�̕\��(&V)",               IDM_VIEW_DRIVEBOX
+        MENUITEM "繝峨Λ繧､繝悶�陦ｨ遉ｺ(&V)",               IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "�ݒ�̕ۑ�(&A)",                IDM_VIEW_SAVESETTINGS
-        MENUITEM "�w��v���O�����̐ݒ�(&T)...",      IDM_VIEW_FINDTARGET
-        MENUITEM "�ݒ�(&P)...",                  IDM_VIEW_OPTIONS
+        MENUITEM "險ｭ螳壹�菫晏ｭ(&A)",                IDM_VIEW_SAVESETTINGS
+        MENUITEM "謖�ｮ壹�繝ｭ繧ｰ繝ｩ繝縺ｮ險ｭ螳(&T)...",      IDM_VIEW_FINDTARGET
+        MENUITEM "險ｭ螳(&P)...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "�t�H���_(&D)...",                IDM_FILE_CHANGEDIR
-        MENUITEM "�h���C�u�̃v���p�e�B(&P)",           IDM_FILE_DRIVEPROP
+        MENUITEM "繝輔か繝ｫ繝(&D)...",                IDM_FILE_CHANGEDIR
+        MENUITEM "繝峨Λ繧､繝悶�繝励Ο繝代ユ繧｣(&P)",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "�h���C�u�̕\��(&V)",              IDM_VIEW_DRIVEBOX
+        MENUITEM "繝峨Λ繧､繝悶�陦ｨ遉ｺ(&V)",              IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "�c�[���o�[��\��(&T)",            IDM_VIEW_TOOLBAR
-        MENUITEM "�c�[���o�[�̕ҏW(&E)...",         IDM_VIEW_CUSTOMIZETB
-        MENUITEM "�X�e�[�^�X�o�[��\��(&S)",          IDM_VIEW_STATUSBAR
+        MENUITEM "繝��繝ｫ繝舌�繧定｡ｨ遉ｺ(&T)",            IDM_VIEW_TOOLBAR
+        MENUITEM "繝��繝ｫ繝舌�縺ｮ邱ｨ髮(&E)...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "繧ｹ繝��繧ｿ繧ｹ繝舌�繧定｡ｨ遉ｺ(&S)",          IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "MiniPath ���J��(&O)",                IDM_TRAY_RESTORE
-        MENUITEM "�I��(&X)",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath を開く(&O)",                IDM_TRAY_RESTORE
+        MENUITEM "終了(&X)",               IDM_TRAY_EXIT
     END
 END
 

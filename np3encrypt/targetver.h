@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // Durch Einbeziehen von"SDKDDKVer.h" wird die höchste verfügbare Windows-Plattform definiert.
 

@@ -1,4 +1,4 @@
-﻿; ReplaceInFile wrapper for testreplace function
+; ReplaceInFile wrapper for testreplace function
 ; John T. Haller of PortableApps.com
 ; BSD License
 ; Requires TextReplace plugin installed in NSIS and !include "TextReplace.nsh" in main nsi

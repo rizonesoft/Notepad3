@@ -2,6 +2,7 @@
 #define REGPARSE_H
 /**********************************************************************
   regparse.h -  Oniguruma (regular expression library)
+  encoding: UTF-8
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2019  K.Kosako

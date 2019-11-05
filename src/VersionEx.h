@@ -1,3 +1,4 @@
+// encoding: UTF-8
 // //////////////////////////////////////////////////////////
 //                                                         //
 // this file is generated - use template to apply changes  //
@@ -7,8 +8,8 @@
 #define SAPPNAME "Notepad3"
 #define VERSION_MAJOR 5
 #define VERSION_MINOR 19
-#define VERSION_REV 1102
-#define VERSION_BUILD 2665
+#define VERSION_REV 1105
+#define VERSION_BUILD 2667
 #define SCINTILLA_VER 420
 #define ONIGURUMA_REGEX_VER 6.9.4
 #define UCHARDET_VER 2018.09.27

@@ -1,5 +1,6 @@
 // Microsoft Visual C++ generated resource script.
-// encoding: CP-1250
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -18,7 +19,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
 LANGUAGE LANG_POLISH, SUBLANG_POLISH_POLAND
-#pragma code_page(1250) // Central European (Windows-1250)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -71,19 +72,19 @@ BEGIN
     IDS_ENC_ISO_8859_6             "C;Arabski (ISO-8859-6);ISO-8859-6"
     IDS_ENC_MAC_ARABIC             "C;Arabski (Mac);Mac (Arabic)"
     IDS_ENC_WIN_1256               "C;Arabski (Windows-1256);Windows-1256"
-    IDS_ENC_DOS_775                "C;Ba≥tycki (DOS-775);DOS-775"
-    IDS_ENC_ISO_8859_4             "C;Ba≥tycki (ISO-8859-4);ISO-8859-4"
-    IDS_ENC_WIN_1257               "C;Ba≥tycki (Windows-1257);Windows-1257"
-    IDS_ENC_DOS_852                "C;årodkowoeuropejski (DOS-852);DOS-852"
-    IDS_ENC_ISO_8859_2             "C;årodkowoeuropejski (ISO-8859-2);ISO-8859-2"
-    IDS_ENC_MAC_CENTRAL_EUROP      "C;årodkowoeuropejski (Mac);Mac (Central)"
-    IDS_ENC_WIN_1250               "C;årodkowoeuropejski (Windows-1250);Windows-1250"
-    IDS_ENC_GB18030                "C;ChiÒski (GB18030);GB-18030"
-    IDS_ENC_GB2312_80              "C;ChiÒski uproszczony (GB2312-80);GB-2312-80"
-    IDS_ENC_GBK_936                "C;ChiÒski uproszczony (GBK-936);GBK-936"
-    IDS_ENC_MAC_ZH_CN              "C;ChiÒski uproszczony (Mac);Mac (zh-cn)"
-    IDS_ENC_BIG5                   "C;ChiÒski tradycyjny (Big5);Big5"
-    IDS_ENC_MAC_ZH_TW              "C;ChiÒski tradycyjny (Mac);Mac (zh-tw)"
+    IDS_ENC_DOS_775                "C;Ba≈Çtycki (DOS-775);DOS-775"
+    IDS_ENC_ISO_8859_4             "C;Ba≈Çtycki (ISO-8859-4);ISO-8859-4"
+    IDS_ENC_WIN_1257               "C;Ba≈Çtycki (Windows-1257);Windows-1257"
+    IDS_ENC_DOS_852                "C;≈örodkowoeuropejski (DOS-852);DOS-852"
+    IDS_ENC_ISO_8859_2             "C;≈örodkowoeuropejski (ISO-8859-2);ISO-8859-2"
+    IDS_ENC_MAC_CENTRAL_EUROP      "C;≈örodkowoeuropejski (Mac);Mac (Central)"
+    IDS_ENC_WIN_1250               "C;≈örodkowoeuropejski (Windows-1250);Windows-1250"
+    IDS_ENC_GB18030                "C;Chi≈Ñski (GB18030);GB-18030"
+    IDS_ENC_GB2312_80              "C;Chi≈Ñski uproszczony (GB2312-80);GB-2312-80"
+    IDS_ENC_GBK_936                "C;Chi≈Ñski uproszczony (GBK-936);GBK-936"
+    IDS_ENC_MAC_ZH_CN              "C;Chi≈Ñski uproszczony (Mac);Mac (zh-cn)"
+    IDS_ENC_BIG5                   "C;Chi≈Ñski tradycyjny (Big5);Big5"
+    IDS_ENC_MAC_ZH_TW              "C;Chi≈Ñski tradycyjny (Mac);Mac (zh-tw)"
 END
 
 STRINGTABLE
@@ -95,13 +96,13 @@ BEGIN
     IDS_ENC_KOI8_U                 "C;Cyrylica (KOI8-U);KOI8-U"
     IDS_ENC_MAC_CYRILLIC           "C;Cyrylica (Mac);Mac (Cyrillic)"
     IDS_ENC_WIN_1251               "C;Cyrylica (Windows-1251);Windows-1251"
-    IDS_ENC_ISO_8859_13            "C;EstoÒski (ISO-8859-13);ISO-8859-13"
+    IDS_ENC_ISO_8859_13            "C;Esto≈Ñski (ISO-8859-13);ISO-8859-13"
     IDS_ENC_DOS_863                "C;Francuski kanadyjski (DOS-863);DOS-863"
     IDS_ENC_DOS_737                "C;Grecki (DOS-737);DOS-737"
     IDS_ENC_ISO_8859_7             "C;Grecki (ISO-8859-7);ISO-8859-7"
     IDS_ENC_MAC_GREEK              "C;Grecki (Mac);Mac (Greek)"
     IDS_ENC_WIN_1253               "C;Grecki (Windows-1253);Windows-1253"
-    IDS_ENC_DOS_869                "C;Grecki, wspÛ≥czesny (DOS-869);DOS-869"
+    IDS_ENC_DOS_869                "C;Grecki, wsp√≥≈Çczesny (DOS-869);DOS-869"
     IDS_ENC_DOS_862                "C;Hebrajski (DOS-862);DOS-862"
     IDS_ENC_ISO_8859_8_I           "C;Hebrajski (ISO-8859-8-I);ISO-8859-8-I"
 END
@@ -113,17 +114,17 @@ BEGIN
     IDS_ENC_WIN_1255               "C;Hebrajski (Windows-1255);Windows-1255"
     IDS_ENC_DOS_861                "C;Islandzki (DOS-861);DOS-861"
     IDS_ENC_MAC_ICELANDIC          "C;Islandzki (Mac);Mac (Icelandic)"
-    IDS_ENC_MAC_JAPANESE           "C;JapoÒski (Mac);Mac (Japanese)"
-    IDS_ENC_SHIFT_JIS              "C;JapoÒski (Shift-JIS);Shift-JIS"
-    IDS_ENC_MAC_KOREAN             "C;KoreaÒski (Mac);Mac (Korean)"
-    IDS_ENC_WIN_949                "C;KoreaÒski (Windows-949);Windows-949"
-    IDS_ENC_ISO_8859_3             "C;£acina 3 (ISO-8859-3);ISO-8859-3"
-    IDS_ENC_ISO_8859_15            "C;£acina 9 (ISO-8859-15);ISO-8859-15"
+    IDS_ENC_MAC_JAPANESE           "C;Japo≈Ñski (Mac);Mac (Japanese)"
+    IDS_ENC_SHIFT_JIS              "C;Japo≈Ñski (Shift-JIS);Shift-JIS"
+    IDS_ENC_MAC_KOREAN             "C;Korea≈Ñski (Mac);Mac (Korean)"
+    IDS_ENC_WIN_949                "C;Korea≈Ñski (Windows-949);Windows-949"
+    IDS_ENC_ISO_8859_3             "C;≈Åacina 3 (ISO-8859-3);ISO-8859-3"
+    IDS_ENC_ISO_8859_15            "C;≈Åacina 9 (ISO-8859-15);ISO-8859-15"
     IDS_ENC_DOS_865                "C;Nordycki (DOS-865);DOS-865"
     IDS_ENC_DOS_437                "C;OEM Stany Zjednoczone (DOS-437);DOS-437"
-    IDS_ENC_DOS_858                "C;OEM £acina wielojÍzyczna 1 (DOS-858);DOS-858"
+    IDS_ENC_DOS_858                "C;OEM ≈Åacina wielojƒôzyczna 1 (DOS-858);DOS-858"
     IDS_ENC_DOS_860                "C;Portugalski (DOS-860);DOS-860"
-    IDS_ENC_MAC_ROMANIAN           "C;RumuÒski (Mac);Mac (Romanian)"
+    IDS_ENC_MAC_ROMANIAN           "C;Rumu≈Ñski (Mac);Mac (Romanian)"
 END
 
 STRINGTABLE
@@ -134,30 +135,30 @@ BEGIN
     IDS_ENC_ISO_8859_9             "C;Turecki (ISO-8859-9);ISO-8859-9"
     IDS_ENC_MAC_TURKISH            "C;Turecki (Mac);Mac (Turkish)"
     IDS_ENC_WIN_1254               "C;Turecki (Windows-1254);Windows-1254"
-    IDS_ENC_MAC_UKRAINIAN          "C;UkraiÒski (Mac);Mac (Ukrainian)"
+    IDS_ENC_MAC_UKRAINIAN          "C;Ukrai≈Ñski (Mac);Mac (Ukrainian)"
     IDS_ENC_WIN_1258               "C;Wietnamski (Windows-1258);Windows-1258"
     IDS_ENC_DOS_850                "B;Zachodnioeuropejski (DOS-850);DOS-850"
     IDS_ENC_ISO_8859_1             "B;Zachodnioeuropejski (ISO-8859-1);ISO-8859-1"
     IDS_ENC_MAC_WESTERN_EUROP      "B;Zachodnioeuropejski (Mac);Mac (Western)"
     IDS_ENC_WIN_1252               "B;Zachodnioeuropejski (Windows-1252);Windows-1252"
     IDS_ENC_IBM_EBCDIC_US          "D0;IBM EBCDIC (US-Kanada);EBCDIC (US)"
-    IDS_ENC_IBM_EBCDIC_INT         "D1;IBM EBCDIC (MiÍdzynarodowy);EBCDIC (Int.)"
-    IDS_ENC_IBM_EBCDIC_GR          "D2;IBM EBCDIC (Grecki wspÛ≥czesny);EBCDIC (GR)"
-    IDS_ENC_IBM_EBCDIC_LAT_5       "D3;IBM EBCDIC (Turecki £acina-5);EBCDIC (Latin-5)"
+    IDS_ENC_IBM_EBCDIC_INT         "D1;IBM EBCDIC (Miƒôdzynarodowy);EBCDIC (Int.)"
+    IDS_ENC_IBM_EBCDIC_GR          "D2;IBM EBCDIC (Grecki wsp√≥≈Çczesny);EBCDIC (GR)"
+    IDS_ENC_IBM_EBCDIC_LAT_5       "D3;IBM EBCDIC (Turecki ≈Åacina-5);EBCDIC (Latin-5)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_EUC_JAPANESE           "C;JapoÒski (EUC);JapoÒski (EUC)"
-    IDS_ENC_EUC_KOREAN             "C;KoreaÒski (EUC);KoreaÒski (EUC)"
-    IDS_ENC_ISO_2022_CN            "C;ChiÒski tradycyjny (ISO-2022);ISO-2022-CN"
-    IDS_ENC_HZ_GB2312              "C;ChiÒski uproszczony (HZ-GB2312);HZ-GB2312"
-    IDS_ENC_ISO_2022_JP            "C;JapoÒski (ISO-2022);ISO-2022-JP"
-    IDS_ENC_ISO_2022_KR            "C;KoreaÒski (ISO-2022);ISO-2022-KR"
-    IDS_ENC_X_CHINESE_CNS          "C;ChiÒski tradycyjny (CNS);x-chinese-cns"
-    IDS_ENC_JOHAB                  "C;KoreaÒski (Johab);KoreaÒski (Johab)"
+    IDS_ENC_EUC_JAPANESE           "C;Japo≈Ñski (EUC);Japo≈Ñski (EUC)"
+    IDS_ENC_EUC_KOREAN             "C;Korea≈Ñski (EUC);Korea≈Ñski (EUC)"
+    IDS_ENC_ISO_2022_CN            "C;Chi≈Ñski tradycyjny (ISO-2022);ISO-2022-CN"
+    IDS_ENC_HZ_GB2312              "C;Chi≈Ñski uproszczony (HZ-GB2312);HZ-GB2312"
+    IDS_ENC_ISO_2022_JP            "C;Japo≈Ñski (ISO-2022);ISO-2022-JP"
+    IDS_ENC_ISO_2022_KR            "C;Korea≈Ñski (ISO-2022);ISO-2022-KR"
+    IDS_ENC_X_CHINESE_CNS          "C;Chi≈Ñski tradycyjny (CNS);x-chinese-cns"
+    IDS_ENC_JOHAB                  "C;Korea≈Ñski (Johab);Korea≈Ñski (Johab)"
     IDS_ENC_ISO_8859_10            "B;Nordycki (ISO-8859-10);ISO-8859-10"
-    IDS_ENC_BIG5_HKSCS             "C;ChiÒski Hong Kong (Big5HKSCS);Big5HKSCS"
+    IDS_ENC_BIG5_HKSCS             "C;Chi≈Ñski Hong Kong (Big5HKSCS);Big5HKSCS"
 END
 
 

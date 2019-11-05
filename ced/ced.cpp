@@ -1,4 +1,5 @@
-﻿// ced.cpp : CompactEncodingDetection - Defines the entry point for the console application.
+// encoding: UTF-8
+// ced.cpp : CompactEncodingDetection - Defines the entry point for the console application.
 //
 
 #include "targetver.h"
