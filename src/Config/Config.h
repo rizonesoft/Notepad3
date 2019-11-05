@@ -46,23 +46,27 @@ void ReleaseIniFile();
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, 
                            LPWSTR lpReturnedString, size_t cchReturnedString);
 int IniSectionGetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
+long IniSectionGetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault);
+long long IniSectionGetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llDefault);
 double IniSectionGetDouble(LPCWSTR lpSectionName, LPCWSTR lpKeyName, double dDefault);
 bool IniSectionGetBool(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault);
 
 inline DocPos IniSectionGetPos(LPCWSTR lpSectionName, LPCWSTR lpKeyName, DocPos posDefault) {
-  return (DocPos)IniSectionGetInt(lpSectionName, lpKeyName, (MBWC_DocPos_Cast)posDefault);
+  return (DocPos)IniSectionGetLongLong(lpSectionName, lpKeyName, posDefault);
 }
 
 // ----------------------------------------------------------------------------
 
 bool IniSectionSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 bool IniSectionSetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
+bool IniSectionSetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue);
+bool IniSectionSetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llValue);
 bool IniSectionSetHex(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
 bool IniSectionSetDouble(LPCWSTR lpSectionName, LPCWSTR lpKeyName, double dValue);
 bool IniSectionSetBool(LPCWSTR lpSectionName, LPCWSTR lpName, bool bValue);
 
 inline bool IniSectionSetPos(LPCWSTR lpSectionName, LPCWSTR lpKeyName, DocPos posValue) {
-  return IniSectionSetInt(lpSectionName, lpKeyName, (MBWC_DocPos_Cast)posValue);
+  return IniSectionSetLongLong(lpSectionName, lpKeyName, posValue);
 }
 
 // ----------------------------------------------------------------------------

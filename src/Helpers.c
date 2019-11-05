@@ -1654,6 +1654,73 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
 }
 
 
+//=============================================================================
+//
+//  WideCharToMultiByteEx()
+//
+ptrdiff_t WideCharToMultiByteEx(
+  UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
+  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte)
+{
+  LPCWCH inPtr = lpWideCharStr;
+  ptrdiff_t inBufCnt = cchWideChar;
+  LPSTR outPtr = (cbMultiByte == 0LL) ? NULL : lpMultiByteStr;
+  ptrdiff_t outBufSiz = cbMultiByte;
+  ptrdiff_t bytesConv = 0LL;
+
+  while ((inBufCnt > 0LL) || (inBufCnt == -1LL)) 
+  {
+    int const cnt = (inBufCnt > INT_MAX) ? INT_MAX : ((inBufCnt > 0LL) ? (int)inBufCnt : -1);
+    int const siz = (outBufSiz > INT_MAX) ? INT_MAX : (int)outBufSiz;
+    int const bytes = WideCharToMultiByte(CodePage, dwFlags, inPtr, cnt, outPtr, siz, NULL, NULL);
+    if (bytes == 0) { break; }
+    bytesConv += (ptrdiff_t)bytes;
+    if (outPtr) {
+      outPtr += (ptrdiff_t)bytes;
+      outBufSiz -= (ptrdiff_t)bytes;
+    }
+    if (inBufCnt > 0LL) {
+      inBufCnt -= (ptrdiff_t)cnt;
+    }
+    inPtr += (ptrdiff_t)cnt;
+  }
+  return bytesConv;
+}
+
+//=============================================================================
+//
+//  MultiByteToWideCharEx()
+//
+ptrdiff_t MultiByteToWideCharEx(
+  UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
+  LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
+{
+  LPCCH inPtr = lpMultiByteStr;
+  ptrdiff_t inBufSiz = cbMultiByte;
+  LPWSTR outPtr = (cchWideChar == 0LL) ? NULL : lpWideCharStr;
+  ptrdiff_t outBufCnt = cchWideChar;
+  ptrdiff_t wcharConv = 0LL;
+
+  while ((inBufSiz > 0LL) || (inBufSiz == -1LL))
+  {
+    int const siz = (inBufSiz > INT_MAX) ? INT_MAX : ((inBufSiz > 0LL) ? (int)inBufSiz : -1);
+    int const cnt = (outBufCnt > INT_MAX) ? INT_MAX : (int)outBufCnt;
+    int const wchars = MultiByteToWideChar(CodePage, dwFlags, inPtr, siz, outPtr, cnt);
+    if (wchars == 0) { break; }
+    wcharConv += (ptrdiff_t)wchars;
+    int const usedMBC = WideCharToMultiByte(CodePage, dwFlags, outPtr, wchars, NULL, 0, NULL, NULL);
+    if (outPtr) {
+      outPtr += (ptrdiff_t)wchars;
+      outBufCnt -= (ptrdiff_t)wchars;
+    }
+    if (inBufSiz > 0LL) {
+      inBufSiz -= (ptrdiff_t)usedMBC;
+    }
+    inPtr += (ptrdiff_t)usedMBC;
+  }
+  return wcharConv;
+}
+
 
 /*
 
