@@ -63,21 +63,21 @@ BEGIN
         MENUITEM "За&хаваць\tCtrl+S",                               IDM_FILE_SAVE
         MENUITEM "Захаваць &як...\tF6",                             IDM_FILE_SAVEAS
         MENUITEM "Захаваць копі&ю...\tCtrl+F6",                     IDM_FILE_SAVECOPY
-        MENUITEM "Save with Original File &Date/Time\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Захоўваць зыходнюю &дату/час файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "&Толькі чытанне",                        IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Задаць парольны сказ...",                IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Path to Clipboard"
+        POPUP "Шлях у буфер абмену"
         BEGIN
-            MENUITEM "Copy &Filename only\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "Copy &Directory-Path only",          IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Copy &Full-Path\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Капіяваць толькі імя &файла\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
+            MENUITEM "Капіяваць толькі шлях да &папкі",       IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "Капіяваць &шлях цалкам\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "&Запусціць"
         BEGIN
-            MENUITEM "Open File &Explorer",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "Адкрыць Права&днік",                 IDM_FILE_EXPLORE_DIR
             MENUITEM SEPARATOR
             MENUITEM "Копі&ю акна\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое акно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -170,10 +170,10 @@ BEGIN
             MENUITEM "Перайсці &вышэй\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
             MENUITEM "Перайсці &ніжэй\tCtrl+Shift+Down",   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Selection or Current Line\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Cop&y Selection Whole Line(s)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "Выразаць вылучэнне &альбо радок\tCtrl+X",     IDM_EDIT_CUT
+            MENUITEM "Выразаць радкі &з вылучэннем\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "&Капіяваць вылучэнне альбо радок\tCtrl+C",    IDM_EDIT_COPY
+            MENUITEM "Капіява&ць радкі з вылучэннем\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
             MENUITEM "&Дубляваць радок/вылучэнне\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Памяняць радкі\tAlt+D",             IDM_EDIT_LINETRANSPOSE
@@ -262,7 +262,7 @@ BEGIN
         END
         POPUP "Рознае"
         BEGIN
-            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
+            MENUITEM "Капіяваць &GUID у буфер абмену\tCtrl+Shift+.",    IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
             MENUITEM "&Экранаваць сімвалы C\tCtrl+Alt+E",               IDM_EDIT_ESCAPECCHARS
             MENUITEM "В&ыдаліць экранаванне сімвалаў C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
@@ -279,7 +279,7 @@ BEGIN
             MENUITEM "Вылучыць с&лова альбо радок\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
             MENUITEM "&Мультывылучэнне ўсіх уваходжанняў\tCtrl+Shift+Spc",      IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",                  IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Падзяліць &транзакцыю адмены па канчаткам радкоў",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "&Закладкі"
@@ -353,7 +353,7 @@ BEGIN
         END
         POPUP "Паліца пры&ладаў"
         BEGIN
-            MENUITEM "Show &Menubar",                 IDM_VIEW_MENUBAR
+            MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
             MENUITEM "Пе&раключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
             MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
@@ -398,7 +398,7 @@ BEGIN
         MENUITEM "Cамадавяр&шэнне слоў",                        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Cамадавяршэнне на аснове &лексемаў",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Паскораная навігацыя па слова&х\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Enable Line &Comment Block Edit",             IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "Уключыць блокавае рэдагаванне радкоў каментарыяў", IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Адзін &экзэмпляр файла",                      IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
@@ -488,7 +488,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Menubar",                 IDM_VIEW_MENUBAR
+        MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
         MENUITEM "Пе&раключыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
         MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
