@@ -340,6 +340,17 @@ unsigned int UnSlash(char* s, UINT cpEdit);
 void TransformBackslashes(char* pszInput,bool,UINT cpEdit,int* iReplaceMsg);
 void TransformMetaChars(char* pszInput,bool,int iEOLMode);
 
+
+//==== Large Text Conversion ==================================================
+ptrdiff_t WideCharToMultiByteEx(
+  UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
+  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte);
+
+ptrdiff_t MultiByteToWideCharEx(
+  UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
+  LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
+
+
 //==== MinimizeToTray Functions - see comments in Helpers.c ===================
 bool GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);

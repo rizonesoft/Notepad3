@@ -666,7 +666,7 @@ public:
      */
     SI_Error SaveFile(
         const char *    a_pszFile,
-        bool            a_bAddSignature = true
+        bool            a_bAddSignature = false
         ) const;
 
 #ifdef SI_HAS_WIDE_FILE
@@ -682,7 +682,7 @@ public:
      */
     SI_Error SaveFile(
         const SI_WCHAR_T *  a_pwszFile,
-        bool                a_bAddSignature = true
+        bool                a_bAddSignature = false
         ) const;
 #endif // _WIN32
 
@@ -723,7 +723,7 @@ public:
         being used by SimpleIni.
 
         To add a BOM to UTF-8 data, write it out manually at the very beginning
-        like is done in SaveFile when a_bUseBOM is true.
+        like is done in SaveFile when a_bAddSignature is true.
 
         @param a_oOutput    Output writer to write the data to.
 
@@ -922,6 +922,13 @@ public:
         bool *          a_pHasMultiple = nullptr
         ) const;
 
+    long long GetLongLongValue(
+      const SI_CHAR* a_pSection,
+      const SI_CHAR* a_pKey,
+      long long      a_nDefault = 0,
+      bool* a_pHasMultiple = nullptr
+    ) const;
+
     /** Retrieve a numeric value for a specific key. If multiple keys are enabled
         (see SetMultiKey) then only the first value associated with that key
         will be returned, see GetAllValues for getting all values with multikey.
@@ -1038,6 +1045,15 @@ public:
         bool            a_bUseHex       = false,
         bool            a_bForceReplace = false
         );
+
+    SI_Error SetLongLongValue(
+      const SI_CHAR* a_pSection,
+      const SI_CHAR* a_pKey,
+      long long      a_nValue,
+      const SI_CHAR* a_pComment = NULL,
+      bool           a_bUseHex = false,
+      bool           a_bForceReplace = false
+    );
 
     /** Add or update a double value. This will always insert
         when multiple keys are enabled.
@@ -2157,6 +2173,77 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SetLongValue(
 
     // actually add it
     return AddEntry(a_pSection, a_pKey, szOutput, a_pComment, a_bForceReplace, true);
+}
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+long long
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::GetLongLongValue(
+  const SI_CHAR* a_pSection,
+  const SI_CHAR* a_pKey,
+  long long      a_nDefault,
+  bool* a_pHasMultiple
+) const
+{
+  // return the default if we don't have a value
+  const SI_CHAR* pszValue = GetValue(a_pSection, a_pKey, NULL, a_pHasMultiple);
+  if (!pszValue || !*pszValue) return a_nDefault;
+
+  // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
+  char szValue[128] = { 0 };
+  SI_CONVERTER c(m_bStoreIsUtf8);
+  if (!c.ConvertToStore(pszValue, szValue, sizeof(szValue))) {
+    return a_nDefault;
+  }
+
+  // handle the value as hex if prefaced with "0x"
+  long long nValue = a_nDefault;
+  char* pszSuffix = szValue;
+  if (szValue[0] == '0' && (szValue[1] == 'x' || szValue[1] == 'X')) {
+    if (!szValue[2]) return a_nDefault;
+    nValue = strtoll(&szValue[2], &pszSuffix, 16);
+  }
+  else {
+    nValue = strtoll(szValue, &pszSuffix, 10);
+  }
+
+  // any invalid strings will return the default value
+  if (*pszSuffix) {
+    return a_nDefault;
+  }
+
+  return nValue;
+}
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+SI_Error
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SetLongLongValue(
+  const SI_CHAR* a_pSection,
+  const SI_CHAR* a_pKey,
+  long long      a_nValue,
+  const SI_CHAR* a_pComment,
+  bool            a_bUseHex,
+  bool            a_bForceReplace
+)
+{
+  // use SetValue to create sections
+  if (!a_pSection || !a_pKey) return SI_Error::SI_FAIL;
+
+  // convert to an ASCII string
+  char szInput[128];
+#if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
+  sprintf_s(szInput, a_bUseHex ? "0x%llx" : "%lld", a_nValue);
+#else // !__STDC_WANT_SECURE_LIB__
+  sprintf(szInput, a_bUseHex ? "0x%llx" : "%lld", a_nValue);
+#endif // __STDC_WANT_SECURE_LIB__
+
+  // convert to output text
+  SI_CHAR szOutput[64];
+  SI_CONVERTER c(m_bStoreIsUtf8);
+  c.ConvertFromStore(szInput, strlen(szInput) + 1,
+    szOutput, sizeof(szOutput) / sizeof(SI_CHAR));
+
+  // actually add it
+  return AddEntry(a_pSection, a_pKey, szOutput, a_pComment, a_bForceReplace, true);
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
