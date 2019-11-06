@@ -158,8 +158,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Дзеянне не можа быць выкананым з прамавугольным вылучэннем."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELMULTI        "Дзеянне не можа быць выкананым з мульцівылучэннем."
+    IDS_MUI_SELRECTORMULTI  "Дзеянне не можа быць выкананым з прамавугольным вылучэннем альбо мульцівылучэннем."
     IDS_MUI_BUFFERTOOSMALL  "Дзеянне не можа быць выкананым (вельмі доўгія радкі)."
     IDS_MUI_FIND_WRAPFW     "Дасягнуты канец дакумента, пошук будзе працягнуты з пачатку."
     IDS_MUI_FIND_WRAPRE     "Дасягнуты пачатак дакумента, пошук будзе працягнуты з канцу."
@@ -187,7 +187,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click, каб адкрыць файл."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, каб адкрыць спасылку ў браўзеры."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "Захоўванне зыходняй часаадзнакі змянення файла ўключана.\nГэта опцыя застанецца ўключанай для гэтай сесіі!"
 END
 
 STRINGTABLE
