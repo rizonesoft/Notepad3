@@ -39,11 +39,11 @@ VIAddVersionKey ProductName "${PORTABLEAPPNAME}"
 VIAddVersionKey Comments "A notepad replacement"
 VIAddVersionKey CompanyName "Rizonesoft"
 VIAddVersionKey LegalCopyright "Derick Payne"
-VIAddVersionKey FileDescription "Based on code from Notepad2, ® Florian Balmer 1996-2011"
+VIAddVersionKey FileDescription "Based on code from Notepad2, Florian Balmer(c) 1996-2011"
 VIAddVersionKey FileVersion "${VER}"
 VIAddVersionKey ProductVersion "${VER}"
 VIAddVersionKey InternalName "${PORTABLEAPPNAME}"
-VIAddVersionKey LegalTrademarks "Rizonesoft® 2008-2019"
+VIAddVersionKey LegalTrademarks "Rizonesoft(c) 2008-2019"
 VIAddVersionKey OriginalFilename "${DEFAULTEXE}"
 ;VIAddVersionKey PrivateBuild ""
 ;VIAddVersionKey SpecialBuild ""
@@ -70,7 +70,7 @@ SetDatablockOptimize On
 Icon "..\..\App\AppInfo\appicon.ico"
 
 ;=== Icon & Stye ===
-BrandingText "Rizonesoft®"
+BrandingText "Rizonesoft(c)"
 
 ;=== Languages
 LoadLanguageFile "${NSISDIR}\Contrib\Language files\${LAUNCHERLANGUAGE}.nlf"
