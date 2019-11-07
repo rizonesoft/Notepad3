@@ -9,9 +9,9 @@
 Rizonesoft Notepad3 --- CHANGELOG ---
 ================================================================================
 
---------------------------------------------------
+----------------------------------------------------
 LEGEND:
---------------------------------------------------
+----------------------------------------------------
 1) NEW: (Added, Feature)
 2) CHANGES:
 3) ENHANCEMENT: (Optimize)
@@ -19,9 +19,9 @@ LEGEND:
 5) REMOVED: 
 6) TRANSLATIONS (MUI): (New Language)
 
---------------------------------------------------
+----------------------------------------------------
 ABBREVIATIONS:
---------------------------------------------------
+----------------------------------------------------
 CED - (C)ompact (E)ncoding (D)etection (by Google)
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
@@ -30,13 +30,13 @@ SCI - (SCI)ntilla Library
 UCD - (UCD)ARDET is an Encoding Detector Library
 
 
-==================================================
+====================================================
 Current BETA Version 5.19.1106.#(build) (2019-11-06)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
@@ -44,9 +44,9 @@ NEW:
 - Preserve File Modification Date/Time: Option stays until new Session is loaded.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Conversion all *.RC files to encoding UTF-8 (no BOM/Signature).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
@@ -71,18 +71,18 @@ CHANGES:
 - Update Oniguruma Regex (ONI) engine (v.6.9.3+).
 - Scintilla Library (SCI) version 4.2.1 (2019-Jul-5).
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Apply Start Case to AutoHotkey Lexer.
 - Change to 1-pass (file open/close) to save settings in Notepad3.ini.
 - Enclosing selection with HTML-Tag - Remember last pattern (session).
 - Repeat selection enclosing (HTML-Tag) n-times control.
 - Hyperlink detection for Unicode.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Batch lexer: handle comment after ampersand(&) command sequence.
 - Bug in replace on single step find/replace.
 - Convert to Hex and vice versa: work on (stream-)selection (original source by ZuFuLiu).
@@ -103,14 +103,14 @@ FIXES:
 - Division by zero exception (indentation and tab width).
 - Selection undo/redo in case of "lean" change notify event.
 
---------------------------------------------------
+----------------------------------------------------
 REMOVED:
---------------------------------------------------
+----------------------------------------------------
 - "Ctrl+Shift+Alt+F" (Code Folding) no longer works from Windows 10 19H1 1903.
 
---------------------------------------------------
+----------------------------------------------------
 TRANSLATIONS (MUI):
---------------------------------------------------
+----------------------------------------------------
 - Portuguese Brazilian (pt-BR) (in progress).
 - Slovak (sk-SK) (in progress).
 - Swedish (sv-SE).

@@ -186,7 +186,7 @@ BEGIN
     CONTROL         "Försök använda existerande fönster när MiniPath öppnas.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "Spara inställningar vid avslut.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "Spara inställningar vid avslut.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,106,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -209,7 +209,7 @@ BEGIN
     CONTROL         "Radera filer utan att bekräfta (ej rekommenderad).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Aktivera Esc-tangenten för att...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Aktivera ""Esc"" till...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "Minimera fönstret.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
     CONTROL         "Avsluta MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
@@ -222,12 +222,12 @@ BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "Utseende för object i mapplistan.",IDC_STATIC,40,15,118,8
     GROUPBOX        "Färger",IDC_STATIC,10,41,205,134
-    LTEXT           "Använd denna textfärg när INGET FILTER är valt:",IDC_STATIC,20,54,136,8
+    LTEXT           "Använd denna textfärg när INGET FILTER är valt:",IDC_STATIC,20,54,150,8
     CONTROL         "Standardfärg för fönster.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Anpassad färg:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Välj färg...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Använd denna textfärg när ett FILTER ÄR AKTIVERAT:",IDC_STATIC,20,105,146,8
+    LTEXT           "Använd denna textfärg när ett FILTER ÄR AKTIVERAT:",IDC_STATIC,20,105,166,8
     CONTROL         "Anpassad fönsterfärg.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Anpassad färg:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
@@ -261,10 +261,10 @@ BEGIN
     LTEXT           "Agen åtgärd om målprogrammet redan körs:",IDC_STATIC,7,64,196,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
-    LTEXT           "Meddelande:",IDC_STATIC,20,120,32,8
+    LTEXT           "Meddelande:",IDC_STATIC,20,120,40,8
     CONTROL         "Inget, kör målprogrammet varje gång filen öppnas.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "Skicka ett filöppningsmeddelande till målappliaktionens fönster:",IDC_SENDDROPMSG,
+    CONTROL         "Skicka ett öppet fil meddelande till mål fönstret:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "Kör DDE-kommando:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Applikation:",IDC_STATIC,128,120,38,8
