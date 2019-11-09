@@ -289,13 +289,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
-Style format:\r\n\
-font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
-fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+Filändelser måste sepeareras med ';'\r\n\
+använd \\<regex>; för att definiera matchande mönster:\r\n\
+   \\xyz$;   => filnamn(basnamn+ändelse) med 'xyz' som sista tecken.\r\n\r\n\
+Stilformat:\r\n\
+font:Namn; storlek:[+/-]nn.mm; fet; kursiv; understrykning;\r\n\
+förgrund:#ffffff; bakgrund:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
+Stilegenskaper kan kopieras genom kopiera-klistra in eller drag-släpp.\
 "
 
 END
