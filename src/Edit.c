@@ -981,50 +981,66 @@ bool EditLoadFile(
   }
 
   // calculate buffer limit
-  DWORD dwFileSize = GetFileSize(hFile, NULL);
-  DWORD dwBufSize = dwFileSize + 16;
+  LARGE_INTEGER liFileSize = { 0, 0 };
+  bool const okay = GetFileSizeEx(hFile, &liFileSize);
+
+  if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (DWORD_MAX - 8))) {
+    if (!okay) {
+      Globals.dwLastError = GetLastError();
+    }
+    else {
+      // refuse to handle file
+      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, (liFileSize.QuadPart / 1024LL / 1024LL));
+      CloseHandle(hFile);
+      Encoding_SrcCmdLn(CPI_NONE);
+      Encoding_SrcWeak(CPI_NONE);
+      status->bFileTooBig = true;
+    }
+    return false;
+  }
+
+  DWORD const dwFileSize = liFileSize.LowPart;
+  DWORD const dwBufferSize = dwFileSize + 8;
+
+  // Check if a warning message should be displayed for large files
+  status->bFileTooBig = false;
+  DWORD dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
+  if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
+    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
+      CloseHandle(hFile);
+      Encoding_SrcCmdLn(CPI_NONE);
+      Encoding_SrcWeak(CPI_NONE);
+      status->bFileTooBig = true;
+      return false;
+    }
+  }
 
   // check for unknown file/extension
+  status->bUnknownExt = false;
   if (!Style_HasLexerForExt(pszFile)) {
-    status->bUnknownExt = true;
     INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile));
     if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
-      return false;
-    }
-  }
-  else {
-    status->bUnknownExt = false;
-  }
-
-  // Check if a warning message should be displayed for large files
-  DWORD dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
-  if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
-    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
-      CloseHandle(hFile);
-      status->bFileTooBig = true;
-      Encoding_SrcCmdLn(CPI_NONE);
-      Encoding_SrcWeak(CPI_NONE);
+      status->bUnknownExt = true;
       return false;
     }
   }
 
-  char* lpData = AllocMem(dwBufSize, HEAP_ZERO_MEMORY);
-
+  char* lpData = AllocMem(dwFileSize + 8, HEAP_ZERO_MEMORY);
   Globals.dwLastError = GetLastError();
   if (!lpData)
   {
     CloseHandle(hFile);
-    status->bFileTooBig = true;
     Encoding_SrcCmdLn(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
+    status->bFileTooBig = true;
     return false;
   }
 
   DWORD cbData = 0L;
-  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize, (void**)&lpData, &cbData);
+  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufferSize, (void**)&lpData, &cbData);
   Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 

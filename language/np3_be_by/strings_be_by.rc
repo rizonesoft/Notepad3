@@ -147,6 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Не знойдены інструмент адміністратара\nНаведаць сайт https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл мае аднолькавага выгляду водступы!"

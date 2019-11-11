@@ -320,15 +320,17 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   {
 
     LPVOID lpMsgBuf = NULL;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      Globals.dwLastError,
-      Globals.iPrefLANGID,
-      (LPWSTR)& lpMsgBuf, 0,
-      NULL);
+    if (Globals.dwLastError != ERROR_SUCCESS) {
+      FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        Globals.dwLastError,
+        Globals.iPrefLANGID,
+        (LPWSTR)&lpMsgBuf, 0,
+        NULL);
 
-    Globals.dwLastError = ERROR_SUCCESS; // reset;
+      Globals.dwLastError = ERROR_SUCCESS; // reset;
+    }
 
     if (lpMsgBuf) {
       StringCchCat(msgBox.lpstrMessage, COUNTOF(wchMessage), L"\n\n");
