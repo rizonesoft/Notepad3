@@ -26,9 +26,10 @@
 #define DECRYPT_NO_ENCRYPTION 0x04
 #define DECRYPT_CANCELED_NO_PASS 0x08
 #define DECRYPT_FATAL_ERROR 0x10
-int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen);
 
+int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen);
 bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written);
+
 bool GetFileKey(HWND hwnd);
 void ResetEncryption();
 

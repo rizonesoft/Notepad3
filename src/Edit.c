@@ -984,7 +984,8 @@ bool EditLoadFile(
   LARGE_INTEGER liFileSize = { 0, 0 };
   bool const okay = GetFileSizeEx(hFile, &liFileSize);
 
-  if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (DWORD_MAX - 8))) {
+  //if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (DWORD_MAX - 8))) {
+  if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (INT_MAX - 8))) {
     if (!okay) {
       Globals.dwLastError = GetLastError();
     }
