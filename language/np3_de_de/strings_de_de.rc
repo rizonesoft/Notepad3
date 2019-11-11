@@ -147,6 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen."
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unbekannte Dateierweiterung (%s) !\nSollen die Daten trotzdem geladen werden?"
     IDS_MUI_INDENT_CONSISTENT  "Die Datei hat einheitliche Einrückungen!"

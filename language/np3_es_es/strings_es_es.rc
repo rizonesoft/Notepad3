@@ -147,6 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable .\n¿Consultar website https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "¿¿Seguro que quiere abrir este archivo tan grande??"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
     IDS_MUI_INDENT_CONSISTENT  "¡El archivo tiene una sangría consistente!"

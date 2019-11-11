@@ -147,6 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Vill du öppna denna stora fil?"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Okändt filnamnstillägg (%s) !\nVill du fortsätta ändå ?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"

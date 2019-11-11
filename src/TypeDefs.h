@@ -47,10 +47,10 @@
 //
 
 /// deprecated:
-///typedef int            DocPos;
-///typedef unsigned int   DocPosU;
+///typedef long           DocPos;
+///typedef unsigned long  DocPosU;
 ///typedef long           DocPosCR;
-///typedef int            DocLn;
+///typedef long           DocLn;
 ///#define DOCPOSFMTA "%i"
 ///#define DOCPOSFMTW L"%i"
 

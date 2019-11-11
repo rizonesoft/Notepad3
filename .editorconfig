@@ -13,7 +13,7 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 # Matches multiple files with brace expansion notation
-[**.{h,c,cpp,hpp,cxx,rc}]
+[**.{h,c,cpp,hpp,cxx}]
 # Set default charset
 charset = utf-8
 # 2 space indentation
@@ -21,11 +21,19 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 
-[language/*.{h,rc}]
+[language/**.{h,rc}]
 charset = utf-8
+# space (w=4) indentation
+indent_style = space
+indent_size = 4
+tab_width = 4
 
-[minipath/language/*.{h,rc}]
+[minipath/language/**.{h,rc}]
 charset = utf-8
+# space (w=4) indentation
+indent_style = space
+indent_size = 4
+tab_width = 4
 
 [scintilla/**.{h,c,cpp,hpp,cxx}]
 charset = utf-8

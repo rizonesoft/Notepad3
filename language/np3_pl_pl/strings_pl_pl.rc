@@ -147,6 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyć ten duży plik?"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Nieznane rozszerzenie nazwy pliku (%s) !\nCzy mimo to załadować?"
     IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wcięcie!"

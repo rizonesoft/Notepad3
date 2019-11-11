@@ -147,6 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Are you sure you want to open this large file?"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unknown file name extension (%s) !\nLoading data anyway ?"
     IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
