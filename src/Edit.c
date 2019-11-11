@@ -1030,9 +1030,9 @@ bool EditLoadFile(
   }
 
   char* lpData = AllocMem(dwFileSize + 8, HEAP_ZERO_MEMORY);
-  Globals.dwLastError = GetLastError();
   if (!lpData)
   {
+    Globals.dwLastError = GetLastError();
     CloseHandle(hFile);
     Encoding_SrcCmdLn(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
@@ -1293,13 +1293,13 @@ bool EditLoadFile(
         UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
         LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
-        int const cbDataWide = MultiByteToWideChar(uCodePage, 0, lpData, cbData, lpDataWide, (MBWC_DocPos_Cast)(SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+        size_t const cbDataWide = (size_t)MultiByteToWideChar(uCodePage, 0, lpData, cbData, lpDataWide, (MBWC_DocPos_Cast)(SizeOfMem(lpDataWide) / sizeof(WCHAR)));
         if (cbDataWide != 0)
         {
           FreeMem(lpData);
           lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
 
-          cbData = WideCharToMultiByte(Encoding_SciCP, 0, lpDataWide, cbDataWide, lpData, (MBWC_DocPos_Cast)SizeOfMem(lpData), NULL, NULL);
+          cbData = WideCharToMultiByte(Encoding_SciCP, 0, lpDataWide, (MBWC_DocPos_Cast)cbDataWide, lpData, (MBWC_DocPos_Cast)SizeOfMem(lpData), NULL, NULL);
           if (cbData != 0) {
             FreeMem(lpDataWide);
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
