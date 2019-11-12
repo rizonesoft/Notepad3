@@ -193,7 +193,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "の編集を保存しますか:\n""%s""?"
+    IDS_MUI_ASK_SAVE        "この編集を保存しますか?\n""%s"""
     IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします？"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます!"
     IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"
@@ -206,7 +206,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "この文書には、印刷のための文章が含まれていません。"
-    IDS_MUI_PRINT_ERROR     "印刷失敗 ""%s""!"
+    IDS_MUI_PRINT_ERROR     "印刷失敗! ""%s"""
     IDS_MUI_FAV_SUCCESS     "このファイルへのショートカットが、お気に入りフォルダ内に作成されました。"
     IDS_MUI_FAV_FAILURE     "このファイルへのショートカットは作成できませんでした。\n同じ名前の他のファイルがないことを確認してください。"
     IDS_MUI_READONLY_MODIFY """%s""の属性は変更できませんでした。"

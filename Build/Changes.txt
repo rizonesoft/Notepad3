@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1110.#(build) (2019-11-10)
+Current BETA Version 5.19.1111.#(build) (2019-11-11)
 ====================================================
 
 ----------------------------------------------------
@@ -47,6 +47,7 @@ NEW:
 ----------------------------------------------------
 CHANGES:
 ----------------------------------------------------
+- Reduce big file size limit to 2GB (INT_MAX).
 - Conversion all *.RC files to encoding UTF-8 (no BOM/Signature).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
@@ -83,6 +84,7 @@ ENHANCEMENT:
 ----------------------------------------------------
 FIXES:
 ----------------------------------------------------
+- Crash on very large file size (rejecting too big files).
 - Batch lexer: handle comment after ampersand(&) command sequence.
 - Bug in replace on single step find/replace.
 - Convert to Hex and vice versa: work on (stream-)selection (original source by ZuFuLiu).
