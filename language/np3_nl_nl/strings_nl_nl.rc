@@ -147,7 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Weet je zeker dat je dit grote bestand wilt openen?"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Kan dat enorme bestand niet aan (grootte: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende bestandsnaamextensie (%s) !\nGegevens toch laden?"
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
