@@ -147,7 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Aucun fichier exécutable d'administration trouvé.\nCheck website https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Etes-vous sûr de vouloir ouvrir ce gros fichier?"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Ne peut pas gérer cet énorme fichier (taille: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Extension de nom de fichier inconnue (%s) !\nChargement des données quand même?"
     IDS_MUI_INDENT_CONSISTENT  "Le fichier a un retrait cohérent!"

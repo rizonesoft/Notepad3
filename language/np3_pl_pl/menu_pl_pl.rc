@@ -400,7 +400,7 @@ BEGIN
         MENUITEM "Przyspieszona nawigacja wyrazów\tCtrl+Alt+A",     IDM_VIEW_ACCELWORDNAV
         MENUITEM "Włącz edycję wierszy bloku komentarzy",                 IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
-        MENUITEM "Przykład pojedyńczego pliku",                     IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Jedna Instancja Pliku",                           IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_VIEW_CHANGENOTIFY
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Funkcja klawisza Esc"
