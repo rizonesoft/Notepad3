@@ -1880,7 +1880,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
   if (StrIsNotEmpty(lpszFileName))
   {
     char chFilePath[MAX_PATH << 1] = { '\0' };
-    WideCharToMultiByte(CP_UTF8, 0, lpszFileName, -1, chFilePath, COUNTOF(chFilePath), NULL, NULL);
+    WideCharToMultiByteEx(CP_UTF8, 0, lpszFileName, -1, chFilePath, COUNTOF(chFilePath), NULL, NULL);
 
     for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex)
     {
@@ -1895,7 +1895,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
           }
           ++f; // exclude '\'
           char regexpat[MAX_PATH] = { '\0' };
-          WideCharToMultiByte(CP_UTF8, 0, f, (int)(e-f), regexpat, COUNTOF(regexpat), NULL, NULL);
+          WideCharToMultiByteEx(CP_UTF8, 0, f, (int)(e-f), regexpat, COUNTOF(regexpat), NULL, NULL);
 
           if (OnigRegExFind(regexpat, chFilePath, false) >= 0) {
             return g_pLexArray[iLex];
@@ -1947,7 +1947,7 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     PEDITLEXER pLexMode;
     WCHAR wchMode[MICRO_BUFFER] = { L'\0' };
-    MultiByteToWideChar(Encoding_SciCP, 0, Globals.fvCurFile.tchMode, -1, wchMode, MICRO_BUFFER);
+    MultiByteToWideCharEx(Encoding_SciCP, 0, Globals.fvCurFile.tchMode, -1, wchMode, MICRO_BUFFER);
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
@@ -3387,13 +3387,13 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   char chFontName[80] = { '\0' };
   if (Style_StrGetFont(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
     if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
-      WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
+      WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
       SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
   }
   else if (bInitDefault) {
     Style_StrGetFont(L"font:Default", wchFontName, COUNTOF(wchFontName));
-    WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
+    WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
     SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
   }
   

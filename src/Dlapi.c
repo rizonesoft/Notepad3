@@ -265,7 +265,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
   lvi.iImage = I_IMAGECALLBACK;
 
   // Convert Directory to a UNICODE string
-  /*MultiByteToWideChar(CP_ACP,
+  /*MultiByteToWideCharEx(CP_ACP,
                       MB_PRECOMPOSED,
                       lpszDir,
                       -1,

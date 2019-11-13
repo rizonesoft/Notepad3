@@ -325,14 +325,14 @@ bool ReadFileKey(HWND hwnd, bool master)
 // read the file data, decrypt if necessary, 
 // return the result as a new allocation
 //
-int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen)
+int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t size, void** result, size_t *resultlen)
 {
   HANDLE rawhandle = *result;
   BYTE* rawdata = (BYTE*)GlobalLock(rawhandle);
 
   int returnFlag = DECRYPT_SUCCESS;
   bool usedEncryption = false;
-  unsigned long readsize = 0;
+  DWORD readsize = 0;
   bool bRetryPassPhrase = true;
 
   while (bRetryPassPhrase) {
@@ -343,7 +343,8 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
     readsize = 0;
     bRetryPassPhrase = false;
 
-    bool bReadSuccess = ReadFile(hFile, rawdata, size, &readsize, NULL);
+    // TODO: size_t -> (DWORD) cast: Huge Files conversion problem
+    bool bReadSuccess = ReadFile(hFile, rawdata, (DWORD)size, &readsize, NULL);
     returnFlag = bReadSuccess ? DECRYPT_SUCCESS : DECRYPT_FREAD_FAILED;
 
     // we read the file, check if it looks like our encryption format
@@ -375,7 +376,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
               // use the file key to decode
               /*@@@
                 char ansiKey[KEY_LEN+1];
-                int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
+                ptrdiff_t len = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                 ansiKey[len] = '\0';
                 AES_keygen( ansiKey, binFileKey );		// generate the encryption key from the passphrase
                 */
@@ -388,7 +389,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
               AES_cipherInstance mastercypher;
               /*@@@
                 char ansiKey[KEY_LEN+1];
-                int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
+                int ptrdiff_t = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                 AES_keygen( ansiKey, binMasterKey );
                 */
               AES_keygen(masterKey, binMasterKey);
@@ -407,8 +408,8 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
               AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
               AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
               { // finally, decrypt the actual data
-                long nbb = BAD_CIPHER_STATE;
-                long nbp = BAD_CIPHER_STATE;
+                ptrdiff_t nbb = BAD_CIPHER_STATE;
+                ptrdiff_t nbp = BAD_CIPHER_STATE;
                 if ((readsize - code_offset) >= PAD_SLOP) {
                   nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
                 }
@@ -416,10 +417,10 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
                   nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
                 }
                 if (nbp >= 0) {
-                  unsigned long const nb = nbb + nbp;
+                  size_t const nb = nbb + nbp;
                   rawdata[nb] = '\0';
                   rawdata[nb + 1] = '\0';	// two zeros in case it's multi-byte
-                  *resultlen = (DWORD)nb;
+                  *resultlen = nb;
                 }
                 else {
                   bRetryPassPhrase = (InfoBoxLng(MB_RETRYCANCEL | MB_ICONWARNING, NULL, IDS_MUI_PASS_FAILURE) == IDRETRY);
@@ -458,7 +459,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
   return returnFlag;
 }
 
-bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written)
+bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_t*written)
 {
     UNUSED(hwnd);
 
@@ -485,7 +486,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
                 // generate the encryption key from the passphrase
                 /* @@@
                         char ansiKey[KEY_LEN+1];
-                        int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
+                        int ptrdiff_t = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                         ansiKey[len] = '\0';
                         AES_keygen( ansiKey, binFileKey );
                         */
@@ -504,7 +505,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
                 AES_cipherInstance mastercypher;
                 /* @@@
                         char ansiKey[KEY_LEN+1];
-                        int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
+                        ptrdiff_t len = WideCharToMultiByteEx( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
                         ansiKey[len] = '\0';
                         AES_keygen( ansiKey, binMasterKey );
                         */
@@ -538,7 +539,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
         // now encrypt the main file
         {
             DWORD enclen_written = 0;
-            DWORD enclen = 0;
+            size_t enclen = 0;
             bool bWriteRes = false;
 
             BYTE* encdata = (BYTE*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size + PAD_SLOP);  // add slop to the end for padding
@@ -550,7 +551,8 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
 
             enclen += AES_padEncrypt(&fileCypher, &fileEncode, data + enclen, size - enclen, encdata + enclen);
 
-            bWriteRes = WriteFile(hFile, encdata, enclen, &enclen_written, NULL);
+            // TODO:  huge file size size_t vs. DWORD
+            bWriteRes = WriteFile(hFile, encdata, (DWORD)enclen, &enclen_written, NULL);
 
             HeapFree(GetProcessHeap(), 0, encdata);             // clean-up
 
@@ -560,7 +562,10 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
     }
     else {
         // not an encrypted file, write normally
-        bool bWriteSuccess = WriteFile(hFile, data, size, written, NULL);
+        // TODO:  huge file size size_t vs. DWORD
+        DWORD dwWritten;
+        bool bWriteSuccess = WriteFile(hFile, data, (DWORD)size, &dwWritten, NULL);
+        *written = dwWritten;
         return(bWriteSuccess);
     }
 }

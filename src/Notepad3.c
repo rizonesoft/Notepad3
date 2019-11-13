@@ -1346,7 +1346,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   {
     if (SciCall_GetTextLength() > 0) {
 
-      WideCharToMultiByte(Encoding_SciCP,0,s_lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
+      WideCharToMultiByteEx(Encoding_SciCP,0,s_lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
 
       if (s_flagMatchText & 4)
         Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
@@ -4505,7 +4505,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         cpi_enc_t const iEncoding = Encoding_Current(CPI_GET);
         char chEncStrg[128] = { '\0' };
-        WideCharToMultiByte(Encoding_SciCP, 0, Encoding_GetLabel(iEncoding), -1, chEncStrg, COUNTOF(chEncStrg), NULL, NULL);
+        WideCharToMultiByteEx(Encoding_SciCP, 0, Encoding_GetLabel(iEncoding), -1, chEncStrg, COUNTOF(chEncStrg), NULL, NULL);
         EditReplaceSelection(chEncStrg, false);
       }
       break;
@@ -4549,7 +4549,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           StringCchPrintf(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
         }
         char chDateTime[128] = { '\0' };
-        WideCharToMultiByte(Encoding_SciCP,0,tchDateTime,-1,chDateTime,COUNTOF(chDateTime),NULL,NULL);
+        WideCharToMultiByteEx(Encoding_SciCP,0,tchDateTime,-1,chDateTime,COUNTOF(chDateTime),NULL,NULL);
         EditReplaceSelection(chDateTime, false);
       }
       break;
@@ -4595,7 +4595,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
             //char chMaxPathBuffer[MAX_PATH] = { '\0' };
-            //if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
+            //if (WideCharToMultiByteEx(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
             //  EditReplaceSelection(chMaxPathBuffer, false);
             //}
             SetClipboardTextW(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
@@ -5009,7 +5009,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FreeMem(szSelection);
           break;
         }
-        MultiByteToWideChar(Encoding_SciCP, 0, szSelection, -1, pszTextW, (MBWC_DocPos_Cast)cchSelection);
+        MultiByteToWideCharEx(Encoding_SciCP, 0, szSelection, -1, pszTextW, cchSelection);
         MRU_Add(Globals.pMRUfind, pszTextW, 0, 0, NULL);
         SetFindPattern(pszTextW);
 
@@ -5989,8 +5989,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         mktime(&sst);
         wcsftime(wchReplace,COUNTOF(wchReplace),wchTemplate,&sst);
 
-        WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
-        WideCharToMultiByte(Encoding_SciCP, 0, wchReplace, -1, efrTS.szReplace, COUNTOF(efrTS.szReplace), NULL, NULL);
+        WideCharToMultiByteEx(Encoding_SciCP, 0, wchFind, -1, efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
+        WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplace, -1, efrTS.szReplace, COUNTOF(efrTS.szReplace), NULL, NULL);
 
         if (!SendMessage(Globals.hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
           EditReplaceAllInSelection(Globals.hwndEdit, &efrTS, true);
@@ -6036,7 +6036,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (StringCchLenA(mszSelection,COUNTOF(mszSelection))) {
 
               WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
-              MultiByteToWideChar(Encoding_SciCP,0,mszSelection,-1,wszSelection, HUGE_BUFFER);
+              MultiByteToWideCharEx(Encoding_SciCP,0,mszSelection,-1,wszSelection, HUGE_BUFFER);
 
               int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
               LPWSTR lpszCommand = AllocMem(sizeof(WCHAR)*cmdsz, HEAP_ZERO_MEMORY);
@@ -6616,7 +6616,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
         }
         CHAR  chAdd[MIDSZ_BUFFER] = { L'\0' };
-        WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, COUNTOF(chAdd), NULL, NULL);
+        WideCharToMultiByteEx(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, COUNTOF(chAdd), NULL, NULL);
 
         char chCallTip[LARGE_BUFFER] = { '\0' };
         //StringCchCatA(chCallTip, COUNTOF(chCallTip), "=> ");
@@ -6689,7 +6689,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
   const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
 
   WCHAR szTextW[INTERNET_MAX_URL_LENGTH+1];
-  int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (MBWC_DocPos_Cast)length, szTextW, COUNTOF(szTextW));
+  ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, szTextW, COUNTOF(szTextW));
   szTextW[cchTextW] = L'\0';
 
   const WCHAR* chkPreFix = L"file://";
@@ -7344,7 +7344,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     {
       // see WM_DROPFILES
       WCHAR szBuf[MAX_PATH + 40];
-      if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
+      if (MultiByteToWideCharEx(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0)
       {
         if (IsIconic(hwnd)) {
           ShowWindow(hwnd, SW_RESTORE);
@@ -7589,7 +7589,7 @@ void SetFindPattern(LPCWSTR wchFindPattern)
 // 
 void SetFindPatternMB(LPCSTR chFindPattern)
 {
-  MultiByteToWideChar(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
+  MultiByteToWideCharEx(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
 }
 
 //=============================================================================
@@ -7607,8 +7607,8 @@ void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
 // 
 void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
 {
-  WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, 
-                      chFindPattern, (MBWC_DocPos_Cast)bufferSize, NULL, NULL);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, sCurrentFindPattern, -1, 
+                        chFindPattern, bufferSize, NULL, NULL);
 }
 
 

@@ -261,7 +261,7 @@ void Encoding_SetLabel(cpi_enc_t iEncoding)
 cpi_enc_t Encoding_MatchW(LPCWSTR pwszTest)
 {
   char tchTest[256] = { '\0' };
-  WideCharToMultiByte(CP_ACP, 0, pwszTest, -1, tchTest, COUNTOF(tchTest), NULL, NULL);
+  WideCharToMultiByteEx(CP_ACP, 0, pwszTest, -1, tchTest, COUNTOF(tchTest), NULL, NULL);
   return Encoding_MatchA(tchTest);
 }
 // ============================================================================
@@ -641,7 +641,7 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
 {
   char tmpbuffer[256] = { '\0' };
   Encoding_GetNameA(iEncoding, tmpbuffer, 256);
-  return MultiByteToWideChar(Encoding_SciCP, 0, tmpbuffer, -1, buffer, (int)cwch);
+  return (int)MultiByteToWideCharEx(Encoding_SciCP, 0, tmpbuffer, -1, buffer, cwch);
 }
 // ============================================================================
 

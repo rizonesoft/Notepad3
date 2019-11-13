@@ -473,7 +473,8 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 static bool  _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
-  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
+  if (IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch))) 
+  {
     if (_CheckIniFile(tch, lpszModule)) {
       StringCchCopy(lpszFile, MAX_PATH, tch);
       return true;

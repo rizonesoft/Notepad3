@@ -235,7 +235,7 @@ DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, tex
 DeclareSciCallV0(UpperCase, UPPERCASE)
 DeclareSciCallV0(LowerCase, LOWERCASE)
 
-//DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text)  // ::WideCharToMultiByte(Encoding_SciCP)
+//DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text)  // WideCharToMultiByteEx(Encoding_SciCP)
 // SCI_ENCODEDFROMUTF8 - no need, internal CP is UTF8 always (fixed const for Notepad3)
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)

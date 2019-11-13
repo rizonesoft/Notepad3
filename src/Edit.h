@@ -33,7 +33,7 @@ bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
-void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
+void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* status);
 void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
                    bool bForceEncDetection, bool bClearUndoHistory, EditFileIOStatus* status);
@@ -131,7 +131,7 @@ void  EditSelectionMultiSelectAll();
 #define FV_ENCODING       64
 #define FV_MODE          128
 
-bool       FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
+bool       FileVars_Init(char* lpData, size_t cbData,LPFILEVARS lpfv);
 bool       FileVars_Apply(LPFILEVARS lpfv);
 bool       FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
 bool       FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
