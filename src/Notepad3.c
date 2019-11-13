@@ -5686,7 +5686,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
           CancelCallTip();
           SciCall_AutoCCancel();
-          break;
         }
         else if (s_bIndicMultiEdit) {
           _BEGIN_UNDO_ACTION_
@@ -5700,7 +5699,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           _BEGIN_UNDO_ACTION_
           EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
           _END_UNDO_ACTION_
-          break;
         }
         else if (Settings.EscFunction == 1) {
           SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
