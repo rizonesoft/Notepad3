@@ -5696,6 +5696,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           _END_UNDO_ACTION_
           s_bIndicMultiEdit = false;
         }
+        else if (!SciCall_IsSelectionEmpty()) {
+          _BEGIN_UNDO_ACTION_
+          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+          _END_UNDO_ACTION_
+          break;
+        }
         else if (Settings.EscFunction == 1) {
           SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
           break;
@@ -5703,12 +5709,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         else if (Settings.EscFunction == 2) {
           CloseApplication(true);
           break;
-        }
-
-        if (!SciCall_IsSelectionEmpty()) {
-          _BEGIN_UNDO_ACTION_
-          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
-          _END_UNDO_ACTION_
         }
         else {
           EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
