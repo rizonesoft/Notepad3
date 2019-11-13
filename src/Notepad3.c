@@ -136,6 +136,7 @@ static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
 static DWORD     s_dwLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
 static bool      s_bIndicMultiEdit = false;
+static bool      s_bCallTipEscDisabled = false;
 
 static int       s_iInitialLine;
 static int       s_iInitialColumn;
@@ -5683,9 +5684,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         DocPos const iCurPos = SciCall_GetCurrentPos();
         
-        if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
-          CancelCallTip();
+        if (SciCall_AutoCActive()) {
           SciCall_AutoCCancel();
+        }
+        else if (SciCall_CallTipActive()) {
+          CancelCallTip();
+          s_bCallTipEscDisabled = true;
         }
         else if (s_bIndicMultiEdit) {
           _BEGIN_UNDO_ACTION_
@@ -6548,6 +6552,10 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
   static DocPos prevStartPosition = -1;
   static DocPos prevEndPosition = -1;
 
+  if (prevPosition < 0) { prevPosition = position; }
+  if (prevStartPosition < 0) { prevStartPosition = position; }
+  if (prevEndPosition < 0) { prevEndPosition = position; }
+
   switch (uid)
   {
     case SCN_DWELLSTART:
@@ -6588,6 +6596,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
       if (position < 0) { prevPosition = -1;  return; }
 
+      if ((position < prevStartPosition) || (position > prevEndPosition)) { s_bCallTipEscDisabled = false; }
+
       //SciCall_SetCursor(SC_NP3_CURSORHAND);
 
       int const indicator_id = (_I_HYPERLINK == indicator_type) ? INDIC_NP3_HYPERLINK : INDIC_NP3_COLOR_DEF;
@@ -6598,32 +6608,34 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
       // WebLinks and Color Refs are ASCII only - No need for UTF-8 conversion here
 
-      if (_I_HYPERLINK == indicator_type)
+      if (_I_HYPERLINK == indicator_type) 
       {
-        char chText[MIDSZ_BUFFER] = { '\0' };
-        // No need for UTF-8 conversion here and 
-        StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
-        StrTrimA(chText, " \t\n\r");
-        if (StrIsEmptyA(chText)) { return; }
+        if (!s_bCallTipEscDisabled) {
+          char chText[MIDSZ_BUFFER] = { '\0' };
+          // No need for UTF-8 conversion here and 
+          StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(firstPos, length), length);
+          StrTrimA(chText, " \t\n\r");
+          if (StrIsEmptyA(chText)) { return; }
 
-        WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
-        if (StrStrIA(chText, "file:") == chText) {
-          GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
-        }
-        else {
-          GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
-        }
-        CHAR  chAdd[MIDSZ_BUFFER] = { L'\0' };
-        WideCharToMultiByteEx(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, COUNTOF(chAdd), NULL, NULL);
+          WCHAR wchCalltipAdd[SMALL_BUFFER] = { L'\0' };
+          if (StrStrIA(chText, "file:") == chText) {
+            GetLngString(IDS_MUI_URL_OPEN_FILE, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+          }
+          else {
+            GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
+          }
+          CHAR  chAdd[MIDSZ_BUFFER] = { L'\0' };
+          WideCharToMultiByteEx(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, COUNTOF(chAdd), NULL, NULL);
 
-        char chCallTip[LARGE_BUFFER] = { '\0' };
-        //StringCchCatA(chCallTip, COUNTOF(chCallTip), "=> ");
-        StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
-        StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
-        //SciCall_CallTipSetPosition(true);
-        SciCall_CallTipShow(position, chCallTip);
-        SciCall_CallTipSetHlt(0, (int)length);
-        Globals.CallTipType = CT_DWELL;
+          char chCallTip[LARGE_BUFFER] = { '\0' };
+          //StringCchCatA(chCallTip, COUNTOF(chCallTip), "=> ");
+          StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
+          StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
+          //SciCall_CallTipSetPosition(true);
+          SciCall_CallTipShow(position, chCallTip);
+          SciCall_CallTipSetHlt(0, (int)length);
+          Globals.CallTipType = CT_DWELL;
+        }
       }
       else if (_I_COLOR_PATTERN == indicator_type)
       {
@@ -6656,6 +6668,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
       DocPos const curPos = SciCall_GetCurrentPos();
       if ((curPos >= prevStartPosition) && ((curPos <= prevEndPosition))) { return; } // no change for if caret in range
+      s_bCallTipEscDisabled = false;
+
       SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DWELL);
       SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
       HandlePosChange();
