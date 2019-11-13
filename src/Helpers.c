@@ -818,7 +818,7 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
     {
       WORD wsz[MAX_PATH] = { L'\0' };
 
-      /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH);*/
+      /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH);*/
       StringCchCopy(wsz,COUNTOF(wsz),pszLnkFile);
 
       if (SUCCEEDED(ppf->lpVtbl->Load(ppf,wsz,STGM_READ)))
@@ -924,7 +924,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
     {
       WORD wsz[MAX_PATH] = { L'\0' };
 
-      /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
+      /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
       StringCchCopy(wsz,COUNTOF(wsz),tchLnkFileName);
 
       psl->lpVtbl->SetPath(psl,tchExeFile);
@@ -980,7 +980,7 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
     {
       WORD wsz[MAX_PATH] = { L'\0' };
 
-      /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
+      /*MultiByteToWideCharEx(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
       StringCchCopy(wsz,COUNTOF(wsz),tchLnkFileName);
 
       psl->lpVtbl->SetPath(psl,pszTarget);
@@ -1410,21 +1410,21 @@ UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount
   WCHAR wsz[FNDRPL_BUFFER] = L"";
   UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
 UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
 {
   WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
   return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
   WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
   return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
@@ -1528,7 +1528,7 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
           }
           if (val[0]) {
             val[1] = 0;
-            WideCharToMultiByte(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
+            WideCharToMultiByteEx(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
             *o = *pch++;
             while (*pch)
               *++o = *pch++;
@@ -1663,7 +1663,7 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
 //
 ptrdiff_t WideCharToMultiByteEx(
   UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
-  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte)
+  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
 {
   LPCWCH inPtr = lpWideCharStr;
   ptrdiff_t inBufCnt = cchWideChar;
@@ -1671,22 +1671,34 @@ ptrdiff_t WideCharToMultiByteEx(
   ptrdiff_t outBufSiz = cbMultiByte;
   ptrdiff_t bytesConv = 0LL;
 
+  static ptrdiff_t const maxBufSize = (INT_MAX - 128);
+
+  BOOL bIsDefCharUse = FALSE;
+
   while ((inBufCnt > 0LL) || (inBufCnt == -1LL)) 
   {
-    int const cnt = (inBufCnt > INT_MAX) ? INT_MAX : ((inBufCnt > 0LL) ? (int)inBufCnt : -1);
-    int const siz = (outBufSiz > INT_MAX) ? INT_MAX : (int)outBufSiz;
-    int const bytes = WideCharToMultiByte(CodePage, dwFlags, inPtr, cnt, outPtr, siz, NULL, NULL);
+    int const cnt = (inBufCnt > maxBufSize) ? (int)maxBufSize : ((inBufCnt > 0LL) ? (int)inBufCnt : -1);
+    int const siz = (outBufSiz > maxBufSize) ? (int)maxBufSize : (int)outBufSiz;
+
+    int const bytes = WideCharToMultiByte(CodePage, dwFlags, inPtr, cnt, outPtr, siz, lpDefaultChar, lpUsedDefaultChar);
     if (bytes == 0) { break; }
+
+    if (lpUsedDefaultChar && *lpUsedDefaultChar) { bIsDefCharUse = TRUE; }
+
+    int const usedWChr = (inBufCnt > maxBufSize) ? (outPtr ? MultiByteToWideChar(CodePage, dwFlags, outPtr, bytes, NULL, 0) : 0) : (int)inBufCnt;
+
     bytesConv += (ptrdiff_t)bytes;
     if (outPtr) {
       outPtr += (ptrdiff_t)bytes;
       outBufSiz -= (ptrdiff_t)bytes;
     }
     if (inBufCnt > 0LL) {
-      inBufCnt -= (ptrdiff_t)cnt;
+      inBufCnt -= (ptrdiff_t)usedWChr;
     }
-    inPtr += (ptrdiff_t)cnt;
+    inPtr += (ptrdiff_t)usedWChr;
   }
+
+  if (lpUsedDefaultChar) { *lpUsedDefaultChar = bIsDefCharUse; }
   return bytesConv;
 }
 
@@ -1704,14 +1716,19 @@ ptrdiff_t MultiByteToWideCharEx(
   ptrdiff_t outBufCnt = cchWideChar;
   ptrdiff_t wcharConv = 0LL;
 
+  static ptrdiff_t const maxBufSize = (INT_MAX - 128);
+
   while ((inBufSiz > 0LL) || (inBufSiz == -1LL))
   {
-    int const siz = (inBufSiz > INT_MAX) ? INT_MAX : ((inBufSiz > 0LL) ? (int)inBufSiz : -1);
-    int const cnt = (outBufCnt > INT_MAX) ? INT_MAX : (int)outBufCnt;
+    int const siz = (inBufSiz > maxBufSize) ? (int)maxBufSize : ((inBufSiz > 0LL) ? (int)inBufSiz : -1);
+    int const cnt = (outBufCnt > maxBufSize) ? (int)maxBufSize : (int)outBufCnt;
+    
     int const wchars = MultiByteToWideChar(CodePage, dwFlags, inPtr, siz, outPtr, cnt);
     if (wchars == 0) { break; }
+
+    int const usedMBC = (inBufSiz > maxBufSize) ? (outPtr ? WideCharToMultiByte(CodePage, dwFlags, outPtr, wchars, NULL, 0, NULL, NULL) : 0) : (int)inBufSiz;
+
     wcharConv += (ptrdiff_t)wchars;
-    int const usedMBC = WideCharToMultiByte(CodePage, dwFlags, outPtr, wchars, NULL, 0, NULL, NULL);
     if (outPtr) {
       outPtr += (ptrdiff_t)wchars;
       outBufCnt -= (ptrdiff_t)wchars;
@@ -1924,7 +1941,7 @@ VOID RestoreWndFromTray(HWND hWnd)
 //
 //  UrlUnescapeEx()
 //
-void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, size_t* pcchUnescaped)
 {
 #if defined(URL_UNESCAPE_AS_UTF8)
   UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
@@ -1933,14 +1950,14 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   if (outBuffer == NULL) {
     return;
   }
-  int const outLen = (int)*pcchUnescaped;
+  size_t const outLen = *pcchUnescaped;
 
   size_t posIn = 0;
   WCHAR buf[5] = { L'\0' };
   size_t lastEsc = StringCchLenW(lpURL,0) - 2;
   unsigned int code;
 
-  int posOut = 0;
+  size_t posOut = 0;
   while ((posIn < lastEsc) && (posOut < outLen))
   {
     bool bOk = false;
@@ -1974,20 +1991,20 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
     }
     // TODO(rkotten): HTML Hex encoded (&#x...)
     if (!bOk) {
-      posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
-                                    &(outBuffer[posOut]), (MBWC_DocPos_Cast)(outLen - posOut), NULL, NULL);
+      posOut += WideCharToMultiByteEx(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
+                                    &(outBuffer[posOut]), (outLen - posOut), NULL, NULL);
     }
   }
 
   // copy rest
   while ((lpURL[posIn] != L'\0') && (posOut < outLen))
   {
-    posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
-                                  &(outBuffer[posOut]), (MBWC_DocPos_Cast)(outLen - posOut), NULL, NULL);
+    posOut += WideCharToMultiByteEx(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
+                                  &(outBuffer[posOut]), (outLen - posOut), NULL, NULL);
   }
   outBuffer[posOut] = '\0';
 
-  int const iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (MBWC_DocPos_Cast)*pcchUnescaped);
+  ptrdiff_t const iOut = MultiByteToWideCharEx(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, *pcchUnescaped);
   FreeMem(outBuffer);
 
   *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);

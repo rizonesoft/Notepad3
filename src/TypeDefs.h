@@ -61,9 +61,6 @@ typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
 
-// TODO: refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
-typedef int MBWC_DocPos_Cast; 
-
 // --------------------------------------------------------------------------
 
 //typedef intptr_t cpi_enc_t;

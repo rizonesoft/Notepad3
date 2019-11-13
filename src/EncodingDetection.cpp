@@ -913,7 +913,7 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   //~StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), " || CED='");
   //~if (encCED >= 0)
   //~{
-  //~  //WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, ARRAYSIZE(chEncodingLabel), 0, 0);
+  //~  //::WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, ARRAYSIZE(chEncodingLabel), 0, 0);
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), encodingCED);
   //~}
   //~else {
@@ -933,6 +933,6 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), (int)lroundf(ucd_conf_perc) >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
-  MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchEncodingInfo, ARRAYSIZE(wchEncodingInfo));
+  ::MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchEncodingInfo, ARRAYSIZE(wchEncodingInfo));
 }
 

@@ -315,11 +315,11 @@ int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax)
 //
 static WCHAR s_tmpStringBuffer[512];
 
-int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
+ptrdiff_t LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
 {
   const int nLen = LoadStringW(Globals.hLngResContainer, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer));
   if (nLen == 0) { LoadStringW(Globals.hInstance, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer)); }
-  return WideCharToMultiByte(CP_UTF8, 0, s_tmpStringBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
+  return WideCharToMultiByteEx(CP_UTF8, 0, s_tmpStringBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
 }
 
 //=============================================================================

@@ -238,11 +238,11 @@ int AES_cipherInit
 
   @rdesc number of bytes encrypted
   */
-int AES_blockEncrypt
+ptrdiff_t AES_blockEncrypt
 (AES_cipherInstance *cipher, //@parm the current <t AES_cipherInstance>
  AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
  BYTE *input,	// @parm the input data
- int inputLen,	// @parm the size of the input data
+ ptrdiff_t inputLen,	// @parm the size of the input data
  BYTE *outBuffer) //@parm a buffer to receive the encrypted data
 {
   u8 block[16];
@@ -257,11 +257,11 @@ int AES_blockEncrypt
         return 0; /* nothing to do */
     }
 
-    unsigned int const numBlocks = inputLen / 16;
+    size_t const numBlocks = inputLen / 16;
 
     switch (cipher->mode) {
     case AES_MODE_ECB:
-        for (unsigned int i = numBlocks; i > 0; i--) {
+        for (size_t i = numBlocks; i > 0; i--) {
             rijndaelEncrypt(key->rk, key->Nr, input, outBuffer);
             input += 16;
             outBuffer += 16;
@@ -270,7 +270,7 @@ int AES_blockEncrypt
 
     case AES_MODE_CBC:
         iv = cipher->IV;
-        for (unsigned int i = numBlocks; i > 0; i--) {
+        for (size_t i = numBlocks; i > 0; i--) {
             ((u32*)block)[0] = ((u32*)input)[0] ^ ((u32*)iv)[0];
             ((u32*)block)[1] = ((u32*)input)[1] ^ ((u32*)iv)[1];
             ((u32*)block)[2] = ((u32*)input)[2] ^ ((u32*)iv)[2];
@@ -287,7 +287,7 @@ int AES_blockEncrypt
 
     case AES_MODE_CFB1:
         iv = cipher->IV;
-        for (unsigned int i = numBlocks; i > 0; i--) {
+        for (size_t i = numBlocks; i > 0; i--) {
             memcpy(outBuffer, input, 16);
             for (unsigned int k = 0; k < 128; k++) {
                 rijndaelEncrypt(key->ek, key->Nr, iv, block);
@@ -323,11 +323,11 @@ int AES_blockEncrypt
 <nl>Overview: <l Crypto Utilities>
   @rdesc	length in octets (not bits) of the encrypted output buffer.
  */
-int AES_padEncrypt
+ptrdiff_t AES_padEncrypt
 (AES_cipherInstance *cipher, //@parm the current <t AES_cipherInstance>
  AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
  BYTE *input,	// @parm the input data
- int inputOctets, // @parm the size of the input data
+ ptrdiff_t inputOctets, // @parm the size of the input data
  BYTE *outBuffer) //@parm a buffer to receive the encrypted data
 {
     u8 block[16];
@@ -342,17 +342,17 @@ int AES_padEncrypt
         return 0; /* nothing to do */
     }
 
-    unsigned int const numBlocks = inputOctets / 16;
+    size_t const numBlocks = inputOctets / 16;
 
     switch (cipher->mode) {
     case AES_MODE_ECB:
     {
-      for (unsigned int i = numBlocks; i > 0; i--) {
+      for (size_t i = numBlocks; i > 0; i--) {
         rijndaelEncrypt(key->rk, key->Nr, input, outBuffer);
         input += 16;
         outBuffer += 16;
       }
-      unsigned int const padLen = 16 - (inputOctets - 16 * numBlocks);
+      int const padLen = 16 - (int)(inputOctets - 16 * numBlocks);
       if ((padLen <= 0) || (padLen > 16)) {
         BUG1("Padding must be 1-16, is %d", padLen);
         return 16 * numBlocks;
@@ -366,7 +366,7 @@ int AES_padEncrypt
     case AES_MODE_CBC:
     {
       iv = cipher->IV;
-      for (unsigned int i = numBlocks; i > 0; i--) {
+      for (size_t i = numBlocks; i > 0; i--) {
         ((u32*)block)[0] = ((u32*)input)[0] ^ ((u32*)iv)[0];
         ((u32*)block)[1] = ((u32*)input)[1] ^ ((u32*)iv)[1];
         ((u32*)block)[2] = ((u32*)input)[2] ^ ((u32*)iv)[2];
@@ -376,7 +376,7 @@ int AES_padEncrypt
         input += 16;
         outBuffer += 16;
       }
-      unsigned int const padLen = 16 - (inputOctets - 16 * numBlocks);
+      size_t const padLen = 16 - (inputOctets - 16 * numBlocks);
       if ((padLen <= 0) || (padLen > 16)) {
         BUG1("Padding must be 1-16, is %d", padLen);
         return 16 * numBlocks;
@@ -385,7 +385,7 @@ int AES_padEncrypt
         block[i] = input[i] ^ iv[i];
       }
       BYTE const plen = (BYTE)(padLen & 0xFF);
-      for (unsigned int i = 16 - padLen; (i < 16); i++) {
+      for (size_t i = 16 - padLen; (i < 16); i++) {
         block[i] = plen ^ iv[i];
       }
       rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
@@ -408,11 +408,11 @@ next block.
 <nl>Overview: <l Crypto Utilities>
 @rdesc the number of bytes decrypted
   */
-int AES_blockDecrypt
+ptrdiff_t AES_blockDecrypt
 (AES_cipherInstance *cipher,	//@parm the current <t AES_cipherInstance>
  AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
  BYTE *input,	//@parm the input encrypted data
- int inputLen,	//@parm the size of the input
+ ptrdiff_t inputLen,	//@parm the size of the input
  BYTE *outBuffer) //@parm a buffer to receive the decrypted buffer
 {
     //int lim = 32;
@@ -428,11 +428,11 @@ int AES_blockDecrypt
         return 0; /* nothing to do */
     }
 
-    unsigned int const numBlocks = inputLen / 16;
+    size_t const numBlocks = inputLen / 16;
 
     switch (cipher->mode) {
     case AES_MODE_ECB:
-        for (unsigned int i = numBlocks; i > 0; i--) {
+        for (size_t i = numBlocks; i > 0; i--) {
             rijndaelDecrypt(key->rk, key->Nr, input, outBuffer);
             input += 16;
             outBuffer += 16;
@@ -441,7 +441,7 @@ int AES_blockDecrypt
 
     case AES_MODE_CBC:
         iv = cipher->IV;
-        for (unsigned int i = numBlocks; i > 0; i--) {
+        for (size_t i = numBlocks; i > 0; i--) {
             rijndaelDecrypt(key->rk, key->Nr, input, block);
             ((u32*)block)[0] ^= ((u32*)iv)[0];
             ((u32*)block)[1] ^= ((u32*)iv)[1];
@@ -456,7 +456,7 @@ int AES_blockDecrypt
 
     case AES_MODE_CFB1:
         iv = cipher->IV;
-        for (unsigned int i = numBlocks; i > 0; i--) {
+        for (size_t i = numBlocks; i > 0; i--) {
             memcpy(outBuffer, input, 16);
             for (unsigned int k = 0; k < 128; k++) {
                 rijndaelEncrypt(key->ek, key->Nr, iv, block);
@@ -487,11 +487,11 @@ thought there normally will not be any more blocks.
 @rdesc the number of bytes decrypted
   */
 
-int AES_padDecrypt
+ptrdiff_t AES_padDecrypt
 (AES_cipherInstance *cipher,	//@parm the current <t AES_cipherInstance>
  AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
  BYTE *input,	//@parm the input encrypted data
- int inputOctets,	//@parm the size of the input
+ ptrdiff_t inputOctets,	//@parm the size of the input
  BYTE *outBuffer) //@parm a buffer to receive the decrypted buffer 
 {
     u8 block[16];
@@ -509,12 +509,12 @@ int AES_padDecrypt
         return BAD_DATA;
     }
 
-    unsigned int const numBlocks = inputOctets / 16;
+    size_t const numBlocks = inputOctets / 16;
 
     switch (cipher->mode) {
     case AES_MODE_ECB:
         /* all blocks but last */
-        for (unsigned int i = numBlocks - 1; i > 0; i--) {
+        for (size_t i = numBlocks - 1; i > 0; i--) {
             rijndaelDecrypt(key->rk, key->Nr, input, outBuffer);
             input += 16;
             outBuffer += 16;
@@ -535,7 +535,7 @@ int AES_padDecrypt
 
     case AES_MODE_CBC:
         /* all blocks but last */
-        for (unsigned int i = numBlocks - 1; i > 0; i--) {
+        for (size_t i = numBlocks - 1; i > 0; i--) {
             rijndaelDecrypt(key->rk, key->Nr, input, block);
             ((u32*)block)[0] ^= ((u32*)cipher->IV)[0];
             ((u32*)block)[1] ^= ((u32*)cipher->IV)[1];

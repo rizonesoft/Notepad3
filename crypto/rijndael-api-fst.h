@@ -138,17 +138,17 @@ int AES_cipherInit(AES_cipherInstance *cipher, AES_MODES mode, char *IV);
 
 int AES_bin_cipherInit(AES_cipherInstance *cipher, AES_MODES mode, BYTE *IV);
 
-int AES_blockEncrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-		BYTE *input, int inputLen, BYTE *outBuffer);
+ptrdiff_t AES_blockEncrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
+          BYTE *input, ptrdiff_t inputLen, BYTE *outBuffer);
 
-int AES_padEncrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-		BYTE *input, int inputOctets, BYTE *outBuffer);
+ptrdiff_t AES_padEncrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
+          BYTE *input, ptrdiff_t inputOctets, BYTE *outBuffer);
 
-int AES_blockDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-		BYTE *input, int inputLen, BYTE *outBuffer);
+ptrdiff_t AES_blockDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
+          BYTE *input, ptrdiff_t inputLen, BYTE *outBuffer);
 
-int AES_padDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
-		BYTE *input, int inputOctets, BYTE *outBuffer);
+ptrdiff_t AES_padDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
+          BYTE *input, ptrdiff_t inputOctets, BYTE *outBuffer);
 
 #ifdef INTERMEDIATE_VALUE_KAT
 int cipherUpdateRounds(AES_cipherInstance *cipher, AES_keyInstance *key,

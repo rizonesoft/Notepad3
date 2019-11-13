@@ -342,13 +342,37 @@ void TransformMetaChars(char* pszInput,bool,int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
+
 ptrdiff_t WideCharToMultiByteEx(
   UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
-  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte);
+  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
+
 
 ptrdiff_t MultiByteToWideCharEx(
   UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
   LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
+
+
+inline void SwabEx(char* src, char* dest, size_t n)
+{
+  static int const max = (INT_MAX - (INT_MAX % 2));
+
+  if (n <= (size_t)max) {
+    _swab(src, dest, (int)n);
+  }
+  else {
+    size_t size = n - (n % 2LL);
+    while (size > (size_t)max) {
+      _swab(src, dest, max);
+      size -= max;
+      src += max;
+      dest += max;
+    }
+    if (size > 0) {
+      _swab(src, dest, (int)size);
+    }
+  }
+}
 
 
 //==== MinimizeToTray Functions - see comments in Helpers.c ===================
@@ -473,7 +497,7 @@ inline int GetHexDigit(char ch) {
 
 // ----------------------------------------------------------------------------
 
-void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, size_t* pcchUnescaped);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
