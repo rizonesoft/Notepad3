@@ -121,6 +121,26 @@ extern "C" int IniSectionGetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iD
 // ============================================================================
 
 
+extern "C" long IniSectionGetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault)
+{
+  bool bHasMultiple = false;
+  auto const lValue = s_INI.GetLongValue(lpSectionName, lpKeyName, lDefault, &bHasMultiple);
+  //assert(!bHasMultiple);
+  return lValue;
+}
+// ============================================================================
+
+
+extern "C" long long IniSectionGetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llDefault)
+{
+  bool bHasMultiple = false;
+  auto const lValue = s_INI.GetLongLongValue(lpSectionName, lpKeyName, llDefault, &bHasMultiple);
+  //assert(!bHasMultiple);
+  return lValue;
+}
+// ============================================================================
+
+
 extern "C" double IniSectionGetDouble(LPCWSTR lpSectionName, LPCWSTR lpKeyName, double dDefault)
 {
   bool bHasMultiple = false;
@@ -154,6 +174,19 @@ extern "C" BOOL IniSectionSetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int i
   SI_Error const rc = s_INI.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
   return SI_SUCCESS(rc);
 }
+
+extern "C" BOOL IniSectionSetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue)
+{
+  SI_Error const rc = s_INI.SetLongValue(lpSectionName, lpKeyName, lValue, nullptr, false, !s_bUseMultiKey);
+  return SI_SUCCESS(rc);
+}
+
+extern "C" BOOL IniSectionSetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llValue)
+{
+  SI_Error const rc = s_INI.SetLongLongValue(lpSectionName, lpKeyName, llValue, nullptr, false, !s_bUseMultiKey);
+  return SI_SUCCESS(rc);
+}
+
 extern "C" BOOL IniSectionSetHex(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
   SI_Error const rc = s_INI.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, true, !s_bUseMultiKey);
@@ -248,6 +281,7 @@ extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
       Ini.SetSpaces(s_bSetSpaces);
       rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
     }
+    Ini.Reset();
   }
   return SI_SUCCESS(rc);
 }
@@ -278,6 +312,7 @@ extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
     Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
   }
+  Ini.Reset();
   return SI_SUCCESS(rc);
 }
 // ============================================================================
@@ -307,6 +342,7 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
     Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
   }
+  Ini.Reset();
   return SI_SUCCESS(rc);
 }
 // ============================================================================
@@ -322,9 +358,11 @@ extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
     Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
   }
+  Ini.Reset();
   return SI_SUCCESS(rc);
 }
 // ============================================================================
+
 
 
 extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
@@ -486,7 +524,8 @@ int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile
 {
   WCHAR tch[MAX_PATH];
 
-  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
+  if (IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch)))
+  {
     if (CheckIniFile(tch, lpszModule)) {
       lstrcpy(lpszFile, tch);
       return(1);

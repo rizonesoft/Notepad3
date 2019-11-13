@@ -1493,8 +1493,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
             return SI_Error::SI_NOMEM;
           }
 
-          auto const convCnt = (size_t)WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)a_pData + 1, (int)(a_uDataLen / sizeof(WCHAR) - 1),
-                                                                       (LPSTR)pDataUTF16toUTF8, (int)(a_uDataLen * 3 + 1), nullptr, nullptr);
+          auto const convCnt = (size_t)::WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)a_pData + 1, (int)(a_uDataLen / sizeof(WCHAR) - 1),
+                                                             (LPSTR)pDataUTF16toUTF8, (int)(a_uDataLen * 3 + 1), nullptr, nullptr);
           if (convCnt == 0) {
             delete[] pDataUTF16toUTF8;
             return SI_Error::SI_FAIL;
@@ -3463,7 +3463,7 @@ public:
     {
         SI_ASSERT(a_uInputDataLen != (size_t) -1);
 
-        int retval = MultiByteToWideChar(
+        int retval = ::MultiByteToWideChar(
             m_uCodePage, 0,
             a_pInputData, (int) a_uInputDataLen,
             0, 0);
@@ -3489,7 +3489,7 @@ public:
         SI_CHAR *       a_pOutputData,
         size_t          a_uOutputDataSize)
     {
-        int nSize = MultiByteToWideChar(
+        int nSize = ::MultiByteToWideChar(
             m_uCodePage, 0,
             a_pInputData, (int) a_uInputDataLen,
             (wchar_t *) a_pOutputData, (int) a_uOutputDataSize);
@@ -3509,7 +3509,7 @@ public:
     size_t SizeToStore(
         const SI_CHAR * a_pInputData)
     {
-        int retval = WideCharToMultiByte(
+        int retval = ::WideCharToMultiByte(
             m_uCodePage, 0,
             (const wchar_t *) a_pInputData, -1,
             0, 0, 0, 0);
@@ -3534,7 +3534,7 @@ public:
         char *          a_pOutputData,
         size_t          a_uOutputDataSize)
     {
-        int retval = WideCharToMultiByte(
+        int retval = ::WideCharToMultiByte(
             m_uCodePage, 0,
             (const wchar_t *) a_pInputData, -1,
             a_pOutputData, (int) a_uOutputDataSize, 0, 0);
