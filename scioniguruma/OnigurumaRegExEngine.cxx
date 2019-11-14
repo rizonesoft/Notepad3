@@ -67,7 +67,7 @@ static OnigEncoding g_UsedEncodingsTypes[] = { g_pOnigEncodingType };
 // --- Onigmo Engine Simple Options ---
 // ------------------------------------
 static void SetSimpleOptions(OnigOptionType& onigOptions, 
-  const bool caseSensitive, const int searchFlags = 0)
+  const bool caseSensitive, const bool forwardSearch, const int searchFlags = 0)
 {
   // fixed options
   onigOptions = ONIG_OPTION_DEFAULT;
@@ -76,6 +76,7 @@ static void SetSimpleOptions(OnigOptionType& onigOptions,
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_FIND_LONGEST);
 
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
@@ -90,11 +91,16 @@ static void SetSimpleOptions(OnigOptionType& onigOptions,
     ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MULTILINE);
   }
 
-  if (!caseSensitive) {
-    ONIG_OPTION_ON(onigOptions, ONIG_OPTION_IGNORECASE);
+  if (caseSensitive) {
+    ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_IGNORECASE);
   }
   else {
-    ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_IGNORECASE);
+    ONIG_OPTION_ON(onigOptions, ONIG_OPTION_IGNORECASE);
+  }
+
+  if (forwardSearch) {
+  }
+  else {
   }
 }
 // ============================================================================
@@ -252,13 +258,17 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
   minPos = doc->MovePositionOutsideChar(minPos, increment, false);
   maxPos = doc->MovePositionOutsideChar(maxPos, increment, false);
+  
+  if (!findForward) {
+    minPos = doc->MovePositionOutsideChar(minPos - 1, increment, false);
+  }
 
   Sci::Position const rangeBeg = (findForward) ? minPos : maxPos;
   Sci::Position const rangeEnd = (findForward) ? maxPos : minPos;
   Sci::Position const rangeLen = (rangeEnd - rangeBeg);
 
   OnigOptionType onigOptions;
-  SetSimpleOptions(onigOptions, caseSensitive, searchFlags);
+  SetSimpleOptions(onigOptions, caseSensitive, findForward, searchFlags);
   ONIG_OPTION_ON(onigOptions, (rangeBeg != 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
   ONIG_OPTION_ON(onigOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
   
@@ -708,7 +718,7 @@ OnigPosition SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* 
   }
 
   // init search options
-  SetSimpleOptions(m_Options, caseSensitive);
+  SetSimpleOptions(m_Options, caseSensitive, true);
   m_ErrorInfo[0] = '\0';
 
   try {

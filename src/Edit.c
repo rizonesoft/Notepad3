@@ -6367,8 +6367,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     SetFocus(hwnd);
 
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
-
-  DocPos start = SciCall_GetCurrentPos();
+  DocPos start = SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : SciCall_GetSelectionEnd();
   DocPos end = iDocEndPos;
 
   if (start >= end) {
@@ -6449,12 +6448,12 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   int const sFlags = (int)(lpefr->fuFlags);
 
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
-  DocPos start = SciCall_GetCurrentPos();
+  DocPos start = SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : SciCall_GetSelectionStart();
   DocPos end = 0;
 
   if (start <= end) {
     if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
-      end = start;  start = iDocEndPos;
+      end = max_p(start, 0);  start = iDocEndPos;
     }
     else
       bSuppressNotFound = true;
