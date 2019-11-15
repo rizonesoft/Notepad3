@@ -170,7 +170,7 @@ static void ColouriseBatchLine(
 				// Reset Offset to re-process remainder of word
 				offset -= (wbl - 1);
 				// Colorize External Command / Program
-                if (!keywords2) {
+				if (!keywords2) {
 					styler.ColourTo(startLine + offset - 1, SCE_BAT_COMMAND);
 				} else if (keywords2.InList(wordBuffer)) {
 					styler.ColourTo(startLine + offset - 1, SCE_BAT_COMMAND);

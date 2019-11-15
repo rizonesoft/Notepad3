@@ -252,6 +252,12 @@ set void SetTabWidth=2036(int tabWidth,)
 # Retrieve the visible size of a tab.
 get int GetTabWidth=2121(,)
 
+# Set the minimum visual width of a tab.
+set void SetTabMinimumWidth=2724(int pixels,)
+
+# Get the minimum visual width of a tab.
+get int GetTabMinimumWidth=2725(,)
+
 # Clear explicit tabstops on a line.
 fun void ClearTabStops=2675(line line,)
 
@@ -280,8 +286,8 @@ get IMEInteraction GetIMEInteraction=2678(,)
 set void SetIMEInteraction=2679(IMEInteraction imeInteraction,)
 
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2724(,)
-get bool IsIMEModeCJK=2725(,)
+get bool IsIMEOpen=2900(,)
+get bool IsIMEModeCJK=2901(,)
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
