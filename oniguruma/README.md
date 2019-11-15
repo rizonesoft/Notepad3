@@ -27,10 +27,11 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
-Master branch
+Version 6.9.4
 -------------
 
 * NEW API: RegSet (set of regexes)
+* Fixed some problems (found by libFuzzer test)
 
 
 Version 6.9.3 (security fix release)
@@ -39,7 +40,7 @@ Version 6.9.3 (security fix release)
 * Fixed CVE-2019-13224
 * Fixed CVE-2019-13225
 * Fixed CVE-2019-16163
-* Fixed many problems (found by libFuzzer programs)
+* Fixed many problems (found by libFuzzer test)
 
 
 Version 6.9.2 (Reiwa)

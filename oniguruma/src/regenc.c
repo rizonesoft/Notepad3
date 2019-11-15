@@ -821,24 +821,6 @@ onigenc_mbn_mbc_case_fold(OnigEncoding enc, OnigCaseFoldType flag ARG_UNUSED,
 }
 
 extern int
-onigenc_mb2_code_to_mbclen(OnigCodePoint code)
-{
-  if ((code & (~0xffff)) != 0) return ONIGERR_INVALID_CODE_POINT_VALUE;
-
-  if ((code & 0xff00) != 0) return 2;
-  else return 1;
-}
-
-extern int
-onigenc_mb4_code_to_mbclen(OnigCodePoint code)
-{
-       if ((code & 0xff000000) != 0) return 4;
-  else if ((code & 0xff0000) != 0) return 3;
-  else if ((code & 0xff00) != 0) return 2;
-  else return 1;
-}
-
-extern int
 onigenc_mb2_code_to_mbc(OnigEncoding enc, OnigCodePoint code, UChar *buf)
 {
   UChar *p = buf;

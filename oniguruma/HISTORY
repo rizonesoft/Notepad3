@@ -2,6 +2,15 @@ History
 
 2019/MM/DD: Version 6.9.4
 
+2019/11/14: Release Candidate 2 for Version 6.9.4
+
+2019/11/12: fix integer overflow by nested quantifier
+2019/11/11: fix #164: Integer overflow related to reg->dmax in search_in_range()
+2019/11/07: fix #163: heap-buffer-overflow in gb18030_mbc_enc_len()
+2019/11/06: fix #162: heap-buffer-overflow in fetch_interval_quantifier()
+2019/11/06: add HAVE_INTTYPES_H into config.h.windows.in and config.h.win{32,64}
+2019/11/06: add HAVE_STDINT_H into config.h.win{32,64}
+2019/11/05: Release Candidate 1 for Version 6.9.4
 2019/10/31: Update Unicode Emoji version to 12.1 (Nothing data changed)
 2019/10/29: implement USE_REPEAT_AND_EMPTY_CHECK_LOCAL_VAR configuration
 2019/10/18: re-implement case fold conversion
