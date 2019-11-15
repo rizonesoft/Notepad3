@@ -96,6 +96,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_SETBUFFEREDDRAW 2035
 #define SCI_SETTABWIDTH 2036
 #define SCI_GETTABWIDTH 2121
+#define SCI_SETTABMINIMUMWIDTH 2724
+#define SCI_GETTABMINIMUMWIDTH 2725
 #define SCI_CLEARTABSTOPS 2675
 #define SCI_ADDTABSTOP 2676
 #define SCI_GETNEXTTABSTOP 2677
@@ -106,8 +108,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETIMEINTERACTION 2678
 #define SCI_SETIMEINTERACTION 2679
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#define SCI_ISIMEOPEN 2724
-#define SCI_ISIMEMODECJK 2725
+#define SCI_ISIMEOPEN 2900
+#define SCI_ISIMEMODECJK 2901
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define MARKER_MAX 31
 #define SC_MARK_CIRCLE 0

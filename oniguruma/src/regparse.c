@@ -263,7 +263,8 @@ bbuf_clone(BBuf** rto, BBuf* from)
   return 0;
 }
 
-static int backref_rel_to_abs(int rel_no, ScanEnv* env)
+static int
+backref_rel_to_abs(int rel_no, ScanEnv* env)
 {
   if (rel_no > 0) {
     return env->num_mem + rel_no;
@@ -3921,68 +3922,70 @@ static enum ReduceType ReduceTypeTable[6][6] = {
   {RQ_ASIS, RQ_PQ_Q, RQ_DEL, RQ_AQ,   RQ_AQ,   RQ_DEL}   /* '+?' */
 };
 
-extern void
-onig_reduce_nested_quantifier(Node* pnode, Node* cnode)
+extern int
+onig_reduce_nested_quantifier(Node* pnode)
 {
   int pnum, cnum;
   QuantNode *p, *c;
+  Node* cnode;
+
+  cnode = NODE_BODY(pnode);
 
   p = QUANT_(pnode);
   c = QUANT_(cnode);
   pnum = quantifier_type_num(p);
   cnum = quantifier_type_num(c);
   if (pnum < 0 || cnum < 0) {
-    if ((p->lower == p->upper) && ! IS_INFINITE_REPEAT(p->upper)) {
-      if ((c->lower == c->upper) && ! IS_INFINITE_REPEAT(c->upper)) {
-        int n = onig_positive_int_multiply(p->lower, c->lower);
-        if (n >= 0) {
-          p->lower = p->upper = n;
-          NODE_BODY(pnode) = NODE_BODY(cnode);
-          goto remove_cnode;
-        }
-      }
+    if (p->lower == p->upper && c->lower == c->upper) {
+      int n = onig_positive_int_multiply(p->lower, c->lower);
+      if (n < 0) return ONIGERR_TOO_BIG_NUMBER_FOR_REPEAT_RANGE;
+
+      p->lower = p->upper = n;
+      NODE_BODY(pnode) = NODE_BODY(cnode);
+      goto remove_cnode;
     }
 
-    return ;
+    return 0;
   }
 
   switch(ReduceTypeTable[cnum][pnum]) {
   case RQ_DEL:
     *pnode = *cnode;
+    goto remove_cnode;
     break;
   case RQ_A:
     NODE_BODY(pnode) = NODE_BODY(cnode);
     p->lower  = 0;  p->upper = INFINITE_REPEAT;  p->greedy = 1;
+    goto remove_cnode;
     break;
   case RQ_AQ:
     NODE_BODY(pnode) = NODE_BODY(cnode);
     p->lower  = 0;  p->upper = INFINITE_REPEAT;  p->greedy = 0;
+    goto remove_cnode;
     break;
   case RQ_QQ:
     NODE_BODY(pnode) = NODE_BODY(cnode);
     p->lower  = 0;  p->upper = 1;  p->greedy = 0;
+    goto remove_cnode;
     break;
   case RQ_P_QQ:
-    NODE_BODY(pnode) = cnode;
     p->lower  = 0;  p->upper = 1;  p->greedy = 0;
     c->lower  = 1;  c->upper = INFINITE_REPEAT;  c->greedy = 1;
-    return ;
     break;
   case RQ_PQ_Q:
-    NODE_BODY(pnode) = cnode;
     p->lower  = 0;  p->upper = 1;  p->greedy = 1;
     c->lower  = 1;  c->upper = INFINITE_REPEAT;  c->greedy = 0;
-    return ;
     break;
   case RQ_ASIS:
-    NODE_BODY(pnode) = cnode;
-    return ;
     break;
   }
+
+  return 0;
 
  remove_cnode:
   NODE_BODY(cnode) = NULL_NODE;
   onig_node_free(cnode);
+  return 0;
 }
 
 static int
@@ -4112,7 +4115,7 @@ typedef struct {
 
 
 static int
-fetch_interval_quantifier(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
+fetch_interval(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
 {
   int low, up, syn_allow, non_low = 0;
   int r = 0;
@@ -4179,7 +4182,7 @@ fetch_interval_quantifier(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
   if (PEND) goto invalid;
   PFETCH(c);
   if (IS_SYNTAX_OP(env->syntax, ONIG_SYN_OP_ESC_BRACE_INTERVAL)) {
-    if (c != MC_ESC(env->syntax)) goto invalid;
+    if (c != MC_ESC(env->syntax) || PEND) goto invalid;
     PFETCH(c);
   }
   if (c != '}') goto invalid;
@@ -5007,7 +5010,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
     case '{':
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_ESC_BRACE_INTERVAL)) break;
-      r = fetch_interval_quantifier(&p, end, tok, env);
+      r = fetch_interval(&p, end, tok, env);
       if (r < 0) return r;  /* error */
       if (r == 0) goto greedy_check2;
       else if (r == 2) { /* {n} */
@@ -5538,7 +5541,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
     case '{':
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_BRACE_INTERVAL)) break;
-      r = fetch_interval_quantifier(&p, end, tok, env);
+      r = fetch_interval(&p, end, tok, env);
       if (r < 0) return r;  /* error */
       if (r == 0) goto greedy_check2;
       else if (r == 2) { /* {n} */
@@ -5886,6 +5889,7 @@ add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
 
   int c, r;
   int ascii_mode;
+  int is_single;
   const OnigCodePoint *ranges;
   OnigCodePoint limit;
   OnigCodePoint sb_out;
@@ -5907,6 +5911,7 @@ add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
   }
 
   r = 0;
+  is_single = ONIGENC_IS_SINGLEBYTE(enc);
   limit = ascii_mode ? ASCII_LIMIT : SINGLE_BYTE_SIZE;
 
   switch (ctype) {
@@ -5923,19 +5928,25 @@ add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
   case ONIGENC_CTYPE_ALNUM:
     if (not != 0) {
       for (c = 0; c < (int )limit; c++) {
-        if (! ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
-          BITSET_SET_BIT(cc->bs, c);
+        if (is_single != 0 || ONIGENC_CODE_TO_MBCLEN(enc, c) == 1) {
+          if (! ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
+            BITSET_SET_BIT(cc->bs, c);
+        }
       }
       for (c = limit; c < SINGLE_BYTE_SIZE; c++) {
-        BITSET_SET_BIT(cc->bs, c);
+        if (is_single != 0 || ONIGENC_CODE_TO_MBCLEN(enc, c) == 1)
+          BITSET_SET_BIT(cc->bs, c);
       }
 
-      ADD_ALL_MULTI_BYTE_RANGE(enc, cc->mbuf);
+      if (is_single == 0)
+        ADD_ALL_MULTI_BYTE_RANGE(enc, cc->mbuf);
     }
     else {
       for (c = 0; c < (int )limit; c++) {
-        if (ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
-          BITSET_SET_BIT(cc->bs, c);
+        if (is_single != 0 || ONIGENC_CODE_TO_MBCLEN(enc, c) == 1) {
+          if (ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
+            BITSET_SET_BIT(cc->bs, c);
+        }
       }
     }
     break;
@@ -5945,21 +5956,25 @@ add_ctype_to_cc(CClassNode* cc, int ctype, int not, ScanEnv* env)
   case ONIGENC_CTYPE_WORD:
     if (not != 0) {
       for (c = 0; c < (int )limit; c++) {
-        if (ONIGENC_CODE_TO_MBCLEN(enc, c) > 0 /* check invalid code point */
+        /* check invalid code point */
+        if ((is_single != 0 || ONIGENC_CODE_TO_MBCLEN(enc, c) == 1)
             && ! ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
           BITSET_SET_BIT(cc->bs, c);
       }
       for (c = limit; c < SINGLE_BYTE_SIZE; c++) {
-        if (ONIGENC_CODE_TO_MBCLEN(enc, c) > 0)
+        if (is_single != 0 || ONIGENC_CODE_TO_MBCLEN(enc, c) == 1)
           BITSET_SET_BIT(cc->bs, c);
       }
+      if (ascii_mode != 0 && is_single == 0)
+        ADD_ALL_MULTI_BYTE_RANGE(enc, cc->mbuf);
     }
     else {
       for (c = 0; c < (int )limit; c++) {
-        if (ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
+        if ((is_single != 0 || ONIGENC_CODE_TO_MBCLEN(enc, c) == 1)
+            && ONIGENC_IS_CODE_CTYPE(enc, (OnigCodePoint )c, ctype))
           BITSET_SET_BIT(cc->bs, c);
       }
-      if (ascii_mode == 0)
+      if (ascii_mode == 0 && is_single == 0)
         ADD_ALL_MULTI_BYTE_RANGE(enc, cc->mbuf);
     }
     break;
@@ -7641,7 +7656,7 @@ static const char* ReduceQStr[] = {
 };
 
 static int
-set_quantifier(Node* qnode, Node* target, int group, ScanEnv* env)
+assign_quantifier_body(Node* qnode, Node* target, int group, ScanEnv* env)
 {
   QuantNode* qn;
 
@@ -7713,9 +7728,11 @@ set_quantifier(Node* qnode, Node* target, int group, ScanEnv* env)
         }
       }
       else {
+        int r;
+
         NODE_BODY(qnode) = target;
-        onig_reduce_nested_quantifier(qnode, target);
-        goto q_exit;
+        r = onig_reduce_nested_quantifier(qnode);
+        return r;
       }
     }
     break;
@@ -7725,7 +7742,6 @@ set_quantifier(Node* qnode, Node* target, int group, ScanEnv* env)
   }
 
   NODE_BODY(qnode) = target;
- q_exit:
   return 0;
 }
 
@@ -8244,9 +8260,10 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
       else {
         target = *tp;
       }
-      r = set_quantifier(qn, target, group, env);
+      r = assign_quantifier_body(qn, target, group, env);
       if (r < 0) {
         onig_node_free(qn);
+        *tp = NULL_NODE;
         return r;
       }
 

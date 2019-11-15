@@ -2292,6 +2292,7 @@ struct Sci_TextToFind {
      <b id="SCI_GETWHITESPACESIZE">SCI_GETWHITESPACESIZE &rarr; int</b><br />
      <code>SCI_SETWHITESPACESIZE</code> sets the size of the dots used for mark space characters.
      The <code>SCI_GETWHITESPACESIZE</code> message retrieves the current size.
+     The value 0 is valid and makes the dots invisible.
     </p>
 
     <p><b id="SCI_SETTABDRAWMODE">SCI_SETTABDRAWMODE(int tabDrawMode)</b><br />
@@ -3912,8 +3913,11 @@ struct Sci_TextToFind {
     inserting a tab at the current character position and backspace unindents the line rather than
     deleting a character. Scintilla can also display indentation guides (vertical lines) to help
     you to generate code.</p>
-    <code><a class="message" href="#SCI_SETTABWIDTH">SCI_SETTABWIDTH(int tabWidth)</a><br />
+    <code>
+     <a class="message" href="#SCI_SETTABWIDTH">SCI_SETTABWIDTH(int tabWidth)</a><br />
      <a class="message" href="#SCI_GETTABWIDTH">SCI_GETTABWIDTH &rarr; int</a><br />
+     <a class="message" href="#SCI_SETTABMINIMUMWIDTH">SCI_SETTABMINIMUMWIDTH(int pixels)</a><br />
+     <a class="message" href="#SCI_GETTABMINIMUMWIDTH">SCI_GETTABMINIMUMWIDTH &rarr; int</a><br />
      <a class="message" href="#SCI_CLEARTABSTOPS">SCI_CLEARTABSTOPS(line line)</a><br />
      <a class="message" href="#SCI_ADDTABSTOP">SCI_ADDTABSTOP(line line, int x)</a><br />
      <a class="message" href="#SCI_GETNEXTTABSTOP">SCI_GETNEXTTABSTOP(line line, int x) &rarr; int</a><br />
@@ -3935,6 +3939,15 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SETHIGHLIGHTGUIDE">SCI_SETHIGHLIGHTGUIDE(position column)</a><br />
      <a class="message" href="#SCI_GETHIGHLIGHTGUIDE">SCI_GETHIGHLIGHTGUIDE &rarr; position</a><br />
     </code>
+
+    <p><b id="SCI_SETTABMINIMUMWIDTH">SCI_SETTABMINIMUMWIDTH(int pixels)</b><br />
+     <b id="SCI_GETTABMINIMUMWIDTH">SCI_GETTABMINIMUMWIDTH &rarr; int</b><br />
+     <code>SCI_SETTABMINIMUMWIDTH</code> sets the minimum size of a tab in pixels to ensure that the tab
+     can be seen. The default value is 2. This is particularly useful with proportional fonts with fractional widths where
+     the character before the tab may end a fraction of a pixel before a tab stop, causing the tab to only be a fraction of
+     a pixel wide without this setting.
+     Where displaying a miniaturized version of the document, setting this to 0 may make the miniaturized
+     version lay out more like the normal size version.</p>
 
     <p><b id="SCI_SETTABWIDTH">SCI_SETTABWIDTH(int tabWidth)</b><br />
      <b id="SCI_GETTABWIDTH">SCI_GETTABWIDTH &rarr; int</b><br />

@@ -461,22 +461,22 @@ typedef struct _BBuf {
 
 /* operation code */
 enum OpCode {
-  OP_FINISH = 0,        /* matching process terminator (no more alternative) */
-  OP_END    = 1,        /* pattern code terminator (success end) */
-  OP_EXACT1 = 2,        /* single byte, N = 1 */
-  OP_EXACT2,            /* single byte, N = 2 */
-  OP_EXACT3,            /* single byte, N = 3 */
-  OP_EXACT4,            /* single byte, N = 4 */
-  OP_EXACT5,            /* single byte, N = 5 */
-  OP_EXACTN,            /* single byte */
-  OP_EXACTMB2N1,        /* mb-length = 2 N = 1 */
-  OP_EXACTMB2N2,        /* mb-length = 2 N = 2 */
-  OP_EXACTMB2N3,        /* mb-length = 2 N = 3 */
-  OP_EXACTMB2N,         /* mb-length = 2 */
-  OP_EXACTMB3N,         /* mb-length = 3 */
-  OP_EXACTMBN,          /* other length */
-  OP_EXACT1_IC,         /* single byte, N = 1, ignore case */
-  OP_EXACTN_IC,         /* single byte,        ignore case */
+  OP_FINISH = 0,       /* matching process terminator (no more alternative) */
+  OP_END    = 1,       /* pattern code terminator (success end) */
+  OP_STR_1 = 2,        /* single byte, N = 1 */
+  OP_STR_2,            /* single byte, N = 2 */
+  OP_STR_3,            /* single byte, N = 3 */
+  OP_STR_4,            /* single byte, N = 4 */
+  OP_STR_5,            /* single byte, N = 5 */
+  OP_STR_N,            /* single byte */
+  OP_STR_MB2N1,        /* mb-length = 2 N = 1 */
+  OP_STR_MB2N2,        /* mb-length = 2 N = 2 */
+  OP_STR_MB2N3,        /* mb-length = 2 N = 3 */
+  OP_STR_MB2N,         /* mb-length = 2 */
+  OP_STR_MB3N,         /* mb-length = 3 */
+  OP_STR_MBN,          /* other length */
+  OP_STR_1_IC,         /* single byte, N = 1, ignore case */
+  OP_STR_N_IC,         /* single byte,        ignore case */
   OP_CCLASS,
   OP_CCLASS_MB,
   OP_CCLASS_MIX,
@@ -881,15 +881,15 @@ struct re_pattern_buffer {
   int            optimize;          /* optimize flag */
   int            threshold_len;     /* search str-length for apply optimize */
   int            anchor;            /* BEGIN_BUF, BEGIN_POS, (SEMI_)END_BUF */
-  OnigLen        anchor_dmin;       /* (SEMI_)END_BUF anchor distance */
-  OnigLen        anchor_dmax;       /* (SEMI_)END_BUF anchor distance */
+  OnigLen        anc_dist_min;      /* (SEMI_)END_BUF anchor distance */
+  OnigLen        anc_dist_max;      /* (SEMI_)END_BUF anchor distance */
   int            sub_anchor;        /* start-anchor for exact or map */
   unsigned char *exact;
   unsigned char *exact_end;
   unsigned char  map[CHAR_MAP_SIZE]; /* used as BMH skip or char-map */
   int            map_offset;
-  OnigLen        dmin;                      /* min-distance of exact or map */
-  OnigLen        dmax;                      /* max-distance of exact or map */
+  OnigLen        dist_min;           /* min-distance of exact or map */
+  OnigLen        dist_max;           /* max-distance of exact or map */
   RegexExt*      extp;
 };
 

@@ -6548,6 +6548,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_GETTABWIDTH:
 		return pdoc->tabInChars;
 
+	case SCI_SETTABMINIMUMWIDTH:
+		SetAppearance(view.tabWidthMinimumPixels, static_cast<int>(wParam));
+		break;
+
+	case SCI_GETTABMINIMUMWIDTH:
+		return view.tabWidthMinimumPixels;
+
 	case SCI_CLEARTABSTOPS:
 		if (view.ClearTabstops(static_cast<Sci::Line>(wParam))) {
 			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, nullptr, static_cast<Sci::Line>(wParam));

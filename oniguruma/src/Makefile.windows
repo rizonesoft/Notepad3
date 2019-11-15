@@ -2,6 +2,9 @@
 
 product_name = oniguruma
 
+TEST_DIR = $(ONIG_DIR)/../test
+WIN_DIR  = $(ONIG_DIR)/../windows
+
 CPPFLAGS =
 CFLAGS = -O2 -nologo /W3
 LDFLAGS =
@@ -152,25 +155,24 @@ $(BUILD_DIR)/unicode_fold1_key.obj: $(ONIG_DIR)/unicode_fold1_key.c $(ONIG_DIR)/
 $(BUILD_DIR)/unicode_fold2_key.obj: $(ONIG_DIR)/unicode_fold2_key.c $(ONIG_DIR)/regenc.h $(BUILD_DIR)/config.h
 $(BUILD_DIR)/unicode_fold3_key.obj: $(ONIG_DIR)/unicode_fold3_key.c $(ONIG_DIR)/regenc.h $(BUILD_DIR)/config.h
 
-# C library test
-ctest: $(testc)
-	.\$(testc)
 
-# POSIX C library test
-ptest: $(testp)
-	.\$(testp)
+test_regset: $(TEST_DIR)/test_regset.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /utf-8 $(TEST_DIR)/test_regset.c $(libname)
 
-$(testc): $(testc).c $(libname)
-	$(CC) -nologo /Fe:$(testc) -DONIG_EXTERN=extern $(testc).c $(libname)
+test_utf8: $(TEST_DIR)/test_utf8.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /utf-8 $(TEST_DIR)/test_utf8.c $(libname)
 
-$(testp): $(testc).c $(dlllib)
-	$(CC) -nologo -DPOSIX_TEST /Fe:$(testp) $(testc).c $(dlllib)
+testc: $(WIN_DIR)/testc.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern $(WIN_DIR)/testc.c $(libname)
 
-$(testc)u: $(testc)u.c $(libname)
-	$(CC) -nologo /Fe:$(testc)u -DONIG_EXTERN=extern $(testc)u.c $(libname)
+testp: $(WIN_DIR)/testc.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern /DPOSIX_TEST $(WIN_DIR)/testc.c $(libname)
+
+testu: $(TEST_DIR)/testu.c $(libname)
+	$(CC) -nologo /Fe:$@ /I. /I$(ONIG_DIR) /DONIG_EXTERN=extern $(TEST_DIR)/testu.c $(libname)
 
 clean:
-	del $(BUILD_DIR)\*.obj $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.exp $(BUILD_DIR)\*.dll $(BUILD_DIR)\$(testp).exe $(BUILD_DIR)\$(testc).exe $(BUILD_DIR)\$(testc).obj
+	del $(BUILD_DIR)\*.obj $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.exp $(BUILD_DIR)\*.dll $(BUILD_DIR)\test_regset.exe $(BUILD_DIR)\test_utf8.exe $(BUILD_DIR)\testp.exe $(BUILD_DIR)\testc.exe $(BUILD_DIR)\testu.exe
 
 
 samples: all
