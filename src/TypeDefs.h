@@ -315,6 +315,15 @@ typedef struct _globals_t
   FILEVARS  fvCurFile;
   FILEVARS  fvBackup;
   int       iWrapCol;
+
+  bool      flagPosParam;
+  int       flagWindowPos;
+  int       flagReuseWindow;
+  int       flagSingleFileInstance;
+  int       flagMultiFileArg;
+  int       flagShellUseSystemMRU;
+  int       flagPrintFileAndLeave;
+   
   bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;

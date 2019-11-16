@@ -1138,6 +1138,10 @@ bool EditLoadFile(
       }
     }
   }
+  else {
+    iAnalyzedEncoding = iForcedEncoding;
+    confidence = 1.0;
+  }
 
   bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
 
