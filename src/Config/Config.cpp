@@ -49,14 +49,6 @@ extern "C" WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH];
 extern "C" bool      s_bEnableSaveSettings;
 extern "C" int       s_iToolBarTheme;
 
-extern "C" bool      s_flagPosParam;
-extern "C" int       s_flagWindowPos;
-extern "C" int       s_flagReuseWindow;
-extern "C" int       s_flagSingleFileInstance;
-extern "C" int       s_flagMultiFileArg;
-extern "C" int       s_flagShellUseSystemMRU;
-extern "C" int       s_flagPrintFileAndLeave;
-
 extern "C"           THEMEFILES Theme_Files[];
 
 // ----------------------------------------------------------------------------
@@ -654,32 +646,32 @@ void LoadSettings()
   Flags.bDevDebugMode = IniSectionGetBool(Settings2_Section, L"DevDebugMode", DefaultFlags.bDevDebugMode);
   Flags.bStickyWindowPosition = IniSectionGetBool(Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
 
-  if (s_flagReuseWindow == 0) {
+  if (Globals.flagReuseWindow == 0) {
     Flags.bReuseWindow = IniSectionGetBool(Settings2_Section, L"ReuseWindow", DefaultFlags.bReuseWindow);
   }
   else {
-    Flags.bReuseWindow = (s_flagReuseWindow == 2);
+    Flags.bReuseWindow = (Globals.flagReuseWindow == 2);
   }
 
-  if (s_flagSingleFileInstance == 0) {
+  if (Globals.flagSingleFileInstance == 0) {
     Flags.bSingleFileInstance = IniSectionGetBool(Settings2_Section, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
   }
   else {
-    Flags.bSingleFileInstance = (s_flagSingleFileInstance == 2);
+    Flags.bSingleFileInstance = (Globals.flagSingleFileInstance == 2);
   }
 
-  if (s_flagMultiFileArg == 0) {
+  if (Globals.flagMultiFileArg == 0) {
     Flags.MultiFileArg = IniSectionGetBool(Settings2_Section, L"MultiFileArg", DefaultFlags.MultiFileArg);
   }
   else {
-    Flags.MultiFileArg = (s_flagMultiFileArg == 2);
+    Flags.MultiFileArg = (Globals.flagMultiFileArg == 2);
   }
 
-  if (s_flagShellUseSystemMRU == 0) {
+  if (Globals.flagShellUseSystemMRU == 0) {
     Flags.ShellUseSystemMRU = IniSectionGetBool(Settings2_Section, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
   }
   else {
-    Flags.ShellUseSystemMRU = (s_flagShellUseSystemMRU == 2);
+    Flags.ShellUseSystemMRU = (Globals.flagShellUseSystemMRU == 2);
   }
 
   Flags.RelativeFileMRU = IniSectionGetBool(Settings2_Section, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
@@ -694,7 +686,7 @@ void LoadSettings()
   Flags.NoCGIGuess = IniSectionGetBool(Settings2_Section, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
   Flags.NoFileVariables = IniSectionGetInt(Settings2_Section, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
-  Flags.PrintFileAndLeave = s_flagPrintFileAndLeave;
+  Flags.PrintFileAndLeave = Globals.flagPrintFileAndLeave;
   Flags.bPreserveFileModTime = false;
 
   // --------------------------------------------------------------------------
@@ -1145,7 +1137,7 @@ void LoadSettings()
 
   // 2nd set initial window position
 
-  if (!s_flagPosParam /*|| g_bStickyWinPos*/) {
+  if (!Globals.flagPosParam /*|| g_bStickyWinPos*/) {
 
     s_WinInfo = s_DefWinInfo;
 
@@ -1170,10 +1162,10 @@ void LoadSettings()
     if ((s_WinInfo.x == CW_USEDEFAULT) || (s_WinInfo.y == CW_USEDEFAULT) ||
       (s_WinInfo.cx == CW_USEDEFAULT) || (s_WinInfo.cy == CW_USEDEFAULT))
     {
-      s_flagWindowPos = 2; // std. default position (CmdLn: /pd)
+      Globals.flagWindowPos = 2; // std. default position (CmdLn: /pd)
     }
     else
-      s_flagWindowPos = 0; // init to g_WinInfo
+      Globals.flagWindowPos = 0; // init to g_WinInfo
   }
 
   // ------------------------------------------------------------------------
