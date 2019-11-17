@@ -1045,20 +1045,33 @@ bool EditLoadFile(
   Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 
+  if (cbData == 0) {
+    FileVars_Init(NULL, 0, &Globals.fvCurFile);
+    status->iEOLMode = Settings.DefaultEOLMode;
+    status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+    EditSetNewText(hwnd, "", 0, bClearUndoHistory);
+    SciCall_SetEOLMode(Settings.DefaultEOLMode);
+    FreeMem(lpData);
+    Encoding_SrcCmdLn(CPI_NONE);
+    Encoding_SrcWeak(CPI_NONE);
+    return true;
+  }
+
   bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
-  // ((readFlag == DECRYPT_SUCCESS) || (readFlag & DECRYPT_NO_ENCRYPTION)) => true;
+  
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
     bReadSuccess = (InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
     if (!bReadSuccess) {
       FreeMem(lpData);
+      Encoding_SrcCmdLn(CPI_NONE);
+      Encoding_SrcWeak(CPI_NONE);
       return true;
     }
     else {
       status->bEncryptedRaw =  true;
     }
   }
-
   if (!bReadSuccess) {
     FreeMem(lpData);
     Encoding_SrcCmdLn(CPI_NONE);
@@ -1066,214 +1079,87 @@ bool EditLoadFile(
     return false;
   }
 
+
+  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
+
+  #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
+
   // --------------------------------------------------------------------------
-  // Encoding Detection
-  // --------------------------------------------------------------------------
 
-  // assume current code-page or default encoding (if forced)
-  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT;
-
-  // --- 1st check for force encodings ---
-  LPCWSTR lpszExt = PathFindExtension(pszFile);
-  bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
-
-  cpi_enc_t iForcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :
-    ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
-
-  #define IS_ENC_ENFORCED() (!Encoding_IsNONE(iForcedEncoding))
-
-  // --- 2nd Use Encoding Analysis if applicable
-
-  size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
-
-  float confidence = 0.0f;
-  cpi_enc_t iAnalyzedEncoding = iAnalyzeFallback;
-
-  if (!IS_ENC_ENFORCED() || bForceEncDetection)
-  {
-    iAnalyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
-
-    if (Flags.bDevDebugMode) {
+  if (Flags.bDevDebugMode) {
 #if 1
-      SetAdditionalTitleInfo(Encoding_GetTitleInfoW());
+    SetAdditionalTitleInfo(Encoding_GetTitleInfoW());
 #else
-      DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
-      int const iXOff = SciCall_GetXOffset();
-      SciCall_SetXOffset(0);
-      SciCall_CallTipShow(iPos, Encoding_GetTitleInfoA());
-      SciCall_SetXOffset(iXOff);
-      Globals.CallTipType = CT_ENC_INFO;
+    DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+    int const iXOff = SciCall_GetXOffset();
+    SciCall_SetXOffset(0);
+    SciCall_CallTipShow(iPos, Encoding_GetTitleInfoA());
+    SciCall_SetXOffset(iXOff);
+    Globals.CallTipType = CT_ENC_INFO;
 #endif
-    }
-    if (bForceEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
-      iForcedEncoding = (iAnalyzedEncoding == CPI_ASCII_7BIT) ? CPI_ANSI_DEFAULT : iAnalyzedEncoding; // no bIsReliable check (forced unreliable detection)
-    }
-  }
 
-  if (Flags.bDevDebugMode && IS_ENC_ENFORCED()) {
-    WCHAR wchBuf[128] = { L'\0' };
-    StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[iForcedEncoding].wchLabel);
-    SetAdditionalTitleInfo(wchBuf);
-  }
-
-  // ------------------------------------------------------
-
-  if (!IS_ENC_ENFORCED())
-  {
-    bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
-
-    if (iAnalyzedEncoding == CPI_NONE) 
-    {
-      iAnalyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+    if (IS_ENC_ENFORCED()) {
+      WCHAR wchBuf[128] = { L'\0' };
+      StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[encDetection.forcedEncoding].wchLabel);
+      SetAdditionalTitleInfo(wchBuf);
     }
-    else if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-      confidence = 1.0;
-    }
-    else {
-      if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
-        iAnalyzedEncoding = CPI_NONE;
-        confidence = 0.0;
-      }
+
+    if (!Encoding_IsNONE(encDetection.fileVarEncoding) && FileVars_IsValidEncoding(&Globals.fvCurFile)) {
+      WCHAR wchBuf[128] = { L'\0' };
+      StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FilEncTag='%s'",
+        g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
+      AppendAdditionalTitleInfo(wchBuf);
     }
   }
-  else {
-    iAnalyzedEncoding = iForcedEncoding;
-    confidence = 1.0;
-  }
-
-  bool const bIsReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
-
+  
   // --------------------------------------------------------------------------
 
-  // --- 3rd Unicode Checks
+  bool const bIsUnicodeForced = Encoding_IsUNICODE(encDetection.forcedEncoding);
+  bool const bIsUnicodeDetected = !IS_ENC_ENFORCED() && (encDetection.bIsUnicodeAnalyzed || !Encoding_IsNONE(encDetection.unicodeEncoding));
 
-  bool const bIsUnicodeForced = Encoding_IsUNICODE(iForcedEncoding);
-
-  // choose best encoding guess
-  cpi_enc_t const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-
-  // set Preferred Encoding
-  cpi_enc_t iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-
-  if (IS_ENC_ENFORCED()) {
-    iPreferredEncoding = iForcedEncoding;
-  }
-  else if (!Encoding_IsNONE(iFileEncWeak)) {
-    iPreferredEncoding = iFileEncWeak;
-  }
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) && (bIsReliable || !Settings.UseReliableCEDonly)) {
-    iPreferredEncoding = iAnalyzedEncoding;
-  }
-  else if (Encoding_IsNONE(iPreferredEncoding)) {
-    iPreferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-  }
-
-  // --------------------------------------------------------------------------
-
-  bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-
-  bool bBOM = false;
-  bool bReverse = false;
-  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable) && !IS_ENC_ENFORCED() && !bSkipUTFDetection && !bIsUTF8Sig);
-
-  cpi_enc_t const encUnicode = bSkipUTFDetection ? CPI_NONE : GetUnicodeEncoding(lpData, cbData, &bBOM, &bReverse);
-
-  if (cbData == 0) {
-    FileVars_Init(NULL, 0, &Globals.fvCurFile);
-    status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferredEncoding;
-    EditSetNewText(hwnd, "", 0, bClearUndoHistory);
-    SciCall_SetEOLMode(Settings.DefaultEOLMode);
-    FreeMem(lpData);
-  }
-  else if (bIsUnicodeForced || (!IS_ENC_ENFORCED() && (bIsUnicodeAnalyzed || !Encoding_IsNONE(encUnicode))))
+  if (bIsUnicodeForced || bIsUnicodeDetected)
   {
     // ===  UNICODE  ===
-    if (Encoding_IsNONE(encUnicode)) 
-    {
-      bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
-      bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
-
-      if ((iForcedEncoding == CPI_UNICODE) || bBOM_LE) {
-        bBOM = bBOM_LE;
-        bReverse = false;
-      }
-      else if ((iForcedEncoding == CPI_UNICODEBE) || bBOM_BE) {
-        bBOM = bBOM_BE;
-        bReverse = true;
-      }
-    }
-
-    if (bReverse)
+    if (encDetection.bIsReverse)
     {
       SwabEx(lpData, lpData, cbData);
-      status->iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
+      status->iEncoding = (encDetection.bHasBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
     }
     else {
-      status->iEncoding = (bBOM ? CPI_UNICODEBOM : CPI_UNICODE);
+      status->iEncoding = (encDetection.bHasBOM ? CPI_UNICODEBOM : CPI_UNICODE);
     }
 
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
-    ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-      (bBOM) ? (cbData / sizeof(WCHAR)) : (cbData / sizeof(WCHAR) + 1), lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+    ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
+      (encDetection.bHasBOM ? (cbData / sizeof(WCHAR)) : (cbData / sizeof(WCHAR) + 1)), lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
 
     if (convCnt == 0) {
+      convCnt = WideCharToMultiByteEx(CP_ACP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
+        -1, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
       status->bUnicodeErr = true;
-      convCnt = WideCharToMultiByteEx(CP_ACP, 0, (bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
-        (-1), lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
     }
 
-    if (convCnt != 0) {
-      FreeMem(lpData);
-      FileVars_Init(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
-      EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory);
-      EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
-      FreeMem(lpDataUTF8);
-    }
-    else {
-      FreeMem(lpDataUTF8);
-      FreeMem(lpData);
-      Encoding_SrcCmdLn(CPI_NONE);
-      Encoding_SrcWeak(CPI_NONE);
-      return false;
-    }
+    FreeMem(lpData);
+    FileVars_Init(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
+    EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory);
+    EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
+    FreeMem(lpDataUTF8);
   }
 
   else { // ===  ALL OTHERS  ===
 
-    // force file vars ?
-    FileVars_Init(lpData, cbData, &Globals.fvCurFile);
-    cpi_enc_t const iFileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile) && !Settings.NoEncodingTags) ?
-      FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
-
-    if (!IS_ENC_ENFORCED() && !Encoding_IsNONE(iFileVarEncoding)) {
-      iForcedEncoding = (Globals.fvCurFile.mask & FV_ENCODING) ? iFileVarEncoding : iForcedEncoding;
-      iPreferredEncoding = IS_ENC_ENFORCED() ? iForcedEncoding : iPreferredEncoding;
-    }
-
-    if (Flags.bDevDebugMode) {
-      if (!Encoding_IsNONE(iFileVarEncoding) && FileVars_IsValidEncoding(&Globals.fvCurFile)) {
-        WCHAR wchBuf[128] = { L'\0' };
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FilEncTag='%s'",
-          g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
-        AppendAdditionalTitleInfo(wchBuf);
-      }
-    }
-
     // ===  UTF-8 ? ===
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
-    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding);
-    bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
-    bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && Encoding_IsUTF8(iPreferredEncoding); // non-reliable analysis = soft-hint
+    bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);
+    bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && encDetection.bIsAnalysisReliable;
+    bool const bSoftHintUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && Encoding_IsUTF8(encDetection.preferredEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = IS_ENC_ENFORCED() || !bValidUTF8 || (!bIsUTF8Sig && bSkipUTFDetection);
+    bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && bSkipUTFDetection);
 
-    if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
+    if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
-      if (bIsUTF8Sig) {
+      if (encDetection.bIsUTF8Sig) {
         EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory);
         status->iEncoding = CPI_UTF8SIGN;
         EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
@@ -1285,10 +1171,10 @@ bool EditLoadFile(
       }
       FreeMem(lpData);
     }
-    else { // ===  ALL OTHER  ===
+    else { // ===  ALL OTHER NON UTF-8 ===
 
       // ----------------------------------------------------------------------
-      status->iEncoding = Encoding_IsValid(iPreferredEncoding) ? iPreferredEncoding : CPI_ANSI_DEFAULT;
+      status->iEncoding = Encoding_IsValid(encDetection.preferredEncoding) ? encDetection.preferredEncoding : CPI_ANSI_DEFAULT;
       // ----------------------------------------------------------------------
 
       if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
@@ -1337,7 +1223,7 @@ bool EditLoadFile(
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
 
-  SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(iAnalyzedEncoding) ? 0x10000 : 0x1000);
+  SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(encDetection.analyzedEncoding) ? 0x10000 : 0x1000);
 
   if (Flags.bDevDebugMode) {
     WCHAR wcBuf[128] = { L'\0' };
@@ -8449,292 +8335,6 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
     }
     p1 = (*p2) ? (p2 + 1) : p2;
   }
-}
-
-
-//=============================================================================
-//
-//  _SetFileVars()
-//
-static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
-{
-  bool bDisableFileVar = false;
-
-  if (!Flags.NoFileVariables) 
-  {
-    int i;
-    if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i)) {
-      bDisableFileVar = true;
-    }
-    if (!bDisableFileVar) {
-
-      if (FileVars_ParseInt(buffer, "tab-width", &i)) {
-        lpfv->iTabWidth = clampi(i, 1, 256);
-        lpfv->mask |= FV_TABWIDTH;
-      }
-
-      if (FileVars_ParseInt(buffer, "c-basic-indent", &i)) {
-        lpfv->iIndentWidth = clampi(i, 0, 256);
-        lpfv->mask |= FV_INDENTWIDTH;
-      }
-
-      if (FileVars_ParseInt(buffer, "indent-tabs-mode", &i)) {
-        lpfv->bTabsAsSpaces = (i) ? false : true;
-        lpfv->mask |= FV_TABSASSPACES;
-      }
-
-      if (FileVars_ParseInt(buffer, "c-tab-always-indent", &i)) {
-        lpfv->bTabIndents = (i) ? true : false;
-        lpfv->mask |= FV_TABINDENTS;
-      }
-
-      if (FileVars_ParseInt(buffer, "truncate-lines", &i)) {
-        lpfv->bWordWrap = (i) ? false : true;
-        lpfv->mask |= FV_WORDWRAP;
-      }
-
-      if (FileVars_ParseInt(buffer, "fill-column", &i)) {
-        lpfv->iLongLinesLimit = clampi(i, 0, LONG_LINES_MARKER_LIMIT);
-        lpfv->mask |= FV_LONGLINESLIMIT;
-      }
-    }
-  }
-
-  // Unicode Sig
-  bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
-
-  if (!bHasSignature && !Settings.NoEncodingTags && !bDisableFileVar) {
-
-    if (FileVars_ParseStr(buffer, "encoding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
-      lpfv->mask |= FV_ENCODING;
-    else if (FileVars_ParseStr(buffer, "charset", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
-      lpfv->mask |= FV_ENCODING;
-    else if (FileVars_ParseStr(buffer, "coding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
-      lpfv->mask |= FV_ENCODING;
-  }
-  if (lpfv->mask & FV_ENCODING) {
-    lpfv->iEncoding = Encoding_MatchA(lpfv->tchEncoding);
-  }
-
-  if (!Flags.NoFileVariables && !bDisableFileVar) {
-    if (FileVars_ParseStr(buffer, "mode", lpfv->tchMode, COUNTOF(lpfv->tchMode)))
-      lpfv->mask |= FV_MODE;
-  }
-}
-
-//=============================================================================
-//
-//  FileVars_Init()
-//
-bool FileVars_Init(char* lpData, size_t cbData, LPFILEVARS lpfv)
-{
-  ZeroMemory(lpfv, sizeof(FILEVARS));
-  lpfv->bTabIndents     = Settings.TabIndents;
-  lpfv->bTabsAsSpaces   = Settings.TabsAsSpaces;
-  lpfv->bWordWrap       = Settings.WordWrap;
-  lpfv->iTabWidth       = Settings.TabWidth;
-  lpfv->iIndentWidth    = Settings.IndentWidth;
-  lpfv->iLongLinesLimit = Settings.LongLinesLimit;
-  lpfv->iEncoding       = Settings.DefaultEncoding;
-
-  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData) {
-    return true;
-  }
-
-  char tmpbuf[LARGE_BUFFER];
-  size_t const cch = min_s(cbData + 1, COUNTOF(tmpbuf));
-
-  StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData, cch);
-  _SetFileVars(tmpbuf, cch, lpfv);
-
-  // if no file vars found, look at EOF
-  if ((lpfv->mask == 0) && (cbData > COUNTOF(tmpbuf))) {
-    StringCchCopyNA(tmpbuf, COUNTOF(tmpbuf), lpData + cbData - COUNTOF(tmpbuf) + 1, COUNTOF(tmpbuf));
-    _SetFileVars(tmpbuf, cch, lpfv);
-  }
-
-  return true;
-}
-
-
-//=============================================================================
-//
-//  FileVars_Apply()
-//
-bool FileVars_Apply(LPFILEVARS lpfv) {
-
-  int const _iTabWidth = (lpfv->mask & FV_TABWIDTH) ? lpfv->iTabWidth : Settings.TabWidth;
-  SciCall_SetTabWidth(_iTabWidth);
-
-  int const _iIndentWidth = (lpfv->mask & FV_INDENTWIDTH) ? lpfv->iIndentWidth : ((lpfv->mask & FV_TABWIDTH) ? 0 : Settings.IndentWidth);
-  SciCall_SetIndent(_iIndentWidth);
-
-  bool const _bTabsAsSpaces = (lpfv->mask & FV_TABSASSPACES) ? lpfv->bTabsAsSpaces : Settings.TabsAsSpaces;
-  SciCall_SetUseTabs(!_bTabsAsSpaces);
-
-  bool const _bTabIndents = (lpfv->mask & FV_TABINDENTS) ? lpfv->bTabIndents : Settings.TabIndents;
-  SciCall_SetTabIndents(_bTabIndents);
-  SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
-
-  bool const _bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
-  int const  _iWrapMode = _bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
-  SciCall_SetWrapMode(_iWrapMode);
-
-  int const _iLongLinesLimit = (lpfv->mask & FV_LONGLINESLIMIT) ? lpfv->iLongLinesLimit : Settings.LongLinesLimit;
-  SciCall_SetEdgeColumn(_iLongLinesLimit);
-  Globals.iWrapCol = _iLongLinesLimit;
-
-  return true;
-}
-
-
-//=============================================================================
-//
-//  FileVars_ParseInt()
-//
-bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
-
-  char *pvStart = StrStrIA(pszData, pszName);
-  while (pvStart) {
-    char chPrev = (pvStart > pszData) ? *(pvStart-1) : 0;
-    if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
-      pvStart += StringCchLenA(pszName,0);
-      while (*pvStart == ' ') {
-        pvStart++;
-      }
-      if (*pvStart == ':' || *pvStart == '=') { break; }
-    }
-    else {
-      pvStart += StringCchLenA(pszName, 0);
-    }
-    pvStart = StrStrIA(pvStart, pszName); // next
-  }
-
-  if (pvStart) {
-
-    while (*pvStart && StrChrIA(":=\"' \t", *pvStart)) {
-      pvStart++;
-    }
-    char tch[32] = { L'\0' };
-    StringCchCopyNA(tch,COUNTOF(tch),pvStart,COUNTOF(tch));
-
-    char* pvEnd = tch;
-    while (*pvEnd && IsCharAlphaNumericA(*pvEnd)) {
-      pvEnd++;
-    }
-    *pvEnd = 0;
-    StrTrimA(tch," \t:=\"'");
-
-    int itok = sscanf_s(tch,"%i",piValue);
-    if (itok == 1) {
-      return true;
-    }
-    if (tch[0] == 't') {
-      *piValue = 1;
-      return true;
-    }
-    if (tch[0] == 'n' || tch[0] == 'f') {
-      *piValue = 0;
-      return true;
-    }
-  }
-  return false;
-}
-
-
-//=============================================================================
-//
-//  FileVars_ParseStr()
-//
-bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) {
-
-  char *pvStart = StrStrIA(pszData, pszName);
-  while (pvStart) {
-    char chPrev = (pvStart > pszData) ? *(pvStart-1) : 0;
-    if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
-      pvStart += StringCchLenA(pszName,0);
-      while (*pvStart == ' ') {
-        pvStart++;
-      }
-      if (*pvStart == ':' || *pvStart == '=') {
-        break;
-      }
-    }
-    else {
-      pvStart += StringCchLenA(pszName, 0);
-    }
-    pvStart = StrStrIA(pvStart, pszName);  // next
-  }
-
-  if (pvStart) {
-
-    bool bQuoted = false;
-    while (*pvStart && StrChrIA(":=\"' \t",*pvStart)) {
-      if (*pvStart == '\'' || *pvStart == '"')
-        bQuoted = true;
-      pvStart++;
-    }
-
-    char tch[32] = { L'\0' };
-    StringCchCopyNA(tch,COUNTOF(tch),pvStart,COUNTOF(tch));
-
-    char* pvEnd = tch;
-    while (*pvEnd && (IsCharAlphaNumericA(*pvEnd) || StrChrIA("+-/_", *pvEnd) || (bQuoted && *pvEnd == ' '))) {
-      pvEnd++;
-    }
-    *pvEnd = 0;
-
-    StrTrimA(tch," \t:=\"'");
-
-    StringCchCopyNA(pszValue,cchValue,tch,COUNTOF(tch));
-
-    return true;
-  }
-  return false;
-}
-
-
-//=============================================================================
-//
-//  FileVars_IsUTF8()
-//
-bool FileVars_IsUTF8(LPFILEVARS lpfv) {
-  if (lpfv->mask & FV_ENCODING) {
-    if (StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8",CSTRLEN("utf-8")) == 0 ||
-        StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8", CSTRLEN("utf8")) == 0)
-      return true;
-  }
-  return false;
-}
-
-
-//=============================================================================
-//
-//  FileVars_IsValidEncoding()
-//
-bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
-  CPINFO cpi;
-  if (lpfv->mask & FV_ENCODING && Encoding_IsValidIdx(lpfv->iEncoding)) {
-    if ((Encoding_IsINTERNAL(lpfv->iEncoding)) ||
-         (IsValidCodePage(Encoding_GetCodePage(lpfv->iEncoding)) &&
-          GetCPInfo(Encoding_GetCodePage(lpfv->iEncoding),&cpi))) {
-      return true;
-    }
-  }
-  return false;
-}
-
-
-//=============================================================================
-//
-//  FileVars_GetEncoding()
-//
-cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv) 
-{
-  if (lpfv->mask & FV_ENCODING) {
-    return(lpfv->iEncoding);
-  }
-  return CPI_NONE;
 }
 
 

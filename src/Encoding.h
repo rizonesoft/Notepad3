@@ -145,8 +145,48 @@ inline bool IsDBCSCodePage(UINT cp) {
   return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 951) || (cp == 1361));
 }
 
-cpi_enc_t Encoding_AnalyzeText(const char* const text, const size_t len, float* confidence_io, const cpi_enc_t encodingHint);
-cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse);
+// ----------------------------------------------------------------------------
+
+#define FV_TABWIDTH        1
+#define FV_INDENTWIDTH     2
+#define FV_TABSASSPACES    4
+#define FV_TABINDENTS      8
+#define FV_WORDWRAP       16
+#define FV_LONGLINESLIMIT 32
+#define FV_ENCODING       64
+#define FV_MODE          128
+
+bool       FileVars_Init(const char* lpData, size_t cbData, LPFILEVARS lpfv);
+bool       FileVars_Apply(LPFILEVARS lpfv);
+bool       FileVars_ParseInt(char* pszData, char* pszName, int* piValue);
+bool       FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue);
+bool       FileVars_IsUTF8(LPFILEVARS lpfv);
+bool       FileVars_IsValidEncoding(LPFILEVARS lpfv);
+cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
+
+// ----------------------------------------------------------------------------
+
+typedef struct _enc_det_t
+{
+  cpi_enc_t forcedEncoding;
+  cpi_enc_t analyzedEncoding;
+  cpi_enc_t preferredEncoding;
+  cpi_enc_t unicodeEncoding;
+  cpi_enc_t fileVarEncoding;
+
+  bool bIsAnalysisReliable;
+  bool bIsUnicodeAnalyzed;
+  bool bHasBOM;
+  bool bIsReverse;
+  bool bIsUTF8Sig;
+
+} ENC_DET_T;
+
+
+ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+                                  bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection);
+
+// ----------------------------------------------------------------------------
 
 const char*  Encoding_GetTitleInfoA();
 const WCHAR* Encoding_GetTitleInfoW();
