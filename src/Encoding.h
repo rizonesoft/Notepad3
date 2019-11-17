@@ -68,19 +68,19 @@ typedef struct _np2encoding {
 } NP2ENCODING;
 
 cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);            // getter/setter
-cpi_enc_t  Encoding_SrcCmdLn(cpi_enc_t iSrcEncoding);        // getter/setter
+cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);             // getter/setter
 cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc);          // getter/setter
 bool       Encoding_HasChanged(cpi_enc_t iOriginalEncoding); // query/setter
            
 void       Encoding_InitDefaults();
 int        Encoding_MapIniSetting(bool, int iSetting);
 
-cpi_enc_t  Encoding_MapUnicode(cpi_enc_t iUni);
 void       Encoding_SetLabel(cpi_enc_t iEncoding);
 cpi_enc_t  Encoding_MatchW(LPCWSTR pwszTest);
 cpi_enc_t  Encoding_MatchA(const char* pchTest);
 bool       Encoding_IsValid(cpi_enc_t iTestEncoding);
 cpi_enc_t  Encoding_GetByCodePage(const UINT codepage);
+cpi_enc_t  Encoding_MapSignature(cpi_enc_t iUni);
 void       Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool);
 bool       Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding);
 void       Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool);
@@ -168,14 +168,14 @@ cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
 
 typedef struct _enc_det_t
 {
+  cpi_enc_t Encoding; // final detection result
+  // statistic:
   cpi_enc_t forcedEncoding;
-  cpi_enc_t analyzedEncoding;
-  cpi_enc_t preferredEncoding;
-  cpi_enc_t unicodeEncoding;
   cpi_enc_t fileVarEncoding;
-
+  cpi_enc_t analyzedEncoding;
+  cpi_enc_t unicodeAnalysis;
+  // flags:
   bool bIsAnalysisReliable;
-  bool bIsUnicodeAnalyzed;
   bool bHasBOM;
   bool bIsReverse;
   bool bIsUTF8Sig;

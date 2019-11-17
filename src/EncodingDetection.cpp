@@ -1025,9 +1025,7 @@ extern "C" bool FileVars_Init(const char* lpData, size_t cbData, LPFILEVARS lpfv
   lpfv->iLongLinesLimit = Settings.LongLinesLimit;
   lpfv->iEncoding = Settings.DefaultEncoding;
 
-  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData) {
-    return true;
-  }
+  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData) { return true; }
 
   char tmpbuf[LARGE_BUFFER];
   size_t const cch = min_s(cbData + 1, COUNTOF(tmpbuf));
@@ -1236,46 +1234,93 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
                                              bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
-  // --------------------------------------------------------------------------
-  // Encoding Detection
-  // --------------------------------------------------------------------------
-    
-  ENC_DET_T encDetRes = { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, false, false, false, false, false };
+   
+  ENC_DET_T encDetRes = { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, false, false, false, false };
 
-  // assume current code-page or default encoding (if forced)
-  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT;
+  FileVars_Init(lpData, cbData, &Globals.fvCurFile);
+
+  bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
+  bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
+  encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
+  encDetRes.bIsReverse = bBOM_BE;
+
+  encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
 
   // --- 1st check for force encodings ---
   LPCWSTR lpszExt = PathFindExtension(pszFile);
   bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
 
-  encDetRes.forcedEncoding = Globals.bForceReLoadAsUTF8 ? CPI_UTF8 :
-    ((Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_SrcCmdLn(CPI_GET));
+  #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
-#define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
+  encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
+
+  if (!IS_ENC_ENFORCED()) 
+  {
+    encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
+    // force file vars ?
+    if (Encoding_IsValid(encDetRes.fileVarEncoding) && (Globals.fvCurFile.mask & FV_ENCODING)) {
+      encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
+    }
+  }
 
   // --- 2nd Use Encoding Analysis if applicable
+
+  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT;
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
   float confidence = 0.0f;
-  encDetRes.analyzedEncoding = iAnalyzeFallback;
 
   if (!IS_ENC_ENFORCED() || bForceEncDetection)
   {
-    encDetRes.analyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
+    if (!bSkipANSICPDetection) 
+    {
+      encDetRes.analyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
+    }
 
-    if (bForceEncDetection && !Encoding_IsNONE(encDetRes.analyzedEncoding)) {
-      encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_ANSI_DEFAULT : encDetRes.analyzedEncoding; // no bIsReliable check (forced unreliable detection)
+    if (encDetRes.analyzedEncoding == CPI_NONE)
+    {
+      encDetRes.analyzedEncoding = iAnalyzeFallback;
+      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+    }
+
+    if (!bSkipUTFDetection)
+    {
+      encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
+
+      if (Encoding_IsNONE(encDetRes.unicodeAnalysis) && Encoding_IsUNICODE(encDetRes.analyzedEncoding))
+      {
+        encDetRes.unicodeAnalysis = encDetRes.analyzedEncoding;
+      }
+
+      //// check for UTF-32, can't handle
+      //if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
+      //  encDetRes.unicodeAnalysis = CPI_NONE;
+      //}
+      //else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
+      //  encDetRes.unicodeAnalysis = CPI_NONE;
+      //}
+      //else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
+      //  // must be UTF-32, can't handle
+      //  encDetRes.unicodeAnalysis = CPI_NONE;
+      //}
+    }
+
+    if (bForceEncDetection) {
+      if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
+        // no bIsReliable check (forced unreliable detection)
+        encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_ANSI_DEFAULT : encDetRes.analyzedEncoding;
+      }
+      else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
+        encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
+      }
     }
   }
 
-  // ------------------------------------------------------
+  //bool const bIsUTF8orUnicodeAnalysis = Encoding_IsUTF8(encDetRes.analyzedEncoding) || Encoding_IsUNICODE(encDetRes.analyzedEncoding);
 
   if (!IS_ENC_ENFORCED())
   {
-    bool const bIsUnicode = Encoding_IsUTF8(encDetRes.analyzedEncoding) || Encoding_IsUNICODE(encDetRes.analyzedEncoding);
-
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
@@ -1285,72 +1330,38 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
       encDetRes.analyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
       confidence = 1.0;
     }
-    else {
-      if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
-        encDetRes.analyzedEncoding = CPI_NONE;
-        confidence = 0.0;
-      }
-    }
   }
 
   encDetRes.bIsAnalysisReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
 
   // --------------------------------------------------------------------------
-
-  // --- 3rd Unicode Checks
-
-  // choose best encoding guess
-  cpi_enc_t const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-
-  // set Preferred Encoding
-  encDetRes.preferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-
-  if (IS_ENC_ENFORCED()) {
-    encDetRes.preferredEncoding = encDetRes.forcedEncoding;
-  }
-  else if (!Encoding_IsNONE(iFileEncWeak)) {
-    encDetRes.preferredEncoding = iFileEncWeak;
-  }
-  else if (!Encoding_IsNONE(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly)) {
-    encDetRes.preferredEncoding = encDetRes.analyzedEncoding;
-  }
-  else if (Encoding_IsNONE(encDetRes.preferredEncoding)) {
-    encDetRes.preferredEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-  }
-
+  // ---  choose best encoding guess  ----
   // --------------------------------------------------------------------------
 
-  encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-  encDetRes.bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(encDetRes.analyzedEncoding) && encDetRes.bIsAnalysisReliable) && !IS_ENC_ENFORCED() && !bSkipUTFDetection && !encDetRes.bIsUTF8Sig);
-  encDetRes.unicodeEncoding = bSkipUTFDetection ? CPI_NONE : GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
-  
-  if (Encoding_IsNONE(encDetRes.unicodeEncoding))
-  {
-    bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
-    bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
+  // init Preferred Encoding
+  encDetRes.Encoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
 
-    if ((encDetRes.forcedEncoding == CPI_UNICODE) || bBOM_LE) {
-      encDetRes.bHasBOM = bBOM_LE;
-      encDetRes.bIsReverse = false;
-    }
-    else if ((encDetRes.forcedEncoding == CPI_UNICODEBE) || bBOM_BE) {
-      encDetRes.bHasBOM = bBOM_BE;
-      encDetRes.bIsReverse = true;
-    }
+  if (IS_ENC_ENFORCED()) 
+  {
+    encDetRes.Encoding = encDetRes.forcedEncoding;
+  }
+  else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly)) 
+  {
+    encDetRes.Encoding = encDetRes.analyzedEncoding;
+  }
+  else if (encDetRes.bIsUTF8Sig)
+  {
+    encDetRes.Encoding = CPI_UTF8SIGN;
+  }
+  else if (bBOM_LE || bBOM_BE) {
+    encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
+    encDetRes.bIsReverse = bBOM_BE;
+  }
+  else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
+    encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
   }
 
-  if (!IS_ENC_ENFORCED()) 
-  {
-    FileVars_Init(lpData, cbData, &Globals.fvCurFile);
-
-    encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile) && !Settings.NoEncodingTags) ?
-      FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
-
-    // force file vars ?
-    if (!Encoding_IsNONE(encDetRes.fileVarEncoding) && (Globals.fvCurFile.mask & FV_ENCODING)) {
-      encDetRes.forcedEncoding = encDetRes.preferredEncoding = encDetRes.fileVarEncoding;
-    }
-  }
+  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = CPI_ANSI_DEFAULT; }
 
   return encDetRes;
 }

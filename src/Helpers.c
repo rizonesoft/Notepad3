@@ -1671,14 +1671,14 @@ ptrdiff_t WideCharToMultiByteEx(
   ptrdiff_t outBufSiz = cbMultiByte;
   ptrdiff_t bytesConv = 0LL;
 
-  static ptrdiff_t const maxBufSize = (INT_MAX - 128);
+  static ptrdiff_t const maxBufSize = (INT_MAX - 1);
 
   BOOL bIsDefCharUse = FALSE;
 
   while ((inBufCnt > 0LL) || (inBufCnt == -1LL)) 
   {
     int const cnt = (inBufCnt > maxBufSize) ? (int)maxBufSize : ((inBufCnt > 0LL) ? (int)inBufCnt : -1);
-    int const siz = (outBufSiz > maxBufSize) ? (int)maxBufSize : (int)outBufSiz;
+    int const siz = (outBufSiz > (ptrdiff_t)INT_MAX) ? INT_MAX : (int)outBufSiz;
 
     int const bytes = WideCharToMultiByte(CodePage, dwFlags, inPtr, cnt, outPtr, siz, lpDefaultChar, lpUsedDefaultChar);
     if (bytes == 0) { break; }
@@ -1716,12 +1716,12 @@ ptrdiff_t MultiByteToWideCharEx(
   ptrdiff_t outBufCnt = cchWideChar;
   ptrdiff_t wcharConv = 0LL;
 
-  static ptrdiff_t const maxBufSize = (INT_MAX - 128);
+  static ptrdiff_t const maxBufSize = (INT_MAX - 1);
 
   while ((inBufSiz > 0LL) || (inBufSiz == -1LL))
   {
     int const siz = (inBufSiz > maxBufSize) ? (int)maxBufSize : ((inBufSiz > 0LL) ? (int)inBufSiz : -1);
-    int const cnt = (outBufCnt > maxBufSize) ? (int)maxBufSize : (int)outBufCnt;
+    int const cnt = (outBufCnt > (ptrdiff_t)INT_MAX) ? INT_MAX : (int)outBufCnt;
     
     int const wchars = MultiByteToWideChar(CodePage, dwFlags, inPtr, siz, outPtr, cnt);
     if (wchars == 0) { break; }

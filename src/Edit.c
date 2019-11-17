@@ -975,8 +975,7 @@ bool EditLoadFile(
   Globals.dwLastError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
-    Encoding_SrcCmdLn(CPI_NONE);
-    Encoding_SrcWeak(CPI_NONE);
+    Encoding_Forced(CPI_NONE);
     return false;
   }
 
@@ -993,8 +992,7 @@ bool EditLoadFile(
       // refuse to handle file
       InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, (liFileSize.QuadPart / 1024LL / 1024LL));
       CloseHandle(hFile);
-      Encoding_SrcCmdLn(CPI_NONE);
-      Encoding_SrcWeak(CPI_NONE);
+      Encoding_Forced(CPI_NONE);
       status->bFileTooBig = true;
     }
     return false;
@@ -1009,8 +1007,7 @@ bool EditLoadFile(
   if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
     if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
-      Encoding_SrcCmdLn(CPI_NONE);
-      Encoding_SrcWeak(CPI_NONE);
+      Encoding_Forced(CPI_NONE);
       status->bFileTooBig = true;
       return false;
     }
@@ -1022,8 +1019,7 @@ bool EditLoadFile(
     INT_PTR const answer = InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, PathFindFileName(pszFile));
     if (!((IDOK == answer) || (IDYES == answer))) {
       CloseHandle(hFile);
-      Encoding_SrcCmdLn(CPI_NONE);
-      Encoding_SrcWeak(CPI_NONE);
+      Encoding_Forced(CPI_NONE);
       status->bUnknownExt = true;
       return false;
     }
@@ -1034,8 +1030,7 @@ bool EditLoadFile(
   {
     Globals.dwLastError = GetLastError();
     CloseHandle(hFile);
-    Encoding_SrcCmdLn(CPI_NONE);
-    Encoding_SrcWeak(CPI_NONE);
+    Encoding_Forced(CPI_NONE);
     status->bFileTooBig = true;
     return false;
   }
@@ -1051,9 +1046,8 @@ bool EditLoadFile(
     status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
+    Encoding_Forced(CPI_NONE);
     FreeMem(lpData);
-    Encoding_SrcCmdLn(CPI_NONE);
-    Encoding_SrcWeak(CPI_NONE);
     return true;
   }
 
@@ -1063,9 +1057,8 @@ bool EditLoadFile(
   {
     bReadSuccess = (InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
     if (!bReadSuccess) {
+      Encoding_Forced(CPI_NONE);
       FreeMem(lpData);
-      Encoding_SrcCmdLn(CPI_NONE);
-      Encoding_SrcWeak(CPI_NONE);
       return true;
     }
     else {
@@ -1073,9 +1066,8 @@ bool EditLoadFile(
     }
   }
   if (!bReadSuccess) {
+    Encoding_Forced(CPI_NONE);
     FreeMem(lpData);
-    Encoding_SrcCmdLn(CPI_NONE);
-    Encoding_SrcWeak(CPI_NONE);
     return false;
   }
 
@@ -1110,26 +1102,28 @@ bool EditLoadFile(
         g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
       AppendAdditionalTitleInfo(wchBuf);
     }
+
+    WCHAR wcBuf[128] = { L'\0' };
+    StringCchPrintf(wcBuf, ARRAYSIZE(wcBuf), L" - OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
+    AppendAdditionalTitleInfo(wcBuf);
   }
   
   // --------------------------------------------------------------------------
+  // ===  UNICODE  ( UTF-16LE / UTF-16BE ) ===
+  // --------------------------------------------------------------------------
 
-  bool const bIsUnicodeForced = Encoding_IsUNICODE(encDetection.forcedEncoding);
-  bool const bIsUnicodeDetected = !IS_ENC_ENFORCED() && (encDetection.bIsUnicodeAnalyzed || !Encoding_IsNONE(encDetection.unicodeEncoding));
+  bool const bIsUnicodeDetected = !IS_ENC_ENFORCED() && Encoding_IsUNICODE(encDetection.unicodeAnalysis);
 
-  if (bIsUnicodeForced || bIsUnicodeDetected)
+  if (Encoding_IsUNICODE(encDetection.Encoding) || bIsUnicodeDetected)
   {
-    // ===  UNICODE  ===
-    if (encDetection.bIsReverse)
-    {
-      SwabEx(lpData, lpData, cbData);
-      status->iEncoding = (encDetection.bHasBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
-    }
-    else {
-      status->iEncoding = (encDetection.bHasBOM ? CPI_UNICODEBOM : CPI_UNICODE);
-    }
+    // ----------------------------------------------------------------------
+    status->iEncoding = encDetection.bHasBOM ? (encDetection.bIsReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) : 
+                                               (encDetection.bIsReverse ? CPI_UNICODEBE    : CPI_UNICODE);
+    // ----------------------------------------------------------------------
 
-    char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
+    if (encDetection.bIsReverse) { SwabEx(lpData, lpData, cbData); }
+
+    char* const lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
     ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
       (encDetection.bHasBOM ? (cbData / sizeof(WCHAR)) : (cbData / sizeof(WCHAR) + 1)), lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
@@ -1140,20 +1134,25 @@ bool EditLoadFile(
       status->bUnicodeErr = true;
     }
 
-    FreeMem(lpData);
     FileVars_Init(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
     EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory);
     EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
     FreeMem(lpDataUTF8);
-  }
 
-  else { // ===  ALL OTHERS  ===
+  }
+  else  // ===  ALL OTHERS  ===
+  {
+    // ----------------------------------------------------------------------
+    status->iEncoding = encDetection.Encoding;
+    // ----------------------------------------------------------------------
+
+    UINT const uCodePage = Encoding_GetCodePage(status->iEncoding);
 
     // ===  UTF-8 ? ===
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
-    bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);
+    bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
     bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && encDetection.bIsAnalysisReliable;
-    bool const bSoftHintUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && Encoding_IsUTF8(encDetection.preferredEncoding); // non-reliable analysis = soft-hint
+    bool const bSoftHintUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && Encoding_IsUTF8(encDetection.Encoding); // non-reliable analysis = soft-hint
 
     bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && bSkipUTFDetection);
 
@@ -1169,20 +1168,20 @@ bool EditLoadFile(
         status->iEncoding = CPI_UTF8;
         EditDetectEOLMode(lpData, cbData, status);
       }
-      FreeMem(lpData);
+    }
+    else if ((uCodePage == CP_UTF7) && IsValidUTF7(lpData, cbData))
+    {
+      // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
+      EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
+      status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+      EditDetectEOLMode(lpData, cbData, status);
     }
     else { // ===  ALL OTHER NON UTF-8 ===
 
-      // ----------------------------------------------------------------------
-      status->iEncoding = Encoding_IsValid(encDetection.preferredEncoding) ? encDetection.preferredEncoding : CPI_ANSI_DEFAULT;
-      // ----------------------------------------------------------------------
-
-      if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
-        ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData, cbData))) {
-
-        UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
-
+      if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) 
+      {
         LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+
         ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData, lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
         if (cbDataWide != 0)
         {
@@ -1191,45 +1190,35 @@ bool EditLoadFile(
 
           cbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide, lpData, SizeOfMem(lpData), NULL, NULL);
           if (cbData != 0) {
-            FreeMem(lpDataWide);
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             EditDetectEOLMode(lpData, cbData, status);
-            FreeMem(lpData);
+            FreeMem(lpDataWide);
           }
           else {
+            Encoding_Forced(CPI_NONE);
             FreeMem(lpDataWide);
             FreeMem(lpData);
-            Encoding_SrcCmdLn(CPI_NONE);
-            Encoding_SrcWeak(CPI_NONE);
             return false;
           }
         }
         else {
+          Encoding_Forced(CPI_NONE);
           FreeMem(lpDataWide);
           FreeMem(lpData);
-          Encoding_SrcCmdLn(CPI_NONE);
-          Encoding_SrcWeak(CPI_NONE);
           return false;
         }
       }
       else {
         EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
         EditDetectEOLMode(lpData, cbData, status);
-        FreeMem(lpData);
       }
     }
   }
 
-  Encoding_SrcCmdLn(CPI_NONE);
-  Encoding_SrcWeak(CPI_NONE);
-
   SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(encDetection.analyzedEncoding) ? 0x10000 : 0x1000);
 
-  if (Flags.bDevDebugMode) {
-    WCHAR wcBuf[128] = { L'\0' };
-    StringCchPrintf(wcBuf, ARRAYSIZE(wcBuf), L" - OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
-    AppendAdditionalTitleInfo(wcBuf);
-  }
+  Encoding_Forced(CPI_NONE);
+  FreeMem(lpData);
 
   return true;
 }
@@ -1314,29 +1303,6 @@ bool EditSaveFile(
 
     lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
     cbData = SciCall_GetText((cbData+1), lpData);
-
-    // FIXME: move checks in front of disk file access
-    // Msg if file tag encoding does not correspond to BOM
-    /*if ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) == 0 && (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
-      bool bEncodingMismatch = true;
-      FILEVARS fv;
-      FileVars_Init(lpData,cbData,&fv);
-      if (fv.mask & FV_ENCODING) {
-        int iAltEncoding;
-        if (FileVars_IsValidEncoding(&fv)) {
-          iAltEncoding = FileVars_GetEncoding(&fv);
-          if (iAltEncoding == iEncoding)
-            bEncodingMismatch = false;
-          else if ((g_Encodings[iAltEncoding].uFlags & NCP_UTF8) && (g_Encodings[iEncoding].uFlags & NCP_UTF8))
-            bEncodingMismatch = false;
-        }
-        if (bEncodingMismatch) {
-          InfoBoxLng(MB_OK,L"MsgEncodingMismatch",IDS_MUI_ENCODINGMISMATCH,
-            g_Encodings[iAltEncoding].wchLabel,
-            g_Encodings[iEncoding].wchLabel);
-        }
-      }
-    }*/
 
     if (Encoding_IsUNICODE(status->iEncoding))  // UTF-16LE/BE_(BOM)
     {

@@ -37,7 +37,6 @@ typedef struct np3params {
   int                 flagJumpTo;
   int                 iInitialLine;
   int                 iInitialColumn;
-  cpi_enc_t           iSrcEncoding;
   cpi_enc_t           flagSetEncoding;
   int                 flagSetEOLMode;
   int                 flagTitleExcerpt;
