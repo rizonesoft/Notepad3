@@ -147,7 +147,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE "大容量すぎて処理できません！ (サイズ: %lli MB)"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "%s は設定のない拡張子です。\n読み込みますか ？"
     IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"

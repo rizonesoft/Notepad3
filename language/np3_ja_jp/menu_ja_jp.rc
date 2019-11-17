@@ -257,14 +257,14 @@ BEGIN
             MENUITEM "日付と時刻(年月日)(&L)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
             MENUITEM "日付と時刻の更新(&U)\tShift+F5",             CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "行コメント(切り替え)(&L)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
+            MENUITEM "行コメント(切替)(&L)\tCtrl+Q",              IDM_EDIT_LINECOMMENT
             MENUITEM "ブロックコメント(&S)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
         END
         POPUP "プログラム(&M)"
         BEGIN
             MENUITEM "GUIDをクリップボードにコピー(&G)\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "文字列型中のエスケープ文字を変換(&E)\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
+            MENUITEM "文字列型中のエスケープ文字変換(&E)\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
             MENUITEM "文字列型中の上記アンエスケープ(&U)\tCtrl+Alt+R",   IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "数値を1増加\tCtrl+Alt+NK+",                    CMD_INCREASENUM
@@ -284,7 +284,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "ブックマーク(しおり)(&K)"
         BEGIN
-            MENUITEM "指定の切り替え(&T)\tCtrl+F2",                BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "指定の切替(&T)\tCtrl+F2",                BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
             MENUITEM "次へ(&N)\tF2",                              BME_EDIT_BOOKMARKNEXT
             MENUITEM "前へ(&T)\tShift+F2",                        BME_EDIT_BOOKMARKPREV
@@ -295,7 +295,7 @@ BEGIN
         POPUP "検索(&S)"
         BEGIN
             MENUITEM "検索(&F)...\tCtrl+F",                      IDM_EDIT_FIND
-            MENUITEM "検索文字列の候補に追加\tAlt+F3",             IDM_EDIT_SAVEFIND
+            MENUITEM "検索文字列候補に追加\tAlt+F3",             IDM_EDIT_SAVEFIND
             MENUITEM "次を検索(&X)\tF3",                          IDM_EDIT_FINDNEXT
             MENUITEM "前へ検索(&V)\tShift+F3",                    IDM_EDIT_FINDPREV
             MENUITEM "選択部分で次を検索\tCtrl+F3",                CMD_FINDNEXTSEL
@@ -321,7 +321,7 @@ BEGIN
         POPUP "現在の行を強調表示(&G)\tCtrl+Shift+I"
         BEGIN
             MENUITEM "無し(&N)",                             IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "背景色を変える(&C)",                     IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "背景色を変更(&C)",                     IDM_VIEW_HILITCURLN_BACK
             MENUITEM "枠線(&F)",                             IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "単語出現マーカー(&k)"
@@ -331,7 +331,7 @@ BEGIN
             MENUITEM "単語一望モードを無効に",                   IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "大文字小文字を区別(&C)",                 IDM_VIEW_MARKOCCUR_CASE
-            POPUP "単語全体が一致(&W)"
+            POPUP "単語単位で一致(&W)"
             BEGIN
                 MENUITEM "オフ",                              IDM_VIEW_MARKOCCUR_WNONE
                 MENUITEM "選択単語に一致(&S)",                IDM_VIEW_MARKOCCUR_WORD
@@ -355,9 +355,9 @@ BEGIN
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "アイコン大小の切り替え(&G)",                   IDM_VIEW_TOGGLETB
+            MENUITEM "アイコン大小の切替(&G)",                   IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
-            MENUITEM "ツールバー用独自アイコンを設定(&L)...",          IDM_VIEW_LOADTHEMETB
+            MENUITEM "独自アイコンを設定(&L)...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
         END
         POPUP "拡大縮小(&Z)"
@@ -373,7 +373,7 @@ BEGIN
             MENUITEM "初期化位置として記憶",                         CMD_SAVEASDEFWINPOS
             MENUITEM "記憶した初期化位置を消去",                     CMD_CLEARSAVEDWINPOS
             MENUITEM "最初の位置へ移動\tCtrl+F11",                  CMD_INITIALWINPOS
-            MENUITEM "全画面表示の切り替え\tF11",                    CMD_FULLSCRWINPOS
+            MENUITEM "全画面表示の切替\tF11",                    CMD_FULLSCRWINPOS
             MENUITEM "ウィンドウ位置の固定(&P)",                      IDM_VIEW_STICKYWINPOS
         END
     END
@@ -402,7 +402,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "単一インスタンスでファイルを開く(&F)",                IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知する(&C)...\tAlt+F5",          IDM_VIEW_CHANGENOTIFY
-        MENUITEM "メッセージ時の効果音をミュート(&B)",                  IDM_VIEW_MUTE_MESSAGEBEEP
+        MENUITEM "メッセージの効果音をミュート(&B)",                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
             MENUITEM "何もしない(&N)",                          IDM_VIEW_NOESCFUNC
@@ -480,7 +480,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "すべて選択(&S)",                              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "ここの折りたたみを切り替え(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "ここの折りたたみを切替(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "ウェブ1で開く(&1)",                             CMD_WEBACTION1
         MENUITEM "ウェブ2で開く(&2)",                             CMD_WEBACTION2
@@ -490,9 +490,9 @@ BEGIN
     BEGIN
         MENUITEM "メニューバーを表示(&M)",                        IDM_VIEW_MENUBAR
         MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "アイコン大小の切り替え(&G)",                    IDM_VIEW_TOGGLETB
+        MENUITEM "アイコン大小の切替(&G)",                    IDM_VIEW_TOGGLETB
         MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
-        MENUITEM "ツールバー用独自アイコンを設定(&L)...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "ツールバーの独自アイコンを設定(&L)...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "ステータスバーの表示(&S)",                      IDM_VIEW_STATUSBAR
     END
     POPUP "+"
