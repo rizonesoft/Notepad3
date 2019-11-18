@@ -214,8 +214,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pl_pl", "minipath\langua
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_tr_tr", "language\np3_tr_tr\np3_tr_tr.vcxproj", "{15428F5A-16F1-4DA5-9F12-0411183E3DC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_tr_tr", "minipath\language\mp_tr_tr\mp_tr_tr.vcxproj", "{6503214A-CE25-45B5-84BB-61EEFB35D1A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scintilla.vcxproj", "{5877B917-512B-49F5-B514-1B4159E7A9CA}"
 EndProject
