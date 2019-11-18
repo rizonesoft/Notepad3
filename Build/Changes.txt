@@ -86,6 +86,7 @@ ENHANCEMENT:
 ----------------------------------------------------
 FIXES:
 ----------------------------------------------------
+- Wrong encoding detection settings for explicit config .ini-File load.
 - Disable HyperLink calltip on ESC, as long as caret is in hyperlink text range.
 - Crash on very large file size (rejecting too big files).
 - Batch lexer: handle comment after ampersand(&) command sequence.
