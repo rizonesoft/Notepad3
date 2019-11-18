@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1113.#(build) (2019-11-13)
+Current BETA Version 5.19.1118.(#build) (2019-11-18)
 ====================================================
 
 ----------------------------------------------------
@@ -48,6 +48,7 @@ NEW:
 CHANGES:
 ----------------------------------------------------
 - ESC Key clears active selection (before exiting Notepad3).
+- Refactoring source code (encoding detection).
 - Reduce big file size limit to 2GB (INT_MAX).
 - Conversion all *.RC files to encoding UTF-8 (no BOM/Signature).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
