@@ -1681,7 +1681,7 @@ ptrdiff_t WideCharToMultiByteEx(
     int const siz = (outBufSiz > (ptrdiff_t)INT_MAX) ? INT_MAX : (int)outBufSiz;
 
     int const bytes = WideCharToMultiByte(CodePage, dwFlags, inPtr, cnt, outPtr, siz, lpDefaultChar, lpUsedDefaultChar);
-    if (bytes == 0) { break; }
+    if (bytes <= 0) { break; }
 
     if (lpUsedDefaultChar && *lpUsedDefaultChar) { bIsDefCharUse = TRUE; }
 
@@ -1724,7 +1724,7 @@ ptrdiff_t MultiByteToWideCharEx(
     int const cnt = (outBufCnt > (ptrdiff_t)INT_MAX) ? INT_MAX : (int)outBufCnt;
     
     int const wchars = MultiByteToWideChar(CodePage, dwFlags, inPtr, siz, outPtr, cnt);
-    if (wchars == 0) { break; }
+    if (wchars <= 0) { break; }
 
     int const usedMBC = (inBufSiz > maxBufSize) ? (outPtr ? WideCharToMultiByte(CodePage, dwFlags, outPtr, wchars, NULL, 0, NULL, NULL) : 0) : (int)inBufSiz;
 
