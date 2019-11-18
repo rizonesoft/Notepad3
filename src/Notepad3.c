@@ -3820,11 +3820,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
           if (PathIsDirectory(tchMaxPathBuffer))
           {
-            if (OpenFileDlg(Globals.hwndMain, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),tchMaxPathBuffer))
-              FileLoad(true,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
+            if (OpenFileDlg(Globals.hwndMain, tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), tchMaxPathBuffer))
+              FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
           }
           else
-            FileLoad(true,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
+            FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchMaxPathBuffer);
           }
         }
       break;
@@ -3862,7 +3862,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd, tchFile)) {
-            FileLoad(true, false, false, false, true, false, tchFile);
+            FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
           }
         }
         UpdateToolbar();
@@ -3939,7 +3939,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           {
             StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
             Encoding_Forced(iNewEncoding);
-            FileLoad(true,false,true,false,true, false, tchMaxPathBuffer);
+            FileLoad(true, false, true, true, true, false, tchMaxPathBuffer);
           }
         }
       }
@@ -5858,33 +5858,33 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RECODEDEFAULT:
       {
-        if (StrIsNotEmpty(Globals.CurrentFile)) {
-          Encoding_Forced(Settings.DefaultEncoding);
-          StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false,false,true,true,true,false,tchMaxPathBuffer);
-        }
+      if (StrIsNotEmpty(Globals.CurrentFile)) {
+        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+        Encoding_Forced(Settings.DefaultEncoding);
+        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+      }
       }
       break;
 
 
     case CMD_RECODEANSI:
       {
-        if (StrIsNotEmpty(Globals.CurrentFile)) {
-          Encoding_Forced(CPI_ANSI_DEFAULT);
-          StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false,false,true,true,Settings.SkipANSICodePageDetection,false,tchMaxPathBuffer);
-        }
+      if (StrIsNotEmpty(Globals.CurrentFile)) {
+        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+        Encoding_Forced(CPI_ANSI_DEFAULT);
+        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+      }
       }
       break;
 
 
     case CMD_RECODEOEM:
       {
-        if (StrIsNotEmpty(Globals.CurrentFile)) {
-          Encoding_Forced(CPI_OEM);
-          StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false,false,true,true,true,false,tchMaxPathBuffer);
-        }
+      if (StrIsNotEmpty(Globals.CurrentFile)) {
+        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+        Encoding_Forced(CPI_OEM);
+        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+      }
       }
       break;
 
@@ -5892,8 +5892,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RECODEGB18030:
     {
       if (StrIsNotEmpty(Globals.CurrentFile)) {
-        Encoding_Forced(Encoding_GetByCodePage(54936)); // GB18030
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+        Encoding_Forced(Encoding_GetByCodePage(54936)); // GB18030
         FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
       }
     }
@@ -5902,12 +5902,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_RELOADASCIIASUTF8:
       {
-        if (StrIsNotEmpty(Globals.CurrentFile))
-        {
-          Encoding_Forced(CPI_UTF8);
-          StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-        }
+      if (StrIsNotEmpty(Globals.CurrentFile))
+      {
+        StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
+        Encoding_Forced(CPI_UTF8);
+        FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
+      }
       }
       break;
 
@@ -6219,7 +6219,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_OPENINIFILE:
       if (StrIsNotEmpty(Globals.IniFile)) {
         SaveAllSettings(false);
-        FileLoad(false,false,false,false,true,true,Globals.IniFile);
+        FileLoad(false, false, false, false, true, false, Globals.IniFile);
       }
       break;
 
@@ -9768,7 +9768,9 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   WCHAR tchFileName2[MAX_PATH] = { L'\0' };
   StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
 
-  if (!FileLoad(true, false, true, false, true, false, tchFileName2)) { return false; }
+  if (!FileLoad(true, false, true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFileName2)) { 
+    return false; 
+  }
 
   if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
     if (docView.bIsTail || FileWatching.MonitoringLog) {
