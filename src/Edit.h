@@ -121,25 +121,6 @@ void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
 void  EditSelectionMultiSelectAll();
 
-
-#define FV_TABWIDTH        1
-#define FV_INDENTWIDTH     2
-#define FV_TABSASSPACES    4
-#define FV_TABINDENTS      8
-#define FV_WORDWRAP       16
-#define FV_LONGLINESLIMIT 32
-#define FV_ENCODING       64
-#define FV_MODE          128
-
-bool       FileVars_Init(char* lpData, size_t cbData,LPFILEVARS lpfv);
-bool       FileVars_Apply(LPFILEVARS lpfv);
-bool       FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
-bool       FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
-bool       FileVars_IsUTF8(LPFILEVARS lpfv);
-bool       FileVars_IsValidEncoding(LPFILEVARS lpfv);
-cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
-
-
 //
 //  Folding Functions
 //

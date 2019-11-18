@@ -68,19 +68,19 @@ typedef struct _np2encoding {
 } NP2ENCODING;
 
 cpi_enc_t  Encoding_Current(cpi_enc_t iEncoding);            // getter/setter
-cpi_enc_t  Encoding_SrcCmdLn(cpi_enc_t iSrcEncoding);        // getter/setter
+cpi_enc_t  Encoding_Forced(cpi_enc_t iEncoding);             // getter/setter
 cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc);          // getter/setter
 bool       Encoding_HasChanged(cpi_enc_t iOriginalEncoding); // query/setter
            
 void       Encoding_InitDefaults();
 int        Encoding_MapIniSetting(bool, int iSetting);
 
-cpi_enc_t  Encoding_MapUnicode(cpi_enc_t iUni);
 void       Encoding_SetLabel(cpi_enc_t iEncoding);
 cpi_enc_t  Encoding_MatchW(LPCWSTR pwszTest);
 cpi_enc_t  Encoding_MatchA(const char* pchTest);
 bool       Encoding_IsValid(cpi_enc_t iTestEncoding);
 cpi_enc_t  Encoding_GetByCodePage(const UINT codepage);
+cpi_enc_t  Encoding_MapSignature(cpi_enc_t iUni);
 void       Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool);
 bool       Encoding_GetFromListView(HWND hwnd, cpi_enc_t* pidEncoding);
 void       Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool);
@@ -145,8 +145,48 @@ inline bool IsDBCSCodePage(UINT cp) {
   return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 951) || (cp == 1361));
 }
 
-cpi_enc_t Encoding_AnalyzeText(const char* const text, const size_t len, float* confidence_io, const cpi_enc_t encodingHint);
-cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse);
+// ----------------------------------------------------------------------------
+
+#define FV_TABWIDTH        1
+#define FV_INDENTWIDTH     2
+#define FV_TABSASSPACES    4
+#define FV_TABINDENTS      8
+#define FV_WORDWRAP       16
+#define FV_LONGLINESLIMIT 32
+#define FV_ENCODING       64
+#define FV_MODE          128
+
+bool       FileVars_Init(const char* lpData, size_t cbData, LPFILEVARS lpfv);
+bool       FileVars_Apply(LPFILEVARS lpfv);
+bool       FileVars_ParseInt(char* pszData, char* pszName, int* piValue);
+bool       FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue);
+bool       FileVars_IsUTF8(LPFILEVARS lpfv);
+bool       FileVars_IsValidEncoding(LPFILEVARS lpfv);
+cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);
+
+// ----------------------------------------------------------------------------
+
+typedef struct _enc_det_t
+{
+  cpi_enc_t Encoding; // final detection result
+  // statistic:
+  cpi_enc_t forcedEncoding;
+  cpi_enc_t fileVarEncoding;
+  cpi_enc_t analyzedEncoding;
+  cpi_enc_t unicodeAnalysis;
+  // flags:
+  bool bIsAnalysisReliable;
+  bool bHasBOM;
+  bool bIsReverse;
+  bool bIsUTF8Sig;
+
+} ENC_DET_T;
+
+
+ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+                                  bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection);
+
+// ----------------------------------------------------------------------------
 
 const char*  Encoding_GetTitleInfoA();
 const WCHAR* Encoding_GetTitleInfoW();

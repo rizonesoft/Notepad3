@@ -535,10 +535,9 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 //
 // CommandLine Parsing Flags
 //
-static LPWSTR     s_lpEncodingArg = NULL;
-static LPWSTR     s_lpMatchArg = NULL;
 static LPWSTR     s_lpSchemeArg = NULL;
 static LPWSTR     s_lpOrigFileArg = NULL;
+static LPWSTR     s_lpMatchArg = NULL;
 static WCHAR      s_lpFileArg[MAX_PATH+1];
 
 static cpi_enc_t  s_flagSetEncoding = CPI_NONE;
@@ -639,7 +638,6 @@ static void _InitGlobals()
   Globals.flagShellUseSystemMRU = 0;
   Globals.flagPrintFileAndLeave = 0;
 
-  Globals.bForceReLoadAsUTF8 = false;
   Globals.DOSEncoding = CPI_NONE;
   Globals.bZeroBasedColumnIndex = false;
   Globals.bZeroBasedCharacterCount = false;
@@ -1217,9 +1215,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Source Encoding
-  if (s_lpEncodingArg) {
-    Encoding_SrcCmdLn(Encoding_MatchW(s_lpEncodingArg));
-  }
+  Encoding_Forced(s_flagSetEncoding);
 
   // Pathname parameter
   if (s_IsThisAnElevatedRelaunch || (StrIsNotEmpty(s_lpFileArg) /*&& !g_flagNewFromClipboard*/))
@@ -1297,14 +1293,14 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     }
   }
   else {
-    if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
-      Encoding_Current(Encoding_SrcCmdLn(CPI_GET));
-      Encoding_HasChanged(Encoding_SrcCmdLn(CPI_GET));
+    if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
+      Encoding_Current(Encoding_Forced(CPI_GET));
+      Encoding_HasChanged(Encoding_Forced(CPI_GET));
     }
   }
 
   // reset
-  Encoding_SrcCmdLn(CPI_NONE);
+  Encoding_Forced(CPI_NONE);
   s_flagQuietCreate = false;
   s_flagKeepTitleExcerpt = false;
 
@@ -2821,7 +2817,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (params->flagFileSpecified) {
 
         bool bOpened = false;
-        Encoding_SrcCmdLn(params->iSrcEncoding);
+        Encoding_Forced(params->flagSetEncoding);
 
         if (PathIsDirectory(&params->wchData)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
@@ -2876,7 +2872,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
         }
         // reset
-        Encoding_SrcCmdLn(CPI_NONE);
+        Encoding_Forced(CPI_NONE);
       }
 
       if (params->flagJumpTo) {
@@ -3930,7 +3926,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          cpi_enc_t iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
+          cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_Current(CPI_GET));
 
           if (IsSaveNeeded(ISN_GET)) {
             INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE);
@@ -3942,7 +3938,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           if (RecodeDlg(hwnd,&iNewEncoding)) 
           {
             StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-            Encoding_SrcCmdLn(iNewEncoding);
+            Encoding_Forced(iNewEncoding);
             FileLoad(true,false,true,false,true, false, tchMaxPathBuffer);
           }
         }
@@ -5863,7 +5859,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RECODEDEFAULT:
       {
         if (StrIsNotEmpty(Globals.CurrentFile)) {
-          Encoding_SrcCmdLn(Encoding_MapUnicode(Settings.DefaultEncoding));
+          Encoding_Forced(Settings.DefaultEncoding);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true,true,true,false,tchMaxPathBuffer);
         }
@@ -5874,7 +5870,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RECODEANSI:
       {
         if (StrIsNotEmpty(Globals.CurrentFile)) {
-          Encoding_SrcCmdLn(CPI_ANSI_DEFAULT);
+          Encoding_Forced(CPI_ANSI_DEFAULT);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true,true,Settings.SkipANSICodePageDetection,false,tchMaxPathBuffer);
         }
@@ -5885,7 +5881,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RECODEOEM:
       {
         if (StrIsNotEmpty(Globals.CurrentFile)) {
-          Encoding_SrcCmdLn(CPI_OEM);
+          Encoding_Forced(CPI_OEM);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false,false,true,true,true,false,tchMaxPathBuffer);
         }
@@ -5896,7 +5892,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RECODEGB18030:
     {
       if (StrIsNotEmpty(Globals.CurrentFile)) {
-        Encoding_SrcCmdLn(Encoding_GetByCodePage(54936)); // GB18030
+        Encoding_Forced(Encoding_GetByCodePage(54936)); // GB18030
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
         FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
       }
@@ -5908,10 +5904,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          Globals.bForceReLoadAsUTF8 = true;
+          Encoding_Forced(CPI_UTF8);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false, false, true, true, true, false, tchMaxPathBuffer);
-          Globals.bForceReLoadAsUTF8 = false;
         }
       }
       break;
@@ -5921,7 +5916,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     {
       if (StrIsNotEmpty(Globals.CurrentFile))
       {
-        Globals.bForceReLoadAsUTF8 = false;
+        Encoding_Forced(CPI_NONE);
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
         FileLoad(false, false, true, false, false, true, tchMaxPathBuffer);
       }
@@ -7659,6 +7654,8 @@ void ParseCommandLine()
 
     bool bContinue = true;
     bool bIsFileArg = false;
+    s_flagSetEncoding = CPI_NONE;
+
     while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
       // options
       if (lp1[1] == L'\0') {
@@ -7697,13 +7694,9 @@ void ParseCommandLine()
           s_flagSetEncoding = CPI_UTF8SIGN;
         }
         // maybe parsed encoding
-        else if (encoding != CPI_NONE) {
-          if (s_lpEncodingArg) { LocalFree(s_lpEncodingArg); }
-          s_lpEncodingArg = StrDup(lp1);
+        else if (Encoding_IsValid(encoding)) {
           s_flagSetEncoding = encoding;
         }
-        
-
         // EOL Mode
         else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
@@ -7872,8 +7865,7 @@ void ParseCommandLine()
 
             case L'E':
               if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                if (s_lpEncodingArg) { LocalFree(s_lpEncodingArg); }
-                s_lpEncodingArg = StrDup(lp1);
+                s_flagSetEncoding = Encoding_MatchW(lp1);
               }
               break;
 
@@ -9571,12 +9563,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         EditSetNewText(Globals.hwndEdit,"",0, true);
         Style_SetDefaultLexer(Globals.hwndEdit);
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
-        if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
-          fioStatus.iEncoding = Encoding_SrcCmdLn(CPI_GET);
+        if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
+          fioStatus.iEncoding = Encoding_Forced(CPI_GET);
           Encoding_Current(fioStatus.iEncoding);
           Encoding_HasChanged(fioStatus.iEncoding);
         }
         else {
+          fioStatus.iEncoding = Settings.DefaultEncoding;
           Encoding_Current(Settings.DefaultEncoding);
           Encoding_HasChanged(Settings.DefaultEncoding);
         }
@@ -9593,8 +9586,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     int idx;
     if (!bReload && MRU_FindFile(Globals.pFileMRU,szFileName,&idx)) {
       fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
-      if (fioStatus.iEncoding > 0)
-        Encoding_SrcCmdLn(Encoding_MapUnicode(fioStatus.iEncoding));
+      if (Encoding_IsValid(fioStatus.iEncoding)) {
+        Encoding_SrcWeak(fioStatus.iEncoding);
+      }
     }
     else {
       fioStatus.iEncoding = Encoding_Current(CPI_GET);
@@ -9767,7 +9761,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
 
   if (bIgnoreCmdLnEnc) {
-    Encoding_SrcCmdLn(CPI_NONE); // ignore history too
+    Encoding_Forced(CPI_NONE); // ignore history too
   }
   Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
@@ -9832,7 +9826,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
   // remove forced command line encoding from argument list
   WCHAR wchEncoding[80] = { L'\0' };
   wchEncoding[0] = L'/';
-  Encoding_GetNameW(Encoding_SrcCmdLn(CPI_GET), &wchEncoding[1], COUNTOF(wchEncoding)-1);
+  Encoding_GetNameW(Encoding_Forced(CPI_GET), &wchEncoding[1], COUNTOF(wchEncoding)-1);
   if (StrIsNotEmpty(&wchEncoding[1])) {
     lpArgs = StrCutI(lpArgs, wchEncoding);
   }
@@ -10312,7 +10306,6 @@ bool ActivatePrevInst()
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
 
-        params->iSrcEncoding = (s_lpEncodingArg) ? Encoding_MatchW(s_lpEncodingArg) : CPI_NONE;
         params->flagSetEncoding = s_flagSetEncoding;
         params->flagSetEOLMode = s_flagSetEOLMode;
         params->flagTitleExcerpt = 0;
@@ -10390,7 +10383,6 @@ bool ActivatePrevInst()
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
 
-        params->iSrcEncoding = (s_lpEncodingArg) ? Encoding_MatchW(s_lpEncodingArg) : CPI_NONE;
         params->flagSetEncoding = s_flagSetEncoding;
         params->flagSetEOLMode = s_flagSetEOLMode;
 

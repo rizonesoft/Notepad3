@@ -55,17 +55,17 @@ cpi_enc_t Encoding_Current(cpi_enc_t iEncoding)
 // ============================================================================
 
 
-cpi_enc_t Encoding_SrcCmdLn(cpi_enc_t iSrcEncoding)
+cpi_enc_t Encoding_Forced(cpi_enc_t iEncoding)
 {
   static cpi_enc_t SourceEncoding = CPI_NONE;
 
-  if (iSrcEncoding >= 0) {
-    if (Encoding_IsValid(iSrcEncoding))
-      SourceEncoding = iSrcEncoding;
+  if (iEncoding >= 0) {
+    if (Encoding_IsValid(iEncoding))
+      SourceEncoding = iEncoding;
     else
       SourceEncoding = CPI_ANSI_DEFAULT;
   }
-  else if (iSrcEncoding == CPI_NONE) {
+  else if (iEncoding == CPI_NONE) {
     SourceEncoding = CPI_NONE;
   }
   return SourceEncoding;
@@ -211,16 +211,16 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting)
 // ============================================================================
 
 
-cpi_enc_t Encoding_MapUnicode(cpi_enc_t iUni)
+cpi_enc_t Encoding_MapSignature(cpi_enc_t iUni)
 {
+  if (iUni == CPI_UTF8SIGN) {
+    return CPI_UTF8;
+  }
   if (iUni == CPI_UNICODEBOM) {
     return CPI_UNICODE;
   }
   if (iUni == CPI_UNICODEBEBOM) {
     return CPI_UNICODEBE;
-  }
-  if (iUni == CPI_UTF8SIGN) {
-    return CPI_UTF8;
   }
   return iUni;
 }

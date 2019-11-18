@@ -324,7 +324,6 @@ typedef struct _globals_t
   int       flagShellUseSystemMRU;
   int       flagPrintFileAndLeave;
    
-  bool      bForceReLoadAsUTF8;
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
   int       iReplacedOccurrences;
