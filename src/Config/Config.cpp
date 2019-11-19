@@ -1005,7 +1005,7 @@ void LoadSettings()
   Settings.PrintMargin.bottom = clampi(IniSectionGetInt(Settings_Section, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
   GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-  GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_NONE, FWM_NONE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+  GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
   GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
   GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
   GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);

@@ -535,27 +535,27 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 //
 // CommandLine Parsing Flags
 //
-static LPWSTR     s_lpSchemeArg = NULL;
-static LPWSTR     s_lpOrigFileArg = NULL;
-static LPWSTR     s_lpMatchArg = NULL;
-static WCHAR      s_lpFileArg[MAX_PATH+1];
+static LPWSTR                s_lpSchemeArg = NULL;
+static LPWSTR                s_lpOrigFileArg = NULL;
+static LPWSTR                s_lpMatchArg = NULL;
+static WCHAR                 s_lpFileArg[MAX_PATH+1];
 
-static cpi_enc_t  s_flagSetEncoding = CPI_NONE;
-static int        s_flagSetEOLMode = 0;
-static bool       s_IsThisAnElevatedRelaunch = false;
-static bool       s_flagStartAsTrayIcon = false;
-static int        s_flagAlwaysOnTop = 0;
-static bool       s_flagKeepTitleExcerpt = false;
-static bool       s_flagNewFromClipboard = false;
-static bool       s_flagPasteBoard = false;
-static bool       s_flagJumpTo = false;
-static int        s_flagMatchText = 0;
-static int        s_flagChangeNotify = 0;
-static bool       s_flagQuietCreate = false;
-static bool       s_flagLexerSpecified = false;
-static bool       s_flagAppIsClosing = false;
-static bool       s_flagSearchPathIfRelative = false;
-static bool       s_flagDisplayHelp = false;
+static cpi_enc_t             s_flagSetEncoding = CPI_NONE;
+static int                   s_flagSetEOLMode = 0;
+static bool                  s_IsThisAnElevatedRelaunch = false;
+static bool                  s_flagStartAsTrayIcon = false;
+static int                   s_flagAlwaysOnTop = 0;
+static bool                  s_flagKeepTitleExcerpt = false;
+static bool                  s_flagNewFromClipboard = false;
+static bool                  s_flagPasteBoard = false;
+static bool                  s_flagJumpTo = false;
+static int                   s_flagMatchText = 0;
+static FILE_WATCHING_MODE    s_flagChangeNotify = FWM_DONT_CARE;
+static bool                  s_flagQuietCreate = false;
+static bool                  s_flagLexerSpecified = false;
+static bool                  s_flagAppIsClosing = false;
+static bool                  s_flagSearchPathIfRelative = false;
+static bool                  s_flagDisplayHelp = false;
 
 //==============================================================================
 
@@ -672,8 +672,8 @@ static void _InitGlobals()
   FocusedView.CodeFoldingAvailable = false;
   FocusedView.ShowCodeFolding = true;
 
-  FileWatching.flagChangeNotify = FWM_NONE;
-  FileWatching.FileWatchingMode = FWM_NONE;
+  FileWatching.flagChangeNotify = FWM_DONT_CARE;
+  FileWatching.FileWatchingMode = FWM_DONT_CARE;
   FileWatching.ResetFileWatching = true;
   FileWatching.MonitoringLog = false;
 
@@ -1234,8 +1234,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (bOpened) {
         if (s_IsThisAnElevatedRelaunch) {
           if (StrIsNotEmpty(s_lpFileArg)) {
-            InstallFileWatching(NULL); // Terminate file watching
-            StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),s_lpFileArg);
+            StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), s_lpFileArg);
             InstallFileWatching(Globals.CurrentFile);
           }
           else {
@@ -1275,27 +1274,33 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     s_lpFileArg[0] = L'\0';
 
     if (bOpened) {
-      if (s_flagChangeNotify == 1) {
-        FileWatching.FileWatchingMode = FWM_NONE;
-        FileWatching.ResetFileWatching = true;
-        InstallFileWatching(Globals.CurrentFile);
-      }
-      else if (s_flagChangeNotify == 2) {
-        if (!FileWatching.MonitoringLog) {
-          SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-        }
-        else {
-          FileWatching.FileWatchingMode = FWM_AUTORELOAD;
+      switch (s_flagChangeNotify) {
+        case FWM_MSGBOX:
+          FileWatching.FileWatchingMode = FWM_DONT_CARE;
           FileWatching.ResetFileWatching = true;
           InstallFileWatching(Globals.CurrentFile);
-        }
+          break;
+        case FWM_AUTORELOAD:
+          if (!FileWatching.MonitoringLog) {
+            SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+          }
+          else {
+            FileWatching.FileWatchingMode = FWM_AUTORELOAD;
+            FileWatching.ResetFileWatching = true;
+            InstallFileWatching(Globals.CurrentFile);
+          }
+          break;
+        case FWM_DONT_CARE:
+        default:
+          break;
       }
     }
   }
   else {
-    if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
-      Encoding_Current(Encoding_Forced(CPI_GET));
-      Encoding_HasChanged(Encoding_Forced(CPI_GET));
+    cpi_enc_t const forcedEncoding = Encoding_Forced(CPI_GET);
+    if (Encoding_IsValid(forcedEncoding)) {
+      Encoding_Current(forcedEncoding);
+      Encoding_HasChanged(forcedEncoding);
     }
   }
 
@@ -2830,7 +2835,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (bOpened) {
           if (params->flagChangeNotify == FWM_MSGBOX) 
           {
-            FileWatching.FileWatchingMode = FWM_NONE;
+            FileWatching.FileWatchingMode = FWM_DONT_CARE;
             FileWatching.ResetFileWatching = true;
             InstallFileWatching(Globals.CurrentFile);
           }
@@ -5602,8 +5607,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_CHANGENOTIFY:
-      if (ChangeNotifyDlg(hwnd))
+      if (ChangeNotifyDlg(hwnd)) {
         InstallFileWatching(Globals.CurrentFile);
+      }
       break;
 
 
@@ -7915,9 +7921,9 @@ void ParseCommandLine()
 
             case L'L':
               if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O')
-                s_flagChangeNotify = 1;
+                s_flagChangeNotify = FWM_MSGBOX;
               else
-                s_flagChangeNotify = 2;
+                s_flagChangeNotify = FWM_AUTORELOAD;
               break;
 
             case L'Q':
@@ -10279,9 +10285,9 @@ bool ActivatePrevInst()
         // Make sure the previous window won't pop up a change notification message
         //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
 
-        if (IsIconic(hwnd))
-          ShowWindowAsync(hwnd,SW_RESTORE);
-
+        if (IsIconic(hwnd)) {
+          ShowWindowAsync(hwnd, SW_RESTORE);
+        }
         if (!IsWindowVisible(hwnd)) {
           SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
           SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
@@ -10295,7 +10301,7 @@ bool ActivatePrevInst()
         }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
-        params->flagChangeNotify = FWM_NONE;
+        params->flagChangeNotify = FWM_DONT_CARE;
         params->flagQuietCreate = false;
         params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
         if (s_flagLexerSpecified && s_lpSchemeArg) {
@@ -10346,9 +10352,9 @@ bool ActivatePrevInst()
       // Make sure the previous window won't pop up a change notification message
       //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
 
-      if (IsIconic(hwnd))
-        ShowWindowAsync(hwnd,SW_RESTORE);
-
+      if (IsIconic(hwnd)) {
+        ShowWindowAsync(hwnd, SW_RESTORE);
+      }
       if (!IsWindowVisible(hwnd)) {
         SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
         SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
@@ -10708,48 +10714,52 @@ void CancelCallTip()
 
 //=============================================================================
 //
-//  InstallFileWatching()
+//  TerminateFileWatching()
 //
-//
-static void _TerminateFileWatching()
+static void TerminateFileWatching()
 {
   if (s_bRunningWatch)
   {
+    KillTimer(NULL, ID_WATCHTIMER);
     if (s_hChangeHandle) {
       FindCloseChangeNotification(s_hChangeHandle);
       s_hChangeHandle = NULL;
     }
-    KillTimer(NULL, ID_WATCHTIMER);
     s_bRunningWatch = false;
     s_dwChangeNotifyTime = 0;
   }
 }
 
-
+//=============================================================================
+//
+//  InstallFileWatching()
+//
 void InstallFileWatching(LPCWSTR lpszFile)
 {
   // Terminate
-  if ((FileWatching.FileWatchingMode == FWM_NONE) || StrIsEmpty(lpszFile))
+  if ((FileWatching.FileWatchingMode == FWM_DONT_CARE) || StrIsEmpty(lpszFile))
   {
-    _TerminateFileWatching();
+    TerminateFileWatching();
   }
   else  // Install
   {
     // Terminate previous watching
-    _TerminateFileWatching();
+    TerminateFileWatching();
 
     WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory,COUNTOF(tchDirectory),lpszFile);
     PathCchRemoveFileSpec(tchDirectory, COUNTOF(tchDirectory));
 
     // Save data of current file
-    HANDLE hFind = FindFirstFile(Globals.CurrentFile,&s_fdCurFile);
-    if (hFind != INVALID_HANDLE_VALUE)
+    HANDLE hFind = FindFirstFile(Globals.CurrentFile, &s_fdCurFile);
+    if (hFind != INVALID_HANDLE_VALUE) {
       FindClose(hFind);
-    else
-      ZeroMemory(&s_fdCurFile,sizeof(WIN32_FIND_DATA));
-
-    s_hChangeHandle = FindFirstChangeNotification(tchDirectory,false,
+    }
+    else {
+      ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
+    }
+    s_hChangeHandle = FindFirstChangeNotification(
+      tchDirectory,false,
       FILE_NOTIFY_CHANGE_FILE_NAME  | \
       FILE_NOTIFY_CHANGE_DIR_NAME   | \
       FILE_NOTIFY_CHANGE_ATTRIBUTES | \
@@ -10758,15 +10768,60 @@ void InstallFileWatching(LPCWSTR lpszFile)
 
     // No previous watching installed, so launch the timer first
     if (!s_bRunningWatch) {
-      SetTimer(NULL, ID_WATCHTIMER, FileWatching.FileCheckInverval, WatchTimerProc);
+      SetTimer(NULL, ID_WATCHTIMER, 
+               min_dw(FileWatching.FileCheckInverval, FileWatching.AutoReloadTimeout), 
+               WatchTimerProc);
+      s_bRunningWatch = true;
     }
-    s_bRunningWatch = true;
-    s_dwChangeNotifyTime = 0;
+    s_dwChangeNotifyTime = 0; // reset
   }
-
   UpdateToolbar();
 }
 
+
+static inline bool CurrentFileChanged() 
+{
+  // Check if the file has been changed
+  WIN32_FIND_DATA fdUpdated;
+  ZeroMemory(&fdUpdated, sizeof(WIN32_FIND_DATA));
+
+  if (!GetFileAttributesEx(Globals.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
+    return true;   // The current file has been removed
+  }
+
+  bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow)
+    || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
+    //|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
+    || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
+    || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
+
+  return changed;
+}
+
+static void CheckCurrentFileChanged(void)
+{
+  switch (FileWatching.FileWatchingMode) {
+    case FWM_AUTORELOAD:
+      if (CurrentFileChanged()) {
+        s_dwChangeNotifyTime = GetTickCount();
+      }
+      break;
+    case FWM_MSGBOX:
+    case FWM_POLL_MSGBOX:
+      if (CurrentFileChanged()) {
+        // Shutdown current watching and give control to main window
+        TerminateFileWatching();
+        PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
+      }
+      break;
+    case FWM_DONT_CARE:
+    default:
+      if (s_hChangeHandle) {
+        FindNextChangeNotification(s_hChangeHandle);
+      }
+      break;
+  }
+}
 
 //=============================================================================
 //
@@ -10782,17 +10837,49 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
   
   if (s_bRunningWatch)
   {
-    if (FileWatching.MonitoringLog) {
-      if ((s_dwChangeNotifyTime > 0) && ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout))
+    switch (FileWatching.FileWatchingMode) {
+      case FWM_AUTORELOAD:
+        break;
+      case FWM_MSGBOX:
+      case FWM_POLL_MSGBOX:
+        break;
+      case FWM_DONT_CARE:
+      default:
+        if (s_hChangeHandle) {
+          FindNextChangeNotification(s_hChangeHandle);
+        }
+        break;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (FileWatching.MonitoringLog && (s_dwChangeNotifyTime > 0L)) {
+      if ((GetTickCount() - s_dwChangeNotifyTime) > FileWatching.AutoReloadTimeout)
       {
-        _TerminateFileWatching();
-        //SendMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
-        MsgChangeNotify(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
+        // Force file reload (Log Monitoring)
+        TerminateFileWatching();
+        PostMessage(Globals.hwndMain, WM_CHANGENOTIFY, 0, 0);
       }
+    }
+    // polling, not very efficient but useful for watching continuously updated file
+    else if () {
+
     }
     // Check Change Notification Handle
     else if (WAIT_OBJECT_0 == WaitForSingleObject(s_hChangeHandle,0))
     {
+
       bool const bHasFileName = StrIsNotEmpty(Globals.CurrentFile);
 
       // Check if the changes affect the current file
@@ -10816,8 +10903,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           FileWatching.MonitoringLog /* force */)
         {
           // Shutdown current watching and give control to main window
-          _TerminateFileWatching();
-          //SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
+          TerminateFileWatching();
           MsgChangeNotify(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
         }
         else {

@@ -86,32 +86,28 @@ typedef enum {
 
 
 //==== Ids ====================================================================
-#define IDC_STATUSBAR    0xFB00
-#define IDC_TOOLBAR      0xFB01
-#define IDC_REBAR        0xFB02
-#define IDC_EDIT         0xFB03
-#define IDC_EDITFRAME    0xFB04
-#define IDC_FILENAME     0xFB05
-#define IDC_REUSELOCK    0xFB06
+#define IDC_STATUSBAR    (0xFB00)
+#define IDC_TOOLBAR      (0xFB01)
+#define IDC_REBAR        (0xFB02)
+#define IDC_EDIT         (0xFB03)
+#define IDC_EDITFRAME    (0xFB04)
+#define IDC_FILENAME     (0xFB05)
+#define IDC_REUSELOCK    (0xFB06)
 
 
 
-//==== Change Notifications ===================================================
-#define ID_WATCHTIMER 0xA000
-#define WM_CHANGENOTIFY WM_USER+1
-//#define WM_CHANGENOTIFYCLEAR WM_USER+2
+//==== Notifications ==========================================================
+#define WM_TRAYMESSAGE    WM_USER          // Callback Message from System Tray
+#define WM_CHANGENOTIFY  (WM_USER+1)       // Change Notifications
+//#define WM_CHANGENOTIFYCLEAR (WM_USER+2)
 
-
-//==== Callback Message from System Tray ======================================
-#define WM_TRAYMESSAGE WM_USER
-
-
-//==== Paste Board Timer ======================================================
-#define ID_PASTEBOARDTIMER 0xA001
+//==== Timer ==================================================================
+#define ID_WATCHTIMER       (0xA000)        // File Watching
+#define ID_PASTEBOARDTIMER  (0xA001)        // Paste Board
 
 
 //==== Reuse Window Lock Timeout ==============================================
-#define REUSEWINDOWLOCKTIMEOUT 1000
+#define REUSEWINDOWLOCKTIMEOUT  (1000)
 
 
 //==== Function Declarations ==================================================
