@@ -639,9 +639,10 @@ void LoadSettings()
   Settings.SaveSettings = IniSectionGetBool(L"Settings", L"SaveSettings", Defaults.SaveSettings);
 
   // --------------------------------------------------------------------------
-  // first set "hard coded" .ini-Settings
-  // --------------------------------------------------------------------------
   const WCHAR* const Settings2_Section = L"Settings2";
+  // --------------------------------------------------------------------------
+
+  // ---  first set "hard coded" .ini-Settings  ---
 
   Flags.bDevDebugMode = IniSectionGetBool(Settings2_Section, L"DevDebugMode", DefaultFlags.bDevDebugMode);
   Flags.bStickyWindowPosition = IniSectionGetBool(Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
@@ -855,6 +856,8 @@ void LoadSettings()
   Defaults2.LexerSQLNumberSignAsComment = true;
   Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(Settings2_Section, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
 
+  Defaults2.ExitOnESCSkipLevel = 2;
+  Settings2.ExitOnESCSkipLevel = clampi(IniSectionGetInt(Settings2_Section, L"ExitOnESCSkipLevel", Defaults2.ExitOnESCSkipLevel), 0, 2);
 
   // --------------------------------------------------------------------------
   const WCHAR* const Settings_Section = L"Settings";
@@ -1005,7 +1008,7 @@ void LoadSettings()
   Settings.PrintMargin.bottom = clampi(IniSectionGetInt(Settings_Section, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
   GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-  GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_NONE, FWM_NONE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+  GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
   GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
   GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
   GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);

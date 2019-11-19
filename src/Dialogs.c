@@ -2062,7 +2062,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     switch (LOWORD(wParam)) {
     case IDOK:
       if (IsButtonChecked(hwnd, 100)) {
-        Settings.FileWatchingMode = FWM_NONE;
+        Settings.FileWatchingMode = FWM_DONT_CARE;
       }
       else if (IsButtonChecked(hwnd, 101)) {
         Settings.FileWatchingMode = FWM_MSGBOX;

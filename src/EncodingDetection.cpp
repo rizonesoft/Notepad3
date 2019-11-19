@@ -731,10 +731,6 @@ cpi_enc_t AnalyzeText_UCHARDET(
 // ============================================================================
 // ============================================================================
 
-inline float max_f(float x, float y) { return (x > y) ? x : y; }
-
-// --------------------------------------------------------------------------
-
 //extern "C" cpi_enc_t Encoding_AnalyzeText
 cpi_enc_t Encoding_AnalyzeText
 (

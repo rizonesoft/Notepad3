@@ -87,23 +87,29 @@ void DbgLog(const char *fmt, ...);
 // ============================================================================
 
 // min/max
-#define _min_(x,y) (((x) < (y)) ? (x) : (y))
-inline int min_i(const int x, const int y) { return (x < y) ? x : y; }
-inline unsigned int min_u(const unsigned int x, const unsigned int y) { return (x < y) ? x : y; }
-inline long min_l(const long x, const long y) { return (x < y) ? x : y; }
-inline size_t min_s(const size_t x, const size_t y) { return (x < y) ? x : y; }
-inline DocPos min_p(const DocPos x, const DocPos y) { return (x < y) ? x : y; }
-inline DocLn min_ln(const DocLn x, const DocLn y) { return (x < y) ? x : y; }
-inline DocPosCR min_cr(const DocPosCR x, const DocPosCR y) { return (x < y) ? x : y; }
+#define _min_(x,y) (((x) > (y)) ? (y) : (x))
+#define _RETCMPMIN_  { return (x > y) ? y : x; }
+inline int min_i(const int x, const int y) _RETCMPMIN_
+inline unsigned int min_u(const unsigned int x, const unsigned int y) _RETCMPMIN_
+inline long min_l(const long x, const long y) _RETCMPMIN_
+inline long min_dw(const DWORD x, const DWORD y) _RETCMPMIN_
+inline size_t min_s(const size_t x, const size_t y) _RETCMPMIN_
+inline DocPos min_p(const DocPos x, const DocPos y) _RETCMPMIN_
+inline DocLn min_ln(const DocLn x, const DocLn y) _RETCMPMIN_
+inline DocPosCR min_cr(const DocPosCR x, const DocPosCR y) _RETCMPMIN_
+inline float min_f(float x, float y) _RETCMPMIN_
 
-#define _max_(x,y) (((x) > (y)) ? (x) : (y))
-inline int max_i(int x, int y) { return (x > y) ? x : y; }
-inline unsigned int max_u(unsigned int x, unsigned int y) { return (x > y) ? x : y; }
-inline long max_l(const long x, const long y) { return (x > y) ? x : y; }
-inline size_t max_s(const size_t x, const size_t y) { return (x > y) ? x : y; }
-inline DocPos max_p(const DocPos x, const DocPos y) { return (x > y) ? x : y; }
-inline DocLn max_ln(const DocLn x, const DocLn y) { return (x > y) ? x : y; }
-inline DocPosCR max_cr(const DocPosCR x, const DocPosCR y) { return (x > y) ? x : y; }
+#define _max_(x,y) (((x) < (y)) ? (y) : (x))
+#define _RETCMPMAX_  { return (x < y) ? y : x; }
+inline int max_i(int x, int y) _RETCMPMAX_
+inline unsigned int max_u(unsigned int x, unsigned int y) _RETCMPMAX_
+inline long max_l(const long x, const long y) _RETCMPMAX_
+inline long max_dw(const DWORD x, const DWORD y) _RETCMPMAX_
+inline size_t max_s(const size_t x, const size_t y) _RETCMPMAX_
+inline DocPos max_p(const DocPos x, const DocPos y) _RETCMPMAX_
+inline DocLn max_ln(const DocLn x, const DocLn y) _RETCMPMAX_
+inline DocPosCR max_cr(const DocPosCR x, const DocPosCR y) _RETCMPMAX_
+inline float max_f(float x, float y) _RETCMPMAX_
 
 inline DocPos abs_p(const DocPos x) { return (x >= 0LL) ? x : (0LL - x); }
 
