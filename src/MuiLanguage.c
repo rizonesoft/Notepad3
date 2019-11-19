@@ -21,7 +21,13 @@
 #include "resource.h"
 #include "Dialogs.h"
 #include "Encoding.h"
+#include "Config/Config.h"
 #include "MuiLanguage.h"
+
+//=============================================================================
+
+extern prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
+extern prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
 //=============================================================================
 
@@ -270,12 +276,28 @@ LANGID LoadLanguageResources()
   Globals.hLngResContainer = _hLangResourceContainer;
   SetThreadUILanguage(languageID);
 
-  // update language dependent items
+  // ===  update language dependent items  ===
+
   for (cpi_enc_t enc = 0; enc < Encoding_CountOf(); ++enc)
   {
     Encoding_SetLabel(enc);
   }
 
+  // ------------------------------------------------------------
+  const WCHAR* const StatusBar_Section = L"Statusbar Settings";
+  // ------------------------------------------------------------
+
+  WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR tchDefaultStrg[MIDSZ_BUFFER] = { L'\0' };
+
+  GetLngString(IDS_MUI_STATUSBAR_PREFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
+  IniFileGetString(Globals.IniFile, StatusBar_Section, L"SectionPrefixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+  ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_PRFX_");
+
+  GetLngString(IDS_MUI_STATUSBAR_POSTFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
+  IniSectionGetString(StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+  ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
+   
   return languageID;
 }
 

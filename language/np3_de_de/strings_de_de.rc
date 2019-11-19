@@ -243,6 +243,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Schema Sammlung"
     IDM_THEMES_DEFAULT      "Fabrik-Vorgaben"
     IDM_THEMES_FILE_ITEM    "Standard Einstellungen"
+    IDS_MUI_STATUSBAR_PREFIXES "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
 STRINGTABLE
