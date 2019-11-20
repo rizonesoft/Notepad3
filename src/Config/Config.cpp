@@ -1621,7 +1621,7 @@ int MRU_Compare(LPMRULIST pmru, LPCWSTR psz1, LPCWSTR psz2)
 }
 
 
-bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks)
+bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
   if (pmru) {
     int i = 0;
@@ -1636,11 +1636,13 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWST
       pmru->pszItems[i] = pmru->pszItems[i - 1];
       pmru->iEncoding[i] = pmru->iEncoding[i - 1];
       pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
+      pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i - 1];
     }
     pmru->pszItems[0] = StrDup(pszNew); // LocalAlloc()
 
     pmru->iEncoding[0] = iEnc;
-    pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : 0);
+    pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
+    pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
     pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
     return true;
   }
@@ -1676,7 +1678,7 @@ bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
 
 
 bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
-  cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks) 
+  cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
   if (pmru) {
     int i = 0;
@@ -1690,6 +1692,7 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
       pmru->pszItems[i] = pmru->pszItems[i - 1];
       pmru->iEncoding[i] = pmru->iEncoding[i - 1];
       pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
+      pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i - 1];
       pmru->pszBookMarks[i] = pmru->pszBookMarks[i - 1];
     }
     if (bRelativePath) {
@@ -1701,7 +1704,8 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
       pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
     }
     pmru->iEncoding[0] = iEnc;
-    pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : 0);
+    pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
+    pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
     pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
     return true;
   }
@@ -1726,11 +1730,13 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
       pmru->pszItems[i] = pmru->pszItems[i + 1];
       pmru->iEncoding[i] = pmru->iEncoding[i + 1];
       pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
+      pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i + 1];
       pmru->pszBookMarks[i] = pmru->pszBookMarks[i + 1];
 
       pmru->pszItems[i + 1] = NULL;
       pmru->iEncoding[i + 1] = 0;
-      pmru->iCaretPos[i + 1] = 0;
+      pmru->iCaretPos[i + 1] = -1;
+      pmru->iSelAnchPos[i + 1] = -1;
       pmru->pszBookMarks[i + 1] = NULL;
     }
     return true;
@@ -1747,7 +1753,8 @@ bool MRU_Empty(LPMRULIST pmru)
         LocalFree(pmru->pszItems[i]);  // StrDup()
         pmru->pszItems[i] = NULL;
         pmru->iEncoding[i] = 0;
-        pmru->iCaretPos[i] = 0;
+        pmru->iCaretPos[i] = -1;
+        pmru->iSelAnchPos[i] = -1;
         if (pmru->pszBookMarks[i]) {
           LocalFree(pmru->pszBookMarks[i]);  // StrDup()
         }
@@ -1804,7 +1811,10 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-        pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : 0;
+        pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1;
+
+        StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
+        pmru->iSelAnchPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
 
@@ -1842,9 +1852,13 @@ bool MRU_Save(LPMRULIST pmru)
             int const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
             IniSectionSetInt(RegKey_Section, tchName, iCP);
           }
-          if (pmru->iCaretPos[i] > 0) {
+          if (pmru->iCaretPos[i] >= 0) {
             StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
             IniSectionSetPos(RegKey_Section, tchName, pmru->iCaretPos[i]);
+          }
+          if (pmru->iSelAnchPos[i] >= 0) {
+            StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
+            IniSectionSetPos(RegKey_Section, tchName, pmru->iSelAnchPos[i]);
           }
           if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
             StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
@@ -1873,7 +1887,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
           WCHAR wchItem[MAX_PATH] = { L'\0' };
           PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
           MRU_AddFile(pmruBase, wchItem, bRelativePath, bUnexpandMyDocs,
-            pmru->iEncoding[i], pmru->iCaretPos[i], pmru->pszBookMarks[i]);
+            pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
         }
       }
     }
@@ -1881,7 +1895,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
       for (i = pmru->iSize - 1; i >= 0; i--) {
         if (pmru->pszItems[i])
           MRU_Add(pmruBase, pmru->pszItems[i],
-            pmru->iEncoding[i], pmru->iCaretPos[i], pmru->pszBookMarks[i]);
+            pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
       }
     }
 

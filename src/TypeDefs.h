@@ -218,6 +218,7 @@ typedef struct _mrulist
   LPWSTR    pszItems[MRU_MAXITEMS];
   cpi_enc_t iEncoding[MRU_MAXITEMS];
   DocPos    iCaretPos[MRU_MAXITEMS];
+  DocPos    iSelAnchPos[MRU_MAXITEMS];
   LPWSTR    pszBookMarks[MRU_MAXITEMS];
 }
 MRULIST, *PMRULIST, *LPMRULIST;
