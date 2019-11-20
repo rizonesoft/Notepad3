@@ -5490,7 +5490,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             // Save MRUs
             if (StringCchLenA(sg_pefrData->szFind, COUNTOF(sg_pefrData->szFind))) {
               if (GetDlgItemText(hwnd, IDC_FINDTEXT, s_tchBuf, COUNTOF(s_tchBuf))) {
-                MRU_Add(Globals.pMRUfind, s_tchBuf, 0, 0, NULL);
+                MRU_Add(Globals.pMRUfind, s_tchBuf, 0, -1, -1, NULL);
                 SetFindPattern(s_tchBuf);
               }
             }
@@ -5916,13 +5916,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           // Save MRUs
           if (StringCchLenA(sg_pefrData->szFind, COUNTOF(sg_pefrData->szFind))) {
             if (GetDlgItemText(hwnd, IDC_FINDTEXT, s_tchBuf2, COUNTOF(s_tchBuf2))) {
-              MRU_Add(Globals.pMRUfind, s_tchBuf2, 0, 0, NULL);
+              MRU_Add(Globals.pMRUfind, s_tchBuf2, 0, -1, -1, NULL);
               SetFindPattern(s_tchBuf2);
             }
           }
           if (StringCchLenA(sg_pefrData->szReplace, COUNTOF(sg_pefrData->szReplace))) {
             if (GetDlgItemText(hwnd, IDC_REPLACETEXT, s_tchBuf2, COUNTOF(s_tchBuf2))) {
-              MRU_Add(Globals.pMRUreplace, s_tchBuf2, 0, 0, NULL);
+              MRU_Add(Globals.pMRUreplace, s_tchBuf2, 0, -1, -1, NULL);
             }
           }
         }

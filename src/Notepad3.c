@@ -5020,7 +5020,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
         }
         MultiByteToWideCharEx(Encoding_SciCP, 0, szSelection, -1, pszTextW, cchSelection);
-        MRU_Add(Globals.pMRUfind, pszTextW, 0, 0, NULL);
+        MRU_Add(Globals.pMRUfind, pszTextW, 0, -1, -1, NULL);
         SetFindPattern(pszTextW);
 
         switch (iLoWParam) {
@@ -9421,7 +9421,9 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
     int idx;
     if (MRU_FindFile(Globals.pFileMRU,pszFileName,&idx)) {
       Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
-      Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : 0);
+      Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : -1);
+      Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetAnchor() : -1);
+
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       if (Globals.pFileMRU->pszBookMarks[idx]) {
@@ -9643,14 +9645,16 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     Flags.bPreserveFileModTime = false;
 
     int idx = 0;
-    DocPos iCaretPos = 0;
+    DocPos iCaretPos = -1;
+    DocPos iAnchorPos = -1;
     LPCWSTR pszBookMarks = L"";
     if (!bReload && MRU_FindFile(Globals.pFileMRU,szFileName,&idx)) {
       iCaretPos = Globals.pFileMRU->iCaretPos[idx];
+      iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
     if (!(s_flagDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
-      MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, pszBookMarks);
+      MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
     }
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
     SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
@@ -9682,13 +9686,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         SciCall_DocumentEnd();
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
-      // set historic caret pos
-      else if (iCaretPos > 0) 
+      // set historic caret/selection  pos
+      else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
       {
-        SciCall_GotoPos(iCaretPos);
-        // adjust view
-        const DocPos iCurPos = SciCall_GetCurrentPos();
-        EditJumpTo(Globals.hwndEdit, SciCall_LineFromPosition(iCurPos) + 1, SciCall_GetColumn(iCurPos) + 1);
+        EditSetSelectionEx(Globals.hwndEdit, iAnchorPos, iCaretPos, -1, -1);
       }
     }
 
@@ -9968,7 +9969,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     int idx;
     if (MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &idx)) {
       Globals.pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
-      Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : 0;
+      Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
+      Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetAnchor() : -1;
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       if (Globals.pFileMRU->pszBookMarks[idx]) {
@@ -10065,9 +10067,10 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       cpi_enc_t iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
       const DocPos iCaretPos = SciCall_GetCurrentPos();
+      const DocPos iAnchorPos = SciCall_GetAnchor();
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-      MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, wchBookMarks);
+      MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
       if (Flags.ShellUseSystemMRU) {
         SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
       }

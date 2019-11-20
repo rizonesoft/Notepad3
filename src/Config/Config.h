@@ -120,9 +120,9 @@ bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectio
 
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
-bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
+bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iAnchor, LPCWSTR pszBookMarks);
 bool      MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex);
-bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, LPCWSTR pszBookMarks);
+bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, DocPos iAnchor, LPCWSTR pszBookMarks);
 bool      MRU_Delete(LPMRULIST pmru, int iIndex);
 bool      MRU_Empty(LPMRULIST pmru);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
