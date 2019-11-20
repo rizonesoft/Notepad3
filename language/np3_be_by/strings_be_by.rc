@@ -243,6 +243,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Калекцыя схем"
     IDM_THEMES_DEFAULT      "Завадскія налады"
     IDM_THEMES_FILE_ITEM    "Стандартныя налады"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
 STRINGTABLE

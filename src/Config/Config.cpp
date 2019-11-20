@@ -36,8 +36,6 @@ extern "C" WININFO   s_DefWinInfo;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
 
-extern "C" prefix_t  s_mxSBPrefix[STATUS_SECTOR_COUNT];
-extern "C" prefix_t  s_mxSBPostfix[STATUS_SECTOR_COUNT];
 extern "C" bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT];
 extern "C" int       s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
 extern "C" int       s_vSBSOrder[STATUS_SECTOR_COUNT];
@@ -276,6 +274,9 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
     bool bHasMultiple = false;
     StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
+  }
+  else {
+    StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
   }
   return StringCchLenW(lpReturnedString, cchReturnedString);
 }
@@ -1056,13 +1057,6 @@ void LoadSettings()
   // --------------------------------------------------------------------------
 
   WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
-
-  IniSectionGetString(StatusBar_Section, L"SectionPrefixes", STATUSBAR_SECTION_PREFIXES, tchStatusBar, COUNTOF(tchStatusBar));
-  ReadStrgsFromCSV(tchStatusBar, s_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_PRFX_");
-
-  IniSectionGetString(StatusBar_Section, L"SectionPostfixes", STATUSBAR_SECTION_POSTFIXES, tchStatusBar, COUNTOF(tchStatusBar));
-  ReadStrgsFromCSV(tchStatusBar, s_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
-
   IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
   ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
 

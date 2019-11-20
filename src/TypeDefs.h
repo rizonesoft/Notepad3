@@ -150,9 +150,6 @@ typedef enum {
 #define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 } 
 #define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11, 12, 13, 14 }
 
-#define STATUSBAR_SECTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-//#define STATUSBAR_SECTION_POSTFIXES L",,, [UTF-8],,, [UTF-8],,,,,,,,,"
-#define STATUSBAR_SECTION_POSTFIXES L",,,,,,,,,,,,,,,"
 #define STATUSBAR_DEFAULT_IDS  L"0 1 12 14 2 4 5 6 7 8 9 10 11"
 #define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0 20 20 20"
 #define STAUSBAR_RIGHT_MARGIN 20

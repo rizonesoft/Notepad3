@@ -1897,7 +1897,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
           char regexpat[MAX_PATH] = { '\0' };
           WideCharToMultiByteEx(CP_UTF8, 0, f, (int)(e-f), regexpat, COUNTOF(regexpat), NULL, NULL);
 
-          if (OnigRegExFind(regexpat, chFilePath, false) >= 0) {
+          if (OnigRegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode()) >= 0) {
             return g_pLexArray[iLex];
           }
         }

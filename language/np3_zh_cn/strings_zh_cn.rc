@@ -243,6 +243,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
     IDM_THEMES_DEFAULT      "工厂默认(&F)"
     IDM_THEMES_FILE_ITEM    "标准设置(&S)"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
 STRINGTABLE

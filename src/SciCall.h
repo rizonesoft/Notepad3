@@ -73,7 +73,7 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 #endif // SCI_DIRECTFUNCTION_INTERFACE
 
 // SciOniguruma RegEx search
-ptrdiff_t WINAPI OnigRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive);
+ptrdiff_t WINAPI OnigRegExFind(const char* pchPattern, const char* pchText, const bool caseSensitive, const int eolMode);
 
 //=============================================================================
 

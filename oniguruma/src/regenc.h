@@ -148,9 +148,8 @@ extern int onigenc_apply_all_case_fold_with_map P_((int map_size, const OnigPair
 extern int onigenc_get_case_fold_codes_by_str_with_map P_((int map_size, const OnigPairCaseFoldCodes map[], int ess_tsett_flag, OnigCaseFoldType flag, const OnigUChar* p, const OnigUChar* end, OnigCaseFoldCodeItem items[]));
 extern int onigenc_not_support_get_ctype_code_range P_((OnigCtype ctype, OnigCodePoint* sb_out, const OnigCodePoint* ranges[]));
 extern int onigenc_is_mbc_newline_0x0a P_((const UChar* p, const UChar* end));
-#ifdef USE_CRNL_AS_LINE_TERMINATOR
-extern int onigenc_is_mbc_newline_0x0a_or_0x0d P_((const UChar* p, const UChar* end));
-#endif
+extern int onigenc_is_mbc_newline_0x0d P_((const UChar* p, const UChar* end));
+extern int onigenc_is_mbc_newline_0x0d_0x0a P_((const UChar* p, const UChar* end));
 
 /* methods for single byte encoding */
 extern int onigenc_ascii_mbc_case_fold P_((OnigCaseFoldType flag, const UChar** p, const UChar* end, UChar* lower));

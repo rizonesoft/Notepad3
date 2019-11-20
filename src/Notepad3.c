@@ -77,8 +77,8 @@ WININFO   s_DefWinInfo = INIT_WININFO;
 
 COLORREF  g_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-prefix_t  s_mxSBPrefix[STATUS_SECTOR_COUNT];
-prefix_t  s_mxSBPostfix[STATUS_SECTOR_COUNT];
+prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
+prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
 bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 int       s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
@@ -8462,7 +8462,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bForceRedraw || ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt)))
     {
       StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
-        s_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, s_mxSBPostfix[STATUS_DOCLINE]);
+        g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, g_mxSBPostfix[STATUS_DOCLINE]);
       s_iLnFromPos = iLnFromPos;
       s_iLnCnt = iLnCnt;
       bIsUpdateNeeded = true;
@@ -8493,7 +8493,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bForceRedraw || ((s_iCol != iCol) || (s_iCols != iCols))) {
       StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
-        s_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, s_mxSBPostfix[STATUS_DOCCOLUMN]);
+        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
 
       s_iCol = iCol;
       s_iCols = iCols;
@@ -8524,7 +8524,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if ((s_iChr != iChr) || (s_iChrs != iChrs)) {
       StringCchPrintf(tchStatusBar[STATUS_DOCCHAR], txtWidth, L"%s%s / %s%s",
-        s_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, s_mxSBPostfix[STATUS_DOCCHAR]);
+        g_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, g_mxSBPostfix[STATUS_DOCCHAR]);
 
       s_iChr = iChr;
       s_iChrs = iChrs;
@@ -8563,10 +8563,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         tchSelB[0] = L'0'; tchSelB[1] = L'\0';
       }
       StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_SELECTION], tchSel, s_mxSBPostfix[STATUS_SELECTION]);
+        g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
 
       StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, s_mxSBPostfix[STATUS_SELCTBYTES]);
+        g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
 
       s_bIsSelCountable = bIsSelCharCountable;
       s_bIsMultiSelection = bIsMultiSelection;
@@ -8603,7 +8603,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         FormatNumberStr(tchLinesSelected, COUNTOF(tchLinesSelected), 0);
       }
       StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, s_mxSBPostfix[STATUS_SELCTLINES]);
+        g_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, g_mxSBPostfix[STATUS_SELCTLINES]);
 
       s_bIsSelectionEmpty = bIsSelectionEmpty;
       s_bIsMultiSelection = bIsMultiSelection;
@@ -8662,7 +8662,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bForceRedraw || (!s_iExprError || (s_iExErr != s_iExprError))) 
     {
       StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
-        s_mxSBPrefix[STATUS_TINYEXPR], tchExpression, s_mxSBPostfix[STATUS_TINYEXPR]);
+        g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
 
       s_iExErr = s_iExprError;
       bIsUpdateNeeded = true;
@@ -8698,7 +8698,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       }
 
       StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, s_mxSBPostfix[STATUS_OCCURRENCE]);
+        g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
 
       s_bMOVisible = Settings.MarkOccurrencesMatchVisible;
       s_iMarkOccurrencesCount = Globals.iMarkOccurrencesCount;
@@ -8725,7 +8725,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       }
 
       StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, s_mxSBPostfix[STATUS_OCCREPLACE]);
+        g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
 
       s_iReplacedOccurrences = Globals.iReplacedOccurrences;
       bIsUpdateNeeded = true;
@@ -8744,7 +8744,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
 
       StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_DOCSIZE], tchBytes, s_mxSBPostfix[STATUS_DOCSIZE]);
+        g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);
 
       s_iTextLength = iTextLength;
       bIsUpdateNeeded = true;
@@ -8759,7 +8759,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bForceRedraw || (s_iEncoding != iEncoding)) 
     {
       StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), s_mxSBPostfix[STATUS_CODEPAGE]);
+        g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
 
       s_iEncoding = iEncoding;
       bIsUpdateNeeded = true;
@@ -8785,16 +8785,16 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       if (eol_mode == SC_EOL_LF) 
       {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _LFi_f : _LF_f),
-          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
       }
       else if (eol_mode == SC_EOL_CR) 
       {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRi_f : _CR_f),
-          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
       }
       else {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, (Globals.bDocHasInconsistentEOLs ? _CRLFi_f : _CRLF_f),
-          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
       }
       s_iEOLMode = eol_mode;
       bIsUpdateNeeded = true;
@@ -8811,11 +8811,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       if (bIsOVR)
       {
         StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
-          s_mxSBPrefix[STATUS_OVRMODE], s_mxSBPostfix[STATUS_OVRMODE]);
+          g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
       }
       else {
         StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
-          s_mxSBPrefix[STATUS_OVRMODE], s_mxSBPostfix[STATUS_OVRMODE]);
+          g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
       }
       s_bIsOVR = bIsOVR;
       bIsUpdateNeeded = true;
@@ -8831,10 +8831,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     {
       if (bUse2ndDefault)
         StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
-          s_mxSBPrefix[STATUS_2ND_DEF], s_mxSBPostfix[STATUS_2ND_DEF]);
+          g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
       else
         StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD%s",
-          s_mxSBPrefix[STATUS_2ND_DEF], s_mxSBPostfix[STATUS_2ND_DEF]);
+          g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
 
       s_bUse2ndDefault = bUse2ndDefault;
       bIsUpdateNeeded = true;
@@ -8855,7 +8855,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), tchLexerName, MINI_BUFFER);
 
       StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s%s",
-        s_mxSBPrefix[STATUS_LEXER], tchLexerName, s_mxSBPostfix[STATUS_LEXER]);
+        g_mxSBPrefix[STATUS_LEXER], tchLexerName, g_mxSBPostfix[STATUS_LEXER]);
 
       s_iCurLexer = iCurLexer;
       bIsUpdateNeeded = true;
@@ -8910,11 +8910,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     static WCHAR tchFRStatus[128] = { L'\0' };
     StringCchPrintf(tchFRStatus, COUNTOF(tchFRStatus), SBFMT,
-      s_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
-      s_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
-      s_mxSBPrefix[STATUS_SELECTION], tchSel,
-      s_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
-      s_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
+      g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
+      g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
+      g_mxSBPrefix[STATUS_SELECTION], tchSel,
+      g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
+      g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
       FR_Status[Globals.FindReplaceMatchFoundState]);
 
     SetWindowText(GetDlgItem(Globals.hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);

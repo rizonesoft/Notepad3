@@ -243,6 +243,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Collection de Schème"
     IDM_THEMES_DEFAULT      "Défaut de fabrication"
     IDM_THEMES_FILE_ITEM    "Paramètres standard"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
 STRINGTABLE
