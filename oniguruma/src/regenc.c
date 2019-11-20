@@ -682,16 +682,23 @@ onigenc_is_mbc_newline_0x0a(const UChar* p, const UChar* end)
   return 0;
 }
 
-#ifdef USE_CRNL_AS_LINE_TERMINATOR
 extern int
-onigenc_is_mbc_newline_0x0a_or_0x0d(const UChar* p, const UChar* end)
+onigenc_is_mbc_newline_0x0d(const UChar* p, const UChar* end)
 {
   if (p < end) {
-    if ((*p == 0x0a) || (*p == 0x0d)) return 1;
+    if (*p == 0x0d) return 1;
   }
   return 0;
 }
-#endif
+
+extern int
+onigenc_is_mbc_newline_0x0d_0x0a(const UChar* p, const UChar* end)
+{
+  if (p < end) {
+    if ((*(p-1) == 0x0d) && (*p == 0x0a)) return 1;
+  }
+  return 0;
+}
 
 /* for single byte encodings */
 extern int

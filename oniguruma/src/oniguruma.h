@@ -186,10 +186,16 @@ ONIG_EXTERN OnigEncodingType OnigEncodingBIG5;
 ONIG_EXTERN OnigEncodingType OnigEncodingGB18030;
 #else // lean and mean
 ONIG_EXTERN OnigEncodingType OnigEncodingASCII;
+ONIG_EXTERN OnigEncodingType OnigEncodingASCII_CR;
+ONIG_EXTERN OnigEncodingType OnigEncodingASCII_CRLF;
 ONIG_EXTERN OnigEncodingType OnigEncodingUTF8;
+ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CR;
+ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CRLF;
 #endif
 
 #define ONIG_ENCODING_ASCII        (&OnigEncodingASCII)
+#define ONIG_ENCODING_ASCII_CR     (&OnigEncodingASCII_CR)
+#define ONIG_ENCODING_ASCII_CRLF   (&OnigEncodingASCII_CRLF)
 #define ONIG_ENCODING_ISO_8859_1   (&OnigEncodingISO_8859_1)
 #define ONIG_ENCODING_ISO_8859_2   (&OnigEncodingISO_8859_2)
 #define ONIG_ENCODING_ISO_8859_3   (&OnigEncodingISO_8859_3)
@@ -206,6 +212,8 @@ ONIG_EXTERN OnigEncodingType OnigEncodingUTF8;
 #define ONIG_ENCODING_ISO_8859_15  (&OnigEncodingISO_8859_15)
 #define ONIG_ENCODING_ISO_8859_16  (&OnigEncodingISO_8859_16)
 #define ONIG_ENCODING_UTF8         (&OnigEncodingUTF8)
+#define ONIG_ENCODING_UTF8_CR      (&OnigEncodingUTF8_CR)
+#define ONIG_ENCODING_UTF8_CRLF    (&OnigEncodingUTF8_CRLF)
 #define ONIG_ENCODING_UTF16_BE     (&OnigEncodingUTF16_BE)
 #define ONIG_ENCODING_UTF16_LE     (&OnigEncodingUTF16_LE)
 #define ONIG_ENCODING_UTF32_BE     (&OnigEncodingUTF32_BE)
