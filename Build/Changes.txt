@@ -31,12 +31,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1118.(#build) (2019-11-18)
+Current BETA Version 5.19.1120.(#build) (2019-11-20)
 ====================================================
 
 ----------------------------------------------------
 NEW:
 ----------------------------------------------------
+- Preserve stream selection in file history (w/ text position remembering).
+- Language dependent status bar abreviations.
 - Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
@@ -47,6 +49,7 @@ NEW:
 ----------------------------------------------------
 CHANGES:
 ----------------------------------------------------
+- Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
 - ESC Key clears active selection (before exiting Notepad3).
 - Refactoring source code (encoding detection).
 - Reduce big file size limit to 2GB (INT_MAX).
@@ -86,6 +89,7 @@ ENHANCEMENT:
 ----------------------------------------------------
 FIXES:
 ----------------------------------------------------
+- Oniguruma RegEx engine: respect EOL mode on encoding type.
 - Wrong encoding detection settings for explicit config .ini-File load.
 - Disable HyperLink calltip on ESC, as long as caret is in hyperlink text range.
 - Crash on very large file size (rejecting too big files).
