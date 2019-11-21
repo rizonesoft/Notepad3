@@ -68,28 +68,61 @@ static HHOOK s_hhkMsgBox = NULL;
 static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lParam)
 {
   // notification that a window is about to be activated  
-  if (nCode == HCBT_ACTIVATE) {
-    // set window handles
-    HWND const hChildWnd = (HWND)wParam; // window handle is wParam
-    HWND const hParentWnd = GetParent(hChildWnd);
+  if (nCode == HCBT_CREATEWND) 
+  {
+    // get window handles
+    LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
+    HWND const hThisWnd = (HWND)wParam;
+    HWND const hParentWnd = pCreateStructure->hwndParent; // GetParent(hThisWnd);
 
     RECT  rParent, rChild, rDesktop;
-    if ((hParentWnd && hChildWnd) &&
+    if ((hParentWnd && hThisWnd) &&
         (GetWindowRect(GetDesktopWindow(), &rDesktop) == TRUE) &&
         (GetWindowRect(hParentWnd, &rParent) == TRUE) &&
-        (GetWindowRect(hChildWnd, &rChild) == TRUE))
+        (GetWindowRect(hThisWnd, &rChild) == TRUE))
     {
+      // calculate message box dimensions
+      LONG const nWidth = (LONG)pCreateStructure->cx;
+      LONG const nHeight = (LONG)pCreateStructure->cy;
+
+      // calculate parent window center point
+      POINT pCenter, pStart;
+      pCenter.x = rParent.left + ((rParent.right - rParent.left) / 2);
+      pCenter.y = rParent.top + ((rParent.bottom - rParent.top) / 2);
+
+      // calculate message box starting point
+      pStart.x = (pCenter.x - (nWidth / 2));
+      pStart.y = (pCenter.y - (nHeight / 2));
+
+      // adjust if message box is off desktop
+      if (pStart.x < 0) pStart.x = 0;
+      if (pStart.y < 0) pStart.y = 0;
+      if (pStart.x + nWidth > rDesktop.right) {
+        pStart.x = rDesktop.right - nWidth;
+      }
+      if (pStart.y + nHeight > rDesktop.bottom) {
+        pStart.y = rDesktop.bottom - nHeight;
+      }
+
+      // set new coordinates
+      pCreateStructure->x = pStart.x;
+      pCreateStructure->y = pStart.y;
+
+      // we are done
       if (s_hhkMsgBox) {
         UnhookWindowsHookEx(s_hhkMsgBox);
-        s_hhkMsgBox = NULL;
       }
-      CenterDlgInParent(hChildWnd, hParentWnd);
-      PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
-      PostMessage(hChildWnd, WM_PAINT, 0, 0);
+      
+      // set Notepad3 dialog icon
+      if (Globals.hDlgIcon) { SendMessage(hThisWnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+    }
+    else if (s_hhkMsgBox) {
+      // continue with any possible chained hooks
+      return CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam);
     }
   }
-  // continue with any possible chained hooks
-  return s_hhkMsgBox ? CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam) : 0;
+  return (LRESULT)0;
 }
 // -----------------------------------------------------------------------------
 
@@ -3666,8 +3699,7 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent /* = NULL */)
     else
       y = rcParent.top + 60;
 
-    SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-
+    SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE);
   }
   //~SnapToDefaultButton(hDlg);
 }
