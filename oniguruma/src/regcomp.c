@@ -5130,10 +5130,16 @@ tune_tree(Node* node, regex_t* reg, int state, ScanEnv* env)
       for (i = 0; i < br->back_num; i++) {
         if (p[i] > env->num_mem)  return ONIGERR_INVALID_BACKREF;
         MEM_STATUS_ON(env->backrefed_mem, p[i]);
+#if 0
 #ifdef USE_BACKREF_WITH_LEVEL
         if (NODE_IS_NEST_LEVEL(node)) {
           MEM_STATUS_ON(env->backtrack_mem, p[i]);
         }
+#endif
+#else
+        /* More precisely, it checks whether alt/repeat exists before
+           the subject capture node.*/
+        MEM_STATUS_ON(env->backtrack_mem, p[i]);
 #endif
       }
     }
@@ -6758,7 +6764,7 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 #endif
 
   reg->capture_history  = scan_env.cap_history;
-  reg->push_mem_start     = scan_env.backtrack_mem | scan_env.cap_history;
+  reg->push_mem_start   = scan_env.backtrack_mem | scan_env.cap_history;
 
 #ifdef USE_CALLOUT
   if (IS_NOT_NULL(reg->extp) && reg->extp->callout_num != 0) {
