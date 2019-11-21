@@ -877,15 +877,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   if (!Globals.hDlgIcon) {
     Globals.hDlgIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
-      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR | LR_SHARED);
   }
 
   if (!Globals.hIcon48) {
-    Globals.hIcon48 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR);
+    Globals.hIcon48 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR | LR_SHARED);
   }
 
   if (!Globals.hIcon128) {
-    Globals.hIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+    Globals.hIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR | LR_SHARED);
   }
 
   // Command Line Help Dialog
@@ -9992,13 +9992,15 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
 
-    //switch (InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch)) 
-    switch (MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch)) 
+    switch (MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch))
     {
     case IDCANCEL:
       return false;
     case IDNO:
       return true;
+    default:
+      // proceed
+      break;
     }
   }
 

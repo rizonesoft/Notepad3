@@ -43,6 +43,23 @@
 #include "Dialogs.h"
 
 //=============================================================================
+
+#define OIC_SAMPLE          32512
+#define OIC_HAND            32513
+#define OIC_QUES            32514
+#define OIC_BANG            32515
+#define OIC_NOTE            32516
+#if(WINVER >= 0x0400)
+#define OIC_WINLOGO         32517
+#define OIC_WARNING         OIC_BANG
+#define OIC_ERROR           OIC_HAND
+#define OIC_INFORMATION     OIC_NOTE
+#endif /* WINVER >= 0x0400 */
+#if(WINVER >= 0x0600)
+#define OIC_SHIELD          32518
+#endif /* WINVER >= 0x0600 */
+
+//=============================================================================
 //
 //  MessageBoxLng()
 //
@@ -67,6 +84,7 @@ static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lPar
         s_hhkMsgBox = NULL;
       }
       CenterDlgInParent(hChildWnd, hParentWnd);
+      PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
     }
   }
   // continue with any possible chained hooks
@@ -163,49 +181,52 @@ typedef struct _infbox {
 
 static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  LPINFOBOXLNG lpMsgBox = NULL;
-
   switch (umsg)
   {
   case WM_INITDIALOG:
-  {
-    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-
-    lpMsgBox = (LPINFOBOXLNG)lParam;
-    switch (lpMsgBox->uType & MB_ICONMASK)
     {
-    case MB_ICONQUESTION:
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_QUESTION), 0);
-      break;
-    case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_WARNING), 0);
-      break;
-    case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_ERROR), 0);
-      break;
-    case MB_USERICON:
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIcon48, 0);
-      break;
-    case MB_ICONINFORMATION:  // = MB_ICONASTERISK
-    default:
-      SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_INFORMATION), 0);
-      break;
+      SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+      LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
+
+      int const cx = GetSystemMetrics(SM_CXSMICON);
+      int const cy = GetSystemMetrics(SM_CYSMICON);
+      UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
+
+      switch (lpMsgBox->uType & MB_ICONMASK)
+      {
+      case MB_ICONQUESTION:
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_QUES), IMAGE_ICON, cx, cy, fuLoad), 0);
+        break;
+      case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_WARNING), IMAGE_ICON, cx, cy, fuLoad), 0);
+        break;
+      case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_ERROR), IMAGE_ICON, cx, cy, fuLoad), 0);
+        break;
+      case MB_USERICON:
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIcon48, 0);
+        break;
+      case MB_ICONINFORMATION:  // = MB_ICONASTERISK
+      default:
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_INFORMATION), IMAGE_ICON, cx, cy, fuLoad), 0);
+        break;
+      }
+
+      SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
+
+      if (lpMsgBox->bDisableCheckBox) {
+        DialogEnableControl(hwnd, IDC_INFOBOXCHECK, false);
+        DialogHideControl(hwnd, IDC_INFOBOXCHECK, true);
+      }
+
+      CenterDlgInParent(hwnd, NULL);
+      AttentionBeep(lpMsgBox->uType);
+
+      FreeMem(lpMsgBox->lpstrMessage);
     }
-    
-    SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
-
-    if (lpMsgBox->bDisableCheckBox) {
-      DialogEnableControl(hwnd, IDC_INFOBOXCHECK, false);
-      DialogHideControl(hwnd, IDC_INFOBOXCHECK, true);
-    }
-
-    CenterDlgInParent(hwnd, NULL);
-    AttentionBeep(lpMsgBox->uType);
-
-    FreeMem(lpMsgBox->lpstrMessage);
-  }
-  return true;
+    return true;
 
 
   case WM_DPICHANGED:
@@ -214,36 +235,38 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
 
   case WM_COMMAND:
-    lpMsgBox = (LPINFOBOXLNG)GetWindowLongPtr(hwnd, DWLP_USER);
-    switch (LOWORD(wParam))
     {
-    case IDOK:
-    case IDYES:
-    case IDRETRY:
-    case IDIGNORE:
-    case IDTRYAGAIN:
-    case IDCONTINUE:
-      if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
-        IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
+      LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)GetWindowLongPtr(hwnd, DWLP_USER);
+      switch (LOWORD(wParam))
+      {
+      case IDOK:
+      case IDYES:
+      case IDRETRY:
+      case IDIGNORE:
+      case IDTRYAGAIN:
+      case IDCONTINUE:
+        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
+          IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
+        }
+      case IDNO:
+      case IDABORT:
+      case IDCLOSE:
+      case IDCANCEL:
+        EndDialog(hwnd, LOWORD(wParam));
+        return true;
+
+      case IDC_INFOBOXCHECK:
+        DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+        DialogEnableControl(hwnd, IDABORT, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+        DialogEnableControl(hwnd, IDCLOSE, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+        DialogEnableControl(hwnd, IDCANCEL, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
+        break;
+
+      default:
+        break;
       }
-    case IDNO:
-    case IDABORT:
-    case IDCLOSE:
-    case IDCANCEL:
-      EndDialog(hwnd, LOWORD(wParam));
       return true;
-
-    case IDC_INFOBOXCHECK:
-      DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-      DialogEnableControl(hwnd, IDABORT, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-      DialogEnableControl(hwnd, IDCLOSE, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-      DialogEnableControl(hwnd, IDCANCEL, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-      break;
-
-    default:
-      break;
     }
-    return true;
   }
   return false;
 }
