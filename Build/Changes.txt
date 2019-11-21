@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1120.(#build) (2019-11-20)
+Current BETA Version 5.19.1121.(#build) (2019-11-21)
 ====================================================
 
 ----------------------------------------------------
@@ -89,6 +89,7 @@ ENHANCEMENT:
 ----------------------------------------------------
 FIXES:
 ----------------------------------------------------
+- System MessageBox() for "not saved" warning on modified files
 - Oniguruma RegEx engine: respect EOL mode on encoding type.
 - Wrong encoding detection settings for explicit config .ini-File load.
 - Disable HyperLink calltip on ESC, as long as caret is in hyperlink text range.
