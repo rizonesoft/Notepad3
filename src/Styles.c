@@ -3823,7 +3823,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
         {
-          CenterDlgInParent(hwnd);
+          CenterDlgInParent(hwnd, NULL);
         }
         else {
           SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
@@ -4370,7 +4370,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           break;
 
         case IDACC_RESETPOS:
-          CenterDlgInParent(hwnd);
+          CenterDlgInParent(hwnd, NULL);
           Settings.CustomSchemesDlgPosX = Settings.CustomSchemesDlgPosY = CW_USEDEFAULT;
           break;
 
@@ -4506,7 +4506,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         iInternalDefault = _s_idefaultLexer;
         CheckDlgButton(hwnd,IDC_AUTOSELECT, SetBtn(s_bAutoSelect));
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 

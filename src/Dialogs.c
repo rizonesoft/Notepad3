@@ -44,38 +44,61 @@
 
 //=============================================================================
 //
-//  MsgBoxLng()
+//  MessageBoxLng()
 //
 static HHOOK s_hhkMsgBox = NULL;
 
-static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lParam)
 {
   // notification that a window is about to be activated  
   if (nCode == HCBT_ACTIVATE) {
     // set window handles
-    HWND hParentWnd = GetForegroundWindow();
-    HWND hChildWnd = (HWND)wParam; // window handle is wParam
+    HWND const hChildWnd = (HWND)wParam; // window handle is wParam
+    HWND const hParentWnd = GetParent(hChildWnd);
 
     RECT  rParent, rChild, rDesktop;
-    if ((hParentWnd != NULL) && (hChildWnd != NULL) &&
-        (GetWindowRect(GetDesktopWindow(), &rDesktop) != 0) &&
-        (GetWindowRect(hParentWnd, &rParent) != 0) &&
-        (GetWindowRect(hChildWnd, &rChild) != 0)) {
-      
-      CenterDlgInParent(hChildWnd);
+    if ((hParentWnd && hChildWnd) &&
+        (GetWindowRect(GetDesktopWindow(), &rDesktop) == TRUE) &&
+        (GetWindowRect(hParentWnd, &rParent) == TRUE) &&
+        (GetWindowRect(hChildWnd, &rChild) == TRUE))
+    {
+      if (s_hhkMsgBox) {
+        UnhookWindowsHookEx(s_hhkMsgBox);
+        s_hhkMsgBox = NULL;
+      }
+      CenterDlgInParent(hChildWnd, hParentWnd);
     }
-    PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
-
-    // exit _MsgBoxProc hook
-    UnhookWindowsHookEx(s_hhkMsgBox);
   }
-  else // otherwise, continue with any possible chained hooks
-  {
-    CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam);
-  }
-  return 0;
+  // continue with any possible chained hooks
+  return s_hhkMsgBox ? CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam) : 0;
 }
 // -----------------------------------------------------------------------------
+
+
+int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
+{
+  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
+  if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) { return -1; }
+
+  WCHAR szTitle[128] = { L'\0' };
+  GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+
+  WCHAR szText[HUGE_BUFFER] = { L'\0' };
+  const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
+  if (argp && *argp) {
+    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
+  }
+  else {
+    StringCchCopy(szText, COUNTOF(szText), szFormat);
+  }
+
+  uType |= (MB_TOPMOST | MB_SETFOREGROUND);
+
+  // center message box to focus or main
+  s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
+
+  return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
+}
 
 
 //=============================================================================
@@ -97,7 +120,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     NULL,
     dwErrID,
     Globals.iPrefLANGID,
-    (LPTSTR)& lpMsgBuf,
+    (LPTSTR)&lpMsgBuf,
     0, NULL);
 
   if (lpMsgBuf) {
@@ -112,7 +135,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
       // center message box to main
       HWND focus = GetFocus();
       HWND hwnd = focus ? focus : Globals.hwndMain;
-      s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+      s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
 
       MessageBoxEx(hwnd, lpDisplayBuf, L"Notepad3 - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
 
@@ -121,54 +144,6 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     LocalFree(lpMsgBuf); // LocalAlloc()
   }
   return dwErrID;
-}
-
-
-//=============================================================================
-//
-//  MessageBoxLng()
-//
-int MessageBoxLng(UINT uType, UINT uidMsg, ...)
-{
-  WCHAR szFormat[HUGE_BUFFER] = { L'\0' };
-  if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) { return -1; }
-
-  WCHAR szTitle[64] = { L'\0' };
-  GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
-
-  WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
-  if (argp && *argp) {
-    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
-  }
-  else {
-    StringCchCopy(szText, COUNTOF(szText), szFormat);
-  }
-
-
-#if 0
-  int iIcon = MB_ICONHAND;
-  switch (iType) {
-
-  case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
-  case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
-  case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
-  case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
-  case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
-  case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
-  case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
-  default: iIcon = MB_ICONSTOP | MB_OK; break;
-  }
-#endif
-
-  uType |= (MB_TOPMOST | MB_SETFOREGROUND);
-
-  // center message box to main
-  HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : Globals.hwndMain;
-  s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
-  return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
 
 
@@ -225,7 +200,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       DialogHideControl(hwnd, IDC_INFOBOXCHECK, true);
     }
 
-    CenterDlgInParent(hwnd);
+    CenterDlgInParent(hwnd, NULL);
     AttentionBeep(lpMsgBox->uType);
 
     FreeMem(lpMsgBox->lpstrMessage);
@@ -427,7 +402,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
       WCHAR szText[4096] = { L'\0' };
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
@@ -782,7 +757,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   #endif
     
-    CenterDlgInParent(hwnd);
+    CenterDlgInParent(hwnd, NULL);
   }
   return true;
 
@@ -927,7 +902,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
       SetDlgItemText(hwnd, IDC_COMMANDLINE, (LPCWSTR)lParam);
       SHAutoComplete(GetDlgItem(hwnd, IDC_COMMANDLINE), SHACF_FILESYSTEM);
 
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
@@ -1107,7 +1082,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
         MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,Globals.hInstance,IDB_OPEN);
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 
@@ -1307,7 +1282,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,Globals.hInstance,IDB_OPEN);
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 
@@ -1474,7 +1449,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
       SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
       SetDlgItemText(hwnd, IDC_ADDFAV_FILES, pszName);
 
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
@@ -1717,7 +1692,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         //  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
         //}
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 
@@ -2050,7 +2025,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
       if (Settings.ResetFileWatching) {
         CheckDlgButton(hwnd, 103, BST_CHECKED);
       }
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
@@ -2130,7 +2105,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
       UINT const uiNumber = *((UINT*)lParam);
       SetDlgItemInt(hwnd, IDC_COLUMNWRAP, uiNumber, false);
       SendDlgItemMessage(hwnd, IDC_COLUMNWRAP, EM_LIMITTEXT, 15, 0);
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
@@ -2233,7 +2208,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
       SendDlgItemMessage(hwnd, 102, CB_SETCURSEL, (WPARAM)(Settings.ShowWordWrapSymbols ? ((Settings.WordWrapSymbols % 100) - (Settings.WordWrapSymbols % 10)) / 10 : 0), 0);
       SendDlgItemMessage(hwnd, 103, CB_SETCURSEL, (WPARAM)Settings.WordWrapMode, 0);
 
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
@@ -2329,7 +2304,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
       else {
         CheckRadioButton(hwnd, 101, 102, 101);
       }
-      CenterDlgInParent(hwnd);
+      CenterDlgInParent(hwnd, NULL);
 
     }
     return true;
@@ -2425,7 +2400,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
         CheckDlgButton(hwnd,IDC_AUTO_DETECT_INDENTS, SetBtn(Settings.AutoDetectIndentSettings));
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 
@@ -2557,7 +2532,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
     DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
 
-    CenterDlgInParent(hwnd);
+    CenterDlgInParent(hwnd, NULL);
   }
   return true;
 
@@ -2726,7 +2701,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 
@@ -2921,7 +2896,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
         CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, SetBtn(Settings.FixLineEndings));
         CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, SetBtn(Settings.FixTrailingBlanks));
 
-        CenterDlgInParent(hwnd);
+        CenterDlgInParent(hwnd, NULL);
       }
       return true;
 
@@ -3009,7 +2984,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
     }
 
     CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
-    CenterDlgInParent(hwnd);
+    CenterDlgInParent(hwnd, NULL);
 
     AttentionBeep(MB_ICONEXCLAMATION);
   }
@@ -3109,7 +3084,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
     CheckDlgButton(hwnd, Globals.fvCurFile.bTabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
     CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
-    CenterDlgInParent(hwnd);
+    CenterDlgInParent(hwnd, NULL);
 
     AttentionBeep(MB_ICONEXCLAMATION);
   }
@@ -3630,44 +3605,46 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLeve
 //
 //  CenterDlgInParent()
 //
-void CenterDlgInParent(HWND hDlg)
+void CenterDlgInParent(HWND hDlg, HWND hDlgParent /* = NULL */)
 {
+  if (!hDlg) { return; }
+
   RECT rcDlg;
   GetWindowRect(hDlg, &rcDlg);
 
-  HWND const hParent = GetParent(hDlg);
+  HWND const hParent = hDlgParent ? hDlgParent : GetParent(hDlg);
   RECT rcParent;
-  if (hParent)
-    GetWindowRect(hParent, &rcParent);
-  else
-    GetWindowRect(GetDesktopWindow(), &rcParent);
+  BOOL const bFoundRect = hParent ? GetWindowRect(hParent, &rcParent) : GetWindowRect(GetDesktopWindow(), &rcParent);
 
-  HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
+  if (bFoundRect) 
+  {
+    HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
 
-  MONITORINFO mi;
-  mi.cbSize = sizeof(MONITORINFO);
-  GetMonitorInfo(hMonitor, &mi);
+    MONITORINFO mi;
+    mi.cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hMonitor, &mi);
 
-  int const xMin = mi.rcWork.left;
-  int const yMin = mi.rcWork.top;
+    int const xMin = mi.rcWork.left;
+    int const yMin = mi.rcWork.top;
 
-  int const xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
-  int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
+    int const xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
+    int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
 
-  int x;
-  if ((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left) > 20)
-    x = rcParent.left + (((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left)) / 2);
-  else
-    x = rcParent.left + 70;
+    int x;
+    if ((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left) > 20)
+      x = rcParent.left + (((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left)) / 2);
+    else
+      x = rcParent.left + 70;
 
-  int y;
-  if ((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top) > 20)
-    y = rcParent.top + (((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top)) / 2);
-  else
-    y = rcParent.top + 60;
+    int y;
+    if ((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top) > 20)
+      y = rcParent.top + (((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top)) / 2);
+    else
+      y = rcParent.top + 60;
 
-  SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+    SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
+  }
   //~SnapToDefaultButton(hDlg);
 }
 
