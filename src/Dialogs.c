@@ -85,6 +85,7 @@ static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lPar
       }
       CenterDlgInParent(hChildWnd, hParentWnd);
       PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
+      PostMessage(hChildWnd, WM_PAINT, 0, 0);
     }
   }
   // continue with any possible chained hooks
