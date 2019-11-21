@@ -49,7 +49,7 @@ void DialogNewWindow(HWND hwnd,bool,bool);
 void DialogFileBrowse(HWND hwnd);
 void DialogAdminExe(HWND hwnd,bool);
 
-int  MessageBoxLng(UINT uType, UINT uIdMsg, ...);
+int  MessageBoxLng(HWND hwnd, UINT uType, UINT uIdMsg, ...);
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMessage, ...);
 DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
@@ -57,7 +57,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR 
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
-void CenterDlgInParent(HWND hDlg);
+void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 //void SnapToDefaultButton(HWND);
@@ -117,7 +117,7 @@ inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { Message
 #define DialogHideControl(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; ShowWindow(hctrl, (b)?SW_HIDE:SW_SHOW); }
 
-
+ 
 // --- Themed Dialogs ---------------------------------------------------------
 
 #ifndef DLGTEMPLATEEX

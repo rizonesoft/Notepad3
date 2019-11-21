@@ -9992,7 +9992,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
 
-    switch (InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch)) {
+    //switch (InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch)) 
+    switch (MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch)) 
+    {
     case IDCANCEL:
       return false;
     case IDNO:
