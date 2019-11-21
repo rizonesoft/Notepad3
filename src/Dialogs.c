@@ -63,7 +63,7 @@
 //
 //  MessageBoxLng()
 //
-static HHOOK s_hhkMsgBox = NULL;
+static HHOOK s_hCBThook = NULL;
 
 static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -72,6 +72,7 @@ static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lPar
   {
     // get window handles
     LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
+    
     HWND const hThisWnd = (HWND)wParam;
     HWND const hParentWnd = pCreateStructure->hwndParent; // GetParent(hThisWnd);
 
@@ -109,17 +110,18 @@ static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lPar
       pCreateStructure->y = pStart.y;
 
       // we are done
-      if (s_hhkMsgBox) {
-        UnhookWindowsHookEx(s_hhkMsgBox);
+      if (s_hCBThook) {
+        UnhookWindowsHookEx(s_hCBThook);
+        s_hCBThook = NULL;
       }
       
       // set Notepad3 dialog icon
       if (Globals.hDlgIcon) { SendMessage(hThisWnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
     }
-    else if (s_hhkMsgBox) {
+    else if (s_hCBThook) {
       // continue with any possible chained hooks
-      return CallNextHookEx(s_hhkMsgBox, nCode, wParam, lParam);
+      return CallNextHookEx(s_hCBThook, nCode, wParam, lParam);
     }
   }
   return (LRESULT)0;
@@ -147,7 +149,7 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
   uType |= (MB_TOPMOST | MB_SETFOREGROUND);
 
   // center message box to focus or main
-  s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
+  s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
 
   return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
@@ -187,7 +189,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
       // center message box to main
       HWND focus = GetFocus();
       HWND hwnd = focus ? focus : Globals.hwndMain;
-      s_hhkMsgBox = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
+      s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
 
       MessageBoxEx(hwnd, lpDisplayBuf, L"Notepad3 - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
 
