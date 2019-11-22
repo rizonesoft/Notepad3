@@ -300,6 +300,12 @@ typedef struct _globals_t
   HICON     hDlgIcon;
   HICON     hIcon48;
   HICON     hIcon128;
+  HICON     hIconMsgInfo;
+  HICON     hIconMsgWarn;
+  HICON     hIconMsgError;
+  HICON     hIconMsgQuest;
+  HICON     hIconMsgShield;
+  HICON     hIconMsgWinLogo;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;

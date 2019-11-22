@@ -875,17 +875,41 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h
   }
 
+  int const cxs = GetSystemMetrics(SM_CXSMICON);
+  int const cys = GetSystemMetrics(SM_CYSMICON);
+
+  int const cxl = GetSystemMetrics(SM_CXICON);
+  int const cyl = GetSystemMetrics(SM_CYICON);
+
+  //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
+
   if (!Globals.hDlgIcon) {
-    Globals.hDlgIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
-      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR | LR_SHARED);
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIcon));
   }
-
   if (!Globals.hIcon48) {
-    Globals.hIcon48 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 48, 48, LR_DEFAULTCOLOR | LR_SHARED);
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxl, cxl, &(Globals.hIcon48));
+  }
+  if (!Globals.hIcon128) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hIcon128));
   }
 
-  if (!Globals.hIcon128) {
-    Globals.hIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR | LR_SHARED);
+  if (!Globals.hIconMsgInfo) {
+    LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxl, cyl, &(Globals.hIconMsgInfo));
+  }
+  if (!Globals.hIconMsgWarn) {
+    LoadIconWithScaleDown(NULL, IDI_WARNING, cxl, cyl, &(Globals.hIconMsgWarn));
+  }
+  if (!Globals.hIconMsgError) {
+    LoadIconWithScaleDown(NULL, IDI_ERROR, cxl, cyl, &(Globals.hIconMsgError));
+  }
+  if (!Globals.hIconMsgQuest) {
+    LoadIconWithScaleDown(NULL, IDI_QUESTION, cxl, cyl, &(Globals.hIconMsgQuest));
+  }
+  if (!Globals.hIconMsgShield) {
+    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgShield));
+  }
+  if (!Globals.hIconMsgWinLogo) {
+    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgWinLogo));
   }
 
   // Command Line Help Dialog
@@ -9991,6 +10015,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     else {
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
+
 
     switch (MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch))
     {
