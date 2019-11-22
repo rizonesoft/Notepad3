@@ -226,27 +226,24 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
 
-      int const cx = GetSystemMetrics(SM_CXSMICON);
-      int const cy = GetSystemMetrics(SM_CYSMICON);
-      UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
       switch (lpMsgBox->uType & MB_ICONMASK)
       {
       case MB_ICONQUESTION:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_QUES), IMAGE_ICON, cx, cy, fuLoad), 0);
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgQuest, 0);
         break;
       case MB_ICONWARNING:  // = MB_ICONEXCLAMATION
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_WARNING), IMAGE_ICON, cx, cy, fuLoad), 0);
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgWarn, 0);
         break;
       case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_ERROR), IMAGE_ICON, cx, cy, fuLoad), 0);
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgError, 0);
         break;
       case MB_USERICON:
         SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIcon48, 0);
         break;
       case MB_ICONINFORMATION:  // = MB_ICONASTERISK
       default:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadImage(NULL, MAKEINTRESOURCE(OIC_INFORMATION), IMAGE_ICON, cx, cy, fuLoad), 0);
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgInfo, 0);
         break;
       }
 
