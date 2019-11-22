@@ -76,38 +76,21 @@ static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lPar
     HWND const hThisWnd = (HWND)wParam;
     HWND const hParentWnd = pCreateStructure->hwndParent; // GetParent(hThisWnd);
 
-    RECT  rParent, rChild, rDesktop;
-    if ((hParentWnd && hThisWnd) &&
-        (GetWindowRect(GetDesktopWindow(), &rDesktop) == TRUE) &&
-        (GetWindowRect(hParentWnd, &rParent) == TRUE) &&
-        (GetWindowRect(hThisWnd, &rChild) == TRUE))
+    if (hParentWnd && hThisWnd) 
     {
-      // calculate message box dimensions
-      LONG const nWidth = (LONG)pCreateStructure->cx;
-      LONG const nHeight = (LONG)pCreateStructure->cy;
+      RECT rcParent;  GetWindowRect(hParentWnd, &rcParent);
 
-      // calculate parent window center point
-      POINT pCenter, pStart;
-      pCenter.x = rParent.left + ((rParent.right - rParent.left) / 2);
-      pCenter.y = rParent.top + ((rParent.bottom - rParent.top) / 2);
-
-      // calculate message box starting point
-      pStart.x = (pCenter.x - (nWidth / 2));
-      pStart.y = (pCenter.y - (nHeight / 2));
-
-      // adjust if message box is off desktop
-      if (pStart.x < 0) pStart.x = 0;
-      if (pStart.y < 0) pStart.y = 0;
-      if (pStart.x + nWidth > rDesktop.right) {
-        pStart.x = rDesktop.right - nWidth;
-      }
-      if (pStart.y + nHeight > rDesktop.bottom) {
-        pStart.y = rDesktop.bottom - nHeight;
-      }
+      RECT rcDlg;
+      rcDlg.left   = pCreateStructure->x;
+      rcDlg.top    = pCreateStructure->y;
+      rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
+      rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
+      
+      POINT ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
 
       // set new coordinates
-      pCreateStructure->x = pStart.x;
-      pCreateStructure->y = pStart.y;
+      pCreateStructure->x = ptTopLeft.x;
+      pCreateStructure->y = ptTopLeft.y;
 
       // we are done
       if (s_hCBThook) {
@@ -3659,48 +3642,60 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLeve
 
 //=============================================================================
 //
+//  GetCenterOfDlgInParent()
+//
+POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)
+{
+  HMONITOR const hMonitor = MonitorFromRect(rcParent, MONITOR_DEFAULTTONEAREST);
+
+  MONITORINFO mi;  mi.cbSize = sizeof(MONITORINFO);  GetMonitorInfo(hMonitor, &mi);
+
+  int const xMin = mi.rcWork.left;
+  int const yMin = mi.rcWork.top;
+
+  int const xMax = (mi.rcWork.right) - (rcDlg->right - rcDlg->left);
+  int const yMax = (mi.rcWork.bottom) - (rcDlg->bottom - rcDlg->top);
+
+  int x;
+  if ((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left) > 20) {
+    x = rcParent->left + (((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left)) / 2);
+  }
+  else {
+    x = rcParent->left + 60;
+  }
+  int y;
+  if ((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top) > 20) {
+    y = rcParent->top + (((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top)) / 2);
+  }
+  else {
+    y = rcParent->top + 60;
+  }
+
+  POINT ptRet;  ptRet.x = clampi(x, xMin, xMax);  ptRet.y = clampi(y, yMin, yMax);
+  return ptRet;
+}
+
+//=============================================================================
+//
 //  CenterDlgInParent()
 //
-void CenterDlgInParent(HWND hDlg, HWND hDlgParent /* = NULL */)
+void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
 {
   if (!hDlg) { return; }
 
-  RECT rcDlg;
-  GetWindowRect(hDlg, &rcDlg);
+  RECT rcDlg;  GetWindowRect(hDlg, &rcDlg);
 
   HWND const hParent = hDlgParent ? hDlgParent : GetParent(hDlg);
+  
   RECT rcParent;
-  BOOL const bFoundRect = hParent ? GetWindowRect(hParent, &rcParent) : GetWindowRect(GetDesktopWindow(), &rcParent);
-
-  if (bFoundRect) 
+  BOOL const bFoundRect = hParent ? GetWindowRect(hParent, &rcParent) :
+                                    GetWindowRect(GetDesktopWindow(), &rcParent);
+  if (bFoundRect)
   {
-    HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
-
-    MONITORINFO mi;
-    mi.cbSize = sizeof(MONITORINFO);
-    GetMonitorInfo(hMonitor, &mi);
-
-    int const xMin = mi.rcWork.left;
-    int const yMin = mi.rcWork.top;
-
-    int const xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
-    int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
-
-    int x;
-    if ((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left) > 20)
-      x = rcParent.left + (((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left)) / 2);
-    else
-      x = rcParent.left + 70;
-
-    int y;
-    if ((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top) > 20)
-      y = rcParent.top + (((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top)) / 2);
-    else
-      y = rcParent.top + 60;
-
-    SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE);
+    POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
+    SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE);
+    //~SnapToDefaultButton(hDlg);
   }
-  //~SnapToDefaultButton(hDlg);
 }
 
 
@@ -3710,7 +3705,6 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent /* = NULL */)
 //
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 {
-
   RECT rcDlg;
   GetWindowRect(hDlg, &rcDlg);
 
@@ -3721,7 +3715,6 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
   // return positions relative to parent window
   *xDlg = (rcDlg.left - rcParent.left);
   *yDlg = (rcDlg.top - rcParent.top);
-
 }
 
 

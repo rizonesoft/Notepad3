@@ -1710,15 +1710,18 @@ ptrdiff_t MultiByteToWideCharEx(
   UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
   LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
 {
-  LPCCH inPtr = lpMultiByteStr;
-  ptrdiff_t inBufSiz = cbMultiByte;
+  static CHAR const strgEnd = '\0'; // stop reading
+
+  LPCCH inPtr = lpMultiByteStr ? lpMultiByteStr : &strgEnd;
+  ptrdiff_t inBufSiz = (cbMultiByte >= 0LL) ? cbMultiByte : -1LL;
+
   LPWSTR outPtr = (cchWideChar == 0LL) ? NULL : lpWideCharStr;
   ptrdiff_t outBufCnt = cchWideChar;
   ptrdiff_t wcharConv = 0LL;
 
   static ptrdiff_t const maxBufSize = (INT_MAX - 1);
 
-  while ((inBufSiz > 0LL) || (inBufSiz == -1LL))
+  while ((inBufSiz > 0LL) || (inPtr && (*inPtr != '\0')))
   {
     int const siz = (inBufSiz > maxBufSize) ? (int)maxBufSize : ((inBufSiz > 0LL) ? (int)inBufSiz : -1);
     int const cnt = (outBufCnt > (ptrdiff_t)INT_MAX) ? INT_MAX : (int)outBufCnt;
@@ -1735,8 +1738,11 @@ ptrdiff_t MultiByteToWideCharEx(
     }
     if (inBufSiz > 0LL) {
       inBufSiz -= (ptrdiff_t)usedMBC;
+      if (inBufSiz <= 0LL) { inPtr = &strgEnd; }
     }
-    inPtr += (ptrdiff_t)usedMBC;
+    else {
+      inPtr += (ptrdiff_t)usedMBC;
+    }
   }
   return wcharConv;
 }
