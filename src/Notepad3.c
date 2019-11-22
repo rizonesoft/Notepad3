@@ -4024,9 +4024,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           if (!Settings2.NoCutLineOnEmptySelection) {
             _BEGIN_UNDO_ACTION_
-            // VisualStudio behavior
-            //~SciCall_CopyAllowLine();
-            //~SciCall_LineDelete();
             SciCall_LineCut();
             _END_UNDO_ACTION_
           }
@@ -4059,7 +4056,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        //~_BEGIN_UNDO_ACTION_
         if (SciCall_IsSelectionEmpty()) {
           if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) && 
               !Settings2.NoCopyLineOnEmptySelection)
@@ -4071,7 +4067,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         else {
           SciCall_Copy();
         }
-        //~_END_UNDO_ACTION_
         UpdateToolbar();
       }
       break;
@@ -4120,16 +4115,35 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           s_bLastCopyFromMe = true;
         }
         _BEGIN_UNDO_ACTION_
+#if 0
           if (SciCall_IsSelectionRectangle()) {
-            //SciCall_SetMultiPaste(SC_MULTIPASTE_ONCE);
-            //SciCall_RotateSelection();
+            SciCall_SetMultiPaste(SC_MULTIPASTE_ONCE);
+            SciCall_RotateSelection();
           } else {
-            //SciCall_SetMultiPaste(SC_MULTIPASTE_EACH);
+            SciCall_SetMultiPaste(SC_MULTIPASTE_EACH);
           }
-          //if (!Sci_IsMultiOrRectangleSelection()) {
-          //  SciCall_PositionBefore(SciCall_PositionAfter(SciCall_GetCurrentPos()));
-          //}
+
+          if (!Sci_IsMultiOrRectangleSelection()) {
+            bool const ast = SciCall_GetAdditionalSelectionTyping();
+            SciCall_SetAdditionalSelectionTyping(false);
+            SciCall_Paste();
+            SciCall_SetAdditionalSelectionTyping(ast);
+          }
+          else {
+          }
+
+          // does not change anything
+          if (Sci_IsThinSelection()) {
+            DocPos const anchor = SciCall_GetRectangularSelectionAnchor();
+            DocPos const caret = SciCall_GetRectangularSelectionCaret();
+            SciCall_ClearSelections();
+            SciCall_SetRectangularSelectionAnchor(anchor);
+            SciCall_SetRectangularSelectionCaret(caret);
+          }
+#endif
+
           SciCall_Paste();
+
         _END_UNDO_ACTION_
         UpdateToolbar();
         UpdateStatusbar(false);

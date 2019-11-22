@@ -246,6 +246,9 @@ DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
 DeclareSciCallV2(AppendText, APPENDTEXT, DocPos, length, const char*, text)
 DeclareSciCallV0(SetSavePoint, SETSAVEPOINT)
 
+DeclareSciCallV1(SetAdditionalSelectionTyping, SETADDITIONALSELECTIONTYPING, bool, flag)
+DeclareSciCallR0(GetAdditionalSelectionTyping, GETADDITIONALSELECTIONTYPING, bool)
+
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos)
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
 //DeclareSciCallR01(GetTargetText, GETTARGETTEXT, sptr_t, const unsigned char*, text)
