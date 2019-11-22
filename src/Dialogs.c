@@ -129,7 +129,7 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
     StringCchCopy(szText, COUNTOF(szText), szFormat);
   }
 
-  uType |= (MB_TOPMOST | MB_SETFOREGROUND);
+  uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
   // center message box to focus or main
   s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
