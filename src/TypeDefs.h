@@ -155,6 +155,8 @@ typedef enum {
 #define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0 20 20 20"
 #define STAUSBAR_RIGHT_MARGIN 20
 
+#define MB_ICONSHIELD 0x000000B0L
+
 // --------------------------------------------------------------------------
 
 typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO, CT_DWELL } CALLTIPTYPE;
@@ -305,7 +307,8 @@ typedef struct _globals_t
   HICON     hIconMsgError;
   HICON     hIconMsgQuest;
   HICON     hIconMsgShield;
-  HICON     hIconMsgWinLogo;
+  HICON     hIconMsgShieldSmall;
+  //HICON     hIconMsgWinLogo;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;

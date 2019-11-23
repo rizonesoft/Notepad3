@@ -241,13 +241,13 @@ LANGID LoadLanguageResources()
   WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, COUNTOF(tchUserLangMultiStrg)))
   {
-    GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
+    MsgBoxLastError(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
   }
   DWORD langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
   if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
-    GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
+    MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
   }
 
   // obtains access to the proper resource container 
@@ -266,7 +266,7 @@ LANGID LoadLanguageResources()
   }
   if (!_hLangResourceContainer) {
     // fallback to ENGLISH_US
-    //GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
+    //MsgBoxLastError(L"LoadMUILibrary", 0);
     Globals.bPrefLngNotAvail = (languageID != MUI_LanguageDLLs[0].LangId);
     languageID = MUI_LanguageDLLs[0].LangId;
     _hLangResourceContainer = Globals.hInstance;

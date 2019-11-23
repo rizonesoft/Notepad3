@@ -129,7 +129,7 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
     StringCchCopy(szText, COUNTOF(szText), szFormat);
   }
 
-  uType |= (MB_TOPMOST | MB_SETFOREGROUND);
+  uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
   // center message box to focus or main
   s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
@@ -140,9 +140,9 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
 
 //=============================================================================
 //
-//  GetLastErrorToMsgBox()
+//  MsgBoxLastError()
 //
-DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
+DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 {
   // Retrieve the system error message for the last-error code
   if (!dwErrID) {
@@ -162,12 +162,12 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 
   if (lpMsgBuf) {
     // Display the error message and exit the process
-    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
+    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW(lpszMessage, 0) + 80;
     LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     if (lpDisplayBuf) {
       StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
-        lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
+        lpszMessage, dwErrID, (LPCWSTR)lpMsgBuf);
 
       // center message box to main
       HWND focus = GetFocus();
@@ -197,7 +197,6 @@ typedef struct _infbox {
   bool   bDisableCheckBox;
 } INFOBOXLNG, *LPINFOBOXLNG;
 
-
 static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch (umsg)
@@ -220,6 +219,9 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         break;
       case MB_ICONERROR:  // = MB_ICONSTOP, MB_ICONHAND
         SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgError, 0);
+        break;
+      case MB_ICONSHIELD:
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgShield, 0);
         break;
       case MB_USERICON:
         SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIcon48, 0);
@@ -293,6 +295,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 //  InfoBoxLng()
 //
 //
+
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
   int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);

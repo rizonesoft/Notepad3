@@ -28,6 +28,7 @@
 #include "Encoding.h"
 #include "MuiLanguage.h"
 #include "Notepad3.h"
+#include "Dialogs.h"
 #include "Config/Config.h"
 
 #include "Scintilla.h"
@@ -212,26 +213,26 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 {
   StringCchCopy(szVersionStr, cchVersionStr, L"OS Version: Windows ");
   
-  if (IsWin10()) {
+  if (IsWin10OrHigher()) {
     StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2016 " : L"10 ");
   }
-  else if (IsWin81()) {
+  else if (IsWin81OrHigher()) {
     StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 R2 " : L"8.1");
   }
-  else if (IsWin8()) {
+  else if (IsWin8OrHigher()) {
     StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 " : L"8");
   }
-  else if (IsWin71()) {
+  else if (IsWin71OrHigher()) {
     StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 R2 " : L"7 (SP1)");
   }
-  else if (IsWin7()) {
+  else if (IsWin7OrHigher()) {
     StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 " : L"7");
   }
   else {
     StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Unkown Server " : L"?");
   }
   
-  if (IsWin10()) {
+  if (IsWin10OrHigher()) {
     WCHAR win10ver[80] = { L'\0' };
     if (s_OSversion.dwOSVersionInfoSize == 0) { _GetTrueWindowsVersion(); }
     DWORD const build = s_OSversion.dwBuildNumber;
@@ -269,13 +270,62 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
 
 //=============================================================================
 //
+//  ConvertIconToBitmap()
+//
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+{
+  const HDC hScreenDC = GetDC(NULL);
+  const HBITMAP hbmpTmp = CreateCompatibleBitmap(hScreenDC, cx, cy);
+  const HDC hMemDC = CreateCompatibleDC(hScreenDC);
+  const HBITMAP hOldBmp = SelectObject(hMemDC, hbmpTmp);
+  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL);
+  SelectObject(hMemDC, hOldBmp);
+
+  const HBITMAP hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
+
+  DeleteObject(hbmpTmp);
+  DeleteDC(hMemDC);
+  ReleaseDC(NULL, hScreenDC);
+
+  return hDibBmp;
+}
+
+
+//=============================================================================
+//
+//  SetUACIcon()
+//
+void SetUACIcon(const HMENU hMenu, const UINT nItem)
+{
+  static bool bInitialized = false;
+  if (bInitialized) { return; }
+
+  //const int cx = GetSystemMetrics(SM_CYMENU) - 4;
+  //const int cy = cx;
+  int const cx = GetSystemMetrics(SM_CXSMICON);
+  int const cy = GetSystemMetrics(SM_CYSMICON);
+
+  if (Globals.hIconMsgShieldSmall)
+  {
+    MENUITEMINFO mii = { 0 };
+    mii.cbSize = sizeof(mii);
+    mii.fMask = MIIM_BITMAP;
+    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+  }
+  bInitialized = true;
+}
+
+
+//=============================================================================
+//
 //  GetCurrentDPI()
 //
 DPI_T GetCurrentDPI(HWND hwnd) {
 
   DPI_T curDPI = { 0, 0 };
 
-  if (IsWin10()) {
+  if (IsWin10OrHigher()) {
     HMODULE const hModule = GetModuleHandle(L"user32.dll");
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
@@ -285,7 +335,7 @@ DPI_T GetCurrentDPI(HWND hwnd) {
     }
   }
 
-  if ((curDPI.x == 0) && IsWin81()) {
+  if ((curDPI.x == 0) && IsWin81OrHigher()) {
     HMODULE hShcore = LoadLibrary(L"shcore.dll");
     if (hShcore) {
       FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
@@ -420,36 +470,67 @@ HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
 
 //=============================================================================
 //
-//  IsElevated()
+//  IsProcessElevated()
 //
-bool IsElevated() {
+//   PURPOSE: The function gets the elevation information of the current 
+//   process. It dictates whether the process is elevated or not. Token 
+//   elevation is only available on Windows Vista and newer operating 
+//   systems, thus IsProcessElevated throws a C++ exception if it is called 
+//   on systems prior to Windows Vista. It is not appropriate to use this 
+//   function to determine whether a process is run as administartor.
+//
+//   RETURN VALUE: Returns TRUE if the process is elevated. Returns FALSE if 
+//   it is not.
+//
+//   NOTE: TOKEN_INFORMATION_CLASS provides TokenElevationType to check the 
+//   elevation type (TokenElevationTypeDefault / TokenElevationTypeLimited /
+//   TokenElevationTypeFull) of the process. It is different from 
+//   TokenElevation in that, when UAC is turned off, elevation type always 
+//   returns TokenElevationTypeDefault even though the process is elevated 
+//   (Integrity Level == High). In other words, it is not safe to say if the 
+//   process is elevated based on elevation type. Instead, we should use 
+//   TokenElevation.
+//
+bool IsProcessElevated() {
+
+  // When the process is run on operating systems prior to Windows 
+  // Vista, GetTokenInformation returns FALSE with the 
+  // ERROR_INVALID_PARAMETER error code because TokenElevation is 
+  // not supported on those operating systems.
+  if (!IsVistaOrHigher()) { return false; }
 
   bool bIsElevated = false;
   HANDLE hToken = NULL;
+  Globals.dwLastError = ERROR_SUCCESS;
 
-  if (!IsVista())
-    return false;
-
-  if (OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&hToken)) {
-
-    TOKEN_ELEVATION te;
+  if (OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&hToken)) 
+  {
+    TOKEN_ELEVATION elevationToken;
     DWORD expectedRetVal = sizeof(TOKEN_ELEVATION);
     DWORD dwReturnLength = 0;
 
-    if (GetTokenInformation(hToken,TokenElevation,&te,expectedRetVal,&dwReturnLength)) {
-        if (dwReturnLength == expectedRetVal)
-          bIsElevated = (bool)te.TokenIsElevated;
+    if (GetTokenInformation(hToken,TokenElevation,&elevationToken,expectedRetVal,&dwReturnLength)) 
+    {
+      if (dwReturnLength == expectedRetVal) {
+        bIsElevated = elevationToken.TokenIsElevated;
+      }
     }
-    if (hToken)
+    if (hToken) {
       CloseHandle(hToken);
+      hToken = NULL;
+    }
+  }
+  else {
+    Globals.dwLastError = GetLastError();
+    //GetLastErrorToMessageBox(L"IsProcessElevated()", Globals.dwLastError);
   }
   return bIsElevated;
 }
 
-
+#if 0
 //=============================================================================
 //
-//  IsUserAdmin()
+//  IsUserInAdminGroup()
 //
 // Routine Description: This routine returns true if the caller's
 // process is a member of the Administrators local group. Caller is NOT
@@ -460,7 +541,8 @@ bool IsElevated() {
 // true - Caller has Administrators local group.
 // false - Caller does not have Administrators local group. --
 //
-bool IsUserAdmin()
+
+bool IsUserInAdminGroup()
 {
   PSID AdminGroup;
   SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
@@ -473,6 +555,175 @@ bool IsUserAdmin()
   }
   return(bIsAdmin);
 }
+#endif
+
+//=============================================================================
+//
+//   IsUserInAdminGroup()
+//
+//   PURPOSE: The function checks whether the primary access token of the 
+//   process belongs to user account that is a member of the local 
+//   Administrators group, even if it currently is not elevated.
+//
+//   RETURN VALUE: Returns TRUE if the primary access token of the process 
+//   belongs to user account that is a member of the local Administrators 
+//   group. Returns FALSE if the token does not.
+//
+//
+//
+bool IsUserInAdminGroup()
+{
+  BOOL fInAdminGroup = FALSE;
+  HANDLE hToken = NULL;
+  HANDLE hTokenToCheck = NULL;
+
+  Globals.dwLastError = ERROR_SUCCESS;
+  const WCHAR* pLastErrMsg = L"";
+
+  do {
+    // Open the primary access token of the process for query and duplicate.
+    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY | TOKEN_DUPLICATE, &hToken))
+    {
+      Globals.dwLastError = GetLastError();
+      pLastErrMsg = L"OpenProcessToken()";
+      break;
+    }
+
+    DWORD cbSize = 0;
+
+    // Determine token type: limited, elevated, or default. 
+    TOKEN_ELEVATION_TYPE elevType;
+    if (!GetTokenInformation(hToken, TokenElevationType, &elevType, sizeof(elevType), &cbSize))
+    {
+      Globals.dwLastError = GetLastError();
+      pLastErrMsg = L"GetTokenInformation()";
+      break;
+    }
+
+    // If limited, get the linked elevated token for further check.
+    if (TokenElevationTypeLimited == elevType)
+    {
+      if (!GetTokenInformation(hToken, TokenLinkedToken, &hTokenToCheck, sizeof(hTokenToCheck), &cbSize))
+      {
+        Globals.dwLastError = GetLastError();
+        pLastErrMsg = L"GetTokenInformation()";
+        break;
+      }
+    }
+
+    // CheckTokenMembership requires an impersonation token. If we just got a 
+    // linked token, it already is an impersonation token.  If we did not get 
+    // a linked token, duplicate the original into an impersonation token for 
+    // CheckTokenMembership.
+    if (!hTokenToCheck)
+    {
+      if (!DuplicateToken(hToken, SecurityIdentification, &hTokenToCheck))
+      {
+        Globals.dwLastError = GetLastError();
+        pLastErrMsg = L"DuplicateToken()";
+        break;
+      }
+    }
+
+    // Create the SID corresponding to the Administrators group.
+    BYTE adminSID[SECURITY_MAX_SID_SIZE];
+    cbSize = sizeof(adminSID);
+    if (!CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, &adminSID, &cbSize))
+    {
+        Globals.dwLastError = GetLastError();
+        pLastErrMsg = L"CreateWellKnownSid()";
+        break;
+    }
+
+    // Check if the token to be checked contains admin SID.
+    // http://msdn.microsoft.com/en-us/library/aa379596(VS.85).aspx:
+    // To determine whether a SID is enabled in a token, that is, whether it 
+    // has the SE_GROUP_ENABLED attribute, call CheckTokenMembership.
+    if (!CheckTokenMembership(hTokenToCheck, &adminSID, &fInAdminGroup))
+    {
+      Globals.dwLastError = GetLastError();
+      pLastErrMsg = L"CheckTokenMembership()";
+      break;
+    }
+
+  } while (false); // Centralized cleanup for all allocated resources.
+
+  if (hToken)
+  {
+    CloseHandle(hToken);
+    hToken = NULL;
+  }
+  if (hTokenToCheck)
+  {
+    CloseHandle(hTokenToCheck);
+    hTokenToCheck = NULL;
+  }
+
+  if (Globals.dwLastError != ERROR_SUCCESS) {
+    MsgBoxLastError(pLastErrMsg, Globals.dwLastError);
+  }
+
+  return fInAdminGroup;
+}
+
+
+//=============================================================================
+// 
+//   IsRunAsAdmin()
+//
+//   PURPOSE: The function checks whether the current process is run as 
+//   administrator. In other words, it dictates whether the primary access 
+//   token of the process belongs to user account that is a member of the 
+//   local Administrators group and it is elevated.
+//
+//   RETURN VALUE: Returns TRUE if the primary access token of the process 
+//   belongs to user account that is a member of the local Administrators 
+//   group and it is elevated. Returns FALSE if the token does not.
+//
+bool IsRunAsAdmin()
+{
+  BOOL fIsRunAsAdmin = FALSE;
+  PSID pAdministratorsGroup = NULL;
+
+  Globals.dwLastError = ERROR_SUCCESS;
+  const WCHAR* pLastErrMsg = L"";
+
+  do {
+    // Allocate and initialize a SID of the administrators group.
+    SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+    if (!AllocateAndInitializeSid(
+      &NtAuthority,
+      2,
+      SECURITY_BUILTIN_DOMAIN_RID,
+      DOMAIN_ALIAS_RID_ADMINS,
+      0, 0, 0, 0, 0, 0,
+      &pAdministratorsGroup))
+    {
+      Globals.dwLastError = GetLastError();
+      pLastErrMsg = L"AllocateAndInitializeSid()";
+      break;
+    }
+
+    // Determine whether the SID of administrators group is enabled in 
+    // the primary access token of the process.
+    if (!CheckTokenMembership(NULL, pAdministratorsGroup, &fIsRunAsAdmin))
+    {
+      Globals.dwLastError = GetLastError();
+      pLastErrMsg = L"CheckTokenMembership()";
+      break;
+    }
+
+  } while (false); // Centralized cleanup for all allocated resources.
+
+  // Centralized cleanup for all allocated resources.
+  if (pAdministratorsGroup)
+  {
+    FreeSid(pAdministratorsGroup);
+    pAdministratorsGroup = NULL;
+  }
+
+  return (bool)fIsRunAsAdmin;
+}
 
 
 
@@ -484,7 +735,7 @@ bool IsUserAdmin()
 //{
 //  FARPROC pfnSetWindowTheme;
 //
-//  if (IsVista()) {
+//  if (IsVistaOrHigher()) {
 //    if (hLocalModUxTheme) {
 //      pfnSetWindowTheme = GetProcAddress(hLocalModUxTheme,"SetWindowTheme");
 //
