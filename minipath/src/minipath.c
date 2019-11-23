@@ -191,15 +191,16 @@ static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID
   StringCchCopyW(tchAvailLngs, 512, g_tchAvailableLanguages);
   WCHAR tchUserLangMultiStrg[512] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
-    GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
+    GetLastErrorToMsgBox(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
     return NULL;
   }
 
   // set the appropriate fallback list
   DWORD langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
-  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
-    GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
+  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
+  {
+    GetLastErrorToMsgBox(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
     return NULL;
   }
   SetThreadUILanguage(langID);

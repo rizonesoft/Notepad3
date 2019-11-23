@@ -606,6 +606,9 @@ static void _SetSaveNeededFlag(const bool setSaveNeeded)
       PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
     }
   }
+  else {
+    Encoding_HasChanged(Encoding_Current(CPI_GET));
+  }
 }
 
 //==============================================================================
@@ -625,10 +628,11 @@ static void _InitGlobals()
   Globals.pFileMRU = NULL;
   Globals.pMRUfind = NULL;
   Globals.pMRUreplace = NULL;
-  Globals.CallTipType = CT_NONE;
   Globals.uConsoleCodePage = 0;
   Globals.iAvailLngCount = 1;
+  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
   Globals.iWrapCol = 0;
+  Globals.CallTipType = CT_NONE;
 
   Globals.flagPosParam = false;
   Globals.flagWindowPos = 0;
@@ -660,7 +664,7 @@ static void _InitGlobals()
   Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
   Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
   Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
-  Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsXP() ? 1 : 2;
+  Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsXPOrHigher() ? 1 : 2;
   Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
   Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
   Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
@@ -812,13 +816,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
   // check if running at least on Windows 7
-  if (!IsWin7()) {
-    GetLastErrorToMsgBox(L"WinMain", ERROR_OLD_WIN_VERSION);
+  if (!IsWin7OrHigher()) {
+    MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
     return 1; // exit
   }
 
   // Check if running with elevated privileges
-  s_bIsElevated = IsUserAdmin() || IsElevated();
+  s_bIsElevated = IsUserInAdminGroup() || IsProcessElevated() || IsRunAsAdmin();
 
   // Default Encodings (may already be used for command line parsing)
   Encoding_InitDefaults();
@@ -905,12 +909,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   if (!Globals.hIconMsgQuest) {
     LoadIconWithScaleDown(NULL, IDI_QUESTION, cxl, cyl, &(Globals.hIconMsgQuest));
   }
+  if (!Globals.hIconMsgShieldSmall) {
+    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxs, cys, &(Globals.hIconMsgShieldSmall));
+  }
   if (!Globals.hIconMsgShield) {
     LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgShield));
   }
-  if (!Globals.hIconMsgWinLogo) {
-    LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgWinLogo));
-  }
+  //if (!Globals.hIconMsgWinLogo) {
+  //  LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgWinLogo));
+  //}
 
   // Command Line Help Dialog
   if (s_flagDisplayHelp) {
@@ -923,7 +930,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
   if (!Globals.hMainMenu) {
-    GetLastErrorToMsgBox(L"LoadMenu()", 0);
+    MsgBoxLastError(L"LoadMenu()", 0);
     _CleanUpResources(NULL, false);
     return 1;
   }
@@ -1796,7 +1803,7 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
-  if (IsVista()) {
+  if (IsVistaOrHigher()) {
     // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
     //~SciCall_SetBufferedDraw(true);  // default is true 
@@ -2037,7 +2044,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
     SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
     SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-    if (IsVista()) {
+    if (IsVistaOrHigher()) {
       s_cxEditFrame = 0;
       s_cyEditFrame = 0;
     }
@@ -2381,10 +2388,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       if (Flags.ToolbarLook == 1) {
         fProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
       }
-      else if (Flags.ToolbarLook == 2 || (!IsXP() && Flags.ToolbarLook == 0)) {
+      else if (Flags.ToolbarLook == 2 || (!IsXPOrHigher() && Flags.ToolbarLook == 0)) {
         fProcessed = BitmapGrayScale(hbmpCopy);
       }
-      if (fProcessed && !IsXP()) {
+      if (fProcessed && !IsXPOrHigher()) {
         BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
       }
       if (fProcessed) {
@@ -2619,7 +2626,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
     SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
     SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE);
 
-    if (IsVista()) {
+    if (IsVistaOrHigher()) {
       s_cxEditFrame = 0;
       s_cyEditFrame = 0;
     }
@@ -3168,7 +3175,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, CMD_RECODEGB18030, cf);
   EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
 
-  EnableCmd(hmenu,IDM_FILE_LAUNCH_ELEVATED, !s_bIsElevated);
+  SetUACIcon(hmenu, IDM_FILE_LAUNCH_ELEVATED);
+  CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsElevated);
+  EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsElevated);
+  
   EnableCmd(hmenu,IDM_FILE_LAUNCH,cf);
   EnableCmd(hmenu,IDM_FILE_PROPERTIES,cf);
   EnableCmd(hmenu,IDM_FILE_CREATELINK,cf);
@@ -3542,7 +3552,7 @@ static void _DynamicLanguageMenuCmd(int cmd)
     Globals.iPrefLANGID = LoadLanguageResources();
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
-      GetLastErrorToMsgBox(L"LoadMenu()", 0);
+      MsgBoxLastError(L"LoadMenu()", 0);
       CloseApplication();
       return;
     }
@@ -3752,7 +3762,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         fioStatus.iEncoding = Encoding_Current(CPI_GET);
         fioStatus.iEOLMode = SciCall_GetEOLMode();
 
-        if (DoElevatedRelaunch(&fioStatus, false)) {
+        if (DoElevatedRelaunch(&fioStatus, false))
+        {
           CloseApplication();
         }
         else {
@@ -7787,7 +7798,7 @@ void ParseCommandLine()
                          lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
           TrimSpcW(s_wchTmpFilePath);
           NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
-          s_bIsElevated = s_IsThisAnElevatedRelaunch = true;
+          s_bIsElevated = s_IsThisAnElevatedRelaunch = IsProcessElevated();
         }
 
         else {
@@ -9564,7 +9575,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     Style_SetDefaultLexer(Globals.hwndEdit);
 
     s_bFileReadOnly = false;
-    _SetSaveNeededFlag(false);
+    SciCall_SetSavePoint();
 
     UpdateAllBars(false);
 
@@ -9960,7 +9971,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
   if (RelaunchElevated(szArguments)) {
     // set no change and quit
     SciCall_SetSavePoint();
-    _SetSaveNeededFlag(false);
+    //_SetSaveNeededFlag(false);
   }
   else {
     Globals.dwLastError = GetLastError();
@@ -10118,7 +10129,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
       }
 
-      _SetSaveNeededFlag(false);
+      SciCall_SetSavePoint();
 
       // Install watching of the current file
       if (bSaveAs && Settings.ResetFileWatching) {
@@ -10134,7 +10145,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   {
     if (!s_bIsElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_ACCESSDENIED, PathFindFileName(Globals.CurrentFile));
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, PathFindFileName(Globals.CurrentFile));
       if ((IDOK == answer) || (IDYES == answer)) {
         if (DoElevatedRelaunch(&fioStatus, true))
         {
@@ -10542,12 +10553,13 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVista() || 
-    !s_flagDoRelaunchElevated ||
-    s_bIsElevated || s_IsThisAnElevatedRelaunch ||
-    s_flagDisplayHelp) 
+  if (!IsVistaOrHigher() || 
+      !s_flagDoRelaunchElevated ||
+       s_bIsElevated || 
+       s_IsThisAnElevatedRelaunch || 
+       s_flagDisplayHelp) 
   {
-    return false; 
+    return false;
   }
 
   STARTUPINFO si;
