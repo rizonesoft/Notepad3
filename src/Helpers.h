@@ -256,6 +256,7 @@ inline float GetBaseFontSize(HWND hwnd) { return ((IsFullHD(hwnd, -1, -1) < 0) ?
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 bool IsProcessElevated();
+//bool IsUserAdmin();
 bool IsUserInAdminGroup();
 bool IsRunAsAdmin();
 //bool SetExplorerTheme(HWND);

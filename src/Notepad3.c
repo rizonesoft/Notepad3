@@ -92,7 +92,7 @@ bool      s_bEnableSaveSettings = true;
 int       s_iToolBarTheme = -1;
 
 // ------------------------------------
-
+static bool      s_bIsProcessElevated = false;
 static bool      s_flagDoRelaunchElevated = false;
 static bool      s_flagSaveOnRelaunch = false;
 
@@ -120,7 +120,6 @@ static WCHAR     s_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 
 static bool      s_bRunningWatch = false;
 static bool      s_bFileReadOnly = false;
-static bool      s_bIsElevated = false;
 
 static int       s_iSortOptions = 0;
 static int       s_iAlignMode = 0;
@@ -581,7 +580,7 @@ inline bool IsSaveNeeded(const SAVE_NEEDED_QUERY query)
   return (bIsSaveNeeded || Encoding_HasChanged(CPI_GET));
 }
 
-static void _SetSaveNeededFlag(const bool setSaveNeeded)
+static void SetSaveNeeded(const bool setSaveNeeded)
 {
   bool const bGetModify = SciCall_GetModify();
   bool const isDocModified = setSaveNeeded || bGetModify; // consistency
@@ -822,7 +821,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
 
   // Check if running with elevated privileges
-  s_bIsElevated = IsUserInAdminGroup() || IsProcessElevated() || IsRunAsAdmin();
+  s_bIsProcessElevated = IsProcessElevated() || IsUserInAdminGroup(); //~ IsRunAsAdmin();
 
   // Default Encodings (may already be used for command line parsing)
   Encoding_InitDefaults();
@@ -838,28 +837,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
   // Adapt window class name
-  if (s_bIsElevated) {
+  if (s_bIsProcessElevated) {
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
   }
   if (s_flagPasteBoard) {
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
   }
-  // Try to Relaunch with elevated privileges
-  s_flagDoRelaunchElevated = RelaunchElevated(NULL);
-  if (s_flagDoRelaunchElevated) {
-    return 0;
-  }
-  // Try to run multiple instances
-  if (RelaunchMultiInst()) {
-    return 0;
-  }
-  // Try to activate another window
-  if (ActivatePrevInst()) {
-    return 0;
-  }
-
+  
   (void)OleInitialize(NULL);
-
+  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
+  
   INITCOMMONCONTROLSEX icex;
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
   icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
@@ -916,8 +903,27 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgShield));
   }
   //if (!Globals.hIconMsgWinLogo) {
-  //  LoadIconWithScaleDown(NULL, IDI_SHIELD, cxl, cyl, &(Globals.hIconMsgWinLogo));
+  //  LoadIconWithScaleDown(NULL, IDI_WINLOGO, cxl, cyl, &(Globals.hIconMsgWinLogo));
   //}
+
+  if (s_IsThisAnElevatedRelaunch && !IsRunAsAdmin()) {
+    InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
+    s_flagSaveOnRelaunch = false;
+  }
+
+  // Try to Relaunch with elevated privileges
+  if (RelaunchElevated(NULL)) {
+    return 0;
+  }
+
+  // Try to run multiple instances
+  if (RelaunchMultiInst()) {
+    return 0;
+  }
+  // Try to activate another window
+  if (ActivatePrevInst()) {
+    return 0;
+  }
 
   // Command Line Help Dialog
   if (s_flagDisplayHelp) {
@@ -1289,7 +1295,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
             }
           }
           SciCall_SetSavePoint();
-          _SetSaveNeededFlag(true);
+          SetSaveNeeded(true);
           if (StrIsNotEmpty(Globals.CurrentFile)) {
             if (s_flagSaveOnRelaunch) {
               FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
@@ -3176,8 +3182,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
 
   SetUACIcon(hmenu, IDM_FILE_LAUNCH_ELEVATED);
-  CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsElevated);
-  EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsElevated);
+  CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
+  EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
   
   EnableCmd(hmenu,IDM_FILE_LAUNCH,cf);
   EnableCmd(hmenu,IDM_FILE_PROPERTIES,cf);
@@ -3767,7 +3773,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           CloseApplication();
         }
         else {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
+          InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
         }
       }
       break;
@@ -5730,7 +5736,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SETPASS:
       if (GetFileKey(Globals.hwndEdit)) {
-        _SetSaveNeededFlag(true);
+        SetSaveNeeded(true);
       }
       break;
 
@@ -7107,14 +7113,14 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
             _SplitUndoTransaction(iModType);
           }
         }
-        _SetSaveNeededFlag(true);
+        SetSaveNeeded(true);
       }
     }
     else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-      _SetSaveNeededFlag(false);
+      SetSaveNeeded(false);
     }
     else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-      _SetSaveNeededFlag(true);
+      SetSaveNeeded(true);
     }
     else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
       if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
@@ -7215,7 +7221,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             _SplitUndoTransaction(iModType);
           }
         }
-        _SetSaveNeededFlag(true);
+        SetSaveNeeded(true);
       }
 
       if (s_bIndicMultiEdit && !(iModType & SC_MULTILINEUNDOREDO)) {
@@ -7409,12 +7415,12 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
 
     case SCN_SAVEPOINTREACHED:
-      _SetSaveNeededFlag(false);
+      SetSaveNeeded(false);
       break;
 
 
     case SCN_SAVEPOINTLEFT:
-      _SetSaveNeededFlag(true);
+      SetSaveNeeded(true);
       break;
 
 
@@ -7798,7 +7804,7 @@ void ParseCommandLine()
                          lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
           TrimSpcW(s_wchTmpFilePath);
           NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
-          s_bIsElevated = s_IsThisAnElevatedRelaunch = IsProcessElevated();
+          s_IsThisAnElevatedRelaunch = true;
         }
 
         else {
@@ -8218,7 +8224,7 @@ void UpdateToolbar()
 
 static void  _UpdateToolbarDelayed()
 {
-  SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
+  SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
                  Settings.PathNameFormat, IsSaveNeeded(ISN_GET),
                  IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
@@ -9743,7 +9749,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     //bReadOnly = false;
-    _SetSaveNeededFlag(bReload);
+    SetSaveNeeded(bReload);
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
@@ -9971,7 +9977,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
   if (RelaunchElevated(szArguments)) {
     // set no change and quit
     SciCall_SetSavePoint();
-    //_SetSaveNeededFlag(false);
+    SetSaveNeeded(false);
   }
   else {
     Globals.dwLastError = GetLastError();
@@ -10143,7 +10149,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   }
   else if (!fioStatus.bCancelDataLoss)
   {
-    if (!s_bIsElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
+    if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
       INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, PathFindFileName(Globals.CurrentFile));
       if ((IDOK == answer) || (IDYES == answer)) {
@@ -10553,13 +10559,10 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVistaOrHigher() || 
-      !s_flagDoRelaunchElevated ||
-       s_bIsElevated || 
-       s_IsThisAnElevatedRelaunch || 
-       s_flagDisplayHelp) 
+  if (!IsVistaOrHigher() || !s_flagDoRelaunchElevated ||
+      s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_flagDisplayHelp) 
   {
-    return false;
+    return false; // reject initial RelaunchElevated() try
   }
 
   STARTUPINFO si;
