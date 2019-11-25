@@ -908,6 +908,12 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UCHARDET);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_TINYEXPR);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UTHASH);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? 
+                                                       L"\nProcess is elevated." : 
+                                                       L"\nProcess is not elevated."));
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ?
+                                                       L"\nUser is in Admin-Group." :
+                                                       L"\nUser is not in Admin-Group."));
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
 
