@@ -10166,7 +10166,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     }
     else {
       UpdateToolbar();
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, PathFindFileName(Globals.CurrentFile));
+      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, PathFindFileName(Globals.CurrentFile));
     }
   }
   return fSuccess;
