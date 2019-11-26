@@ -264,7 +264,7 @@ BEGIN
     LTEXT           "Nachricht:", IDC_STATIC, 16, 120, 40, 8
     CONTROL         "KEINE, starte die Ziel-Applikation immer wenn eine Datei geöffnet wird.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,240,10
-    CONTROL         "Sende eine ""FILE OPEN"" Nachricht zum Ziel-Fenster:",IDC_SENDDROPMSG,
+    CONTROL         "Sende eine ""DROP FILES"" Nachricht zum Ziel-Fenster:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,170,10
     CONTROL         "Führe folgendes DDE-Kommando aus:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,240,10
     LTEXT           "Applikation:",IDC_STATIC,124,120,40,8

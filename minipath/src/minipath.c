@@ -101,8 +101,9 @@ UINT      wFuncCopyMove = FO_COPY;
 
 UINT      msgTaskbarCreated = 0;
 
-int iUseTargetApplication = 4;
-int iTargetApplicationMode = 0;
+UseTargetApp eUseTargetApplication = UTA_DEFINE_TARGET;
+TargetAppMode eTargetApplicationMode = TAM_ALWAYS_RUN;
+
 WCHAR szTargetApplication[MAX_PATH] = L"";
 WCHAR szTargetApplicationParams[MAX_PATH] = L"";
 WCHAR szTargetApplicationWndClass[MAX_PATH] = L"";
@@ -541,19 +542,22 @@ static void __fastcall _SetTargetAppMenuEntry(HMENU hMenu)
   if (dli.ntype != DLE_DIR) {
     WCHAR wchMenuEntry[MAX_PATH] = { L'\0' };
     WCHAR wchTargetAppName[MAX_PATH] = { L'\0' };
-    if (iUseTargetApplication != 0xFB) {
+    if (eUseTargetApplication != 0xFB) {
       lstrcpy(wchTargetAppName, szTargetApplication);
       PathStripPath(wchTargetAppName);
       PathRemoveExtension(wchTargetAppName);
     }
-    else if (iUseTargetApplication && wchTargetAppName[0] == 0) {
-      iUseTargetApplication = 1;
+    else if ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(wchTargetAppName)) {
+      eUseTargetApplication = UTA_LAUNCH_TARGET;
       lstrcpy(wchTargetAppName, L"Notepad3");
     }
-    if (iUseTargetApplication == 4 || (iUseTargetApplication && wchTargetAppName[0] == 0)) {
+
+    if ((eUseTargetApplication == UTA_DEFINE_TARGET) || 
+       ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(wchTargetAppName))) {
       lstrcpy(wchTargetAppName, L"...");
     }
-    if (wchTargetAppName[0] != 0){
+
+    if (StrIsNotEmpty(wchTargetAppName)){
       FormatLngStringW(wchMenuEntry, COUNTOF(wchMenuEntry), IDS_OPEN_FILE_WITH, wchTargetAppName);
       MENUITEMINFO menuitem;
       ZeroMemory(&menuitem, sizeof(MENUITEMINFO));
@@ -3323,8 +3327,8 @@ void LoadTargetParamsOnce(void)
   const WCHAR* const TargetApp_Section = L"Target Application";
 
   if (IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",0xFB) != 0xFB) {
-    iUseTargetApplication = IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",iUseTargetApplication);
-    iTargetApplicationMode = IniSectionGetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
+    eUseTargetApplication = IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",eUseTargetApplication);
+    eTargetApplicationMode = IniSectionGetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
     IniSectionGetString(TargetApp_Section,L"TargetApplicationPath",szTargetApplication,szTargetApplication,COUNTOF(szTargetApplication));
     IniSectionGetString(TargetApp_Section,L"TargetApplicationParams",szTargetApplicationParams,szTargetApplicationParams,COUNTOF(szTargetApplicationParams));
     IniSectionGetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
@@ -3332,9 +3336,9 @@ void LoadTargetParamsOnce(void)
     IniSectionGetString(TargetApp_Section,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
     IniSectionGetString(TargetApp_Section,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
   }
-  else if (iUseTargetApplication && StrIsEmpty(szTargetApplication)) {
-    iUseTargetApplication = 1;
-    iTargetApplicationMode = 1;
+  else if ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(szTargetApplication)) {
+    eUseTargetApplication = UTA_LAUNCH_TARGET;
+    eTargetApplicationMode = TAM_SEND_DROP_MSG;
     lstrcpy(szTargetApplication,L"Notepad3.exe");
     lstrcpy(szTargetApplicationParams,L"");
     lstrcpy(szTargetApplicationWndClass,L"Notepad3");
@@ -3363,13 +3367,13 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
   LoadTargetParamsOnce();
 
-  if (iUseTargetApplication == 4 ||
-     (iUseTargetApplication && StrIsEmpty(szTargetApplication))) {
+  if ((eUseTargetApplication == UTA_DEFINE_TARGET) || ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(szTargetApplication))) 
+  {
     ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwndMain,FindTargetDlgProc,(LPARAM)NULL);
     return;
   }
 
-  if (iUseTargetApplication && iTargetApplicationMode == 1)
+  if ((eUseTargetApplication != UTA_UNDEFINED) && (eTargetApplicationMode == TAM_SEND_DROP_MSG))
   {
     lstrcpy(szGlobalWndClass,szTargetApplicationWndClass);
 
@@ -3391,7 +3395,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         PostMessage(hwnd,WM_DROPFILES,(WPARAM)hDrop,(LPARAM)0);
       }
     }
-
     else // Either no window or disabled - run target.exe
     {
       WCHAR  szFile[MAX_PATH];
@@ -3465,12 +3468,12 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
     WCHAR  szParam[MAX_PATH] = L"";
     WCHAR  szTmp[MAX_PATH];
 
-    if (iUseTargetApplication &&
-        iTargetApplicationMode == 2 &&
+    if ((eUseTargetApplication != UTA_UNDEFINED) &&
+        (eTargetApplicationMode == TAM_SEND_DDE_MSG) &&
         ExecDDECommand(lpFileName,szDDEMsg,szDDEApp,szDDETopic))
       return;
 
-    if (!iUseTargetApplication && StrIsEmpty(lpFileName))
+    if ((eUseTargetApplication == UTA_UNDEFINED) && StrIsEmpty(lpFileName))
       return;
 
     else {
@@ -3517,7 +3520,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       sei.fMask = 0;
       sei.hwnd = hwndMain;
       sei.lpVerb = NULL;
-      if (iUseTargetApplication) {
+      if (eUseTargetApplication != UTA_UNDEFINED) {
         sei.lpFile = szFile;
         sei.lpParameters = szParam;
       }

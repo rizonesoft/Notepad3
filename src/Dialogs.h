@@ -45,7 +45,7 @@ WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO * hMonitorInfo);
 void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
-void DialogNewWindow(HWND hwnd,bool,bool);
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath);
 void DialogFileBrowse(HWND hwnd);
 void DialogAdminExe(HWND hwnd,bool);
 

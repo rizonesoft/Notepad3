@@ -2750,26 +2750,28 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  WCHAR szBuf[MAX_PATH + 40];
+  WCHAR szDropStrgBuf[MAX_PATH + 40];
   HDROP hDrop = (HDROP)wParam;
 
-  // Reset Change Notify
-  //bPendingChangeNotify = false;
-
-  if (IsIconic(hwnd))
+  if (IsIconic(hwnd)) {
     ShowWindow(hwnd, SW_RESTORE);
-
-  //SetForegroundWindow(hwnd);
-
-  DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
-
-  if (PathIsDirectory(szBuf)) {
-    WCHAR tchFile[MAX_PATH] = { L'\0' };
-    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf))
-      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
   }
-  else if (PathFileExists(szBuf)) {
-    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+
+  DragQueryFile(hDrop, 0, szDropStrgBuf, COUNTOF(szDropStrgBuf));
+
+  if (PathIsDirectory(szDropStrgBuf)) {
+    WCHAR tchFile[MAX_PATH] = { L'\0' };
+    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szDropStrgBuf)) {
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+    }
+  }
+  else if (PathFileExists(szDropStrgBuf)) {
+    if (Flags.bReuseWindow) {
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szDropStrgBuf);
+    }
+    else {
+      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, szDropStrgBuf);
+    }
   }
   else {
 #ifndef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -2782,6 +2784,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
   }
+
   DragFinish(hDrop);
 
   return FALSE;
@@ -3718,8 +3721,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
-      SaveAllSettings(false); 
-      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, (iLoWParam != IDM_FILE_NEWWINDOW2));
+      SaveAllSettings(false);
+      LPCWSTR lpcwFilePath = (iLoWParam != IDM_FILE_NEWWINDOW2) ? Globals.CurrentFile : NULL;
+      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, lpcwFilePath);
       break;
 
 
