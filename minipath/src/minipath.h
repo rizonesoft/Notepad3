@@ -81,6 +81,7 @@
 //==== Callback Message from System Tray ======================================
 #define WM_TRAYMESSAGE WM_USER
 
+
 //==== TypeDefs ======================================
 typedef struct _wi
 {
@@ -89,6 +90,11 @@ typedef struct _wi
   int cx;
   int cy;
 } WININFO;
+
+
+typedef enum { UTA_UNDEFINED = 0,  UTA_LAUNCH_TARGET = 1, UTA_DEFINE_TARGET = 4 } UseTargetApp;
+typedef enum { TAM_ALWAYS_RUN = 0, TAM_SEND_DROP_MSG = 1, TAM_SEND_DDE_MSG = 2 } TargetAppMode;
+
 
 // ----------------------------------------------------------------------------
 
