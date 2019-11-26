@@ -53,7 +53,8 @@ int  MessageBoxLng(HWND hwnd, UINT uType, UINT uIdMsg, ...);
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMessage, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
-bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, int iFormat, bool, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
+bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, 
+                    int iFormat, bool bIsElevated, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);

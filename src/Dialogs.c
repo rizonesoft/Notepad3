@@ -908,6 +908,12 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UCHARDET);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_TINYEXPR);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UTHASH);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? 
+                                                       L"\nProcess is elevated." : 
+                                                       L"\nProcess is not elevated."));
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ?
+                                                       L"\nUser is in Admin-Group." :
+                                                       L"\nUser is not in Admin-Group."));
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
 
@@ -3540,13 +3546,13 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   LPCWSTR lpszFile, int iFormat, bool bModified,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
-  if (bFreezeAppTitle)
+  if (bFreezeAppTitle) {
     return false;
-
+  }
   WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
   WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
   if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
-    !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
+      !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
   }
   if (bIsElevated) {

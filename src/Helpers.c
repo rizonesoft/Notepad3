@@ -502,37 +502,46 @@ bool IsProcessElevated() {
   bool bIsElevated = false;
   HANDLE hToken = NULL;
   Globals.dwLastError = ERROR_SUCCESS;
+  const WCHAR* pLastErrMsg = L"";
 
-  if (OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&hToken)) 
-  {
-    TOKEN_ELEVATION elevationToken;
-    DWORD expectedRetVal = sizeof(TOKEN_ELEVATION);
-    DWORD dwReturnLength = 0;
-
-    if (GetTokenInformation(hToken,TokenElevation,&elevationToken,expectedRetVal,&dwReturnLength)) 
+  do {
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
     {
-      if (dwReturnLength == expectedRetVal) {
-        bIsElevated = elevationToken.TokenIsElevated;
+      TOKEN_ELEVATION elevationToken;
+      DWORD expectedRetVal = sizeof(TOKEN_ELEVATION);
+      DWORD dwReturnLength = 0;
+      if (GetTokenInformation(hToken, TokenElevation, &elevationToken, expectedRetVal, &dwReturnLength))
+      {
+        if (dwReturnLength == expectedRetVal) {
+          bIsElevated = elevationToken.TokenIsElevated;
+        }
       }
     }
-    if (hToken) {
-      CloseHandle(hToken);
-      hToken = NULL;
+    else {
+      Globals.dwLastError = GetLastError();
+      pLastErrMsg = L"IsProcessElevated()";
+      break;
     }
+  } while (false); // Centralized cleanup for all allocated resources.
+
+  if (hToken) {
+    CloseHandle(hToken);
+    hToken = NULL;
   }
-  else {
-    Globals.dwLastError = GetLastError();
-    //GetLastErrorToMessageBox(L"IsProcessElevated()", Globals.dwLastError);
+
+  if (Globals.dwLastError != ERROR_SUCCESS) {
+    MsgBoxLastError(pLastErrMsg, Globals.dwLastError);
   }
+
   return bIsElevated;
 }
 
 #if 0
 //=============================================================================
 //
-//  IsUserInAdminGroup()
+//  IsUserAdmin()
 //
-// Routine Description: This routine returns true if the caller's
+// Routine Description: This routine returns TRUE if the caller's
 // process is a member of the Administrators local group. Caller is NOT
 // expected to be impersonating anyone and is expected to be able to
 // open its own process and process token.
@@ -541,19 +550,19 @@ bool IsProcessElevated() {
 // true - Caller has Administrators local group.
 // false - Caller does not have Administrators local group. --
 //
-
-bool IsUserInAdminGroup()
+bool IsUserAdmin()
 {
-  PSID AdminGroup;
+  PSID pAdminGroup;
   SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
-  BOOL bIsAdmin = AllocateAndInitializeSid(&NtAuthority,2,
-    SECURITY_BUILTIN_DOMAIN_RID,DOMAIN_ALIAS_RID_ADMINS,0,0,0,0,0,0,&AdminGroup);
+  BOOL bIsAdmin = AllocateAndInitializeSid(&NtAuthority, 2,
+    SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &pAdminGroup);
   if (bIsAdmin) {
-    if (!CheckTokenMembership(NULL,AdminGroup,&bIsAdmin))
+    if (!CheckTokenMembership(NULL, pAdminGroup, &bIsAdmin)) {
       bIsAdmin = false;
-    FreeSid(AdminGroup);
+    }
+    FreeSid(pAdminGroup);
   }
-  return(bIsAdmin);
+  return bIsAdmin;
 }
 #endif
 
