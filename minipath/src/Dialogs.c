@@ -2453,8 +2453,9 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 //  Select MiniPath target application
 //
-extern int iUseTargetApplication;
-extern int iTargetApplicationMode;
+extern UseTargetApp eUseTargetApplication;
+extern TargetAppMode eTargetApplicationMode;
+
 extern WCHAR szTargetApplication[MAX_PATH];
 extern WCHAR szTargetApplicationParams[MAX_PATH];
 extern WCHAR szTargetApplicationWndClass[MAX_PATH];
@@ -2524,7 +2525,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         LoadTargetParamsOnce();
 
-        if (iUseTargetApplication)
+        if (eUseTargetApplication != UTA_UNDEFINED)
           CheckRadioButton(hwnd,IDC_LAUNCH,IDC_TARGET,IDC_TARGET);
         else
           CheckRadioButton(hwnd,IDC_LAUNCH,IDC_TARGET,IDC_LAUNCH);
@@ -2537,9 +2538,8 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         }
         SetDlgItemText(hwnd,IDC_TARGETPATH,wch);
 
-        if (iUseTargetApplication) {
-          i = iTargetApplicationMode;
-          i = clampi(i, 0, 2);
+        if (eUseTargetApplication != UTA_UNDEFINED) {
+          i = clampi(eTargetApplicationMode, TAM_ALWAYS_RUN, TAM_SEND_DDE_MSG);
           CheckRadioButton(hwnd,IDC_ALWAYSRUN,IDC_USEDDE,IDC_ALWAYSRUN + i);
         }
 
@@ -2701,11 +2701,11 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                 LoadIniFile(g_wchIniFile);
                 const WCHAR* const TargetApp_Section = L"Target Application";
 
-                i = IsDlgButtonChecked(hwnd,IDC_LAUNCH);
-                iUseTargetApplication = i ? 0:1;
-                IniSectionSetInt(TargetApp_Section,L"UseTargetApplication",iUseTargetApplication);
+                i = (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_LAUNCH));
+                eUseTargetApplication = ((i) ? UTA_UNDEFINED : UTA_LAUNCH_TARGET);
+                IniSectionSetInt(TargetApp_Section,L"UseTargetApplication",eUseTargetApplication);
 
-                if (iUseTargetApplication) {
+                if (eUseTargetApplication != UTA_UNDEFINED) {
                   GetDlgItemText(hwnd,IDC_TARGETPATH,tch,COUNTOF(tch));
                   ExtractFirstArgument(tch,szTargetApplication,szTargetApplicationParams);
                 }
@@ -2716,22 +2716,22 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                 IniSectionSetString(TargetApp_Section,L"TargetApplicationPath",szTargetApplication);
                 IniSectionSetString(TargetApp_Section,L"TargetApplicationParams",szTargetApplicationParams);
 
-                if (!iUseTargetApplication) {
-                  iTargetApplicationMode = 0;
-                  IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
+                if (eUseTargetApplication == UTA_UNDEFINED) {
+                  eTargetApplicationMode = TAM_ALWAYS_RUN;
+                  IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
                 }
                 else {
                   if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_ALWAYSRUN)) {
-                    iTargetApplicationMode = 0;
-                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
+                    eTargetApplicationMode = TAM_ALWAYS_RUN;
+                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
                   }
                   else if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG)) {
-                    iTargetApplicationMode = 1;
-                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
+                    eTargetApplicationMode = TAM_SEND_DROP_MSG;
+                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
                   }
                   else {
-                    iTargetApplicationMode = 2;
-                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",iTargetApplicationMode);
+                    eTargetApplicationMode = TAM_SEND_DDE_MSG;
+                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
                   }
                 }
 

@@ -3355,7 +3355,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 //  DialogNewWindow()
 //
 //
-void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
 {
   if (bSaveOnRunTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) { return; }
 
@@ -3397,10 +3397,10 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StrIsNotEmpty(Globals.CurrentFile))
+  if (StrIsNotEmpty(lpcwFilePath))
   {
     WCHAR szFileName[MAX_PATH] = { L'\0' };
-    StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
+    StringCchCopy(szFileName, COUNTOF(szFileName), lpcwFilePath);
     PathQuoteSpaces(szFileName);
     StringCchCat(szParameters, COUNTOF(szParameters), L" ");
     StringCchCat(szParameters, COUNTOF(szParameters), szFileName);
