@@ -3384,15 +3384,15 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
 
   MONITORINFO mi;
   WININFO wi = GetMyWindowPlacement(hwnd, &mi);
-  // offset new window position +10/+10
-  wi.x += 10;
-  wi.y += 10;
-  // check if window fits monitor
-  if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
-    wi.x = mi.rcMonitor.left;
-    wi.y = mi.rcMonitor.top;
-  }
-  wi.max = IsZoomed(hwnd);
+  //~ offset new window position +10/+10
+  //~wi.x += 10;
+  //~wi.y += 10;
+  //~// check if window fits monitor
+  //~if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
+  //~  wi.x = mi.rcMonitor.left;
+  //~  wi.y = mi.rcMonitor.top;
+  //~}
+  //~wi.max = IsZoomed(hwnd);
 
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
