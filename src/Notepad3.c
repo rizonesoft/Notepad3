@@ -672,6 +672,7 @@ static void _InitGlobals()
   Flags.NoFileVariables = DefaultFlags.NoFileVariables = false;
   Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
   Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
+  Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime = false;
 
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
@@ -9564,11 +9565,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   fioStatus.iEOLMode = Settings.DefaultEOLMode;
   fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
-  if (bNew || bReload) {
-    if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
-    Flags.bPreserveFileModTime = false;
-  }
-
   if (!bDontSave)
   {
     if (!FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
@@ -9576,9 +9572,18 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
   }
 
-  if (!bReload) { ResetEncryption(); }
+  if (!bReload) { 
+    ResetEncryption(); 
+  }
 
-  if (bNew) {
+  if (bNew) 
+  {
+    if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+
+    if (!s_IsThisAnElevatedRelaunch) {
+      Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
+    }
+
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),L"");
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
@@ -9694,7 +9699,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   bool bUnknownLexer = s_flagLexerSpecified;
 
-  if (fSuccess) {
+  if (fSuccess) 
+  {
+    if (!s_IsThisAnElevatedRelaunch) {
+      Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
+    }
+
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
@@ -9708,8 +9718,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SciCall_SetEOLMode(fioStatus.iEOLMode);
     Encoding_Current(fioStatus.iEncoding); // load may change encoding
     Encoding_HasChanged(fioStatus.iEncoding);
-
-    Flags.bPreserveFileModTime = false;
 
     int idx = 0;
     DocPos iCaretPos = -1;
@@ -9830,7 +9838,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   UpdateAllBars(true);
 
-  return(fSuccess);
+  return fSuccess;
 }
 
 
