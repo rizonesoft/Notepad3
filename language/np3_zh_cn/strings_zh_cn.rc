@@ -142,8 +142,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
     IDS_MUI_ERR_DROP        "一次只能拖放一个文件。"
-    IDS_MUI_ERR_ACCESSDENIED
-                            "文件""%s""不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
+    //IDS_MUI_ERR_ACCESSDENIED "文件""%s""不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
+
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否确实要打开一个如此庞大的文件？"

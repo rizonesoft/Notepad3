@@ -7820,11 +7820,16 @@ void ParseCommandLine()
               break;
 
             case L'R':
-              Globals.flagReuseWindow = 2;
-              if (*CharUpper(lp1 + 1) == L'S')
-                Globals.flagSingleFileInstance = 2;
-              else
-                Globals.flagSingleFileInstance = 1;
+              if (*CharUpper(lp1 + 1) == L'P') {
+                Flags.bPreserveFileModTime = true;
+              }
+              else {
+                Globals.flagReuseWindow = 2;
+                if (*CharUpper(lp1 + 1) == L'S')
+                  Globals.flagSingleFileInstance = 2;
+                else
+                  Globals.flagSingleFileInstance = 1;
+              }
               break;
 
             case L'F':
@@ -9925,6 +9930,9 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
   if (bAutoSaveOnRelaunch) {
     StringCchCat(wchFlags, COUNTOF(wchFlags), L"/QS ");
   }
+  if (Flags.bPreserveFileModTime) {
+    StringCchCat(wchFlags, COUNTOF(wchFlags), L"/RP ");
+  }
 
   DocPos const iCurPos = SciCall_GetCurrentPos();
   int const iCurLn = (int)SciCall_LineFromPosition(iCurPos) + 1;
@@ -10151,7 +10159,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   {
     if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, PathFindFileName(Globals.CurrentFile));
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED,
+                                        PathFindFileName(Globals.CurrentFile), _W(SAPPNAME));
       if ((IDOK == answer) || (IDYES == answer)) {
         if (DoElevatedRelaunch(&fioStatus, true))
         {

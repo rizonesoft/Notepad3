@@ -142,8 +142,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자를 현재 인코딩에서 지원하지 않기 때문에 저장시에는 기본 문자로 대체될 것입니다. 다른 인코딩을 선택하는게 좋습니다. 계속 할까요?"
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
+    //IDS_MUI_ERR_ACCESSDENIED """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다. \n\n관리자 권한으로 Notepad3을 시작 하시겠습니까?"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다. \n\n관리자 권한으로 Notepad3을 시작 하시겠습니까?"
+                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 대용량 파일을 열겠습니까?"

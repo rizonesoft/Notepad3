@@ -142,8 +142,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Egyes karakterek a jelenlegi szövegben nem támogatottak a kiválasztott kódolásban, ezért le kéne cserélni őket az alapértelmezett helykitöltővel mentéskor.Ajánlott egy másik kódolást választani. Folytatja?"
     IDS_MUI_ERR_DROP        "Csak egy fájlt lehet egyszerre ide ejteni!"
+    //IDS_MUI_ERR_ACCESSDENIED "A következő fájlt: ""%s"" nem lehet menteni, lehet, hogy védett.\n\nSzeretné adminisztrátornként elindítani a Notepad3-at?"
     IDS_MUI_ERR_ACCESSDENIED
-                            "A következő fájlt: ""%s"" nem lehet menteni, lehet, hogy védett.\n\nSzeretné adminisztrátornként elindítani a Notepad3-at?"
+                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "Adminisztrátor végrehajtható nem található.\nFelkeressük e  weboldalt: https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Biztosan meg szeretné nyitni ezt a nagy fájlt?"
