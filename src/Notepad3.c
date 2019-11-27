@@ -93,10 +93,13 @@ int       s_iToolBarTheme = -1;
 
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
+static bool      s_bIsUserInAdminGroup = false;
+static bool      s_bIsRunAsAdmin = false;
 static bool      s_flagDoRelaunchElevated = false;
 static bool      s_flagSaveOnRelaunch = false;
+static bool      s_IsThisAnElevatedRelaunch = false;
 
-static WCHAR     s_wchWndClass[16] = _W(SAPPNAME);
+static WCHAR     s_wchWndClass[64] = _W(SAPPNAME);
 
 static HWND      s_hwndEditFrame = NULL;
 static HWND      s_hwndNextCBChain = NULL;
@@ -541,7 +544,6 @@ static WCHAR                 s_lpFileArg[MAX_PATH+1];
 
 static cpi_enc_t             s_flagSetEncoding = CPI_NONE;
 static int                   s_flagSetEOLMode = 0;
-static bool                  s_IsThisAnElevatedRelaunch = false;
 static bool                  s_flagStartAsTrayIcon = false;
 static int                   s_flagAlwaysOnTop = 0;
 static bool                  s_flagKeepTitleExcerpt = false;
@@ -821,7 +823,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
 
   // Check if running with elevated privileges
-  s_bIsProcessElevated = IsProcessElevated() || IsUserInAdminGroup(); //~ IsRunAsAdmin();
+  s_bIsProcessElevated = IsProcessElevated();
+  s_bIsUserInAdminGroup = IsUserInAdminGroup();
+  s_bIsRunAsAdmin = IsRunAsAdmin();
 
   // Default Encodings (may already be used for command line parsing)
   Encoding_InitDefaults();
@@ -845,7 +849,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   
   (void)OleInitialize(NULL);
-  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
   
   INITCOMMONCONTROLSEX icex;
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -2747,26 +2750,28 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  WCHAR szBuf[MAX_PATH + 40];
+  WCHAR szDropStrgBuf[MAX_PATH + 40];
   HDROP hDrop = (HDROP)wParam;
 
-  // Reset Change Notify
-  //bPendingChangeNotify = false;
-
-  if (IsIconic(hwnd))
+  if (IsIconic(hwnd)) {
     ShowWindow(hwnd, SW_RESTORE);
-
-  //SetForegroundWindow(hwnd);
-
-  DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
-
-  if (PathIsDirectory(szBuf)) {
-    WCHAR tchFile[MAX_PATH] = { L'\0' };
-    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf))
-      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
   }
-  else if (PathFileExists(szBuf)) {
-    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
+
+  DragQueryFile(hDrop, 0, szDropStrgBuf, COUNTOF(szDropStrgBuf));
+
+  if (PathIsDirectory(szDropStrgBuf)) {
+    WCHAR tchFile[MAX_PATH] = { L'\0' };
+    if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szDropStrgBuf)) {
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+    }
+  }
+  else if (PathFileExists(szDropStrgBuf)) {
+    if (Flags.bReuseWindow) {
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szDropStrgBuf);
+    }
+    else {
+      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, szDropStrgBuf);
+    }
   }
   else {
 #ifndef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -2779,6 +2784,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_DROP);
   }
+
   DragFinish(hDrop);
 
   return FALSE;
@@ -3715,8 +3721,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
-      SaveAllSettings(false); 
-      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, (iLoWParam != IDM_FILE_NEWWINDOW2));
+      SaveAllSettings(false);
+      LPCWSTR lpcwFilePath = (iLoWParam != IDM_FILE_NEWWINDOW2) ? Globals.CurrentFile : NULL;
+      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, lpcwFilePath);
       break;
 
 
@@ -10306,7 +10313,7 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 
     if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
 
-      DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,FALSE);
+      DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
 
         *(HWND*)lParam = hwnd;
@@ -10327,7 +10334,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 
     if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
 
-      DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,false);
+      DWORD const dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL, FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) 
       {
         if (IsWindowEnabled(hwnd)) { bContinue = FALSE; }
@@ -10569,7 +10576,8 @@ bool RelaunchMultiInst() {
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
   if (!IsVistaOrHigher() || !s_flagDoRelaunchElevated ||
-      s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_flagDisplayHelp) 
+      s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
+      s_flagDisplayHelp) 
   {
     return false; // reject initial RelaunchElevated() try
   }

@@ -45,7 +45,7 @@ WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO * hMonitorInfo);
 void FitIntoMonitorGeometry(RECT* pRect, WININFO* pWinInfo, SCREEN_MODE mode);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
 
-void DialogNewWindow(HWND hwnd,bool,bool);
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath);
 void DialogFileBrowse(HWND hwnd);
 void DialogAdminExe(HWND hwnd,bool);
 
@@ -53,7 +53,8 @@ int  MessageBoxLng(HWND hwnd, UINT uType, UINT uIdMsg, ...);
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMessage, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
-bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, int iFormat, bool, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
+bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, 
+                    int iFormat, bool bIsElevated, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);

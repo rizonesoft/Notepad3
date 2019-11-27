@@ -3355,7 +3355,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 //  DialogNewWindow()
 //
 //
-void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
+void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
 {
   if (bSaveOnRunTools && !FileSave(false, true, false, false, Flags.bPreserveFileModTime)) { return; }
 
@@ -3384,23 +3384,23 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 
   MONITORINFO mi;
   WININFO wi = GetMyWindowPlacement(hwnd, &mi);
-  // offset new window position +10/+10
-  wi.x += 10;
-  wi.y += 10;
-  // check if window fits monitor
-  if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
-    wi.x = mi.rcMonitor.left;
-    wi.y = mi.rcMonitor.top;
-  }
-  wi.max = IsZoomed(hwnd);
+  //~ offset new window position +10/+10
+  //~wi.x += 10;
+  //~wi.y += 10;
+  //~// check if window fits monitor
+  //~if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
+  //~  wi.x = mi.rcMonitor.left;
+  //~  wi.y = mi.rcMonitor.top;
+  //~}
+  //~wi.max = IsZoomed(hwnd);
 
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StrIsNotEmpty(Globals.CurrentFile))
+  if (StrIsNotEmpty(lpcwFilePath))
   {
     WCHAR szFileName[MAX_PATH] = { L'\0' };
-    StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
+    StringCchCopy(szFileName, COUNTOF(szFileName), lpcwFilePath);
     PathQuoteSpaces(szFileName);
     StringCchCat(szParameters, COUNTOF(szParameters), L" ");
     StringCchCat(szParameters, COUNTOF(szParameters), szFileName);
@@ -3546,13 +3546,13 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   LPCWSTR lpszFile, int iFormat, bool bModified,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
-  if (bFreezeAppTitle)
+  if (bFreezeAppTitle) {
     return false;
-
+  }
   WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
   WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
   if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
-    !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
+      !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
   }
   if (bIsElevated) {
