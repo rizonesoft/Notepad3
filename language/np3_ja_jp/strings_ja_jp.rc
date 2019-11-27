@@ -142,9 +142,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します。\n変換を続行しますか？"
     IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません。"
-    //IDS_MUI_ERR_ACCESSDENIED """%s"" を保存できませんでした。保護されている可能性があります。\n\n管理者権限でNotepad3を起動しますか？"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
+                            """%s"" を保存できませんでした。保護されている可能性があります。\n\nDo you want to launch %s as 'Elevated' application?"
+//  (to be deleted)         """%s"" を保存できませんでした。保護されている可能性があります。\n\n管理者権限でNotepad3を起動しますか？"
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？"

@@ -244,7 +244,6 @@ BEGIN
     IDM_THEMES_DEFAULT      "Factory Default"
     IDM_THEMES_FILE_ITEM    "Standard Settings"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    //IDS_MUI_STATUSBAR_POSTFIXES ",,, [UTF-8],,, [UTF-8],,,,,,,,,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 

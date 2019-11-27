@@ -1,13 +1,13 @@
-================================================================================
+==================================================================================
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
 =                                                   (c) Rizonesoft 2008-2019   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
-================================================================================
+==================================================================================
 Rizonesoft Notepad3 --- CHANGELOG ---
-================================================================================
+==================================================================================
 
 ----------------------------------------------------
 LEGEND:
@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1122.(#build) (2019-11-22)
+Current BETA Version 5.19.1127.(#build) (2019-11-27)
 ====================================================
 
 ----------------------------------------------------
@@ -49,6 +49,8 @@ NEW:
 ----------------------------------------------------
 CHANGES:
 ----------------------------------------------------
+- Change wording "Administrator" to "Elevated".
+- MiniPath - Notepad3 communication.
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
 - ESC Key clears active selection (before exiting Notepad3).
 - Refactoring source code (encoding detection).
@@ -89,6 +91,7 @@ ENHANCEMENT:
 ----------------------------------------------------
 FIXES:
 ----------------------------------------------------
+- Preserve file modification time option on elevated.
 - Elevated relaunch after encoding change.
 - Sub dialog centering in multi monitor environment.
 - Modern style message box icons.
@@ -131,21 +134,21 @@ TRANSLATIONS (MUI):
 - Turkish (tr-TR) (on hold).
 
 
-==================================================
+====================================================
 Version 5.19.815.2595 (15 August 2019)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Add settings for allowed AutoComplete fill-up chars.
 - Advanced TOML Lexer.
 - Multiselect Edit Indicator.
 - Color hover and picker (HTML color def only #RRGGBB, to call color-picker: Alt+MouseClick).
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Encoding (Default) Settings dialog: use positive wording for all items.
 - Sync Minipath Filter-Lines list with Notepad3 Lexers list.
 - Use double-quotes as MRU list string limiter.
@@ -158,9 +161,9 @@ CHANGES:
 - Replace Onigmo by Oniguruma (ONI).
 - CED -> UCHARDET license and acknowledgement.
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Additional information on using copy version info button of About Dialog.
 - Complete implementation of UTF-8-Sig MinPath.ini file handler.
 - Use UTF-8-Sig for themes files.
@@ -169,9 +172,9 @@ ENHANCEMENT:
 - Bookmark margin click.
 - Some multi-selection enhancements.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Multiple checks for (invalid) operations on rectangular selection.
 - Lexers with empty "associated filename ext" will be intialized with default extentions.
 - Load set localized menu before displaying dialog.
@@ -188,27 +191,27 @@ FIXES:
 - Encoding detection failure fallback: current code-page or default encoding on new (if fallback forced).
 - Multi-Selection while Mark-Occurrences of current word is active.
 
---------------------------------------------------
+----------------------------------------------------
 REMOVED:
---------------------------------------------------
+----------------------------------------------------
 - Disable "NewLine" for AutoComplete fill-up.
 - Remove (old) AHK Lexer in favour of modern AHK_L Lexer.
 
---------------------------------------------------
+----------------------------------------------------
 TRANSLATIONS (MUI):
---------------------------------------------------
+----------------------------------------------------
 - Polish (pl-PL).
 - Portuguese Brazilian (pt-BR) (in progress).
 - Turkish (tr-TR) (in progress).
 
 
-==================================================
+====================================================
 Version 5.19.630.2381 (30 June 2019)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Add another Dark Theme "Obsidian".
 - Add option to disable Hyperlink Tooltip.
 - ToolTip for Hyperlinks.
@@ -231,9 +234,9 @@ NEW:
 - End-of-Line (EOL) consistency check on file open (NLS: dialogs).
 - Checkbox for transparent Find/Replace Dialogbox on losing focus.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Enable Undo on FileRevert / AutoReload.
 - Adapt warning dialog according to new FileRevert / AutoReload undo/redo history.
 - Add an "Always On Top" toolbar button.
@@ -262,9 +265,9 @@ CHANGES:
 - Goto-Dlg (Line/Column) shows max line number.
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting).
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Allow customizable fileName-RegEx to extensionlist 
 	( \rc$; = all filenames (incl. ext) which ends on 'rc').
 - Hand cursor coupled with indicator hover style only on modifier keys.
@@ -273,9 +276,9 @@ ENHANCEMENT:
 - Rework inconsistent line-breaks in status bar.
 - Rework EOL and Indentation check with dialogs.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Load external Toolbars (clear config on error, path relative to be portable).
 - Focused View: refolding by lexer.
 - Focused View started from Find/Replace dialog.
@@ -295,28 +298,28 @@ FIXES:
 - Support high-definition icon for taskbar.
 - .vcxproj files supporting VS2019 (vc142).
 
---------------------------------------------------
+----------------------------------------------------
 REMOVED:
---------------------------------------------------
+----------------------------------------------------
 - Compact Encoding Detection (CED) as 2nd encoding detector
     (rely on UCHARDET only).
 
---------------------------------------------------
+----------------------------------------------------
 TRANSLATIONS (MUI):
---------------------------------------------------
+----------------------------------------------------
 - Hungarian (hu-HU).
 - Italian (it-IT).
 - Korean (ko-KR).
 - Polish (pl-PL) (in progress).
 
 
-==================================================
+====================================================
 Version 5.19.108.1602 (8 January 2019)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Added initial "minipath.ini" to Visual Studio Project.
 - Read undefined MiniPath settings from Notepad3.ini 
     (Preferred language and Favorites directory).
@@ -328,9 +331,9 @@ NEW:
 - Add schema related keywords Auto Completion & IME.
 - Rebuilding the "Command Line Help" dialog.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - MiniPath About dialog: visual adjustments.
 - Optimize icon resource handling.
 - Optimized MiniPath resource file (icon/bitmap placement).
@@ -354,9 +357,9 @@ CHANGES:
 - Adaptations for MS Visual Studio 2019 Preview.
 - Scintilla updated to 412. 
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Do not reset scroll-width tracking on saving file 
     (issue #539: https://github.com/rizonesoft/Notepad3/issues/539).
 - Fixed portable MiniPath redirector .ini files.
@@ -378,9 +381,9 @@ FIXES:
 - Fixed ASCII fallback only for selected encodings.
 - Fixed Onigmo RegEx Interface: bug in returning correct matching range.
 
---------------------------------------------------
+----------------------------------------------------
 TRANSLATIONS (MUI):
---------------------------------------------------
+----------------------------------------------------
 - Afrikaans (af-ZA).
 - Belarusian (be-BY).
 - German (de-DE).
@@ -393,13 +396,13 @@ TRANSLATIONS (MUI):
 - Chinese Simplified (zh-CN).
 
 
-==================================================
+====================================================
 Version 4.18.511.992 (12 May 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Menu entries for (hidden) Accelerator Keys.
 - Method to remove duplicate lines.
 - Names under Acknowledgments on About box.
@@ -411,9 +414,9 @@ NEW:
 - DPI awarenes on manual font scaling.
 - Menu entry for switching HighDPI toolbar.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Incremental match for search/replace dialog box.
 - Default ini for Notepad3Portable.
 - Scintilla library to v4.04.
@@ -431,9 +434,9 @@ CHANGES:
 - Menu Help instead of "?" 
 - Move File History (Recent File List) to Accel-Key Ctrl+Alt+H.
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Latest compiler tool chain recognition.
 - Pad with Spaces in Rectangular Selection.
 - Handling of default/standard lexer styles.
@@ -479,9 +482,9 @@ ENHANCEMENT:
     (predefined -4).
 - Minor speedup on notify changed event.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Memory leakage in selection undo/redo stack.
 - Remember initial search start position for incremental search.
 - Some .ini-file handling stuff.
@@ -586,35 +589,35 @@ FIXES:
 - Modified document flag set unneccessaryly.
 - Bug, where styling stopped after hotspot highligting.
 
---------------------------------------------------
+----------------------------------------------------
 REMOVED:
---------------------------------------------------
+----------------------------------------------------
 - wyUpdate stuff from portable installation.
 
 
-==================================================
+====================================================
 Version 3.18.311.928 (11 March 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Accelerator-Key to toggle tranparency mode (Alt+0 => Alt+G).
 
 
-==================================================
+====================================================
 Version 3.18.311.925 (11 March 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - New: About Box (RichEdit library 2.0)
 - New: Version string patching commands for different local builds.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Accelerator Keys: (Alt+0: Toggle Transparency), 
     (Alt+Shift+N: Launch new empty window).
 - Added "tellenc" acknowledgement to About test.
@@ -622,15 +625,15 @@ CHANGES:
 - New compiler version.
 - Version info in About text.
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Pressing F3 at Find/Replace dialog performs a find and 
     switches focus to main window.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Activation of Undo TB-Icon on operations, that can't be undone.
 - Onigmo: use CR (\r) as mono line-break symbol too.
 - Format number with thousand seperator and digit grouping 
@@ -647,24 +650,24 @@ FIXES:
 - Swap clipboard while pasting into selection.
 
 
-==================================================
+====================================================
 Version 3.18.223.908 (23 February 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Critical error with automatic updates.
 - Swap clipboard bug while pasting into selection.
 
 
-==================================================
+====================================================
 Version 3.18.222.905 (22 February 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Accelerator Key (Alt+A) to switch ON/OFF occurrences marker/counter.
 - Feature "Scroll Past End of File" (settings).
 - Menu entry to check Rizonesoft.com directly for updates.
@@ -675,9 +678,9 @@ NEW:
 - Styling for folding marks (charset:1 -> circles / case:U -> double lines).
 - wyUpdate's client configuration to PortableApps version.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Executables now compressed with NRV2E method. 
 - Scintilla version 4.0.3 and documentation update.
 - Adapted VS compiler version string for About dialog.
@@ -689,9 +692,9 @@ CHANGES:
     charset:0/1/2 single line after/before/enclosing.
 - Registry files lexer to support eolfilled on "Added Keys".
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Added "Shift+F1" Accelerator Key to open "About..." box.
 - Allow negative values for Extra Line Spacing (compact line view).
 - Automatic Updates and incorporated launch of update installer "wyUpdate.exe".
@@ -705,9 +708,9 @@ ENHANCEMENT:
 - Check for Alt-Key down/up to allow drawing rectangular selection in virtual space.
 - Use faster method (SCI direct call) to set/reset virtual space access option.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Minor issues in context of undo/redo (virtual) rectangular (empty) selection.
 - Static URL string to open version check website.
 - Tidy up menu navigation via keyboard.
@@ -745,20 +748,20 @@ FIXES:
 - Performance issue: Replace All - delay status update until transaction finished.
 
 
-==================================================
+====================================================
 Version 3.18.131.862 (31 January 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - Accelerator Key "Ctrl+Alt+J" -> Fuse Lines 
     (:= Join Lines, line-breaks NOT replaced by Space).
 - Setting2 parameter to adjust "Mark Occ" and "Hyperlink" styling delay.
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Highlight current line stuff gathered.
 - Customize Schemes... Style Names.
 - Added Accelerator Keys: Alt+LEFT/RIGHT to FOLD/EXPAND folding section.
@@ -766,9 +769,9 @@ ENHANCEMENT:
 - Canonical initial Notepad3.ini.
 - Make selection block indentation similar to VisualStudio's.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Performance for several modify text operations.
 - Correct in-memory encoding/re-coding of text.
 - Join Lines (preserve paragraphs) issue.
@@ -801,19 +804,19 @@ FIXES:
 - Char2Hex: Remove limit single byte selection.
 
 
-==================================================
+====================================================
 Version 3.18.113.828 (13 January 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - "Customize Schemes..." UI change to represent "relative sizing hierarchy".
 - Initial version of Nim Lexer. Added Scintilla project and header for Nim lexer.
 
---------------------------------------------------
+----------------------------------------------------
 CHANGES:
---------------------------------------------------
+----------------------------------------------------
 - Compiler version 191225834 (VS2017 v15.5.3).
 - Executables not compressed with UPX.
 - Menu "Mark Occurrences" whole word matching: radio button behavior.
@@ -828,9 +831,9 @@ CHANGES:
 - Re-introduce "max mark occurrence counter" to avoid lazy UI. 
     (Set .ini section [Settings2] MarkOccurrencesMaxCount=-1 for unlimited (MAX_INT)).
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - NimLexer = NimrodLexer -> rely on Scintilla distribution for Nim(rod) lexer.
 - Reasonable assumption for memory allocation of style handling (backup, save, load).
 - statusbar: information about usage of 2nd Default Style.
@@ -845,9 +848,9 @@ ENHANCEMENT:
 - Redraw indicator ranges (Mark Occurrences) only if needed - 
     avoiding recursive SCN_UPDATEUI notifications.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Several Mark Occurrences (instantly) issues.
 - Regarding Scheme customizing (rel. size) and View Menu (Mark Occ.).
 - Onigmo regex engine PERL syntax: supporting named groups referencing 
@@ -886,28 +889,28 @@ FIXES:
 - Selection of 1st or 2nd standard lexer (Default Text) based on Use2ndStandard flag.
 
 
-==================================================
+====================================================
 Version 3.18.105.802 (5 January 2018)
-==================================================
+====================================================
 
---------------------------------------------------
+----------------------------------------------------
 NEW:
---------------------------------------------------
+----------------------------------------------------
 - New: Hyperlink Hotspot Style updates on UpdateUI event (visible area only)
 - New: Switch to draw all occurrences in visible area only.
 - New: (Mark Occurences) instant word highligting.
 
---------------------------------------------------
+----------------------------------------------------
 ENHANCEMENT:
---------------------------------------------------
+----------------------------------------------------
 - Async mark all occurrences via timer (UI response).
 - Delayed mark all occurrences for better UI response.
 - Fixed some issuses, which eat up CPU.
 - Optimizing timer handling to avoid multiple calls of complex methods.
 
---------------------------------------------------
+----------------------------------------------------
 FIXES:
---------------------------------------------------
+----------------------------------------------------
 - Custom toolbar images ini settings added.
 - Add hints for free text style properties in "Customize Schemes...".
 - Test version numbers for month Jan - Sep (mono digit).
@@ -921,9 +924,9 @@ FIXES:
 - mark occurrences counter not updated in time.
 
 
-==================================================
+====================================================
 Version 3.17.1228.783 (28 December 2017)
-==================================================
+====================================================
 - New: Added batch script to bulk encrypt files of given directory with encryption tool.
 - New: inticator style used for matching braces too.
 - New: Java sourcecode to compile a class which acts as a standalone tool for decrypting Notepad3's encrypted files.
@@ -937,9 +940,9 @@ Version 3.17.1228.783 (28 December 2017)
 - Fix: font styling of Hyperlinks are not reset to default if feature is switched off.
 
 
-==================================================
+====================================================
 Version 3.17.1223.778 (23 December 2017)
-==================================================
+====================================================
 - New: More triggers for Hyperlink style updated.
 - New: Online Documentation menu item.
 - New: Added Scintilla's indicator styles to scheme config for "Mark Occurences".
@@ -987,9 +990,9 @@ Version 3.17.1223.778 (23 December 2017)
 - Fix: General bug fixes and code cleanup.
 
 
-==================================================
+====================================================
 Version 3.17.1210.729 (10 December 2017)
-==================================================
+====================================================
 - New: Added Awk Script syntax highlighting (Python lexer based)
 - New: Enhanced URL Hotspot highlighting.
 - New: open Hyperlink in NP3 (if applicable: "file://...").
@@ -1010,9 +1013,9 @@ Version 3.17.1210.729 (10 December 2017)
 - Fix: Added some more places, where Hotspot style redrawing does not slow down responsiveness.
 
 
-==================================================
+====================================================
 Version 3.17.1202.715 (2 December 2017)
-==================================================
+====================================================
 - New: Additionally show full path to current directory in windows title.
 - Changed: Move "Mark Occurrences" check box from menu to find/replace dialog options.
 - Changed: Renaming of drag n' drop methods.
@@ -1027,9 +1030,9 @@ Version 3.17.1202.715 (2 December 2017)
 - Fix: #192 Drag n' drop from 32-bit process on Notepad3 x64 window
 
 
-==================================================
+====================================================
 Version 3.17.1124.690 (24 November 2017)
-==================================================
+====================================================
 - Added Book Mark style (Color Background and Alpha) to customize schemes...
 - New "D" and "Go" programming language support.
 - Update: Compiler version detection.
@@ -1086,9 +1089,9 @@ Version 3.17.1124.690 (24 November 2017)
 - Minor bug fixes and more...
 
 
-==================================================
+====================================================
 Version 2.17.1023.632 (23 October 2017)
-==================================================
+====================================================
 - Add code snippet (activation only prepare for future extensions).
 - Added switch ([Settings2] UseOldStyleBraceMatching) to preserve old style 
     brace matching behavior.
@@ -1118,9 +1121,9 @@ Version 2.17.1023.632 (23 October 2017)
     default folder (%USERPROFILE%\Favorites).
 
 
-==================================================
+====================================================
 Version 2.17.1016.610 (16 October 2017)
-==================================================
+====================================================
 - Added remove button for list items.
 - Checkbox for "preserve caret position" settings.
 - File History Dlg: rename button "Remove" -> "Discard" 
@@ -1130,24 +1133,24 @@ Version 2.17.1016.610 (16 October 2017)
 - Removed unnecessary build artifacts from np3portable.
 
 
-==================================================
+====================================================
 Version 2 Build 605 (15 October 2017)
-==================================================
+====================================================
 - Fix: Crash on accessing UndoRedo structure while NP3 instance has 
     not been initialized completely (.LOG file opening bug).
 
 
-==================================================
+====================================================
 Version 2 Build 600 (15 October 2017)
-==================================================
+====================================================
 - Fix: Virtual space access: column indicator.
 - Fix: Customize Schemes... Font... selection: bold/italic now detected 
     (bold: if selection >= FW_SEMIBOLD)
 
 
-==================================================
+====================================================
 Version 2 Build 583 (11 October 2017)
-==================================================
+====================================================
 - Cleanup AHK testing script, add test artifacts.
 - Generalized internal multi-byte codepage definitions (code cleanup).
 - Fix: syntax error on exit script.
@@ -1158,9 +1161,9 @@ Version 2 Build 583 (11 October 2017)
 - Fix: Recode to ANSI (in case of Chinese ANSI code-page)
 
 
-==================================================
+====================================================
 Version 2 Build 568 (8 October 2017)
-==================================================
+====================================================
 - Updated the Run Dialog icon.
 - Code comment for completeness.
 - Enhanced clipboard recoding detection.
@@ -1180,9 +1183,9 @@ Version 2 Build 568 (8 October 2017)
 - Fix: Bug in code-page related text conversion.
 
 
-==================================================
+====================================================
 Version 2 Build 548 (3 October 2017)
-==================================================
+====================================================
 - Code cleanup
 - Fix: Made corrections to build 505 change log (spelling, grammar, etc).
 - Fix: FILE status becomes [MODIFIED] when doing CONTROL+A to select ALL.
@@ -1198,9 +1201,9 @@ Version 2 Build 548 (3 October 2017)
 - Correct UFT Spelling on Encoding menu.
 
 
-==================================================
+====================================================
 Version 2 Build 505 (23 September 2017)
-==================================================
+====================================================
 - 1st chunk of StrSafe migration.
 - Some more StrSafe changes
 - Fix: manually edited settings (SciDirectWriteTech, SciFontQuality) 
@@ -1278,9 +1281,9 @@ Version 2 Build 505 (23 September 2017)
 - Readme.txt Updated. (Thanks Will)
 
 
-==================================================
+====================================================
 Version 2 Build 450 (18 August 2017)
-==================================================
+====================================================
 - Update to Scintilla 400 (early bird) pre-release.
 - Renamed encoding menu item: "Recode No FileVars" (Alt+F8) =>> "Ignore Encoding Tags" (Alt-F8)
 - UTF-8 encoding of License.txt (fixing: different ANSI codepage for copyright sign)
@@ -1291,9 +1294,9 @@ Version 2 Build 450 (18 August 2017)
 - Fixed wrong shortcut in menu on word navigation (Ctrl+LEFT/RIGHT)
 
 
-==================================================
+====================================================
 Version 2 Build 440 (16 August 2017)
-==================================================
+====================================================
 - Added Enabling/Disabling Save-Button in toolbar according to file modified indicator.
 - Added Del/Back Selection preserving on Undo/Redo
 - Cut Selection (Ctrl-X) will preserve Selection on Undo/Redo
@@ -1306,9 +1309,9 @@ Version 2 Build 440 (16 August 2017)
 - Fixing and cleanup build for Notepad3Portable
 
 
-==================================================
+====================================================
 Version 2 Build 432 (10 August 2017)
-==================================================
+====================================================
 - Added command line option ( /v ) to print file immediately and quit (like Window's original notepad.exe /p option).
 - Added printing additional option /v dialog to allow access to the Printer dialog (as on Menu: Print... ).
 - Enlarge some string buffers for dialogs.
@@ -1318,16 +1321,16 @@ Version 2 Build 432 (10 August 2017)
 - Fixed np3encrypt vcxproj files.
 
 
-==================================================
+====================================================
 Version 2 Build 422 (10 August 2017)
-==================================================
+====================================================
 - Cleanup manifest handling
 - Minipath DPI aware false
 
 
-==================================================
+====================================================
 Version 2 Build 411 (9 August 2017)
-==================================================
+====================================================
 - Added VisualStudio's Editor Behaviour for Ctrl-C and Ctrl-X
 - Added VS2017 .vcproj files and adapted Compiler Tool Set accordingly
 - Reintroduce HighDPI toolbar
@@ -1337,25 +1340,25 @@ Version 2 Build 411 (9 August 2017)
 - Fixed broken Ctrl-Q (toggle line comments)
 
 
-==================================================
+====================================================
 Version 2 Build 398 (13 June 2017)
-==================================================
+====================================================
 - Added Microsoft Visual C++ 2017 (vc141) support.
 - Updated Scintilla to version 3.7.5
 - Don't use 2nd default syntax scheme by default. (Issue #21)
 - Bigger Toolbar Buttons (24px). Should be big enough now. (Issue #21)
 
 
-==================================================
+====================================================
 Version 1 Build 388 (06 January 2017)
-==================================================
+====================================================
 - Updated Scintilla to version 3.7.2
 - MiniPath now works on Windows XP
 
 
-==================================================
+====================================================
 Version 1 Build 386 (08 December 2016)
-==================================================
+====================================================
 - Added RaPeHoff to the contributors list.
 - Update to Scintilla 371 (NP2 adaption due to deprecated data types).
 - Clean-code Solution (instead of "magic numbers").
@@ -1365,17 +1368,17 @@ Version 1 Build 386 (08 December 2016)
 - Fixed block selecting cause crash.
 
 
-==================================================
+====================================================
 Version 1 Build 350 (05 September 2016)
-==================================================
+====================================================
 - Added Microsoft Visual C++ Update 3 version number
 - Updated HTML Keywords
 - Updated Scintilla to version 3.6.7
 
 
-==================================================
+====================================================
 Version 1 Build 330 (24 June 2016)
-==================================================
+====================================================
 - Added Visual Studio 2015 Update 2 version number
 - Added Support for Inno Setup 5.5.9
 - Implemented a new versioning scheme

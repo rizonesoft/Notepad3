@@ -142,9 +142,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Niektóre znaki w tym tekście nie są obsługiwane przez wybrane kodowanie, i mogą zostanie zamienione na standardowe znaki po zapisaniu. Zaleca się wybrać inne kodowanie pliku. Kontynuować?"
     IDS_MUI_ERR_DROP        "Tylko jeden plik może być upuszczony w tym samym czasie!"
-    //IDS_MUI_ERR_ACCESSDENIED "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nCzy uruchomić Notepad3 jako Administrator?"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file '%s' cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nDo you want to launch %s as 'Elevated' application?"
+//  (to be deleted)         "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nCzy uruchomić Notepad3 jako Administrator?"
     IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyć ten duży plik?"
