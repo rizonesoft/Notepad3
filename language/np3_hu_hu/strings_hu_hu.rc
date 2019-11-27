@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Adminisztrátor)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Vágólap"
     IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
