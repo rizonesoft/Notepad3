@@ -143,7 +143,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Vissa tecken stöds inte av vald teckenkodning och kommer att ersättas av platshållare när filen sparas. Vi rekommenderar att du väljer en annan teckenkodning. Vill du fortsätta?"
     IDS_MUI_ERR_DROP        "Endast en fil kan slängas på en gång!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra Notepad3 som Administratör?"
+                            "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nDo you want to launch %s as 'Elevated' application?"
+//  (to be deleted)         "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra Notepad3 som Administratör?"
     IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Vill du öppna denna stora fil?"

@@ -126,7 +126,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" 파일을 읽는 도중 오류가 발생하였습니다."
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 도중 오류가 발생하였습니다."
-    IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다. \nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
+    IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다.\nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -142,9 +142,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자를 현재 인코딩에서 지원하지 않기 때문에 저장시에는 기본 문자로 대체될 것입니다. 다른 인코딩을 선택하는게 좋습니다. 계속 할까요?"
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
-    //IDS_MUI_ERR_ACCESSDENIED """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다. \n\n관리자 권한으로 Notepad3을 시작 하시겠습니까?"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
+                            """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다.\n\nDo you want to launch %s as 'Elevated' application?"
+//  (to be deleted)         """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다.\n\n관리자 권한으로 Notepad3을 시작 하시겠습니까?"
     IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 대용량 파일을 열겠습니까?"
@@ -178,7 +178,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "설정 파일을 만드는 중 오류가 발생하였습니다."
     IDS_MUI_WRITEINI_FAIL   "설정을 저장 하는 중 오류가 발생하였습니다."
     IDS_MUI_SETTINGSNOTSAVED
-                            "기존 설정 파일이 없습니다. \n스타일 설정을 유지하려면 저장(F7) 하거나 스키마 편집(Ctrl+F12) 에서 스타일을 내보내기 하면 됩니다."
+                            "기존 설정 파일이 없습니다.\n스타일 설정을 유지하려면 저장(F7) 하거나 스키마 편집(Ctrl+F12) 에서 스타일을 내보내기 하면 됩니다."
 END
 
 STRINGTABLE
@@ -209,7 +209,7 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "이 문서에는 인쇄 할 텍스트가 없습니다."
     IDS_MUI_PRINT_ERROR     """%s"" 인쇄 오류!"
     IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로 가기가 즐겨 찾기 디렉토리에 만들어졌습니다."
-    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로 가기를 만들 수 없습니다. \n같은 이름의 다른 파일이 없는지 확인하십시오."
+    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로 가기를 만들 수 없습니다.\n같은 이름의 다른 파일이 없는지 확인하십시오."
     IDS_MUI_READONLY_MODIFY """%s""의 속성을 수정할 수 없습니다."
     IDS_MUI_SAVEPOS         "위치 저장(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "위치 재설정(&R)\tCtrl+R"
