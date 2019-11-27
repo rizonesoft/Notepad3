@@ -142,8 +142,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dall'encoding selezionato, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare un encoding differente. Continuare?"
     IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
+    //IDS_MUI_ERR_ACCESSDENIED "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi avviare Notepad3 come Administrator?"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi avviare Notepad3 come Administrator?"
+                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Sei sicuro di voler aprire questo file grande?"

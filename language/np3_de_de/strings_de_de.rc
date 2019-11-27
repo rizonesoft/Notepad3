@@ -143,7 +143,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Bestimmte Zeichen im aktuellen Text werden von der gewählten Codierung nicht unterstützt und werden evtl. durch Standardplatzhalter ersetzt wenn die Datei gespeichert wird. Es wird empfolen eine andere Codierung zu wählen. Weiter machen?"
     IDS_MUI_ERR_DROP        "Es kann immer nur eine Datei gleichzeitig verworfen werden!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du Notepad3 als Administrator starten?"
+                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du %s mit erhöhten Rechten starten?"
     IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen."
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
