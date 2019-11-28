@@ -421,15 +421,15 @@ BEGIN
         BEGIN
             POPUP "&Адлюстраванне назвы акна"
             BEGIN
-                MENUITEM "&Толькі імя файла",             IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Імя файла і &папка",            IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Поўны &шлях",                   IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Урывак тэксту\tCtrl+9",        IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Толькі імя файла",                IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "Імя файла і &папка",               IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Поўны &шлях",                      IDM_VIEW_SHOWFULLPATH
+                MENUITEM "&Урывак тэксту\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Перавыкарыстаць акно",             IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Зверху іншых вокнаў\tAlt+T",       IDM_VIEW_ALWAYSONTOP
-            MENUITEM "З&гортваць у абшар інфармаванняў",  IDM_VIEW_MINTOTRAY
-            MENUITEM "Празрысты &рэжым\tAlt+G",           IDM_VIEW_TRANSPARENT
+            MENUITEM "&Перавыкарыстаць акно\tCtrl+Alt+L",    IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Зверху іншых вокнаў\tAlt+T",          IDM_VIEW_ALWAYSONTOP
+            MENUITEM "З&гортваць у абшар інфармаванняў",     IDM_VIEW_MINTOTRAY
+            MENUITEM "Празрысты &рэжым\tAlt+G",              IDM_VIEW_TRANSPARENT
         END
         POPUP "&Тэхналогіі"
         BEGIN

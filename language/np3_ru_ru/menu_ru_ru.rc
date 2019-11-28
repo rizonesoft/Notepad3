@@ -421,15 +421,15 @@ BEGIN
         BEGIN
             POPUP "Отобра&жение заголовка окна"
             BEGIN
-                MENUITEM "&Только имя файла",             IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Имя файла и &папка",            IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Полный п&уть",                  IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Отрывок текста\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Только имя файла",                IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "Имя файла и &папка",               IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Полный п&уть",                     IDM_VIEW_SHOWFULLPATH
+                MENUITEM "&Отрывок текста\tCtrl+9",          IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Переиспользовать окно",            IDM_VIEW_REUSEWINDOW
-            MENUITEM "П&оверх других окон\tAlt+T",        IDM_VIEW_ALWAYSONTOP
-            MENUITEM "&Сворачивать в панель уведомлений", IDM_VIEW_MINTOTRAY
-            MENUITEM "Полупрозрачный &режим\tAlt+G",      IDM_VIEW_TRANSPARENT
+            MENUITEM "&Переиспользовать окно\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "П&оверх других окон\tAlt+T",           IDM_VIEW_ALWAYSONTOP
+            MENUITEM "&Сворачивать в панель уведомлений",    IDM_VIEW_MINTOTRAY
+            MENUITEM "Полупрозрачный &режим\tAlt+G",         IDM_VIEW_TRANSPARENT
         END
         POPUP "&Технологии"
         BEGIN

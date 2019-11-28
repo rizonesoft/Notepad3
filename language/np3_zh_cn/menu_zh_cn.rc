@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "完整文件路径(&P)",                   IDM_VIEW_SHOWFULLPATH
                 MENUITEM "摘录选中内容(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "重用窗口(&R)",                           IDM_VIEW_REUSEWINDOW
+            MENUITEM "重用窗口(&R)\tCtrl+Alt+L",              IDM_VIEW_REUSEWINDOW
             MENUITEM "总是置顶(&A)\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
             MENUITEM "最小化到托盘(&Z)",                       IDM_VIEW_MINTOTRAY
             MENUITEM "透明模式(&M)\tAlt+G",                   IDM_VIEW_TRANSPARENT

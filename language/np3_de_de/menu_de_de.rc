@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Voller &Pfadname",                    IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Textauszug\tCtrl+9",                 IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Fenster wiederverwenden",                IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Fenster wiederverwenden\tCtrl+Alt+L",    IDM_VIEW_REUSEWINDOW
             MENUITEM "&Immer als oberstes Fenster\tAlt+T",      IDM_VIEW_ALWAYSONTOP
             MENUITEM "In den &Tray minimieren",                 IDM_VIEW_MINTOTRAY
             MENUITEM "&Transparent Modus\tAlt+G",               IDM_VIEW_TRANSPARENT

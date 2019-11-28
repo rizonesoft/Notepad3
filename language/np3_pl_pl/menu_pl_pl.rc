@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Pełna ścieżka",                           IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Fragment tekstu\tCtrl+9",                IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Użyj ponownie okna",                         IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Użyj ponownie okna\tCtrl+Alt+L",             IDM_VIEW_REUSEWINDOW
             MENUITEM "&Zawsze na wierzchu\tAlt+T",                  IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimalizuj do zasobnika systemowego",        IDM_VIEW_MINTOTRAY
             MENUITEM "Tryb przeźroczystości\tAlt+G",                IDM_VIEW_TRANSPARENT

@@ -421,15 +421,15 @@ BEGIN
         BEGIN
             POPUP "Mostrar en el &título de la ventana"
             BEGIN
-                MENUITEM "&Solo el nombre del archivo",     IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "&Nombre de archivo y carpeta",    IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "Nombre de la &ruta completa",     IDM_VIEW_SHOWFULLPATH
-                MENUITEM "&Extracto de texto\tCtrl+9",      IDM_VIEW_SHOWEXCERPT
+                MENUITEM "&Solo el nombre del archivo",      IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "&Nombre de archivo y carpeta",     IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Nombre de la &ruta completa",      IDM_VIEW_SHOWFULLPATH
+                MENUITEM "&Extracto de texto\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reutilizar la ventana",              IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Siempre visible\tAlt+T",             IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&zar en la barra de tareas",    IDM_VIEW_MINTOTRAY
-            MENUITEM "&Modo transparente\tAlt+G",           IDM_VIEW_TRANSPARENT
+            MENUITEM "&Reutilizar la ventana\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Siempre visible\tAlt+T",              IDM_VIEW_ALWAYSONTOP
+            MENUITEM "Minimi&zar en la barra de tareas",     IDM_VIEW_MINTOTRAY
+            MENUITEM "&Modo transparente\tAlt+G",            IDM_VIEW_TRANSPARENT
         END
         POPUP "T&ecnología"
         BEGIN

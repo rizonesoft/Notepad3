@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Fullständig sökväg",                      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "Återanvänd fönster",                          IDM_VIEW_REUSEWINDOW
+            MENUITEM "Återanvänd fönster\tCtrl+Alt+L",              IDM_VIEW_REUSEWINDOW
             MENUITEM "Alltid överst\tAlt+T",                        IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimera till dolda ikoner",                  IDM_VIEW_MINTOTRAY
             MENUITEM "Genomskinlig\tAlt+G",                         IDM_VIEW_TRANSPARENT

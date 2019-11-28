@@ -82,10 +82,80 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 // Accelerator
 //
+// Beware of Unicode Character Input Methods:
+// ------------------------------------------
+// A.) UNIVERSAL
+//     This method works regardless of any of your language settings, but is the most cumbersome to type.
+//     1. Press and hold down the Alt key.
+//     2. Press the + (plus) key on the numeric keypad.
+//     3. Type the hexidecimal unicode value.
+//     4. Release the Alt key.
+//
+//     Alas, this appears to require a registry setting. It was already set on my computer,
+//     but some readers report that this method didn't work for them, and this is probably why.
+//     If you don't know what the registry is, please don't try this.
+//     Under HKEY_Current_User/Control Panel/Input Method, set EnableHexNumpad to "1".
+//     If you have to add it, set the type to be REG_SZ.
+//
+// B.) INPUT-LANGUAGE-SPECIFIC
+//     This method depends on the specific input language you are using.
+//     1. Press and hold down the Alt key.
+//     2. Type 0 (zero) and the decimal unicode value on the numeric keypad.
+//     3. Release the Alt key.
+//
+//     You can see which input language you are using (and which are installed) by:
+//        - Start Menu
+//        - Settings
+//        - Control Panel
+//        - Regional and Language Options
+//        - Languages tab
+//        - Detail button
+//     The entries in the Unicode character information section are using the Windows Latin 1 input language.
+//
+// C.) CODE-PAGE-SPECIFIC
+//     This method depends on the specific code page you have installed.
+//     1. Press and hold down the Alt key.
+//     2. Type the decimal codepage value on the numeric keypad. Do not type any leading zeros.
+//     3. Release the Alt key.
+//
+//     You can see which code page you have by typing chcp at a command prompt.
+//     Check the grid for your code page from the list of known code pages to see what characters you can enter this way.
+//     The entries in the Unicode character information section are using code page 437.
+//
+// D.) APPLICATION-SPECIFIC
+//     Applications can support their own methods. These are not standardized.
+//     - Several Microsoft applications, including WordPad and Microsoft Word:
+//     - press Alt-X after typing some hex digits.
+//       You see the digits as you type them, and they're replaced by the Unicode equivalent.
+//       Pressing Alt-X again converts it back to numbers.
+//
+// E.) UNICODE-IME
+//     Microsoft has a Unicode Input Method Editor (IME) with LeftAlt Shift as the trigger key.
+//     Michael Kaplan, a Microsoft i18n guru, has the details on how the Unicode IME works.
+//     - https://blogs.msdn.com/michkap/archive/2005/05/18/419117.aspx
+//     Some notes to fill in some details that he assumes:
+//     - Go into Control Panel -> Regional Settings, on the languages tab, enable support for East Asian languages.
+//        This takes 230 MB of disk space and a restart.
+//     - Go back into Control Panel -> Regional Settings, on the languages tab, press the Details button.
+//     - Add Chinese (Taiwan) (Others would probably work too) and choose Chinese (Traditional) - Unicode.
+//     - You will now have an extra do-hickey in the taskbar showing which language you're in.
+//     - Press LeftAlt Shift to switch into the IME (taskbar shows CH).
+//     - Type the hex digits of the Unicode character. As soon as you type the last one, it is sent to the application.
+//     - Press LeftAlt Shift to switch out of the IME (taskbar shows your original language code).
+//
+// --------------------------------------------------------------------------------------------------------------------
+// 
+// GLOBAL INTERCEPTED HOTKEYS:
+//
+// - Ctrl+Alt+Shift+F
+//     After Win10 1903 upgrade, Ctrl+Alt+Shift+F hotkey is intercepted by File Explorer
+//
+//
 
 IDR_MAINWND ACCELERATORS
 BEGIN
     "0",            IDM_VIEW_RESETZOOM,               VIRTKEY, CONTROL, NOINVERT
+    //~"0",            MMMMMMMMMMMMMMMMMM,               VIRTKEY, SHIFT, CONTROL, NOINVERT  (intercepted?)
     "1",            CMD_STRINGIFY,                    VIRTKEY, CONTROL, NOINVERT
     "1",            CMD_WEBACTION1,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
     "2",            CMD_STRINGIFY2,                   VIRTKEY, CONTROL, NOINVERT
@@ -145,6 +215,7 @@ BEGIN
     "L",            IDM_FILE_LAUNCH,                  VIRTKEY, CONTROL, NOINVERT
     "L",            IDM_FILE_OPENWITH,                VIRTKEY, ALT, NOINVERT
     "L",            IDM_VIEW_LONGLINEMARKER,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "L",            IDM_VIEW_REUSEWINDOW,             VIRTKEY, CONTROL, ALT, NOINVERT
     "M",            IDM_FILE_BROWSE,                  VIRTKEY, CONTROL, NOINVERT
     "M",            IDM_EDIT_MODIFYLINES,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "M",            IDM_VIEW_MARGIN,                  VIRTKEY, SHIFT, CONTROL, NOINVERT

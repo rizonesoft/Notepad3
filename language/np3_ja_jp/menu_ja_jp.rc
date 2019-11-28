@@ -421,15 +421,15 @@ BEGIN
         BEGIN
             POPUP "タイトルバーの表示(&Y)"
             BEGIN
-                MENUITEM "ファイル名のみ(&O)",                   IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "ファイル名のみ(&O)",                      IDM_VIEW_SHOWFILENAMEONLY
                 MENUITEM "ファイル名とフォルダパス(&D)",             IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "フルパス(&P)",                        IDM_VIEW_SHOWFULLPATH
-                MENUITEM "選択文字列を使用(&T)\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
+                MENUITEM "フルパス(&P)",                            IDM_VIEW_SHOWFULLPATH
+                MENUITEM "選択文字列を使用(&T)\tCtrl+9",            IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "新しいウィンドウを開かない(&R)",              IDM_VIEW_REUSEWINDOW
-            MENUITEM "常に手前に表示(&A)\tAlt+T",              IDM_VIEW_ALWAYSONTOP
-            MENUITEM "システムトレイに最小化(&Z)",                 IDM_VIEW_MINTOTRAY
-            MENUITEM "ウィンドウ透化(&M)\tAlt+G",                IDM_VIEW_TRANSPARENT
+            MENUITEM "新しいウィンドウを開かない(&R)\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "常に手前に表示(&A)\tAlt+T",                   IDM_VIEW_ALWAYSONTOP
+            MENUITEM "システムトレイに最小化(&Z)",                   IDM_VIEW_MINTOTRAY
+            MENUITEM "ウィンドウ透化(&M)\tAlt+G",                   IDM_VIEW_TRANSPARENT
         END
         POPUP "文字の描画(&T)"
         BEGIN
