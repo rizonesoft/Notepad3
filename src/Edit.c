@@ -1071,8 +1071,13 @@ bool EditLoadFile(
     return false;
   }
 
+  bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
 
-  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
+  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : 
+                                     (bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
+
+  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iAnalyzeFallback,
+                                                   bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
   #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
 
@@ -1149,7 +1154,6 @@ bool EditLoadFile(
     UINT const uCodePage = Encoding_GetCodePage(status->iEncoding);
 
     // ===  UTF-8 ? ===
-    bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
     bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && encDetection.bIsAnalysisReliable;
     bool const bSoftHintUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && Encoding_IsUTF8(encDetection.Encoding); // non-reliable analysis = soft-hint

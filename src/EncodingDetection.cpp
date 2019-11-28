@@ -1222,12 +1222,12 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //=============================================================================
 //=============================================================================
 
-
 //=============================================================================
 //
 //  GetFileEncoding()
 //
-extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData, 
+                                             const cpi_enc_t iAnalyzeFallback,
                                              bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
    
@@ -1261,9 +1261,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   // --- 2nd Use Encoding Analysis if applicable
 
-  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT;
-
-  size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
+  size_t const cbNbytes4Analysis = min_s(cbData, 200000LL);
 
   float confidence = 0.0f;
 
