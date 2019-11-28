@@ -1,13 +1,13 @@
-==================================================================================
+================================================================================
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
 =                                                   (c) Rizonesoft 2008-2019   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
-==================================================================================
+================================================================================
 Rizonesoft Notepad3 --- CHANGELOG ---
-==================================================================================
+================================================================================
 
 ----------------------------------------------------
 LEGEND:
@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1127.(#build) (2019-11-27)
+Current BETA Version 5.19.1128.(#build) (2019-11-28)
 ====================================================
 
 ----------------------------------------------------
@@ -49,6 +49,8 @@ NEW:
 ----------------------------------------------------
 CHANGES:
 ----------------------------------------------------
+- Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
+- Use Ctrl+Alt+L  for toggle "Menu: Reuse Window" option.
 - Change wording "Administrator" to "Elevated".
 - MiniPath - Notepad3 communication.
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
