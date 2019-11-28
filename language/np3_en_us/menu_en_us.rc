@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Full &Pathname",              IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Text Excerpt\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reuse Window",                   IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Reuse Window\tCtrl+Alt+L",       IDM_VIEW_REUSEWINDOW
             MENUITEM "&Always On Top\tAlt+T",           IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&ze To Tray",               IDM_VIEW_MINTOTRAY
             MENUITEM "Transparent &Mode\tAlt+G",        IDM_VIEW_TRANSPARENT

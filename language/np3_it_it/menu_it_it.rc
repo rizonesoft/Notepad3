@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Full path",                     IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Estratto di testo\tCtrl+9",    IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Riusa finestra",                   IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Riusa finestra\tCtrl+Alt+L",       IDM_VIEW_REUSEWINDOW
             MENUITEM "&Sempre in primo piano\tAlt+T",     IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&zza nella Tray",             IDM_VIEW_MINTOTRAY
             MENUITEM "Modalità &trasparente\tAlt+G",      IDM_VIEW_TRANSPARENT

@@ -421,15 +421,15 @@ BEGIN
         BEGIN
             POPUP "Ablak &címsor megjelenítése"
             BEGIN
-                MENUITEM "C&sak a fájl neve",           IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Fájlnév és kön&yvtár",        IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "&Teljes útvonal",             IDM_VIEW_SHOWFULLPATH
-                MENUITEM "S&zöveg kivonat\tCtrl+9",     IDM_VIEW_SHOWEXCERPT
+                MENUITEM "C&sak a fájl neve",                 IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "Fájlnév és kön&yvtár",              IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "&Teljes útvonal",                   IDM_VIEW_SHOWFULLPATH
+                MENUITEM "S&zöveg kivonat\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Ablak újrahasznosítása",         IDM_VIEW_REUSEWINDOW
-            MENUITEM "Mindig &felül\tAlt+T",            IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Lekicsinyítés az &óra mellé",     IDM_VIEW_MINTOTRAY
-            MENUITEM "&Átlátszó mód\tAlt+G",            IDM_VIEW_TRANSPARENT
+            MENUITEM "&Ablak újrahasznosítása\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "Mindig &felül\tAlt+T",                  IDM_VIEW_ALWAYSONTOP
+            MENUITEM "Lekicsinyítés az &óra mellé",           IDM_VIEW_MINTOTRAY
+            MENUITEM "&Átlátszó mód\tAlt+G",                  IDM_VIEW_TRANSPARENT
         END
         POPUP "&Technológia"
         BEGIN

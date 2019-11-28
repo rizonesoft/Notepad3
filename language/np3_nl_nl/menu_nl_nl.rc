@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Volledige &padnaam",              IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Fragment of tekst\tCtrl+9",      IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "He&rgebruik venster",                 IDM_VIEW_REUSEWINDOW
+            MENUITEM "He&rgebruik venster\tCtrl+Alt+L",     IDM_VIEW_REUSEWINDOW
             MENUITEM "&Altijd bovenop\tAlt+T",              IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimaliseer naar &Taakbalk",         IDM_VIEW_MINTOTRAY
             MENUITEM "Transparante &modus\tAlt+G",          IDM_VIEW_TRANSPARENT

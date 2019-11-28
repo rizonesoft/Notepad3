@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Mostrar &Caminho Completo",            IDM_VIEW_SHOWFULLPATH
                 MENUITEM "Extrair &Texto\tCtrl+9",               IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reusar Janela",                           IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Reusar Janela\tCtrl+Alt+L",               IDM_VIEW_REUSEWINDOW
             MENUITEM "&Sempre no Topo\tAlt+T",                   IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&zar para a Bandeja",                IDM_VIEW_MINTOTRAY
             MENUITEM "&Modo Transparente\tAlt+G",                IDM_VIEW_TRANSPARENT
