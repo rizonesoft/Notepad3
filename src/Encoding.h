@@ -184,6 +184,7 @@ typedef struct _enc_det_t
 
 
 ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
+                                  const cpi_enc_t iAnalyzeFallback,
                                   bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection);
 
 // ----------------------------------------------------------------------------

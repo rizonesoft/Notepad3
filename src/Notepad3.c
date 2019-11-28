@@ -1525,10 +1525,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_CREATE:
       return MsgCreate(hwnd, wParam, lParam);
 
-    case WM_DESTROY:
-    case WM_ENDSESSION:
-      return MsgEndSession(hwnd, umsg, wParam, lParam);
-
     case WM_SETFOCUS:
       SetFocus(Globals.hwndEdit);
       break;
@@ -1537,7 +1533,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       s_flagAppIsClosing = true;
       CloseNonModalDialogs();
       if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
-        DestroyWindow(hwnd);
+        DestroyWindow(Globals.hwndMain);
       }
       break;
 
@@ -1546,6 +1542,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return TRUE;
       }
       break;
+
+    case WM_DESTROY:
+    case WM_ENDSESSION:
+      return MsgEndSession(hwnd, umsg, wParam, lParam);
 
     // Reinitialize theme-dependent values and resize windows
     case WM_THEMECHANGED:
@@ -10997,10 +10997,10 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 void CloseNonModalDialogs()
 {
   if (IsWindow(Globals.hwndDlgFindReplace)) {
-    PostMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
+    SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
   }
   if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-    PostMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
+    SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
   }
 }
 
