@@ -308,7 +308,7 @@ BEGIN
     POPUP "Visa"
     BEGIN
         MENUITEM "Automatiskt radbyte\tCtrl+W",                     IDM_VIEW_WORDWRAP
-        MENUITEM "Markering för långa rader\tCtrl+Shift+L",         IDM_VIEW_LONGLINEMARKER
+        MENUITEM "Markering för långa rader\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indragsguide\tCtrl+Shift+G",                      IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Visa radbrytsindikator\tCtrl+Shift+7",            IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Fullständig sökväg",                      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "Återanvänd fönster\tCtrl+Alt+L",              IDM_VIEW_REUSEWINDOW
+            MENUITEM "Återanvänd fönster\tCtrl+Shift+L",            IDM_VIEW_REUSEWINDOW
             MENUITEM "Alltid överst\tAlt+T",                        IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimera till dolda ikoner",                  IDM_VIEW_MINTOTRAY
             MENUITEM "Genomskinlig\tAlt+G",                         IDM_VIEW_TRANSPARENT

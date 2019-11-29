@@ -308,7 +308,7 @@ BEGIN
     POPUP "&Aansig"
     BEGIN
         MENUITEM "Woord Oo&rvloei\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "&Lang Lyn Merker\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Lang Lyn Merker\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&asiegidse\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Wys &Oorvloei Simbole\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Volle &Padnaam",                  IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Teks Uittreksel\tCtrl+9",        IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Hergebruik Venster\tCtrl+Alt+L",     IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Hergebruik Venster\tCtrl+Shift+L",   IDM_VIEW_REUSEWINDOW
             MENUITEM "&Altyd Bo-op\tAlt+T",                 IDM_VIEW_ALWAYSONTOP
             MENUITEM "&Minimeer Na Die Laai",               IDM_VIEW_MINTOTRAY
             MENUITEM "&Deursigtige Modus\tAlt+G",           IDM_VIEW_TRANSPARENT

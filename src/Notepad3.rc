@@ -214,8 +214,8 @@ BEGIN
     //"K",            IDM_VIEW_COLORDEFHOTSPOTS,        VIRTKEY, CONTROL, ALT, NOINVERT
     "L",            IDM_FILE_LAUNCH,                  VIRTKEY, CONTROL, NOINVERT
     "L",            IDM_FILE_OPENWITH,                VIRTKEY, ALT, NOINVERT
-    "L",            IDM_VIEW_LONGLINEMARKER,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "L",            IDM_VIEW_REUSEWINDOW,             VIRTKEY, CONTROL, ALT, NOINVERT
+    "L",            IDM_VIEW_REUSEWINDOW,             VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "L",            IDM_VIEW_LONGLINEMARKER,          VIRTKEY, CONTROL, ALT, NOINVERT
     "M",            IDM_FILE_BROWSE,                  VIRTKEY, CONTROL, NOINVERT
     "M",            IDM_EDIT_MODIFYLINES,             VIRTKEY, ALT, NOINVERT  /// NO Menu
     "M",            IDM_VIEW_MARGIN,                  VIRTKEY, SHIFT, CONTROL, NOINVERT

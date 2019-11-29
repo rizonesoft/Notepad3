@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ====================================================
-Current BETA Version 5.19.1128.(#build) (2019-11-28)
+Current BETA Version 5.19.1129.(#build) (2019-11-29)
 ====================================================
 
 ----------------------------------------------------
@@ -49,8 +49,10 @@ NEW:
 ----------------------------------------------------
 CHANGES:
 ----------------------------------------------------
+- Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
-- Use Ctrl+Alt+L  for toggle "Menu: Reuse Window" option.
+- Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
+- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L
 - Change wording "Administrator" to "Elevated".
 - MiniPath - Notepad3 communication.
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
@@ -178,7 +180,7 @@ ENHANCEMENT:
 FIXES:
 ----------------------------------------------------
 - Multiple checks for (invalid) operations on rectangular selection.
-- Lexers with empty "associated filename ext" will be intialized with default extentions.
+- Lexers with empty "associated filename ext" will be intialized with default extensions.
 - Load set localized menu before displaying dialog.
 - Manual entry for "Suppressed Messages" set as '-1' will hide checkbox for "Don't display again".
 - Issues regarding "no Notepad3.ini" file (defaults).

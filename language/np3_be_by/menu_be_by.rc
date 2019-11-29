@@ -308,8 +308,8 @@ BEGIN
     POPUP "&Выгляд"
     BEGIN
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
-        MENUITEM "&Маркер доўгіх радкоў\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "&Маркер доўгіх радкоў\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
+        MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Паказваць &сімвалы пераносаў\tCtrl+Shift+7",  IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Паказваць пра&бельныя сімвалы\tCtrl+Shift+8", IDM_VIEW_SHOWBLANKS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Поўны &шлях",                      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Урывак тэксту\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Перавыкарыстаць акно\tCtrl+Alt+L",    IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Перавыкарыстаць акно\tCtrl+Shift+L",  IDM_VIEW_REUSEWINDOW
             MENUITEM "&Зверху іншых вокнаў\tAlt+T",          IDM_VIEW_ALWAYSONTOP
             MENUITEM "З&гортваць у абшар інфармаванняў",     IDM_VIEW_MINTOTRAY
             MENUITEM "Празрысты &рэжым\tAlt+G",              IDM_VIEW_TRANSPARENT
