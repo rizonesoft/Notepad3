@@ -22,7 +22,7 @@ KEYWORDLIST KeyWords_VHDL = {
 "UX01 UX01Z X01 X01Z bit bit_vector boolean character delay_length file_open_kind file_open_status integer "
 "line natural positive real severity_level side signed std_logic std_logic_vector std_ulogic "
 "std_ulogic_vector string text time unsigned width",
-"", "", "" };
+"", "", "", "" };
 
 EDITLEXER lexVHDL = { 
 SCLEX_VHDL, IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"", 
