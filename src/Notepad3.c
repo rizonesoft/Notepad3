@@ -10027,6 +10027,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   fioStatus.iEncoding = Encoding_Current(CPI_GET);
   fioStatus.iEOLMode = SciCall_GetEOLMode();
 
+#if 0
   bool bIsEmptyNewFile = false;
   if (StrIsEmpty(Globals.CurrentFile)) {
     DocPos const cchText = SciCall_GetTextLength();
@@ -10042,6 +10043,10 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       }
     }
   }
+#else
+  bool const bIsEmptyNewFile = (StrIsEmpty(Globals.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
+#endif
+
 
   if (!bSaveAlways && (!IsSaveNeeded(ISN_GET) || bIsEmptyNewFile) && !bSaveAs) {
     int idx;
