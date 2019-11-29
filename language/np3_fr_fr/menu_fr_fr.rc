@@ -308,7 +308,7 @@ BEGIN
     POPUP "&Affichage"
     BEGIN
         MENUITEM "Retour automatique à la lig&ne\tCtrl+W",              IDM_VIEW_WORDWRAP
-        MENUITEM "Marqueur de &longue ligne\tCtrl+Shift+L",             IDM_VIEW_LONGLINEMARKER
+        MENUITEM "Marqueur de &longue ligne\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "Guides de retra&it\tCtrl+Shift+G",                    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Afficher le retour automatique à la ligne\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Nom du &chemin com&plet",                     IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Extrait de texte\tCtrl+9",                   IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Réutiliser la fenêtre\tCtrl+Alt+L",              IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Réutiliser la fenêtre\tCtrl+Shift+L",            IDM_VIEW_REUSEWINDOW
             MENUITEM "Toujours visible\tAlt+T",                         IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&ser dans la barre des tâches",             IDM_VIEW_MINTOTRAY
             MENUITEM "&Mode transparent\tAlt+G",                        IDM_VIEW_TRANSPARENT

@@ -308,7 +308,7 @@ BEGIN
     POPUP "查看(&V)"
     BEGIN
         MENUITEM "自动换行(&R)\tCtrl+W",                        IDM_VIEW_WORDWRAP
-        MENUITEM "显示行长度标记(&L)\tCtrl+Shift+L",             IDM_VIEW_LONGLINEMARKER
+        MENUITEM "显示行长度标记(&L)\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "显示软换行(&P)\tCtrl+Shift+7",                IDM_VIEW_WORDWRAPSYMBOLS
@@ -316,11 +316,11 @@ BEGIN
         MENUITEM "显示换行符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "检测 #RRGGBB 颜色(&C)",                IDM_VIEW_COLORDEFHOTSPOTS
+        MENUITEM "检测 #RRGGBB 颜色(&C)",                      IDM_VIEW_COLORDEFHOTSPOTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
         POPUP "高亮当前行(&G)\tCtrl+Shift+I"
         BEGIN
-            MENUITEM "无高亮(&N)",                          IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "无高亮(&N)",                           IDM_VIEW_HILITCURLN_NONE
             MENUITEM "背景颜色(&C)",                          IDM_VIEW_HILITCURLN_BACK
             MENUITEM "边框(&F)",                              IDM_VIEW_HILITCURLN_FRAME
         END
@@ -426,10 +426,10 @@ BEGIN
                 MENUITEM "完整文件路径(&P)",                   IDM_VIEW_SHOWFULLPATH
                 MENUITEM "摘录选中内容(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "重用窗口(&R)\tCtrl+Alt+L",              IDM_VIEW_REUSEWINDOW
+            MENUITEM "重用窗口(&R)\tCtrl+Shift+L",             IDM_VIEW_REUSEWINDOW
             MENUITEM "总是置顶(&A)\tAlt+T",                    IDM_VIEW_ALWAYSONTOP
             MENUITEM "最小化到托盘(&Z)",                       IDM_VIEW_MINTOTRAY
-            MENUITEM "透明模式(&M)\tAlt+G",                   IDM_VIEW_TRANSPARENT
+            MENUITEM "透明模式(&M)\tAlt+G",                    IDM_VIEW_TRANSPARENT
         END
         POPUP "处理技术(&T)"
         BEGIN

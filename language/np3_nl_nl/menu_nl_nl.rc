@@ -308,7 +308,7 @@ BEGIN
     POPUP "Beel&d"
     BEGIN
         MENUITEM "Automatische &terugloop\tCtrl+W",         IDM_VIEW_WORDWRAP
-        MENUITEM "&Lange lijnmarkering\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Lange lijnmarkering\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "Inspringen gidsen\tCtrl+Shift+G",         IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Tonen de terugloo&p symbolen\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Volledige &padnaam",              IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Fragment of tekst\tCtrl+9",      IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "He&rgebruik venster\tCtrl+Alt+L",     IDM_VIEW_REUSEWINDOW
+            MENUITEM "He&rgebruik venster\tCtrl+Shift+L",   IDM_VIEW_REUSEWINDOW
             MENUITEM "&Altijd bovenop\tAlt+T",              IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimaliseer naar &Taakbalk",         IDM_VIEW_MINTOTRAY
             MENUITEM "Transparante &modus\tAlt+G",          IDM_VIEW_TRANSPARENT

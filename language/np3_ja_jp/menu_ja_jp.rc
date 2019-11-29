@@ -308,7 +308,7 @@ BEGIN
     POPUP "表示(&V)"
     BEGIN
         MENUITEM "右端で折り返す(&R)\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "行の長さのガイド(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
+        MENUITEM "行の長さのガイド(&L)\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",             IDM_VIEW_WORDWRAPSYMBOLS
@@ -421,13 +421,13 @@ BEGIN
         BEGIN
             POPUP "タイトルバーの表示(&Y)"
             BEGIN
-                MENUITEM "ファイル名のみ(&O)",                      IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "ファイル名とフォルダパス(&D)",             IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "フルパス(&P)",                            IDM_VIEW_SHOWFULLPATH
-                MENUITEM "選択文字列を使用(&T)\tCtrl+9",            IDM_VIEW_SHOWEXCERPT
+                MENUITEM "ファイル名のみ(&O)",                     IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "ファイル名とフォルダパス(&D)",               IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "フルパス(&P)",                          IDM_VIEW_SHOWFULLPATH
+                MENUITEM "選択文字列を使用(&T)\tCtrl+9",         IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "新しいウィンドウを開かない(&R)\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
-            MENUITEM "常に手前に表示(&A)\tAlt+T",                   IDM_VIEW_ALWAYSONTOP
+            MENUITEM "新しいウィンドウを開かない(&R)\tCtrl+Shift+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "常に手前に表示(&A)\tAlt+T",                 IDM_VIEW_ALWAYSONTOP
             MENUITEM "システムトレイに最小化(&Z)",                   IDM_VIEW_MINTOTRAY
             MENUITEM "ウィンドウ透化(&M)\tAlt+G",                   IDM_VIEW_TRANSPARENT
         END

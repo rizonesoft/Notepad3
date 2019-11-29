@@ -308,7 +308,7 @@ BEGIN
     POPUP "&View"
     BEGIN
         MENUITEM "&Word Wrap\tCtrl+W",                   IDM_VIEW_WORDWRAP
-        MENUITEM "&Long Line Marker\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Long Line Marker\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indentation &Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Show W&rap Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Full &Pathname",              IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Text Excerpt\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reuse Window\tCtrl+Alt+L",       IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Reuse Window\tCtrl+Shift+L",     IDM_VIEW_REUSEWINDOW
             MENUITEM "&Always On Top\tAlt+T",           IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&se To Tray",               IDM_VIEW_MINTOTRAY
             MENUITEM "Transparent &Mode\tAlt+G",        IDM_VIEW_TRANSPARENT

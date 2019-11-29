@@ -308,7 +308,7 @@ BEGIN
     POPUP "보기(&V)"
     BEGIN
         MENUITEM "워드 랩(&R)\tCtrl+W",                    IDM_VIEW_WORDWRAP
-        MENUITEM "긴 줄 표시(&L)\tCtrl+Shift+L",            IDM_VIEW_LONGLINEMARKER
+        MENUITEM "긴 줄 표시(&L)\tCtrl+Alt+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "들여쓰기 안내선(&A)\tCtrl+Shift+G",        IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "워드 랩 기호 표시(&P)\tCtrl+Shift+7",      IDM_VIEW_WORDWRAPSYMBOLS
@@ -422,11 +422,11 @@ BEGIN
             POPUP "창 제목 표시(&Y)"
             BEGIN
                 MENUITEM "파일 이름만(&O)",                 IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "파일 이름 및 디렉터리(&D)",        IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "파일 이름 및 디렉터리(&D)",         IDM_VIEW_SHOWFILENAMEFIRST
                 MENUITEM "전체 경로(&P)",                   IDM_VIEW_SHOWFULLPATH
                 MENUITEM "본문 인용(&T)\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "창 다시 사용(&R)\tCtrl+Alt+L",        IDM_VIEW_REUSEWINDOW
+            MENUITEM "창 다시 사용(&R)\tCtrl+Shift+L",      IDM_VIEW_REUSEWINDOW
             MENUITEM "항상 위에(&A)\tAlt+T",                IDM_VIEW_ALWAYSONTOP
             MENUITEM "트레이로 최소화(&Z)",                  IDM_VIEW_MINTOTRAY
             MENUITEM "투명 모드(&M)\tAlt+G",                IDM_VIEW_TRANSPARENT

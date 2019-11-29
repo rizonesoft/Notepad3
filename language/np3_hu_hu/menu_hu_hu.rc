@@ -308,7 +308,7 @@ BEGIN
     POPUP "&Nézet"
     BEGIN
         MENUITEM "Sort&örés\tCtrl+W",                     IDM_VIEW_WORDWRAP
-        MENUITEM "&Hosszú sor jelölő\tCtrl+Shift+L",      IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Hosszú sor jelölő\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Behúzás jelölése\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Sortö&rés jelzése\tCtrl+Shift+7",       IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "&Teljes útvonal",                   IDM_VIEW_SHOWFULLPATH
                 MENUITEM "S&zöveg kivonat\tCtrl+9",           IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Ablak újrahasznosítása\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Ablak újrahasznosítása\tCtrl+Shift+L", IDM_VIEW_REUSEWINDOW
             MENUITEM "Mindig &felül\tAlt+T",                  IDM_VIEW_ALWAYSONTOP
             MENUITEM "Lekicsinyítés az &óra mellé",           IDM_VIEW_MINTOTRAY
             MENUITEM "&Átlátszó mód\tAlt+G",                  IDM_VIEW_TRANSPARENT

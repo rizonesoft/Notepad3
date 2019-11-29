@@ -308,7 +308,7 @@ BEGIN
     POPUP "&Vista"
     BEGIN
         MENUITEM "&Ajuste automático de línea\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "&Marcador de línea larga\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Marcador de línea larga\tCtrl+Alt+L",                IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guías de Sangría\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostrar &símbolos de ajuste\tCtrl+Shift+7",           IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Nombre de la &ruta completa",      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Extracto de texto\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reutilizar la ventana\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Reutilizar la ventana\tCtrl+Shift+L", IDM_VIEW_REUSEWINDOW
             MENUITEM "&Siempre visible\tAlt+T",              IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimi&zar en la barra de tareas",     IDM_VIEW_MINTOTRAY
             MENUITEM "&Modo transparente\tAlt+G",            IDM_VIEW_TRANSPARENT

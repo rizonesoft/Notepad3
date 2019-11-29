@@ -308,7 +308,7 @@ BEGIN
     POPUP "&Widok"
     BEGIN
         MENUITEM "Zawijanie wierszy\tCtrl+W",                       IDM_VIEW_WORDWRAP
-        MENUITEM "&Znacznik długości wiersza\tCtrl+Shift+L",        IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Znacznik długości wiersza\tCtrl+Alt+L",          IDM_VIEW_LONGLINEMARKER
         MENUITEM "Linie pomocnicze wcięć\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Pokaż symbole zawijania wiersza\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Pełna ścieżka",                           IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Fragment tekstu\tCtrl+9",                IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Użyj ponownie okna\tCtrl+Alt+L",             IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Użyj ponownie okna\tCtrl+Shift+L",           IDM_VIEW_REUSEWINDOW
             MENUITEM "&Zawsze na wierzchu\tAlt+T",                  IDM_VIEW_ALWAYSONTOP
             MENUITEM "Minimalizuj do zasobnika systemowego",        IDM_VIEW_MINTOTRAY
             MENUITEM "Tryb przeźroczystości\tAlt+G",                IDM_VIEW_TRANSPARENT

@@ -308,7 +308,7 @@ BEGIN
     POPUP "&Вид"
     BEGIN
         MENUITEM "&Перенос строк\tCtrl+W",                          IDM_VIEW_WORDWRAP
-        MENUITEM "&Маркер длинных строк\tCtrl+Shift+L",              IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Маркер длинных строк\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "Направ&ляющие отступов\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Отображать &символы переноса\tCtrl+Shift+7",      IDM_VIEW_WORDWRAPSYMBOLS
@@ -426,7 +426,7 @@ BEGIN
                 MENUITEM "Полный п&уть",                     IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Отрывок текста\tCtrl+9",          IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Переиспользовать окно\tCtrl+Alt+L",   IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Переиспользовать окно\tCtrl+Shift+L", IDM_VIEW_REUSEWINDOW
             MENUITEM "П&оверх других окон\tAlt+T",           IDM_VIEW_ALWAYSONTOP
             MENUITEM "&Сворачивать в панель уведомлений",    IDM_VIEW_MINTOTRAY
             MENUITEM "Полупрозрачный &режим\tAlt+G",         IDM_VIEW_TRANSPARENT
