@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (権限昇格)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : クリップボード履歴"
     IDS_MUI_UNTITLED        "無題"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -124,8 +124,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "読み込み失敗 ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s""."
+    IDS_MUI_ERR_LOADFILE    "読み込み失敗 ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s"""
     IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は https://rizonesoft.com からダウンロードできます。"
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか？"
     IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
@@ -143,14 +143,13 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します。\n変換を続行しますか？"
     IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません。"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" を保存できませんでした。保護されている可能性があります。\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         """%s"" を保存できませんでした。保護されている可能性があります。\n\n管理者権限でNotepad3を起動しますか？"
+                            """%s"" を保存できませんでした。保護されている可能性があります。\n\n権限を昇格して %s を起動しますか？"
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？"
     IDS_MUI_ERR_FILE_TOO_LARGE "大容量すぎて処理できません！ (サイズ: %lli MB)"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "%s は設定のない拡張子です。\n読み込みますか ？"
+                            "%s は設定のない拡張子です。\n読み込みますか？"
     IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -244,7 +243,7 @@ BEGIN
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_DEFAULT      "初期設定"
     IDM_THEMES_FILE_ITEM    "標準設定"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
