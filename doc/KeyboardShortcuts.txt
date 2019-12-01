@@ -165,7 +165,7 @@ Keyboard Shortcuts for Notepad3
   View
 
     Ctrl+W                Toggle word wrap.
-    Ctrl+Shift+L          Show long line marker.
+    Ctrl+Alt+L            Show long line marker.
     Ctrl+Shift+G          Show indentation guides.
     Ctrl+Shift+N          Show line numbers.
     Ctrl+Shift+M          Show selection margin.
@@ -189,8 +189,9 @@ Keyboard Shortcuts for Notepad3
     Alt++                 Increase limit for long lines.
     Alt+-                 Decrease limit for long lines.
     Ctrl+Shift+H          Toggle auto close HTML/XML.
+    Ctrl+Shift+L          Reuse Window.
     Alt+T                 Always on top.
-    Ctrl+Numpad_*         Transparent mode.
+    Ctrl+G                Transparent mode.
     Ctrl+9                Display text excerpt in title.
     F7                    Save settings now.
     Ctrl+F7               Jump to ini-file.
