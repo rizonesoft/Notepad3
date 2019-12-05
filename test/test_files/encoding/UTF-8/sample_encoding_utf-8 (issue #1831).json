@@ -1,0 +1,9 @@
+{
+  "manifest_version": 2,
+  "name": "k view",
+  "version": "0.5",
+  "description": "テスト。",
+  "browser_action": {
+    "default_icon": { "19": "round-done-button.png" }
+  },
+}

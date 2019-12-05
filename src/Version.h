@@ -73,7 +73,11 @@
 #undef VER_CPL
 
 #if defined(_MSC_VER)
-    #if (_MSC_VER == 1923)
+    #if (_MSC_VER == 1924)
+        #if(_MSC_FULL_VER >= 192428314) 
+            #define VER_CPL     MS Visual C++ 2019 v16.4.0
+        #endif
+    #elif (_MSC_VER == 1923)
         #if(_MSC_FULL_VER >= 192328107) 
             #define VER_CPL     MS Visual C++ 2019 v16.3.(9-10)
         #elif(_MSC_FULL_VER >= 192328106) 
