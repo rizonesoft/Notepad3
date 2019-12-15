@@ -174,7 +174,6 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+9          Show line endings.
     Ctrl+Shift+V          Toggle visual brace matching.
     Ctrl+Shift+I          Highlight current line.
-    Ctrl+Shift+Alt+F      Activate/Deactivate code folding.
     Ctrl+Shift+F          Toggle all folds.
 
   Zoom
