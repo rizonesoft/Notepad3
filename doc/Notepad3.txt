@@ -90,7 +90,7 @@ Changed keyboard shortcuts compared to Notepad2:
 
 Ctrl+C (no selection)   Copy current line.
 Ctrl+X (no selection)   Cut current line.
-Ctrl+Shift+.            Insert GUID.
+Ctrl+Shift+.            Copy GUID to Clipboard.
 Ctrl+0                  Reset zoom.
 Ctrl+NK_*               Toggle transparency
 
@@ -99,7 +99,6 @@ Shift+F2                Go to privious bookmark.
 Ctrl+F2                 Set/Reset bookmark.
 Alt+F2                  Clear all.
 
-Ctrl+Shift+Alt+F        Activate/Deactivate code folding.
 Ctrl+Shift+F            Toggle all folds.
 
 Ctrl+Alt+F2             Expand selection to next match.

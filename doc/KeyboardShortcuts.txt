@@ -19,7 +19,8 @@ Keyboard Shortcuts for Notepad3
   Tools
 
     Alt+N                 Open document in new window.
-    Ctrl+M                Run metapath file browser plugin.
+    Alt+Shit+N            Open new empty window.
+    Ctrl+M                Run MiniPath file browser plugin.
     Ctrl+L                Launch document.
     Alt+L                 Open with.
     Ctrl+R                Run command.
@@ -107,9 +108,9 @@ Keyboard Shortcuts for Notepad3
     Alt+X                 HTML/XML tag.
     Ctrl+F5               Time/date (short form).
     Ctrl+Shift+F5         Time/date (long form).
-    Ctrl+F9               Filename.
-    Ctrl+Shift+F9         Path and filename.
-    Ctrl+Shift+.          Insert GUID.
+    Ctrl+F9               Filename to Clipboard.
+    Ctrl+Shift+F9         Path and filename to Clipboard.
+    Ctrl+Shift+.          Copy GUID to Clipboard.
 
   Special
 
@@ -197,6 +198,7 @@ Keyboard Shortcuts for Notepad3
 
   Misc.
 
+    Ctrl+Shift+K          Copy window position to clipboard.
     Esc                   Optionally minimize or exit Notepad3.
     Shift+Esc             Save file and exit Notepad3.
     F1                    Online Documentation.
