@@ -1,0 +1,14 @@
+9:30 30/12/2019
+
+Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod.
+MiniPath is based on code from Florian Balmer's metapath.
+
+Changes in Notepad3 compared to original Notepad2 😃  
+
+Changes in MiniPath compared to metapath 👍 😃   
+
+Français, Moïse, fêtes, léger, caractères, 
+Año, lección, página, título, cigüeña
+
+Latitude Longitude : 50° 35' 6" nord, 3° 53' 14.3" est
+
