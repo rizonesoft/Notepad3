@@ -1,14 +1,14 @@
 // encoding: UTF-8
-S/******************************************************************************
+S/*****************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
 *                                                                             *
 * EncTables.hpp                                                               *
-*   Encoding detector tables                                     *
+*   Encoding detector tables                                                  *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2019   *
+*                                                  (c) Rizonesoft 2008-2020   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

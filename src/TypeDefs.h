@@ -6,7 +6,7 @@
 *                                                                             *
 * TypeDefs.h                                                                  *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2019   *
+*                                                  (c) Rizonesoft 2008-2020   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

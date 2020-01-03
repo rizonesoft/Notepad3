@@ -8,7 +8,7 @@
 *   Global definitions and declarations                                       *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2019   *
+*                                                  (c) Rizonesoft 2008-2020   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

@@ -1,4 +1,5 @@
 @echo off
+:: encoding: UTF-8
 setlocal enableextensions
 :: ====================================================================================================================
 :: Build batch to create a PortableApps.com's (https://portableapps.com/development) 
