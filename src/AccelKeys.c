@@ -6,9 +6,9 @@
 *                                                                             *
 * AccelKeys.c                                                                 *
 *   Load Accelerator Keys at Runtime                                          *
-*	                                                                            *
+*	                                                                          *
 *                                                                             *
-*                                                  (c) Rizonesoft 2015-2018   *
+*                                                  (c) Rizonesoft 2008-2020   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *******************************************************************************/

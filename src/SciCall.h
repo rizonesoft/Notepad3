@@ -6,13 +6,13 @@
 *                                                                             *
 * SciCall.h                                                                   *
 *   Inline wrappers for Scintilla API calls, arranged in the order and        *
-*	  grouping in which they appear in the Scintilla documentation.             *
+*	grouping in which they appear in the Scintilla documentation.             *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
 *   The use of these inline wrapper functions with declared types will        *
 *   ensure that we get the benefit of the compiler's type checking.           *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2019   *
+*                                                  (c) Rizonesoft 2008-2020   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

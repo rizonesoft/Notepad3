@@ -1,16 +1,16 @@
 @ECHO OFF
 rem ******************************************************************************
-rem *
-rem * Notepad3
-rem *
-rem * make_zip.bat
-rem *   Batch file for creating the zip packages
-rem *
-rem * See License.txt for details about distribution and modification.
-rem *
-rem *                                     (c) Rizonesoft 2008-2019
-rem *                                     https://rizonesoft.com
-rem *
+rem *                                                                            *
+rem * Notepad3                                                                   *
+rem *                                                                            *
+rem * make_zip.bat                                                               *
+rem *   Batch file for creating the zip packages                                 *
+rem *                                                                            *
+rem * See License.txt for details about distribution and modification.           *
+rem *                                                                            *
+rem *                                                 (c) Rizonesoft 2008-2020   *
+rem *                                                   https://rizonesoft.com   *
+rem *                                                                            *
 rem ******************************************************************************
 
 SETLOCAL ENABLEEXTENSIONS

@@ -1,16 +1,16 @@
 @ECHO OFF
 rem ******************************************************************************
-rem *
-rem * Notepad2-mod
-rem *
-rem * make_installer.bat
-rem *   Batch file for building the installer for Notepad2-mod
-rem *
-rem * See License.txt for details about distribution and modification.
-rem *
-rem *                                     (c) XhmikosR 2010-2015
-rem *                                     https://github.com/XhmikosR/notepad2-mod
-rem *
+rem *                                                                            *
+rem * Notepad2-mod                                                               *
+rem *                                                                            *
+rem * make_installer.bat                                                         *
+rem *   Batch file for building the installer for Notepad2-mod                   *
+rem *                                                                            *
+rem * See License.txt for details about distribution and modification.           *
+rem *                                                                            *
+rem *                                                  (c) XhmikosR 2010-2015    *
+rem *                                 https://github.com/XhmikosR/notepad2-mod   *
+rem *                                                                            *
 rem ******************************************************************************
 
 SETLOCAL ENABLEEXTENSIONS
