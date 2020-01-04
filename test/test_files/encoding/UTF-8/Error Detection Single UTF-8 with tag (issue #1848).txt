@@ -1,0 +1,31 @@
+Apache on Windows:
+==================
+// encoding: UTF-8
+
+* Which distribution?
+
+apache.org no longer provides Windows binaries. They direct you to other sources.
+
+Candidates:
+  - The Apache Haus (apachehaus.com)
+  - Apache Lounge   (apachelounge.com)
+
+My current favourite is Apache Lounge. Use the distro with the highest Visual C version you can, and that matches the target system architecture.
+
+Prerequisite: Visual C++ Redistributable
+
+
+* Updating:
+
+(Also check for the latest Visual C++ Redistributable)
+
+Précis:
+
+- Build a new folder at same level as production folder, with "_new" suffix
+- Copy as much production data as possible to new folder
+- Stop (old) production
+- Copy remainder of production data to new folder, moving what can't be copied because of space constraints
+- Rename production folder to backup folder (becomes backup)
+- Rename new folder to production folder (becomes production)
+- Start (new) production and test
+
