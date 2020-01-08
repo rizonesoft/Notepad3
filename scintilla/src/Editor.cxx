@@ -167,8 +167,7 @@ Editor::Editor() : durationWrapOneLine(0.00001, 0.000001, 0.0001) {
 	multiPasteMode = SC_MULTIPASTE_ONCE;
 	virtualSpaceOptions = SCVS_NONE;
 
-	targetStart = 0;
-	targetEnd = 0;
+	targetRange = SelectionSegment();
 	searchFlags = 0;
 
 	topLine = 0;
@@ -594,8 +593,11 @@ void Editor::SetRectangularRange() {
 		const Sci::Line lineCaret =
 			pdoc->SciLineFromPosition(sel.Rectangular().caret.Position());
 		const int increment = (lineCaret > lineAnchorRect) ? 1 : -1;
+		AutoSurface surface(this);
 		for (Sci::Line line=lineAnchorRect; line != lineCaret+increment; line += increment) {
-			SelectionRange range(SPositionFromLineX(line, xCaret), SPositionFromLineX(line, xAnchor));
+			SelectionRange range(
+				view.SPositionFromLineX(surface, *this, line, xCaret, vs),
+				view.SPositionFromLineX(surface, *this, line, xAnchor, vs));
 			if ((virtualSpaceOptions & SCVS_RECTANGULARSELECTION) == 0)
 				range.ClearVirtualSpace();
 			if (line == lineAnchorRect)
@@ -752,7 +754,7 @@ void Editor::MultipleSelectAdd(AddNumber addNumber) {
 		const Range rangeMainSelection(sel.RangeMain().Start().Position(), sel.RangeMain().End().Position());
 		const std::string selectedText = RangeText(rangeMainSelection.start, rangeMainSelection.end);
 
-		const Range rangeTarget(targetStart, targetEnd);
+		const Range rangeTarget(targetRange.start.Position(), targetRange.end.Position());
 		std::vector<Range> searchRanges;
 		// Search should be over the target range excluding the current selection so
 		// may need to search 2 ranges, after the selection then before the selection.
@@ -1598,17 +1600,17 @@ bool Editor::WrapLines(WrapScope ws) {
 }
 
 void Editor::LinesJoin() {
-	if (!RangeContainsProtected(targetStart, targetEnd)) {
+	if (!RangeContainsProtected(targetRange.start.Position(), targetRange.end.Position())) {
 		UndoGroup ug(pdoc);
 		bool prevNonWS = true;
-		for (Sci::Position pos = targetStart; pos < targetEnd; pos++) {
+		for (Sci::Position pos = targetRange.start.Position(); pos < targetRange.end.Position(); pos++) {
 			if (pdoc->IsPositionInLineEnd(pos)) {
-				targetEnd -= pdoc->LenChar(pos);
+				targetRange.end.Add(-pdoc->LenChar(pos));
 				pdoc->DelChar(pos);
 				if (prevNonWS) {
 					// Ensure at least one space separating previous lines
 					const Sci::Position lengthInserted = pdoc->InsertString(pos, " ", 1);
-					targetEnd += lengthInserted;
+					targetRange.end.Add(lengthInserted);
 				}
 			} else {
 				prevNonWS = pdoc->CharAt(pos) != ' ';
@@ -1628,13 +1630,13 @@ const char *Editor::StringFromEOLMode(int eolMode) noexcept {
 }
 
 void Editor::LinesSplit(int pixelWidth) {
-	if (!RangeContainsProtected(targetStart, targetEnd)) {
+	if (!RangeContainsProtected(targetRange.start.Position(), targetRange.end.Position())) {
 		if (pixelWidth == 0) {
 			const PRectangle rcText = GetTextRectangle();
 			pixelWidth = static_cast<int>(rcText.Width());
 		}
-		const Sci::Line lineStart = pdoc->SciLineFromPosition(targetStart);
-		Sci::Line lineEnd = pdoc->SciLineFromPosition(targetEnd);
+		const Sci::Line lineStart = pdoc->SciLineFromPosition(targetRange.start.Position());
+		Sci::Line lineEnd = pdoc->SciLineFromPosition(targetRange.end.Position());
 		const char *eol = StringFromEOLMode(pdoc->eolMode);
 		UndoGroup ug(pdoc);
 		for (Sci::Line line = lineStart; line <= lineEnd; line++) {
@@ -1648,11 +1650,11 @@ void Editor::LinesSplit(int pixelWidth) {
 					const Sci::Position lengthInserted = pdoc->InsertString(
 						posLineStart + lengthInsertedTotal + ll->LineStart(subLine),
 						eol, strlen(eol));
-					targetEnd += lengthInserted;
+					targetRange.end.Add(lengthInserted);
 					lengthInsertedTotal += lengthInserted;
 				}
 			}
-			lineEnd = pdoc->SciLineFromPosition(targetEnd);
+			lineEnd = pdoc->SciLineFromPosition(targetRange.end.Position());
 		}
 	}
 }
@@ -4159,12 +4161,12 @@ Sci::Position Editor::SearchInTarget(const char *text, Sci::Position length) {
 	if (!pdoc->HasCaseFolder())
 		pdoc->SetCaseFolder(CaseFolderForEncoding());
 	try {
-		const Sci::Position pos = pdoc->FindText(targetStart, targetEnd, text,
+		const Sci::Position pos = pdoc->FindText(targetRange.start.Position(), targetRange.end.Position(), text,
 				searchFlags,
 				&lengthFound);
 		if (pos != -1) {
-			targetStart = pos;
-			targetEnd = pos + lengthFound;
+			targetRange.start.SetPosition(pos);
+			targetRange.end.SetPosition(pos + lengthFound);
 		}
 		return pos;
 	} catch (RegexError &) {
@@ -5258,8 +5260,7 @@ void Editor::SetDocPointer(Document *document) {
 
 	// Ensure all positions within document
 	sel.Clear();
-	targetStart = 0;
-	targetEnd = 0;
+	targetRange = SelectionSegment();
 
 	braces[0] = Sci::invalidPosition;
 	braces[1] = Sci::invalidPosition;
@@ -5594,11 +5595,20 @@ Sci::Position Editor::ReplaceTarget(bool replacePatterns, const char *text, Sci:
 			return 0;
 		}
 	}
-	if (targetStart != targetEnd)
-		pdoc->DeleteChars(targetStart, targetEnd - targetStart);
-	targetEnd = targetStart;
-	const Sci::Position lengthInserted = pdoc->InsertString(targetStart, text, length);
-	targetEnd = targetStart + lengthInserted;
+
+	// Remove the text inside the range
+	if (targetRange.Length() > 0)
+		pdoc->DeleteChars(targetRange.start.Position(), targetRange.Length());
+	targetRange.end = targetRange.start;
+
+	// Realize virtual space of target start
+	Sci::Position startAfterSpaceInsertion = RealizeVirtualSpace(targetRange.start.Position(), targetRange.start.VirtualSpace());
+	targetRange.start.SetPosition(startAfterSpaceInsertion);
+	targetRange.end = targetRange.start;
+
+	// Insert the new text
+	const Sci::Position lengthInserted = pdoc->InsertString(targetRange.start.Position(), text, length);
+	targetRange.end.SetPosition(targetRange.start.Position() + lengthInserted);
 	return length;
 }
 
@@ -5991,41 +6001,50 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_SETTARGETSTART:
-		targetStart = static_cast<Sci::Position>(wParam);
+		targetRange.start.SetPosition(static_cast<Sci::Position>(wParam));
 		break;
 
 	case SCI_GETTARGETSTART:
-		return targetStart;
+		return targetRange.start.Position();
+
+	case SCI_SETTARGETSTARTVIRTUALSPACE:
+		targetRange.start.SetVirtualSpace(static_cast<Sci::Position>(wParam));
+		break;
+
+	case SCI_GETTARGETSTARTVIRTUALSPACE:
+		return targetRange.start.VirtualSpace();
 
 	case SCI_SETTARGETEND:
-		targetEnd = static_cast<Sci::Position>(wParam);
+		targetRange.end.SetPosition(static_cast<Sci::Position>(wParam));
 		break;
 
 	case SCI_GETTARGETEND:
-		return targetEnd;
+		return targetRange.end.Position();
+
+	case SCI_SETTARGETENDVIRTUALSPACE:
+		targetRange.end.SetVirtualSpace(static_cast<Sci::Position>(wParam));
+		break;
+
+	case SCI_GETTARGETENDVIRTUALSPACE:
+		return targetRange.end.VirtualSpace();
 
 	case SCI_SETTARGETRANGE:
-		targetStart = static_cast<Sci::Position>(wParam);
-		targetEnd = lParam;
+		targetRange.start.SetPosition(static_cast<Sci::Position>(wParam));
+		targetRange.end.SetPosition(lParam);
 		break;
 
 	case SCI_TARGETWHOLEDOCUMENT:
-		targetStart = 0;
-		targetEnd = pdoc->Length();
+		targetRange.start.SetPosition(0);
+		targetRange.end.SetPosition(pdoc->Length());
 		break;
 
 	case SCI_TARGETFROMSELECTION:
-		if (sel.MainCaret() < sel.MainAnchor()) {
-			targetStart = sel.MainCaret();
-			targetEnd = sel.MainAnchor();
-		} else {
-			targetStart = sel.MainAnchor();
-			targetEnd = sel.MainCaret();
-		}
+		targetRange.start = sel.RangeMain().Start();
+		targetRange.end = sel.RangeMain().End();
 		break;
 
 	case SCI_GETTARGETTEXT: {
-			std::string text = RangeText(targetStart, targetEnd);
+			std::string text = RangeText(targetRange.start.Position(), targetRange.end.Position());
 			return BytesResult(lParam, reinterpret_cast<const unsigned char *>(text.c_str()), text.length());
 		}
 
@@ -8179,8 +8198,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_GETSELECTIONNSTART:
 		return sel.Range(wParam).Start().Position();
 
+	case SCI_GETSELECTIONNSTARTVIRTUALSPACE:
+		return sel.Range(wParam).Start().VirtualSpace();
+
 	case SCI_GETSELECTIONNEND:
 		return sel.Range(wParam).End().Position();
+
+	case SCI_GETSELECTIONNENDVIRTUALSPACE:
+		return sel.Range(wParam).End().VirtualSpace();
 
 	case SCI_SETRECTANGULARSELECTIONCARET:
 		if (!sel.IsRectangular())

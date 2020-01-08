@@ -53,7 +53,7 @@
 // POSIX
 #include <sys/time.h>
 
-// GTK+ headers
+// GTK headers
 #include <glib.h>
 #include <gmodule.h>
 #include <gdk/gdk.h>

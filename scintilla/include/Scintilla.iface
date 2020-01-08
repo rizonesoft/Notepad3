@@ -1216,12 +1216,24 @@ set void SetTargetStart=2190(position start,)
 # Get the position that starts the target.
 get position GetTargetStart=2191(,)
 
+# Sets the virtual space of the target start
+set void SetTargetStartVirtualSpace=2728(position space,)
+
+# Get the virtual space of the target start
+get position GetTargetStartVirtualSpace=2729(,)
+
 # Sets the position that ends the target which is used for updating the
 # document without affecting the scroll position.
 set void SetTargetEnd=2192(position end,)
 
 # Get the position that ends the target.
 get position GetTargetEnd=2193(,)
+
+# Sets the virtual space of the target end
+set void SetTargetEndVirtualSpace=2730(position space,)
+
+# Get the virtual space of the target end
+get position GetTargetEndVirtualSpace=2731(,)
 
 # Sets both the start and end of the target in one call.
 fun void SetTargetRange=2686(position start, position end)
@@ -2613,8 +2625,14 @@ set void SetSelectionNStart=2584(int selection, position anchor)
 # Returns the position at the start of the selection.
 get position GetSelectionNStart=2585(int selection,)
 
+# Returns the virtual space at the start of the selection.
+get position GetSelectionNStartVirtualSpace=2726(int selection,)
+
 # Sets the position that ends the selection - this becomes the currentPosition.
 set void SetSelectionNEnd=2586(int selection, position caret)
+
+# Returns the virtual space at the end of the selection.
+get position GetSelectionNEndVirtualSpace=2727(int selection,)
 
 # Returns the position at the end of the selection.
 get position GetSelectionNEnd=2587(int selection,)
@@ -3177,6 +3195,7 @@ val SCLEX_NIM=126
 val SCLEX_CIL=127
 val SCLEX_X12=128
 val SCLEX_DATAFLEX=129
+val SCLEX_HOLLYWOOD=130
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -5190,6 +5209,23 @@ val SCE_DF_STRINGEOL=11
 val SCE_DF_SCOPEWORD=12
 val SCE_DF_OPERATOR=13
 val SCE_DF_ICODE=14
+# Lexical states for SCLEX_HOLLYWOOD
+lex Hollywood=SCLEX_HOLLYWOOD SCE_HOLLYWOOD_
+val SCE_HOLLYWOOD_DEFAULT=0
+val SCE_HOLLYWOOD_COMMENT=1
+val SCE_HOLLYWOOD_COMMENTBLOCK=2
+val SCE_HOLLYWOOD_NUMBER=3
+val SCE_HOLLYWOOD_KEYWORD=4
+val SCE_HOLLYWOOD_STDAPI=5
+val SCE_HOLLYWOOD_PLUGINAPI=6
+val SCE_HOLLYWOOD_PLUGINMETHOD=7
+val SCE_HOLLYWOOD_STRING=8
+val SCE_HOLLYWOOD_STRINGBLOCK=9
+val SCE_HOLLYWOOD_PREPROCESSOR=10
+val SCE_HOLLYWOOD_OPERATOR=11
+val SCE_HOLLYWOOD_IDENTIFIER=12
+val SCE_HOLLYWOOD_CONSTANT=13
+val SCE_HOLLYWOOD_HEXNUMBER=14
 
 # Events
 
