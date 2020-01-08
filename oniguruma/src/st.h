@@ -6,12 +6,17 @@
 
 #define ST_INCLUDED
 
+#ifndef ONIGURUMA_SYS_UEFI
+
 #ifdef _WIN32
 # include <windows.h>
 typedef ULONG_PTR st_data_t;
 #else
 typedef unsigned long st_data_t;
 #endif
+
+#endif /* ONIGURUMA_SYS_UEFI */
+
 #define ST_DATA_T_DEFINED
 
 typedef struct st_table st_table;

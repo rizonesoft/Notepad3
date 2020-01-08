@@ -1103,7 +1103,7 @@ static int IsAscii(int enc ARG_UNUSED, int c)
 
 static int IsNewline(int enc ARG_UNUSED, int c)
 {
-  if (c == 0x0a) return 1;
+  if (c == NEWLINE_CODE) return 1;
   return 0;
 }
 

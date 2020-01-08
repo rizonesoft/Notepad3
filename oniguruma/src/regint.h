@@ -5,7 +5,7 @@
   encoding: UTF-8
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako
+ * Copyright (c) 2002-2020  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@
     defined(ONIG_DEBUG_STATISTICS)
 #ifndef ONIG_DEBUG
 #define ONIG_DEBUG
+#define DBGFP   stderr
 #endif
 #endif
 
@@ -56,6 +57,7 @@
 
 /* config */
 /* spec. config */
+#define USE_REGSET
 #define USE_CALL
 #define USE_CALLOUT
 #define USE_BACKREF_WITH_LEVEL        /* \k<name+n>, \k<name-n> */
@@ -119,6 +121,9 @@
 /* */
 #define onig_st_is_member              st_is_member
 
+
+#ifndef ONIGURUMA_SYS_UEFI
+
 #define xmemset     memset
 #define xmemcpy     memcpy
 #define xmemmove    memmove
@@ -175,6 +180,19 @@ typedef int  intptr_t;
 typedef unsigned int  uintptr_t;
 #endif
 #endif
+
+/* strend hash */
+typedef void hash_table_type;
+
+#ifdef _WIN32
+# include <windows.h>
+typedef ULONG_PTR hash_data_type;
+#else
+typedef unsigned long hash_data_type;
+#endif
+
+#endif /* ONIGURUMA_SYS_UEFI */
+
 
 #ifdef MIN
 #undef MIN
@@ -237,7 +255,6 @@ enum OptimizeType {
   OPTIMIZE_STR,                   /* Slow Search */
   OPTIMIZE_STR_FAST,              /* Sunday quick search / BMH */
   OPTIMIZE_STR_FAST_STEP_FORWARD, /* Sunday quick search / BMH */
-  OPTIMIZE_STR_CASE_FOLD,         /* Slow Search (ignore case) */
   OPTIMIZE_MAP                    /* char map */
 };
 
@@ -290,32 +307,20 @@ typedef unsigned int  MemStatusType;
   (IS_CODE_DIGIT_ASCII(enc,code) ? DIGITVAL(code) \
    : (ONIGENC_IS_CODE_UPPER(enc,code) ? (code) - 'A' + 10 : (code) - 'a' + 10))
 
-#define IS_SINGLELINE(option)     ((option) & ONIG_OPTION_SINGLELINE)
-#define IS_MULTILINE(option)      ((option) & ONIG_OPTION_MULTILINE)
-#define IS_IGNORECASE(option)     ((option) & ONIG_OPTION_IGNORECASE)
-#define IS_EXTEND(option)         ((option) & ONIG_OPTION_EXTEND)
-#define IS_FIND_LONGEST(option)   ((option) & ONIG_OPTION_FIND_LONGEST)
-#define IS_FIND_NOT_EMPTY(option) ((option) & ONIG_OPTION_FIND_NOT_EMPTY)
-#define IS_FIND_CONDITION(option) ((option) & \
+#define OPTON_FIND_LONGEST(option)   ((option) & ONIG_OPTION_FIND_LONGEST)
+#define OPTON_FIND_NOT_EMPTY(option) ((option) & ONIG_OPTION_FIND_NOT_EMPTY)
+#define OPTON_FIND_CONDITION(option) ((option) & \
           (ONIG_OPTION_FIND_LONGEST | ONIG_OPTION_FIND_NOT_EMPTY))
-#define IS_NOTBOL(option)         ((option) & ONIG_OPTION_NOTBOL)
-#define IS_NOTEOL(option)         ((option) & ONIG_OPTION_NOTEOL)
-#define IS_POSIX_REGION(option)   ((option) & ONIG_OPTION_POSIX_REGION)
-
-#define IS_WORD_ASCII(option) \
-  ((option) & (ONIG_OPTION_WORD_IS_ASCII | ONIG_OPTION_POSIX_IS_ASCII))
-#define IS_DIGIT_ASCII(option) \
-  ((option) & (ONIG_OPTION_DIGIT_IS_ASCII | ONIG_OPTION_POSIX_IS_ASCII))
-#define IS_SPACE_ASCII(option) \
-  ((option) & (ONIG_OPTION_SPACE_IS_ASCII | ONIG_OPTION_POSIX_IS_ASCII))
-#define IS_POSIX_ASCII(option)    ((option) & ONIG_OPTION_POSIX_IS_ASCII)
-
-#define IS_ASCII_MODE_CTYPE_OPTION(ctype, options) \
-  ((ctype) >= 0 && \
-  (((ctype) < ONIGENC_CTYPE_ASCII  && IS_POSIX_ASCII(options)) ||\
-   ((ctype) == ONIGENC_CTYPE_WORD  && IS_WORD_ASCII(options))  ||\
-   ((ctype) == ONIGENC_CTYPE_DIGIT && IS_DIGIT_ASCII(options)) ||\
-   ((ctype) == ONIGENC_CTYPE_SPACE && IS_SPACE_ASCII(options))))
+#define OPTON_NEGATE_SINGLELINE(option) ((option) & \
+                                          ONIG_OPTION_NEGATE_SINGLELINE)
+#define OPTON_DONT_CAPTURE_GROUP(option) ((option) & \
+                                          ONIG_OPTION_DONT_CAPTURE_GROUP)
+#define OPTON_CAPTURE_GROUP(option)  ((option) & ONIG_OPTION_CAPTURE_GROUP)
+#define OPTON_NOTBOL(option)         ((option) & ONIG_OPTION_NOTBOL)
+#define OPTON_NOTEOL(option)         ((option) & ONIG_OPTION_NOTEOL)
+#define OPTON_POSIX_REGION(option)   ((option) & ONIG_OPTION_POSIX_REGION)
+#define OPTON_CHECK_VALIDITY_OF_STRING(option)  ((option) & \
+                                      ONIG_OPTION_CHECK_VALIDITY_OF_STRING)
 
 #define DISABLE_CASE_FOLD_MULTI_CHAR(case_fold_flag) \
   ((case_fold_flag) & ~INTERNAL_ONIGENC_CASE_FOLD_MULTI_CHAR)
@@ -327,17 +332,17 @@ typedef unsigned int  MemStatusType;
 #define BITS_PER_BYTE      8
 #define SINGLE_BYTE_SIZE   (1 << BITS_PER_BYTE)
 #define BITS_IN_ROOM       32   /* 4 * BITS_PER_BYTE */
-#define BITSET_SIZE        (SINGLE_BYTE_SIZE / BITS_IN_ROOM)
+#define BITSET_REAL_SIZE   (SINGLE_BYTE_SIZE / BITS_IN_ROOM)
 
 typedef uint32_t  Bits;
-typedef Bits      BitSet[BITSET_SIZE];
+typedef Bits      BitSet[BITSET_REAL_SIZE];
 typedef Bits*     BitSetRef;
 
 #define SIZE_BITSET        sizeof(BitSet)
 
 #define BITSET_CLEAR(bs) do {\
   int i;\
-  for (i = 0; i < (int )BITSET_SIZE; i++) { (bs)[i] = 0; } \
+  for (i = 0; i < (int )BITSET_REAL_SIZE; i++) { (bs)[i] = 0; } \
 } while (0)
 
 #define BS_ROOM(bs,pos)            (bs)[(unsigned int )(pos) >> 5]
@@ -475,8 +480,6 @@ enum OpCode {
   OP_STR_MB2N,         /* mb-length = 2 */
   OP_STR_MB3N,         /* mb-length = 3 */
   OP_STR_MBN,          /* other length */
-  OP_STR_1_IC,         /* single byte, N = 1, ignore case */
-  OP_STR_N_IC,         /* single byte,        ignore case */
   OP_CCLASS,
   OP_CCLASS_MB,
   OP_CCLASS_MIX,
@@ -552,7 +555,7 @@ enum OpCode {
   OP_LOOK_BEHIND,           /* (?<=...) start (no needs end opcode) */
   OP_LOOK_BEHIND_NOT_START, /* (?<!...) start */
   OP_LOOK_BEHIND_NOT_END,   /* (?<!...) end   */
-  OP_PUSH_SAVE_VAL,
+  OP_SAVE_VAL,
   OP_UPDATE_VAR,
 #ifdef USE_CALL
   OP_CALL,                  /* \g<name> */
@@ -650,7 +653,7 @@ typedef int ModeType;
 #define OPSIZE_LOOK_BEHIND_NOT_END     1
 #define OPSIZE_CALL                    1
 #define OPSIZE_RETURN                  1
-#define OPSIZE_PUSH_SAVE_VAL           1
+#define OPSIZE_SAVE_VAL                1
 #define OPSIZE_UPDATE_VAR              1
 
 #ifdef USE_CALLOUT
@@ -810,7 +813,7 @@ typedef struct {
     struct {
       SaveType   type;
       MemNumType id;
-    } push_save_val;
+    } save_val;
     struct {
       UpdateVarType type;
       MemNumType id;
@@ -998,16 +1001,6 @@ extern OnigCalloutFunc onig_get_callout_start_func(regex_t* reg, int callout_num
 
 #endif /* USE_CALLOUT */
 
-
-/* strend hash */
-typedef void hash_table_type;
-
-#ifdef _WIN32
-# include <windows.h>
-typedef ULONG_PTR hash_data_type;
-#else
-typedef unsigned long hash_data_type;
-#endif
 
 extern hash_table_type* onig_st_init_strend_table_with_size P_((int size));
 extern int onig_st_lookup_strend P_((hash_table_type* table, const UChar* str_key, const UChar* end_key, hash_data_type *value));
