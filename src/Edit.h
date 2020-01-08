@@ -72,6 +72,8 @@ void  EditCompressBlanks(HWND hwnd);
 void  EditRemoveBlankLines(HWND hwnd,bool,bool);
 void  EditRemoveDuplicateLines(HWND hwnd,bool);
 void  EditWrapToColumn(HWND hwnd,DocPos nColumn);
+void  EditWrapToColumnForce(HWND hwnd, DocPos nColumn);
+
 void  EditSplitLines(HWND hwnd);
 void  EditJoinLinesEx(HWND hwnd,bool,bool);
 void  EditSortLines(HWND hwnd,int iSortFlags);

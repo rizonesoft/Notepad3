@@ -72,10 +72,10 @@ static bool s_ACFillUpCharsHaveNewLn = false;
 #define W_AUTOC_WORD_ANSI1252 L"#$%&@0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
 static char AutoCompleteWordCharSet[ANSI_CHAR_BUFFER] = { L'\0' };
 
-//static WCHAR W_DelimChars[ANSI_CAHR_BUFFER] = { L'\0' };
-//static WCHAR W_DelimCharsAccel[ANSI_CAHR_BUFFER] = { L'\0' };
-//static WCHAR W_WhiteSpaceCharsDefault[ANSI_CAHR_BUFFER] = { L'\0' };
-//static WCHAR W_WhiteSpaceCharsAccelerated[ANSI_CAHR_BUFFER] = { L'\0' };
+static WCHAR W_DelimChars[ANSI_CHAR_BUFFER] = { L'\0' };
+static WCHAR W_DelimCharsAccel[ANSI_CHAR_BUFFER] = { L'\0' };
+static WCHAR W_WhiteSpaceCharsDefault[ANSI_CHAR_BUFFER] = { L'\0' };
+static WCHAR W_WhiteSpaceCharsAccelerated[ANSI_CHAR_BUFFER] = { L'\0' };
 
 
 // Is the character a white space char?
@@ -303,10 +303,10 @@ void EditInitWordDelimiter(HWND hwnd)
   }
 
   // construct wide char arrays
-  //MultiByteToWideCharEx(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, COUNTOF(W_DelimChars));
-  //MultiByteToWideCharEx(Encoding_SciCP, 0, DelimCharsAccel, -1, W_DelimCharsAccel, COUNTOF(W_DelimCharsAccel));
-  //MultiByteToWideCharEx(Encoding_SciCP, 0, WhiteSpaceCharsDefault, -1, W_WhiteSpaceCharsDefault, COUNTOF(W_WhiteSpaceCharsDefault));
-  //MultiByteToWideCharEx(Encoding_SciCP, 0, WhiteSpaceCharsAccelerated, -1, W_WhiteSpaceCharsAccelerated, COUNTOF(W_WhiteSpaceCharsAccelerated));
+  MultiByteToWideCharEx(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, COUNTOF(W_DelimChars));
+  MultiByteToWideCharEx(Encoding_SciCP, 0, DelimCharsAccel, -1, W_DelimCharsAccel, COUNTOF(W_DelimCharsAccel));
+  MultiByteToWideCharEx(Encoding_SciCP, 0, WhiteSpaceCharsDefault, -1, W_WhiteSpaceCharsDefault, COUNTOF(W_WhiteSpaceCharsDefault));
+  MultiByteToWideCharEx(Encoding_SciCP, 0, WhiteSpaceCharsAccelerated, -1, W_WhiteSpaceCharsAccelerated, COUNTOF(W_WhiteSpaceCharsAccelerated));
 }
 
 
@@ -4054,7 +4054,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 //
 //  EditWrapToColumn()
 //
-void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
+void EditWrapToColumn(HWND hwnd, DocPos nColumn/*,int nTabWidth*/)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -4095,40 +4095,39 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
   WCHAR wszEOL[3] = { L'\0' };
   int const cchEOL = Sci_GetCurrentEOL_W(wszEOL);
 
-  int cchConvW = 0;
-  DocPos iLineLength = 0;
-
   //#define W_DELIMITER  L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"  // underscore counted as part of word
-  //WCHAR* W_DELIMITER  = Settings.AccelWordNavigation ? W_DelimCharsAccel : W_DelimChars;
-  //#define ISDELIMITER(wc) StrChr(W_DELIMITER,wc)
+  const WCHAR* const W_DELIMITER  = Settings.AccelWordNavigation ? W_DelimCharsAccel : W_DelimChars;
+  #define ISDELIMITER(wc) StrChrW(W_DELIMITER,(wc))
 
-  //WCHAR* W_WHITESPACE = Settings.AccelWordNavigation ? W_WhiteSpaceCharsAccelerated : W_WhiteSpaceCharsDefault;
-  //#define ISWHITE(wc) StrChr(W_WHITESPACE,wc)
-  #define ISWHITE(wc) StrChr(L" \t\f",wc)
+  //#define ISWHITE(wc) StrChr(L" \t\f",wc)
+  const WCHAR* const W_WHITESPACE = Settings.AccelWordNavigation ? W_WhiteSpaceCharsAccelerated : W_WhiteSpaceCharsDefault;
+  #define ISWHITE(wc) StrChrW(W_WHITESPACE,(wc))
 
-  //#define ISWORDEND(wc) (ISDELIMITER(wc) || ISWHITE(wc))
-  #define ISWORDEND(wc) StrChr(L" \t\f\r\n\v",wc)
+  //#define ISWORDEND(wc) StrChr(L" \t\f\r\n\v",wc)
+  #define ISWORDEND(wc) (ISDELIMITER(wc) || ISWHITE(wc))
   
   DocPos iCaretShift = 0;
   bool bModified = false;
 
-  for (int iTextW = 0; iTextW < cchTextW; iTextW++)
+  int cchConvW = 0;
+  DocPos iLineLength = 0;
+
+  for (int iTextW = 0;  iTextW < cchTextW;  ++iTextW)
   {
-    WCHAR w = pszTextW[iTextW];
+    WCHAR const w = pszTextW[iTextW];
 
     if (ISWHITE(w))
     {
-      DocPos iNextWordLen = 0;
 
-      while (pszTextW[iTextW+1] == L' ' || pszTextW[iTextW+1] == L'\t') {
+      while (ISWHITE(pszTextW[iTextW+1])) {
         ++iTextW;
         bModified = true;
       }
 
+      DocPos iNextWordLen = 0;
       WCHAR w2 = pszTextW[iTextW + 1];
-
-      while (w2 != L'\0' && !ISWORDEND(w2)) {
-        iNextWordLen++;
+      while ((w2 != L'\0') && !ISWORDEND(w2)) {
+        ++iNextWordLen;
         w2 = pszTextW[iTextW + iNextWordLen + 1];
       }
 
@@ -4137,18 +4136,19 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 
       if (iNextWordLen > 0)
       {
-        if (iLineLength + iNextWordLen + 1 > nColumn) {
+        if ((iLineLength + iNextWordLen + 1) > nColumn) {
           if (cchConvW <= iCurPos) { ++iCaretShift; };
           pszConvW[cchConvW++] = wszEOL[0];
-          if (cchEOL > 1)
+          if (cchEOL > 1) {
             pszConvW[cchConvW++] = wszEOL[1];
+          }
           iLineLength = 0;
           bModified = true;
         }
         else {
           if (iLineLength > 0) {
             pszConvW[cchConvW++] = L' ';
-            iLineLength++;
+            ++iLineLength;
           }
         }
       }
@@ -4160,7 +4160,7 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
         iLineLength = 0;
       }
       else {
-        iLineLength++;
+        ++iLineLength;
       }
     }
   }
@@ -4206,6 +4206,39 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 
 //=============================================================================
 //
+//  EditWrapToColumnForce()
+//
+void EditWrapToColumnForce(HWND hwnd, DocPos nColumn/*,int nTabWidth*/)
+{
+  UNUSED(hwnd);
+
+  if (Sci_IsMultiOrRectangleSelection()) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+    return;
+  }
+
+  size_t const size = (size_t)nColumn + 1LL;
+  char const spc = ' ';
+  char* const pTxt = (char* const)AllocMem(size + 1, HEAP_ZERO_MEMORY);
+  memset(pTxt, spc, size);
+  int const width_pix = SciCall_TextWidth(STYLE_DEFAULT, pTxt);
+  FreeMem(pTxt);
+
+  DocPos const saveTargetBeg = SciCall_GetTargetStart();
+  DocPos const saveTargetEnd = SciCall_GetTargetEnd();
+  _BEGIN_UNDO_ACTION_
+  _IGNORE_NOTIFY_CHANGE_;
+  if (SciCall_IsSelectionEmpty()) { SciCall_TargetWholeDocument(); } else { SciCall_TargetFromSelection(); }
+  SciCall_LinesSplit(width_pix);
+  SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+  _OBSERVE_NOTIFY_CHANGE_;
+  _END_UNDO_ACTION_
+}
+
+
+
+//=============================================================================
+//
 //  EditSplitLines()
 //
 void EditSplitLines(HWND hwnd)
@@ -4216,7 +4249,7 @@ void EditSplitLines(HWND hwnd)
   _BEGIN_UNDO_ACTION_
   _IGNORE_NOTIFY_CHANGE_;
   SciCall_TargetFromSelection();
-  SciCall_LinesSplit();
+  SciCall_LinesSplit(0);
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
   _OBSERVE_NOTIFY_CHANGE_;
   _END_UNDO_ACTION_
