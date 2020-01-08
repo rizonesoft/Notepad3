@@ -1,7 +1,7 @@
 
 # Oniguruma syntax (operator) configuration
 
-_Documented for Oniguruma 6.9.3 (2019/08/08)_
+_Documented for Oniguruma 6.9.5 (2019/12/16)_
 
 
 ----------
@@ -909,6 +909,13 @@ If this flag is set, then intervals of a fixed size will ignore a lazy (non-gree
 `?` quantifier and treat it as an optional match (an ordinary `r?`), since "match as
 little as possible" is meaningless for a fixed-size interval.  If this flag is clear,
 then `r{n}?` will mean the same as `r{n}`, and the useless `?` will be discarded.
+
+### 10. ONIG_SYN_ISOLATED_OPTION_CONTINUE_BRANCH (`..(?i)..`)
+
+_Set in: Perl, Java_
+
+If this flag is set, then an isolated option doesn't break the branch and affects until the end of the group (or end of the pattern).
+If this flag is not set, then an isolated option is interpreted as the starting point of a new branch. /a(?i)b|c/ ==> /a(?i:b|c)/
 
 ### 20. ONIG_SYN_NOT_NEWLINE_IN_NEGATIVE_CC (add `\n` to `[^...]`)
 

@@ -47,6 +47,7 @@ m4/*.m4
 /test/testcu
 /test/testp
 /test/test_regset
+/test/test_syntax
 /test/kofu-utf8.txt
 
 # sample/
@@ -67,8 +68,8 @@ m4/*.m4
 /sample/log*
 
 /harnesses/utf16*.dict
-/harnesses/*-libfuzzer
-/harnesses/main-*
+/harnesses/fuzzer-*
+/harnesses/read-*
 /harnesses/libfuzzer-onig
 /harnesses/libfuzzer-onig-full
 /harnesses/slow-unit-*
