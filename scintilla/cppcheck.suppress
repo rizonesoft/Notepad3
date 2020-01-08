@@ -25,6 +25,9 @@ shiftTooManyBitsSigned:scintilla/src/MarginView.cxx
 // ScintillaDocument is providing an API and there are no consumers of the API inside Scintilla
 unusedFunction:scintilla/qt/ScintillaEdit/ScintillaDocument.cpp
 
+// moc_ files show #error as they are not built with standard context
+preprocessorErrorDirective:scintilla/qt/*.cpp
+
 // moc_ files are not understood by cppcheck
 noValidConfiguration
 
@@ -46,11 +49,11 @@ uninitMemberVar:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBatch.cxx
 constParameter:scintilla/lexers/LexBullant.cxx
-constStatement:scintilla/lexers/LexCaml.cxx
 variableScope:scintilla/lexers/LexCmake.cxx
 constParameter:scintilla/lexers/LexCLW.cxx
 constParameter:scintilla/lexers/LexCOBOL.cxx
 constParameter:scintilla/lexers/LexCoffeeScript.cxx
+constParameter:scintilla/lexers/LexCPP.cxx
 variableScope:scintilla/lexers/LexCSS.cxx
 constParameter:scintilla/lexers/LexDataflex.cxx
 variableScope:scintilla/lexers/LexDataflex.cxx
@@ -62,6 +65,7 @@ constParameter:scintilla/lexers/LexFortran.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 constParameter:scintilla/lexers/LexHaskell.cxx
 constParameter:scintilla/lexers/LexHex.cxx
+missingOverride:scintilla/lexers/LexHollywood.cxx
 constParameter:scintilla/lexers/LexHTML.cxx
 variableScope:scintilla/lexers/LexInno.cxx
 constParameter:scintilla/lexers/LexJSON.cxx
@@ -185,6 +189,9 @@ constVariable:scintilla/lexers/LexVHDL.cxx
 
 // bp.itBracket not actually redundant as needed by return statements
 redundantAssignment:scintilla/lexers/LexCPP.cxx
+
+// Appears spurious for allowTermination
+knownConditionTrueFalse:scintilla/lexers/LexHTML.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp

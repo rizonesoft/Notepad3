@@ -119,7 +119,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 22 June 2019 NH</p>
+    <p>Last edited 15 November 2019 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -711,10 +711,15 @@ struct Sci_TextRange {
     <code>SCI_SEARCHINTARGET</code> such as <code>SCFIND_MATCHCASE</code>,
     <code>SCFIND_WHOLEWORD</code>, <code>SCFIND_WORDSTART</code>, and <code>SCFIND_REGEXP</code>
     can be set with <code>SCI_SETSEARCHFLAGS</code>.</p>
-    <code><a class="message" href="#SCI_SETTARGETSTART">SCI_SETTARGETSTART(position start)</a><br />
+    <code>
+     <a class="message" href="#SCI_SETTARGETSTART">SCI_SETTARGETSTART(position start)</a><br />
      <a class="message" href="#SCI_GETTARGETSTART">SCI_GETTARGETSTART &rarr; position</a><br />
+     <a class="message" href="#SCI_SETTARGETSTARTVIRTUALSPACE">SCI_SETTARGETSTARTVIRTUALSPACE(position space)</a><br />
+     <a class="message" href="#SCI_GETTARGETSTARTVIRTUALSPACE">SCI_GETTARGETSTARTVIRTUALSPACE &rarr; position</a><br />
      <a class="message" href="#SCI_SETTARGETEND">SCI_SETTARGETEND(position end)</a><br />
      <a class="message" href="#SCI_GETTARGETEND">SCI_GETTARGETEND &rarr; position</a><br />
+     <a class="message" href="#SCI_SETTARGETENDVIRTUALSPACE">SCI_SETTARGETENDVIRTUALSPACE(position space)</a><br />
+     <a class="message" href="#SCI_GETTARGETENDVIRTUALSPACE">SCI_GETTARGETENDVIRTUALSPACE &rarr; position</a><br />
      <a class="message" href="#SCI_SETTARGETRANGE">SCI_SETTARGETRANGE(position start, position end)</a><br />
      <a class="message" href="#SCI_TARGETFROMSELECTION">SCI_TARGETFROMSELECTION</a><br />
      <a class="message" href="#SCI_TARGETWHOLEDOCUMENT">SCI_TARGETWHOLEDOCUMENT</a><br />
@@ -729,13 +734,22 @@ struct Sci_TextRange {
 
     <p><b id="SCI_SETTARGETSTART">SCI_SETTARGETSTART(position start)</b><br />
      <b id="SCI_GETTARGETSTART">SCI_GETTARGETSTART &rarr; position</b><br />
+     <b id="SCI_SETTARGETSTARTVIRTUALSPACE">SCI_SETTARGETSTARTVIRTUALSPACE(position space)</b><br />
+     <b id="SCI_GETTARGETSTARTVIRTUALSPACE">SCI_GETTARGETSTARTVIRTUALSPACE &rarr; position</b><br />
      <b id="SCI_SETTARGETEND">SCI_SETTARGETEND(position end)</b><br />
      <b id="SCI_GETTARGETEND">SCI_GETTARGETEND &rarr; position</b><br />
+     <b id="SCI_SETTARGETENDVIRTUALSPACE">SCI_SETTARGETENDVIRTUALSPACE(position space)</b><br />
+     <b id="SCI_GETTARGETENDVIRTUALSPACE">SCI_GETTARGETENDVIRTUALSPACE &rarr; position</b><br />
      <b id="SCI_SETTARGETRANGE">SCI_SETTARGETRANGE(position start, position end)</b><br />
      These functions set and return the start and end of the target. When searching
      you can set start greater than end to find the last matching text in the
-    target rather than the first matching text. The target is also set by a successful
+    target rather than the first matching text.
+    Setting a target position with <code>SCI_SETTARGETSTART</code>, <code>SCI_SETTARGETEND</code>, or <code>SCI_SETTARGETRANGE</code>
+    sets the virtual space to 0.
+    The target is also set by a successful
     <code>SCI_SEARCHINTARGET</code>.</p>
+    <p>The virtual space of the target range can be set and retrieved with the corresponding <code>...VIRTUALSPACE</code>
+    methods. This allows text to be inserted in virtual space more easily.</p>
 
      <p><b id="SCI_TARGETFROMSELECTION">SCI_TARGETFROMSELECTION</b><br />
      Set the target start and end to the start and end positions of the selection.</p>
@@ -1639,8 +1653,10 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_GETSELECTIONNANCHORVIRTUALSPACE">SCI_GETSELECTIONNANCHORVIRTUALSPACE(int selection) &rarr; position</a><br />
      <a class="message" href="#SCI_SETSELECTIONNSTART">SCI_SETSELECTIONNSTART(int selection, position anchor)</a><br />
      <a class="message" href="#SCI_GETSELECTIONNSTART">SCI_GETSELECTIONNSTART(int selection) &rarr; position</a><br />
+     <a class="message" href="#SCI_GETSELECTIONNSTARTVIRTUALSPACE">SCI_GETSELECTIONNSTARTVIRTUALSPACE(int selection) &rarr; position</a><br />
      <a class="message" href="#SCI_SETSELECTIONNEND">SCI_SETSELECTIONNEND(int selection, position caret)</a><br />
      <a class="message" href="#SCI_GETSELECTIONNEND">SCI_GETSELECTIONNEND(int selection) &rarr; position</a><br />
+     <a class="message" href="#SCI_GETSELECTIONNENDVIRTUALSPACE">SCI_GETSELECTIONNENDVIRTUALSPACE(int selection) &rarr; position</a><br />
      <br />
 
      <a class="message" href="#SCI_SETRECTANGULARSELECTIONCARET">SCI_SETRECTANGULARSELECTIONCARET(position caret)</a><br />
@@ -1790,9 +1806,12 @@ struct Sci_TextToFind {
     <p>
      <b id="SCI_SETSELECTIONNSTART">SCI_SETSELECTIONNSTART(int selection, position anchor)</b><br />
      <b id="SCI_GETSELECTIONNSTART">SCI_GETSELECTIONNSTART(int selection) &rarr; position</b><br />
+     <b id="SCI_GETSELECTIONNSTARTVIRTUALSPACE">SCI_GETSELECTIONNSTARTVIRTUALSPACE(int selection) &rarr; position</b><br />
      <b id="SCI_SETSELECTIONNEND">SCI_SETSELECTIONNEND(int selection, position caret)</b><br />
      <b id="SCI_GETSELECTIONNEND">SCI_GETSELECTIONNEND(int selection) &rarr; position</b><br />
+     <b id="SCI_GETSELECTIONNENDVIRTUALSPACE">SCI_GETSELECTIONNENDVIRTUALSPACE(int selection) &rarr; position</b><br />
      Set or query the start and end position of each already existing selection.
+     Query the virtual space at start and end of each selection. 
      Mostly of use to query each range for its text. The selection parameter is zero-based. </p>
 
     <p>

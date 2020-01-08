@@ -70,10 +70,9 @@ Used by VSCode, Atom etc.
 
 #ifdef SCI_LEXER
 #include "SciLexer.h"
-#endif
-#ifdef SCI_LEXER
 #include "LexerModule.h"
 #endif
+//#include "CharacterCategory.h"
 #include "Position.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
@@ -156,8 +155,10 @@ constexpr UINT SC_WORK_IDLE = 5002;
 #define SCS_SETRECONVERTSTRING 0x00010000
 #endif
 
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
 using SetCoalescableTimerSig = UINT_PTR (WINAPI *)(HWND hwnd, UINT_PTR nIDEvent,
 	UINT uElapse, TIMERPROC lpTimerFunc, ULONG uToleranceDelay);
+#endif
 
 using namespace Scintilla;
 
@@ -185,13 +186,27 @@ inline Point PointFromLParam(sptr_t lpoint) noexcept {
 	return Point::FromInts(GET_X_LPARAM(lpoint), GET_Y_LPARAM(lpoint));
 }
 
-constexpr POINT POINTFromPoint(Point pt) noexcept {
+inline POINT POINTFromPoint(Point pt) noexcept {
 	return POINT{ static_cast<LONG>(pt.x), static_cast<LONG>(pt.y) };
 }
 
 inline bool KeyboardIsKeyDown(int key) noexcept {
 	return (::GetKeyState(key) & 0x8000) != 0;
 }
+
+#if 0
+inline CLIPFORMAT GetClipboardFormat(LPCWSTR name) noexcept {
+	return static_cast<CLIPFORMAT>(::RegisterClipboardFormat(name));
+}
+#endif
+
+#if 0
+inline void LazyGetClipboardFormat(UINT &fmt, LPCWSTR name) noexcept {
+	if (fmt == 0) {
+		fmt = ::RegisterClipboardFormat(name);
+	}
+}
+#endif
 
 }
 
@@ -285,6 +300,31 @@ public:
 
 namespace {
 
+// InputLanguage() and SetCandidateWindowPos() are based on Chromium's IMM32Manager and InputMethodWinImm32.
+// https://github.com/chromium/chromium/blob/master/ui/base/ime/win/imm32_manager.cc
+// See License.txt or https://github.com/chromium/chromium/blob/master/LICENSE for license details.
+
+// See Chromium's IMM32Manager::SetInputLanguage()
+LANGID InputLanguage() noexcept {
+	// Retrieve the current input language from the system's keyboard layout.
+	// Using GetKeyboardLayoutName instead of GetKeyboardLayout, because
+	// the language from GetKeyboardLayout is the language under where the
+	// keyboard layout is installed. And the language from GetKeyboardLayoutName
+	// indicates the language of the keyboard layout itself.
+	// See crbug.com/344834.
+	LANGID inputLang;
+	WCHAR keyboard_layout[KL_NAMELENGTH];
+	if (::GetKeyboardLayoutNameW(keyboard_layout)) {
+		inputLang =  static_cast<LANGID>(wcstol(&keyboard_layout[KL_NAMELENGTH >> 1], nullptr, 16));
+	} else {
+		/// TODO: Fallback to en-US?
+		HKL inputLocale = ::GetKeyboardLayout(0);
+		inputLang = LOWORD(inputLocale);
+	}
+	//Platform::DebugPrintf("InputLanguage(): %04X\n", inputLang);
+	return inputLang;
+}
+
 class IMContext {
 	HWND hwnd;
 public:
@@ -301,20 +341,24 @@ public:
 			::ImmReleaseContext(hwnd, hIMC);
 	}
 
-	unsigned int GetImeCaretPos() noexcept {
+	operator bool() const noexcept {
+		return hIMC != nullptr;
+	}
+
+	LONG GetImeCaretPos() const noexcept {
 		return ImmGetCompositionStringW(hIMC, GCS_CURSORPOS, nullptr, 0);
 	}
 
-	std::vector<BYTE> GetImeAttributes() {
-		const int attrLen = ::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, nullptr, 0);
+	std::vector<BYTE> GetImeAttributes() const {
+		const LONG attrLen = ::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, nullptr, 0);
 		std::vector<BYTE> attr(attrLen, 0);
 		::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, attr.data(), static_cast<DWORD>(attr.size()));
 		return attr;
 	}
 
-	std::wstring GetCompositionString(DWORD dwIndex) {
+	std::wstring GetCompositionString(DWORD dwIndex) const {
 		const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, nullptr, 0);
-		std::wstring wcs(byteLen / 2, 0);
+		std::wstring wcs(byteLen / sizeof(wchar_t), 0);
 		::ImmGetCompositionStringW(hIMC, dwIndex, wcs.data(), byteLen);
 		return wcs;
 	}
@@ -332,7 +376,9 @@ class ScintillaWin :
 
 	bool capturedMouse;
 	bool trackedMouseLeave;
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
 	SetCoalescableTimerSig SetCoalescableTimerFn;
+#endif
 
 	unsigned int linesPerScroll;	///< Intellimouse support
 	int wheelDelta; ///< Wheel delta from roll
@@ -357,7 +403,7 @@ class ScintillaWin :
 	// supported drag & drop format
 	std::vector<CLIPFORMAT> dropFormat;
 
-	HRESULT hrOle;
+	//HRESULT hrOle;
 	DropSource ds;
 	DataObject dob;
 	DropTarget dt;
@@ -365,6 +411,9 @@ class ScintillaWin :
 	static HINSTANCE hInstance;
 	static ATOM scintillaClassAtom;
 	static ATOM callClassAtom;
+
+	// The current input Language ID.
+	LANGID inputLang;
 
 #if defined(USE_D2D)
 	ID2D1RenderTarget *pRenderTarget;
@@ -402,6 +451,8 @@ class ScintillaWin :
 
 	Sci::Position TargetAsUTF8(char *text) const;
 	Sci::Position EncodedFromUTF8(const char *utf8, char *encoded) const;
+
+	bool PaintDC(HDC hdc);
 	sptr_t WndPaint();
 
 	sptr_t HandleCompositionWindowed(uptr_t wParam, sptr_t lParam);
@@ -534,7 +585,9 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	capturedMouse = false;
 	trackedMouseLeave = false;
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
 	SetCoalescableTimerFn = nullptr;
+#endif
 
 	linesPerScroll = 0;
 	wheelDelta = 0;   // Wheel delta from roll
@@ -576,7 +629,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	dropFormat.push_back(CF_UNICODETEXT);
 	dropFormat.push_back(CF_TEXT);
 
-	hrOle = E_FAIL;
+	//hrOle = E_FAIL;
 	wMain = hwnd;
 
 	dob.sci = this;
@@ -586,6 +639,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	sysCaretBitmap = nullptr;
 	sysCaretWidth = 0;
 	sysCaretHeight = 0;
+	inputLang = LANG_USER_DEFAULT;
 
 	styleIdleInQueue = false;
 
@@ -607,11 +661,13 @@ void ScintillaWin::Init() {
 	// Initialize COM.  If the app has already done this it will have
 	// no effect.  If the app hasn't, we really shouldn't ask them to call
 	// it just so this internal feature works.
-	hrOle = ::OleInitialize(nullptr);
+	//hrOle = ::OleInitialize(nullptr);
 
 	// Find SetCoalescableTimer which is only available from Windows 8+
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
 	SetCoalescableTimerFn = reinterpret_cast<SetCoalescableTimerSig>(
 		::GetProcAddress(::GetModuleHandle(L"user32.dll"), "SetCoalescableTimer"));
+#endif
 
 	vs.indicators[SC_INDICATOR_UNKNOWN] = Indicator(INDIC_HIDDEN, ColourDesired(0, 0, 0xff));
 	vs.indicators[SC_INDICATOR_INPUT] = Indicator(INDIC_DOTS, ColourDesired(0, 0, 0xff));
@@ -629,9 +685,9 @@ void ScintillaWin::Finalise() noexcept {
 	DropRenderTarget();
 #endif
 	::RevokeDragDrop(MainHWND());
-	if (SUCCEEDED(hrOle)) {
-		::OleUninitialize();
-	}
+	//if (SUCCEEDED(hrOle)) {
+	//	::OleUninitialize();
+	//}
 }
 
 #if defined(USE_D2D)
@@ -886,14 +942,14 @@ std::wstring StringMapCase(const std::wstring_view wsv, DWORD mapFlags) {
 // Returns the target converted to UTF8.
 // Return the length in bytes.
 Sci::Position ScintillaWin::TargetAsUTF8(char *text) const {
-	const Sci::Position targetLength = targetEnd - targetStart;
+	const Sci::Position targetLength = targetRange.Length();
 	if (IsUnicodeMode()) {
 		if (text) {
-			pdoc->GetCharRange(text, targetStart, targetLength);
+			pdoc->GetCharRange(text, targetRange.start.Position(), targetLength);
 		}
 	} else {
 		// Need to convert
-		const std::string s = RangeText(targetStart, targetEnd);
+		const std::string s = RangeText(targetRange.start.Position(), targetRange.end.Position());
 		const std::wstring characters = StringDecode(s, CodePageOfDocument());
 		const int utf8Len = MultiByteLenFromWideChar(CP_UTF8, characters);
 		if (text) {
@@ -931,6 +987,35 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 	}
 }
 
+bool ScintillaWin::PaintDC(HDC hdc) {
+	if (technology == SC_TECHNOLOGY_DEFAULT) {
+		AutoSurface surfaceWindow(hdc, this);
+		if (surfaceWindow) {
+			Paint(surfaceWindow, rcPaint);
+			surfaceWindow->Release();
+		}
+	} else {
+#if defined(USE_D2D)
+		EnsureRenderTarget(hdc);
+		if (pRenderTarget) {
+			AutoSurface surfaceWindow(pRenderTarget, this);
+			if (surfaceWindow) {
+				pRenderTarget->BeginDraw();
+				Paint(surfaceWindow, rcPaint);
+				surfaceWindow->Release();
+				const HRESULT hr = pRenderTarget->EndDraw();
+				if (hr == static_cast<HRESULT>(D2DERR_RECREATE_TARGET)) {
+					DropRenderTarget();
+					return false;
+				}
+			}
+		}
+#endif
+	}
+
+	return true;
+}
+
 sptr_t ScintillaWin::WndPaint() {
 	//ElapsedPeriod ep;
 
@@ -947,28 +1032,9 @@ sptr_t ScintillaWin::WndPaint() {
 	rcPaint = PRectangle::FromInts(ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right, ps.rcPaint.bottom);
 	const PRectangle rcClient = GetClientRectangle();
 	paintingAllText = BoundsContains(rcPaint, hRgnUpdate, rcClient);
-	if (technology == SC_TECHNOLOGY_DEFAULT) {
-		AutoSurface surfaceWindow(ps.hdc, this);
-		if (surfaceWindow) {
-			Paint(surfaceWindow, rcPaint);
-			surfaceWindow->Release();
-		}
-	} else {
-#if defined(USE_D2D)
-		EnsureRenderTarget(ps.hdc);
-		AutoSurface surfaceWindow(pRenderTarget, this);
-		if (surfaceWindow) {
-			pRenderTarget->BeginDraw();
-			Paint(surfaceWindow, rcPaint);
-			surfaceWindow->Release();
-			const HRESULT hr = pRenderTarget->EndDraw();
-			if (hr == static_cast<HRESULT>(D2DERR_RECREATE_TARGET)) {
-				DropRenderTarget();
+	if (!PaintDC(ps.hdc)) {
 				paintState = paintAbandoned;
 			}
-		}
-#endif
-	}
 	if (hRgnUpdate) {
 		::DeleteRgn(hRgnUpdate);
 		hRgnUpdate = nullptr;
@@ -1119,7 +1185,7 @@ void ScintillaWin::EscapeHanja() {
 
 	// ImmEscapeW() may overwrite uniChar[] with a null terminated string.
 	// So enlarge it enough to Maximum 4 as in UTF-8.
-	unsigned int const safeLength = UTF8MaxBytes + 1;
+	constexpr unsigned int safeLength = UTF8MaxBytes + 1;
 	std::string oneChar(safeLength, '\0');
 	pdoc->GetCharRange(oneChar.data(), currentPos, oneCharLen);
 
@@ -1227,7 +1293,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			ClearBeforeTentativeStart();
 		}
 
-		// Set candidate window left aligned to beginning of preedit string.
+		// set candidate window left aligned to beginning of preedit string.
 		SetCandidateWindowPos();
 		pdoc->TentativeStart(); // TentativeActive from now on.
 
@@ -1236,6 +1302,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 		const UINT codePage = CodePageOfDocument();
 		char inBufferCP[16];
 		const std::wstring_view wsv = wcs;
+
 		for (size_t i = 0; i < wsv.size(); ) {
 			const size_t ucWidth = UTF16CharLength(wsv[i]);
 			const int size = MultiByteFromWideChar(codePage, wsv.substr(i, ucWidth), inBufferCP, sizeof(inBufferCP) - 1);
@@ -1521,7 +1588,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 						const DWORD dwCurrent = GetTickCount();
 						const DWORD dwStart = wParam ? static_cast<DWORD>(wParam) : dwCurrent;
-						const DWORD maxWorkTime = 50;
+						constexpr DWORD maxWorkTime = 50;
 
 						if (dwCurrent >= dwStart && dwCurrent > maxWorkTime && dwCurrent - maxWorkTime < dwStart)
 							PostMessage(MainHWND(), SC_WIN_IDLE, dwStart, 0);
@@ -1743,7 +1810,12 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			}
 
 		case WM_CONTEXTMENU:
+			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+
 		case WM_INPUTLANGCHANGE:
+			inputLang = InputLanguage();
+			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+
 		case WM_INPUTLANGCHANGEREQUEST:
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
@@ -1894,6 +1966,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 #endif
 					technology = technologyNew;
 					// Invalidate all cached information including layout.
+					//vs.fontsValid = false;
 					DropGraphics(true);
 					InvalidateStyleRedraw();
 				}
@@ -1951,11 +2024,20 @@ bool ScintillaWin::FineTickerRunning(TickReason reason) noexcept {
 
 void ScintillaWin::FineTickerStart(TickReason reason, int millis, int tolerance) noexcept {
 	FineTickerCancel(reason);
+	const int idEvent = static_cast<int>(fineTimerStart) + static_cast<int>(reason);
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
 	if (SetCoalescableTimerFn && tolerance) {
-		timers[reason] = SetCoalescableTimerFn(MainHWND(), fineTimerStart + reason, millis, nullptr, tolerance);
+		timers[reason] = SetCoalescableTimerFn(MainHWND(), idEvent, millis, nullptr, tolerance);
 	} else {
-		timers[reason] = ::SetTimer(MainHWND(), fineTimerStart + reason, millis, nullptr);
+		timers[reason] = ::SetTimer(MainHWND(), idEvent, millis, nullptr);
 	}
+#else
+	if (tolerance) {
+		timers[reason] = SetCoalescableTimer(MainHWND(), idEvent, millis, nullptr, tolerance);
+	} else {
+		timers[reason] = ::SetTimer(MainHWND(), idEvent, millis, nullptr);
+	}
+#endif
 }
 
 void ScintillaWin::FineTickerCancel(TickReason reason) noexcept {
@@ -3047,27 +3129,7 @@ void ScintillaWin::FullPaintDC(HDC hdc) {
 	paintState = painting;
 	rcPaint = GetClientRectangle();
 	paintingAllText = true;
-	if (technology == SC_TECHNOLOGY_DEFAULT) {
-		AutoSurface surfaceWindow(hdc, this);
-		if (surfaceWindow) {
-			Paint(surfaceWindow, rcPaint);
-			surfaceWindow->Release();
-		}
-	} else {
-#if defined(USE_D2D)
-		EnsureRenderTarget(hdc);
-		AutoSurface surfaceWindow(pRenderTarget, this);
-		if (surfaceWindow) {
-			pRenderTarget->BeginDraw();
-			Paint(surfaceWindow, rcPaint);
-			surfaceWindow->Release();
-			const HRESULT hr = pRenderTarget->EndDraw();
-			if (hr == static_cast<HRESULT>(D2DERR_RECREATE_TARGET)) {
-				DropRenderTarget();
-			}
-		}
-#endif
-	}
+	PaintDC(hdc);
 	paintState = notPainting;
 }
 

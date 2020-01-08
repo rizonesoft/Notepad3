@@ -210,8 +210,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position wordSelectAnchorStartPos;
 	Sci::Position wordSelectAnchorEndPos;
 	Sci::Position wordSelectInitialCaretPos;
-	Sci::Position targetStart;
-	Sci::Position targetEnd;
+	SelectionSegment targetRange;
 	int searchFlags;
 	Sci::Line topLine;
 	Sci::Position posTopLine;

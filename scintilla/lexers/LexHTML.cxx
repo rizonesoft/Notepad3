@@ -266,14 +266,30 @@ void classifyAttribHTML(Sci_PositionU start, Sci_PositionU end, const WordList &
 	styler.ColourTo(end, chAttr);
 }
 
+// https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements-core-concepts
+bool isHTMLCustomElement(const std::string &tag) {
+	// check valid HTML custom element name: starts with an ASCII lower alpha and contains hyphen.
+	// IsUpperOrLowerCase() is used for `html.tags.case.sensitive=1`.
+	if (tag.length() < 2 || !IsUpperOrLowerCase(tag[0])) {
+		return false;
+	}
+	if (tag.find('-') == std::string::npos) {
+		return false;
+	}
+	return true;
+}
+
 int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
                            const WordList &keywords, Accessor &styler, bool &tagDontFold,
                     bool caseSensitive, bool isXml, bool allowScripts,
                     const std::set<std::string> &nonFoldingTags) {
 	std::string tag;
-	// Copy after the '<'
+	// Copy after the '<' and stop before ' '
 	for (Sci_PositionU cPos = start; cPos <= end; cPos++) {
 		const char ch = styler[cPos];
+		if (IsASpace(ch)) {
+			break;
+		}
 		if ((ch != '<') && (ch != '/')) {
 			tag.push_back(caseSensitive ? ch : MakeLowerCase(ch));
 		}
@@ -288,8 +304,12 @@ int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
 		chAttr = SCE_H_SGML_DEFAULT;
 	} else if (!keywords || keywords.InList(tag.c_str())) {
 		chAttr = SCE_H_TAG;
+	} else if (!isXml && isHTMLCustomElement(tag)) {
+		chAttr = SCE_H_TAG;
 	}
-	styler.ColourTo(end, chAttr);
+	if (chAttr != SCE_H_TAGUNKNOWN) {
+		styler.ColourTo(end, chAttr);
+	}
 	if (chAttr == SCE_H_TAG) {
 		if (allowScripts && (tag == "script")) {
 			// check to see if this is a self-closing tag by sniffing ahead
@@ -826,6 +846,7 @@ const char *tagsThatDoNotFold[] = {
 };
 
 }
+
 class LexerHTML : public DefaultLexer {
 	bool isXml;
 	bool isPHPScript;
