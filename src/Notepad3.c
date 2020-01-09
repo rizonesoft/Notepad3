@@ -4453,7 +4453,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         UINT uWrpCol = Globals.iWrapCol;
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol))
         {
-          Globals.iWrapCol = clampi((int)uWrpCol, 1, LONG_LINES_MARKER_LIMIT);
+          Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
           BeginWaitCursor(NULL);
           EditWrapToColumn(Globals.hwndEdit, Globals.iWrapCol);
           EndWaitCursor();
@@ -5203,6 +5203,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             _iLongLinesLimit = clampi(_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
             Globals.fvCurFile.iLongLinesLimit = _iLongLinesLimit;
             Settings.LongLinesLimit = _iLongLinesLimit;
+            Globals.iWrapCol = _iLongLinesLimit;
           }
           Settings.MarkLongLines = true;
           Style_SetLongLineEdge(Globals.hwndEdit, Settings.LongLinesLimit);
