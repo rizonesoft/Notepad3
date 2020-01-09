@@ -4054,12 +4054,10 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 //
 //  EditWrapToColumn()
 //
-void EditWrapToColumn(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
+void EditWrapToColumn(HWND hwnd, DocPosU nColumn)
 {
-  if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-    return;
-  }
+  DocPosU const tabWidth = SciCall_GetTabWidth();
+  nColumn = clamppu(nColumn, tabWidth, LONG_LINES_MARKER_LIMIT);
 
   DocPosU iCurPos = SciCall_GetCurrentPos();
   DocPosU iAnchorPos = SciCall_GetAnchor();
@@ -4105,6 +4103,7 @@ void EditWrapToColumn(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
   #define ISWHITE(wc) (!(wc) || StrChrW(W_WHITESPACE,(wc)))
   #define ISLINEBREAK(wc) (!(wc) || ((wc) == wszEOL[0]) || ((wc) == wszEOL[1]))
   #define ISWORDCHAR(wc) (!ISWHITE(wc) && !ISLINEBREAK(wc) && !ISDELIMITER(wc))
+  #define ISTAB(wc) ((wc) == L'\t')
   // --------------------------------------------------------------------------
 
   DocPos iCaretShift = 0;
@@ -4119,16 +4118,8 @@ void EditWrapToColumn(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
 
     // read complete words
     while (ISWORDCHAR(w) && (iTextW < cchTextW)) {
-      if (ISLINEBREAK(w)) {
-        if (w != L'\0') {
-          pszConvW[cchConvW++] = w;
-        }
-        iLineLength = 0;
-      }
-      else if (w != L'\0') {
-        pszConvW[cchConvW++] = w;
-        ++iLineLength;
-      }
+      pszConvW[cchConvW++] = w;
+      ++iLineLength;
       w = pszTextW[++iTextW];
     }
 
@@ -4146,14 +4137,13 @@ void EditWrapToColumn(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
           pszConvW[cchConvW++] = wszEOL[1];
         }
         if (cchConvW <= iCurPos) { iCaretShift += cchEOL; }
-        iLineLength = 0;
         bModified = true;
         pszConvW[cchConvW++] = w;
-        ++iLineLength;
+        iLineLength = ISTAB(w) ? tabWidth : 1;
       }
       else {
         pszConvW[cchConvW++] = w;
-        ++iLineLength;
+        iLineLength += ISTAB(w) ? tabWidth : 1;
       }
       w = pszTextW[++iTextW];
     }
@@ -4162,23 +4152,22 @@ void EditWrapToColumn(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
     DocPosU iNextWordLen = 1;
     DocPosU iNextW = iTextW;
     WCHAR w2 = pszTextW[iNextW];
-    while (ISWORDCHAR(w2) && ((iLineLength + iNextWordLen) < nColumn) && (iNextW < cchTextW)) {
+    while (ISWORDCHAR(w2) && (iNextW < cchTextW)) {
       w2 = pszTextW[++iNextW];
       ++iNextWordLen;
     }
-    if ((iLineLength + iNextWordLen + 1) >= nColumn) {
-      pszConvW[cchConvW++] = wszEOL[0];
-      if (cchEOL > 1) {
-        pszConvW[cchConvW++] = wszEOL[1];
-      }
-      if (cchConvW <= iCurPos) { iCaretShift += cchEOL; }
-      iLineLength = 0;
-      bModified = true;
-    }
-
     if (w != L'\0') {
+      if ((iLineLength + iNextWordLen) >= nColumn) {
+        pszConvW[cchConvW++] = wszEOL[0];
+        if (cchEOL > 1) {
+          pszConvW[cchConvW++] = wszEOL[1];
+        }
+        if (cchConvW <= iCurPos) { iCaretShift += cchEOL; }
+        iLineLength = 0;
+        bModified = true;
+      }
       pszConvW[cchConvW++] = w;
-      ++iLineLength;
+      iLineLength += ISTAB(w) ? tabWidth : 1;
     }
 
   }

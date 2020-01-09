@@ -134,6 +134,10 @@ inline DocPos clampp(DocPos x, DocPos lower, DocPos upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
+inline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
 // Is the character an octal digit?
 inline bool IsDigitA(const CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
 inline bool IsDigitW(const WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
