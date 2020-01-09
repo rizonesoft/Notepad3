@@ -135,8 +135,6 @@ DeclareSciCallV0(GrabFocus, GRABFOCUS)
 DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag)
 DeclareSciCallR0(GetFocus, GETFOCUS, bool)
 
-DeclareSciCallV0(LinesSplit, LINESSPLIT)
-
 DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
@@ -209,6 +207,8 @@ DeclareSciCallV0(DelWordRight, DELWORDRIGHT)
 DeclareSciCallV0(DelLineLeft, DELLINELEFT)
 DeclareSciCallV0(DelLineRight, DELLINERIGHT)
 DeclareSciCallV0(LineDelete, LINEDELETE)
+DeclareSciCallV1(LinesSplit, LINESSPLIT, int, pix)
+DeclareSciCallV0(LinesJoin, LINESJOIN)
 
 //  Commands
 DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
