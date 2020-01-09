@@ -4453,7 +4453,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         UINT uWrpCol = Globals.iWrapCol;
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol))
         {
-          Globals.iWrapCol = clampi((int)uWrpCol, 1, Globals.fvCurFile.iLongLinesLimit);
+          Globals.iWrapCol = clampi((int)uWrpCol, 1, LONG_LINES_MARKER_LIMIT);
           BeginWaitCursor(NULL);
           EditWrapToColumn(Globals.hwndEdit, Globals.iWrapCol);
           EndWaitCursor();
