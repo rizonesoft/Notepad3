@@ -15,19 +15,24 @@
 #ifndef _NP3_TYPEDEFS_H_
 #define _NP3_TYPEDEFS_H_
 
-
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
+#ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
 #endif
-#if !defined(NTDDI_VERSION)
+#ifndef WINVER
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#ifndef NTDDI_VERSION
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
+
+// Want to use std::min and std::max so don't want Windows.h version of min and max
+#if !defined(NOMINMAX)
+#define NOMINMAX
+#endif
+
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
+
 #include <windows.h>
 //#include <winuser.h>
 
