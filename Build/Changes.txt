@@ -37,6 +37,7 @@ Current BETA Version 5.20.110.(build_#) (2020-01-10)
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- Infos of sreen/display for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
 - Language dependent status bar abreviations.
 - Copy directory to clipboard and Open path in explorer.
@@ -49,6 +50,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Replace "save modified file warning" by (silent) custom messagebox if message beeps are muted.
 - Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
 - Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
