@@ -1,12 +1,7 @@
 #ifndef _EDIT_LEXER_H_
 #define _EDIT_LEXER_H_
 
-
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
-
+#include "typedefs.h"
 #include "Scintilla.h"
 
 // -----------------------------------------------------------------------------
