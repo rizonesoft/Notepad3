@@ -884,6 +884,12 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         WCHAR wchBuf2[128] = { L'\0' };
         WCHAR wchVerInfo[2048] = { L'\0' };
 
+        int ResX, ResY;
+        GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+        DPI_T const wndDPI = GetCurrentDPI(Globals.hwndMain);
+
+        // --------------------------------------------------------------------
+
         StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), _W(_STRG(VERSION_FILEVERSION_LONG)));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
 
@@ -899,16 +905,29 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             break;
           }
         }
-        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\nLocale: %s (Codepage: '%s')", 
+        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\nLocale: %s (CP:'%s')", 
           wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UCHARDET);
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_TINYEXPR);
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UTHASH);
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? 
+        //StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UCHARDET);
+        //StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_TINYEXPR);
+        //StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UTHASH);
+
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nScreen-Resolution = %i x %i [pix].", ResX, ResY);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nDisplay-DPI = %i x %i  (Scale: %i%%).", wndDPI.x, wndDPI.y, ScaleIntToCurrentDPI(100));
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nRendering-Technology = %s.", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nZoom = %i%%.", SciCall_GetZoom());
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ?
                                                        L"\nProcess is elevated." : 
                                                        L"\nProcess is not elevated."));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ?
@@ -916,6 +935,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
                                                        L"\nUser is not in Admin-Group."));
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
+
+        // --------------------------------------------------------------------
 
         SetClipboardTextW(Globals.hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
       }
