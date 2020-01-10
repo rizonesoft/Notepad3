@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.109.(build_#) (2020-01-09)
+Current BETA Version 5.20.110.(build_#) (2020-01-10)
 =====================================================
 
 -----------------------------------------------------
@@ -95,7 +95,8 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
-- Wrap to Column.
+- Win7 "procedure entry point "SetCoalescableTimer()" could not be located.
+- Wrap to Column - default=80.
 - Preserve file modification time option on elevated.
 - Elevated relaunch after encoding change.
 - Sub dialog centering in multi monitor environment.
