@@ -512,7 +512,8 @@ inline int GetHexDigit(char ch) {
 
 // ----------------------------------------------------------------------------
 
-void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, size_t* pcchUnescaped);
+void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped);
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
