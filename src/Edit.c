@@ -1646,9 +1646,8 @@ void EditURLEncode(HWND hwnd)
   }
 
   DWORD cchEscapedW = (DWORD)cchEscaped;
-  DWORD const flags = (DWORD)(URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8);
 
-  UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
+  UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW);
 
   ptrdiff_t const cchEscapedEnc = WideCharToMultiByteEx(Encoding_SciCP, 0, pszEscapedW, cchEscapedW,
                                                   pszEscaped, cchEscaped, NULL, NULL);
@@ -1723,11 +1722,11 @@ void EditURLDecode(HWND hwnd)
     return;
   }
 
-  size_t cchUnescapedW = cchUnescaped;
+  DWORD cchUnescapedW = (DWORD)cchUnescaped;
   UrlUnescapeEx(pszTextW, pszUnescapedW, &cchUnescapedW);
 
-  ptrdiff_t const cchUnescapedDec = WideCharToMultiByteEx(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW,
-                                                          pszUnescaped, cchUnescaped, NULL, NULL);
+  int const cchUnescapedDec = WideCharToMultiByte(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW,
+                                                          pszUnescaped, (int)cchUnescaped, NULL, NULL);
 
   _BEGIN_UNDO_ACTION_
   _IGNORE_NOTIFY_CHANGE_;
