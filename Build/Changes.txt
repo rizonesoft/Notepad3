@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.113.(build_#) (2020-01-13)
+Current BETA Version 5.20.114.(build_#) (2020-01-14)
 =====================================================
 
 -----------------------------------------------------
@@ -343,6 +343,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Encoding Detection fine tuning.
 - MiniPath About dialog: visual adjustments.
 - Optimize icon resource handling.
 - Optimized MiniPath resource file (icon/bitmap placement).
