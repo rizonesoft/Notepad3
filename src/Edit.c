@@ -1647,7 +1647,7 @@ void EditURLEncode(HWND hwnd)
 
   DWORD cchEscapedW = (DWORD)cchEscaped;
 
-  UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW);
+  UrlEscapeEx(szTextW, pszEscapedW, &cchEscapedW, true);
 
   ptrdiff_t const cchEscapedEnc = WideCharToMultiByteEx(Encoding_SciCP, 0, pszEscapedW, cchEscapedW,
                                                   pszEscaped, cchEscaped, NULL, NULL);
