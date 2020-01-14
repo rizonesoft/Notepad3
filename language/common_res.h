@@ -1052,6 +1052,12 @@
 #define IDS_LEX_STR_63354               63354
 #define IDS_LEX_STR_63355               63355
 #define IDS_LEX_STR_63356               63356
+#define IDS_LEX_STR_63357               63357
+#define IDS_LEX_STR_63358               63358
+#define IDS_LEX_STR_63359               63359
+#define IDS_LEX_STR_63360               63360
+#define IDS_LEX_STR_63361               63361
+#define IDS_LEX_STR_63362               63362
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401
