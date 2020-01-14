@@ -2209,48 +2209,22 @@ VOID RestoreWndFromTray(HWND hWnd)
 
 #if (NTDDI_VERSION < NTDDI_WIN8)
 
-// no encoding for safe chars
-inline bool isAlphaNumeric(WCHAR ch) {
-  return
-    ((ch >= L'0') && (ch <= L'9')) ||
-    ((ch >= L'a') && (ch <= L'z')) ||
-    ((ch >= L'A') && (ch <= L'Z'));
-}
-
 // Convert a byte into Hexadecimal Unicode character
-inline void toHEX(BYTE val, WCHAR* pOutChr)
+__inline int toHEX(BYTE val, WCHAR* pOutChr)
 {
   StringCchPrintfW(pOutChr, 4, L"%%%0.2X", val);
+  return 3; // num of wchars ('%FF')
 }
 
-// Convert a Unicode character into UTF8
-inline WORD toUTF8(WCHAR ch)
-{
-  WCHAR wc[2] = { L'\0', L'\0' };
-  CHAR  mb[3] = { '\0', '\0', '\0' };
-  wc[0] = ch;
-  WideCharToMultiByte(CP_UTF8, 0, wc, 2, mb, 3, 0, 0);
-  return MAKEWORD(mb[1], mb[0]);
-}
-
-// Convert a UTF8 character into Unicode
-inline WCHAR fromUTF8(WORD w)
-{
-  WCHAR wc[2] = { L'\0', L'\0' };
-  CHAR  mb[3] = { '\0', '\0', '\0' };
-  mb[0] = HIBYTE(w);
-  mb[1] = LOBYTE(w);
-  MultiByteToWideChar(CP_UTF8, 0, mb, 3, wc, 2);
-  return (WCHAR)wc[0];
-}
-
-LPCTSTR const lpszUnsafeChars = L"% \"<>#{}|\\^~[]`";
-LPCTSTR const lpszReservedChars = L"$&+,./:;=?@-_!*()'";
+LPCTSTR const lpszUnreservedChars = L"-_.~"; // or IsAlphaNumeric()
+LPCTSTR const lpszReservedChars = L"!#$%&'()*+,/:;=?@[]";
+LPCTSTR const lpszUnsafeChars = L" \"\\<>{|}^`";
 
 #endif
 
+// ----------------------------------------------------------------------------
 
-void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped)
+void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved)
 {
 #if (NTDDI_VERSION >= NTDDI_WIN8)
   UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_URI_COMPONENT));
@@ -2262,40 +2236,42 @@ void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped)
 
   while (lpURL[posIn] && (posOut < *pcchEscaped))
   {
-    if (isAlphaNumeric(lpURL[posIn]))
+    if (IsAlphaNumeric(lpURL[posIn]) || StrChrW(lpszUnreservedChars, lpURL[posIn]))
     {
       lpEscaped[posOut++] = lpURL[posIn++];
     }
     else if (StrChrW(lpszReservedChars, lpURL[posIn]))
     {
       if (posOut < (*pcchEscaped - 3)) {
-        toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
-        posOut += 3;
+        if (bEscReserved) {
+          posOut += toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
+        }
+        else {
+          lpEscaped[posOut++] = lpURL[posIn++];
+        }
       }
     }
     else if (StrChrW(lpszUnsafeChars, lpURL[posIn]))
     {
       if (posOut < (*pcchEscaped - 3)) {
-        toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
-        posOut += 3;
+        posOut += toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
       }
     }
     // Encode unprintable characters 0x00-0x1F, and 0x7F
     else if ((lpURL[posIn] <= 0x1F) || (lpURL[posIn] == 0x7F))
     {
       if (posOut < (*pcchEscaped - 3)) {
-        toHEX((BYTE)lpURL[posIn++], &lpEscaped[posOut]);
-        posOut += 3;
+        posOut += toHEX((BYTE)lpURL[posIn++], &lpEscaped[posOut]);
       }
     }
     // Now encode all other unsafe characters
     else {
-      WORD const w = toUTF8(lpURL[posIn++]);
-      if (posOut < (*pcchEscaped - 6)) {
-        toHEX(HIBYTE(w), &lpEscaped[posOut]);
-        posOut += 3;
-        toHEX(LOBYTE(w), &lpEscaped[posOut]);
-        posOut += 3;
+      CHAR mb[4] = { '\0', '\0', '\0', '\0' };
+      int const n = WideCharToMultiByte(CP_UTF8, 0, &lpURL[posIn++], 1, mb, 4, 0, 0);
+      if (posOut < (*pcchEscaped - (n*3))) {
+        for (int i = 0; i < n; ++i) {
+          posOut += toHEX((BYTE)mb[i], &lpEscaped[posOut]);
+        }
       }
     }
   } 

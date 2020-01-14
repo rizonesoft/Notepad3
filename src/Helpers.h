@@ -502,8 +502,16 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 // Is the character an octal digit?
 #define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
 
+// no encoding for safe chars
+__inline bool IsAlphaNumeric(WCHAR ch) {
+  return
+    ((ch >= L'0') && (ch <= L'9')) ||
+    ((ch >= L'a') && (ch <= L'z')) ||
+    ((ch >= L'A') && (ch <= L'Z'));
+}
+
 // If the character is an hexa digit, get its value.
-inline int GetHexDigit(char ch) {
+__inline int GetHexDigit(char ch) {
   if (ch >= '0' && ch <= '9') { return ch - '0'; }
   if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
   if (ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
@@ -512,7 +520,7 @@ inline int GetHexDigit(char ch) {
 
 // ----------------------------------------------------------------------------
 
-void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped);
+void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved);
 void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
