@@ -1147,20 +1147,14 @@ bool EditLoadFile(
   }
   else  // ===  ALL OTHERS  ===
   {
-    // ----------------------------------------------------------------------
-    status->iEncoding = encDetection.Encoding;
-    // ----------------------------------------------------------------------
-
-    UINT const uCodePage = Encoding_GetCodePage(status->iEncoding);
-
     // ===  UTF-8 ? ===
     bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
-    bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && encDetection.bIsAnalysisReliable;
-    bool const bSoftHintUTF8 = Encoding_IsUTF8(encDetection.analyzedEncoding) && Encoding_IsUTF8(encDetection.Encoding); // non-reliable analysis = soft-hint
+    bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
     bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && bSkipUTFDetection);
+    bool const bIsCP_UTF7 = (Encoding_GetCodePage(encDetection.Encoding) == CP_UTF7);
 
-    if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
+    if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8)))
     {
       if (encDetection.bIsUTF8Sig) {
         EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory);
@@ -1173,7 +1167,7 @@ bool EditLoadFile(
         EditDetectEOLMode(lpData, cbData, status);
       }
     }
-    else if ((uCodePage == CP_UTF7) && IsValidUTF7(lpData, cbData))
+    else if (bIsCP_UTF7 && IsValidUTF7(lpData, cbData))
     {
       // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
       EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
@@ -1181,6 +1175,9 @@ bool EditLoadFile(
       EditDetectEOLMode(lpData, cbData, status);
     }
     else { // ===  ALL OTHER NON UTF-8 ===
+
+      status->iEncoding = encDetection.Encoding;
+      UINT const uCodePage = Encoding_GetCodePage(encDetection.Encoding);
 
       if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) 
       {
