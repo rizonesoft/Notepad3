@@ -1917,7 +1917,7 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
   StringCchCopyA(pszInput, FNDRPL_BUFFER, buffer);
 }
 
-
+#ifdef WC2MB_EX
 //=============================================================================
 //
 //  WideCharToMultiByteEx()
@@ -1962,7 +1962,9 @@ ptrdiff_t WideCharToMultiByteEx(
   if (lpUsedDefaultChar) { *lpUsedDefaultChar = bIsDefCharUse; }
   return bytesConv;
 }
+#endif
 
+#ifdef MB2WC_EX
 //=============================================================================
 //
 //  MultiByteToWideCharEx()
@@ -2007,7 +2009,7 @@ ptrdiff_t MultiByteToWideCharEx(
   }
   return wcharConv;
 }
-
+#endif
 
 /*
 

@@ -358,14 +358,41 @@ void TransformMetaChars(char* pszInput,bool,int iEOLMode);
 
 //==== Large Text Conversion ==================================================
 
+#undef WC2MB_EX
+#undef MB2WC_EX
+
+#ifdef WC2MB_EX
 ptrdiff_t WideCharToMultiByteEx(
   UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
   LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
+#else
+
+__inline ptrdiff_t WideCharToMultiByteEx(
+  UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
+  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
+{
+  return (ptrdiff_t)WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, (int)cchWideChar,
+                                        lpMultiByteStr, (int)cbMultiByte, lpDefaultChar, lpUsedDefaultChar);
+}
+
+#endif
 
 
+#ifdef MB2WC_EX
 ptrdiff_t MultiByteToWideCharEx(
   UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
   LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
+#else
+
+__inline ptrdiff_t MultiByteToWideCharEx(
+  UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
+  LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
+{
+  return (ptrdiff_t)MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, (int)cbMultiByte,
+                                        lpWideCharStr, (int)cchWideChar);
+}
+
+#endif 
 
 
 inline void SwabEx(char* src, char* dest, size_t n)

@@ -1831,83 +1831,73 @@ void EditUnescapeCChars(HWND hwnd) {
 //=============================================================================
 //
 // EditChar2Hex()
-// by ZuFuLiu
 //
 
-/*				C/C++	C#	Java	JS	JSON	Python	PHP	Lua		Go
-\ooo		3	1			1					1		1	1/ddd	1
-\xHH		2	1		1			1			1		1			1
-\uHHHH		4	1			1		1	1		1					1
-\UHHHHHHHH	8	1								1					1
-\xHHHH		4			1
-\uHHHHHH	6				1
-*/
 #define MAX_ESCAPE_HEX_DIGIT	4
 
 void EditChar2Hex(HWND hwnd) 
 {
   UNUSED(hwnd);
 
-  if (SciCall_IsSelectionEmpty()) {
-    return;
-  }
   if (Sci_IsMultiOrRectangleSelection()) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
     return;
   }
 
-  DocPos const iCurPos = SciCall_GetCurrentPos();
-  DocPos const iAnchorPos = SciCall_GetAnchor();
+  bool const bSelEmpty = SciCall_IsSelectionEmpty();
+
+  DocPos const iAnchorPos = bSelEmpty ? SciCall_GetCurrentPos() : SciCall_GetAnchor();
+  DocPos const iCurPos = bSelEmpty ? SciCall_PositionAfter(iAnchorPos) : SciCall_GetCurrentPos();
+  if (iAnchorPos == iCurPos) { return; }
+
+  _BEGIN_UNDO_ACTION_
+
+  if (bSelEmpty) { SciCall_SetSelection(iCurPos, iAnchorPos); }
   DocPos const count = Sci_GetSelTextLength();
-  if (count <= 0) { return; }
 
-  if (Sci_IsMultiOrRectangleSelection()) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-    return;
-  }
+  //???char const uesc = (LEXER == CSHARP) ? 'x' : 'u';  // '\xn[n][n][n]' - variable length version
+  char const uesc = 'u';
 
-  size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT);
-  char* ch = (char*)AllocMem(alloc + 1, HEAP_ZERO_MEMORY);
-  WCHAR* wch = (WCHAR*)AllocMem((alloc + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
+  char* ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
+  WCHAR* wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
   SciCall_GetSelText(ch);
+  DocPos const nchars = (DocPos)MultiByteToWideCharEx(Encoding_SciCP, 0, ch, -1, wch, (int)alloc) - 1; // '\0'
+  memset(ch, 0, alloc);
 
-  if (ch[0] == 0) {
-    StringCchCopyA(ch, alloc, "\\x00");
-  }
-  else {
-    char const uesc = 'u';
-    //???char const uesc = (LEXER == CSHARP) ? 'x' : 'u';  // '\xn[n][n][n]' - variable length version
-    DocPos const nchars = (DocPos)MultiByteToWideCharEx(Encoding_SciCP, 0, ch, -1, wch, (int)(alloc + 1)) - 1; // '\0'
-    for (DocPos i = 0, j = 0; i < nchars; i++) {
-      if (wch[i] <= 0xFF) {
-        StringCchPrintfA(ch + j, alloc - j, "\\x%02X", wch[i] & 0xFF);  // \xhh
-        j += 4;
-      }
-      else {
-        StringCchPrintfA(ch + j, alloc - j, "\\%c%04X", uesc, wch[i]);  // \uhhhh \xhhhh
-        j += 6;
-      }
+  for (DocPos i = 0, j = 0; i < nchars; ++i) 
+  {
+    if (wch[i] <= 0xFF) {
+      StringCchPrintfA(&ch[j], (alloc - j), "\\x%02X", (wch[i] & 0xFF));  // \xhh
+      j += 4;
+    }
+    else {
+      StringCchPrintfA(ch + j, (alloc - j), "\\%c%04X", uesc, wch[i]);  // \uhhhh \xhhhh
+      j += 6;
     }
   }
-  _BEGIN_UNDO_ACTION_
 
   SciCall_ReplaceSel(ch);
 
   DocPos const iReplLen = (DocPos)StringCchLenA(ch, alloc);
 
-  if (iCurPos < iAnchorPos) {
-    EditSetSelectionEx(hwnd, iCurPos + iReplLen, iCurPos, -1, -1);
+  if (!bSelEmpty) {
+    if (iCurPos < iAnchorPos) {
+      EditSetSelectionEx(hwnd, iCurPos + iReplLen, iCurPos, -1, -1);
+    }
+    else if (iCurPos > iAnchorPos) {
+      EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + iReplLen, -1, -1);
+    }
+    else { // empty selection
+      EditSetSelectionEx(hwnd, iCurPos + iReplLen, iCurPos + iReplLen, -1, -1);
+    }
   }
-  else if (iCurPos > iAnchorPos) {
-    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + iReplLen, -1, -1);
-  }
-  else { // empty selection
-    EditSetSelectionEx(hwnd, iCurPos + iReplLen, iCurPos + iReplLen, -1, -1);
-  }
-  _END_UNDO_ACTION_
 
   FreeMem(ch);
   FreeMem(wch);
+
+  _END_UNDO_ACTION_
 }
 
 //=============================================================================
@@ -1932,9 +1922,9 @@ void EditHex2Char(HWND hwnd)
   DocPos const count = Sci_GetSelTextLength();
   if (count <= 0) { return; }
 
-  size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT);
-  char* ch = (char*)AllocMem(alloc + 1, HEAP_ZERO_MEMORY);
-  WCHAR* wch = (WCHAR*)AllocMem((alloc + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  size_t const alloc = count * (2 + MAX_ESCAPE_HEX_DIGIT) + 1;
+  char* ch = (char*)AllocMem(alloc, HEAP_ZERO_MEMORY);
+  WCHAR* wch = (WCHAR*)AllocMem(alloc * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   int ci = 0;
   ptrdiff_t cch = 0;
 
@@ -1975,9 +1965,9 @@ void EditHex2Char(HWND hwnd)
       break;
     }
   }
+  wch[cch] = L'\0';
 
-  wch[cch] = 0;
-  cch = WideCharToMultiByteEx(Encoding_SciCP, 0, wch, -1, ch, (alloc + 1), NULL, NULL) - 1; // '\0'
+  cch = WideCharToMultiByteEx(Encoding_SciCP, 0, wch, -1, ch, alloc, NULL, NULL) - 1; // '\0'
 
   _BEGIN_UNDO_ACTION_
   SciCall_ReplaceSel(ch);
