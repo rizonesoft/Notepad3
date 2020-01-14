@@ -40,7 +40,7 @@ SCLEX_TCL, IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl; tm", L"",
     { {SCE_TCL_IN_QUOTE}, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
     { {SCE_TCL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"", L"" },
     { {SCE_TCL_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"fore:#800080", L"" },
-    { {SCE_TCL__MULTI_SUBSTITUTION}, IDS_LEX_STR_63274, L"Substitution", L"fore:#CC0000", L"" },
-    { {SCE_TCL_MODIFIER}, IDS_LEX_STR_63275, L"Modifier", L"fore:#FF00FF", L"" },
+    { {SCE_TCL__MULTI_SUBSTITUTION}, IDS_LEX_STR_63361, L"Substitution", L"fore:#CC0000", L"" },
+    { {SCE_TCL_MODIFIER}, IDS_LEX_STR_63362, L"Modifier", L"fore:#FF00FF", L"" },
     EDITLEXER_SENTINEL } };
 
