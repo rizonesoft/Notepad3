@@ -928,7 +928,7 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
   //~}
       
-  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), (int)lroundf(ucd_conf_perc) >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
+  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), ucd_confidence >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
   ::MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchEncodingInfo, ARRAYSIZE(wchEncodingInfo));
@@ -1265,6 +1265,8 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   float confidence = 0.0f;
 
+  cpi_enc_t const asciiEnc = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+
   if (!IS_ENC_ENFORCED() || bForceEncDetection)
   {
     if (!bSkipANSICPDetection) 
@@ -1275,7 +1277,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+      confidence = Settings2.AnalyzeReliableConfidenceLevel / 4.0f;
     }
 
     if (!bSkipUTFDetection)
@@ -1303,7 +1305,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     if (bForceEncDetection) {
       if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
         // no bIsReliable check (forced unreliable detection)
-        encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_ANSI_DEFAULT : encDetRes.analyzedEncoding;
+        encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? asciiEnc : encDetRes.analyzedEncoding;
       }
       else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
         encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
@@ -1318,11 +1320,10 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+      confidence = Settings2.AnalyzeReliableConfidenceLevel / 4.0f;
     }
     else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
-      encDetRes.analyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-      confidence = 1.0;
+      encDetRes.analyzedEncoding = asciiEnc;
     }
   }
 
@@ -1333,15 +1334,11 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
   // --------------------------------------------------------------------------
 
   // init Preferred Encoding
-  encDetRes.Encoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+  encDetRes.Encoding = asciiEnc;
 
   if (IS_ENC_ENFORCED()) 
   {
     encDetRes.Encoding = encDetRes.forcedEncoding;
-  }
-  else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly)) 
-  {
-    encDetRes.Encoding = encDetRes.analyzedEncoding;
   }
   else if (encDetRes.bIsUTF8Sig)
   {
@@ -1351,11 +1348,20 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
     encDetRes.bIsReverse = bBOM_BE;
   }
+  else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
+  {
+    encDetRes.Encoding = encDetRes.analyzedEncoding;
+  }
   else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
     encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
+    encDetRes.bIsAnalysisReliable = false;
+  }
+  else if (Encoding_IsValid(iAnalyzeFallback)) {
+    encDetRes.Encoding = iAnalyzeFallback;
+    encDetRes.bIsAnalysisReliable = false;
   }
 
-  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = CPI_ANSI_DEFAULT; }
+  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = asciiEnc; }
 
   return encDetRes;
 }
