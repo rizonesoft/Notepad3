@@ -1,6 +1,5 @@
 Apache on Windows:
 ==================
-é
 
 * Which distribution?
 

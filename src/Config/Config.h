@@ -127,7 +127,7 @@ bool      MRU_Delete(LPMRULIST pmru, int iIndex);
 bool      MRU_Empty(LPMRULIST pmru);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
 bool      MRU_Load(LPMRULIST pmru);
-bool      MRU_Save(LPMRULIST pmru);
+void      MRU_Save(LPMRULIST pmru);
 bool      MRU_MergeSave(LPMRULIST pmru, bool, bool, bool);
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 

@@ -1678,35 +1678,22 @@ bool SaveAllSettings(bool bSaveSettingsNow)
 
   if (ok) {
 
-    ok = SaveSettings(bSaveSettingsNow);
+    SaveSettings(bSaveSettingsNow);
 
     if (StrIsNotEmpty(Globals.IniFile))
     {
       // Cleanup unwanted MRU'selEmpty
       if (!Settings.SaveRecentFiles) {
         MRU_Empty(Globals.pFileMRU);
-        MRU_Save(Globals.pFileMRU);
       }
-      else {
-        MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
-      }
-      MRU_Destroy(Globals.pFileMRU);
-      Globals.pFileMRU = NULL;
+      MRU_Save(Globals.pFileMRU);
 
       if (!Settings.SaveFindReplace) {
         MRU_Empty(Globals.pMRUfind);
         MRU_Empty(Globals.pMRUreplace);
-        MRU_Save(Globals.pMRUfind);
-        MRU_Save(Globals.pMRUreplace);
       }
-      else {
-        MRU_MergeSave(Globals.pMRUfind, false, false, false);
-        MRU_MergeSave(Globals.pMRUreplace, false, false, false);
-      }
-      MRU_Destroy(Globals.pMRUfind);
-      Globals.pMRUfind = NULL;
-      MRU_Destroy(Globals.pMRUreplace);
-      Globals.pMRUreplace = NULL;
+      MRU_Save(Globals.pMRUfind);
+      MRU_Save(Globals.pMRUreplace);
     }
   }
 

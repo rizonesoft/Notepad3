@@ -1725,12 +1725,16 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
     if (pmru->pszBookMarks[iIndex]) {
       LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
     }
-    for (i = iIndex; i < pmru->iSize - 1; i++) {
+    bool bZeroMoved = false;
+    for (i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; i++)
+    {
       pmru->pszItems[i] = pmru->pszItems[i + 1];
       pmru->iEncoding[i] = pmru->iEncoding[i + 1];
       pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
       pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i + 1];
       pmru->pszBookMarks[i] = pmru->pszBookMarks[i + 1];
+
+      bZeroMoved = (NULL == pmru->pszItems[i + 1]);
 
       pmru->pszItems[i + 1] = NULL;
       pmru->iEncoding[i + 1] = 0;
@@ -1830,10 +1834,13 @@ bool MRU_Load(LPMRULIST pmru)
 }
 
 
-bool MRU_Save(LPMRULIST pmru)
+void MRU_Save(LPMRULIST pmru)
 {
-  if (s_bSettingsIniFileOpend) {
-    if (pmru) {
+  if (pmru) {
+
+    bool const bOpendByMe = !s_bSettingsIniFileOpend ? OpenSettingsFile() : false;
+
+    if (s_bSettingsIniFileOpend) {
       WCHAR tchName[32] = { L'\0' };
       WCHAR tchItem[2048] = { L'\0' };
 
@@ -1866,42 +1873,51 @@ bool MRU_Save(LPMRULIST pmru)
         }
       }
     }
+    if (bOpendByMe) {
+      CloseSettingsFile();
+    }
   }
-  return s_bSettingsIniFileOpend;
 }
 
 
 bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUnexpandMyDocs)
 {
   if (pmru) {
-    int i;
-    LPMRULIST pmruBase;
 
-    pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
-    MRU_Load(pmruBase);
+    bool const bOpendByMe = !s_bSettingsIniFileOpend ?  OpenSettingsFile() : false;
 
-    if (bAddFiles) {
-      for (i = pmru->iSize - 1; i >= 0; i--) {
-        if (pmru->pszItems[i]) {
-          WCHAR wchItem[MAX_PATH] = { L'\0' };
-          PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
-          MRU_AddFile(pmruBase, wchItem, bRelativePath, bUnexpandMyDocs,
-            pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
+    if (s_bSettingsIniFileOpend) {
+
+      LPMRULIST pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
+      MRU_Load(pmruBase);
+
+      if (bAddFiles) {
+        for (int i = pmru->iSize - 1; i >= 0; i--) {
+          if (pmru->pszItems[i]) {
+            WCHAR wchItem[MAX_PATH] = { L'\0' };
+            PathAbsoluteFromApp(pmru->pszItems[i], wchItem, COUNTOF(wchItem), true);
+            MRU_AddFile(pmruBase, wchItem, bRelativePath, bUnexpandMyDocs,
+              pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
+          }
         }
       }
-    }
-    else {
-      for (i = pmru->iSize - 1; i >= 0; i--) {
-        if (pmru->pszItems[i])
-          MRU_Add(pmruBase, pmru->pszItems[i],
-            pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
+      else {
+        for (int i = pmru->iSize - 1; i >= 0; i--) {
+          if (pmru->pszItems[i])
+            MRU_Add(pmruBase, pmru->pszItems[i],
+              pmru->iEncoding[i], pmru->iCaretPos[i], pmru->iSelAnchPos[i], pmru->pszBookMarks[i]);
+        }
       }
-    }
 
-    MRU_Save(pmruBase);
-    MRU_Destroy(pmruBase);
-    pmruBase = NULL;
-    return true;
+      MRU_Save(pmruBase);
+      MRU_Destroy(pmruBase);
+      pmruBase = NULL;
+
+      if (bOpendByMe) {
+        CloseSettingsFile();
+      }
+      return true;
+    }
   }
   return false;
 }

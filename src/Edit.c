@@ -1074,7 +1074,7 @@ bool EditLoadFile(
   bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
 
   cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : 
-                                     (bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
+                                     ((bValidUTF8 && Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT);
 
   ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iAnalyzeFallback,
                                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
