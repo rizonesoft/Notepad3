@@ -1904,9 +1904,13 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         case LVN_ITEMCHANGED:
         case LVN_DELETEITEM:
             {
-              UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
+              UINT const cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
               DialogEnableControl(hwnd, IDOK, (cnt > 0));
-              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
+              // can't discard current file (myself)
+              int iCur = 0;
+              if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &iCur)) { iCur = -1; }
+              int const item = ListView_GetNextItem(GetDlgItem(hwnd, IDC_FILEMRU), -1, LVNI_ALL | LVNI_SELECTED);
+              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (iCur != item));
             }
             break;
           }
@@ -2032,11 +2036,14 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
                   DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0));
                 }
               }
-
               else {
                 StringCchCopy((LPWSTR)GetWindowLongPtr(hwnd,DWLP_USER),MAX_PATH,tchFileName);
                 EndDialog(hwnd,IDOK);
               }
+            }
+
+            if (Settings.SaveRecentFiles && !StrIsEmpty(Globals.IniFile)) {
+              MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
             }
           }
           break;
