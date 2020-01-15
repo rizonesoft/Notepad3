@@ -74,23 +74,25 @@
 
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1924)
-        #if(_MSC_FULL_VER >= 192428314) 
+        #if(_MSC_FULL_VER >= 192428315)
+            #define VER_CPL     MS Visual C++ 2019 v16.4.3
+        #elif(_MSC_FULL_VER >= 192428314)
             #define VER_CPL     MS Visual C++ 2019 v16.4.(0-2)
         #endif
     #elif (_MSC_VER == 1923)
-        #if(_MSC_FULL_VER >= 192328107) 
+        #if(_MSC_FULL_VER >= 192328107)
             #define VER_CPL     MS Visual C++ 2019 v16.3.(9-10)
-        #elif(_MSC_FULL_VER >= 192328106) 
+        #elif(_MSC_FULL_VER >= 192328106)
             #define VER_CPL     MS Visual C++ 2019 v16.3.(3-8)
-        #elif(_MSC_FULL_VER >= 192328105) 
+        #elif(_MSC_FULL_VER >= 192328105)
             #define VER_CPL     MS Visual C++ 2019 v16.3.(0-2)
         #endif
     #elif (_MSC_VER == 1922)
-        #if(_MSC_FULL_VER >= 192227905) 
+        #if(_MSC_FULL_VER >= 192227905)
             #define VER_CPL     MS Visual C++ 2019 v16.2.(0-5)
         #endif
     #elif (_MSC_VER == 1921)
-        #if(_MSC_FULL_VER >= 192127702) 
+        #if(_MSC_FULL_VER >= 192127702)
             #define VER_CPL     MS Visual C++ 2019 v16.1.(0-6)
         #endif
     #elif (_MSC_VER == 1920)
