@@ -1,4 +1,6 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -20,6 +22,9 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *          JoungKyun.Kim <http://oops.org>
+ *            - Add mDetectedConfidence
+ *            - Add mDetectedIsBOM
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -80,6 +85,7 @@ protected:
    char    mLastChar;
    const char *  mDetectedCharset;
    float mDetectedConfidence;
+   short   mDetectedIsBOM;
    PRInt32 mBestGuess;
    PRUint32 mLanguageFilter;
 
@@ -88,3 +94,4 @@ protected:
 };
 
 #endif
+

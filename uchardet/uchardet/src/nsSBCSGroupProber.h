@@ -1,4 +1,6 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -49,10 +51,10 @@ public:
   virtual ~nsSBCSGroupProber();
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
   const char* GetCharSetName();
-  nsProbingState GetState(void) {return mState;}
+  nsProbingState GetState(void) {return mState;};
   void      Reset(void);
   float     GetConfidence(void);
-  void      SetOpion() {}
+  void      SetOpion() {};
 
 #ifdef DEBUG_chardet
   void  DumpStatus();

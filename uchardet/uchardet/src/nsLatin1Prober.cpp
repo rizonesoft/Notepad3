@@ -1,4 +1,6 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -87,9 +89,9 @@ static const unsigned char Latin1_CharToClass[] =
 };
 
 
-/* 0 : illegal 
-   1 : very unlikely 
-   2 : normal 
+/* 0 : illegal
+   1 : very unlikely
+   2 : normal
    3 : very likely
 */
 static const unsigned char Latin1ClassModel[] = 
@@ -97,11 +99,11 @@ static const unsigned char Latin1ClassModel[] =
 /*      UDF OTH ASC ASS ACV ACO ASV ASO  */
 /*UDF*/  0,  0,  0,  0,  0,  0,  0,  0,
 /*OTH*/  0,  3,  3,  3,  3,  3,  3,  3,
-/*ASC*/  0,  3,  3,  3,  3,  3,  3,  3, 
+/*ASC*/  0,  3,  3,  3,  3,  3,  3,  3,
 /*ASS*/  0,  3,  3,  3,  1,  1,  3,  3,
 /*ACV*/  0,  3,  3,  3,  1,  2,  1,  2,
-/*ACO*/  0,  3,  3,  3,  3,  3,  3,  3, 
-/*ASV*/  0,  3,  1,  3,  1,  1,  1,  3, 
+/*ACO*/  0,  3,  3,  3,  3,  3,  3,  3,
+/*ASV*/  0,  3,  1,  3,  1,  1,  1,  3,
 /*ASO*/  0,  3,  1,  3,  1,  1,  3,  3,
 };
 
@@ -123,7 +125,7 @@ nsProbingState nsLatin1Prober::HandleData(const char* aBuf, PRUint32 aLen)
     newBuf1 = (char*)aBuf;
     newLen1 = aLen;
   }
-  
+
   unsigned char charClass;
   unsigned char freq;
   for (PRUint32 i = 0; i < newLen1; i++)
@@ -148,7 +150,7 @@ float nsLatin1Prober::GetConfidence(void)
 {
   if (mState == eNotMe)
     return 0.01f;
-  
+
   float confidence;
   PRUint32 total = 0;
   for (PRInt32 i = 0; i < FREQ_CAT_NUM; i++)
@@ -164,8 +166,8 @@ float nsLatin1Prober::GetConfidence(void)
 
   if (confidence < 0.0f)
     confidence = 0.0f;
-  
-  // lower the confidence of latin1 so that other more accurate detector 
+
+  // lower the confidence of latin1 so that other more accurate detector
   // can take priority.
   confidence *= 0.50f;
 

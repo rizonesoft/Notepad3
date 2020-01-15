@@ -1,5 +1,6 @@
-// encoding: UTF-8
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -51,7 +52,7 @@ const char *ProberName[] =
   //"GB2312",
   "GB18030",
   "EUC-KR",
-  "Big5",
+  "BIG5",
   "EUC-TW",
 };
 
@@ -63,25 +64,25 @@ nsMBCSGroupProber::nsMBCSGroupProber(PRUint32 aLanguageFilter)
     mProbers[i] = nsnull;
   }
   PRUint32 i = 0;
-  mProbers[i] = new nsUTF8Prober();
+  mProbers[i++] = new nsUTF8Prober();
   if (aLanguageFilter & NS_FILTER_JAPANESE) 
   {
-    mProbers[++i] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
-    mProbers[++i] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[i++] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[i++] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
   }
   if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED) 
   {
-    //mProbers[++i] = new nsGB2312Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
-    mProbers[++i] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+    //mProbers[i++] = new nsGB2312Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+    mProbers[i++] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
   }
   if (aLanguageFilter & NS_FILTER_KOREAN)
   {
-    mProbers[++i] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
+    mProbers[i++] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
   }
   if (aLanguageFilter & NS_FILTER_CHINESE_TRADITIONAL) 
   {
-    mProbers[++i] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
-    mProbers[++i] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[i++] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[i++] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
   }
   Reset();
 }
@@ -164,7 +165,7 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, PRUint32 aLen)
     {
       if (!mIsActive[i])
         continue;
-      st = mProbers[i]->HandleData(aBuf + start, aLen - start);
+      st = mProbers[i]->HandleData(aBuf + start, aLen + 1 - start);
       if (st == eFoundIt)
       {
         mBestGuess = i;

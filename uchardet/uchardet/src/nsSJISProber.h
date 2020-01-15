@@ -1,4 +1,6 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -55,13 +57,13 @@ public:
     :mIsPreferredLanguage(aIsPreferredLanguage)
   {mCodingSM = new nsCodingStateMachine(&SJISSMModel);
     Reset();}
-  virtual ~nsSJISProber(void){delete mCodingSM;}
+  virtual ~nsSJISProber(void){delete mCodingSM;};
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return "SHIFT_JIS";}
-  nsProbingState GetState(void) {return mState;}
+  const char* GetCharSetName() {return "Shift_JIS";};
+  nsProbingState GetState(void) {return mState;};
   void      Reset(void);
   float     GetConfidence(void);
-  void      SetOpion() {}
+  void      SetOpion() {};
 
 protected:
   nsCodingStateMachine* mCodingSM;
@@ -72,7 +74,6 @@ protected:
 
   char mLastChar[2];
   PRBool mIsPreferredLanguage;
-
 };
 
 

@@ -613,26 +613,26 @@
     <None Include="..\Versions\VersionEx.h.tpl">
       <Filter>templates</Filter>
     </None>
-    <None Include="..\uchardet\uchardet\src\Big5Freq.tab">
-      <Filter>Source Files\uchardet</Filter>
-    </None>
-    <None Include="..\uchardet\uchardet\src\EUCKRFreq.tab">
-      <Filter>Source Files\uchardet</Filter>
-    </None>
-    <None Include="..\uchardet\uchardet\src\EUCTWFreq.tab">
-      <Filter>Source Files\uchardet</Filter>
-    </None>
-    <None Include="..\uchardet\uchardet\src\GB2312Freq.tab">
-      <Filter>Source Files\uchardet</Filter>
-    </None>
-    <None Include="..\uchardet\uchardet\src\JISFreq.tab">
-      <Filter>Source Files\uchardet</Filter>
-    </None>
     <None Include="..\Build\Notepad3.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="..\uchardet\uchardet\src\EUCTWFreq.tab">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </None>
+    <None Include="..\uchardet\uchardet\src\EUCKRFreq.tab">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </None>
+    <None Include="..\uchardet\uchardet\src\GB2312Freq.tab">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </None>
     <None Include="..\uchardet\uchardet\src\GB18030Freq.tab">
-      <Filter>Source Files\uchardet</Filter>
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </None>
+    <None Include="..\uchardet\uchardet\src\JISFreq.tab">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </None>
+    <None Include="..\uchardet\uchardet\src\Big5Freq.tab">
+      <Filter>Source Files\uchardet\LangModels</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
