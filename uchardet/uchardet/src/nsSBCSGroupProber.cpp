@@ -1,4 +1,6 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -256,14 +258,14 @@ nsProbingState nsSBCSGroupProber::HandleData(const char* aBuf, PRUint32 aLen)
   PRUint32 newLen1 = 0;
 
   //apply filter to original buffer, and we got new buffer back
-  //depend on what script it is, we will feed them the new buffer 
+  //depend on what script it is, we will feed them the new buffer
   //we got after applying proper filter
   //this is done without any consideration to KeepEnglishLetters
   //of each prober since as of now, there are no probers here which
   //recognize languages with English characters.
   if (!FilterWithoutEnglishLetters(aBuf, aLen, &newBuf1, newLen1))
     goto done;
-  
+
   if (newLen1 == 0)
     goto done; // Nothing to see here, move on.
 
@@ -328,7 +330,7 @@ void nsSBCSGroupProber::DumpStatus()
 {
   PRUint32 i;
   float cf;
-  
+
   cf = GetConfidence();
   printf(" SBCS Group Prober --------begin status \r\n");
   for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
@@ -338,7 +340,7 @@ void nsSBCSGroupProber::DumpStatus()
     else
       mProbers[i]->DumpStatus();
   }
-  printf(" SBCS Group found best match [%s] confidence %f.\r\n",  
+  printf(" SBCS Group found best match [%s] confidence %f.\r\n",
          mProbers[mBestGuess]->GetCharSetName(), cf);
 }
 #endif

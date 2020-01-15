@@ -1,4 +1,6 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -40,7 +42,7 @@
 
 #define NUM_OF_CATEGORY 6
 
-#include "nscore.h" 
+#include "nscore.h"
 
 #define ENOUGH_REL_THRESHOLD  100
 #define MAX_REL_THRESHOLD     1000
@@ -51,7 +53,7 @@ extern const PRUint8 jp2CharContext[83][83];
 class JapaneseContextAnalysis
 {
 public:
-  JapaneseContextAnalysis() {Reset(PR_FALSE);}
+  JapaneseContextAnalysis() {Reset(PR_FALSE);};
 
   void HandleData(const char* aBuf, PRUint32 aLen);
 
@@ -59,25 +61,25 @@ public:
   {
     PRInt32 order;
 
-    //if we received enough data, stop here   
+    //if we received enough data, stop here
     if (mTotalRel > MAX_REL_THRESHOLD)   mDone = PR_TRUE;
     if (mDone)       return;
-     
+
     //Only 2-bytes characters are of our interest
     order = (aCharLen == 2) ? GetOrder(aStr) : -1;
     if (order != -1 && mLastCharOrder != -1)
     {
       mTotalRel++;
       //count this sequence to its category counter
-      mRelSample[jp2CharContext[mLastCharOrder][order]]++;
+      mRelSample[(int)jp2CharContext[mLastCharOrder][order]]++;
     }
     mLastCharOrder = order;
-  }
+  };
 
   float GetConfidence(void);
   void      Reset(PRBool aIsPreferredLanguage);
-  void      SetOpion(){}
-  PRBool GotEnoughData() {return mTotalRel > ENOUGH_REL_THRESHOLD;}
+  void      SetOpion(){};
+  PRBool GotEnoughData() {return mTotalRel > ENOUGH_REL_THRESHOLD;};
 
 protected:
   virtual PRInt32 GetOrder(const char* str, PRUint32 *charLen) = 0;
@@ -91,7 +93,7 @@ protected:
 
   //Number of sequences needed to trigger detection
   PRUint32 mDataThreshold;
-  
+
   //The order of previous char
   PRInt32  mLastCharOrder;
 
@@ -113,12 +115,12 @@ protected:
   PRInt32 GetOrder(const char* str)
   {
     //We only interested in Hiragana, so first byte is '\202'
-    if (*str == '\202' && 
-          (unsigned char)*(str+1) >= (unsigned char)0x9f && 
+    if (*str == '\202' &&
+          (unsigned char)*(str+1) >= (unsigned char)0x9f &&
           (unsigned char)*(str+1) <= (unsigned char)0xf1)
       return (unsigned char)*(str+1) - (unsigned char)0x9f;
     return -1;
-  }
+  };
 };
 
 class EUCJPContextAnalysis : public JapaneseContextAnalysis
@@ -133,7 +135,7 @@ protected:
           (unsigned char)*(str+1) <= (unsigned char)0xf3)
       return (unsigned char)*(str+1) - (unsigned char)0xa1;
     return -1;
-  }
+  };
 };
 
 #endif /* __JPCNTX_H__ */

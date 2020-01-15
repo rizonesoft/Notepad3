@@ -1,4 +1,6 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -63,15 +65,15 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 
     }
     if (order < mModel->freqCharCount)
     {
-      mFreqChar++;
+      ++mFreqChar;
 
       if (mLastOrder < mModel->freqCharCount)
       {
-        mTotalSeqs++;
+        ++mTotalSeqs;
         if (!mReversed)
-          ++(mSeqCounters[mModel->precedenceMatrix[mLastOrder*mModel->freqCharCount+order]]);
+          ++(mSeqCounters[(int)mModel->precedenceMatrix[mLastOrder*mModel->freqCharCount+order]]);
         else // reverse the order of the letters in the lookup
-          ++(mSeqCounters[mModel->precedenceMatrix[order*mModel->freqCharCount+mLastOrder]]);
+          ++(mSeqCounters[(int)mModel->precedenceMatrix[order*mModel->freqCharCount+mLastOrder]]);
       }
     }
     mLastOrder = order;
@@ -124,7 +126,8 @@ float nsSingleByteCharSetProber::GetConfidence(void)
      * character). This could make the difference between very closely related
      * charsets used for the same language.
      */
-    r = r * (mSeqCounters[POSITIVE_CAT] + (float) mSeqCounters[PROBABLE_CAT] / 4) / mTotalChar;
+    r = r * mSeqCounters[POSITIVE_CAT] / mTotalChar;
+    //r = r * (mSeqCounters[POSITIVE_CAT] + (float) mSeqCounters[PROBABLE_CAT] / 4) / mTotalChar;
     /* The more control characters (proportionnaly to the size of the text), the
      * less confident we become in the current charset.
      */

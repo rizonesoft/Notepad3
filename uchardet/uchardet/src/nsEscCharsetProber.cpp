@@ -1,4 +1,6 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -67,8 +69,7 @@ void nsEscCharSetProber::Reset(void)
 {
   mState = eDetecting;
   for (PRUint32 i = 0; i < NUM_OF_ESC_CHARSETS; i++)
-    if (mCodingSM[i])
-      mCodingSM[i]->Reset();
+    if (mCodingSM[i]) mCodingSM[i]->Reset();
   mActiveSM = NUM_OF_ESC_CHARSETS;
   mDetectedCharset = nsnull;
 }

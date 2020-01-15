@@ -1,5 +1,6 @@
-// encoding: UTF-8
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -46,13 +47,13 @@
 typedef enum {
    eStart = 0,
    eError = 1,
-   eItsMe = 2 
+   eItsMe = 2
 } nsSMState;
 
 #define GETCLASS(c) GETFROMPCK(((unsigned char)(c)), mModel->classTable)
 
 //state machine model
-typedef struct 
+typedef struct
 {
   nsPkgInt classTable;
   PRUint32 classFactor;
@@ -68,8 +69,8 @@ public:
     //for each byte we get its class , if it is first byte, we also get byte length
     PRUint32 byteCls = GETCLASS(c);
     if (mCurrentState == eStart)
-    { 
-      mCurrentBytePos = 0; 
+    {
+      mCurrentBytePos = 0;
       mCurrentCharLen = mModel->charLenTable[byteCls];
     }
     //from byte's class and stateTable, we get its next state
@@ -77,10 +78,10 @@ public:
                                        mModel->stateTable);
     mCurrentBytePos++;
     return mCurrentState;
-  }
-  PRUint32  GetCurrentCharLen(void) {return mCurrentCharLen;}
-  void      Reset(void) {mCurrentState = eStart;}
-  const char * GetCodingStateMachine() {return mModel->name;}
+  };
+  PRUint32  GetCurrentCharLen(void) {return mCurrentCharLen;};
+  void      Reset(void) {mCurrentState = eStart;};
+  const char * GetCodingStateMachine() {return mModel->name;};
 
 protected:
   nsSMState mCurrentState;
@@ -98,6 +99,7 @@ extern const SMModel EUCTWSMModel;
 extern const SMModel GB2312SMModel;
 extern const SMModel GB18030SMModel;
 extern const SMModel SJISSMModel;
+extern const SMModel UCS2BESMModel;
 
 
 extern const SMModel HZSMModel;

@@ -1,4 +1,6 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -52,7 +54,7 @@ typedef enum {
 
 class nsCharSetProber {
 public:
-  virtual ~nsCharSetProber() {}
+  virtual ~nsCharSetProber() {};
   virtual const char* GetCharSetName() = 0;
   virtual nsProbingState HandleData(const char* aBuf, PRUint32 aLen) = 0;
   virtual nsProbingState GetState(void) = 0;
@@ -65,7 +67,7 @@ public:
 #endif
 
   // Helper functions used in the Latin1 and Group probers.
-  // both functions Allocate a new buffer for newBuf. This buffer should be 
+  // both functions Allocate a new buffer for newBuf. This buffer should be
   // freed by the caller using PR_FREEIF.
   // Both functions return PR_FALSE in case of memory allocation failure.
   static PRBool FilterWithoutEnglishLetters(const char* aBuf, PRUint32 aLen, char** newBuf, PRUint32& newLen);

@@ -1,4 +1,6 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -43,25 +45,25 @@ typedef enum {
   eIdxSft4bits  = 3,
   eIdxSft8bits  = 2,
   eIdxSft16bits = 1
-} nsIdxSft; 
+} nsIdxSft;
 
 typedef enum {
   eSftMsk4bits  = 7,
   eSftMsk8bits  = 3,
   eSftMsk16bits = 1
-} nsSftMsk; 
+} nsSftMsk;
 
 typedef enum {
   eBitSft4bits  = 2,
   eBitSft8bits  = 3,
   eBitSft16bits = 4
-} nsBitSft; 
+} nsBitSft;
 
 typedef enum {
   eUnitMsk4bits  = 0x0000000FL,
   eUnitMsk8bits  = 0x000000FFL,
   eUnitMsk16bits = 0x0000FFFFL
-} nsUnitMsk; 
+} nsUnitMsk;
 
 typedef struct nsPkgInt {
   nsIdxSft  idxsft;
