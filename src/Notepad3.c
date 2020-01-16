@@ -9843,10 +9843,13 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   bool bPreserveView = true;
   DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
 
+  Encoding_SrcWeak(CPI_NONE);
   if (bIgnoreCmdLnEnc) {
-    Encoding_Forced(CPI_NONE); // ignore history too
+    Encoding_Forced(CPI_NONE);  // ignore history too
   }
-  Encoding_SrcWeak(Encoding_Current(CPI_GET));
+  else if (Encoding_HasChanged(Encoding_Current(CPI_GET))) {
+    Encoding_SrcWeak(Encoding_Current(CPI_GET));
+  }
 
   WCHAR tchFileName2[MAX_PATH] = { L'\0' };
   StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);

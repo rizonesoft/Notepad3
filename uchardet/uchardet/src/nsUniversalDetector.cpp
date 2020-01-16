@@ -107,8 +107,6 @@ nsUniversalDetector::Reset()
 }
 
 //---------------------------------------------------------------------
-#define SHORTCUT_THRESHOLD      (float)0.95
-#define MINIMUM_THRESHOLD      (float)0.20
 
 nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
 {
@@ -243,7 +241,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   PRUint32 i;
   for (i = 0; i < aLen; i++)
   {
-    //other than 0xa0, if every othe character is ascii, the page is ascii
+    //other than 0xa0, if every other character is ascii, the page is ascii
     if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')  //Since many Ascii only page contains NBSP
     {
       //we got a non-ascii byte (high-byte)

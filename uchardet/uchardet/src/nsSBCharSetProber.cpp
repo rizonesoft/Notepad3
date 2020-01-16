@@ -1,4 +1,4 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
  * vim: et sw=2 ts=2 fdm=marker
  */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -82,7 +82,7 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 
   if (mState == eDetecting)
     if (mTotalSeqs > SB_ENOUGH_REL_THRESHOLD)
     {
-      float cf = GetConfidence();
+      float const cf = GetConfidence();
       if (cf > POSITIVE_SHORTCUT_THRESHOLD)
         mState = eFoundIt;
       else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
@@ -112,12 +112,22 @@ float nsSingleByteCharSetProber::GetConfidence(void)
   if (mTotalSeqs > 0)
     if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT]*10 )
       return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT]*10))/mTotalSeqs * mFreqChar / mTotalChar;
-  return (float)0.01;
+  return SURE_NO;
 #else  //POSITIVE_APPROACH
-  float r;
 
-  if (mTotalSeqs > 0) {
-    r = ((float)1.0) * mSeqCounters[POSITIVE_CAT] / mTotalSeqs / mModel->mTypicalPositiveRatio;
+  #define ffactor(m,d) (((d) > 0) ? ((float)(m)/(float)(d)) : 1.0f)
+
+  PRUint32 const txtChar = (mTotalChar > mCtrlChar) ? (mTotalChar - mCtrlChar) : (mTotalSeqs << 1);
+
+  if ((txtChar > 0) && (mTotalSeqs > 0))
+  {
+    PRUint32 const goodSeqCnt = mSeqCounters[POSITIVE_CAT] + (mSeqCounters[PROBABLE_CAT] >> 1);
+
+    float r = mModel->mTypicalPositiveRatio;
+
+    // negative sequence correction factor
+    r *= ffactor(goodSeqCnt, mTotalSeqs + (mSeqCounters[NEGATIVE_CAT] << 4));
+
     /* Multiply by a ratio of positive sequences per characters.
      * This would help in particular to distinguish close winners.
      * Indeed if you add a letter, you'd expect the positive sequence count
@@ -126,18 +136,21 @@ float nsSingleByteCharSetProber::GetConfidence(void)
      * character). This could make the difference between very closely related
      * charsets used for the same language.
      */
-    r = r * mSeqCounters[POSITIVE_CAT] / mTotalChar;
-    //r = r * (mSeqCounters[POSITIVE_CAT] + (float) mSeqCounters[PROBABLE_CAT] / 4) / mTotalChar;
+    r *= ffactor(goodSeqCnt + mSeqCounters[NEUTRAL_CAT], txtChar);
+
     /* The more control characters (proportionnaly to the size of the text), the
      * less confident we become in the current charset.
      */
-    r = r * (mTotalChar - mCtrlChar) / mTotalChar;
-    r = r*mFreqChar/mTotalChar;
-    if (r >= (float)1.00)
-      r = (float)0.99;
+    r *= ffactor(txtChar, mTotalChar);
+    
+    // normalizing
+    r *= ffactor(mFreqChar, mTotalChar);
+
+    if (r >= 1.00f) { r = SURE_YES; }
+
     return r;
   }
-  return (float)0.01;
+  return SURE_NO;
 #endif
 }
 

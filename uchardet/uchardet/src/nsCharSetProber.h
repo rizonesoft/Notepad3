@@ -50,7 +50,6 @@ typedef enum {
   eNotMe = 2        //Negative answer
 } nsProbingState;
 
-#define SHORTCUT_THRESHOLD      (float)0.95
 
 class nsCharSetProber {
 public:

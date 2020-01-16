@@ -53,7 +53,7 @@ public:
   const char* GetCharSetName() {return mDetectedCharset;};
   nsProbingState GetState(void) {return mState;};
   void      Reset(void);
-  float     GetConfidence(void){return (float)0.99;};
+  float     GetConfidence(void){return SURE_YES;};
   void      SetOpion() {};
 
 protected:
