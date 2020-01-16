@@ -1,4 +1,4 @@
-﻿/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
  * vim: et sw=2 ts=2 fdm=marker
  */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -41,10 +41,6 @@
 #define CharDistribution_h__
 
 #include "nscore.h"
-
-#define ENOUGH_DATA_THRESHOLD 4096
- 
-#define MINIMUM_DATA_THRESHOLD  4
 
 class CharDistributionAnalysis
 {
@@ -92,7 +88,7 @@ public:
 
   //It is not necessary to receive all data to draw conclusion. For charset detection,
   // certain amount of data is enough
-  PRBool GotEnoughData() {return mTotalChars > ENOUGH_DATA_THRESHOLD;};
+  PRBool GotEnoughData() { return (mTotalChars >= ENOUGH_DATA_THRESHOLD); };
 
 protected:
   //we do not handle character base on its original encoding string, but

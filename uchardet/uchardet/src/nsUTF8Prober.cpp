@@ -1,4 +1,4 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
  * vim: et sw=2 ts=2 fdm=marker
  */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -71,19 +71,19 @@ nsProbingState nsUTF8Prober::HandleData(const char* aBuf, PRUint32 aLen)
   return mState;
 }
 
-#define ONE_CHAR_PROB   (float)0.50
+#define ONE_CHAR_PROB  (0.50f)
 
 float nsUTF8Prober::GetConfidence(void)
 {
-  float unlike = (float)0.99;
+  float unlike = SURE_YES;
 
   if (mNumOfMBChar < 6)
   {
     for (PRUint32 i = 0; i < mNumOfMBChar; i++)
       unlike *= ONE_CHAR_PROB;
-    return (float)1.0 - unlike;
+    return (1.0f - unlike);
   }
   else
-    return (float)0.99;
+    return SURE_YES;
 }
 

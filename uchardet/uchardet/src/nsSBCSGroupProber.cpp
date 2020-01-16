@@ -1,4 +1,4 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
  * vim: et sw=2 ts=2 fdm=marker
  */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -46,173 +46,183 @@
 
 #include "nsHebrewProber.h"
 
+
 nsSBCSGroupProber::nsSBCSGroupProber()
+  : mNumOfProbers(MAX_NUM_OF_SBCS_PROBERS), mBestGuess(-1), mActiveNum(0)
 {
-  mProbers[0] = new nsSingleByteCharSetProber(&Win1251RussianModel);
-  mProbers[1] = new nsSingleByteCharSetProber(&Koi8rRussianModel);
-  mProbers[2] = new nsSingleByteCharSetProber(&Latin5RussianModel);
-  mProbers[3] = new nsSingleByteCharSetProber(&MacCyrillicRussianModel);
-  mProbers[4] = new nsSingleByteCharSetProber(&Ibm866RussianModel);
-  mProbers[5] = new nsSingleByteCharSetProber(&Ibm855RussianModel);
+  PRUint32 i = 0;
+  mProbers[i++] = new nsSingleByteCharSetProber(&Win1251RussianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Koi8rRussianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Latin5RussianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&MacCyrillicRussianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm866RussianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm855RussianModel);
 
-  mProbers[6] = new nsSingleByteCharSetProber(&Iso_8859_7GreekModel);
-  mProbers[7] = new nsSingleByteCharSetProber(&Windows_1253GreekModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_7GreekModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1253GreekModel);
 
-  mProbers[8] = new nsSingleByteCharSetProber(&Latin5BulgarianModel);
-  mProbers[9] = new nsSingleByteCharSetProber(&Win1251BulgarianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Latin5BulgarianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Win1251BulgarianModel);
 
   nsHebrewProber *hebprober = new nsHebrewProber();
   // Notice: Any change in these indexes - 10,11,12 must be reflected
   // in the code below as well.
-  mProbers[10] = hebprober;
-  mProbers[11] = new nsSingleByteCharSetProber(&Win1255Model, PR_FALSE, hebprober); // Logical Hebrew
-  mProbers[12] = new nsSingleByteCharSetProber(&Win1255Model, PR_TRUE, hebprober); // Visual Hebrew
+  PRUint32 const heb = i;
+  mProbers[i++] = hebprober;
+  mProbers[i++] = new nsSingleByteCharSetProber(&Win1255Model, PR_FALSE, hebprober); // Logical Hebrew
+  mProbers[i++] = new nsSingleByteCharSetProber(&Win1255Model, PR_TRUE, hebprober);  // Visual Hebrew
   // Tell the Hebrew prober about the logical and visual probers
-  if (mProbers[10] && mProbers[11] && mProbers[12]) // all are not null
+  if (mProbers[heb] && mProbers[heb+1] && mProbers[heb+2]) // all are not null
   {
-    hebprober->SetModelProbers(mProbers[11], mProbers[12]);
+    hebprober->SetModelProbers(mProbers[heb+1], mProbers[heb+2]);
   }
   else // One or more is null. avoid any Hebrew probing, null them all
   {
-    for (PRUint32 i = 10; i <= 12; ++i)
+    for (PRUint32 j = heb + 2; j >= heb; --j)
     {
-      delete mProbers[i];
-      mProbers[i] = 0;
+      delete mProbers[j];
+      mProbers[j] = nsnull;
     }
   }
+  mProbers[i++] = new nsSingleByteCharSetProber(&Tis_620ThaiModel);
 
-  mProbers[13] = new nsSingleByteCharSetProber(&Tis_620ThaiModel);
-  mProbers[14] = new nsSingleByteCharSetProber(&Iso_8859_11ThaiModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252AfricaansModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1AfricaansModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9AfricaansModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15AfricaansModel);
 
-  mProbers[15] = new nsSingleByteCharSetProber(&Iso_8859_1FrenchModel);
-  mProbers[16] = new nsSingleByteCharSetProber(&Iso_8859_15FrenchModel);
-  mProbers[17] = new nsSingleByteCharSetProber(&Windows_1252FrenchModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1GermanModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252GermanModel);
 
-  mProbers[18] = new nsSingleByteCharSetProber(&Iso_8859_1SpanishModel);
-  mProbers[19] = new nsSingleByteCharSetProber(&Iso_8859_15SpanishModel);
-  mProbers[20] = new nsSingleByteCharSetProber(&Windows_1252SpanishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1FrenchModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15FrenchModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252FrenchModel);
 
-  mProbers[21] = new nsSingleByteCharSetProber(&Iso_8859_2HungarianModel);
-  mProbers[22] = new nsSingleByteCharSetProber(&Windows_1250HungarianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1SpanishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15SpanishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252SpanishModel);
 
-  mProbers[23] = new nsSingleByteCharSetProber(&Iso_8859_1GermanModel);
-  mProbers[24] = new nsSingleByteCharSetProber(&Windows_1252GermanModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1PortugueseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9PortugueseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15PortugueseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252PortugueseModel);
 
-  mProbers[25] = new nsSingleByteCharSetProber(&Iso_8859_3EsperantoModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2HungarianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250HungarianModel);
 
-  mProbers[26] = new nsSingleByteCharSetProber(&Iso_8859_3TurkishModel);
-  mProbers[27] = new nsSingleByteCharSetProber(&Iso_8859_9TurkishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_3EsperantoModel);
 
-  mProbers[28] = new nsSingleByteCharSetProber(&Iso_8859_6ArabicModel);
-  mProbers[29] = new nsSingleByteCharSetProber(&Windows_1256ArabicModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_3TurkishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9TurkishModel);
 
-  mProbers[30] = new nsSingleByteCharSetProber(&VisciiVietnameseModel);
-  mProbers[31] = new nsSingleByteCharSetProber(&Windows_1258VietnameseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15DanishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1DanishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252DanishModel);
 
-  mProbers[32] = new nsSingleByteCharSetProber(&Iso_8859_15DanishModel);
-  mProbers[33] = new nsSingleByteCharSetProber(&Iso_8859_1DanishModel);
-  mProbers[34] = new nsSingleByteCharSetProber(&Windows_1252DanishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_13LithuanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_10LithuanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_4LithuanianModel);
 
-  mProbers[35] = new nsSingleByteCharSetProber(&Iso_8859_13LithuanianModel);
-  mProbers[36] = new nsSingleByteCharSetProber(&Iso_8859_10LithuanianModel);
-  mProbers[37] = new nsSingleByteCharSetProber(&Iso_8859_4LithuanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_13LatvianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_10LatvianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_4LatvianModel);
 
-  mProbers[38] = new nsSingleByteCharSetProber(&Iso_8859_13LatvianModel);
-  mProbers[39] = new nsSingleByteCharSetProber(&Iso_8859_10LatvianModel);
-  mProbers[40] = new nsSingleByteCharSetProber(&Iso_8859_4LatvianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_3MalteseModel);
 
-  mProbers[41] = new nsSingleByteCharSetProber(&Iso_8859_1PortugueseModel);
-  mProbers[42] = new nsSingleByteCharSetProber(&Iso_8859_9PortugueseModel);
-  mProbers[43] = new nsSingleByteCharSetProber(&Iso_8859_15PortugueseModel);
-  mProbers[44] = new nsSingleByteCharSetProber(&Windows_1252PortugueseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250CzechModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2CzechModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&MaccentraleuropeCzechModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm852CzechModel);
 
-  mProbers[45] = new nsSingleByteCharSetProber(&Iso_8859_3MalteseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250SlovakModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2SlovakModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&MaccentraleuropeSlovakModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm852SlovakModel);
 
-  mProbers[46] = new nsSingleByteCharSetProber(&Windows_1250CzechModel);
-  mProbers[47] = new nsSingleByteCharSetProber(&Iso_8859_2CzechModel);
-  mProbers[48] = new nsSingleByteCharSetProber(&MaccentraleuropeCzechModel);
-  mProbers[49] = new nsSingleByteCharSetProber(&Ibm852CzechModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250PolishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2PolishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_13PolishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_16PolishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&MaccentraleuropePolishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm852PolishModel);
 
-  mProbers[50] = new nsSingleByteCharSetProber(&Windows_1250SlovakModel);
-  mProbers[51] = new nsSingleByteCharSetProber(&Iso_8859_2SlovakModel);
-  mProbers[52] = new nsSingleByteCharSetProber(&MaccentraleuropeSlovakModel);
-  mProbers[53] = new nsSingleByteCharSetProber(&Ibm852SlovakModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1FinnishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_4FinnishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9FinnishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_13FinnishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15FinnishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252FinnishModel);
 
-  mProbers[54] = new nsSingleByteCharSetProber(&Windows_1250PolishModel);
-  mProbers[55] = new nsSingleByteCharSetProber(&Iso_8859_2PolishModel);
-  mProbers[56] = new nsSingleByteCharSetProber(&Iso_8859_13PolishModel);
-  mProbers[57] = new nsSingleByteCharSetProber(&Iso_8859_16PolishModel);
-  mProbers[58] = new nsSingleByteCharSetProber(&MaccentraleuropePolishModel);
-  mProbers[59] = new nsSingleByteCharSetProber(&Ibm852PolishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1ItalianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_3ItalianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9ItalianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15ItalianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252ItalianModel);
 
-  mProbers[60] = new nsSingleByteCharSetProber(&Iso_8859_1FinnishModel);
-  mProbers[61] = new nsSingleByteCharSetProber(&Iso_8859_4FinnishModel);
-  mProbers[62] = new nsSingleByteCharSetProber(&Iso_8859_9FinnishModel);
-  mProbers[63] = new nsSingleByteCharSetProber(&Iso_8859_13FinnishModel);
-  mProbers[64] = new nsSingleByteCharSetProber(&Iso_8859_15FinnishModel);
-  mProbers[65] = new nsSingleByteCharSetProber(&Windows_1252FinnishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250CroatianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2CroatianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_13CroatianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_16CroatianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&MaccentraleuropeCroatianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm852CroatianModel);
 
-  mProbers[66] = new nsSingleByteCharSetProber(&Iso_8859_1ItalianModel);
-  mProbers[67] = new nsSingleByteCharSetProber(&Iso_8859_3ItalianModel);
-  mProbers[68] = new nsSingleByteCharSetProber(&Iso_8859_9ItalianModel);
-  mProbers[69] = new nsSingleByteCharSetProber(&Iso_8859_15ItalianModel);
-  mProbers[70] = new nsSingleByteCharSetProber(&Windows_1252ItalianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252EstonianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1257EstonianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_4EstonianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_13EstonianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15EstonianModel);
 
-  mProbers[71] = new nsSingleByteCharSetProber(&Windows_1250CroatianModel);
-  mProbers[72] = new nsSingleByteCharSetProber(&Iso_8859_2CroatianModel);
-  mProbers[73] = new nsSingleByteCharSetProber(&Iso_8859_13CroatianModel);
-  mProbers[74] = new nsSingleByteCharSetProber(&Iso_8859_16CroatianModel);
-  mProbers[75] = new nsSingleByteCharSetProber(&MaccentraleuropeCroatianModel);
-  mProbers[76] = new nsSingleByteCharSetProber(&Ibm852CroatianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1IrishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9IrishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15IrishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252IrishModel);
 
-  mProbers[77] = new nsSingleByteCharSetProber(&Windows_1252EstonianModel);
-  mProbers[78] = new nsSingleByteCharSetProber(&Windows_1257EstonianModel);
-  mProbers[79] = new nsSingleByteCharSetProber(&Iso_8859_4EstonianModel);
-  mProbers[80] = new nsSingleByteCharSetProber(&Iso_8859_13EstonianModel);
-  mProbers[81] = new nsSingleByteCharSetProber(&Iso_8859_15EstonianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250RomanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2RomanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_16RomanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm852RomanianModel);
 
-  mProbers[82] = new nsSingleByteCharSetProber(&Iso_8859_1IrishModel);
-  mProbers[83] = new nsSingleByteCharSetProber(&Iso_8859_9IrishModel);
-  mProbers[84] = new nsSingleByteCharSetProber(&Iso_8859_15IrishModel);
-  mProbers[85] = new nsSingleByteCharSetProber(&Windows_1252IrishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1250SloveneModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_2SloveneModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_16SloveneModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&MaccentraleuropeSloveneModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Ibm852SloveneModel);
 
-  mProbers[86] = new nsSingleByteCharSetProber(&Windows_1250RomanianModel);
-  mProbers[87] = new nsSingleByteCharSetProber(&Iso_8859_2RomanianModel);
-  mProbers[88] = new nsSingleByteCharSetProber(&Iso_8859_16RomanianModel);
-  mProbers[89] = new nsSingleByteCharSetProber(&Ibm852RomanianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1SwedishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_4SwedishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9SwedishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15SwedishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252SwedishModel);
 
-  mProbers[90] = new nsSingleByteCharSetProber(&Windows_1250SloveneModel);
-  mProbers[91] = new nsSingleByteCharSetProber(&Iso_8859_2SloveneModel);
-  mProbers[92] = new nsSingleByteCharSetProber(&Iso_8859_16SloveneModel);
-  mProbers[93] = new nsSingleByteCharSetProber(&MaccentraleuropeSloveneModel);
-  mProbers[94] = new nsSingleByteCharSetProber(&Ibm852SloveneModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1251BelarusianModel);
 
-  mProbers[95] = new nsSingleByteCharSetProber(&Iso_8859_1SwedishModel);
-  mProbers[96] = new nsSingleByteCharSetProber(&Iso_8859_4SwedishModel);
-  mProbers[97] = new nsSingleByteCharSetProber(&Iso_8859_9SwedishModel);
-  mProbers[98] = new nsSingleByteCharSetProber(&Iso_8859_15SwedishModel);
-  mProbers[99] = new nsSingleByteCharSetProber(&Windows_1252SwedishModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252NederlandsModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1NederlandsModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_9NederlandsModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_15NederlandsModel);
   
-  mProbers[100] = new nsSingleByteCharSetProber(&Windows_1252AfricaansModel);
-  mProbers[101] = new nsSingleByteCharSetProber(&Iso_8859_1AfricaansModel);
-  mProbers[102] = new nsSingleByteCharSetProber(&Iso_8859_9AfricaansModel);
-  mProbers[103] = new nsSingleByteCharSetProber(&Iso_8859_15AfricaansModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_6ArabicModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1256ArabicModel);
 
-  mProbers[104] = new nsSingleByteCharSetProber(&Windows_1251BelarusianModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&VisciiVietnameseModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1258VietnameseModel);
 
-  mProbers[105] = new nsSingleByteCharSetProber(&Windows_1252NederlandsModel);
-  mProbers[106] = new nsSingleByteCharSetProber(&Iso_8859_1NederlandsModel);
-  mProbers[107] = new nsSingleByteCharSetProber(&Iso_8859_9NederlandsModel);
-  mProbers[108] = new nsSingleByteCharSetProber(&Iso_8859_15NederlandsModel);
-  
+
+  //mProbers[i++] = new nsSingleByteCharSetProber(&Tis_620ThaiModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_11ThaiModel);
+
+  mNumOfProbers = i;
+
+  for (; i < MAX_NUM_OF_SBCS_PROBERS; ++i) { mProbers[i] = nsnull; }
+
   Reset();
 }
 
 nsSBCSGroupProber::~nsSBCSGroupProber()
 {
-  for (PRUint32 i = 0; i < NUM_OF_SBCS_PROBERS; i++)
+  for (PRUint32 i = 0; i < MAX_NUM_OF_SBCS_PROBERS; i++)
   {
-    delete mProbers[i];
+    if (mProbers[i]) { delete mProbers[i]; }
   }
 }
 
@@ -234,7 +244,7 @@ const char* nsSBCSGroupProber::GetCharSetName()
 void  nsSBCSGroupProber::Reset(void)
 {
   mActiveNum = 0;
-  for (PRUint32 i = 0; i < NUM_OF_SBCS_PROBERS; i++)
+  for (PRUint32 i = 0; i < MAX_NUM_OF_SBCS_PROBERS; ++i)
   {
     if (mProbers[i]) // not null
     {
@@ -242,8 +252,9 @@ void  nsSBCSGroupProber::Reset(void)
       mIsActive[i] = PR_TRUE;
       ++mActiveNum;
     }
-    else
+    else {
       mIsActive[i] = PR_FALSE;
+    }
   }
   mBestGuess = -1;
   mState = eDetecting;
@@ -269,7 +280,7 @@ nsProbingState nsSBCSGroupProber::HandleData(const char* aBuf, PRUint32 aLen)
   if (newLen1 == 0)
     goto done; // Nothing to see here, move on.
 
-  for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
+  for (i = 0; i < mNumOfProbers; i++)
   {
      if (!mIsActive[i])
        continue;
@@ -300,21 +311,20 @@ done:
 
 float nsSBCSGroupProber::GetConfidence(void)
 {
-  PRUint32 i;
-  float bestConf = 0.0, cf;
+  float bestConf = 0.0f;
 
   switch (mState)
   {
   case eFoundIt:
-    return (float)0.99; //sure yes
+    return SURE_YES;
   case eNotMe:
-    return (float)0.01;  //sure no
+    return SURE_NO;
   default:
-    for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
+    for (PRUint32 i = 0; i < mNumOfProbers; i++)
     {
       if (!mIsActive[i])
         continue;
-      cf = mProbers[i]->GetConfidence();
+      float const cf = mProbers[i]->GetConfidence();
       if (bestConf < cf)
       {
         bestConf = cf;
@@ -333,7 +343,7 @@ void nsSBCSGroupProber::DumpStatus()
 
   cf = GetConfidence();
   printf(" SBCS Group Prober --------begin status \r\n");
-  for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
+  for (i = 0; i < mNumOfProbers; i++)
   {
     if (!mIsActive[i])
       printf("  inactive: [%s] (i.e. confidence is too low).\r\n", mProbers[i]->GetCharSetName());

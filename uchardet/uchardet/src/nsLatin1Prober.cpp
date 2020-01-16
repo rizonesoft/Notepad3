@@ -149,23 +149,22 @@ nsProbingState nsLatin1Prober::HandleData(const char* aBuf, PRUint32 aLen)
 float nsLatin1Prober::GetConfidence(void)
 {
   if (mState == eNotMe)
-    return 0.01f;
+    return SURE_NO;
 
-  float confidence;
   PRUint32 total = 0;
-  for (PRInt32 i = 0; i < FREQ_CAT_NUM; i++)
+  for (PRInt32 i = 0; i < FREQ_CAT_NUM; i++) {
     total += mFreqCounter[i];
-
-  if(!total)
-    confidence = 0.0f;
-  else
-  {
-    confidence = mFreqCounter[3]*1.0f / total;
-    confidence -= mFreqCounter[1]*20.0f/total;
   }
 
-  if (confidence < 0.0f)
-    confidence = 0.0f;
+  float confidence = 0.0f;
+
+  if (total)
+  {
+    confidence = (float)mFreqCounter[3] / (float)total;
+    confidence -= (float)mFreqCounter[1] * 20.0f / (float)total;
+  }
+
+  if (confidence < 0.0f) { confidence = 0.0f; }
 
   // lower the confidence of latin1 so that other more accurate detector
   // can take priority.

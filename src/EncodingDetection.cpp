@@ -904,8 +904,8 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
     const char* ukn = (!encodingUCD || (encodingUCD[0] == '\0')) ? "<unknown>" : encodingUCD;
     StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? "ASCII" : ukn);
   }
-  float const ucd_conf_perc = ucd_confidence * 100.0f;
-  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%%", ucd_conf_perc);
+  int const ucd_conf_perc = float2int(ucd_confidence * 100.0f);
+  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%i%%", ucd_conf_perc);
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
   //~StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), " || CED='");
@@ -920,15 +920,17 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   //~if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
   //~  bool const ced_reliable = (ced_confidence >= Settings2.ReliableCEDConfidenceMapping);
   //~  bool const ced_not_reliable = (ced_confidence <= Settings2.UnReliableCEDConfidenceMapping);
-  //~  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
+  //~  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
   //~    ced_reliable ? "reliable" : (ced_not_reliable ? "NOT reliable" : "???"));
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
   //~}
   //~else {
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
   //~}
-      
-  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), ucd_confidence >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
+  
+  int const relThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+  const char* rel_fmt = (ucd_conf_perc >= relThreshold) ? " (reliable (%i%%))" : " (NOT reliable(%i%%))";
+  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), rel_fmt, relThreshold);
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
   ::MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchEncodingInfo, ARRAYSIZE(wchEncodingInfo));
@@ -1327,7 +1329,9 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     }
   }
 
-  encDetRes.bIsAnalysisReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
+  int const iConfidence = float2int(confidence * 100.0f);
+  int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+  encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
 
   // --------------------------------------------------------------------------
   // ---  choose best encoding guess  ----

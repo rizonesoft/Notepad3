@@ -1,4 +1,4 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
  * vim: et sw=2 ts=2 fdm=marker
  */
 /* ***** BEGIN LICENSE BLOCK *****
@@ -55,9 +55,9 @@
 /* Numbers 0-9. */
 #define NUM 251
 
-#define SB_ENOUGH_REL_THRESHOLD  1024
-#define POSITIVE_SHORTCUT_THRESHOLD  (float)0.95
-#define NEGATIVE_SHORTCUT_THRESHOLD  (float)0.05
+#define SB_ENOUGH_REL_THRESHOLD  min(512, ENOUGH_DATA_THRESHOLD)
+#define POSITIVE_SHORTCUT_THRESHOLD  SHORTCUT_THRESHOLD
+#define NEGATIVE_SHORTCUT_THRESHOLD  (0.05f)
 #define SYMBOL_CAT_ORDER  250
 #define NUMBER_OF_SEQ_CAT 4
 #define POSITIVE_CAT   (NUMBER_OF_SEQ_CAT-1)

@@ -1,4 +1,4 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -89,8 +89,6 @@ nsProbingState nsGB18030Prober::HandleData(const char* aBuf, PRUint32 aLen)
 
 float nsGB18030Prober::GetConfidence(void)
 {
-  float distribCf = mDistributionAnalyser.GetConfidence();
-
-  return (float)distribCf;
+  return mDistributionAnalyser.GetConfidence();
 }
 

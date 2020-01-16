@@ -58,7 +58,7 @@
 
 // Minimum Visual vs Logical model score difference.
 // If the difference is below this, don't rely at all on the model score distance.
-#define MIN_MODEL_DISTANCE (0.01)
+#define MIN_MODEL_DISTANCE (0.01f)
 
 #define VISUAL_HEBREW_NAME ("ISO-8859-8")
 #define LOGICAL_HEBREW_NAME ("WINDOWS-1255")
