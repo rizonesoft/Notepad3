@@ -1148,6 +1148,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, dColor);
     SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, dColor);
     SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, dColor);
+  } else {
+    SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, dColor);
+    SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, dColor);
+    SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, dColor);
+    SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, dColor);
   }
 
   COLORREF rgb;
