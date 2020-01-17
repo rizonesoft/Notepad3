@@ -64,15 +64,6 @@ Used by VSCode, Atom etc.
 */
 #define Enable_ChromiumWebCustomMIMEDataFormat	0
 
-#if !defined(DISABLE_D2D)
-#define USE_D2D 1
-#endif
-
-#if defined(USE_D2D)
-#include <d2d1.h>
-#include <dwrite.h>
-#endif
-
 #include "Platform.h"
 
 #include "ILoader.h"
@@ -189,15 +180,15 @@ inline void SetWindowID(HWND hWnd, int identifier) noexcept {
 	::SetWindowLongPtr(hWnd, GWLP_ID, identifier);
 }
 
-inline Point PointFromPOINT(POINT pt) noexcept {
+constexpr Point PointFromPOINT(POINT pt) noexcept {
 	return Point::FromInts(pt.x, pt.y);
 }
 
-inline Point PointFromLParam(sptr_t lpoint) noexcept {
+constexpr Point PointFromLParam(sptr_t lpoint) noexcept {
 	return Point::FromInts(GET_X_LPARAM(lpoint), GET_Y_LPARAM(lpoint));
 }
 
-inline POINT POINTFromPoint(Point pt) noexcept {
+constexpr POINT POINTFromPoint(Point pt) noexcept {
 	return POINT{ static_cast<LONG>(pt.x), static_cast<LONG>(pt.y) };
 }
 
@@ -205,11 +196,9 @@ inline bool KeyboardIsKeyDown(int key) noexcept {
 	return (::GetKeyState(key) & 0x8000) != 0;
 }
 
-#if 0
 inline CLIPFORMAT GetClipboardFormat(LPCWSTR name) noexcept {
 	return static_cast<CLIPFORMAT>(::RegisterClipboardFormat(name));
 }
-#endif
 
 #if 0
 inline void LazyGetClipboardFormat(UINT &fmt, LPCWSTR name) noexcept {
@@ -399,9 +388,9 @@ class ScintillaWin :
 	bool hasOKText;
 
 	CLIPFORMAT cfColumnSelect;
-	CLIPFORMAT cfBorlandIDEBlockType;
-	CLIPFORMAT cfLineSelect;
-	CLIPFORMAT cfVSLineTag;
+	UINT cfBorlandIDEBlockType;
+	UINT cfLineSelect;
+	UINT cfVSLineTag;
 
 #if EnableDrop_VisualStudioProjectItem
 	CLIPFORMAT cfVSStgProjectItem;
@@ -443,6 +432,10 @@ class ScintillaWin :
 	HWND MainHWND() const noexcept;
 #if DebugDragAndDropDataFormat
 	void EnumDataSourceFormat(const char *tag, LPDATAOBJECT pIDataSource);
+	void EnumAllClipboardFormat(const char *tag);
+#else
+	#define EnumDataSourceFormat(tag, pIDataSource)
+	#define EnumAllClipboardFormat(tag)
 #endif
 
 	static sptr_t DirectFunction(
@@ -456,7 +449,7 @@ class ScintillaWin :
 		invalidTimerID, standardTimerID, idleTimerID, fineTimerStart
 	};
 
-	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
+	bool SCICALL DragThreshold(Point ptStart, Point ptNow) noexcept override;
 	void StartDrag() override;
 	static int MouseModifiers(uptr_t wParam) noexcept;
 
@@ -510,11 +503,11 @@ class ScintillaWin :
 	void NotifyURIDropped(const char *list) noexcept;
 	CaseFolder *CaseFolderForEncoding() override;
 	std::string CaseMapString(const std::string &s, int caseMapping) override;
-	void Copy() override;
+	void Copy(bool bAsBinary) override;
 	void CopyAllowLine() override;
 	bool CanPaste() override;
-	void Paste() override;
-	void CreateCallTipWindow(PRectangle rc) noexcept override;
+	void Paste(bool asBinary) override;
+	void SCICALL CreateCallTipWindow(PRectangle rc) noexcept override;
 	void ClaimSelection() noexcept override;
 
 	// DBCS
@@ -570,7 +563,7 @@ public:
 	friend class DropSource;
 	friend class DataObject;
 	friend class DropTarget;
-	bool DragIsRectangularOK(CLIPFORMAT fmt) const noexcept {
+	bool DragIsRectangularOK(UINT fmt) const noexcept {
 		return drag.rectangular && (fmt == cfColumnSelect);
 	}
 
@@ -609,23 +602,19 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	// There does not seem to be a real standard for indicating that the clipboard
 	// contains a rectangular selection, so copy Developer Studio and Borland Delphi.
-	cfColumnSelect = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("MSDEVColumnSelect")));
-	cfBorlandIDEBlockType = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("Borland IDE Block Type")));
+	cfColumnSelect = GetClipboardFormat(L"MSDEVColumnSelect");
+	cfBorlandIDEBlockType = ::RegisterClipboardFormat(L"Borland IDE Block Type");
 
 	// Likewise for line-copy (copies a full line when no text is selected)
-	cfLineSelect = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("MSDEVLineSelect")));
-	cfVSLineTag = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("VisualStudioEditorOperationsLineCutCopyClipboardTag")));
+	cfLineSelect = ::RegisterClipboardFormat(L"MSDEVLineSelect");
+	cfVSLineTag = ::RegisterClipboardFormat(L"VisualStudioEditorOperationsLineCutCopyClipboardTag");
 
 #if EnableDrop_VisualStudioProjectItem
-	cfVSStgProjectItem = static_cast<CLIPFORMAT>(::RegisterClipboardFormat(TEXT("CF_VSSTGPROJECTITEMS")));
-	cfVSRefProjectItem = static_cast<CLIPFORMAT>(::RegisterClipboardFormat(TEXT("CF_VSREFPROJECTITEMS")));
+	cfVSStgProjectItem = GetClipboardFormat(L"CF_VSSTGPROJECTITEMS");
+	cfVSRefProjectItem = GetClipboardFormat(L"CF_VSREFPROJECTITEMS");
 #endif
 #if Enable_ChromiumWebCustomMIMEDataFormat
-	cfChromiumCustomMIME = static_cast<CLIPFORMAT>(::RegisterClipboardFormat(TEXT("Chromium Web Custom MIME Data Format")));
+	cfChromiumCustomMIME = GetClipboardFormat(L"Chromium Web Custom MIME Data Format");
 #endif
 
 	dropFormat.push_back(CF_HDROP);
@@ -798,8 +787,8 @@ bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
-	return (xMove > ::GetSystemMetrics(SM_CXDRAG)) ||
-		(yMove > ::GetSystemMetrics(SM_CYDRAG));
+	return (xMove > GetSystemMetricsEx(SM_CXDRAG)) ||
+		(yMove > GetSystemMetricsEx(SM_CYDRAG));
 }
 
 void ScintillaWin::StartDrag() {
@@ -1381,12 +1370,13 @@ unsigned int SciMessageFromEM(unsigned int iMessage) noexcept {
 namespace Scintilla {
 
 UINT CodePageFromCharSet(DWORD characterSet, UINT documentCodePage) noexcept {
-	if (documentCodePage == SC_CP_UTF8) {
-		return SC_CP_UTF8;
+	if (documentCodePage) {
+		return SC_CP_UTF8; // we only use UTF-8
 	}
+	// SBCS code pages: zero / CP_ACP
 	switch (characterSet) {
 	case SC_CHARSET_ANSI: return 1252;
-//case SC_CHARSET_DEFAULT: return documentCodePage ? documentCodePage : 1252;  // SCI orig
+	//case SC_CHARSET_DEFAULT: return documentCodePage ? documentCodePage : 1252;  // SCI orig
 	case SC_CHARSET_DEFAULT: return documentCodePage;
 	case SC_CHARSET_BALTIC: return 1257;
 	case SC_CHARSET_CHINESEBIG5: return 950;
@@ -2058,7 +2048,6 @@ void ScintillaWin::FineTickerCancel(TickReason reason) noexcept {
 	}
 }
 
-
 bool ScintillaWin::SetIdle(bool on) noexcept {
 	// On Win32 the Idler is implemented as a Timer on the Scintilla window.  This
 	// takes advantage of the fact that WM_TIMER messages are very low priority,
@@ -2409,10 +2398,11 @@ std::string ScintillaWin::CaseMapString(const std::string &s, int caseMapping) {
 	return sConverted;
 }
 
-void ScintillaWin::Copy() {
+void ScintillaWin::Copy(bool asBinary) {
 	//Platform::DebugPrintf("Copy\n");
 	if (!sel.Empty()) {
 		SelectionText selectedText;
+		selectedText.asBinary = asBinary;
 		CopySelectionRange(&selectedText);
 		CopyToClipboard(selectedText);
 	}
@@ -2427,11 +2417,7 @@ void ScintillaWin::CopyAllowLine() {
 bool ScintillaWin::CanPaste() {
 	if (!Editor::CanPaste())
 		return false;
-	if (::IsClipboardFormatAvailable(CF_UNICODETEXT))
-		return true;
-	if (::IsClipboardFormatAvailable(CF_TEXT))
-		return true;
-	return false;
+	return ::IsClipboardFormatAvailable(CF_UNICODETEXT);
 }
 
 namespace {
@@ -2467,7 +2453,7 @@ public:
 		HGLOBAL handCopy = hand;
 		::GlobalUnlock(hand);
 		ptr = nullptr;
-		hand = {};
+		hand = nullptr;
 		return handCopy;
 	}
 	void SetClip(UINT uFormat) noexcept {
@@ -2498,7 +2484,7 @@ bool OpenClipboardRetry(HWND hwnd) noexcept {
 
 }
 
-void ScintillaWin::Paste() {
+void ScintillaWin::Paste(bool asBinary) {
 	if (!::OpenClipboardRetry(MainHWND())) {
 		return;
 	}
@@ -2518,6 +2504,14 @@ void ScintillaWin::Paste() {
 		}
 	}
 	const PasteShape pasteShape = isRectangular ? pasteRectangular : (isLine ? pasteLine : pasteStream);
+
+	if (asBinary /*&& ::IsClipboardFormatAvailable(CF_TEXT)*/) {
+		if (!asBinary) {
+			::CloseClipboard();
+			Redraw();
+			return;
+		}
+	}
 
 	// Always use CF_UNICODETEXT if available
 	GlobalMemory memUSelection(::GetClipboardData(CF_UNICODETEXT));
@@ -2545,34 +2539,6 @@ void ScintillaWin::Paste() {
 			InsertPasteShape(putf.data(), len, pasteShape);
 		}
 		memUSelection.Unlock();
-	} else {
-		// CF_UNICODETEXT not available, paste ANSI text
-		GlobalMemory memSelection(::GetClipboardData(CF_TEXT));
-		if (memSelection) {
-			const char *ptr = static_cast<const char *>(memSelection.ptr);
-			if (ptr) {
-				const size_t bytes = memSelection.Size();
-				const size_t len = strnlen(ptr, bytes);
-				// In Unicode mode, convert clipboard text to UTF-8
-				if (IsUnicodeMode()) {
-					std::vector<wchar_t> uptr(len + 1);
-
-					const int ilen = static_cast<int>(len);
-					const size_t ulen = WideCharFromMultiByte(CP_ACP,
-						std::string_view(ptr, ilen), uptr.data(), ilen + 1);
-
-					const std::wstring_view wsv(uptr.data(), ulen);
-					const size_t mlen = UTF8Length(wsv);
-					std::vector<char> putf(mlen + 1);
-					UTF8FromUTF16(wsv, putf.data(), mlen);
-
-					InsertPasteShape(putf.data(), mlen, pasteShape);
-				} else {
-					InsertPasteShape(ptr, len, pasteShape);
-				}
-			}
-			memSelection.Unlock();
-		}
 	}
 	::CloseClipboard();
 	Redraw();
@@ -2993,6 +2959,7 @@ void ScintillaWin::CopyToClipboard(const SelectionText &selectedText) {
 
 	GlobalMemory uniText;
 
+	if (!selectedText.asBinary) {
 	// Default Scintilla behaviour in Unicode mode
 	if (IsUnicodeMode()) {
 		const std::string_view sv(selectedText.Data(), selectedText.LengthWithTerminator());
@@ -3007,24 +2974,16 @@ void ScintillaWin::CopyToClipboard(const SelectionText &selectedText) {
 		const UINT cpSrc = CodePageFromCharSet(
 			selectedText.characterSet, selectedText.codePage);
 		const std::string_view svSelected(selectedText.Data(), selectedText.LengthWithTerminator());
-		const int uLen = WideCharLenFromMultiByte(cpSrc, svSelected);
+			const size_t uLen = WideCharLenFromMultiByte(cpSrc, svSelected);
 		uniText.Allocate(2 * uLen);
 		if (uniText) {
-			WideCharFromMultiByte(cpSrc, svSelected,
-				static_cast<wchar_t *>(uniText.ptr), uLen);
+				WideCharFromMultiByte(cpSrc, svSelected, static_cast<wchar_t *>(uniText.ptr), uLen);
+			}
 		}
 	}
 
 	if (uniText) {
 		uniText.SetClip(CF_UNICODETEXT);
-	} else {
-		// There was a failure - try to copy at least ANSI text
-		GlobalMemory ansiText;
-		ansiText.Allocate(selectedText.LengthWithTerminator());
-		if (ansiText) {
-			memcpy(ansiText.ptr, selectedText.Data(), selectedText.LengthWithTerminator());
-			ansiText.SetClip(CF_TEXT);
-		}
 	}
 
 	if (selectedText.rectangular) {
@@ -3043,7 +3002,14 @@ void ScintillaWin::CopyToClipboard(const SelectionText &selectedText) {
 		::SetClipboardData(cfVSLineTag, nullptr);
 	}
 
+	if (selectedText.asBinary) {
+	}
+
 	::CloseClipboard();
+
+	// TODO: notify data loss
+	//if (!selectedText.asBinary && ) {
+	//}
 }
 
 void ScintillaWin::ScrollMessage(WPARAM wParam) {
@@ -3229,7 +3195,7 @@ const char* GetStorageMediumType(DWORD tymed) noexcept {
 	}
 }
 
-const char* GetSourceFormatName(CLIPFORMAT fmt, char name[], int cchName) noexcept {
+const char* GetSourceFormatName(UINT fmt, char name[], int cchName) noexcept {
 	const int len = GetClipboardFormatNameA(fmt, name, cchName);
 	if (len <= 0) {
 		switch (fmt) {
@@ -3280,8 +3246,21 @@ void ScintillaWin::EnumDataSourceFormat(const char *tag, LPDATAOBJECT pIDataSour
 	}
 }
 
-#else
-#define EnumDataSourceFormat(tag, pIDataSource)
+// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-enumclipboardformats
+void ScintillaWin::EnumAllClipboardFormat(const char *tag) {
+	UINT fmt = 0;
+	unsigned int i = 0;
+	char name[1024];
+	char buf[2048];
+	while ((fmt = ::EnumClipboardFormats(fmt)) != 0) {
+		const char *fmtName = GetSourceFormatName(fmt, name, sizeof(name));
+		const int len = sprintf(buf, "%s: fmt[%u]=%u, 0x%04X; name=%s\n",
+			tag, i, fmt, fmt, fmtName);
+		InsertCharacter(std::string_view(buf, len), CharacterSource::tentativeInput);
+		i++;
+	}
+}
+
 #endif
 
 /// Implement IDropTarget

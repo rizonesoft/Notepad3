@@ -2151,7 +2151,7 @@ void Editor::CopyAllowLine() {
 void Editor::Cut() {
 	pdoc->CheckReadOnly();
 	if (!pdoc->IsReadOnly() && !SelectionContainsProtected()) {
-		Copy();
+		Copy(false);
 		ClearSelection();
 	}
 }
@@ -5846,7 +5846,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_COPY:
-		Copy();
+		Copy(false);
 		break;
 
 	case SCI_COPYALLOWLINE:
@@ -5874,7 +5874,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_PASTE:
-		Paste();
+		Paste(false);
 		if ((caretSticky == SC_CARETSTICKY_OFF) || (caretSticky == SC_CARETSTICKY_WHITESPACE)) {
 			SetLastXChosen();
 		}

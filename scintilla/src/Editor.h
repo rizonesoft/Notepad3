@@ -67,13 +67,15 @@ class SelectionText {
 public:
 	bool rectangular;
 	bool lineCopy;
+	bool asBinary;
 	int codePage;
 	int characterSet;
-	SelectionText() noexcept : rectangular(false), lineCopy(false), codePage(0), characterSet(0) {}
+	SelectionText() noexcept : rectangular(false), lineCopy(false), asBinary(false), codePage(0), characterSet(0) {}
 	void Clear() noexcept {
 		s.clear();
 		rectangular = false;
 		lineCopy = false;
+		asBinary = false;
 		codePage = 0;
 		characterSet = 0;
 	}
@@ -402,10 +404,10 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void ClearDocumentStyle();
 	virtual void Cut();
 	void PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Position len);
-	virtual void Copy() = 0;
+	virtual void Copy(bool asBinary) = 0;
 	virtual void CopyAllowLine();
 	virtual bool CanPaste();
-	virtual void Paste() = 0;
+	virtual void Paste(bool asBinary) = 0;
 	void Clear();
 	virtual void SelectAll();
 	virtual void Undo();
