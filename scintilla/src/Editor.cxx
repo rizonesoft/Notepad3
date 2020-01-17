@@ -4278,7 +4278,7 @@ void Editor::DisplayCursor(Window::Cursor c) {
 		wMain.SetCursor(static_cast<Window::Cursor>(cursorMode));
 }
 
-bool Editor::DragThreshold(Point ptStart, Point ptNow) {
+bool Editor::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDiff = ptStart - ptNow;
 	const XYPOSITION distanceSquared = ptDiff.x * ptDiff.x + ptDiff.y * ptDiff.y;
 	return distanceSquared > 16.0f;

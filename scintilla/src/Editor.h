@@ -488,7 +488,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void CopyText(size_t length, const char *text);
 	void SetDragPosition(SelectionPosition newPos);
 	virtual void DisplayCursor(Window::Cursor c);
-	virtual bool DragThreshold(Point ptStart, Point ptNow);
+	virtual bool DragThreshold(Point ptStart, Point ptNow) noexcept;
 	virtual void StartDrag();
 	void DropAt(SelectionPosition position, const char *value, size_t lengthValue, bool moving, bool rectangular);
 	void DropAt(SelectionPosition position, const char *value, bool moving, bool rectangular);

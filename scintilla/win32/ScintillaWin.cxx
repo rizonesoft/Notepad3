@@ -449,7 +449,7 @@ class ScintillaWin :
 		invalidTimerID, standardTimerID, idleTimerID, fineTimerStart
 	};
 
-	bool SCICALL DragThreshold(Point ptStart, Point ptNow) noexcept override;
+	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
 	void StartDrag() override;
 	static int MouseModifiers(uptr_t wParam) noexcept;
 
@@ -507,7 +507,7 @@ class ScintillaWin :
 	void CopyAllowLine() override;
 	bool CanPaste() override;
 	void Paste(bool asBinary) override;
-	void SCICALL CreateCallTipWindow(PRectangle rc) noexcept override;
+	void CreateCallTipWindow(PRectangle rc) override;
 	void ClaimSelection() noexcept override;
 
 	// DBCS
@@ -2544,7 +2544,7 @@ void ScintillaWin::Paste(bool asBinary) {
 	Redraw();
 }
 
-void ScintillaWin::CreateCallTipWindow(PRectangle) noexcept {
+void ScintillaWin::CreateCallTipWindow(PRectangle) {
 	if (!ct.wCallTip.Created()) {
 		HWND wnd = ::CreateWindow(callClassName, L"ACallTip",
 			WS_POPUP, 100, 100, 150, 20,
