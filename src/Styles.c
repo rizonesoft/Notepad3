@@ -1142,20 +1142,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   #define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
   #define _SC_INDIC_IME_UNKNOWN    INDIC_IME_MAX
 
-  if (Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &dColor)) // IME foregr
-  {
-    SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, dColor);
-  } else {
-    SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, dColor);
-  }
+  COLORREF rgb = RGB(0xFF, 0xA0, 0x00);
+  Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &rgb); // IME foregr
+  SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, rgb);
+  SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, rgb);
+  SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, rgb);
+  SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, rgb);
 
-  COLORREF rgb;
   if (pLexNew != &lexANSI) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
   }
@@ -1170,14 +1163,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, 0, 0);
   }
 
-  if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER , &dColor)) { // selection back
-    SendMessage(hwnd, SCI_SETSELBACK, true, dColor);
-    SendMessage(hwnd, SCI_SETADDITIONALSELBACK, dColor, 0);
-  }
-  else {
-    SendMessage(hwnd, SCI_SETSELBACK, true, RGB(0xC0, 0xC0, 0xC0)); // use a default value...
-    SendMessage(hwnd, SCI_SETADDITIONALSELBACK, RGB(0xC0, 0xC0, 0xC0), 0);
-  }
+  rgb = RGB(0xC0, 0xC0, 0xC0);
+  Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb); // selection back
+  SendMessage(hwnd, SCI_SETSELBACK, true, rgb);
+  SendMessage(hwnd, SCI_SETADDITIONALSELBACK, rgb, 0);
 
   if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true)) { // selection alpha
     SendMessage(hwnd, SCI_SETSELALPHA, iValue, 0);
