@@ -22,8 +22,8 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Common Base", L"", L"",
     /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; alpha:100", L"" },
     /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"fore:#3399FF; alpha:60; alpha2:60; indic_roundbox", L"" },
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"fore:#0000FF; back:#0000BF; indic_plain", L"" },
-    /* 16 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
     /* 15 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63354, L"Multi Edit Indicator", L"fore:#FFA000; alpha:60; alpha2:180; indic_roundbox", L"" },
+    /* 16 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
              EDITLEXER_SENTINEL } };
 
 
@@ -45,8 +45,8 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Common Base", L"", L"",
     /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#00DC00; charset:2; case:U; alpha:100", L"" },
     /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0000FF; alpha:60; alpha2:60; indic_box", L"" },
     /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"fore:#00D000; back:#009C00; alpha:180; indic_compositionthin", L"" },
+    /* 15 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63355, L"2nd Multi Edit Indicator", L"fore:#00A5FF; indic_box", L"" },
     /* 16 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
-    /* 15 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63355, L"Multi Edit Indicator", L"fore:#00A5FF; indic_box", L"" },
              EDITLEXER_SENTINEL } };
 
 
@@ -79,7 +79,7 @@ SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty; texi; texinfo; tx
     { {MULTI_STYLE(SCE_L_COMMENT,SCE_L_COMMENT2,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
     { {MULTI_STYLE(SCE_L_MATH,SCE_L_MATH2,0,0)}, IDS_LEX_STR_63359, L"Math", L"fore:#FF0000", L"" },
     { {SCE_L_SPECIAL}, IDS_LEX_STR_63306, L"Special Char", L"fore:#AAAA00", L"" },
-    { {MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0)}, IDS_LEX_STR_63282, L"Tag", L"fore:#0000FF", L"" },
+    { {MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0)}, IDS_LEX_STR_63363, L"Tag", L"fore:#0000FF", L"" },
     { {SCE_L_VERBATIM}, IDS_LEX_STR_63307, L"Verbatim Segment", L"fore:#666666", L"" },
     EDITLEXER_SENTINEL } };
 

@@ -393,14 +393,6 @@ static void  _SplitUndoTransaction(const int iModType);
 static void  _DelayClearZoomCallTip(int delay);
 static void  _DelaySplitUndoTransaction(int delay, int iModType);
 
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-static CLIPFORMAT cfDrpF = CF_HDROP;
-static POINTL ptDummy = { 0, 0 };
-static PDROPTARGET pDropTarget = NULL;
-static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
-#endif
-
-
 //#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE)
 #define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION)
 
@@ -960,10 +952,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     return 1; 
   }
   DrawMenuBar(hwnd);
-
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-  DragAndDropInit(NULL);
-#endif
 
   HACCEL const hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   HACCEL const hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
@@ -2095,9 +2083,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,true);
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-  pDropTarget = RegisterDragAndDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)Globals.hwndEdit);
-#endif
 
   if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
     Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL) {
@@ -2517,9 +2502,6 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     InstallFileWatching(NULL);
 
     DragAcceptFiles(hwnd, true);
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-    RevokeDragAndDrop(pDropTarget);
-#endif
 
     // Terminate clipboard watching
     if (s_flagPasteBoard) {
@@ -2762,10 +2744,6 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
   }
   else {
-#ifndef _EXTRA_DRAG_N_DROP_HANDLER_
-    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
-#endif
     // delegated to SCN_URIDROPPED
   }
 
