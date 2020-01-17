@@ -79,7 +79,7 @@ SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty; texi; texinfo; tx
     { {MULTI_STYLE(SCE_L_COMMENT,SCE_L_COMMENT2,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
     { {MULTI_STYLE(SCE_L_MATH,SCE_L_MATH2,0,0)}, IDS_LEX_STR_63359, L"Math", L"fore:#FF0000", L"" },
     { {SCE_L_SPECIAL}, IDS_LEX_STR_63306, L"Special Char", L"fore:#AAAA00", L"" },
-    { {MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0)}, IDS_LEX_STR_63282, L"Tag", L"fore:#0000FF", L"" },
+    { {MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0)}, IDS_LEX_STR_63363, L"Tag", L"fore:#0000FF", L"" },
     { {SCE_L_VERBATIM}, IDS_LEX_STR_63307, L"Verbatim Segment", L"fore:#666666", L"" },
     EDITLEXER_SENTINEL } };
 
