@@ -460,6 +460,7 @@ BEGIN
     IDS_LEX_STR_63360       "Scalar"
     IDS_LEX_STR_63361       "Substitution"
     IDS_LEX_STR_63362       "Modifier"
+    IDS_LEX_STR_63363       "Tag"
 END
 
 STRINGTABLE
