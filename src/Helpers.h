@@ -571,30 +571,6 @@ inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); re
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
-#define _EXTRA_DRAG_N_DROP_HANDLER_ 1
-
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-
-// special Drag and Drop Handling
-
-typedef struct tDROPDATA
-{
-  CLIPFORMAT cf;
-  POINTL pt;
-  DWORD dwKeyState;
-  HGLOBAL hData;
-} 
-DROPDATA, *PDROPDATA;
-
-typedef struct tDROPTARGET *PDROPTARGET;
-typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
-
-void DragAndDropInit(HANDLE hHeap);
-PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK pDropProc, void *pUserData);
-PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
-
-#endif
-
 
 #endif //_NP3_HELPERS_H_
 

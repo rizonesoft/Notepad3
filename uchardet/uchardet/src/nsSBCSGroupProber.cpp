@@ -84,7 +84,6 @@ nsSBCSGroupProber::nsSBCSGroupProber()
       mProbers[j] = nsnull;
     }
   }
-  mProbers[i++] = new nsSingleByteCharSetProber(&Tis_620ThaiModel);
 
   mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1252AfricaansModel);
   mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_1AfricaansModel);
@@ -208,7 +207,7 @@ nsSBCSGroupProber::nsSBCSGroupProber()
   mProbers[i++] = new nsSingleByteCharSetProber(&Windows_1258VietnameseModel);
 
 
-  //mProbers[i++] = new nsSingleByteCharSetProber(&Tis_620ThaiModel);
+  mProbers[i++] = new nsSingleByteCharSetProber(&Tis_620ThaiModel);
   mProbers[i++] = new nsSingleByteCharSetProber(&Iso_8859_11ThaiModel);
 
   mNumOfProbers = i;
