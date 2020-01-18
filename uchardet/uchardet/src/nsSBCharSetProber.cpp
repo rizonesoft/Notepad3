@@ -104,29 +104,26 @@ void  nsSingleByteCharSetProber::Reset(void)
   mFreqChar = 0;
 }
 
-//#define NEGATIVE_APPROACH 1
+constexpr float rfactor(PRUint32 m, PRUint32 d) { 
+  return ((d >= 1) ? (static_cast<float>(m) / static_cast<float>(d)) : static_cast<float>(m));
+}
 
-float nsSingleByteCharSetProber::GetConfidence(void)
+float nsSingleByteCharSetProber::GetConfidence()
 {
-#ifdef NEGATIVE_APPROACH
-  if (mTotalSeqs > 0)
-    if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT]*10 )
-      return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT]*10))/mTotalSeqs * mFreqChar / mTotalChar;
-  return SURE_NO;
-#else  //POSITIVE_APPROACH
+  PRUint32 const neutralChar = mSeqCounters[NEUTRAL_CAT] + mCtrlChar;
+  PRUint32 const netChars = (mTotalChar > neutralChar) ? (mTotalChar - neutralChar) : mTotalSeqs;
 
-  #define ffactor(m,d) (((d) > 0) ? ((float)(m)/(float)(d)) : 1.0f)
-
-  PRUint32 const txtChar = (mTotalChar > mCtrlChar) ? (mTotalChar - mCtrlChar) : (mTotalSeqs << 1);
-
-  if ((txtChar > 0) && (mTotalSeqs > 0))
+  if ((mTotalChar > 0) && (mTotalSeqs > 0))
   {
-    PRUint32 const goodSeqCnt = mSeqCounters[POSITIVE_CAT] + (mSeqCounters[PROBABLE_CAT] >> 1);
+    // weighted good sequence count
+    PRUint32 const validSeqs = mSeqCounters[POSITIVE_CAT]
+                            + (mSeqCounters[PROBABLE_CAT] >> 1)
+                            + (mSeqCounters[NEUTRAL_CAT] >> 2);
 
     float r = mModel->mTypicalPositiveRatio;
 
     // negative sequence correction factor
-    r *= ffactor(goodSeqCnt, mTotalSeqs + (mSeqCounters[NEGATIVE_CAT] << 4));
+    r *= rfactor(validSeqs, (mTotalSeqs + ((validSeqs >> 2) * mSeqCounters[NEGATIVE_CAT])));
 
     /* Multiply by a ratio of positive sequences per characters.
      * This would help in particular to distinguish close winners.
@@ -136,22 +133,21 @@ float nsSingleByteCharSetProber::GetConfidence(void)
      * character). This could make the difference between very closely related
      * charsets used for the same language.
      */
-    r *= ffactor(goodSeqCnt + mSeqCounters[NEUTRAL_CAT], txtChar);
+    r *= rfactor(validSeqs, netChars);
 
     /* The more control characters (proportionnaly to the size of the text), the
      * less confident we become in the current charset.
      */
-    r *= ffactor(txtChar, mTotalChar);
+    r *= rfactor(netChars, mTotalChar);
     
     // normalizing
-    r *= ffactor(mFreqChar, mTotalChar);
+    r *= rfactor(mFreqChar, mTotalChar);
 
     if (r >= 1.00f) { r = SURE_YES; }
 
     return r;
   }
   return SURE_NO;
-#endif
 }
 
 const char* nsSingleByteCharSetProber::GetCharSetName()
