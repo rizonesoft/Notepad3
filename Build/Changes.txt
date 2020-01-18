@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.116.(build_#) (2020-01-16)
+Current BETA Version 5.20.117.(build_#) (2020-01-17)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,9 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Remove "extra" drag n' drop handler.
+- Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=70".
+- UCHARDET: Confidence calculation for Single Byte Character Set (SBCS).
 - Replace "save modified file warning" by (silent) custom messagebox if message beeps are muted.
 - Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
@@ -97,6 +100,8 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- IME color and IME color styler.
+- Wrong language reference for lexer : "Tag".
 - "Recent Files" History handling.
 - URL Encode/Decode (according to RFC 3986) for (Win7 API).
 - Win7 "procedure entry point "SetCoalescableTimer()" could not be located.
