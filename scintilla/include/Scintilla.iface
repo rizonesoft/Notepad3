@@ -2945,6 +2945,9 @@ fun int TagsOfStyle=4031(int style, stringresult tags)
 # Result is NUL-terminated.
 fun int DescriptionOfStyle=4032(int style, stringresult description)
 
+# Set the lexer from an ILexer*.
+set void SetILexer=4033(, pointer ilexer)
+
 # Notifications
 # Type of modification and the action which caused the modification.
 # These are defined as a bit mask to make it easy to specify which notifications are wanted.
@@ -3196,6 +3199,7 @@ val SCLEX_CIL=127
 val SCLEX_X12=128
 val SCLEX_DATAFLEX=129
 val SCLEX_HOLLYWOOD=130
+val SCLEX_RAKU=131
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -5226,6 +5230,37 @@ val SCE_HOLLYWOOD_OPERATOR=11
 val SCE_HOLLYWOOD_IDENTIFIER=12
 val SCE_HOLLYWOOD_CONSTANT=13
 val SCE_HOLLYWOOD_HEXNUMBER=14
+# Lexical states for SCLEX_RAKU
+lex Raku=SCLEX_RAKU SCE_RAKU_
+val SCE_RAKU_DEFAULT=0
+val SCE_RAKU_ERROR=1
+val SCE_RAKU_COMMENTLINE=2
+val SCE_RAKU_COMMENTEMBED=3
+val SCE_RAKU_POD=4
+val SCE_RAKU_CHARACTER=5
+val SCE_RAKU_HEREDOC_Q=6
+val SCE_RAKU_HEREDOC_QQ=7
+val SCE_RAKU_STRING=8
+val SCE_RAKU_STRING_Q=9
+val SCE_RAKU_STRING_QQ=10
+val SCE_RAKU_STRING_Q_LANG=11
+val SCE_RAKU_STRING_VAR=12
+val SCE_RAKU_REGEX=13
+val SCE_RAKU_REGEX_VAR=14
+val SCE_RAKU_ADVERB=15
+val SCE_RAKU_NUMBER=16
+val SCE_RAKU_PREPROCESSOR=17
+val SCE_RAKU_OPERATOR=18
+val SCE_RAKU_WORD=19
+val SCE_RAKU_FUNCTION=20
+val SCE_RAKU_IDENTIFIER=21
+val SCE_RAKU_TYPEDEF=22
+val SCE_RAKU_MU=23
+val SCE_RAKU_POSITIONAL=24
+val SCE_RAKU_ASSOCIATIVE=25
+val SCE_RAKU_CALLABLE=26
+val SCE_RAKU_GRAMMAR=27
+val SCE_RAKU_CLASS=28
 
 # Events
 

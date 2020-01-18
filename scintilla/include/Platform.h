@@ -1,13 +1,11 @@
 // Scintilla source code edit control
 /** @file Platform.h
  ** Interface to platform facilities. Also includes some basic utilities.
- ** Implemented in PlatGTK.cxx for GTK+/Linux, PlatWin.cxx for Windows, and PlatWX.cxx for wxWindows.
+ ** Implemented in PlatGTK.cxx for GTK/Linux, PlatWin.cxx for Windows, and PlatWX.cxx for wxWindows.
  **/
 // Copyright 1998-2009 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
-
-#ifndef PLATFORM_H
-#define PLATFORM_H
+#pragma once
 
 // PLAT_GTK = GTK+ on Linux or Win32
 // PLAT_GTK_WIN32 is defined additionally when running PLAT_GTK under Win32
@@ -76,6 +74,21 @@
 
 #endif
 
+// use __vectorcall to pass float/double arguments such as Point and PRectangle.
+#if defined(_WIN64) && defined(NDEBUG)
+	#if defined(_MSC_BUILD)
+		#define SCICALL __vectorcall
+	#elif defined(__INTEL_COMPILER_BUILD_DATE)
+		//#define SCICALL __regcall
+		#define SCICALL
+	#else
+		#define SCICALL
+	#endif
+#else
+	#define SCICALL
+#endif
+
+
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include <memory>
 #include <vector>
@@ -100,17 +113,16 @@ typedef void *IdlerID;
 
 /**
  * A geometric point class.
- * Point is similar to the Win32 POINT and GTK+ GdkPoint types.
+ * Point is similar to the Win32 POINT and GTK GdkPoint types.
  */
 class Point {
 public:
 	XYPOSITION x;
 	XYPOSITION y;
 
-	constexpr explicit Point(XYPOSITION x_=0, XYPOSITION y_=0) noexcept : x(x_), y(y_) {
-	}
+	constexpr explicit Point(XYPOSITION x_ = 0, XYPOSITION y_ = 0) noexcept : x(x_), y(y_) {}
 
-	static Point FromInts(int x_, int y_) noexcept {
+	static constexpr Point FromInts(int x_, int y_) noexcept {
 		return Point(static_cast<XYPOSITION>(x_), static_cast<XYPOSITION>(y_));
 	}
 
@@ -142,10 +154,9 @@ public:
 	XYPOSITION bottom;
 
 	constexpr explicit PRectangle(XYPOSITION left_=0, XYPOSITION top_=0, XYPOSITION right_=0, XYPOSITION bottom_ = 0) noexcept :
-		left(left_), top(top_), right(right_), bottom(bottom_) {
-	}
+		left(left_), top(top_), right(right_), bottom(bottom_) {}
 
-	static PRectangle FromInts(int left_, int top_, int right_, int bottom_) noexcept {
+	static constexpr PRectangle FromInts(int left_, int top_, int right_, int bottom_) noexcept {
 		return PRectangle(static_cast<XYPOSITION>(left_), static_cast<XYPOSITION>(top_),
 			static_cast<XYPOSITION>(right_), static_cast<XYPOSITION>(bottom_));
 	}
@@ -179,8 +190,24 @@ public:
 		right += xDelta;
 		bottom += yDelta;
 	}
-	XYPOSITION Width() const noexcept { return right - left; }
-	XYPOSITION Height() const noexcept { return bottom - top; }
+	constexpr PRectangle Inflate(XYPOSITION xDelta, XYPOSITION yDelta) const noexcept {
+		return PRectangle(left - xDelta, top - yDelta, right + xDelta, bottom + yDelta);
+	}
+	constexpr PRectangle Inflate(int xDelta, int yDelta) const noexcept {
+		return PRectangle(left - xDelta, top - yDelta, right + xDelta, bottom + yDelta);
+	}
+	constexpr PRectangle Deflate(XYPOSITION xDelta, XYPOSITION yDelta) const noexcept {
+		return Inflate(-xDelta, -yDelta);
+	}
+	constexpr PRectangle Deflate(int xDelta, int yDelta) const noexcept {
+		return Inflate(-xDelta, -yDelta);
+	}
+	XYPOSITION Width() const noexcept {
+		return right - left;
+	}
+	XYPOSITION Height() const noexcept {
+		return bottom - top;
+	}
 	bool Empty() const noexcept {
 		return (Height() <= 0) || (Width() <= 0);
 	}
@@ -189,22 +216,20 @@ public:
 /**
  * Holds an RGB colour with 8 bits for each component.
  */
-constexpr const float componentMaximum = 255.0f;
+constexpr float componentMaximum = 255.0F;
 class ColourDesired {
-	int co;
+	unsigned int co;
 public:
-	explicit ColourDesired(int co_=0) noexcept : co(co_) {
-	}
+	explicit ColourDesired(unsigned int co_ = 0) noexcept : co(co_) {}
 
 	ColourDesired(unsigned int red, unsigned int green, unsigned int blue) noexcept :
-		co(red | (green << 8) | (blue << 16)) {
-	}
+		co(red | (green << 8) | (blue << 16)) {}
 
 	bool operator==(const ColourDesired &other) const noexcept {
 		return co == other.co;
 	}
 
-	int AsInteger() const noexcept {
+	unsigned int AsInteger() const noexcept {
 		return co;
 	}
 
@@ -236,20 +261,15 @@ public:
 */
 class ColourAlpha : public ColourDesired {
 public:
-	explicit ColourAlpha(int co_ = 0) noexcept : ColourDesired(co_) {
-	}
+	explicit ColourAlpha(unsigned int co_ = 0) noexcept : ColourDesired(co_) {}
 
 	ColourAlpha(unsigned int red, unsigned int green, unsigned int blue) noexcept :
-		ColourDesired(red | (green << 8) | (blue << 16)) {
-	}
-
+		ColourDesired(red | (green << 8) | (blue << 16)) {}
 	ColourAlpha(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha) noexcept :
-		ColourDesired(red | (green << 8) | (blue << 16) | (alpha << 24)) {
-	}
+		ColourDesired(red | (green << 8) | (blue << 16) | (alpha << 24)) {}
 
 	ColourAlpha(ColourDesired cd, unsigned int alpha) noexcept :
-		ColourDesired(cd.AsInteger() | (alpha << 24)) {
-	}
+		ColourDesired(cd.AsInteger() | (alpha << 24)) {}
 
 	ColourDesired GetColour() const noexcept {
 		return ColourDesired(AsInteger() & 0xffffff);
@@ -280,13 +300,14 @@ public:
 	float position;
 	ColourAlpha colour;
 	ColourStop(float position_, ColourAlpha colour_) noexcept :
-		position(position_), colour(colour_) {
-	}
+		position(position_), colour(colour_) {}
 };
 
 /**
  * Font management.
  */
+
+constexpr const char *defaultLocaleName = ""; // "en-us";
 
 struct FontParameters {
 	const char *faceName;
@@ -296,6 +317,7 @@ struct FontParameters {
 	int extraFontFlag;
 	int technology;
 	int characterSet;
+	const char *localeName;
 
 	FontParameters(
 		const char *faceName_,
@@ -304,7 +326,8 @@ struct FontParameters {
 		bool italic_=false,
 		int extraFontFlag_=0,
 		int technology_=0,
-		int characterSet_=0) noexcept :
+		int characterSet_=0,
+		const char *localeName_=defaultLocaleName) noexcept :
 
 		faceName(faceName_),
 		size(size_),
@@ -312,9 +335,8 @@ struct FontParameters {
 		italic(italic_),
 		extraFontFlag(extraFontFlag_),
 		technology(technology_),
-		characterSet(characterSet_)
-	{
-	}
+		characterSet(characterSet_),
+		localeName(localeName_) {}
 
 };
 
@@ -331,11 +353,15 @@ public:
 	virtual ~Font();
 
 	virtual void Create(const FontParameters &fp);
-	virtual void Release();
+	virtual void Release() noexcept;
 
-	FontID GetID() const noexcept { return fid; }
+	FontID GetID() const noexcept {
+		return fid;
+	}
 	// Alias another font - caller guarantees not to Release
-	void SetID(FontID fid_) noexcept { fid = fid_; }
+	void SetID(FontID fid_) noexcept {
+		fid = fid_;
+	}
 	friend class Surface;
 	friend class SurfaceImpl;
 };
@@ -363,7 +389,7 @@ class IScreenLineLayout {
 public:
 	virtual ~IScreenLineLayout() = default;
 	virtual size_t PositionFromX(XYPOSITION xDistance, bool charPosition) = 0;
-	virtual XYPOSITION XFromPosition(size_t caretPosition) = 0;
+	virtual XYPOSITION XFromPosition(size_t caretPosition) noexcept = 0;
 	virtual std::vector<Interval> FindRangeIntervals(size_t start, size_t end) = 0;
 };
 
@@ -377,52 +403,54 @@ public:
 	Surface(Surface &&) = delete;
 	Surface &operator=(const Surface &) = delete;
 	Surface &operator=(Surface &&) = delete;
-	virtual ~Surface() {}
+	virtual ~Surface() = default;
 	static Surface *Allocate(int technology);
 
-	virtual void Init(WindowID wid)=0;
-	virtual void Init(SurfaceID sid, WindowID wid)=0;
-	virtual void InitPixMap(int width, int height, Surface *surface_, WindowID wid)=0;
+	virtual void Init(WindowID wid) noexcept = 0;
+	virtual void Init(SurfaceID sid, WindowID wid) noexcept = 0;
+	virtual void InitPixMap(int width, int height, Surface *surface_, WindowID wid) noexcept = 0;
 
-	virtual void Release()=0;
-	virtual bool Initialised()=0;
+	virtual void Release() noexcept = 0;
+	virtual bool Initialised() const noexcept = 0;
 	virtual void PenColour(ColourDesired fore)=0;
-	virtual int LogPixelsY()=0;
-	virtual int DeviceHeightFont(int points)=0;
-	virtual void MoveTo(int x_, int y_)=0;
-	virtual void LineTo(int x_, int y_)=0;
-	virtual void Polygon(Point *pts, size_t npts, ColourDesired fore, ColourDesired back)=0;
-	virtual void RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
-	virtual void FillRectangle(PRectangle rc, ColourDesired back)=0;
-	virtual void FillRectangle(PRectangle rc, Surface &surfacePattern)=0;
-	virtual void RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
-	virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
+	virtual int LogPixelsY() const noexcept = 0;
+	virtual int DeviceHeightFont(int points) const noexcept = 0;
+	virtual void SCICALL MoveTo(int x_, int y_) noexcept = 0;
+	virtual void SCICALL LineTo(int x_, int y_) noexcept = 0;
+	virtual void SCICALL Polygon(const Point *pts, size_t npts, ColourDesired fore, ColourDesired back) = 0;
+	virtual void SCICALL RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
+	virtual void SCICALL FillRectangle(PRectangle rc, ColourDesired back) = 0;
+	virtual void SCICALL FillRectangle(PRectangle rc, Surface &surfacePattern) = 0;
+	virtual void SCICALL RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
+	virtual void SCICALL AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
 		ColourDesired outline, int alphaOutline, int flags)=0;
-	enum class GradientOptions { leftToRight, topToBottom };
-	virtual void GradientRectangle(PRectangle rc, const std::vector<ColourStop> &stops, GradientOptions options)=0;
-	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
-	virtual void Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
-	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
+	enum class GradientOptions {
+		leftToRight, topToBottom
+	};
+	virtual void SCICALL GradientRectangle(PRectangle rc, const std::vector<ColourStop> &stops, GradientOptions options) = 0;
+	virtual void SCICALL DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
+	virtual void SCICALL Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
+	virtual void SCICALL Copy(PRectangle rc, Point from, Surface &surfaceSource) = 0;
 
 	virtual std::unique_ptr<IScreenLineLayout> Layout(const IScreenLine *screenLine) = 0;
 
-	virtual void DrawTextNoClip(PRectangle rc, Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
-	virtual void DrawTextClipped(PRectangle rc, Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
-	virtual void DrawTextTransparent(PRectangle rc, Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore) = 0;
-	virtual void MeasureWidths(Font &font_, std::string_view text, XYPOSITION *positions) = 0;
-	virtual XYPOSITION WidthText(Font &font_, std::string_view text) = 0;
-	virtual XYPOSITION Ascent(Font &font_)=0;
-	virtual XYPOSITION Descent(Font &font_)=0;
-	virtual XYPOSITION InternalLeading(Font &font_)=0;
-	virtual XYPOSITION Height(Font &font_)=0;
-	virtual XYPOSITION AverageCharWidth(Font &font_)=0;
+	virtual void SCICALL DrawTextNoClip(PRectangle rc, const Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
+	virtual void SCICALL DrawTextClipped(PRectangle rc, const Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
+	virtual void SCICALL DrawTextTransparent(PRectangle rc, const Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore) = 0;
+	virtual void SCICALL MeasureWidths(const Font &font_, std::string_view text, XYPOSITION *positions) = 0;
+	virtual XYPOSITION WidthText(const Font &font_, std::string_view text) = 0;
+	virtual XYPOSITION Ascent(const Font &font_) noexcept = 0;
+	virtual XYPOSITION Descent(const Font &font_) noexcept = 0;
+	virtual XYPOSITION InternalLeading(const Font &font_) noexcept = 0;
+	virtual XYPOSITION Height(const Font &font_) noexcept = 0;
+	virtual XYPOSITION AverageCharWidth(const Font &font_) = 0;
 
-	virtual void SetClip(PRectangle rc)=0;
-	virtual void FlushCachedState()=0;
+	virtual void SCICALL SetClip(PRectangle rc) noexcept = 0;
+	virtual void FlushCachedState() noexcept = 0;
 
-	virtual void SetUnicodeMode(bool unicodeMode_)=0;
-	virtual void SetDBCSMode(int codePage)=0;
-	virtual void SetBidiR2L(bool bidiR2L_)=0;
+	virtual void SetUnicodeMode(bool unicodeMode_) noexcept = 0;
+	virtual void SetDBCSMode(int codePage) noexcept = 0;
+	virtual void SetBidiR2L(bool bidiR2L_) noexcept = 0;
 };
 
 /**
@@ -433,8 +461,7 @@ class Window {
 protected:
 	WindowID wid;
 public:
-	Window() noexcept : wid(nullptr), cursorLast(cursorInvalid) {
-	}
+	Window() noexcept : wid(nullptr), cursorLast(cursorInvalid) {}
 	Window(const Window &source) = delete;
 	Window(Window &&) = delete;
 	Window &operator=(WindowID wid_) noexcept {
@@ -445,20 +472,26 @@ public:
 	Window &operator=(const Window &) = delete;
 	Window &operator=(Window &&) = delete;
 	virtual ~Window();
-	WindowID GetID() const noexcept { return wid; }
-	bool Created() const noexcept { return wid != nullptr; }
-	void Destroy();
-	PRectangle GetPosition() const;
-	void SetPosition(PRectangle rc);
-	void SetPositionRelative(PRectangle rc, const Window *relativeTo);
-	PRectangle GetClientPosition() const;
-	void Show(bool show=true);
-	void InvalidateAll();
-	void InvalidateRectangle(PRectangle rc);
-	virtual void SetFont(Font &font);
-	enum Cursor { cursorInvalid, cursorText, cursorArrow, cursorUp, cursorWait, cursorHoriz, cursorVert, cursorReverseArrow, cursorHand };
-	void SetCursor(Cursor curs);
-	PRectangle GetMonitorRect(Point pt);
+	WindowID GetID() const noexcept {
+		return wid;
+	}
+	bool Created() const noexcept {
+		return wid != nullptr;
+	}
+	void Destroy() noexcept;
+	PRectangle GetPosition() const noexcept;
+	void SCICALL SetPosition(PRectangle rc) noexcept;
+	void SCICALL SetPositionRelative(PRectangle rc, const Window *relativeTo) noexcept;
+	PRectangle GetClientPosition() const noexcept;
+	void Show(bool show = true) const noexcept;
+	void InvalidateAll() noexcept;
+	void SCICALL InvalidateRectangle(PRectangle rc) noexcept;
+	virtual void SetFont(const Font &font) noexcept;
+	enum Cursor {
+		cursorInvalid, cursorText, cursorArrow, cursorUp, cursorWait, cursorHoriz, cursorVert, cursorReverseArrow, cursorHand
+	};
+	void SetCursor(Cursor curs) noexcept;
+	PRectangle SCICALL GetMonitorRect(Point pt) const noexcept;
 private:
 	Cursor cursorLast;
 };
@@ -470,9 +503,10 @@ private:
 // ScintillaBase implements IListBoxDelegate to receive ListBoxEvents from a ListBox
 
 struct ListBoxEvent {
-	enum class EventType { selectionChange, doubleClick } event;
-	ListBoxEvent(EventType event_) noexcept : event(event_) {
-	}
+	enum class EventType {
+		selectionChange, doubleClick
+	} event;
+	explicit ListBoxEvent(EventType event_) noexcept : event(event_) {}
 };
 
 class IListBoxDelegate {
@@ -486,24 +520,25 @@ public:
 	~ListBox() override;
 	static ListBox *Allocate();
 
-	void SetFont(Font &font) override =0;
-	virtual void Create(Window &parent, int ctrlID, Point location, int lineHeight_, bool unicodeMode_, int technology_)=0;
-	virtual void SetAverageCharWidth(int width)=0;
-	virtual void SetVisibleRows(int rows)=0;
-	virtual int GetVisibleRows() const=0;
+	void SetFont(const Font &font) noexcept override = 0;
+	virtual void SetColour(ColourDesired fore, ColourDesired back) noexcept = 0;
+	virtual void SCICALL Create(Window &parent, int ctrlID, Point location, int lineHeight_, bool unicodeMode_, int technology_) noexcept = 0;
+	virtual void SetAverageCharWidth(int width) noexcept = 0;
+	virtual void SetVisibleRows(int rows) noexcept = 0;
+	virtual int GetVisibleRows() const noexcept = 0;
 	virtual PRectangle GetDesiredRect()=0;
-	virtual int CaretFromEdge()=0;
-	virtual void Clear()=0;
-	virtual void Append(char *s, int type = -1)=0;
-	virtual int Length()=0;
+	virtual int CaretFromEdge() const = 0;
+	virtual void Clear() noexcept = 0;
+	virtual void Append(const char *s, int type = -1) const noexcept = 0;
+	virtual int Length() const noexcept = 0;
 	virtual void Select(int n)=0;
-	virtual int GetSelection()=0;
-	virtual int Find(const char *prefix)=0;
-	virtual void GetValue(int n, char *value, int len)=0;
+	virtual int GetSelection() const noexcept = 0;
+	virtual int Find(const char *prefix) const noexcept = 0;
+	virtual void GetValue(int n, char *value, int len) const = 0;
 	virtual void RegisterImage(int type, const char *xpm_data)=0;
 	virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) = 0;
-	virtual void ClearRegisteredImages()=0;
-	virtual void SetDelegate(IListBoxDelegate *lbDelegate)=0;
+	virtual void ClearRegisteredImages() noexcept = 0;
+	virtual void SetDelegate(IListBoxDelegate *lbDelegate) noexcept = 0;
 	virtual void SetList(const char* list, char separator, char typesep)=0;
 };
 
@@ -514,10 +549,12 @@ class Menu {
 	MenuID mid;
 public:
 	Menu() noexcept;
-	MenuID GetID() const noexcept { return mid; }
-	void CreatePopUp();
-	void Destroy();
-	void Show(Point pt, Window &w);
+	MenuID GetID() const noexcept {
+		return mid;
+	}
+	void CreatePopUp() noexcept;
+	void Destroy() noexcept;
+	void SCICALL Show(Point pt, const Window &w) noexcept;
 };
 
 /**
@@ -528,13 +565,13 @@ public:
 	virtual ~DynamicLibrary() = default;
 
 	/// @return Pointer to function "name", or NULL on failure.
-	virtual Function FindFunction(const char *name) = 0;
+	virtual Function FindFunction(const char* name) = 0;
 
 	/// @return true if the library was loaded successfully.
 	virtual bool IsValid() = 0;
 
 	/// @return An instance of a DynamicLibrary subclass with "modulePath" loaded.
-	static DynamicLibrary *Load(const char *modulePath);
+	static DynamicLibrary* Load(const char* modulePath);
 };
 
 #if defined(__clang__)
@@ -553,25 +590,27 @@ public:
  */
 class Platform {
 public:
-	Platform() = default;
+	Platform() noexcept = default;
 	Platform(const Platform &) = delete;
 	Platform(Platform &&) = delete;
 	Platform &operator=(const Platform &) = delete;
 	Platform &operator=(Platform &&) = delete;
 	~Platform() = default;
-	static ColourDesired Chrome();
-	static ColourDesired ChromeHighlight();
-	static const char *DefaultFont();
-	static int DefaultFontSize();
-	static unsigned int DoubleClickTime();
-	static void DebugDisplay(const char *s);
-	static constexpr long LongFromTwoShorts(short a,short b) noexcept {
-		return (a) | ((b) << 16);
-	}
 
-	static void DebugPrintf(const char *format, ...);
-	static bool ShowAssertionPopUps(bool assertionPopUps_);
-	static void Assert(const char *c, const char *file, int line) CLANG_ANALYZER_NORETURN;
+	static ColourDesired Chrome() noexcept;
+	static ColourDesired ChromeHighlight() noexcept;
+	static const char *DefaultFont() noexcept;
+	static int DefaultFontSize() noexcept;
+	static unsigned int DoubleClickTime() noexcept;
+
+	static void DebugDisplay(const char *s) noexcept;
+	static void DebugPrintf(const char *format, ...) noexcept
+#if defined(__GNUC__) || defined(__clang__)
+	__attribute__((format(printf, 1, 2)))
+#endif
+	;
+	static bool ShowAssertionPopUps(bool assertionPopUps_) noexcept;
+	static void Assert(const char *c, const char *file, int line) noexcept CLANG_ANALYZER_NORETURN;
 };
 
 #ifdef  NDEBUG
@@ -581,5 +620,3 @@ public:
 #endif
 
 }
-
-#endif

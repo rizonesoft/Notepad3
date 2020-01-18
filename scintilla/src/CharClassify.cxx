@@ -15,11 +15,11 @@
 
 using namespace Scintilla;
 
-CharClassify::CharClassify() : charClass{} {
+CharClassify::CharClassify() noexcept : charClass{} {
 	SetDefaultCharClasses(true);
 }
 
-void CharClassify::SetDefaultCharClasses(bool includeWordClass) {
+void CharClassify::SetDefaultCharClasses(bool includeWordClass) noexcept {
 	// Initialize all char classes to default values
 	for (int ch = 0; ch < 256; ch++) {
 		if (ch == '\r' || ch == '\n')
@@ -33,7 +33,7 @@ void CharClassify::SetDefaultCharClasses(bool includeWordClass) {
 	}
 }
 
-void CharClassify::SetCharClasses(const unsigned char *chars, cc newCharClass) {
+void CharClassify::SetCharClasses(const unsigned char *chars, cc newCharClass) noexcept {
 	// Apply the newCharClass to the specifed chars
 	if (chars) {
 		while (*chars) {
@@ -43,7 +43,7 @@ void CharClassify::SetCharClasses(const unsigned char *chars, cc newCharClass) {
 	}
 }
 
-int CharClassify::GetCharsOfClass(cc characterClass, unsigned char *buffer) const {
+int CharClassify::GetCharsOfClass(cc characterClass, unsigned char *buffer) const noexcept {
 	// Get characters belonging to the given char class; return the number
 	// of characters (if the buffer is NULL, don't write to it).
 	int count = 0;

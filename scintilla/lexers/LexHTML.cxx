@@ -861,7 +861,10 @@ class LexerHTML : public DefaultLexer {
 	std::set<std::string> nonFoldingTags;
 public:
 	explicit LexerHTML(bool isXml_, bool isPHPScript_) :
-		DefaultLexer(isXml_ ? lexicalClassesHTML : lexicalClassesXML,
+		DefaultLexer(
+			isXml_ ? "xml" : (isPHPScript_ ? "phpscript" : "hypertext"),
+			isXml_ ? SCLEX_XML : (isPHPScript_ ? SCLEX_PHPSCRIPT : SCLEX_HTML),
+			isXml_ ? lexicalClassesHTML : lexicalClassesXML,
 			isXml_ ? std::size(lexicalClassesHTML) : std::size(lexicalClassesXML)),
 		isXml(isXml_),
 		isPHPScript(isPHPScript_),
@@ -883,6 +886,9 @@ public:
 		return osHTML.DescribeProperty(name);
 	}
 	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
+	const char * SCI_METHOD PropertyGet(const char *key) override {
+		return osHTML.PropertyGet(key);
+	}
 	const char *SCI_METHOD DescribeWordListSets() override {
 		return osHTML.DescribeWordListSets();
 	}
@@ -890,13 +896,13 @@ public:
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
 	// No Fold as all folding performs in Lex.
 
-	static ILexer4 *LexerFactoryHTML() {
+	static ILexer5 *LexerFactoryHTML() {
 		return new LexerHTML(false, false);
 	}
-	static ILexer4 *LexerFactoryXML() {
+	static ILexer5 *LexerFactoryXML() {
 		return new LexerHTML(true, false);
 	}
-	static ILexer4 *LexerFactoryPHPScript() {
+	static ILexer5 *LexerFactoryPHPScript() {
 		return new LexerHTML(false, true);
 	}
 };

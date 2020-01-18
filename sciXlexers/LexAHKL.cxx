@@ -97,7 +97,7 @@ class LexerAHKL : public DefaultLexer {
 	CharacterSet EscSequence;
 
 public:
-	LexerAHKL() :	
+	LexerAHKL() : DefaultLexer("AHKL", SCLEX_AHKL, nullptr, 0),
 		//valLabel(CharacterSet::setAlphaNum, "@#$_~!^&*()+[]\';./\\<>?|{}-=\""),
 		valLabel(CharacterSet::setAlphaNum, R"(@#$_~!^&*()+[]';./\<>?|{}-=")"),
 		valHotkeyMod(CharacterSet::setDigits, "#!^+&<>*~$"),
@@ -116,13 +116,16 @@ public:
     delete this;
   }
   int SCI_METHOD Version() const override {
-    return lvRelease4;
+    return lvRelease5;
   }
   const char* SCI_METHOD PropertyNames() override {
     return osAHKL.PropertyNames();
   }
   int SCI_METHOD PropertyType(const char* name) override {
     return osAHKL.PropertyType(name);
+  }
+  const char* SCI_METHOD PropertyGet(const char* name) override {
+    return osAHKL.PropertyGet(name);
   }
   const char* SCI_METHOD DescribeProperty(const char* name) override {
     return osAHKL.DescribeProperty(name);
@@ -138,7 +141,7 @@ public:
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
 
-	static ILexer4 *LexerFactoryAHKL() {
+	static ILexer5 *LexerFactoryAHKL() {
 		return new LexerAHKL();
 	}
 };

@@ -87,7 +87,7 @@ class LexerCSV : public DefaultLexer {
 
 public:
   LexerCSV() 
-    : DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses))
+    : DefaultLexer("CSV", SCLEX_CSV, lexicalClasses, ELEMENTS(lexicalClasses))
   { }
 
   virtual ~LexerCSV() { }
@@ -97,7 +97,7 @@ public:
   }
 
   int SCI_METHOD Version() const override {
-    return lvRelease4;
+    return lvRelease5;
   }
 
   const char* SCI_METHOD PropertyNames() override {
@@ -106,6 +106,10 @@ public:
 
   int SCI_METHOD PropertyType(const char* name) override {
     return osCSV.PropertyType(name);
+  }
+
+  const char* SCI_METHOD PropertyGet(const char* name) override {
+    return osCSV.PropertyGet(name);
   }
 
   const char* SCI_METHOD DescribeProperty(const char* name) override {
@@ -129,7 +133,7 @@ public:
     return style;
   }
 
-  static ILexer4* LexerFactoryCSV() {
+  static ILexer5* LexerFactoryCSV() {
     return new LexerCSV();
   }
 

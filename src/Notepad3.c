@@ -203,6 +203,10 @@ static TBBUTTON  s_tbbMainWnd[] = {
 };
 static const int NUMTOOLBITMAPS = 29;
 
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+DWORD		kSystemLibraryLoadFlags = 0;
+#endif
+
 // ----------------------------------------------------------------------------
 
 const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
@@ -847,6 +851,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
   icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
   InitCommonControlsEx(&icex);
+
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+  // see LoadD2D() in PlatWin.cxx
+  kSystemLibraryLoadFlags = (IsWin8OrHigher() || GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetDefaultDllDirectories")) ? LOAD_LIBRARY_SEARCH_SYSTEM32 : 0;
+#endif
 
   Scintilla_RegisterClasses(hInstance);
 
@@ -2745,6 +2754,8 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
   else {
     // delegated to SCN_URIDROPPED
+    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
+    //~InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
   }
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {

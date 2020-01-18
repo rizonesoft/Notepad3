@@ -111,7 +111,7 @@ class LexerTOML : public DefaultLexer {
 
 public:
   LexerTOML() 
-    : DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses))
+    : DefaultLexer("TOML", SCLEX_TOML, lexicalClasses, ELEMENTS(lexicalClasses))
     , validKey(CharacterSet::setAlphaNum, R"(-_.)", 0x80, false)
     , validKeyWord(CharacterSet::setAlphaNum, "_+-", 0x80, false)
     , validNumberEnd(CharacterSet::setNone, " \t\n\v\f\r#,)}]", 0x80, false)
@@ -125,7 +125,7 @@ public:
   }
 
   int SCI_METHOD Version() const override {
-    return lvRelease4;
+    return lvRelease5;
   }
 
   const char* SCI_METHOD PropertyNames() override {
@@ -136,6 +136,10 @@ public:
     return osTOML.PropertyType(name);
   }
 
+  const char* SCI_METHOD PropertyGet(const char* name) override {
+    return osTOML.PropertyGet(name);
+  }
+  
   const char* SCI_METHOD DescribeProperty(const char* name) override {
     return osTOML.DescribeProperty(name);
   }
@@ -157,7 +161,7 @@ public:
     return style;
   }
 
-  static ILexer4* LexerFactoryTOML() {
+  static ILexer5* LexerFactoryTOML() {
     return new LexerTOML();
   }
 

@@ -548,6 +548,7 @@
 	<td>Dejan Budimir</td>
       </tr><tr>
 	<td>Andreas Falkenhahn</td>
+	<td>Mark Reay</td>
     </tr>
     </table>
     <p>
@@ -558,6 +559,50 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scite430.zip">Release 4.3.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 16 January 2020.
+	</li>
+	<li>
+	Lexers made available as Lexilla library.
+	TestLexers program with tests for Lexilla and lexers added in lexilla/test.
+	</li>
+	<li>
+	SCI_SETILEXER implemented to use lexers from Lexilla or other sources.
+	</li>
+	<li>
+	ILexer5 interface defined provisionally to support use of Lexilla.
+	The details of this interface may change before being stabilised in Scintilla 5.0.
+	</li>
+	<li>
+	SCI_LOADLEXERLIBRARY implemented on Cocoa.
+	</li>
+	<li>
+	Build Scintilla with SCI_EMPTYCATALOGUE to avoid making lexers available.
+	</li>
+	<li>
+	Lexer and folder added for Raku language.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1328/">Feature #1328</a>.
+	</li>
+	<li>
+	Don't clear clipboard before copying text with Qt.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2147/">Bug #2147</a>.
+	</li>
+	<li>
+	On Win32, remove support for CF_TEXT clipboard format as Windows will convert to
+	CF_UNICODETEXT.
+	</li>
+	<li>
+	Improve IME behaviour on GTK.
+	Set candidate position for windowed IME.
+	Improve location of candidate window.
+	Prevent movement of candidate window while typing.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2135/">Bug #2135</a>.
+	</li>
     </ul>
     <h3>
        <a href="https://www.scintilla.org/scite423.zip">Release 4.2.3</a>

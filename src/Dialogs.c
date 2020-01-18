@@ -1756,10 +1756,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
         CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, SetBtn(Settings.SaveFindReplace));
 
-        //if (!Settings.SaveRecentFiles) {
-        //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
-        //  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
-        //}
+        //~if (!Settings.SaveRecentFiles) {
+        //~  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
+        //~  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
+        //~}
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1788,9 +1788,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         RemoveProp(hwnd,L"it");
         FreeMem(lpit);
 
+        Settings.SaveRecentFiles = IsButtonChecked(hwnd, IDC_SAVEMRU);
         Settings.SaveFindReplace = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
         Settings.PreserveCaretPos = IsButtonChecked(hwnd, IDC_PRESERVECARET);
-        Settings.SaveRecentFiles  = IsButtonChecked(hwnd, IDC_SAVEMRU);
 
         ResizeDlg_Destroy(hwnd,&Settings.FileMRUDlgSizeX,&Settings.FileMRUDlgSizeY);
       }
@@ -1812,8 +1812,8 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_REMOVE,dx,dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FILEMRU,dx,dy,SWP_NOMOVE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_SAVEMRU,0,dy,SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PRESERVECARET, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REMEMBERSEARCHPATTERN, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_PRESERVECARET,0,dy,SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_REMEMBERSEARCHPATTERN,0,dy, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
         ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_FILEMRU),0,LVSCW_AUTOSIZE_USEHEADER);
       }
