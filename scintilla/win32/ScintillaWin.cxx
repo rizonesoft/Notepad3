@@ -1987,7 +1987,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 #ifdef SCI_LEXER
 		case SCI_LOADLEXERLIBRARY:
-			LexerManager::GetInstance()->Load(ConstCharPtrFromSPtr(lParam));
+			ExternalLexerLoad(ConstCharPtrFromSPtr(lParam));
 			break;
 #endif
 

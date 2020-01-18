@@ -242,7 +242,7 @@ class ScintillaData:
         self.lexerProperties = list(lexerProperties)
         SortListInsensitive(self.lexerProperties)
 
-        self.lexersXcode = FindLexersInXcode(scintillaRoot + "cocoa/ScintillaFramework/ScintillaFramework.xcodeproj/project.pbxproj")
+        #self.lexersXcode = FindLexersInXcode(scintillaRoot + "cocoa/ScintillaFramework/ScintillaFramework.xcodeproj/project.pbxproj")
         self.credits = FindCredits(scintillaRoot + "doc/ScintillaHistory.html")
 
 def printWrapped(text):

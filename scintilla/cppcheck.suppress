@@ -1,6 +1,10 @@
 // File to suppress cppcheck warnings for files that will not be fixed.
 // Does not suppress warnings where an additional occurrence of the warning may be of interest.
 
+// unreadVariable has expanded in cppcheck 1.90 to match assigning a struct then reading
+// only from members which is a common idiom
+unreadVariable
+
 // Coding style is to use assignments in constructor when there are many
 // members to initialize or the initialization is complex or has comments.
 useInitializationList
@@ -10,14 +14,15 @@ useInitializationList
 // produces same result on empty collections
 useStlAlgorithm
 
+// Currently shift by word size is implementation defined but is OK on all used compilers
+// In C++20, it will be well-defined.
+shiftTooManyBitsSigned
+
 // The two sections are for different purposes: C1 control set and UTF-8 invalid bytes
 duplicateCondition:scintilla/src/Editor.cxx
 
 // Some non-explicit constructors are used for conversions or are private to lexers
 noExplicitConstructor
-
-// Document is checking for a change by called methods and cppcheck isn't considering escape
-knownConditionTrueFalse:scintilla/src/Document.cxx
 
 // MarginView access to all bits is safe and is better defined in later versions of C++
 shiftTooManyBitsSigned:scintilla/src/MarginView.cxx
@@ -41,6 +46,7 @@ constParameter:scintilla/lexers/LexAbaqus.cxx
 constParameter:scintilla/lexers/LexAda.cxx
 constParameter:scintilla/lexers/LexAsn1.cxx
 compareBoolExpressionWithInt:scintilla/lexers/LexAU3.cxx
+knownConditionTrueFalse:scintilla/lexers/LexAU3.cxx
 shadowVariable:scintilla/lexers/LexAU3.cxx
 constParameter:scintilla/lexers/LexBaan.cxx
 unreadVariable:scintilla/lexers/LexBaan.cxx
@@ -65,7 +71,6 @@ constParameter:scintilla/lexers/LexFortran.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 constParameter:scintilla/lexers/LexHaskell.cxx
 constParameter:scintilla/lexers/LexHex.cxx
-missingOverride:scintilla/lexers/LexHollywood.cxx
 constParameter:scintilla/lexers/LexHTML.cxx
 variableScope:scintilla/lexers/LexInno.cxx
 constParameter:scintilla/lexers/LexJSON.cxx
@@ -94,6 +99,8 @@ constParameter:scintilla/lexers/LexPython.cxx
 shadowVariable:scintilla/lexers/LexPowerPro.cxx
 constParameter:scintilla/lexers/LexProgress.cxx
 variableScope:scintilla/lexers/LexProgress.cxx
+constParameter:scintilla/lexers/LexRaku.cxx
+variableScope:scintilla/lexers/LexRaku.cxx
 redundantInitialization:scintilla/lexers/LexRegistry.cxx
 constParameter:scintilla/lexers/LexRuby.cxx
 variableScope:scintilla/lexers/LexRuby.cxx
@@ -105,6 +112,7 @@ constParameter:scintilla/lexers/LexSpice.cxx
 unreadVariable:scintilla/lexers/LexSpice.cxx
 constParameter:scintilla/lexers/LexSTTXT.cxx
 constParameter:scintilla/lexers/LexTACL.cxx
+knownConditionTrueFalse:scintilla/lexers/LexTACL.cxx
 clarifyCalculation:scintilla/lexers/LexTADS3.cxx
 constParameter:scintilla/lexers/LexTADS3.cxx
 constParameter:scintilla/lexers/LexTAL.cxx
@@ -189,9 +197,6 @@ constVariable:scintilla/lexers/LexVHDL.cxx
 
 // bp.itBracket not actually redundant as needed by return statements
 redundantAssignment:scintilla/lexers/LexCPP.cxx
-
-// Appears spurious for allowTermination
-knownConditionTrueFalse:scintilla/lexers/LexHTML.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp

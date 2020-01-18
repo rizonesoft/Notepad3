@@ -25,6 +25,9 @@
     <Filter Include="scioniguruma">
       <UniqueIdentifier>{72633fd7-00ab-45b0-b160-40f5ded15bd4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lexilla">
+      <UniqueIdentifier>{326090d3-060e-4529-9b3e-4be7793fb194}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexers\LexAsm.cxx">
@@ -58,9 +61,6 @@
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="lexers\LexDiff.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
-    <ClCompile Include="lexers\LexErrorList.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="lexers\LexHTML.cxx">
@@ -345,6 +345,9 @@
     <ClCompile Include="..\sciXlexers\LexCSV.cxx">
       <Filter>sciXlexers</Filter>
     </ClCompile>
+    <ClCompile Include="lexilla\src\Lexilla.cxx">
+      <Filter>lexilla</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -559,6 +562,9 @@
     </ClInclude>
     <ClInclude Include="..\sciXlexers\CharSetX.h">
       <Filter>sciXlexers</Filter>
+    </ClInclude>
+    <ClInclude Include="lexilla\src\Lexilla.h">
+      <Filter>lexilla</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
