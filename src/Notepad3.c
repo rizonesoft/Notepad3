@@ -7670,19 +7670,32 @@ void SetFindPatternMB(LPCSTR chFindPattern)
 //
 //  GetFindPattern()
 // 
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount, bool bTransformBackslashes)
 {
-  StringCchCopyW(wchFindPattern, bufferSize, sCurrentFindPattern);
+  if (bTransformBackslashes) {
+    EscCtrlCharsW(wchFindPattern, bufferCount, sCurrentFindPattern);
+  }
+  else {
+    StringCchCopyW(wchFindPattern, bufferCount, sCurrentFindPattern);
+  }
 }
 
 //=============================================================================
 //
 //  GetFindPatternMB()
 // 
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount, bool bTransformBackslashes)
 {
-  WideCharToMultiByteEx(Encoding_SciCP, 0, sCurrentFindPattern, -1, 
-                        chFindPattern, bufferSize, NULL, NULL);
+  if (bTransformBackslashes) {
+    WCHAR wchFindPattern[FNDRPL_BUFFER] = { L'\0' };
+    GetFindPattern(wchFindPattern, FNDRPL_BUFFER, bTransformBackslashes);
+    WideCharToMultiByte(Encoding_SciCP, 0, wchFindPattern, -1,
+      chFindPattern, (int)bufferCount, NULL, NULL);
+  }
+  else {
+    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1,
+      chFindPattern, (int)bufferCount, NULL, NULL);
+  }
 }
 
 

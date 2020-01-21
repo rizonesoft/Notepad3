@@ -1668,7 +1668,7 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 //
 UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
 {
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
   WideCharToMultiByteEx(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
@@ -1676,16 +1676,16 @@ UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount
 }
 
 UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
-{
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+{ 
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, COUNTOF(wsz));
   return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, COUNTOF(wsz));
   return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
@@ -1838,6 +1838,132 @@ unsigned int UnSlashLowOctal(char* s) {
   }
   *o = '\0';
   return (unsigned int)(o - sStart);
+}
+
+/*
+ * transform control chas into backslash sequence 
+ */
+bool EscCtrlCharsA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
+{
+  if (!pchOutput || cchOutLen < 1 || !pchInput) { return false; }
+
+  int i = 0;
+  int k = 0;
+  bool escChar = false;
+  while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
+  {
+    escChar = false;
+    switch (pchInput[k]) {
+    case '\n':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'n';
+      escChar = true;
+      break;
+    case '\r':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'r';
+      escChar = true;
+      break;
+    case '\t':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 't';
+      escChar = true;
+      break;
+    case '\f':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'f';
+      escChar = true;
+      break;
+    case '\v':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'v';
+      escChar = true;
+      break;
+    case '\a':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'a';
+      escChar = true;
+      break;
+    case '\b':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'b';
+      escChar = true;
+      break;
+    case '\x1B':
+      pchOutput[i++] = '\\';
+      pchOutput[i++] = 'e';
+      escChar = true;
+      break;
+    default:
+      pchOutput[i++] = pchInput[k];
+      break;
+    }
+    ++k;
+  }
+  pchOutput[i] = '\0';
+  return escChar;
+}
+
+
+bool EscCtrlCharsW(LPWSTR pszOutput, size_t cchOutLen, LPCWSTR pszInput)
+{
+  if (!pszOutput || cchOutLen < 1 || !pszInput) { return false; }
+
+  int i = 0;
+  int k = 0;
+  bool escChar = false;
+  while ((pszInput[k] != L'\0') && (i < (cchOutLen - 2)))
+  {
+    escChar = false;
+    switch (pszInput[k]) {
+    case L'\n':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'n';
+      escChar = true;
+      break;
+    case L'\r':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'r';
+      escChar = true;
+      break;
+    case L'\t':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L't';
+      escChar = true;
+      break;
+    case L'\f':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'f';
+      escChar = true;
+      break;
+    case L'\v':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'v';
+      escChar = true;
+      break;
+    case L'\a':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'a';
+      escChar = true;
+      break;
+    case L'\b':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'b';
+      escChar = true;
+      break;
+    case L'\x1B':
+      pszOutput[i++] = L'\\';
+      pszOutput[i++] = L'e';
+      escChar = true;
+      break;
+    default:
+      pszOutput[i++] = pszInput[k];
+      break;
+    }
+    ++k;
+  }
+  pszOutput[i] = L'\0';
+  return escChar;
 }
 
 
