@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.118.(build_#) (2020-01-18)
+Current BETA Version 5.20.121.(build_#) (2020-01-21)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Find/Replace dialog: in case of "transform backslashes" do Esc control seqs.
 - Remove "extra" drag n' drop handler.
 - Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=70".
 - UCHARDET: Confidence calculation for Single Byte Character Set (SBCS).
@@ -85,7 +86,7 @@ CHANGES:
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
-- Update Oniguruma Regex (ONI) engine (version 6.9.4 R3).
+- Update Oniguruma Regex (ONI) engine (version 6.9.4).
 - Update Scintilla Library (SCI) version 4.3.0 (Released 16 January 2020).
 
 -----------------------------------------------------
@@ -143,10 +144,11 @@ REMOVED:
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
+- Korean (ko-KR) (to resume).
 - Portuguese Brazilian (pt-BR) (in progress).
-- Slovak (sk-SK) (in progress).
+- Slovak (sk-SK) (to resume).
 - Swedish (sv-SE).
-- Turkish (tr-TR) (on hold).
+- Turkish (tr-TR) (to resume).
 
 
 =====================================================
