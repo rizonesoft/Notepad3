@@ -6025,7 +6025,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(PEFRDATA(hwnd));  }
           EditFindPrev(PEFRDATA(hwnd), sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), IsKeyDown(VK_F3));
-          s_InitialSearchStart = SciCall_GetSelectionStart();
+          s_InitialSearchStart = SciCall_GetSelectionEnd();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();
           s_InitialTopLine = -1;  // reset
@@ -6296,7 +6296,8 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   {
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) {
+      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) 
+      {
         end = min_p(start, iDocEndPos);  start = 0;
 
         iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
@@ -6325,7 +6326,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     EditSetSelectionEx(hwnd, min_p(iSelAnchor, iSelPos), end, -1, -1);
   }
   else {
-    EditSetSelectionEx(hwnd, start, end, -1, -1);
+    EditSetSelectionEx(hwnd, iPos, end, -1, -1);
   }
 
   if (start == end) {
@@ -6378,8 +6379,9 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
-      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE)) {
-        end = start;  start = iDocEndPos;
+      if (IDOK == InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE)) 
+      {
+        end = max_p(start, 0);  start = iDocEndPos;
 
         iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
 
@@ -6403,14 +6405,14 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (bExtendSelection) {
     DocPos const iSelPos = SciCall_GetCurrentPos();
     DocPos const iSelAnchor = SciCall_GetAnchor();
-    EditSetSelectionEx(hwnd, max_p(iSelPos, iSelAnchor), start, -1, -1);
+    EditSetSelectionEx(hwnd, max_p(iSelPos, iSelAnchor), iPos, -1, -1);
   }
   else {
-    EditSetSelectionEx(hwnd, end, start, -1, -1);
+    EditSetSelectionEx(hwnd, end, iPos, -1, -1);
   }
 
   if (start == end) {
-    EditShowZeroLengthCallTip(hwnd, start);
+    EditShowZeroLengthCallTip(hwnd, iPos);
   }
   return true;
 }
