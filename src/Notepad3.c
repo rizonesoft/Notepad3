@@ -5042,13 +5042,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_GetSelText(szSelection);
 
-        // Check lpszSelection and truncate newlines
-        char *lpsz = StrChrA(szSelection, '\n');
-        if (lpsz) *lpsz = '\0';
-
-        lpsz = StrChrA(szSelection, '\r');
-        if (lpsz) *lpsz = '\0';
-
         StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), szSelection);
         Settings.EFR_Data.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
         Settings.EFR_Data.bTransformBS = false;
@@ -7670,32 +7663,18 @@ void SetFindPatternMB(LPCSTR chFindPattern)
 //
 //  GetFindPattern()
 // 
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount, bool bTransformBackslashes)
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
 {
-  if (bTransformBackslashes) {
-    EscCtrlCharsW(wchFindPattern, bufferCount, sCurrentFindPattern);
-  }
-  else {
-    StringCchCopyW(wchFindPattern, bufferCount, sCurrentFindPattern);
-  }
+  StringCchCopyW(wchFindPattern, bufferCount, sCurrentFindPattern);
 }
 
 //=============================================================================
 //
 //  GetFindPatternMB()
 // 
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount, bool bTransformBackslashes)
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 {
-  if (bTransformBackslashes) {
-    WCHAR wchFindPattern[FNDRPL_BUFFER] = { L'\0' };
-    GetFindPattern(wchFindPattern, FNDRPL_BUFFER, bTransformBackslashes);
-    WideCharToMultiByte(Encoding_SciCP, 0, wchFindPattern, -1,
-      chFindPattern, (int)bufferCount, NULL, NULL);
-  }
-  else {
-    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1,
-      chFindPattern, (int)bufferCount, NULL, NULL);
-  }
+    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
 }
 
 

@@ -59,7 +59,7 @@ extern "C"           THEMEFILES Theme_Files[];
 static bool const s_bIsUTF8 = true;
 static bool const s_bWriteSIG = true;     // BOM
 static bool const s_bUseMultiKey = false;
-static bool const s_bUseMultiLine = false;
+static bool const s_bUseMultiLine = true; // find/repl with line breaks
 static bool const s_bSetSpaces = false;
 
 // ----------------------------------------------------------------------------
@@ -84,6 +84,8 @@ static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 extern "C" bool LoadIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.Reset();
+  s_INI.SetSpaces(s_bSetSpaces);
+  s_INI.SetMultiLine(s_bUseMultiLine);
   SI_Error const rc = s_INI.LoadFile(lpIniFilePath);
   return SI_Success(rc);
 }
@@ -91,6 +93,7 @@ extern "C" bool LoadIniFile(LPCWSTR lpIniFilePath)
 extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.SetSpaces(s_bSetSpaces);
+  s_INI.SetMultiLine(s_bUseMultiLine);
   SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
   if (SI_Success(rc)) {
     s_INI.Reset(); // done
@@ -101,6 +104,8 @@ extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
 extern "C" void ReleaseIniFile()
 {
   s_INI.Reset();
+  s_INI.SetSpaces(s_bSetSpaces);
+  s_INI.SetMultiLine(s_bUseMultiLine);
 }
 
 

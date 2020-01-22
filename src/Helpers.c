@@ -1671,21 +1671,21 @@ UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
+  WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
 UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
 { 
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, COUNTOF(wsz));
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
   return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
   WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, COUNTOF(wsz));
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
   return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
@@ -1728,6 +1728,99 @@ UINT CharSetFromCodePage(const UINT uCodePage) {
 }
 
 
+/**
+ * Convert C style \0oo into their indicated characters.
+ * This is used to get control characters into the regular expresion engine
+ * w/o interfering with group referencing ('\0').
+ */
+unsigned int UnSlashLowOctal(char* s) {
+  char* sStart = s;
+  char* o = s;
+  while (*s) {
+    if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
+      *o = *s; ++o; ++s; *o = *s;
+    }
+    else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
+      *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
+      s += 3;
+    }
+    else {
+      *o = *s;
+    }
+    ++o;
+    if (*s)
+      ++s;
+  }
+  *o = '\0';
+  return (unsigned int)(o - sStart);
+}
+
+
+/*
+ * transform control chars into backslash sequence
+ */
+bool Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
+{
+  if (!pchOutput || cchOutLen < 1 || !pchInput) { return false; }
+
+  int i = 0;
+  int k = 0;
+  bool escChar = false;
+  while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
+  {
+    escChar = false;
+    switch (pchInput[k]) {
+      case '\\':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = '\\';
+        escChar = true;
+        break;
+      case '\n':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'n';
+        escChar = true;
+        break;
+      case '\r':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'r';
+        escChar = true;
+        break;
+      case '\t':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 't';
+        escChar = true;
+        break;
+      case '\f':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'f';
+        escChar = true;
+        break;
+      case '\v':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'v';
+        escChar = true;
+        break;
+      case '\a':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'a';
+        escChar = true;
+        break;
+      case '\b':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'b';
+        escChar = true;
+        break;
+      default:
+        pchOutput[i++] = pchInput[k];
+        break;
+    }
+    ++k;
+  }
+  pchOutput[i] = '\0';
+  return escChar;
+}
+
+
 /** ******************************************************************************
  *
  *  UnSlash functions
@@ -1735,9 +1828,11 @@ UINT CharSetFromCodePage(const UINT uCodePage) {
  *
  * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh and \uhhhh into their indicated characters.
  */
-unsigned int UnSlash(char *s,UINT cpEdit) {
-  char *sStart = s;
-  char *o = s;
+unsigned int UnSlash(LPSTR pchInOut, UINT cpEdit) 
+{
+  LPSTR const sStart = pchInOut;
+  LPSTR s = pchInOut;
+  LPSTR o = pchInOut;
 
   while (*s) {
     if (*s == '\\') {
@@ -1789,7 +1884,7 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
           }
           if (val[0]) {
             val[1] = 0;
-            WideCharToMultiByteEx(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
+            WideCharToMultiByte(cpEdit,0,val,-1,ch,(int)COUNTOF(ch),NULL,NULL);
             *o = *pch++;
             while (*pch)
               *++o = *pch++;
@@ -1813,159 +1908,6 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
   *o = '\0';
   return (unsigned int)(o - sStart);
 }
-
-/**
- * Convert C style \0oo into their indicated characters.
- * This is used to get control characters into the regular expresion engine
- * w/o interfering with group referencing ('\0').
- */
-unsigned int UnSlashLowOctal(char* s) {
-  char* sStart = s;
-  char* o = s;
-  while (*s) {
-    if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
-      *o = *s; ++o; ++s; *o = *s;
-    }
-    else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
-      *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
-      s += 3;
-    } else {
-      *o = *s;
-    }
-    ++o;
-    if (*s)
-      ++s;
-  }
-  *o = '\0';
-  return (unsigned int)(o - sStart);
-}
-
-/*
- * transform control chas into backslash sequence 
- */
-bool EscCtrlCharsA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
-{
-  if (!pchOutput || cchOutLen < 1 || !pchInput) { return false; }
-
-  int i = 0;
-  int k = 0;
-  bool escChar = false;
-  while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
-  {
-    escChar = false;
-    switch (pchInput[k]) {
-    case '\n':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'n';
-      escChar = true;
-      break;
-    case '\r':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'r';
-      escChar = true;
-      break;
-    case '\t':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 't';
-      escChar = true;
-      break;
-    case '\f':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'f';
-      escChar = true;
-      break;
-    case '\v':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'v';
-      escChar = true;
-      break;
-    case '\a':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'a';
-      escChar = true;
-      break;
-    case '\b':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'b';
-      escChar = true;
-      break;
-    case '\x1B':
-      pchOutput[i++] = '\\';
-      pchOutput[i++] = 'e';
-      escChar = true;
-      break;
-    default:
-      pchOutput[i++] = pchInput[k];
-      break;
-    }
-    ++k;
-  }
-  pchOutput[i] = '\0';
-  return escChar;
-}
-
-
-bool EscCtrlCharsW(LPWSTR pszOutput, size_t cchOutLen, LPCWSTR pszInput)
-{
-  if (!pszOutput || cchOutLen < 1 || !pszInput) { return false; }
-
-  int i = 0;
-  int k = 0;
-  bool escChar = false;
-  while ((pszInput[k] != L'\0') && (i < (cchOutLen - 2)))
-  {
-    escChar = false;
-    switch (pszInput[k]) {
-    case L'\n':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'n';
-      escChar = true;
-      break;
-    case L'\r':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'r';
-      escChar = true;
-      break;
-    case L'\t':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L't';
-      escChar = true;
-      break;
-    case L'\f':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'f';
-      escChar = true;
-      break;
-    case L'\v':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'v';
-      escChar = true;
-      break;
-    case L'\a':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'a';
-      escChar = true;
-      break;
-    case L'\b':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'b';
-      escChar = true;
-      break;
-    case L'\x1B':
-      pszOutput[i++] = L'\\';
-      pszOutput[i++] = L'e';
-      escChar = true;
-      break;
-    default:
-      pszOutput[i++] = pszInput[k];
-      break;
-    }
-    ++k;
-  }
-  pszOutput[i] = L'\0';
-  return escChar;
-}
-
 
 /**
  *  check, if we have regex sub-group referencing 

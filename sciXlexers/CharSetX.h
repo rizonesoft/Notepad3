@@ -31,6 +31,21 @@ constexpr bool IsADigitX(const int ch) noexcept {
   return ((ch >= '0') && (ch <= '9'));
 }
 
+constexpr bool IsADigitX(int ch, int base) noexcept {
+  if (base <= 10) {
+    return (ch >= '0') && (ch < ('0' + base));
+  }
+  return ((ch >= '0') && (ch <= '9'))
+    || ((ch >= 'A') && (ch < ('A' + base - 10)))
+    || ((ch >= 'a') && (ch < ('a' + base - 10)));
+}
+
+constexpr bool IsAHexDigit(int ch) noexcept {
+  return ((ch >= '0') && (ch <= '9'))
+      || ((ch >= 'A') && (ch <= 'F'))
+      || ((ch >= 'a') && (ch <= 'f'));
+}
+
 constexpr bool IsALetter(const int ch) noexcept {
   // 97 to 122 || 65 to 90
   return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
