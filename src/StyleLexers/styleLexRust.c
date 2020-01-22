@@ -19,8 +19,8 @@ KEYWORDLIST KeyWords_Rust = {
 "", 
 // Keywords 7
 "",
-// 0
-"", "" };
+NULL,
+};
 
 
 EDITLEXER lexRust = { 

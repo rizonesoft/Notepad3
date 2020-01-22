@@ -647,7 +647,8 @@ KEYWORDLIST KeyWords_AU3 = {
 "_worddocgetcollection _worddoclinkgetcollection _worddocopen _worddocprint _worddocpropertyget "
 "_worddocpropertyset _worddocsave _worddocsaveas _worderrorhandlerderegister _worderrorhandlerregister "
 "_worderrornotify _wordmacrorun _wordpropertyget _wordpropertyset _wordquit",
-"" };
+NULL,
+};
 
 
 EDITLEXER lexAU3 = { 

@@ -9,7 +9,8 @@ KEYWORDLIST KeyWords_VBS = {
 "mod module new next not nothing null object on option optional or preserve private property public "
 "raiseevent redim rem resume return rset select set single static stop string sub then to true type unload "
 "until variant wend while with withevents xor",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexVBS = { 

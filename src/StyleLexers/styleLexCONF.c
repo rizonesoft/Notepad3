@@ -120,7 +120,8 @@ KEYWORDLIST KeyWords_CONF = {
 "", 
 // "downgrade-1.0 followsymlinks force-response-1.0 includes indexes inetd nokeepalive none off on "
 // "standalone x-compress x-gzip",
-"", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexCONF = { 

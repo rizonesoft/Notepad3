@@ -106,9 +106,10 @@ KEYWORDLIST KeyWords_AHKL = {
 "ScrollLock Shift ShiftDown ShiftUp Space Tab Up Volume_Down Volume_Mute Volume_Up WheelDown WheelUp "
 "XButton1 XButton2",
 // User Defined 1
-"",
+NULL,
 // User Defined 2
-"" };
+NULL,
+};
 
 
 EDITLEXER lexAHKL = { 

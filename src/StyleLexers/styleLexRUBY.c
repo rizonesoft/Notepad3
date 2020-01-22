@@ -5,7 +5,8 @@
 KEYWORDLIST KeyWords_RUBY = {
 "__FILE__ __LINE__ alias and begin break case class def defined? do else elsif end ensure false for if in "
 "module next nil not or redo rescue retry return self super then true undef unless until when while yield",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 EDITLEXER lexRUBY = { 
 SCLEX_RUBY, IDS_LEX_RUBY, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; rakefile; gemspec; podspec", L"", 

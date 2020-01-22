@@ -56,7 +56,8 @@ KEYWORDLIST KeyWords_NSIS = {
 "shctx shell_context shift short show silent silentlog smooth solid strike sw_hide sw_showmaximized "
 "sw_showminimized sw_shownormal system temporary textonly timeout top trimcenter trimleft trimright true "
 "try underline uninstconfirm user utcdate win10 win7 win8 win8.1 windows winvista zlib",
-"", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexNSIS = { 

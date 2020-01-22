@@ -5,7 +5,8 @@
 KEYWORDLIST KeyWords_JSON = {
 "false null true",
 "@base @container @context @graph @id @index @language @list @reverse @set @type @value @vocab",
-"", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexJSON = { 
