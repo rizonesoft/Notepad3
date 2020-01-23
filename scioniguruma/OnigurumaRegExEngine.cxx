@@ -556,7 +556,6 @@ std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, boo
 // ----------------------------------------------------------------------------
 
 
-
 std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
 {
   std::string	tmpStr;
@@ -576,6 +575,9 @@ std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
         break;
       case 'b':
         tmpStr.push_back('\b');
+        break;
+      case '\x1B':
+        tmpStr.push_back('\e');
         break;
       case 'f':
         tmpStr.push_back('\f');
@@ -638,15 +640,16 @@ std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
                 tmpStr.push_back(*pch++);
             }
             else
-              tmpStr.push_back(ch); // unknown ctrl seq
+              tmpStr.push_back(ch); // unknown hex seq
           }
           else
-            tmpStr.push_back(ch); // unknown ctrl seq
+            tmpStr.push_back(ch); // unknown hex seq
         }
         break;
 
-      default:
-        tmpStr.push_back(ch); // unknown ctrl seq
+      default: // unknown ctrl seq
+        tmpStr.push_back('\\'); // revert
+        tmpStr.push_back(ch);
         break;
       }
     }

@@ -1761,11 +1761,12 @@ unsigned int UnSlashLowOctal(char* s) {
  */
 size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
 {
-  if (!pchOutput || cchOutLen < 1 || !pchInput) { return 0; }
+  if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
 
   size_t i = 0;
   size_t k = 0;
-  while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
+  size_t const maxcnt = cchOutLen - 2;
+  while ((pchInput[k] != '\0') && (i < maxcnt))
   {
     switch (pchInput[k]) {
       case '\\':
@@ -1800,13 +1801,21 @@ size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'b';
         break;
+      case '\x1B':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'e';
+        break;
       default:
         pchOutput[i++] = pchInput[k];
         break;
     }
     ++k;
   }
-  pchOutput[i] = '\0';
+  pchOutput[i] = pchInput[k];
+  // ensure string end
+  if (pchInput[k] != '\0') { 
+    pchOutput[++i] = '\0';
+  }
   return i;
 }
 
@@ -1827,12 +1836,12 @@ size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
   while (*s) {
     if (*s == '\\') {
       ++s;
-      if (*s == '\\')
-        *o = '\\';
-      else if (*s == 'a')
+      if (*s == 'a')
         *o = '\a';
       else if (*s == 'b')
         *o = '\b';
+      else if (*s == 'e')
+        *o = '\x1B';
       else if (*s == 'f')
         *o = '\f';
       else if (*s == 'n')
@@ -1843,6 +1852,8 @@ size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
         *o = '\t';
       else if (*s == 'v')
         *o = '\v';
+      else if (*s == '\\')
+        *o = '\\';
       else if (*s == 'x' || *s == 'u') {
         bool bShort = (*s == 'x');
         char ch[8];
