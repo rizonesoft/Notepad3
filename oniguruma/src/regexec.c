@@ -26,6 +26,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#ifndef ONIG_NO_PRINT
+#ifndef NEED_TO_INCLUDE_STDIO
+#define NEED_TO_INCLUDE_STDIO
+#endif
+#endif
+
 #include "regint.h"
 
 #define IS_MBC_WORD_ASCII_MODE(enc,s,end,mode) \
@@ -203,7 +210,7 @@ static OpInfoType OpInfo[] = {
   { OP_BEGIN_LINE,            "begin-line"},
   { OP_END_LINE,              "end-line"},
   { OP_SEMI_END_BUF,          "semi-end-buf"},
-  { OP_BEGIN_POSITION,        "begin-position"},
+  { OP_CHECK_POSITION,        "check-position"},
   { OP_BACKREF1,              "backref1"},
   { OP_BACKREF2,              "backref2"},
   { OP_BACKREF_N,             "backref-n"},
@@ -228,7 +235,8 @@ static OpInfoType OpInfo[] = {
   { OP_JUMP,                  "jump"},
   { OP_PUSH,                  "push"},
   { OP_PUSH_SUPER,            "push-super"},
-  { OP_POP_OUT,               "pop-out"},
+  { OP_POP,                   "pop"},
+  { OP_POP_TO_MARK,           "pop-to-mark"},
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
   { OP_PUSH_OR_JUMP_EXACT1,   "push-or-jump-e1"},
 #endif
@@ -243,15 +251,11 @@ static OpInfoType OpInfo[] = {
 #ifdef USE_CALL
   { OP_EMPTY_CHECK_END_MEMST_PUSH,"empty-check-end-memst-push"},
 #endif
-  { OP_PREC_READ_START,       "push-pos"},
-  { OP_PREC_READ_END,         "pop-pos"},
-  { OP_PREC_READ_NOT_START,   "prec-read-not-start"},
-  { OP_PREC_READ_NOT_END,     "prec-read-not-end"},
-  { OP_ATOMIC_START,          "atomic-start"},
-  { OP_ATOMIC_END,            "atomic-end"},
-  { OP_LOOK_BEHIND,           "look-behind"},
-  { OP_LOOK_BEHIND_NOT_START, "look-behind-not-start"},
-  { OP_LOOK_BEHIND_NOT_END,   "look-behind-not-end"},
+  { OP_MOVE,                  "move"},
+  { OP_STEP_BACK_START,       "step-back-start"},
+  { OP_STEP_BACK_NEXT,        "step-back-next"},
+  { OP_CUT_TO_MARK,           "cut-to-mark"},
+  { OP_MARK,                  "mark"},
   { OP_SAVE_VAL,              "save-val"},
   { OP_UPDATE_VAR,            "update-var"},
 #ifdef USE_CALL
@@ -529,30 +533,49 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
     fprintf(f, ":%d", mem);
     break;
 
-  case OP_PREC_READ_NOT_START:
-    addr = p->prec_read_not_start.addr;
-    fputc(':', f);
-    p_rel_addr(f, addr, p, start);
-    break;
-
-  case OP_LOOK_BEHIND:
-    len = p->look_behind.len;
-    fprintf(f, ":%d", len);
-    break;
-
-  case OP_LOOK_BEHIND_NOT_START:
-    addr = p->look_behind_not_start.addr;
-    len  = p->look_behind_not_start.len;
-    fprintf(f, ":%d:", len);
-    p_rel_addr(f, addr, p, start);
-    break;
-
 #ifdef USE_CALL
   case OP_CALL:
     addr = p->call.addr;
     fprintf(f, ":{/%d}", addr);
     break;
 #endif
+
+  case OP_MOVE:
+    fprintf(f, ":%d", p->move.n);
+    break;
+
+  case OP_STEP_BACK_START:
+    addr = p->step_back_start.addr;
+    fprintf(f, ":%d:%d:",
+            p->step_back_start.initial,
+            p->step_back_start.remaining);
+    p_rel_addr(f, addr, p, start);
+    break;
+
+  case OP_POP_TO_MARK:
+    mem = p->pop_to_mark.id;
+    fprintf(f, ":%d", mem);
+    break;
+
+  case OP_CUT_TO_MARK:
+    {
+      int restore;
+
+      mem     = p->cut_to_mark.id;
+      restore = p->cut_to_mark.restore_pos;
+      fprintf(f, ":%d:%d", mem, restore);
+    }
+    break;
+
+  case OP_MARK:
+    {
+      int save;
+
+      mem  = p->mark.id;
+      save = p->mark.save_pos;
+      fprintf(f, ":%d:%d", mem, save);
+    }
+    break;
 
   case OP_SAVE_VAL:
     {
@@ -596,6 +619,17 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       fprintf(f, ":not");
     break;
 
+  case OP_CHECK_POSITION:
+    switch (p->check_position.type) {
+    case CHECK_POSITION_SEARCH_START:
+      fprintf(f, ":search-start"); break;
+    case CHECK_POSITION_CURRENT_RIGHT_RANGE:
+      fprintf(f, ":current-right-range"); break;
+    default:
+      break;
+    };
+    break;
+
   case OP_FINISH:
   case OP_END:
   case OP_ANYCHAR:
@@ -611,17 +645,11 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_BEGIN_LINE:
   case OP_END_LINE:
   case OP_SEMI_END_BUF:
-  case OP_BEGIN_POSITION:
   case OP_BACKREF1:
   case OP_BACKREF2:
   case OP_FAIL:
-  case OP_POP_OUT:
-  case OP_PREC_READ_START:
-  case OP_PREC_READ_END:
-  case OP_PREC_READ_NOT_END:
-  case OP_ATOMIC_START:
-  case OP_ATOMIC_END:
-  case OP_LOOK_BEHIND_NOT_END:
+  case OP_POP:
+  case OP_STEP_BACK_NEXT:
 #ifdef USE_CALL
   case OP_RETURN:
 #endif
@@ -976,8 +1004,6 @@ onig_region_copy(OnigRegion* to, OnigRegion* from)
 /* used by normal-POP */
 #define STK_SUPER_ALT             STK_ALT_FLAG
 #define STK_ALT                   (0x0002 | STK_ALT_FLAG)
-#define STK_ALT_PREC_READ_NOT     (0x0004 | STK_ALT_FLAG)
-#define STK_ALT_LOOK_BEHIND_NOT   (0x0006 | STK_ALT_FLAG)
 
 /* handled by normal-POP */
 #define STK_MEM_START              0x0010
@@ -1000,13 +1026,10 @@ onig_region_copy(OnigRegion* to, OnigRegion* from)
 #endif
 #define STK_EMPTY_CHECK_END        0x5000  /* for recursive call */
 #define STK_MEM_END_MARK           0x8100
-#define STK_TO_VOID_START          0x1200  /* mark for "(?>...)" */
-/* #define STK_REPEAT                 0x0300 */
 #define STK_CALL_FRAME             0x0400
 #define STK_RETURN                 0x0500
 #define STK_SAVE_VAL               0x0600
-#define STK_PREC_READ_START        0x0700
-#define STK_PREC_READ_END          0x0800
+#define STK_MARK                   0x0704
 
 /* stack type check mask */
 #define STK_MASK_POP_USED          STK_ALT_FLAG
@@ -1580,6 +1603,16 @@ stack_double(int is_alloca, char** arg_alloc_base,
   STACK_INC;\
 } while(0)
 
+#define STACK_PUSH_WITH_ZID(stack_type,pat,s,sprev,id) do {\
+  STACK_ENSURE(1);\
+  stk->type = (stack_type);\
+  stk->zid  = (int )(id);\
+  stk->u.state.pcode     = (pat);\
+  stk->u.state.pstr      = (s);\
+  stk->u.state.pstr_prev = (sprev);\
+  STACK_INC;\
+} while(0)
+
 #define STACK_PUSH_ENSURED(stack_type,pat) do {\
   stk->type = (stack_type);\
   stk->u.state.pcode = (pat);\
@@ -1604,13 +1637,8 @@ stack_double(int is_alloca, char** arg_alloc_base,
 
 #define STACK_PUSH_ALT(pat,s,sprev)       STACK_PUSH(STK_ALT,pat,s,sprev)
 #define STACK_PUSH_SUPER_ALT(pat,s,sprev) STACK_PUSH(STK_SUPER_ALT,pat,s,sprev)
-#define STACK_PUSH_PREC_READ_START(s,sprev) \
-  STACK_PUSH(STK_PREC_READ_START,(Operation* )0,s,sprev)
-#define STACK_PUSH_ALT_PREC_READ_NOT(pat,s,sprev) \
-  STACK_PUSH(STK_ALT_PREC_READ_NOT,pat,s,sprev)
-#define STACK_PUSH_TO_VOID_START        STACK_PUSH_TYPE(STK_TO_VOID_START)
-#define STACK_PUSH_ALT_LOOK_BEHIND_NOT(pat,s,sprev) \
-  STACK_PUSH(STK_ALT_LOOK_BEHIND_NOT,pat,s,sprev)
+#define STACK_PUSH_ALT_WITH_ZID(pat,s,sprev,id) \
+  STACK_PUSH_WITH_ZID(STK_ALT,pat,s,sprev,id)
 
 #if 0
 #define STACK_PUSH_REPEAT(sid, pat) do {\
@@ -1723,6 +1751,22 @@ stack_double(int is_alloca, char** arg_alloc_base,
 #define STACK_PUSH_RETURN do {\
   STACK_ENSURE(1);\
   stk->type = STK_RETURN;\
+  STACK_INC;\
+} while(0)
+
+#define STACK_PUSH_MARK(sid) do {\
+  STACK_ENSURE(1);\
+  stk->type = STK_MARK;\
+  stk->zid  = (sid);\
+  STACK_INC;\
+} while(0)
+
+#define STACK_PUSH_MARK_WITH_POS(sid, s, sprev) do {\
+  STACK_ENSURE(1);\
+  stk->type = STK_MARK;\
+  stk->zid  = (sid);\
+  stk->u.val.v  = (UChar* )(s);\
+  stk->u.val.v2 = (sprev);\
   STACK_INC;\
 } while(0)
 
@@ -1884,6 +1928,32 @@ stack_double(int is_alloca, char** arg_alloc_base,
   }\
 } while(0)
 
+#define STACK_POP_TO_MARK(sid) do {\
+  while (1) {\
+    stk--;\
+    STACK_BASE_CHECK(stk, "STACK_POP_TO_MARK");\
+    if ((stk->type & STK_MASK_POP_HANDLED_TIL) != 0) {\
+      if (stk->type == STK_MARK) {\
+        if (stk->zid == (sid)) break;\
+      }\
+      else {\
+        if (stk->type == STK_MEM_START) {\
+          mem_start_stk[stk->zid] = stk->u.mem.prev_start;\
+          mem_end_stk[stk->zid]   = stk->u.mem.prev_end;\
+        }\
+        else if (stk->type == STK_MEM_END) {\
+          mem_start_stk[stk->zid] = stk->u.mem.prev_start;\
+          mem_end_stk[stk->zid]   = stk->u.mem.prev_end;\
+        }\
+        POP_REPEAT_INC \
+        POP_EMPTY_CHECK_START \
+        /* Don't call callout here because negation of total success by (?!..) (?<!..) */\
+      }\
+    }\
+  }\
+} while(0)
+
+
 #define POP_TIL_BODY(aname, til_type) do {\
   while (1) {\
     stk--;\
@@ -1907,51 +1977,24 @@ stack_double(int is_alloca, char** arg_alloc_base,
   }\
 } while(0)
 
-#define STACK_POP_TIL_ALT_PREC_READ_NOT  do {\
-  POP_TIL_BODY("STACK_POP_TIL_ALT_PREC_READ_NOT", STK_ALT_PREC_READ_NOT);\
-} while(0)
 
-#define STACK_POP_TIL_ALT_LOOK_BEHIND_NOT  do {\
-  POP_TIL_BODY("STACK_POP_TIL_ALT_LOOK_BEHIND_NOT", STK_ALT_LOOK_BEHIND_NOT);\
-} while(0)
-
-
-#define STACK_EXEC_TO_VOID(k) do {\
+#define STACK_TO_VOID_TO_MARK(k,sid) do {\
   k = stk;\
   while (1) {\
     k--;\
-    STACK_BASE_CHECK(k, "STACK_EXEC_TO_VOID"); \
+    STACK_BASE_CHECK(k, "STACK_TO_VOID_TO_MARK");\
     if (IS_TO_VOID_TARGET(k)) {\
-      if (k->type == STK_TO_VOID_START) {\
+      if (k->type == STK_MARK) {\
+        if (k->zid == (sid)) {\
+          k->type = STK_VOID;\
+          break;\
+        } /* don't void different id mark */ \
+      }\
+      else\
         k->type = STK_VOID;\
-        break;\
-      }\
-      k->type = STK_VOID;\
     }\
   }\
 } while(0)
-
-#define STACK_GET_PREC_READ_START(k) do {\
-  int level = 0;\
-  k = stk;\
-  while (1) {\
-    k--;\
-    STACK_BASE_CHECK(k, "STACK_GET_PREC_READ_START");\
-    if (IS_TO_VOID_TARGET(k)) {\
-      k->type = STK_VOID;\
-    }\
-    else if (k->type == STK_PREC_READ_START) {\
-      if (level == 0) {\
-        break;\
-      }\
-      level--;\
-    }\
-    else if (k->type == STK_PREC_READ_END) {\
-      level++;\
-    }\
-  }\
-} while(0)
-
 
 #define EMPTY_CHECK_START_SEARCH(sid, k) do {\
   k = stk;\
@@ -2373,27 +2416,19 @@ backref_check_at_nested_level(regex_t* reg,
 
 #ifdef ONIG_DEBUG_STATISTICS
 
-#define USE_TIMEOFDAY
-
 #ifdef USE_TIMEOFDAY
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+
 static struct timeval ts, te;
 #define GETTIME(t)        gettimeofday(&(t), (struct timezone* )0)
 #define TIMEDIFF(te,ts)   (((te).tv_usec - (ts).tv_usec) + \
                            (((te).tv_sec - (ts).tv_sec)*1000000))
 #else
-#ifdef HAVE_SYS_TIMES_H
-#include <sys/times.h>
-#endif
+
 static struct tms ts, te;
 #define GETTIME(t)         times(&(t))
 #define TIMEDIFF(te,ts)   ((te).tms_utime - (ts).tms_utime)
-#endif
+
+#endif /* USE_TIMEOFDAY */
 
 static int OpCounter[256];
 static int OpPrevCounter[256];
@@ -2605,7 +2640,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
   &&L_BEGIN_LINE,
   &&L_END_LINE,
   &&L_SEMI_END_BUF,
-  &&L_BEGIN_POSITION,
+  &&L_CHECK_POSITION,
   &&L_BACKREF1,
   &&L_BACKREF2,
   &&L_BACKREF_N,
@@ -2630,7 +2665,8 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
   &&L_JUMP,
   &&L_PUSH,
   &&L_PUSH_SUPER,
-  &&L_POP_OUT,
+  &&L_POP,
+  &&L_POP_TO_MARK,
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
   &&L_PUSH_OR_JUMP_EXACT1,
 #endif
@@ -2645,15 +2681,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #ifdef USE_CALL
   &&L_EMPTY_CHECK_END_MEMST_PUSH,
 #endif
-  &&L_PREC_READ_START,
-  &&L_PREC_READ_END,
-  &&L_PREC_READ_NOT_START,
-  &&L_PREC_READ_NOT_END,
-  &&L_ATOMIC_START,
-  &&L_ATOMIC_END,
-  &&L_LOOK_BEHIND,
-  &&L_LOOK_BEHIND_NOT_START,
-  &&L_LOOK_BEHIND_NOT_END,
+  &&L_MOVE,
+  &&L_STEP_BACK_START,
+  &&L_STEP_BACK_NEXT,
+  &&L_CUT_TO_MARK,
+  &&L_MARK,
   &&L_SAVE_VAL,
   &&L_UPDATE_VAR,
 #ifdef USE_CALL
@@ -2671,7 +2703,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
   LengthType tlen, tlen2;
   MemNumType mem;
   RelAddrType addr;
-  UChar *s, *q, *ps, *sbegin;
+  UChar *s, *ps, *sbegin;
   UChar *right_range;
   int is_alloca;
   char *alloc_base;
@@ -3404,10 +3436,17 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #endif
       goto fail;
 
-    CASE_OP(BEGIN_POSITION)
-      if (s != msa->start)
-        goto fail;
-
+    CASE_OP(CHECK_POSITION)
+      switch (p->check_position.type) {
+      case CHECK_POSITION_SEARCH_START:
+        if (s != msa->start) goto fail;
+        break;
+      case CHECK_POSITION_CURRENT_RIGHT_RANGE:
+        if (s != right_range) goto fail;
+        break;
+      default:
+        break;
+      }
       INC_OP;
       JUMP_OUT;
 
@@ -3753,10 +3792,15 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       INC_OP;
       JUMP_OUT;
 
-    CASE_OP(POP_OUT)
+    CASE_OP(POP)
       STACK_POP_ONE;
       /* for stop backtrack */
       /* CHECK_RETRY_LIMIT_IN_MATCH; */
+      INC_OP;
+      JUMP_OUT;
+
+    CASE_OP(POP_TO_MARK)
+      STACK_POP_TO_MARK(p->pop_to_mark.id);
       INC_OP;
       JUMP_OUT;
 
@@ -3854,70 +3898,6 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       }
       CHECK_INTERRUPT_JUMP_OUT;
 
-    CASE_OP(PREC_READ_START)
-      STACK_PUSH_PREC_READ_START(s, sprev);
-      INC_OP;
-      JUMP_OUT;
-
-    CASE_OP(PREC_READ_END)
-      STACK_GET_PREC_READ_START(stkp);
-      s     = stkp->u.state.pstr;
-      sprev = stkp->u.state.pstr_prev;
-      STACK_PUSH(STK_PREC_READ_END,0,0,0);
-      INC_OP;
-      JUMP_OUT;
-
-    CASE_OP(PREC_READ_NOT_START)
-      addr = p->prec_read_not_start.addr;
-      STACK_PUSH_ALT_PREC_READ_NOT(p + addr, s, sprev);
-      INC_OP;
-      JUMP_OUT;
-
-    CASE_OP(PREC_READ_NOT_END)
-      STACK_POP_TIL_ALT_PREC_READ_NOT;
-      goto fail;
-
-    CASE_OP(ATOMIC_START)
-      STACK_PUSH_TO_VOID_START;
-      INC_OP;
-      JUMP_OUT;
-
-    CASE_OP(ATOMIC_END)
-      STACK_EXEC_TO_VOID(stkp);
-      INC_OP;
-      JUMP_OUT;
-
-    CASE_OP(LOOK_BEHIND)
-      tlen = p->look_behind.len;
-      s = (UChar* )ONIGENC_STEP_BACK(encode, str, s, (int )tlen);
-      if (IS_NULL(s)) goto fail;
-      sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
-      INC_OP;
-      JUMP_OUT;
-
-    CASE_OP(LOOK_BEHIND_NOT_START)
-      addr = p->look_behind_not_start.addr;
-      tlen = p->look_behind_not_start.len;
-      q = (UChar* )ONIGENC_STEP_BACK(encode, str, s, (int )tlen);
-      if (IS_NULL(q)) {
-        /* too short case -> success. ex. /(?<!XXX)a/.match("a")
-           If you want to change to fail, replace following line. */
-        p += addr;
-        /* goto fail; */
-      }
-      else {
-        STACK_PUSH_ALT_LOOK_BEHIND_NOT(p + addr, s, sprev);
-        s = q;
-        sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
-        INC_OP;
-      }
-      JUMP_OUT;
-
-    CASE_OP(LOOK_BEHIND_NOT_END)
-      STACK_POP_TIL_ALT_LOOK_BEHIND_NOT;
-      INC_OP;
-      goto fail;
-
 #ifdef USE_CALL
     CASE_OP(CALL)
       addr = p->call.addr;
@@ -3930,6 +3910,72 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       STACK_PUSH_RETURN;
       JUMP_OUT;
 #endif
+
+    CASE_OP(MOVE)
+      if (p->move.n < 0) {
+        s = (UChar* )ONIGENC_STEP_BACK(encode, str, s, -p->move.n);
+        if (IS_NULL(s)) goto fail;
+      }
+      else {
+        int len;
+
+        for (tlen = 0; tlen < p->move.n; tlen++) {
+          len = enclen(encode, s);
+          if (s + len > end) goto fail;
+          sprev = s;
+          s += len;
+        }
+      }
+      sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
+      INC_OP;
+      JUMP_OUT;
+
+    CASE_OP(STEP_BACK_START)
+      tlen = p->step_back_start.initial;
+      if (tlen != 0) {
+        s = (UChar* )ONIGENC_STEP_BACK(encode, str, s, (int )tlen);
+        if (IS_NULL(s)) goto fail;
+        sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
+      }
+      if (p->step_back_start.remaining != 0) {
+        STACK_PUSH_ALT_WITH_ZID(p + 1, s, sprev, p->step_back_start.remaining);
+        p += p->step_back_start.addr;
+      }
+      else
+        INC_OP;
+      JUMP_OUT;
+
+    CASE_OP(STEP_BACK_NEXT)
+      tlen = (LengthType )stk->zid; /* remaining count */
+      if (tlen != INFINITE_LEN) tlen--;
+      s = (UChar* )ONIGENC_STEP_BACK(encode, str, s, 1);
+      if (IS_NULL(s)) goto fail;
+      sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
+      if (tlen != 0) {
+        STACK_PUSH_ALT_WITH_ZID(p, s, sprev, (int )tlen);
+      }
+      INC_OP;
+      JUMP_OUT;
+
+    CASE_OP(CUT_TO_MARK)
+      mem  = p->cut_to_mark.id; /* mem: mark id */
+      STACK_TO_VOID_TO_MARK(stkp, mem);
+      if (p->cut_to_mark.restore_pos != 0) {
+        s     = stkp->u.val.v;
+        sprev = stkp->u.val.v2;
+      }
+      INC_OP;
+      JUMP_OUT;
+
+    CASE_OP(MARK)
+      mem  = p->mark.id; /* mem: mark id */
+      if (p->mark.save_pos != 0)
+        STACK_PUSH_MARK_WITH_POS(mem, s, sprev);
+      else
+        STACK_PUSH_MARK(mem);
+
+      INC_OP;
+      JUMP_OUT;
 
     CASE_OP(SAVE_VAL)
       {
@@ -3960,13 +4006,13 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         enum SaveType save_type;
 
         type = p->update_var.type;
-        mem  = p->update_var.id; /* mem: save id */
 
         switch ((enum UpdateVarType )type) {
         case UPDATE_VAR_KEEP_FROM_STACK_LAST:
           STACK_GET_SAVE_VAL_TYPE_LAST(SAVE_KEEP, keep);
           break;
         case UPDATE_VAR_S_FROM_STACK:
+          mem = p->update_var.id; /* mem: save id */
           STACK_GET_SAVE_VAL_TYPE_LAST_ID_WITH_SPREV(SAVE_S, mem, s);
           break;
         case UPDATE_VAR_RIGHT_RANGE_FROM_S_STACK:
@@ -3976,7 +4022,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         case UPDATE_VAR_RIGHT_RANGE_FROM_STACK:
           save_type = SAVE_RIGHT_RANGE;
         get_save_val_type_last_id:
+          mem = p->update_var.id; /* mem: save id */
           STACK_GET_SAVE_VAL_TYPE_LAST_ID(save_type, mem, right_range);
+          break;
+        case UPDATE_VAR_RIGHT_RANGE_TO_S:
+          right_range = s;
           break;
         case UPDATE_VAR_RIGHT_RANGE_INIT:
           INIT_RIGHT_RANGE;
@@ -6238,9 +6288,7 @@ onig_builtin_cmp(OnigCalloutArgs* args, void* user_data ARG_UNUSED)
 }
 
 
-#ifndef ONIGURUMA_UNSUPPORTED_PRINT
-
-#include <stdio.h>
+#ifndef ONIG_NO_PRINT
 
 static FILE* OutFp;
 
@@ -6338,6 +6386,6 @@ onig_setup_builtin_monitors_by_ascii_encoded_name(void* fp /* FILE* */)
   return ONIG_NORMAL;
 }
 
-#endif /* ONIGURUMA_UNSUPPORTED_PRINT */
+#endif /* ONIG_NO_PRINT */
 
 #endif /* USE_CALLOUT */

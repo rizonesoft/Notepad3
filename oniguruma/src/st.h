@@ -3,19 +3,13 @@
 /* @(#) st.h 5.1 89/12/14 */
 
 #ifndef ST_INCLUDED
-
 #define ST_INCLUDED
 
-#ifndef ONIGURUMA_SYS_UEFI
-
-#ifdef _WIN32
-# include <windows.h>
-typedef ULONG_PTR st_data_t;
-#else
+#if SIZEOF_VOIDP == SIZEOF_LONG
 typedef unsigned long st_data_t;
+#elif SIZEOF_VOIDP == SIZEOF_LONG_LONG
+typedef unsigned long long st_data_t;
 #endif
-
-#endif /* ONIGURUMA_SYS_UEFI */
 
 #define ST_DATA_T_DEFINED
 
