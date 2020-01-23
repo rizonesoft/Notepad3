@@ -1759,56 +1759,46 @@ unsigned int UnSlashLowOctal(char* s) {
 /*
  * transform control chars into backslash sequence
  */
-bool Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
+size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
 {
-  if (!pchOutput || cchOutLen < 1 || !pchInput) { return false; }
+  if (!pchOutput || cchOutLen < 1 || !pchInput) { return 0; }
 
-  int i = 0;
-  int k = 0;
-  bool escChar = false;
+  size_t i = 0;
+  size_t k = 0;
   while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
   {
-    escChar = false;
     switch (pchInput[k]) {
       case '\\':
         pchOutput[i++] = '\\';
         pchOutput[i++] = '\\';
-        escChar = true;
         break;
       case '\n':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'n';
-        escChar = true;
         break;
       case '\r':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'r';
-        escChar = true;
         break;
       case '\t':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 't';
-        escChar = true;
         break;
       case '\f':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'f';
-        escChar = true;
         break;
       case '\v':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'v';
-        escChar = true;
         break;
       case '\a':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'a';
-        escChar = true;
         break;
       case '\b':
         pchOutput[i++] = '\\';
         pchOutput[i++] = 'b';
-        escChar = true;
         break;
       default:
         pchOutput[i++] = pchInput[k];
@@ -1817,7 +1807,7 @@ bool Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
     ++k;
   }
   pchOutput[i] = '\0';
-  return escChar;
+  return i;
 }
 
 
@@ -1826,18 +1816,20 @@ bool Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
  *  UnSlash functions
  *  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
  *
- * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh and \uhhhh into their indicated characters.
+ * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh, \uhhhh and \\  into their indicated characters.
  */
-unsigned int UnSlash(LPSTR pchInOut, UINT cpEdit) 
+size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
 {
-  LPSTR const sStart = pchInOut;
   LPSTR s = pchInOut;
   LPSTR o = pchInOut;
+  LPSTR const sStart = pchInOut;
 
   while (*s) {
     if (*s == '\\') {
-      s++;
-      if (*s == 'a')
+      ++s;
+      if (*s == '\\')
+        *o = '\\';
+      else if (*s == 'a')
         *o = '\a';
       else if (*s == 'b')
         *o = '\b';
@@ -1854,28 +1846,28 @@ unsigned int UnSlash(LPSTR pchInOut, UINT cpEdit)
       else if (*s == 'x' || *s == 'u') {
         bool bShort = (*s == 'x');
         char ch[8];
-        char *pch = ch;
+        char* pch = ch;
         WCHAR val[2] = L"";
         int hex;
         val[0] = 0;
-        hex = GetHexDigit(*(s+1));
+        hex = GetHexDigit(*(s + 1));
         if (hex >= 0) {
-          s++;
+          ++s;
           val[0] = (WCHAR)hex;
-          hex = GetHexDigit(*(s+1));
+          hex = GetHexDigit(*(s + 1));
           if (hex >= 0) {
-            s++;
+            ++s;
             val[0] *= 16;
             val[0] += (WCHAR)hex;
             if (!bShort) {
-              hex = GetHexDigit(*(s+1));
+              hex = GetHexDigit(*(s + 1));
               if (hex >= 0) {
-                s++;
+                ++s;
                 val[0] *= 16;
                 val[0] += (WCHAR)hex;
-                hex = GetHexDigit(*(s+1));
+                hex = GetHexDigit(*(s + 1));
                 if (hex >= 0) {
-                  s++;
+                  ++s;
                   val[0] *= 16;
                   val[0] += (WCHAR)hex;
                 }
@@ -1884,29 +1876,34 @@ unsigned int UnSlash(LPSTR pchInOut, UINT cpEdit)
           }
           if (val[0]) {
             val[1] = 0;
-            WideCharToMultiByte(cpEdit,0,val,-1,ch,(int)COUNTOF(ch),NULL,NULL);
+            WideCharToMultiByte(cpEdit, 0, val, -1, ch, (int)COUNTOF(ch), NULL, NULL);
             *o = *pch++;
-            while (*pch)
+            while (*pch) {
               *++o = *pch++;
+            }
           }
           else
-            o--;
+            --o;
         }
         else
-          o--;
+          --o;
       }
-      else
+      else {
+        *o = '\\'; // revert
+        ++o;
         *o = *s;
+      }
     }
     else
       *o = *s;
-    o++;
+
+    ++o;
     if (*s) {
-      s++;
+      ++s;
     }
   }
   *o = '\0';
-  return (unsigned int)(o - sStart);
+  return (size_t)((ptrdiff_t)(o - sStart));
 }
 
 /**
