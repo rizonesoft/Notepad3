@@ -1,4 +1,4 @@
-Oniguruma Regular Expressions Version 6.9.4    2019/10/31
+Oniguruma Regular Expressions Version 6.9.5    2020/01/23
 
 syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
@@ -279,15 +279,12 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
   (?=subexp)         look-ahead
   (?!subexp)         negative look-ahead
+
   (?<=subexp)        look-behind
   (?<!subexp)        negative look-behind
 
-                     Subexp of look-behind must be fixed-width.
-                     But top-level alternatives can be of various lengths.
-                     ex. (?<=a|bc) is OK. (?<=aaa(?:b|cd)) is not allowed.
-
-                     In negative look-behind, capturing group isn't allowed,
-                     but non-capturing group (?:) is allowed.
+                     * Cannot use Absent stopper (?~|expr) and Range clear
+                       (?~|) operators in look-behind and negative look-behind.
 
                      * In look-behind and negative look-behind, support for
                        ignore-case option is limited. Only supports conversion

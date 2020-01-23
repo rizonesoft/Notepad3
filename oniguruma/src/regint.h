@@ -74,76 +74,31 @@
 #define USE_OP_PUSH_OR_JUMP_EXACT
 #define USE_QUANT_PEEK_NEXT
 #define USE_ST_LIBRARY
+#define USE_TIMEOFDAY
 
-#define USE_WORD_BEGIN_END        /* "\<", "\>" */
+#define USE_WORD_BEGIN_END   /* "\<", "\>" */
 #define USE_CAPTURE_HISTORY
 #define USE_VARIABLE_META_CHARS
 #define USE_POSIX_API_REGION_OPTION
 #define USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
 /* #define USE_REPEAT_AND_EMPTY_CHECK_LOCAL_VAR */
 
+#define INIT_MATCH_STACK_SIZE                160
+#define DEFAULT_MATCH_STACK_LIMIT_SIZE         0 /* unlimited */
+#define DEFAULT_RETRY_LIMIT_IN_MATCH    10000000
+#define DEFAULT_PARSE_DEPTH_LIMIT           4096
+
 
 #include "regenc.h"
 
-#define INIT_MATCH_STACK_SIZE                     160
-#define DEFAULT_MATCH_STACK_LIMIT_SIZE              0 /* unlimited */
-#define DEFAULT_RETRY_LIMIT_IN_MATCH         10000000
-#define DEFAULT_PARSE_DEPTH_LIMIT                4096
-
-/* */
-/* escape other system UChar definition */
-#ifdef ONIG_ESCAPE_UCHAR_COLLISION
-#undef ONIG_ESCAPE_UCHAR_COLLISION
-#endif
-
-#define xmalloc     malloc
-#define xrealloc    realloc
-#define xcalloc     calloc
-#define xfree       free
-
-#define st_init_table                  onig_st_init_table
-#define st_init_table_with_size        onig_st_init_table_with_size
-#define st_init_numtable               onig_st_init_numtable
-#define st_init_numtable_with_size     onig_st_init_numtable_with_size
-#define st_init_strtable               onig_st_init_strtable
-#define st_init_strtable_with_size     onig_st_init_strtable_with_size
-#define st_delete                      onig_st_delete
-#define st_delete_safe                 onig_st_delete_safe
-#define st_insert                      onig_st_insert
-#define st_lookup                      onig_st_lookup
-#define st_foreach                     onig_st_foreach
-#define st_add_direct                  onig_st_add_direct
-#define st_free_table                  onig_st_free_table
-#define st_cleanup_safe                onig_st_cleanup_safe
-#define st_copy                        onig_st_copy
-#define st_nothing_key_clone           onig_st_nothing_key_clone
-#define st_nothing_key_free            onig_st_nothing_key_free
-/* */
-#define onig_st_is_member              st_is_member
-
-
-#ifndef ONIGURUMA_SYS_UEFI
-
-#define xmemset     memset
-#define xmemcpy     memcpy
-#define xmemmove    memmove
-
-#if defined(_WIN32) && !defined(__GNUC__)
-#define xalloca     _alloca
-#define xvsnprintf(buf,size,fmt,args)  _vsnprintf_s(buf,size,_TRUNCATE,fmt,args)
-#define xsnprintf   sprintf_s
-#define xstrcat(dest,src,size)   strcat_s(dest,size,src)
-#else
-#define xalloca     alloca
-#define xvsnprintf  vsnprintf
-#define xsnprintf   snprintf
-#define xstrcat(dest,src,size)   strcat(dest,src)
-#endif
-
+#ifndef ONIG_NO_STANDARD_C_HEADERS
 
 #include <stddef.h>
+#include <stdarg.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -153,9 +108,6 @@
 #include <alloca.h>
 #endif
 
-#include <string.h>
-
-#include <ctype.h>
 #ifdef HAVE_SYS_TYPES_H
 #ifndef __BORLANDC__
 #include <sys/types.h>
@@ -166,32 +118,50 @@
 #include <inttypes.h>
 #endif
 
-#ifdef __BORLANDC__
+#if defined(_WIN32) || defined(__BORLANDC__)
 #include <malloc.h>
 #endif
 
-#ifdef ONIG_DEBUG
+#if defined(ONIG_DEBUG) || defined(NEED_TO_INCLUDE_STDIO)
 # include <stdio.h>
 #endif
 
-#ifdef _WIN32
-#if defined(_MSC_VER) && (_MSC_VER < 1300)
-typedef int  intptr_t;
-typedef unsigned int  uintptr_t;
-#endif
-#endif
+#ifdef ONIG_DEBUG_STATISTICS
+#ifdef USE_TIMEOFDAY
 
-/* strend hash */
-typedef void hash_table_type;
-
-#ifdef _WIN32
-# include <windows.h>
-typedef ULONG_PTR hash_data_type;
-#else
-typedef unsigned long hash_data_type;
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
-#endif /* ONIGURUMA_SYS_UEFI */
+#else /* USE_TIMEOFDAY */
+
+#ifdef HAVE_SYS_TIMES_H
+#include <sys/times.h>
+#endif
+
+#endif /* USE_TIMEOFDAY */
+#endif /* ONIG_DEBUG_STATISTICS */
+
+/* I don't think these x....'s need to be included in
+   ONIG_NO_STANDARD_C_HEADERS, but they are required by Issue #170
+   and do so since there is no problem.
+ */
+#ifndef xmemset
+#define xmemset     memset
+#endif
+
+#ifndef xmemcpy
+#define xmemcpy     memcpy
+#endif
+
+#ifndef xmemmove
+#define xmemmove    memmove
+#endif
+
+#endif /* ONIG_NO_STANDARD_C_HEADERS */
 
 
 #ifdef MIN
@@ -212,6 +182,86 @@ typedef unsigned long hash_data_type;
 
 #define CHAR_MAP_SIZE       256
 #define INFINITE_LEN        ONIG_INFINITE_DISTANCE
+
+/* escape other system UChar definition */
+#ifdef ONIG_ESCAPE_UCHAR_COLLISION
+#undef ONIG_ESCAPE_UCHAR_COLLISION
+#endif
+
+#define xmalloc    malloc
+#define xrealloc   realloc
+#define xcalloc    calloc
+#define xfree      free
+
+#define st_init_table               onig_st_init_table
+#define st_init_table_with_size     onig_st_init_table_with_size
+#define st_init_numtable            onig_st_init_numtable
+#define st_init_numtable_with_size  onig_st_init_numtable_with_size
+#define st_init_strtable            onig_st_init_strtable
+#define st_init_strtable_with_size  onig_st_init_strtable_with_size
+#define st_delete                   onig_st_delete
+#define st_delete_safe              onig_st_delete_safe
+#define st_insert                   onig_st_insert
+#define st_lookup                   onig_st_lookup
+#define st_foreach                  onig_st_foreach
+#define st_add_direct               onig_st_add_direct
+#define st_free_table               onig_st_free_table
+#define st_cleanup_safe             onig_st_cleanup_safe
+#define st_copy                     onig_st_copy
+#define st_nothing_key_clone        onig_st_nothing_key_clone
+#define st_nothing_key_free         onig_st_nothing_key_free
+/* */
+#define onig_st_is_member           st_is_member
+
+
+#if defined(_WIN32) && !defined(__GNUC__)
+
+#ifndef xalloca
+#define xalloca  _alloca
+#endif
+#ifndef xvsnprintf
+#define xvsnprintf(buf,size,fmt,args)  _vsnprintf_s(buf,size,_TRUNCATE,fmt,args)
+#endif
+#ifndef xsnprintf
+#define xsnprintf  sprintf_s
+#endif
+#ifndef xstrcat
+#define xstrcat(dest,src,size)  strcat_s(dest,size,src)
+#endif
+
+#else
+
+#ifndef xalloca
+#define xalloca  alloca
+#endif
+#ifndef xvsnprintf
+#define xvsnprintf  vsnprintf
+#endif
+#ifndef xsnprintf
+#define xsnprintf  snprintf
+#endif
+#ifndef xstrcat
+#define xstrcat(dest,src,size)  strcat(dest,src)
+#endif
+
+#endif /* defined(_WIN32) && !defined(__GNUC__) */
+
+
+#ifdef _WIN32
+#if defined(_MSC_VER) && (_MSC_VER < 1300)
+typedef int           intptr_t;
+typedef unsigned int  uintptr_t;
+#endif
+#endif
+
+#if SIZEOF_VOIDP == SIZEOF_LONG
+typedef unsigned long hash_data_type;
+#elif SIZEOF_VOIDP == SIZEOF_LONG_LONG
+typedef unsigned long long hash_data_type;
+#endif
+
+/* strend hash */
+typedef void* hash_table_type;
 
 
 #ifdef USE_CALLOUT
@@ -338,7 +388,7 @@ typedef uint32_t  Bits;
 typedef Bits      BitSet[BITSET_REAL_SIZE];
 typedef Bits*     BitSetRef;
 
-#define SIZE_BITSET        sizeof(BitSet)
+#define SIZE_BITSET  sizeof(BitSet)
 
 #define BITSET_CLEAR(bs) do {\
   int i;\
@@ -361,14 +411,6 @@ typedef struct _BBuf {
 } BBuf;
 
 #define BB_INIT(buf,size)    bbuf_init((BBuf* )(buf), (size))
-
-/*
-#define BB_SIZE_INC(buf,inc) do{\
-  (buf)->alloc += (inc);\
-  (buf)->p = (UChar* )xrealloc((buf)->p, (buf)->alloc);\
-  if (IS_NULL((buf)->p)) return(ONIGERR_MEMORY);\
-} while (0)
-*/
 
 #define BB_EXPAND(buf,low) do{\
   do { (buf)->alloc *= 2; } while ((buf)->alloc < (unsigned int )low);\
@@ -466,20 +508,20 @@ typedef struct _BBuf {
 
 /* operation code */
 enum OpCode {
-  OP_FINISH = 0,       /* matching process terminator (no more alternative) */
-  OP_END    = 1,       /* pattern code terminator (success end) */
-  OP_STR_1 = 2,        /* single byte, N = 1 */
-  OP_STR_2,            /* single byte, N = 2 */
-  OP_STR_3,            /* single byte, N = 3 */
-  OP_STR_4,            /* single byte, N = 4 */
-  OP_STR_5,            /* single byte, N = 5 */
-  OP_STR_N,            /* single byte */
-  OP_STR_MB2N1,        /* mb-length = 2 N = 1 */
-  OP_STR_MB2N2,        /* mb-length = 2 N = 2 */
-  OP_STR_MB2N3,        /* mb-length = 2 N = 3 */
-  OP_STR_MB2N,         /* mb-length = 2 */
-  OP_STR_MB3N,         /* mb-length = 3 */
-  OP_STR_MBN,          /* other length */
+  OP_FINISH = 0,  /* matching process terminator (no more alternative) */
+  OP_END    = 1,  /* pattern code terminator (success end) */
+  OP_STR_1 = 2,   /* single byte, N = 1 */
+  OP_STR_2,       /* single byte, N = 2 */
+  OP_STR_3,       /* single byte, N = 3 */
+  OP_STR_4,       /* single byte, N = 4 */
+  OP_STR_5,       /* single byte, N = 5 */
+  OP_STR_N,       /* single byte */
+  OP_STR_MB2N1,   /* mb-length = 2 N = 1 */
+  OP_STR_MB2N2,   /* mb-length = 2 N = 2 */
+  OP_STR_MB2N3,   /* mb-length = 2 N = 3 */
+  OP_STR_MB2N,    /* mb-length = 2 */
+  OP_STR_MB3N,    /* mb-length = 3 */
+  OP_STR_MBN,     /* other length */
   OP_CCLASS,
   OP_CCLASS_MB,
   OP_CCLASS_MIX,
@@ -506,7 +548,7 @@ enum OpCode {
   OP_BEGIN_LINE,
   OP_END_LINE,
   OP_SEMI_END_BUF,
-  OP_BEGIN_POSITION,
+  OP_CHECK_POSITION,
   OP_BACKREF1,
   OP_BACKREF2,
   OP_BACKREF_N,
@@ -531,7 +573,8 @@ enum OpCode {
   OP_JUMP,
   OP_PUSH,
   OP_PUSH_SUPER,
-  OP_POP_OUT,
+  OP_POP,
+  OP_POP_TO_MARK,
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
   OP_PUSH_OR_JUMP_EXACT1,   /* if match exact then push, else jump. */
 #endif
@@ -546,15 +589,11 @@ enum OpCode {
 #ifdef USE_CALL
   OP_EMPTY_CHECK_END_MEMST_PUSH, /* with capture status and push check-end */
 #endif
-  OP_PREC_READ_START,       /* (?=...)  start */
-  OP_PREC_READ_END,         /* (?=...)  end   */
-  OP_PREC_READ_NOT_START,   /* (?!...)  start */
-  OP_PREC_READ_NOT_END,     /* (?!...)  end   */
-  OP_ATOMIC_START,          /* (?>...)  start */
-  OP_ATOMIC_END,            /* (?>...)  end   */
-  OP_LOOK_BEHIND,           /* (?<=...) start (no needs end opcode) */
-  OP_LOOK_BEHIND_NOT_START, /* (?<!...) start */
-  OP_LOOK_BEHIND_NOT_END,   /* (?<!...) end   */
+  OP_MOVE,
+  OP_STEP_BACK_START,
+  OP_STEP_BACK_NEXT,
+  OP_CUT_TO_MARK,
+  OP_MARK,
   OP_SAVE_VAL,
   OP_UPDATE_VAR,
 #ifdef USE_CALL
@@ -578,7 +617,13 @@ enum UpdateVarType {
   UPDATE_VAR_S_FROM_STACK             = 1,
   UPDATE_VAR_RIGHT_RANGE_FROM_STACK   = 2,
   UPDATE_VAR_RIGHT_RANGE_FROM_S_STACK = 3,
-  UPDATE_VAR_RIGHT_RANGE_INIT         = 4,
+  UPDATE_VAR_RIGHT_RANGE_TO_S         = 4,
+  UPDATE_VAR_RIGHT_RANGE_INIT         = 5,
+};
+
+enum CheckPositionType {
+  CHECK_POSITION_SEARCH_START = 0,
+  CHECK_POSITION_CURRENT_RIGHT_RANGE = 1,
 };
 
 enum TextSegmentBoundaryType {
@@ -589,6 +634,7 @@ enum TextSegmentBoundaryType {
 typedef int RelAddrType;
 typedef int AbsAddrType;
 typedef int LengthType;
+typedef int RelPositionType;
 typedef int RepeatNumType;
 typedef int MemNumType;
 typedef void* PointerType;
@@ -623,7 +669,8 @@ typedef int ModeType;
 #define OPSIZE_JUMP                    1
 #define OPSIZE_PUSH                    1
 #define OPSIZE_PUSH_SUPER              1
-#define OPSIZE_POP_OUT                 1
+#define OPSIZE_POP                     1
+#define OPSIZE_POP_TO_MARK             1
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
 #define OPSIZE_PUSH_OR_JUMP_EXACT1     1
 #endif
@@ -632,10 +679,6 @@ typedef int ModeType;
 #define OPSIZE_REPEAT_INC              1
 #define OPSIZE_REPEAT_INC_NG           1
 #define OPSIZE_WORD_BOUNDARY           1
-#define OPSIZE_PREC_READ_START         1
-#define OPSIZE_PREC_READ_NOT_START     1
-#define OPSIZE_PREC_READ_END           1
-#define OPSIZE_PREC_READ_NOT_END       1
 #define OPSIZE_BACKREF                 1
 #define OPSIZE_FAIL                    1
 #define OPSIZE_MEM_START               1
@@ -644,15 +687,16 @@ typedef int ModeType;
 #define OPSIZE_MEM_END_PUSH_REC        1
 #define OPSIZE_MEM_END                 1
 #define OPSIZE_MEM_END_REC             1
-#define OPSIZE_ATOMIC_START            1
-#define OPSIZE_ATOMIC_END              1
 #define OPSIZE_EMPTY_CHECK_START       1
 #define OPSIZE_EMPTY_CHECK_END         1
-#define OPSIZE_LOOK_BEHIND             1
-#define OPSIZE_LOOK_BEHIND_NOT_START   1
-#define OPSIZE_LOOK_BEHIND_NOT_END     1
+#define OPSIZE_CHECK_POSITION          1
 #define OPSIZE_CALL                    1
 #define OPSIZE_RETURN                  1
+#define OPSIZE_MOVE                    1
+#define OPSIZE_STEP_BACK_START         1
+#define OPSIZE_STEP_BACK_NEXT          1
+#define OPSIZE_CUT_TO_MARK             1
+#define OPSIZE_MARK                    1
 #define OPSIZE_SAVE_VAL                1
 #define OPSIZE_UPDATE_VAR              1
 
@@ -754,6 +798,9 @@ typedef struct {
       int not;
     } text_segment_boundary;
     struct {
+      enum CheckPositionType type;
+    } check_position;
+    struct {
       union {
         MemNumType  n1; /* num == 1 */
         MemNumType* ns; /* num >  1 */
@@ -785,6 +832,9 @@ typedef struct {
       UChar c;
     } push_if_peek_next;
     struct {
+      MemNumType id;
+    } pop_to_mark;
+    struct {
       MemNumType  id;
       RelAddrType addr;
     } repeat; /* REPEAT, REPEAT_NG */
@@ -808,8 +858,21 @@ typedef struct {
       RelAddrType addr;
     } look_behind_not_start;
     struct {
-      AbsAddrType addr;
-    } call;
+      RelPositionType n; /* char relative position */
+    } move;
+    struct {
+      LengthType initial;   /* char length */
+      LengthType remaining; /* char length */
+      RelAddrType addr;
+    } step_back_start;
+    struct {
+      MemNumType id;
+      int restore_pos;  /* flag: restore current string position */
+    } cut_to_mark;
+    struct {
+      MemNumType id;
+      int save_pos;  /* flag: save current string position */
+    } mark;
     struct {
       SaveType   type;
       MemNumType id;
@@ -818,6 +881,9 @@ typedef struct {
       UpdateVarType type;
       MemNumType id;
     } update_var;
+    struct {
+      AbsAddrType addr;
+    } call;
 #ifdef USE_CALLOUT
     struct {
       MemNumType num;
@@ -903,6 +969,17 @@ struct re_pattern_buffer {
 
 
 extern void onig_add_end_call(void (*func)(void));
+extern void onig_warning(const char* s);
+extern UChar* onig_error_code_to_format P_((int code));
+extern void ONIG_VARIADIC_FUNC_ATTR onig_snprintf_with_pattern PV_((UChar buf[], int bufsize, OnigEncoding enc, UChar* pat, UChar* pat_end, const UChar *fmt, ...));
+extern int onig_compile P_((regex_t* reg, const UChar* pattern, const UChar* pattern_end, OnigErrorInfo* einfo));
+extern int onig_is_code_in_cc_len P_((int enclen, OnigCodePoint code, void* /* CClassNode* */ cc));
+extern RegexExt* onig_get_regex_ext(regex_t* reg);
+extern int onig_ext_set_pattern(regex_t* reg, const UChar* pattern, const UChar* pattern_end);
+extern int onig_positive_int_multiply(int x, int y);
+extern hash_table_type onig_st_init_strend_table_with_size P_((int size));
+extern int onig_st_lookup_strend P_((hash_table_type table, const UChar* str_key, const UChar* end_key, hash_data_type *value));
+extern int onig_st_insert_strend P_((hash_table_type table, const UChar* str_key, const UChar* end_key, hash_data_type value));
 
 #ifdef ONIG_DEBUG
 
@@ -914,16 +991,8 @@ extern void onig_print_compiled_byte_code_list(FILE* f, regex_t* reg);
 extern void onig_statistics_init P_((void));
 extern int  onig_print_statistics P_((FILE* f));
 #endif
-#endif
 
-extern void   onig_warning(const char* s);
-extern UChar* onig_error_code_to_format P_((int code));
-extern void   onig_snprintf_with_pattern PV_((UChar buf[], int bufsize, OnigEncoding enc, UChar* pat, UChar* pat_end, const UChar *fmt, ...));
-extern int    onig_compile P_((regex_t* reg, const UChar* pattern, const UChar* pattern_end, OnigErrorInfo* einfo));
-extern int    onig_is_code_in_cc_len P_((int enclen, OnigCodePoint code, void* /* CClassNode* */ cc));
-extern RegexExt* onig_get_regex_ext(regex_t* reg);
-extern int    onig_ext_set_pattern(regex_t* reg, const UChar* pattern, const UChar* pattern_end);
-extern int    onig_positive_int_multiply(int x, int y);
+#endif /* ONIG_DEBUG */
 
 #ifdef USE_CALLOUT
 
@@ -1001,10 +1070,6 @@ extern OnigCalloutFunc onig_get_callout_start_func(regex_t* reg, int callout_num
 
 #endif /* USE_CALLOUT */
 
-
-extern hash_table_type* onig_st_init_strend_table_with_size P_((int size));
-extern int onig_st_lookup_strend P_((hash_table_type* table, const UChar* str_key, const UChar* end_key, hash_data_type *value));
-extern int onig_st_insert_strend P_((hash_table_type* table, const UChar* str_key, const UChar* end_key, hash_data_type value));
 
 typedef int (*ONIGENC_INIT_PROPERTY_LIST_FUNC_TYPE)(void);
 

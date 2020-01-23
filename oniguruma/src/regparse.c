@@ -28,12 +28,14 @@
  * SUCH DAMAGE.
  */
 
+#ifdef DEBUG_NODE_FREE
+#ifndef NEED_TO_INCLUDE_STDIO
+#define NEED_TO_INCLUDE_STDIO
+#endif
+#endif
+
 #include "regparse.h"
 #include "st.h"
-
-#ifdef DEBUG_NODE_FREE
-#include <stdio.h>
-#endif
 
 #define INIT_TAG_NAMES_ALLOC_NUM   5
 
@@ -95,6 +97,7 @@ OnigSyntaxType OnigSyntaxOniguruma = {
   , ( SYN_GNU_REGEX_BV |
       ONIG_SYN_ALLOW_INTERVAL_LOW_ABBREV |
       ONIG_SYN_DIFFERENT_LEN_ALT_LOOK_BEHIND |
+      ONIG_SYN_VARIABLE_LEN_LOOK_BEHIND |
       ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP |
       ONIG_SYN_ALLOW_MULTIPLEX_DEFINITION_NAME |
       ONIG_SYN_FIXED_INTERVAL_IS_GREEDY_ONLY |
@@ -389,16 +392,6 @@ onig_strcpy(UChar* dest, const UChar* src, const UChar* end)
   }
 }
 
-static int
-save_entry(ScanEnv* env, enum SaveType type, int* id)
-{
-  int nid = env->save_num;
-
-  env->save_num++;
-  *id = nid;
-  return 0;
-}
-
 /* scan pattern methods */
 #define PEND_VALUE   0
 
@@ -499,7 +492,7 @@ str_end_hash(st_str_end_key* x)
   return (int) (val + (val >> 5));
 }
 
-extern hash_table_type*
+extern hash_table_type
 onig_st_init_strend_table_with_size(int size)
 {
   static struct st_hash_type hashType = {
@@ -507,12 +500,11 @@ onig_st_init_strend_table_with_size(int size)
     str_end_hash,
   };
 
-  return (hash_table_type* )
-           onig_st_init_table_with_size(&hashType, size);
+  return (hash_table_type )onig_st_init_table_with_size(&hashType, size);
 }
 
 extern int
-onig_st_lookup_strend(hash_table_type* table, const UChar* str_key,
+onig_st_lookup_strend(hash_table_type table, const UChar* str_key,
                       const UChar* end_key, hash_data_type *value)
 {
   st_str_end_key key;
@@ -524,7 +516,7 @@ onig_st_lookup_strend(hash_table_type* table, const UChar* str_key,
 }
 
 extern int
-onig_st_insert_strend(hash_table_type* table, const UChar* str_key,
+onig_st_insert_strend(hash_table_type table, const UChar* str_key,
                       const UChar* end_key, hash_data_type value)
 {
   st_str_end_key* key;
@@ -590,7 +582,7 @@ callout_name_table_hash(st_callout_name_key* x)
   return (int )(val + (val >> 5) + ((intptr_t )x->enc & 0xffff) + x->type);
 }
 
-extern hash_table_type*
+extern hash_table_type
 onig_st_init_callout_name_table_with_size(int size)
 {
   static struct st_hash_type hashType = {
@@ -598,12 +590,11 @@ onig_st_init_callout_name_table_with_size(int size)
     callout_name_table_hash,
   };
 
-  return (hash_table_type* )
-           onig_st_init_table_with_size(&hashType, size);
+  return (hash_table_type )onig_st_init_table_with_size(&hashType, size);
 }
 
 extern int
-onig_st_lookup_callout_name_table(hash_table_type* table,
+onig_st_lookup_callout_name_table(hash_table_type table,
                                   OnigEncoding enc,
                                   int type,
                                   const UChar* str_key,
@@ -621,7 +612,7 @@ onig_st_lookup_callout_name_table(hash_table_type* table,
 }
 
 static int
-st_insert_callout_name_table(hash_table_type* table,
+st_insert_callout_name_table(hash_table_type table,
                              OnigEncoding enc, int type,
                              UChar* str_key, UChar* end_key,
                              hash_data_type value)
@@ -2003,15 +1994,15 @@ scan_env_clear(ScanEnv* env)
 
   xmemset(env->mem_env_static, 0, sizeof(env->mem_env_static));
 
-  env->parse_depth         = 0;
+  env->parse_depth      = 0;
 #ifdef ONIG_DEBUG_PARSE
-  env->max_parse_depth     = 0;
+  env->max_parse_depth  = 0;
 #endif
-  env->backref_num         = 0;
-  env->keep_num            = 0;
-  env->save_num            = 0;
-  env->save_alloc_num      = 0;
-  env->saves               = 0;
+  env->backref_num      = 0;
+  env->keep_num         = 0;
+  env->id_num           = 0;
+  env->save_alloc_num   = 0;
+  env->saves            = 0;
 }
 
 static int
@@ -2062,15 +2053,10 @@ scan_env_set_mem_node(ScanEnv* env, int num, Node* node)
   return 0;
 }
 
-extern void
-onig_node_free(Node* node)
+static void
+node_free_body(Node* node)
 {
- start:
   if (IS_NULL(node)) return ;
-
-#ifdef DEBUG_NODE_FREE
-  fprintf(stderr, "onig_node_free: %p\n", node);
-#endif
 
   switch (NODE_TYPE(node)) {
   case NODE_STRING:
@@ -2083,12 +2069,12 @@ onig_node_free(Node* node)
   case NODE_LIST:
   case NODE_ALT:
     onig_node_free(NODE_CAR(node));
-    {
-      Node* next_node = NODE_CDR(node);
-
+    node = NODE_CDR(node);
+    while (IS_NOT_NULL(node)) {
+      Node* next = NODE_CDR(node);
+      onig_node_free(NODE_CAR(node));
       xfree(node);
-      node = next_node;
-      goto start;
+      node = next;
     }
     break;
 
@@ -2120,9 +2106,15 @@ onig_node_free(Node* node)
     break;
 
   case NODE_QUANT:
+    if (NODE_BODY(node))
+      onig_node_free(NODE_BODY(node));
+    break;
+
   case NODE_ANCHOR:
     if (NODE_BODY(node))
       onig_node_free(NODE_BODY(node));
+    if (IS_NOT_NULL(ANCHOR_(node)->lead_node))
+      onig_node_free(ANCHOR_(node)->lead_node);
     break;
 
   case NODE_CTYPE:
@@ -2130,7 +2122,18 @@ onig_node_free(Node* node)
   case NODE_GIMMICK:
     break;
   }
+}
 
+extern void
+onig_node_free(Node* node)
+{
+  if (IS_NULL(node)) return ;
+
+#ifdef DEBUG_NODE_FREE
+  fprintf(stderr, "onig_node_free: %p\n", node);
+#endif
+
+  node_free_body(node);
   xfree(node);
 }
 
@@ -2157,16 +2160,64 @@ node_new(void)
   return node;
 }
 
-extern Node*
-onig_node_copy(Node* from)
+extern int
+onig_node_copy(Node** rcopy, Node* from)
 {
+  int r;
   Node* copy;
 
+  *rcopy = NULL_NODE;
+
+  switch (NODE_TYPE(from)) {
+  case NODE_LIST:
+  case NODE_ALT:
+  case NODE_ANCHOR:
+    /* These node's link to other nodes are processed by caller. */
+    break;
+  case NODE_STRING:
+  case NODE_CCLASS:
+  case NODE_CTYPE:
+    /* Fixed contents after copy. */
+    break;
+  default:
+    /* Not supported yet. */
+    return ONIGERR_TYPE_BUG;
+    break;
+  }
+
   copy = node_new();
-  CHECK_NULL_RETURN(copy);
+  CHECK_NULL_RETURN_MEMERR(copy);
   xmemcpy(copy, from, sizeof(*copy));
 
-  return copy;
+  switch (NODE_TYPE(copy)) {
+  case NODE_STRING:
+    r = onig_node_str_set(copy, STR_(from)->s, STR_(from)->end, FALSE);
+    if (r != 0) {
+    err:
+      onig_node_free(copy);
+      return r;
+    }
+    break;
+
+  case NODE_CCLASS:
+    {
+      CClassNode *fcc, *tcc;
+
+      fcc = CCLASS_(from);
+      tcc = CCLASS_(copy);
+      if (IS_NOT_NULL(fcc->mbuf)) {
+        r = bbuf_clone(&(tcc->mbuf), fcc->mbuf);
+        if (r != 0) goto err;
+      }
+    }
+    break;
+
+  default:
+    break;
+  }
+
+  *rcopy = copy;
+  return ONIG_NORMAL;
 }
 
 
@@ -2323,8 +2374,10 @@ node_new_anchor(int type)
 
   NODE_SET_TYPE(node, NODE_ANCHOR);
   ANCHOR_(node)->type       = type;
-  ANCHOR_(node)->char_len   = INFINITE_LEN;
+  ANCHOR_(node)->char_min_len = 0;
+  ANCHOR_(node)->char_max_len = INFINITE_LEN;
   ANCHOR_(node)->ascii_mode = 0;
+  ANCHOR_(node)->lead_node  = NULL_NODE;
   return node;
 }
 
@@ -2561,24 +2614,35 @@ node_drop_group(Node* group)
 }
 
 static int
+node_set_fail(Node* node)
+{
+  NODE_SET_TYPE(node, NODE_GIMMICK);
+  GIMMICK_(node)->type = GIMMICK_FAIL;
+  return ONIG_NORMAL;
+}
+
+static int
 node_new_fail(Node** node, ScanEnv* env)
 {
   *node = node_new();
   CHECK_NULL_RETURN_MEMERR(*node);
 
-  NODE_SET_TYPE(*node, NODE_GIMMICK);
-  GIMMICK_(*node)->type = GIMMICK_FAIL;
-  return ONIG_NORMAL;
+  return node_set_fail(*node);
+}
+
+extern int
+onig_node_reset_fail(Node* node)
+{
+  node_free_body(node);
+  return node_set_fail(node);
 }
 
 static int
 node_new_save_gimmick(Node** node, enum SaveType save_type, ScanEnv* env)
 {
   int id;
-  int r;
 
-  r = save_entry(env, save_type, &id);
-  if (r != ONIG_NORMAL) return r;
+  ID_ENTRY(env, id);
 
   *node = node_new();
   CHECK_NULL_RETURN_MEMERR(*node);
@@ -2806,6 +2870,9 @@ make_absent_engine(Node** node, int pre_save_right_id, Node* absent,
                                   id, env);
   if (r != 0) goto err;
 
+  if (is_range_cutter != 0)
+    NODE_STATUS_ADD(ns[2], ABSENT_WITH_SIDE_EFFECTS);
+
   r = node_new_fail(&ns[3], env);
   if (r != 0) goto err;
 
@@ -2945,6 +3012,7 @@ make_range_clear(Node** node, ScanEnv* env)
   r = node_new_update_var_gimmick(&ns[0], UPDATE_VAR_RIGHT_RANGE_INIT,
                                   ID_NOT_USED_DONT_CARE_ME, env);
   if (r != 0) goto err;
+  NODE_STATUS_ADD(ns[0], ABSENT_WITH_SIDE_EFFECTS);
 
   x = make_alt(2, ns);
   if (IS_NULL(x)) goto err0;
@@ -3216,9 +3284,9 @@ onig_node_str_cat(Node* node, const UChar* s, const UChar* end)
 }
 
 extern int
-onig_node_str_set(Node* node, const UChar* s, const UChar* end)
+onig_node_str_set(Node* node, const UChar* s, const UChar* end, int need_free)
 {
-  onig_node_str_clear(node);
+  onig_node_str_clear(node, need_free);
   return onig_node_str_cat(node, s, end);
 }
 
@@ -3232,9 +3300,10 @@ node_str_cat_char(Node* node, UChar c)
 }
 
 extern void
-onig_node_str_clear(Node* node)
+onig_node_str_clear(Node* node, int need_free)
 {
-  if (STR_(node)->capacity != 0 &&
+  if (need_free != 0 &&
+      STR_(node)->capacity != 0 &&
       IS_NOT_NULL(STR_(node)->s) && STR_(node)->s != STR_(node)->buf) {
     xfree(STR_(node)->s);
   }
@@ -3245,11 +3314,10 @@ onig_node_str_clear(Node* node)
   STR_(node)->capacity = 0;
 }
 
-static Node*
-node_new_str(const UChar* s, const UChar* end)
+static int
+node_set_str(Node* node, const UChar* s, const UChar* end)
 {
-  Node* node = node_new();
-  CHECK_NULL_RETURN(node);
+  int r;
 
   NODE_SET_TYPE(node, NODE_STRING);
   STR_(node)->flag     = 0;
@@ -3257,11 +3325,37 @@ node_new_str(const UChar* s, const UChar* end)
   STR_(node)->end      = STR_(node)->buf;
   STR_(node)->capacity = 0;
 
-  if (onig_node_str_cat(node, s, end)) {
+  r = onig_node_str_cat(node, s, end);
+  return r;
+}
+
+static Node*
+node_new_str(const UChar* s, const UChar* end)
+{
+  int r;
+  Node* node = node_new();
+  CHECK_NULL_RETURN(node);
+
+  r = node_set_str(node, s, end);
+  if (r != 0) {
     onig_node_free(node);
     return NULL;
   }
+
   return node;
+}
+
+static int
+node_reset_str(Node* node, const UChar* s, const UChar* end)
+{
+  node_free_body(node);
+  return node_set_str(node, s, end);
+}
+
+extern int
+onig_node_reset_empty(Node* node)
+{
+  return node_reset_str(node, NULL, NULL);
 }
 
 extern Node*

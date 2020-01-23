@@ -3,16 +3,13 @@
 
 /* static	char	sccsid[] = "@(#) st.c 5.1 89/12/14 Crucible"; */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef _WIN32
-#include <malloc.h>
+#ifndef NEED_TO_INCLUDE_STDIO
+#define NEED_TO_INCLUDE_STDIO
 #endif
 
 #include "regint.h"
 #include "st.h"
+
 
 typedef struct st_table_entry st_table_entry;
 

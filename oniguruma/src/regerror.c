@@ -3,7 +3,7 @@
   encoding: UTF-8
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako
+ * Copyright (c) 2002-2020  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,10 +28,12 @@
  * SUCH DAMAGE.
  */
 
-#include "regint.h"
-#include <stdio.h> /* for vsnprintf() */
+#ifndef NEED_TO_INCLUDE_STDIO
+/* for vsnprintf() */
+#define NEED_TO_INCLUDE_STDIO
+#endif
 
-#include <stdarg.h>
+#include "regint.h"
 
 extern UChar*
 onig_error_code_to_format(int code)
@@ -278,7 +280,8 @@ onig_is_error_code_needs_param(int code)
 /* for ONIG_MAX_ERROR_MESSAGE_LEN */
 #define MAX_ERROR_PAR_LEN   30
 
-extern int onig_error_code_to_str(UChar* s, int code, ...)
+extern int ONIG_VARIADIC_FUNC_ATTR
+onig_error_code_to_str(UChar* s, int code, ...)
 {
   UChar *p, *q;
   OnigErrorInfo* einfo;
@@ -338,8 +341,9 @@ extern int onig_error_code_to_str(UChar* s, int code, ...)
 }
 
 
-void onig_snprintf_with_pattern(UChar buf[], int bufsize, OnigEncoding enc,
-                                UChar* pat, UChar* pat_end, const UChar *fmt, ...)
+void ONIG_VARIADIC_FUNC_ATTR
+onig_snprintf_with_pattern(UChar buf[], int bufsize, OnigEncoding enc,
+                           UChar* pat, UChar* pat_end, const UChar *fmt, ...)
 {
   int n, need, len;
   UChar *p, *s, *bp;
