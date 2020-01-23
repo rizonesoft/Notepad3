@@ -1761,11 +1761,12 @@ unsigned int UnSlashLowOctal(char* s) {
  */
 size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
 {
-  if (!pchOutput || cchOutLen < 1 || !pchInput) { return 0; }
+  if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
 
   size_t i = 0;
   size_t k = 0;
-  while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
+  size_t const maxcnt = cchOutLen - 2;
+  while ((pchInput[k] != '\0') && (i < maxcnt))
   {
     switch (pchInput[k]) {
       case '\\':
@@ -1810,7 +1811,11 @@ size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
     }
     ++k;
   }
-  pchOutput[i] = '\0';
+  pchOutput[i] = pchInput[k];
+  // ensure string end
+  if (pchInput[k] != '\0') { 
+    pchOutput[++i] = '\0';
+  }
   return i;
 }
 
