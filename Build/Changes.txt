@@ -87,7 +87,7 @@ CHANGES:
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
-- Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/01/23).
+- Update Oniguruma Regex (ONI) engine version 6.9.4 (2019/10/31).
 - Update Scintilla Library (SCI) version 4.3.0 (2020/01/16).
 
 -----------------------------------------------------
