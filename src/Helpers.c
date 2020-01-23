@@ -1668,24 +1668,24 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 //
 UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
 {
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
+  WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
 UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
-{
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+{ 
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
   return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
   return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
@@ -1728,21 +1728,108 @@ UINT CharSetFromCodePage(const UINT uCodePage) {
 }
 
 
+/**
+ * Convert C style \0oo into their indicated characters.
+ * This is used to get control characters into the regular expresion engine
+ * w/o interfering with group referencing ('\0').
+ */
+unsigned int UnSlashLowOctal(char* s) {
+  char* sStart = s;
+  char* o = s;
+  while (*s) {
+    if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
+      *o = *s; ++o; ++s; *o = *s;
+    }
+    else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
+      *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
+      s += 3;
+    }
+    else {
+      *o = *s;
+    }
+    ++o;
+    if (*s)
+      ++s;
+  }
+  *o = '\0';
+  return (unsigned int)(o - sStart);
+}
+
+
+/*
+ * transform control chars into backslash sequence
+ */
+size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
+{
+  if (!pchOutput || cchOutLen < 1 || !pchInput) { return 0; }
+
+  size_t i = 0;
+  size_t k = 0;
+  while ((pchInput[k] != '\0') && (i < (cchOutLen - 2)))
+  {
+    switch (pchInput[k]) {
+      case '\\':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = '\\';
+        break;
+      case '\n':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'n';
+        break;
+      case '\r':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'r';
+        break;
+      case '\t':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 't';
+        break;
+      case '\f':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'f';
+        break;
+      case '\v':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'v';
+        break;
+      case '\a':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'a';
+        break;
+      case '\b':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'b';
+        break;
+      default:
+        pchOutput[i++] = pchInput[k];
+        break;
+    }
+    ++k;
+  }
+  pchOutput[i] = '\0';
+  return i;
+}
+
+
 /** ******************************************************************************
  *
  *  UnSlash functions
  *  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
  *
- * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh and \uhhhh into their indicated characters.
+ * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh, \uhhhh and \\  into their indicated characters.
  */
-unsigned int UnSlash(char *s,UINT cpEdit) {
-  char *sStart = s;
-  char *o = s;
+size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
+{
+  LPSTR s = pchInOut;
+  LPSTR o = pchInOut;
+  LPSTR const sStart = pchInOut;
 
   while (*s) {
     if (*s == '\\') {
-      s++;
-      if (*s == 'a')
+      ++s;
+      if (*s == '\\')
+        *o = '\\';
+      else if (*s == 'a')
         *o = '\a';
       else if (*s == 'b')
         *o = '\b';
@@ -1759,28 +1846,28 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
       else if (*s == 'x' || *s == 'u') {
         bool bShort = (*s == 'x');
         char ch[8];
-        char *pch = ch;
+        char* pch = ch;
         WCHAR val[2] = L"";
         int hex;
         val[0] = 0;
-        hex = GetHexDigit(*(s+1));
+        hex = GetHexDigit(*(s + 1));
         if (hex >= 0) {
-          s++;
+          ++s;
           val[0] = (WCHAR)hex;
-          hex = GetHexDigit(*(s+1));
+          hex = GetHexDigit(*(s + 1));
           if (hex >= 0) {
-            s++;
+            ++s;
             val[0] *= 16;
             val[0] += (WCHAR)hex;
             if (!bShort) {
-              hex = GetHexDigit(*(s+1));
+              hex = GetHexDigit(*(s + 1));
               if (hex >= 0) {
-                s++;
+                ++s;
                 val[0] *= 16;
                 val[0] += (WCHAR)hex;
-                hex = GetHexDigit(*(s+1));
+                hex = GetHexDigit(*(s + 1));
                 if (hex >= 0) {
-                  s++;
+                  ++s;
                   val[0] *= 16;
                   val[0] += (WCHAR)hex;
                 }
@@ -1789,57 +1876,35 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
           }
           if (val[0]) {
             val[1] = 0;
-            WideCharToMultiByteEx(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
+            WideCharToMultiByte(cpEdit, 0, val, -1, ch, (int)COUNTOF(ch), NULL, NULL);
             *o = *pch++;
-            while (*pch)
+            while (*pch) {
               *++o = *pch++;
+            }
           }
           else
-            o--;
+            --o;
         }
         else
-          o--;
+          --o;
       }
-      else
+      else {
+        *o = '\\'; // revert
+        ++o;
         *o = *s;
+      }
     }
     else
       *o = *s;
-    o++;
-    if (*s) {
-      s++;
-    }
-  }
-  *o = '\0';
-  return (unsigned int)(o - sStart);
-}
 
-/**
- * Convert C style \0oo into their indicated characters.
- * This is used to get control characters into the regular expresion engine
- * w/o interfering with group referencing ('\0').
- */
-unsigned int UnSlashLowOctal(char* s) {
-  char* sStart = s;
-  char* o = s;
-  while (*s) {
-    if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
-      *o = *s; ++o; ++s; *o = *s;
-    }
-    else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
-      *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
-      s += 3;
-    } else {
-      *o = *s;
-    }
     ++o;
-    if (*s)
+    if (*s) {
       ++s;
+    }
   }
   *o = '\0';
-  return (unsigned int)(o - sStart);
+  return (size_t)((ptrdiff_t)(o - sStart));
 }
-
 
 /**
  *  check, if we have regex sub-group referencing 

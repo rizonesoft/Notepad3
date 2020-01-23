@@ -53,7 +53,8 @@ KEYWORDLIST KeyWords_HTML = {
 "http_post_vars http_server_vars if implements include include_once instanceof insteadof interface isset "
 "list namespace new not null old_function or parent php_self print private protected public require "
 "require_once return static stdclass switch this throw trait true try unset use var virtual while xor",
-"", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexHTML = { 

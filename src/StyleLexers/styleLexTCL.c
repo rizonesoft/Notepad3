@@ -21,7 +21,8 @@ KEYWORDLIST KeyWords_TCL = {
 // iTCL Keywords
 "@scope body class code common component configbody constructor define destructor hull import inherit itcl "
 "itk itk_component itk_initialize itk_interior itk_option iwidgets keep method private protected public",
-"", "", "", "", "", "" };
+NULL,
+};
 
 
 #define SCE_TCL__MULTI_COMMENT      MULTI_STYLE(SCE_TCL_COMMENT,SCE_TCL_COMMENTLINE,SCE_TCL_COMMENT_BOX,SCE_TCL_BLOCK_COMMENT)

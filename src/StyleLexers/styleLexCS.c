@@ -120,7 +120,8 @@ KEYWORDLIST KeyWords_CS = {
 "XsdDataContractExporter XsdDataContractImporter XslCompiledTransform XslTransform XsltArgumentList "
 "XsltCompileException XsltContext XsltException XsltMessageEncounteredEventArgs "
 "XsltMessageEncounteredEventHandler XsltSettings",
-"", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexCS = { 

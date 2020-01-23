@@ -30,7 +30,7 @@ typedef struct _editstyle
 
 typedef struct _keywordlist
 {
-  char* pszKeyWords[KEYWORDSET_MAX + 1];
+  const char* const pszKeyWords[KEYWORDSET_MAX + 1];
 
 } KEYWORDLIST, *PKEYWORDLIST;
 

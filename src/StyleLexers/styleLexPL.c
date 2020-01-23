@@ -20,7 +20,8 @@ KEYWORDLIST KeyWords_PL = {
 "srand stat state study sub substr symlink syscall sysopen sysread sysseek system syswrite tell telldir "
 "tie tied time times truncate uc ucfirst umask undef unless unlink unpack unshift untie until use utime "
 "values vec wait waitpid wantarray warn when while write xor",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexPL = { 

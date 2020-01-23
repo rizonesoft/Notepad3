@@ -981,17 +981,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
 
   // Add KeyWord Lists
-  for (int i = 0; i < (KEYWORDSET_MAX + 1); i++)
+  for (int i = 0;  i <= KEYWORDSET_MAX;  ++i)
   {
     const char* pKeyWordList = pLexNew->pKeyWords->pszKeyWords[i];
-    assert(pKeyWordList != NULL);
-
-    if (pKeyWordList != NULL) {
-      SciCall_SetKeywords(i, pKeyWordList);
-    }
-    else {
-      SciCall_SetKeywords(i, "");
-    }
+    SciCall_SetKeywords(i, (pKeyWordList ? pKeyWordList : ""));
   }
 
   // --------------------------------------------------------------------------

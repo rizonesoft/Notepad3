@@ -28,7 +28,7 @@ KEYWORDLIST KeyWords_D = {
 // Keywords 7
 "",
 // ---
-"", ""
+NULL,
 };
 
 

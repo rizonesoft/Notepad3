@@ -75,7 +75,8 @@ KEYWORDLIST KeyWords_AVS = {
 "audiobits audiochannels audiolength audiolengthf audiorate framecount framerate frameratedenominator "
 "frameratenumerator getleftchannel getrightchannel hasaudio hasvideo height isaudiofloat isaudioint "
 "isfieldbased isframebased isinterleaved isplanar isrgb isrgb24 isrgb32 isyuv isyuy2 isyv12 width",
-"", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexAVS = { 

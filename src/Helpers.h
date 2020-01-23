@@ -351,7 +351,8 @@ UINT CharSetFromCodePage(const UINT uCodePage);
 
 
 //==== UnSlash Functions ======================================================
-unsigned int UnSlash(char* s, UINT cpEdit);
+size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
+size_t UnSlash(LPSTR pchInOut, UINT cpEdit);
 void TransformBackslashes(char* pszInput,bool,UINT cpEdit,int* iReplaceMsg);
 void TransformMetaChars(char* pszInput,bool,int iEOLMode);
 

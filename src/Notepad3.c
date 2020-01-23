@@ -5042,13 +5042,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_GetSelText(szSelection);
 
-        // Check lpszSelection and truncate newlines
-        char *lpsz = StrChrA(szSelection, '\n');
-        if (lpsz) *lpsz = '\0';
-
-        lpsz = StrChrA(szSelection, '\r');
-        if (lpsz) *lpsz = '\0';
-
         StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), szSelection);
         Settings.EFR_Data.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
         Settings.EFR_Data.bTransformBS = false;
@@ -7670,19 +7663,18 @@ void SetFindPatternMB(LPCSTR chFindPattern)
 //
 //  GetFindPattern()
 // 
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
 {
-  StringCchCopyW(wchFindPattern, bufferSize, sCurrentFindPattern);
+  StringCchCopyW(wchFindPattern, bufferCount, sCurrentFindPattern);
 }
 
 //=============================================================================
 //
 //  GetFindPatternMB()
 // 
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 {
-  WideCharToMultiByteEx(Encoding_SciCP, 0, sCurrentFindPattern, -1, 
-                        chFindPattern, bufferSize, NULL, NULL);
+    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
 }
 
 

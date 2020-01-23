@@ -28,10 +28,7 @@ KEYWORDLIST KeyWords_CPP = {
 // Preprocessor definitions
 "DEBUG NDEBUG UNICODE _DEBUG _MSC_VER _UNICODE", 
 // Task marker and error marker keywords
-"",
-"", 
-"", 
-"" 
+NULL,
 };
 
 EDITLEXER lexCPP = { 

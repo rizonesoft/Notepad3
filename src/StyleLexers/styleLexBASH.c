@@ -15,7 +15,8 @@ KEYWORDLIST KeyWords_BASH = {
 "test then time times touch tr trap true tsort tty type typeset ulimit umask unalias uname uncompress "
 "unexpand uniq unlink unpack unset until users uudecode uuencode vdir vi vim vpax wait wc whence which "
 "while who whoami wpaste wstart xargs yes zcat",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexBASH = { 

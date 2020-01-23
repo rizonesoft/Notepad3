@@ -19,7 +19,7 @@ KEYWORDLIST KeyWords_Go = {
 // Keywords 7
 "",
 // ---
-"", ""
+NULL,
 };
 
 

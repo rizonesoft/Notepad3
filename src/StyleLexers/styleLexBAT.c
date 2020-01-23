@@ -13,7 +13,8 @@ KEYWORDLIST KeyWords_BAT = {
 "recover reg regedit regsvr32 rem ren rename replace rmdir robocopy route runas rundll32 sc schtasks "
 "sclist set setlocal sfc shift shutdown sort start subst systeminfo taskkill tasklist time timeout title "
 "tracert tree type typeperf ver verify vol wmic xcopy",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexBAT = { 
