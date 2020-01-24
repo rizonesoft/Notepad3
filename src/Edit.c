@@ -247,7 +247,7 @@ void EditInitWordDelimiter(HWND hwnd)
 
   char whitesp[ANSI_CHAR_BUFFER*2] = { '\0' };
   if (StrIsNotEmpty(Settings2.ExtendedWhiteSpaceChars)) {
-    WideCharToMultiByteEx(Encoding_SciCP, 0, Settings2.ExtendedWhiteSpaceChars, -1, whitesp, COUNTOF(whitesp), NULL, NULL);
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.ExtendedWhiteSpaceChars, -1, whitesp, (int)COUNTOF(whitesp), NULL, NULL);
   }
 
   // 3rd set accelerated arrays
@@ -295,18 +295,18 @@ void EditInitWordDelimiter(HWND hwnd)
 
   if (StrIsNotEmpty(Settings2.AutoCompleteWordCharSet))
   {
-    WideCharToMultiByteEx(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, (int)COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     Globals.bUseLimitedAutoCCharSet = true;
   } else {
-    WideCharToMultiByteEx(Encoding_SciCP, 0, W_AUTOC_WORD_ANSI1252, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
+    WideCharToMultiByte(Encoding_SciCP, 0, W_AUTOC_WORD_ANSI1252, -1, AutoCompleteWordCharSet, (int)COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     Globals.bUseLimitedAutoCCharSet = false;
   }
 
   // construct wide char arrays
-  MultiByteToWideCharEx(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, COUNTOF(W_DelimChars));
-  MultiByteToWideCharEx(Encoding_SciCP, 0, DelimCharsAccel, -1, W_DelimCharsAccel, COUNTOF(W_DelimCharsAccel));
-  MultiByteToWideCharEx(Encoding_SciCP, 0, WhiteSpaceCharsDefault, -1, W_WhiteSpaceCharsDefault, COUNTOF(W_WhiteSpaceCharsDefault));
-  MultiByteToWideCharEx(Encoding_SciCP, 0, WhiteSpaceCharsAccelerated, -1, W_WhiteSpaceCharsAccelerated, COUNTOF(W_WhiteSpaceCharsAccelerated));
+  MultiByteToWideChar(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, (int)COUNTOF(W_DelimChars));
+  MultiByteToWideChar(Encoding_SciCP, 0, DelimCharsAccel, -1, W_DelimCharsAccel, (int)COUNTOF(W_DelimCharsAccel));
+  MultiByteToWideChar(Encoding_SciCP, 0, WhiteSpaceCharsDefault, -1, W_WhiteSpaceCharsDefault, (int)COUNTOF(W_WhiteSpaceCharsDefault));
+  MultiByteToWideChar(Encoding_SciCP, 0, WhiteSpaceCharsAccelerated, -1, W_WhiteSpaceCharsAccelerated, (int)COUNTOF(W_WhiteSpaceCharsAccelerated));
 }
 
 
@@ -621,6 +621,26 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     *pLenLastLn = lenLastLine;
 
   return pmch;
+}
+
+
+//=============================================================================
+//
+//  EditGetClipboardW()
+//
+void EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength) 
+{
+  if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(Globals.hwndMain)) { return; }
+
+  HANDLE const hmem = GetClipboardData(CF_UNICODETEXT);
+  if (hmem) {
+    const WCHAR* const pwch = GlobalLock(hmem);
+    if (pwch) {
+      StringCchCopyW(pwchBuffer, wchLength, pwch);
+    }
+    GlobalUnlock(hmem);
+  }
+  CloseClipboard();
 }
 
 
@@ -1773,16 +1793,16 @@ void EditEscapeCChars(HWND hwnd) {
 
     _BEGIN_UNDO_ACTION_
 
-    StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\");
-    StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\\\");
+    StringCchCopyA(efr.szFind,COUNTOF(efr.szFind), "\\");
+    StringCchCopyA(efr.szReplace, COUNTOF(efr.szReplace), "\\\\");
     EditReplaceAllInSelection(hwnd,&efr,false);
 
-    StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\"");
-    StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\\"");
+    StringCchCopyA(efr.szFind, COUNTOF(efr.szFind), "\"");
+    StringCchCopyA(efr.szReplace, COUNTOF(efr.szReplace), "\\\"");
     EditReplaceAllInSelection(hwnd,&efr,false);
 
-    StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\'");
-    StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\\'");
+    StringCchCopyA(efr.szFind, COUNTOF(efr.szFind), "\'");
+    StringCchCopyA(efr.szReplace, COUNTOF(efr.szReplace), "\\\'");
     EditReplaceAllInSelection(hwnd,&efr,false);
     
     _END_UNDO_ACTION_
@@ -5307,17 +5327,59 @@ static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
+//=============================================================================
+
+static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' }; // tmp working buffer
+
+static bool s_SaveMarkOccurrences = false;
+static bool s_SaveMarkMatchVisible = false;
+static bool s_SaveTFBackSlashes = false;
+static char s_lastFind[FNDRPL_BUFFER] = { L'\0' };
+
+//=============================================================================
+//
+//  EditBoxForPasteFixes()
+//
+static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
+                                             UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+  UNUSED(dwRefData);
+
+  switch (uMsg)
+  {
+    case WM_PASTE:
+      {
+        EditGetClipboardW(s_tchBuf, COUNTOF(s_tchBuf));
+
+        if (s_SaveTFBackSlashes) {
+          WCHAR tchBuf2[FNDRPL_BUFFER] = { L'\0' };
+          SlashW(tchBuf2, COUNTOF(tchBuf2), s_tchBuf);
+          SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)tchBuf2);
+        }
+        else {
+          SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)s_tchBuf);
+        }
+      }
+      return TRUE;
+
+    //case WM_LBUTTONDOWN:
+    //  SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)L"X");
+    //  return TRUE;
+
+    case WM_NCDESTROY:
+      RemoveWindowSubclass(hwnd, EditBoxForPasteFixes, uIdSubclass);
+      // fall through
+    default:
+      break;
+  }
+  return DefSubclassProc(hwnd, uMsg, wParam, lParam);
+}
+
 
 //=============================================================================
 //
 //  EditFindReplaceDlgProcW()
 //
-static char s_lastFind[FNDRPL_BUFFER] = { L'\0' };
-static WCHAR s_tchBuf[FNDRPL_BUFFER] = { L'\0' };
-
-static bool s_SaveMarkOccurrences = false;
-static bool s_SaveMarkMatchVisible = false;
-static bool s_SaveTFBackSlashes = false;
 
 static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -5370,13 +5432,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
 
       SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_LIMITTEXT, FNDRPL_BUFFER, 0);
       SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_SETEXTENDEDUI, true, 0);
-      //const HWND hwndItem = (HWND)SendDlgItemMessage(hwnd, IDC_FINDTEXT, CBEM_GETEDITCONTROL, 0, 0);
+      
       COMBOBOXINFO infoF = { sizeof(COMBOBOXINFO) };
       GetComboBoxInfo(GetDlgItem(hwnd, IDC_FINDTEXT), &infoF);
-      //SHAutoComplete(infoF.hwndItem, SHACF_DEFAULT);
       if (infoF.hwndItem) {
+        SetWindowSubclass(infoF.hwndItem, EditBoxForPasteFixes, 0, 0);
         SHAutoComplete(infoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
       }
+
       if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
       }
@@ -5384,12 +5447,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       {
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_LIMITTEXT, FNDRPL_BUFFER, 0);
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_SETEXTENDEDUI, true, 0);
-        //const HWND hwndItem = (HWND)SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CBEM_GETEDITCONTROL, 0, 0);
         COMBOBOXINFO infoR = { sizeof(COMBOBOXINFO) };
         GetComboBoxInfo(GetDlgItem(hwnd, IDC_REPLACETEXT), &infoR);
-        //SHAutoComplete(infoR.hwndItem, SHACF_DEFAULT);
-        SHAutoComplete(infoR.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
-        
+        if (infoR.hwndItem) {
+          SetWindowSubclass(infoR.hwndItem, EditBoxForPasteFixes, 0, 0);
+          SHAutoComplete(infoR.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
+        }
         SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
       }
 
@@ -5683,7 +5746,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
               char* buf = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
               if (buf) {
                 SciCall_GetSelText(buf);
-                Slash(lpszSelection, cchSelection, buf);
+                SlashA(lpszSelection, cchSelection, buf);
                 FreeMem(buf);
               }
             }
@@ -5707,7 +5770,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                 if (len) {
                   lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
                   if (s_SaveTFBackSlashes) {
-                    Slash(lpszSelection, len + 1, pClip);
+                    SlashA(lpszSelection, len + 1, pClip);
                   }
                   else {
                     StringCchCopyA(lpszSelection, len + 1, pClip);
@@ -5908,11 +5971,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
           s_SaveTFBackSlashes = IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS);
           if (s_SaveTFBackSlashes) {
             char buf[FNDRPL_BUFFER + 1];
-            Slash(buf, COUNTOF(buf), sg_pefrData->szFind);
+            SlashA(buf, COUNTOF(buf), sg_pefrData->szFind);
             StringCchCopyA(sg_pefrData->szFind, COUNTOF(sg_pefrData->szFind), buf);
             SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
             if (GetDlgItem(hwnd, IDC_REPLACE)) {
-              Slash(buf, COUNTOF(buf), sg_pefrData->szReplace);
+              SlashA(buf, COUNTOF(buf), sg_pefrData->szReplace);
               StringCchCopyA(sg_pefrData->szReplace, COUNTOF(sg_pefrData->szReplace), buf);
               SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
             }
@@ -6092,7 +6155,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       case IDC_SWAPSTRG:
       {
         if (!sg_pefrData) { break; }
-        WCHAR wszFind[FNDRPL_BUFFER] = { L'\0' };
+        WCHAR* wszFind = s_tchBuf;
         WCHAR wszRepl[FNDRPL_BUFFER] = { L'\0' };
         GetDlgItemTextW(hwnd, IDC_FINDTEXT, wszFind, COUNTOF(wszFind));
         GetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszRepl, COUNTOF(wszRepl));
@@ -6907,7 +6970,7 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //
 void EditMarkAll(HWND hwnd, char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd)
 {
-  char txtBuffer[XHUGE_BUFFER] = { '\0' };
+  char txtBuffer[FNDRPL_BUFFER] = { '\0' };
   char* pszText = (pszFind != NULL) ? pszFind : txtBuffer;
 
   DocPos iFindLength = 0;

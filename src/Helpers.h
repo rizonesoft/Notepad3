@@ -351,10 +351,13 @@ UINT CharSetFromCodePage(const UINT uCodePage);
 
 
 //==== UnSlash Functions ======================================================
-size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
+
+size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
+size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
+
 size_t UnSlash(LPSTR pchInOut, UINT cpEdit);
-void TransformBackslashes(char* pszInput,bool,UINT cpEdit,int* iReplaceMsg);
-void TransformMetaChars(char* pszInput,bool,int iEOLMode);
+void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
+void TransformMetaChars(char* pszInput, bool, int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
