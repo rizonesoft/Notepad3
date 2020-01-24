@@ -584,7 +584,6 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
-
 inline int Sci_GetCurrentEOL_A(LPCH eol) {
   switch (SciCall_GetEOLMode()) {
     case SC_EOL_CRLF:

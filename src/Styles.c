@@ -573,20 +573,20 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     }
 
     // Styles
-    const WCHAR* const Styles_Section = L"Styles";
+    const WCHAR* const IniSecStyles = Constants.Styles_Section;
 
     // 2nd default
-    Style_SetUse2ndDefault(IniSectionGetBool(Styles_Section, L"Use2ndDefaultStyle", false));
+    Style_SetUse2ndDefault(IniSectionGetBool(IniSecStyles, L"Use2ndDefaultStyle", false));
 
     // default scheme
-    s_iDefaultLexer = clampi(IniSectionGetInt(Styles_Section, L"DefaultScheme", Constants.StdDefaultLexerID), 0, COUNTOF(g_pLexArray) - 1);
+    s_iDefaultLexer = clampi(IniSectionGetInt(IniSecStyles, L"DefaultScheme", Constants.StdDefaultLexerID), 0, COUNTOF(g_pLexArray) - 1);
 
     // auto select
-    s_bAutoSelect = IniSectionGetBool(Styles_Section, L"AutoSelect", true);
+    s_bAutoSelect = IniSectionGetBool(IniSecStyles, L"AutoSelect", true);
 
     // scheme select dlg dimensions
-    s_cxStyleSelectDlg = clampi(IniSectionGetInt(Styles_Section, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
-    s_cyStyleSelectDlg = clampi(IniSectionGetInt(Styles_Section, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
+    s_cxStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
+    s_cyStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
 
 
     // Lexer 
@@ -693,9 +693,9 @@ bool Style_Export(HWND hwnd)
 
 #define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)        \
   if ((VALUE) != (DEFAULT)) {                                              \
-    IniSectionSet##TYPE(Styles_Section, _W(_STRG(VARNAME)), (VALUE));      \
+    IniSectionSet##TYPE(IniSecStyles, _W(_STRG(VARNAME)), (VALUE));      \
   } else {                                                                 \
-    IniSectionDelete(Styles_Section, _W(_STRG(VARNAME)), false);           \
+    IniSectionDelete(IniSecStyles, _W(_STRG(VARNAME)), false);           \
   }
 
 
@@ -720,7 +720,7 @@ void Style_ToIniSection(bool bForceAll)
     }
   }
 
-  const WCHAR* const Styles_Section = L"Styles";
+  const WCHAR* const IniSecStyles = Constants.Styles_Section;
 
   // auto select
   bool const bUse2ndSty = Style_GetUse2ndDefault();

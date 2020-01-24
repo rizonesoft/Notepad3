@@ -80,7 +80,7 @@ void  EditJoinLinesEx(HWND hwnd,bool,bool);
 void  EditSortLines(HWND hwnd,int iSortFlags);
 
 void  EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol);
-void  EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop);
+void  EditScrollTo(DocLn iScrollToLine, int iSlop);
 const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd);
 void  EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView);
 void  EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);

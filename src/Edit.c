@@ -4744,10 +4744,8 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 //
 //  EditScrollTo()
 //
-void EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop)
+void EditScrollTo(DocLn iScrollToLine, int iSlop)
 {
-  UNUSED(hwnd);
-
   const int iXoff = SciCall_GetXOffset();
   const DocLn iLinesOnScreen = SciCall_LinesOnScreen();
   const DocLn iSlopLines = ((iSlop < 0) || (iSlop >= iLinesOnScreen)) ? (iLinesOnScreen/2) : iSlop;
@@ -4764,6 +4762,7 @@ void EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop)
 //
 void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 {
+  UNUSED(hwnd);
   // jump to end with line set to -1
   if (iNewLine < 0) {
     SciCall_DocumentEnd();
@@ -4780,7 +4779,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  EditScrollTo(hwnd, iNewLine, -1);
+  EditScrollTo(iNewLine, -1);
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
@@ -6913,11 +6912,11 @@ void EditToggleView(HWND hwnd)
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
   if (FocusedView.HideNonMatchedLines) {
-    EditScrollTo(hwnd, 0, false);
+    EditScrollTo(0, 0);
     SciCall_SetReadOnly(true);
   }
   else {
-    EditScrollTo(hwnd, Sci_GetCurrentLineNumber(), true);
+    EditScrollTo(Sci_GetCurrentLineNumber(), -1);
     SciCall_SetReadOnly(false);
   }
 
