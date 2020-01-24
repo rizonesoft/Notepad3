@@ -1759,7 +1759,7 @@ unsigned int UnSlashLowOctal(char* s) {
 /*
  * transform control chars into backslash sequence
  */
-size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
+size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
 {
   if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
 
@@ -1815,6 +1815,67 @@ size_t Slash(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
   // ensure string end
   if (pchInput[k] != '\0') { 
     pchOutput[++i] = '\0';
+  }
+  return i;
+}
+
+
+size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput)
+{
+  if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
+
+  size_t i = 0;
+  size_t k = 0;
+  size_t const maxcnt = cchOutLen - 2;
+  while ((pchInput[k] != L'\0') && (i < maxcnt))
+  {
+    switch (pchInput[k]) {
+      case L'\\':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'\\';
+        break;
+      case L'\n':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'n';
+        break;
+      case L'\r':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'r';
+        break;
+      case L'\t':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L't';
+        break;
+      case L'\f':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'f';
+        break;
+      case L'\v':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'v';
+        break;
+      case L'\a':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'a';
+        break;
+      case L'\b':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'b';
+        break;
+      case L'\x1B':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'e';
+        break;
+      default:
+        pchOutput[i++] = pchInput[k];
+        break;
+    }
+    ++k;
+  }
+  pchOutput[i] = pchInput[k];
+  // ensure string end
+  if (pchInput[k] != L'\0') {
+    pchOutput[++i] = L'\0';
   }
   return i;
 }
