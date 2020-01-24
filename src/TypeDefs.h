@@ -278,8 +278,13 @@ typedef struct _constants_t
 {
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
-  const WCHAR* const SectionSuppressedMessages;
   const WCHAR* const StylingThemeName;
+
+  const WCHAR* const Settings_Section;
+  const WCHAR* const Settings2_Section;
+  const WCHAR* const Window_Section;
+  const WCHAR* const Styles_Section;
+  const WCHAR* const SectionSuppressedMessages;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 
