@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.123.(build_#) (2020-01-23)
+Current BETA Version 5.20.124.(build_#) (2020-01-24)
 =====================================================
 
 -----------------------------------------------------
@@ -93,7 +93,7 @@ CHANGES:
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
-- Multiline search/find.
+- Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
 - Change to 1-pass (file open/close) to save settings in Notepad3.ini.
 - Enclosing selection with HTML-Tag - Remember last pattern (session).
@@ -103,7 +103,8 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
-- Allow multi-line search pattern.
+- Clipboard multi-line paste hook for Find/Replace pattern CB.
+- Allow multi-line Search Find/Replace pattern.
 - IME color and IME color styler.
 - Wrong language reference for lexer : "Tag".
 - "Recent Files" History handling.
