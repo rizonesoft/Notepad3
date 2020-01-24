@@ -26,6 +26,7 @@ extern "C" {
 #include "Dialogs.h"
 #include "Encoding.h"
 #include "Notepad3.h"
+#include "MuiLanguage.h"
 #include "resource.h"
 }
 
@@ -696,10 +697,15 @@ void LoadSettings()
 
   // --------------------------------------------------------------------------
 
+  LANGID lngID = 0;
   Defaults2.PreferredLanguageLocaleName[0] = L'\0';
+  GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
+
   IniSectionGetString(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
     Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
   //_wsetlocale(LC_COLLATE, Settings2.PreferredLanguageLocaleName);
+
+  // --------------------------------------------------------------------------
 
   StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
   IniSectionGetString(IniSecSettings2, L"DefaultExtension", Defaults2.DefaultExtension,
@@ -901,7 +907,7 @@ void LoadSettings()
   Defaults.EFR_Data.fuFlags = 0;
   Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
-  Defaults.OpenWithDir[0] = L'\0';
+  StringCchCopy(Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir), L"%USERPROFILE%\\Desktop");
   if (!IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
     GetKnownFolderPath(FOLDERID_Desktop, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir));
   }
@@ -909,8 +915,7 @@ void LoadSettings()
     PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
   }
 
-  Defaults.FavoritesDir[0] = L'\0';
-  //StringCchCopyW(Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir), L"%USERPROFILE%");
+  StringCchCopyW(Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir), L"%USERPROFILE%\\Favorites");
   if (!IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
     GetKnownFolderPath(FOLDERID_Favorites, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir));
   }
@@ -1494,15 +1499,7 @@ bool SaveSettings(bool bSaveSettingsNow)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeY);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
-
-
-  // --------------------------------------------------------------------------
-  const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
-  // --------------------------------------------------------------------------
-
-  IniSectionSetString(IniSecSettings2, L"DefaultWindowPosition", Settings2.DefaultWindowPosition);
-  IniSectionSetString(IniSecSettings2, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
-  
+ 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------

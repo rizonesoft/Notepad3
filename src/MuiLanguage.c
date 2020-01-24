@@ -140,7 +140,7 @@ static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t ln
 //  _GetUserPreferredLanguage
 //
 //
-static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID)
+bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID)
 {
   int res = 0;
   LANGID lngID = *pLangID;
@@ -209,10 +209,13 @@ LANGID LoadLanguageResources()
   WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
   StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), Settings2.PreferredLanguageLocaleName);
 
-  if (_GetUserPreferredLanguage(wchLngLocalName, COUNTOF(wchLngLocalName), &languageID)) {
+  if (GetUserPreferredLanguage(wchLngLocalName, COUNTOF(wchLngLocalName), &languageID)) {
     // push-back (corrected) name found
     StringCchCopy(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), wchLngLocalName);
     //_wsetlocale(LC_COLLATE, Settings2.PreferredLanguageLocaleName);
+    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+      IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+    }
   }
 
   // set the appropriate fallback list

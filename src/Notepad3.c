@@ -3536,6 +3536,9 @@ static void _DynamicLanguageMenuCmd(int cmd)
     CloseNonModalDialogs();
 
     StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
+    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+      IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+    }
 
     LockWindowUpdate(Globals.hwndMain); // prevent intermediate redrawing
 
