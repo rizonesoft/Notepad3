@@ -703,8 +703,9 @@ void LoadSettings()
 
   IniSectionGetString(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
     Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
-  //_wsetlocale(LC_COLLATE, Settings2.PreferredLanguageLocaleName);
 
+  StringCchCopyW(Globals.InitialPreferredLanguage, COUNTOF(Globals.InitialPreferredLanguage), Settings2.PreferredLanguageLocaleName);
+   
   // --------------------------------------------------------------------------
 
   StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
@@ -907,19 +908,13 @@ void LoadSettings()
   Defaults.EFR_Data.fuFlags = 0;
   Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
-  StringCchCopy(Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir), L"%USERPROFILE%\\Desktop");
-  if (!IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
-    GetKnownFolderPath(FOLDERID_Desktop, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir));
-  }
-  else {
+  GetKnownFolderPath(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
+  if (IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
     PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
   }
 
-  StringCchCopyW(Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir), L"%USERPROFILE%\\Favorites");
-  if (!IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
-    GetKnownFolderPath(FOLDERID_Favorites, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir));
-  }
-  else {
+  GetKnownFolderPath(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
+  if (IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
     PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
   }
 
