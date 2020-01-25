@@ -19,7 +19,7 @@ Keyboard Shortcuts for Notepad3
   Tools
 
     Alt+N                 Open document in new window.
-    Alt+Shit+N            Open new empty window.
+    Alt+Shift+N           Open new empty window.
     Ctrl+M                Run MiniPath file browser plugin.
     Ctrl+L                Launch document.
     Alt+L                 Open with.
