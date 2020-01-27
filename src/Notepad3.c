@@ -1844,6 +1844,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);  // paste into rectangular selection
+  SendMessage(hwndEditCtrl, SCI_AUTOCSETMULTI, SC_MULTIAUTOC_EACH, 0);  // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
 
   int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS;
@@ -1937,6 +1938,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
 #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
 #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
+
   if (Settings2.CurrentLineHorizontalSlop > 0)
     SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
   else
@@ -4149,10 +4151,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_SetRectangularSelectionAnchor(anchor);
             SciCall_SetRectangularSelectionCaret(caret);
           }
+#else
+        SciCall_Paste();
 #endif
-
-          SciCall_Paste();
-
         _END_UNDO_ACTION_
         UpdateToolbar();
         UpdateStatusbar(false);

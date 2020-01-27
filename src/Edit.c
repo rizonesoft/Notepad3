@@ -7254,17 +7254,18 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   {
     const char* const sep = " ";
     SciCall_AutoCCancel();
+    SciCall_ClearRegisteredImages();
+
     // cppcheck-suppress constArgument
     SciCall_AutoCSetSeperator(sep[0]);
     SciCall_AutoCSetIgnoreCase(true);
     //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     SciCall_AutoCSetChooseSingle(autoInsert);
-    //~SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
+    SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
     SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
-    //~SciCall_AutoCSetMulti(SC_MULTIAUTOC_EACH);
 
     ++iWListSize; // zero termination
-    char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);
+    char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);
     if (pList) {
       PWLIST pTmp = NULL;
       PWLIST pWLItem = NULL;
@@ -7276,7 +7277,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         LL_DELETE(pListHead, pWLItem);
         FreeMem(pWLItem);
       }
-      SciCall_AutoCShow(iRootLen, (pList + 1));
+      SciCall_AutoCShow(iRootLen, pList);
       FreeMem(pList);
     }
   }
