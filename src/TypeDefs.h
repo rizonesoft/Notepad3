@@ -355,6 +355,7 @@ typedef struct _globals_t
   unsigned  idxSelectedTheme;
 
   WCHAR     SelectedThemeName[128];
+  WCHAR     InitialPreferredLanguage[LOCALE_NAME_MAX_LENGTH + 1];
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -534,7 +535,7 @@ typedef struct _settings2_t
   //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
   //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
 
-  WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
+  WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[64];
   WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];

@@ -867,7 +867,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // ----------------------------------------------------
   // MultiLingual
   //
-  Globals.iPrefLANGID = LoadLanguageResources();
+  SetPreferredLanguage(LoadLanguageResources());
 
   // ----------------------------------------------------
 
@@ -974,7 +974,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
   if (Globals.bPrefLngNotAvail) {
-    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
+    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Globals.InitialPreferredLanguage);
   }
 
   MSG msg;
@@ -3535,14 +3535,18 @@ static void _DynamicLanguageMenuCmd(int cmd)
   {
     CloseNonModalDialogs();
 
-    StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
-
     LockWindowUpdate(Globals.hwndMain); // prevent intermediate redrawing
 
     DestroyMenu(Globals.hMainMenu);
-    Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
+    
+    // desired language
+    SetPreferredLanguage(MUI_LanguageDLLs[iLngIdx].LangId);
+
     FreeLanguageResources();
-    Globals.iPrefLANGID = LoadLanguageResources();
+
+    // change to available (fallback en-US)
+    SetPreferredLanguage(LoadLanguageResources());
+
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
       MsgBoxLastError(L"LoadMenu()", 0);

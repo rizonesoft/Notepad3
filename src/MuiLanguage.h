@@ -33,6 +33,8 @@ typedef struct _muilanguage
 extern MUILANGUAGE MUI_LanguageDLLs[];
 int MuiLanguages_CountOf();
 
+bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID);
+void SetPreferredLanguage(LANGID iPreferredLanguageID);
 
 LANGID LoadLanguageResources();
 void   FreeLanguageResources();
