@@ -101,19 +101,19 @@ public:
 
 // Functions for classifying characters
 
-inline bool IsASpace(int ch) {
+constexpr bool IsASpace(int ch) {
     return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
-inline bool IsASpaceOrTab(int ch) {
+constexpr bool IsASpaceOrTab(int ch) {
 	return (ch == ' ') || (ch == '\t');
 }
 
-inline bool IsADigit(int ch) {
+constexpr bool IsADigit(int ch) {
 	return (ch >= '0') && (ch <= '9');
 }
 
-inline bool IsADigit(int ch, int base) {
+constexpr bool IsADigit(int ch, int base) {
 	if (base <= 10) {
 		return (ch >= '0') && (ch < '0' + base);
 	} else {
@@ -123,23 +123,23 @@ inline bool IsADigit(int ch, int base) {
 	}
 }
 
-inline bool IsASCII(int ch) {
+constexpr bool IsASCII(int ch) {
 	return (ch >= 0) && (ch < 0x80);
 }
 
-inline bool IsLowerCase(int ch) {
+constexpr bool IsLowerCase(int ch) {
 	return (ch >= 'a') && (ch <= 'z');
 }
 
-inline bool IsUpperCase(int ch) {
+constexpr bool IsUpperCase(int ch) {
 	return (ch >= 'A') && (ch <= 'Z');
 }
 
-inline bool IsUpperOrLowerCase(int ch) {
+constexpr bool IsUpperOrLowerCase(int ch) {
 	return IsUpperCase(ch) || IsLowerCase(ch);
 }
 
-inline bool IsAlphaNumeric(int ch) {
+constexpr bool IsAlphaNumeric(int ch) {
 	return
 		((ch >= '0') && (ch <= '9')) ||
 		((ch >= 'a') && (ch <= 'z')) ||
@@ -150,19 +150,19 @@ inline bool IsAlphaNumeric(int ch) {
  * Check if a character is a space.
  * This is ASCII specific but is safe with chars >= 0x80.
  */
-inline bool isspacechar(int ch) {
+constexpr bool isspacechar(int ch) {
     return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
-inline bool iswordchar(int ch) {
+constexpr bool iswordchar(int ch) {
 	return IsAlphaNumeric(ch) || ch == '.' || ch == '_';
 }
 
-inline bool iswordstart(int ch) {
+constexpr bool iswordstart(int ch) {
 	return IsAlphaNumeric(ch) || ch == '_';
 }
 
-inline bool isoperator(int ch) {
+constexpr bool isoperator(int ch) {
 	if (IsAlphaNumeric(ch))
 		return false;
 	if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
