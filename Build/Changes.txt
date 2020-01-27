@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.124.(build_#) (2020-01-24)
+Current BETA Version 5.20.127.(build_#) (2020-01-27)
 =====================================================
 
 -----------------------------------------------------
@@ -103,6 +103,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Some issues for lexers: YAML and JSON.
 - Clipboard multi-line paste hook for Find/Replace pattern CB.
 - Allow multi-line Search Find/Replace pattern.
 - IME color and IME color styler.
