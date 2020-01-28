@@ -280,7 +280,7 @@ void EditInitWordDelimiter(HWND hwnd)
   if (StrIsNotEmpty(Settings2.AutoCompleteFillUpChars))
   {
     WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteFillUpChars, -1, AutoCompleteFillUpChars, (int)COUNTOF(AutoCompleteFillUpChars), NULL, NULL);
-    UnSlash(AutoCompleteFillUpChars, Encoding_SciCP);
+    UnSlashA(AutoCompleteFillUpChars, Encoding_SciCP);
 
     s_ACFillUpCharsHaveNewLn = false;
     int i = 0;
@@ -5356,6 +5356,7 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
           SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)tchBuf2);
         }
         else {
+          UnSlashW(s_tchBuf);
           SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)s_tchBuf);
         }
       }
@@ -5773,6 +5774,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                   }
                   else {
                     StringCchCopyA(lpszSelection, len + 1, pClip);
+                    UnSlashA(lpszSelection, Encoding_SciCP);
                   }
                 }
                 FreeMem(pClip);
@@ -5980,10 +5982,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             }
           }
           else {
-            UnSlash(sg_pefrData->szFind, Encoding_SciCP);
+            UnSlashA(sg_pefrData->szFind, Encoding_SciCP);
             SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
             if (GetDlgItem(hwnd, IDC_REPLACE)) {
-              UnSlash(sg_pefrData->szReplace, Encoding_SciCP);
+              UnSlashA(sg_pefrData->szReplace, Encoding_SciCP);
               SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
             }
           }
