@@ -86,7 +86,6 @@ protected:
    const char *  mDetectedCharset;
    float mDetectedConfidence;
    short   mDetectedIsBOM;
-   PRInt32 mBestGuess;
    PRUint32 mLanguageFilter;
 
    nsCharSetProber  *mCharSetProbers[NUM_OF_CHARSET_PROBERS];

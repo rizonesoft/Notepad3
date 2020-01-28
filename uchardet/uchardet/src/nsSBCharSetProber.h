@@ -55,7 +55,7 @@
 /* Numbers 0-9. */
 #define NUM 251
 
-#define SB_ENOUGH_REL_THRESHOLD  min(512, ENOUGH_DATA_THRESHOLD)
+#define SB_ENOUGH_REL_THRESHOLD  (ENOUGH_DATA_THRESHOLD >> 1)
 #define POSITIVE_SHORTCUT_THRESHOLD  SHORTCUT_THRESHOLD
 #define NEGATIVE_SHORTCUT_THRESHOLD  (0.05f)
 #define SYMBOL_CAT_ORDER  250
@@ -83,6 +83,7 @@ class nsSingleByteCharSetProber : public nsCharSetProber{
 public:
   nsSingleByteCharSetProber(const SequenceModel *model) 
     :mModel(model), mReversed(PR_FALSE), mNameProber(0) { Reset(); }
+
   nsSingleByteCharSetProber(const SequenceModel *model, PRBool reversed, nsCharSetProber* nameProber)
     :mModel(model), mReversed(reversed), mNameProber(nameProber) { Reset(); }
 

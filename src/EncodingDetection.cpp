@@ -1279,7 +1279,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel / 4.0f;
+      confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
     }
 
     if (!bSkipUTFDetection)
@@ -1322,7 +1322,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel / 4.0f;
+      confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
     }
     else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
       encDetRes.analyzedEncoding = asciiEnc;

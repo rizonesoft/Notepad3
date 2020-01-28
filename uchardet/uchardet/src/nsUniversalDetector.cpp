@@ -55,7 +55,6 @@ nsUniversalDetector::nsUniversalDetector(PRUint32 aLanguageFilter)
 {
   mNbspFound = PR_FALSE;
   mDone = PR_FALSE;
-  mBestGuess = -1;   //illegal value as signal
   mInTag = PR_FALSE;
   mEscCharSetProber = nsnull;
 
@@ -86,7 +85,6 @@ nsUniversalDetector::Reset()
 {
   mNbspFound = PR_FALSE;
   mDone = PR_FALSE;
-  mBestGuess = -1;   //illegal value as signal
   mInTag = PR_FALSE;
 
   mStart = PR_TRUE;
@@ -365,15 +363,14 @@ void nsUniversalDetector::DataEnd()
   {
   case eHighbyte:
     {
-      float proberConfidence;
-      float maxProberConfidence = (float)0.0;
-      PRInt32 maxProber = 0;
+      float maxProberConfidence = 0.0f;
+      PRInt32 maxProber = -1;
 
-      for (PRInt32 i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
+      for (PRInt32 i = 0; i < NUM_OF_CHARSET_PROBERS; ++i)
       {
         if (mCharSetProbers[i])
         {
-          proberConfidence = mCharSetProbers[i]->GetConfidence();
+          float const proberConfidence = mCharSetProbers[i]->GetConfidence();
           if (proberConfidence > maxProberConfidence)
           {
             maxProberConfidence = proberConfidence;
@@ -382,10 +379,10 @@ void nsUniversalDetector::DataEnd()
         }
       }
       mDetectedConfidence = maxProberConfidence;
+
       //do not report anything because we are not confident of it, that's in fact a negative answer
-      if (maxProberConfidence > MINIMUM_THRESHOLD) {
-        Report(mCharSetProbers[maxProber]->GetCharSetName(), mCharSetProbers[maxProber]->GetConfidence());
-        mDetectedConfidence = mCharSetProbers[maxProber]->GetConfidence();
+      if ((maxProber >= 0) && (maxProberConfidence > MINIMUM_THRESHOLD)) {
+        Report(mCharSetProbers[maxProber]->GetCharSetName(), maxProberConfidence);
       }
     }
     break;

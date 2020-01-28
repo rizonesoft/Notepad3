@@ -83,7 +83,7 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 
     if (mTotalSeqs > SB_ENOUGH_REL_THRESHOLD)
     {
       float const cf = GetConfidence();
-      if (cf > POSITIVE_SHORTCUT_THRESHOLD)
+      if (cf >= POSITIVE_SHORTCUT_THRESHOLD)
         mState = eFoundIt;
       else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
         mState = eNotMe;
@@ -116,14 +116,13 @@ float nsSingleByteCharSetProber::GetConfidence()
   if ((mTotalChar > 0) && (mTotalSeqs > 0))
   {
     // weighted good sequence count
-    PRUint32 const validSeqs = mSeqCounters[POSITIVE_CAT]
-                            + (mSeqCounters[PROBABLE_CAT] >> 1)
-                            + (mSeqCounters[NEUTRAL_CAT] >> 2);
+    PRUint32 const probableSeqs = mSeqCounters[POSITIVE_CAT] + (mSeqCounters[PROBABLE_CAT] >> 2);
+    PRUint32 const validSeqs = mTotalSeqs - mSeqCounters[NEGATIVE_CAT];
 
-    float r = mModel->mTypicalPositiveRatio;
+    float r = rfactor(mSeqCounters[POSITIVE_CAT], mTotalSeqs) / mModel->mTypicalPositiveRatio;
 
     // negative sequence correction factor
-    r *= rfactor(validSeqs, (mTotalSeqs + ((validSeqs >> 2) * mSeqCounters[NEGATIVE_CAT])));
+    r *= rfactor(validSeqs, (mTotalSeqs + (netChars * mSeqCounters[NEGATIVE_CAT])));
 
     /* Multiply by a ratio of positive sequences per characters.
      * This would help in particular to distinguish close winners.
@@ -133,9 +132,9 @@ float nsSingleByteCharSetProber::GetConfidence()
      * character). This could make the difference between very closely related
      * charsets used for the same language.
      */
-    r *= rfactor(validSeqs, netChars);
+     r *= rfactor(validSeqs, netChars);
 
-    /* The more control characters (proportionnaly to the size of the text), the
+     /* The more control characters (proportionally to the size of the text), the
      * less confident we become in the current charset.
      */
     r *= rfactor(netChars, mTotalChar);
