@@ -34,6 +34,7 @@
 #include "resource.h"
 #include "Version.h"
 #include "Encoding.h"
+#include "Styles.h"
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
@@ -897,7 +898,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         GetWinVersionString(wchBuf, COUNTOF(wchBuf));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        //GetLngString(IDS_MUI_TRANSL_AUTHOR, wchBuf, COUNTOF(wchBuf));
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
+
         StringCchCopy(wchBuf, COUNTOF(wchBuf), L"en-US");
         for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
           if (MUI_LanguageDLLs[lng].bIsActive) {
@@ -905,34 +908,35 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             break;
           }
         }
-        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\nLocale: %s (CP:'%s')", 
+        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Locale: %s (CP:'%s')", 
           wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
-        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
-        //StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UCHARDET);
-        //StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_TINYEXPR);
-        //StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_UTHASH);
-
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nScreen-Resolution = %i x %i [pix].", ResX, ResY);
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding = '%s'", Encoding_GetLabel(Encoding_Current(CPI_GET)));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nDisplay-DPI = %i x %i  (Scale: %i%%).", wndDPI.x, wndDPI.y, ScaleIntToCurrentDPI(100));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nRendering-Technology = %s.", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", wndDPI.x, wndDPI.y, ScaleIntToCurrentDPI(100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\nZoom = %i%%.", SciCall_GetZoom());
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom = %i%%.", SciCall_GetZoom());
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ?
-                                                       L"\nProcess is elevated." : 
-                                                       L"\nProcess is not elevated."));
+                                                       L"\n- Process is elevated." : 
+                                                       L"\n- Process is not elevated"));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ?
-                                                       L"\nUser is in Admin-Group." :
-                                                       L"\nUser is not in Admin-Group."));
+                                                       L"\n- User is in Admin-Group." :
+                                                       L"\n- User is not in Admin-Group"));
+
+        Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), wchBuf, COUNTOF(wchBuf));
+        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Current Lexer: '%s'", wchBuf);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
 

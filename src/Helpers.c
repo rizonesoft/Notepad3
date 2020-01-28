@@ -1888,11 +1888,11 @@ size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput)
  *
  * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh, \uhhhh and \\  into their indicated characters.
  */
-size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
+size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
 {
   LPSTR s = pchInOut;
   LPSTR o = pchInOut;
-  LPSTR const sStart = pchInOut;
+  LPCSTR const sStart = pchInOut;
 
   while (*s) {
     if (*s == '\\') {
@@ -1922,22 +1922,22 @@ size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
         WCHAR val[2] = L"";
         int hex;
         val[0] = 0;
-        hex = GetHexDigit(*(s + 1));
+        hex = GetHexDigitA(*(s + 1));
         if (hex >= 0) {
           ++s;
           val[0] = (WCHAR)hex;
-          hex = GetHexDigit(*(s + 1));
+          hex = GetHexDigitA(*(s + 1));
           if (hex >= 0) {
             ++s;
             val[0] *= 16;
             val[0] += (WCHAR)hex;
             if (!bShort) {
-              hex = GetHexDigit(*(s + 1));
+              hex = GetHexDigitA(*(s + 1));
               if (hex >= 0) {
                 ++s;
                 val[0] *= 16;
                 val[0] += (WCHAR)hex;
-                hex = GetHexDigit(*(s + 1));
+                hex = GetHexDigitA(*(s + 1));
                 if (hex >= 0) {
                   ++s;
                   val[0] *= 16;
@@ -1964,6 +1964,85 @@ size_t UnSlash(LPSTR pchInOut, UINT cpEdit)
         *o = '\\'; // revert
         ++o;
         *o = *s;
+      }
+    }
+    else
+      *o = *s;
+
+    ++o;
+    if (*s) {
+      ++s;
+    }
+  }
+  *o = '\0';
+  return (size_t)((ptrdiff_t)(o - sStart));
+}
+
+size_t UnSlashW(LPWSTR pchInOut)
+{
+  LPWSTR s = pchInOut;
+  LPWSTR o = pchInOut;
+  LPCWSTR const sStart = pchInOut;
+
+  while (*s) {
+    if (*s == '\\') {
+      ++s;
+      if (*s == L'a')
+        *o = L'\a';
+      else if (*s == L'b')
+        *o = L'\b';
+      else if (*s == L'e')
+        *o = L'\x1B';
+      else if (*s == L'f')
+        *o = L'\f';
+      else if (*s == L'n')
+        *o = L'\n';
+      else if (*s == L'r')
+        *o = L'\r';
+      else if (*s == L't')
+        *o = L'\t';
+      else if (*s == L'v')
+        *o = L'\v';
+      else if (*s == L'\\')
+        *o = L'\\';
+      else if (*s == L'x' || *s == L'u') {
+        bool bShort = (*s == L'x');
+        WCHAR val = L'\0';
+        int hex = GetHexDigitW(*(s + 1));
+        if (hex >= 0) {
+          val = (WCHAR)hex;
+          hex = GetHexDigitW(*(++s + 1));
+          if (hex >= 0) {
+            ++s;
+            val *= 16;
+            val += (WCHAR)hex;
+            if (!bShort) {
+              hex = GetHexDigitW(*(s + 1));
+              if (hex >= 0) {
+                val *= 16;
+                val += (WCHAR)hex;
+                hex = GetHexDigitW(*(++s + 1));
+                if (hex >= 0) {
+                  ++s;
+                  val *= 16;
+                  val += (WCHAR)hex;
+                }
+              }
+            }
+          }
+
+          if (val) {
+            *o = val;
+          }
+          else
+            --o;
+        }
+        else
+          --o;
+      }
+      else {
+        *o = '\\'; // revert
+        *++o = *s;
       }
     }
     else
@@ -2015,7 +2094,7 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
   // regex handles backslashes itself
   // except: replacement is not delegated to regex engine
   if (!bRegEx || (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg))) {
-    UnSlash(pszInput, cpEdit);
+    UnSlashA(pszInput, cpEdit);
   }
 }
 

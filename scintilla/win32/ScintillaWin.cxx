@@ -476,6 +476,7 @@ class ScintillaWin :
 
 	UINT CodePageOfDocument() const noexcept;
 	bool ValidCodePage(int codePage) const noexcept override;
+	std::string EncodeWString(std::wstring_view wsv);
 	sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) noexcept override;
 	void IdleWork() override;
 	void QueueIdleWork(WorkNeeded::workItems items, Sci::Position upTo) noexcept override;
@@ -507,7 +508,10 @@ class ScintillaWin :
 	void CopyAllowLine() override;
 	bool CanPaste() override;
 	void Paste(bool asBinary) override;
-	void CreateCallTipWindow(PRectangle rc) override;
+	void CreateCallTipWindow(PRectangle rc) noexcept override;
+#if SCI_EnablePopupMenu
+	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) noexcept override;
+#endif
 	void ClaimSelection() noexcept override;
 
 	// DBCS
@@ -1408,6 +1412,18 @@ UINT ScintillaWin::CodePageOfDocument() const noexcept {
 	return CodePageFromCharSet(vs.styles[STYLE_DEFAULT].characterSet, pdoc->dbcsCodePage);
 }
 
+std::string ScintillaWin::EncodeWString(std::wstring_view wsv) {
+	if (IsUnicodeMode()) {
+		const size_t len = UTF8Length(wsv);
+		std::string putf(len, 0);
+		UTF8FromUTF16(wsv, putf.data(), len);
+		return putf;
+	} else {
+		// Not in Unicode mode so convert from Unicode to current Scintilla code page
+		return StringEncode(wsv, CodePageOfDocument());
+	}
+}
+
 sptr_t ScintillaWin::GetTextLength() const noexcept {
 	return pdoc->CountUTF16(0, pdoc->Length());
 }
@@ -1811,6 +1827,25 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			}
 
 		case WM_CONTEXTMENU:
+#if SCI_EnablePopupMenu
+			{
+				Point pt = PointFromLParam(lParam);
+				POINT rpt = {static_cast<int>(pt.x), static_cast<int>(pt.y)};
+				::ScreenToClient(MainHWND(), &rpt);
+				const Point ptClient = PointFromPOINT(rpt);
+				if (ShouldDisplayPopup(ptClient)) {
+					if ((pt.x == -1) && (pt.y == -1)) {
+						// Caused by keyboard so display menu near caret
+						pt = PointMainCaret();
+						POINT spt = POINTFromPoint(pt);
+						::ClientToScreen(MainHWND(), &spt);
+						pt = PointFromPOINT(spt);
+					}
+					ContextMenu(pt);
+					return 0;
+				}
+			}
+#endif
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 		case WM_INPUTLANGCHANGE:
@@ -2505,7 +2540,7 @@ void ScintillaWin::Paste(bool asBinary) {
 	}
 	const PasteShape pasteShape = isRectangular ? pasteRectangular : (isLine ? pasteLine : pasteStream);
 
-	if (asBinary /*&& ::IsClipboardFormatAvailable(CF_TEXT)*/) {
+	if (asBinary) {
 		if (!asBinary) {
 			::CloseClipboard();
 			Redraw();
@@ -2513,38 +2548,18 @@ void ScintillaWin::Paste(bool asBinary) {
 		}
 	}
 
-	// Always use CF_UNICODETEXT if available
+	// Use CF_UNICODETEXT if available
 	GlobalMemory memUSelection(::GetClipboardData(CF_UNICODETEXT));
-	if (memUSelection) {
-		const wchar_t *uptr = static_cast<const wchar_t *>(memUSelection.ptr);
-		if (uptr) {
-			size_t len;
-			std::vector<char> putf;
-			// Default Scintilla behaviour in Unicode mode
-			if (IsUnicodeMode()) {
-				const size_t bytes = memUSelection.Size();
-				const std::wstring_view wsv(uptr, bytes / 2);
-				len = UTF8Length(wsv);
-				putf.resize(len + 1);
-				UTF8FromUTF16(wsv, putf.data(), len);
-			} else {
-				// CF_UNICODETEXT available, but not in Unicode mode
-				// Convert from Unicode to current Scintilla code page
-				const UINT cpDest = CodePageOfDocument();
-				len = MultiByteLenFromWideChar(cpDest, uptr);
-				putf.resize(len);
-				MultiByteFromWideChar(cpDest, uptr, putf.data(), len);
-			}
-
-			InsertPasteShape(putf.data(), len, pasteShape);
-		}
+	if (const wchar_t *uptr = static_cast<const wchar_t *>(memUSelection.ptr)) {
+		const std::string putf = EncodeWString(uptr);
+		InsertPasteShape(putf.c_str(), putf.length(), pasteShape);
 		memUSelection.Unlock();
 	}
 	::CloseClipboard();
 	Redraw();
 }
 
-void ScintillaWin::CreateCallTipWindow(PRectangle) {
+void ScintillaWin::CreateCallTipWindow(PRectangle) noexcept {
 	if (!ct.wCallTip.Created()) {
 		HWND wnd = ::CreateWindow(callClassName, L"ACallTip",
 			WS_POPUP, 100, 100, 150, 20,
@@ -2555,6 +2570,18 @@ void ScintillaWin::CreateCallTipWindow(PRectangle) {
 		ct.wDraw = wnd;
 	}
 }
+
+#if SCI_EnablePopupMenu
+void ScintillaWin::AddToPopUp(const char *label, int cmd, bool enabled) noexcept {
+	HMENU hmenuPopup = static_cast<HMENU>(popup.GetID());
+	if (!label[0])
+		::AppendMenuA(hmenuPopup, MF_SEPARATOR, 0, "");
+	else if (enabled)
+		::AppendMenuA(hmenuPopup, MF_STRING, cmd, label);
+	else
+		::AppendMenuA(hmenuPopup, MF_STRING | MF_DISABLED | MF_GRAYED, cmd, label);
+}
+#endif
 
 void ScintillaWin::ClaimSelection() noexcept {
 	// Windows does not have a primary selection

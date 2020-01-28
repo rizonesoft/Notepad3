@@ -355,7 +355,9 @@ UINT CharSetFromCodePage(const UINT uCodePage);
 size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
 size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 
-size_t UnSlash(LPSTR pchInOut, UINT cpEdit);
+size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
+size_t UnSlashW(LPWSTR pchInOut);
+
 void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
 void TransformMetaChars(char* pszInput, bool, int iEOLMode);
 
@@ -541,14 +543,20 @@ __inline bool IsAlphaNumeric(WCHAR ch) {
     ((ch >= L'A') && (ch <= L'Z'));
 }
 
-// If the character is an hexa digit, get its value.
-__inline int GetHexDigit(char ch) {
+// If the character is an hexadecimal digit, get its value.
+__inline int GetHexDigitA(char ch) {
   if (ch >= '0' && ch <= '9') { return ch - '0'; }
   if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
   if (ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
   return -1;
 }
 
+__inline int GetHexDigitW(WCHAR ch) {
+  if (ch >= L'0' && ch <= L'9') { return ch - L'0'; }
+  if (ch >= L'A' && ch <= L'F') { return ch - L'A' + 10; }
+  if (ch >= L'a' && ch <= L'f') { return ch - L'a' + 10; }
+  return -1;
+}
 // ----------------------------------------------------------------------------
 
 void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved);

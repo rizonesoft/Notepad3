@@ -280,7 +280,7 @@ void EditInitWordDelimiter(HWND hwnd)
   if (StrIsNotEmpty(Settings2.AutoCompleteFillUpChars))
   {
     WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteFillUpChars, -1, AutoCompleteFillUpChars, (int)COUNTOF(AutoCompleteFillUpChars), NULL, NULL);
-    UnSlash(AutoCompleteFillUpChars, Encoding_SciCP);
+    UnSlashA(AutoCompleteFillUpChars, Encoding_SciCP);
 
     s_ACFillUpCharsHaveNewLn = false;
     int i = 0;
@@ -5356,6 +5356,7 @@ static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam
           SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)tchBuf2);
         }
         else {
+          UnSlashW(s_tchBuf);
           SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)s_tchBuf);
         }
       }
@@ -5773,6 +5774,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                   }
                   else {
                     StringCchCopyA(lpszSelection, len + 1, pClip);
+                    UnSlashA(lpszSelection, Encoding_SciCP);
                   }
                 }
                 FreeMem(pClip);
@@ -5980,10 +5982,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             }
           }
           else {
-            UnSlash(sg_pefrData->szFind, Encoding_SciCP);
+            UnSlashA(sg_pefrData->szFind, Encoding_SciCP);
             SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
             if (GetDlgItem(hwnd, IDC_REPLACE)) {
-              UnSlash(sg_pefrData->szReplace, Encoding_SciCP);
+              UnSlashA(sg_pefrData->szReplace, Encoding_SciCP);
               SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
             }
           }
@@ -7254,17 +7256,18 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   {
     const char* const sep = " ";
     SciCall_AutoCCancel();
+    SciCall_ClearRegisteredImages();
+
     // cppcheck-suppress constArgument
     SciCall_AutoCSetSeperator(sep[0]);
     SciCall_AutoCSetIgnoreCase(true);
     //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     SciCall_AutoCSetChooseSingle(autoInsert);
-    //~SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
+    SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
     SciCall_AutoCSetFillups(AutoCompleteFillUpChars);
-    //~SciCall_AutoCSetMulti(SC_MULTIAUTOC_EACH);
 
     ++iWListSize; // zero termination
-    char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);
+    char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);
     if (pList) {
       PWLIST pTmp = NULL;
       PWLIST pWLItem = NULL;
@@ -7276,7 +7279,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         LL_DELETE(pListHead, pWLItem);
         FreeMem(pWLItem);
       }
-      SciCall_AutoCShow(iRootLen, (pList + 1));
+      SciCall_AutoCShow(iRootLen, pList);
       FreeMem(pList);
     }
   }
