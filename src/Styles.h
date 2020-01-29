@@ -33,7 +33,7 @@
 void   Style_Load();
 bool   Style_Import(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);
-void   Style_SaveSettings();
+void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
 void   Style_ToIniSection(bool bForceAll);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
@@ -41,7 +41,7 @@ bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 unsigned ThemeItems_CountOf();
 void     Style_SetIniFile(LPCWSTR szIniFile);
 bool     Style_InsertThemesMenu(HMENU hMenuBar);
-void     Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings);
+void     Style_DynamicThemesMenuCmd(int cmd);
 
 float  Style_GetCurrentFontSize();
 void   Style_SetFoldingAvailability(PEDITLEXER pLexer);

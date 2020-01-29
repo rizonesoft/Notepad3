@@ -182,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS  "Die aktuellen Notepad3 Einstellungen durch einen Neustart aktivieren ?\n\n%s"
+    IDS_MUI_RELOADCFGSEX    "Bei Fortsetzung ohne Neustart werden die gespeicherten Einstellungen nicht genutzt und beim Verlassen von Notepad3 von den internen Einstellungen überschrieben!"
     IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s""."
     IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulären Ausdrucks (RegEx), der Ausruck ist ungültig!"
     IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen."

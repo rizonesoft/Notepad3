@@ -502,6 +502,11 @@ typedef struct _flags_t
   bool ShellUseSystemMRU;
   bool bPreserveFileModTime;
 
+  bool bDoRelaunchElevated;
+  bool bSearchPathIfRelative;
+
+  bool bSettingsFileLocked;
+
 } FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;

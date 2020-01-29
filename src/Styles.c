@@ -300,7 +300,7 @@ static void _EnableSchemeConfig(const bool bEnable)
   EnableTool(Globals.hwndToolbar, IDT_VIEW_SCHEMECONFIG, bEnable);
 }
 
-void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
+void Style_DynamicThemesMenuCmd(int cmd)
 {
   unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
 
@@ -316,7 +316,7 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
       // internal defaults
     }
     else if (Globals.idxSelectedTheme == 1) {
-      if (bEnableSaveSettings) {
+      if (!Flags.bSettingsFileLocked) {
         CreateIniFile();
         if (StrIsNotEmpty(Globals.IniFile)) {
           Style_ExportToFile(Globals.IniFile, false);
@@ -645,9 +645,12 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //
 //  Style_SaveSettings()
 //
-void Style_SaveSettings()
+void Style_SaveSettings(bool bForceSaveSettings)
 {
-  Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
+  if (Settings.SaveSettings || bForceSaveSettings)
+  {
+    Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
+  }
 }
 
 

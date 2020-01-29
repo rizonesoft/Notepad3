@@ -162,6 +162,8 @@
 #define IDS_MUI_URL_OPEN_BROWSER        15059
 #define IDS_MUI_STATUSBAR_PREFIXES      15060
 #define IDS_MUI_STATUSBAR_POSTFIXES     15061
+#define IDS_MUI_RELOADSETTINGS          15062
+#define IDS_MUI_RELOADCFGSEX            15063
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
