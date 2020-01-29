@@ -27,19 +27,19 @@ extern "C" {
 //==== Ini-File Handling =============================================
 
 bool FindIniFile();
-int  TestIniFile();
+bool TestIniFile();
 bool CreateIniFile();
-bool CreateIniFileEx(LPCWSTR lpszIniFile);
-
-void LoadSettings();
+bool CreateIniFileEx(LPWSTR lpszIniFile);
 
 bool OpenSettingsFile();
-bool SaveSettings(bool);
+void LoadSettings();
+bool SaveAllSettings(bool bForceSaveSettings);
 bool CloseSettingsFile();
 
 // ----------------------------------------------------------------------------
 
 bool LoadIniFile(LPCWSTR lpIniFilePath);
+bool IsIniFileLoaded();
 bool SaveIniFile(LPCWSTR lpIniFilePath);
 void ReleaseIniFile();
 

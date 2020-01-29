@@ -45,7 +45,6 @@ extern "C" WCHAR     s_tchToolbarBitmap[MAX_PATH];
 extern "C" WCHAR     s_tchToolbarBitmapHot[MAX_PATH];
 extern "C" WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH];
 
-extern "C" bool      s_bEnableSaveSettings;
 extern "C" int       s_iToolBarTheme;
 
 extern "C"           THEMEFILES Theme_Files[];
@@ -80,15 +79,22 @@ constexpr bool SI_Success(const SI_Error rc) noexcept { return (rc >= SI_Error::
 // ============================================================================
 
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-
+static bool s_INI_Loaded = false;
 
 extern "C" bool LoadIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.Reset();
+  s_INI_Loaded = false;
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
   SI_Error const rc = s_INI.LoadFile(lpIniFilePath);
-  return SI_Success(rc);
+  s_INI_Loaded = SI_Success(rc);
+  return s_INI_Loaded;
+}
+
+extern "C" bool IsIniFileLoaded()
+{
+  return s_INI_Loaded;
 }
 
 extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
@@ -98,6 +104,7 @@ extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
   SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
   if (SI_Success(rc)) {
     s_INI.Reset(); // done
+    s_INI_Loaded = false;
   }
   return SI_Success(rc);
 }
@@ -105,6 +112,7 @@ extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
 extern "C" void ReleaseIniFile()
 {
   s_INI.Reset();
+  s_INI_Loaded = false;
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
 }
@@ -551,12 +559,12 @@ extern "C" bool FindIniFile()
 //=============================================================================
 
 
-extern "C" int TestIniFile() {
+extern "C" bool TestIniFile() {
 
   if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
     StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
     StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
-    return(0);
+    return false;
   }
 
   if (PathIsDirectory(Globals.IniFile) || *CharPrev(Globals.IniFile, StrEnd(Globals.IniFile, COUNTOF(Globals.IniFile))) == L'\\') {
@@ -578,9 +586,10 @@ extern "C" int TestIniFile() {
   if (!PathFileExists(Globals.IniFile) || PathIsDirectory(Globals.IniFile)) {
     StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), Globals.IniFile);
     StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
-    return(0);
+    return false;
   }
-  return(1);
+
+  return true;
 }
 //=============================================================================
 
@@ -591,7 +600,7 @@ extern "C" bool CreateIniFile()
 }
 //=============================================================================
 
-extern "C" bool CreateIniFileEx(LPCWSTR lpszIniFile)
+extern "C" bool CreateIniFileEx(LPWSTR lpszIniFile)
 {
   if (StrIsNotEmpty(lpszIniFile))
   {
@@ -601,7 +610,7 @@ extern "C" bool CreateIniFileEx(LPCWSTR lpszIniFile)
       SHCreateDirectoryEx(NULL, lpszIniFile, NULL);
       *pwchTail = L'\\';
     }
-
+    
     HANDLE hFile = CreateFile(lpszIniFile,
       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
       NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -614,6 +623,7 @@ extern "C" bool CreateIniFileEx(LPCWSTR lpszIniFile)
         Globals.bIniFileFromScratch = true;
       }
       CloseHandle(hFile);
+      NormalizePathEx(lpszIniFile, MAX_PATH, true, Flags.bSearchPathIfRelative);
       Style_SetIniFile(lpszIniFile);
       return true;
     }
@@ -1233,26 +1243,21 @@ void LoadSettings()
 //  OpenSettingsFile()
 //
 
-static bool s_bSettingsIniFileOpend = false;
-
 bool OpenSettingsFile()
 {
   if (StrIsNotEmpty(Globals.IniFile)) {
-    if (!s_bSettingsIniFileOpend) {
+    if (!IsIniFileLoaded()) {
       CreateIniFile();
-      s_bSettingsIniFileOpend = LoadIniFile(Globals.IniFile);
+      LoadIniFile(Globals.IniFile);
     }
   }
-  else {
-    s_bSettingsIniFileOpend = false;
-  }
-  return s_bSettingsIniFileOpend;
+  return IsIniFileLoaded();
 }
 
 
 //=============================================================================
 //
-//  SaveSettings()
+//  _SaveSettings()
 //
 
 #define SAVE_VALUE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME)                               \
@@ -1264,18 +1269,18 @@ bool OpenSettingsFile()
   }
 
 
-bool SaveSettings(bool bSaveSettingsNow)
+static bool _SaveSettings(bool bForceSaveSettings)
 {
   // update window placement 
   s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
-  if (!s_bSettingsIniFileOpend) { return false; }
+  if (!IsIniFileLoaded()) { return false; }
 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecSettings = Constants.Settings_Section;
   // --------------------------------------------------------------------------
 
-  if (!Settings.SaveSettings && !bSaveSettingsNow)
+  if (!(Settings.SaveSettings || bForceSaveSettings))
   {
     if (Settings.SaveSettings != Defaults.SaveSettings) {
       IniSectionSetBool(IniSecSettings, L"SaveSettings", Settings.SaveSettings);
@@ -1554,12 +1559,62 @@ bool SaveSettings(bool bSaveSettingsNow)
 
 //=============================================================================
 //
+//  SaveAllSettings()
+//
+bool SaveAllSettings(bool bForceSaveSettings)
+{
+  if (Flags.bDoRelaunchElevated) { return true; } // already saved before relaunch
+  if (Flags.bSettingsFileLocked) { return false; }
+
+  WCHAR tchMsg[80];
+  GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
+  BeginWaitCursor(tchMsg);
+
+  bool ok = OpenSettingsFile();
+
+  if (ok) {
+
+    _SaveSettings(bForceSaveSettings);
+
+    if (StrIsNotEmpty(Globals.IniFile))
+    {
+      // Cleanup unwanted MRU'selEmpty
+      if (!Settings.SaveRecentFiles) {
+        MRU_Empty(Globals.pFileMRU);
+      }
+      MRU_Save(Globals.pFileMRU);
+
+      if (!Settings.SaveFindReplace) {
+        MRU_Empty(Globals.pMRUfind);
+        MRU_Empty(Globals.pMRUreplace);
+      }
+      MRU_Save(Globals.pMRUfind);
+      MRU_Save(Globals.pMRUreplace);
+    }
+  }
+
+  if (ok) {
+    ok = CloseSettingsFile();
+  }
+
+  // separate INI files for Style-Themes
+  if (Globals.idxSelectedTheme >= 2) {
+    Style_SaveSettings(bForceSaveSettings);
+  }
+
+  EndWaitCursor();
+  return ok;
+}
+
+
+//=============================================================================
+//
 //  CloseSettingsFile()
 //
 
 bool CloseSettingsFile()
 {
-  if (!s_bSettingsIniFileOpend || StrIsEmpty(Globals.IniFile)) { return false; }
+  if (!IsIniFileLoaded() || StrIsEmpty(Globals.IniFile)) { return false; }
 
   bool const ok = SaveIniFile(Globals.IniFile);
 
@@ -1568,10 +1623,11 @@ bool CloseSettingsFile()
   }
 
   // force filesystem cache to sync
-  LoadIniFile(Globals.IniFile);
+  FILE* fp = nullptr;
+  _wfopen_s(&fp, Globals.IniFile, L"rb");
+  if (fp) { fclose(fp); }
   ReleaseIniFile();
 
-  s_bSettingsIniFileOpend = false;
   return ok;
 }
 
@@ -1844,9 +1900,9 @@ void MRU_Save(LPMRULIST pmru)
 {
   if (pmru) {
 
-    bool const bOpendByMe = !s_bSettingsIniFileOpend ? OpenSettingsFile() : false;
+    bool const bOpendByMe = !IsIniFileLoaded() ? OpenSettingsFile() : false;
 
-    if (s_bSettingsIniFileOpend) {
+    if (IsIniFileLoaded()) {
       WCHAR tchName[32] = { L'\0' };
       WCHAR tchItem[2048] = { L'\0' };
 
@@ -1890,9 +1946,9 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 {
   if (pmru) {
 
-    bool const bOpendByMe = !s_bSettingsIniFileOpend ?  OpenSettingsFile() : false;
+    bool const bOpendByMe = !IsIniFileLoaded() ?  OpenSettingsFile() : false;
 
-    if (s_bSettingsIniFileOpend) {
+    if (IsIniFileLoaded()) {
 
       LPMRULIST pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
       MRU_Load(pmruBase);

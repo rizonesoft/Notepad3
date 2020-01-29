@@ -93,14 +93,12 @@ WCHAR     s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-bool      s_bEnableSaveSettings = true;
 int       s_iToolBarTheme = -1;
 
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
 static bool      s_bIsRunAsAdmin = false;
-static bool      s_flagDoRelaunchElevated = false;
 static bool      s_flagSaveOnRelaunch = false;
 static bool      s_IsThisAnElevatedRelaunch = false;
 
@@ -556,7 +554,6 @@ static FILE_WATCHING_MODE    s_flagChangeNotify = FWM_DONT_CARE;
 static bool                  s_flagQuietCreate = false;
 static bool                  s_flagLexerSpecified = false;
 static bool                  s_flagAppIsClosing = false;
-static bool                  s_flagSearchPathIfRelative = false;
 static bool                  s_flagDisplayHelp = false;
 
 //==============================================================================
@@ -674,6 +671,10 @@ static void _InitGlobals()
   Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
   Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
   Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime = false;
+  Flags.bDoRelaunchElevated = DefaultFlags.bDoRelaunchElevated = false;
+  Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
+
+  Flags.bSettingsFileLocked = DefaultFlags.bSettingsFileLocked = false;
 
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
@@ -1661,55 +1662,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
   return 0; // 0 = swallow message
-}
-
-
-//=============================================================================
-//
-//  SaveAllSettings()
-//
-bool SaveAllSettings(bool bSaveSettingsNow)
-{
-  if (s_flagDoRelaunchElevated) { return true; } // already saved before relaunch
-
-  WCHAR tchMsg[80];
-  GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
-  BeginWaitCursor(tchMsg);
-  
-  bool ok = OpenSettingsFile();
-
-  if (ok) {
-
-    SaveSettings(bSaveSettingsNow);
-
-    if (StrIsNotEmpty(Globals.IniFile))
-    {
-      // Cleanup unwanted MRU'selEmpty
-      if (!Settings.SaveRecentFiles) {
-        MRU_Empty(Globals.pFileMRU);
-      }
-      MRU_Save(Globals.pFileMRU);
-
-      if (!Settings.SaveFindReplace) {
-        MRU_Empty(Globals.pMRUfind);
-        MRU_Empty(Globals.pMRUreplace);
-      }
-      MRU_Save(Globals.pMRUfind);
-      MRU_Save(Globals.pMRUreplace);
-    }
-  }
-
-  if (ok) {
-    ok = CloseSettingsFile();
-  }
-
-  // separate INI files for Style-Themes
-  if (Globals.idxSelectedTheme >= 2) {
-    Style_SaveSettings();
-  }
-
-  EndWaitCursor();
-  return ok;
 }
 
 
@@ -3512,7 +3464,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
   }
 
-  UpdateSettingsCmds();
+  UpdateSaveSettingsCmds();
   
   LockWindowUpdate(NULL); // allow redrawing
   DrawMenuBar(hwnd);
@@ -3591,7 +3543,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
   if (bIsThemesMenuCmd) {
-    Style_DynamicThemesMenuCmd(iLoWParam, s_bEnableSaveSettings);
+    Style_DynamicThemesMenuCmd(iLoWParam);
     return FALSE;
   }
 
@@ -5689,16 +5641,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (StrIsEmpty(Globals.IniFile)) {
 
-          if (StringCchLenW(Globals.IniFileDefault,COUNTOF(Globals.IniFileDefault)) > 0) {
+          if (StrIsNotEmpty(Globals.IniFileDefault)) {
             if (CreateIniFileEx(Globals.IniFileDefault)) {
-              StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile), Globals.IniFileDefault);
-              StringCchCopy(Globals.IniFileDefault,COUNTOF(Globals.IniFileDefault),L"");
+              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+              StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
               bCreateFailure = true;
             }
           }
-
           else
             break;
         }
@@ -7796,7 +7747,7 @@ void ParseCommandLine()
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                          lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
           TrimSpcW(s_wchTmpFilePath);
-          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
+          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, Flags.bSearchPathIfRelative);
           s_IsThisAnElevatedRelaunch = true;
         }
 
@@ -8041,12 +7992,12 @@ void ParseCommandLine()
                 s_flagAppIsClosing = true;
               }
               else {
-                s_flagDoRelaunchElevated = true;
+                Flags.bDoRelaunchElevated = true;
               }
               break;
 
             case L'Y':
-              s_flagSearchPathIfRelative = true;
+              Flags.bSearchPathIfRelative = true;
               break;
 
             case L'Z':
@@ -9008,16 +8959,15 @@ void UpdateMarginWidth()
 
 //=============================================================================
 //
-//  UpdateSettingsCmds()
+//  UpdateSaveSettingsCmds()
 //
 //
-void UpdateSettingsCmds()
+void UpdateSaveSettingsCmds()
 {
-    //~HMENU hmenu = GetSystemMenu(Globals.hwndMain, false);
-    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && s_bEnableSaveSettings);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && s_bEnableSaveSettings);
-    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && s_bEnableSaveSettings);
+    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileLocked);
+    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
 }
 
 
@@ -9595,8 +9545,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
     InstallFileWatching(NULL);
-    s_bEnableSaveSettings = true;
-    UpdateSettingsCmds();
+    Flags.bSettingsFileLocked = false;
+    UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
     return true;
@@ -9609,8 +9559,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
   else {
     StringCchCopy(szFileName, COUNTOF(szFileName), lpszFile);
-    NormalizePathEx(szFileName, COUNTOF(szFileName), true, s_flagSearchPathIfRelative);
   }
+  NormalizePathEx(szFileName, COUNTOF(szFileName), true, Flags.bSearchPathIfRelative);
 
   // change current directory to prevent directory lock on another path
   WCHAR szFolder[MAX_PATH];
@@ -9713,7 +9663,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
-    if (!(s_flagDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
+    if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
       MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
     }
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
@@ -9758,8 +9708,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
-    s_bEnableSaveSettings = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) ? false : true;
-    UpdateSettingsCmds();
+    Flags.bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
     // Show warning: Unicode file loaded as ANSI
@@ -9891,7 +9841,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 {
   SaveAllSettings(false);
 
-  s_flagDoRelaunchElevated = true;
+  Flags.bDoRelaunchElevated = true;
 
   LPWSTR lpCmdLine = GetCommandLine();
   size_t const wlen = StringCchLen(lpCmdLine, 0) + 2;
@@ -9994,10 +9944,10 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     if (PathFileExists(szTempFileName)) {
       DeleteFile(szTempFileName);
     }
-    s_flagDoRelaunchElevated = false;
+    Flags.bDoRelaunchElevated = false;
   }
 
-  return s_flagDoRelaunchElevated;
+  return Flags.bDoRelaunchElevated;
 }
 
 
@@ -10142,7 +10092,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
   if (fSuccess)
   {
-    if (!(bSaveCopy || s_flagDoRelaunchElevated))
+    if (!(bSaveCopy || Flags.bDoRelaunchElevated))
     {
       cpi_enc_t iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
@@ -10166,14 +10116,38 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       }
       InstallFileWatching(Globals.CurrentFile);
     }
+
+    // if current file is settings/config file: ask to start
+    // bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    if (Flags.bSettingsFileLocked && !s_flagAppIsClosing)
+    {
+      //~ LoadSettings(); NOT all settings will be applied ...
+      INT_PTR answer = 0;
+      if (Settings.SaveSettings) { // @@@ 
+        WCHAR tch[256] = { L'\0' };
+        LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
+        answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
+      }
+      else {
+        answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
+      }
+      if ((IDOK == answer) || (IDYES == answer))
+      {
+        DialogNewWindow(Globals.hwndMain, false, Globals.CurrentFile);
+        CloseApplication();
+      }
+    }
+
   }
   else if (!fioStatus.bCancelDataLoss)
   {
+    LPCWSTR const currentFileName = PathFindFileName(Globals.CurrentFile);
+
     if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED,
-                                        PathFindFileName(Globals.CurrentFile), _W(SAPPNAME));
-      if ((IDOK == answer) || (IDYES == answer)) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME));
+      if ((IDOK == answer) || (IDYES == answer)) 
+      {
         if (DoElevatedRelaunch(&fioStatus, true))
         {
           CloseApplication();
@@ -10181,13 +10155,13 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         else {
           s_flagAppIsClosing = false;
           UpdateToolbar();
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, PathFindFileName(Globals.CurrentFile));
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
         }
       }
     }
     else {
       UpdateToolbar();
-      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, PathFindFileName(Globals.CurrentFile));
+      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
     }
   }
   return fSuccess;
@@ -10370,7 +10344,7 @@ bool ActivatePrevInst()
 
   if (Flags.bSingleFileInstance && StrIsNotEmpty(s_lpFileArg))
   {
-    NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, s_flagSearchPathIfRelative);
+    NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, Flags.bSearchPathIfRelative);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -10580,7 +10554,7 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVistaOrHigher() || !s_flagDoRelaunchElevated ||
+  if (!IsVistaOrHigher() || !Flags.bDoRelaunchElevated ||
       s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
       s_flagDisplayHelp) 
   {
