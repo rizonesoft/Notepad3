@@ -144,8 +144,7 @@ BEGIN
     IDS_MUI_ERR_DROP        "За один раз можно перетащить только один файл!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Файл «%s» не может быть сохранен и может быть защищен.\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         "Файл «%s» не может быть сохранен и может быть защищен.\n\nХотите запустить Notepad3 от имени Администратора?"
-    IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы уверены, что хотите открыть этот очень большой файл?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
@@ -183,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "Ошибка экспорта настроек стилей в «%s»."
     IDS_MUI_REGEX_INVALID    "Ошибка обработки регулярного выражения. Выражение недействительно!"
     IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3."

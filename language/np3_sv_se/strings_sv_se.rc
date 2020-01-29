@@ -144,13 +144,12 @@ BEGIN
     IDS_MUI_ERR_DROP        "Endast en fil kan slängas på en gång!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra Notepad3 som Administratör?"
-    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Vill du öppna denna stora fil?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Okändt filnamnstillägg (%s) !\nVill du fortsätta ändå ?"
+                            "Okändt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -183,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s""."
     IDS_MUI_REGEX_INVALID    "Fil vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
     IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält."

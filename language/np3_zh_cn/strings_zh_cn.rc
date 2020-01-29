@@ -118,7 +118,7 @@ BEGIN
     IDS_MUI_OPENWITH        "请选择用于收藏应用程序的文件夹。"
     IDS_MUI_FAVORITES       "请选择用于收藏文件的文件夹。"
     IDS_MUI_BACKSLASHHELP   "反斜杠转义序列：\n\n\\a\t响铃符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳页符 (FF, ASCII 12)\n\\n\t换行符 (LF, ASCII 10)\n\\r\t回车符 (CR, ASCII 13)\n\\t\t水平制表符 (HT, ASCII 9)\n\\v\t垂直制表符 (VT, ASCII 11)\n\\ooo\t八进制数值 ooo 对应的字符\n\\uHHHH\t十六进制数值 HHHH 对应的字符\n\\xHH\t十六进制数值 HH 对应的字符\n\\\\\t反斜杠"
-    IDS_MUI_REGEXPHELP      "正则表达式语法（支持多行匹配）：\n\n.\t任意字符\n^\t行首\n$\t行尾\n\\<\t词首\n\\>\t词尾\n\\b\t词首或词尾\n[...]\t集合（[abc]）或范围（[a-z]）中的任一字符\n[^...]\t除集合或范围以外的任一字符\n\\d\t单个十进制数字\n\\D\t单个除十进制数字以外的任意字符\n\\s\t单个空格字符\n\\S\t单个除空格字符以外的任意字符\n\\w\t任一可出现于标识符中的字符\n\\W\t任一不可出现于标识符中的字符\n\\\\\t反斜杠\n\\xHH\t十六进制数值 HH 对应的字符\n?\t匹配它前面的单元至多 1 次\n*\t匹配它前面的单元 0 次或任意次\n+\t匹配它前面的单元至少 1 次\n*? 和 +?\t非贪婪匹配的 ? 和 +\n(\t分组开始\n)\t分组结束\n\\1 - \\9\t引用指定序号的已匹配分组\n"
+    IDS_MUI_REGEXPHELP      "正则表达式语法（支持多行匹配）：\n\n.\t任意字符\n^\t行首\n$\t行尾\n\\<\t词首\n\\>\t词尾\n\\b\t词首或词尾\n[...]\t集合（[abc]）或范围（[a-z]）中的任一字符\n[^...]\t除集合或范围以外的任一字符\n\\d\t单个十进制数字\n\\D\t单个除十进制数字以外的任意字符\n\\s\t单个空格字符\n\\S\t单个除空格字符以外的任意字符\n\\w\t任一可出现于标识符中的字符\n\\W\t任一不可出现于标识符中的字符\n\\\\\t反斜杠\n\\xHH\t十六进制数值 HH 对应的字符\n?\t匹配它前面的单元至多 1 次\n*\t匹配它前面的单元 0 次或任意次\n+\t匹配它前面的单元至少 1 次\n*? 和 +?\t非贪婪匹配的? 和 +\n(\t分组开始\n)\t分组结束\n\\1 - \\9\t引用指定序号的已匹配分组\n"
     IDS_MUI_WILDCARDHELP    "通配符：\n\n*\t匹配 0 或任意个字符\n?\t匹配恰好一个字符"
 END
 
@@ -144,7 +144,6 @@ BEGIN
     IDS_MUI_ERR_DROP        "一次只能拖放一个文件。"
     IDS_MUI_ERR_ACCESSDENIED
                             "文件""%s""不能被保存，它可能是受保护的。\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         "文件""%s""不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否确实要打开一个如此庞大的文件？"
@@ -183,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "导出样式设置到文件""%s""时遇到错误。"
     IDS_MUI_REGEX_INVALID    "正则表达式无效。"
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
