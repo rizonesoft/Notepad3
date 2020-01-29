@@ -10122,14 +10122,14 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     if (Flags.bSettingsFileLocked && !s_flagAppIsClosing)
     {
       //~ LoadSettings(); NOT all settings will be applied ...
-      INT_PTR const answer = 0;
+      INT_PTR answer = 0;
       if (Settings.SaveSettings) { // @@@ 
         WCHAR tch[256] = { L'\0' };
         LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
-        InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
+        answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
       }
       else {
-        InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
+        answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
       }
       if ((IDOK == answer) || (IDYES == answer))
       {
