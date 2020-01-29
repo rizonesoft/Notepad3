@@ -144,12 +144,12 @@ BEGIN
     IDS_MUI_ERR_DROP        "Un seul fichier peut être déposé en même temps!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Le fichier ""% s "" ne peut pas être sauvegardé et est peut-être protégé.\n\nVoulez-vous lancer %s en tant qu'application élevée?"
-    IDS_MUI_ERR_ADMINEXE    "Aucun fichier exécutable d'administration trouvé.\nCheck website https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Aucun fichier exécutable d'administration trouvé.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Etes-vous sûr de vouloir ouvrir ce gros fichier?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Ne peut pas gérer cet énorme fichier (taille: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Extension de nom de fichier inconnue (%s) !\nChargement des données quand même?"
+                            "Extension de nom de fichier inconnue (%s)!\nChargement des données quand même?"
     IDS_MUI_INDENT_CONSISTENT  "Le fichier a un retrait cohérent!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -182,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activer les paramètres actuels en redémarrant?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "En poursuivant sans relance, les paramètres enregistrés ne sont pas appliqués et seront remplacés par les paramètres internes à la sortie du programme!"
     IDS_MUI_EXPORT_FAIL      "Erreur d'exportation des paramètres de style vers ""%s""."
     IDS_MUI_REGEX_INVALID    "Erreur lors de l'évaluation de l'expression régulière. L'expression est invalide!"
     IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré.\nSi une application 32 bits est utilisée,\nessayer de faire glisser le fichier sur la barre d'outils de Notepad3."

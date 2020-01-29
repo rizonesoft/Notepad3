@@ -149,7 +149,7 @@ BEGIN
                             "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unbekannte Dateierweiterung (%s) !\nSollen die Daten trotzdem geladen werden?"
+                            "Unbekannte Dateierweiterung (%s)!\nSollen die Daten trotzdem geladen werden?"
     IDS_MUI_INDENT_CONSISTENT  "Die Datei hat einheitliche Einrückungen!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -182,7 +182,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS  "Die aktuellen Notepad3 Einstellungen durch einen Neustart aktivieren ?\n\n%s"
+    IDS_MUI_RELOADSETTINGS  "Die aktuellen Notepad3 Einstellungen durch einen Neustart aktivieren?\n\n%s"
     IDS_MUI_RELOADCFGSEX    "Bei Fortsetzung ohne Neustart werden die gespeicherten Einstellungen nicht genutzt und beim Verlassen von Notepad3 von den internen Einstellungen überschrieben!"
     IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s""."
     IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulären Ausdrucks (RegEx), der Ausruck ist ungültig!"

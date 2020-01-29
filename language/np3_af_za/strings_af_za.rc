@@ -144,7 +144,6 @@ BEGIN
     IDS_MUI_ERR_DROP        "Slegs een lêer kan op dieselfde tyd laat val word!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nWil u Notepad as Administrateur begin?"
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Is jy seker jy wil hierdie groot lêer oopmaak?"
@@ -183,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "Kon nie stylinstellings uitvoer na ""%s""."
     IDS_MUI_REGEX_INVALID    "Kon nie regular expression evalueer nie. Expression is ongeldig!"
     IDS_MUI_DROP_NO_FILE     "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."

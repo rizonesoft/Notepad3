@@ -182,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
     IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません!"
     IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"

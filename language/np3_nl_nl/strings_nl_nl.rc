@@ -144,12 +144,12 @@ BEGIN
     IDS_MUI_ERR_DROP        "Er kan slechts één bestand tegelijkertijd worden gedeponeerd!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Het bestand ""%s"" kan niet worden opgeslagen en kan worden beveiligd.\n\nWilt u %s als verhoogde applicatie starten?"
-    IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Weet je zeker dat je dit grote bestand wilt openen?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Kan dat enorme bestand niet aan (grootte: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Onbekende bestandsnaamextensie (%s) !\nGegevens toch laden?"
+                            "Onbekende bestandsnaamextensie (%s)!\nGegevens toch laden?"
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -182,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "De huidige instellingen activeren door opnieuw te starten?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Als u doorgaat zonder opnieuw te starten, worden opgeslagen instellingen niet toegepast en worden deze overschreven door interne instellingen bij het afsluiten van het programma!"
     IDS_MUI_EXPORT_FAIL      "Fout bij het exporteren van stijl instellingen naar ""%s""."
     IDS_MUI_REGEX_INVALID    "Fout bij het evalueren van reguliere expressie. Expressie is ongeldig!"
     IDS_MUI_DROP_NO_FILE     "Geen geldige bestandsnaam opgehaald.\nAls een 32-bits toepassing wordt gebruikt,\nprobeer dan het bestand naar de werkbalk Notepad3 te slepen"
