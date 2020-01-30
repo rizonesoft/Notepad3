@@ -7262,7 +7262,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         LL_DELETE(pListHead, pWLItem);
         FreeMem(pWLItem);
       }
-      SciCall_AutoCShow(iRootLen, pList);
+      SciCall_AutoCShow(iRootLen, &pList[1]); // skip first sep
       FreeMem(pList);
     }
   }

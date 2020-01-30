@@ -119,7 +119,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 21 December 2019 NH</p>
+    <p>Last edited 25 January 2020 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -1839,7 +1839,7 @@ struct Sci_TextToFind {
      <b id="SCI_GETSELECTIONNEND">SCI_GETSELECTIONNEND(int selection) &rarr; position</b><br />
      <b id="SCI_GETSELECTIONNENDVIRTUALSPACE">SCI_GETSELECTIONNENDVIRTUALSPACE(int selection) &rarr; position</b><br />
      Set or query the start and end position of each already existing selection.
-     Query the virtual space at start and end of each selection. 
+     Query the virtual space at start and end of each selection.
      Mostly of use to query each range for its text. The selection parameter is zero-based. </p>
 
     <p>
@@ -5548,6 +5548,12 @@ struct Sci_TextToFind {
     <code>SCMOD_SUPER</code> is only available on GTK which is commonly the Windows key.
     If you are building a table, you might
     want to use <code>SCMOD_NORM</code>, which has the value 0, to mean no modifiers.</p>
+
+    <p>On Win32, the numeric keypad with Alt pressed can be used to enter characters by number.
+    This can produce unexpected results in non-numlock mode when function keys are assigned so
+    potentially problematic keys are ignored. For example, setting
+    <code>SCMOD_ALT</code>,<code>SCK_UP</code> will only be active for the Up key on the
+    main cursor keys, not the numeric keypad.</p>
 
     <p><b id="SCI_ASSIGNCMDKEY">SCI_ASSIGNCMDKEY(int <a class="jump"
     href="#keyDefinition">keyDefinition</a>, int sciCommand)</b><br />
