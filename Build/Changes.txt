@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.127.(build_#) (2020-01-27)
+Current BETA Version 5.20.129.(build_#) (2020-01-29)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,8 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Finetuning of Single Byte Char Set (SBCS) detection.
+- Add current Encoding and Lexer to "Copy Version Text".
 - Lexer keyword initializer list simplified.
 - Find/Replace dialog: in case of "transform backslashes" do Esc control seqs.
 - Remove "extra" drag n' drop handler.
@@ -103,6 +105,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Transform backslashes while pasting into search/replace box.
 - Some issues for lexers: YAML and JSON.
 - Clipboard multi-line paste hook for Find/Replace pattern CB.
 - Allow multi-line Search Find/Replace pattern.
@@ -301,6 +304,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Changing .ini-file manually.
 - Load external Toolbars (clear config on error, path relative to be portable).
 - Focused View: refolding by lexer.
 - Focused View started from Find/Replace dialog.
