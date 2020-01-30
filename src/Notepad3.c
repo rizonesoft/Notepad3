@@ -1379,7 +1379,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (s_flagJumpTo)
         EditJumpTo(Globals.hwndEdit, s_iInitialLine, s_iInitialColumn);
       else
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
     }
   }
 
@@ -1408,14 +1408,14 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         Settings.EFR_Data.bTransformBS = true;
 
       if (s_flagMatchText & 2) {
-        if (!s_flagJumpTo) { SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0); }
+        if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
         EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
       }
       else {
-        if (!s_flagJumpTo) { SendMessage(Globals.hwndEdit, SCI_DOCUMENTSTART, 0, 0); }
+        if (!s_flagJumpTo) { SciCall_DocumentStart(); }
         EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
       }
     }
     LocalFree(s_lpMatchArg);  // StrDup()
@@ -4945,16 +4945,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         switch (iLoWParam) {
 
           case IDM_EDIT_FINDNEXT:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionEnd(Globals.hwndEdit);
-            }
             EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
             break;
 
           case IDM_EDIT_FINDPREV:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionStart(Globals.hwndEdit);
-            }
             EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
             break;
 
@@ -4968,16 +4962,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_SELTONEXT:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionEnd(Globals.hwndEdit);
-            }
             EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,true,false);
             break;
 
           case IDM_EDIT_SELTOPREV:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionStart(Globals.hwndEdit);
-            }
             EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,true,false);
             break;
         }
@@ -5022,16 +5010,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
 
         case CMD_FINDNEXTSEL:
-          if (!SciCall_IsSelectionEmpty()) {
-            EditJumpToSelectionEnd(Globals.hwndEdit);
-          }
           EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
 
         case CMD_FINDPREVSEL:
-          if (!SciCall_IsSelectionEmpty()) {
-            EditJumpToSelectionStart(Globals.hwndEdit);
-          }
           EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
         }
@@ -5099,7 +5081,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Globals.fvCurFile.bWordWrap = !Globals.fvCurFile.bWordWrap;
       Settings.WordWrap = Globals.fvCurFile.bWordWrap;
       _SetWrapIndentMode(Globals.hwndEdit);
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+      EditEnsureSelectionVisible();
       UpdateToolbar();
       break;
 
@@ -6171,12 +6153,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_JUMP2SELSTART:
-      EditJumpToSelectionStart(Globals.hwndEdit);
+      EditSetCaretToSelectionStart();
       SciCall_ChooseCaretX();
       break;
 
     case CMD_JUMP2SELEND:
-      EditJumpToSelectionEnd(Globals.hwndEdit);
+      EditSetCaretToSelectionEnd();
       SciCall_ChooseCaretX();
       break;
 
@@ -9694,7 +9676,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         SciCall_NewLine();
         _END_UNDO_ACTION_
         SciCall_DocumentEnd();
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
       }
       // set historic caret/selection  pos
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
@@ -9819,7 +9801,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+      EditEnsureSelectionVisible();
     }
   }
 
@@ -10948,7 +10930,7 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       SendMessage(Globals.hwndEdit,SCI_PASTE,0,0);
       SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
       _END_UNDO_ACTION_
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+      EditEnsureSelectionVisible();
       Settings.AutoIndent = bAutoIndent2;
     }
     s_dwLastCopyTime = 0;
