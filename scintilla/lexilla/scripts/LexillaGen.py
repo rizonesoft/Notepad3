@@ -22,11 +22,24 @@ def RegenerateAll(root):
     scintillaBase = os.path.abspath(root)
 
     sci = ScintillaData.ScintillaData(root + os.sep)
-    
-    src = os.path.join(root, "lexilla", "src")
 
-    Regenerate(os.path.join(src, "Lexilla.cxx"), "//", sci.lexerModules)
-    Regenerate(os.path.join(src, "lexilla.mak"), "#", sci.lexFiles)
+    lexillaDir = os.path.join(root, "lexilla")
+    srcDir = os.path.join(lexillaDir, "src")
+
+    Regenerate(os.path.join(srcDir, "Lexilla.cxx"), "//", sci.lexerModules)
+    Regenerate(os.path.join(srcDir, "lexilla.mak"), "#", sci.lexFiles)
+
+    # Discover version information
+    with open(os.path.join(lexillaDir, "version.txt")) as f:
+        version = f.read().strip()
+    versionDotted = version[0] + '.' + version[1] + '.' + version[2]
+    versionCommad = versionDotted.replace(".", ", ") + ', 0'
+
+    rcPath = os.path.join(srcDir, "LexillaVersion.rc")
+    UpdateLineInFile(rcPath, "#define VERSION_LEXILLA",
+        "#define VERSION_LEXILLA \"" + versionDotted + "\"")
+    UpdateLineInFile(rcPath, "#define VERSION_WORDS",
+        "#define VERSION_WORDS " + versionCommad)
 
     #~ startDir = os.getcwd()
     #~ os.chdir(os.path.join(scintillaBase, "win32"))

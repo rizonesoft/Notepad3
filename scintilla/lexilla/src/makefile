@@ -20,6 +20,8 @@ WARNINGS = -Wpedantic -Wall -Wextra
 
 ifdef windir
     SHAREDEXTENSION = dll
+    WINDRES ?= windres
+    VERSION_RESOURCE = LexillaVersion.o
 else
     ifeq ($(shell uname),Darwin)
         CLANG := 1
@@ -80,6 +82,9 @@ clean:
 %.o: %.cxx
 	$(CXX) $(DEFINES) $(INCLUDES) $(BASE_FLAGS) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+%.o:	%.rc
+	$(WINDRES) $< $@
+
 analyze:
 	$(CXX) --analyze $(DEFINES) $(INCLUDES) $(BASE_FLAGS) $(CXXFLAGS) *.cxx ../../lexlib/*.cxx ../../lexers/*.cxx
 
@@ -109,7 +114,7 @@ LEXILLA_OBJS=\
 	$(LEXLIB_OBJS) \
 	$(LEXERS:.cxx=.o)
 
-$(LEXILLA): $(LEXILLA_OBJS)
+$(LEXILLA): $(LEXILLA_OBJS) $(VERSION_RESOURCE)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 $(LIBLEXILLA):  $(LEXILLA_OBJS)
