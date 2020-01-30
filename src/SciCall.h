@@ -268,6 +268,7 @@ DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option)
 
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position)
 DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line)
+DeclareSciCallV0(DocumentStart, DOCUMENTSTART)
 DeclareSciCallV0(DocumentEnd, DOCUMENTEND)
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position)
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)

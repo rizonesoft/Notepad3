@@ -59,8 +59,8 @@ void  EditSpacesToTabs(HWND hwnd,int nTabWidth,bool);
 
 void  EditMoveUp(HWND hwnd);
 void  EditMoveDown(HWND hwnd);
-void  EditJumpToSelectionEnd(HWND hwnd);
-void  EditJumpToSelectionStart(HWND hwnd);
+DocPos  EditSetCaretToSelectionStart();
+DocPos  EditSetCaretToSelectionEnd();
 void  EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend);
 void  EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
 void  EditAlignText(HWND hwnd,int nMode);
@@ -85,7 +85,7 @@ const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd);
 void  EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView);
 void  EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions(HWND hwnd);
-void  EditEnsureSelectionVisible(HWND hwnd);
+void  EditEnsureSelectionVisible();
 void	EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
