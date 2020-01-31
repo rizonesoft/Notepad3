@@ -979,6 +979,10 @@ bool EditLoadFile(
   bool bClearUndoHistory,
   EditFileIOStatus* status)
 {
+  cpi_enc_t const iEncFallback = Settings.UseDefaultForFileEncoding ?
+                                 Settings.DefaultEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
+
+  status->iEncoding = iEncFallback;
   status->bUnicodeErr = false;
   status->bFileTooBig = false;
   status->bUnknownExt = false;
@@ -1062,8 +1066,8 @@ bool EditLoadFile(
 
   if (cbData == 0) {
     FileVars_Init(NULL, 0, &Globals.fvCurFile);
+    status->iEncoding = iEncFallback;
     status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     Encoding_Forced(CPI_NONE);
@@ -1091,12 +1095,7 @@ bool EditLoadFile(
     return false;
   }
 
-  bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
-
-  cpi_enc_t const iAnalyzeFallback = Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : 
-                                     ((bValidUTF8 && Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT);
-
-  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iAnalyzeFallback,
+  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iEncFallback,
                                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
   #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
@@ -1168,6 +1167,7 @@ bool EditLoadFile(
   else  // ===  ALL OTHERS  ===
   {
     // ===  UTF-8 ? ===
+    bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
     bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
@@ -1191,7 +1191,7 @@ bool EditLoadFile(
     {
       // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
       EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
-      status->iEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+      status->iEncoding = iEncFallback;
       EditDetectEOLMode(lpData, cbData, status);
     }
     else { // ===  ALL OTHER NON UTF-8 ===

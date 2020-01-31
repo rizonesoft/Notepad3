@@ -94,6 +94,7 @@ bool       Encoding_IsANSI(const cpi_enc_t iEncoding);
 bool       Encoding_IsOEM(const cpi_enc_t iEncoding);
 bool       Encoding_IsUTF8(const cpi_enc_t iEncoding);
 bool       Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding);
+bool       Encoding_IsUTF8_NO_SIGN(const cpi_enc_t iEncoding);
 bool       Encoding_IsMBCS(const cpi_enc_t iEncoding);
 bool       Encoding_IsCJK(const cpi_enc_t iEncoding);
 bool       Encoding_IsUNICODE(const cpi_enc_t iEncoding);
@@ -174,6 +175,7 @@ typedef struct _enc_det_t
   cpi_enc_t fileVarEncoding;
   cpi_enc_t analyzedEncoding;
   cpi_enc_t unicodeAnalysis;
+  float     confidence;
   // flags:
   bool bIsAnalysisReliable;
   bool bHasBOM;

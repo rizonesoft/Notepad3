@@ -533,6 +533,11 @@ bool Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding) {
 }
 // ============================================================================
 
+bool Encoding_IsUTF8_NO_SIGN(const cpi_enc_t iEncoding) {
+  return  (Encoding_IsUTF8(iEncoding) && !Encoding_IsUTF8_SIGN(iEncoding));
+}
+// ============================================================================
+
 bool Encoding_IsMBCS(const cpi_enc_t iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : false;
 }
