@@ -1265,7 +1265,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   size_t const cbNbytes4Analysis = min_s(cbData, 200000LL);
 
-  float confidence = 0.0f;
+  encDetRes.confidence = 0.0f;
 
   cpi_enc_t const asciiEnc = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
 
@@ -1273,13 +1273,16 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
   {
     if (!bSkipANSICPDetection) 
     {
-      encDetRes.analyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
+      encDetRes.analyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes.confidence, iAnalyzeFallback);
     }
 
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
+      encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
+    }
+    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
+      encDetRes.analyzedEncoding = asciiEnc;
     }
 
     if (!bSkipUTFDetection)
@@ -1317,19 +1320,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   //bool const bIsUTF8orUnicodeAnalysis = Encoding_IsUTF8(encDetRes.analyzedEncoding) || Encoding_IsUNICODE(encDetRes.analyzedEncoding);
 
-  if (!IS_ENC_ENFORCED())
-  {
-    if (encDetRes.analyzedEncoding == CPI_NONE)
-    {
-      encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
-    }
-    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
-      encDetRes.analyzedEncoding = asciiEnc;
-    }
-  }
-
-  int const iConfidence = float2int(confidence * 100.0f);
+  int const iConfidence = float2int(encDetRes.confidence * 100.0f);
   int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
   encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
 

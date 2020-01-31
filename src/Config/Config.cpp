@@ -801,7 +801,7 @@ void LoadSettings()
   Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCutLineOnEmptySelection", Defaults2.NoCutLineOnEmptySelection);
     
 
-  int const iARCLdef = 70;
+  int const iARCLdef = 92;
   Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
   int const iARCLset = clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
   Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
