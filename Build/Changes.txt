@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.130.(build_#) (2020-01-30)
+Current BETA Version 5.20.131.(build_#) (2020-01-31)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Increase encoding detection confidence threshold to 92%.
 - Finetuning of Single Byte Char Set (SBCS) detection.
 - Add current Encoding and Lexer to "Copy Version Text".
 - Lexer keyword initializer list simplified.
