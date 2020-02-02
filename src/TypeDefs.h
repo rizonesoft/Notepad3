@@ -192,13 +192,13 @@ typedef struct _editfindreplace
   char szReplace[FNDRPL_BUFFER];
   UINT fuFlags;
   bool bTransformBS;
+  bool bAutoEscCtrlChars;
   bool bFindClose;
   bool bReplaceClose;
   bool bNoFindWrap;
   bool bWildcardSearch;
   bool bMarkOccurences;
   bool bHideNonMatchedLines;
-  bool bDotMatchAll;
   bool bStateChanged;
   HWND hwnd;
 

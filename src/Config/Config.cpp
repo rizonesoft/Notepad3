@@ -907,14 +907,14 @@ void LoadSettings()
   Settings.EFR_Data.bNoFindWrap = IniSectionGetBool(IniSecSettings, L"NoFindWrap", Defaults.EFR_Data.bNoFindWrap);
   Defaults.EFR_Data.bTransformBS = false;
   Settings.EFR_Data.bTransformBS = IniSectionGetBool(IniSecSettings, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
+  Defaults.EFR_Data.bAutoEscCtrlChars = false;
+  Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
   Defaults.EFR_Data.bWildcardSearch = false;
   Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
   Defaults.EFR_Data.bMarkOccurences = true;
   Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(IniSecSettings, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
   Defaults.EFR_Data.bHideNonMatchedLines = false;
   Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(IniSecSettings, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
-  Defaults.EFR_Data.bDotMatchAll = false;
-  Settings.EFR_Data.bDotMatchAll = IniSectionGetBool(IniSecSettings, L"RegexDotMatchesAll", Defaults.EFR_Data.bDotMatchAll);
   Defaults.EFR_Data.fuFlags = 0;
   Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
@@ -1322,6 +1322,12 @@ static bool _SaveSettings(bool bForceSaveSettings)
   else {
     IniSectionDelete(IniSecSettings, L"FindTransformBS", false);
   }
+  if (Settings.EFR_Data.bAutoEscCtrlChars != Defaults.EFR_Data.bAutoEscCtrlChars) {
+    IniSectionSetBool(IniSecSettings, L"AutoEscCtrlChars", Settings.EFR_Data.bAutoEscCtrlChars);
+  }
+  else {
+    IniSectionDelete(IniSecSettings, L"AutoEscCtrlChars", false);
+  }
   if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
     IniSectionSetBool(IniSecSettings, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
   }
@@ -1339,12 +1345,6 @@ static bool _SaveSettings(bool bForceSaveSettings)
   }
   else {
     IniSectionDelete(IniSecSettings, L"HideNonMatchedLines", false);
-  }
-  if (Settings.EFR_Data.bDotMatchAll != Defaults.EFR_Data.bDotMatchAll) {
-    IniSectionSetBool(IniSecSettings, L"RegexDotMatchesAll", Settings.EFR_Data.bDotMatchAll);
-  }
-  else {
-    IniSectionDelete(IniSecSettings, L"RegexDotMatchesAll", false);
   }
   if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
     IniSectionSetInt(IniSecSettings, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);

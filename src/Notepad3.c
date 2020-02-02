@@ -5967,7 +5967,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         EDITFINDREPLACE efrTS = EFR_INIT_DATA;
         efrTS.hwnd = Globals.hwndEdit;
-        efrTS.fuFlags = SCFIND_REGEXP;
+        efrTS.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
 
         StringCchCopyW(wchFind, COUNTOF(wchFind), Settings2.TimeStamp);
 
