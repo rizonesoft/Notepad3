@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "Вставка"
         BEGIN
-            MENUITEM "&Новая строка выше\tCtrl+Enter",                  CMD_CTRLENTER
+            MENUITEM "&Новая строка выше\tCtrl+Enter",                  CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "Тег &HTML/XML...\tAlt+X",                         IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

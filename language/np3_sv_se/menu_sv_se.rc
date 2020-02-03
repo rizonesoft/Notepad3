@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "Infoga"
         BEGIN
-            MENUITEM "Ny rad över\tCtrl+Enter",                     CMD_CTRLENTER
+            MENUITEM "Ny rad över\tCtrl+Enter",                     CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML Tag...\tAlt+X",                      IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

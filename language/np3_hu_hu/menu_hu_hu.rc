@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Beillesztés"
         BEGIN
-            MENUITEM "&Fölé egy új sor\tCtrl+Enter",               CMD_CTRLENTER
+            MENUITEM "&Fölé egy új sor\tCtrl+Enter",               CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "&HTML/XML elem...\tAlt+X",                   IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

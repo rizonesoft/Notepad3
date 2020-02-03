@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "Устаўка"
         BEGIN
-            MENUITEM "&Новы радок вышэй\tCtrl+Enter",           CMD_CTRLENTER
+            MENUITEM "&Новы радок вышэй\tCtrl+Enter",           CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "Тэг &HTML/XML...\tAlt+X",                 IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

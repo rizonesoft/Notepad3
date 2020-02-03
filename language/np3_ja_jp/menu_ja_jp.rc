@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "挿入(&I)"
         BEGIN
-            MENUITEM "上に改行(&N)\tCtrl+Enter",                 CMD_CTRLENTER
+            MENUITEM "上に改行(&N)\tCtrl+Enter",                 CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "HTML/XMLタグ(&H)...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

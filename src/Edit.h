@@ -141,7 +141,7 @@ typedef enum {
 
 void EditToggleFolds(FOLD_ACTION action,bool);
 void EditFoldClick(DocLn ln, int mode);
-void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
+void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action);
 
 
 #define NP3_BRACES_TO_MATCH "()[]{}"

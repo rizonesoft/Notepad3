@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Invoegen"
         BEGIN
-            MENUITEM "&Nieuwe lijn boven\tCtrl+Enter",                  CMD_CTRLENTER
+            MENUITEM "&Nieuwe lijn boven\tCtrl+Enter",                  CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "&HTML/XML Tag...\tAlt+X",                         IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

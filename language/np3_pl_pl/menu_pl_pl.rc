@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Wstaw"
         BEGIN
-            MENUITEM "&Nowy wiersz u góry\tCtrl+Enter",             CMD_CTRLENTER
+            MENUITEM "&Nowy wiersz u góry\tCtrl+Enter",             CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "&Znacznik HTML/XML...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

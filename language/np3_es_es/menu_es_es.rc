@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Insertar"
         BEGIN
-            MENUITEM "&Nueva línea arriba\tCtrl+Enter",                 CMD_CTRLENTER
+            MENUITEM "&Nueva línea arriba\tCtrl+Enter",                 CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "Etiqueta HTML/&XML...\tAlt+X",                    IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

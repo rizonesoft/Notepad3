@@ -275,10 +275,12 @@ BEGIN
     //VK_NEXT,        CMD_VKEND,                        VIRTKEY, NOINVERT    /// PAGE NEXT Key 
     //~VK_LEFT,        CMD_LEFT,                         VIRTKEY, NOINVERT
     VK_LEFT,        CMD_CTRLLEFT,                     VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        CMD_ALTLEFT,                      VIRTKEY, ALT, NOINVERT
+    VK_LEFT,        CMD_FOLDCOLLAPSE,                 VIRTKEY, ALT, NOINVERT
+    //~VK_LEFT,     XXXXXXXXXXX,                         VIRTKEY, SHIFT, CONTROL, NOINVERT    /// extend selection by word jump
     //~VK_RIGHT,       CMD_RIGHT,                        VIRTKEY, NOINVERT
     VK_RIGHT,       CMD_CTRLRIGHT,                    VIRTKEY, CONTROL, NOINVERT
-    VK_RIGHT,       CMD_ALTRIGHT,                     VIRTKEY, ALT, NOINVERT
+    VK_RIGHT,       CMD_FOLDEXPAND,                     VIRTKEY, ALT, NOINVERT
+    //~VK_RIGHT,    XXXXXXXXXXX,                     VIRTKEY, SHIFT, CONTROL, NOINVERT       /// extend selection by word jump
     VK_ADD,         IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     //~VK_ADD,      CMD_INCLINELIMIT,                 VIRTKEY, ALT, NOINVERT   /// ALT+[+] is used for universal Unicode input
     VK_ADD,         CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
@@ -290,12 +292,12 @@ BEGIN
     VK_DELETE,      CMD_CTRLDEL,                      VIRTKEY, CONTROL, NOINVERT
     VK_DELETE,      IDM_EDIT_CUT,                     VIRTKEY, SHIFT, NOINVERT
     VK_DELETE,      IDM_EDIT_DELETELINERIGHT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_UP,          CMD_ALTUP,                        VIRTKEY, ALT, NOINVERT
-    VK_UP,          CMD_CTRLUP,                       VIRTKEY, CONTROL, NOINVERT
-    VK_UP,          IDM_EDIT_MOVELINEUP,              VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_DOWN,        CMD_ALTDOWN,                      VIRTKEY, ALT, NOINVERT
-    VK_DOWN,        CMD_CTRLDOWN,                     VIRTKEY, CONTROL, NOINVERT
-    VK_DOWN,        IDM_EDIT_MOVELINEDOWN,            VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_UP,          IDM_EDIT_MOVELINEUP,              VIRTKEY, ALT, NOINVERT
+    VK_UP,          CMD_SCROLLUP,                     VIRTKEY, CONTROL, NOINVERT
+    //VK_UP,          <free>,                           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_DOWN,        IDM_EDIT_MOVELINEDOWN,            VIRTKEY, ALT, NOINVERT
+    VK_DOWN,        CMD_SCROLLDOWN,                   VIRTKEY, CONTROL, NOINVERT
+    //VK_DOWN,        <free>,                           VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_ESCAPE,      CMD_ESCAPE,                       VIRTKEY, NOINVERT
     VK_ESCAPE,      CMD_SHIFTESC,                     VIRTKEY, SHIFT, NOINVERT
     VK_F1,          IDM_HELP_ONLINEDOCUMENTATION,     VIRTKEY, NOINVERT
@@ -351,13 +353,15 @@ BEGIN
     //VK_MULTIPLY,    CMD_VK_MULTIPLY,                  VIRTKEY, NOINVERT
     VK_NUMPAD0,     IDM_VIEW_RESETZOOM,               VIRTKEY, CONTROL, NOINVERT
     VK_OEM_COMMA,   CMD_JUMP2SELSTART,                VIRTKEY, CONTROL, NOINVERT
+    VK_OEM_MINUS,   CMD_FOLDJUMPUP,                   VIRTKEY, ALT, NOINVERT
     VK_OEM_MINUS,   IDM_VIEW_ZOOMOUT,                 VIRTKEY, CONTROL, NOINVERT
     VK_OEM_MINUS,   CMD_DECREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
     VK_OEM_PERIOD,  CMD_JUMP2SELEND,                  VIRTKEY, CONTROL, NOINVERT
     VK_OEM_PERIOD,  IDM_EDIT_INSERT_GUID,             VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_OEM_PLUS,    CMD_FOLDJUMPDOWN,                 VIRTKEY, ALT, NOINVERT
     VK_OEM_PLUS,    IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     VK_OEM_PLUS,    CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_RETURN,      CMD_CTRLENTER,                    VIRTKEY, CONTROL, NOINVERT
+    VK_RETURN,      CMD_INSERTNEWLINE,                VIRTKEY, CONTROL, NOINVERT
     VK_RETURN,      CMD_SHIFTCTRLENTER,               VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_RETURN,      IDM_EDIT_COMPLETEWORD,            VIRTKEY, CONTROL, ALT, NOINVERT
     VK_SPACE,       IDM_EDIT_SELECTWORD,              VIRTKEY, CONTROL, NOINVERT
