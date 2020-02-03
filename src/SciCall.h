@@ -193,6 +193,9 @@ DeclareSciCallV0(ZoomOut, ZOOMOUT)
 
 // Keyboard Commands
 DeclareSciCallV0(NewLine, NEWLINE)
+DeclareSciCallV0(Tab, TAB)
+DeclareSciCallV0(BackTab, BACKTAB)
+DeclareSciCallV0(VCHome, VCHOME)
 DeclareSciCallV0(LineUpExtend, LINEUPEXTEND)
 DeclareSciCallV0(LineScrollUp, LINESCROLLUP)
 DeclareSciCallV0(LineDownExtend, LINEDOWNEXTEND)

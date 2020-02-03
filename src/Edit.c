@@ -2674,7 +2674,6 @@ void EditModifyLines(HWND hwnd, LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
   }
 
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-  _OBSERVE_NOTIFY_CHANGE_;
 
   // extend selection to start of first line
   // the above code is not required when last line has been excluded
@@ -2693,6 +2692,7 @@ void EditModifyLines(HWND hwnd, LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
     EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
   }
 
+  _OBSERVE_NOTIFY_CHANGE_;
   _END_UNDO_ACTION_
 }
 
@@ -2714,6 +2714,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   }
 
   _BEGIN_UNDO_ACTION_
+  _IGNORE_NOTIFY_CHANGE_
 
   DocPos const iInitialPos = SciCall_GetCurrentPos();
   if (bForceAll) { SciCall_SelectAll(); }
@@ -2734,9 +2735,9 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 
   if (bSingleLine) {
     if (bFormatIndentation) {
-      SendMessage(hwnd, SCI_VCHOME, 0, 0);
+      SciCall_VCHome();
       if (SciCall_PositionFromLine(iCurLine) == SciCall_GetCurrentPos()) {
-        SendMessage(hwnd, SCI_VCHOME, 0, 0);
+        SciCall_VCHome();
       }
       iDiffCurrent = (iCurPos - SciCall_GetCurrentPos());
     }
@@ -2753,7 +2754,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   if (cmd == SCI_TAB) 
   {
     SciCall_SetTabIndents(bFormatIndentation ? true : _bTabIndents);
-    SendMessage(hwnd, SCI_TAB, 0, 0);
+    SciCall_Tab();
     if (bFormatIndentation) {
       SciCall_SetTabIndents(_bTabIndents);
     }
@@ -2761,7 +2762,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   else  // SCI_BACKTAB
   {
     SciCall_SetBackSpaceUnIndents(bFormatIndentation ? true : _bBSpUnindents);
-    SendMessage(hwnd, SCI_BACKTAB, 0, 0);
+    SciCall_BackTab();
     if (bFormatIndentation) {
       SciCall_SetBackSpaceUnIndents(_bBSpUnindents);
     }
@@ -2787,6 +2788,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     EditSetSelectionEx(hwnd, iInitialPos, iInitialPos, -1, -1);
   }
 
+  _OBSERVE_NOTIFY_CHANGE_
   _END_UNDO_ACTION_
 }
 
