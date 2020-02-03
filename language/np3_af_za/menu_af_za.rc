@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Insetsel"
         BEGIN
-            MENUITEM "&Nuwe Lyn Hierbo\tCtrl+Enter",            CMD_CTRLENTER
+            MENUITEM "&Nuwe Lyn Hierbo\tCtrl+Enter",            CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "&HTML/XML Tag...\tAlt+X",                 IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

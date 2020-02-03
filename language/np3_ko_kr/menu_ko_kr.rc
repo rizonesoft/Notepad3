@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "삽입(&N)"
         BEGIN
-            MENUITEM "새 줄(&N)\tCtrl+Enter",                      CMD_CTRLENTER
+            MENUITEM "새 줄(&N)\tCtrl+Enter",                      CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "HTML/XML 태그(&H)...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR

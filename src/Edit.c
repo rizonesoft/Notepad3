@@ -8589,7 +8589,7 @@ void EditFoldClick(DocLn ln, int mode)
 }
 
 
-void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
+void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action)
 {
   if (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding)
   {

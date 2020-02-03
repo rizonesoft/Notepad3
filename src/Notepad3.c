@@ -3281,7 +3281,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
       i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD || i == SCLEX_TOML) && !ro);
 
-  EnableCmd(hmenu, CMD_CTRLENTER, !ro);
+  EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_Current(CPI_GET)) != NULL) && !ro);
 
@@ -5730,7 +5730,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_CTRLENTER:
+    case CMD_INSERTNEWLINE:
       {
         _BEGIN_UNDO_ACTION_
         const DocPos iPos = SciCall_GetCurrentPos();
@@ -5765,7 +5765,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_CTRLUP:
+    case CMD_SCROLLUP:
       if (Sci_IsMultiSelection())
       {
         SciCall_LineUpExtend();
@@ -5776,7 +5776,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_CTRLDOWN:
+    case CMD_SCROLLDOWN:
       if (Sci_IsMultiSelection())
       {
         SciCall_LineDownExtend();
@@ -6228,20 +6228,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         HandleHotSpotURLClicked(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3));
       break;
 
-    case CMD_ALTDOWN:
-      EditFoldAltArrow(DOWN, SNIFF);
+    case CMD_FOLDJUMPDOWN:
+      EditFoldCmdKey(DOWN, SNIFF);
       break;
 
-    case CMD_ALTUP:
-      EditFoldAltArrow(UP, SNIFF);
+    case CMD_FOLDJUMPUP:
+      EditFoldCmdKey(UP, SNIFF);
       break;
 
-    case CMD_ALTLEFT:
-      EditFoldAltArrow(NONE, FOLD);
+    case CMD_FOLDCOLLAPSE:
+      EditFoldCmdKey(NONE, FOLD);
       break;
 
-    case CMD_ALTRIGHT:
-      EditFoldAltArrow(NONE, EXPAND);
+    case CMD_FOLDEXPAND:
+      EditFoldCmdKey(NONE, EXPAND);
       break;
 
 
