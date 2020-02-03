@@ -3316,12 +3316,16 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
   EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.HideNonMatchedLines);
-  CheckCmd(hmenu, IDM_VIEW_FOLDING, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!te && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
-
+  bool const fd = (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, fd);
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDJUMPDOWN, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDJUMPUP, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDCOLLAPSE, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDEXPAND, !te && fd);
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding) && (bF || bH));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
