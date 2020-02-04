@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "&Compleet woord\tCtrl+Alt+Enter",             IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Cursor woord &links\tCtrl+Left",              CMD_CTRLLEFT
-            MENUITEM "Cursor woord &rechts\tCtrl+Right",            CMD_CTRLRIGHT
+            MENUITEM "Cursor woord &links\tCtrl+ ←",                CMD_CTRLLEFT
+            MENUITEM "Cursor woord &rechts\tCtrl+ →",               CMD_CTRLRIGHT
             MENUITEM "&Verwijderen woord links\tCtrl+Back",         CMD_CTRLBACK
             MENUITEM "Verwijderen &woord rechts\tCtrl+Del",         CMD_CTRLDEL
         END
         POPUP "&Lijnen"
         BEGIN
-            MENUITEM "Naar &boven verplaatsen\tCtrl+Shift+Up",      IDM_EDIT_MOVELINEUP
-            MENUITEM "&Naar beneden verplaatsen\tCtrl+Shift+Down",  IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Naar &boven verplaatsen\tCtrl+Shift+ ↑",      IDM_EDIT_MOVELINEUP
+            MENUITEM "&Naar beneden verplaatsen\tCtrl+Shift+ ↓",    IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Knipen select&ie of huidige lijn\tCtrl+X",          IDM_EDIT_CUT
             MENUITEM "Knipen de hele &lijn(en)selectie\tCtrl+Shift+X",    IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "Lijn &nummers\tCtrl+Shift+N",             IDM_VIEW_LINENUMBERS
         MENUITEM "Selectie &marge\tCtrl+Shift+M",           IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Tonen"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "Sectie &samenvouwen",                             IDM_VIEW_FOLDING
             MENUITEM "&Toggle vouwen\tCtrl+Shift+F",                    IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "&Tonen"
+        BEGIN
             MENUITEM "Gefocust zicht\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Log &Monitoren",                                  IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Scrollen na einde van bes&tand",                  IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "&Inzoomen\tCtrl++",                               IDM_VIEW_ZOOMIN
-            MENUITEM "Uitz&oomen\tCtrl+-",                              IDM_VIEW_ZOOMOUT
+            MENUITEM "&Inzoomen\tCtrl+ +",                              IDM_VIEW_ZOOMIN
+            MENUITEM "Uitz&oomen\tCtrl+ –",                             IDM_VIEW_ZOOMOUT
             MENUITEM "Resetten &Zoom\tCtrl+0",                          IDM_VIEW_RESETZOOM
         END
         POPUP "&Positie"

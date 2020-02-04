@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "単語補完(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "カーソルを単語の左へ(&L)\tCtrl+Left",       CMD_CTRLLEFT
-            MENUITEM "カーソルを単語の右へ(&R)\tCtrl+Right",      CMD_CTRLRIGHT
+            MENUITEM "カーソルを単語の左へ(&L)\tCtrl+ ←",         CMD_CTRLLEFT
+            MENUITEM "カーソルを単語の右へ(&R)\tCtrl+ →",         CMD_CTRLRIGHT
             MENUITEM "カーソル左の単語を削除(&D)\tCtrl+Back",     CMD_CTRLBACK
             MENUITEM "カーソル右の単語を削除(&W)\tCtrl+Del",      CMD_CTRLDEL
         END
         POPUP "行(&L)"
         BEGIN
-            MENUITEM "上へ移動(&U)\tCtrl+Shift+Up",            IDM_EDIT_MOVELINEUP
-            MENUITEM "下へ移動(&M)\tCtrl+Shift+Down",          IDM_EDIT_MOVELINEDOWN
+            MENUITEM "上へ移動(&U)\tCtrl+Shift+ ↑",            IDM_EDIT_MOVELINEUP
+            MENUITEM "下へ移動(&M)\tCtrl+Shift+ ↓",            IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "切り取り/選択範囲か行(&I)\tCtrl+X",        IDM_EDIT_CUT
             MENUITEM "切り取り/選択範囲の行全体(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
         MENUITEM "行番号の余白(&M)\tCtrl+Shift+M",            IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "折りたたみや表示(&D)"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
             MENUITEM "すべて折りたたみ(&T)\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "折りたたみや表示(&D)"
+        BEGIN
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
@@ -355,15 +364,15 @@ BEGIN
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "アイコン大小の切替(&G)",                   IDM_VIEW_TOGGLETB
+            MENUITEM "アイコン大小の切替(&G)",                     IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
-            MENUITEM "独自アイコンを設定(&L)...",          IDM_VIEW_LOADTHEMETB
-            MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
+            MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
+            MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
         END
         POPUP "拡大縮小(&Z)"
         BEGIN
-            MENUITEM "拡大(&I)\tCtrl++",                         IDM_VIEW_ZOOMIN
-            MENUITEM "縮小(&O)\tCtrl+-",                         IDM_VIEW_ZOOMOUT
+            MENUITEM "拡大(&I)\tCtrl+ +",                        IDM_VIEW_ZOOMIN
+            MENUITEM "縮小(&O)\tCtrl+ –",                        IDM_VIEW_ZOOMOUT
             MENUITEM "拡大縮小リセット(&Z)\tCtrl+0",                IDM_VIEW_RESETZOOM
         END
         POPUP "ウィンドウ位置(&P)"
@@ -373,7 +382,7 @@ BEGIN
             MENUITEM "初期化位置として記憶",                         CMD_SAVEASDEFWINPOS
             MENUITEM "記憶した初期化位置を消去",                     CMD_CLEARSAVEDWINPOS
             MENUITEM "最初の位置へ移動\tCtrl+F11",                  CMD_INITIALWINPOS
-            MENUITEM "全画面表示の切替\tF11",                    CMD_FULLSCRWINPOS
+            MENUITEM "全画面表示の切替\tF11",                      CMD_FULLSCRWINPOS
             MENUITEM "ウィンドウ位置の固定(&P)",                      IDM_VIEW_STICKYWINPOS
         END
     END

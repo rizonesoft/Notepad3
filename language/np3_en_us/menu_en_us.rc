@@ -371,8 +371,8 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoom &In\tCtrl+ +",            IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom &Out\tCtrl+ –",           IDM_VIEW_ZOOMOUT
+            MENUITEM "Zoom &In\tCtrl+ +",           IDM_VIEW_ZOOMIN
+            MENUITEM "Zoom &Out\tCtrl+ –",          IDM_VIEW_ZOOMOUT
             MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         END
         POPUP "&Position"

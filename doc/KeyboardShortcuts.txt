@@ -56,15 +56,16 @@ Keyboard Shortcuts for Notepad3
   Char, Word
 
     Ctrl+Space            Select word (or line).
+    Ctrl+ ←               Cursor Word Left.
+    Ctrl+ →               Cursor Word Right.
     Ctrl+Backspace        Delete word before/left.
     Ctrl+Del              Delete word after/right.
     Ctrl+Tab              Insert tabulator.
 
   Lines
 
-    Ctrl+Shift+Space      Select line.
-    Ctrl+Shift+Up         Move line (block) up.
-    Ctrl+Shift+Down       Move line (block) down.
+    Alt+ ↑                Move line (block) up.
+    Alt+ ↓                Move line (block) down.
     Ctrl+D                Duplicate line.
     Ctrl+Shift+X          Cut line.
     Ctrl+Shift+C          Copy line.
@@ -176,18 +177,22 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+V          Toggle visual brace matching.
     Ctrl+Shift+I          Highlight current line.
     Ctrl+Shift+F          Toggle all folds.
+    Alt+ +                Jump Next Fold.
+    Alt+ –                Jump Prev Fold.
+    Alt+ ←                Collapse Fold.
+    Alt+ →                Expand Fold.
 
   Zoom
 
-    Ctrl++                Zoom in.
-    Ctrl+-                Zoom out.
+    Ctrl+ +               Zoom in.
+    Ctrl+ –               Zoom out.
     Ctrl+0                Reset zoom.
 
   Settings
 
     Ctrl+T                Tab settings.
-    Alt++                 Increase limit for long lines.
-    Alt+-                 Decrease limit for long lines.
+    Alt+ +                Increase limit for long lines.
+    Alt+ –                Decrease limit for long lines.
     Ctrl+Shift+H          Toggle auto close HTML/XML.
     Ctrl+Shift+L          Reuse Window.
     Alt+T                 Always on top.
