@@ -126,7 +126,7 @@ BEGIN
     CONTROL         "Match &whole word only",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Match &beginning of word only",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "&Auto Esc Ctrl Chr", IDC_FINDAUTOESCCTRLCHR, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 125, 73, 85, 10
+    CONTROL         "&Auto Esc Ctrl Chr", IDC_FINDAUTOESCCTRLCHR, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 125, 102, 85, 10
     CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
