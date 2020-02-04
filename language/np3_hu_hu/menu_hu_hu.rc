@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "&Szó kiegészítése\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Kurzor egy szónyit &balra\tCtrl+Left",   CMD_CTRLLEFT
-            MENUITEM "Kurzor egy szónyit &jobbra\tCtrl+Right", CMD_CTRLRIGHT
+            MENUITEM "Kurzor egy szónyit &balra\tCtrl+ ←",     CMD_CTRLLEFT
+            MENUITEM "Kurzor egy szónyit &jobbra\tCtrl+ →",    CMD_CTRLRIGHT
             MENUITEM "Szó &törlése balra\tCtrl+Back",          CMD_CTRLBACK
             MENUITEM "Szó t&örlése jobbra\tCtrl+Del",          CMD_CTRLDEL
         END
         POPUP "S&orok"
         BEGIN
-            MENUITEM "Mozgatás &fel\tCtrl+Shift+Up",        IDM_EDIT_MOVELINEUP
-            MENUITEM "Mozgatás l&e\tCtrl+Shift+Down",       IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mozgatás &fel\tCtrl+Shift+ ↑",        IDM_EDIT_MOVELINEUP
+            MENUITEM "Mozgatás l&e\tCtrl+Shift+ ↓",         IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Kijelölés vagy a&ktuális sor kivágása\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Kijelölés &sorainak kivágása\tCtrl+Shift+X",         IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
         MENUITEM "Kijelölési mar&gó\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Megjelenítés"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "&Kódblokk összecsukás",                   IDM_VIEW_FOLDING
             MENUITEM "Kódblokk &váltás\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "&Megjelenítés"
+        BEGIN
             MENUITEM "Fókuszált nézet\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Naplófájl követése",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Görgetés a fájl vége után is",           IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "&Nagyítás"
         BEGIN
-            MENUITEM "&Nagyítás\tCtrl++",                       IDM_VIEW_ZOOMIN
-            MENUITEM "&Kicsinyítés\tCtrl+-",                    IDM_VIEW_ZOOMOUT
+            MENUITEM "&Nagyítás\tCtrl+ +",                      IDM_VIEW_ZOOMIN
+            MENUITEM "&Kicsinyítés\tCtrl+ –",                   IDM_VIEW_ZOOMOUT
             MENUITEM "Nagyítás &visszaállítása\tCtrl+0",        IDM_VIEW_RESETZOOM
         END
         POPUP "&Pozíció"

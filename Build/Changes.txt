@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.202.(build_#) (2020-02-02)
+Current BETA Version 5.20.204.(build_#) (2020-02-04)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Accelerator key remapping: move line up/down vs. jump folds.
 - Separate auto esc'd control chars from "transform backslashes" switch in find/replace dialog.
 - Increase encoding detection confidence threshold to 92%.
 - Finetuning of Single Byte Char Set (SBCS) detection.
@@ -97,6 +98,7 @@ CHANGES:
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
+- Menu entries for move line and folding control.
 - Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
 - Change to 1-pass (file open/close) to save settings in Notepad3.ini.
@@ -107,6 +109,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Slow indentation (TAB/BACKTAB).
 - AutoCompletion box.
 - Find/Replace Dialog behavior.
 - Transform backslashes while pasting into search/replace box.

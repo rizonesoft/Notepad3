@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "补全单词(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "光标向左跳过一个单词(&L)\tCtrl+Left",    CMD_CTRLLEFT
-            MENUITEM "光标向右跳过一个单词(&R)\tCtrl+Right",   CMD_CTRLRIGHT
+            MENUITEM "光标向左跳过一个单词(&L)\tCtrl+ ←",      CMD_CTRLLEFT
+            MENUITEM "光标向右跳过一个单词(&R)\tCtrl+ →",      CMD_CTRLRIGHT
             MENUITEM "删除光标左边的单词(&D)\tCtrl+Back",      CMD_CTRLBACK
             MENUITEM "删除光标右边的单词(&W)\tCtrl+Del",       CMD_CTRLDEL
         END
         POPUP "行(&L)"
         BEGIN
-            MENUITEM "上移行(&U)\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
-            MENUITEM "下移行(&M)\tCtrl+Shift+Down",            IDM_EDIT_MOVELINEDOWN
+            MENUITEM "上移行(&U)\tCtrl+Alt+ ↑",                IDM_EDIT_MOVELINEUP
+            MENUITEM "下移行(&M)\tCtrl+Shift+ ↓",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "剪切选区或当前行(&I)\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "剪切选区所在整行或当前行(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "显示边界(&M)\tCtrl+Shift+M",                IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "显示(&D)"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "代码折叠(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "显示(&D)"
+        BEGIN
             MENUITEM "切换聚焦\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "日志监控(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允许滚动超过文件尾(&S)",                IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "缩放(&Z)"
         BEGIN
-            MENUITEM "放大(&I)\tCtrl++",                      IDM_VIEW_ZOOMIN
-            MENUITEM "缩小(&O)\tCtrl+-",                      IDM_VIEW_ZOOMOUT
+            MENUITEM "放大(&I)\tCtrl+ +",                     IDM_VIEW_ZOOMIN
+            MENUITEM "缩小(&O)\tCtrl+ –",                     IDM_VIEW_ZOOMOUT
             MENUITEM "重置缩放(&Z)\tCtrl+0",                  IDM_VIEW_RESETZOOM
         END
         POPUP "窗口位置(&P)"

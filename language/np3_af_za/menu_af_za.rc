@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "Voltooi &Woord\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Wyser Woord &Links\tCtrl+Left",       CMD_CTRLLEFT
-            MENUITEM "Wyser Woord &Regs\tCtrl+Right",       CMD_CTRLRIGHT
+            MENUITEM "Wyser Woord &Links\tCtrl+ ←",         CMD_CTRLLEFT
+            MENUITEM "Wyser Woord &Regs\tCtrl+ →",          CMD_CTRLRIGHT
             MENUITEM "&Verwyder Woord Links\tCtrl+Back",    CMD_CTRLBACK
             MENUITEM "V&erwyder Woord Regs\tCtrl+Del",      CMD_CTRLDEL
         END
         POPUP "&Lyne"
         BEGIN
-            MENUITEM "Skuif &Op\tCtrl+Shift+Up",             IDM_EDIT_MOVELINEUP
-            MENUITEM "Skuif &Af\tCtrl+Shift+Down",           IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Skuif &Op\tCtrl+Shift+ ↑",             IDM_EDIT_MOVELINEUP
+            MENUITEM "Skuif &Af\tCtrl+Shiftt+ ↓",            IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Cut Select&ion or Current Line\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Cut Selection Whole &Line(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "Lyn &Nommers\tCtrl+Shift+N",              IDM_VIEW_LINENUMBERS
         MENUITEM "Seleksie &Kantlyne\tCtrl+Shift+M",        IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "Ver&toning"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "Kode &Vou",                           IDM_VIEW_FOLDING
             MENUITEM "&Wissel Voue\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "Ver&toning"
+        BEGIN
             MENUITEM "Gefokusde Aansig\tCtrl+Alt+V",        IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoring Log",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoem &In\tCtrl++",                    IDM_VIEW_ZOOMIN
-            MENUITEM "Zoem &Uit\tCtrl+-",                   IDM_VIEW_ZOOMOUT
+            MENUITEM "Zoem &In\tCtrl+ +",                   IDM_VIEW_ZOOMIN
+            MENUITEM "Zoem &Uit\tCtrl+ –",                  IDM_VIEW_ZOOMOUT
             MENUITEM "Herstel &Zoem\tCtrl+0",               IDM_VIEW_RESETZOOM
         END
         POPUP "&Posisie"

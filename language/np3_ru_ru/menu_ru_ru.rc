@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "&Завершить слово\tCtrl+Alt+Enter",    IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Курсор на слове &левее\tCtrl+Left",   CMD_CTRLLEFT
-            MENUITEM "Курсор на слове &правее\tCtrl+Right", CMD_CTRLRIGHT
+            MENUITEM "Курсор на слове &левее\tCtrl+ ←",     CMD_CTRLLEFT
+            MENUITEM "Курсор на слове &правее\tCtrl+ →",    CMD_CTRLRIGHT
             MENUITEM "&Удалить слово слева\tCtrl+Back",     CMD_CTRLBACK
             MENUITEM "Удалить слово &справа\tCtrl+Del",     CMD_CTRLDEL
         END
         POPUP "Строки"
         BEGIN
-            MENUITEM "Перейти &выше\tCtrl+Shift+Up",                IDM_EDIT_MOVELINEUP
-            MENUITEM "Перейти &ниже\tCtrl+Shift+Down",              IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Перейти &выше\tCtrl+Shift ↑",                 IDM_EDIT_MOVELINEUP
+            MENUITEM "Перейти &ниже\tCtrl+Shift+ ↓",                IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Вырезать в&ыделение или строку\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Вырезать &строки с выделением\tCtrl+Shift+X", IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "&Номера строк\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Отступ в&ыделения\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "Рабо&чая область"
+        POPUP "Р&Folding"
         BEGIN
             MENUITEM "Свора&чивание блоков кода",                   IDM_VIEW_FOLDING
             MENUITEM "Свернуть/ра&звернуть блок\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "&Рабо&чая область"
+        BEGIN
             MENUITEM "Фокусировка просмотра\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Слежение за фа&йлом",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Прокрутка за пределы последней строки",       IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "Мас&штаб"
         BEGIN
-            MENUITEM "&Увеличить\tCtrl++",                  IDM_VIEW_ZOOMIN
-            MENUITEM "У&меньшить\tCtrl+-",                  IDM_VIEW_ZOOMOUT
+            MENUITEM "&Увеличить\tCtrl+ +",                 IDM_VIEW_ZOOMIN
+            MENUITEM "У&меньшить\tCtrl+ –",                 IDM_VIEW_ZOOMOUT
             MENUITEM "&Сбросить\tCtrl+0",                   IDM_VIEW_RESETZOOM
         END
         POPUP "Поло&жение"

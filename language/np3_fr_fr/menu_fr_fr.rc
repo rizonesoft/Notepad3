@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "Mot &complet\tCtrl+Alt+Enter",                    IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Curseur à &gauche du mot\tCtrl+Left",             CMD_CTRLLEFT
-            MENUITEM "Curseur à &droite du mot\tCtrl+Right",            CMD_CTRLRIGHT
+            MENUITEM "Curseur à &gauche du mot\tCtrl+ ←",               CMD_CTRLLEFT
+            MENUITEM "Curseur à &droite du mot\tCtrl+ →",               CMD_CTRLRIGHT
             MENUITEM "&Supprimer le mot à gauche\tCtrl+Back",           CMD_CTRLBACK
             MENUITEM "Supprimer le &mot à droite\tCtrl+Del",            CMD_CTRLDEL
         END
         POPUP "&Lignes"
         BEGIN
-            MENUITEM "Déplacement vers le &haut\tCtrl+Shift+Up",        IDM_EDIT_MOVELINEUP
-            MENUITEM "&Déplacement vers le bas\tCtrl+Shift+Down",       IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Déplacement vers le &haut\tAlt+ ↑",                      IDM_EDIT_MOVELINEUP
+            MENUITEM "&Déplacement vers le bas\tAlt+ ↓",                       IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Couper sélect&ion ou ligne actuelle\tCtrl+X",            IDM_EDIT_CUT
             MENUITEM "Couper sélection de &ligne(s) entière(s)\tCtrl+Shift+X", IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "&Numéros de ligne\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Sélection de la &marge\tCtrl+Shift+M",    IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Afficher"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "&Code Pliages",                       IDM_VIEW_FOLDING
             MENUITEM "&Alterner Pliages\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "&Afficher"
+        BEGIN
             MENUITEM "Vue Focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Surveillance de Log",                IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Défiler après la fin de fichier",    IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoom &avant\tCtrl++",                 IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom a&rrière\tCtrl+-",               IDM_VIEW_ZOOMOUT
+            MENUITEM "Zoom &avant\tCtrl+ +",                IDM_VIEW_ZOOMIN
+            MENUITEM "Zoom a&rrière\tCtrl+ –",              IDM_VIEW_ZOOMOUT
             MENUITEM "Rétablir le &zoom\tCtrl+0",           IDM_VIEW_RESETZOOM
         END
         POPUP "&Position"

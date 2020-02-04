@@ -929,7 +929,7 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   //~}
   
   int const relThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
-  const char* rel_fmt = (ucd_conf_perc >= relThreshold) ? " (reliable (%i%%))" : " (NOT reliable(%i%%))";
+  const char* rel_fmt = (ucd_conf_perc >= relThreshold) ? " (reliable (%i%%))" : " (NOT reliable (%i%%))";
   StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), rel_fmt, relThreshold);
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 

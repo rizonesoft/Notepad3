@@ -160,15 +160,15 @@ BEGIN
                 BEGIN
                     MENUITEM "Komplettera ord\tCtrl+Alt+Enter",     IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Markör till ord till vänster\tCtrl+Left",     CMD_CTRLLEFT
-            MENUITEM "Markör till ord till höger\tCtrl+Right",      CMD_CTRLRIGHT
+            MENUITEM "Markör till ord till vänster\tCtrl+ ←",       CMD_CTRLLEFT
+            MENUITEM "Markör till ord till höger\tCtrl+ →",         CMD_CTRLRIGHT
             MENUITEM "Radera ord till vänster\tCtrl+Back",          CMD_CTRLBACK
             MENUITEM "Radera ord till höger\tCtrl+Del",             CMD_CTRLDEL
         END
         POPUP "Rader"
         BEGIN
-            MENUITEM "Flytta upp\tCtrl+Shift+Up",                   IDM_EDIT_MOVELINEUP
-            MENUITEM "Flytta ner\tCtrl+Shift+Down",                 IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Flytta upp\tCtrl+Shift+ ↑",                   IDM_EDIT_MOVELINEUP
+            MENUITEM "Flytta ner\tCtrl+Shift+ ↓",                   IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Klipp ut markering eller rad\tCtrl+X",                IDM_EDIT_CUT
             MENUITEM "Klipp ut markering eller hela rader\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "Radnummer\tCtrl+Shift+N",                         IDM_VIEW_LINENUMBERS
         MENUITEM "Markeringsmarginal\tCtrl+Shift+M",                IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "Visa"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "Ihopvikning av kodsegment",                   IDM_VIEW_FOLDING
             MENUITEM "Växla ihopvikning\tCtrl+Shift+F",             IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "Visa"
+        BEGIN
             MENUITEM "Fokuserad vy\tCtrl+Alt+V",                    IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Log",                                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rulla förbi slutet av filen",                 IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "Förstoring"
         BEGIN
-            MENUITEM "Förstora\tCtrl++",                            IDM_VIEW_ZOOMIN
-            MENUITEM "Förminska\tCtrl+-",                           IDM_VIEW_ZOOMOUT
+            MENUITEM "Förstora\tCtrl+ +",                           IDM_VIEW_ZOOMIN
+            MENUITEM "Förminska\tCtrl+ –",                          IDM_VIEW_ZOOMOUT
             MENUITEM "Nollställ förstoring\tCtrl+0",                IDM_VIEW_RESETZOOM
         END
         POPUP "Position"
