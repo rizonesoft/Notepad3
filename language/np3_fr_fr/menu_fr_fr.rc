@@ -342,16 +342,16 @@ BEGIN
         MENUITEM "&Numéros de ligne\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Sélection de la &marge\tCtrl+Shift+M",    IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "&Pliage"
         BEGIN
-            MENUITEM "&Code Pliages",                       IDM_VIEW_FOLDING
-            MENUITEM "&Alterner Pliages\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Code pliage",                        IDM_VIEW_FOLDING
+            MENUITEM "Al&terner pliages\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "&Aller pli suivant\tAlt+ +",          CMD_FOLDJUMPDOWN
+            MENUITEM "All&er pli précédent\tAlt+ –",        CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Réduire pliage\tAlt+ ←",             CMD_FOLDCOLLAPSE
+            MENUITEM "&Développer pliage\tAlt+ →",          CMD_FOLDEXPAND
         END
         POPUP "&Afficher"
         BEGIN

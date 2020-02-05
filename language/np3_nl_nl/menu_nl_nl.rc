@@ -342,16 +342,16 @@ BEGIN
         MENUITEM "Lijn &nummers\tCtrl+Shift+N",             IDM_VIEW_LINENUMBERS
         MENUITEM "Selectie &marge\tCtrl+Shift+M",           IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "&Vouwen"
         BEGIN
-            MENUITEM "Sectie &samenvouwen",                             IDM_VIEW_FOLDING
-            MENUITEM "&Toggle vouwen\tCtrl+Shift+F",                    IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Vouw&code",                           IDM_VIEW_FOLDING
+            MENUITEM "&Toggle vouwen\tCtrl+Shift+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "&Spring volgende vouw\tAlt+ +",       CMD_FOLDJUMPDOWN
+            MENUITEM "S&pring vorige vouw\tAlt+ –",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Vou&w samenvouwen\tAlt+ ←",           CMD_FOLDCOLLAPSE
+            MENUITEM "Vouw &uitklappen\tAlt+ →",            CMD_FOLDEXPAND
         END
         POPUP "&Tonen"
         BEGIN
