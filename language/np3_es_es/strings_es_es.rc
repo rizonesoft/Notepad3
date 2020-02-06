@@ -159,7 +159,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Esta operación no se puede realizar en una selección rectangular."
-    IDS_MUI_SELMULTI        "TEsta operación no se puede realizar en una selección múltiple."
+    IDS_MUI_SELMULTI        "Esta operación no se puede realizar en una selección múltiple."
     IDS_MUI_SELRECTORMULTI  "Esta operación no se puede realizar en un rectángulo o selección múltiple."
     IDS_MUI_BUFFERTOOSMALL  "Esta operación no se puede realizar (líneas demasiado largas)."
     IDS_MUI_FIND_WRAPFW     "Se llegó al final del documento, reiniciando la búsqueda desde el principio."
