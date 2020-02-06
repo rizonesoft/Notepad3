@@ -102,12 +102,12 @@ BEGIN
             MENUITEM "その他の文字コードを指定(&M)...\tF9",        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
             MENUITEM "デフォルトで読み直し(&D)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
-            MENUITEM "ANSIで読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
-            MENUITEM "OEMで読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
-            MENUITEM "GB18030で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
-            MENUITEM "UCHARDET解析で検出し読み直し",              CMD_RELOADFORCEDETECTION
+            MENUITEM "ANSI で読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
+            MENUITEM "OEM で読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
+            MENUITEM "GB18030 で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
+            MENUITEM "UCHARDET 解析で検出し読み直し",              CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "ASCIIをUTF-8として開く(&8)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
+            MENUITEM "ASCII を UTF-8として開く(&8)\tCtrl+Shift+F8",  CMD_RELOADASCIIASUTF8
             MENUITEM "文字コードを無視(&T)\tAlt+F8",               CMD_RELOADNOFILEVARS
             MENUITEM "文字コードを指定して読み直し(&R)...\tF8",      IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
@@ -342,18 +342,18 @@ BEGIN
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
         MENUITEM "行番号の余白(&M)\tCtrl+Shift+M",            IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "折りたたみ(&F)"
         BEGIN
             MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
             MENUITEM "すべて折りたたみ(&T)\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "折りたたむ(&C)\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "折りたたみを展開(&E)\tAlt+ →",            CMD_FOLDEXPAND
         END
-        POPUP "折りたたみや表示(&D)"
+        POPUP "表示(&D)"
         BEGIN
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
