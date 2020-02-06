@@ -98,15 +98,15 @@ STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (権限昇格)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : クリップボード履歴"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3: クリップボード履歴"
     IDS_MUI_UNTITLED        "無題"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(読み取り専用)"
     IDS_MUI_LOADFILE        "読み込み中 ""%s""..."
     IDS_MUI_SAVEFILE        "保存中 ""%s""..."
-    IDS_MUI_PRINTFILE       "%iページを印刷..."
+    IDS_MUI_PRINTFILE       "%i ページを印刷..."
     IDS_MUI_SAVINGSETTINGS  "設定保存中..."
-    IDS_MUI_LINKDESCRIPTION "Notepad3で編集"
+    IDS_MUI_LINKDESCRIPTION "Notepad3 で編集"
 END
 
 STRINGTABLE
@@ -130,9 +130,9 @@ BEGIN
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか？"
     IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "現在 Notepad3のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3のウィンドウを新たに開きますか？"
+                            "現在 Notepad3 のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3 のウィンドウを新たに開きますか？"
     IDS_MUI_ERR_ENCODINGNA  "このコンピュータでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
-    IDS_MUI_ERR_UNICODE     "Unicodeへの変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
+    IDS_MUI_ERR_UNICODE     "Unicode への変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
     IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "権限取得のエラー。"
@@ -143,8 +143,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します。\n変換を続行しますか？"
     IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません。"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" を保存できませんでした。保護されている可能性があります。\n\n権限を昇格して %s を起動しますか？"
-    IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
+                            "「%s」を保存できませんでした。保護されている可能性があります。\n\n権限を昇格して %s を起動しますか？"
+    IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3 の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？"
     IDS_MUI_ERR_FILE_TOO_LARGE "大容量すぎて処理できません！ (サイズ: %lli MB)"
@@ -164,11 +164,11 @@ BEGIN
     IDS_MUI_BUFFERTOOSMALL  "この操作は実行できません。行が長すぎます。"
     IDS_MUI_FIND_WRAPFW     "文書の最後に到達しました。先頭から検索しますか？"
     IDS_MUI_FIND_WRAPRE     "文書の先頭に到達しました。終端から検索しますか？"
-    IDS_MUI_NOTFOUND        "指定の文字列は見つかりませんでした。"
-    IDS_MUI_REPLCOUNT       "%iか所の指定の文字列を置換しました。"
+    IDS_MUI_NOTFOUND        "指定された文字列は見つかりませんでした。"
+    IDS_MUI_REPLCOUNT       "%i か所の指定の文字列を置換しました。"
     IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴もリセットされます。\n変換を続行しますか？"
     IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか？"
-    IDS_MUI_READONLY_SAVE   """%s"" は読み取り専用です。別のファイル名で保存しますか？"
+    IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか？"
     IDS_MUI_FILECHANGENOTIFY
                             "ファイルが他のプログラムによって変更されました。再読み込みしますか？"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか？"
@@ -182,11 +182,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "アプリケーションを再起動して保存した設定を有効にしますか？\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "再起動せずに続行すると、保存した設定は反映されず、プログラム終了時の内部設定に上書きされてしまいます！"
     IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
     IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません!"
-    IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bitのプログラムからドロップしたのであれば、\nNotepad3のツールバーにドラッグ&&ドロップしてください。"
+    IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bit のプログラムからドロップしたのであれば、\nNotepad3 のツールバーにドラッグ&&ドロップしてください。"
     IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます。"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
     IDS_MUI_INF_PRSVFILEMODTM
@@ -195,23 +195,23 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "この編集を保存しますか?\n""%s"""
+    IDS_MUI_ASK_SAVE        "この編集を保存しますか?\n「%s」"
     IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みします？"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます!"
-    IDS_MUI_ASK_CREATE      """%s""はありません。\nこのファイルを作成しますか？"
-    IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄とする"
-    IDS_MUI_PRINT_FOOTER    "ページ番号|空欄とする"
+    IDS_MUI_ASK_CREATE      "「%s」は存在しません。\nこのファイルを作成しますか？"
+    IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄のまま"
+    IDS_MUI_PRINT_FOOTER    "ページ番号|空欄のまま"
     IDS_MUI_PRINT_COLOR     "通常|明るさの反転 (暗い背景)|白背景に黒|白背景にカラー|白背景にカラー (行番号以外)|モニタ上の色"
-    IDS_MUI_PRINT_PAGENUM   "%iページ"
+    IDS_MUI_PRINT_PAGENUM   "%i ページ"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "この文書には、印刷のための文章が含まれていません。"
-    IDS_MUI_PRINT_ERROR     "印刷失敗! ""%s"""
+    IDS_MUI_PRINT_ERROR     "印刷失敗! 「%s」"
     IDS_MUI_FAV_SUCCESS     "このファイルへのショートカットが、お気に入りフォルダ内に作成されました。"
     IDS_MUI_FAV_FAILURE     "このファイルへのショートカットは作成できませんでした。\n同じ名前の他のファイルがないことを確認してください。"
-    IDS_MUI_READONLY_MODIFY """%s""の属性は変更できませんでした。"
+    IDS_MUI_READONLY_MODIFY "「%s」の属性を変更できませんでした。"
     IDS_MUI_SAVEPOS         "ウインドウ位置の保存(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "ウインドウ位置のリセット(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "設定のプレビュー(&P)\tCtrl+P"
