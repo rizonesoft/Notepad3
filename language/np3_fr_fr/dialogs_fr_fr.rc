@@ -640,7 +640,7 @@ BEGIN
     CONTROL         "Casse &sensible.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
     CONTROL         "&Casse insensible.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
     CONTROL         "Comparaison logique des &nombres.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
-    CONTROL         "&Lexicographical comparison.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Comparaison &lexicographique.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
     CONTROL         "&Tri Colonne (sélection rectangulaire).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,128,24,50,14
