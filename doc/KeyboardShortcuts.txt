@@ -7,7 +7,6 @@ Keyboard Shortcuts for Notepad3
     Ctrl+O                Open file.
     F5                    Reload file.
     F8                    Reload file without encoding detection.
-    Ctrl+F8               Reload file with Unicode detection toggled.
     Shift+F8              Reload file with ANSI/UTF-8 defaults toggled.
     Alt+F8                Reload file without file variable parsing.
     Ctrl+S                Save file.
@@ -106,17 +105,20 @@ Keyboard Shortcuts for Notepad3
 
   Insert
 
+    Ctrl+Enter            New Line Above
     Alt+X                 HTML/XML tag.
+    Ctrl+F8               Encoding Identifier.
     Ctrl+F5               Time/date (short form).
     Ctrl+Shift+F5         Time/date (long form).
-    Ctrl+F9               Filename to Clipboard.
-    Ctrl+Shift+F9         Path and filename to Clipboard.
-    Ctrl+Shift+.          Copy GUID to Clipboard.
+    Shift+F5              Update timestamps.
+    Ctrl+Q                Block comment (toggle).
+    Ctrl+Shift+Q          Stream comment.
 
   Special
 
-    Ctrl+Q                Block comment (toggle).
-    Ctrl+Shift+Q          Stream comment.
+    Ctrl+F9               Filename to Clipboard.
+    Ctrl+Shift+F9         Path and filename to Clipboard.
+    Ctrl+Shift+.          Copy GUID to Clipboard.
     Ctrl+Shift+E          URL Encode.
     Ctrl+Shift+R          URL Decode.
     Ctrl+Alt+E            Escape C Special Chars.
@@ -129,7 +131,6 @@ Keyboard Shortcuts for Notepad3
     Ctrl+4                Enclose within [].
     Ctrl+5                Enclose within {}.
     Ctrl+6                Enclose within ``.
-    Shift+F5              Update timestamps.
     Ctrl+,                Jump to selection start.
     Ctrl+.                Jump to selection end.
 
@@ -191,8 +192,6 @@ Keyboard Shortcuts for Notepad3
   Settings
 
     Ctrl+T                Tab settings.
-    Alt+ +                Increase limit for long lines.
-    Alt+ –                Decrease limit for long lines.
     Ctrl+Shift+H          Toggle auto close HTML/XML.
     Ctrl+Shift+L          Reuse Window.
     Alt+T                 Always on top.
