@@ -342,16 +342,16 @@ BEGIN
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
         MENUITEM "Kijelölési mar&gó\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "&Behajtások"
         BEGIN
-            MENUITEM "&Kódblokk összecsukás",                   IDM_VIEW_FOLDING
+            MENUITEM "Kó&dblokk behajtások",                    IDM_VIEW_FOLDING
             MENUITEM "Kódblokk &váltás\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Ugrás a &köv. behajtásra\tAlt+ +",        CMD_FOLDJUMPDOWN
+            MENUITEM "Ugrás az &előző behajtásra\tAlt+ –",      CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Behajtás &becsukása\tAlt+ ←",             CMD_FOLDCOLLAPSE
+            MENUITEM "Behajtás ki&nyitása\tAlt+ →",             CMD_FOLDEXPAND
         END
         POPUP "&Megjelenítés"
         BEGIN

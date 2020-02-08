@@ -367,7 +367,7 @@ BEGIN
     IDS_LEX_STR_63287       "Hex"
     IDS_LEX_STR_63288       "Hozzáadott kulcs"
     IDS_LEX_STR_63289       "Törölt kulcs"
-    IDS_LEX_STR_63290       "Escape-elve"
+    IDS_LEX_STR_63290       "Escape-elt"
     IDS_LEX_STR_63291       "GUID kulcs útvonalban"
     IDS_LEX_STR_63292       "POD"
     IDS_LEX_STR_63293       "Szimbólum"
@@ -447,19 +447,19 @@ BEGIN
     IDS_LEX_STR_63351       "HotStringOption"
     IDS_LEX_STR_63352       "Inline-IME Color"
     IDS_LEX_STR_63353       "2nd Inline-IME Color"
-    IDS_LEX_STR_63354       "Multi Edit Indicator"
-    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
+    IDS_LEX_STR_63354       "Többszörös szerkesztés jelzése"
+    IDS_LEX_STR_63355       "2. többszörös szerkesztés jelzése"
     IDS_LEX_STR_63356       "Dátum-Id?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63357       "For Each Definition"
-    IDS_LEX_STR_63358       "While Definition"
-    IDS_LEX_STR_63359       "Math"
-    IDS_LEX_STR_63360       "Scalar"
-    IDS_LEX_STR_63361       "Substitution"
-    IDS_LEX_STR_63362       "Modifier"
+    IDS_LEX_STR_63357       "For Each definíció"
+    IDS_LEX_STR_63358       "While definíció"
+    IDS_LEX_STR_63359       "Matematikai"
+    IDS_LEX_STR_63360       "Skaláris"
+    IDS_LEX_STR_63361       "Helyettesítés"
+    IDS_LEX_STR_63362       "Módosító"
     IDS_LEX_STR_63363       "Tag"
 END
 
