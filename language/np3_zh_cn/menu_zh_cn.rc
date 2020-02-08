@@ -342,16 +342,16 @@ BEGIN
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "显示边界(&M)\tCtrl+Shift+M",                IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "折叠(&F)"
         BEGIN
-            MENUITEM "代码折叠(&F)",                         IDM_VIEW_FOLDING
+            MENUITEM "启用折叠(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "跳转到下一折叠点(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "跳转到上一折叠点(&P)\tAlt+ –",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "折叠(&C)\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "展开(&E)\tAlt+ →",            CMD_FOLDEXPAND
         END
         POPUP "显示(&D)"
         BEGIN

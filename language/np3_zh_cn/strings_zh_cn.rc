@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s （管理员权限）"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 剪贴板收集模式"
     IDS_MUI_UNTITLED        "未命名"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -143,11 +143,11 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
     IDS_MUI_ERR_DROP        "一次只能拖放一个文件。"
     IDS_MUI_ERR_ACCESSDENIED
-                            "文件""%s""不能被保存，它可能是受保护的。\n\nDo you want to launch %s as 'Elevated' application?"
+                            "文件""%s""不能被保存，它可能是受保护的。\n\n是否希望提升 %s 的权限？"
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否确实要打开一个如此庞大的文件？"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE "无法处理如此庞大的文件（大小 %lli MB）！"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "扩展名""%s""不是已知的文本文件。仍然要尝试打开吗？"
     IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
@@ -182,8 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "重新启动应用程序以加载已保存的设置吗？\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "如果继续而不重启应用程序，已保存的设置将不会生效，并且当退出时会被内部设置覆盖。"
     IDS_MUI_EXPORT_FAIL      "导出样式设置到文件""%s""时遇到错误。"
     IDS_MUI_REGEX_INVALID    "正则表达式无效。"
     IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
@@ -245,7 +245,7 @@ BEGIN
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
     IDM_THEMES_DEFAULT      "工厂默认(&F)"
     IDM_THEMES_FILE_ITEM    "标准设置(&S)"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
