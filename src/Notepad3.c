@@ -3279,7 +3279,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
       i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD || i == SCLEX_TOML) && !ro);
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
 
   EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
@@ -4624,60 +4624,65 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
 
         switch (SciCall_GetLexer()) {
-        default:
-        case SCLEX_NULL:
-        case SCLEX_CSS:
-        case SCLEX_DIFF:
-        case SCLEX_MARKDOWN:
-        case SCLEX_JSON:
-          break;
-        case SCLEX_HTML:
-        case SCLEX_XML:
-        case SCLEX_CPP:
-        case SCLEX_PASCAL:
-          EditToggleLineComments(Globals.hwndEdit, L"//", false);
-          break;
-        case SCLEX_VBSCRIPT:
-        case SCLEX_VB:
-          EditToggleLineComments(Globals.hwndEdit, L"'", false);
-          break;
-        case SCLEX_MAKEFILE:
-        case SCLEX_PERL:
-        case SCLEX_PYTHON:
-        case SCLEX_CONF:
-        case SCLEX_BASH:
-        case SCLEX_TCL:
-        case SCLEX_RUBY:
-        case SCLEX_POWERSHELL:
-        case SCLEX_CMAKE:
-        case SCLEX_AVS:
-        case SCLEX_YAML:
-        case SCLEX_COFFEESCRIPT:
-        case SCLEX_NIMROD:
-        case SCLEX_TOML:
-          EditToggleLineComments(Globals.hwndEdit, L"#", true);
-          break;
-        case SCLEX_ASM:
-        case SCLEX_PROPERTIES:
-        case SCLEX_AU3:
-        case SCLEX_AHKL:
-        case SCLEX_NSIS: // # could also be used instead
-        case SCLEX_INNOSETUP:
-        case SCLEX_REGISTRY:
-          EditToggleLineComments(Globals.hwndEdit, L";", true);
-          break;
-        case SCLEX_LUA:
-        case SCLEX_SQL:
-        case SCLEX_VHDL:
-          EditToggleLineComments(Globals.hwndEdit, L"--", true);
-          break;
-        case SCLEX_BATCH:
-          EditToggleLineComments(Globals.hwndEdit, L"rem ", true);
-          break;
-        case SCLEX_LATEX:
-        case SCLEX_MATLAB:
-          EditToggleLineComments(Globals.hwndEdit, L"%", true);
-          break;
+          case SCLEX_CPP:
+          case SCLEX_D:
+          case SCLEX_HTML:
+          case SCLEX_PASCAL:
+          case SCLEX_RUST:
+          case SCLEX_XML:
+            EditToggleLineComments(Globals.hwndEdit, L"//", false);
+            break;
+          case SCLEX_VB:
+          case SCLEX_VBSCRIPT:
+            EditToggleLineComments(Globals.hwndEdit, L"'", false);
+            break;
+          case SCLEX_AVS:
+          case SCLEX_BASH:
+          case SCLEX_CMAKE:
+          case SCLEX_COFFEESCRIPT:
+          case SCLEX_CONF:
+          case SCLEX_MAKEFILE:
+          case SCLEX_NIM:
+          case SCLEX_PERL:
+          case SCLEX_POWERSHELL:
+          case SCLEX_PYTHON:
+          case SCLEX_R:
+          case SCLEX_RUBY:
+          case SCLEX_TCL:
+          case SCLEX_TOML:
+          case SCLEX_YAML:
+            EditToggleLineComments(Globals.hwndEdit, L"#", true);
+            break;
+          case SCLEX_AHKL:
+          case SCLEX_ASM:
+          case SCLEX_AU3:
+          case SCLEX_INNOSETUP:
+          case SCLEX_NSIS: // # could also be used instead
+          case SCLEX_PROPERTIES:
+          case SCLEX_REGISTRY:
+            EditToggleLineComments(Globals.hwndEdit, L";", true);
+            break;
+          case SCLEX_LUA:
+          case SCLEX_SQL:
+          case SCLEX_VHDL:
+            EditToggleLineComments(Globals.hwndEdit, L"--", true);
+            break;
+          case SCLEX_BATCH:
+            EditToggleLineComments(Globals.hwndEdit, L"rem ", true);
+            break;
+          case SCLEX_LATEX:
+          case SCLEX_MATLAB:
+            EditToggleLineComments(Globals.hwndEdit, L"%", true);
+            break;
+          // ------------------
+          case SCLEX_NULL:
+          case SCLEX_CSS:
+          case SCLEX_DIFF:
+          case SCLEX_JSON:
+          case SCLEX_MARKDOWN:
+          default:
+            // do nothing
+            break;
         }
         EndWaitCursor();
       }
@@ -4689,55 +4694,63 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
 
         switch (SciCall_GetLexer()) {
-        default:
-        case SCLEX_NULL:
-        case SCLEX_VBSCRIPT:
-        case SCLEX_MAKEFILE:
-        case SCLEX_VB:
-        case SCLEX_ASM:
-        case SCLEX_PERL:
-        case SCLEX_PYTHON:
-        case SCLEX_PROPERTIES:
-        case SCLEX_CONF:
-        case SCLEX_POWERSHELL:
-        case SCLEX_BATCH:
-        case SCLEX_DIFF:
-        case SCLEX_BASH:
-        case SCLEX_TCL:
-        case SCLEX_AU3:
-        case SCLEX_LATEX:
-        case SCLEX_AHKL:
-        case SCLEX_RUBY:
-        case SCLEX_CMAKE:
-        case SCLEX_MARKDOWN:
-        case SCLEX_YAML:
-        case SCLEX_JSON:
-        case SCLEX_REGISTRY:
-        case SCLEX_NIMROD:
-        case SCLEX_TOML:
-          break;
-        case SCLEX_AVS:
-        case SCLEX_CPP:
-        case SCLEX_CSS:
-        case SCLEX_HTML:
-        case SCLEX_NSIS:
-        case SCLEX_SQL:
-        case SCLEX_VHDL:
-        case SCLEX_XML:
-          EditEncloseSelection(Globals.hwndEdit, L"/*", L"*/");
-          break;
-        case SCLEX_INNOSETUP:
-        case SCLEX_PASCAL:
-          EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
-          break;
-        case SCLEX_LUA:
-          EditEncloseSelection(Globals.hwndEdit, L"--[[", L"]]");
-          break;
-        case SCLEX_COFFEESCRIPT:
-          EditEncloseSelection(Globals.hwndEdit, L"###", L"###");
-          break;
-        case SCLEX_MATLAB:
-          EditEncloseSelection(Globals.hwndEdit, L"%{", L"%}");
+          case SCLEX_D:
+            //~EditEncloseSelection(Globals.hwndEdit, L"/+", L"+/");
+            //~break;
+          case SCLEX_AVS:
+          case SCLEX_CPP:
+          case SCLEX_CSS:
+          case SCLEX_HTML:
+          case SCLEX_NSIS:
+          case SCLEX_RUST:
+          case SCLEX_SQL:
+          case SCLEX_VHDL:
+          case SCLEX_XML:
+            EditEncloseSelection(Globals.hwndEdit, L"/*", L"*/");
+            break;
+          case SCLEX_INNOSETUP:
+          case SCLEX_PASCAL:
+            EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
+            break;
+          case SCLEX_LUA:
+            EditEncloseSelection(Globals.hwndEdit, L"--[[", L"]]");
+            break;
+          case SCLEX_COFFEESCRIPT:
+            EditEncloseSelection(Globals.hwndEdit, L"###", L"###");
+            break;
+          case SCLEX_MATLAB:
+            EditEncloseSelection(Globals.hwndEdit, L"%{", L"%}");
+            break;
+          // ------------------
+          case SCLEX_NULL:
+          case SCLEX_AHKL:
+          case SCLEX_ASM:
+          case SCLEX_AU3:
+          case SCLEX_BASH:
+          case SCLEX_BATCH:
+          case SCLEX_CMAKE:
+          case SCLEX_CONF:
+          case SCLEX_DIFF:
+          case SCLEX_JSON:
+          case SCLEX_LATEX:
+          case SCLEX_MAKEFILE:
+          case SCLEX_MARKDOWN:
+          case SCLEX_NIM:
+          case SCLEX_PERL:
+          case SCLEX_POWERSHELL:
+          case SCLEX_PROPERTIES:
+          case SCLEX_PYTHON:
+          case SCLEX_R:
+          case SCLEX_REGISTRY:
+          case SCLEX_RUBY:
+          case SCLEX_TCL:
+          case SCLEX_TOML:
+          case SCLEX_VB:
+          case SCLEX_VBSCRIPT:
+          case SCLEX_YAML:
+          default:
+            // do nothing
+            break;
         }
         EndWaitCursor();
       }

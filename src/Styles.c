@@ -2293,7 +2293,7 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
     if (!Flags.SimpleIndentGuides) {
       switch (SciCall_GetLexer()) {
       case SCLEX_PYTHON:
-      case SCLEX_NIMROD:
+      case SCLEX_NIM:
         iIndentView = SC_IV_LOOKFORWARD;
         break;
       default:
