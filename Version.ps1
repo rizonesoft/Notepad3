@@ -38,16 +38,15 @@ try
 	$Revis = [int]$(Get-Date -format MMdd)
 	#~$Build = [int]($env:appveyor_build_number )
 	$Build = [int](Get-Content "Versions\build.txt")
+	if (!$Build) { $Build = 0 }
+	$Build = $Build + 1
 	if ($AppVeyorEnv) {
 		$CommitID = [string]($env:appveyor_repo_commit)
 	}
 	else {
 		$CommitID = [string]($env:computername)
-		$Build = $Build + 1
-		$Build | Set-Content "Versions\build.txt"
 	}
-	if (!$Build) { $Build = 0 }
-	if (!$CommitID) { $CommitID = "0" }
+	if (!$CommitID) { $CommitID = "---" }
 	$SciVer = [string](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
 	$OnigVer = [string](Get-Content "oniguruma\version.txt")
@@ -95,6 +94,7 @@ catch
 }
 finally
 {
+	$Build | Set-Content "Versions\build.txt"
 	[Environment]::SetEnvironmentVariable("LASTEXITCODE", $LastExitCode, "User")
 	$host.SetShouldExit($LastExitCode)
 	Write-Host "VersionPatching: Done! Elapsed time: $($stopwatch.Elapsed)."
