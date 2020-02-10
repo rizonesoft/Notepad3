@@ -37,7 +37,7 @@ try
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {
-		$CommitID = [string]($env:appveyor_repo_commit)
+		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,7)
 		$Build = [int]($env:appveyor_build_number)
 	}
 	else {
