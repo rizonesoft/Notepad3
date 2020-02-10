@@ -180,8 +180,9 @@
 #define CHECK_NULL_RETURN_MEMERR(p)   if (IS_NULL(p)) return ONIGERR_MEMORY
 #define NULL_UCHARP                   ((UChar* )0)
 
-#define CHAR_MAP_SIZE       256
-#define INFINITE_LEN        ONIG_INFINITE_DISTANCE
+#define CHAR_MAP_SIZE              256
+#define INFINITE_LEN               ONIG_INFINITE_DISTANCE
+#define LOOK_BEHIND_MAX_CHAR_LEN   INT_MAX
 
 /* escape other system UChar definition */
 #ifdef ONIG_ESCAPE_UCHAR_COLLISION
