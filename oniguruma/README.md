@@ -27,11 +27,20 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
+Master branch
+-------------
+
+* Fixed behavior of isolated options in Perl and Java syntaxes.  /...(?i).../
+
+
 Version 6.9.4
 -------------
 
 * NEW API: RegSet (set of regexes)
-* Fixed CVE-2019-19012 (Issue #164)
+* Fixed CVE-2019-19012
+* Fixed CVE-2019-19203 (Does not affect UTF-8, UTF-16 and UTF-32 encodings)
+* Fixed CVE-2019-19204 (Affects only PosixBasic, Emacs and Grep syntaxes)
+* Fixed CVE-2019-19246
 * Fixed some problems (found by libFuzzer test)
 
 

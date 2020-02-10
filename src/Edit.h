@@ -29,6 +29,7 @@ bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
 bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
+void  EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
@@ -58,8 +59,8 @@ void  EditSpacesToTabs(HWND hwnd,int nTabWidth,bool);
 
 void  EditMoveUp(HWND hwnd);
 void  EditMoveDown(HWND hwnd);
-void  EditJumpToSelectionEnd(HWND hwnd);
-void  EditJumpToSelectionStart(HWND hwnd);
+DocPos  EditSetCaretToSelectionStart();
+DocPos  EditSetCaretToSelectionEnd();
 void  EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend);
 void  EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
 void  EditAlignText(HWND hwnd,int nMode);
@@ -71,18 +72,20 @@ void  EditStripLastCharacter(HWND hwnd,bool,bool);
 void  EditCompressBlanks(HWND hwnd);
 void  EditRemoveBlankLines(HWND hwnd,bool,bool);
 void  EditRemoveDuplicateLines(HWND hwnd,bool);
-void  EditWrapToColumn(HWND hwnd,DocPos nColumn);
+void  EditWrapToColumn(HWND hwnd,DocPosU nColumn);
+//void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
+
 void  EditSplitLines(HWND hwnd);
 void  EditJoinLinesEx(HWND hwnd,bool,bool);
 void  EditSortLines(HWND hwnd,int iSortFlags);
 
 void  EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol);
-void  EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop);
+void  EditScrollTo(DocLn iScrollToLine, int iSlop);
 const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd);
 void  EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView);
 void  EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions(HWND hwnd);
-void  EditEnsureSelectionVisible(HWND hwnd);
+void  EditEnsureSelectionVisible();
 void	EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
@@ -138,7 +141,7 @@ typedef enum {
 
 void EditToggleFolds(FOLD_ACTION action,bool);
 void EditFoldClick(DocLn ln, int mode);
-void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
+void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action);
 
 
 #define NP3_BRACES_TO_MATCH "()[]{}"

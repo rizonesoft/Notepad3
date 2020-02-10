@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "Palabra &completa\tCtrl+Alt+Enter",               IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Cursor a la izquierda de la pa&labra\tCtrl+Left", CMD_CTRLLEFT
-            MENUITEM "Cu&rsor a la derecha de la palabra\tCtrl+Right",  CMD_CTRLRIGHT
+            MENUITEM "Cursor a la izquierda de la pa&labra\tCtrl+ ←",   CMD_CTRLLEFT
+            MENUITEM "Cu&rsor a la derecha de la palabra\tCtrl+ →",     CMD_CTRLRIGHT
             MENUITEM "&Eliminar la palabra a la izquierda\tCtrl+Back",  CMD_CTRLBACK
             MENUITEM "Eliminar la &palabra a la derecha\tCtrl+Del",     CMD_CTRLDEL
         END
         POPUP "Lí&neas"
         BEGIN
-            MENUITEM "Mover &hacia arriba\tCtrl+Shift+Up",              IDM_EDIT_MOVELINEUP
-            MENUITEM "&Mover hacia abajo\tCtrl+Shift+Down",             IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Mover &hacia arriba\tCtrl+Shift+ ↑",              IDM_EDIT_MOVELINEUP
+            MENUITEM "&Mover hacia abajo\tCtrl+Shift+ ↓",               IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Cortar selecc&ión o línea actual\tCtrl+X",                 IDM_EDIT_CUT
             MENUITEM "Cortar selección de &línea(s) completa(s)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Insertar"
         BEGIN
-            MENUITEM "&Nueva línea arriba\tCtrl+Enter",                 CMD_CTRLENTER
+            MENUITEM "&Nueva línea arriba\tCtrl+Enter",                 CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "Etiqueta HTML/&XML...\tAlt+X",                    IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "&Números de línea\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Selección de&l margen\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
+        POPUP "&Plegable"
+        BEGIN
+            MENUITEM "&Código plegable",                    IDM_VIEW_FOLDING
+            MENUITEM "&Alternar pliegues\tCtrl+Shift+F",    IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "&Ir al siguiente pliegue\tAlt+ +",    CMD_FOLDJUMPDOWN
+            MENUITEM "I&r al pliegue anterior\tAlt+ –",     CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Contraer pliegue\tAlt+ ←",           CMD_FOLDCOLLAPSE
+            MENUITEM "&Expandir pliegue\tAlt+ →",           CMD_FOLDEXPAND
+        END
         POPUP "Mos&trar"
         BEGIN
-            MENUITEM "&Código plegable",                                IDM_VIEW_FOLDING
-            MENUITEM "&Alternar pliegues\tCtrl+Shift+F",                IDM_VIEW_TOGGLEFOLDS
             MENUITEM "Vista enfocada\tCtrl+Alt+V",                      IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoreo de Log",                               IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoom &Acercar\tCtrl++",                           IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom A&lejar\tCtrl+-",                            IDM_VIEW_ZOOMOUT
+            MENUITEM "Zoom &Acercar\tCtrl+ +",                          IDM_VIEW_ZOOMIN
+            MENUITEM "Zoom A&lejar\tCtrl+ –",                           IDM_VIEW_ZOOMOUT
             MENUITEM "Restablecer el &Zoom\tCtrl+0",                    IDM_VIEW_RESETZOOM
         END
         POPUP "&Posición"

@@ -86,8 +86,8 @@ KEYWORDLIST KeyWords_SQL = {
 "",
 // User Keywords 4
 "",
-
-"" };
+NULL,
+};
 
 
 EDITLEXER lexSQL = { 

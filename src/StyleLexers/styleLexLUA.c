@@ -27,7 +27,8 @@ KEYWORDLIST KeyWords_LUA = {
 "openfile os.clock os.date os.difftime os.execute os.exit os.getenv os.remove os.rename os.setlocale "
 "os.time os.tmpname package.cpath package.loaded package.loadlib package.path package.preload "
 "package.seeall read readfrom remove rename seek setlocale time tmpfile tmpname write writeto",
-"", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexLUA = { 

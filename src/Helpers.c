@@ -20,6 +20,7 @@
 
 #include <shlobj.h>
 #include <shellapi.h>
+#include <ctype.h>
 
 //#include <pathcch.h>
 
@@ -394,7 +395,7 @@ if (!bSucceed) {
 //=============================================================================
 //
 //  GetSystemMetricsEx()
-//  get system metrix for current DPI 
+//  get system metric for current DPI 
 // https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
 //
 int GetSystemMetricsEx(int nValue) {
@@ -1667,24 +1668,24 @@ bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 //
 UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
 {
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
   UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
+  WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
 UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
-{
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+{ 
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
   return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
-  WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharEx(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
+  WCHAR wsz[FNDRPL_BUFFER] = { L'\0' };
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, (int)COUNTOF(wsz));
   return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
@@ -1727,92 +1728,6 @@ UINT CharSetFromCodePage(const UINT uCodePage) {
 }
 
 
-/** ******************************************************************************
- *
- *  UnSlash functions
- *  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
- *
- * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh and \uhhhh into their indicated characters.
- */
-unsigned int UnSlash(char *s,UINT cpEdit) {
-  char *sStart = s;
-  char *o = s;
-
-  while (*s) {
-    if (*s == '\\') {
-      s++;
-      if (*s == 'a')
-        *o = '\a';
-      else if (*s == 'b')
-        *o = '\b';
-      else if (*s == 'f')
-        *o = '\f';
-      else if (*s == 'n')
-        *o = '\n';
-      else if (*s == 'r')
-        *o = '\r';
-      else if (*s == 't')
-        *o = '\t';
-      else if (*s == 'v')
-        *o = '\v';
-      else if (*s == 'x' || *s == 'u') {
-        bool bShort = (*s == 'x');
-        char ch[8];
-        char *pch = ch;
-        WCHAR val[2] = L"";
-        int hex;
-        val[0] = 0;
-        hex = GetHexDigit(*(s+1));
-        if (hex >= 0) {
-          s++;
-          val[0] = (WCHAR)hex;
-          hex = GetHexDigit(*(s+1));
-          if (hex >= 0) {
-            s++;
-            val[0] *= 16;
-            val[0] += (WCHAR)hex;
-            if (!bShort) {
-              hex = GetHexDigit(*(s+1));
-              if (hex >= 0) {
-                s++;
-                val[0] *= 16;
-                val[0] += (WCHAR)hex;
-                hex = GetHexDigit(*(s+1));
-                if (hex >= 0) {
-                  s++;
-                  val[0] *= 16;
-                  val[0] += (WCHAR)hex;
-                }
-              }
-            }
-          }
-          if (val[0]) {
-            val[1] = 0;
-            WideCharToMultiByteEx(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
-            *o = *pch++;
-            while (*pch)
-              *++o = *pch++;
-          }
-          else
-            o--;
-        }
-        else
-          o--;
-      }
-      else
-        *o = *s;
-    }
-    else
-      *o = *s;
-    o++;
-    if (*s) {
-      s++;
-    }
-  }
-  *o = '\0';
-  return (unsigned int)(o - sStart);
-}
-
 /**
  * Convert C style \0oo into their indicated characters.
  * This is used to get control characters into the regular expresion engine
@@ -1828,7 +1743,8 @@ unsigned int UnSlashLowOctal(char* s) {
     else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
       *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
       s += 3;
-    } else {
+    }
+    else {
       *o = *s;
     }
     ++o;
@@ -1839,6 +1755,307 @@ unsigned int UnSlashLowOctal(char* s) {
   return (unsigned int)(o - sStart);
 }
 
+
+/*
+ * transform control chars into backslash sequence
+ */
+size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput)
+{
+  if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
+
+  size_t i = 0;
+  size_t k = 0;
+  size_t const maxcnt = cchOutLen - 2;
+  while ((pchInput[k] != '\0') && (i < maxcnt))
+  {
+    switch (pchInput[k]) {
+      case '\\':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = '\\';
+        break;
+      case '\n':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'n';
+        break;
+      case '\r':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'r';
+        break;
+      case '\t':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 't';
+        break;
+      case '\f':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'f';
+        break;
+      case '\v':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'v';
+        break;
+      case '\a':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'a';
+        break;
+      case '\b':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'b';
+        break;
+      case '\x1B':
+        pchOutput[i++] = '\\';
+        pchOutput[i++] = 'e';
+        break;
+      default:
+        pchOutput[i++] = pchInput[k];
+        break;
+    }
+    ++k;
+  }
+  pchOutput[i] = pchInput[k];
+  // ensure string end
+  if (pchInput[k] != '\0') { 
+    pchOutput[++i] = '\0';
+  }
+  return i;
+}
+
+
+size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput)
+{
+  if (!pchOutput || cchOutLen < 2 || !pchInput) { return 0; }
+
+  size_t i = 0;
+  size_t k = 0;
+  size_t const maxcnt = cchOutLen - 2;
+  while ((pchInput[k] != L'\0') && (i < maxcnt))
+  {
+    switch (pchInput[k]) {
+      case L'\\':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'\\';
+        break;
+      case L'\n':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'n';
+        break;
+      case L'\r':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'r';
+        break;
+      case L'\t':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L't';
+        break;
+      case L'\f':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'f';
+        break;
+      case L'\v':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'v';
+        break;
+      case L'\a':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'a';
+        break;
+      case L'\b':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'b';
+        break;
+      case L'\x1B':
+        pchOutput[i++] = L'\\';
+        pchOutput[i++] = L'e';
+        break;
+      default:
+        pchOutput[i++] = pchInput[k];
+        break;
+    }
+    ++k;
+  }
+  pchOutput[i] = pchInput[k];
+  // ensure string end
+  if (pchInput[k] != L'\0') {
+    pchOutput[++i] = L'\0';
+  }
+  return i;
+}
+
+
+/** ******************************************************************************
+ *
+ *  UnSlash functions
+ *  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
+ *
+ * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh, \uhhhh and \\  into their indicated characters.
+ */
+size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
+{
+  LPSTR s = pchInOut;
+  LPSTR o = pchInOut;
+  LPCSTR const sStart = pchInOut;
+
+  while (*s) {
+    if (*s == '\\') {
+      ++s;
+      if (*s == 'a')
+        *o = '\a';
+      else if (*s == 'b')
+        *o = '\b';
+      else if (*s == 'e')
+        *o = '\x1B';
+      else if (*s == 'f')
+        *o = '\f';
+      else if (*s == 'n')
+        *o = '\n';
+      else if (*s == 'r')
+        *o = '\r';
+      else if (*s == 't')
+        *o = '\t';
+      else if (*s == 'v')
+        *o = '\v';
+      else if (*s == '\\')
+        *o = '\\';
+      else if (*s == 'x' || *s == 'u') {
+        bool bShort = (*s == 'x');
+        char ch[8];
+        char* pch = ch;
+        WCHAR val[2] = L"";
+        int hex;
+        val[0] = 0;
+        hex = GetHexDigitA(*(s + 1));
+        if (hex >= 0) {
+          ++s;
+          val[0] = (WCHAR)hex;
+          hex = GetHexDigitA(*(s + 1));
+          if (hex >= 0) {
+            ++s;
+            val[0] *= 16;
+            val[0] += (WCHAR)hex;
+            if (!bShort) {
+              hex = GetHexDigitA(*(s + 1));
+              if (hex >= 0) {
+                ++s;
+                val[0] *= 16;
+                val[0] += (WCHAR)hex;
+                hex = GetHexDigitA(*(s + 1));
+                if (hex >= 0) {
+                  ++s;
+                  val[0] *= 16;
+                  val[0] += (WCHAR)hex;
+                }
+              }
+            }
+          }
+          if (val[0]) {
+            val[1] = 0;
+            WideCharToMultiByte(cpEdit, 0, val, -1, ch, (int)COUNTOF(ch), NULL, NULL);
+            *o = *pch++;
+            while (*pch) {
+              *++o = *pch++;
+            }
+          }
+          else
+            --o;
+        }
+        else
+          --o;
+      }
+      else {
+        *o = '\\'; // revert
+        ++o;
+        *o = *s;
+      }
+    }
+    else
+      *o = *s;
+
+    ++o;
+    if (*s) {
+      ++s;
+    }
+  }
+  *o = '\0';
+  return (size_t)((ptrdiff_t)(o - sStart));
+}
+
+size_t UnSlashW(LPWSTR pchInOut)
+{
+  LPWSTR s = pchInOut;
+  LPWSTR o = pchInOut;
+  LPCWSTR const sStart = pchInOut;
+
+  while (*s) {
+    if (*s == '\\') {
+      ++s;
+      if (*s == L'a')
+        *o = L'\a';
+      else if (*s == L'b')
+        *o = L'\b';
+      else if (*s == L'e')
+        *o = L'\x1B';
+      else if (*s == L'f')
+        *o = L'\f';
+      else if (*s == L'n')
+        *o = L'\n';
+      else if (*s == L'r')
+        *o = L'\r';
+      else if (*s == L't')
+        *o = L'\t';
+      else if (*s == L'v')
+        *o = L'\v';
+      else if (*s == L'\\')
+        *o = L'\\';
+      else if (*s == L'x' || *s == L'u') {
+        bool bShort = (*s == L'x');
+        WCHAR val = L'\0';
+        int hex = GetHexDigitW(*(s + 1));
+        if (hex >= 0) {
+          val = (WCHAR)hex;
+          hex = GetHexDigitW(*(++s + 1));
+          if (hex >= 0) {
+            ++s;
+            val *= 16;
+            val += (WCHAR)hex;
+            if (!bShort) {
+              hex = GetHexDigitW(*(s + 1));
+              if (hex >= 0) {
+                val *= 16;
+                val += (WCHAR)hex;
+                hex = GetHexDigitW(*(++s + 1));
+                if (hex >= 0) {
+                  ++s;
+                  val *= 16;
+                  val += (WCHAR)hex;
+                }
+              }
+            }
+          }
+
+          if (val) {
+            *o = val;
+          }
+          else
+            --o;
+        }
+        else
+          --o;
+      }
+      else {
+        *o = '\\'; // revert
+        *++o = *s;
+      }
+    }
+    else
+      *o = *s;
+
+    ++o;
+    if (*s) {
+      ++s;
+    }
+  }
+  *o = '\0';
+  return (size_t)((ptrdiff_t)(o - sStart));
+}
 
 /**
  *  check, if we have regex sub-group referencing 
@@ -1877,7 +2094,7 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
   // regex handles backslashes itself
   // except: replacement is not delegated to regex engine
   if (!bRegEx || (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg))) {
-    UnSlash(pszInput, cpEdit);
+    UnSlashA(pszInput, cpEdit);
   }
 }
 
@@ -1916,7 +2133,7 @@ void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
   StringCchCopyA(pszInput, FNDRPL_BUFFER, buffer);
 }
 
-
+#ifdef WC2MB_EX
 //=============================================================================
 //
 //  WideCharToMultiByteEx()
@@ -1961,7 +2178,9 @@ ptrdiff_t WideCharToMultiByteEx(
   if (lpUsedDefaultChar) { *lpUsedDefaultChar = bIsDefCharUse; }
   return bytesConv;
 }
+#endif
 
+#ifdef MB2WC_EX
 //=============================================================================
 //
 //  MultiByteToWideCharEx()
@@ -2006,7 +2225,7 @@ ptrdiff_t MultiByteToWideCharEx(
   }
   return wcharConv;
 }
-
+#endif
 
 /*
 
@@ -2201,29 +2420,106 @@ VOID RestoreWndFromTray(HWND hWnd)
   // properly until DAR finished
 }
 
+//=============================================================================
+//
+//  UrlEscapeEx()
+//
+
+#if (NTDDI_VERSION < NTDDI_WIN8)
+
+// Convert a byte into Hexadecimal Unicode character
+__inline int toHEX(BYTE val, WCHAR* pOutChr)
+{
+  StringCchPrintfW(pOutChr, 4, L"%%%0.2X", val);
+  return 3; // num of wchars ('%FF')
+}
+
+LPCTSTR const lpszUnreservedChars = L"-_.~"; // or IsAlphaNumeric()
+LPCTSTR const lpszReservedChars = L"!#$%&'()*+,/:;=?@[]";
+LPCTSTR const lpszUnsafeChars = L" \"\\<>{|}^`";
+
+#endif
+
+// ----------------------------------------------------------------------------
+
+void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved)
+{
+#if (NTDDI_VERSION >= NTDDI_WIN8)
+  UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_URI_COMPONENT));
+#else
+  //UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8));
+
+  DWORD posIn = 0;
+  DWORD posOut = 0;
+
+  while (lpURL[posIn] && (posOut < *pcchEscaped))
+  {
+    if (IsAlphaNumeric(lpURL[posIn]) || StrChrW(lpszUnreservedChars, lpURL[posIn]))
+    {
+      lpEscaped[posOut++] = lpURL[posIn++];
+    }
+    else if (StrChrW(lpszReservedChars, lpURL[posIn]))
+    {
+      if (posOut < (*pcchEscaped - 3)) {
+        if (bEscReserved) {
+          posOut += toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
+        }
+        else {
+          lpEscaped[posOut++] = lpURL[posIn++];
+        }
+      }
+    }
+    else if (StrChrW(lpszUnsafeChars, lpURL[posIn]))
+    {
+      if (posOut < (*pcchEscaped - 3)) {
+        posOut += toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
+      }
+    }
+    // Encode unprintable characters 0x00-0x1F, and 0x7F
+    else if ((lpURL[posIn] <= 0x1F) || (lpURL[posIn] == 0x7F))
+    {
+      if (posOut < (*pcchEscaped - 3)) {
+        posOut += toHEX((BYTE)lpURL[posIn++], &lpEscaped[posOut]);
+      }
+    }
+    // Now encode all other unsafe characters
+    else {
+      CHAR mb[4] = { '\0', '\0', '\0', '\0' };
+      int const n = WideCharToMultiByte(CP_UTF8, 0, &lpURL[posIn++], 1, mb, 4, 0, 0);
+      if (posOut < (*pcchEscaped - (n*3))) {
+        for (int i = 0; i < n; ++i) {
+          posOut += toHEX((BYTE)mb[i], &lpEscaped[posOut]);
+        }
+      }
+    }
+  } 
+  lpEscaped[posOut] = L'\0';
+  *pcchEscaped = posOut;
+#endif
+}
 
 
 //=============================================================================
 //
 //  UrlUnescapeEx()
 //
-void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, size_t* pcchUnescaped)
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 {
-#if defined(URL_UNESCAPE_AS_UTF8)
+#if (NTDDI_VERSION >= NTDDI_WIN8)
   UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
 #else
   char* outBuffer = AllocMem(*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
   if (outBuffer == NULL) {
     return;
   }
-  size_t const outLen = *pcchUnescaped;
+  DWORD const outLen = *pcchUnescaped;
 
-  size_t posIn = 0;
+  DWORD posIn = 0;
   WCHAR buf[5] = { L'\0' };
-  size_t lastEsc = StringCchLenW(lpURL,0) - 2;
+  DWORD lastEsc = (DWORD)StringCchLenW(lpURL,0) - 2;
   unsigned int code;
 
-  size_t posOut = 0;
+  DWORD posOut = 0;
   while ((posIn < lastEsc) && (posOut < outLen))
   {
     bool bOk = false;
@@ -2255,22 +2551,22 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, size_t* pcchUnescaped)
         }
       }
     }
-    // TODO(rkotten): HTML Hex encoded (&#x...)
+
     if (!bOk) {
-      posOut += WideCharToMultiByteEx(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
-                                    &(outBuffer[posOut]), (outLen - posOut), NULL, NULL);
+      posOut += WideCharToMultiByte(Encoding_SciCP, 0, &lpURL[posIn++], 1, 
+                                    &outBuffer[posOut], (int)(outLen - posOut), NULL, NULL);
     }
   }
 
   // copy rest
   while ((lpURL[posIn] != L'\0') && (posOut < outLen))
   {
-    posOut += WideCharToMultiByteEx(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
-                                  &(outBuffer[posOut]), (outLen - posOut), NULL, NULL);
+    posOut += WideCharToMultiByte(Encoding_SciCP, 0, &lpURL[posIn++], 1, 
+                                  &outBuffer[posOut], (int)(outLen - posOut), NULL, NULL);
   }
   outBuffer[posOut] = '\0';
 
-  ptrdiff_t const iOut = MultiByteToWideCharEx(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, *pcchUnescaped);
+  DWORD const iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
   FreeMem(outBuffer);
 
   *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);
@@ -2424,354 +2720,6 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
     StringCchPrintf(lpszStrg, cchSize, L"%.3G", fValue);
   else
     StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-//   Drag N Drop helpers
-//
-///////////////////////////////////////////////////////////////////////////////
-
-static HANDLE g_hHeap = NULL;
-
-typedef struct tIDROPTARGET {
-  IDropTarget idt;
-  LONG lRefCount;
-  ULONG lNumFormats;
-  CLIPFORMAT *pFormat;
-  HWND hWnd;
-  bool bAllowDrop;
-  DWORD dwKeyState;
-  IDataObject *pDataObject;
-  UINT nMsg;
-  void *pUserData;
-  DNDCALLBACK pDropProc;
-} 
-IDROPTARGET, *PIDROPTARGET;
-
-
-typedef struct IDRPTRG_VTBL
-{
-  BEGIN_INTERFACE
-    HRESULT(STDMETHODCALLTYPE *QueryInterface)(PIDROPTARGET pThis, REFIID riid, void  **ppvObject);
-    ULONG(STDMETHODCALLTYPE   *AddRef)(PIDROPTARGET pThis);
-    ULONG(STDMETHODCALLTYPE   *Release)(PIDROPTARGET pThis);
-    HRESULT(STDMETHODCALLTYPE *DragEnter)(PIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-    HRESULT(STDMETHODCALLTYPE *DragOver)(PIDROPTARGET pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-    HRESULT(STDMETHODCALLTYPE *DragLeave)(PIDROPTARGET pThis);
-    HRESULT(STDMETHODCALLTYPE *Drop)(PIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-  END_INTERFACE
-} 
-IDRPTRG_VTBL, *PIDRPTRG_VTBL;
-
-
-//=============================================================================
-//
-//  DragAndDropInit()
-//
-void DragAndDropInit(HANDLE hHeap)
-{
-  if (g_hHeap == NULL && hHeap == NULL)
-    g_hHeap = GetProcessHeap();
-  else if (g_hHeap == NULL)
-    g_hHeap = hHeap;
-
-  //OleInitialize(NULL); // just in case
-}
-
-
-//=============================================================================
-//
-//  GetDnDHeap()
-//
-static HANDLE GetDnDHeap()
-{
-  if (g_hHeap == NULL) {
-    g_hHeap = GetProcessHeap();
-  }
-  return g_hHeap;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_AddRef()
-//
-static ULONG STDMETHODCALLTYPE IDRPTRG_AddRef(PIDROPTARGET pThis)
-{
-  return InterlockedIncrement(&pThis->lRefCount);
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_QueryDataObject()
-//
-static bool IDRPTRG_QueryDataObject(PIDROPTARGET pDropTarget, IDataObject *pDataObject)
-{
-  ULONG lFmt;
-  FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-
-  for (lFmt = 0; lFmt < pDropTarget->lNumFormats; lFmt++)
-  {
-    fmtetc.cfFormat = pDropTarget->pFormat[lFmt];
-    if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
-      return true;
-  }
-  return false;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_QueryInterface()
-//
-static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PIDROPTARGET pThis, REFIID riid,
-  LPVOID *ppvObject)
-{
-  *ppvObject = NULL;
-
-  if (IsEqualGUID(riid, &IID_IUnknown))
-  {
-    IDRPTRG_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-  if (IsEqualGUID(riid, &IID_IDropTarget))
-  {
-    IDRPTRG_AddRef(pThis);
-    *ppvObject = pThis;
-    return S_OK;
-  }
-  return E_NOINTERFACE;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_Release()
-//
-static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PIDROPTARGET pThis)
-{
-  ULONG nCount;
-
-  if ((nCount = InterlockedDecrement(&pThis->lRefCount)) == 0)
-  {
-    HeapFree(GetDnDHeap(), 0, pThis);
-    return 0;
-  }
-  return nCount;
-}
-
-
-
-//=============================================================================
-//
-//  IDRPTRG_DropEffect()
-//
-static DWORD IDRPTRG_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
-{
-  DWORD dwEffect = 0;
-
-  if (dwKeyState & MK_CONTROL)
-    dwEffect = dwAllowed & DROPEFFECT_COPY;
-  else if (dwKeyState & MK_SHIFT)
-    dwEffect = dwAllowed & DROPEFFECT_MOVE;
-
-  if (dwEffect == 0)
-  {
-    if (dwAllowed & DROPEFFECT_COPY)
-      dwEffect = DROPEFFECT_COPY;
-    if (dwAllowed & DROPEFFECT_MOVE)
-      dwEffect = DROPEFFECT_MOVE;
-  }
-  UNUSED(pt);
-  return dwEffect;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_DragEnter()
-//
-static HRESULT STDMETHODCALLTYPE IDRPTRG_DragEnter(PIDROPTARGET pThis, IDataObject *pDataObject,
-  DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
-{
-  pThis->bAllowDrop = IDRPTRG_QueryDataObject(pThis, pDataObject);
-  if (pThis->bAllowDrop)
-  {
-    *pdwEffect = IDRPTRG_DropEffect(dwKeyState, pt, *pdwEffect);
-    SetFocus(pThis->hWnd);
-  }
-  else
-    *pdwEffect = DROPEFFECT_NONE;
-
-  return S_OK;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_DragOver()
-//
-static HRESULT STDMETHODCALLTYPE IDRPTRG_DragOver(PIDROPTARGET pThis, DWORD dwKeyState, POINTL pt,
-  DWORD *pdwEffect)
-{
-  if (pThis->bAllowDrop)
-  {
-    pThis->dwKeyState = dwKeyState;
-
-    *pdwEffect = IDRPTRG_DropEffect(dwKeyState, pt, *pdwEffect);
-  }
-  else
-    *pdwEffect = DROPEFFECT_NONE;
-
-  return S_OK;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_DragLeave()
-//
-static HRESULT STDMETHODCALLTYPE IDRPTRG_DragLeave(PIDROPTARGET pThis)
-{
-  UNUSED(pThis);
-  return S_OK;
-}
-
-
-//=============================================================================
-//
-//  IDRPTRG_Drop()
-//
-static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *pDataObject,
-  DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
-{
-  FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-  STGMEDIUM medium;
-  DROPDATA DropData;
-
-  UNUSED(dwKeyState);
-  UNUSED(pt);
-
-  if (pThis->bAllowDrop)
-  {
-    ULONG lFmt;
-    for (lFmt = 0; lFmt < pThis->lNumFormats; lFmt++)
-    {
-      fmtetc.cfFormat = pThis->pFormat[lFmt];
-      if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
-        break;
-    }
-    if (lFmt < pThis->lNumFormats)
-    {
-      pDataObject->lpVtbl->GetData(pDataObject, &fmtetc, &medium);
-      *pdwEffect = DROPEFFECT_NONE;
-      if (pThis->pDropProc != NULL) {
-        *pdwEffect = (*pThis->pDropProc)(pThis->pFormat[lFmt], medium.hGlobal, pThis->hWnd, pThis->dwKeyState, pt, pThis->pUserData);
-      }
-      else if (pThis->nMsg != WM_NULL)
-      {
-        DropData.cf = pThis->pFormat[lFmt];
-        DropData.dwKeyState = pThis->dwKeyState;
-        DropData.hData = medium.hGlobal;
-        DropData.pt = pt;
-
-        *pdwEffect = (DWORD)SendMessage(pThis->hWnd, pThis->nMsg, (WPARAM)&DropData, (LPARAM)pThis->pUserData);
-      }
-      if (*pdwEffect != DROPEFFECT_NONE)
-        ReleaseStgMedium(&medium);
-    }
-  }
-  else
-    *pdwEffect = DROPEFFECT_NONE;
-
-  return S_OK;
-}
-
-
-//=============================================================================
-//
-//  CreateDropTarget()
-//
-IDropTarget* CreateDropTarget(const CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
-  DWORD(*pDropProc)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData),
-  void *pUserData)
-{
-  PIDROPTARGET pRet;
-  static IDRPTRG_VTBL idt_vtbl = {
-    IDRPTRG_QueryInterface,
-    IDRPTRG_AddRef,
-    IDRPTRG_Release,
-    IDRPTRG_DragEnter,
-    IDRPTRG_DragOver,
-    IDRPTRG_DragLeave,
-    IDRPTRG_Drop };
-
-  if ((pRet = HeapAlloc(GetDnDHeap(), 0, sizeof(IDROPTARGET) + lFmt * sizeof(CLIPFORMAT))) == NULL)
-    return NULL;
-
-  pRet->pFormat = (CLIPFORMAT *)(((char *)pRet) + sizeof(IDROPTARGET));
-
-  pRet->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
-  pRet->lRefCount = 1;
-  pRet->hWnd = hWnd;
-  pRet->nMsg = nMsg;
-  pRet->bAllowDrop = false;
-  pRet->dwKeyState = 0;
-  pRet->lNumFormats = lFmt;
-  pRet->pDropProc = pDropProc;
-  pRet->pUserData = pUserData;
-
-  for (lFmt = 0; lFmt < pRet->lNumFormats; lFmt++) {
-    pRet->pFormat[lFmt] = pFormat[lFmt];
-  }
-  return (IDropTarget *)pRet;
-}
-
-
-
-//=============================================================================
-//
-//  RegisterDragAndDrop()
-//
-PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK pDropProc, void *pUserData)
-{
-  IDropTarget *pTarget;
-
-  if ((pTarget = CreateDropTarget(pFormat, lFmt, hWnd, nMsg, pDropProc, pUserData)) == NULL)
-    return NULL;
-
-  if (RegisterDragDrop(hWnd, pTarget) != S_OK)
-  {
-    HeapFree(GetDnDHeap(), 0, pTarget);
-    return NULL;
-  }
-
-  return (PDROPTARGET)pTarget;
-}
-
-
-//=============================================================================
-//
-//  RevokeDragAndDrop()
-//
-PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget)
-{
-  if (pTarget == NULL)
-    return NULL;
-
-  if (((PIDROPTARGET)pTarget)->hWnd != NULL)
-  {
-    if (GetWindowLongPtr(((PIDROPTARGET)pTarget)->hWnd, GWLP_WNDPROC) != 0)
-      RevokeDragDrop(((PIDROPTARGET)pTarget)->hWnd);
-  }
-
-  ((IDropTarget *)pTarget)->lpVtbl->Release((IDropTarget *)pTarget);
-
-  return NULL;
 }
 
 ///   End of Helpers.c   ///

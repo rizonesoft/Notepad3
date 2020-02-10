@@ -56,8 +56,13 @@
 CONSTANTS_T const Constants = { 
     2                           // StdDefaultLexerID
   , L"minipath.exe"             // FileBrowserMiniPath
-  , L"Suppressed Messages"      // SectionSuppressedMessages
   , L"ThemeFileName"            // StylingThemeName
+
+  , L"Settings"                 // Inifile Section "Settings"
+  , L"Settings2"                // Inifile Section "Settings2"
+  , L"Window"                   // Inifile Section "Window"
+  , L"Styles"                   // Inifile Section "Styles"
+  , L"Suppressed Messages"      // Inifile Section "SuppressedMessages"
 };
 
 FLAGS_T     Flags;
@@ -88,14 +93,12 @@ WCHAR     s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-bool      s_bEnableSaveSettings = true;
 int       s_iToolBarTheme = -1;
 
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
 static bool      s_bIsRunAsAdmin = false;
-static bool      s_flagDoRelaunchElevated = false;
 static bool      s_flagSaveOnRelaunch = false;
 static bool      s_IsThisAnElevatedRelaunch = false;
 
@@ -202,6 +205,10 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
 };
 static const int NUMTOOLBITMAPS = 29;
+
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+DWORD		kSystemLibraryLoadFlags = 0;
+#endif
 
 // ----------------------------------------------------------------------------
 
@@ -393,14 +400,6 @@ static void  _SplitUndoTransaction(const int iModType);
 static void  _DelayClearZoomCallTip(int delay);
 static void  _DelaySplitUndoTransaction(int delay, int iModType);
 
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-static CLIPFORMAT cfDrpF = CF_HDROP;
-static POINTL ptDummy = { 0, 0 };
-static PDROPTARGET pDropTarget = NULL;
-static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
-#endif
-
-
 //#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE)
 #define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION)
 
@@ -555,7 +554,6 @@ static FILE_WATCHING_MODE    s_flagChangeNotify = FWM_DONT_CARE;
 static bool                  s_flagQuietCreate = false;
 static bool                  s_flagLexerSpecified = false;
 static bool                  s_flagAppIsClosing = false;
-static bool                  s_flagSearchPathIfRelative = false;
 static bool                  s_flagDisplayHelp = false;
 
 //==============================================================================
@@ -673,6 +671,10 @@ static void _InitGlobals()
   Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
   Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
   Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime = false;
+  Flags.bDoRelaunchElevated = DefaultFlags.bDoRelaunchElevated = false;
+  Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
+
+  Flags.bSettingsFileLocked = DefaultFlags.bSettingsFileLocked = false;
 
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
@@ -856,12 +858,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
   InitCommonControlsEx(&icex);
 
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+  // see LoadD2D() in PlatWin.cxx
+  kSystemLibraryLoadFlags = (IsWin8OrHigher() || GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetDefaultDllDirectories")) ? LOAD_LIBRARY_SEARCH_SYSTEM32 : 0;
+#endif
+
   Scintilla_RegisterClasses(hInstance);
 
   // ----------------------------------------------------
   // MultiLingual
   //
-  Globals.iPrefLANGID = LoadLanguageResources();
+  SetPreferredLanguage(LoadLanguageResources());
 
   // ----------------------------------------------------
 
@@ -961,10 +968,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   DrawMenuBar(hwnd);
 
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-  DragAndDropInit(NULL);
-#endif
-
   HACCEL const hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   HACCEL const hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
   HACCEL const hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
@@ -972,7 +975,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
   if (Globals.bPrefLngNotAvail) {
-    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
+    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Globals.InitialPreferredLanguage);
   }
 
   MSG msg;
@@ -1323,7 +1326,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           break;
         case FWM_AUTORELOAD:
           if (!FileWatching.MonitoringLog) {
-            SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+            PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
           }
           else {
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
@@ -1376,7 +1379,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (s_flagJumpTo)
         EditJumpTo(Globals.hwndEdit, s_iInitialLine, s_iInitialColumn);
       else
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
     }
   }
 
@@ -1405,14 +1408,14 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         Settings.EFR_Data.bTransformBS = true;
 
       if (s_flagMatchText & 2) {
-        if (!s_flagJumpTo) { SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0); }
+        if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
         EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
       }
       else {
-        if (!s_flagJumpTo) { SendMessage(Globals.hwndEdit, SCI_DOCUMENTSTART, 0, 0); }
+        if (!s_flagJumpTo) { SciCall_DocumentStart(); }
         EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
       }
     }
     LocalFree(s_lpMatchArg);  // StrDup()
@@ -1664,68 +1667,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  SaveAllSettings()
-//
-bool SaveAllSettings(bool bSaveSettingsNow)
-{
-  if (s_flagDoRelaunchElevated) { return true; } // already saved before relaunch
-
-  WCHAR tchMsg[80];
-  GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
-  BeginWaitCursor(tchMsg);
-  
-  bool ok = OpenSettingsFile();
-
-  if (ok) {
-
-    ok = SaveSettings(bSaveSettingsNow);
-
-    if (StrIsNotEmpty(Globals.IniFile))
-    {
-      // Cleanup unwanted MRU'selEmpty
-      if (!Settings.SaveRecentFiles) {
-        MRU_Empty(Globals.pFileMRU);
-        MRU_Save(Globals.pFileMRU);
-      }
-      else {
-        MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
-      }
-      MRU_Destroy(Globals.pFileMRU);
-      Globals.pFileMRU = NULL;
-
-      if (!Settings.SaveFindReplace) {
-        MRU_Empty(Globals.pMRUfind);
-        MRU_Empty(Globals.pMRUreplace);
-        MRU_Save(Globals.pMRUfind);
-        MRU_Save(Globals.pMRUreplace);
-      }
-      else {
-        MRU_MergeSave(Globals.pMRUfind, false, false, false);
-        MRU_MergeSave(Globals.pMRUreplace, false, false, false);
-      }
-      MRU_Destroy(Globals.pMRUfind);
-      Globals.pMRUfind = NULL;
-      MRU_Destroy(Globals.pMRUreplace);
-      Globals.pMRUreplace = NULL;
-    }
-  }
-
-  if (ok) {
-    ok = CloseSettingsFile();
-  }
-
-  // separate INI files for Style-Themes
-  if (Globals.idxSelectedTheme >= 2) {
-    Style_SaveSettings();
-  }
-
-  EndWaitCursor();
-  return ok;
-}
-
-
-//=============================================================================
-//
 //  _SetWrapStartIndent()
 //
 static void  _SetWrapStartIndent()
@@ -1855,6 +1796,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);  // paste into rectangular selection
+  SendMessage(hwndEditCtrl, SCI_AUTOCSETMULTI, SC_MULTIAUTOC_EACH, 0);  // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
 
   int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS;
@@ -1948,6 +1890,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
 #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
 #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
+
   if (Settings2.CurrentLineHorizontalSlop > 0)
     SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
   else
@@ -2108,9 +2051,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,true);
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-  pDropTarget = RegisterDragAndDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)Globals.hwndEdit);
-#endif
 
   if (Globals.hwndEdit == NULL || s_hwndEditFrame == NULL ||
     Globals.hwndStatus == NULL || Globals.hwndToolbar == NULL || s_hwndReBar == NULL) {
@@ -2148,7 +2088,6 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
 //=============================================================================
 //
 //  SelectExternalToolBar() - Select and Load an external Bitmal as ToolBarImage
-//
 //
 bool SelectExternalToolBar(HWND hwnd)
 {
@@ -2530,9 +2469,6 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     InstallFileWatching(NULL);
 
     DragAcceptFiles(hwnd, true);
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-    RevokeDragAndDrop(pDropTarget);
-#endif
 
     // Terminate clipboard watching
     if (s_flagPasteBoard) {
@@ -2775,11 +2711,9 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
   }
   else {
-#ifndef _EXTRA_DRAG_N_DROP_HANDLER_
-    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
-#endif
     // delegated to SCN_URIDROPPED
+    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
+    //~InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_DROP_NO_FILE);
   }
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1) {
@@ -2885,7 +2819,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           else if (params->flagChangeNotify == FWM_AUTORELOAD) {
             if (!FileWatching.MonitoringLog) {
-              SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+              PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
             }
             else {
               FileWatching.FileWatchingMode = FWM_AUTORELOAD;
@@ -3036,8 +2970,9 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        //SetForegroundWindow(hwnd);
-        //~SciCall_ScrollToEnd();
+        EditScrollTo(Sci_GetLastDocLineNumber(), Settings2.CurrentLineVerticalSlop);
+      }
+      else {
         SciCall_GotoPos(iCurPos);
       }
     }
@@ -3344,9 +3279,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
       i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD || i == SCLEX_TOML) && !ro);
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
 
-  EnableCmd(hmenu, CMD_CTRLENTER, !ro);
+  EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_Current(CPI_GET)) != NULL) && !ro);
 
@@ -3381,12 +3316,16 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
   EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.HideNonMatchedLines);
-  CheckCmd(hmenu, IDM_VIEW_FOLDING, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!te && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
-
+  bool const fd = (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, fd);
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDJUMPDOWN, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDJUMPUP, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDCOLLAPSE, !te && fd);
+  EnableCmd(hmenu, CMD_FOLDEXPAND, !te && fd);
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding) && (bF || bH));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -3529,7 +3468,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
   }
 
-  UpdateSettingsCmds();
+  UpdateSaveSettingsCmds();
   
   LockWindowUpdate(NULL); // allow redrawing
   DrawMenuBar(hwnd);
@@ -3554,15 +3493,18 @@ static void _DynamicLanguageMenuCmd(int cmd)
   {
     CloseNonModalDialogs();
 
-    StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
-    IniFileSetString(Globals.IniFile, L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
-
     LockWindowUpdate(Globals.hwndMain); // prevent intermediate redrawing
 
     DestroyMenu(Globals.hMainMenu);
-    Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
+    
+    // desired language
+    SetPreferredLanguage(MUI_LanguageDLLs[iLngIdx].LangId);
+
     FreeLanguageResources();
-    Globals.iPrefLANGID = LoadLanguageResources();
+
+    // change to available (fallback en-US)
+    SetPreferredLanguage(LoadLanguageResources());
+
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
       MsgBoxLastError(L"LoadMenu()", 0);
@@ -3605,7 +3547,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
   if (bIsThemesMenuCmd) {
-    Style_DynamicThemesMenuCmd(iLoWParam, s_bEnableSaveSettings);
+    Style_DynamicThemesMenuCmd(iLoWParam);
     return FALSE;
   }
 
@@ -4165,10 +4107,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_SetRectangularSelectionAnchor(anchor);
             SciCall_SetRectangularSelectionCaret(caret);
           }
+#else
+        SciCall_Paste();
 #endif
-
-          SciCall_Paste();
-
         _END_UNDO_ACTION_
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -4450,10 +4391,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COLUMNWRAP:
       {
-        UINT uWrpCol = 0;
+        UINT uWrpCol = Globals.iWrapCol;
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol))
         {
-          Globals.iWrapCol = (DocPos)clampi((int)uWrpCol, 1, Globals.fvCurFile.iLongLinesLimit);
+          Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
           BeginWaitCursor(NULL);
           EditWrapToColumn(Globals.hwndEdit, Globals.iWrapCol);
           EndWaitCursor();
@@ -4683,60 +4624,65 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
 
         switch (SciCall_GetLexer()) {
-        default:
-        case SCLEX_NULL:
-        case SCLEX_CSS:
-        case SCLEX_DIFF:
-        case SCLEX_MARKDOWN:
-        case SCLEX_JSON:
-          break;
-        case SCLEX_HTML:
-        case SCLEX_XML:
-        case SCLEX_CPP:
-        case SCLEX_PASCAL:
-          EditToggleLineComments(Globals.hwndEdit, L"//", false);
-          break;
-        case SCLEX_VBSCRIPT:
-        case SCLEX_VB:
-          EditToggleLineComments(Globals.hwndEdit, L"'", false);
-          break;
-        case SCLEX_MAKEFILE:
-        case SCLEX_PERL:
-        case SCLEX_PYTHON:
-        case SCLEX_CONF:
-        case SCLEX_BASH:
-        case SCLEX_TCL:
-        case SCLEX_RUBY:
-        case SCLEX_POWERSHELL:
-        case SCLEX_CMAKE:
-        case SCLEX_AVS:
-        case SCLEX_YAML:
-        case SCLEX_COFFEESCRIPT:
-        case SCLEX_NIMROD:
-        case SCLEX_TOML:
-          EditToggleLineComments(Globals.hwndEdit, L"#", true);
-          break;
-        case SCLEX_ASM:
-        case SCLEX_PROPERTIES:
-        case SCLEX_AU3:
-        case SCLEX_AHKL:
-        case SCLEX_NSIS: // # could also be used instead
-        case SCLEX_INNOSETUP:
-        case SCLEX_REGISTRY:
-          EditToggleLineComments(Globals.hwndEdit, L";", true);
-          break;
-        case SCLEX_LUA:
-        case SCLEX_SQL:
-        case SCLEX_VHDL:
-          EditToggleLineComments(Globals.hwndEdit, L"--", true);
-          break;
-        case SCLEX_BATCH:
-          EditToggleLineComments(Globals.hwndEdit, L"rem ", true);
-          break;
-        case SCLEX_LATEX:
-        case SCLEX_MATLAB:
-          EditToggleLineComments(Globals.hwndEdit, L"%", true);
-          break;
+          case SCLEX_CPP:
+          case SCLEX_D:
+          case SCLEX_HTML:
+          case SCLEX_PASCAL:
+          case SCLEX_RUST:
+          case SCLEX_XML:
+            EditToggleLineComments(Globals.hwndEdit, L"//", false);
+            break;
+          case SCLEX_VB:
+          case SCLEX_VBSCRIPT:
+            EditToggleLineComments(Globals.hwndEdit, L"'", false);
+            break;
+          case SCLEX_AVS:
+          case SCLEX_BASH:
+          case SCLEX_CMAKE:
+          case SCLEX_COFFEESCRIPT:
+          case SCLEX_CONF:
+          case SCLEX_MAKEFILE:
+          case SCLEX_NIM:
+          case SCLEX_PERL:
+          case SCLEX_POWERSHELL:
+          case SCLEX_PYTHON:
+          case SCLEX_R:
+          case SCLEX_RUBY:
+          case SCLEX_TCL:
+          case SCLEX_TOML:
+          case SCLEX_YAML:
+            EditToggleLineComments(Globals.hwndEdit, L"#", true);
+            break;
+          case SCLEX_AHKL:
+          case SCLEX_ASM:
+          case SCLEX_AU3:
+          case SCLEX_INNOSETUP:
+          case SCLEX_NSIS: // # could also be used instead
+          case SCLEX_PROPERTIES:
+          case SCLEX_REGISTRY:
+            EditToggleLineComments(Globals.hwndEdit, L";", true);
+            break;
+          case SCLEX_LUA:
+          case SCLEX_SQL:
+          case SCLEX_VHDL:
+            EditToggleLineComments(Globals.hwndEdit, L"--", true);
+            break;
+          case SCLEX_BATCH:
+            EditToggleLineComments(Globals.hwndEdit, L"rem ", true);
+            break;
+          case SCLEX_LATEX:
+          case SCLEX_MATLAB:
+            EditToggleLineComments(Globals.hwndEdit, L"%", true);
+            break;
+          // ------------------
+          case SCLEX_NULL:
+          case SCLEX_CSS:
+          case SCLEX_DIFF:
+          case SCLEX_JSON:
+          case SCLEX_MARKDOWN:
+          default:
+            // do nothing
+            break;
         }
         EndWaitCursor();
       }
@@ -4748,55 +4694,63 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
 
         switch (SciCall_GetLexer()) {
-        default:
-        case SCLEX_NULL:
-        case SCLEX_VBSCRIPT:
-        case SCLEX_MAKEFILE:
-        case SCLEX_VB:
-        case SCLEX_ASM:
-        case SCLEX_PERL:
-        case SCLEX_PYTHON:
-        case SCLEX_PROPERTIES:
-        case SCLEX_CONF:
-        case SCLEX_POWERSHELL:
-        case SCLEX_BATCH:
-        case SCLEX_DIFF:
-        case SCLEX_BASH:
-        case SCLEX_TCL:
-        case SCLEX_AU3:
-        case SCLEX_LATEX:
-        case SCLEX_AHKL:
-        case SCLEX_RUBY:
-        case SCLEX_CMAKE:
-        case SCLEX_MARKDOWN:
-        case SCLEX_YAML:
-        case SCLEX_JSON:
-        case SCLEX_REGISTRY:
-        case SCLEX_NIMROD:
-        case SCLEX_TOML:
-          break;
-        case SCLEX_AVS:
-        case SCLEX_CPP:
-        case SCLEX_CSS:
-        case SCLEX_HTML:
-        case SCLEX_NSIS:
-        case SCLEX_SQL:
-        case SCLEX_VHDL:
-        case SCLEX_XML:
-          EditEncloseSelection(Globals.hwndEdit, L"/*", L"*/");
-          break;
-        case SCLEX_INNOSETUP:
-        case SCLEX_PASCAL:
-          EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
-          break;
-        case SCLEX_LUA:
-          EditEncloseSelection(Globals.hwndEdit, L"--[[", L"]]");
-          break;
-        case SCLEX_COFFEESCRIPT:
-          EditEncloseSelection(Globals.hwndEdit, L"###", L"###");
-          break;
-        case SCLEX_MATLAB:
-          EditEncloseSelection(Globals.hwndEdit, L"%{", L"%}");
+          case SCLEX_D:
+            //~EditEncloseSelection(Globals.hwndEdit, L"/+", L"+/");
+            //~break;
+          case SCLEX_AVS:
+          case SCLEX_CPP:
+          case SCLEX_CSS:
+          case SCLEX_HTML:
+          case SCLEX_NSIS:
+          case SCLEX_RUST:
+          case SCLEX_SQL:
+          case SCLEX_VHDL:
+          case SCLEX_XML:
+            EditEncloseSelection(Globals.hwndEdit, L"/*", L"*/");
+            break;
+          case SCLEX_INNOSETUP:
+          case SCLEX_PASCAL:
+            EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
+            break;
+          case SCLEX_LUA:
+            EditEncloseSelection(Globals.hwndEdit, L"--[[", L"]]");
+            break;
+          case SCLEX_COFFEESCRIPT:
+            EditEncloseSelection(Globals.hwndEdit, L"###", L"###");
+            break;
+          case SCLEX_MATLAB:
+            EditEncloseSelection(Globals.hwndEdit, L"%{", L"%}");
+            break;
+          // ------------------
+          case SCLEX_NULL:
+          case SCLEX_AHKL:
+          case SCLEX_ASM:
+          case SCLEX_AU3:
+          case SCLEX_BASH:
+          case SCLEX_BATCH:
+          case SCLEX_CMAKE:
+          case SCLEX_CONF:
+          case SCLEX_DIFF:
+          case SCLEX_JSON:
+          case SCLEX_LATEX:
+          case SCLEX_MAKEFILE:
+          case SCLEX_MARKDOWN:
+          case SCLEX_NIM:
+          case SCLEX_PERL:
+          case SCLEX_POWERSHELL:
+          case SCLEX_PROPERTIES:
+          case SCLEX_PYTHON:
+          case SCLEX_R:
+          case SCLEX_REGISTRY:
+          case SCLEX_RUBY:
+          case SCLEX_TCL:
+          case SCLEX_TOML:
+          case SCLEX_VB:
+          case SCLEX_VBSCRIPT:
+          case SCLEX_YAML:
+          default:
+            // do nothing
+            break;
         }
         EndWaitCursor();
       }
@@ -5008,16 +4962,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         switch (iLoWParam) {
 
           case IDM_EDIT_FINDNEXT:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionEnd(Globals.hwndEdit);
-            }
             EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
             break;
 
           case IDM_EDIT_FINDPREV:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionStart(Globals.hwndEdit);
-            }
             EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
             break;
 
@@ -5031,16 +4979,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_SELTONEXT:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionEnd(Globals.hwndEdit);
-            }
             EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,true,false);
             break;
 
           case IDM_EDIT_SELTOPREV:
-            if (!SciCall_IsSelectionEmpty()) {
-              EditJumpToSelectionStart(Globals.hwndEdit);
-            }
             EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,true,false);
             break;
         }
@@ -5066,13 +5008,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_GetSelText(szSelection);
 
-        // Check lpszSelection and truncate newlines
-        char *lpsz = StrChrA(szSelection, '\n');
-        if (lpsz) *lpsz = '\0';
-
-        lpsz = StrChrA(szSelection, '\r');
-        if (lpsz) *lpsz = '\0';
-
         StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), szSelection);
         Settings.EFR_Data.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
         Settings.EFR_Data.bTransformBS = false;
@@ -5092,16 +5027,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
 
         case CMD_FINDNEXTSEL:
-          if (!SciCall_IsSelectionEmpty()) {
-            EditJumpToSelectionEnd(Globals.hwndEdit);
-          }
           EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
 
         case CMD_FINDPREVSEL:
-          if (!SciCall_IsSelectionEmpty()) {
-            EditJumpToSelectionStart(Globals.hwndEdit);
-          }
           EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
         }
@@ -5169,7 +5098,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Globals.fvCurFile.bWordWrap = !Globals.fvCurFile.bWordWrap;
       Settings.WordWrap = Globals.fvCurFile.bWordWrap;
       _SetWrapIndentMode(Globals.hwndEdit);
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+      EditEnsureSelectionVisible();
       UpdateToolbar();
       break;
 
@@ -5203,6 +5132,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             _iLongLinesLimit = clampi(_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
             Globals.fvCurFile.iLongLinesLimit = _iLongLinesLimit;
             Settings.LongLinesLimit = _iLongLinesLimit;
+            Globals.iWrapCol = _iLongLinesLimit;
           }
           Settings.MarkLongLines = true;
           Style_SetLongLineEdge(Globals.hwndEdit, Settings.LongLinesLimit);
@@ -5424,6 +5354,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (FileWatching.MonitoringLog)
         {
           SetForegroundWindow(hwnd);
+          SendWMCommand(hwnd, IDM_FILE_REVERT);
           FileWatching.flagChangeNotify = s_flagChangeNotify;
           s_flagChangeNotify = FWM_AUTORELOAD;
           FileWatching.FileWatchingMode = FWM_AUTORELOAD;
@@ -5431,6 +5362,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.FileCheckInverval = 250UL;
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
+          SciCall_SetEndAtLastLine(false);
+          EditScrollTo(Sci_GetLastDocLineNumber(), Settings2.CurrentLineVerticalSlop);
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5439,6 +5372,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
+          SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+          //SciCall_ScrollCaret();
+          EditScrollTo(Sci_GetCurrentLineNumber(), Settings2.CurrentLineVerticalSlop);
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -5516,37 +5452,38 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (LoadIniFile(Globals.IniFile)) {
 
-          const WCHAR* const Window_Section = L"Window";
+          const WCHAR* const IniSecWindow = Constants.Window_Section;
 
           if (Flags.bStickyWindowPosition)
           {
             // GetWindowPlacement
             WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
-            IniSectionSetInt(Window_Section, tchPosX, wi.x);
-            IniSectionSetInt(Window_Section, tchPosY, wi.y);
-            IniSectionSetInt(Window_Section, tchSizeX, wi.cx);
-            IniSectionSetInt(Window_Section, tchSizeY, wi.cy);
-            IniSectionSetBool(Window_Section, tchMaximized, wi.max);
-            IniSectionSetInt(Window_Section, tchZoom, wi.zoom);
+            IniSectionSetInt(IniSecWindow, tchPosX, wi.x);
+            IniSectionSetInt(IniSecWindow, tchPosY, wi.y);
+            IniSectionSetInt(IniSecWindow, tchSizeX, wi.cx);
+            IniSectionSetInt(IniSecWindow, tchSizeY, wi.cy);
+            IniSectionSetBool(IniSecWindow, tchMaximized, wi.max);
+            IniSectionSetInt(IniSecWindow, tchZoom, wi.zoom);
 
             InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
           }
           else { // clear entries
 
-            IniSectionDelete(Window_Section, tchPosX, false);
-            IniSectionDelete(Window_Section, tchPosY, false);
-            IniSectionDelete(Window_Section, tchSizeX, false);
-            IniSectionDelete(Window_Section, tchSizeY, false);
-            IniSectionDelete(Window_Section, tchMaximized, false);
-            IniSectionDelete(Window_Section, tchZoom, false);
+            IniSectionDelete(IniSecWindow, tchPosX, false);
+            IniSectionDelete(IniSecWindow, tchPosY, false);
+            IniSectionDelete(IniSecWindow, tchSizeX, false);
+            IniSectionDelete(IniSecWindow, tchSizeY, false);
+            IniSectionDelete(IniSecWindow, tchMaximized, false);
+            IniSectionDelete(IniSecWindow, tchZoom, false);
           }
 
           if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) {
-            IniSectionSetBool(L"Settings2", L"StickyWindowPosition", Flags.bStickyWindowPosition);
+            IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
           }
           else {
-            IniSectionDelete(L"Settings2", L"StickyWindowPosition", false);
+            IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
           }
+
           SaveIniFile(Globals.IniFile);
         }
       }
@@ -5556,10 +5493,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_REUSEWINDOW:
       Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
       if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
-        IniFileSetBool(Globals.IniFile, L"Settings2", L"ReuseWindow", Flags.bReuseWindow);
+        IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
       }
       else {
-        IniFileDelete(Globals.IniFile, L"Settings2", L"ReuseWindow", false);
+        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
       }
       break;
 
@@ -5567,10 +5504,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SINGLEFILEINSTANCE:
       Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
       if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
-        IniFileSetInt(Globals.IniFile, L"Settings2", L"SingleFileInstance", Flags.bSingleFileInstance);
+        IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
       }
       else {
-        IniFileDelete(Globals.IniFile, L"Settings2", L"SingleFileInstance", false);
+        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
       }
       break;
 
@@ -5687,10 +5624,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS)) {
         Settings.SaveSettings = !Settings.SaveSettings;
         if (Settings.SaveSettings == Defaults.SaveSettings) {
-          IniFileDelete(Globals.IniFile, L"Settings", L"SaveSettings", false);
+          IniFileDelete(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", false);
         }
         else {
-          IniFileSetBool(Globals.IniFile, L"Settings", L"SaveSettings", Settings.SaveSettings);
+          IniFileSetBool(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
         }
       }
       break;
@@ -5703,16 +5640,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (StrIsEmpty(Globals.IniFile)) {
 
-          if (StringCchLenW(Globals.IniFileDefault,COUNTOF(Globals.IniFileDefault)) > 0) {
+          if (StrIsNotEmpty(Globals.IniFileDefault)) {
             if (CreateIniFileEx(Globals.IniFileDefault)) {
-              StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile), Globals.IniFileDefault);
-              StringCchCopy(Globals.IniFileDefault,COUNTOF(Globals.IniFileDefault),L"");
+              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+              StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
               bCreateFailure = true;
             }
           }
-
           else
             break;
         }
@@ -5811,7 +5747,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_CTRLENTER:
+    case CMD_INSERTNEWLINE:
       {
         _BEGIN_UNDO_ACTION_
         const DocPos iPos = SciCall_GetCurrentPos();
@@ -5846,7 +5782,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_CTRLUP:
+    case CMD_SCROLLUP:
       if (Sci_IsMultiSelection())
       {
         SciCall_LineUpExtend();
@@ -5857,7 +5793,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_CTRLDOWN:
+    case CMD_SCROLLDOWN:
       if (Sci_IsMultiSelection())
       {
         SciCall_LineDownExtend();
@@ -6048,7 +5984,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         EDITFINDREPLACE efrTS = EFR_INIT_DATA;
         efrTS.hwnd = Globals.hwndEdit;
-        efrTS.fuFlags = SCFIND_REGEXP;
+        efrTS.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
 
         StringCchCopyW(wchFind, COUNTOF(wchFind), Settings2.TimeStamp);
 
@@ -6234,12 +6170,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_JUMP2SELSTART:
-      EditJumpToSelectionStart(Globals.hwndEdit);
+      EditSetCaretToSelectionStart();
       SciCall_ChooseCaretX();
       break;
 
     case CMD_JUMP2SELEND:
-      EditJumpToSelectionEnd(Globals.hwndEdit);
+      EditSetCaretToSelectionEnd();
       SciCall_ChooseCaretX();
       break;
 
@@ -6289,13 +6225,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
-        IniFileSetString(Globals.IniFile, L"Settings2", L"DefaultWindowPosition", tchDefWinPos);
+        IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
       }
       break;
 
     case CMD_CLEARSAVEDWINPOS:
       s_DefWinInfo = InitDefaultWndPos(2);
-      IniFileDelete(Globals.IniFile, L"Settings2", L"DefaultWindowPosition", false);
+      IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
     break;
 
     case CMD_OPENINIFILE:
@@ -6309,20 +6245,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         HandleHotSpotURLClicked(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_WITH_NOTEPAD3));
       break;
 
-    case CMD_ALTDOWN:
-      EditFoldAltArrow(DOWN, SNIFF);
+    case CMD_FOLDJUMPDOWN:
+      EditFoldCmdKey(DOWN, SNIFF);
       break;
 
-    case CMD_ALTUP:
-      EditFoldAltArrow(UP, SNIFF);
+    case CMD_FOLDJUMPUP:
+      EditFoldCmdKey(UP, SNIFF);
       break;
 
-    case CMD_ALTLEFT:
-      EditFoldAltArrow(NONE, FOLD);
+    case CMD_FOLDCOLLAPSE:
+      EditFoldCmdKey(NONE, FOLD);
       break;
 
-    case CMD_ALTRIGHT:
-      EditFoldAltArrow(NONE, EXPAND);
+    case CMD_FOLDEXPAND:
+      EditFoldCmdKey(NONE, EXPAND);
       break;
 
 
@@ -7693,19 +7629,18 @@ void SetFindPatternMB(LPCSTR chFindPattern)
 //
 //  GetFindPattern()
 // 
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
 {
-  StringCchCopyW(wchFindPattern, bufferSize, sCurrentFindPattern);
+  StringCchCopyW(wchFindPattern, bufferCount, sCurrentFindPattern);
 }
 
 //=============================================================================
 //
 //  GetFindPatternMB()
 // 
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 {
-  WideCharToMultiByteEx(Encoding_SciCP, 0, sCurrentFindPattern, -1, 
-                        chFindPattern, bufferSize, NULL, NULL);
+    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
 }
 
 
@@ -7811,7 +7746,7 @@ void ParseCommandLine()
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                          lp1 + CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG), len - CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG));
           TrimSpcW(s_wchTmpFilePath);
-          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
+          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, Flags.bSearchPathIfRelative);
           s_IsThisAnElevatedRelaunch = true;
         }
 
@@ -8056,12 +7991,12 @@ void ParseCommandLine()
                 s_flagAppIsClosing = true;
               }
               else {
-                s_flagDoRelaunchElevated = true;
+                Flags.bDoRelaunchElevated = true;
               }
               break;
 
             case L'Y':
-              s_flagSearchPathIfRelative = true;
+              Flags.bSearchPathIfRelative = true;
               break;
 
             case L'Z':
@@ -9023,16 +8958,15 @@ void UpdateMarginWidth()
 
 //=============================================================================
 //
-//  UpdateSettingsCmds()
+//  UpdateSaveSettingsCmds()
 //
 //
-void UpdateSettingsCmds()
+void UpdateSaveSettingsCmds()
 {
-    //~HMENU hmenu = GetSystemMenu(Globals.hwndMain, false);
-    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && s_bEnableSaveSettings);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && s_bEnableSaveSettings);
-    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && s_bEnableSaveSettings);
+    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileLocked);
+    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
 }
 
 
@@ -9605,13 +9539,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // Terminate file watching
     if (FileWatching.ResetFileWatching) {
       if (FileWatching.MonitoringLog) {
-        SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
       }
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
     InstallFileWatching(NULL);
-    s_bEnableSaveSettings = true;
-    UpdateSettingsCmds();
+    Flags.bSettingsFileLocked = false;
+    UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
     return true;
@@ -9624,8 +9558,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
   else {
     StringCchCopy(szFileName, COUNTOF(szFileName), lpszFile);
-    NormalizePathEx(szFileName, COUNTOF(szFileName), true, s_flagSearchPathIfRelative);
   }
+  NormalizePathEx(szFileName, COUNTOF(szFileName), true, Flags.bSearchPathIfRelative);
 
   // change current directory to prevent directory lock on another path
   WCHAR szFolder[MAX_PATH];
@@ -9728,7 +9662,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
-    if (!(s_flagDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
+    if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
       MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
     }
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
@@ -9740,7 +9674,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // Install watching of the current file
     if (!bReload && FileWatching.ResetFileWatching) {
       if (FileWatching.MonitoringLog) {
-        SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
       }
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
@@ -9759,7 +9693,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         SciCall_NewLine();
         _END_UNDO_ACTION_
         SciCall_DocumentEnd();
-        EditEnsureSelectionVisible(Globals.hwndEdit);
+        EditEnsureSelectionVisible();
       }
       // set historic caret/selection  pos
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
@@ -9773,8 +9707,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
-    s_bEnableSaveSettings = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) ? false : true;
-    UpdateSettingsCmds();
+    Flags.bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
     // Show warning: Unicode file loaded as ANSI
@@ -9855,10 +9789,13 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   bool bPreserveView = true;
   DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
 
+  Encoding_SrcWeak(CPI_NONE);
   if (bIgnoreCmdLnEnc) {
-    Encoding_Forced(CPI_NONE); // ignore history too
+    Encoding_Forced(CPI_NONE);  // ignore history too
   }
-  Encoding_SrcWeak(Encoding_Current(CPI_GET));
+  else if (Encoding_HasChanged(Encoding_Current(CPI_GET))) {
+    Encoding_SrcWeak(Encoding_Current(CPI_GET));
+  }
 
   WCHAR tchFileName2[MAX_PATH] = { L'\0' };
   StringCchCopyW(tchFileName2, COUNTOF(tchFileName2), szFileName);
@@ -9870,8 +9807,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
     if (docView.bIsTail || FileWatching.MonitoringLog) {
       bPreserveView = false;
-      //~SciCall_DocumentEnd();
-      SciCall_ScrollToEnd();
+      EditScrollTo(Sci_GetLastDocLineNumber(), Settings2.CurrentLineVerticalSlop);
     }
   }
 
@@ -9882,7 +9818,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+      EditEnsureSelectionVisible();
     }
   }
 
@@ -9904,7 +9840,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 {
   SaveAllSettings(false);
 
-  s_flagDoRelaunchElevated = true;
+  Flags.bDoRelaunchElevated = true;
 
   LPWSTR lpCmdLine = GetCommandLine();
   size_t const wlen = StringCchLen(lpCmdLine, 0) + 2;
@@ -10007,10 +9943,10 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     if (PathFileExists(szTempFileName)) {
       DeleteFile(szTempFileName);
     }
-    s_flagDoRelaunchElevated = false;
+    Flags.bDoRelaunchElevated = false;
   }
 
-  return s_flagDoRelaunchElevated;
+  return Flags.bDoRelaunchElevated;
 }
 
 
@@ -10070,13 +10006,17 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     WCHAR tch[MAX_PATH] = { L'\0' };
     if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile));
+      if (Settings.MuteMessageBeep) { PathStripPath(tch); } // need shorter string for custom msgbox
     }
     else {
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
 
+    INT_PTR const btn = Settings.MuteMessageBeep ?
+      InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch) :
+      MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch);
 
-    switch (MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch))
+    switch (btn)
     {
     case IDCANCEL:
       return false;
@@ -10116,8 +10056,9 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       StringCchCopy(tchFile, COUNTOF(tchFile), s_tchLastSaveCopyDir);
       PathCchAppend(tchFile, COUNTOF(tchFile), PathFindFileName(Globals.CurrentFile));
     }
-    else
+    else {
       StringCchCopy(tchFile, COUNTOF(tchFile), Globals.CurrentFile);
+    }
 
     if (SaveFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), tchInitialDir))
     {
@@ -10150,7 +10091,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 
   if (fSuccess)
   {
-    if (!(bSaveCopy || s_flagDoRelaunchElevated))
+    if (!(bSaveCopy || Flags.bDoRelaunchElevated))
     {
       cpi_enc_t iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
@@ -10168,20 +10109,44 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       // Install watching of the current file
       if (bSaveAs && Settings.ResetFileWatching) {
         if (FileWatching.MonitoringLog) {
-          SendWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+          PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
         }
         FileWatching.FileWatchingMode = Settings.FileWatchingMode;
       }
       InstallFileWatching(Globals.CurrentFile);
     }
+
+    // if current file is settings/config file: ask to start
+    // bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    if (Flags.bSettingsFileLocked && !s_flagAppIsClosing)
+    {
+      //~ LoadSettings(); NOT all settings will be applied ...
+      INT_PTR answer = 0;
+      if (Settings.SaveSettings) { // @@@ 
+        WCHAR tch[256] = { L'\0' };
+        LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
+        answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
+      }
+      else {
+        answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
+      }
+      if ((IDOK == answer) || (IDYES == answer))
+      {
+        DialogNewWindow(Globals.hwndMain, false, Globals.CurrentFile);
+        CloseApplication();
+      }
+    }
+
   }
   else if (!fioStatus.bCancelDataLoss)
   {
+    LPCWSTR const currentFileName = PathFindFileName(Globals.CurrentFile);
+
     if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED))
     {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED,
-                                        PathFindFileName(Globals.CurrentFile), _W(SAPPNAME));
-      if ((IDOK == answer) || (IDYES == answer)) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME));
+      if ((IDOK == answer) || (IDYES == answer)) 
+      {
         if (DoElevatedRelaunch(&fioStatus, true))
         {
           CloseApplication();
@@ -10189,13 +10154,13 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
         else {
           s_flagAppIsClosing = false;
           UpdateToolbar();
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, PathFindFileName(Globals.CurrentFile));
+          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
         }
       }
     }
     else {
       UpdateToolbar();
-      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, PathFindFileName(Globals.CurrentFile));
+      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
     }
   }
   return fSuccess;
@@ -10378,7 +10343,7 @@ bool ActivatePrevInst()
 
   if (Flags.bSingleFileInstance && StrIsNotEmpty(s_lpFileArg))
   {
-    NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, s_flagSearchPathIfRelative);
+    NormalizePathEx(s_lpFileArg, COUNTOF(s_lpFileArg), true, Flags.bSearchPathIfRelative);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -10588,7 +10553,7 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVistaOrHigher() || !s_flagDoRelaunchElevated ||
+  if (!IsVistaOrHigher() || !Flags.bDoRelaunchElevated ||
       s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
       s_flagDisplayHelp) 
   {
@@ -10982,7 +10947,7 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       SendMessage(Globals.hwndEdit,SCI_PASTE,0,0);
       SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
       _END_UNDO_ACTION_
-      EditEnsureSelectionVisible(Globals.hwndEdit);
+      EditEnsureSelectionVisible();
       Settings.AutoIndent = bAutoIndent2;
     }
     s_dwLastCopyTime = 0;

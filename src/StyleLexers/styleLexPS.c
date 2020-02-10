@@ -49,7 +49,8 @@ KEYWORDLIST KeyWords_PS = {
 "rd rdr ren ri rjb rm rmdir rmo rni rnp rp rsn rsnp rv rvpa rwmi sajb sal saps sasv sbp sc select set si "
 "sl sleep sort sp spjb spps spsv start sv swmi tee type where wjb write",
 "importsystemmodules prompt psedit tabexpansion",
-"", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexPS = { 

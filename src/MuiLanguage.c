@@ -140,7 +140,7 @@ static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t ln
 //  _GetUserPreferredLanguage
 //
 //
-static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID)
+bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID)
 {
   int res = 0;
   LANGID lngID = *pLangID;
@@ -193,6 +193,33 @@ static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, L
 }
 
 
+//=============================================================================
+//
+//  ChangePreferredLanguage
+//
+void SetPreferredLanguage(LANGID iPreferredLanguageID)
+{
+  Globals.iPrefLANGID = 0;
+  const WCHAR* szLocaleName = NULL;
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+    if (MUI_LanguageDLLs[lng].LangId == iPreferredLanguageID) {
+      szLocaleName = MUI_LanguageDLLs[lng].szLocaleName;
+      Globals.iPrefLANGID = iPreferredLanguageID;
+    }
+  }
+  if (szLocaleName) {
+    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) {
+      StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
+      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+        IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+      }
+      else {
+        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
+      }
+    }
+  }
+}
+
 
 //=============================================================================
 //
@@ -203,17 +230,6 @@ LANGID LoadLanguageResources()
 {
   // 1st check language resources
   Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
-
-  LANGID languageID = MUI_LanguageDLLs[0].LangId;
-
-  WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
-  StringCchCopy(wchLngLocalName, COUNTOF(wchLngLocalName), Settings2.PreferredLanguageLocaleName);
-
-  if (_GetUserPreferredLanguage(wchLngLocalName, COUNTOF(wchLngLocalName), &languageID)) {
-    // push-back (corrected) name found
-    StringCchCopy(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), wchLngLocalName);
-    //_wsetlocale(LC_COLLATE, Settings2.PreferredLanguageLocaleName);
-  }
 
   // set the appropriate fallback list
   int iPrefLngIndex = -1;
@@ -255,26 +271,29 @@ LANGID LoadLanguageResources()
 
   HINSTANCE _hLangResourceContainer = NULL;
   Globals.bPrefLngNotAvail = (iPrefLngIndex < 0);
+  int iUsedLngId = (iPrefLngIndex >= 0) ? iPrefLngIndex : 0;
 
   if ((iPrefLngIndex >= 0) && MUI_LanguageDLLs[iPrefLngIndex].bHasDLL) {
     _hLangResourceContainer = (iPrefLngIndex == 0) ? Globals.hInstance :
-      LoadMUILibrary(L"lng/np3lng.dll", MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT, languageID);
+      LoadMUILibrary(L"lng/np3lng.dll", MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT, MUI_LanguageDLLs[iPrefLngIndex].LangId);
     if (_hLangResourceContainer) {
       MUI_LanguageDLLs[0].bIsActive = false;
       MUI_LanguageDLLs[iPrefLngIndex].bIsActive = true;
+      iUsedLngId = iPrefLngIndex;
     }
   }
+
   if (!_hLangResourceContainer) {
     // fallback to ENGLISH_US
     //MsgBoxLastError(L"LoadMUILibrary", 0);
-    Globals.bPrefLngNotAvail = (languageID != MUI_LanguageDLLs[0].LangId);
-    languageID = MUI_LanguageDLLs[0].LangId;
+    Globals.bPrefLngNotAvail = (iPrefLngIndex != 0);
     _hLangResourceContainer = Globals.hInstance;
     MUI_LanguageDLLs[0].bIsActive = true;
+    iUsedLngId = 0;
   }
 
   Globals.hLngResContainer = _hLangResourceContainer;
-  SetThreadUILanguage(languageID);
+  SetThreadUILanguage(MUI_LanguageDLLs[iUsedLngId].LangId);
 
   // ===  update language dependent items  ===
 
@@ -298,7 +317,7 @@ LANGID LoadLanguageResources()
   IniSectionGetString(StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
   ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
    
-  return languageID;
+  return MUI_LanguageDLLs[iUsedLngId].LangId;
 }
 
 

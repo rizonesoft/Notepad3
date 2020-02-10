@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.105.(build_#) (2020-01-05)
+Current BETA Version 5.20.208.(build_#) (2020-02-08)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- Infos of sreen/display for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
 - Language dependent status bar abreviations.
 - Copy directory to clipboard and Open path in explorer.
@@ -49,6 +50,17 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Accelerator key remapping: move line up/down vs. jump folds.
+- Separate auto esc'd control chars from "transform backslashes" switch in find/replace dialog.
+- Increase encoding detection confidence threshold to 92%.
+- Finetuning of Single Byte Char Set (SBCS) detection.
+- Add current Encoding and Lexer to "Copy Version Text".
+- Lexer keyword initializer list simplified.
+- Find/Replace dialog: in case of "transform backslashes" do Esc control seqs.
+- Remove "extra" drag n' drop handler.
+- Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=70".
+- UCHARDET: Confidence calculation for Single Byte Character Set (SBCS).
+- Replace "save modified file warning" by (silent) custom messagebox if message beeps are muted.
 - Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
 - Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
@@ -80,12 +92,14 @@ CHANGES:
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
-- Update Oniguruma Regex (ONI) engine (v.6.9.3+).
-- Scintilla Library (SCI) version 4.2.1 (2019-Jul-5).
+- Update Oniguruma Regex (ONI) engine version 6.9.4 (2019/10/31).
+- Update Scintilla Library (SCI) version 4.3.0 (2020/01/16).
 
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
+- Menu entries for move line and folding control.
+- Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
 - Change to 1-pass (file open/close) to save settings in Notepad3.ini.
 - Enclosing selection with HTML-Tag - Remember last pattern (session).
@@ -95,6 +109,19 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Slow indentation (TAB/BACKTAB).
+- AutoCompletion box.
+- Find/Replace Dialog behavior.
+- Transform backslashes while pasting into search/replace box.
+- Some issues for lexers: YAML and JSON.
+- Clipboard multi-line paste hook for Find/Replace pattern CB.
+- Allow multi-line Search Find/Replace pattern.
+- IME color and IME color styler.
+- Wrong language reference for lexer : "Tag".
+- "Recent Files" History handling.
+- URL Encode/Decode (according to RFC 3986) for (Win7 API).
+- Win7 "procedure entry point "SetCoalescableTimer()" could not be located.
+- Wrap to Column - default=80.
 - Preserve file modification time option on elevated.
 - Elevated relaunch after encoding change.
 - Sub dialog centering in multi monitor environment.
@@ -132,10 +159,11 @@ REMOVED:
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
+- Korean (ko-KR) (to resume).
 - Portuguese Brazilian (pt-BR) (in progress).
-- Slovak (sk-SK) (in progress).
+- Slovak (sk-SK) (to resume).
 - Swedish (sv-SE).
-- Turkish (tr-TR) (on hold).
+- Turkish (tr-TR) (to resume).
 
 
 =====================================================
@@ -283,6 +311,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Changing .ini-file manually.
 - Load external Toolbars (clear config on error, path relative to be portable).
 - Focused View: refolding by lexer.
 - Focused View started from Find/Replace dialog.
@@ -338,6 +367,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Encoding Detection fine tuning.
 - MiniPath About dialog: visual adjustments.
 - Optimize icon resource handling.
 - Optimized MiniPath resource file (icon/bitmap placement).

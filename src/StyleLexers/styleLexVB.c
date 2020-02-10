@@ -13,7 +13,8 @@ KEYWORDLIST KeyWords_VB = {
 "raiseevent randomize readonly redim rem removehandler resume return select set shadows shared short "
 "single static step stop strict string structure sub synclock then throw to true try typeof unicode until "
 "variant when while with withevents writeonly xor",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexVB = { 

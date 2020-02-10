@@ -81,7 +81,8 @@ KEYWORDLIST KeyWords_ASM = {
 "punpckhqdq punpckhwd punpcklbw punpckldq punpcklqdq punpcklwd pxor rcpps rcpss roundpd roundps roundsd "
 "roundss rsqrtps rsqrtss sfence shufpd shufps sqrtpd sqrtps sqrtsd sqrtss stmxcsr subpd subps subsd subss "
 "ucomisd ucomiss unpckhpd unpckhps unpcklpd unpcklps xorpd xorps",
-"", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexASM = { 

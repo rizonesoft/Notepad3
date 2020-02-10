@@ -2,7 +2,9 @@
 
 // ----------------------------------------------------------------------------
 
-KEYWORDLIST KeyWords_YAML = { "false n no off on true y yes", "", "", "", "", "", "", "", "" };
+KEYWORDLIST KeyWords_YAML = { "false n no off on true y yes",
+NULL,
+};
 
 EDITLEXER lexYAML = { 
 SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"", 

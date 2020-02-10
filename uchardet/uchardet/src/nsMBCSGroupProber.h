@@ -1,4 +1,6 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -48,18 +50,19 @@
 #include "nsBig5Prober.h"
 #include "nsEUCTWProber.h"
 
-#define NUM_OF_PROBERS    7
+#define MAX_NUM_OF_MBCS_PROBERS    7
 
 class nsMBCSGroupProber: public nsCharSetProber {
 public:
+  nsMBCSGroupProber();
   nsMBCSGroupProber(PRUint32 aLanguageFilter);
   virtual ~nsMBCSGroupProber();
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
   const char* GetCharSetName();
-  nsProbingState GetState(void) {return mState;}
+  nsProbingState GetState(void) {return mState;};
   void      Reset(void);
   float     GetConfidence(void);
-  void      SetOpion() {}
+  void      SetOpion() {};
 
 #ifdef DEBUG_chardet
   void  DumpStatus();
@@ -70,9 +73,10 @@ public:
 
 protected:
   nsProbingState mState;
-  nsCharSetProber* mProbers[NUM_OF_PROBERS];
-  PRBool          mIsActive[NUM_OF_PROBERS];
-  PRInt32 mBestGuess;
+  nsCharSetProber* mProbers[MAX_NUM_OF_MBCS_PROBERS];
+  PRBool          mIsActive[MAX_NUM_OF_MBCS_PROBERS];
+  PRUint32 mNumOfProbers;
+  PRInt32  mBestGuess;
   PRUint32 mActiveNum;
   PRUint32 mKeepNext;
 };

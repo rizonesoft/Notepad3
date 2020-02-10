@@ -1,4 +1,4 @@
-﻿/* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -45,9 +45,23 @@ typedef unsigned short PRUint16;
 typedef signed char PRInt8;
 typedef unsigned char PRUint8;
 
+#define nsnull nullptr
+
 #define PR_FALSE false
 #define PR_TRUE true
-#define nsnull 0
+
+#define MINIMUM_DATA_THRESHOLD  4
+#define ENOUGH_DATA_THRESHOLD  1024
+
+#define SURE_YES  (0.99f)
+#define SURE_NO   (0.01f)
+
+#define SHORTCUT_THRESHOLD  (0.95f)
+#define MINIMUM_THRESHOLD   (0.20f)
+
+#ifndef min
+#define min(x,y)  (((x) < (y)) ? (x) : (y))
+#endif
 
 #ifdef _MSC_VER
 #ifdef strdup

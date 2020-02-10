@@ -135,8 +135,6 @@ DeclareSciCallV0(GrabFocus, GRABFOCUS)
 DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag)
 DeclareSciCallR0(GetFocus, GETFOCUS, bool)
 
-DeclareSciCallV0(LinesSplit, LINESSPLIT)
-
 DeclareSciCallV1(SetEmptySelection, SETEMPTYSELECTION, DocPos, position)
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos)
@@ -195,6 +193,9 @@ DeclareSciCallV0(ZoomOut, ZOOMOUT)
 
 // Keyboard Commands
 DeclareSciCallV0(NewLine, NEWLINE)
+DeclareSciCallV0(Tab, TAB)
+DeclareSciCallV0(BackTab, BACKTAB)
+DeclareSciCallV0(VCHome, VCHOME)
 DeclareSciCallV0(LineUpExtend, LINEUPEXTEND)
 DeclareSciCallV0(LineScrollUp, LINESCROLLUP)
 DeclareSciCallV0(LineDownExtend, LINEDOWNEXTEND)
@@ -209,6 +210,8 @@ DeclareSciCallV0(DelWordRight, DELWORDRIGHT)
 DeclareSciCallV0(DelLineLeft, DELLINELEFT)
 DeclareSciCallV0(DelLineRight, DELLINERIGHT)
 DeclareSciCallV0(LineDelete, LINEDELETE)
+DeclareSciCallV1(LinesSplit, LINESSPLIT, int, pix)
+DeclareSciCallV0(LinesJoin, LINESJOIN)
 
 //  Commands
 DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
@@ -268,6 +271,7 @@ DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option)
 
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position)
 DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line)
+DeclareSciCallV0(DocumentStart, DOCUMENTSTART)
 DeclareSciCallV0(DocumentEnd, DOCUMENTEND)
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position)
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
@@ -320,6 +324,7 @@ DeclareSciCallV1(SetMouseDWellTime, SETMOUSEDWELLTIME, int, millisec)
 DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool)
 DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE)
 DeclareSciCallV0(AutoCCancel, AUTOCCANCEL)
+DeclareSciCallV0(ClearRegisteredImages, CLEARREGISTEREDIMAGES)
 DeclareSciCallV1(AutoCSetIgnoreCase, AUTOCSETIGNORECASE, bool, flag)
 DeclareSciCallV1(AutoCSetCaseInsensitiveBehaviour, AUTOCSETCASEINSENSITIVEBEHAVIOUR, int, options)
 DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator)
@@ -583,7 +588,6 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 // ----------------------------------------------------------------------------
 
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
-
 
 inline int Sci_GetCurrentEOL_A(LPCH eol) {
   switch (SciCall_GetEOLMode()) {

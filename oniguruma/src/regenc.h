@@ -5,7 +5,7 @@
   encoding: UTF-8
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako
+ * Copyright (c) 2002-2020  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,10 @@
 #endif
 
 #include "config.h"
+
+#ifndef ONIG_NO_STANDARD_C_HEADERS
 #include <stddef.h>
+#endif
 
 #ifdef ONIG_ESCAPE_UCHAR_COLLISION
 #undef ONIG_ESCAPE_UCHAR_COLLISION
@@ -75,6 +78,8 @@ typedef struct {
 #define ONIG_CHECK_NULL_RETURN_VAL(p,val)  if (ONIG_IS_NULL(p)) return (val)
 
 #define MAX_CODE_POINT         (~((OnigCodePoint )0))
+#define ASCII_LIMIT            127
+#define NEWLINE_CODE           0x0a
 
 #define enclen(enc,p)          ONIGENC_MBC_ENC_LEN(enc,p)
 

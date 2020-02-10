@@ -144,9 +144,9 @@ BEGIN
     IDS_MUI_ERR_DROP        "¡Sólo se puede eliminar un archivo al mismo tiempo!"
     IDS_MUI_ERR_ACCESSDENIED
                             "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¿Quiere lanzar %s como aplicación elevada?"
-    IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable .\n¿Consultar website https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable.\n¿Consultar website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "¿¿Seguro que quiere abrir este archivo tan grande??"
+                            "¿Seguro que quiere abrir este archivo tan grande?"
     IDS_MUI_ERR_FILE_TOO_LARGE "No puedo manejar ese archivo enorme (tamaño: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
@@ -159,7 +159,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Esta operación no se puede realizar en una selección rectangular."
-    IDS_MUI_SELMULTI        "TEsta operación no se puede realizar en una selección múltiple."
+    IDS_MUI_SELMULTI        "Esta operación no se puede realizar en una selección múltiple."
     IDS_MUI_SELRECTORMULTI  "Esta operación no se puede realizar en un rectángulo o selección múltiple."
     IDS_MUI_BUFFERTOOSMALL  "Esta operación no se puede realizar (líneas demasiado largas)."
     IDS_MUI_FIND_WRAPFW     "Se llegó al final del documento, reiniciando la búsqueda desde el principio."
@@ -182,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "¿Activar la configuración actual reiniciando?n\n%s"
+    IDS_MUI_RELOADCFGSEX     "¡Al continuar sin reiniciar, las configuraciones guardadas no se aplican y serán anuladas por las configuraciones internas al salir del programa!"
     IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s""."
     IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
     IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."

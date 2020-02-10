@@ -11,7 +11,8 @@ KEYWORDLIST KeyWords_PAS = {
 "property protected public published raise read record register reintroduce repeat resourcestring safecall "
 "self set shl shr softfloat stdcall stored string then threadvar to true try type unit until uses var "
 "virtual while with write xor",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexPAS = { 

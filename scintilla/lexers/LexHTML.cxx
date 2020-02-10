@@ -266,14 +266,30 @@ void classifyAttribHTML(Sci_PositionU start, Sci_PositionU end, const WordList &
 	styler.ColourTo(end, chAttr);
 }
 
+// https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements-core-concepts
+bool isHTMLCustomElement(const std::string &tag) {
+	// check valid HTML custom element name: starts with an ASCII lower alpha and contains hyphen.
+	// IsUpperOrLowerCase() is used for `html.tags.case.sensitive=1`.
+	if (tag.length() < 2 || !IsUpperOrLowerCase(tag[0])) {
+		return false;
+	}
+	if (tag.find('-') == std::string::npos) {
+		return false;
+	}
+	return true;
+}
+
 int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
                            const WordList &keywords, Accessor &styler, bool &tagDontFold,
                     bool caseSensitive, bool isXml, bool allowScripts,
                     const std::set<std::string> &nonFoldingTags) {
 	std::string tag;
-	// Copy after the '<'
+	// Copy after the '<' and stop before ' '
 	for (Sci_PositionU cPos = start; cPos <= end; cPos++) {
 		const char ch = styler[cPos];
+		if (IsASpace(ch)) {
+			break;
+		}
 		if ((ch != '<') && (ch != '/')) {
 			tag.push_back(caseSensitive ? ch : MakeLowerCase(ch));
 		}
@@ -288,8 +304,12 @@ int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
 		chAttr = SCE_H_SGML_DEFAULT;
 	} else if (!keywords || keywords.InList(tag.c_str())) {
 		chAttr = SCE_H_TAG;
+	} else if (!isXml && isHTMLCustomElement(tag)) {
+		chAttr = SCE_H_TAG;
 	}
-	styler.ColourTo(end, chAttr);
+	if (chAttr != SCE_H_TAGUNKNOWN) {
+		styler.ColourTo(end, chAttr);
+	}
 	if (chAttr == SCE_H_TAG) {
 		if (allowScripts && (tag == "script")) {
 			// check to see if this is a self-closing tag by sniffing ahead
@@ -826,6 +846,7 @@ const char *tagsThatDoNotFold[] = {
 };
 
 }
+
 class LexerHTML : public DefaultLexer {
 	bool isXml;
 	bool isPHPScript;
@@ -840,7 +861,10 @@ class LexerHTML : public DefaultLexer {
 	std::set<std::string> nonFoldingTags;
 public:
 	explicit LexerHTML(bool isXml_, bool isPHPScript_) :
-		DefaultLexer(isXml_ ? lexicalClassesHTML : lexicalClassesXML,
+		DefaultLexer(
+			isXml_ ? "xml" : (isPHPScript_ ? "phpscript" : "hypertext"),
+			isXml_ ? SCLEX_XML : (isPHPScript_ ? SCLEX_PHPSCRIPT : SCLEX_HTML),
+			isXml_ ? lexicalClassesHTML : lexicalClassesXML,
 			isXml_ ? std::size(lexicalClassesHTML) : std::size(lexicalClassesXML)),
 		isXml(isXml_),
 		isPHPScript(isPHPScript_),
@@ -862,6 +886,9 @@ public:
 		return osHTML.DescribeProperty(name);
 	}
 	Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override;
+	const char * SCI_METHOD PropertyGet(const char *key) override {
+		return osHTML.PropertyGet(key);
+	}
 	const char *SCI_METHOD DescribeWordListSets() override {
 		return osHTML.DescribeWordListSets();
 	}
@@ -869,13 +896,13 @@ public:
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
 	// No Fold as all folding performs in Lex.
 
-	static ILexer4 *LexerFactoryHTML() {
+	static ILexer5 *LexerFactoryHTML() {
 		return new LexerHTML(false, false);
 	}
-	static ILexer4 *LexerFactoryXML() {
+	static ILexer5 *LexerFactoryXML() {
 		return new LexerHTML(true, false);
 	}
-	static ILexer4 *LexerFactoryPHPScript() {
+	static ILexer5 *LexerFactoryPHPScript() {
 		return new LexerHTML(false, true);
 	}
 };

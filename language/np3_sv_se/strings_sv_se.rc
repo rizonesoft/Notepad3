@@ -144,13 +144,12 @@ BEGIN
     IDS_MUI_ERR_DROP        "Endast en fil kan slängas på en gång!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra Notepad3 som Administratör?"
-    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Vill du öppna denna stora fil?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Okändt filnamnstillägg (%s) !\nVill du fortsätta ändå ?"
+                            "Okändt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -183,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s""."
     IDS_MUI_REGEX_INVALID    "Fil vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
     IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält."
@@ -251,45 +252,45 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Instruktioner:\r\n\
+Notepad3 \t[/?] [...[Teckenkodning]] [...[Radslutsläge]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
-...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
-Examples:\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[volym:][sökväg]filnamn[...]]\r\n\r\n\
+fil\tMåste vara det sista argumentet, inga citerade mellanslag.\r\n\
++\tAcceptera många filargument (med citerade mellanslag).\r\n\
+-\tAccepera enstaka filargument (utan citerade mellanslag).\r\n\r\n\
+Tillval:\r\n\
+/?\tVisa detta hjälpmeddelande.\r\n\
+...\tTeckenkodning (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tRadslutsläge (/crlf, /cr, /lf).\r\n\
+/e\tRadslut för källkod.\r\n\
+/g\tHoppa till position (/g -1 end of file).\r\n\
+/m\tMatcha angiven text (/m- last, /mr regex, /mb backslash).\r\n\
+/l\tLadda om modifierade filer automatiskt.\r\n\
+/q\tTvinga skapande av nya filer utan bekräftelse.\r\n\
+/s\tVälj syntaxschema.\r\n\
+/d\tVälj förvalt syntaxschema.\r\n\
+/h\tVälj källkodschema för webben..\r\n\
+/x\tVälj XML dokumentschema.\r\n\
+/c\tÖppna nytt fönster och klistra in urklipp.\r\n\
+/b\tÖppna urklippsbordet för att samla alla urklipp.\r\n\
+/n\tÖppna alltid nytt fönster (/ns enkel filinstans).\r\n\
+/r\tÅteranvänd fönster (/rs enkel filinstans).\r\n\
+/p\tAnge fönsterposition och storlek (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tAnge fönstertitel.\r\n\
+/i\tStarta som ikon i verktygsfältet.\r\n\
+/o\tVisa alltid fönstret överst.\r\n\
+/f\tAnge ini-fil (/f0 ingen ini-fil).\r\n\
+/u\tKör med utökade privilegier.\r\n\
+/v\tSpara fil och avsluta.\r\n\
+/vd\tSkriv ut fil (öppna skrivardialogen).\r\n\
+/y\tSök miljövariable vid relativt filnamn.\r\n\
+/z\tHoppa över nästa (användbart för registerbaserad notepad-ersättning).\r\n\r\n\
+Exempel:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Öppna ny fil: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately.\
+ \t... Skriv ut filen: ""Test.txt"" omedelbart.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

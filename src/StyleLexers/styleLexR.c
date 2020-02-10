@@ -66,7 +66,7 @@ KEYWORDLIST KeyWords_R = {
 // Unused
 "",
 // ---
-"", "", "", ""
+NULL,
 };
 
 

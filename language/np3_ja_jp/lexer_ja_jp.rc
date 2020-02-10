@@ -200,8 +200,8 @@ BEGIN
     IDS_LEX_STR_63152       "PHP キーワード"
     IDS_LEX_STR_63153       "PHP 数値"
     IDS_LEX_STR_63154       "PHP 変数"
-    IDS_LEX_STR_63155       "PHP 変数(文字列内)"
-    IDS_LEX_STR_63156       "PHP 可変変数(文字列内)"
+    IDS_LEX_STR_63155       "PHP 変数 (文字列内)"
+    IDS_LEX_STR_63156       "PHP 可変変数 (文字列内)"
     IDS_LEX_STR_63157       "PHP コメント"
     IDS_LEX_STR_63158       "PHP 演算子"
     IDS_LEX_STR_63159       "JS"
@@ -251,13 +251,13 @@ BEGIN
     IDS_LEX_STR_63195       "ID"
     IDS_LEX_STR_63196       "属性"
     IDS_LEX_STR_63197       "疑似クラス"
-    IDS_LEX_STR_63198       "疑似クラス(未定義)"
+    IDS_LEX_STR_63198       "疑似クラス (未定義)"
     IDS_LEX_STR_63199       "CSS プロパティ"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63200       "プロパティ(未定義)"
+    IDS_LEX_STR_63200       "プロパティ (未定義)"
     IDS_LEX_STR_63201       "値"
     IDS_LEX_STR_63202       "Important"
     IDS_LEX_STR_63203       "ディレクティブ"
@@ -299,11 +299,11 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63232       "セクション"
     IDS_LEX_STR_63233       "代入"
-    IDS_LEX_STR_63234       "Default Value"
+    IDS_LEX_STR_63234       "デフォルト値"
     IDS_LEX_STR_63235       "ラベル"
     IDS_LEX_STR_63236       "コマンド"
     IDS_LEX_STR_63237       "SGML"
-    IDS_LEX_STR_63238       "比較対象のファイルn"
+    IDS_LEX_STR_63238       "比較対象のファイル"
     IDS_LEX_STR_63239       "場所"
     IDS_LEX_STR_63240       "新規行"
     IDS_LEX_STR_63241       "削除行"
@@ -352,7 +352,7 @@ BEGIN
     IDS_LEX_STR_63276       "セクショングループ"
     IDS_LEX_STR_63277       "関数定義"
     IDS_LEX_STR_63278       "PageEx"
-    IDS_LEX_STR_63279       "If定義(AutoItではキー？)"
+    IDS_LEX_STR_63279       "If定義 (AutoItではキー？)"
 END
 
 STRINGTABLE
@@ -363,12 +363,12 @@ BEGIN
     IDS_LEX_STR_63283       "Pascal コメント"
     IDS_LEX_STR_63284       "Pascal キーワード"
     IDS_LEX_STR_63285       "値の名前"
-    IDS_LEX_STR_63286       "値の型"
-    IDS_LEX_STR_63287       "Hex(16進数)"
+    IDS_LEX_STR_63286       "型"
+    IDS_LEX_STR_63287       "Hex (16進数)"
     IDS_LEX_STR_63288       "キーの追加"
     IDS_LEX_STR_63289       "キーの削除"
     IDS_LEX_STR_63290       "エスケープ"
-    IDS_LEX_STR_63291       "キーのパス中のGUID"
+    IDS_LEX_STR_63291       "キーのパス中の GUID"
     IDS_LEX_STR_63292       "POD"
     IDS_LEX_STR_63293       "シンボル"
     IDS_LEX_STR_63294       "モジュール名"
@@ -378,7 +378,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63296       "クラス変数"
-    IDS_LEX_STR_63297       "Dataセクション"
+    IDS_LEX_STR_63297       "Data セクション"
     IDS_LEX_STR_63298       "基本関数"
     IDS_LEX_STR_63299       "文字列、テーブル、Function"
     IDS_LEX_STR_63300       "入力、出力、OSの機能"
@@ -386,60 +386,60 @@ BEGIN
     IDS_LEX_STR_63302       "擬似要素"
     IDS_LEX_STR_63303       "メディアクエリ"
     IDS_LEX_STR_63304       "グローバルクラス"
-    IDS_LEX_STR_63305       "ユーザー定義関数(Function)"
-    IDS_LEX_STR_63306       "特殊文字(エスケープ文字?)"
+    IDS_LEX_STR_63305       "ユーザー定義関数"
+    IDS_LEX_STR_63306       "特殊文字 (エスケープ文字?)"
     IDS_LEX_STR_63307       "区切り部分"
     IDS_LEX_STR_63308       "式演算子"
-    IDS_LEX_STR_63309       "変数逆参照(%)"
+    IDS_LEX_STR_63309       "変数逆参照 (%)"
     IDS_LEX_STR_63310       "制御フロー"
     IDS_LEX_STR_63311       "キー・ボタン"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63312       "変数(組み込み)"
+    IDS_LEX_STR_63312       "変数 (組み込み)"
     IDS_LEX_STR_63313       "変数"
     IDS_LEX_STR_63314       "フィルター"
     IDS_LEX_STR_63315       "プラグイン"
     IDS_LEX_STR_63316       "クリップのプロパティ"
-    IDS_LEX_STR_63317       "改行(Line Begin)"
-    IDS_LEX_STR_63318       "強調(太字)"
-    IDS_LEX_STR_63319       "強勢(斜体)"
+    IDS_LEX_STR_63317       "改行 (Line Begin)"
+    IDS_LEX_STR_63318       "強調 (太字)"
+    IDS_LEX_STR_63319       "強勢 (斜体)"
     IDS_LEX_STR_63320       "見出しレベル1"
     IDS_LEX_STR_63321       "見出しレベル2"
     IDS_LEX_STR_63322       "見出しレベル3"
     IDS_LEX_STR_63323       "見出しレベル4"
     IDS_LEX_STR_63324       "見出しレベル5"
     IDS_LEX_STR_63325       "見出しレベル6"
-    IDS_LEX_STR_63326       "Pre文字列"
+    IDS_LEX_STR_63326       "Pre 文字列"
     IDS_LEX_STR_63327       "箇条書きリスト"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63328       "引用(BlockQuote)"
+    IDS_LEX_STR_63328       "引用 (BlockQuote)"
     IDS_LEX_STR_63329       "打消し"
-    IDS_LEX_STR_63330       "水平線(HR)"
+    IDS_LEX_STR_63330       "水平線 (HR)"
     IDS_LEX_STR_63331       "リンク"
     IDS_LEX_STR_63332       "コード"
-    IDS_LEX_STR_63333       "Reference(*)"
+    IDS_LEX_STR_63333       "Reference (*)"
     IDS_LEX_STR_63334       "ドキュメント"
     IDS_LEX_STR_63335       "文字列"
     IDS_LEX_STR_63336       "標準演算子"
-    IDS_LEX_STR_63337       "属性(Attribute)"
-    IDS_LEX_STR_63338       "標準関数(Function)"
+    IDS_LEX_STR_63337       "属性 (Attribute)"
+    IDS_LEX_STR_63338       "標準関数 (Function)"
     IDS_LEX_STR_63339       "標準パッケージ"
-    IDS_LEX_STR_63340       "標準型(Type)"
+    IDS_LEX_STR_63340       "標準型 (Type)"
     IDS_LEX_STR_63341       "Word"
     IDS_LEX_STR_63342       "Verbatim"
-    IDS_LEX_STR_63343       "型(組み込み)"
+    IDS_LEX_STR_63343       "型 (組み込み)"
 END
 
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63344       "バイト文字列"
     IDS_LEX_STR_63345       "他のキーワード"
-    IDS_LEX_STR_63346       "Rustライフタイム"
+    IDS_LEX_STR_63346       "Rust ライフタイム"
     IDS_LEX_STR_63347       "オブジェクト"
     IDS_LEX_STR_63348       "キー"
     IDS_LEX_STR_63349       "ホットキー"
@@ -450,6 +450,17 @@ BEGIN
     IDS_LEX_STR_63354       "マルチ編集の表示"
     IDS_LEX_STR_63355       "第2 マルチ編集の表示"
     IDS_LEX_STR_63356       "日時"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63357       "For Each 構文"
+    IDS_LEX_STR_63358       "While 構文"
+    IDS_LEX_STR_63359       "数式"
+    IDS_LEX_STR_63360       "スカラー"
+    IDS_LEX_STR_63361       "置換"
+    IDS_LEX_STR_63362       "修飾子"
+    IDS_LEX_STR_63363       "タグ"
 END
 
 STRINGTABLE

@@ -129,7 +129,6 @@ void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTim
 void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 void ParseCommandLine();
-bool SaveAllSettings(bool bSaveSettingsNow);
 void ShowZoomCallTip();
 void CancelCallTip();
 
@@ -138,7 +137,7 @@ void UpdateUI();
 void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
-void UpdateSettingsCmds();
+void UpdateSaveSettingsCmds();
 void UpdateVisibleIndicators();
 inline void UpdateAllBars(bool force) { DrawMenuBar(Globals.hwndMain); UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
@@ -159,8 +158,8 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position);
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
 void SetFindPatternMB(LPCSTR chFindPattern);
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize);
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize);
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 

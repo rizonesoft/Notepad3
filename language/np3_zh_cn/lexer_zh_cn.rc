@@ -447,9 +447,20 @@ BEGIN
     IDS_LEX_STR_63351       "HotStringOption"
     IDS_LEX_STR_63352       "输入法候选文本颜色"
     IDS_LEX_STR_63353       "备选：输入法候选文本颜色"
-    IDS_LEX_STR_63354       "Multi Edit Indicator"
-    IDS_LEX_STR_63355       "2nd Multi Edit Indicator"
-    IDS_LEX_STR_63356       "Date-Time"
+    IDS_LEX_STR_63354       "多点编辑指示符"
+    IDS_LEX_STR_63355       "备选：多点编辑指示符"
+    IDS_LEX_STR_63356       "日期时间"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63357       "For Each Definition"
+    IDS_LEX_STR_63358       "While Definition"
+    IDS_LEX_STR_63359       "Math"
+    IDS_LEX_STR_63360       "Scalar"
+    IDS_LEX_STR_63361       "Substitution"
+    IDS_LEX_STR_63362       "Modifier"
+    IDS_LEX_STR_63363       "Tag"
 END
 
 STRINGTABLE

@@ -1,7 +1,7 @@
 
 # Oniguruma syntax (operator) configuration
 
-_Documented for Oniguruma 6.9.3 (2019/08/08)_
+_Documented for Oniguruma 6.9.5 (2020/01/23)_
 
 
 ----------
@@ -75,7 +75,7 @@ data set by `onig_set_meta_char()` will be ignored.
 
 ### 1. ONIG_SYN_OP_DOT_ANYCHAR (enable `.`)
 
-_Set in: PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 Enables support for the standard `.` metacharacter, meaning "any one character."  You
 usually want this flag on unless you have turned on `ONIG_SYN_OP_VARIABLE_META_CHARACTERS`
@@ -84,7 +84,7 @@ so that you can use a metacharacter other than `.` instead.
 
 ### 2. ONIG_SYN_OP_ASTERISK_ZERO_INF (enable `r*`)
 
-_Set in: PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the standard `r*` metacharacter, meaning "zero or more r's."
 You usually want this flag set unless you have turned on `ONIG_SYN_OP_VARIABLE_META_CHARACTERS`
@@ -103,7 +103,7 @@ behavior.
 
 ### 4. ONIG_SYN_OP_PLUS_ONE_INF (enable `r+`)
 
-_Set in: PosixExtended, Emacs, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, Emacs, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the standard `r+` metacharacter, meaning "one or more r's."
 You usually want this flag set unless you have turned on `ONIG_SYN_OP_VARIABLE_META_CHARACTERS`
@@ -122,7 +122,7 @@ behavior.
 
 ### 6. ONIG_SYN_OP_QMARK_ZERO_ONE (enable `r?`)
 
-_Set in: PosixExtended, Emacs, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, Emacs, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the standard `r?` metacharacter, meaning "zero or one r" or "an optional r."
 You usually want this flag set unless you have turned on `ONIG_SYN_OP_VARIABLE_META_CHARACTERS`
@@ -141,7 +141,7 @@ you want `?` to simply match a literal `?` character, but you still want some wa
 
 ### 8. ONIG_SYN_OP_BRACE_INTERVAL (enable `r{l,u}`)
 
-_Set in: PosixExtended, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the `r{lower,upper}` range form, common to more advanced
 regex engines, which lets you specify precisely a minimum and maximum range on how many r's
@@ -168,7 +168,7 @@ match literal curly brace characters, but you still want some way of activating
 
 ### 10. ONIG_SYN_OP_VBAR_ALT (enable `r|s`)
 
-_Set in: PosixExtended, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `r|s` alternation operator.  You usually want this
 flag set.
@@ -185,7 +185,7 @@ match a literal `|` character, but you still want some way of activating "altern
 
 ### 12. ONIG_SYN_OP_LPAREN_SUBEXP (enable `(r)`)
 
-_Set in: PosixExtended, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `(...)` grouping-and-capturing operators.  You usually
 want this flag set.
@@ -203,7 +203,7 @@ activating "grouping" or "capturing" behavior.
 
 ### 14. ONIG_SYN_OP_ESC_AZ_BUF_ANCHOR (enable `\A` and `\Z` and `\z`)
 
-_Set in: GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the anchors `\A` (start-of-string), `\Z` (end-of-string or
 newline-at-end-of-string), and `\z` (end-of-string) escapes.
@@ -214,7 +214,7 @@ option will recognize that metacharacter instead.)
 
 ### 15. ONIG_SYN_OP_ESC_CAPITAL_G_BEGIN_ANCHOR (enable `\G`)
 
-_Set in: GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the special anchor `\G` (start-of-previous-match).
 
@@ -231,7 +231,7 @@ exactly the same as `\A`.
 
 ### 16. ONIG_SYN_OP_DECIMAL_BACKREF (enable `\num`)
 
-_Set in: PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for subsequent matches to back references to prior capture groups `(...)` using
 the common `\num` syntax (like `\3`).
@@ -244,7 +244,7 @@ You usually want this enabled, and it is enabled by default in every built-in sy
 
 ### 17. ONIG_SYN_OP_BRACKET_CC (enable `[...]`)
 
-_Set in: PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixBasic, PosixExtended, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for recognizing character classes, like `[a-z]`.  If this flag is not set, `[`
 and `]` will be treated as ordinary literal characters instead of as metacharacters.
@@ -254,7 +254,7 @@ You usually want this enabled, and it is enabled by default in every built-in sy
 
 ### 18. ONIG_SYN_OP_ESC_W_WORD (enable `\w` and `\W`)
 
-_Set in: Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `\w` and `\W` shorthand forms.  These match "word characters,"
 whose meaning varies depending on the encoding being used.
@@ -285,7 +285,7 @@ Most regex syntaxes do _not_ support these metacharacters.
 
 ### 20. ONIG_SYN_OP_ESC_B_WORD_BOUND (enable `\b` and `\B`)
 
-_Set in: Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `\b` and `\B` word-boundary metacharacters.  The `\b` metacharacter
 matches a zero-width position at a transition from word-characters to non-word-characters, or vice
@@ -297,7 +297,7 @@ are considered "word characters."
 
 ### 21. ONIG_SYN_OP_ESC_S_WHITE_SPACE (enable `\s` and `\S`)
 
-_Set in: GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `\s` and `\S` whitespace-matching metacharacters.
 
@@ -319,7 +319,7 @@ Unicode-equivalent code points, and then matching according to Unicode rules.
 
 ### 22. ONIG_SYN_OP_ESC_D_DIGIT (enable `\d` and `\D`)
 
-_Set in: GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `\d` and `\D` digit-matching metacharacters.
 
@@ -337,7 +337,7 @@ Unicode-equivalent code points, and then matching according to Unicode rules.
 
 ### 23. ONIG_SYN_OP_LINE_ANCHOR (enable `^r` and `r$`)
 
-_Set in: Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Emacs, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the common `^` and `$` line-anchor metacharacters.
 
@@ -352,7 +352,7 @@ and not any other form.)
 
 ### 24. ONIG_SYN_OP_POSIX_BRACKET (enable POSIX `[:xxxx:]`)
 
-_Set in: PosixBasic, PosixExtended, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixBasic, PosixExtended, Grep, GnuRegex, Perl, Java, Perl_NG, Ruby_
 
 Enables support for the POSIX `[:xxxx:]` character classes, like `[:alpha:]` and `[:digit:]`.
 The supported POSIX character classes are `alnum`, `alpha`, `blank`, `cntrl`, `digit`,
@@ -361,7 +361,7 @@ The supported POSIX character classes are `alnum`, `alpha`, `blank`, `cntrl`, `d
 
 ### 25. ONIG_SYN_OP_QMARK_NON_GREEDY (enable `r??`, `r*?`, `r+?`, and `r{n,m}?`)
 
-_Set in: Perl, Java, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Java, Perl_NG, Ruby_
 
 Enables support for lazy (non-greedy) quantifiers: That is, if you append a `?` after
 another quantifier such as `?`, `*`, `+`, or `{n,m}`, Oniguruma will try to match
@@ -370,7 +370,7 @@ as _little_ as possible instead of as _much_ as possible.
 
 ### 26. ONIG_SYN_OP_ESC_CONTROL_CHARS (enable `\n`, `\r`, `\t`, etc.)
 
-_Set in: PosixBasic, PosixExtended, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixBasic, PosixExtended, Java, Perl, Perl_NG, Ruby_
 
 Enables support for C-style control-code escapes, like `\n` and `\r`.  Specifically,
 this recognizes `\a` (7), `\b` (8), `\t` (9), `\n` (10), `\f` (12), `\r` (13), and
@@ -380,7 +380,7 @@ support for recognizing `\v` as code point 11.
 
 ### 27. ONIG_SYN_OP_ESC_C_CONTROL (enable `\cx` control codes)
 
-_Set in: Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Perl, Perl_NG, Ruby_
 
 Enables support for named control-code escapes, like `\cm` or `\cM` for code-point
 13.  In this shorthand form, control codes may be specified by `\c` (for "Control")
@@ -390,7 +390,7 @@ followed by an alphabetic letter, a-z or A-Z, indicating which code point to rep
 
 ### 28. ONIG_SYN_OP_ESC_OCTAL3 (enable `\OOO` octal codes)
 
-_Set in: Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Perl, Perl_NG, Ruby_
 
 Enables support for octal-style escapes of up to three digits, like `\1` for code
 point 1, and `\177` for code point 127.  Octal values greater than 255 will result
@@ -399,7 +399,7 @@ in an error message.
 
 ### 29. ONIG_SYN_OP_ESC_X_HEX2 (enable `\xHH` hex codes)
 
-_Set in: Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Perl, Perl_NG, Ruby_
 
 Enables support for hexadecimal-style escapes of up to two digits, like `\x1` for code
 point 1, and `\x7F` for code point 127.
@@ -407,7 +407,7 @@ point 1, and `\x7F` for code point 127.
 
 ### 30. ONIG_SYN_OP_ESC_X_BRACE_HEX8 (enable `\x{7HHHHHHH}` hex codes)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 Enables support for brace-wrapped hexadecimal-style escapes of up to eight digits,
 like `\x{1}` for code point 1, and `\x{FFFE}` for code point 65534.
@@ -415,7 +415,7 @@ like `\x{1}` for code point 1, and `\x{FFFE}` for code point 65534.
 
 ### 31. ONIG_SYN_OP_ESC_O_BRACE_OCTAL (enable `\o{1OOOOOOOOOO}` octal codes)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 Enables support for brace-wrapped octal-style escapes of up to eleven digits,
 like `\o{1}` for code point 1, and `\o{177776}` for code point 65534.
@@ -444,7 +444,7 @@ longer be treated as metacharacters, and instead will be matched as literal
 
 ### 1. ONIG_SYN_OP2_QMARK_GROUP_EFFECT (enable `(?...)`)
 
-_Set in: Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Perl, Perl_NG, Ruby_
 
 Enables support for the fairly-common `(?...)` grouping operator, which
 controls precedence but which does _not_ capture its contents.
@@ -465,7 +465,7 @@ The supported toggle-able options for this flag are:
 
 ### 3. ONIG_SYN_OP2_OPTION_RUBY (enable options `(?imx)` and `(?-imx)`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 Enables support of regex options. (i,m,x)
 The supported toggle-able options for this flag are:
@@ -477,7 +477,7 @@ The supported toggle-able options for this flag are:
 
 ### 4. ONIG_SYN_OP2_PLUS_POSSESSIVE_REPEAT (enable `r?+`, `r*+`, and `r++`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 Enables support for the _possessive_ quantifiers `?+`, `*+`, and `++`, which
 work similarly to `?` and `*` and `+`, respectively, but which do not backtrack
@@ -499,7 +499,7 @@ extent if subsequent parts of the pattern fail to match.
 
 ### 6. ONIG_SYN_OP2_CCLASS_SET_OP (enable `&&` within `[...]`)
 
-_Set in: Java, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Ruby_
 
 Enables support for character-class _intersection_.  For example, with this
 feature enabled, you can write `[a-z&&[^aeiou]]` to produce a character class
@@ -509,7 +509,7 @@ all control codes _except_ newlines.
 
 ### 7. ONIG_SYN_OP2_QMARK_LT_NAMED_GROUP (enable named captures `(?<name>...)`)
 
-_Set in: Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl_NG, Ruby_
 
 Enables support for _naming_ capture groups, so that instead of having to
 refer to captures by position (like `\3` or `$3`), you can refer to them by names
@@ -519,7 +519,7 @@ and `(?'name'...)`, but not the Python `(?P<name>...)` syntax.
 
 ### 8. ONIG_SYN_OP2_ESC_K_NAMED_BACKREF (enable named backreferences `\k<name>`)
 
-_Set in: Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl_NG, Ruby_
 
 Enables support for substituted backreferences by name, not just by position.
 This supports using `\k'name'` in addition to supporting `\k<name>`.  This also
@@ -530,7 +530,7 @@ the match, if the capture matched multiple times, by writing `\k<name+n>` or
 
 ### 9. ONIG_SYN_OP2_ESC_G_SUBEXP_CALL (enable backreferences `\g<name>` and `\g<n>`)
 
-_Set in: Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl_NG, Ruby_
 
 Enables support for substituted backreferences by both name and position using
 the same syntax.  This supports using `\g'name'` and `\g'1'` in addition to
@@ -554,7 +554,7 @@ enabled by default in any syntax.
 
 ### 11. ONIG_SYN_OP2_ESC_CAPITAL_C_BAR_CONTROL (enable `\C-x`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 Enables support for Ruby legacy control-code escapes, like `\C-m` or `\C-M` for code-point
 13.  In this shorthand form, control codes may be specified by `\C-` (for "Control")
@@ -567,7 +567,7 @@ See also ONIG_SYN_OP_ESC_C_CONTROL, which enables the more-common `\cx` syntax.
 
 ### 12. ONIG_SYN_OP2_ESC_CAPITAL_M_BAR_META (enable `\M-x`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 Enables support for Ruby legacy meta-code escapes.  When you write `\M-x`, Oniguruma
 will match an `x` whose 8th bit is set (i.e., the character code of `x` will be or'ed
@@ -577,7 +577,7 @@ with `0x80`).  So, for example, you can match `\x81` using `\x81`, or you can wr
 
 ### 13. ONIG_SYN_OP2_ESC_V_VTAB (enable `\v` as vertical tab)
 
-_Set in: Java, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Ruby_
 
 Enables support for a C-style `\v` escape code, meaning "vertical tab."  If enabled,
 `\v` will be equivalent to ASCII code point 11.
@@ -585,7 +585,7 @@ Enables support for a C-style `\v` escape code, meaning "vertical tab."  If enab
 
 ### 14. ONIG_SYN_OP2_ESC_U_HEX4 (enable `\uHHHH` for Unicode)
 
-_Set in: Java, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Ruby_
 
 Enables support for a Java-style `\uHHHH` escape code for representing Unicode
 code-points by number, using up to four hexadecimal digits (up to `\uFFFF`).  So,
@@ -611,7 +611,7 @@ These anchor forms are very obscure, and rarely supported by other regex librari
 
 ### 16. ONIG_SYN_OP2_ESC_P_BRACE_CHAR_PROPERTY (enable `\p{...}` and `\P{...}`)
 
-_Set in: Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Perl, Perl_NG, Ruby_
 
 Enables support for an alternate syntax for POSIX character classes; instead of
 writing `[:alpha:]` when this is enabled, you can instead write `\p{alpha}`.
@@ -621,7 +621,7 @@ See also ONIG_SYN_OP_POSIX_BRACKET for the classic POSIX form.
 
 ### 17. ONIG_SYN_OP2_ESC_P_BRACE_CIRCUMFLEX_NOT (enable `\p{^...}` and `\P{^...}`)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 Enables support for an alternate syntax for POSIX character classes; instead of
 writing `[:^alpha:]` when this is enabled, you can instead write `\p{^alpha}`.
@@ -636,7 +636,7 @@ _(not presently used)_
 
 ### 19. ONIG_SYN_OP2_ESC_H_XDIGIT (enable `\h` and `\H`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 Enables support for the Ruby-specific shorthand `\h` and `\H` metacharacters.
 Somewhat like `\d` matches decimal digits, `\h` matches hexadecimal digits — that is,
@@ -658,7 +658,7 @@ You usually do not want this flag to be enabled.
 
 ### 21. ONIG_SYN_OP2_QMARK_LPAREN_IF_ELSE (enable `(?(...)then|else)`)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 Enables support for conditional inclusion of subsequent regex patterns based on whether
 a prior named or numbered capture matched, or based on whether a pattern will
@@ -676,7 +676,7 @@ match.  This supports many different forms, including:
 
 ### 22. ONIG_SYN_OP2_ESC_CAPITAL_K_KEEP (enable `\K`)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 Enables support for `\K`, which excludes all content before it from the overall
 regex match (i.e., capture #0).  So, for example, pattern `foo\Kbar` would match
@@ -687,7 +687,7 @@ regex match (i.e., capture #0).  So, for example, pattern `foo\Kbar` would match
 
 ### 23. ONIG_SYN_OP2_ESC_CAPITAL_R_GENERAL_NEWLINE (enable `\R`)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 Enables support for `\R`, the "general newline" shorthand, which matches
 `(\r\n|[\n\v\f\r\u0085\u2028\u2029])` (obviously, the Unicode values are cannot be
@@ -698,7 +698,7 @@ matched in ASCII encodings).
 
 ### 24. ONIG_SYN_OP2_ESC_CAPITAL_N_O_SUPER_DOT (enable `\N` and `\O`)
 
-_Set in: Perl, Perl_NG, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG_
 
 Enables support for `\N` and `\O`.  `\N` is "not a line break," which is much
 like the standard `.` metacharacter, except that while `.` can be affected by
@@ -713,7 +713,7 @@ multi-line mode are enabled or disabled.
 
 ### 25. ONIG_SYN_OP2_QMARK_TILDE_ABSENT_GROUP (enable `(?~...)`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 Enables support for the `(?~r)` "absent operator" syntax, which matches
 as much as possible as long as the result _doesn't_ match pattern `r`.  This is
@@ -731,7 +731,7 @@ excellent article about it is [available on Medium](https://medium.com/rubyinsid
 
 ### 26. ONIG_SYN_OP2_ESC_X_Y_TEXT_SEGMENT (enable `\X` and `\Y` and `\y`)
 
-_Set in: Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG, Ruby_
 
 `\X` is another variation on `.`, designed to support Unicode, in that it matches
 a full _grapheme cluster_.  In Unicode, `à` can be encoded as one code point,
@@ -764,7 +764,7 @@ backreferences.
 
 ### 28. ONIG_SYN_OP2_QMARK_BRACE_CALLOUT_CONTENTS (enable `(?{...})`)
 
-_Set in: Perl, Perl_NG, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG_
 
 Enables support for Perl-style "callouts" — pattern substitutions that result from
 invoking a callback method.  When `(?{foo})` is reached in a pattern, the callback
@@ -779,7 +779,7 @@ Full documentation for this advanced feature can be found in the Oniguruma
 
 ### 29. ONIG_SYN_OP2_ASTERISK_CALLOUT_NAME (enable `(*name)`)
 
-_Set in: Perl, Perl_NG, Oniguruma_
+_Set in: Oniguruma, Perl, Perl_NG_
 
 Enables support for Perl-style "callouts" — pattern substitutions that result from
 invoking a callback method.  When `(*foo)` is reached in a pattern, the callback
@@ -820,7 +820,7 @@ some syntaxes but not in others.
 
 ### 0. ONIG_SYN_CONTEXT_INDEP_REPEAT_OPS (independent `?`, `*`, `+`, `{n,m}`)
 
-_Set in: PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 This flag specifies how to handle operators like `?` and `*` when they aren't
 directly attached to an operand, as in `^*` or `(*)`:  Are they an error, are
@@ -830,7 +830,7 @@ determines if they are errors or if they are discarded.
 
 ### 1. ONIG_SYN_CONTEXT_INVALID_REPEAT_OPS (error or ignore independent operators)
 
-_Set in: PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 If ONIG_SYN_CONTEXT_INDEP_REPEAT_OPS is set, this flag controls what happens when
 independent operators appear in a pattern:  If this flag is set, then independent
@@ -847,7 +847,7 @@ character will produce an error message.
 
 ### 3. ONIG_SYN_ALLOW_INVALID_INTERVAL (allow `{???`)
 
-_Set in: GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 This flag, if set, causes an invalid range, like `foo{bar}` or `foo{}`, to be
 silently discarded, as if `foo` had been written instead.  If clear, an invalid
@@ -855,7 +855,7 @@ range will produce an error message.
 
 ### 4. ONIG_SYN_ALLOW_INTERVAL_LOW_ABBREV (allow `{,n}` to mean `{0,n}`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 If this flag is set, then `r{,n}` will be treated as equivalent to writing
 `{0,n}`.  If this flag is clear, then `r{,n}` will produce an error message.
@@ -876,7 +876,7 @@ No built-in syntax has this flag enabled.
 
 ### 6. ONIG_SYN_DIFFERENT_LEN_ALT_LOOK_BEHIND (allow `(?<=a|bc)`)
 
-_Set in: Java, Ruby, Oniguruma_
+_Set in: Oniguruma, Java, Ruby_
 
 If this flag is set, lookbehind patterns with alternate options may have differing
 lengths among those options.  If this flag is clear, lookbehind patterns with options
@@ -888,7 +888,7 @@ depend on this rule.
 
 ### 7. ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP (prefer `\k<name>` over `\3`)
 
-_Set in: Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl_NG, Ruby_
 
 If this flag is set on the syntax *and* ONIG_OPTION_CAPTURE_GROUP is set when calling
 Oniguruma, then if a name is used on any capture, all captures must also use names:  A
@@ -896,19 +896,32 @@ single use of a named capture prohibits the use of numbered captures.
 
 ### 8. ONIG_SYN_ALLOW_MULTIPLEX_DEFINITION_NAME (allow `(?<x>)...(?<x>)`)
 
-_Set in: Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, Perl_NG, Ruby_
 
 If this flag is set, multiple capture groups may use the same name.  If this flag is
 clear, then reuse of a name will produce an error message.
 
 ### 9. ONIG_SYN_FIXED_INTERVAL_IS_GREEDY_ONLY (`a{n}?` is equivalent to `(?:a{n})?`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 If this flag is set, then intervals of a fixed size will ignore a lazy (non-greedy)
 `?` quantifier and treat it as an optional match (an ordinary `r?`), since "match as
 little as possible" is meaningless for a fixed-size interval.  If this flag is clear,
 then `r{n}?` will mean the same as `r{n}`, and the useless `?` will be discarded.
+
+### 10. ONIG_SYN_ISOLATED_OPTION_CONTINUE_BRANCH (`..(?i)..`)
+
+_Set in: Perl, Perl_NG, Java_
+
+If this flag is set, then an isolated option doesn't break the branch and affects until the end of the group (or end of the pattern).
+If this flag is not set, then an isolated option is interpreted as the starting point of a new branch. /a(?i)b|c/ ==> /a(?i:b|c)/
+
+### 11. ONIG_SYN_VARIABLE_LEN_LOOK_BEHIND (`(?<=...a+...)`)
+
+_Set in: Oniguruma, Java_
+
+If this flag is set, then a variable length expressions are allowed in look-behind.
 
 ### 20. ONIG_SYN_NOT_NEWLINE_IN_NEGATIVE_CC (add `\n` to `[^...]`)
 
@@ -921,7 +934,7 @@ only exclude those characters and ranges written in them.
 
 ### 21. ONIG_SYN_BACKSLASH_ESCAPE_IN_CC (allow `[...\w...]`)
 
-_Set in: GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 If this flag is set, shorthands like `\w` are allowed to describe characters in character
 classes.  If this flag is clear, shorthands like `\w` are treated as a redundantly-escaped
@@ -937,7 +950,7 @@ character ranges will produce an error message.
 
 ### 23. ONIG_SYN_ALLOW_DOUBLE_RANGE_OP_IN_CC (treat `[0-9-a]` as `[0-9\-a]`)
 
-_Set in: PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 If this flag is set, then a trailing `-` after a character range will be taken as a
 literal `-`, as if it had been escaped as `\-`.  If this flag is clear, then a trailing
@@ -945,7 +958,7 @@ literal `-`, as if it had been escaped as `\-`.  If this flag is clear, then a t
 
 ### 24. ONIG_SYN_WARN_CC_OP_NOT_ESCAPED (warn on `[[...]` and `[-x]`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 If this flag is set, Oniguruma will be stricter about warning for bad forms in
 character classes:  `[[...]` will produce a warning, but `[\[...]` will not;
@@ -955,7 +968,7 @@ will be silently discarded.
 
 ### 25. ONIG_SYN_WARN_REDUNDANT_NESTED_REPEAT (warn on `(?:a*)+`)
 
-_Set in: Ruby, Oniguruma_
+_Set in: Oniguruma, Ruby_
 
 If this flag is set, Oniguruma will warn about nested repeat operators those have no meaning, like `(?:a*)+`.
 If this flag is clear, Oniguruma will allow the nested repeat operators without warning about them.
@@ -968,7 +981,7 @@ If this flag is set, then invalid code points at the end of range in character c
 
 ### 31. ONIG_SYN_CONTEXT_INDEP_ANCHORS
 
-_Set in: PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby, Oniguruma_
+_Set in: Oniguruma, PosixExtended, GnuRegex, Java, Perl, Perl_NG, Ruby_
 
 Not currently used, and does nothing.  (But still set in several syntaxes for some
 reason.)
@@ -1062,10 +1075,12 @@ These tables show which of the built-in syntaxes use which flags and options, fo
 | 3     | `ONIG_SYN_ALLOW_INVALID_INTERVAL`             | -     | -     | -     | -     | Yes   | Yes   | Yes   | Yes   | Yes   | Yes   |
 | 4     | `ONIG_SYN_ALLOW_INTERVAL_LOW_ABBREV`          | -     | -     | -     | -     | -     | -     | -     | -     | Yes   | Yes   |
 | 5     | `ONIG_SYN_STRICT_CHECK_BACKREF`               | -     | -     | -     | -     | -     | -     | -     | -     | -     | -     |
-| 6     | `ONIG_SYN_DIFFERENT_LEN_ALT_LOOK_BEHIND`      | -     | -     | -     | -     | -     | -     | -     | Yes   | Yes   | Yes   |
+| 6     | `ONIG_SYN_DIFFERENT_LEN_ALT_LOOK_BEHIND`      | -     | -     | -     | -     | -     | Yes   | -     | -     | Yes   | Yes   |
 | 7     | `ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP`           | -     | -     | -     | -     | -     | -     | -     | Yes   | Yes   | Yes   |
 | 8     | `ONIG_SYN_ALLOW_MULTIPLEX_DEFINITION_NAME`    | -     | -     | -     | -     | -     | -     | -     | Yes   | Yes   | Yes   |
 | 9     | `ONIG_SYN_FIXED_INTERVAL_IS_GREEDY_ONLY`      | -     | -     | -     | -     | -     | -     | -     | -     | Yes   | Yes   |
+| 10    | `ONIG_SYN_ISOLATED_OPTION_CONTINUE_BRANCH`    | -     | -     | -     | -     | -     | Yes   | Yes   | Yes   | -     | -     |
+| 11    | `ONIG_SYN_VARIABLE_LEN_LOOK_BEHIND`           | -     | -     | -     | -     | -     | Yes   | -     | -     | -     | Yes   |
 | 20    | `ONIG_SYN_NOT_NEWLINE_IN_NEGATIVE_CC`         | -     | -     | -     | Yes   | -     | -     | -     | -     | -     | -     |
 | 21    | `ONIG_SYN_BACKSLASH_ESCAPE_IN_CC`             | -     | -     | -     | -     | Yes   | Yes   | Yes   | Yes   | Yes   | Yes   |
 | 22    | `ONIG_SYN_ALLOW_EMPTY_RANGE_IN_CC`            | -     | -     | Yes   | Yes   | -     | -     | -     | -     | -     | -     |

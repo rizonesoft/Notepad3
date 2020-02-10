@@ -67,13 +67,15 @@ class SelectionText {
 public:
 	bool rectangular;
 	bool lineCopy;
+	bool asBinary;
 	int codePage;
 	int characterSet;
-	SelectionText() noexcept : rectangular(false), lineCopy(false), codePage(0), characterSet(0) {}
+	SelectionText() noexcept : rectangular(false), lineCopy(false), asBinary(false), codePage(0), characterSet(0) {}
 	void Clear() noexcept {
 		s.clear();
 		rectangular = false;
 		lineCopy = false;
+		asBinary = false;
 		codePage = 0;
 		characterSet = 0;
 	}
@@ -210,8 +212,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position wordSelectAnchorStartPos;
 	Sci::Position wordSelectAnchorEndPos;
 	Sci::Position wordSelectInitialCaretPos;
-	Sci::Position targetStart;
-	Sci::Position targetEnd;
+	SelectionSegment targetRange;
 	int searchFlags;
 	Sci::Line topLine;
 	Sci::Position posTopLine;
@@ -403,10 +404,10 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void ClearDocumentStyle();
 	virtual void Cut();
 	void PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Position len);
-	virtual void Copy() = 0;
+	virtual void Copy(bool asBinary) = 0;
 	virtual void CopyAllowLine();
 	virtual bool CanPaste();
-	virtual void Paste() = 0;
+	virtual void Paste(bool asBinary) = 0;
 	void Clear();
 	virtual void SelectAll();
 	virtual void Undo();
@@ -487,7 +488,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void CopyText(size_t length, const char *text);
 	void SetDragPosition(SelectionPosition newPos);
 	virtual void DisplayCursor(Window::Cursor c);
-	virtual bool DragThreshold(Point ptStart, Point ptNow);
+	virtual bool DragThreshold(Point ptStart, Point ptNow) noexcept;
 	virtual void StartDrag();
 	void DropAt(SelectionPosition position, const char *value, size_t lengthValue, bool moving, bool rectangular);
 	void DropAt(SelectionPosition position, const char *value, bool moving, bool rectangular);

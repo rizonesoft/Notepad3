@@ -5,7 +5,7 @@
   encoding: UTF-8
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako
+ * Copyright (c) 2002-2020  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,23 +32,23 @@
 
 #include "regint.h"
 
-#define NODE_STRING_MARGIN         16
-#define NODE_STRING_BUF_SIZE       20  /* sizeof(CClassNode) - sizeof(int)*4 */
-#define NODE_BACKREFS_SIZE          6
+#define NODE_STRING_MARGIN     16
+#define NODE_STRING_BUF_SIZE   24  /* sizeof(CClassNode) - sizeof(int)*4 */
+#define NODE_BACKREFS_SIZE      6
 
 /* node type */
 typedef enum {
-  NODE_STRING    =  0,
-  NODE_CCLASS    =  1,
-  NODE_CTYPE     =  2,
-  NODE_BACKREF   =  3,
-  NODE_QUANT     =  4,
-  NODE_BAG       =  5,
-  NODE_ANCHOR    =  6,
-  NODE_LIST      =  7,
-  NODE_ALT       =  8,
-  NODE_CALL      =  9,
-  NODE_GIMMICK   = 10
+  NODE_STRING  =  0,
+  NODE_CCLASS  =  1,
+  NODE_CTYPE   =  2,
+  NODE_BACKREF =  3,
+  NODE_QUANT   =  4,
+  NODE_BAG     =  5,
+  NODE_ANCHOR  =  6,
+  NODE_LIST    =  7,
+  NODE_ALT     =  8,
+  NODE_CALL    =  9,
+  NODE_GIMMICK = 10
 } NodeType;
 
 enum BagType {
@@ -68,10 +68,10 @@ enum GimmickType {
 };
 
 enum BodyEmptyType {
-  BODY_IS_NOT_EMPTY             = 0,
-  BODY_IS_EMPTY_POSSIBILITY     = 1,
-  BODY_IS_EMPTY_POSSIBILITY_MEM = 2,
-  BODY_IS_EMPTY_POSSIBILITY_REC = 3
+  BODY_IS_NOT_EMPTY     = 0,
+  BODY_MAY_BE_EMPTY     = 1,
+  BODY_MAY_BE_EMPTY_MEM = 2,
+  BODY_MAY_BE_EMPTY_REC = 3
 };
 
 struct _Node;
@@ -85,8 +85,7 @@ typedef struct {
   UChar* end;
   unsigned int flag;
   UChar  buf[NODE_STRING_BUF_SIZE];
-  int    capacity;    /* (allocated size - 1) or 0: use buf[] */
-  int    case_min_len;
+  int    capacity;  /* (allocated size - 1) or 0: use buf[] */
 } StrNode;
 
 typedef struct {
@@ -111,7 +110,7 @@ typedef struct {
   enum BodyEmptyType emptiness;
   struct _Node* head_exact;
   struct _Node* next_head_exact;
-  int include_referred;   /* include called node. don't eliminate even if {0} */
+  int include_referred;  /* include called node. don't eliminate even if {0} */
 } QuantNode;
 
 typedef struct {
@@ -140,7 +139,8 @@ typedef struct {
   /* for multiple call reference */
   OnigLen min_len;   /* min length (byte) */
   OnigLen max_len;   /* max length (byte) */
-  int char_len;      /* character length  */
+  OnigLen min_char_len;
+  OnigLen max_char_len;
   int opt_count;     /* referenced count in optimize_nodes() */
 } BagNode;
 
@@ -190,8 +190,10 @@ typedef struct {
   struct _Node* body;
 
   int type;
-  int char_len;
+  OnigLen char_min_len;
+  OnigLen char_max_len;
   int ascii_mode;
+  struct _Node* lead_node;
 } AnchorNode;
 
 typedef struct {
@@ -210,7 +212,6 @@ typedef struct {
 
   int ctype;
   int not;
-  OnigOptionType options;
   int ascii_mode;
 } CtypeNode;
 
@@ -249,6 +250,11 @@ typedef struct _Node {
   } u;
 } Node;
 
+typedef struct {
+  int new_val;
+} GroupNumMap;
+
+
 #define NULL_NODE  ((Node* )0)
 
 
@@ -281,62 +287,59 @@ typedef struct _Node {
 #define CALL_(node)        (&((node)->u.call))
 #define GIMMICK_(node)     (&((node)->u.gimmick))
 
-#define NODE_CAR(node)         (CONS_(node)->car)
-#define NODE_CDR(node)         (CONS_(node)->cdr)
+#define NODE_CAR(node)     (CONS_(node)->car)
+#define NODE_CDR(node)     (CONS_(node)->cdr)
 
 #define CTYPE_ANYCHAR      -1
 #define NODE_IS_ANYCHAR(node) \
   (NODE_TYPE(node) == NODE_CTYPE && CTYPE_(node)->ctype == CTYPE_ANYCHAR)
 
-#define CTYPE_OPTION(node, reg) \
-  (NODE_IS_FIXED_OPTION(node) ? CTYPE_(node)->options : reg->options)
-
 
 #define ANCR_ANYCHAR_INF_MASK  (ANCR_ANYCHAR_INF | ANCR_ANYCHAR_INF_ML)
 #define ANCR_END_BUF_MASK      (ANCR_END_BUF | ANCR_SEMI_END_BUF)
 
-#define NODE_STRING_CRUDE              (1<<0)
-#define NODE_STRING_CASE_EXPANDED      (1<<1)
-#define NODE_STRING_CASE_FOLD_MATCH    (1<<2)
+#define NODE_STRING_CRUDE           (1<<0)
+#define NODE_STRING_CASE_EXPANDED   (1<<1)
 
 #define NODE_STRING_LEN(node)            (int )((node)->u.str.end - (node)->u.str.s)
 #define NODE_STRING_SET_CRUDE(node)         (node)->u.str.flag |= NODE_STRING_CRUDE
 #define NODE_STRING_CLEAR_CRUDE(node)       (node)->u.str.flag &= ~NODE_STRING_CRUDE
 #define NODE_STRING_SET_CASE_EXPANDED(node) (node)->u.str.flag |= NODE_STRING_CASE_EXPANDED
-#define NODE_STRING_SET_CASE_FOLD_MATCH(node) (node)->u.str.flag |= NODE_STRING_CASE_FOLD_MATCH
 #define NODE_STRING_IS_CRUDE(node) \
   (((node)->u.str.flag & NODE_STRING_CRUDE) != 0)
 #define NODE_STRING_IS_CASE_EXPANDED(node) \
   (((node)->u.str.flag & NODE_STRING_CASE_EXPANDED) != 0)
-#define NODE_STRING_IS_CASE_FOLD_MATCH(node) \
-  (((node)->u.str.flag & NODE_STRING_CASE_FOLD_MATCH) != 0)
 
 #define BACKREFS_P(br) \
   (IS_NOT_NULL((br)->back_dynamic) ? (br)->back_dynamic : (br)->back_static)
 
 /* node status bits */
-#define NODE_ST_MIN_FIXED             (1<<0)
-#define NODE_ST_MAX_FIXED             (1<<1)
-#define NODE_ST_CLEN_FIXED            (1<<2)
-#define NODE_ST_MARK1                 (1<<3)
-#define NODE_ST_MARK2                 (1<<4)
-#define NODE_ST_STRICT_REAL_REPEAT    (1<<5)
-#define NODE_ST_RECURSION             (1<<6)
-#define NODE_ST_CALLED                (1<<7)
-#define NODE_ST_ADDR_FIXED            (1<<8)
-#define NODE_ST_NAMED_GROUP           (1<<9)
-#define NODE_ST_IN_REAL_REPEAT        (1<<10) /* STK_REPEAT is nested in stack. */
-#define NODE_ST_IN_ZERO_REPEAT        (1<<11) /* (....){0} */
-#define NODE_ST_IN_MULTI_ENTRY        (1<<12)
-#define NODE_ST_NEST_LEVEL            (1<<13)
-#define NODE_ST_BY_NUMBER             (1<<14) /* {n,m} */
-#define NODE_ST_BY_NAME               (1<<15) /* backref by name */
-#define NODE_ST_BACKREF               (1<<16)
-#define NODE_ST_CHECKER               (1<<17)
-#define NODE_ST_FIXED_OPTION          (1<<18)
-#define NODE_ST_PROHIBIT_RECURSION    (1<<19)
-#define NODE_ST_SUPER                 (1<<20)
-#define NODE_ST_EMPTY_STATUS_CHECK    (1<<21)
+#define NODE_ST_FIXED_MIN           (1<<0)
+#define NODE_ST_FIXED_MAX           (1<<1)
+#define NODE_ST_FIXED_CLEN          (1<<2)
+#define NODE_ST_MARK1               (1<<3)
+#define NODE_ST_MARK2               (1<<4)
+#define NODE_ST_STRICT_REAL_REPEAT  (1<<5)
+#define NODE_ST_RECURSION           (1<<6)
+#define NODE_ST_CALLED              (1<<7)
+#define NODE_ST_FIXED_ADDR          (1<<8)
+#define NODE_ST_NAMED_GROUP         (1<<9)
+#define NODE_ST_IN_REAL_REPEAT      (1<<10) /* STK_REPEAT is nested in stack. */
+#define NODE_ST_IN_ZERO_REPEAT      (1<<11) /* (....){0} */
+#define NODE_ST_IN_MULTI_ENTRY      (1<<12)
+#define NODE_ST_NEST_LEVEL          (1<<13)
+#define NODE_ST_BY_NUMBER           (1<<14) /* {n,m} */
+#define NODE_ST_BY_NAME             (1<<15) /* backref by name */
+#define NODE_ST_BACKREF             (1<<16)
+#define NODE_ST_CHECKER             (1<<17)
+#define NODE_ST_PROHIBIT_RECURSION  (1<<18)
+#define NODE_ST_SUPER               (1<<19)
+#define NODE_ST_EMPTY_STATUS_CHECK  (1<<20)
+#define NODE_ST_IGNORECASE          (1<<21)
+#define NODE_ST_MULTILINE           (1<<22)
+#define NODE_ST_TEXT_SEGMENT_WORD   (1<<23)
+#define NODE_ST_ABSENT_WITH_SIDE_EFFECTS (1<<24)  /* stopper or clear */
+#define NODE_ST_FIXED_CLEN_MIN_SURE (1<<25)
 
 
 #define NODE_STATUS(node)           (((Node* )node)->u.base.status)
@@ -350,17 +353,16 @@ typedef struct _Node {
 #define NODE_IS_RECURSION(node)       ((NODE_STATUS(node) & NODE_ST_RECURSION)      != 0)
 #define NODE_IS_IN_ZERO_REPEAT(node)  ((NODE_STATUS(node) & NODE_ST_IN_ZERO_REPEAT) != 0)
 #define NODE_IS_NAMED_GROUP(node)     ((NODE_STATUS(node) & NODE_ST_NAMED_GROUP)  != 0)
-#define NODE_IS_ADDR_FIXED(node)      ((NODE_STATUS(node) & NODE_ST_ADDR_FIXED)   != 0)
-#define NODE_IS_CLEN_FIXED(node)      ((NODE_STATUS(node) & NODE_ST_CLEN_FIXED)   != 0)
-#define NODE_IS_MIN_FIXED(node)       ((NODE_STATUS(node) & NODE_ST_MIN_FIXED)    != 0)
-#define NODE_IS_MAX_FIXED(node)       ((NODE_STATUS(node) & NODE_ST_MAX_FIXED)    != 0)
+#define NODE_IS_FIXED_ADDR(node)      ((NODE_STATUS(node) & NODE_ST_FIXED_ADDR)   != 0)
+#define NODE_IS_FIXED_CLEN(node)      ((NODE_STATUS(node) & NODE_ST_FIXED_CLEN)   != 0)
+#define NODE_IS_FIXED_MIN(node)       ((NODE_STATUS(node) & NODE_ST_FIXED_MIN)    != 0)
+#define NODE_IS_FIXED_MAX(node)       ((NODE_STATUS(node) & NODE_ST_FIXED_MAX)    != 0)
 #define NODE_IS_MARK1(node)           ((NODE_STATUS(node) & NODE_ST_MARK1)        != 0)
 #define NODE_IS_MARK2(node)           ((NODE_STATUS(node) & NODE_ST_MARK2)        != 0)
 #define NODE_IS_NEST_LEVEL(node)      ((NODE_STATUS(node) & NODE_ST_NEST_LEVEL)   != 0)
 #define NODE_IS_BY_NAME(node)         ((NODE_STATUS(node) & NODE_ST_BY_NAME)      != 0)
 #define NODE_IS_BACKREF(node)         ((NODE_STATUS(node) & NODE_ST_BACKREF)      != 0)
 #define NODE_IS_CHECKER(node)         ((NODE_STATUS(node) & NODE_ST_CHECKER)      != 0)
-#define NODE_IS_FIXED_OPTION(node)    ((NODE_STATUS(node) & NODE_ST_FIXED_OPTION) != 0)
 #define NODE_IS_SUPER(node)           ((NODE_STATUS(node) & NODE_ST_SUPER)        != 0)
 #define NODE_IS_PROHIBIT_RECURSION(node) \
     ((NODE_STATUS(node) & NODE_ST_PROHIBIT_RECURSION) != 0)
@@ -368,6 +370,11 @@ typedef struct _Node {
     ((NODE_STATUS(node) & NODE_ST_STRICT_REAL_REPEAT) != 0)
 #define NODE_IS_EMPTY_STATUS_CHECK(node) \
     ((NODE_STATUS(node) & NODE_ST_EMPTY_STATUS_CHECK) != 0)
+#define NODE_IS_IGNORECASE(node)      ((NODE_STATUS(node) & NODE_ST_IGNORECASE) != 0)
+#define NODE_IS_MULTILINE(node)       ((NODE_STATUS(node) & NODE_ST_MULTILINE) != 0)
+#define NODE_IS_TEXT_SEGMENT_WORD(node)  ((NODE_STATUS(node) & NODE_ST_TEXT_SEGMENT_WORD) != 0)
+#define NODE_IS_ABSENT_WITH_SIDE_EFFECTS(node)  ((NODE_STATUS(node) & NODE_ST_ABSENT_WITH_SIDE_EFFECTS) != 0)
+#define NODE_IS_FIXED_CLEN_MIN_SURE(node)  ((NODE_STATUS(node) & NODE_ST_FIXED_CLEN_MIN_SURE) != 0)
 
 #define NODE_PARENT(node)         ((node)->u.base.parent)
 #define NODE_BODY(node)           ((node)->u.base.body)
@@ -376,10 +383,19 @@ typedef struct _Node {
 #define NODE_CALL_BODY(node)      ((node)->body)
 #define NODE_ANCHOR_BODY(node)    ((node)->body)
 
-#define SCANENV_MEMENV_SIZE               8
+#define SCANENV_MEMENV_SIZE  8
 #define SCANENV_MEMENV(senv) \
  (IS_NOT_NULL((senv)->mem_env_dynamic) ? \
     (senv)->mem_env_dynamic : (senv)->mem_env_static)
+
+#define IS_SYNTAX_OP(syn, opm)    (((syn)->op  & (opm)) != 0)
+#define IS_SYNTAX_OP2(syn, opm)   (((syn)->op2 & (opm)) != 0)
+#define IS_SYNTAX_BV(syn, bvm)    (((syn)->behavior & (bvm)) != 0)
+
+#define ID_ENTRY(env, id) do {\
+  id = (env)->id_num++;\
+} while(0)
+
 
 typedef struct {
   Node* mem_node;
@@ -404,50 +420,44 @@ typedef struct {
   UChar*           error_end;
   regex_t*         reg;       /* for reg->names only */
   int              num_call;
-#ifdef USE_CALL
-  UnsetAddrList*   unset_addr_list;
-  int              has_call_zero;
-#endif
   int              num_mem;
   int              num_named;
   int              mem_alloc;
   MemEnv           mem_env_static[SCANENV_MEMENV_SIZE];
   MemEnv*          mem_env_dynamic;
+  int              backref_num;
+  int              keep_num;
+  int              id_num;
+  int              save_alloc_num;
+  SaveItem*        saves;
+#ifdef USE_CALL
+  UnsetAddrList*   unset_addr_list;
+  int              has_call_zero;
+#endif
   unsigned int     parse_depth;
 #ifdef ONIG_DEBUG_PARSE
   unsigned int     max_parse_depth;
 #endif
-  int backref_num;
-  int keep_num;
-  int save_num;
-  int save_alloc_num;
-  SaveItem* saves;
 } ScanEnv;
 
 
-#define IS_SYNTAX_OP(syn, opm)    (((syn)->op  & (opm)) != 0)
-#define IS_SYNTAX_OP2(syn, opm)   (((syn)->op2 & (opm)) != 0)
-#define IS_SYNTAX_BV(syn, bvm)    (((syn)->behavior & (bvm)) != 0)
-
-typedef struct {
-  int new_val;
-} GroupNumRemap;
-
-extern int    onig_renumber_name_table P_((regex_t* reg, GroupNumRemap* map));
+extern int    onig_renumber_name_table P_((regex_t* reg, GroupNumMap* map));
 
 extern int    onig_strncmp P_((const UChar* s1, const UChar* s2, int n));
 extern void   onig_strcpy P_((UChar* dest, const UChar* src, const UChar* end));
 extern void   onig_scan_env_set_error_string P_((ScanEnv* env, int ecode, UChar* arg, UChar* arg_end));
 extern int    onig_reduce_nested_quantifier P_((Node* pnode));
+extern int    onig_node_copy(Node** rcopy, Node* from);
 extern int    onig_node_str_cat P_((Node* node, const UChar* s, const UChar* end));
-extern int    onig_node_str_set P_((Node* node, const UChar* s, const UChar* end));
+extern int    onig_node_str_set P_((Node* node, const UChar* s, const UChar* end, int need_free));
+extern void   onig_node_str_clear P_((Node* node, int need_free));
 extern void   onig_node_free P_((Node* node));
+extern int    onig_node_reset_empty P_((Node* node));
+extern int    onig_node_reset_fail P_((Node* node));
 extern Node*  onig_node_new_bag P_((enum BagType type));
-extern Node*  onig_node_new_anchor P_((int type, int ascii_mode));
 extern Node*  onig_node_new_str P_((const UChar* s, const UChar* end));
 extern Node*  onig_node_new_list P_((Node* left, Node* right));
 extern Node*  onig_node_new_alt P_((Node* left, Node* right));
-extern void   onig_node_str_clear P_((Node* node));
 extern int    onig_names_free P_((regex_t* reg));
 extern int    onig_parse_tree P_((Node** root, const UChar* pattern, const UChar* end, regex_t* reg, ScanEnv* env));
 extern int    onig_free_shared_cclass_table P_((void));

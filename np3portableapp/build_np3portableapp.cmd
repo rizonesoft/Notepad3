@@ -1,6 +1,8 @@
 @echo off
-:: encoding: UTF-8
 setlocal enableextensions
+:: encoding: UTF-8
+chcp 65001  >nul 2>&1
+
 :: ====================================================================================================================
 :: Build batch to create a PortableApps.com's (https://portableapps.com/development) 
 ::

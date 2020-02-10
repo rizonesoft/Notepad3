@@ -300,7 +300,7 @@ static void _EnableSchemeConfig(const bool bEnable)
   EnableTool(Globals.hwndToolbar, IDT_VIEW_SCHEMECONFIG, bEnable);
 }
 
-void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
+void Style_DynamicThemesMenuCmd(int cmd)
 {
   unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
 
@@ -316,7 +316,7 @@ void Style_DynamicThemesMenuCmd(int cmd, bool bEnableSaveSettings)
       // internal defaults
     }
     else if (Globals.idxSelectedTheme == 1) {
-      if (bEnableSaveSettings) {
+      if (!Flags.bSettingsFileLocked) {
         CreateIniFile();
         if (StrIsNotEmpty(Globals.IniFile)) {
           Style_ExportToFile(Globals.IniFile, false);
@@ -573,20 +573,20 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     }
 
     // Styles
-    const WCHAR* const Styles_Section = L"Styles";
+    const WCHAR* const IniSecStyles = Constants.Styles_Section;
 
     // 2nd default
-    Style_SetUse2ndDefault(IniSectionGetBool(Styles_Section, L"Use2ndDefaultStyle", false));
+    Style_SetUse2ndDefault(IniSectionGetBool(IniSecStyles, L"Use2ndDefaultStyle", false));
 
     // default scheme
-    s_iDefaultLexer = clampi(IniSectionGetInt(Styles_Section, L"DefaultScheme", Constants.StdDefaultLexerID), 0, COUNTOF(g_pLexArray) - 1);
+    s_iDefaultLexer = clampi(IniSectionGetInt(IniSecStyles, L"DefaultScheme", Constants.StdDefaultLexerID), 0, COUNTOF(g_pLexArray) - 1);
 
     // auto select
-    s_bAutoSelect = IniSectionGetBool(Styles_Section, L"AutoSelect", true);
+    s_bAutoSelect = IniSectionGetBool(IniSecStyles, L"AutoSelect", true);
 
     // scheme select dlg dimensions
-    s_cxStyleSelectDlg = clampi(IniSectionGetInt(Styles_Section, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
-    s_cyStyleSelectDlg = clampi(IniSectionGetInt(Styles_Section, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
+    s_cxStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
+    s_cyStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
 
 
     // Lexer 
@@ -645,9 +645,12 @@ bool Style_ImportFromFile(const WCHAR* szFile)
 //
 //  Style_SaveSettings()
 //
-void Style_SaveSettings()
+void Style_SaveSettings(bool bForceSaveSettings)
 {
-  Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
+  if (Settings.SaveSettings || bForceSaveSettings)
+  {
+    Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, Globals.bIniFileFromScratch);
+  }
 }
 
 
@@ -693,9 +696,9 @@ bool Style_Export(HWND hwnd)
 
 #define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)        \
   if ((VALUE) != (DEFAULT)) {                                              \
-    IniSectionSet##TYPE(Styles_Section, _W(_STRG(VARNAME)), (VALUE));      \
+    IniSectionSet##TYPE(IniSecStyles, _W(_STRG(VARNAME)), (VALUE));      \
   } else {                                                                 \
-    IniSectionDelete(Styles_Section, _W(_STRG(VARNAME)), false);           \
+    IniSectionDelete(IniSecStyles, _W(_STRG(VARNAME)), false);           \
   }
 
 
@@ -720,7 +723,7 @@ void Style_ToIniSection(bool bForceAll)
     }
   }
 
-  const WCHAR* const Styles_Section = L"Styles";
+  const WCHAR* const IniSecStyles = Constants.Styles_Section;
 
   // auto select
   bool const bUse2ndSty = Style_GetUse2ndDefault();
@@ -981,17 +984,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
 
   // Add KeyWord Lists
-  for (int i = 0; i < (KEYWORDSET_MAX + 1); i++)
+  for (int i = 0;  i <= KEYWORDSET_MAX;  ++i)
   {
     const char* pKeyWordList = pLexNew->pKeyWords->pszKeyWords[i];
-    assert(pKeyWordList != NULL);
-
-    if (pKeyWordList != NULL) {
-      SciCall_SetKeywords(i, pKeyWordList);
-    }
-    else {
-      SciCall_SetKeywords(i, "");
-    }
+    SciCall_SetKeywords(i, (pKeyWordList ? pKeyWordList : ""));
   }
 
   // --------------------------------------------------------------------------
@@ -1142,15 +1138,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   #define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
   #define _SC_INDIC_IME_UNKNOWN    INDIC_IME_MAX
 
-  if (Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &dColor)) // IME foregr
-  {
-    SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, dColor);
-    SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, dColor);
-  }
+  COLORREF rgb = RGB(0xFF, 0xA0, 0x00);
+  Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &rgb); // IME foregr
+  SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, rgb);
+  SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, rgb);
+  SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, rgb);
+  SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, rgb);
 
-  COLORREF rgb;
   if (pLexNew != &lexANSI) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
   }
@@ -1165,14 +1159,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, 0, 0);
   }
 
-  if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER , &dColor)) { // selection back
-    SendMessage(hwnd, SCI_SETSELBACK, true, dColor);
-    SendMessage(hwnd, SCI_SETADDITIONALSELBACK, dColor, 0);
-  }
-  else {
-    SendMessage(hwnd, SCI_SETSELBACK, true, RGB(0xC0, 0xC0, 0xC0)); // use a default value...
-    SendMessage(hwnd, SCI_SETADDITIONALSELBACK, RGB(0xC0, 0xC0, 0xC0), 0);
-  }
+  rgb = RGB(0xC0, 0xC0, 0xC0);
+  Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb); // selection back
+  SendMessage(hwnd, SCI_SETSELBACK, true, rgb);
+  SendMessage(hwnd, SCI_SETADDITIONALSELBACK, rgb, 0);
 
   if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true)) { // selection alpha
     SendMessage(hwnd, SCI_SETSELALPHA, iValue, 0);
@@ -2303,7 +2293,7 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
     if (!Flags.SimpleIndentGuides) {
       switch (SciCall_GetLexer()) {
       case SCLEX_PYTHON:
-      case SCLEX_NIMROD:
+      case SCLEX_NIM:
         iIndentView = SC_IV_LOOKFORWARD;
         break;
       default:

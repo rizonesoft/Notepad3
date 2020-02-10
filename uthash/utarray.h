@@ -127,7 +127,7 @@ typedef struct {
 #define utarray_len(a) ((a)->i)
 
 #define utarray_eltptr(a,j) (((j) < (a)->i) ? _utarray_eltptr(a,j) : NULL)
-#define _utarray_eltptr(a,j) ((a)->d + ((a)->icd.sz * (j)))
+#define _utarray_eltptr(a,j) ((void*)((a)->d + ((a)->icd.sz * (j))))
 
 #define utarray_insert(a,p,j) do {                                            \
   if ((j) > (a)->i) utarray_resize(a,j);                                      \

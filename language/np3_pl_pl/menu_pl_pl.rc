@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "&Uzupełnij wyraz\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "Kursor przed wyrazem\tCtrl+Left",           CMD_CTRLLEFT
-            MENUITEM "Kursor za wyrazem\tCtrl+Right",             CMD_CTRLRIGHT
+            MENUITEM "Kursor przed wyrazem\tCtrl+ ←",             CMD_CTRLLEFT
+            MENUITEM "Kursor za wyrazem\tCtrl+ →",                CMD_CTRLRIGHT
             MENUITEM "&Usuń wyrazy przed kursorem\tCtrl+Back",    CMD_CTRLBACK
             MENUITEM "Usuń wyrazy za kursorem\tCtrl+Del",         CMD_CTRLDEL
         END
         POPUP "&Wiersze"
         BEGIN
-            MENUITEM "Przenieś w górę\tCtrl+Shift+Up",            IDM_EDIT_MOVELINEUP
-            MENUITEM "&Przenieś w dół\tCtrl+Shift+Down",          IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Przenieś w górę\tCtrl+Shift+ ↑",            IDM_EDIT_MOVELINEUP
+            MENUITEM "&Przenieś w dół\tCtrl+Shift+ ↓",            IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Wytnij wybór lub bieżący wiersz\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Wytnij cały wiersz wyboru\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -247,7 +247,7 @@ BEGIN
         END
         POPUP "&Wstaw"
         BEGIN
-            MENUITEM "&Nowy wiersz u góry\tCtrl+Enter",             CMD_CTRLENTER
+            MENUITEM "&Nowy wiersz u góry\tCtrl+Enter",             CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "&Znacznik HTML/XML...\tAlt+X",                IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
@@ -342,10 +342,19 @@ BEGIN
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "Margines\tCtrl+Shift+M",                          IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Pokaż"
+        POPUP "&Folding"
         BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
             MENUITEM "&Przełącz składanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
+            MENUITEM SEPARATOR
+            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM SEPARATOR
+            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+        END
+        POPUP "&Pokaż"
+        BEGIN
             MENUITEM "Widok skupiony\tCtrl+Alt+V",                  IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Dziennik &monitorowania",                     IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "Rozszerzony widok końca dokumentu",           IDM_VIEW_SCROLLPASTEOF
@@ -362,8 +371,8 @@ BEGIN
         END
         POPUP "&Powiększenie"
         BEGIN
-            MENUITEM "Powiększ\tCtrl++",                            IDM_VIEW_ZOOMIN
-            MENUITEM "Pomniejsz\tCtrl+-",                           IDM_VIEW_ZOOMOUT
+            MENUITEM "Powiększ\tCtrl+ +",                           IDM_VIEW_ZOOMIN
+            MENUITEM "Pomniejsz\tCtrl+ –",                          IDM_VIEW_ZOOMOUT
             MENUITEM "Resetuj...\tCtrl+0",                          IDM_VIEW_RESETZOOM
         END
         POPUP "&Położenie"

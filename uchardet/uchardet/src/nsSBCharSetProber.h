@@ -1,4 +1,6 @@
-﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * vim: et sw=2 ts=2 fdm=marker
+ */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -53,11 +55,10 @@
 /* Numbers 0-9. */
 #define NUM 251
 
-#define SB_ENOUGH_REL_THRESHOLD  1024
-#define POSITIVE_SHORTCUT_THRESHOLD  (float)0.95
-#define NEGATIVE_SHORTCUT_THRESHOLD  (float)0.05
+#define SB_ENOUGH_REL_THRESHOLD  (ENOUGH_DATA_THRESHOLD >> 1)
+#define POSITIVE_SHORTCUT_THRESHOLD  SHORTCUT_THRESHOLD
+#define NEGATIVE_SHORTCUT_THRESHOLD  (0.05f)
 #define SYMBOL_CAT_ORDER  250
-
 #define NUMBER_OF_SEQ_CAT 4
 #define POSITIVE_CAT   (NUMBER_OF_SEQ_CAT-1)
 #define PROBABLE_CAT   (NUMBER_OF_SEQ_CAT-2)
@@ -82,23 +83,24 @@ class nsSingleByteCharSetProber : public nsCharSetProber{
 public:
   nsSingleByteCharSetProber(const SequenceModel *model) 
     :mModel(model), mReversed(PR_FALSE), mNameProber(0) { Reset(); }
+
   nsSingleByteCharSetProber(const SequenceModel *model, PRBool reversed, nsCharSetProber* nameProber)
     :mModel(model), mReversed(reversed), mNameProber(nameProber) { Reset(); }
 
   virtual const char* GetCharSetName();
   virtual nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  virtual nsProbingState GetState(void) {return mState;}
+  virtual nsProbingState GetState(void) {return mState;};
   virtual void      Reset(void);
   virtual float     GetConfidence(void);
-  virtual void      SetOpion() {}
-  
+  virtual void      SetOpion() {};
+
   // This feature is not implemented yet. any current language model
   // contain this parameter as PR_FALSE. No one is looking at this
   // parameter or calling this method.
   // Moreover, the nsSBCSGroupProber which calls the HandleData of this
   // prober has a hard-coded call to FilterWithoutEnglishLetters which gets rid
   // of the English letters.
-  PRBool KeepEnglishLetters() {return mModel->keepEnglishLetter;} // (not implemented)
+  PRBool KeepEnglishLetters() {return mModel->keepEnglishLetter;}; // (not implemented)
 
 #ifdef DEBUG_chardet
   virtual void  DumpStatus();
@@ -119,9 +121,9 @@ protected:
   PRUint32 mCtrlChar;
   //characters that fall in our sampling range
   PRUint32 mFreqChar;
-  
+
   // Optional auxiliary prober for name decision. created and destroyed by the GroupProber
-  nsCharSetProber* mNameProber; 
+  nsCharSetProber* mNameProber;
 
 };
 

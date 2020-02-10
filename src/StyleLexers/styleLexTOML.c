@@ -5,7 +5,8 @@
 //KEYWORDLIST KeyWords_TOML = EMPTY_KEYWORDLIST;
 KEYWORDLIST KeyWords_TOML = {
 "+inf +nan -inf -nan false inf nan true", // Keyword
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexTOML = {

@@ -134,6 +134,10 @@ inline DocPos clampp(DocPos x, DocPos lower, DocPos upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
+inline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
 // Is the character an octal digit?
 inline bool IsDigitA(const CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
 inline bool IsDigitW(const WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
@@ -347,21 +351,54 @@ UINT CharSetFromCodePage(const UINT uCodePage);
 
 
 //==== UnSlash Functions ======================================================
-unsigned int UnSlash(char* s, UINT cpEdit);
-void TransformBackslashes(char* pszInput,bool,UINT cpEdit,int* iReplaceMsg);
-void TransformMetaChars(char* pszInput,bool,int iEOLMode);
+
+size_t SlashA(LPSTR pchOutput, size_t cchOutLen, LPCSTR pchInput);
+size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
+
+size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
+size_t UnSlashW(LPWSTR pchInOut);
+
+void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
+void TransformMetaChars(char* pszInput, bool, int iEOLMode);
 
 
 //==== Large Text Conversion ==================================================
 
+#undef WC2MB_EX
+#undef MB2WC_EX
+
+#ifdef WC2MB_EX
 ptrdiff_t WideCharToMultiByteEx(
   UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
   LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar);
+#else
+
+__inline ptrdiff_t WideCharToMultiByteEx(
+  UINT CodePage, DWORD dwFlags, LPCWCH lpWideCharStr, ptrdiff_t cchWideChar,
+  LPSTR lpMultiByteStr, ptrdiff_t cbMultiByte, LPCCH lpDefaultChar, LPBOOL lpUsedDefaultChar)
+{
+  return (ptrdiff_t)WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, (int)cchWideChar,
+                                        lpMultiByteStr, (int)cbMultiByte, lpDefaultChar, lpUsedDefaultChar);
+}
+
+#endif
 
 
+#ifdef MB2WC_EX
 ptrdiff_t MultiByteToWideCharEx(
   UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
   LPWSTR lpWideCharStr, ptrdiff_t cchWideChar);
+#else
+
+__inline ptrdiff_t MultiByteToWideCharEx(
+  UINT CodePage, DWORD dwFlags, LPCCH lpMultiByteStr, ptrdiff_t cbMultiByte,
+  LPWSTR lpWideCharStr, ptrdiff_t cchWideChar)
+{
+  return (ptrdiff_t)MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, (int)cbMultiByte,
+                                        lpWideCharStr, (int)cchWideChar);
+}
+
+#endif 
 
 
 inline void SwabEx(char* src, char* dest, size_t n)
@@ -498,17 +535,32 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 // Is the character an octal digit?
 #define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
 
-// If the character is an hexa digit, get its value.
-inline int GetHexDigit(char ch) {
+// no encoding for safe chars
+__inline bool IsAlphaNumeric(WCHAR ch) {
+  return
+    ((ch >= L'0') && (ch <= L'9')) ||
+    ((ch >= L'a') && (ch <= L'z')) ||
+    ((ch >= L'A') && (ch <= L'Z'));
+}
+
+// If the character is an hexadecimal digit, get its value.
+__inline int GetHexDigitA(char ch) {
   if (ch >= '0' && ch <= '9') { return ch - '0'; }
   if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
   if (ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
   return -1;
 }
 
+__inline int GetHexDigitW(WCHAR ch) {
+  if (ch >= L'0' && ch <= L'9') { return ch - L'0'; }
+  if (ch >= L'A' && ch <= L'F') { return ch - L'A' + 10; }
+  if (ch >= L'a' && ch <= L'f') { return ch - L'a' + 10; }
+  return -1;
+}
 // ----------------------------------------------------------------------------
 
-void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, size_t* pcchUnescaped);
+void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved);
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
@@ -530,30 +582,6 @@ inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); re
 inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
-
-#define _EXTRA_DRAG_N_DROP_HANDLER_ 1
-
-#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
-
-// special Drag and Drop Handling
-
-typedef struct tDROPDATA
-{
-  CLIPFORMAT cf;
-  POINTL pt;
-  DWORD dwKeyState;
-  HGLOBAL hData;
-} 
-DROPDATA, *PDROPDATA;
-
-typedef struct tDROPTARGET *PDROPTARGET;
-typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
-
-void DragAndDropInit(HANDLE hHeap);
-PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK pDropProc, void *pUserData);
-PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
-
-#endif
 
 
 #endif //_NP3_HELPERS_H_

@@ -1,12 +1,7 @@
 #ifndef _EDIT_LEXER_H_
 #define _EDIT_LEXER_H_
 
-
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
-
+#include "typedefs.h"
 #include "Scintilla.h"
 
 // -----------------------------------------------------------------------------
@@ -35,7 +30,7 @@ typedef struct _editstyle
 
 typedef struct _keywordlist
 {
-  char* pszKeyWords[KEYWORDSET_MAX + 1];
+  const char* const pszKeyWords[KEYWORDSET_MAX + 1];
 
 } KEYWORDLIST, *PKEYWORDLIST;
 
@@ -73,7 +68,7 @@ typedef enum {
   STY_MARK_OCC = 13,
   STY_URL_HOTSPOT = 14,
   STY_MULTI_EDIT = 15,
-  STY_IME_COLOR = 17,
+  STY_IME_COLOR = 16,
 
   STY_INVISIBLE = 17,
   STY_READONLY = 18

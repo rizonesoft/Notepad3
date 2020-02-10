@@ -269,12 +269,18 @@ BEGIN
     "Z",            IDM_EDIT_UNDO,                    VIRTKEY, CONTROL, NOINVERT
     "Z",            IDM_EDIT_STRIP1STCHAR,            VIRTKEY, ALT, NOINVERT  /// NO Menu
     "Z",            IDM_EDIT_REDO,                    VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //VK_END,         CMD_VKEND,                        VIRTKEY, NOINVERT
+    //VK_HOME,        CMD_VKEND,                        VIRTKEY, NOINVERT
+    //VK_PRIOR,       CMD_VKEND,                        VIRTKEY, NOINVERT    /// PAGE UP Key
+    //VK_NEXT,        CMD_VKEND,                        VIRTKEY, NOINVERT    /// PAGE NEXT Key 
     //~VK_LEFT,        CMD_LEFT,                         VIRTKEY, NOINVERT
     VK_LEFT,        CMD_CTRLLEFT,                     VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        CMD_ALTLEFT,                      VIRTKEY, ALT, NOINVERT
+    VK_LEFT,        CMD_FOLDCOLLAPSE,                 VIRTKEY, ALT, NOINVERT
+    //~VK_LEFT,     XXXXXXXXXXX,                         VIRTKEY, SHIFT, CONTROL, NOINVERT    /// extend selection by word jump
     //~VK_RIGHT,       CMD_RIGHT,                        VIRTKEY, NOINVERT
     VK_RIGHT,       CMD_CTRLRIGHT,                    VIRTKEY, CONTROL, NOINVERT
-    VK_RIGHT,       CMD_ALTRIGHT,                     VIRTKEY, ALT, NOINVERT
+    VK_RIGHT,       CMD_FOLDEXPAND,                     VIRTKEY, ALT, NOINVERT
+    //~VK_RIGHT,    XXXXXXXXXXX,                     VIRTKEY, SHIFT, CONTROL, NOINVERT       /// extend selection by word jump
     VK_ADD,         IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     //~VK_ADD,      CMD_INCLINELIMIT,                 VIRTKEY, ALT, NOINVERT   /// ALT+[+] is used for universal Unicode input
     VK_ADD,         CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
@@ -286,23 +292,16 @@ BEGIN
     VK_DELETE,      CMD_CTRLDEL,                      VIRTKEY, CONTROL, NOINVERT
     VK_DELETE,      IDM_EDIT_CUT,                     VIRTKEY, SHIFT, NOINVERT
     VK_DELETE,      IDM_EDIT_DELETELINERIGHT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_DOWN,        CMD_ALTDOWN,                      VIRTKEY, ALT, NOINVERT
-    VK_DOWN,        CMD_CTRLDOWN,                     VIRTKEY, CONTROL, NOINVERT
-    VK_DOWN,        IDM_EDIT_MOVELINEDOWN,            VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_UP,          IDM_EDIT_MOVELINEUP,              VIRTKEY, ALT, NOINVERT
+    VK_UP,          CMD_SCROLLUP,                     VIRTKEY, CONTROL, NOINVERT
+    //VK_UP,          <free>,                           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_DOWN,        IDM_EDIT_MOVELINEDOWN,            VIRTKEY, ALT, NOINVERT
+    VK_DOWN,        CMD_SCROLLDOWN,                   VIRTKEY, CONTROL, NOINVERT
+    //VK_DOWN,        <free>,                           VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_ESCAPE,      CMD_ESCAPE,                       VIRTKEY, NOINVERT
     VK_ESCAPE,      CMD_SHIFTESC,                     VIRTKEY, SHIFT, NOINVERT
     VK_F1,          IDM_HELP_ONLINEDOCUMENTATION,     VIRTKEY, NOINVERT
     VK_F1,          IDM_HELP_ABOUT,                   VIRTKEY, SHIFT, NOINVERT
-    VK_F10,         CMD_RECODEGB18030,                VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_F11,         CMD_FULLSCRWINPOS,                VIRTKEY, NOINVERT
-    VK_F11,         CMD_INITIALWINPOS,                VIRTKEY, CONTROL, NOINVERT
-    //~VK_F11,         CMD_LEXHTML,                      VIRTKEY, CONTROL, NOINVERT
-    VK_F11,         CMD_LEXDEFAULT,                   VIRTKEY, SHIFT, NOINVERT
-    VK_F12,         IDM_VIEW_SCHEME,                  VIRTKEY, NOINVERT
-    VK_F12,         IDM_VIEW_SCHEMECONFIG,            VIRTKEY, CONTROL, NOINVERT
-    VK_F12,         IDM_VIEW_FONT,                    VIRTKEY, ALT, NOINVERT
-    VK_F12,         IDM_VIEW_USE2NDDEFAULT,           VIRTKEY, SHIFT, NOINVERT
-    VK_F12,         IDM_VIEW_CURRENTSCHEME,           VIRTKEY, CONTROL, ALT, NOINVERT
     VK_F2,          IDM_EDIT_SELTONEXT,               VIRTKEY, CONTROL, ALT, NOINVERT
     VK_F2,          IDM_EDIT_SELTOPREV,               VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     VK_F2,          BME_EDIT_BOOKMARKNEXT,            VIRTKEY, NOINVERT
@@ -337,19 +336,32 @@ BEGIN
     VK_F9,          IDM_FILE_MANAGEFAV,               VIRTKEY, ALT, NOINVERT
     VK_F9,          CMD_COPYPATHNAME,                 VIRTKEY, SHIFT, NOINVERT
     VK_F9,          IDM_EDIT_INSERT_PATHNAME,         VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_F10,         CMD_RECODEGB18030,                VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_F11,         CMD_FULLSCRWINPOS,                VIRTKEY, NOINVERT
+    VK_F11,         CMD_INITIALWINPOS,                VIRTKEY, CONTROL, NOINVERT
+    //~VK_F11,         CMD_LEXHTML,                      VIRTKEY, CONTROL, NOINVERT
+    VK_F11,         CMD_LEXDEFAULT,                   VIRTKEY, SHIFT, NOINVERT
+    VK_F12,         IDM_VIEW_SCHEME,                  VIRTKEY, NOINVERT
+    VK_F12,         IDM_VIEW_SCHEMECONFIG,            VIRTKEY, CONTROL, NOINVERT
+    VK_F12,         IDM_VIEW_FONT,                    VIRTKEY, ALT, NOINVERT
+    VK_F12,         IDM_VIEW_USE2NDDEFAULT,           VIRTKEY, SHIFT, NOINVERT
+    VK_F12,         IDM_VIEW_CURRENTSCHEME,           VIRTKEY, CONTROL, ALT, NOINVERT
     VK_OEM_2,       IDM_EDIT_LINECOMMENT,             VIRTKEY, CONTROL, NOINVERT
     VK_OEM_2,       IDM_EDIT_STREAMCOMMENT,           VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_DIVIDE,      IDM_EDIT_LINECOMMENT,             VIRTKEY, CONTROL, NOINVERT
     VK_DIVIDE,      IDM_EDIT_STREAMCOMMENT,           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    //VK_MULTIPLY,    CMD_VK_MULTIPLY,                  VIRTKEY, NOINVERT
     VK_NUMPAD0,     IDM_VIEW_RESETZOOM,               VIRTKEY, CONTROL, NOINVERT
     VK_OEM_COMMA,   CMD_JUMP2SELSTART,                VIRTKEY, CONTROL, NOINVERT
+    VK_OEM_MINUS,   CMD_FOLDJUMPUP,                   VIRTKEY, ALT, NOINVERT
     VK_OEM_MINUS,   IDM_VIEW_ZOOMOUT,                 VIRTKEY, CONTROL, NOINVERT
     VK_OEM_MINUS,   CMD_DECREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
     VK_OEM_PERIOD,  CMD_JUMP2SELEND,                  VIRTKEY, CONTROL, NOINVERT
     VK_OEM_PERIOD,  IDM_EDIT_INSERT_GUID,             VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_OEM_PLUS,    CMD_FOLDJUMPDOWN,                 VIRTKEY, ALT, NOINVERT
     VK_OEM_PLUS,    IDM_VIEW_ZOOMIN,                  VIRTKEY, CONTROL, NOINVERT
     VK_OEM_PLUS,    CMD_INCREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_RETURN,      CMD_CTRLENTER,                    VIRTKEY, CONTROL, NOINVERT
+    VK_RETURN,      CMD_INSERTNEWLINE,                VIRTKEY, CONTROL, NOINVERT
     VK_RETURN,      CMD_SHIFTCTRLENTER,               VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_RETURN,      IDM_EDIT_COMPLETEWORD,            VIRTKEY, CONTROL, ALT, NOINVERT
     VK_SPACE,       IDM_EDIT_SELECTWORD,              VIRTKEY, CONTROL, NOINVERT
@@ -360,9 +372,6 @@ BEGIN
     VK_TAB,         CMD_TAB,                          VIRTKEY, NOINVERT
     VK_TAB,         CMD_BACKTAB,                      VIRTKEY, SHIFT, NOINVERT
     VK_TAB,         CMD_CTRLTAB,                      VIRTKEY, CONTROL, NOINVERT
-    VK_UP,          CMD_ALTUP,                        VIRTKEY, ALT, NOINVERT
-    VK_UP,          CMD_CTRLUP,                       VIRTKEY, CONTROL, NOINVERT
-    VK_UP,          IDM_EDIT_MOVELINEUP,              VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_INSERT,      CMD_VK_INSERT,                    VIRTKEY, NOINVERT
 END                                                   
                                                       

@@ -18,7 +18,7 @@
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
-#define EMPTY_KEYWORDLIST { "", "", "", "", "", "", "", "", "" }
+#define EMPTY_KEYWORDLIST { NULL, }
 
 #define EDITLEXER_SENTINEL { {(-1)}, (00000), L"", L"", L"" }
 

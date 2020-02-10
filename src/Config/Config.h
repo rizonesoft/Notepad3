@@ -27,19 +27,19 @@ extern "C" {
 //==== Ini-File Handling =============================================
 
 bool FindIniFile();
-int  TestIniFile();
+bool TestIniFile();
 bool CreateIniFile();
-bool CreateIniFileEx(LPCWSTR lpszIniFile);
-
-void LoadSettings();
+bool CreateIniFileEx(LPWSTR lpszIniFile);
 
 bool OpenSettingsFile();
-bool SaveSettings(bool);
+void LoadSettings();
+bool SaveAllSettings(bool bForceSaveSettings);
 bool CloseSettingsFile();
 
 // ----------------------------------------------------------------------------
 
 bool LoadIniFile(LPCWSTR lpIniFilePath);
+bool IsIniFileLoaded();
 bool SaveIniFile(LPCWSTR lpIniFilePath);
 void ReleaseIniFile();
 
@@ -127,7 +127,7 @@ bool      MRU_Delete(LPMRULIST pmru, int iIndex);
 bool      MRU_Empty(LPMRULIST pmru);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
 bool      MRU_Load(LPMRULIST pmru);
-bool      MRU_Save(LPMRULIST pmru);
+void      MRU_Save(LPMRULIST pmru);
 bool      MRU_MergeSave(LPMRULIST pmru, bool, bool, bool);
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 

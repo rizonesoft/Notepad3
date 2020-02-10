@@ -15,7 +15,8 @@ KEYWORDLIST KeyWords_BASH = {
 "test then time times touch tr trap true tsort tty type typeset ulimit umask unalias uname uncompress "
 "unexpand uniq unlink unpack unset until users uudecode uuencode vdir vi vim vpax wait wc whence which "
 "while who whoami wpaste wstart xargs yes zcat",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 EDITLEXER lexBASH = { 
@@ -31,9 +32,9 @@ SCLEX_BASH, IDS_LEX_SHELL_SCR, L"Shell Script", L"sh; csh; zsh; bash; tcsh; m4; 
     { {SCE_SH_CHARACTER}, IDS_LEX_STR_63212, L"String Single Quoted", L"fore:#800080", L"" },
     { {SCE_SH_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"", L"" },
     { {SCE_SH_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-    { {SCE_SH_SCALAR}, IDS_LEX_STR_63268, L"Scalar", L"fore:#808000", L"" },
-    { {SCE_SH_PARAM}, IDS_LEX_STR_63269, L"Parameter Expansion", L"fore:#808000; back:#FFFF99", L"" },
-    { {SCE_SH_BACKTICKS}, IDS_LEX_STR_63270, L"Back Ticks", L"fore:#FF0080", L"" },
-    { {SCE_SH_HERE_DELIM}, IDS_LEX_STR_63271, L"Here-Doc (Delimiter)", L"", L"" },
-    { {SCE_SH_HERE_Q}, IDS_LEX_STR_63272, L"Here-Doc (Single Quoted, q)", L"fore:#008080", L"" },
+    { {SCE_SH_SCALAR}, IDS_LEX_STR_63360, L"Scalar", L"fore:#808000", L"" },
+    { {SCE_SH_PARAM}, IDS_LEX_STR_63281, L"Parameter Expansion", L"fore:#808000; back:#FFFF99", L"" },
+    { {SCE_SH_BACKTICKS}, IDS_LEX_STR_63221, L"Back Ticks", L"fore:#FF0080", L"" },
+    { {SCE_SH_HERE_DELIM}, IDS_LEX_STR_63223, L"Here-Doc (Delimiter)", L"", L"" },
+    { {SCE_SH_HERE_Q}, IDS_LEX_STR_63224, L"Here-Doc (Single Quoted, q)", L"fore:#008080", L"" },
     EDITLEXER_SENTINEL } };

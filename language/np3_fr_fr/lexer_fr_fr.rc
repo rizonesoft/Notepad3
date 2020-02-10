@@ -454,6 +454,17 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_STR_63357       "For Each Definition"
+    IDS_LEX_STR_63358       "While Definition"
+    IDS_LEX_STR_63359       "Math"
+    IDS_LEX_STR_63360       "Scalar"
+    IDS_LEX_STR_63361       "Substitution"
+    IDS_LEX_STR_63362       "Modifier"
+    IDS_LEX_STR_63363       "Tag"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_CSV_COL_0       "Colonne 0"
     IDS_LEX_CSV_COL_1       "Colonne 1"
     IDS_LEX_CSV_COL_2       "Colonne 2"

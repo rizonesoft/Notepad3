@@ -62,7 +62,7 @@ KEYWORDLIST KeyWords_CSS = {
 "^-moz- ^-ms- ^-o- ^-webkit-",
 "^-moz- ^-ms- ^-o- ^-webkit-",
 "^-moz- ^-ms- ^-o- ^-webkit-",
-"" 
+NULL,
 };
 
 

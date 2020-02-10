@@ -144,12 +144,12 @@ BEGIN
     IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
     IDS_MUI_ERR_ACCESSDENIED
                             "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Are you sure you want to open this large file?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unknown file name extension (%s) !\nLoading data anyway ?"
+                            "Unknown file name extension (%s)!\nLoading data anyway?"
     IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -182,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by program relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
     IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
     IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."

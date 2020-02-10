@@ -144,13 +144,12 @@ BEGIN
     IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nDo you want to launch %s as 'Elevated' application?"
-//  (to be deleted)         "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi avviare Notepad3 come Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com ?"
+    IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Sei sicuro di voler aprire questo file grande?"
     IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Estensione sconosciuta (%s) !\nProseguire con il caricamento?"
+                            "Estensione sconosciuta (%s)!\nProseguire con il caricamento?"
     IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -183,6 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
     IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s""."
     IDS_MUI_REGEX_INVALID    "Errore nella valutazione della regular expression. La RegExp non è valida!"
     IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."

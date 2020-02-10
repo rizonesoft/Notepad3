@@ -121,7 +121,9 @@ static void ColouriseYAMLLine(
 			styler.ColourTo(startLine + i - 1, SCE_YAML_DEFAULT);
 			styler.ColourTo(endPos, SCE_YAML_COMMENT);
 			return;
-		} else if (lineBuffer[i] == ':' && !bInQuotes) {
+		//} else if (lineBuffer[i] == ':' && !bInQuotes) {
+		} else if (lineBuffer[i] == ':' && !bInQuotes &&
+			       (((i+1) < lengthLine) && isspacechar(lineBuffer[i+1]))) {
 			styler.ColourTo(startLine + i - 1, SCE_YAML_IDENTIFIER);
 			styler.ColourTo(startLine + i, SCE_YAML_OPERATOR);
 			// Non-folding scalar

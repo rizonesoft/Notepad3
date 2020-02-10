@@ -904,8 +904,8 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
     const char* ukn = (!encodingUCD || (encodingUCD[0] == '\0')) ? "<unknown>" : encodingUCD;
     StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? "ASCII" : ukn);
   }
-  float const ucd_conf_perc = ucd_confidence * 100.0f;
-  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%%", ucd_conf_perc);
+  int const ucd_conf_perc = float2int(ucd_confidence * 100.0f);
+  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%i%%", ucd_conf_perc);
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
   //~StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), " || CED='");
@@ -920,15 +920,17 @@ static void _SetEncodingTitleInfo(const char* encodingUCD, cpi_enc_t encUCD, flo
   //~if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
   //~  bool const ced_reliable = (ced_confidence >= Settings2.ReliableCEDConfidenceMapping);
   //~  bool const ced_not_reliable = (ced_confidence <= Settings2.UnReliableCEDConfidenceMapping);
-  //~  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
+  //~  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
   //~    ced_reliable ? "reliable" : (ced_not_reliable ? "NOT reliable" : "???"));
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
   //~}
   //~else {
   //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
   //~}
-      
-  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), (int)lroundf(ucd_conf_perc) >= Settings2.AnalyzeReliableConfidenceLevel ? " (reliable)" : " (NOT reliable)");
+  
+  int const relThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+  const char* rel_fmt = (ucd_conf_perc >= relThreshold) ? " (reliable (%i%%))" : " (NOT reliable (%i%%))";
+  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), rel_fmt, relThreshold);
   StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
 
   ::MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchEncodingInfo, ARRAYSIZE(wchEncodingInfo));
@@ -1263,19 +1265,24 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   size_t const cbNbytes4Analysis = min_s(cbData, 200000LL);
 
-  float confidence = 0.0f;
+  encDetRes.confidence = 0.0f;
+
+  cpi_enc_t const asciiEnc = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
 
   if (!IS_ENC_ENFORCED() || bForceEncDetection)
   {
     if (!bSkipANSICPDetection) 
     {
-      encDetRes.analyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &confidence, iAnalyzeFallback);
+      encDetRes.analyzedEncoding = Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes.confidence, iAnalyzeFallback);
     }
 
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
       encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel;
+      encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
+    }
+    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
+      encDetRes.analyzedEncoding = asciiEnc;
     }
 
     if (!bSkipUTFDetection)
@@ -1303,7 +1310,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     if (bForceEncDetection) {
       if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
         // no bIsReliable check (forced unreliable detection)
-        encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_ANSI_DEFAULT : encDetRes.analyzedEncoding;
+        encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? asciiEnc : encDetRes.analyzedEncoding;
       }
       else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
         encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
@@ -1313,35 +1320,20 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   //bool const bIsUTF8orUnicodeAnalysis = Encoding_IsUTF8(encDetRes.analyzedEncoding) || Encoding_IsUNICODE(encDetRes.analyzedEncoding);
 
-  if (!IS_ENC_ENFORCED())
-  {
-    if (encDetRes.analyzedEncoding == CPI_NONE)
-    {
-      encDetRes.analyzedEncoding = iAnalyzeFallback;
-      confidence = Settings2.AnalyzeReliableConfidenceLevel;
-    }
-    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
-      encDetRes.analyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-      confidence = 1.0;
-    }
-  }
-
-  encDetRes.bIsAnalysisReliable = (confidence >= Settings2.AnalyzeReliableConfidenceLevel);
+  int const iConfidence = float2int(encDetRes.confidence * 100.0f);
+  int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+  encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
 
   // --------------------------------------------------------------------------
   // ---  choose best encoding guess  ----
   // --------------------------------------------------------------------------
 
   // init Preferred Encoding
-  encDetRes.Encoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+  encDetRes.Encoding = asciiEnc;
 
   if (IS_ENC_ENFORCED()) 
   {
     encDetRes.Encoding = encDetRes.forcedEncoding;
-  }
-  else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly)) 
-  {
-    encDetRes.Encoding = encDetRes.analyzedEncoding;
   }
   else if (encDetRes.bIsUTF8Sig)
   {
@@ -1351,11 +1343,20 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
     encDetRes.bIsReverse = bBOM_BE;
   }
+  else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
+  {
+    encDetRes.Encoding = encDetRes.analyzedEncoding;
+  }
   else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
     encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
+    encDetRes.bIsAnalysisReliable = false;
+  }
+  else if (Encoding_IsValid(iAnalyzeFallback)) {
+    encDetRes.Encoding = iAnalyzeFallback;
+    encDetRes.bIsAnalysisReliable = false;
   }
 
-  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = CPI_ANSI_DEFAULT; }
+  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = asciiEnc; }
 
   return encDetRes;
 }

@@ -15,19 +15,24 @@
 #ifndef _NP3_TYPEDEFS_H_
 #define _NP3_TYPEDEFS_H_
 
-
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
+#ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
 #endif
-#if !defined(NTDDI_VERSION)
+#ifndef WINVER
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#ifndef NTDDI_VERSION
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
+
+// Want to use std::min and std::max so don't want Windows.h version of min and max
+#if !defined(NOMINMAX)
+#define NOMINMAX
+#endif
+
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
+
 #include <windows.h>
 //#include <winuser.h>
 
@@ -187,13 +192,13 @@ typedef struct _editfindreplace
   char szReplace[FNDRPL_BUFFER];
   UINT fuFlags;
   bool bTransformBS;
+  bool bAutoEscCtrlChars;
   bool bFindClose;
   bool bReplaceClose;
   bool bNoFindWrap;
   bool bWildcardSearch;
   bool bMarkOccurences;
   bool bHideNonMatchedLines;
-  bool bDotMatchAll;
   bool bStateChanged;
   HWND hwnd;
 
@@ -273,8 +278,13 @@ typedef struct _constants_t
 {
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
-  const WCHAR* const SectionSuppressedMessages;
   const WCHAR* const StylingThemeName;
+
+  const WCHAR* const Settings_Section;
+  const WCHAR* const Settings2_Section;
+  const WCHAR* const Window_Section;
+  const WCHAR* const Styles_Section;
+  const WCHAR* const SectionSuppressedMessages;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 
@@ -345,6 +355,7 @@ typedef struct _globals_t
   unsigned  idxSelectedTheme;
 
   WCHAR     SelectedThemeName[128];
+  WCHAR     InitialPreferredLanguage[LOCALE_NAME_MAX_LENGTH + 1];
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -491,6 +502,11 @@ typedef struct _flags_t
   bool ShellUseSystemMRU;
   bool bPreserveFileModTime;
 
+  bool bDoRelaunchElevated;
+  bool bSearchPathIfRelative;
+
+  bool bSettingsFileLocked;
+
 } FLAGS_T, *PFLAGS_T;
 
 extern FLAGS_T Flags;
@@ -524,7 +540,7 @@ typedef struct _settings2_t
   //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
   //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
 
-  WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
+  WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[64];
   WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];

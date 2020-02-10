@@ -9,7 +9,8 @@ KEYWORDLIST KeyWords_Nim = {
 "elif else end enum except export finally for from func if import in include interface is isnot iterator "
 "let macro method mixin mod nil not notin object of or out proc ptr raise ref return shl shr static "
 "template try tuple type using var when while xor yield",
-"", "", "", "", "", "", "", "" };
+NULL,
+};
 
 
 
@@ -29,5 +30,5 @@ SCLEX_NIM, IDS_LEX_NIM_SRC, L"Nim Source Code", L"nim; nimrod", L"",
     { {SCE_NIM_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#4B4B4B", L"" },
     { {SCE_NIM_FUNCNAME}, IDS_LEX_STR_63247, L"Function name", L"fore:#4B4B4B", L"" },
     { {SCE_NIM_NUMERROR}, IDS_LEX_STR_63252, L"Parsing Error", L"italic; fore:#FFFF00; back:#A00000", L"" },
-    //{ {SCE_NIM_BACKTICKS}, IDS_LEX_STR_63246, L"Class name", L"fore:#660066", L"" },
+    //{ {SCE_NIM_BACKTICKS}, IDS_LEX_STR_63360, L"Back Ticks", L"fore:#660066", L"" },
     EDITLEXER_SENTINEL } };
