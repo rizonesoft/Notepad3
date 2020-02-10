@@ -765,7 +765,11 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
       UChar *s = sn->s;
 
       if (NODE_IS_IGNORECASE(node) && ! NODE_STRING_IS_CRUDE(node)) {
-        r = ONIGERR_PARSER_BUG;
+        /* Such a case is possible.
+           ex. /(?i)(?<=\1)(a)/
+           Backref node refer to capture group, but it doesn't tune yet.
+         */
+        r = ONIGERR_INVALID_LOOK_BEHIND_PATTERN;
         break;
       }
 
@@ -2055,8 +2059,7 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
       if (r < 0) return r;
       r = add_op(reg, OP_MOVE);
       if (r != 0) return r;
-      //ORIG: COP(reg)->move.n = (RelPositionType )(-ci.min);
-      COP(reg)->move.n = (RelPositionType )(0-ci.min);
+      COP(reg)->move.n = -((RelPositionType )ci.min);
       r = compile_tree(node->lead_node, reg, env);
       if (r != 0) return r;
     }
@@ -2203,8 +2206,7 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
       if (r < 0) return r;
       r = add_op(reg, OP_MOVE);
       if (r != 0) return r;
-      //ORIG: COP(reg)->move.n = (RelPositionType )(-ci.min);
-      COP(reg)->move.n = (RelPositionType )(0-ci.min);
+      COP(reg)->move.n = -((RelPositionType )ci.min);
 
       r = compile_tree(node->lead_node, reg, env);
       if (r != 0) return r;
@@ -3005,8 +3007,18 @@ fix_unset_addr_list(UnsetAddrList* uslist, regex_t* reg)
   AbsAddrType* paddr;
 
   for (i = 0; i < uslist->num; i++) {
-    if (! NODE_IS_FIXED_ADDR(uslist->us[i].target))
-      return ONIGERR_PARSER_BUG;
+    if (! NODE_IS_FIXED_ADDR(uslist->us[i].target)) {
+      if (NODE_IS_CALLED(uslist->us[i].target))
+        return ONIGERR_PARSER_BUG;
+      else {
+        /* CASE: called node doesn't have called address.
+           ex. /((|a\g<1>)(.){0}){0}\g<3>/
+           group-1 doesn't called, but compiled into bytecodes,
+           because group-3 is referred from outside.
+        */
+        continue;
+      }
+    }
 
     en = BAG_(uslist->us[i].target);
     addr   = en->m.called_addr;
@@ -3486,7 +3498,7 @@ check_called_node_in_look_behind(Node* node, int not)
 
 
 static int
-check_node_in_look_behind(Node* node, int not)
+check_node_in_look_behind(Node* node, int not, int* used)
 {
   static unsigned int
     bag_mask[2] = { ALLOWED_BAG_IN_LB, ALLOWED_BAG_IN_LB_NOT };
@@ -3505,12 +3517,12 @@ check_node_in_look_behind(Node* node, int not)
   case NODE_LIST:
   case NODE_ALT:
     do {
-      r = check_node_in_look_behind(NODE_CAR(node), not);
+      r = check_node_in_look_behind(NODE_CAR(node), not, used);
     } while (r == 0 && IS_NOT_NULL(node = NODE_CDR(node)));
     break;
 
   case NODE_QUANT:
-    r = check_node_in_look_behind(NODE_BODY(node), not);
+    r = check_node_in_look_behind(NODE_BODY(node), not, used);
     break;
 
   case NODE_BAG:
@@ -3519,14 +3531,19 @@ check_node_in_look_behind(Node* node, int not)
       if (((1<<en->type) & bag_mask[not]) == 0)
         return 1;
 
-      r = check_node_in_look_behind(NODE_BODY(node), not);
-      if (r == 0 && en->type == BAG_IF_ELSE) {
+      r = check_node_in_look_behind(NODE_BODY(node), not, used);
+      if (r != 0) break;
+
+      if (en->type == BAG_MEMORY) {
+        if (NODE_IS_BACKREF(node) || NODE_IS_CALLED(node)) *used = TRUE;
+      }
+      else if (en->type == BAG_IF_ELSE) {
         if (IS_NOT_NULL(en->te.Then)) {
-          r = check_node_in_look_behind(en->te.Then, not);
+          r = check_node_in_look_behind(en->te.Then, not, used);
           if (r != 0) break;
         }
         if (IS_NOT_NULL(en->te.Else)) {
-          r = check_node_in_look_behind(en->te.Else, not);
+          r = check_node_in_look_behind(en->te.Else, not, used);
         }
       }
     }
@@ -3538,7 +3555,7 @@ check_node_in_look_behind(Node* node, int not)
       return 1;
 
     if (IS_NOT_NULL(NODE_BODY(node)))
-      r = check_node_in_look_behind(NODE_BODY(node), not);
+      r = check_node_in_look_behind(NODE_BODY(node), not, used);
     break;
 
   case NODE_GIMMICK:
@@ -4660,9 +4677,17 @@ tune_look_behind(Node* node, regex_t* reg, int state, ScanEnv* env)
 {
   int r;
   int state1;
+  int used;
   MinMaxCharLen ci;
   Node* body;
   AnchorNode* an = ANCHOR_(node);
+
+  used = FALSE;
+  r = check_node_in_look_behind(NODE_ANCHOR_BODY(an),
+                                an->type == ANCR_LOOK_BEHIND_NOT ? 1 : 0,
+                                &used);
+  if (r < 0) return r;
+  if (r > 0) return ONIGERR_INVALID_LOOK_BEHIND_PATTERN;
 
   if (an->type == ANCR_LOOK_BEHIND_NOT)
     state1 = state | IN_NOT | IN_LOOK_BEHIND;
@@ -4681,7 +4706,13 @@ tune_look_behind(Node* node, regex_t* reg, int state, ScanEnv* env)
 
   r = node_char_len(body, reg, &ci, env);
   if (r >= 0) {
-    if (ci.min == 0 && ci.min_is_sure != 0) {
+    /* #177: overflow in onigenc_step_back() */
+    if ((ci.max != INFINITE_LEN && ci.max > LOOK_BEHIND_MAX_CHAR_LEN)
+      || ci.min > LOOK_BEHIND_MAX_CHAR_LEN) {
+      return ONIGERR_INVALID_LOOK_BEHIND_PATTERN;
+    }
+
+    if (ci.min == 0 && ci.min_is_sure != 0 && used == FALSE) {
       if (an->type == ANCR_LOOK_BEHIND_NOT)
         r = onig_node_reset_fail(node);
       else
@@ -4713,12 +4744,17 @@ tune_look_behind(Node* node, regex_t* reg, int state, ScanEnv* env)
         }
         else {
           Node* tail;
-          an->char_min_len = ci.min;
-          an->char_max_len = ci.max;
-          r = get_tree_tail_literal(body, &tail, reg);
-          if (r == GET_VALUE_FOUND) {
-            r = onig_node_copy(&(an->lead_node), tail);
-            if (r != 0) return r;
+
+          /* check lead_node is already set by double call after
+             divide_look_behind_alternatives() */
+          if (IS_NULL(an->lead_node)) {
+            an->char_min_len = ci.min;
+            an->char_max_len = ci.max;
+            r = get_tree_tail_literal(body, &tail, reg);
+            if (r == GET_VALUE_FOUND) {
+              r = onig_node_copy(&(an->lead_node), tail);
+              if (r != 0) return r;
+            }
           }
           r = ONIG_NORMAL;
         }
@@ -5610,10 +5646,6 @@ tune_anchor(Node* node, regex_t* reg, int state, ScanEnv* env)
 
   case ANCR_LOOK_BEHIND:
   case ANCR_LOOK_BEHIND_NOT:
-    r = check_node_in_look_behind(NODE_ANCHOR_BODY(an),
-                                  an->type == ANCR_LOOK_BEHIND_NOT ? 1 : 0);
-    if (r < 0) return r;
-    if (r > 0) return ONIGERR_INVALID_LOOK_BEHIND_PATTERN;
     r = tune_look_behind(node, reg, state, env);
     break;
 
@@ -6170,7 +6202,7 @@ concat_opt_exact_str(OptStr* to, UChar* s, UChar* end, OnigEncoding enc)
 
   to->len = i;
 
-  if (p >= end && to->len == (int )(end - s))
+  if (p >= end)
     to->reach_end = 1;
 }
 
@@ -6623,6 +6655,20 @@ optimize_nodes(Node* node, OptNode* opt, OptEnv* env)
       OnigLen min, max;
       QuantNode* qn = QUANT_(node);
 
+      /* Issue #175
+         ex. /\g<1>{0}(?<=|())/
+
+         Empty and unused nodes in look-behind is removed in
+         tune_look_behind().
+         Called group nodes are assigned to be not called if the caller side is
+         inside of zero-repetition.
+         As a result, the nodes are considered unused.
+       */
+      if (qn->upper == 0) {
+        mml_set_min_max(&opt->len, 0, 0);
+        break;
+      }
+
       r = optimize_nodes(NODE_BODY(node), &xo, env);
       if (r != 0) break;
 
@@ -6795,7 +6841,7 @@ set_optimize_map(regex_t* reg, OptMap* m)
   reg->dist_max   = m->mm.max;
 
   if (reg->dist_min != INFINITE_LEN) {
-    reg->threshold_len = reg->dist_min + 1;
+    reg->threshold_len = reg->dist_min + ONIGENC_MBC_MINLEN(reg->enc);
   }
 }
 
@@ -6988,9 +7034,8 @@ print_anchor(FILE* f, int anchor)
 static void
 print_optimize_info(FILE* f, regex_t* reg)
 {
-  static const char* on[] = { "NONE", "STR",
-                              "STR_FAST", "STR_FAST_STEP_FORWARD",
-                              "STR_CASE_FOLD", "MAP" };
+  static const char* on[] =
+    { "NONE", "STR", "STR_FAST", "STR_FAST_STEP_FORWARD", "MAP" };
 
   fprintf(f, "optimize: %s\n", on[reg->optimize]);
   fprintf(f, "  anchor: "); print_anchor(f, reg->anchor);
@@ -7682,7 +7727,7 @@ print_indent_tree(FILE* f, Node* node, int indent)
     fprintf(f, "<ctype:%p> ", node);
     switch (CTYPE_(node)->ctype) {
     case CTYPE_ANYCHAR:
-      fprintf(f, "<anychar:%p>", node);
+      fprintf(f, "anychar");
       break;
 
     case ONIGENC_CTYPE_WORD:
@@ -7769,9 +7814,10 @@ print_indent_tree(FILE* f, Node* node, int indent)
 #endif
 
   case NODE_QUANT:
-    fprintf(f, "<quantifier:%p>{%d,%d}%s\n", node,
+    fprintf(f, "<quantifier:%p>{%d,%d}%s%s\n", node,
             QUANT_(node)->lower, QUANT_(node)->upper,
-            (QUANT_(node)->greedy ? "" : "?"));
+            (QUANT_(node)->greedy ? "" : "?"),
+            QUANT_(node)->include_referred == 0 ? "" : " referred");
     print_indent_tree(f, NODE_BODY(node), indent + add);
     break;
 
@@ -7811,6 +7857,10 @@ print_indent_tree(FILE* f, Node* node, int indent)
       break;
     case BAG_MEMORY:
       fprintf(f, "memory:%d", BAG_(node)->m.regnum);
+      if (NODE_IS_CALLED(node))
+        fprintf(f, ", called");
+      if (NODE_IS_FIXED_ADDR(node))
+        fprintf(f, ", fixed-addr");
       break;
     case BAG_STOP_BACKTRACK:
       fprintf(f, "stop-bt");

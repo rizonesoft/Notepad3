@@ -1,4 +1,4 @@
-Oniguruma Regular Expressions Version 6.9.5    2020/01/23
+Oniguruma Regular Expressions Version 6.9.5    2020/01/28
 
 syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
@@ -132,6 +132,7 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
     {,n}    at least 0 but no more than n times ({0,n})
     {n}     n times
 
+
   reluctant
 
     ??      0 or 1 times
@@ -141,6 +142,11 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
     {n,}?   at least n times
     {,n}?   at least 0 but not more than n times (== {0,n}?)
 
+      {n}? is reluctant operator in ONIG_SYNTAX_JAVA and ONIG_SYNTAX_PERL only.
+      (In that case, it doesn't make sense to write so.)
+      In default syntax, /a{n}?/ === /(?:a{n})?/
+
+
   possessive (greedy and does not backtrack once match)
 
     ?+      1 or 0 times
@@ -148,8 +154,8 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
     ++      1 or more times
     {n,m}   (n > m)  at least m but not more than n times
 
-    {n,m}+, {n,}+, {n}+ are possessive operators in ONIG_SYNTAX_JAVA and
-    ONIG_SYNTAX_PERL only.
+      {n,m}+, {n,}+, {n}+ are possessive operators in ONIG_SYNTAX_JAVA and
+      ONIG_SYNTAX_PERL only.
 
     ex. /a*+/ === /(?>a*)/
 
