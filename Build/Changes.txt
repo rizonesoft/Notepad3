@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current BETA Version 5.20.208.(build_#) (2020-02-08)
+Current RC1 Version 5.20.2010.(build_#) (2020-02-10)
 =====================================================
 
 -----------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Remove AppVeyors build number, add build-of-the-day number, add short version of commit/local build ID.
 - Accelerator key remapping: move line up/down vs. jump folds.
 - Separate auto esc'd control chars from "transform backslashes" switch in find/replace dialog.
 - Increase encoding detection confidence threshold to 92%.
@@ -109,6 +110,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Line Comment (Toggle) for NIM Lexer.
 - Slow indentation (TAB/BACKTAB).
 - AutoCompletion box.
 - Find/Replace Dialog behavior.
