@@ -454,8 +454,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63357       "For Each Definition"
-    IDS_LEX_STR_63358       "While Definition"
+    IDS_LEX_STR_63357       "For Each definition"
+    IDS_LEX_STR_63358       "While definition"
     IDS_LEX_STR_63359       "Math"
     IDS_LEX_STR_63360       "Scalar"
     IDS_LEX_STR_63361       "Substitution"
