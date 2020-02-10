@@ -37,7 +37,7 @@ try
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {
-		$CommitID = [string]($env:appveyor_repo_commit)
+		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,7)
 		$Build = [int]($env:appveyor_build_number)
 	}
 	else {
@@ -80,6 +80,7 @@ try
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content "res\Notepad3.exe.manifest.conf"
+
 	if ($AppVeyorEnv) {
 		Update-AppveyorBuild -Version $CompleteVer
   }

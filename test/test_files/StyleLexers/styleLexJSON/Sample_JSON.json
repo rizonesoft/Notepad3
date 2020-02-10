@@ -3,9 +3,9 @@
   "AutoRefresh": true,
   "AutoRefreshRemotes": true,
   "CommitTextLinks": null,
-  "DraftCommitMsg": "",
+  "DraftCommitMsg": "",\r\n
   "IncomingSavedCount": 0,
-  "LastCheckedRemotes": "2011-01-01T01:01:01.1111111+1:00",
+  "LastCheckedRemotes": "2011\01\01T01:01:01.11\\11111+1:00\\",
   "LastUsedView": 0,
   "LogBranchFilterIndex": 0,
   "OutgoingSavedCount": 0,
@@ -13,7 +13,7 @@
     "Branches",
     "Remotes",
     "Stashes"
-  ],
+  ],\x0D\x0A
   "SidebarWidth": 0.0,
   "SubtreeLinks": [],
   "RemoteProjectLinks": [
@@ -30,6 +30,11 @@
       "AvatarUrl": null,
       "DisplayName": "xxx: https://www.github.com"
     },
+	{
+	   "policies": {
+		  "DisableAppUpdate": true
+	   }
+	},
     {
       "$id": "0",
       "BaseUrl": "https://www.github.com",
