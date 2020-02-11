@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Verhoogde)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Knipbord"
     IDS_MUI_UNTITLED        "Ongetiteld"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -143,11 +143,11 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Sekere karakters in die huidige teks word nie deur die geselekteerde enkodering ondersteun nie, en kan vervang word deur standaard plekhouers wanneer hulle gestoor word. Dit word aanbeveel om 'n ander lêer kodering te kies. Gaan voort?"
     IDS_MUI_ERR_DROP        "Slegs een lêer kan op dieselfde tyd laat val word!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nWil jy begin %s as 'n 'Verhoogde' toepassing?"
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Is jy seker jy wil hierdie groot lêer oopmaak?"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE "Kan nie daardie groot lêer hanteer nie (Grootte: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
     IDS_MUI_INDENT_CONSISTENT  "Die lêer het 'n konsekwente indentasie!"
@@ -159,8 +159,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "Hierdie operasie kan nie binne 'n reghoekige seleksie uitgevoer word nie."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELMULTI        "Hierdie bewerking kan nie binne 'n multiseleksie uitgevoer word nie."
+    IDS_MUI_SELRECTORMULTI  "Hierdie bewerking kan nie binne 'n reghoekige of multi-seleksie uitgevoer word nie."
     IDS_MUI_BUFFERTOOSMALL  "Hierdie operasie kan nie uitgevoer word nie (lyne te lank)."
     IDS_MUI_FIND_WRAPFW     "Het die einde van die dokument bereik en begin die soektog weer vanaf die begin."
     IDS_MUI_FIND_WRAPRE     "Het die begin van die dokument bereik en begin die soektog weer vanaf die einde."
@@ -182,8 +182,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "Aktiveer gestoorde instellings volgens toepassing herdie?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "By die voortsetting van w/o-herdie-instellings word gestoorde opsies nie toegepas nie en sal dit oorgeskryf word deur interne instellings op program verlaat!"
     IDS_MUI_EXPORT_FAIL      "Kon nie stylinstellings uitvoer na ""%s""."
     IDS_MUI_REGEX_INVALID    "Kon nie regular expression evalueer nie. Expression is ongeldig!"
     IDS_MUI_DROP_NO_FILE     "Geen geldige lêernaam opgehaal.\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk."
