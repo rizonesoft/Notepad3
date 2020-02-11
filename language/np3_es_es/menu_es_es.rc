@@ -199,6 +199,9 @@ BEGIN
             MENUITEM "&Aumentar la sangría",                IDM_EDIT_INDENT
             MENUITEM "&Reducir la sangría",                 IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
+            MENUITEM "Jump to Selection Start\tCtrl+,",     CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selection End\tCtrl+.",       CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
             POPUP "&Incluir selección"
             BEGIN
                 MENUITEM "Comillas simples\tCtrl+1",        CMD_STRINGIFY

@@ -196,17 +196,20 @@ BEGIN
         END
         POPUP "선택(&S)"
         BEGIN
-            MENUITEM "들여쓰기(&I)",                      IDM_EDIT_INDENT
-            MENUITEM "내어쓰기(&U)",                      IDM_EDIT_UNINDENT
+            MENUITEM "들여쓰기(&I)",                           IDM_EDIT_INDENT
+            MENUITEM "내어쓰기(&U)",                           IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "Jump to Selection Start\tCtrl+,",     CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selection End\tCtrl+.",       CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "선택 영역 외부 꾸미기(&E)"
             BEGIN
-                MENUITEM "작은따옴표(&S)\tCtrl+1",             CMD_STRINGIFY
-                MENUITEM "큰따옴표(&D)\tCtrl+2",              CMD_STRINGIFY2
+                MENUITEM "작은따옴표(&S)\tCtrl+1",              CMD_STRINGIFY
+                MENUITEM "큰따옴표(&D)\tCtrl+2",               CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                      CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                      CMD_EMBRACE3
                 MENUITEM SEPARATOR
                 MENUITEM "역따옴표(&B)\tCtrl+6",               CMD_EMBRACE4
                 MENUITEM SEPARATOR
