@@ -199,6 +199,9 @@ BEGIN
             MENUITEM "&Inkeep",                             IDM_EDIT_INDENT
             MENUITEM "&Ontkeep",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
+            MENUITEM "Jump to Selection Start\tCtrl+,",     CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selection End\tCtrl+.",       CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
             POPUP "Omsluit S&eleksie"
             BEGIN
                 MENUITEM "&Enkele Aanhaling\tCtrl+1",       CMD_STRINGIFY
