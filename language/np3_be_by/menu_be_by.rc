@@ -199,6 +199,9 @@ BEGIN
             MENUITEM "&Дадаць водступ",                    IDM_EDIT_INDENT
             MENUITEM "&Выдаліць водступ",                  IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
+            MENUITEM "Jump to Selection Start\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selection End\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
             POPUP "&Абгарнуць вылучэнне"
             BEGIN
                 MENUITEM "&Адзіночнае двукоссе\tCtrl+1",   CMD_STRINGIFY
