@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "들여쓰기(&I)",                           IDM_EDIT_INDENT
             MENUITEM "내어쓰기(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Selection Start\tCtrl+,",     CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selection End\tCtrl+.",       CMD_JUMP2SELEND
+            MENUITEM "Jump to Sele&ction Start\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selectio&n End\tCtrl+.",      CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "선택 영역 외부 꾸미기(&E)"
             BEGIN
