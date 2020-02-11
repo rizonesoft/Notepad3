@@ -6111,17 +6111,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         case IDC_REPLACE:
           {
             Globals.bReplaceInitialized = true;
-            _BEGIN_UNDO_ACTION_
             EditReplace(sg_pefrData->hwnd, sg_pefrData);
-            _END_UNDO_ACTION_
           }
           break;
 
         case IDC_REPLACEALL:
           Globals.bReplaceInitialized = true;
-          _BEGIN_UNDO_ACTION_
           EditReplaceAll(sg_pefrData->hwnd, sg_pefrData, true);
-          _END_UNDO_ACTION_
           break;
 
         case IDC_REPLACEINSEL:
@@ -6624,6 +6620,8 @@ static char*  _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iRepla
 //
 bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) 
 {
+  _BEGIN_UNDO_ACTION_
+
   int iReplaceMsg = SCI_REPLACETARGET;
   char* pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
   if (!pszReplace) {
@@ -6675,6 +6673,8 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr)
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
   FreeMem(pszReplace);
 
+  _END_UNDO_ACTION_
+
   return EditFindNext(hwnd, lpefr, false, false);
 }
 
@@ -6698,6 +6698,10 @@ static UT_icd ReplPos_icd = { sizeof(ReplPos_t), NULL, NULL, NULL };
 
 int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos* enlargement)
 {
+  int iCount = 0;
+
+  _BEGIN_UNDO_ACTION_
+
   if (iStartPos > iEndPos) { swapos(&iStartPos, &iEndPos); }
 
   char szFind[FNDRPL_BUFFER];
@@ -6744,7 +6748,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
       iPos = -1;
   } 
   
-  int const iCount = utarray_len(ReplPosUTArray);
+  iCount = utarray_len(ReplPosUTArray);
   if (iCount <= 0) { FreeMem(pszReplace); return 0; }
 
   // ===  iterate over findings and replace strings  ===
@@ -6787,6 +6791,8 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   FreeMem(pszReplace);
 
   *enlargement = totalReplLength;
+
+  _END_UNDO_ACTION_
 
   return iCount;
 }
@@ -6836,8 +6842,6 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  _BEGIN_UNDO_ACTION_
-
   bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
   Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
@@ -6859,7 +6863,6 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
       }
     }
   }
-  _END_UNDO_ACTION_
 
   return (Globals.iReplacedOccurrences > 0) ? true : false;
 }

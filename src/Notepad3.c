@@ -3970,14 +3970,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_UNDO:
       if (SciCall_CanUndo()) {
+        _IGNORE_NOTIFY_CHANGE_
         SciCall_Undo();
+        _OBSERVE_NOTIFY_CHANGE_
       }
       break;
 
 
     case IDM_EDIT_REDO:
       if (SciCall_CanRedo()) {
+        _IGNORE_NOTIFY_CHANGE_
         SciCall_Redo();
+        _OBSERVE_NOTIFY_CHANGE_
       }
       break;
 
@@ -7149,7 +7153,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
         }
         UpdateVisibleIndicators();
-
         if (scn->linesAdded != 0) {
           if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1)) {
             _SplitUndoTransaction(iModType);
@@ -9109,7 +9112,7 @@ static int _SaveUndoSelection()
   int const token = _UndoRedoActionMap(-1, &pSel);
 
   if (token >= 0) {
-    SciCall_AddUndoAction(token, 0);
+    SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
   }
   return token;
 }
@@ -9203,7 +9206,6 @@ static void  _SaveRedoSelection(int token)
 int BeginUndoAction()
 {
   if (_InUndoRedoTransaction()) { return -1; }
-
   SciCall_BeginUndoAction();
   int const token = _SaveUndoSelection();
   InterlockedExchange(&UndoActionToken, (LONG)token);

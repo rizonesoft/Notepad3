@@ -37,11 +37,17 @@ try
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {
-		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,7)
+		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 		$Build = [int]($env:appveyor_build_number)
 	}
 	else {
-		$CommitID = [string]($env:computername)
+		$CommitID = [string](Get-Content "Versions\commit_id.txt")
+		if ($CommitID -eq "computername") {
+			$CommitID = ([string]($env:computername)).substring(0,8).ToLower()
+		}
+		else {
+			$CommitID = $CommitID.substring(0,8)
+		}
 		$Build = [int](Get-Content "Versions\build.txt") + 1
 	}
 	if (!$CommitID) { $CommitID = "---" }
@@ -59,6 +65,9 @@ try
 	
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Version number: 'v$CompleteVer $VerPatch'")
+	if ($AppVeyorEnv) {
+		Update-AppveyorBuild -Version $CompleteVer
+	}
 
 #~if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
 
@@ -80,9 +89,6 @@ try
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content "res\Notepad3.exe.manifest.conf"
-	if ($AppVeyorEnv) {
-		Update-AppveyorBuild -Version $CompleteVer
-  }
 }
 catch 
 {
