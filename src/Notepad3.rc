@@ -148,7 +148,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // GLOBAL INTERCEPTED HOTKEYS:
 //
 // - Ctrl+Alt+Shift+F
-//     After Win10 1903 upgrade, Ctrl+Alt+Shift+F hotkey is intercepted by File Explorer
+//     After Win10 1903 upgrade, Ctrl+Alt+Shift+F hotkey is intercepted by File Explorer (issue #1609)
 //
 //
 
