@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_LUA = {
+// Keywords
 "and break do else elseif end false for function goto if in local nil not or repeat return "
 "then true until while",
 // Basic Functions
@@ -39,9 +40,9 @@ SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua; wlua; nse; luadoc; luax", L"",
     { {MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
     { {SCE_LUA_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
     { {SCE_LUA_WORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F", L"" },
-    { {SCE_LUA_WORD}, IDS_LEX_STR_63298, L"Basic Functions", L"fore:#00007F", L"" },
-    { {SCE_LUA_WORD}, IDS_LEX_STR_63299, L"String, Table & Math Functions", L"fore:#00007F", L"" },
-    { {SCE_LUA_WORD}, IDS_LEX_STR_63300, L"Input, Output & System Facilities", L"fore:#00007F", L"" },
+    { {SCE_LUA_WORD2}, IDS_LEX_STR_63298, L"Basic Functions", L"fore:#00007F", L"" },
+    { {SCE_LUA_WORD3}, IDS_LEX_STR_63299, L"String, Table & Math Functions", L"fore:#00007F", L"" },
+    { {SCE_LUA_WORD4}, IDS_LEX_STR_63300, L"Input, Output & System Facilities", L"fore:#00007F", L"" },
     { {MULTI_STYLE(SCE_LUA_STRING,SCE_LUA_STRINGEOL,SCE_LUA_CHARACTER,0)}, IDS_LEX_STR_63131, L"String", L"fore:#B000B0", L"" },
     { {SCE_LUA_LITERALSTRING}, IDS_LEX_STR_63301, L"Literal String", L"fore:#B000B0", L"" },
     { {SCE_LUA_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
