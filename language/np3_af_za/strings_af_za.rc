@@ -147,7 +147,8 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Is jy seker jy wil hierdie groot lêer oopmaak?"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE 
+                            "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
     IDS_MUI_INDENT_CONSISTENT  "Die lêer het 'n konsekwente indentasie!"

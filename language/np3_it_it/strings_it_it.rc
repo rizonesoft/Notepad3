@@ -147,7 +147,8 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Sei sicuro di voler aprire questo file grande?"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE 
+                            "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Estensione sconosciuta (%s)!\nProseguire con il caricamento?"
     IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
