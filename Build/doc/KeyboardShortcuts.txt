@@ -1,4 +1,4 @@
-Keyboard Shortcuts for Notepad3
+Keyboard Shortcuts for Notepad3 - 2020/02/11
 
   File
 
@@ -6,37 +6,51 @@ Keyboard Shortcuts for Notepad3
     Ctrl+F4               Close file, identical with Ctrl+N.
     Ctrl+O                Open file.
     F5                    Reload file.
-    F8                    Reload file without encoding detection.
-    Shift+F8              Reload file with ANSI/UTF-8 defaults toggled.
-    Alt+F8                Reload file without file variable parsing.
     Ctrl+S                Save file.
     F6                    Save file as.
     Ctrl+F6               Save file copy.
+    Ctrl+Alt+F6           Save with original file &Date/Time.
     Ctrl+P                Print file.
+    Ctrl+M                Run MiniPath file browser plugin.
     Ctrl+Alt+H            Open recent file.
+    Alt+F4                Exit Notepad3.
 
-  Tools
+  Launch
 
     Alt+N                 Open document in new window.
     Alt+Shift+N           Open new empty window.
-    Ctrl+M                Run MiniPath file browser plugin.
     Ctrl+L                Launch document.
     Alt+L                 Open with.
     Ctrl+R                Run command.
+    Ctrl+Shift+1          Web Template 1
+    Ctrl+Shift+2          Web Template 2
 
+  Encoding
+  
+    Shift+F8              Select UTF-8 as default.
+    F9                    Open Select current file encoding.
+    Ctrl+Alt+F            Recode to Default.
+    Ctrl+Shift+O          Recode to ANSI.
+    Ctrl+Shift+A          Recode to OEM.
+    Ctrl+Shift+F10        Recode to GB18030.
+    Ctrl+Shift+F8         Reload an ASCII file as UTF-8 file.
+    Alt+F8                Ignore encoding tags.
+    F8                    Open Select source encoding to reload file.
+   
   Favorites
 
     Alt+I                 Open favorites.
     Alt+K                 Add to favorites.
     Alt+F9                Manage favorites.
 
+
   Edit
 
     Ctrl+Z                Undo.
-    Ctrl+Shift+Z          Redo.
     Alt+Backspace         Undo.
-    Ctrl+Y                Redo.
     Ctrl+Shift+Y          Undo.
+    Ctrl+Y                Redo.
+    Ctrl+Shift+Z          Redo.
     Ctrl+X                Cut selection  / Cut current line, if no selection.
     Shift+Del             Cut.
     Ctrl+C                Copy selection / Copy current line, if no selection.
@@ -45,15 +59,12 @@ Keyboard Shortcuts for Notepad3
     Ctrl+V                Paste.
     Shift+Ins             Paste.
     Ctrl+K                Swap.
-    Del                   Clear.
+    Del                   Delete.
     Ctrl+A                Select all.
-    Alt+Shift+Arrows      Rectangular selection.
-    Ctrl+Shift+Enter      New line with toggled auto indent option. (orig-NP2: Ctrl+Enter)
-    Ctrl+PgUp/PgDn        Goto previous/next block.
-    Ctrl+Shift+PgUp/PgDn  Select to previous/next block.
+    
+  Words
 
-  Char, Word
-
+    Ctrl+Alt+Enter        Complete Word.
     Ctrl+Space            Select word (or line).
     Ctrl+ ←               Cursor Word Left.
     Ctrl+ →               Cursor Word Right.
@@ -76,7 +87,7 @@ Keyboard Shortcuts for Notepad3
     Ctrl+J                Join lines.
     Ctrl+Shift+J          Join paragraphs.
 
-  Block
+  Selection
 
     Tab                   Indent selected block.
     Shift+Tab             Unindent selected block.
@@ -114,11 +125,15 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Q                Block comment (toggle).
     Ctrl+Shift+Q          Stream comment.
 
-  Special
+  Miscellaneous
 
-    Ctrl+F9               Filename to Clipboard.
-    Ctrl+Shift+F9         Path and filename to Clipboard.
-    Ctrl+Shift+.          Copy GUID to Clipboard.
+    Alt+Shift+Arrows      Rectangular selection.
+    Ctrl+Shift+Enter      New line with toggled auto indent option. (orig-NP2: Ctrl+Enter)
+    Ctrl+PgUp/PgDn        Goto previous/next block.
+    Ctrl+Shift+PgUp/PgDn  Select to previous/next block.
+    Ctrl+F9               Copy Filename only to clipboard.
+    Ctrl+Shift+F9         Copy Full Path to clipboard.
+    Ctrl+Shift+.          Copy GUID to clipboard.
     Ctrl+Shift+E          URL Encode.
     Ctrl+Shift+R          URL Decode.
     Ctrl+Alt+E            Escape C Special Chars.
@@ -134,7 +149,14 @@ Keyboard Shortcuts for Notepad3
     Ctrl+,                Jump to selection start.
     Ctrl+.                Jump to selection end.
 
-  Find, Replace
+  Bookmarks
+
+    F2                    Jump to next bookmark.
+    Shift+F2              Jump to previous bookmark.
+    Ctrl+F2               Toggle bookmark.
+    Alt+F2                Clear all.
+
+  Search
 
     Ctrl+F                Find.
     Alt+F3                Save find text.
@@ -148,22 +170,6 @@ Keyboard Shortcuts for Notepad3
     F4                    Replace next.
     Ctrl+G                Jump to line.
 
-  Bookmarks
-
-    F2                    Jump to next bookmark.
-    Shift+F2              Jump to previous bookmark.
-    Ctrl+F2               Toggle bookmark.
-    Alt+F2                Clear all.
-    
-  Syntax scheme, Font
-
-    F12                   Select syntax scheme.
-    Shift+F12             Select 2nd default syntax scheme.
-    Ctrl+F12              Customize syntax schemes.
-    Alt+F12               Select default font.
-    F11                   Select default text syntax scheme.
-    Ctrl+F11              Select web source code syntax scheme.
-    Shift+F11             Select XML document syntax scheme.
 
   View
 
@@ -178,35 +184,70 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+V          Toggle visual brace matching.
     Ctrl+Shift+I          Highlight current line.
     Ctrl+Shift+F          Toggle all folds.
+
+  Folding
+  
     Alt+ +                Jump Next Fold.
     Alt+ –                Jump Prev Fold.
     Alt+ ←                Collapse Fold.
     Alt+ →                Expand Fold.
 
+  Display
+  
+    Ctrl+Alt+V           Focused view. 
+  
   Zoom
 
     Ctrl+ +               Zoom in.
     Ctrl+ –               Zoom out.
     Ctrl+0                Reset zoom.
+    
+  Position
+  
+    Ctrl+Shift+K          Copy window position to clipboard.
+
+  
+  Appearence
+
+    Ctrl+F12              Customize syntax schemes.
+    F12                   Select syntax scheme.
+    Shift+F12             Select 2nd default syntax scheme.
+    Alt+F12               Select default font.
+    F11                   Select default text syntax scheme.
+    Ctrl+F11              Select web source code syntax scheme.
+    Shift+F11             Select XML document syntax scheme.
+
 
   Settings
 
     Ctrl+T                Tab settings.
     Ctrl+Shift+H          Toggle auto close HTML/XML.
+
+  Windows
+
     Ctrl+Shift+L          Reuse Window.
     Alt+T                 Always on top.
     Ctrl+G                Transparent mode.
     Ctrl+9                Display text excerpt in title.
+
+  Advanced Configuration
+
     F7                    Save settings now.
     Ctrl+F7               Jump to ini-file.
 
-  Misc.
 
-    Ctrl+Shift+K          Copy window position to clipboard.
-    Esc                   Optionally minimize or exit Notepad3.
-    Shift+Esc             Save file and exit Notepad3.
+  Help
+
     F1                    Online Documentation.
     Shift+F1              Display Info version "About…"
+
+  Divers
+
+    Esc                   Optionally minimize or exit Notepad3.
+    Shift+Esc             Save file and exit Notepad3.
+
+
+-------------------------------------------------------------------------------
 
 Regular Expression Syntax
 
@@ -266,6 +307,8 @@ Regular Expression Syntax
          - Convert tabs to double spaces: find "\t" replace with "  "
 
 
+-------------------------------------------------------------------------------
+
 Command Line Help
 
 Usage:
@@ -310,4 +353,8 @@ Examples:
              … Open a new file: "Test.txt" Encoding=UTF-8-BOM, EoL=CRLF.
   Notepad3  /v d:\temp\Test.txt
             … Print the file: "Test.txt" immediately.
+
+
+-------------------------------------------------------------------------------
+
  
