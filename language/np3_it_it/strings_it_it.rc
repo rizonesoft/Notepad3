@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Amministratore)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3: Clipboard"
     IDS_MUI_UNTITLED        "Senza titolo"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -143,12 +143,12 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dall'encoding selezionato, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare un encoding differente. Continuare?"
     IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi aprire %s con diritti amministrativi?"
     IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Sei sicuro di voler aprire questo file grande?"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %lli MB)!"
+                            "Impossibile gestire un file così grande (dimensione: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Estensione sconosciuta (%s)!\nProseguire con il caricamento?"
     IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
@@ -183,8 +183,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "Attivare le impostazioni salvate riavviando l'applicazione?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Continuando senza riavviare, le impostazioni salvate non sono applicate e saranno sovrascritte dalle impostazioni interne all'uscita del programma!"
     IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s""."
     IDS_MUI_REGEX_INVALID    "Errore nella valutazione della regular expression. La RegExp non è valida!"
     IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."
