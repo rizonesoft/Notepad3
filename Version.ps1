@@ -64,8 +64,9 @@ try
 
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
+	
 	if ($AppVeyorEnv) {
-		$AppveyorVer = "$Major.$Minor.$Revis.$AppveyorBuild"
+		$AppveyorVer = "0.0.0.$AppveyorBuild"
 		DebugOutput("Appveyor version number: 'v$AppveyorVer $VerPatch'")
 		Update-AppveyorBuild -Version $AppveyorVer
 	}
