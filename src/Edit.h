@@ -59,8 +59,8 @@ void  EditSpacesToTabs(HWND hwnd,int nTabWidth,bool);
 
 void  EditMoveUp(HWND hwnd);
 void  EditMoveDown(HWND hwnd);
-DocPos  EditSetCaretToSelectionStart();
-DocPos  EditSetCaretToSelectionEnd();
+bool  EditSetCaretToSelectionStart();
+bool  EditSetCaretToSelectionEnd();
 void  EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend);
 void  EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
 void  EditAlignText(HWND hwnd,int nMode);

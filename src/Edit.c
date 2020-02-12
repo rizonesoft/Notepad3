@@ -2415,28 +2415,40 @@ void EditMoveDown(HWND hwnd)
 //
 //  EditSetCaretToSelectionStart()
 //
-DocPos EditSetCaretToSelectionStart()
+bool EditSetCaretToSelectionStart()
 {
-  if (!Sci_IsMultiSelection()) {
-    if (SciCall_GetCurrentPos() != SciCall_GetSelectionStart()) {
+  size_t const m = SciCall_GetMainSelection();
+  DocPos const c = SciCall_GetSelectionNCaret(m) + SciCall_GetSelectionNCaretVirtualSpace(m);
+  DocPos const s = SciCall_GetSelectionNStart(m) + SciCall_GetSelectionNStartVirtualSpace(m);
+  bool const bSwap = (c != s);
+  if (bSwap) {
+    size_t const n = SciCall_GetSelections();
+    for (size_t i = 0; i < n; ++i) {
       SciCall_SwapMainAnchorCaret();
+      SciCall_RotateSelection();
     }
   }
-  return SciCall_GetSelectionStart();
+  return bSwap;
 }
 
 //=============================================================================
 //
 //  EditSetCaretToSelectionEnd()
 //
-DocPos EditSetCaretToSelectionEnd()
+bool EditSetCaretToSelectionEnd()
 {
-  if (!Sci_IsMultiSelection()) {
-    if (SciCall_GetCurrentPos() != SciCall_GetSelectionEnd()) {
+  size_t const m = SciCall_GetMainSelection();
+  DocPos const c = SciCall_GetSelectionNCaret(m) + SciCall_GetSelectionNCaretVirtualSpace(m);
+  DocPos const e = SciCall_GetSelectionNEnd(m) + SciCall_GetSelectionNEndVirtualSpace(m);
+  bool const bSwap = (c != e);
+  if (bSwap) {
+    size_t const n = SciCall_GetSelections();
+    for (size_t i = 0; i < n; ++i) {
       SciCall_SwapMainAnchorCaret();
+      SciCall_RotateSelection();
     }
   }
-  return SciCall_GetSelectionEnd();
+  return bSwap;
 }
 
 
@@ -6344,7 +6356,8 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     SetFocus(hwnd);
   }
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
-  DocPos start = EditSetCaretToSelectionEnd();
+  EditSetCaretToSelectionEnd();
+  DocPos start = SciCall_GetSelectionEnd();
   DocPos end = iDocEndPos;
 
   if (start >= end) {
@@ -6426,7 +6439,8 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   int const sFlags = (int)(lpefr->fuFlags);
 
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
-  DocPos start = EditSetCaretToSelectionStart();
+  EditSetCaretToSelectionStart();
+  DocPos start = SciCall_GetSelectionStart();
   DocPos end = 0;
 
   if (start <= end) {
