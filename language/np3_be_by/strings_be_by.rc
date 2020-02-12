@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Павышаныя правы)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Буфер абмену"
     IDS_MUI_UNTITLED        "Безыменны"
     IDS_MUI_TITLEEXCERPT    "«%s»"
@@ -143,12 +143,12 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Вызначаныя сімвалы ў гэтым тэксце не падтрымліваюцца выбранай кадоўкай і будуць заменены сімваламі-заменнікамі падчас захавання. Лепей выбраць іншую кадоўку файла. Усё роўна працягнуць?"
     IDS_MUI_ERR_DROP        "За адзін раз можна перацягнуць толькі адзін файл!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Файл «%s» нельга захаваць з прычыны абароны ад змянення.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Файл «%s» нельга захаваць з прычыны абароны ад змянення.\n\nЖадаеце запусціць %s з павышанымі правамі?"
     IDS_MUI_ERR_ADMINEXE    "Не знойдены інструмент адміністратара\nНаведаць сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %lli MB)!"
+                            "Немагчыма апрацаваць гэты вялікі файл (памер: %lli МБ)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл мае аднолькавага выгляду водступы!"
@@ -174,7 +174,7 @@ BEGIN
                             "Гэты файл быў зменены вонкавай праграмай. Пераадкрыць яго?"
     IDS_MUI_FILECHANGENOTIFY2 "Гэты файл быў выдалены. Захаваць нанава?"
     IDS_MUI_STICKYWINPOS    "Фіксаваная пазіцыя акна задзейнічана. Усякае новае акно Notepad3 запусціцца з цяперашнімі наладамі пазіцыі."
-    IDS_MUI_SAVEDSETTINGS   "Цяперашнія налады пазіцыі былі захаваны."
+    IDS_MUI_SAVEDSETTINGS   "Цяперашнія налады праграмы былі захаваны."
     IDS_MUI_CREATEINI_FAIL  "Памылка падчас стварэння файла наладаў."
     IDS_MUI_WRITEINI_FAIL   "Памылка пісання наладаў у файл."
     IDS_MUI_SETTINGSNOTSAVED
@@ -183,8 +183,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "Задзейнічаць захаваныя налады перазапускам праграмы?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Калі працягнуць без перазапуску, захаваныя налады не будуць задзейнічаны і будуць перапісаны ўнутранымі наладамі падчас выхаду!"
     IDS_MUI_EXPORT_FAIL      "Памылка экспарту наладаў стыляў «%s»."
     IDS_MUI_REGEX_INVALID    "Памылка апрацоўкі рэгулярнага выразу. Выраз несапраўдны!"
     IDS_MUI_DROP_NO_FILE     "Не выйшла атрымаць імя файла. \nКалі перацягваеце з 32-бітнай праграмы,\nперацягніце на паліцу прыладаў Notepad3."
