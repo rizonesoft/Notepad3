@@ -196,24 +196,24 @@ BEGIN
         END
         POPUP "&Selección"
         BEGIN
-            MENUITEM "&Aumentar la sangría",                IDM_EDIT_INDENT
-            MENUITEM "&Reducir la sangría",                 IDM_EDIT_UNINDENT
+            MENUITEM "&Aumentar la sangría",                            IDM_EDIT_INDENT
+            MENUITEM "&Reducir la sangría",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM "Ir al inicio de la selecci&ón\tCtrl+,",           CMD_JUMP2SELSTART
+            MENUITEM "Ir al final de la selecció&n\tCtrl+.",            CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Incluir selección"
             BEGIN
-                MENUITEM "Comillas simples\tCtrl+1",        CMD_STRINGIFY
-                MENUITEM "Comillas &dobles\tCtrl+2",        CMD_STRINGIFY2
+                MENUITEM "Comillas simples\tCtrl+1",                    CMD_STRINGIFY
+                MENUITEM "Comillas &dobles\tCtrl+2",                    CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                                 CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                                 CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                                 CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "&Backticks\tCtrl+6",                          CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Con...\tAlt+Q",                  IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Con...\tAlt+Q",                              IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "&Duplicar Selección/Línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
@@ -221,10 +221,10 @@ BEGIN
             MENUITEM "Eliminar el &primer carácter\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
             MENUITEM "Eliminar el ú&ltimo carácter\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Eliminar los blancos al &final de línea\tAlt+W",  IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimir &blancos\tCtrl+Alt+P",                  IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "&Comprimir blancos\tCtrl+Alt+P",                  IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modificar líneas...\tAlt+M",                     IDM_EDIT_MODIFYLINES
-            MENUITEM "&Alinear líneas...\tAlt+J",                       IDM_EDIT_ALIGN
+            MENUITEM "Alinear l&íneas...\tAlt+J",                       IDM_EDIT_ALIGN
             MENUITEM "&Ordenar líneas...\tAlt+O",                       IDM_EDIT_SORTLINES
         END
         POPUP "Conve&rtir"
