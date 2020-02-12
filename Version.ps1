@@ -35,7 +35,7 @@ try
   $AppName = "Notepad3"
 	$Major = 5
 	$Minor = [int]$(Get-Date -format yy)
-	$Revis = [int]$(Get-Date -format MMdd)
+	$Revis = [int]$(Get-Date -format Mdd)
 	$Build = [int](Get-Content "Versions\build.txt")
 	if (!$Build) { $Build = 0 }
 	$AppveyorBuild = [int]($env:appveyor_build_number) # Appveyor internal
