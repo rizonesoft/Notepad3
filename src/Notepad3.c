@@ -400,9 +400,6 @@ static void  _SplitUndoTransaction(const int iModType);
 static void  _DelayClearZoomCallTip(int delay);
 static void  _DelaySplitUndoTransaction(int delay, int iModType);
 
-//#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE)
-#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS  (SCVS_RECTANGULARSELECTION)
-
 //=============================================================================
 //
 //  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
@@ -1364,16 +1361,16 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 
   // Check for /c [if no file is specified] -- even if a file is specified
   /*else */if (s_flagNewFromClipboard) {
-    if (SendMessage(Globals.hwndEdit, SCI_CANPASTE, 0, 0)) {
+    if (SciCall_CanPaste()) {
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit, -1, 0);
       _BEGIN_UNDO_ACTION_
-      if (SendMessage(Globals.hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
-        SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
+      if (!Sci_IsDocEmpty()) {
+        SciCall_NewLine();
       }
-      SendMessage(Globals.hwndEdit, SCI_PASTE, 0, 0);
-      SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
+      SciCall_Paste();
+      SciCall_NewLine();
       _END_UNDO_ACTION_
       Settings.AutoIndent = bAutoIndent2;
       if (s_flagJumpTo)
@@ -1799,8 +1796,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_AUTOCSETMULTI, SC_MULTIAUTOC_EACH, 0);  // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, true, 0);
 
-  int const vspaceOpt = Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS;
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, vspaceOpt, 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, NP3_VIRTUAL_SPACE_ACCESS_OPTIONS, 0);
 
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
@@ -1902,7 +1898,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   else {
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
   }
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : NP3_VIRTUAL_SPACE_ACCESS_OPTIONS), 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
@@ -2524,7 +2519,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 #if 0
   char buf[128];
   sprintf(buf, "WM_DPICHANGED: dpi=%u,%u  ppi=%u,%u\n", Globals.CurrentDPI.x, Globals.CurrentDPI.y, Globals.CurrentPPI.x, Globals.CurrentPPI.y);
-  SendMessage(Globals.hwndEdit, SCI_INSERTTEXT, 0, (LPARAM)buf);
+  SciCall_InsertText(0, buf);
 #endif
 
   Style_ResetCurrentLexer(Globals.hwndEdit);
@@ -4140,7 +4135,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_SELECTALL:
-        SendMessage(Globals.hwndEdit,SCI_SELECTALL,0,0);
+        SciCall_SelectAll();
         UpdateToolbar();
         UpdateStatusbar(false);
       break;
@@ -4284,7 +4279,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  break;
 
     case CMD_VK_INSERT:
-      SendMessage(Globals.hwndEdit, SCI_EDITTOGGLEOVERTYPE, 0, 0);
+      SciCall_EditToggleOverType();
       UpdateStatusbar(false);
       break;
 
@@ -6019,10 +6014,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WideCharToMultiByteEx(Encoding_SciCP, 0, wchFind, -1, efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
         WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplace, -1, efrTS.szReplace, COUNTOF(efrTS.szReplace), NULL, NULL);
 
-        if (!SendMessage(Globals.hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
+        if (!SciCall_IsSelectionEmpty()) {
           EditReplaceAllInSelection(Globals.hwndEdit, &efrTS, true);
-        else
-          EditReplaceAll(Globals.hwndEdit,&efrTS,true);
+        }
+        else {
+          EditReplaceAll(Globals.hwndEdit, &efrTS, true);
+        }
       }
       break;
 
@@ -6179,7 +6176,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_JUMP2SELEND:
-      EditSetCaretToSelectionEnd();
+      if (!EditSetCaretToSelectionEnd() && Sci_IsMultiOrRectangleSelection()) {
+        size_t const n = SciCall_GetSelections();
+        DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+        SciCall_ClearSelections();
+        DocPos const beg = SciCall_GetLineEndPosition(lineStart);
+        SciCall_SetSelection(beg, beg);
+        for (size_t i = 1; i < n; ++i) {
+          DocPos const pos = SciCall_GetLineEndPosition(lineStart + i);
+          SciCall_AddSelection(pos, pos);
+        }
+      }
       SciCall_ChooseCaretX();
       break;
 
@@ -7348,10 +7355,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     }
     break;
 
-
-    case SCN_MARGINRIGHTCLICK:
-      break;
-
+    //case SCN_MARGINRIGHTCLICK:
+    //  break;
 
     // ~~~ Not used in Windows ~~~
     // see: CMD_ALTUP / CMD_ALTDOWN
@@ -10937,17 +10942,16 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
   if ((s_dwLastCopyTime > 0) && ((GetTickCount() - s_dwLastCopyTime) > 200)) {
 
-    if (SendMessage(Globals.hwndEdit,SCI_CANPASTE,0,0)) {
-
+    if (SciCall_CanPaste()) {
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit,-1,0);
       _BEGIN_UNDO_ACTION_
-      if (SendMessage(Globals.hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
-        SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
+      if (!Sci_IsDocEmpty()) {
+        SciCall_NewLine();
       }
-      SendMessage(Globals.hwndEdit,SCI_PASTE,0,0);
-      SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
+      SciCall_Paste();
+      SciCall_NewLine();
       _END_UNDO_ACTION_
       EditEnsureSelectionVisible();
       Settings.AutoIndent = bAutoIndent2;
