@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "&Дадаць водступ",                    IDM_EDIT_INDENT
             MENUITEM "&Выдаліць водступ",                  IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",   CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",     CMD_JUMP2SELEND
+            MENUITEM "Перайсці &ў пачатак вылучэння\tCtrl+,",   CMD_JUMP2SELSTART
+            MENUITEM "Перайсці ў &канец вылучэння\tCtrl+.",     CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Абгарнуць вылучэнне"
             BEGIN
@@ -345,16 +345,16 @@ BEGIN
         MENUITEM "&Нумары радкоў\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Водступ для в&ылучэння\tCtrl+Shift+M", IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "&Блокі коду"
         BEGIN
-            MENUITEM "Згорт&ванне блокаў коду",                   IDM_VIEW_FOLDING
-            MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Shift+F",   IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Згорт&ванне блокаў коду",                 IDM_VIEW_FOLDING
+            MENUITEM "Згарнуць/ра&згарнуць блок\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Перайсці да &наступнага блоку\tAlt+ +",    CMD_FOLDJUMPDOWN
+            MENUITEM "Перайсці да &папярэдняга блоку\tAlt+ –",   CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Згарнуць &блок\tAlt+ ←",              CMD_FOLDCOLLAPSE
+            MENUITEM "&Разгарнуць блок\tAlt+ →",            CMD_FOLDEXPAND
         END
         POPUP "Пра&цоўная прастора"
         BEGIN
@@ -410,7 +410,7 @@ BEGIN
         MENUITEM "Cамадавяр&шэнне слоў",                        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Cамадавяршэнне на аснове &лексемаў",          IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Паскораная навігацыя па слова&х\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Уключыць блокавае рэдагаванне радкоў каментарыяў", IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "Блокавае рэдагаванне каментарыяў",            IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Адзін &экзэмпляр файла",                      IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY
