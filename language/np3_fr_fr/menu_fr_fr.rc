@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "&Mettre en retrait",                              IDM_EDIT_INDENT
             MENUITEM "&Réduire le retrait",                             IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Aller début de séle&ction\tCtrl+,",               CMD_JUMP2SELSTART
-            MENUITEM "Aller fin de sélectio&n End\tCtrl+.",             CMD_JUMP2SELEND
+            MENUITEM "Aller au début de la séle&ction\tCtrl+,",         CMD_JUMP2SELSTART
+            MENUITEM "Aller à la fin de la sélectio&n\tCtrl+.",         CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Inclure sélection"
             BEGIN
