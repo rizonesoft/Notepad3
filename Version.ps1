@@ -38,9 +38,9 @@ try
 	$Revis = [int]$(Get-Date -format MMdd)
 	$Build = [int](Get-Content "Versions\build.txt")
 	if (!$Build) { $Build = 0 }
+	$AppveyorBuild = [int]($env:appveyor_build_number) # Appveyor internal
 
 	if ($AppVeyorEnv) {
-		#~ $Build = [int]($env:appveyor_build_number)
 		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 	}
 	else {
@@ -63,9 +63,11 @@ try
 	if (!$CommitID) { $CommitID = "---" }
 
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
-	DebugOutput("Version number: 'v$CompleteVer $VerPatch'")
+	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
 	if ($AppVeyorEnv) {
-		Update-AppveyorBuild -Version $CompleteVer
+		$AppveyorVer = "$Major.$Minor.$Revis.$AppveyorBuild"
+		DebugOutput("Appveyor version number: 'v$AppveyorVer $VerPatch'")
+		Update-AppveyorBuild -Version $AppveyorVer
 	}
 
 	$SciVer = [string](Get-Content "scintilla\version.txt")
