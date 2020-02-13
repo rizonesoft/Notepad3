@@ -2417,9 +2417,8 @@ void EditMoveDown(HWND hwnd)
 //
 bool EditSetCaretToSelectionStart()
 {
-  size_t const m = SciCall_GetMainSelection();
-  DocPos const c = SciCall_GetSelectionNCaret(m) + SciCall_GetSelectionNCaretVirtualSpace(m);
-  DocPos const s = SciCall_GetSelectionNStart(m) + SciCall_GetSelectionNStartVirtualSpace(m);
+  DocPos const c = SciCall_GetSelectionNCaret(0) + SciCall_GetSelectionNCaretVirtualSpace(0);
+  DocPos const s = SciCall_GetSelectionNStart(0) + SciCall_GetSelectionNStartVirtualSpace(0);
   bool const bSwap = (c != s);
   if (bSwap) {
     size_t const n = SciCall_GetSelections();
@@ -2437,9 +2436,8 @@ bool EditSetCaretToSelectionStart()
 //
 bool EditSetCaretToSelectionEnd()
 {
-  size_t const m = SciCall_GetMainSelection();
-  DocPos const c = SciCall_GetSelectionNCaret(m) + SciCall_GetSelectionNCaretVirtualSpace(m);
-  DocPos const e = SciCall_GetSelectionNEnd(m) + SciCall_GetSelectionNEndVirtualSpace(m);
+  DocPos const c = SciCall_GetSelectionNCaret(0) + SciCall_GetSelectionNCaretVirtualSpace(0);
+  DocPos const e = SciCall_GetSelectionNEnd(0) + SciCall_GetSelectionNEndVirtualSpace(0);
   bool const bSwap = (c != e);
   if (bSwap) {
     size_t const n = SciCall_GetSelections();

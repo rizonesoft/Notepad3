@@ -3105,10 +3105,15 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
   bool const bPosInSel = Sci_IsPosInSelection(iCurPos);
+
+  bool const pst = SciCall_CanPaste();
+  bool const se = SciCall_IsSelectionEmpty();
   bool const mrs = Sci_IsMultiOrRectangleSelection();
   bool const cf = StrIsNotEmpty(Globals.CurrentFile);
+  bool const te = Sci_IsDocEmpty();
+  bool const mls = Sci_IsSelectionMultiLine();
 
-  EnableCmd(hmenu,IDM_FILE_REVERT, cf);
+  EnableCmd(hmenu, IDM_FILE_REVERT, cf);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
   EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, cf);
   EnableCmd(hmenu, CMD_RECODEANSI, cf);
@@ -3121,29 +3126,29 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SetUACIcon(hmenu, IDM_FILE_LAUNCH_ELEVATED);
   CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
   EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
-  
-  EnableCmd(hmenu,IDM_FILE_LAUNCH,cf);
-  EnableCmd(hmenu,IDM_FILE_PROPERTIES,cf);
-  EnableCmd(hmenu,IDM_FILE_CREATELINK,cf);
-  EnableCmd(hmenu,IDM_FILE_ADDTOFAV,cf);
-  
-  EnableCmd(hmenu,IDM_FILE_READONLY,cf);
+
+  EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
+  EnableCmd(hmenu, IDM_FILE_PROPERTIES, cf);
+  EnableCmd(hmenu, IDM_FILE_CREATELINK, cf);
+  EnableCmd(hmenu, IDM_FILE_ADDTOFAV, cf);
+
+  EnableCmd(hmenu, IDM_FILE_READONLY, cf);
   EnableCmd(hmenu, IDM_EDIT_INSERT_FILENAME, cf);
   EnableCmd(hmenu, IDM_EDIT_INSERT_DIRNAME, cf);
   EnableCmd(hmenu, IDM_EDIT_INSERT_PATHNAME, cf);
   EnableCmd(hmenu, IDM_ENCODING_RECODE, cf);
 
-  CheckCmd(hmenu,IDM_FILE_READONLY,s_bFileReadOnly);
+  CheckCmd(hmenu, IDM_FILE_READONLY, s_bFileReadOnly);
   CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
 
-  EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
-  EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
-  EnableCmd(hmenu,IDM_ENCODING_UTF8SIGN,!ro);
-  EnableCmd(hmenu,IDM_ENCODING_UTF8,!ro);
-  EnableCmd(hmenu,IDM_ENCODING_ANSI,!ro);
-  EnableCmd(hmenu,IDM_LINEENDINGS_CRLF,!ro);
-  EnableCmd(hmenu,IDM_LINEENDINGS_LF,!ro);
-  EnableCmd(hmenu,IDM_LINEENDINGS_CR,!ro);
+  EnableCmd(hmenu, IDM_ENCODING_UNICODEREV, !ro);
+  EnableCmd(hmenu, IDM_ENCODING_UNICODE, !ro);
+  EnableCmd(hmenu, IDM_ENCODING_UTF8SIGN, !ro);
+  EnableCmd(hmenu, IDM_ENCODING_UTF8, !ro);
+  EnableCmd(hmenu, IDM_ENCODING_ANSI, !ro);
+  EnableCmd(hmenu, IDM_LINEENDINGS_CRLF, !ro);
+  EnableCmd(hmenu, IDM_LINEENDINGS_LF, !ro);
+  EnableCmd(hmenu, IDM_LINEENDINGS_CR, !ro);
 
   int i;
 
@@ -3179,40 +3184,35 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
   CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_LF,i,MF_BYCOMMAND);
 
-  EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Count(Globals.pFileMRU) > 0));
+  EnableCmd(hmenu, IDM_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
-  EnableCmd(hmenu,IDM_EDIT_UNDO,SciCall_CanUndo() && !ro);
-  EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
+  EnableCmd(hmenu, IDM_EDIT_UNDO, SciCall_CanUndo() && !ro);
+  EnableCmd(hmenu, IDM_EDIT_REDO, SciCall_CanRedo() && !ro);
 
-  bool const se = SciCall_IsSelectionEmpty();
-  bool const te = (SciCall_GetTextLength() <= 0);
-  bool const pst = SciCall_CanPaste();
-  bool const mls = Sci_IsSelectionMultiLine();
+  EnableCmd(hmenu, IDM_EDIT_CUT, !te && !ro);       // allow Ctrl-X w/o selection
+  EnableCmd(hmenu, IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection
 
-  EnableCmd(hmenu,IDM_EDIT_CUT, !te && !ro);       // allow Ctrl-X w/o selection
-  EnableCmd(hmenu,IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection
+  EnableCmd(hmenu, IDM_EDIT_COPYALL, !te);
+  EnableCmd(hmenu, IDM_EDIT_COPYADD, !te);
 
-  EnableCmd(hmenu,IDM_EDIT_COPYALL, !te);
-  EnableCmd(hmenu,IDM_EDIT_COPYADD, !te);
-
-  EnableCmd(hmenu,IDM_EDIT_PASTE, pst && !ro);
-  EnableCmd(hmenu,IDM_EDIT_SWAP, (!se || pst) && !ro);
-  EnableCmd(hmenu,IDM_EDIT_CLEAR, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_PASTE, pst && !ro);
+  EnableCmd(hmenu, IDM_EDIT_SWAP, (!se || pst) && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CLEAR, !se && !ro);
 
   EnableCmd(hmenu, IDM_EDIT_SELECTALL, !te);
   EnableCmd(hmenu, IDM_EDIT_GOTOLINE, !te);
 
   OpenClipboard(hwnd);
-  EnableCmd(hmenu,IDM_EDIT_CLEARCLIPBOARD,CountClipboardFormats());
+  EnableCmd(hmenu, IDM_EDIT_CLEARCLIPBOARD, CountClipboardFormats());
   CloseClipboard();
 
-  EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!ro);
-  EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!ro);
-  EnableCmd(hmenu,IDM_EDIT_DUPLINEORSELECTION,!ro);
-  EnableCmd(hmenu,IDM_EDIT_LINETRANSPOSE,!ro);
-  EnableCmd(hmenu,IDM_EDIT_CUTLINE,!ro);
-  EnableCmd(hmenu,IDM_EDIT_COPYLINE,true);
-  EnableCmd(hmenu,IDM_EDIT_DELETELINE,!ro);
+  EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
+  EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
+  EnableCmd(hmenu, IDM_EDIT_DUPLINEORSELECTION, !ro);
+  EnableCmd(hmenu, IDM_EDIT_LINETRANSPOSE, !ro);
+  EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro);
+  //EnableCmd(hmenu, IDM_EDIT_COPYLINE, true);
+  EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
   EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, !ro);
@@ -3220,58 +3220,58 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, !ro);
   EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_INDENT, !se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_UNINDENT, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_INDENT, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_UNINDENT, !se && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_PADWITHSPACES,!ro);
-  EnableCmd(hmenu,IDM_EDIT_STRIP1STCHAR,!ro);
-  EnableCmd(hmenu,IDM_EDIT_STRIPLASTCHAR,!ro);
-  EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!ro);
+  EnableCmd(hmenu, CMD_JUMP2SELSTART, !se || mrs);
+  EnableCmd(hmenu, CMD_JUMP2SELEND, !se || mrs);
+
+  EnableCmd(hmenu, IDM_EDIT_PADWITHSPACES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_STRIP1STCHAR, !ro);
+  EnableCmd(hmenu, IDM_EDIT_STRIPLASTCHAR, !ro);
+  EnableCmd(hmenu, IDM_EDIT_TRIMLINES, !ro);
   EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
   EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
   EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
- 
+
   //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu,IDM_EDIT_SPLITLINES,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_JOINLINES,!se && !ro);
-  EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_JOINLINES_PARA,!se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_CONVERTUPPERCASE,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTLOWERCASE,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_INVERTCASE,!se && !ro /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu,IDM_EDIT_TITLECASE,!se && !ro /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu,IDM_EDIT_SENTENCECASE,!se && !ro /*&& IsWindowsNT()*/);
+  EnableCmd(hmenu, IDM_EDIT_CONVERTUPPERCASE, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CONVERTLOWERCASE, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_INVERTCASE, !se && !ro /*&& IsWindowsNT()*/);
+  EnableCmd(hmenu, IDM_EDIT_TITLECASE, !se && !ro /*&& IsWindowsNT()*/);
+  EnableCmd(hmenu, IDM_EDIT_SENTENCECASE, !se && !ro /*&& IsWindowsNT()*/);
 
-  EnableCmd(hmenu,IDM_EDIT_CONVERTTABS,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTSPACES,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTTABS2,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTSPACES2,!se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CONVERTTABS, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CONVERTTABS2, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES2, !se && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_URLENCODE,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_URLDECODE,!se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_URLENCODE, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_ESCAPECCHARS,!se && !ro);
-  EnableCmd(hmenu,IDM_EDIT_UNESCAPECCHARS,!se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_ESCAPECCHARS, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_UNESCAPECCHARS, !se && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
-  EnableCmd(hmenu,IDM_EDIT_HEX2CHAR, !se && !ro);
+  EnableCmd(hmenu, IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
+  EnableCmd(hmenu, IDM_EDIT_HEX2CHAR, !se && !ro);
 
-  //EnableCmd(hmenu,IDM_EDIT_INCREASENUM,!selEmpty && !ro);
-  //EnableCmd(hmenu,IDM_EDIT_DECREASENUM,!selEmpty && !ro);
-
-  EnableCmd(hmenu,IDM_VIEW_SHOWEXCERPT, !se);
+  EnableCmd(hmenu, IDM_VIEW_SHOWEXCERPT, !se);
 
   i = SciCall_GetLexer();
 
-  EnableCmd(hmenu,IDM_EDIT_LINECOMMENT,
+  EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
+  EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
-      i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
+      i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES || i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
       i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
@@ -3280,26 +3280,26 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_Current(CPI_GET)) != NULL) && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!ro);
-  EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!ro);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_SHORTDATE, !ro);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_LONGDATE, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_FIND, !te);
-  EnableCmd(hmenu,IDM_EDIT_SAVEFIND, !te);
-  EnableCmd(hmenu,IDM_EDIT_FINDNEXT, !te);
-  EnableCmd(hmenu,IDM_EDIT_FINDPREV, !te);
-  EnableCmd(hmenu,IDM_EDIT_REPLACE, !te && !ro);
-  EnableCmd(hmenu,IDM_EDIT_REPLACENEXT, !te && !ro);
-  EnableCmd(hmenu,IDM_EDIT_SELTONEXT, !te);
-  EnableCmd(hmenu,IDM_EDIT_SELTOPREV, !te);
-  EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE, !te);
-  EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE, !te);
+  EnableCmd(hmenu, IDM_EDIT_FIND, !te);
+  EnableCmd(hmenu, IDM_EDIT_SAVEFIND, !te);
+  EnableCmd(hmenu, IDM_EDIT_FINDNEXT, !te);
+  EnableCmd(hmenu, IDM_EDIT_FINDPREV, !te);
+  EnableCmd(hmenu, IDM_EDIT_REPLACE, !te && !ro);
+  EnableCmd(hmenu, IDM_EDIT_REPLACENEXT, !te && !ro);
+  EnableCmd(hmenu, IDM_EDIT_SELTONEXT, !te);
+  EnableCmd(hmenu, IDM_EDIT_SELTOPREV, !te);
+  EnableCmd(hmenu, IDM_EDIT_FINDMATCHINGBRACE, !te);
+  EnableCmd(hmenu, IDM_EDIT_SELTOMATCHINGBRACE, !te);
 
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKPREV, !te);
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKNEXT, !te);
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKTOGGLE, !te);
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKCLEAR, !te);
+  EnableCmd(hmenu, BME_EDIT_BOOKMARKPREV, !te);
+  EnableCmd(hmenu, BME_EDIT_BOOKMARKNEXT, !te);
+  EnableCmd(hmenu, BME_EDIT_BOOKMARKTOGGLE, !te);
+  EnableCmd(hmenu, BME_EDIT_BOOKMARKCLEAR, !te);
 
   EnableCmd(hmenu, IDM_EDIT_DELETELINELEFT, !te && !ro);
   EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, !te && !ro);
@@ -3313,32 +3313,32 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_FOLDING, FocusedView.CodeFoldingAvailable && !FocusedView.HideNonMatchedLines);
   bool const fd = (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding);
   CheckCmd(hmenu, IDM_VIEW_FOLDING, fd);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS, !te && fd);
+  EnableCmd(hmenu, IDM_VIEW_TOGGLEFOLDS, !te && fd);
   EnableCmd(hmenu, CMD_FOLDJUMPDOWN, !te && fd);
   EnableCmd(hmenu, CMD_FOLDJUMPUP, !te && fd);
   EnableCmd(hmenu, CMD_FOLDCOLLAPSE, !te && fd);
   EnableCmd(hmenu, CMD_FOLDEXPAND, !te && fd);
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
+  EnableCmd(hmenu, IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
 
-  CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
+  CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
-  CheckCmd(hmenu,IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
-  CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,Settings.MarkLongLines);
-  CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,Globals.fvCurFile.bTabsAsSpaces);
-  CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,Settings.ShowIndentGuides);
-  CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,Settings.AutoIndent);
-  CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,Settings.ShowLineNumbers);
-  CheckCmd(hmenu,IDM_VIEW_MARGIN,Settings.ShowSelectionMargin);
-  CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+  CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
+  CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
+  CheckCmd(hmenu, IDM_VIEW_TABSASSPACES, Globals.fvCurFile.bTabsAsSpaces);
+  CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
+  CheckCmd(hmenu, IDM_VIEW_AUTOINDENTTEXT, Settings.AutoIndent);
+  CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
+  CheckCmd(hmenu, IDM_VIEW_MARGIN, Settings.ShowSelectionMargin);
+  CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
-  EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!te && !ro);
-  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,Settings.AutoCompleteWords && !ro);
-  CheckCmd(hmenu,IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
-  
-  CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,Settings.AccelWordNavigation);
-  CheckCmd(hmenu,IDM_VIEW_EDIT_LINECOMMENT,Settings.EditLineCommentBlock);
+  EnableCmd(hmenu, IDM_EDIT_COMPLETEWORD, !te && !ro);
+  CheckCmd(hmenu, IDM_VIEW_AUTOCOMPLETEWORDS, Settings.AutoCompleteWords && !ro);
+  CheckCmd(hmenu, IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
+
+  CheckCmd(hmenu, IDM_VIEW_ACCELWORDNAV, Settings.AccelWordNavigation);
+  CheckCmd(hmenu, IDM_VIEW_EDIT_LINECOMMENT, Settings.EditLineCommentBlock);
 
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
@@ -3363,19 +3363,19 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
-  EnableCmd(hmenu,IDM_VIEW_MARKOCCUR_WORD, i);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
   EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 17), 5, i);
 
 
-  CheckCmd(hmenu,IDM_VIEW_SHOWBLANKS,Settings.ViewWhiteSpace);
-  CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,Settings.ViewEOLs);
-  CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,Settings.ShowWordWrapSymbols);
-  CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,Settings.MatchBraces);
-  CheckCmd(hmenu,IDM_VIEW_MENUBAR,Settings.ShowMenubar);
-  CheckCmd(hmenu,IDM_VIEW_TOOLBAR,Settings.ShowToolbar);
-  EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
-  CheckCmd(hmenu,IDM_VIEW_STATUSBAR,Settings.ShowStatusbar);
+  CheckCmd(hmenu, IDM_VIEW_SHOWBLANKS, Settings.ViewWhiteSpace);
+  CheckCmd(hmenu, IDM_VIEW_SHOWEOLS, Settings.ViewEOLs);
+  CheckCmd(hmenu, IDM_VIEW_WORDWRAPSYMBOLS, Settings.ShowWordWrapSymbols);
+  CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
+  CheckCmd(hmenu, IDM_VIEW_MENUBAR, Settings.ShowMenubar);
+  CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
+  EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
+  CheckCmd(hmenu, IDM_VIEW_STATUSBAR, Settings.ShowStatusbar);
 
   //i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
@@ -3390,19 +3390,19 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
 
   bool b = Flags.bReuseWindow;
-  CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,b);
+  CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, b);
   b = Flags.bSingleFileInstance;
-  CheckCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,b);
+  CheckCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, b);
   b = Flags.bStickyWindowPosition;
-  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,b);
+  CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, b);
 
-  CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
-  CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,Settings.MinimizeToTray);
-  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,Settings.TransparentMode);
+  CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
+  CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
+  CheckCmd(hmenu, IDM_VIEW_TRANSPARENT, Settings.TransparentMode);
 
   i = IDM_SET_RENDER_TECH_DEFAULT + Settings.RenderingTechnology;
   CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
-  
+
   if (Settings.RenderingTechnology > 0) {
     i = IDM_SET_BIDIRECTIONAL_NONE + Settings.Bidirectional;
     CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
@@ -3414,18 +3414,18 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_NONE, (Settings.RenderingTechnology > 0));
   EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_L2R, (Settings.RenderingTechnology > 0));
   EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, (Settings.RenderingTechnology > 0));
-  
+
   CheckCmd(hmenu, IDM_VIEW_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
   CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
-  
-  CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
-  CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
-  CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
-  CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,Settings.SaveBeforeRunningTools);
 
-  CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,Settings.FileWatchingMode);
+  CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
+  CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
+  CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
+  CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
 
-  if (StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt)))
+  CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
+
+  if (StringCchLenW(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt)))
     i = IDM_VIEW_SHOWEXCERPT;
   else if (Settings.PathNameFormat == 0)
     i = IDM_VIEW_SHOWFILENAMEONLY;
@@ -3433,7 +3433,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_SHOWFILENAMEFIRST;
   else
     i = IDM_VIEW_SHOWFULLPATH;
-  CheckMenuRadioItem(hmenu,IDM_VIEW_SHOWFILENAMEONLY,IDM_VIEW_SHOWEXCERPT,i,MF_BYCOMMAND);
+  CheckMenuRadioItem(hmenu, IDM_VIEW_SHOWFILENAMEONLY, IDM_VIEW_SHOWEXCERPT, i, MF_BYCOMMAND);
 
   if (Settings.EscFunction == 1)
     i = IDM_VIEW_ESCMINIMIZE;
@@ -3441,14 +3441,14 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_ESCEXIT;
   else
     i = IDM_VIEW_NOESCFUNC;
-  CheckMenuRadioItem(hmenu,IDM_VIEW_NOESCFUNC,IDM_VIEW_ESCEXIT,i,MF_BYCOMMAND);
+  CheckMenuRadioItem(hmenu, IDM_VIEW_NOESCFUNC, IDM_VIEW_ESCEXIT, i, MF_BYCOMMAND);
 
-  EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
-  EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
-  EnableCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
-  EnableCmd(hmenu,IDM_VIEW_NOSAVERECENT,i);
-  EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
-  EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
+  EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, i);
+  EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, i);
+  EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, i);
+  EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, i);
+  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, i);
+  EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, i);
 
   EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel);
   EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel);
@@ -6171,16 +6171,26 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_JUMP2SELSTART:
-      EditSetCaretToSelectionStart();
+      if (!EditSetCaretToSelectionStart() && Sci_IsMultiOrRectangleSelection()) {
+        size_t const n = SciCall_GetSelections();
+        DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionNCaret(0));
+        DocPos const beg = SciCall_PositionFromLine(lineStart);
+        SciCall_ClearSelections(); // needed to reset mode
+        SciCall_SetSelection(beg, beg);
+        for (size_t i = 1; i < n; ++i) {
+          DocPos const pos = SciCall_PositionFromLine(lineStart + i);
+          SciCall_AddSelection(pos, pos);
+        }
+      }
       SciCall_ChooseCaretX();
       break;
 
     case CMD_JUMP2SELEND:
       if (!EditSetCaretToSelectionEnd() && Sci_IsMultiOrRectangleSelection()) {
         size_t const n = SciCall_GetSelections();
-        DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-        SciCall_ClearSelections();
+        DocLn const lineStart = SciCall_LineFromPosition(SciCall_GetSelectionNCaret(0));
         DocPos const beg = SciCall_GetLineEndPosition(lineStart);
+        SciCall_ClearSelections(); // needed to reset mode
         SciCall_SetSelection(beg, beg);
         for (size_t i = 1; i < n; ++i) {
           DocPos const pos = SciCall_GetLineEndPosition(lineStart + i);

@@ -15,7 +15,7 @@ KEYWORDLIST KeyWords_HTML = {
 "formaction formenctype formmethod formnovalidate formtarget frame frameborder frameset h1 h2 h3 h4 h5 h6 "
 "head header headers height hgroup hidden high hr href hreflang hspace html http-equiv i icon id iframe "
 "image img input ins integrity isindex ismap itemprop itemscope itemtype kbd keygen keytype kind label "
-"lang language leftmargin legend li link list longdesc loop low main manifest map marginheight marginwidth "
+"lang language leftmargin legend let li link list longdesc loop low main manifest map marginheight marginwidth "
 "mark max maxlength media mediagroup menu menuitem meta meter method min multiple muted name nav noframes "
 "nohref noresize noscript noshade novalidate nowrap object ol onabort onafterprint onbeforeprint "
 "onbeforeunload onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu "
@@ -33,10 +33,10 @@ KEYWORDLIST KeyWords_HTML = {
 "tabindex table target tbody td template text textarea tfoot th thead time title topmargin tr track "
 "translate tt type typemustmatch u ul usemap valign value valuetype var version video vlink vspace wbr "
 "width wrap xml xmlns",
-// JavaScript keywords
-"abstract await boolean break byte case catch char class const continue debugger default delete do double else "
-"enum export extends false final finally float for function goto if implements import in instanceof int "
-"interface let long native new null package private protected public return short static super switch "
+// JavaScript keywords (sync with lexJS::KeyWords_JS)
+"abstract as async await boolean break byte case catch char class const continue debugger default delete do double "
+"each else enum export extends false final finally float for from function get goto if implements import in instanceof int "
+"interface let long native new null of package private protected public return set short static super switch "
 "synchronized this throw throws transient true try typeof var void volatile while with yield",
 // VBScript keywords
 "alias and as attribute begin boolean byref byte byval call case class compare const continue currency date "
