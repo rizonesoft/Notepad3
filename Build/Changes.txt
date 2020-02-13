@@ -37,6 +37,7 @@ Current RC1 Version 5.20.212.(build_#) (2020-02-12)
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- Multiple selection on end-of-lines from rectangular selection.
 - Infos of sreen/display for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
 - Language dependent status bar abreviations.

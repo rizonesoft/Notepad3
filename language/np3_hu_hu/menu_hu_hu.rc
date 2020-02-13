@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",   CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",     CMD_JUMP2SELEND
+            MENUITEM "Ugrás a kijelölés &elejére\tCtrl+,", CMD_JUMP2SELSTART
+            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",  CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Kijelölés körbevétele"
             BEGIN
