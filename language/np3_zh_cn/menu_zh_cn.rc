@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "增加缩进(&I)",                           IDM_EDIT_INDENT
             MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Selection Start\tCtrl+,",       CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selection End\tCtrl+.",         CMD_JUMP2SELEND
+            MENUITEM "跳转到选区开始\tCtrl+,",       CMD_JUMP2SELSTART
+            MENUITEM "跳转到选区结束\tCtrl+.",         CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "围闭选区(&E)"
             BEGIN
