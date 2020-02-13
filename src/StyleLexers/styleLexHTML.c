@@ -15,7 +15,7 @@ KEYWORDLIST KeyWords_HTML = {
 "formaction formenctype formmethod formnovalidate formtarget frame frameborder frameset h1 h2 h3 h4 h5 h6 "
 "head header headers height hgroup hidden high hr href hreflang hspace html http-equiv i icon id iframe "
 "image img input ins integrity isindex ismap itemprop itemscope itemtype kbd keygen keytype kind label "
-"lang language leftmargin legend let li link list longdesc loop low main manifest map marginheight marginwidth "
+"lang language leftmargin legend li link list longdesc loop low main manifest map marginheight marginwidth "
 "mark max maxlength media mediagroup menu menuitem meta meter method min multiple muted name nav noframes "
 "nohref noresize noscript noshade novalidate nowrap object ol onabort onafterprint onbeforeprint "
 "onbeforeunload onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu "
