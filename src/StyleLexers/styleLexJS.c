@@ -2,11 +2,12 @@
 
 // ----------------------------------------------------------------------------
 
+// JavaScript keywords (sync with lexHTML::KeyWords_HTML for embedded JS)
 KEYWORDLIST KeyWords_JS = {
-"abstract boolean break byte case catch char class const continue debugger default delete do double else "
-"enum export extends false final finally float for function goto if implements import in instanceof int "
-"interface let long native new null package private protected public return short static super switch "
-"synchronized this throw throws transient true try typeof var void volatile while with",
+"abstract as async await boolean break byte case catch char class const continue debugger default delete do double "
+"each else enum export extends false final finally float for from function get goto if implements import in instanceof int "
+"interface let long native new null of package private protected public return set short static super switch "
+"synchronized this throw throws transient true try typeof var void volatile while with yield",
 NULL,
 };
 
