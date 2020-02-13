@@ -34,17 +34,9 @@ KEYWORDLIST KeyWords_HTML = {
 "translate tt type typemustmatch u ul usemap valign value valuetype var version video vlink vspace wbr "
 "width wrap xml xmlns",
 // JavaScript keywords (sync with lexJS::KeyWords_JS)
-"abstract as async await boolean break byte case catch char class const continue debugger default delete do double "
-"each else enum export extends false final finally float for from function get goto if implements import in instanceof int "
-"interface let long native new null of package private protected public return set short static super switch "
-"synchronized this throw throws transient true try typeof var void volatile while with yield",
+NP3_LEXER_JS_KEYWORD_LIST,
 // VBScript keywords
-"alias and as attribute begin boolean byref byte byval call case class compare const continue currency date "
-"declare dim do double each else elseif empty end enum eqv erase error event exit explicit false for "
-"friend function get global gosub goto if imp implement in integer is let lib load long loop lset me mid "
-"mod module new next not nothing null object on option optional or preserve private property public "
-"raiseevent redim rem resume return rset select set single static stop string sub then to true type unload "
-"until variant wend while with withevents xor",
+NP3_LEXER_VB_KEYWORD_LIST,
 // Python keywords
 "",
 // PHP keywords
