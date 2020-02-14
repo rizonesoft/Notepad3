@@ -38,20 +38,23 @@ try
 	$Revis = [int]$(Get-Date -format Mdd)
 	$Build = [int](Get-Content "Versions\build.txt")
 	if (!$Build) { $Build = 0 }
-	$AppveyorBuild = [int]($env:appveyor_build_number) # Appveyor internal
+	$LastBuildDay = [string](Get-Content "Versions\day.txt")
+	if ($LastBuildDay -ne "$Revis") {
+		$Build = 0  # reset
+		$Build | Set-Content "Versions\build.txt"
+		$Revis | Set-Content "Versions\day.txt"
+	}
+
+	$AppVeyorBuild = [int]($env:appveyor_build_number) # AppVeyor internal
 
 	if ($AppVeyorEnv) {
 		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 	}
 	else {
-		$LastBuildDay = [string](Get-Content "Versions\day.txt")
-		if ($LastBuildDay -ne "$Revis") {
-			$Build = 0  # reset
-			$Revis | Set-Content "Versions\day.txt"
-		}
+		# locally: increase build number and persit it
 		$Build = $Build + 1
 		$Build | Set-Content "Versions\build.txt"
-
+		# locally: we have no commit ID, create an arificial one
 		$CommitID = [string](Get-Content "Versions\commit_id.txt")
 		if ($CommitID -eq "computername") {
 			$CommitID = ([string]($env:computername)).substring(0,8).ToLower()
@@ -66,9 +69,10 @@ try
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
 	
 	if ($AppVeyorEnv) {
-		$AppveyorVer = "0.0.0.$AppveyorBuild"
-		DebugOutput("Appveyor version number: 'v$AppveyorVer $VerPatch'")
-		Update-AppveyorBuild -Version $AppveyorVer
+		# AppVeyor needs unique artefact build number
+		$AppVeyorVer = "0.0.0.$AppVeyorBuild"
+		DebugOutput("AppVeyor version number: 'v$AppVeyorVer $VerPatch'")
+		Update-AppveyorBuild -Version $AppVeyorVer
 	}
 
 	$SciVer = [string](Get-Content "scintilla\version.txt")
