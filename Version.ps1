@@ -41,6 +41,7 @@ try
 	$LastBuildDay = [string](Get-Content "Versions\day.txt")
 	if ($LastBuildDay -ne "$Revis") {
 		$Build = 0  # reset
+		$Build | Set-Content "Versions\build.txt"
 		$Revis | Set-Content "Versions\day.txt"
 	}
 
