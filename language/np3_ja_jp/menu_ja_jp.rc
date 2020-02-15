@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "インデント(&I)\tTab",                      IDM_EDIT_INDENT
             MENUITEM "逆インデント(&U)\tShift+Tab",              IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",      CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",        CMD_JUMP2SELEND
+            MENUITEM "選択範囲の先頭へ移動(&C)\tCtrl+,",      CMD_JUMP2SELSTART
+            MENUITEM "選択範囲の末端へ移動(&N)\tCtrl+.",        CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "選択範囲を囲む(&E)"
             BEGIN
