@@ -799,7 +799,6 @@ void Style_ToIniSection(bool bForceAll)
 //
 //  Style_ExportToFile()
 //
-
 bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 {
   if (StrIsEmpty(szFile)) {
@@ -809,11 +808,22 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     return false;
   }
 
-  LoadIniFile(szFile); // reset
+  WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
+  StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
+  NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
 
-  Style_ToIniSection(bForceAll);
-
-  return SaveIniFile(szFile);
+  bool ok = false;
+  if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
+    ok = OpenSettingsFile();
+    Style_ToIniSection(bForceAll);
+    ok = CloseSettingsFile(true);
+  }
+  else {
+    LoadIniFile(szFilePathNorm); // reset
+    Style_ToIniSection(bForceAll);
+    SaveIniFile(szFilePathNorm);
+  }
+  return ok;
 }
 
 

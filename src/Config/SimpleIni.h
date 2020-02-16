@@ -2515,6 +2515,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #endif // __STDC_WANT_SECURE_LIB__
     if (!fp) return SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
+    fflush(fp);
     fclose(fp);
     return rc;
 }
@@ -2536,6 +2537,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #endif // __STDC_WANT_SECURE_LIB__
     if (!fp) return SI_Error::SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
+    fflush(fp);
     fclose(fp);
     return rc;
 #else // !_WIN32 (therefore SI_CONVERT_ICU)
