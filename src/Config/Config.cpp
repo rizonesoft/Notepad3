@@ -74,7 +74,9 @@ static int s_iStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
 // ----------------------------------------------------------------------------
 
-constexpr bool SI_Success(const SI_Error rc) noexcept { return (rc >= SI_Error::SI_OK); };
+constexpr bool SI_Success(const SI_Error rc) noexcept { 
+  return ((rc == SI_Error::SI_OK) || (rc == SI_Error::SI_UPDATED) || (rc == SI_Error::SI_INSERTED)); 
+};
 
 // ============================================================================
 
@@ -97,24 +99,19 @@ extern "C" bool IsIniFileLoaded()
   return s_INI_Loaded;
 }
 
+extern "C" void ReleaseIniFile()
+{
+  s_INI.Reset();
+  s_INI_Loaded = false;
+}
+
 extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
   SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
-  if (SI_Success(rc)) {
-    s_INI.Reset(); // done
-    s_INI_Loaded = false;
-  }
+  ReleaseIniFile();
   return SI_Success(rc);
-}
-
-extern "C" void ReleaseIniFile()
-{
-  s_INI.Reset();
-  s_INI_Loaded = false;
-  s_INI.SetSpaces(s_bSetSpaces);
-  s_INI.SetMultiLine(s_bUseMultiLine);
 }
 
 
@@ -291,6 +288,7 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
   else {
     StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
   }
+  Ini.Reset();
   return StringCchLenW(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
@@ -308,8 +306,8 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
     if (SI_Success(rc)) {
       rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
     }
-    Ini.Reset();
   }
+  Ini.Reset();
   return SI_Success(rc);
 }
 // ============================================================================
@@ -325,6 +323,7 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
     //assert(!bHasMultiple);
     return iValue;
   }
+  Ini.Reset();
   return iDefault;
 }
 // ============================================================================
@@ -355,6 +354,7 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
     //assert(!bHasMultiple);
     return bValue;
   }
+  Ini.Reset();
   return bDefault;
 }
 // ============================================================================
@@ -633,6 +633,22 @@ extern "C" bool CreateIniFileEx(LPWSTR lpszIniFile)
 //=============================================================================
 
 
+//=============================================================================
+//
+//  OpenSettingsFile()
+//
+
+bool OpenSettingsFile()
+{
+  if (StrIsNotEmpty(Globals.IniFile)) {
+    if (!IsIniFileLoaded()) {
+      CreateIniFile();
+      LoadIniFile(Globals.IniFile);
+    }
+  }
+  return IsIniFileLoaded();
+}
+
 
 //=============================================================================
 //
@@ -643,7 +659,7 @@ void LoadSettings()
 {
   CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
-  LoadIniFile(Globals.IniFile);
+  OpenSettingsFile();
 
   bool bDirtyFlag = false;  // do we have to save the file on done
 
@@ -1226,33 +1242,13 @@ void LoadSettings()
   Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
   MRU_Load(Globals.pMRUreplace);
 
-  if (bDirtyFlag) {
-    SaveIniFile(Globals.IniFile);
-  }
-  ReleaseIniFile();
+  CloseSettingsFile(bDirtyFlag);
 
   // Scintilla Styles
   Style_Load();
 }
 //=============================================================================
 
-
-
-//=============================================================================
-//
-//  OpenSettingsFile()
-//
-
-bool OpenSettingsFile()
-{
-  if (StrIsNotEmpty(Globals.IniFile)) {
-    if (!IsIniFileLoaded()) {
-      CreateIniFile();
-      LoadIniFile(Globals.IniFile);
-    }
-  }
-  return IsIniFileLoaded();
-}
 
 
 //=============================================================================
@@ -1268,6 +1264,13 @@ bool OpenSettingsFile()
     IniSectionDelete(IniSecSettings, _W(_STRG(VARNAME)), false);                  \
   }
 
+#define SAVE_VALUE2_IF_NOT_EQ_DEFAULT2(TYPE, VARNAME)                             \
+  if (Settings2.VARNAME != Defaults2.VARNAME) {                                   \
+    IniSectionSet##TYPE(IniSecSettings2, _W(_STRG(VARNAME)), Settings.VARNAME);   \
+  }                                                                               \
+  else {                                                                          \
+    IniSectionDelete(IniSecSettings2, _W(_STRG(VARNAME)), false);                 \
+  }
 
 static bool _SaveSettings(bool bForceSaveSettings)
 {
@@ -1501,6 +1504,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
  
   // --------------------------------------------------------------------------
+  //const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
+  // --------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------
 
@@ -1594,7 +1601,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
   }
 
   if (ok) {
-    ok = CloseSettingsFile();
+    ok = CloseSettingsFile(true);
   }
 
   // separate INI files for Style-Themes
@@ -1612,20 +1619,16 @@ bool SaveAllSettings(bool bForceSaveSettings)
 //  CloseSettingsFile()
 //
 
-bool CloseSettingsFile()
+bool CloseSettingsFile(bool bSaveChanges)
 {
   if (!IsIniFileLoaded() || StrIsEmpty(Globals.IniFile)) { return false; }
 
-  bool const ok = SaveIniFile(Globals.IniFile);
+  bool const ok = bSaveChanges ? SaveIniFile(Globals.IniFile) : true;
 
   if (ok) {
     Globals.bIniFileFromScratch = false;
   }
 
-  // force filesystem cache to sync
-  FILE* fp = nullptr;
-  _wfopen_s(&fp, Globals.IniFile, L"rb");
-  if (fp) { fclose(fp); }
   ReleaseIniFile();
 
   return ok;
@@ -1936,7 +1939,7 @@ void MRU_Save(LPMRULIST pmru)
       }
     }
     if (bOpendByMe) {
-      CloseSettingsFile();
+      CloseSettingsFile(true);
     }
   }
 }
@@ -1976,7 +1979,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
       pmruBase = NULL;
 
       if (bOpendByMe) {
-        CloseSettingsFile();
+        CloseSettingsFile(true);
       }
       return true;
     }
