@@ -39,21 +39,23 @@ try
 	$Build = [int](Get-Content "Versions\build.txt")
 	if (!$Build) { $Build = 0 }
 	$LastBuildDay = [string](Get-Content "Versions\day.txt")
-	if ($LastBuildDay -ne "$Revis") {
-		$Build = 0  # reset
-		$Build | Set-Content "Versions\build.txt"
-		$Revis | Set-Content "Versions\day.txt"
-	}
 
 	$AppVeyorBuild = [int]($env:appveyor_build_number) # AppVeyor internal
 
 	if ($AppVeyorEnv) {
+		if ($LastBuildDay -ne "$Revis") {
+			$Revis | Set-Content "Versions\day.txt"
+			$Build = 1  # reset (AppVeyor)
+		}
 		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 	}
 	else {
+		if ($LastBuildDay -ne "$Revis") {
+			$Revis | Set-Content "Versions\day.txt"
+			$Build = 0  # reset (local build)
+		}
 		# locally: increase build number and persit it
 		$Build = $Build + 1
-		$Build | Set-Content "Versions\build.txt"
 		# locally: we have no commit ID, create an arificial one
 		$CommitID = [string](Get-Content "Versions\commit_id.txt")
 		if ($CommitID -eq "computername") {
@@ -64,6 +66,7 @@ try
 		}
 	}
 	if (!$CommitID) { $CommitID = "---" }
+	$Build | Set-Content "Versions\build.txt"
 
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
