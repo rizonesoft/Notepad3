@@ -138,5 +138,28 @@ extern EDITLEXER lexXML;           // XML Document
 extern EDITLEXER lexYAML;          // YAML
 
 // -----------------------------------------------------------------------------
+// common defines
+// -----------------------------------------------------------------------------
+
+#define NP3_LEXER_JS_KEYWORD_LIST \
+"abstract as async await boolean break byte case catch char class const continue debugger default delete do double "\
+"each else enum export extends false final finally float for from function get goto if implements import in instanceof int "\
+"interface let long native new null of package private protected public return set short static super switch "\
+"synchronized this throw throws transient true try typeof var void volatile while with yield"
+
+
+#define NP3_LEXER_VB_KEYWORD_LIST \
+"addhandler addressof alias and andalso ansi any as assembly attribute auto begin boolean byref byte byval "\
+"call case catch cbool cbyte cchar cdate cdbl cdec char cint class clng cobj compare const continue cshort csng cstr ctype currency "\
+"date decimal declare default delegate dim directcast do double each else elseif empty end enum eqv erase error event "\
+"exit explicit externalsource false finally for friend function get gettype global gosub goto handles if "\
+"imp implement implements imports in inherits integer interface is let lib like load long loop lset me mid mod module mustinherit "\
+"mustoverride mybase myclass namespace new next not nothing notinheritable notoverridable null object on option "\
+"optional or orelse overloads overridable overrides paramarray preserve private property protected public "\
+"raiseevent randomize readonly redim rem removehandler resume return rset select set shadows shared short "\
+"single static step stop strict string structure sub synclock then throw to true try type typeof unicode unload until "\
+"variant wend when while with withevents writeonly xor"
+
+// -----------------------------------------------------------------------------
 
 #endif // _EDIT_LEXER_H_

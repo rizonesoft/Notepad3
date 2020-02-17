@@ -196,21 +196,24 @@ BEGIN
         END
         POPUP "&Sélection"
         BEGIN
-            MENUITEM "&Mettre en retrait",                  IDM_EDIT_INDENT
-            MENUITEM "&Réduire le retrait",                 IDM_EDIT_UNINDENT
+            MENUITEM "&Mettre en retrait",                              IDM_EDIT_INDENT
+            MENUITEM "&Réduire le retrait",                             IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "Aller au début de la séle&ction\tCtrl+,",         CMD_JUMP2SELSTART
+            MENUITEM "Aller à la fin de la sélectio&n\tCtrl+.",         CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Inclure sélection"
             BEGIN
-                MENUITEM "&Simple guillemets\tCtrl+1",      CMD_STRINGIFY
-                MENUITEM "&Double guillemets\tCtrl+2",      CMD_STRINGIFY2
+                MENUITEM "&Simple guillemets\tCtrl+1",                  CMD_STRINGIFY
+                MENUITEM "&Double guillemets\tCtrl+2",                  CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                                 CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                                 CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                                 CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",              CMD_EMBRACE4
+                MENUITEM "&Backticks\tCtrl+6",                          CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Avec...\tAlt+Q",                 IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Avec...\tAlt+Q",                             IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "&Dupliquer la ligne/sélection\tCtrl+D",           IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR

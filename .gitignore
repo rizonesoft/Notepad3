@@ -43,7 +43,10 @@ Thumbs.db
 /Build/Signing/Password.txt
 /distrib/Notepad3*.exe
 
-/Notepad3.VC.VC.opendb
+/Version_*.cmd
+/Versions/build.txt
+/Versions/day.txt
+/Versions/commit_id.txt
 
 /res/Notepad3.exe.manifest.conf
 /minipath/res/Notepad3.exe.manifest.conf
@@ -51,9 +54,8 @@ Thumbs.db
 /minipath/src/VersionEx.h
 
 /test/test.log
+/Notepad3.VC.VC.opendb
 
-/Version_*.cmd
-/Versions/build.txt
 /np3portableapp/*.7z
 /np3portableapp/*.paf.exe
 /np3portableapp/_buildname.txt

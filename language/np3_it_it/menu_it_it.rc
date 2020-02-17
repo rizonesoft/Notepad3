@@ -199,6 +199,9 @@ BEGIN
             MENUITEM "&Indenta",                             IDM_EDIT_INDENT
             MENUITEM "&Rimuovi indentazione",                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
+            MENUITEM "Vai all'&Inizio della selezione\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Vai alla &Fine della selezione\tCtrl+.",   CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
             POPUP "&Racchiudi selezione"
             BEGIN
                 MENUITEM "&Apici\tCtrl+1",                   CMD_STRINGIFY
@@ -347,8 +350,8 @@ BEGIN
             MENUITEM "Code &Folding",                              IDM_VIEW_FOLDING
             MENUITEM "&Attiva/Disattiva Folds\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Salta al Prossimo Fold\tAlt+ +",             CMD_FOLDJUMPDOWN
+            MENUITEM "Salta al Precedente Fold\tAlt+ –",           CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
             MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
             MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND

@@ -34,7 +34,7 @@ bool CreateIniFileEx(LPWSTR lpszIniFile);
 bool OpenSettingsFile();
 void LoadSettings();
 bool SaveAllSettings(bool bForceSaveSettings);
-bool CloseSettingsFile();
+bool CloseSettingsFile(bool bSaveChanges);
 
 // ----------------------------------------------------------------------------
 

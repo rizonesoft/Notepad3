@@ -196,69 +196,72 @@ BEGIN
         END
         POPUP "&Selectie"
         BEGIN
-            MENUITEM "&Inspringen",                             IDM_EDIT_INDENT
-            MENUITEM "&Terugspringen",                          IDM_EDIT_UNINDENT
+            MENUITEM "&Inspringen",                                 IDM_EDIT_INDENT
+            MENUITEM "Teru&gspringen",                              IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR                                      
+            MENUITEM "Gaan naar begin van sele&ctie\tCtrl+,",       CMD_JUMP2SELSTART
+            MENUITEM "Gaan naar ei&nde van selectie\tCtrl+.",       CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Omvatten selectie"
             BEGIN
-                MENUITEM "&Enkele aanhalingstekens\tCtrl+1",    CMD_STRINGIFY
-                MENUITEM "&Dubbele aanhalingstekens\tCtrl+2",   CMD_STRINGIFY2
-                MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                         CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                         CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                         CMD_EMBRACE3
-                MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",                  CMD_EMBRACE4
-                MENUITEM SEPARATOR
-                MENUITEM "&Met...\tAlt+Q",                      IDM_EDIT_ENCLOSESELECTION
-            END
-            MENUITEM "&Dupliceren selectie/lijn\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
+                MENUITEM "En&kele aanhalingstekens\tCtrl+1",        CMD_STRINGIFY
+                MENUITEM "&Dubbele aanhalingstekens\tCtrl+2",       CMD_STRINGIFY2
+                MENUITEM SEPARATOR                                  
+                MENUITEM "( )\tCtrl+3",                             CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                             CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                             CMD_EMBRACE3
+                MENUITEM SEPARATOR                                  
+                MENUITEM "&Backticks\tCtrl+6",                      CMD_EMBRACE4
+                MENUITEM SEPARATOR                                  
+                MENUITEM "&Met...\tAlt+Q",                          IDM_EDIT_ENCLOSESELECTION
+            END                                                     
+            MENUITEM "Du&pliceren selectie/lijn\tCtrl+D",           IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM SEPARATOR                                      
+            MENUITEM "Blok &met blancos\tAlt+B",                    IDM_EDIT_PADWITHSPACES
+            MENUITEM "Strippen &eerste teken\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Strippen &laatste teken\tAlt+U",              IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Strippen &achteraan blancos\tAlt+W",          IDM_EDIT_TRIMLINES
+            MENUITEM "Comp&rimeren blancos\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM SEPARATOR                                      
+            MENUITEM "&Wijzigen lijnen...\tAlt+M",                  IDM_EDIT_MODIFYLINES
+            MENUITEM "Lijnen &uitlijnen...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM "Sorteren li&jnen...\tAlt+O",                  IDM_EDIT_SORTLINES
+        END                                                         
+        POPUP "Co&nverteren"                                        
+        BEGIN                                                       
+            MENUITEM "&Hoofdletters\tCtrl+Shift+U",                 IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "&kleine letters\tCtrl+U",                     IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM SEPARATOR                                      
+            MENUITEM "Hoofdletters &inverteer \tCtrl+Alt+U",        IDM_EDIT_INVERTCASE
+            MENUITEM "Titel &hoofdletters\tCtrl+Alt+I",             IDM_EDIT_TITLECASE
+            MENUITEM "&Zin hoofdletters\tCtrl+Alt+O",               IDM_EDIT_SENTENCECASE
+            MENUITEM SEPARATOR                                      
+            MENUITEM "&Tab selectie\tCtrl+Shift+T",                 IDM_EDIT_CONVERTSPACES
+            MENUITEM "U&ntab selectie\tCtrl+Shift+S",               IDM_EDIT_CONVERTTABS
+            MENUITEM SEPARATOR                                      
+            MENUITEM "Ta&b inspringen\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Untab ins&pringen\tCtrl+Alt+S",               IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "&Blok met blancos\tAlt+B",                IDM_EDIT_PADWITHSPACES
-            MENUITEM "Strippen &eerste teken\tAlt+Z",           IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Strippen &laatste teken\tAlt+U",          IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Strippen &achteraan blancos\tAlt+W",      IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimeren &blancos\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "&URL Encode\tCtrl+Shift+E",                   IDM_EDIT_URLENCODE
+            MENUITEM "URL &Decode\tCtrl+Shift+R",                   IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Wijzigen lijnen...\tAlt+M",              IDM_EDIT_MODIFYLINES
-            MENUITEM "Lijnen &uitlijnen...\tAlt+J",             IDM_EDIT_ALIGN
-            MENUITEM "&Sorteren lijnen...\tAlt+O",              IDM_EDIT_SORTLINES
-        END
-        POPUP "Co&nverteren"
-        BEGIN
-            MENUITEM "&Hoofdletters\tCtrl+Shift+U",             IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&kleine letters\tCtrl+U",                 IDM_EDIT_CONVERTLOWERCASE
-            MENUITEM SEPARATOR
-            MENUITEM "Hoofdletters &inverteer \tCtrl+Alt+U",    IDM_EDIT_INVERTCASE
-            MENUITEM "Titel &hoofdletters\tCtrl+Alt+I",         IDM_EDIT_TITLECASE
-            MENUITEM "&Zin hoofdletters\tCtrl+Alt+O",           IDM_EDIT_SENTENCECASE
-            MENUITEM SEPARATOR
-            MENUITEM "&Tab selectie\tCtrl+Shift+T",             IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntab selectie\tCtrl+Shift+S",           IDM_EDIT_CONVERTTABS
-            MENUITEM SEPARATOR
-            MENUITEM "Ta&b inspringen\tCtrl+Alt+T",             IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untab ins&pringen\tCtrl+Alt+S",           IDM_EDIT_CONVERTTABS2
-            MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
-            MENUITEM "&Char naar Hex\tCtrl+Alt+X",                      IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex naar Char\tCtrl+Alt+C",                      IDM_EDIT_HEX2CHAR
+            MENUITEM "&Char naar Hex\tCtrl+Alt+X",                  IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex naar Char\tCtrl+Alt+C",                  IDM_EDIT_HEX2CHAR
         END
         POPUP "&Invoegen"
         BEGIN
-            MENUITEM "&Nieuwe lijn boven\tCtrl+Enter",                  CMD_INSERTNEWLINE
+            MENUITEM "&Nieuwe lijn boven\tCtrl+Enter",              CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
-            MENUITEM "&HTML/XML Tag...\tAlt+X",                         IDM_EDIT_INSERT_TAG
+            MENUITEM "&HTML/XML Tag...\tAlt+X",                     IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "&Codering identificator\tCtrl+F8",                IDM_EDIT_INSERT_ENCODING
+            MENUITEM "&Codering identificator\tCtrl+F8",            IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "&Tijd/Datum (Korte vorm)\tCtrl+F5",               IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Tijd/Datum (&Lange vorm)\tCtrl+Shift+F5",         IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Tijdstempels bijwerken\tShift+F5",               CMD_TIMESTAMPS
+            MENUITEM "&Tijd/Datum (Korte vorm)\tCtrl+F5",           IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Tijd/Datum (&Lange vorm)\tCtrl+Shift+F5",     IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "&Tijdstempels bijwerken\tShift+F5",           CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",               IDM_EDIT_LINECOMMENT
-            MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",           IDM_EDIT_STREAMCOMMENT
+            MENUITEM "&Lijn commentaar (Toggle)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
+            MENUITEM "&Multilijnen commentaar\tCtrl+Shift+Q",       IDM_EDIT_STREAMCOMMENT
         END
         POPUP "&Overig"
         BEGIN

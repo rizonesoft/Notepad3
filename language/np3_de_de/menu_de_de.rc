@@ -199,6 +199,9 @@ BEGIN
             MENUITEM "&Text Einrückung",                         IDM_EDIT_INDENT
             MENUITEM "&Text Rückzug",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
+            MENUITEM "Jump to Sele&ction Start\tCtrl+,",         CMD_JUMP2SELSTART
+            MENUITEM "Jump to Selectio&n End\tCtrl+.",           CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
             POPUP "&Umschließe Selektion"
             BEGIN
                 MENUITEM "&Einfache Anführungszeichen\tCtrl+1",  CMD_STRINGIFY

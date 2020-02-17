@@ -35,17 +35,49 @@ try
   $AppName = "Notepad3"
 	$Major = 5
 	$Minor = [int]$(Get-Date -format yy)
-	$Revis = [int]$(Get-Date -format MMdd)
+	$Revis = [int]$(Get-Date -format Mdd)
+	$Build = [int](Get-Content "Versions\build.txt")
+	if (!$Build) { $Build = 0 }
+	$LastBuildDay = [string](Get-Content "Versions\day.txt")
+
+	$AppVeyorBuild = [int]($env:appveyor_build_number) # AppVeyor internal
+
 	if ($AppVeyorEnv) {
-		$CommitID = [string]($env:appveyor_repo_commit)
-		$Build = [int]($env:appveyor_build_number)
+		if ($LastBuildDay -ne "$Revis") {
+			$Revis | Set-Content "Versions\day.txt"
+			$Build = 1  # reset (AppVeyor)
+		}
+		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 	}
 	else {
-		$CommitID = [string]($env:computername)
-		$Build = [int](Get-Content "Versions\build.txt") + 1
+		if ($LastBuildDay -ne "$Revis") {
+			$Revis | Set-Content "Versions\day.txt"
+			$Build = 0  # reset (local build)
+		}
+		# locally: increase build number and persit it
+		$Build = $Build + 1
+		# locally: we have no commit ID, create an arificial one
+		$CommitID = [string](Get-Content "Versions\commit_id.txt")
+		if ($CommitID -eq "computername") {
+			$CommitID = ([string]($env:computername)).substring(0,8).ToLower()
+		}
+		else {
+			$CommitID = $CommitID.substring(0,8)
+		}
 	}
 	if (!$CommitID) { $CommitID = "---" }
-	if (!$Build) { $Build = 0 }
+	$Build | Set-Content "Versions\build.txt"
+
+	$CompleteVer = "$Major.$Minor.$Revis.$Build"
+	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
+	
+	if ($AppVeyorEnv) {
+		# AppVeyor needs unique artefact build number
+		$AppVeyorVer = "0.0.0.$AppVeyorBuild"
+		DebugOutput("AppVeyor version number: 'v$AppVeyorVer $VerPatch'")
+		Update-AppveyorBuild -Version $AppVeyorVer
+	}
+
 	$SciVer = [string](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
 	$OnigVer = [string](Get-Content "oniguruma\version.txt")
@@ -56,9 +88,6 @@ try
 	if (!$TinyExprVer) { $TinyExprVer = "0.0.0" }
 	$UtHashVer = [string](Get-Content "uthash\version.txt")
 	if (!$UtHashVer) { $UtHashVer = "0.0.0" }
-	
-	$CompleteVer = "$Major.$Minor.$Revis.$Build"
-	DebugOutput("Version number: 'v$CompleteVer $VerPatch'")
 
 #~if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
 
@@ -80,9 +109,6 @@ try
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content "res\Notepad3.exe.manifest.conf"
-	if ($AppVeyorEnv) {
-		Update-AppveyorBuild -Version $CompleteVer
-  }
 }
 catch 
 {
@@ -93,7 +119,6 @@ catch
 }
 finally
 {
-	$Build | Set-Content "Versions\build.txt"
 	[Environment]::SetEnvironmentVariable("LASTEXITCODE", $LastExitCode, "User")
 	$host.SetShouldExit($LastExitCode)
 	Write-Host "VersionPatching: Done! Elapsed time: $($stopwatch.Elapsed)."

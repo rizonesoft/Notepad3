@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_HTML = {
+// HTML elements and attributes
 "!doctype ^aria- ^data- a abbr accept accept-charset accesskey acronym action address align alink alt and "
 "applet archive area article aside async audio autocomplete autofocus autoplay axis b background base "
 "basefont bb bdi bdo bgcolor big blockquote body border bordercolor br buffered button canvas caption "
@@ -32,17 +33,13 @@ KEYWORDLIST KeyWords_HTML = {
 "tabindex table target tbody td template text textarea tfoot th thead time title topmargin tr track "
 "translate tt type typemustmatch u ul usemap valign value valuetype var version video vlink vspace wbr "
 "width wrap xml xmlns",
-"abstract boolean break byte case catch char class const continue debugger default delete do double else "
-"enum export extends false final finally float for function goto if implements import in instanceof int "
-"interface long native new null package private protected public return short static super switch "
-"synchronized this throw throws transient true try typeof var void volatile while with",
-"alias and as attribute begin boolean byref byte byval call case class compare const continue currency date "
-"declare dim do double each else elseif empty end enum eqv erase error event exit explicit false for "
-"friend function get global gosub goto if imp implement in integer is let lib load long loop lset me mid "
-"mod module new next not nothing null object on option optional or preserve private property public "
-"raiseevent redim rem resume return rset select set single static stop string sub then to true type unload "
-"until variant wend while with withevents xor",
+// JavaScript keywords (sync with lexJS::KeyWords_JS)
+NP3_LEXER_JS_KEYWORD_LIST,
+// VBScript keywords
+NP3_LEXER_VB_KEYWORD_LIST,
+// Python keywords
 "",
+// PHP keywords
 "__callstatic __class__ __compiler_halt_offset__ __dir__ __file__ __function__ __get __halt_compiler __isset "
 "__line__ __method__ __namespace__ __set __sleep __trait__ __unset __wakeup abstract and argc argv array "
 "as break callable case catch cfunction class clone closure const continue declare default define die "
@@ -53,6 +50,8 @@ KEYWORDLIST KeyWords_HTML = {
 "http_post_vars http_server_vars if implements include include_once instanceof insteadof interface isset "
 "list namespace new not null old_function or parent php_self print private protected public require "
 "require_once return static stdclass switch this throw trait true try unset use var virtual while xor",
+// SGML and DTD keywords
+"",
 NULL,
 };
 

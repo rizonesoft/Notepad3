@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Повышенные права)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Буфер обмена"
     IDS_MUI_UNTITLED        "Безымянный"
     IDS_MUI_TITLEEXCERPT    "«%s»"
@@ -143,11 +143,12 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Определенные символы в текущем тексте не поддерживаются выбранной кодировкой и будут заменены заполнителями при сохранении. Рекомендуется выбрать другую кодировку файла. Все равно продолжить?"
     IDS_MUI_ERR_DROP        "За один раз можно перетащить только один файл!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Файл «%s» не может быть сохранен и может быть защищен.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Файл «%s» не может быть сохранен и может быть защищен.\n\nХотите запустить %s с повышенными правами?"
     IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы уверены, что хотите открыть этот очень большой файл?"
-    IDS_MUI_ERR_FILE_TOO_LARGE "Can't handle that huge file (size: %lli MB)!"
+    IDS_MUI_ERR_FILE_TOO_LARGE 
+                            "Невозможно обработать этот большой файл (размер: %lli МБ)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл имеет одинакового вида отступы!"
@@ -182,8 +183,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "Активировать сохраненные настройки перезапуском приложения?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Если продолжить без перезапуска, сохраненные настройки не применятся и будут переписаны внутренними настройками при выходе!"
     IDS_MUI_EXPORT_FAIL      "Ошибка экспорта настроек стилей в «%s»."
     IDS_MUI_REGEX_INVALID    "Ошибка обработки регулярного выражения. Выражение недействительно!"
     IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3."

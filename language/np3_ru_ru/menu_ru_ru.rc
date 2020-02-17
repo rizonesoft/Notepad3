@@ -196,21 +196,24 @@ BEGIN
         END
         POPUP "Выделение"
         BEGIN
-            MENUITEM "&Добавить отступ",                IDM_EDIT_INDENT
-            MENUITEM "&Удалить отступ",                 IDM_EDIT_UNINDENT
+            MENUITEM "&Добавить отступ",                  IDM_EDIT_INDENT
+            MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "Перейти к началу в&ыделения\tCtrl+,", CMD_JUMP2SELSTART
+            MENUITEM "Перейти в конец выделени&я\tCtrl+.",  CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Обернуть выделение"
             BEGIN
-                MENUITEM "&Одиночные кавычки\tCtrl+1",  CMD_STRINGIFY
-                MENUITEM "&Двойные кавычки\tCtrl+2",    CMD_STRINGIFY2
+                MENUITEM "&Одиночные кавычки\tCtrl+1",    CMD_STRINGIFY
+                MENUITEM "&Двойные кавычки\tCtrl+2",      CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                 CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                 CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                 CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                   CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                   CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "Обратные &кавычки\tCtrl+6",   CMD_EMBRACE4
+                MENUITEM "Обратные &кавычки\tCtrl+6",     CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Еще...\tAlt+Q",              IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&Еще...\tAlt+Q",                IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "Дублировать &выделение/строку\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
@@ -342,16 +345,16 @@ BEGIN
         MENUITEM "&Номера строк\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Отступ в&ыделения\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "Р&Folding"
+        POPUP "Блоки &кода"
         BEGIN
-            MENUITEM "Свора&чивание блоков кода",                   IDM_VIEW_FOLDING
-            MENUITEM "Свернуть/ра&звернуть блок\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Свора&чивание блоков кода",               IDM_VIEW_FOLDING
+            MENUITEM "Свернуть/ра&звернуть блок\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Перейти к следующему &блоку\tAlt+ +",     CMD_FOLDJUMPDOWN
+            MENUITEM "Перейти к &предыдущему блоку\tAlt+ –",    CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Свернуть блок\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Развернуть блок\tAlt+ →",        CMD_FOLDEXPAND
         END
         POPUP "&Рабо&чая область"
         BEGIN
@@ -407,7 +410,7 @@ BEGIN
         MENUITEM "Авто&завершение слов",                        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Автозавершение на основе &лексем",            IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Включить блочное редактирование строк &комментариев", IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "Блочное редактирование &комментариев",        IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Один &экземпляр файла",                       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_VIEW_CHANGENOTIFY

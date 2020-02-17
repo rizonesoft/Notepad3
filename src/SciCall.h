@@ -181,6 +181,9 @@ DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE,
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum)
+DeclareSciCallR1(GetSelectionNStartVirtualSpace, GETSELECTIONNSTARTVIRTUALSPACE, DocPos, DocPosU, selnum)
+DeclareSciCallR1(GetSelectionNEndVirtualSpace, GETSELECTIONNENDVIRTUALSPACE, DocPos, DocPosU, selnum)
+
 DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
 DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH)
 DeclareSciCallV0(RotateSelection, ROTATESELECTION)
@@ -212,6 +215,7 @@ DeclareSciCallV0(DelLineRight, DELLINERIGHT)
 DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV1(LinesSplit, LINESSPLIT, int, pix)
 DeclareSciCallV0(LinesJoin, LINESJOIN)
+DeclareSciCallV0(EditToggleOverType, EDITTOGGLEOVERTYPE)
 
 //  Commands
 DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
@@ -540,6 +544,8 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
 //
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
+
+#define Sci_IsDocEmpty() (SciCall_GetTextLength() <= 0LL)
 
 #define Sci_IsThinSelection() (SciCall_GetSelectionMode() == SC_SEL_THIN)
 #define Sci_IsMultiSelection() ((SciCall_GetSelections() > 1) && !SciCall_IsSelectionRectangle())
