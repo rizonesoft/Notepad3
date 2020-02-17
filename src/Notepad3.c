@@ -2168,7 +2168,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (Globals.hwndToolbar) { DestroyWindow(Globals.hwndToolbar); }
 
-  LoadIniFile(Globals.IniFile);
+  OpenSettingsFile();
   bool bDirtyFlag = false;
 
   Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
@@ -2436,9 +2436,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;
 
-  if (bDirtyFlag) {
-    SaveIniFile(Globals.IniFile);
-  }
+  CloseSettingsFile(bDirtyFlag);
 }
 
 
@@ -5449,7 +5447,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
         StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-        if (LoadIniFile(Globals.IniFile)) {
+        if (OpenSettingsFile()) {
 
           const WCHAR* const IniSecWindow = Constants.Window_Section;
 
@@ -5482,9 +5480,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           else {
             IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
           }
-
-          SaveIniFile(Globals.IniFile);
         }
+        CloseSettingsFile(true);
       }
       break;
 
