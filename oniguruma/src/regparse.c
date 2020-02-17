@@ -3456,7 +3456,7 @@ scan_number(UChar** src, const UChar* end, OnigEncoding enc)
     PFETCH(c);
     if (IS_CODE_DIGIT_ASCII(enc, c)) {
       val = (int )DIGITVAL(c);
-      if ((INT_MAX - val) / 10 < num)
+      if ((ONIG_INT_MAX - val) / 10 < num)
         return -1;  /* overflow */
 
       num = num * 10 + val;
