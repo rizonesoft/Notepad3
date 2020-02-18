@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.4  2019/09/30
+Oniguruma API  Version 6.9.5  2020/02/13
 
 #include <oniguruma.h>
 
@@ -273,6 +273,20 @@ Oniguruma API  Version 6.9.4  2019/09/30
   normal return: ONIG_NORMAL
 
 
+# int onig_set_retry_limit_in_search_of_match_param(OnigMatchParam* mp, unsigned long limit)
+
+  Set a retry limit count of a search process.
+  0 means unlimited.
+
+  If the value of this limit is not 0 and is smaller than the current value of the retry limit in match of mp, the value of retry limit in match is set to this limit.
+
+  arguments
+  1 mp: match-param pointer
+  2 limit: number of limit
+
+  normal return: ONIG_NORMAL
+
+
 # int onig_set_progress_callout_of_match_param(OnigMatchParam* mp, OnigCalloutFunc f)
 
   Set a function for callouts of contents in progress.
@@ -333,7 +347,7 @@ Oniguruma API  Version 6.9.4  2019/09/30
 
   arguments
   1-7:  same as onig_search()
-  8 mp: match parameter values (match_stack_limit, retry_limit_in_match)
+  8 mp: match parameter values (match_stack_limit, retry_limit_in_match, retry_limit_in_search)
 
 
 # int onig_match(regex_t* reg, const UChar* str, const UChar* end, const UChar* at,
@@ -368,7 +382,7 @@ Oniguruma API  Version 6.9.4  2019/09/30
 
    arguments
    1-6:  same as onig_match()
-   7 mp: match parameter values (match_stack_limit, retry_limit_in_match)
+   7 mp: match parameter values (match_stack_limit, retry_limit_in_match, retry_limit_in_search)
 
 
 # int onig_scan(regex_t* reg, const UChar* str, const UChar* end,
@@ -866,15 +880,34 @@ Oniguruma API  Version 6.9.4  2019/09/30
 
 # unsigned long onig_get_retry_limit_in_match(void)
 
-  Return the limit of retry counts in matching process.
+  Return the limit of retry counts in a matching process.
   (default: 10000000)
 
-  normal return: limit value
+  normal return: current limit value
 
 
-# int onig_set_retry_limit_in_match(unsigned long n)
+# unsigned long onig_get_retry_limit_in_search(void)
+
+  Return the limit of retry counts in a search process.
+  0 means unlimited.
+  (default: 0)
+
+  normal return: current limit value
+
+
+# int onig_set_retry_limit_in_match(unsigned long limit)
 
   Set the limit of retry counts in matching process.
+
+  normal return: ONIG_NORMAL
+
+
+# int onig_set_retry_limit_in_search(unsigned long limit)
+
+  Set a retry limit count of a search process.
+  0 means unlimited.
+
+  If the value of this limit is not 0 and is smaller than the current value of the retry limit in match, the value of retry limit in match is set to this limit.
 
   normal return: ONIG_NORMAL
 

@@ -294,6 +294,7 @@ enum class SI_Error : int {
 
 #if defined(_WIN32)
 # define SI_HAS_WIDE_FILE
+# define SI_USE_LOCKING_WIDE_FILE
 # define SI_WCHAR_T     wchar_t
 #elif defined(SI_CONVERT_ICU)
 # define SI_HAS_WIDE_FILE
@@ -412,9 +413,28 @@ public:
             fputs(a_pBuf, m_file);
         }
     private:
+        FileWriter() = delete;
         FileWriter(const FileWriter &);             // disable
         FileWriter & operator=(const FileWriter &); // disable
     };
+
+#ifdef SI_USE_LOCKING_WIDE_FILE
+    class FileHndlWriter : public OutputWriter {
+      HANDLE m_file;
+    public:
+      FileHndlWriter(HANDLE a_file) : m_file(a_file) {};
+      ~FileHndlWriter() { FlushFileBuffers(m_file); }
+      void Write(const char* a_pBuf) override {
+        DWORD nBytesWritten = 0UL;
+        DWORD const nBytesToWrite = static_cast<DWORD>(strlen(a_pBuf));
+        WriteFile(m_file, a_pBuf, nBytesToWrite, &nBytesWritten, NULL);
+      }
+    private:
+      FileHndlWriter() = delete;
+      FileHndlWriter(const FileHndlWriter&) = delete;             // disable
+      FileHndlWriter& operator=(const FileHndlWriter&) = delete;  // disable
+    };
+#endif
 
     /** OutputWriter class to write the INI data to a string */
     class StringWriter : public OutputWriter {
@@ -610,9 +630,11 @@ public:
 
         @return SI_Error    See error definitions
     */
-    SI_Error LoadFile(
-        FILE * a_fpFile
-        );
+#ifdef SI_USE_LOCKING_WIDE_FILE
+    SI_Error LoadFile( HANDLE a_hFile);
+#else
+    SI_Error LoadFile( FILE * a_fpFile );
+#endif
 
 #ifdef SI_SUPPORT_IOSTREAMS
     /** Load INI file data from an istream.
@@ -698,11 +720,17 @@ public:
 
         @return SI_Error    See error definitions
      */
+#ifdef SI_USE_LOCKING_WIDE_FILE
+    SI_Error SaveFile(
+      HANDLE a_hFile,
+      bool   a_bAddSignature = false
+    ) const;
+#else
     SI_Error SaveFile(
         FILE *  a_pFile,
         bool    a_bAddSignature = false
         ) const;
-
+#endif
     /** Save the INI data. The data will be written to the output device
         in a format appropriate to the current data, selected by:
 
@@ -1392,6 +1420,48 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 }
 
 #ifdef SI_HAS_WIDE_FILE
+
+#ifdef SI_USE_LOCKING_WIDE_FILE
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+SI_Error
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
+  const SI_WCHAR_T* a_pwszFile
+)
+{
+  HANDLE hFile = CreateFile(a_pwszFile,
+    GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return SI_Error::SI_FILE;
+  }
+
+  SI_Error rc = SI_Error::SI_FILE;
+
+  DWORD const flags = 0UL; // SHARED READ(!) ~ LOCKFILE_FAIL_IMMEDIATELY | LOCKFILE_EXCLUSIVE_LOCK
+  OVERLAPPED OvrLpd = { 0 };
+
+  bool bLocked = false;
+  try {
+    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd);
+    if (bLocked) {
+      rc = LoadFile(hFile);
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+  }
+  catch (...) {
+    if (bLocked) {
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+    throw; // re-throw to pass the exception to some other handler
+  }
+  CloseHandle(hFile);
+  return rc;
+}
+
+#else
+
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
@@ -1415,7 +1485,48 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     return LoadFile(szFile);
 #endif // _WIN32
 }
+
+#endif // SI_USE_LOCKING_WIDE_FILE
+
 #endif // SI_HAS_WIDE_FILE
+
+
+#ifdef SI_USE_LOCKING_WIDE_FILE
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+SI_Error
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
+  HANDLE a_hFile
+)
+{
+  DWORD dwFileSizeHigh = 0UL;
+  DWORD const dwFileSize = GetFileSize(a_hFile, &dwFileSizeHigh);
+  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSize == 0) || (dwFileSizeHigh != 0UL)) {
+    return SI_Error::SI_FILE;
+  }
+
+  // allocate and ensure NULL terminated
+  auto* pData = new(std::nothrow) char[dwFileSize + 1];
+  if (!pData) {
+    return SI_Error::SI_NOMEM;
+  }
+  pData[dwFileSize] = '\0';
+
+  // load the raw file data
+  DWORD nBytesRead = 0UL;
+  BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, nullptr);
+  if ((result == FALSE) || (nBytesRead != dwFileSize)) {
+    delete[] pData;
+    return SI_Error::SI_FILE;
+  }
+
+  // convert the raw data to unicode
+  SI_Error const rc = LoadData(pData, (size_t)nBytesRead);
+  delete[] pData;
+  return rc;
+}
+
+#else
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
@@ -1456,6 +1567,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     delete[] pData;
     return rc;
 }
+
+#endif
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
@@ -2515,11 +2628,55 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #endif // __STDC_WANT_SECURE_LIB__
     if (!fp) return SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
+    fflush(fp);
     fclose(fp);
     return rc;
 }
 
 #ifdef SI_HAS_WIDE_FILE
+
+#ifdef SI_USE_LOCKING_WIDE_FILE
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+SI_Error
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
+  const SI_WCHAR_T* a_pwszFile,
+  bool              a_bAddSignature
+) const
+{
+  HANDLE hFile = CreateFile(a_pwszFile,
+    GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return SI_Error::SI_FILE;
+  }
+
+  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;  // LOCK SHARED READ/WRITE(!) ~ LOCKFILE_FAIL_IMMEDIATELY
+  OVERLAPPED OvrLpd = { 0 };
+  SI_Error rc = SI_Error::SI_FILE;
+  
+  bool bLocked = false;
+  try {
+    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd);
+    if (bLocked) {
+      rc = SaveFile(hFile, a_bAddSignature);
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+  }
+  catch(...) {
+    if (bLocked) {
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+    throw; // re-throw to pass the exception to some other handler
+  }
+
+  CloseHandle(hFile);
+  return rc;
+}
+
+#else
+
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
@@ -2536,6 +2693,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #endif // __STDC_WANT_SECURE_LIB__
     if (!fp) return SI_Error::SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
+    fflush(fp);
     fclose(fp);
     return rc;
 #else // !_WIN32 (therefore SI_CONVERT_ICU)
@@ -2544,8 +2702,24 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     return SaveFile(szFile, a_bAddSignature);
 #endif // _WIN32
 }
+
+#endif // SI_USE_LOCKING_WIDE_FILE
+
 #endif // SI_HAS_WIDE_FILE
 
+
+#ifdef SI_USE_LOCKING_WIDE_FILE
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+SI_Error
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
+  HANDLE a_hFile,
+  bool   a_bAddSignature
+) const
+{
+  FileHndlWriter writer(a_hFile);
+  return Save(writer, a_bAddSignature);
+}
+#else
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
@@ -2556,6 +2730,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     FileWriter writer(a_pFile);
     return Save(writer, a_bAddSignature);
 }
+#endif
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
