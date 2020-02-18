@@ -631,7 +631,7 @@ public:
         @return SI_Error    See error definitions
     */
 #ifdef SI_USE_LOCKING_WIDE_FILE
-    SI_Error LoadFile( HANDLE a_hFile, DWORD dwFileSize);
+    SI_Error LoadFile( HANDLE a_hFile);
 #else
     SI_Error LoadFile( FILE * a_fpFile );
 #endif
@@ -1431,28 +1431,30 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 {
   HANDLE hFile = CreateFile(a_pwszFile,
     GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
     return SI_Error::SI_FILE;
   }
 
-  DWORD dwFileSizeHigh = 0UL;
-  DWORD const dwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
-    return SI_Error::SI_FILE;
-  }
-  
   SI_Error rc = SI_Error::SI_FILE;
 
   DWORD const flags = 0UL; // SHARED READ(!) ~ LOCKFILE_FAIL_IMMEDIATELY | LOCKFILE_EXCLUSIVE_LOCK
   OVERLAPPED OvrLpd = { 0 };
 
-  if (LockFileEx(hFile, flags, 0, dwFileSize, dwFileSizeHigh, &OvrLpd)) {
-
-    rc = LoadFile(hFile, dwFileSize);
-
-    UnlockFileEx(hFile, 0, dwFileSize, dwFileSizeHigh, &OvrLpd);
+  bool bLocked = false;
+  try {
+    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd);
+    if (bLocked) {
+      rc = LoadFile(hFile);
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+  }
+  catch (...) {
+    if (bLocked) {
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+    throw; // re-throw to pass the exception to some other handler
   }
   CloseHandle(hFile);
   return rc;
@@ -1494,9 +1496,15 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
-  HANDLE a_hFile, DWORD dwFileSize
+  HANDLE a_hFile
 )
 {
+  DWORD dwFileSizeHigh = 0UL;
+  DWORD const dwFileSize = GetFileSize(a_hFile, &dwFileSizeHigh);
+  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSize == 0) || (dwFileSizeHigh != 0UL)) {
+    return SI_Error::SI_FILE;
+  }
+
   // allocate and ensure NULL terminated
   auto* pData = new(std::nothrow) char[dwFileSize + 1];
   if (!pData) {
@@ -1506,7 +1514,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 
   // load the raw file data
   DWORD nBytesRead = 0UL;
-  BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, NULL);
+  BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, nullptr);
   if ((result == FALSE) || (nBytesRead != dwFileSize)) {
     delete[] pData;
     return SI_Error::SI_FILE;
@@ -2638,7 +2646,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
 {
   HANDLE hFile = CreateFile(a_pwszFile,
     GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
     return SI_Error::SI_FILE;
@@ -2648,13 +2656,19 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
   OVERLAPPED OvrLpd = { 0 };
   SI_Error rc = SI_Error::SI_FILE;
   
-  if (LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd)) {
-
-    rc = SaveFile(hFile, a_bAddSignature);
-
-    FlushFileBuffers(hFile);
-
-    UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+  bool bLocked = false;
+  try {
+    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd);
+    if (bLocked) {
+      rc = SaveFile(hFile, a_bAddSignature);
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+  }
+  catch(...) {
+    if (bLocked) {
+      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
+    }
+    throw; // re-throw to pass the exception to some other handler
   }
 
   CloseHandle(hFile);
