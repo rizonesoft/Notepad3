@@ -9683,7 +9683,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
 
     if (Flags.ShellUseSystemMRU) {
-      SHAddToRecentDocs(SHARD_PATHW, szFileName);
+      //SHAddToRecentDocs(SHARD_PATHW, szFileName);
+      AddFilePathToRecentDocs(szFileName);
     }
     // Install watching of the current file
     if (!bReload && FileWatching.ResetFileWatching) {
@@ -10115,7 +10116,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
       if (Flags.ShellUseSystemMRU) {
-        SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
+        //SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
+        AddFilePathToRecentDocs(Globals.CurrentFile);
       }
 
       SciCall_SetSavePoint();

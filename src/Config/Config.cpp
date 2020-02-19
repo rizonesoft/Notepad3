@@ -16,6 +16,7 @@
 //#include <locale.h>
 #include <strsafe.h>
 #include <shlobj.h>
+#include <shobjidl.h>
 
 // ----------------------------------------------------------------------------
 
@@ -415,6 +416,24 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 }
 // ============================================================================
 
+
+
+//=============================================================================
+//
+//  AddFilePathToRecentDocs()
+//
+extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
+{
+  IShellItem* pShellItem = NULL;
+  HRESULT const hr = SHCreateItemFromParsingName(szFilePath, NULL, IID_PPV_ARGS(&pShellItem));
+  if (SUCCEEDED(hr))
+  {
+    SHARDAPPIDINFO info;
+    info.psi = pShellItem;
+    info.pszAppID = Settings2.AppUserModelID;  // our AppID - see above
+    SHAddToRecentDocs(SHARD_APPIDINFO, &info);
+  }
+}
 
 
 //=============================================================================
@@ -1877,7 +1896,7 @@ bool MRU_Load(LPMRULIST pmru)
           tchItem[len - 2] = L'\0'; // clear dangling '"'
         }
         pmru->pszItems[n] = StrDup(tchItem);
-
+        
         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
         int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
         pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);

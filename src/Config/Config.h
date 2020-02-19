@@ -118,6 +118,8 @@ bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectio
 
 //==== MRU Functions ==========================================================
 
+void AddFilePathToRecentDocs(LPCWSTR szFilePath);
+
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
 bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iAnchor, LPCWSTR pszBookMarks);
