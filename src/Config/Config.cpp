@@ -763,6 +763,7 @@ void LoadSettings()
     Defaults2.UndoTransactionTimeout), 0UL, 86400000UL);
 
   // deprecated
+
   Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
   if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
     // cleanup
@@ -778,7 +779,7 @@ void LoadSettings()
     IniSectionDelete(IniSecSettings2, L"EnableBidirectionalSupport", false);
     bDirtyFlag = true;
   }
-  Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : 0;
+  Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : SC_BIDIRECTIONAL_DISABLED;
 
   Defaults2.IMEInteraction = -1;
   Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", Defaults2.IMEInteraction), -1, SC_IME_INLINE);
@@ -1041,8 +1042,10 @@ void LoadSettings()
   GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
   GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
   GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
-  GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3);  // set before
+  GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // set before
+  Defaults.RenderingTechnology = 0; // reset
   GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
+  Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
   GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
   GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, false);
 
