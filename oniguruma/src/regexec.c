@@ -116,9 +116,6 @@ onig_set_retry_limit_in_search_of_match_param(OnigMatchParam* param,
 {
 #ifdef USE_RETRY_LIMIT
   param->retry_limit_in_search = limit;
-  if (limit != 0 && param->retry_limit_in_match > limit)
-    param->retry_limit_in_match = limit;
-
   return ONIG_NORMAL;
 #else
   return ONIG_NO_SUPPORT_CONFIG;
@@ -1254,17 +1251,17 @@ struct OnigCalloutArgsStruct {
 } while(0);
 
 
-#define STACK_SAVE do{\
-  msa->stack_n = (int )(stk_end - stk_base);\
-  if (is_alloca != 0) {\
-    size_t size = sizeof(StackIndex) * msa->ptr_num \
-                + sizeof(StackType) * msa->stack_n;\
-    msa->stack_p = xmalloc(size);\
-    CHECK_NULL_RETURN_MEMERR(msa->stack_p);\
-    xmemcpy(msa->stack_p, alloc_base, size);\
+#define STACK_SAVE(msa,is_alloca,alloc_base) do{\
+  (msa)->stack_n = (int )(stk_end - stk_base);\
+  if ((is_alloca) != 0) {\
+    size_t size = sizeof(StackIndex) * (msa)->ptr_num\
+                + sizeof(StackType) * (msa)->stack_n;\
+    (msa)->stack_p = xmalloc(size);\
+    CHECK_NULL_RETURN_MEMERR((msa)->stack_p);\
+    xmemcpy((msa)->stack_p, (alloc_base), size);\
   }\
   else {\
-    msa->stack_p = alloc_base;\
+    (msa)->stack_p = (alloc_base);\
   };\
 } while(0)
 
@@ -1290,7 +1287,7 @@ static unsigned long RetryLimitInSearch = DEFAULT_RETRY_LIMIT_IN_SEARCH;
 
 #define CHECK_RETRY_LIMIT_IN_MATCH  do {\
   if (retry_in_match_counter++ > retry_limit_in_match) {\
-    MATCH_AT_ERROR_RETURN(ONIGERR_RETRY_LIMIT_IN_MATCH_OVER);\
+    MATCH_AT_ERROR_RETURN(retry_in_match_counter > msa->retry_limit_in_match ? ONIGERR_RETRY_LIMIT_IN_MATCH_OVER : ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER); \
   }\
 } while (0)
 
@@ -1336,9 +1333,6 @@ onig_set_retry_limit_in_search(unsigned long n)
 {
 #ifdef USE_RETRY_LIMIT
   RetryLimitInSearch = n;
-  if (n != 0 && RetryLimitInMatch > n)
-    RetryLimitInMatch = n;
-
   return 0;
 #else
   return ONIG_NO_SUPPORT_CONFIG;
@@ -1615,7 +1609,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
   if (*is_alloca != 0) {
     new_alloc_base = (char* )xmalloc(new_size);
     if (IS_NULL(new_alloc_base)) {
-      STACK_SAVE;
+      STACK_SAVE(msa, *is_alloca, alloc_base);
       return ONIGERR_MEMORY;
     }
     xmemcpy(new_alloc_base, alloc_base, size);
@@ -1624,7 +1618,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
   else {
     if (msa->match_stack_limit != 0 && n > msa->match_stack_limit) {
       if ((unsigned int )(stk_end - stk_base) == msa->match_stack_limit) {
-        STACK_SAVE;
+        STACK_SAVE(msa, *is_alloca, alloc_base);
         return ONIGERR_MATCH_STACK_LIMIT_OVER;
       }
       else
@@ -1632,7 +1626,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
     }
     new_alloc_base = (char* )xrealloc(alloc_base, new_size);
     if (IS_NULL(new_alloc_base)) {
-      STACK_SAVE;
+      STACK_SAVE(msa, *is_alloca, alloc_base);
       return ONIGERR_MEMORY;
     }
   }
@@ -2829,6 +2823,12 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
 #ifdef USE_RETRY_LIMIT
   retry_limit_in_match = msa->retry_limit_in_match;
+  if (msa->retry_limit_in_search != 0) {
+    unsigned long rem = msa->retry_limit_in_search
+                      - msa->retry_limit_in_search_counter;
+    if (rem < retry_limit_in_match)
+      retry_limit_in_match = rem;
+  }
 #endif
 
   pop_level = reg->stack_pop_level;
@@ -4220,15 +4220,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
  match_at_end:
   if (msa->retry_limit_in_search != 0) {
-    if (retry_in_match_counter > ULONG_MAX - msa->retry_limit_in_search_counter)
-      best_len = ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER;
-    else {
-      msa->retry_limit_in_search_counter += retry_in_match_counter;
-      if (msa->retry_limit_in_search_counter > msa->retry_limit_in_search)
-        best_len = ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER;
-    }
+    msa->retry_limit_in_search_counter += retry_in_match_counter;
   }
-  STACK_SAVE;
+  STACK_SAVE(msa, is_alloca, alloc_base);
   return best_len;
 }
 
