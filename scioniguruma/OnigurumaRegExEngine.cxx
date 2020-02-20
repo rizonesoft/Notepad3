@@ -387,10 +387,8 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 // ============================================================================
 
 
-
 const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
 {
-
   if (m_MatchPos < 0) {
     *length = SciPos(-1);
     return nullptr;
@@ -400,7 +398,7 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
 
   m_SubstBuffer.clear();
 
-  for (size_t j = 0; j < rawReplStrg.length(); j++) 
+  for (size_t j = 0; j < rawReplStrg.length(); ++j) 
   {
     bool bReplaced = false;
     if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
@@ -408,8 +406,9 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
       if ((rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))
       {
         // group # limit = 99 / TODO: allow for arbitrary number of groups/regions
-        bool const num2nd = ((rawReplStrg[j + 2] >= '0') && (rawReplStrg[j + 2] <= '9'));
-        int const grpNum = num2nd ? (rawReplStrg[j + 1] - '0') * 10 + (rawReplStrg[j + 2] - '0') : (rawReplStrg[j + 1] - '0');
+
+        bool const digit2nd = ((rawReplStrg[j + 2] >= '0') && (rawReplStrg[j + 2] <= '9')) && (m_Region.num_regs > 10);
+        int const grpNum = digit2nd ? (rawReplStrg[j + 1] - '0') * 10 + (rawReplStrg[j + 2] - '0') : (rawReplStrg[j + 1] - '0');
         if (grpNum < m_Region.num_regs)
         {
           auto const rBeg = SciPos(m_Region.beg[grpNum]);
@@ -418,7 +417,7 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
           m_SubstBuffer.append(doc->RangePointer(rBeg, len), static_cast<size_t>(len));
         }
         bReplaced = true;
-        j += num2nd ? 2 : 1;
+        j += digit2nd ? 2 : 1;
       }
       else if (rawReplStrg[j] == '$')
       {
@@ -442,10 +441,13 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
           }
         }
       }
-      else if ((rawReplStrg[j] == '\\') && (rawReplStrg[j+1] == '\\')){
-        m_SubstBuffer.push_back('\\');
+      else if (rawReplStrg[j + 1] == '$') {
+        m_SubstBuffer.push_back('$');
         bReplaced = true;
-        ++j;
+        j += 2; //  '\$' -> '$'
+      }
+      else if (rawReplStrg[j + 1] == '\\') {
+        ++j; //  '\\' -> '\'
       }
     }
     if (!bReplaced) { m_SubstBuffer.push_back(rawReplStrg[j]); }
