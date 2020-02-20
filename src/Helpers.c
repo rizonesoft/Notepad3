@@ -1961,9 +1961,8 @@ size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
           --o;
       }
       else {
-        *o = '\\'; // revert
-        ++o;
-        *o = *s;
+        //~*o = '\\';  *++o = *s;   // revert
+        *o = *s;   // swallow single '\'
       }
     }
     else
@@ -2041,8 +2040,8 @@ size_t UnSlashW(LPWSTR pchInOut)
           --o;
       }
       else {
-        *o = '\\'; // revert
-        *++o = *s;
+        //~*o = '\\';  *++o = *s;   // revert
+        *o = *s;   // swallow single '\'
       }
     }
     else
@@ -2085,17 +2084,20 @@ int CheckRegExReplTarget(char* pszInput)
 
 void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
 {
-  if (bRegEx && iReplaceMsg) {
-    UnSlashLowOctal(pszInput);
-    *iReplaceMsg = CheckRegExReplTarget(pszInput);
+  if (iReplaceMsg) 
+  {
+    if (bRegEx) {
+      UnSlashLowOctal(pszInput);
+      *iReplaceMsg = CheckRegExReplTarget(pszInput);
+    }
+    else {
+      *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+    }
   }
-  else if (iReplaceMsg) {
-    *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
-  }
+  bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
 
   // regex handles backslashes itself
-  // except: replacement is not delegated to regex engine
-  if (!bRegEx || (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg))) {
+  if (!bRegEx || bStdReplace) {
     UnSlashA(pszInput, cpEdit);
   }
 }
