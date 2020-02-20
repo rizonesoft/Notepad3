@@ -441,13 +441,8 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
           }
         }
       }
-      else if (rawReplStrg[j + 1] == '$') {
-        m_SubstBuffer.push_back('$');
-        bReplaced = true;
-        j += 2; //  '\$' -> '$'
-      }
-      else if (rawReplStrg[j + 1] == '\\') {
-        ++j; //  '\\' -> '\'
+      else if ((rawReplStrg[j + 1] == '$') || (rawReplStrg[j + 1] == '\\')) {
+        ++j; //  '\$' -> '$' or '\\' -> '\'
       }
     }
     if (!bReplaced) { m_SubstBuffer.push_back(rawReplStrg[j]); }

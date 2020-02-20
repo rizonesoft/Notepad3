@@ -2075,7 +2075,9 @@ int CheckRegExReplTarget(char* pszInput)
         return SCI_REPLACETARGETRE;
       }
     }
-    ++pszInput;
+    else {
+      ++pszInput;
+    }
   }
   return SCI_REPLACETARGET;
 }
