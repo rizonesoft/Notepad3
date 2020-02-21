@@ -424,16 +424,52 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 //
 extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
 {
-  IShellItem* pShellItem = NULL;
-  HRESULT const hr = SHCreateItemFromParsingName(szFilePath, NULL, IID_PPV_ARGS(&pShellItem));
-  if (SUCCEEDED(hr))
+  if (Flags.ShellUseSystemMRU) 
   {
-    SHARDAPPIDINFO info;
-    info.psi = pShellItem;
-    info.pszAppID = Settings2.AppUserModelID;  // our AppID - see above
-    SHAddToRecentDocs(SHARD_APPIDINFO, &info);
+    SHAddToRecentDocs(SHARD_PATHW, szFilePath);
+#if 0
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
+
+    IShellItem* pShellItem = NULL;
+    HRESULT const hr = SHCreateItemFromParsingName(szFilePath, NULL, IID_PPV_ARGS(&pShellItem));
+
+    if (SUCCEEDED(hr))
+    {
+      SHARDAPPIDINFO info;
+      info.psi = pShellItem;
+      info.pszAppID = Settings2.AppUserModelID;  // our AppID - see above
+      SHAddToRecentDocs(SHARD_APPIDINFO, &info);
+      pShellItem->Release();
+    }
+    CoUninitialize();
+#endif
   }
 }
+
+
+#if 0
+//=============================================================================
+//
+//  ClearDestinationsOnRecentDocs()
+//
+extern "C" void ClearDestinationsOnRecentDocs()
+{
+  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
+
+  IApplicationDestinations* pDestinations = NULL;
+  HRESULT hr = CoCreateInstance(CLSID_ApplicationDestinations, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pDestinations));
+    
+  if (SUCCEEDED(hr))
+  {
+    hr = pDestinations->SetAppID(Settings2.AppUserModelID);
+    if (SUCCEEDED(hr)) {
+      pDestinations->RemoveAllDestinations();
+    }
+    pDestinations->Release();
+  }
+  CoUninitialize();
+}
+#endif
 
 
 //=============================================================================
@@ -1257,14 +1293,14 @@ void LoadSettings()
 
   // File MRU
   Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);
-  MRU_Load(Globals.pFileMRU);
+  MRU_Load(Globals.pFileMRU, true);
 
   Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUfind);
+  MRU_Load(Globals.pMRUfind, false);
   SetFindPattern(Globals.pMRUfind->pszItems[0]);
 
   Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUreplace);
+  MRU_Load(Globals.pMRUreplace, false);
 
   CloseSettingsFile(bDirtyFlag);
 
@@ -1770,7 +1806,8 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
 {
   if (pmru) {
     int i = 0;
-    if (MRU_FindFile(pmru, pszFile, &i)) {
+    bool const bAlreadyInList = MRU_FindFile(pmru, pszFile, &i);
+    if (bAlreadyInList) {
       LocalFree(pmru->pszItems[i]);  // StrDup()
     }
     else {
@@ -1790,6 +1827,9 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
     }
     else {
       pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
+    }
+    if (!bAlreadyInList) {
+      AddFilePathToRecentDocs(pszFile);
     }
     pmru->iEncoding[0] = iEnc;
     pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
@@ -1877,46 +1917,60 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 }
 
 
-bool MRU_Load(LPMRULIST pmru)
+bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 {
   if (pmru) 
   {
     MRU_Empty(pmru);
+    //if (bFileProps) { ClearDestinationsOnRecentDocs(); }
 
     const WCHAR* const RegKey_Section = pmru->szRegKey;
 
     int n = 0;
-    for (int i = 0; i < pmru->iSize; i++) {
+    for (int i = 0; i < pmru->iSize; ++i)
+    {
       WCHAR tchName[32] = { L'\0' };
       StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
       WCHAR tchItem[2048] = { L'\0' };
-      if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
+      if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem)))
+      {
         size_t const len = StringCchLen(tchItem, 0);
         if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
           MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
           tchItem[len - 2] = L'\0'; // clear dangling '"'
         }
         pmru->pszItems[n] = StrDup(tchItem);
-        
+
         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
         int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
-        pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
+        pmru->iEncoding[n] = bFileProps ? (cpi_enc_t)Encoding_MapIniSetting(true, iCP) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-        pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1;
+        pmru->iCaretPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
-        pmru->iSelAnchPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1;
+        pmru->iSelAnchPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
 
         WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
         IniSectionGetString(RegKey_Section, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
-        pmru->pszBookMarks[n] = StrDup(wchBookMarks);
+        pmru->pszBookMarks[n] = bFileProps ? StrDup(wchBookMarks) : nullptr;
 
         ++n;
       }
     }
+    if (bFileProps) {
+      WCHAR szFilePath[MAX_PATH + 1];
+      for (int i = n - 1; i >= 0; --i) 
+      {
+        if (StrIsNotEmpty(pmru->pszItems[i])) {
+          PathAbsoluteFromApp(pmru->pszItems[i], szFilePath, COUNTOF(szFilePath), true);
+          AddFilePathToRecentDocs(szFilePath);
+        }
+      }
+    }
+
     return true;
   }
   return false;
@@ -1978,7 +2032,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
     if (IsIniFileLoaded()) {
 
       LPMRULIST pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
-      MRU_Load(pmruBase);
+      MRU_Load(pmruBase, bAddFiles);
 
       if (bAddFiles) {
         for (int i = pmru->iSize - 1; i >= 0; i--) {

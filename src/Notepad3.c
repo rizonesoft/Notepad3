@@ -9670,13 +9670,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
       MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
     }
+
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
     SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
 
-    if (Flags.ShellUseSystemMRU) {
-      //SHAddToRecentDocs(SHARD_PATHW, szFileName);
-      AddFilePathToRecentDocs(szFileName);
-    }
     // Install watching of the current file
     if (!bReload && FileWatching.ResetFileWatching) {
       if (FileWatching.MonitoringLog) {
@@ -10106,10 +10103,6 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
-      if (Flags.ShellUseSystemMRU) {
-        //SHAddToRecentDocs(SHARD_PATHW, Globals.CurrentFile);
-        AddFilePathToRecentDocs(Globals.CurrentFile);
-      }
 
       SciCall_SetSavePoint();
 
