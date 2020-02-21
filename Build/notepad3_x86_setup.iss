@@ -20,8 +20,9 @@
   #error Compile MiniPath x86 first
 #endif
 
+#define app_name      Notepad3
+#define app_publisher Rizonesoft
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
-#define app_name      "Notepad3"
 #define app_copyright "(c) Rizonesoft 2008-2019"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
@@ -30,7 +31,7 @@ AppId={#app_name}
 AppName={#app_name}
 AppVersion={#app_version}
 AppVerName={#app_name} {#app_version}
-AppPublisher=Rizonesoft
+AppPublisher={#app_publisher}
 AppPublisherURL=https://rizonesoft.com
 AppSupportURL=https://rizonesoft.com
 AppUpdatesURL=https://rizonesoft.com
@@ -173,10 +174,10 @@ Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
 Name: "{userappdata}\Rizonesoft\Notepad3\themes"
 
 [Icons]
-Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {commonprograms}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: startup_icon;       Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklaunchicon;    Comment: {#app_name} {#app_version}; WorkingDir: {app};                           IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {commonprograms}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: startup_icon;      Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklaunchicon;    Comment: {#app_name} {#app_version}; WorkingDir: {app};                                               IconFilename: {app}\Notepad3.exe; IconIndex: 0
 
 
 [INI]
@@ -332,7 +333,7 @@ end;
 
 procedure AddReg();
 begin
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Notepad3');
+  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
 end;
