@@ -334,13 +334,13 @@ typedef struct _globals_t
   FILEVARS  fvBackup;
   int       iWrapCol;
 
-  bool      flagPosParam;
-  int       flagWindowPos;
-  int       flagReuseWindow;
-  int       flagSingleFileInstance;
-  int       flagMultiFileArg;
-  int       flagShellUseSystemMRU;
-  int       flagPrintFileAndLeave;
+  bool      CmdLnFlag_PosParam;
+  int       CmdLnFlag_WindowPos;
+  int       CmdLnFlag_ReuseWindow;
+  int       CmdLnFlag_SingleFileInstance;
+  int       CmdLnFlag_MultiFileArg;
+  int       CmdLnFlag_ShellUseSystemMRU;
+  int       CmdLnFlag_PrintFileAndLeave;
    
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
@@ -546,7 +546,7 @@ typedef struct _settings2_t
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
   WCHAR FileBrowserPath[MAX_PATH];
-  WCHAR AppUserModelID[32];
+  WCHAR AppUserModelID[128];
   WCHAR AutoCompleteFillUpChars[64];
   WCHAR LineCommentPostfixStrg[64];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];

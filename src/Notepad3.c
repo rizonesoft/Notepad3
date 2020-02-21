@@ -536,7 +536,7 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 static LPWSTR                s_lpSchemeArg = NULL;
 static LPWSTR                s_lpOrigFileArg = NULL;
 static LPWSTR                s_lpMatchArg = NULL;
-static WCHAR                 s_lpFileArg[MAX_PATH+1];
+static WCHAR                 s_lpFileArg[MAX_PATH + 1] = { L'\0' };
 
 static cpi_enc_t             s_flagSetEncoding = CPI_NONE;
 static int                   s_flagSetEOLMode = 0;
@@ -613,7 +613,9 @@ static void SetSaveNeeded(const bool setSaveNeeded)
 static void _InitGlobals()
 {
   ZeroMemory(&Globals, sizeof(GLOBALS_T));
+  ZeroMemory(&Defaults, sizeof(SETTINGS_T));
   ZeroMemory(&Settings, sizeof(SETTINGS_T));
+  ZeroMemory(&Defaults2, sizeof(SETTINGS_T));
   ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
   ZeroMemory(&Flags, sizeof(FLAGS_T));
 
@@ -630,13 +632,13 @@ static void _InitGlobals()
   Globals.iWrapCol = 0;
   Globals.CallTipType = CT_NONE;
 
-  Globals.flagPosParam = false;
-  Globals.flagWindowPos = 0;
-  Globals.flagReuseWindow = 0;
-  Globals.flagSingleFileInstance = 0;
-  Globals.flagMultiFileArg = 0;
-  Globals.flagShellUseSystemMRU = 0;
-  Globals.flagPrintFileAndLeave = 0;
+  Globals.CmdLnFlag_PosParam = false;
+  Globals.CmdLnFlag_WindowPos = 0;
+  Globals.CmdLnFlag_ReuseWindow = 0;
+  Globals.CmdLnFlag_SingleFileInstance = 0;
+  Globals.CmdLnFlag_MultiFileArg = 0;
+  Globals.CmdLnFlag_ShellUseSystemMRU = 0;
+  Globals.CmdLnFlag_PrintFileAndLeave = 0;
 
   Globals.DOSEncoding = CPI_NONE;
   Globals.bZeroBasedColumnIndex = false;
@@ -681,7 +683,6 @@ static void _InitGlobals()
   FileWatching.FileWatchingMode = FWM_DONT_CARE;
   FileWatching.ResetFileWatching = true;
   FileWatching.MonitoringLog = false;
-
 }
 
 
@@ -1195,7 +1196,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
-  InitWindowPosition(&s_WinInfo, Globals.flagWindowPos);
+  InitWindowPosition(&s_WinInfo, Globals.CmdLnFlag_WindowPos);
   s_WinCurrentWidth = s_WinInfo.cx;
 
   // get monitor coordinates from g_WinInfo
@@ -1451,7 +1452,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   UpdateAllBars(false);
 
   // print file immediately and quit
-  if (Globals.flagPrintFileAndLeave)
+  if (Globals.CmdLnFlag_PrintFileAndLeave)
   {
     WCHAR *pszTitle;
     WCHAR tchUntitled[32] = { L'\0' };
@@ -1474,7 +1475,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     }
   }
 
-  if (s_flagAppIsClosing || Globals.flagPrintFileAndLeave) {
+  if (s_flagAppIsClosing || Globals.CmdLnFlag_PrintFileAndLeave) {
     CloseApplication();
   }
 
@@ -1531,7 +1532,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_CLOSE:
       s_flagAppIsClosing = true;
-      CloseNonModalDialogs();
       if (FileSave(false, true, false, false, Flags.bPreserveFileModTime)) {
         DestroyWindow(Globals.hwndMain);
       }
@@ -2469,15 +2469,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       ChangeClipboardChain(hwnd, s_hwndNextCBChain);
     }
 
-    // Destroy find / replace dialog
-    if (IsWindow(Globals.hwndDlgFindReplace)) {
-      DestroyWindow(Globals.hwndDlgFindReplace);
-    }
-    // Destroy customize schemes
-    if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
-      DestroyWindow(Globals.hwndDlgCustomizeSchemes);
-    }
-    
+    // close Find/Replace and CustomizeSchemes
+    CloseNonModalDialogs();
+   
     // call SaveAllSettings() when Globals.hwndToolbar is still valid
     SaveAllSettings(false);
 
@@ -2485,11 +2479,6 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     ShowNotifyIcon(hwnd, false);
 
     bShutdownOK = true;
-  }
-
-  if (s_lpOrigFileArg) {
-    FreeMem(s_lpOrigFileArg);
-    s_lpOrigFileArg = NULL;
   }
 
   if (umsg == WM_DESTROY) {
@@ -7692,11 +7681,11 @@ void ParseCommandLine()
       // options
       if (lp1[1] == L'\0') {
         if (!bIsFileArg && (lp1[0] == L'+')) {
-          Globals.flagMultiFileArg = 2;
+          Globals.CmdLnFlag_MultiFileArg = 2;
           bIsFileArg = true;
         }
         else if (!bIsFileArg && (lp1[0] == L'-')) {
-          Globals.flagMultiFileArg = 1;
+          Globals.CmdLnFlag_MultiFileArg = 1;
           bIsFileArg = true;
         }
       }
@@ -7744,17 +7733,18 @@ void ParseCommandLine()
           StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
                          lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
           StrTrim(Settings2.AppUserModelID, L" ");
-          if (StringCchLenW(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID)) == 0)
-            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W(SAPPNAME));
+          if (StrIsEmpty(Settings2.AppUserModelID)) {
+            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
+          }
         }
         else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
           WCHAR wch[16];
           StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
           StrTrim(wch, L" ");
           if (*wch == L'1')
-            Globals.flagShellUseSystemMRU = 2;
+            Globals.CmdLnFlag_ShellUseSystemMRU = 2;
           else
-            Globals.flagShellUseSystemMRU = 1;
+            Globals.CmdLnFlag_ShellUseSystemMRU = 1;
         }
         // Relaunch elevated
         else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CSTRLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0) {
@@ -7770,11 +7760,11 @@ void ParseCommandLine()
           switch (*CharUpper(lp1)) {
 
             case L'N':
-              Globals.flagReuseWindow = 1;
+              Globals.CmdLnFlag_ReuseWindow = 1;
               if (*CharUpper(lp1 + 1) == L'S')
-                Globals.flagSingleFileInstance = 2;
+                Globals.CmdLnFlag_SingleFileInstance = 2;
               else
-                Globals.flagSingleFileInstance = 1;
+                Globals.CmdLnFlag_SingleFileInstance = 1;
               break;
 
             case L'R':
@@ -7782,11 +7772,11 @@ void ParseCommandLine()
                 Flags.bPreserveFileModTime = true;
               }
               else {
-                Globals.flagReuseWindow = 2;
+                Globals.CmdLnFlag_ReuseWindow = 2;
                 if (*CharUpper(lp1 + 1) == L'S')
-                  Globals.flagSingleFileInstance = 2;
+                  Globals.CmdLnFlag_SingleFileInstance = 2;
                 else
-                  Globals.flagSingleFileInstance = 1;
+                  Globals.CmdLnFlag_SingleFileInstance = 1;
               }
               break;
 
@@ -7826,43 +7816,43 @@ void ParseCommandLine()
                 break;
               }
               if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O') {
-                Globals.flagPosParam = true;
-                Globals.flagWindowPos = 1;
+                Globals.CmdLnFlag_PosParam = true;
+                Globals.CmdLnFlag_WindowPos = 1;
               }
               else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S') {
-                Globals.flagPosParam = true;
-                Globals.flagWindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
+                Globals.CmdLnFlag_PosParam = true;
+                Globals.CmdLnFlag_WindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
               }
               else if (StrChrI(L"FLTRBM", *(lp + 1))) {
                 WCHAR* p = (lp + 1);
-                Globals.flagPosParam = true;
-                Globals.flagWindowPos = 0;
+                Globals.CmdLnFlag_PosParam = true;
+                Globals.CmdLnFlag_WindowPos = 0;
                 while (*p) {
                   switch (*CharUpper(p)) {
                     case L'F':
-                      Globals.flagWindowPos &= ~(4 | 8 | 16 | 32);
-                      Globals.flagWindowPos |= 64;
+                      Globals.CmdLnFlag_WindowPos &= ~(4 | 8 | 16 | 32);
+                      Globals.CmdLnFlag_WindowPos |= 64;
                       break;
                     case L'L':
-                      Globals.flagWindowPos &= ~(8 | 64);
-                      Globals.flagWindowPos |= 4;
+                      Globals.CmdLnFlag_WindowPos &= ~(8 | 64);
+                      Globals.CmdLnFlag_WindowPos |= 4;
                       break;
                     case  L'R':
-                      Globals.flagWindowPos &= ~(4 | 64);
-                      Globals.flagWindowPos |= 8;
+                      Globals.CmdLnFlag_WindowPos &= ~(4 | 64);
+                      Globals.CmdLnFlag_WindowPos |= 8;
                       break;
                     case L'T':
-                      Globals.flagWindowPos &= ~(32 | 64);
-                      Globals.flagWindowPos |= 16;
+                      Globals.CmdLnFlag_WindowPos &= ~(32 | 64);
+                      Globals.CmdLnFlag_WindowPos |= 16;
                       break;
                     case L'B':
-                      Globals.flagWindowPos &= ~(16 | 64);
-                      Globals.flagWindowPos |= 32;
+                      Globals.CmdLnFlag_WindowPos &= ~(16 | 64);
+                      Globals.CmdLnFlag_WindowPos |= 32;
                       break;
                     case L'M':
-                      if (Globals.flagWindowPos == 0)
-                        Globals.flagWindowPos |= 64;
-                      Globals.flagWindowPos |= 128;
+                      if (Globals.CmdLnFlag_WindowPos == 0)
+                        Globals.CmdLnFlag_WindowPos |= 64;
+                      Globals.CmdLnFlag_WindowPos |= 128;
                       break;
                   }
                   p = CharNext(p);
@@ -7873,8 +7863,8 @@ void ParseCommandLine()
                 int bMaximize = 0;
                 int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &bMaximize);
                 if (itok == 4 || itok == 5) { // scan successful
-                  Globals.flagPosParam = true;
-                  Globals.flagWindowPos = 0;
+                  Globals.CmdLnFlag_PosParam = true;
+                  Globals.CmdLnFlag_WindowPos = 0;
                   if (wi.cx < 1) wi.cx = CW_USEDEFAULT;
                   if (wi.cy < 1) wi.cy = CW_USEDEFAULT;
                   if (bMaximize) wi.max = true;
@@ -8016,7 +8006,7 @@ void ParseCommandLine()
 
             case L'Z':
               ExtractFirstArgument(lp2, lp1, lp2, (int)len);
-              Globals.flagMultiFileArg = 1;
+              Globals.CmdLnFlag_MultiFileArg = 1;
               bIsNotepadReplacement = true;
               break;
 
@@ -8025,9 +8015,9 @@ void ParseCommandLine()
               break;
 
             case L'V':
-              Globals.flagPrintFileAndLeave = 1;
+              Globals.CmdLnFlag_PrintFileAndLeave = 1;
               if (*CharUpper(lp1 + 1) == L'D') {
-                Globals.flagPrintFileAndLeave = 2;  // open printer dialog
+                Globals.CmdLnFlag_PrintFileAndLeave = 2;  // open printer dialog
               }
               break;
 
@@ -8069,6 +8059,7 @@ void ParseCommandLine()
             s_lpFileList[s_cFileList++] = StrDup(lpFileBuf); // LocalAlloc()
           }
           bContinue = false;
+          FreeMem(lpFileBuf);
         }
       }
 
@@ -9737,7 +9728,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
 
     bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
-      && !Globals.flagPrintFileAndLeave 
+      && !Globals.CmdLnFlag_PrintFileAndLeave 
       && !fioStatus.bEncryptedRaw
       && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
@@ -9758,7 +9749,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
     bool const bCheckIndent = Settings.WarnInconsistentIndents
-      && !Globals.flagPrintFileAndLeave
+      && !Globals.CmdLnFlag_PrintFileAndLeave
       && !fioStatus.bEncryptedRaw
       && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
@@ -9770,7 +9761,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       ConsistentIndentationCheck(&fioStatus);
     }
 
-    if (Settings.AutoDetectIndentSettings && !Globals.flagPrintFileAndLeave)
+    if (Settings.AutoDetectIndentSettings && !Globals.CmdLnFlag_PrintFileAndLeave)
     {
       if (!Settings.WarnInconsistentIndents || (fioStatus.iGlobalIndent != I_MIX_LN))
       {
@@ -10512,8 +10503,8 @@ bool ActivatePrevInst()
 //
 bool RelaunchMultiInst() {
 
-  if (Flags.MultiFileArg && (s_cFileList > 1)) {
-
+  if (Flags.MultiFileArg && (s_cFileList > 1)) 
+  {
     LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
     size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
     LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
@@ -10558,6 +10549,7 @@ bool RelaunchMultiInst() {
   for (int i = 0; i < s_cFileList; i++) {
     LocalFree(s_lpFileList[i]); // StrDup()
   }
+
   return false;
 }
 

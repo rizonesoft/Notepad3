@@ -699,32 +699,32 @@ void LoadSettings()
   Flags.bDevDebugMode = IniSectionGetBool(IniSecSettings2, L"DevDebugMode", DefaultFlags.bDevDebugMode);
   Flags.bStickyWindowPosition = IniSectionGetBool(IniSecSettings2, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
 
-  if (Globals.flagReuseWindow == 0) {
+  if (Globals.CmdLnFlag_ReuseWindow == 0) {
     Flags.bReuseWindow = IniSectionGetBool(IniSecSettings2, L"ReuseWindow", DefaultFlags.bReuseWindow);
   }
   else {
-    Flags.bReuseWindow = (Globals.flagReuseWindow == 2);
+    Flags.bReuseWindow = (Globals.CmdLnFlag_ReuseWindow == 2);
   }
 
-  if (Globals.flagSingleFileInstance == 0) {
+  if (Globals.CmdLnFlag_SingleFileInstance == 0) {
     Flags.bSingleFileInstance = IniSectionGetBool(IniSecSettings2, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
   }
   else {
-    Flags.bSingleFileInstance = (Globals.flagSingleFileInstance == 2);
+    Flags.bSingleFileInstance = (Globals.CmdLnFlag_SingleFileInstance == 2);
   }
 
-  if (Globals.flagMultiFileArg == 0) {
+  if (Globals.CmdLnFlag_MultiFileArg == 0) {
     Flags.MultiFileArg = IniSectionGetBool(IniSecSettings2, L"MultiFileArg", DefaultFlags.MultiFileArg);
   }
   else {
-    Flags.MultiFileArg = (Globals.flagMultiFileArg == 2);
+    Flags.MultiFileArg = (Globals.CmdLnFlag_MultiFileArg == 2);
   }
 
-  if (Globals.flagShellUseSystemMRU == 0) {
+  if (Globals.CmdLnFlag_ShellUseSystemMRU == 0) {
     Flags.ShellUseSystemMRU = IniSectionGetBool(IniSecSettings2, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
   }
   else {
-    Flags.ShellUseSystemMRU = (Globals.flagShellUseSystemMRU == 2);
+    Flags.ShellUseSystemMRU = (Globals.CmdLnFlag_ShellUseSystemMRU == 2);
   }
 
   Flags.RelativeFileMRU = IniSectionGetBool(IniSecSettings2, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
@@ -739,7 +739,7 @@ void LoadSettings()
   Flags.NoCGIGuess = IniSectionGetBool(IniSecSettings2, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
   Flags.NoFileVariables = IniSectionGetInt(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
-  Flags.PrintFileAndLeave = Globals.flagPrintFileAndLeave;
+  Flags.PrintFileAndLeave = Globals.CmdLnFlag_PrintFileAndLeave;
 
   // --------------------------------------------------------------------------
 
@@ -871,9 +871,10 @@ void LoadSettings()
   Defaults2.FileBrowserPath[0] = L'\0';
   IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
-  StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W(SAPPNAME));
-  IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
-
+  StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
+  if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
+    IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
+  }
   Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
   IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", Defaults2.ExtendedWhiteSpaceChars,
     Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
@@ -1188,7 +1189,7 @@ void LoadSettings()
 
   // 2nd set initial window position
 
-  if (!Globals.flagPosParam /*|| g_bStickyWinPos*/) {
+  if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
 
     s_WinInfo = s_DefWinInfo;
 
@@ -1213,10 +1214,10 @@ void LoadSettings()
     if ((s_WinInfo.x == CW_USEDEFAULT) || (s_WinInfo.y == CW_USEDEFAULT) ||
       (s_WinInfo.cx == CW_USEDEFAULT) || (s_WinInfo.cy == CW_USEDEFAULT))
     {
-      Globals.flagWindowPos = 2; // std. default position (CmdLn: /pd)
+      Globals.CmdLnFlag_WindowPos = 2; // std. default position (CmdLn: /pd)
     }
     else
-      Globals.flagWindowPos = 0; // init to g_WinInfo
+      Globals.CmdLnFlag_WindowPos = 0; // init to g_WinInfo
   }
 
   // ------------------------------------------------------------------------
