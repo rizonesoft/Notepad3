@@ -137,7 +137,7 @@ static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 static UINT      s_uidsAppTitle = IDS_MUI_APPTITLE;
 static DWORD     s_dwLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
-static bool      s_bIndicMultiEdit = false;
+static bool      s_bInMultiEditMode = false;
 static bool      s_bCallTipEscDisabled = false;
 
 static int       s_iInitialLine;
@@ -5700,18 +5700,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           s_bCallTipEscDisabled = true;
           --skipLevel;
         }
-        else if (s_bIndicMultiEdit) {
+        else if (s_bInMultiEditMode) {
           _BEGIN_UNDO_ACTION_
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
           EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
           _END_UNDO_ACTION_
-          s_bIndicMultiEdit = false;
+          s_bInMultiEditMode = false;
           --skipLevel;
         }
 
-        if (!SciCall_IsSelectionEmpty() && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
+        if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
           _BEGIN_UNDO_ACTION_
           EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
           _END_UNDO_ACTION_
@@ -7186,11 +7186,11 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         SetSaveNeeded(true);
       }
 
-      if (s_bIndicMultiEdit && !(iModType & SC_MULTILINEUNDOREDO)) {
+      if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
         if (!Sci_IsMultiSelection()) {
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
-          s_bIndicMultiEdit = false;
+          s_bInMultiEditMode = false;
         }
       }
     }
@@ -7304,7 +7304,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           DocPos const pos = SciCall_GetSelectionNStart(s);
           SciCall_IndicatorFillRange(SciCall_PositionBefore(pos), 1);
         }
-        if (!s_bIndicMultiEdit) { s_bIndicMultiEdit = true; }
+        s_bInMultiEditMode = true;
       }
 
       switch (ich) {
