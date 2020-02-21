@@ -487,6 +487,7 @@ typedef struct _flags_t
   int  ToolbarLook;
   int PrintFileAndLeave;
 
+  bool bLargeFileLoaded;
   bool bDevDebugMode;
   bool bStickyWindowPosition;
   bool bReuseWindow;
@@ -600,7 +601,7 @@ typedef struct _editfileiostatus
   cpi_enc_t iEncoding;
   int iEOLMode;
 
-  bool bFileTooBig;
+  bool bBigFileLoad;
   bool bUnicodeErr;
 
   // inconsistent line endings

@@ -1464,7 +1464,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
   // apply lexer styles
-  Sci_ApplyLexerStyle(0, -1);
+  if (Flags.bLargeFileLoaded) {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    SciCall_StartStyling(0);
+  }
+  else {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    Sci_ApplyLexerStyle(0, -1);
+  }
   EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
 
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
@@ -1947,6 +1954,12 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 //
 bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
+  if (Flags.bLargeFileLoaded) 
+  {
+    Style_SetLexer(hwnd, &lexANSI);
+    return true;
+  }
+
   LPCWSTR lpszExt = PathFindExtension(lpszFile);
   bool  bFound = false;
   PEDITLEXER pLexNew = NULL;

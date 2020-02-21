@@ -832,7 +832,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 // EditDetectEOLMode() - moved here to handle Unicode files correctly
 // by zufuliu (https://github.com/zufuliu/notepad2)
 //
-void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* status)
+void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status)
 {
   int iEOLMode = Settings.DefaultEOLMode;
 
@@ -900,7 +900,7 @@ void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* status)
 //
 // EditIndentationCount() - check indentation consistency
 //
-void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status)
+void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
 {
   UNUSED(hwnd);
 
@@ -913,6 +913,8 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status)
   status->indentCount[I_MIX_LN] = 0;
   status->indentCount[I_TAB_MOD_X] = 0;
   status->indentCount[I_SPC_MOD_X] = 0;
+
+  if (status->bBigFileLoad) { return; }
 
   for (DocLn line = 0; line < lineCount; ++line) 
   {
@@ -974,14 +976,14 @@ bool EditLoadFile(
   bool bSkipANSICPDetection,
   bool bForceEncDetection,
   bool bClearUndoHistory,
-  EditFileIOStatus* status)
+  EditFileIOStatus* const status)
 {
   cpi_enc_t const iEncFallback = Settings.UseDefaultForFileEncoding ?
                                  Settings.DefaultEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
 
   status->iEncoding = iEncFallback;
   status->bUnicodeErr = false;
-  status->bFileTooBig = false;
+  status->bBigFileLoad = false;
   status->bUnknownExt = false;
   status->bEncryptedRaw = false;
 
@@ -1014,7 +1016,7 @@ bool EditLoadFile(
       InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, (liFileSize.QuadPart / 1024LL / 1024LL));
       CloseHandle(hFile);
       Encoding_Forced(CPI_NONE);
-      status->bFileTooBig = true;
+      status->bBigFileLoad = true;
     }
     return false;
   }
@@ -1023,15 +1025,15 @@ bool EditLoadFile(
   DWORD const dwBufferSize = dwFileSize + 8;
 
   // Check if a warning message should be displayed for large files
-  status->bFileTooBig = false;
+  status->bBigFileLoad = false;
   DWORD dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
     if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
       Encoding_Forced(CPI_NONE);
-      status->bFileTooBig = true;
       return false;
     }
+    status->bBigFileLoad = true;
   }
 
   // check for unknown file/extension
@@ -1052,7 +1054,7 @@ bool EditLoadFile(
     Globals.dwLastError = GetLastError();
     CloseHandle(hFile);
     Encoding_Forced(CPI_NONE);
-    status->bFileTooBig = true;
+    status->bBigFileLoad = true;
     return false;
   }
 
@@ -7297,6 +7299,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   UNUSED(hwnd);
+  if (Flags.bLargeFileLoaded) { return; }   // no styling for large files
   if (iEndPos < 0) {
     Sci_ApplyLexerStyle(0, -1);
   }

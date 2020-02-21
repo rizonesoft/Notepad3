@@ -652,6 +652,7 @@ static void _InitGlobals()
   Globals.bDocHasInconsistentEOLs = false;
   Globals.idxSelectedTheme = 1; // Default(0), Standard(1)
 
+  Flags.bLargeFileLoaded = DefaultFlags.bLargeFileLoaded = false;
   Flags.bDevDebugMode = DefaultFlags.bDevDebugMode = false;
   Flags.bStickyWindowPosition = DefaultFlags.bStickyWindowPosition = false;
   Flags.bReuseWindow = DefaultFlags.bReuseWindow = false;
@@ -1436,8 +1437,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       Style_SetLexerFromName(Globals.hwndEdit,Globals.CurrentFile,s_lpSchemeArg);
       LocalFree(s_lpSchemeArg);  // StrDup()
     }
-    else if (s_iInitialLexer >=0 && s_iInitialLexer < NUMLEXERS)
-      Style_SetLexerFromID(Globals.hwndEdit,s_iInitialLexer);
+    else if ((s_iInitialLexer >= 0) && (s_iInitialLexer < NUMLEXERS)) {
+      Style_SetLexerFromID(Globals.hwndEdit, s_iInitialLexer);
+    }
     s_flagLexerSpecified = false;
   }
 
@@ -9448,7 +9450,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
       }
       Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
     }
-    fSuccess = EditSaveFile(Globals.hwndEdit,pszFileName, status, bSaveCopy, bPreserveTimeStamp);
+    fSuccess = EditSaveFile(Globals.hwndEdit, pszFileName, status, bSaveCopy, bPreserveTimeStamp);
   }
 
   dwFileAttributes = GetFileAttributes(pszFileName);
@@ -9661,7 +9663,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (!s_flagKeepTitleExcerpt) {
       StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
     }
-    if (!s_flagLexerSpecified) { // flag will be cleared
+    Flags.bLargeFileLoaded = fioStatus.bBigFileLoad;
+    // flagLexerSpecified will be cleared
+    if (!s_flagLexerSpecified && !fioStatus.bBigFileLoad) {
       bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
     }
     SciCall_SetEOLMode(fioStatus.iEOLMode);
@@ -9731,17 +9735,17 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_UNICODE);
     }
 
-    _UpdateStatusbarDelayed(true);
-
     // Show inconsistent line endings warning
     Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
 
-    bool const bCheckEOL = Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs
-      && !Globals.flagPrintFileAndLeave 
+    bool const bCheckFile = !Globals.flagPrintFileAndLeave
+      && !fioStatus.bBigFileLoad
       && !fioStatus.bEncryptedRaw
       && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
     //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
+
+    bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
 
     if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
     {
@@ -9757,12 +9761,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // Show inconsistent indentation 
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-    bool const bCheckIndent = Settings.WarnInconsistentIndents
-      && !Globals.flagPrintFileAndLeave
-      && !fioStatus.bEncryptedRaw
-      && !(fioStatus.bUnknownExt && bUnknownLexer)
-      && !bReload;
-    //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
+    bool const bCheckIndent = bCheckFile && Settings.WarnInconsistentIndents;
 
     if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
     {
@@ -9781,7 +9780,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
   }
-  else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
+  else if (!(fioStatus.bBigFileLoad || fioStatus.bUnknownExt)) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFileName));
   }
 

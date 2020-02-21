@@ -454,6 +454,7 @@ DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber
 DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
 DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
 DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 
 //=============================================================================
 //
