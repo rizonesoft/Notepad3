@@ -5694,6 +5694,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
+          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
           _END_UNDO_ACTION_
           s_bIndicMultiEdit = false;
           --skipLevel;
