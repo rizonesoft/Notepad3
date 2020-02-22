@@ -122,6 +122,15 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 //=============================================================================
 
+
+// Document Pointer Handling
+DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t)
+DeclareSciCallV01(SetDocPointer, SETDOCPOINTER, sptr_t, pdoc)
+DeclareSciCallR2(CreateDocument, CREATEDOCUMENT, sptr_t, DocPos, bytes, int, options)
+DeclareSciCallV01(AddRefDocument, ADDREFDOCUMENT, sptr_t, pdoc)
+DeclareSciCallV01(ReleaseDocument, RELEASEDOCUMENT, sptr_t, pdoc)
+DeclareSciCallR0(GetDocumentOptions, GETDOCUMENTOPTIONS, int)
+
 //  Selection, positions and information
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)

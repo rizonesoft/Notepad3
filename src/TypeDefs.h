@@ -601,7 +601,6 @@ typedef struct _editfileiostatus
   cpi_enc_t iEncoding;
   int iEOLMode;
 
-  bool bBigFileLoad;
   bool bUnicodeErr;
 
   // inconsistent line endings
@@ -618,7 +617,7 @@ typedef struct _editfileiostatus
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
 
 //=============================================================================
 

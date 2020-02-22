@@ -4042,9 +4042,11 @@ void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
 {
   if (lpszText) {
     UINT const uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
     SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
   }
 }
+
 
 
 //=============================================================================
@@ -4053,21 +4055,18 @@ void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
 //
 bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
 {
-
   WCHAR szText[256] = { L'\0' };
   UINT const uFlags = (nPart == STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+  StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
 
-  if (!uID)
-  {
+  if (!uID) {
     SendMessage(hwnd, SB_SETTEXT, uFlags, 0);
     return true;
   }
 
-  if (!GetLngString(uID, szText, 256))
-    return false;
+  if (!GetLngString(uID, szText, 256)) { return false; }
 
   return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)szText);
-
 }
 
 

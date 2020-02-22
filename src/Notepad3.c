@@ -1031,7 +1031,6 @@ void BeginWaitCursor(LPCWSTR text)
   {
     SciCall_SetCursor(SC_CURSORWAIT); // delayed to SCN_DWELLSTART
     StatusSetText(Globals.hwndStatus, STATUS_HELP, text);
-    //StatusSetTextID(Globals.hwndStatus, STATUS_HELP, uid);
   }
   InterlockedIncrement(&iWaitCursorStackCounter);
 }
@@ -1052,8 +1051,7 @@ void EndWaitCursor()
     POINT pt;
     SciCall_SetCursor(SC_CURSORNORMAL);
     GetCursorPos(&pt); SetCursorPos(pt.x, pt.y);
-    StatusSetSimple(Globals.hwndStatus, false);
-    UpdateStatusbar(false);
+    UpdateStatusbar(true);
   }
 }
 
@@ -1558,7 +1556,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+      if (Flags.bLargeFileLoaded) {
+        UpdateVisibleIndicators();
+      }
+      else {
+        EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+      }
       MarkAllOccurrences(0, true);
       UpdateAllBars(false);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
@@ -9425,14 +9428,11 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
             bool bSkipUnicodeDetect,bool bSkipANSICPDetection, bool bForceEncDetection, bool bSetSavePoint,
             EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp)
 {
-  WCHAR tch[MAX_PATH+40];
-  bool fSuccess;
-  DWORD dwFileAttributes;
-
-  FormatLngStringW(tch,COUNTOF(tch),(fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
-
+  WCHAR tch[MAX_PATH + 40];
+  FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
   BeginWaitCursor(tch);
 
+  bool fSuccess = false;
   if (fLoad) {
     fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,bSetSavePoint,status);
   }
@@ -9453,8 +9453,8 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
     fSuccess = EditSaveFile(Globals.hwndEdit, pszFileName, status, bSaveCopy, bPreserveTimeStamp);
   }
 
-  dwFileAttributes = GetFileAttributes(pszFileName);
-  s_bFileReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+  DWORD const dwFileAttributes = GetFileAttributes(pszFileName);
+  s_bFileReadOnly = ((dwFileAttributes != INVALID_FILE_ATTRIBUTES) && (dwFileAttributes & FILE_ATTRIBUTE_READONLY));
 
   EndWaitCursor();
 
@@ -9652,6 +9652,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   if (fSuccess) 
   {
+    BeginWaitCursor(L"Styling...");
+
     if (!s_IsThisAnElevatedRelaunch) {
       Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
     }
@@ -9663,9 +9665,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (!s_flagKeepTitleExcerpt) {
       StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
     }
-    Flags.bLargeFileLoaded = fioStatus.bBigFileLoad;
-    // flagLexerSpecified will be cleared
-    if (!s_flagLexerSpecified && !fioStatus.bBigFileLoad) {
+    
+    if (!s_flagLexerSpecified) { // flagLexerSpecified will be cleared
       bUnknownLexer = !Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
     }
     SciCall_SetEOLMode(fioStatus.iEOLMode);
@@ -9738,8 +9739,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // Show inconsistent line endings warning
     Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
 
-    bool const bCheckFile = !Globals.flagPrintFileAndLeave
-      && !fioStatus.bBigFileLoad
+    bool const bCheckFile = !Flags.bLargeFileLoaded
+      && !Globals.flagPrintFileAndLeave
       && !fioStatus.bEncryptedRaw
       && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
@@ -9779,8 +9780,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
     }
 
+    EndWaitCursor();
   }
-  else if (!(fioStatus.bBigFileLoad || fioStatus.bUnknownExt)) {
+  else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt)) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFileName));
   }
 

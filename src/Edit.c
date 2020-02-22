@@ -914,7 +914,7 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
   status->indentCount[I_TAB_MOD_X] = 0;
   status->indentCount[I_SPC_MOD_X] = 0;
 
-  if (status->bBigFileLoad) { return; }
+  if (Flags.bLargeFileLoaded) { return; }
 
   for (DocLn line = 0; line < lineCount; ++line) 
   {
@@ -983,9 +983,9 @@ bool EditLoadFile(
 
   status->iEncoding = iEncFallback;
   status->bUnicodeErr = false;
-  status->bBigFileLoad = false;
   status->bUnknownExt = false;
   status->bEncryptedRaw = false;
+  Flags.bLargeFileLoaded = false;
 
   HANDLE hFile = CreateFile(pszFile,
     GENERIC_READ,
@@ -1005,6 +1005,7 @@ bool EditLoadFile(
   // calculate buffer limit
   LARGE_INTEGER liFileSize = { 0, 0 };
   bool const okay = GetFileSizeEx(hFile, &liFileSize);
+  //bool const bLargerThan2GB = okay && (liFileSize.LowPart >= ((DWORD)LONG_MAX));
 
   //if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (DWORD_MAX - 8))) {
   if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (INT_MAX - 8))) {
@@ -1016,7 +1017,7 @@ bool EditLoadFile(
       InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, (liFileSize.QuadPart / 1024LL / 1024LL));
       CloseHandle(hFile);
       Encoding_Forced(CPI_NONE);
-      status->bBigFileLoad = true;
+      Flags.bLargeFileLoaded = true;
     }
     return false;
   }
@@ -1025,7 +1026,6 @@ bool EditLoadFile(
   DWORD const dwBufferSize = dwFileSize + 8;
 
   // Check if a warning message should be displayed for large files
-  status->bBigFileLoad = false;
   DWORD dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
     if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
@@ -1033,7 +1033,7 @@ bool EditLoadFile(
       Encoding_Forced(CPI_NONE);
       return false;
     }
-    status->bBigFileLoad = true;
+    Flags.bLargeFileLoaded = true;
   }
 
   // check for unknown file/extension
@@ -1048,13 +1048,13 @@ bool EditLoadFile(
     }
   }
 
-  char* lpData = AllocMem(dwFileSize + 8, HEAP_ZERO_MEMORY);
+  char* lpData = AllocMem(dwBufferSize, HEAP_ZERO_MEMORY);
   if (!lpData)
   {
     Globals.dwLastError = GetLastError();
     CloseHandle(hFile);
     Encoding_Forced(CPI_NONE);
-    status->bBigFileLoad = true;
+    Flags.bLargeFileLoaded = true;
     return false;
   }
 
@@ -7299,9 +7299,10 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   UNUSED(hwnd);
-  if (Flags.bLargeFileLoaded) { return; }   // no styling for large files
   if (iEndPos < 0) {
-    Sci_ApplyLexerStyle(0, -1);
+    if (!Flags.bLargeFileLoaded) {  // no styling for large files
+      Sci_ApplyLexerStyle(0, -1);
+    }
   }
   else {
     DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
