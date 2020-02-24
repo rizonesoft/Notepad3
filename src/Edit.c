@@ -313,7 +313,7 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 extern bool bFreezeAppTitle;
 
-void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bClearUndoHistory)
+void XXX_EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory)
 {
   bFreezeAppTitle = true;
 
@@ -334,16 +334,14 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bClea
   // set new text
   if (lenText > 0) {
     _IGNORE_NOTIFY_CHANGE_;
-    DocPos const saveTargetBeg = SciCall_GetTargetStart();
-    DocPos const saveTargetEnd = SciCall_GetTargetEnd();
     SciCall_TargetWholeDocument();
     SciCall_ReplaceTarget(lenText, lpstrText);
-    SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     _OBSERVE_NOTIFY_CHANGE_;
   }
   else {
     SciCall_ClearAll();
   }
+
   SciCall_GotoPos(0);
   SciCall_ChooseCaretX();
 
@@ -354,6 +352,62 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPos lenText, bool bClea
 
   bFreezeAppTitle = false;
 }
+
+
+
+//=============================================================================
+//
+//  EditSetNewText()
+//
+extern bool bFreezeAppTitle;
+
+void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory)
+{
+  bFreezeAppTitle = true;
+
+  if (!lpstrText) { lenText = 0; }
+
+  // clear markers, flags and positions
+  if (bClearUndoHistory) { UndoRedoRecordingStop(); }
+  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
+  _IGNORE_NOTIFY_CHANGE_;
+  SciCall_Cancel();
+  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
+  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
+  EditClearAllOccurrenceMarkers(hwnd);
+  SciCall_SetScrollWidth(1);
+  SciCall_SetXOffset(0);
+  _OBSERVE_NOTIFY_CHANGE_;
+
+  FileVars_Apply(&Globals.fvCurFile);
+
+  // set new text
+  if (Flags.bLargeFileLoaded) {
+    _IGNORE_NOTIFY_CHANGE_;
+    EditSetDocumentBuffer(lpstrText, lenText);
+    _OBSERVE_NOTIFY_CHANGE_;
+  }
+  else if (lenText > 0) {
+    _IGNORE_NOTIFY_CHANGE_;
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
+    _OBSERVE_NOTIFY_CHANGE_;
+  }
+  else {
+    SciCall_ClearAll();
+  }
+
+  SciCall_GotoPos(0);
+  SciCall_ChooseCaretX();
+
+  if (bClearUndoHistory) {
+    SciCall_SetSavePoint();
+    UndoRedoRecordingStart();
+  }
+
+  bFreezeAppTitle = false;
+}
+
 
 
 //=============================================================================
@@ -1005,10 +1059,10 @@ bool EditLoadFile(
   // calculate buffer limit
   LARGE_INTEGER liFileSize = { 0, 0 };
   bool const okay = GetFileSizeEx(hFile, &liFileSize);
-  //bool const bLargerThan2GB = okay && (liFileSize.LowPart >= ((DWORD)LONG_MAX));
+  bool const bLargerThan2GB = okay && (liFileSize.LowPart >= ((DWORD)INT32_MAX));
 
   //if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (DWORD_MAX - 8))) {
-  if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (INT_MAX - 8))) {
+  if (!okay || (liFileSize.HighPart != 0) || bLargerThan2GB) {
     if (!okay) {
       Globals.dwLastError = GetLastError();
     }
@@ -1047,7 +1101,8 @@ bool EditLoadFile(
       return false;
     }
   }
-
+  
+  // new document text buffer
   char* lpData = AllocMem(dwBufferSize, HEAP_ZERO_MEMORY);
   if (!lpData)
   {
@@ -1238,6 +1293,7 @@ bool EditLoadFile(
   SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(encDetection.analyzedEncoding) ? 0x10000 : 0x1000);
 
   Encoding_Forced(CPI_NONE);
+
   FreeMem(lpData);
 
   return true;
@@ -7299,17 +7355,24 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   UNUSED(hwnd);
-  if (iEndPos < 0) {
-    if (!Flags.bLargeFileLoaded) {  // no styling for large files
+  static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
+
+  if (Flags.bLargeFileLoaded) { return; }; // no styling for large files
+
+  if (!guard)
+  {
+    guard = true;
+    if (iEndPos < 0) {
       Sci_ApplyLexerStyle(0, -1);
     }
-  }
-  else {
-    DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
-    DocPos const endPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
-    if (startPos < endPos) {
-      Sci_ApplyLexerStyle(startPos, endPos);
+    else {
+      DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
+      DocPos const endPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
+      if (startPos < endPos) {
+        Sci_ApplyLexerStyle(startPos, endPos);
+      }
     }
+    guard = false;
   }
 }
 

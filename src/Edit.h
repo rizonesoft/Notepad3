@@ -24,7 +24,7 @@
 void  EditInitializeSciCtrl(HWND);
 void  EditReplaceSelection(const char* text, bool bForceSel);
 void  EditInitWordDelimiter(HWND hwnd);
-void  EditSetNewText(HWND hwnd,const char* lpstrText,DocPos lenText,bool);
+void  EditSetNewText(HWND hwnd,const char* lpstrText, DocPosU lenText,bool);
 bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
 bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
@@ -103,8 +103,9 @@ bool  EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose,UINT* pRepeat)
 bool  EditSortDlg(HWND hwnd,int* piSortFlags);
 bool  EditAlignDlg(HWND hwnd,int* piAlignMode);
 bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
-void  EditPrintSetup(HWND);
+void  EditPrintSetup(HWND hwnd);
 void  EditPrintInit();
+bool  EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText);
 void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);

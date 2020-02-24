@@ -3115,6 +3115,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   bool const cf = StrIsNotEmpty(Globals.CurrentFile);
   bool const te = Sci_IsDocEmpty();
   bool const mls = Sci_IsSelectionMultiLine();
+  bool const lfl = Flags.bLargeFileLoaded;
 
   EnableCmd(hmenu, IDM_FILE_REVERT, cf);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
@@ -3270,14 +3271,14 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = SciCall_GetLexer();
 
   EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
+    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro && !lfl);
 
   EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES || i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro && !lfl);
 
   EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
