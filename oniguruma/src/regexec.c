@@ -625,7 +625,10 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       type = p->update_var.type;
       mem  = p->update_var.id;
       clear = p->update_var.clear;
-      fprintf(f, ":%d:%d:%d", type, mem, clear);
+      fprintf(f, ":%d:%d", type, mem);
+      if (type == UPDATE_VAR_RIGHT_RANGE_FROM_S_STACK ||
+          type ==  UPDATE_VAR_RIGHT_RANGE_FROM_STACK)
+        fprintf(f, ":%d", clear);
     }
     break;
 
@@ -1188,7 +1191,7 @@ struct OnigCalloutArgsStruct {
 #define RETRY_IN_MATCH_ARG_INIT(msa,mpv)
 #endif
 
-#ifdef USE_CALL
+#if defined(USE_CALL) && defined(SUBEXP_CALL_MAX_NEST_LEVEL)
 #define POP_CALL  else if (stk->type == STK_RETURN) {subexp_call_nest_counter++;} else if (stk->type == STK_CALL_FRAME) {subexp_call_nest_counter--;}
 #else
 #define POP_CALL
@@ -1291,7 +1294,7 @@ static unsigned long RetryLimitInMatch  = DEFAULT_RETRY_LIMIT_IN_MATCH;
 static unsigned long RetryLimitInSearch = DEFAULT_RETRY_LIMIT_IN_SEARCH;
 
 #define CHECK_RETRY_LIMIT_IN_MATCH  do {\
-  if (retry_in_match_counter++ > retry_limit_in_match) {\
+  if (++retry_in_match_counter > retry_limit_in_match) {\
     MATCH_AT_ERROR_RETURN(retry_in_match_counter > msa->retry_limit_in_match ? ONIGERR_RETRY_LIMIT_IN_MATCH_OVER : ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER); \
   }\
 } while (0)
@@ -2280,7 +2283,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
   }\
 } while(0)
 
-#define GET_STACK_RETURN_CALL(k) do {\
+#define GET_STACK_RETURN_CALL(k,addr) do {\
   int level = 0;\
   k = stk;\
   while (1) {\
@@ -2288,6 +2291,7 @@ stack_double(int* is_alloca, char** arg_alloc_base,
     STACK_BASE_CHECK(k, "GET_STACK_RETURN_CALL");\
     if (k->type == STK_CALL_FRAME) {\
       if (level == 0) {\
+        (addr) = k->u.call_frame.ret_addr;\
         break;\
       }\
       else level--;\
@@ -2664,15 +2668,17 @@ typedef struct {
       if (xp == FinishCode)\
         fprintf(DBGFP, "----: finish");\
       else {\
-	int index;\
+        int index;\
         enum OpCode zopcode;\
+        Operation* addr;\
         index = (int )(xp - reg->ops);\
         fprintf(DBGFP, "%4d: ", index);\
         print_compiled_byte_code(DBGFP, reg, index, reg->ops, encode); \
         zopcode = GET_OPCODE(reg, index);\
         if (zopcode == OP_RETURN) {\
-          GET_STACK_RETURN_CALL(stkp);\
-          fprintf(DBGFP, " %ld", GET_STACK_INDEX(stkp));\
+          GET_STACK_RETURN_CALL(stkp, addr);\
+          fprintf(DBGFP, " f:%ld -> %d", \
+            GET_STACK_INDEX(stkp), (int )(addr - reg->ops));\
         }\
       }\
       fprintf(DBGFP, "\n");\
@@ -2830,7 +2836,8 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
   OnigOptionType option = reg->options;
   OnigEncoding encode = reg->enc;
   OnigCaseFoldType case_fold_flag = reg->case_fold_flag;
-#ifdef USE_CALL
+
+#if defined(USE_CALL) && defined(SUBEXP_CALL_MAX_NEST_LEVEL)
   unsigned long subexp_call_nest_counter = 0;
 #endif
 
@@ -4009,9 +4016,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
 #ifdef USE_CALL
     CASE_OP(CALL)
+#ifdef SUBEXP_CALL_MAX_NEST_LEVEL
       if (subexp_call_nest_counter == SUBEXP_CALL_MAX_NEST_LEVEL)
         goto fail;
       subexp_call_nest_counter++;
+#endif
       addr = p->call.addr;
       INC_OP; STACK_PUSH_CALL_FRAME(p);
       p = reg->ops + addr;
@@ -4021,7 +4030,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
     CASE_OP(RETURN)
       STACK_RETURN(p);
       STACK_PUSH_RETURN;
+#ifdef SUBEXP_CALL_MAX_NEST_LEVEL
       subexp_call_nest_counter--;
+#endif
       JUMP_OUT;
 #endif
 
