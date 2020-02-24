@@ -4267,9 +4267,9 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 		const auto oldCaretXPolicy = caretXPolicy;
 		const auto oldCaretXSlop = caretXSlop;
 		caretYPolicy = CARET_SLOP | CARET_STRICT | CARET_EVEN;
-		caretYSlop = 5;
+		caretYSlop = (oldCaretYSlop < 3) ? 3 : oldCaretYSlop;
 		caretXPolicy = CARET_SLOP | CARET_STRICT | CARET_EVEN;
-		caretXSlop = 50;
+		caretXSlop = (oldCaretXSlop < 75) ? 75 : oldCaretXSlop;
 		MovedCaret(newPos, posDrag, true);
 		caretYPolicy = oldCaretYPolicy;
 		caretYSlop = oldCaretYSlop;
@@ -4362,6 +4362,9 @@ void Editor::DropAt(SelectionPosition position, const char *value, size_t length
 				SetSelection(posAfterInsertion, position);
 			}
 		}
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		EnsureCaretVisible();
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	} else if (inDragDrop == ddDragging) {
 		SetEmptySelection(position);
 	}
