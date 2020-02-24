@@ -36,7 +36,6 @@ extern "C" {
 #include "Platform.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
-#include "ILoader.h"
 
 #include "resource.h"
 
@@ -634,35 +633,5 @@ void RedirectIOToConsole()
   std::ios::sync_with_stdio();
 }
 #endif
-
-
-//=============================================================================
-//
-//  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component 
-//
-extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
-{
-  bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
-
-  int const docOptions = Flags.bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE) : SC_DOCUMENTOPTION_DEFAULT;
-
-  ILoader* const pDocLoad = reinterpret_cast<ILoader*>( SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1024, docOptions) );
-
-  #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
-
-  if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
-    RELEASE_RETURN(false);
-  }
-
-  sptr_t const pNewDocumentPtr = (sptr_t)pDocLoad->ConvertToDocument(); // == SciCall_CreateDocument(lenText, docOptions);
-
-  if (!pNewDocumentPtr) { 
-    RELEASE_RETURN(false); 
-  }
-
-  SciCall_SetDocPointer(pNewDocumentPtr);
-
-  RELEASE_RETURN(true);
-}
 
 // End of Print.cpp

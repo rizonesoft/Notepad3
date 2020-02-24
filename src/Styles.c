@@ -968,6 +968,7 @@ static inline bool _IsItemInStyleString(LPCWSTR lpszStyleStrg, LPCWSTR item)
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
+#ifdef  NP3_LARGE_DOCUMENT_STYLES_NONE
   if (Flags.bLargeFileLoaded)
   {
     s_pLexCurrent = GetLargeFileLexer();
@@ -976,14 +977,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     UpdateAllBars(false);
     return;
   }
+#endif
 
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();
+    pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
     if (IsLexerStandard(pLexNew)) {
       pLexNew = GetCurrentStdLexer();
     }
   }
+  _IGNORE_NOTIFY_CHANGE_
 
   // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
   // assert(pLexNew != s_pLexCurrent);
@@ -1017,14 +1020,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // --------------------------------------------------------------------------
 
   // Clear
-  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+  SciCall_ClearDocumentStyle();
 
   // Default Values are always set
-  SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
+  SciCall_StyleResetDefault();
 
-
-  // constants
-  SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
+  // Constants
+  SciCall_StyleSetVisible(STYLE_DEFAULT, true);
 
   //~Style_SetACPfromCharSet(hwnd);
 
@@ -1479,14 +1481,21 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
   // apply lexer styles
-  SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
-  Sci_ApplyLexerStyle(0, -1);
-
-  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
-  
+  if (Flags.bLargeFileLoaded)
+  {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    EditUpdateVisibleIndicators();
+  }
+  else {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditUpdateIndicators(0, -1, false);
+  }
+ 
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   UpdateAllBars(false);
+
+  _OBSERVE_NOTIFY_CHANGE_
 }
 
 
@@ -1964,8 +1973,7 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 //
 bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
-  if (Flags.bLargeFileLoaded) 
-  {
+  if (Flags.bLargeFileLoaded) {
     Style_SetDefaultLexer(hwnd);
     return true;
   }

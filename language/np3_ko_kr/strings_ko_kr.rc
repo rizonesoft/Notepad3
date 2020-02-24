@@ -146,7 +146,7 @@ BEGIN
                             """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "이 대용량 파일을 열겠습니까?"
+                            "이 대용량 파일을 열겠습니까?\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
                             "Can't handle that huge file (size: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT

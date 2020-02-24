@@ -381,21 +381,9 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
   FileVars_Apply(&Globals.fvCurFile);
 
-  // set new text
-  if (Flags.bLargeFileLoaded) {
-    _IGNORE_NOTIFY_CHANGE_;
-    EditSetDocumentBuffer(lpstrText, lenText);
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
-  else if (lenText > 0) {
-    _IGNORE_NOTIFY_CHANGE_;
-    SciCall_TargetWholeDocument();
-    SciCall_ReplaceTarget(lenText, lpstrText);
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
-  else {
-    SciCall_ClearAll();
-  }
+  _IGNORE_NOTIFY_CHANGE_;
+  EditSetDocumentBuffer(lpstrText, lenText);
+  _OBSERVE_NOTIFY_CHANGE_;
 
   SciCall_GotoPos(0);
   SciCall_ChooseCaretX();
@@ -1080,7 +1068,7 @@ bool EditLoadFile(
   DWORD const dwBufferSize = dwFileSize + 8;
 
   // Check if a warning message should be displayed for large files
-  DWORD dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
+  DWORD const dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
     if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
@@ -5261,11 +5249,9 @@ static int  _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, 
 //
 //  _FindInTarget()
 //
-static DocPos  _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int sFlags, 
+static DocPos  _FindInTarget(LPCSTR szFind, DocPos length, int sFlags, 
                              DocPos* start, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
-  UNUSED(hwnd);
-
   DocPos _start = *start;
   DocPos _end = *end;
   bool const bFindPrev = (_start > _end);
@@ -5333,7 +5319,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
 
   DocPos start = iStart;
   DocPos end   = iTextEnd;
-  DocPos const iPos  = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
+  DocPos const iPos  = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
 
   if (bFirstMatchOnly && !Globals.bReplaceInitialized) {
     if (GetForegroundWindow() == Globals.hwndDlgFindReplace) {
@@ -5351,7 +5337,7 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
     if (bMarkAll) {
       EditClearAllOccurrenceMarkers(hwnd);
       if (iPos >= 0) {
-        EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextEnd);
+        EditMarkAll(szFind, (int)(lpefr->fuFlags), 0, iTextEnd);
         if (FocusedView.HideNonMatchedLines) { EditHideNotMarkedLineRange(lpefr->hwnd, true); }
       }
       else {
@@ -6427,7 +6413,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
 
   CancelCallTip();
 
-  DocPos iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
+  DocPos iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
@@ -6441,7 +6427,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       {
         end = min_p(start, iDocEndPos);  start = 0;
 
-        iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
+        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
 
         if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
           InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex2", IDS_MUI_REGEX_INVALID);
@@ -6509,7 +6495,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
 
   CancelCallTip();
 
-  DocPos iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
+  DocPos iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, true, FRMOD_NORM);
 
   if ((iPos < -1) && (sFlags & SCFIND_REGEXP)) 
   {
@@ -6525,7 +6511,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       {
         end = max_p(start, 0);  start = iDocEndPos;
 
-        iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
+        iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_WRAPED);
 
         if ((iPos < -1) && (sFlags & SCFIND_REGEXP)) {
           InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex2", IDS_MUI_REGEX_INVALID);
@@ -6592,10 +6578,10 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
     // !!! don't clear all marks, else this method is re-called
     // !!! on UpdateUI notification on drawing indicator mark
-    EditMarkAll(hwnd, NULL, searchFlags, iPosStart, iPosEnd);
+    EditMarkAll(NULL, searchFlags, iPosStart, iPosEnd);
   }
   else {
-    EditMarkAll(hwnd, NULL, searchFlags, 0, Sci_GetDocEndPosition());
+    EditMarkAll(NULL, searchFlags, 0, Sci_GetDocEndPosition());
   }
   
   _OBSERVE_NOTIFY_CHANGE_;
@@ -6709,7 +6695,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr)
   char szFind[FNDRPL_BUFFER];
   DocPos const slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
   int const sFlags = (int)(lpefr->fuFlags);
-  DocPos const iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
+  DocPos const iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
 
   // w/o selection, replacement string is put into current position
   // but this maybe not intended here
@@ -6793,7 +6779,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   DocPos start = iStartPos;
   DocPos end = iEndPos;
 
-  DocPos iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
+  DocPos iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
@@ -6813,7 +6799,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
     end = iEndPos;
 
     if (start <= iEndPos)
-      iPos = _FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, ((posPair.end - posPair.beg) == 0), FRMOD_IGNORE);
+      iPos = _FindInTarget(szFind, slen, sFlags, &start, &end, ((posPair.end - posPair.beg) == 0), FRMOD_IGNORE);
     else
       iPos = -1;
   } 
@@ -6837,7 +6823,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
     if (iReplaceMsg == SCI_REPLACETARGETRE) 
     {
       // redo find to get group ranges filled
-      /*iPos = */_FindInTarget(hwnd, szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
+      /*iPos = */_FindInTarget(szFind, slen, sFlags, &start, &end, false, FRMOD_IGNORE);
     }
     else {
       start = pPosPair->beg + totalReplLength;
@@ -7028,7 +7014,7 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //  EditMarkAll()
 //  Mark all occurrences of the matching text in range (by Aleksandar Lekov)
 //
-void EditMarkAll(HWND hwnd, char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd)
+void EditMarkAll(char* pszFind, int sFlags, DocPos rangeStart, DocPos rangeEnd)
 {
   char txtBuffer[FNDRPL_BUFFER] = { '\0' };
   char* pszText = (pszFind != NULL) ? pszFind : txtBuffer;
@@ -7097,7 +7083,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int sFlags, DocPos rangeStart, DocPos
     DocPos iPos = (DocPos)-1;
     do {
 
-      iPos = _FindInTarget(hwnd, pszText, iFindLength, sFlags, &start, &end, (start == iPos), FRMOD_IGNORE);
+      iPos = _FindInTarget(pszText, iFindLength, sFlags, &start, &end, (start == iPos), FRMOD_IGNORE);
 
       if (iPos < 0) {
         break; // not found
@@ -7350,30 +7336,59 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
 //=============================================================================
 //
-//  EditFinalizeStyling()
+//  EditDoStyling()
 //
-void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
+void EditDoVisibleStyling()
 {
-  UNUSED(hwnd);
+  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+  EditDoStyling(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine));
+}
+
+//=============================================================================
+//
+//  EditDoStyling()
+//
+void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
+{
   static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
 
-  if (Flags.bLargeFileLoaded) { return; }; // no styling for large files
+#ifdef  NP3_LARGE_DOCUMENT_STYLES_NONE
+  if (Flags.bLargeFileLoaded) { return; }
+#endif
 
   if (!guard)
   {
     guard = true;
-    if (iEndPos < 0) {
-      Sci_ApplyLexerStyle(0, -1);
+    if (iStartPos < 0) {
+      iStartPos = SciCall_GetEndStyled();
     }
     else {
-      DocPos const startPos = SciCall_PositionFromLine(SciCall_LineFromPosition(SciCall_GetEndStyled()));
-      DocPos const endPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
-      if (startPos < endPos) {
-        Sci_ApplyLexerStyle(startPos, endPos);
+      iStartPos = SciCall_PositionFromLine(SciCall_LineFromPosition(iStartPos));
+    }
+    if (iEndPos < 0) {
+      Sci_ApplyLexerStyle(iStartPos, -1);
+    }
+    else {
+      iEndPos = SciCall_GetLineEndPosition(SciCall_LineFromPosition(iEndPos));
+      if (iStartPos < iEndPos) {
+        Sci_ApplyLexerStyle(iStartPos, iEndPos);
       }
     }
     guard = false;
   }
+}
+
+
+//=============================================================================
+//
+//  EditUpdateVisibleIndicators()
+// 
+void EditUpdateVisibleIndicators()
+{
+  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
+  EditUpdateIndicators(SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), false);
 }
 
 
@@ -7393,7 +7408,7 @@ static void _ClearIndicatorInRange(const int indicator, const int indicator2nd,
   }
 }
 
-static void _UpdateIndicators(HWND hwnd, const int indicator, const int indicator2nd, 
+static void _UpdateIndicators(const int indicator, const int indicator2nd, 
                               const char* regExpr, DocPos startPos, DocPos endPos)
 {
   if (endPos < 0) {
@@ -7419,7 +7434,7 @@ static void _UpdateIndicators(HWND hwnd, const int indicator, const int indicato
 
     DocPos const _start = start;
     DocPos const _end   = end;
-    DocPos const iPos = _FindInTarget(hwnd, regExpr, iRegExLen, SCFIND_REGEXP, &start, &end, false, FRMOD_IGNORE);
+    DocPos const iPos = _FindInTarget(regExpr, iRegExLen, SCFIND_REGEXP, &start, &end, false, FRMOD_IGNORE);
 
     if (iPos < 0) {
       // not found
@@ -7456,14 +7471,13 @@ static void _UpdateIndicators(HWND hwnd, const int indicator, const int indicato
 //  - Find and mark all URL hot-spots
 //  - Find and mark all COLOR refs (#RRGGBB)
 //
-void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClearOnly)
+void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
 {
   if (bClearOnly) {
     _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
     _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
     return;
   }
-
   if (Settings.HyperlinkHotspot) 
   {
     // https://mathiasbynens.be/demo/url-regex : @stephenhay
@@ -7473,7 +7487,7 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
       "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.])*"
       "(?:\\([-a-z\\u00a1-\\uffff0-9+&@#/%=~_|$?!:,.]*\\)|[a-z\\u00a1-\\uffff0-9+&@#/%=~_|$])";
 
-    _UpdateIndicators(hwnd, INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
+    _UpdateIndicators(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, pUrlRegEx, startPos, endPos);
   }
   else {
     _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
@@ -7482,12 +7496,13 @@ void EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClear
   if (Settings.ColorDefHotspot) 
   {
     static const char* pColorRegEx = "#([0-9a-fA-F]){6}";
-    _UpdateIndicators(hwnd, INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
+    _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, pColorRegEx, startPos, endPos);
   }
   else {
     _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DWELL, startPos, endPos);
   }
-  EditFinalizeStyling(hwnd, endPos);
+
+  EditDoStyling(startPos, endPos);
 }
 
 

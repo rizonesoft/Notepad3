@@ -376,6 +376,9 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 //
 //  Style definition
 //
+DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
+DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)
+DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
 DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)

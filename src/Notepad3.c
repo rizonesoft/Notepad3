@@ -422,7 +422,7 @@ void ObserveNotifyChangeEvent()
     InterlockedDecrement(&iNotifyChangeStackCounter);
   }
   if (CheckNotifyChangeEvent()) {
-    UpdateVisibleIndicators();
+    EditUpdateVisibleIndicators();
     UpdateAllBars(false);
   }
 }
@@ -1557,10 +1557,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       if (Flags.bLargeFileLoaded) {
-        UpdateVisibleIndicators();
+        EditUpdateVisibleIndicators();
       }
       else {
-        EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+        EditUpdateIndicators(0, -1, false);
       }
       MarkAllOccurrences(0, true);
       UpdateAllBars(false);
@@ -2536,13 +2536,18 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   RECT* const rc = (RECT*)lParam;
   SendWMSize(hwnd, rc);
 
-  MarkAllOccurrences(0, true);
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
 
-  EditFinalizeStyling(Globals.hwndEdit, -1);
+  MarkAllOccurrences(0, false);
+  if (Flags.bLargeFileLoaded) {
+    EditDoVisibleStyling();
+  }
+  else {
+    EditDoStyling(0, -1);
+  }
   UpdateAllBars(true);
   UpdateUI();
-  UpdateVisibleIndicators();
+  EditUpdateVisibleIndicators();
 
   return 0;
 }
@@ -2601,13 +2606,19 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   CreateBars(hwnd,hInstance);
   SendWMSize(hwnd, NULL);
 
-  MarkAllOccurrences(0, true);
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  MarkAllOccurrences(0, false);
 
-  EditFinalizeStyling(Globals.hwndEdit, -1);
+  if (Flags.bLargeFileLoaded) {
+    EditDoVisibleStyling();
+  }
+  else {
+    EditDoStyling(0, -1);
+  }
+
   UpdateAllBars(true);
   UpdateUI();
-  UpdateVisibleIndicators();
+  EditUpdateVisibleIndicators();
 
   return 0;
 }
@@ -3115,7 +3126,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   bool const cf = StrIsNotEmpty(Globals.CurrentFile);
   bool const te = Sci_IsDocEmpty();
   bool const mls = Sci_IsSelectionMultiLine();
-  bool const lfl = Flags.bLargeFileLoaded;
+  //bool const lfl = Flags.bLargeFileLoaded;
 
   EnableCmd(hmenu, IDM_FILE_REVERT, cf);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, cf);
@@ -3271,14 +3282,14 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = SciCall_GetLexer();
 
   EnableCmd(hmenu, IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro && !lfl);
+    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
 
   EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES || i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHKL || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro && !lfl);
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM || i == SCLEX_TOML) && !ro);
 
   EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
@@ -3553,7 +3564,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   switch(iLoWParam)
   {
     case SCEN_CHANGE:
-      UpdateVisibleIndicators();
+      EditUpdateVisibleIndicators();
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       break;
 
@@ -5320,12 +5331,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
-      UpdateVisibleIndicators();
+      EditUpdateVisibleIndicators();
       break;
 
     case IDM_VIEW_COLORDEFHOTSPOTS:
       Settings.ColorDefHotspot = !Settings.ColorDefHotspot;
-      UpdateVisibleIndicators();
+      EditUpdateVisibleIndicators();
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -7173,7 +7184,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         if (IsMarkOccurrencesEnabled()) {
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
         }
-        UpdateVisibleIndicators();
+        EditUpdateVisibleIndicators();
         if (scn->linesAdded != 0) {
           if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded == 1)) {
             _SplitUndoTransaction(iModType);
@@ -7205,7 +7216,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
     case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
     {
-      EditFinalizeStyling(Globals.hwndEdit, scn->position);
+      EditDoStyling(-1, scn->position);
     }
     break;
 
@@ -7254,7 +7265,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
         }
       }
-      UpdateVisibleIndicators();
+      EditUpdateVisibleIndicators();
     }
     break;
 
@@ -7349,7 +7360,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       DocLn const iFirstLine = SciCall_LineFromPosition(scn->position);
       DocLn const iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
       for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
-      UpdateVisibleIndicators();
+      EditUpdateVisibleIndicators();
     }
     break;
 
@@ -8169,25 +8180,12 @@ void MarkAllOccurrences(int delay, bool bForceClear)
 
 //=============================================================================
 //
-//  UpdateVisibleIndicators()
-// 
-void UpdateVisibleIndicators()
-{
-  DocLn const iStartLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-  DocLn const iEndLine = min_ln((iStartLine + SciCall_LinesOnScreen()), (SciCall_GetLineCount() - 1));
-  EditUpdateIndicators(Globals.hwndEdit, SciCall_PositionFromLine(iStartLine), SciCall_GetLineEndPosition(iEndLine), false);
-}
-
-
-//=============================================================================
-//
 //  UpdateToolbar()
 //
 void UpdateToolbar()
 {
   _DelayUpdateToolbar(40);
 }
-
 
 
 //=============================================================================
@@ -9543,6 +9541,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     FileVars_Init(NULL,0,&Globals.fvCurFile);
 
     EditSetNewText(Globals.hwndEdit, "", 0, true);
+
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     Encoding_Current(Settings.DefaultEncoding);
     Encoding_HasChanged(Settings.DefaultEncoding);
@@ -9651,10 +9650,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   bool bUnknownLexer = s_flagLexerSpecified;
 
+  BeginWaitCursor(L"Styling...");
+
   if (fSuccess) 
   {
-    BeginWaitCursor(L"Styling...");
-
     if (!s_IsThisAnElevatedRelaunch) {
       Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
     }
@@ -9725,7 +9724,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     //bReadOnly = false;
     SetSaveNeeded(bReload);
-    UpdateAllBars(true);
 
     // consistent settings file handling (if loaded in editor)
     Flags.bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
@@ -9780,13 +9778,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
       SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
     }
-
-    EndWaitCursor();
   }
   else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt)) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFileName));
   }
 
+  EndWaitCursor();
   UpdateAllBars(true);
 
   return fSuccess;
