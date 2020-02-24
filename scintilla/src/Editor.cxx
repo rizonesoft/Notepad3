@@ -4261,6 +4261,21 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 		posDrop = newPos;
 	}
 	if (!(posDrag == newPos)) {
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		const auto oldCaretYPolicy = caretYPolicy;
+		const auto oldCaretYSlop = caretYSlop;
+		const auto oldCaretXPolicy = caretXPolicy;
+		const auto oldCaretXSlop = caretXSlop;
+		caretYPolicy = CARET_SLOP | CARET_STRICT | CARET_EVEN;
+		caretYSlop = 5;
+		caretXPolicy = CARET_SLOP | CARET_STRICT | CARET_EVEN;
+		caretXSlop = 50;
+		MovedCaret(newPos, posDrag, true);
+		caretYPolicy = oldCaretYPolicy;
+		caretYSlop = oldCaretYSlop;
+		caretXPolicy = oldCaretXPolicy;
+		caretXSlop = oldCaretXSlop;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		caret.on = true;
 		FineTickerCancel(tickCaret);
 		if ((caret.active) && (caret.period > 0) && (newPos.Position() < 0))
