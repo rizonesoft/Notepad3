@@ -146,7 +146,7 @@ BEGIN
                             "Le fichier ""% s "" ne peut pas être sauvegardé et est peut-être protégé.\n\nVoulez-vous lancer %s en tant qu'application élevée?"
     IDS_MUI_ERR_ADMINEXE    "Aucun fichier exécutable d'administration trouvé.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Etes-vous sûr de vouloir ouvrir ce gros fichier?"
+                            "Etes-vous sûr de vouloir ouvrir ce gros fichier?\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
                             "Ne peut pas gérer cet énorme fichier (taille: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT

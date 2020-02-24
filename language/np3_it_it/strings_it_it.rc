@@ -146,7 +146,7 @@ BEGIN
                             "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi aprire %s con diritti amministrativi?"
     IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Sei sicuro di voler aprire questo file grande?"
+                            "Sei sicuro di voler aprire questo file grande?\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
                             "Impossibile gestire un file così grande (dimensione: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT

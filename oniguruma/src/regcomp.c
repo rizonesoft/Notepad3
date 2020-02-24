@@ -1975,7 +1975,7 @@ compile_length_anchor_node(AnchorNode* node, regex_t* reg)
     if (node->char_min_len == node->char_max_len)
       len = OPSIZE_MARK + OPSIZE_STEP_BACK_START + tlen + OPSIZE_CUT_TO_MARK;
     else {
-      len = OPSIZE_SAVE_VAL + OPSIZE_UPDATE_VAR + OPSIZE_MARK + OPSIZE_PUSH + OPSIZE_UPDATE_VAR + OPSIZE_FAIL + OPSIZE_JUMP + OPSIZE_STEP_BACK_START + OPSIZE_STEP_BACK_NEXT + tlen + OPSIZE_CHECK_POSITION + OPSIZE_CUT_TO_MARK + OPSIZE_UPDATE_VAR + OPSIZE_POP;
+      len = OPSIZE_SAVE_VAL + OPSIZE_UPDATE_VAR + OPSIZE_MARK + OPSIZE_PUSH + OPSIZE_UPDATE_VAR + OPSIZE_FAIL + OPSIZE_JUMP + OPSIZE_STEP_BACK_START + OPSIZE_STEP_BACK_NEXT + tlen + OPSIZE_CHECK_POSITION + OPSIZE_CUT_TO_MARK + OPSIZE_UPDATE_VAR;
 
       if (IS_NOT_NULL(node->lead_node)) {
         int llen = compile_length_tree(node->lead_node, reg);
@@ -2093,7 +2093,8 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
     r = add_op(reg, OP_UPDATE_VAR);
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
-    COP(reg)->update_var.id   = mid1;
+    COP(reg)->update_var.id    = mid1;
+    COP(reg)->update_var.clear = FALSE;
     r = add_op(reg, OP_FAIL);
     if (r != 0) return r;
 
@@ -2127,9 +2128,8 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
     r = add_op(reg, OP_UPDATE_VAR);
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
-    COP(reg)->update_var.id   = mid1;
-
-    r = add_op(reg, OP_POP);
+    COP(reg)->update_var.id    = mid1;
+    COP(reg)->update_var.clear = TRUE;
   }
 
   return r;
@@ -2244,6 +2244,7 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
     COP(reg)->update_var.id   = mid1;
+    COP(reg)->update_var.clear = FALSE;
 
     r = add_op(reg, OP_POP); /* pop save val */
     if (r != 0) return r;
@@ -2254,6 +2255,7 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
     COP(reg)->update_var.id   = mid1;
+    COP(reg)->update_var.clear = FALSE;
 
     r = add_op(reg, OP_POP); /* pop mark */
     if (r != 0) return r;
@@ -2407,6 +2409,7 @@ compile_gimmick_node(GimmickNode* node, regex_t* reg)
     if (r != 0) return r;
     COP(reg)->update_var.type = node->detail_type;
     COP(reg)->update_var.id   = node->id;
+    COP(reg)->update_var.clear = FALSE;
     break;
 
 #ifdef USE_CALLOUT
@@ -7330,6 +7333,7 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 
       COP(reg)->update_var.type = UPDATE_VAR_KEEP_FROM_STACK_LAST;
       COP(reg)->update_var.id   = 0; /* not used */
+      COP(reg)->update_var.clear = FALSE;
     }
 
     r = add_op(reg, OP_END);

@@ -122,6 +122,16 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 //=============================================================================
 
+
+// Document Pointer Handling
+DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t)
+DeclareSciCallV01(SetDocPointer, SETDOCPOINTER, sptr_t, pdoc)
+DeclareSciCallR2(CreateDocument, CREATEDOCUMENT, sptr_t, DocPos, bytes, int, options)
+DeclareSciCallR2(CreateLoader, CREATELOADER, sptr_t, DocPos, bytes, int, options)
+DeclareSciCallV01(AddRefDocument, ADDREFDOCUMENT, sptr_t, pdoc)
+DeclareSciCallV01(ReleaseDocument, RELEASEDOCUMENT, sptr_t, pdoc)
+DeclareSciCallR0(GetDocumentOptions, GETDOCUMENTOPTIONS, int)
+
 //  Selection, positions and information
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
@@ -366,6 +376,9 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 //
 //  Style definition
 //
+DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
+DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)
+DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
 DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
@@ -454,6 +467,7 @@ DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber
 DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
 DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
 DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 
 //=============================================================================
 //

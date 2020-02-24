@@ -24,7 +24,7 @@
 void  EditInitializeSciCtrl(HWND);
 void  EditReplaceSelection(const char* text, bool bForceSel);
 void  EditInitWordDelimiter(HWND hwnd);
-void  EditSetNewText(HWND hwnd,const char* lpstrText,DocPos lenText,bool);
+void  EditSetNewText(HWND hwnd,const char* lpstrText, DocPosU lenText,bool);
 bool  EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest,bool);
 bool  EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool);
 bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
@@ -34,10 +34,10 @@ bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
-void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* status);
-void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* status);
+void  EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const status);
+void  EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status);
 bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool bSkipUTFDetection, bool bSkipANSICPDetection, 
-                   bool bForceEncDetection, bool bClearUndoHistory, EditFileIOStatus* status);
+                   bool bForceEncDetection, bool bClearUndoHistory, EditFileIOStatus* const status);
 bool  EditSaveFile(HWND hwnd, LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy, bool bPreserveTimeStamp);
 
 void  EditInvertCase(HWND hwnd);
@@ -103,16 +103,19 @@ bool  EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose,UINT* pRepeat)
 bool  EditSortDlg(HWND hwnd,int* piSortFlags);
 bool  EditAlignDlg(HWND hwnd,int* piAlignMode);
 bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
-void  EditPrintSetup(HWND);
+void  EditPrintSetup(HWND hwnd);
 void  EditPrintInit();
+bool  EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText);
 void  EditMatchBrace(HWND hwnd);
 void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
 void  EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
-void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
-void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
-void  EditUpdateIndicators(HWND hwnd, DocPos startPos, DocPos endPos, bool bClearOnly);
+void  EditMarkAll(char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
+void  EditDoVisibleStyling();
+void  EditDoStyling(DocPos iStartPos, DocPos iEndPos);
+void  EditUpdateVisibleIndicators();
+void  EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly);
 void  EditSetAccelWordNav(HWND hwnd,bool);
 bool  EditAutoCompleteWord(HWND hwnd, bool autoInsert);
 bool  EditCheckNewLineInACFillUps();

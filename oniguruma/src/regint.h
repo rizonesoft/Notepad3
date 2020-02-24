@@ -888,6 +888,7 @@ typedef struct {
     struct {
       UpdateVarType type;
       MemNumType id;
+      int clear;  /* UPDATE_VAR_RIGHT_RANGE_FROM_S_STACK or UPDATE_VAR_RIGHT_RANGE_FROM_STACK */
     } update_var;
     struct {
       AbsAddrType addr;
