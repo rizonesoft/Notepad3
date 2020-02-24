@@ -146,7 +146,7 @@ BEGIN
                             "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du %s mit erhöhten Rechten starten?"
     IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen."
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
+                            "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?\n(Styling und Syntax Highlighting wird nicht durchgeführt!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "Notepad3 kann so große Dateien nicht laden (Größe: %lli MB)!"
     IDS_MUI_WARN_UNKNOWN_EXT

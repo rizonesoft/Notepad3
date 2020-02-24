@@ -487,6 +487,7 @@ typedef struct _flags_t
   int  ToolbarLook;
   int PrintFileAndLeave;
 
+  bool bLargeFileLoaded;
   bool bDevDebugMode;
   bool bStickyWindowPosition;
   bool bReuseWindow;
@@ -600,7 +601,6 @@ typedef struct _editfileiostatus
   cpi_enc_t iEncoding;
   int iEOLMode;
 
-  bool bFileTooBig;
   bool bUnicodeErr;
 
   // inconsistent line endings
@@ -617,7 +617,7 @@ typedef struct _editfileiostatus
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
 
 //=============================================================================
 
@@ -652,6 +652,8 @@ typedef struct _themeFiles
 
 
 // ---------   common defines   --------
+
+#define NP3_LARGE_DOCUMENT_STYLES_NONE 1
 
 #define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
 

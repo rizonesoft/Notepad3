@@ -30,6 +30,10 @@ extern "C" {
 #include "resource.h"
 }
 
+// Scintilla
+#include "ILoader.h"
+
+
 extern "C" const int g_FontQuality[4];
 extern "C" WININFO   s_WinInfo;
 extern "C" WININFO   s_DefWinInfo;
@@ -840,7 +844,7 @@ void LoadSettings()
   IniSectionGetString(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
     Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
 
-  Defaults2.FileLoadWarningMB = 256;
+  Defaults2.FileLoadWarningMB = 64;
   Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
 
   Defaults2.OpacityLevel = 75;
@@ -1991,3 +1995,65 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
   return false;
 }
 
+// ////////////////////////////////////////////////////////////////////////////
+// Some C++ Extentions for Notepad3
+// ////////////////////////////////////////////////////////////////////////////
+
+//=============================================================================
+//
+//  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component 
+//
+
+static bool _CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+{
+#define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
+
+  ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
+
+  if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
+    RELEASE_RETURN(false);
+  }
+  sptr_t const pNewDocumentPtr = (sptr_t)pDocLoad->ConvertToDocument(); // == SciCall_CreateDocument(lenText, docOptions);
+  if (!pNewDocumentPtr) {
+    RELEASE_RETURN(false);
+  }
+  SciCall_SetDocPointer(pNewDocumentPtr);
+  RELEASE_RETURN(true);
+}
+
+extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
+{
+  bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
+  bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB * 1024ULL * 1024ULL));
+
+  int const curOptions = SciCall_GetDocumentOptions();
+
+  bool result = false;
+
+  if (!bLargeFileLoaded && (curOptions & (SC_DOCUMENTOPTION_STYLES_NONE | SC_DOCUMENTOPTION_TEXT_LARGE)))
+  {
+    int const docOptions = SC_DOCUMENTOPTION_DEFAULT;
+    result = _CreateNewDocument(lpstrText, lenText, docOptions);
+  }
+  else if (!lpstrText || (lenText == 0)) {
+    SciCall_ClearAll();
+    result = true;
+  }
+  else if (bLargeFileLoaded)
+  {
+#ifdef NP3_LARGE_DOCUMENT_STYLES_NONE 
+    int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE) : SC_DOCUMENTOPTION_DEFAULT;
+#else
+    int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_DEFAULT) : SC_DOCUMENTOPTION_DEFAULT;
+#endif
+
+    result = _CreateNewDocument(lpstrText, lenText, docOptions);
+  }
+  else {
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
+    result = true;
+  }
+
+  return result;
+}

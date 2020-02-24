@@ -366,29 +366,34 @@ void Style_DynamicThemesMenuCmd(int cmd)
 //  IsLexerStandard()
 //
 
-bool  IsLexerStandard(PEDITLEXER pLexer)
+inline bool  IsLexerStandard(PEDITLEXER pLexer)
 {
   return ( pLexer && ((pLexer == &lexStandard) || (pLexer == &lexStandard2nd)) );
 }
 
-PEDITLEXER  GetCurrentStdLexer()
+inline PEDITLEXER  GetCurrentStdLexer()
 {
   return (Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard);
 }
 
-bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
+inline bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && ((pStyle->rid == IDS_LEX_STD_STYLE) || (pStyle->rid == IDS_LEX_2ND_STYLE)));
 }
 
-bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
+inline bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && (pStyle->rid == IDS_LEX_STR_63126));
 }
 
-PEDITLEXER  GetDefaultLexer()
+inline PEDITLEXER  GetDefaultLexer()
 {
   return g_pLexArray[s_iDefaultLexer];
+}
+
+inline PEDITLEXER  GetLargeFileLexer()
+{
+  return &lexTEXT;
 }
 
 
@@ -963,13 +968,25 @@ static inline bool _IsItemInStyleString(LPCWSTR lpszStyleStrg, LPCWSTR item)
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
+#ifdef  NP3_LARGE_DOCUMENT_STYLES_NONE
+  if (Flags.bLargeFileLoaded)
+  {
+    s_pLexCurrent = GetLargeFileLexer();
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    SciCall_StartStyling(0);
+    UpdateAllBars(false);
+    return;
+  }
+#endif
+
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();
+    pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
     if (IsLexerStandard(pLexNew)) {
       pLexNew = GetCurrentStdLexer();
     }
   }
+  _IGNORE_NOTIFY_CHANGE_
 
   // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
   // assert(pLexNew != s_pLexCurrent);
@@ -1003,14 +1020,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // --------------------------------------------------------------------------
 
   // Clear
-  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+  SciCall_ClearDocumentStyle();
 
   // Default Values are always set
-  SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
+  SciCall_StyleResetDefault();
 
-
-  // constants
-  SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
+  // Constants
+  SciCall_StyleSetVisible(STYLE_DEFAULT, true);
 
   //~Style_SetACPfromCharSet(hwnd);
 
@@ -1155,7 +1171,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, rgb);
   SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, rgb);
 
-  if (pLexNew != &lexANSI) {
+  if (pLexNew != &lexANSI) 
+  {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
   }
   Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, false); // indent guide
@@ -1464,12 +1481,21 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
   // apply lexer styles
-  Sci_ApplyLexerStyle(0, -1);
-  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
-
+  if (Flags.bLargeFileLoaded)
+  {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    EditUpdateVisibleIndicators();
+  }
+  else {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditUpdateIndicators(0, -1, false);
+  }
+ 
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   UpdateAllBars(false);
+
+  _OBSERVE_NOTIFY_CHANGE_
 }
 
 
@@ -1947,6 +1973,11 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 //
 bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
+  if (Flags.bLargeFileLoaded) {
+    Style_SetDefaultLexer(hwnd);
+    return true;
+  }
+
   LPCWSTR lpszExt = PathFindExtension(lpszFile);
   bool  bFound = false;
   PEDITLEXER pLexNew = NULL;
