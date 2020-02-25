@@ -37,18 +37,25 @@ see ecryption-doc.txt for details
 #define WKEY_LEN 256
 #define KEY_LEN  512
 
-bool  useFileKey = false;			// file should be encrypted
-char fileKey[KEY_LEN] = { 0 };		// ascii passphrase for the file key
-WCHAR unicodeFileKey[WKEY_LEN] = { 0 };	// unicode file passphrase
-bool  useMasterKey = false;		    // file should have a master key
-char masterKey[KEY_LEN] = { 0 };		// ascii passphrase for the master key
-WCHAR unicodeMasterKey[WKEY_LEN] = { 0 };	// unicode master passphrase
-BYTE  binFileKey[KEY_BYTES];			// the encryption key in for the file
-bool  hasBinFileKey = false;
-BYTE  masterFileKey[KEY_BYTES];		// file key encrypted with the master key
-BYTE  masterFileIV[AES_MAX_IV_SIZE];	// the iv for the master key
-bool  hasMasterFileKey = false;
-bool  masterKeyAvailable = false;		// information for the passphrase dialog box
+static bool  useFileKey = false;			// file should be encrypted
+static char fileKey[KEY_LEN] = { 0 };		// ascii passphrase for the file key
+static WCHAR unicodeFileKey[WKEY_LEN] = { 0 };	// unicode file passphrase
+static bool  useMasterKey = false;		    // file should have a master key
+static char masterKey[KEY_LEN] = { 0 };		// ascii passphrase for the master key
+static WCHAR unicodeMasterKey[WKEY_LEN] = { 0 };	// unicode master passphrase
+static BYTE  binFileKey[KEY_BYTES];			// the encryption key in for the file
+static bool  hasBinFileKey = false;
+static BYTE  masterFileKey[KEY_BYTES];		// file key encrypted with the master key
+static BYTE  masterFileIV[AES_MAX_IV_SIZE];	// the iv for the master key
+static bool  hasMasterFileKey = false;
+static bool  masterKeyAvailable = false;		// information for the passphrase dialog box
+
+
+bool IsEncryptionRequired()
+{
+  return (useFileKey || hasMasterFileKey);
+}
+
 
 void ResetEncryption()
 {
@@ -325,31 +332,30 @@ bool ReadFileKey(HWND hwnd, bool master)
 // read the file data, decrypt if necessary, 
 // return the result as a new allocation
 //
-int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t size, void** result, size_t *resultlen)
+int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t fileSize, void** result, size_t *resultlen)
 {
   HANDLE rawhandle = *result;
   BYTE* rawdata = (BYTE*)GlobalLock(rawhandle);
 
   int returnFlag = DECRYPT_SUCCESS;
   bool usedEncryption = false;
-  DWORD readsize = 0;
   bool bRetryPassPhrase = true;
+  size_t bytesRead = 0ULL;
 
   while (bRetryPassPhrase) {
 
     SetFilePointer(hFile, 0L, NULL, FILE_BEGIN);
     returnFlag = DECRYPT_SUCCESS;
     usedEncryption = false;
-    readsize = 0;
     bRetryPassPhrase = false;
 
-    // TODO: size_t -> (DWORD) cast: Huge Files conversion problem
-    bool bReadSuccess = ReadFile(hFile, rawdata, (DWORD)size, &readsize, NULL);
-    returnFlag = bReadSuccess ? DECRYPT_SUCCESS : DECRYPT_FREAD_FAILED;
+    bool const bReadOk = ReadFileXL(hFile, rawdata, fileSize, &bytesRead);
+
+    returnFlag = bReadOk ? DECRYPT_SUCCESS : DECRYPT_FREAD_FAILED;
 
     // we read the file, check if it looks like our encryption format
 
-    if (bReadSuccess && (readsize > (PREAMBLE_SIZE + AES_MAX_IV_SIZE))) {
+    if (bReadOk && (bytesRead > (PREAMBLE_SIZE + AES_MAX_IV_SIZE))) {
 
       long *ldata = (long*)rawdata;
 
@@ -410,11 +416,11 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t size, void** result, size
               { // finally, decrypt the actual data
                 ptrdiff_t nbb = BAD_CIPHER_STATE;
                 ptrdiff_t nbp = BAD_CIPHER_STATE;
-                if ((readsize - code_offset) >= PAD_SLOP) {
-                  nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
+                if ((bytesRead - code_offset) >= PAD_SLOP) {
+                  nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], bytesRead - code_offset - PAD_SLOP, rawdata);
                 }
                 if (nbb >= 0) {
-                  nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
+                  nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], bytesRead - code_offset - nbb, rawdata + nbb);
                 }
                 if (nbp >= 0) {
                   size_t const nb = nbb + nbp;
@@ -426,7 +432,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t size, void** result, size
                   bRetryPassPhrase = (InfoBoxLng(MB_RETRYCANCEL | MB_ICONWARNING, NULL, IDS_MUI_PASS_FAILURE) == IDRETRY);
                   if (!bRetryPassPhrase) {
                     // enable raw encryption read
-                    *resultlen = readsize;
+                    *resultlen = bytesRead;
                     returnFlag |= DECRYPT_WRONG_PASS;
                   }
                 }
@@ -450,7 +456,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t size, void** result, size
 
   if (!usedEncryption) { // here, the file is believed to be a straight text file
     ResetEncryption();
-    *resultlen = readsize;
+    *resultlen = bytesRead;
     returnFlag |= DECRYPT_NO_ENCRYPTION;
   }
 
@@ -463,7 +469,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
 {
     UNUSED(hwnd);
 
-    if (useFileKey || hasMasterFileKey) {
+    if (IsEncryptionRequired()) {
         AES_keyInstance fileEncode;		// encryption key for the file
         AES_cipherInstance fileCypher;	// cypher for the file, including the IV
         DWORD PREAMBLE_written = 0;
@@ -538,35 +544,30 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
 
         // now encrypt the main file
         {
-            DWORD enclen_written = 0;
-            size_t enclen = 0;
             bool bWriteRes = false;
-
+          
             BYTE* encdata = (BYTE*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size + PAD_SLOP);  // add slop to the end for padding
-
             if (!encdata) {
               return bWriteRes;
             }
+
+            size_t enclen = 0;
             if (size > PAD_SLOP) { enclen += AES_blockEncrypt(&fileCypher, &fileEncode, data, size - PAD_SLOP, encdata); }
 
             enclen += AES_padEncrypt(&fileCypher, &fileEncode, data + enclen, size - enclen, encdata + enclen);
 
-            // TODO:  huge file size size_t vs. DWORD
-            bWriteRes = WriteFile(hFile, encdata, (DWORD)enclen, &enclen_written, NULL);
+            size_t enclen_written = 0;
+            bWriteRes = WriteFileXL(hFile, encdata, enclen, &enclen_written);
 
             HeapFree(GetProcessHeap(), 0, encdata);             // clean-up
 
-            *written = PREAMBLE_written + enclen_written;		// return the file size written
-            return(bWriteRes);									// and the file ok status
+            *written = (size_t)PREAMBLE_written + enclen_written;		// return the file size written
+            return bWriteRes;									// and the file ok status
         }
     }
     else {
         // not an encrypted file, write normally
-        // TODO:  huge file size size_t vs. DWORD
-        DWORD dwWritten;
-        bool bWriteSuccess = WriteFile(hFile, data, (DWORD)size, &dwWritten, NULL);
-        *written = dwWritten;
-        return(bWriteSuccess);
+        return WriteFileXL(hFile, data, size, written);
     }
 }
 

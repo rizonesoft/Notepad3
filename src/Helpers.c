@@ -910,6 +910,53 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
   return (!(ustate & (MF_GRAYED|MF_DISABLED)));
 }
 
+
+//=============================================================================
+//
+//  ReadFileXL()
+//
+bool ReadFileXL(HANDLE hFile, BYTE* const lpBuffer, size_t nNumberOfBytesToRead, size_t* lpNumberOfBytesRead)
+{
+  DWORD dwRead = 0;
+  size_t bytesRead = 0ULL;
+  size_t bytesLeft = nNumberOfBytesToRead;
+  bool bReadOk = false;
+  do {
+    DWORD const chunk_size = (bytesLeft < (size_t)DWORD_MAX) ? (DWORD)bytesLeft : DWORD_MAX - 1UL;
+    bReadOk = ReadFile(hFile, &lpBuffer[bytesRead], chunk_size, &dwRead, NULL);
+    bytesRead += (size_t)dwRead;
+    bytesLeft -= (size_t)dwRead;
+  } 
+  while (bReadOk && ((dwRead != 0) && (bytesLeft > 0)));
+
+  *lpNumberOfBytesRead = bytesRead;
+  return (bytesRead == nNumberOfBytesToRead);
+}
+
+//=============================================================================
+//
+//  WriteFileXL()
+//
+bool WriteFileXL(HANDLE hFile, const BYTE* const lpBuffer, size_t nNumberOfBytesToWrite, size_t* lpNumberOfBytesWritten)
+{
+  DWORD dwWritten = 0;
+  size_t bytesWritten = 0ULL;
+  size_t bytesLeft = nNumberOfBytesToWrite;
+  bool bWriteOk = false;
+  do {
+    DWORD const chunk_size = (bytesLeft < (size_t)DWORD_MAX) ? (DWORD)bytesLeft : DWORD_MAX - 1UL;
+
+    bWriteOk = WriteFile(hFile, &lpBuffer[bytesWritten], chunk_size, &dwWritten, NULL);
+    bytesWritten += (size_t)dwWritten;
+    bytesLeft -= (size_t)dwWritten;
+  }
+  while (bWriteOk && ((dwWritten != 0) && (bytesLeft > 0)));
+  
+  *lpNumberOfBytesWritten = bytesWritten;
+  return (bytesWritten == nNumberOfBytesToWrite);
+}
+
+
 //=============================================================================
 //
 //  GetKnownFolderPath()
