@@ -146,9 +146,9 @@ BEGIN
                             "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nWil jy begin %s as 'n 'Verhoogde' toepassing?"
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Is jy seker jy wil hierdie groot lêer oopmaak?\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Is jy seker jy wil hierdie groot lêer oopmaak?\n\t(Grootte: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Kan nie daardie groot lêer hanteer nie (Grootte: %lli MB)!"
+                            "Kan nie daardie groot lêer hanteer nie (Grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
     IDS_MUI_INDENT_CONSISTENT  "Die lêer het 'n konsekwente indentasie!"

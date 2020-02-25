@@ -146,9 +146,9 @@ BEGIN
                             "Файл «%s» нельга захаваць з прычыны абароны ад змянення.\n\nЖадаеце запусціць %s з павышанымі правамі?"
     IDS_MUI_ERR_ADMINEXE    "Не знойдены інструмент адміністратара\nНаведаць сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?\n\t(памер: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Немагчыма апрацаваць гэты вялікі файл (памер: %lli МБ)!"
+                            "Немагчыма апрацаваць гэты вялікі файл (памер: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл мае аднолькавага выгляду водступы!"

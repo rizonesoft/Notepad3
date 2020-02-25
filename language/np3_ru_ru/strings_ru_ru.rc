@@ -146,9 +146,9 @@ BEGIN
                             "Файл «%s» не может быть сохранен и может быть защищен.\n\nХотите запустить %s с повышенными правами?"
     IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Вы уверены, что хотите открыть этот очень большой файл?\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Вы уверены, что хотите открыть этот очень большой файл?\n\t(размер: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Невозможно обработать этот большой файл (размер: %lli МБ)!"
+                            "Невозможно обработать этот большой файл (размер: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл имеет одинакового вида отступы!"

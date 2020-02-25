@@ -146,9 +146,9 @@ BEGIN
                             "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application??"
     IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large file?\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %lli MB)!"
+                            "Can't handle that huge file (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unknown file name extension (%s)!\nLoading data anyway?"
     IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"

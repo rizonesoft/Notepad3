@@ -647,7 +647,7 @@ inline int Sci_GetCurrentEOL_W(LPWCH eol) {
 inline DocPos Sci_GetSelectionStartEx() {
   if (!Sci_IsMultiSelection()) { return SciCall_GetSelectionStart(); }
   DocPosU const nsel = SciCall_GetSelections();
-  DocPos selStart = SciCall_GetTextLength() + 1;
+  DocPos selStart = Sci_GetDocEndPosition() + 1;
   for (DocPosU i = 0; i < nsel; ++i) {
     DocPos const iStart = SciCall_GetSelectionNStart(i);
     if (iStart < selStart) { selStart = iStart; }

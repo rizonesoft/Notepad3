@@ -1044,33 +1044,52 @@ bool EditLoadFile(
     return false;
   }
 
-  // calculate buffer limit
+  // calculate buffer size and limits
+
   LARGE_INTEGER liFileSize = { 0, 0 };
   bool const okay = GetFileSizeEx(hFile, &liFileSize);
-  bool const bLargerThan2GB = okay && (liFileSize.LowPart >= ((DWORD)INT32_MAX));
+  //DWORD const fileSizeMB = (DWORD)liFileSize.HighPart * (DWORD_MAX >> 20) + (liFileSize.LowPart >> 20);
+  
+  bool const bLargerThan2GB = okay && ((liFileSize.HighPart > 0) || (liFileSize.LowPart >= (DWORD)INT32_MAX));
 
-  //if (!okay || (liFileSize.HighPart != 0) || (liFileSize.LowPart > (DWORD_MAX - 8))) {
-  if (!okay || (liFileSize.HighPart != 0) || bLargerThan2GB) {
+  if (!okay || bLargerThan2GB) {
     if (!okay) {
       Globals.dwLastError = GetLastError();
+      return false;
     }
     else {
-      // refuse to handle file
-      InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, (liFileSize.QuadPart / 1024LL / 1024LL));
-      CloseHandle(hFile);
-      Encoding_Forced(CPI_NONE);
-      Flags.bLargeFileLoaded = true;
+#ifdef _WIN64
+      // can only handle ASCII/UTF-8 of this size
+      Encoding_Forced(CPI_UTF8);
+      // @@@ TODO: Scintilla can't handle files larger than 4GB :-( yet (2020-02-25)
+      bool const bFileTooBig = (liFileSize.HighPart > 0); // > DWORD_MAX 
+#else
+      bool const bFileTooBig = true; // _WIN32: file size < 2GB only
+#endif
+      if (bFileTooBig) {
+        // refuse to handle file in 32-bit
+        WCHAR sizeStr[64] = { L'\0' };
+        StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
+        InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_FILE_TOO_LARGE, sizeStr);
+        CloseHandle(hFile);
+        Encoding_Forced(CPI_NONE);
+        Flags.bLargeFileLoaded = true;
+        return false;
+      }
     }
-    return false;
   }
 
-  DWORD const dwFileSize = liFileSize.LowPart;
-  DWORD const dwBufferSize = dwFileSize + 8;
+  size_t const fileSize = (size_t)liFileSize.QuadPart;
 
   // Check if a warning message should be displayed for large files
-  DWORD const dwFileSizeLimit = (DWORD)Settings2.FileLoadWarningMB;
-  if ((dwFileSizeLimit != 0LL) && ((dwFileSizeLimit * 1024LL * 1024LL) < dwFileSize)) {
-    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
+  size_t const fileSizeWarning = (size_t)Settings2.FileLoadWarningMB << 20;
+  if ((fileSizeWarning != 0ULL) && (fileSizeWarning <= fileSize)) 
+  {
+    WCHAR sizeStr[64] = { L'\0' };
+    StrFormatByteSize((LONGLONG)liFileSize.QuadPart, sizeStr, COUNTOF(sizeStr));
+    WCHAR sizeWarnStr[64] = { L'\0' };
+    StrFormatByteSize((LONGLONG)fileSizeWarning, sizeWarnStr, COUNTOF(sizeWarnStr));
+    if (InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr) != IDYES) {
       CloseHandle(hFile);
       Encoding_Forced(CPI_NONE);
       return false;
@@ -1091,7 +1110,7 @@ bool EditLoadFile(
   }
   
   // new document text buffer
-  char* lpData = AllocMem(dwBufferSize, HEAP_ZERO_MEMORY);
+  char* lpData = AllocMem(fileSize + 2ULL, HEAP_ZERO_MEMORY);
   if (!lpData)
   {
     Globals.dwLastError = GetLastError();
@@ -1102,7 +1121,7 @@ bool EditLoadFile(
   }
 
   size_t cbData = 0LL;
-  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufferSize, (void**)&lpData, &cbData);
+  int const readFlag = ReadAndDecryptFile(hwnd, hFile, fileSize, (void**)&lpData, &cbData);
   Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 
@@ -1136,6 +1155,31 @@ bool EditLoadFile(
     FreeMem(lpData);
     return false;
   }
+
+  // force very large file to be ASCII/UTF-8 (!) - Scintilla can't handle it otherwise
+  if (bLargerThan2GB) 
+  {
+    bool const bIsUTF8Sig = IsUTF8Signature(lpData);
+    Encoding_Forced(bIsUTF8Sig ? CPI_UTF8SIGN : CPI_UTF8);
+    
+    FileVars_Init(NULL, 0, &Globals.fvCurFile);
+    status->iEncoding = Encoding_Forced(CPI_GET);
+    status->iEOLMode = Settings.DefaultEOLMode;
+
+    if (bIsUTF8Sig) {
+      EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory);
+    }
+    else {
+      EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
+    }
+
+    SciCall_SetEOLMode(Settings.DefaultEOLMode);
+
+    FreeMem(lpData);
+    return true;
+  }
+
+  // --------------------------------------------------------------------------
 
   ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iEncFallback,
                                                    bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
@@ -1301,10 +1345,10 @@ bool EditSaveFile(
 {
 
   HANDLE hFile;
-  bool   bWriteSuccess;
+  bool   bWriteSuccess = false;
 
   char* lpData;
-  size_t dwBytesWritten;
+  size_t bytesWritten;
 
   status->bCancelDataLoss = false;
 
@@ -1359,17 +1403,58 @@ bool EditSaveFile(
   // get text
   DocPos cbData = SciCall_GetTextLength();
 
-  if (cbData <= 0) {
-    bWriteSuccess = SetEndOfFile(hFile);
+  // files larger than 2GB will be forced stored as ASCII/UTF-8
+  if (cbData >= (DocPos)INT32_MAX) {
+    Encoding_Current(CPI_UTF8);
+    Encoding_Forced(CPI_UTF8);
+    status->iEncoding = Encoding_Forced(CPI_GET);
+  }
+
+  if ((cbData <= 0) || (cbData >= DWORD_MAX)) {
+    bWriteSuccess = SetEndOfFile(hFile) && (cbData < DWORD_MAX);
     Globals.dwLastError = GetLastError();
   }
   else {
 
-    lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-    cbData = SciCall_GetText((cbData+1), lpData);
-
-    if (Encoding_IsUNICODE(status->iEncoding))  // UTF-16LE/BE_(BOM)
+    if (Encoding_IsUTF8(status->iEncoding))
     {
+      const char* bom = NULL;
+      DocPos bomoffset = 0;
+
+      if (Encoding_IsUTF8_SIGN(status->iEncoding)) {
+        bom = "\xEF\xBB\xBF";
+        bomoffset = 3;
+      }
+
+      SetEndOfFile(hFile);
+     
+      if (IsEncryptionRequired() && (cbData < ((DocPos)INT32_MAX - 4)))
+      {
+        lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
+        cbData = SciCall_GetText((cbData + 1), lpData);
+        if (bom) {
+          MoveMemory(&lpData[bomoffset], lpData, cbData);
+          CopyMemory(lpData, bom, bomoffset);
+        }
+        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (size_t)(cbData + bomoffset), &bytesWritten);
+        Globals.dwLastError = GetLastError();
+        FreeMem(lpData);
+      }
+      else { // raw data handling of UTF-8 or >2GB file size
+        DWORD dwBytesWritten = 0;
+        if (bom) {
+          WriteFile(hFile, bom, (DWORD)bomoffset, &dwBytesWritten, NULL);
+        }
+        bWriteSuccess = WriteFile(hFile, SciCall_GetCharacterPointer(), (DWORD)cbData, &dwBytesWritten, NULL);
+        bytesWritten = (size_t)dwBytesWritten + bomoffset;
+      }
+    }
+
+    else if (Encoding_IsUNICODE(status->iEncoding))  // UTF-16LE/BE_(BOM)
+    {
+      lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
+      cbData = SciCall_GetText((cbData + 1), lpData);
+
       SetEndOfFile(hFile);
 
       LPWSTR lpDataWide = AllocMem((cbData+1) * 2 + 2, HEAP_ZERO_MEMORY);
@@ -1385,32 +1470,17 @@ bool EditSaveFile(
       if (Encoding_IsUNICODE_REVERSE(status->iEncoding)) {
         SwabEx((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
       }
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &dwBytesWritten);
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &bytesWritten);
       Globals.dwLastError = GetLastError();
 
       FreeMem(lpDataWide);
       FreeMem(lpData);
     }
 
-    else if (Encoding_IsUTF8(status->iEncoding))
-    {
-      SetEndOfFile(hFile);
-
-      DocPos bomoffset = 0;
-      if (Encoding_IsUTF8_SIGN(status->iEncoding)) {
-        const char* bom = "\xEF\xBB\xBF";
-        bomoffset = 3;
-        MoveMemory(&lpData[bomoffset], lpData, cbData);
-        CopyMemory(lpData, bom, bomoffset);
-      }
-      //bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)(cbData + bomoffset), &dwBytesWritten);
-      Globals.dwLastError = GetLastError();
-
-      FreeMem(lpData);
-    }
-
     else if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
+
+      lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
+      cbData = SciCall_GetText((cbData + 1), lpData);
 
       BOOL bCancelDataLoss = FALSE;
       UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
@@ -1440,7 +1510,7 @@ bool EditSaveFile(
 
       if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
         SetEndOfFile(hFile);
-        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataNew, &dwBytesWritten);
+        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataNew, &bytesWritten);
         Globals.dwLastError = GetLastError();
       }
       else {
@@ -1450,9 +1520,13 @@ bool EditSaveFile(
       FreeMem(lpData);
     }
 
-    else {
+    else 
+    {
+      lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
+      cbData = SciCall_GetText((cbData + 1), lpData);
+
       SetEndOfFile(hFile);
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)cbData, &dwBytesWritten);
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)cbData, &bytesWritten);
       Globals.dwLastError = GetLastError();
       FreeMem(lpData);
     }

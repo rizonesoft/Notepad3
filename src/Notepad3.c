@@ -1395,7 +1395,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   // Match Text
   if (s_flagMatchText && StrIsNotEmpty(s_lpMatchArg)) 
   {
-    if (SciCall_GetTextLength() > 0) {
+    if (!Sci_IsDocEmpty()) {
 
       WideCharToMultiByteEx(Encoding_SciCP,0,s_lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
 
@@ -3899,7 +3899,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _IGNORE_NOTIFY_CHANGE_;
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
 
-          if (SciCall_GetTextLength() <= 0) {
+          if (Sci_IsDocEmpty()) {
             Encoding_Current(iNewEncoding);
             Encoding_HasChanged(iNewEncoding);
           }
@@ -4918,7 +4918,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELTONEXT:
     case IDM_EDIT_SELTOPREV:
 
-      if (SciCall_GetTextLength() <= 0) { break; }
+      if (Sci_IsDocEmpty()) { break; }
 
       if (Sci_IsMultiSelection()) { 
         switch (iLoWParam) {
@@ -8198,7 +8198,7 @@ static void  _UpdateToolbarDelayed()
   CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
   bool b1 = SciCall_IsSelectionEmpty();
-  bool b2 = (bool)(SciCall_GetTextLength() > 0);
+  bool b2 = !Sci_IsDocEmpty();
   bool ro = SciCall_GetReadOnly();
   bool tv = FocusedView.HideNonMatchedLines;
 
