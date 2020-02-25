@@ -292,7 +292,8 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 #define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
 
 
-
+bool ReadFileXL(HANDLE hFile, BYTE* const lpBuffer, size_t nNumberOfBytesToRead, size_t* lpNumberOfBytesRead);
+bool WriteFileXL(HANDLE hFile, const BYTE* const lpBuffer, size_t nNumberOfBytesToWrite, size_t* lpNumberOfBytesWritten);
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);

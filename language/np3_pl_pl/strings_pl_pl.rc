@@ -146,9 +146,9 @@ BEGIN
                             "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Czy na pewno chcesz otworzyć ten duży plik?\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Czy na pewno chcesz otworzyć ten duży plik?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %lli MB)!"
+                            "Can't handle that huge file (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Nieznane rozszerzenie nazwy pliku (%s)!\nCzy mimo to załadować?"
     IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wcięcie!"

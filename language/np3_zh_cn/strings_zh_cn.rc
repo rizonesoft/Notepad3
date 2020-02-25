@@ -146,9 +146,9 @@ BEGIN
                             "文件“%s”不能被保存，它可能是受保护的。\n\n是否希望提升 %s 的权限？"
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "是否确实要打开一个如此庞大的文件？\n(Styling and Syntax Highlighting will not be applied!)"
+                            "是否确实要打开一个如此庞大的文件？\n\t(大小 %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "无法处理如此庞大的文件（大小 %lli MB）！"
+                            "无法处理如此庞大的文件（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
     IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
