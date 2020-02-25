@@ -146,7 +146,7 @@ BEGIN
                             "「%s」を保存できませんでした。保護されている可能性があります。\n\n権限を昇格して %s を起動しますか？"
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3 の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "大容量のファイルです。このファイルを開きますか？\n(Styling and Syntax Highlighting will not be applied!)"
+                            "大容量のファイルです。このファイルを開きますか？\n(配色や構文ハイライトは適用されません!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
                             "大容量すぎて処理できません！ (サイズ: %lli MB)"
     IDS_MUI_WARN_UNKNOWN_EXT
