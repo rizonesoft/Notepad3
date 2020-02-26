@@ -1343,22 +1343,17 @@ bool EditSaveFile(
        bool bSaveCopy,
        bool bPreserveTimeStamp)
 {
-
-  HANDLE hFile;
-  bool   bWriteSuccess = false;
-
-  char* lpData;
-  size_t bytesWritten;
-
+  bool bWriteSuccess = false;
   status->bCancelDataLoss = false;
 
-  hFile = CreateFile(pszFile,
-                     GENERIC_WRITE,
-                     FILE_SHARE_READ|FILE_SHARE_WRITE,
-                     NULL,
-                     OPEN_ALWAYS,
-                     FILE_ATTRIBUTE_NORMAL,
-                     NULL);
+  HANDLE hFile = CreateFile(pszFile,
+                            GENERIC_WRITE,
+                            FILE_SHARE_READ|FILE_SHARE_WRITE,
+                            NULL,
+                            OPEN_ALWAYS,
+                            FILE_ATTRIBUTE_NORMAL,
+                            NULL);
+
   Globals.dwLastError = GetLastError();
 
   // failure could be due to missing attributes (2k/XP)
@@ -1375,12 +1370,14 @@ bool EditSaveFile(
                         OPEN_ALWAYS,
                         FILE_ATTRIBUTE_NORMAL | dwAttributes,
                         NULL);
+
       Globals.dwLastError = GetLastError();
     }
   }
 
-  if (hFile == INVALID_HANDLE_VALUE)
+  if (hFile == INVALID_HANDLE_VALUE) {
     return false;
+  }
 
   //FILETIME createTime;
   //FILETIME laccessTime;
@@ -1400,8 +1397,9 @@ bool EditSaveFile(
     EditStripLastCharacter(hwnd, true, true);
   }
 
-  // get text
-  DocPos cbData = SciCall_GetTextLength();
+  // get text length in bytes
+  DocPos const cbData = SciCall_GetTextLength();
+  size_t bytesWritten = 0ULL;
 
   // files larger than 2GB will be forced stored as ASCII/UTF-8
   if (cbData >= (DocPos)INT32_MAX) {
@@ -1420,115 +1418,134 @@ bool EditSaveFile(
     {
       const char* bom = NULL;
       DocPos bomoffset = 0;
-
       if (Encoding_IsUTF8_SIGN(status->iEncoding)) {
         bom = "\xEF\xBB\xBF";
-        bomoffset = 3;
+        bomoffset = 3; // in char
       }
 
       SetEndOfFile(hFile);
      
-      if (IsEncryptionRequired() && (cbData < ((DocPos)INT32_MAX - 4)))
+      if (IsEncryptionRequired() && (cbData < ((DocPos)INT32_MAX - 1 - bomoffset)))
       {
-        lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-        cbData = SciCall_GetText((cbData + 1), lpData);
-        if (bom) {
-          MoveMemory(&lpData[bomoffset], lpData, cbData);
-          CopyMemory(lpData, bom, bomoffset);
+        char* const lpData = AllocMem(cbData + 1 + bomoffset, HEAP_ZERO_MEMORY); //fix: +bom
+        if (lpData) {
+          if (bom) {
+            CopyMemory(lpData, bom, bomoffset);
+          }
+          SciCall_GetText((cbData + 1), &lpData[bomoffset]);
+          bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (size_t)(cbData + bomoffset), &bytesWritten);
+          Globals.dwLastError = GetLastError();
+          FreeMem(lpData);
         }
-        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (size_t)(cbData + bomoffset), &bytesWritten);
-        Globals.dwLastError = GetLastError();
-        FreeMem(lpData);
+        else { Globals.dwLastError = GetLastError(); }
       }
       else { // raw data handling of UTF-8 or >2GB file size
         DWORD dwBytesWritten = 0;
         if (bom) {
           WriteFile(hFile, bom, (DWORD)bomoffset, &dwBytesWritten, NULL);
         }
-        bWriteSuccess = WriteFile(hFile, SciCall_GetCharacterPointer(), (DWORD)cbData, &dwBytesWritten, NULL);
-        bytesWritten = (size_t)dwBytesWritten + bomoffset;
+        bWriteSuccess = WriteFileXL(hFile, SciCall_GetCharacterPointer(), cbData, &bytesWritten);
+        bytesWritten += (size_t)dwBytesWritten;
       }
     }
 
     else if (Encoding_IsUNICODE(status->iEncoding))  // UTF-16LE/BE_(BOM)
     {
-      lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-      cbData = SciCall_GetText((cbData + 1), lpData);
+      const char* bom = NULL;
+      DocPos bomoffset = 0;
+      if (Encoding_IsUNICODE_BOM(status->iEncoding)) {
+        bom = "\xFF\xFE";
+        bomoffset = 1; // in wide-char
+      }
 
       SetEndOfFile(hFile);
 
-      LPWSTR lpDataWide = AllocMem((cbData+1) * 2 + 2, HEAP_ZERO_MEMORY);
-      int bomoffset = 0;
-      if (Encoding_IsUNICODE_BOM(status->iEncoding)) {
-        const char* bom = "\xFF\xFE";
-        CopyMemory((char*)lpDataWide, bom, 2);
-        bomoffset = 1;
-      }
-      ptrdiff_t const cbDataWide = bomoffset +
-        MultiByteToWideCharEx(Encoding_SciCP, 0, lpData, cbData, &lpDataWide[bomoffset],
-        ((SizeOfMem(lpDataWide) / sizeof(WCHAR)) - bomoffset));
-      if (Encoding_IsUNICODE_REVERSE(status->iEncoding)) {
-        SwabEx((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
-      }
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &bytesWritten);
-      Globals.dwLastError = GetLastError();
+      LPWSTR const lpDataWide = AllocMem((cbData+1+bomoffset) * 2, HEAP_ZERO_MEMORY);
+      if (lpDataWide) {
+        if (bom) {
+          CopyMemory((char*)lpDataWide, bom, bomoffset * 2);
+          bomoffset = 1;
+        }
+        ptrdiff_t const cbDataWide = bomoffset +
+          MultiByteToWideCharEx(Encoding_SciCP, 0, SciCall_GetCharacterPointer(), cbData,
+            &lpDataWide[bomoffset], ((SizeOfMem(lpDataWide) / sizeof(WCHAR)) - bomoffset));
 
-      FreeMem(lpDataWide);
-      FreeMem(lpData);
+        if (Encoding_IsUNICODE_REVERSE(status->iEncoding)) {
+          SwabEx((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
+        }
+        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &bytesWritten);
+        Globals.dwLastError = GetLastError();
+        FreeMem(lpDataWide);
+      }
+      else { Globals.dwLastError = GetLastError(); }
     }
 
-    else if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
-
-      lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-      cbData = SciCall_GetText((cbData + 1), lpData);
-
+    else if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) 
+    {
       BOOL bCancelDataLoss = FALSE;
-      UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
+      UINT const uCodePage = Encoding_GetCodePage(status->iEncoding);
+      bool const isUTF_7_or_8 = ((uCodePage == CPI_UTF7) || (uCodePage == CPI_UTF8));
 
-      LPWSTR lpDataWide = AllocMem((cbData+1) * 2, HEAP_ZERO_MEMORY);
-      ptrdiff_t const cbDataWide = MultiByteToWideCharEx(Encoding_SciCP, 0, lpData, cbData,
-                                                 lpDataWide, (SizeOfMem(lpDataWide)/sizeof(WCHAR)));
+      LPWSTR const lpDataWide = AllocMem((cbData+1) * 2, HEAP_ZERO_MEMORY);
+      if (lpDataWide) {
+        size_t const cbDataWide = (size_t)MultiByteToWideCharEx(Encoding_SciCP, 0, SciCall_GetCharacterPointer(), cbData,
+                                                                lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR))); 
 
-      ptrdiff_t cbDataNew = 0;
-      if (Encoding_IsMBCS(status->iEncoding)) {
-        FreeMem(lpData);
-        lpData = AllocMem(SizeOfMem(lpDataWide) * 2, HEAP_ZERO_MEMORY); // need more space
-        cbDataNew = WideCharToMultiByteEx(uCodePage, 0, lpDataWide, cbDataWide,
-                                     lpData, SizeOfMem(lpData), NULL, NULL);
-      }
-      else {
-        ZeroMemory(lpData, SizeOfMem(lpData));
-        cbDataNew = WideCharToMultiByteEx(uCodePage,WC_NO_BEST_FIT_CHARS,lpDataWide,cbDataWide,
-                                     lpData,SizeOfMem(lpData),NULL,&bCancelDataLoss);
-        if (!bCancelDataLoss) {
-          cbDataNew = WideCharToMultiByteEx(uCodePage,0,lpDataWide,cbDataWide,
-                                          lpData,SizeOfMem(lpData),NULL,NULL);
-          bCancelDataLoss = FALSE;
+        // dry conversion run
+        size_t const cbSizeNeeded = (size_t)WideCharToMultiByteEx(uCodePage, 0, lpDataWide, cbDataWide, NULL, 0, NULL, NULL);
+        size_t const cbDataNew = max(cbSizeNeeded, cbDataWide);
+        size_t cbDataConverted = 0ULL;
+
+        char* const lpData = AllocMem(cbDataNew + 1, HEAP_ZERO_MEMORY);
+        if (lpData) 
+        {
+          if (Encoding_IsMBCS(status->iEncoding)) {
+            cbDataConverted = (size_t)WideCharToMultiByteEx(uCodePage, 0, lpDataWide, cbDataWide,
+                                                            lpData, cbDataNew, NULL, NULL);
+          }
+          else {
+            cbDataConverted = (size_t)WideCharToMultiByteEx(uCodePage, WC_NO_BEST_FIT_CHARS, lpDataWide, cbDataWide,
+                                                            lpData, cbDataNew, NULL, isUTF_7_or_8 ? NULL : &bCancelDataLoss);
+          }
+
+          FreeMem(lpDataWide);
+
+          if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2) == IDOK) {
+            SetEndOfFile(hFile);
+            if (lpData && (cbDataConverted != 0)) {
+              bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataConverted, &bytesWritten);
+              Globals.dwLastError = GetLastError();
+            }
+          }
+          else {
+            bWriteSuccess = false;
+            status->bCancelDataLoss = true;
+          }
+          FreeMem(lpData);
         }
+        else { Globals.dwLastError = GetLastError(); }
       }
-      FreeMem(lpDataWide);
-
-      if (!bCancelDataLoss || InfoBoxLng(MB_OKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
-        SetEndOfFile(hFile);
-        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbDataNew, &bytesWritten);
-        Globals.dwLastError = GetLastError();
-      }
-      else {
-        bWriteSuccess = false;
-        status->bCancelDataLoss = true;
-      }
-      FreeMem(lpData);
+      else { Globals.dwLastError = GetLastError(); }
     }
 
     else 
     {
-      lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-      cbData = SciCall_GetText((cbData + 1), lpData);
-
-      SetEndOfFile(hFile);
-      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)cbData, &bytesWritten);
-      Globals.dwLastError = GetLastError();
-      FreeMem(lpData);
+      if (IsEncryptionRequired())
+      {
+        char* const lpData = AllocMem(cbData + 1, HEAP_ZERO_MEMORY);
+        if (lpData) {
+          SciCall_GetText((cbData + 1), lpData);
+          SetEndOfFile(hFile);
+          bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, (DWORD)cbData, &bytesWritten);
+          Globals.dwLastError = GetLastError();
+          FreeMem(lpData);
+        }
+        else { Globals.dwLastError = GetLastError(); }
+      }
+      else {
+        SetEndOfFile(hFile);
+        bWriteSuccess = WriteFileXL(hFile, SciCall_GetCharacterPointer(), cbData, &bytesWritten);
+      }
     }
   }
 
@@ -1537,13 +1554,10 @@ bool EditSaveFile(
   }
   CloseHandle(hFile);
 
-  if (bWriteSuccess) {
-    if (!bSaveCopy) {
-      SciCall_SetSavePoint();
-    }
-    return true;
+  if (bWriteSuccess && !bSaveCopy) {
+    SciCall_SetSavePoint();
   }
-  return false;
+  return bWriteSuccess;
 }
 
 
