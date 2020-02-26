@@ -143,14 +143,11 @@ Editor::Editor() : durationWrapOneLine(0.00001, 0.000001, 0.0001) {
 	wordSelectAnchorEndPos = 0;
 	wordSelectInitialCaretPos = -1;
 
-	caretXPolicy = CARET_SLOP | CARET_EVEN;
-	caretXSlop = 50;
-
-	caretYPolicy = CARET_EVEN;
-	caretYSlop = 0;
-
-	visiblePolicy = 0;
-	visibleSlop = 0;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	caretPolicies.x = { CARET_SLOP | CARET_EVEN, 50 };
+	caretPolicies.y = { CARET_EVEN, 0 };
+	visiblePolicy = { 0, 0 };
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	searchAnchor = 0;
 
@@ -847,7 +844,9 @@ SelectionPosition Editor::MovePositionOutsideChar(SelectionPosition pos, Sci::Po
 	return pos;
 }
 
-void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos, bool ensureVisible) {
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos, bool ensureVisible, CaretPolicies policies) {
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const Sci::Line currentLine = pdoc->SciLineFromPosition(newPos.Position());
 	if (ensureVisible) {
 		// In case in need of wrapping to ensure DisplayFromDoc works.
@@ -857,7 +856,9 @@ void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
 			}
 		}
 		const XYScrollPosition newXY = XYScrollToMakeVisible(
-			SelectionRange(posDrag.IsValid() ? posDrag : newPos), xysDefault);
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+			SelectionRange(posDrag.IsValid() ? posDrag : newPos), xysDefault, policies);
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		if (previousPos.IsValid() && (newXY.xOffset == xOffset)) {
 			// simple vertical scroll then invalidate
 			ScrollTo(newXY.topLine);
@@ -907,7 +908,9 @@ void Editor::MovePositionTo(SelectionPosition newPos, Selection::selTypes selt, 
 		SetEmptySelection(newPos);
 	}
 
-	MovedCaret(newPos, spCaret, ensureVisible);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	MovedCaret(newPos, spCaret, ensureVisible, caretPolicies);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void Editor::MovePositionTo(Sci::Position newPos, Selection::selTypes selt, bool ensureVisible) {
@@ -1151,7 +1154,9 @@ slop | strict | jumps | even | Caret can go to the margin                 | When
   1  |   1    |   1   |   1  | No, kept out of UZ                         | moved to put caret at 3UZ of the margin
 */
 
-Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options) {
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange & range, const XYScrollOptions options, CaretPolicies policies) {
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const PRectangle rcClient = GetTextRectangle();
 	const Point ptOrigin = GetVisibleOriginInMain();
 	const Point pt = LocationFromPosition(range.caret) + ptOrigin;
@@ -1164,14 +1169,18 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 	}
 
 	// Vertical positioning
-	if ((options & xysVertical) && (pt.y < rcClient.top || ptBottomCaret.y >= rcClient.bottom || (caretYPolicy & CARET_STRICT) != 0)) {
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	if ((options & xysVertical) && (pt.y < rcClient.top || ptBottomCaret.y >= rcClient.bottom || (policies.y.policy & CARET_STRICT) != 0)) {
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		const Sci::Line lineCaret = DisplayFromPosition(range.caret.Position());
 		const Sci::Line linesOnScreen = LinesOnScreen();
 		const Sci::Line halfScreen = std::max(linesOnScreen - 1, static_cast<Sci::Line>(2)) / 2;
-		const bool bSlop = (caretYPolicy & CARET_SLOP) != 0;
-		const bool bStrict = (caretYPolicy & CARET_STRICT) != 0;
-		const bool bJump = (caretYPolicy & CARET_JUMPS) != 0;
-		const bool bEven = (caretYPolicy & CARET_EVEN) != 0;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		const bool bSlop = (policies.y.policy & CARET_SLOP) != 0;
+		const bool bStrict = (policies.y.policy & CARET_STRICT) != 0;
+		const bool bJump = (policies.y.policy & CARET_JUMPS) != 0;
+		const bool bEven = (policies.y.policy & CARET_EVEN) != 0;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		// It should be possible to scroll the window to show the caret,
 		// but this fails to remove the caret on GTK+
@@ -1186,7 +1195,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				} else {
 					// yMarginT must equal to caretYSlop, with a minimum of 1 and
 					// a maximum of slightly less than half the heigth of the text area.
-					yMarginT = std::clamp<Sci::Line>(caretYSlop, 1, halfScreen);
+					yMarginT = std::clamp<Sci::Line>(policies.y.slop, 1, halfScreen);
 					if (bEven) {
 						yMarginB = yMarginT;
 					} else {
@@ -1196,7 +1205,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				yMoveT = yMarginT;
 				if (bEven) {
 					if (bJump) {
-						yMoveT = std::clamp<Sci::Line>(caretYSlop * 3, 1, halfScreen);
+						yMoveT = std::clamp<Sci::Line>(policies.y.slop * 3, 1, halfScreen);
 					}
 					yMoveB = yMoveT;
 				} else {
@@ -1210,7 +1219,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 					newXY.topLine = lineCaret - linesOnScreen + 1 + yMoveB;
 				}
 			} else {	// Not strict
-				yMoveT = bJump ? caretYSlop * 3 : caretYSlop;
+				yMoveT = bJump ? policies.y.slop * 3 : policies.y.slop;
 				yMoveT = std::clamp<Sci::Line>(yMoveT, 1, halfScreen);
 				if (bEven) {
 					yMoveB = yMoveT;
@@ -1267,10 +1276,12 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 	// Horizontal positioning
 	if ((options & xysHorizontal) && !Wrapping()) {
 		const int halfScreen = std::max(static_cast<int>(rcClient.Width()) - 4, 4) / 2;
-		const bool bSlop = (caretXPolicy & CARET_SLOP) != 0;
-		const bool bStrict = (caretXPolicy & CARET_STRICT) != 0;
-		const bool bJump = (caretXPolicy & CARET_JUMPS) != 0;
-		const bool bEven = (caretXPolicy & CARET_EVEN) != 0;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		const bool bSlop = (policies.x.policy & CARET_SLOP) != 0;
+		const bool bStrict = (policies.x.policy & CARET_STRICT) != 0;
+		const bool bJump = (policies.x.policy & CARET_JUMPS) != 0;
+		const bool bEven = (policies.x.policy & CARET_EVEN) != 0;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		if (bSlop) {	// A margin is defined
 			int xMoveL, xMoveR;
@@ -1283,7 +1294,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				} else {
 					// xMargin must equal to caretXSlop, with a minimum of 2 and
 					// a maximum of slightly less than half the width of the text area.
-					xMarginR = std::clamp(caretXSlop, 2, halfScreen);
+					xMarginR = std::clamp(policies.x.slop, 2, halfScreen);
 					if (bEven) {
 						xMarginL = xMarginR;
 					} else {
@@ -1292,7 +1303,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				}
 				if (bJump && bEven) {
 					// Jump is used only in even mode
-					xMoveL = xMoveR = std::clamp(caretXSlop * 3, 1, halfScreen);
+					xMoveL = xMoveR = std::clamp(policies.x.slop * 3, 1, halfScreen);
 				} else {
 					xMoveL = xMoveR = 0;	// Not used, avoid a warning
 				}
@@ -1314,7 +1325,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 					}
 				}
 			} else {	// Not strict
-				xMoveR = bJump ? caretXSlop * 3 : caretXSlop;
+				xMoveR = bJump ? policies.x.slop * 3 : policies.x.slop;
 				xMoveR = std::clamp(xMoveR, 1, halfScreen);
 				if (bEven) {
 					xMoveL = xMoveR;
@@ -1413,12 +1424,17 @@ void Editor::SetXYScroll(XYScrollPosition newXY) {
 }
 
 void Editor::ScrollRange(SelectionRange range) {
-	SetXYScroll(XYScrollToMakeVisible(range, xysDefault));
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	SetXYScroll(XYScrollToMakeVisible(range, xysDefault, caretPolicies));
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void Editor::EnsureCaretVisible(bool useMargin, bool vert, bool horiz) {
 	SetXYScroll(XYScrollToMakeVisible(SelectionRange(posDrag.IsValid() ? posDrag : sel.RangeMain().caret),
-		static_cast<XYScrollOptions>((useMargin?xysUseMargin:0)|(vert?xysVertical:0)|(horiz?xysHorizontal:0))));
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	static_cast<XYScrollOptions>((useMargin ? xysUseMargin : 0) | (vert ? xysVertical : 0) | (horiz ? xysHorizontal : 0)),
+	caretPolicies));
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void Editor::ShowCaretAtCurrentPosition() {
@@ -2883,20 +2899,20 @@ void Editor::PageMove(int direction, Selection::selTypes selt, bool stuttered) {
 	SelectionPosition newPos;
 
 	const Sci::Line currentLine = pdoc->SciLineFromPosition(sel.MainCaret());
-	const Sci::Line topStutterLine = topLine + caretYSlop;
+	const Sci::Line topStutterLine = topLine + caretPolicies.y.slop;
 	const Sci::Line bottomStutterLine =
 	    pdoc->SciLineFromPosition(PositionFromLocation(
 	                Point::FromInts(lastXChosen - xOffset, direction * vs.lineHeight * static_cast<int>(LinesToScroll()))))
-	    - caretYSlop - 1;
+	    - caretPolicies.y.slop - 1;
 
 	if (stuttered && (direction < 0 && currentLine > topStutterLine)) {
 		topLineNew = topLine;
-		newPos = SPositionFromLocation(Point::FromInts(lastXChosen - xOffset, vs.lineHeight * caretYSlop),
+		newPos = SPositionFromLocation(Point::FromInts(lastXChosen - xOffset, vs.lineHeight * caretPolicies.y.slop),
 			false, false, UserVirtualSpace());
 
 	} else if (stuttered && (direction > 0 && currentLine < bottomStutterLine)) {
 		topLineNew = topLine;
-		newPos = SPositionFromLocation(Point::FromInts(lastXChosen - xOffset, vs.lineHeight * static_cast<int>(LinesToScroll() - caretYSlop)),
+		newPos = SPositionFromLocation(Point::FromInts(lastXChosen - xOffset, vs.lineHeight * static_cast<int>(LinesToScroll() - caretPolicies.y.slop)),
 			false, false, UserVirtualSpace());
 
 	} else {
@@ -3183,7 +3199,9 @@ void Editor::CursorUpOrDown(int direction, Selection::selTypes selt) {
 		sel.selType = Selection::selRectangle;
 		sel.Rectangular() = SelectionRange(posNew, rangeBase.anchor);
 		SetRectangularRange();
-		MovedCaret(posNew, caretToUse, true);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		MovedCaret(posNew, caretToUse, true, caretPolicies);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	} else if (sel.selType == Selection::selLines && sel.MoveExtends()) {
 		// Calculate new caret position and call SetSelection(), which will ensure whole lines are selected.
 		const SelectionPosition posNew = MovePositionSoVisible(
@@ -3204,7 +3222,9 @@ void Editor::CursorUpOrDown(int direction, Selection::selTypes selt) {
 				SelectionRange(posNew, sel.Range(r).anchor) : SelectionRange(posNew);
 		}
 		sel.RemoveDuplicates();
-		MovedCaret(sel.RangeMain().caret, caretToUse, true);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		MovedCaret(sel.RangeMain().caret, caretToUse, true, caretPolicies);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -3601,7 +3621,9 @@ int Editor::HorizontalMove(unsigned int iMessage) {
 
 	sel.RemoveDuplicates();
 
-	MovedCaret(sel.RangeMain().caret, SelectionPosition(INVALID_POSITION), true);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	MovedCaret(sel.RangeMain().caret, SelectionPosition(INVALID_POSITION), true, caretPolicies);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	// Invalidate the new state of the selection
 	InvalidateWholeSelection();
@@ -3672,7 +3694,9 @@ int Editor::DelWordOrLine(unsigned int iMessage) {
 	// May need something stronger here: can selections overlap at this point?
 	sel.RemoveDuplicates();
 
-	MovedCaret(sel.RangeMain().caret, SelectionPosition(INVALID_POSITION), true);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	MovedCaret(sel.RangeMain().caret, SelectionPosition(INVALID_POSITION), true, caretPolicies);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	// Invalidate the new state of the selection
 	InvalidateWholeSelection();
@@ -4262,20 +4286,13 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 	}
 	if (!(posDrag == newPos)) {
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		const auto oldCaretYPolicy = caretYPolicy;
-		const auto oldCaretYSlop = caretYSlop;
-		const auto oldCaretXPolicy = caretXPolicy;
-		const auto oldCaretXSlop = caretXSlop;
-		caretYPolicy = CARET_SLOP | CARET_STRICT | CARET_EVEN;
-		caretYSlop = (oldCaretYSlop < 3) ? 3 : oldCaretYSlop;
-		caretXPolicy = CARET_SLOP | CARET_STRICT | CARET_EVEN;
-		caretXSlop = (oldCaretXSlop < 75) ? 75 : oldCaretXSlop;
-		MovedCaret(newPos, posDrag, true);
-		caretYPolicy = oldCaretYPolicy;
-		caretYSlop = oldCaretYSlop;
-		caretXPolicy = oldCaretXPolicy;
-		caretXSlop = oldCaretXSlop;
+		const CaretPolicies dragCaretPolicies = {
+			CaretPolicy(CARET_SLOP | CARET_STRICT | CARET_EVEN, 50),
+			CaretPolicy(CARET_SLOP | CARET_STRICT | CARET_EVEN, 2)
+		};
+		MovedCaret(newPos, posDrag, true, dragCaretPolicies);
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 		caret.on = true;
 		FineTickerCancel(tickCaret);
 		if ((caret.active) && (caret.period > 0) && (newPos.Position() < 0))
@@ -5464,24 +5481,26 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 	}
 	if (enforcePolicy) {
 		const Sci::Line lineDisplay = pcs->DisplayFromDoc(lineDoc);
-		if (visiblePolicy & VISIBLE_SLOP) {
-			if ((topLine > lineDisplay) || ((visiblePolicy & VISIBLE_STRICT) && (topLine + visibleSlop > lineDisplay))) {
-				SetTopLine(std::clamp<Sci::Line>(lineDisplay - visibleSlop, 0, MaxScrollPos()));
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (visiblePolicy.policy & VISIBLE_SLOP) {
+			if ((topLine > lineDisplay) || ((visiblePolicy.policy & VISIBLE_STRICT) && (topLine + visiblePolicy.slop > lineDisplay))) {
+				SetTopLine(std::clamp<Sci::Line>(lineDisplay - visiblePolicy.slop, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			} else if ((lineDisplay > topLine + LinesOnScreen() - 1) ||
-			        ((visiblePolicy & VISIBLE_STRICT) && (lineDisplay > topLine + LinesOnScreen() - 1 - visibleSlop))) {
-				SetTopLine(std::clamp<Sci::Line>(lineDisplay - LinesOnScreen() + 1 + visibleSlop, 0, MaxScrollPos()));
+			           ((visiblePolicy.policy & VISIBLE_STRICT) && (lineDisplay > topLine + LinesOnScreen() - 1 - visiblePolicy.slop))) {
+				SetTopLine(std::clamp<Sci::Line>(lineDisplay - LinesOnScreen() + 1 + visiblePolicy.slop, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			}
 		} else {
-			if ((topLine > lineDisplay) || (lineDisplay > topLine + LinesOnScreen() - 1) || (visiblePolicy & VISIBLE_STRICT)) {
+			if ((topLine > lineDisplay) || (lineDisplay > topLine + LinesOnScreen() - 1) || (visiblePolicy.policy & VISIBLE_STRICT)) {
 				SetTopLine(std::clamp<Sci::Line>(lineDisplay - LinesOnScreen() / 2 + 1, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			}
 		}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -7324,20 +7343,19 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SEARCHPREV:
 		return SearchText(iMessage, wParam, lParam);
 
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case SCI_SETXCARETPOLICY:
-		caretXPolicy = static_cast<int>(wParam);
-		caretXSlop = static_cast<int>(lParam);
+		caretPolicies.x = CaretPolicy(wParam, lParam);
 		break;
 
 	case SCI_SETYCARETPOLICY:
-		caretYPolicy = static_cast<int>(wParam);
-		caretYSlop = static_cast<int>(lParam);
+		caretPolicies.y = CaretPolicy(wParam, lParam);
 		break;
 
 	case SCI_SETVISIBLEPOLICY:
-		visiblePolicy = static_cast<int>(wParam);
-		visibleSlop = static_cast<int>(lParam);
+		visiblePolicy = CaretPolicy(wParam, lParam);
 		break;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case SCI_LINESONSCREEN:
 		return LinesOnScreen();

@@ -915,7 +915,7 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 //
 //  ReadFileXL()
 //
-bool ReadFileXL(HANDLE hFile, BYTE* const lpBuffer, size_t nNumberOfBytesToRead, size_t* lpNumberOfBytesRead)
+bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead)
 {
   DWORD dwRead = 0;
   size_t bytesRead = 0ULL;
@@ -937,7 +937,7 @@ bool ReadFileXL(HANDLE hFile, BYTE* const lpBuffer, size_t nNumberOfBytesToRead,
 //
 //  WriteFileXL()
 //
-bool WriteFileXL(HANDLE hFile, const BYTE* const lpBuffer, size_t nNumberOfBytesToWrite, size_t* lpNumberOfBytesWritten)
+bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten)
 {
   DWORD dwWritten = 0;
   size_t bytesWritten = 0ULL;
