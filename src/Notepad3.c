@@ -7046,11 +7046,7 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
       if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
         if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
           if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
-            int const token = _SaveUndoSelection();
-            if (!Sci_IsMultiOrRectangleSelection()) {
-              SciCall_ReplaceSel("");
-            }
-            _SaveRedoSelection(token);
+            _SaveRedoSelection(_SaveUndoSelection());
           }
         }
         bModified = false; // not yet
@@ -7145,11 +7141,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
         if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
           if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
-            int const token = _SaveUndoSelection();
-            if (!Sci_IsMultiOrRectangleSelection()) {
-              SciCall_ReplaceSel("");
-            }
-            _SaveRedoSelection(token);
+            _SaveRedoSelection(_SaveUndoSelection());
           }
         }
         bModified = false; // not yet
