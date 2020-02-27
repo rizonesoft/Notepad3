@@ -5025,7 +5025,7 @@ void EditEnsureSelectionVisible()
   SciCall_EnsureVisible(iAnchorLine);
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
 
-  //SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
+  //~SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
   EditScrollTo(iCurrentLine, Settings2.CurrentLineVerticalSlop);
 }
 

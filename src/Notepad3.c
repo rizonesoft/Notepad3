@@ -9687,12 +9687,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         SciCall_NewLine();
         _END_UNDO_ACTION_
         SciCall_DocumentEnd();
-        EditEnsureSelectionVisible();
+        SciCall_ScrollToEnd();
       }
       // set historic caret/selection  pos
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
       {
-        EditSetSelectionEx(Globals.hwndEdit, iAnchorPos, iCaretPos, -1, -1);
+        SciCall_SetSelection(iCaretPos, iAnchorPos);
+        SciCall_ScrollRange(iAnchorPos, iCaretPos);
       }
     }
 
