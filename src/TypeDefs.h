@@ -653,8 +653,6 @@ typedef struct _themeFiles
 
 // ---------   common defines   --------
 
-#define NP3_LARGE_DOCUMENT_STYLES_NONE 1
-
 #define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"
 
 //~#define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS (Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE))

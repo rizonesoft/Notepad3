@@ -968,17 +968,6 @@ static inline bool _IsItemInStyleString(LPCWSTR lpszStyleStrg, LPCWSTR item)
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
-#ifdef  NP3_LARGE_DOCUMENT_STYLES_NONE
-  if (Flags.bLargeFileLoaded)
-  {
-    s_pLexCurrent = GetLargeFileLexer();
-    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
-    SciCall_StartStyling(0);
-    UpdateAllBars(false);
-    return;
-  }
-#endif
-
   // Select standard if NULL is specified
   if (!pLexNew) {
     pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
@@ -1480,6 +1469,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
+  SciCall_StartStyling(0);
+
   // apply lexer styles
   if (Flags.bLargeFileLoaded)
   {
@@ -1488,6 +1479,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditDoStyling(0, -1);
     EditUpdateIndicators(0, -1, false);
   }
  
