@@ -195,22 +195,27 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 
 //=============================================================================
 //
-//  ChangePreferredLanguage
+//  SetPreferredLanguage
 //
 void SetPreferredLanguage(LANGID iPreferredLanguageID)
 {
-  Globals.iPrefLANGID = 0;
+  LANGID const prevLngID = Globals.iPrefLANGID;
+  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US); // internal
   const WCHAR* szLocaleName = NULL;
   for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
     if (MUI_LanguageDLLs[lng].LangId == iPreferredLanguageID) {
-      szLocaleName = MUI_LanguageDLLs[lng].szLocaleName;
       Globals.iPrefLANGID = iPreferredLanguageID;
+      szLocaleName = MUI_LanguageDLLs[lng].szLocaleName;
     }
   }
-  if (szLocaleName) {
-    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) {
+  if ((Globals.iPrefLANGID != prevLngID) && szLocaleName) 
+  {
+    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) 
+    {
       StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
-      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+      
+      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) 
+      {
         IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
       }
       else {

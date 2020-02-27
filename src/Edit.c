@@ -7393,7 +7393,7 @@ void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
 {
   static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
 
-  //~if (Flags.bLargeFileLoaded) { return; }
+  if (Flags.bLargeFileLoaded) { return; }
 
   if (!guard)
   {

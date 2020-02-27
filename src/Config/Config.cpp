@@ -2078,10 +2078,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 //  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component 
 //
 
-// @@@ NOTE: CreateDocument and SetDocPointer hangs on  WndPaint()/PaintDC()
-// need to debug deeper ....
-
-#if FALSE
+#if TRUE
 static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
 {
   #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
@@ -2090,18 +2087,7 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
     SciCall_SetDocPointer(0);
   }
   else {
-#if 1
-    sptr_t const pNewDocumentPtr = SciCall_CreateDocument(lenText, docOptions);
-    if (pNewDocumentPtr) { 
-      SciCall_SetDocPointer(pNewDocumentPtr);
-      SciCall_ReleaseDocument(pNewDocumentPtr);
-    }
-    else {
-      SciCall_SetDocPointer(0);
-    }
-    SciCall_TargetWholeDocument();
-    SciCall_ReplaceTarget(lenText, lpstrText);
-#else
+#if TRUE
     ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
 
     if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
@@ -2113,6 +2099,17 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
     }
     SciCall_SetDocPointer(pNewDocumentPtr);
     SciCall_ReleaseDocument(pNewDocumentPtr);
+#else
+    sptr_t const pNewDocumentPtr = SciCall_CreateDocument(lenText, docOptions);
+    if (pNewDocumentPtr) {
+      SciCall_SetDocPointer(pNewDocumentPtr);
+      SciCall_ReleaseDocument(pNewDocumentPtr);
+    }
+    else {
+      SciCall_SetDocPointer(0);
+    }
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
 #endif
   }
   return true;

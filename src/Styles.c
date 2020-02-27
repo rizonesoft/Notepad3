@@ -1479,6 +1479,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditDoStyling(0, -1);
     EditUpdateIndicators(0, -1, false);
   }
  
