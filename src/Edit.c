@@ -313,59 +313,11 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 extern bool bFreezeAppTitle;
 
-void XXX_EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory)
-{
-  bFreezeAppTitle = true;
-
-  // clear markers, flags and positions
-  if (bClearUndoHistory) { UndoRedoRecordingStop(); }
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(hwnd); }
-  _IGNORE_NOTIFY_CHANGE_;
-  SciCall_Cancel();
-  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
-  SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
-  EditClearAllOccurrenceMarkers(hwnd);
-  SciCall_SetScrollWidth(1);
-  SciCall_SetXOffset(0);
-  _OBSERVE_NOTIFY_CHANGE_;
-
-  FileVars_Apply(&Globals.fvCurFile);
-
-  // set new text
-  if (lenText > 0) {
-    _IGNORE_NOTIFY_CHANGE_;
-    SciCall_TargetWholeDocument();
-    SciCall_ReplaceTarget(lenText, lpstrText);
-    _OBSERVE_NOTIFY_CHANGE_;
-  }
-  else {
-    SciCall_ClearAll();
-  }
-
-  SciCall_GotoPos(0);
-  SciCall_ChooseCaretX();
-
-  if (bClearUndoHistory) {
-    SciCall_SetSavePoint();
-    UndoRedoRecordingStart();
-  }
-
-  bFreezeAppTitle = false;
-}
-
-
-
-//=============================================================================
-//
-//  EditSetNewText()
-//
-extern bool bFreezeAppTitle;
-
 void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory)
 {
-  bFreezeAppTitle = true;
-
   if (!lpstrText) { lenText = 0; }
+
+  bFreezeAppTitle = true;
 
   // clear markers, flags and positions
   if (bClearUndoHistory) { UndoRedoRecordingStop(); }
@@ -7441,9 +7393,7 @@ void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
 {
   static bool guard = false;  // protect against recursion by notification event SCN_STYLENEEDED
 
-#ifdef  NP3_LARGE_DOCUMENT_STYLES_NONE
-  if (Flags.bLargeFileLoaded) { return; }
-#endif
+  //~if (Flags.bLargeFileLoaded) { return; }
 
   if (!guard)
   {
