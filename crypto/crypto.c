@@ -349,7 +349,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t fileSize, void** result, 
     usedEncryption = false;
     bRetryPassPhrase = false;
 
-    bool const bReadOk = ReadFileXL(hFile, rawdata, fileSize, &bytesRead);
+    bool const bReadOk = ReadFileXL(hFile, (char* const)rawdata, fileSize, &bytesRead);
 
     returnFlag = bReadOk ? DECRYPT_SUCCESS : DECRYPT_FREAD_FAILED;
 
@@ -541,7 +541,6 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
                 return false;
             }
         }
-
         // now encrypt the main file
         {
             bool bWriteRes = false;
@@ -557,7 +556,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
             enclen += AES_padEncrypt(&fileCypher, &fileEncode, data + enclen, size - enclen, encdata + enclen);
 
             size_t enclen_written = 0;
-            bWriteRes = WriteFileXL(hFile, encdata, enclen, &enclen_written);
+            bWriteRes = WriteFileXL(hFile, (const char* const)encdata, enclen, &enclen_written);
 
             HeapFree(GetProcessHeap(), 0, encdata);             // clean-up
 
@@ -567,7 +566,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
     }
     else {
         // not an encrypted file, write normally
-        return WriteFileXL(hFile, data, size, written);
+        return WriteFileXL(hFile, (const char* const)data, size, written);
     }
 }
 

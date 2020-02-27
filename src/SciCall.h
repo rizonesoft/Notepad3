@@ -247,7 +247,7 @@ DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
 DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
-DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
+DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text)
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
 DeclareSciCallV0(UpperCase, UPPERCASE)
 DeclareSciCallV0(LowerCase, LOWERCASE)
@@ -311,7 +311,7 @@ DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, Doc
 DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative)
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
-DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, char* const)
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char* const)
 
 DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text)
 DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text)
