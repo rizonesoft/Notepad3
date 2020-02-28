@@ -165,8 +165,6 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             GetDlgItemText(hDlg, IDC_PWD_EDIT2, newMasKey, COUNTOF(newMasKey));
             useFileKey = !((newFileKey[0] <= ' ') || !useFil);
             useMasterKey = !((newMasKey[0] <= ' ') || !useMas);
-            //@@@lstrcpyn(fileKey, newFileKey, WKEY_LEN);
-            //@@@lstrcpyn(masterKey, newMasKey, WKEY_LEN);
             memcpy(unicodeFileKey, newFileKey, sizeof(unicodeFileKey));
             memcpy(unicodeMasterKey, newMasKey, sizeof(unicodeMasterKey));
             unicodeStringCpy(fileKey, unicodeFileKey, sizeof(fileKey));
@@ -249,7 +247,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
-        //@@@SetDlgItemText( hDlg, IDC_PWD_EDIT3, fileKey );
+        //~SetDlgItemText( hDlg, IDC_PWD_EDIT3, fileKey );
         SetDlgItemText(hDlg, IDC_PWD_EDIT3, unicodeFileKey);
         CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED);
         CenterDlgInParent(hDlg, NULL);

@@ -47,23 +47,6 @@
 
 #include "Sci_Position.h"
 
-// Compiler Optimizations
-#ifndef NP2_USE_SSE2
-  // SSE2 enabled by default
-#define NP2_USE_SSE2	1
-#endif
-
-#if defined(_WIN64) && !defined(NP2_USE_AVX2)
-#if defined(__AVX2__)
-#define NP2_USE_AVX2	1
-#else
-#define NP2_USE_AVX2	0
-#endif
-#else
-#define NP2_USE_AVX2	0
-#endif // NP2_USE_AVX2
-
-
 //
 // TODO(rkotten): 
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
@@ -524,6 +507,8 @@ typedef struct _flags_t
   bool bSearchPathIfRelative;
 
   bool bSettingsFileLocked;
+  bool bHas_SSE2_CPU;
+  bool bHas_AVX2_CPU_OS;
 
 } FLAGS_T, *PFLAGS_T;
 
