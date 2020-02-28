@@ -676,6 +676,9 @@ static void _InitGlobals()
 
   Flags.bSettingsFileLocked = DefaultFlags.bSettingsFileLocked = false;
 
+  Flags.bHas_SSE2_CPU = DefaultFlags.bHas_SSE2_CPU = false;
+  Flags.bHas_AVX2_CPU_OS = DefaultFlags.bHas_AVX2_CPU_OS = false;
+
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
   FocusedView.ShowCodeFolding = true;
@@ -803,6 +806,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   Globals.hInstance = hInstance;
   Globals.hPrevInst = hPrevInstance;
   Globals.hndlProcessHeap = GetProcessHeap();
+
+  Flags.bHas_SSE2_CPU = CanUseCPUFeature(CPU_SSE2);
+  Flags.bHas_AVX2_CPU_OS = CanUseCPUFeature(CPU_OS_AVX2);
 
   WCHAR wchAppDir[2 * MAX_PATH + 4] = { L'\0' };
   GetModuleFileName(NULL,wchAppDir,COUNTOF(wchAppDir));
@@ -1889,8 +1895,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   }
 
 
-#define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
-#define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
+  #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
+  #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
 
   if (Settings2.CurrentLineHorizontalSlop > 0)
     SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineHorizontalSlop);
@@ -2908,7 +2914,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(Globals.hwndEdit, &ptc);
         DocPos iNewPos = SciCall_PositionFromPoint(ptc.x, ptc.y);
-        EditSetSelectionEx(Globals.hwndEdit, iNewPos, iNewPos, -1, -1);
+        EditSetSelectionEx(iNewPos, iNewPos, -1, -1);
       }
 
       if (pt.x == -1 && pt.y == -1) {
@@ -2968,7 +2974,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditScrollTo(Sci_GetLastDocLineNumber(), Settings2.CurrentLineVerticalSlop);
+        Sci_ScrollToLine(Sci_GetLastDocLineNumber());
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -4150,12 +4156,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
         }
       }
-
       // selection not empty or no word found - select line
-      DocPos const iSelStart = SciCall_GetSelectionStart();
-      DocPos const iSelEnd = SciCall_GetSelectionEnd();
-      DocPos const iLineStart = SciCall_LineFromPosition(iSelStart);
-      DocPos const iLineEnd = SciCall_LineFromPosition(iSelEnd);
+      DocPos const iLineStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+      DocPos const iLineEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
       SciCall_SetSelection(SciCall_GetLineEndPosition(iLineEnd), SciCall_PositionFromLine(iLineStart));
 
       SciCall_ChooseCaretX();
@@ -4283,7 +4286,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,s_wchPrefixSelection,s_wchAppendSelection)) {
         BeginWaitCursor(NULL);
-        EditEncloseSelection(Globals.hwndEdit,s_wchPrefixSelection,s_wchAppendSelection);
+        EditEncloseSelection(s_wchPrefixSelection,s_wchAppendSelection);
         EndWaitCursor();
       }
       break;
@@ -4361,7 +4364,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_MODIFYLINES:
       if (EditModifyLinesDlg(hwnd,s_wchPrefixLines,s_wchAppendLines)) {
         BeginWaitCursor(NULL);
-        EditModifyLines(Globals.hwndEdit,s_wchPrefixLines,s_wchAppendLines);
+        EditModifyLines(s_wchPrefixLines,s_wchAppendLines);
         EndWaitCursor();
       }
       break;
@@ -4370,7 +4373,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_ALIGN:
       if (EditAlignDlg(hwnd,&s_iAlignMode)) {
         BeginWaitCursor(NULL);
-        EditAlignText(Globals.hwndEdit,s_iAlignMode);
+        EditAlignText(s_iAlignMode);
         EndWaitCursor();
       }
       break;
@@ -4392,7 +4395,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
           BeginWaitCursor(NULL);
-          EditWrapToColumn(Globals.hwndEdit, Globals.iWrapCol);
+          EditWrapToColumn(Globals.iWrapCol);
           EndWaitCursor();
         }
       }
@@ -4408,19 +4411,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_JOINLINES:
       BeginWaitCursor(NULL);
-      EditJoinLinesEx(Globals.hwndEdit, false, true);
+      EditJoinLinesEx(false, true);
       EndWaitCursor();
       break;
 
     case IDM_EDIT_JOINLN_NOSP:
       BeginWaitCursor(NULL);
-      EditJoinLinesEx(Globals.hwndEdit, false, false);
+      EditJoinLinesEx(false, false);
       EndWaitCursor();
       break;
 
     case IDM_EDIT_JOINLINES_PARA:
       BeginWaitCursor(NULL);
-      EditJoinLinesEx(Globals.hwndEdit, true, true);
+      EditJoinLinesEx(true, true);
       EndWaitCursor();
       break;
 
@@ -4470,28 +4473,28 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CONVERTTABS:
       BeginWaitCursor(NULL);
-      EditTabsToSpaces(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, false);
+      EditTabsToSpaces(Globals.fvCurFile.iTabWidth, false);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTSPACES:
       BeginWaitCursor(NULL);
-      EditSpacesToTabs(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, false);
+      EditSpacesToTabs(Globals.fvCurFile.iTabWidth, false);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTTABS2:
       BeginWaitCursor(NULL);
-      EditTabsToSpaces(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, true);
+      EditTabsToSpaces(Globals.fvCurFile.iTabWidth, true);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTSPACES2:
       BeginWaitCursor(NULL);
-      EditSpacesToTabs(Globals.hwndEdit, Globals.fvCurFile.iTabWidth, true);
+      EditSpacesToTabs(Globals.fvCurFile.iTabWidth, true);
       EndWaitCursor();
       break;
 
@@ -4503,7 +4506,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         UINT repeat = 1;
         if (EditInsertTagDlg(hwnd, wszOpen, wszClose, &repeat)) {
           while (repeat > 0) {
-            EditEncloseSelection(Globals.hwndEdit, wszOpen, wszClose);
+            EditEncloseSelection(wszOpen, wszClose);
             --repeat;
           }
         }
@@ -4702,20 +4705,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           case SCLEX_SQL:
           case SCLEX_VHDL:
           case SCLEX_XML:
-            EditEncloseSelection(Globals.hwndEdit, L"/*", L"*/");
+            EditEncloseSelection(L"/*", L"*/");
             break;
           case SCLEX_INNOSETUP:
           case SCLEX_PASCAL:
-            EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
+            EditEncloseSelection(L"{", L"}");
             break;
           case SCLEX_LUA:
-            EditEncloseSelection(Globals.hwndEdit, L"--[[", L"]]");
+            EditEncloseSelection(L"--[[", L"]]");
             break;
           case SCLEX_COFFEESCRIPT:
-            EditEncloseSelection(Globals.hwndEdit, L"###", L"###");
+            EditEncloseSelection(L"###", L"###");
             break;
           case SCLEX_MATLAB:
-            EditEncloseSelection(Globals.hwndEdit, L"%{", L"%}");
+            EditEncloseSelection(L"%{", L"%}");
             break;
           // ------------------
           case SCLEX_NULL:
@@ -5359,7 +5362,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditScrollTo(Sci_GetLastDocLineNumber(), Settings2.CurrentLineVerticalSlop);
+          Sci_ScrollToLine(Sci_GetLastDocLineNumber());
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5369,8 +5372,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          //SciCall_ScrollCaret();
-          EditScrollTo(Sci_GetCurrentLineNumber(), Settings2.CurrentLineVerticalSlop);
+          Sci_ScrollToLine(Sci_GetCurrentLineNumber());
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -5704,7 +5706,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
-          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+          EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
           _END_UNDO_ACTION_
           s_bInMultiEditMode = false;
           --skipLevel;
@@ -5712,7 +5714,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
           _BEGIN_UNDO_ACTION_
-          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+          EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
           _END_UNDO_ACTION_
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
@@ -5729,7 +5731,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           default:
-            EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+            EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
             break;
           }
         }
@@ -6111,42 +6113,42 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_STRINGIFY:
       {
-        EditEncloseSelection(Globals.hwndEdit, L"'", L"'");
+        EditEncloseSelection(L"'", L"'");
       }
       break;
 
 
     case CMD_STRINGIFY2:
       {
-        EditEncloseSelection(Globals.hwndEdit, L"\"", L"\"");
+        EditEncloseSelection(L"\"", L"\"");
       }
       break;
 
 
     case CMD_EMBRACE:
       {
-        EditEncloseSelection(Globals.hwndEdit, L"(", L")");
+        EditEncloseSelection(L"(", L")");
       }
       break;
 
 
     case CMD_EMBRACE2:
       {
-        EditEncloseSelection(Globals.hwndEdit, L"[", L"]");
+        EditEncloseSelection(L"[", L"]");
       }
       break;
 
 
     case CMD_EMBRACE3:
       {
-        EditEncloseSelection(Globals.hwndEdit, L"{", L"}");
+        EditEncloseSelection(L"{", L"}");
       }
       break;
 
 
     case CMD_EMBRACE4:
       {
-        EditEncloseSelection(Globals.hwndEdit, L"`", L"`");
+        EditEncloseSelection(L"`", L"`");
       }
       break;
 
@@ -9692,8 +9694,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       // set historic caret/selection  pos
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
       {
-        SciCall_SetSelection(iCaretPos, iAnchorPos);
-        SciCall_ScrollRange(iAnchorPos, iCaretPos);
+        //~SciCall_SetSelection(iCaretPos, iAnchorPos); // no scroll
+        SciCall_SetSel(iAnchorPos, iCaretPos); // scroll into view
       }
     }
 
@@ -9713,8 +9715,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // Show inconsistent line endings warning
     Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
 
-    bool const bCheckFile = !Flags.bLargeFileLoaded
-      && !Globals.CmdLnFlag_PrintFileAndLeave
+    bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave
       && !fioStatus.bEncryptedRaw
       && !(fioStatus.bUnknownExt && bUnknownLexer)
       && !bReload;
@@ -9736,7 +9737,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     // Show inconsistent indentation 
     fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-    bool const bCheckIndent = bCheckFile && Settings.WarnInconsistentIndents;
+    bool const bCheckIndent = bCheckFile && !Flags.bLargeFileLoaded && Settings.WarnInconsistentIndents;
 
     if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
     {
@@ -9796,7 +9797,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
     if (docView.bIsTail || FileWatching.MonitoringLog) {
       bPreserveView = false;
-      EditScrollTo(Sci_GetLastDocLineNumber(), Settings2.CurrentLineVerticalSlop);
+      Sci_ScrollToLine(Sci_GetLastDocLineNumber());
     }
   }
 
@@ -10108,7 +10109,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     {
       //~ LoadSettings(); NOT all settings will be applied ...
       INT_PTR answer = 0;
-      if (Settings.SaveSettings) { // @@@ 
+      if (Settings.SaveSettings) {
         WCHAR tch[256] = { L'\0' };
         LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
         answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);

@@ -724,9 +724,9 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
   if (!bIsMultiSel) {
     // TODO(rkotten): check for Rectangular Clipboard and skip selection restore
     if (iCurPos < iAnchorPos)
-      EditSetSelectionEx(hwnd, iCurPos + clipLen, iCurPos, -1, -1);
+      EditSetSelectionEx(iCurPos + clipLen, iCurPos, -1, -1);
     else
-      EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + clipLen, -1, -1);
+      EditSetSelectionEx(iAnchorPos, iAnchorPos + clipLen, -1, -1);
   }
   else {
     // TODO(rkotten): restore rectangular selection in case of swap clipboard 
@@ -840,24 +840,14 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 * __cpuid(cpuInfo, 0x00000001);
 * const BOOL cpuPOPCNT = cpuInfo[2] & (1 << 23);
 */
+
 // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
 // Bit Twiddling Hacks copyright 1997-2005 Sean Eron Anderson
-#if defined(_MSC_VER)
 static __forceinline unsigned int bth_popcount(unsigned int v) {
   v = v - ((v >> 1) & 0x55555555U);
   v = (v & 0x33333333U) + ((v >> 2) & 0x33333333U);
   return (((v + (v >> 4)) & 0x0F0F0F0FU) * 0x01010101U) >> 24;
 }
-#endif
-
-#if !defined(_MSC_VER)
-#define __popcnt	__builtin_popcount
-#elif NP2_USE_AVX2
-#define __popcnt	_mm_popcnt_u32
-#else
-//#define np2_popcount	__popcnt
-#define __popcnt	bth_popcount
-#endif
 
 // ----------------------------------------------------------------------------
 
@@ -881,137 +871,142 @@ void EditDetectEOLMode(LPCSTR lpData, size_t cbData, EditFileIOStatus* const sta
   // No NULL-terminated requirement for *ptr == '\n'
   const uint8_t* const end = ptr + cbData - 1;
 
-#if NP2_USE_AVX2
-#define LAST_CR_MASK	(1U << (sizeof(__m256i) - 1))
-  const __m256i vectCR = _mm256_set1_epi8('\r');
-  const __m256i vectLF = _mm256_set1_epi8('\n');
-  while (ptr + sizeof(__m256i) <= end) {
-    // unaligned loading: line starts at random position.
-    const __m256i chunk = _mm256_loadu_si256((__m256i*)ptr);
-    uint32_t maskCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, vectCR));
-    uint32_t maskLF = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, vectLF));
+#ifdef __AVX__
+  if (Flags.bHas_AVX2_CPU_OS)
+  {
+    #define LAST_CR_MASK	(1U << (sizeof(__m256i) - 1))
+    const __m256i vectCR = _mm256_set1_epi8('\r');
+    const __m256i vectLF = _mm256_set1_epi8('\n');
+    while (ptr + sizeof(__m256i) <= end) {
+      // unaligned loading: line starts at random position.
+      const __m256i chunk = _mm256_loadu_si256((__m256i*)ptr);
+      uint32_t maskCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, vectCR));
+      uint32_t maskLF = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, vectLF));
 
-    ptr += sizeof(__m256i);
-    if (maskCR) {
-      if (maskCR & LAST_CR_MASK) {
-        maskCR &= LAST_CR_MASK - 1;
-        if (*ptr == '\n') {
-          // CR+LF across boundary
-          ++ptr;
-          ++lineCountCRLF;
-        }
-        else {
-          // clear highest bit (last CR) to avoid using following code:
-          // maskCR = (maskCR_LF ^ maskLF) | (maskCR & LAST_CR_MASK);
-          ++lineCountCR;
-        }
-      }
-
-      // maskCR and maskLF never have some bit set. after shifting maskCR by 1 bit,
-      // the bits both set in maskCR and maskLF represents CR+LF;
-      // the bits only set in maskCR or maskLF represents individual CR or LF.
-      const uint32_t maskCRLF = (maskCR << 1) & maskLF; // CR+LF
-      const uint32_t maskCR_LF = (maskCR << 1) ^ maskLF;// CR alone or LF alone
-      maskLF = maskCR_LF & maskLF; // LF alone
-      maskCR = maskCR_LF ^ maskLF; // CR alone (with one position offset)
-      if (maskCRLF) {
-        lineCountCRLF += __popcnt(maskCRLF);
-      }
+      ptr += sizeof(__m256i);
       if (maskCR) {
-        lineCountCR += __popcnt(maskCR);
-      }
-    }
-    if (maskLF) {
-      lineCountLF += __popcnt(maskLF);
-    }
-  }
-
-#undef LAST_CR_MASK
-  // end NP2_USE_AVX2
-#elif NP2_USE_SSE2
-#define LAST_CR_MASK	(1U << (2*sizeof(__m128i) - 1))
-  const __m128i vectCR = _mm_set1_epi8('\r');
-  const __m128i vectLF = _mm_set1_epi8('\n');
-  while (ptr + 2 * sizeof(__m128i) <= end) {
-    // unaligned loading: line starts at random position.
-    __m128i chunk = _mm_loadu_si128((__m128i*)ptr);
-    uint32_t maskCR = _mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectCR));
-    uint32_t maskLF = _mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectLF));
-    chunk = _mm_loadu_si128((__m128i*)(ptr + sizeof(__m128i)));
-    maskCR |= ((uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectCR))) << sizeof(__m128i);
-    maskLF |= ((uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectLF))) << sizeof(__m128i);
-
-    ptr += 2 * sizeof(__m128i);
-    if (maskCR) {
-      if (maskCR & LAST_CR_MASK) {
-        maskCR &= LAST_CR_MASK - 1;
-        if (*ptr == '\n') {
-          // CR+LF across boundary
-          ++ptr;
-          ++lineCountCRLF;
+        if (maskCR & LAST_CR_MASK) {
+          maskCR &= LAST_CR_MASK - 1;
+          if (*ptr == '\n') {
+            // CR+LF across boundary
+            ++ptr;
+            ++lineCountCRLF;
+          }
+          else {
+            // clear highest bit (last CR) to avoid using following code:
+            // maskCR = (maskCR_LF ^ maskLF) | (maskCR & LAST_CR_MASK);
+            ++lineCountCR;
+          }
         }
-        else {
-          // clear highest bit (last CR) to avoid using following code:
-          // maskCR = (maskCR_LF ^ maskLF) | (maskCR & LAST_CR_MASK);
-          ++lineCountCR;
+
+        // maskCR and maskLF never have some bit set. after shifting maskCR by 1 bit,
+        // the bits both set in maskCR and maskLF represents CR+LF;
+        // the bits only set in maskCR or maskLF represents individual CR or LF.
+        const uint32_t maskCRLF = (maskCR << 1) & maskLF; // CR+LF
+        const uint32_t maskCR_LF = (maskCR << 1) ^ maskLF;// CR alone or LF alone
+        maskLF = maskCR_LF & maskLF; // LF alone
+        maskCR = maskCR_LF ^ maskLF; // CR alone (with one position offset)
+        if (maskCRLF) {
+          lineCountCRLF += _mm_popcnt_u32(maskCRLF);
+        }
+        if (maskCR) {
+          lineCountCR += _mm_popcnt_u32(maskCR);
         }
       }
-
-      // maskCR and maskLF never have some bit set. after shifting maskCR by 1 bit,
-      // the bits both set in maskCR and maskLF represents CR+LF;
-      // the bits only set in maskCR or maskLF represents individual CR or LF.
-      const uint32_t maskCRLF = (maskCR << 1) & maskLF; // CR+LF
-      const uint32_t maskCR_LF = (maskCR << 1) ^ maskLF;// CR alone or LF alone
-      maskLF = maskCR_LF & maskLF; // LF alone
-      maskCR = maskCR_LF ^ maskLF; // CR alone (with one position offset)
-      if (maskCRLF) {
-        lineCountCRLF += __popcnt(maskCRLF);
-      }
-      if (maskCR) {
-        lineCountCR += __popcnt(maskCR);
+      if (maskLF) {
+        lineCountLF += _mm_popcnt_u32(maskLF);
       }
     }
-    if (maskLF) {
-      lineCountLF += __popcnt(maskLF);
-    }
+    #undef LAST_CR_MASK
   }
-
-#undef LAST_CR_MASK
-  // end NP2_USE_SSE2
+  else 
 #endif
+  if (Flags.bHas_SSE2_CPU)
+  {
+    #define LAST_CR_MASK	(1U << (2*sizeof(__m128i) - 1))
+    const __m128i vectCR = _mm_set1_epi8('\r');
+    const __m128i vectLF = _mm_set1_epi8('\n');
+    while (ptr + 2 * sizeof(__m128i) <= end) {
+      // unaligned loading: line starts at random position.
+      __m128i chunk = _mm_loadu_si128((__m128i*)ptr);
+      uint32_t maskCR = _mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectCR));
+      uint32_t maskLF = _mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectLF));
+      chunk = _mm_loadu_si128((__m128i*)(ptr + sizeof(__m128i)));
+      maskCR |= ((uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectCR))) << sizeof(__m128i);
+      maskLF |= ((uint32_t)_mm_movemask_epi8(_mm_cmpeq_epi8(chunk, vectLF))) << sizeof(__m128i);
 
-  do {
-    // skip to line end
-    uint8_t ch;
-    uint8_t type = 0;
-    while (ptr < end && ((ch = *ptr++) > '\r' || (type = eol_table[ch]) == 0)) {
-      // nop
-    }
-    switch (type) {
-      case 1: //'\n'
-        ++lineCountLF;
-        break;
-      case 2: //'\r'
-        if (*ptr == '\n') {
-          ++ptr;
-          ++lineCountCRLF;
+      ptr += 2 * sizeof(__m128i);
+      if (maskCR) {
+        if (maskCR & LAST_CR_MASK) {
+          maskCR &= LAST_CR_MASK - 1;
+          if (*ptr == '\n') {
+            // CR+LF across boundary
+            ++ptr;
+            ++lineCountCRLF;
+          }
+          else {
+            // clear highest bit (last CR) to avoid using following code:
+            // maskCR = (maskCR_LF ^ maskLF) | (maskCR & LAST_CR_MASK);
+            ++lineCountCR;
+          }
         }
-        else {
+
+        // maskCR and maskLF never have some bit set. after shifting maskCR by 1 bit,
+        // the bits both set in maskCR and maskLF represents CR+LF;
+        // the bits only set in maskCR or maskLF represents individual CR or LF.
+        const uint32_t maskCRLF = (maskCR << 1) & maskLF; // CR+LF
+        const uint32_t maskCR_LF = (maskCR << 1) ^ maskLF;// CR alone or LF alone
+        maskLF = maskCR_LF & maskLF; // LF alone
+        maskCR = maskCR_LF ^ maskLF; // CR alone (with one position offset)
+        if (maskCRLF) {
+          lineCountCRLF += bth_popcount(maskCRLF);
+        }
+        if (maskCR) {
+          lineCountCR += bth_popcount(maskCR);
+        }
+      }
+      if (maskLF) {
+        lineCountLF += bth_popcount(maskLF);
+      }
+    }
+    #undef LAST_CR_MASK
+  }
+  else { // no intrinsic optimization
+
+    do {
+      // skip to line end
+      uint8_t ch;
+      uint8_t type = 0;
+      while (ptr < end && ((ch = *ptr++) > '\r' || (type = eol_table[ch]) == 0)) {
+        // nop
+      }
+      switch (type) {
+        case 1: //'\n'
+          ++lineCountLF;
+          break;
+        case 2: //'\r'
+          if (*ptr == '\n') {
+            ++ptr;
+            ++lineCountCRLF;
+          }
+          else {
+            ++lineCountCR;
+          }
+          break;
+      }
+    } while (ptr < end);
+
+    if (ptr == end) {
+      switch (*ptr) {
+        case '\n':
+          ++lineCountLF;
+          break;
+        case '\r':
           ++lineCountCR;
-        }
-        break;
+          break;
+      }
     }
-  } while (ptr < end);
 
-  if (ptr == end) {
-    switch (*ptr) {
-      case '\n':
-        ++lineCountLF;
-        break;
-      case '\r':
-        ++lineCountCR;
-        break;
-    }
   }
 
   // values must kept in same order as SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
@@ -1867,7 +1862,7 @@ void EditSentenceCase(HWND hwnd)
 //
 //  EditURLEncode()
 //
-void EditURLEncode(HWND hwnd)
+void EditURLEncode()
 {
   if (SciCall_IsSelectionEmpty()) { return; }
 
@@ -1924,9 +1919,9 @@ void EditURLEncode(HWND hwnd)
   _OBSERVE_NOTIFY_CHANGE_;
 
   if (iCurPos < iAnchorPos)
-    EditSetSelectionEx(hwnd, iCurPos + cchEscapedEnc, iCurPos, -1, -1);
+    EditSetSelectionEx(iCurPos + cchEscapedEnc, iCurPos, -1, -1);
   else
-    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cchEscapedEnc, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iAnchorPos + cchEscapedEnc, -1, -1);
 
   _END_UNDO_ACTION_;
 
@@ -1939,7 +1934,7 @@ void EditURLEncode(HWND hwnd)
 //
 //  EditURLDecode()
 //
-void EditURLDecode(HWND hwnd)
+void EditURLDecode()
 {
   if (SciCall_IsSelectionEmpty()) { return; }
 
@@ -1998,10 +1993,10 @@ void EditURLDecode(HWND hwnd)
   _OBSERVE_NOTIFY_CHANGE_;
 
   if (iCurPos < iAnchorPos) {
-    EditSetSelectionEx(hwnd, iCurPos + cchUnescapedDec, iCurPos, -1, -1);
+    EditSetSelectionEx(iCurPos + cchUnescapedDec, iCurPos, -1, -1);
   }
   else {
-    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cchUnescapedDec, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iAnchorPos + cchUnescapedDec, -1, -1);
   }
   _END_UNDO_ACTION_
 
@@ -2137,13 +2132,13 @@ void EditChar2Hex(HWND hwnd)
 
   if (!bSelEmpty) {
     if (iCurPos < iAnchorPos) {
-      EditSetSelectionEx(hwnd, iCurPos + iReplLen, iCurPos, -1, -1);
+      EditSetSelectionEx(iCurPos + iReplLen, iCurPos, -1, -1);
     }
     else if (iCurPos > iAnchorPos) {
-      EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + iReplLen, -1, -1);
+      EditSetSelectionEx(iAnchorPos, iAnchorPos + iReplLen, -1, -1);
     }
     else { // empty selection
-      EditSetSelectionEx(hwnd, iCurPos + iReplLen, iCurPos + iReplLen, -1, -1);
+      EditSetSelectionEx(iCurPos + iReplLen, iCurPos + iReplLen, -1, -1);
     }
   }
 
@@ -2225,9 +2220,9 @@ void EditHex2Char(HWND hwnd)
   _BEGIN_UNDO_ACTION_
   SciCall_ReplaceSel(ch);
   if (iCurPos < iAnchorPos)
-    EditSetSelectionEx(hwnd, iCurPos + cch, iCurPos, -1, -1);
+    EditSetSelectionEx(iCurPos + cch, iCurPos, -1, -1);
   else
-    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cch, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iAnchorPos + cch, -1, -1);
   _END_UNDO_ACTION_
 
   FreeMem(ch);
@@ -2239,7 +2234,7 @@ void EditHex2Char(HWND hwnd)
 //
 //  EditFindMatchingBrace()
 //
-void EditFindMatchingBrace(HWND hwnd)
+void EditFindMatchingBrace()
 {
   bool bIsAfter = false;
   DocPos iMatchingBracePos = (DocPos)-1;
@@ -2258,7 +2253,7 @@ void EditFindMatchingBrace(HWND hwnd)
   }
   if (iMatchingBracePos != (DocPos)-1) {
     iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
-    EditSetSelectionEx(hwnd, iMatchingBracePos, iMatchingBracePos, -1, -1);
+    EditSetSelectionEx(iMatchingBracePos, iMatchingBracePos, -1, -1);
   }
 }
 
@@ -2267,7 +2262,7 @@ void EditFindMatchingBrace(HWND hwnd)
 //
 //  EditSelectToMatchingBrace()
 //
-void EditSelectToMatchingBrace(HWND hwnd)
+void EditSelectToMatchingBrace()
 {
   bool bIsAfter = false;
   DocPos iMatchingBracePos = -1;
@@ -2287,9 +2282,9 @@ void EditSelectToMatchingBrace(HWND hwnd)
   _BEGIN_UNDO_ACTION_
   if (iMatchingBracePos != (DocPos)-1) {
     if (bIsAfter)
-      EditSetSelectionEx(hwnd, iCurPos, iMatchingBracePos, -1, -1);
+      EditSetSelectionEx(iCurPos, iMatchingBracePos, -1, -1);
     else
-      EditSetSelectionEx(hwnd, iCurPos, SciCall_PositionAfter(iMatchingBracePos), -1, -1);
+      EditSetSelectionEx(iCurPos, SciCall_PositionAfter(iMatchingBracePos), -1, -1);
   }
   _END_UNDO_ACTION_
 }
@@ -2367,7 +2362,7 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
 //
 //  EditTabsToSpaces()
 //
-void EditTabsToSpaces(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
+void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
 {
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
 
@@ -2452,7 +2447,7 @@ void EditTabsToSpaces(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
     SciCall_ReplaceTarget(cchConvM, pszText2);
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     _OBSERVE_NOTIFY_CHANGE_;
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     _END_UNDO_ACTION_
     FreeMem(pszText2);
   }
@@ -2465,7 +2460,7 @@ void EditTabsToSpaces(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
 //
 //  EditSpacesToTabs()
 //
-void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
+void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
 {
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
 
@@ -2569,7 +2564,7 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
     SciCall_ReplaceTarget(cchConvM, pszText2);
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     _OBSERVE_NOTIFY_CHANGE_;
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     _END_UNDO_ACTION_
     FreeMem(pszText2);
   }
@@ -2693,7 +2688,7 @@ bool EditSetCaretToSelectionEnd()
 //
 //  EditModifyLines()
 //
-void EditModifyLines(HWND hwnd, LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
+void EditModifyLines(LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -2938,7 +2933,7 @@ void EditModifyLines(HWND hwnd, LPCWSTR pwszPrefix, LPCWSTR pwszAppend)
       iAnchorPos = SciCall_PositionFromLine(iLineStart);
       iCurPos = SciCall_PositionFromLine(iLineEnd + 1);
     }
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
   }
 
   _OBSERVE_NOTIFY_CHANGE_;
@@ -3020,7 +3015,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   if (!bForceAll) {
     if (bSingleLine) {
       if (bFormatIndentation) {
-        EditSetSelectionEx(hwnd, SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
+        EditSetSelectionEx(SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
       }
     }
     else {  // on multiline indentation, anchor and current positions are moved to line begin resp. end
@@ -3030,11 +3025,11 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         else
           iDiffAnchor = SciCall_LineLength(iAnchorLine) - Sci_GetEOLLen();
       }
-      EditSetSelectionEx(hwnd, SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
+      EditSetSelectionEx(SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
     }
   }
   else {
-    EditSetSelectionEx(hwnd, iInitialPos, iInitialPos, -1, -1);
+    EditSetSelectionEx(iInitialPos, iInitialPos, -1, -1);
   }
 
   _OBSERVE_NOTIFY_CHANGE_
@@ -3046,7 +3041,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 //
 //  EditAlignText()
 //
-void EditAlignText(HWND hwnd, int nMode)
+void EditAlignText(int nMode)
 {
   DocPos iCurPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos = SciCall_GetAnchor();
@@ -3272,7 +3267,7 @@ void EditAlignText(HWND hwnd, int nMode)
     iAnchorPos = SciCall_FindColumn(iLineStart, iAnchorCol);
     iCurPos = SciCall_FindColumn(_lnend, iCurCol);
   }
-  EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+  EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
   _END_UNDO_ACTION_
 }
 
@@ -3282,7 +3277,7 @@ void EditAlignText(HWND hwnd, int nMode)
 //
 //  EditEncloseSelection()
 //
-void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
+void EditEncloseSelection(LPCWSTR pwszOpen, LPCWSTR pwszClose)
 {
   if (Sci_IsMultiOrRectangleSelection()) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
@@ -3323,7 +3318,7 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
   _OBSERVE_NOTIFY_CHANGE_;
 
   // Fix selection
-  EditSetSelectionEx(hwnd, iAnchorPos + iLenOpen, iCurPos + iLenOpen, -1, -1);
+  EditSetSelectionEx(iAnchorPos + iLenOpen, iCurPos + iLenOpen, -1, -1);
 
   _END_UNDO_ACTION_
 }
@@ -3475,13 +3470,13 @@ void EditToggleLineCommentsSimple(HWND hwnd, LPCWSTR pwszComment, bool bInsertAt
   SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
   if (iCurPos < iAnchorPos) {
-    EditSetSelectionEx(hwnd, iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
+    EditSetSelectionEx(iAnchorPos + iSelEndOffset, iCurPos + iSelStartOffset, -1, -1);
   }
   else if (iCurPos > iAnchorPos) {
-    EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
+    EditSetSelectionEx(iAnchorPos + iSelStartOffset, iCurPos + iSelEndOffset, -1, -1);
   }
   else {
-    EditSetSelectionEx(hwnd, iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
+    EditSetSelectionEx(iAnchorPos + iSelStartOffset, iCurPos + iSelStartOffset, -1, -1);
   }
 
   _OBSERVE_NOTIFY_CHANGE_;
@@ -3727,15 +3722,15 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 
     if (iRcAnchorLine <= iRcCaretLine) {
       if (bSelLeft2Right)
-        EditSetSelectionEx(hwnd, selAnchorMainPos + pVspAVec[0], selCaretMainPos + iSpcCount, 0, 0);
+        EditSetSelectionEx(selAnchorMainPos + pVspAVec[0], selCaretMainPos + iSpcCount, 0, 0);
       else
-        EditSetSelectionEx(hwnd, selAnchorMainPos + pVspAVec[0], selCaretMainPos + pVspCVec[iLineCount - 1] + iSpcCount - pVspAVec[iLineCount - 1], 0, 0);
+        EditSetSelectionEx(selAnchorMainPos + pVspAVec[0], selCaretMainPos + pVspCVec[iLineCount - 1] + iSpcCount - pVspAVec[iLineCount - 1], 0, 0);
     }
     else {
       if (bSelLeft2Right)
-        EditSetSelectionEx(hwnd, selAnchorMainPos + pVspAVec[0] + iSpcCount - pVspCVec[0], selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
+        EditSetSelectionEx(selAnchorMainPos + pVspAVec[0] + iSpcCount - pVspCVec[0], selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
       else
-        EditSetSelectionEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
+        EditSetSelectionEx(selAnchorMainPos + iSpcCount, selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
     }
 
     FreeMem(pVspCVec);
@@ -3768,9 +3763,9 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     const DocPos iSpcCount = _AppendSpaces(hwnd, iStartLine, iEndLine, iMaxColumn, bSkipEmpty);
 
     if (iCurPos < iAnchorPos)
-      EditSetSelectionEx(hwnd, iAnchorPos + iSpcCount, iCurPos, -1, -1);
+      EditSetSelectionEx(iAnchorPos + iSpcCount, iCurPos, -1, -1);
     else
-      EditSetSelectionEx(hwnd, iAnchorPos, iCurPos + iSpcCount, -1, -1);
+      EditSetSelectionEx(iAnchorPos, iCurPos + iSpcCount, -1, -1);
   }
 
   if (token >= 0) { EndUndoAction(token); }
@@ -3980,7 +3975,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
 //
 //  EditCompressBlanks()
 //
-void EditCompressBlanks(HWND hwnd)
+void EditCompressBlanks()
 {
   const bool bIsSelEmpty = SciCall_IsSelectionEmpty();
 
@@ -4132,17 +4127,17 @@ void EditCompressBlanks(HWND hwnd)
         DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, cch + 1);
 
         if (iCurPos < iAnchorPos) {
-          EditSetSelectionEx(hwnd, iCurPos + iNewLen, iCurPos, -1, -1);
+          EditSetSelectionEx(iCurPos + iNewLen, iCurPos, -1, -1);
         }
         else if (iCurPos > iAnchorPos) {
-          EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + iNewLen, -1, -1);
+          EditSetSelectionEx(iAnchorPos, iAnchorPos + iNewLen, -1, -1);
         }
         else { // empty selection
           DocPos iNewPos = iCurPos;
           if (iCurPos > 0) {
             iNewPos = SciCall_PositionBefore(SciCall_PositionAfter(iCurPos - remWSuntilCaretPos));
           }
-          EditSetSelectionEx(hwnd, iNewPos, iNewPos, -1, -1);
+          EditSetSelectionEx(iNewPos, iNewPos, -1, -1);
         }
       }
     }
@@ -4308,7 +4303,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 //
 //  EditWrapToColumn()
 //
-void EditWrapToColumn(HWND hwnd, DocPosU nColumn)
+void EditWrapToColumn(DocPosU nColumn)
 {
   DocPosU const tabWidth = SciCall_GetTabWidth();
   nColumn = clamppu(nColumn, tabWidth, LONG_LINES_MARKER_LIMIT);
@@ -4456,7 +4451,7 @@ void EditWrapToColumn(HWND hwnd, DocPosU nColumn)
       _OBSERVE_NOTIFY_CHANGE_;
       FreeMem(pszText);
 
-      EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+      EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
       _END_UNDO_ACTION_
     }
   }
@@ -4523,7 +4518,7 @@ void EditSplitLines(HWND hwnd)
 //
 //  Customized version of  SCI_LINESJOIN  (w/o using TARGET transaction)
 //
-void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
+void EditJoinLinesEx(bool bPreserveParagraphs, bool bCRLF2Space)
 {
   bool bModified = false;
 
@@ -4594,7 +4589,7 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
     _OBSERVE_NOTIFY_CHANGE_;
 
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     _END_UNDO_ACTION_
   }
 
@@ -4887,10 +4882,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   FreeMem(pmszResult);
 
   if (bIsMultiSel) {
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
+    EditSetSelectionEx(iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
   }
   else {
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+    EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
   }
   _END_UNDO_ACTION_
 }
@@ -4900,65 +4895,47 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 //
 //  EditSetSelectionEx()
 //
-void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
+void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
 {
-  UNUSED(hwnd);
-
   if ((iAnchorPos < 0) && (iCurrentPos < 0)) {
     SciCall_SelectAll();
   }
-  else if (iAnchorPos < 0) {
-    iAnchorPos = 0;
-  }
-  if (iCurrentPos < 0) {
-    iCurrentPos = Sci_GetDocEndPosition();
-  }
-
-  DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
-  DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-
-  // Ensure that the first and last lines of a selection are always unfolded
-  // This needs to be done *before* the SCI_SETSEL message
-  SciCall_EnsureVisible(iAnchorLine);
-  if (iAnchorLine != iCurrentLine) {  SciCall_EnsureVisible(iCurrentLine);  }
-
-  if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
-    SciCall_SetRectangularSelectionAnchor(iAnchorPos);
-    if (vSpcAnchor > 0) {
-      SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchor);
-    }
-    SciCall_SetRectangularSelectionCaret(iCurrentPos);
-    if (vSpcCurrent > 0) {
-      SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
-    }
-  }
   else {
-    SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
-  }
-  // remember x-pos for moving caret vertically
-  SciCall_ChooseCaretX();
+    if (iAnchorPos < 0) {
+      iAnchorPos = 0;
+    }
+    if (iCurrentPos < 0) {
+      iCurrentPos = Sci_GetDocEndPosition();
+    }
 
+    DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
+    DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+
+    // Ensure that the first and last lines of a selection are always unfolded
+    // This needs to be done *before* the SCI_SETSEL message
+    SciCall_EnsureVisible(iAnchorLine);
+    if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
+
+    if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
+      SciCall_SetRectangularSelectionAnchor(iAnchorPos);
+      if (vSpcAnchor > 0) {
+        SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchor);
+      }
+      SciCall_SetRectangularSelectionCaret(iCurrentPos);
+      if (vSpcCurrent > 0) {
+        SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
+      }
+      SciCall_ScrollRange(iAnchorPos, iCurrentPos);
+    }
+    else {
+      SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
+    }
+
+    // remember x-pos for moving caret vertically
+    SciCall_ChooseCaretX();
+  }
   UpdateToolbar();
   UpdateStatusbar(false);
-}
-
-
-//=============================================================================
-//
-//  EditEnsureSelectionVisible()
-//
-void EditEnsureSelectionVisible()
-{
-  DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
-  DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
-
-  // Ensure that the first and last lines of a selection are always unfolded
-  // This needs to be done *before* the SCI_SETSEL message
-  SciCall_EnsureVisible(iAnchorLine);
-  if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
-
-  //~SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
-  EditScrollTo(iCurrentLine, Settings2.CurrentLineVerticalSlop);
 }
 
 
@@ -4976,17 +4953,20 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 
 //=============================================================================
 //
-//  EditScrollTo()
+//  EditEnsureSelectionVisible()
 //
-void EditScrollTo(DocLn iScrollToLine, int iSlop)
+void EditEnsureSelectionVisible()
 {
-  const int iXoff = SciCall_GetXOffset();
-  const DocLn iLinesOnScreen = SciCall_LinesOnScreen();
-  const DocLn iSlopLines = ((iSlop < 0) || (iSlop >= iLinesOnScreen)) ? (iLinesOnScreen/2) : iSlop;
+  DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
+  DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
 
-  SciCall_SetVisiblePolicy((VISIBLE_SLOP | VISIBLE_STRICT), iSlopLines);
-  SciCall_EnsureVisibleEnforcePolicy(iScrollToLine);
-  SciCall_SetXOffset(iXoff);
+  // Ensure that the first and last lines of a selection are always unfolded
+  // This needs to be done *before* the SCI_SETSEL message
+  SciCall_EnsureVisible(iAnchorLine);
+  if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
+
+  //SciCall_ScrollCaret();
+  Sci_ScrollToLine(iCurrentLine);
 }
 
 
@@ -5013,7 +4993,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  EditScrollTo(iNewLine, -1);
+  Sci_ScrollToLine(iNewLine);
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
@@ -5061,10 +5041,8 @@ void EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView)
 //
 //  EditFixPositions()
 //
-void EditFixPositions(HWND hwnd)
+void EditFixPositions()
 {
-  UNUSED(hwnd);
-
   DocPos const iCurrentPos = SciCall_GetCurrentPos();
   DocPos const iAnchorPos = SciCall_GetAnchor();
   DocPos const iMaxPos = Sci_GetDocEndPosition();
@@ -5518,7 +5496,6 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
     if (GetForegroundWindow() == Globals.hwndDlgFindReplace) {
       if (iPos >= 0) {
         SciCall_SetSel(start, end);
-        SciCall_ScrollRange(iPos, iPos);
       }
       else {
         SciCall_ScrollCaret();
@@ -5858,7 +5835,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         }
         else {
           if (s_fwrdMatch == NO_MATCH) {
-            EditSetSelectionEx(sg_pefrData->hwnd, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+            EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
           }
           else {
             EditEnsureSelectionVisible();
@@ -6104,7 +6081,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
                 SciCall_SetFirstVisibleLine(s_InitialTopLine);
               }
               else {
-                EditSetSelectionEx(sg_pefrData->hwnd, s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
+                EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
               }
               if (FocusedView.HideNonMatchedLines) {
                 EditToggleView(sg_pefrData->hwnd);
@@ -6643,10 +6620,10 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (bExtendSelection) {
     DocPos const iSelPos = SciCall_GetCurrentPos();
     DocPos const iSelAnchor = SciCall_GetAnchor();
-    EditSetSelectionEx(hwnd, min_p(iSelAnchor, iSelPos), end, -1, -1);
+    EditSetSelectionEx(min_p(iSelAnchor, iSelPos), end, -1, -1);
   }
   else {
-    EditSetSelectionEx(hwnd, iPos, end, -1, -1);
+    EditSetSelectionEx(iPos, end, -1, -1);
   }
 
   if (start == end) {
@@ -6726,10 +6703,10 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (bExtendSelection) {
     DocPos const iSelPos = SciCall_GetCurrentPos();
     DocPos const iSelAnchor = SciCall_GetAnchor();
-    EditSetSelectionEx(hwnd, max_p(iSelPos, iSelAnchor), iPos, -1, -1);
+    EditSetSelectionEx(max_p(iSelPos, iSelAnchor), iPos, -1, -1);
   }
   else {
-    EditSetSelectionEx(hwnd, end, iPos, -1, -1);
+    EditSetSelectionEx(end, iPos, -1, -1);
   }
 
   if (start == end) {
@@ -6899,7 +6876,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr)
       if (iPos < 0) {
         return EditFindNext(hwnd, lpefr, false, false);
       }
-      EditSetSelectionEx(hwnd, start, end, -1, -1);
+      EditSetSelectionEx(start, end, -1, -1);
       return true;
     }
   }
@@ -7152,11 +7129,11 @@ void EditToggleView(HWND hwnd)
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
   if (FocusedView.HideNonMatchedLines) {
-    EditScrollTo(0, 0);
+    Sci_ScrollToLine(0);
     SciCall_SetReadOnly(true);
   }
   else {
-    EditScrollTo(Sci_GetCurrentLineNumber(), -1);
+    Sci_ScrollToLine(Sci_GetCurrentLineNumber());
     SciCall_SetReadOnly(false);
   }
 
