@@ -676,9 +676,6 @@ static void _InitGlobals()
 
   Flags.bSettingsFileLocked = DefaultFlags.bSettingsFileLocked = false;
 
-  Flags.bHas_SSE2_CPU = DefaultFlags.bHas_SSE2_CPU = false;
-  Flags.bHas_AVX2_CPU_OS = DefaultFlags.bHas_AVX2_CPU_OS = false;
-
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
   FocusedView.ShowCodeFolding = true;
@@ -806,9 +803,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   Globals.hInstance = hInstance;
   Globals.hPrevInst = hPrevInstance;
   Globals.hndlProcessHeap = GetProcessHeap();
-
-  Flags.bHas_SSE2_CPU = CanUseCPUFeature(CPU_SSE2);
-  Flags.bHas_AVX2_CPU_OS = CanUseCPUFeature(CPU_OS_AVX2);
 
   WCHAR wchAppDir[2 * MAX_PATH + 4] = { L'\0' };
   GetModuleFileName(NULL,wchAppDir,COUNTOF(wchAppDir));
