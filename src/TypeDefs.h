@@ -507,8 +507,6 @@ typedef struct _flags_t
   bool bSearchPathIfRelative;
 
   bool bSettingsFileLocked;
-  bool bHas_SSE2_CPU;
-  bool bHas_AVX2_CPU_OS;
 
 } FLAGS_T, *PFLAGS_T;
 
