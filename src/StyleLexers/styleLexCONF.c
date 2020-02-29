@@ -125,7 +125,7 @@ NULL,
 
 
 EDITLEXER lexCONF = { 
-SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; cfg; cnf; htaccess; prefs; iface; prop; po; te", L"", 
+SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; cfg; cnf; htaccess; prefs; iface; prop; po; te; \\Kconfig; \\Doxyfile", L"", 
 &KeyWords_CONF, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_CONF_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

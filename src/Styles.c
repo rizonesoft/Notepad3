@@ -2016,10 +2016,18 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   LPCWSTR lpszFileName = PathFindFileName(lpszFile);
 
-  if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
-      (StrIsNotEmpty(lpszFile) && *lpszExt)) 
+  // check for filename regex match
+  if (!bFound && s_bAutoSelect && StrIsNotEmpty(lpszFile)) {
+    pLexSniffed = Style_RegExMatchLexer(lpszFileName);
+    if (pLexSniffed) {
+      pLexNew = pLexSniffed;
+      bFound = true;
+    }
+  }
+
+  if (!bFound && s_bAutoSelect && (StrIsNotEmpty(lpszFile) && *lpszExt)) 
   {
-    if (*lpszExt == L'.') ++lpszExt;
+    if (*lpszExt == L'.') { ++lpszExt; }
 
     if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
@@ -2032,11 +2040,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       }
     }
 
-    if (!bFound && StringCchCompareXI(lpszFileName,L"cmakelists.txt") == 0) {
-      pLexNew = &lexCmake;
-      bFound = true;
-    }
-
     // check associated extensions
     if (!bFound) {
       pLexSniffed = Style_MatchLexer(lpszExt, false);
@@ -2045,49 +2048,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
         bFound = true;
       }
     }
-
-    // check for filename regex match
-    if (!bFound) {
-      pLexSniffed = Style_RegExMatchLexer(lpszFileName);
-      if (pLexSniffed) {
-        pLexNew = pLexSniffed;
-        bFound = true;
-      }
-    }
-
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    StringCchCompareXI(lpszFileName, L"Readme") == 0) {
-    pLexNew = &lexANSI;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Makefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Kbuild") == 0))) {
-    pLexNew = &lexMAK;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Rakefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Podfile") == 0))) {
-    pLexNew = &lexRUBY;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(lpszFileName,L"mozconfig") == 0) {
-    pLexNew = &lexBASH;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName, L"Kconfig") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Doxyfile") == 0))) {
-    pLexNew = &lexCONF;
-    bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
