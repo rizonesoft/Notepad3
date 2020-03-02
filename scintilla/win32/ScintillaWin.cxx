@@ -459,7 +459,7 @@ class ScintillaWin :
 		invalidTimerID, standardTimerID, idleTimerID, fineTimerStart
 	};
 
-	bool SCICALL DragThreshold(Point ptStart, Point ptNow) noexcept override;
+	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
 	void StartDrag() override;
 	static int MouseModifiers(uptr_t wParam) noexcept;
 
@@ -518,7 +518,7 @@ class ScintillaWin :
 	void CopyAllowLine() override;
 	bool CanPaste() override;
 	void Paste(bool asBinary) override;
-	void SCICALL CreateCallTipWindow(PRectangle rc) noexcept override;
+	void CreateCallTipWindow(PRectangle rc) noexcept override;
 #if SCI_EnablePopupMenu
 	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) noexcept override;
 #endif
