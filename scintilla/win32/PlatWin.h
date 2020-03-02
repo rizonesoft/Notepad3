@@ -5,6 +5,8 @@
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 #pragma once
+#ifndef PLATWIN_H
+#define PLATWIN_H
 
 // sdkddkver.h
 #ifndef _WIN32_WINNT_VISTA
@@ -61,6 +63,22 @@ constexpr RECT RectFromPRectangle(PRectangle prc) noexcept {
 	return rc;
 }
 
+constexpr POINT POINTFromPoint(Point pt) noexcept {
+	return POINT{ static_cast<LONG>(pt.x), static_cast<LONG>(pt.y) };
+}
+
+constexpr Point PointFromPOINT(POINT pt) noexcept {
+	return Point::FromInts(pt.x, pt.y);
+}
+
+constexpr HWND HwndFromWindowID(WindowID wid) noexcept {
+	return static_cast<HWND>(wid);
+}
+
+inline HWND HwndFromWindow(const Window &w) noexcept {
+	return HwndFromWindowID(w.GetID());
+}
+
 #if defined(USE_D2D)
 extern bool LoadD2D() noexcept;
 extern ID2D1Factory *pD2DFactory;
@@ -68,3 +86,5 @@ extern IDWriteFactory *pIDWriteFactory;
 #endif
 
 }
+
+#endif
