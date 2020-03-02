@@ -103,7 +103,7 @@ CHANGES:
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
 - Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/01/28).
-- Update Scintilla Library (SCI) version 4.3.0 (2020/01/16).
+- Update Scintilla Library (SCI) version 4.3.1 (2020/03/04).
 
 -----------------------------------------------------
 ENHANCEMENT:
@@ -123,6 +123,8 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Correct return result of Styles export.
+- Scintilla method declaration.
 - Move hardcoded lexer <-> filename (w/o .ext) associations to configurable scheme (regex def).
 - Drag&drop rectangular selection shuffles chars.
 - Paint() hangs due to unnecessary LockWindowsUpdate().
