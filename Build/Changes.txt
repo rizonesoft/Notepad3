@@ -122,6 +122,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Debug assertion (isspace() called on non ASCII char).
 - Correct return result of Styles export.
 - Scintilla method declaration.
 - Move hardcoded lexer <-> filename (w/o .ext) associations to configurable scheme (regex def).
