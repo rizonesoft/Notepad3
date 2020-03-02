@@ -819,14 +819,17 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
   bool ok = false;
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
-    ok = OpenSettingsFile();
-    Style_ToIniSection(bForceAll);
-    ok = CloseSettingsFile(true);
+    if (OpenSettingsFile()) {
+      Style_ToIniSection(bForceAll);
+      ok = CloseSettingsFile(true);
+    }
   }
   else {
-    LoadIniFile(szFilePathNorm); // reset
-    Style_ToIniSection(bForceAll);
-    SaveIniFile(szFilePathNorm);
+    // reset
+    if (LoadIniFile(szFilePathNorm)) { 
+      Style_ToIniSection(bForceAll);
+      ok = SaveIniFile(szFilePathNorm);
+    }
   }
   return ok;
 }
