@@ -4559,7 +4559,7 @@ onig_regset_search_with_param(OnigRegSet* set,
   if (start > end || start < str) goto mismatch_no_msa;
   if (str < end) {
     /* forward search only */
-    if (range <= start)
+    if (range < start)
       return ONIGERR_INVALID_ARGUMENT;
   }
 
