@@ -4641,7 +4641,18 @@ onig_regset_search_with_param(OnigRegSet* set,
     for (i = 0; i < set->n; i++) {
       reg = set->rs[i].reg;
       if (reg->threshold_len == 0) {
-        REGSET_MATCH_AND_RETURN_CHECK(end);
+        /* REGSET_MATCH_AND_RETURN_CHECK(end); */
+        /* Can't use REGSET_MATCH_AND_RETURN_CHECK()
+           because r must be set regex index (i)
+        */
+        r = match_at(reg, str, end, end, s, prev, msas + i);
+        if (r != ONIG_MISMATCH) {
+          if (r >= 0) {
+            r = i;
+            goto match;
+          }
+          else goto finish; /* error */
+        }
       }
     }
 
