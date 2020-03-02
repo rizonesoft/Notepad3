@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "&Wcięcie",                              IDM_EDIT_INDENT
             MENUITEM "&Bez wcięcia",                          IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",      CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",        CMD_JUMP2SELEND
+            MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
+            MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Ujęcie zaznaczenia"
             BEGIN
@@ -345,16 +345,16 @@ BEGIN
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "Margines\tCtrl+Shift+M",                          IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "&Składanie"
         BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
             MENUITEM "&Przełącz składanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Przeskocz do nast.\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Przeskocz do poprzed.\tAlt+ –",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Zwiń zagięcie\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Rozwiń zagięcie\tAlt+ →",            CMD_FOLDEXPAND
         END
         POPUP "&Pokaż"
         BEGIN
