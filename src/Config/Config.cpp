@@ -1664,6 +1664,8 @@ bool SaveAllSettings(bool bForceSaveSettings)
     }
   }
 
+  IniSectionClear(L"~EOF~", false);
+
   if (ok) {
     ok = CloseSettingsFile(true);
   }

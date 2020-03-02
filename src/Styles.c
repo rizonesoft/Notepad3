@@ -825,11 +825,10 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     }
   }
   else {
-    // reset
-    if (LoadIniFile(szFilePathNorm)) { 
-      Style_ToIniSection(bForceAll);
-      ok = SaveIniFile(szFilePathNorm);
-    }
+    LoadIniFile(szFilePathNorm); // reset
+    Style_ToIniSection(bForceAll);
+    IniSectionClear(L"~EOF~", false);
+    ok = SaveIniFile(szFilePathNorm);
   }
   return ok;
 }
