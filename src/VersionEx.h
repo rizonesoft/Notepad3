@@ -16,4 +16,4 @@
 #define TINYEXPR_VER 2018.05.11
 #define UTHASH_VER 2.1.0
 #define VERSION_PATCH RC2
-#define VERSION_COMMIT_ID t7820-rk
+#define VERSION_COMMIT_ID dkt1-amr

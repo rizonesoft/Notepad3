@@ -1,0 +1,5 @@
+
+ Wgraæ plik ustawieñ "Notepad3.ini" do folderu "C:\Users\Marek\AppData\Roaming\Rizonesoft\Notepad3".
+ 
+ Poprawiony plik jêzykowy "np3lng.dll.mui" - zmieniona opcja w menu "Ustawienia" -> 
+  -> "Przyk³ad pojedyñczego pliku" na "Jedna Instancja Pliku".

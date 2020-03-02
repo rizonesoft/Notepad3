@@ -447,7 +447,7 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "默认 GDI(&G)",                      IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "默认 GDI(&G) (no ligatures)",       IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC

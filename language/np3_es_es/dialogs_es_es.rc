@@ -139,7 +139,7 @@ BEGIN
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Reemplazar",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "En selección",IDC_REPLACEINSEL,211,59,55,14
-    PUSHBUTTON      "Reemplazar &todo",IDC_REPLACEALL,211,75,55,14
+    PUSHBUTTON      "Reemplazar to&do",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Alternar textos",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Cerrar",IDCANCEL,211,126,55,14
     CONTROL         "<a>Ir a Buscar (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
