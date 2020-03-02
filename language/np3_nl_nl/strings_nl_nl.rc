@@ -146,7 +146,7 @@ BEGIN
                             "Het bestand ""%s"" kan niet worden opgeslagen en kan worden beveiligd.\n\nWilt u %s als verhoogde applicatie starten?"
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Styling en syntax highlighting wordt niet toegepast!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
                             "Kan dat enorme bestand niet aan (grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT

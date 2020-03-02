@@ -53,7 +53,6 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
-- Add an end file "[~EOF~]" ins *.ini files.
 - Add file history to to recent docs jumplist.
 - AddFileToRecentDocs.
 - INI file read/write using synchronous file locking (shared read / exclusive write).
@@ -123,6 +122,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Debug assertion (isspace() called on non ASCII char).
 - Correct return result of Styles export.
 - Scintilla method declaration.
 - Move hardcoded lexer <-> filename (w/o .ext) associations to configurable scheme (regex def).
