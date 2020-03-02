@@ -146,7 +146,7 @@ BEGIN
                             "A következő fájlt: ""%s"" nem lehet menteni, lehet, hogy védett.\n\nElindítsuk a %s alkalmazást adminisztrátorként?"
     IDS_MUI_ERR_ADMINEXE    "Adminisztrátor végrehajtható nem található.\nFelkeressük ezt a weboldalt: https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Biztosan meg szeretné nyitni ezt a nagy fájlt?\n\t(méret: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Biztosan meg szeretné nyitni ezt a nagy fájlt?\n\t(méret: %s >= %s)!\n(A stílus és a szintaxis kiemelés nem lesz alkalmazva!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
                             "Nem tudok ilyen nagy fájlt kezelni (méret: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
