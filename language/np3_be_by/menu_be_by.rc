@@ -425,9 +425,9 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Гісторыя"
         BEGIN
-            MENUITEM "Захоўваць гісторыю адкрытых &файлаў", IDM_VIEW_NOSAVERECENT
-            MENUITEM "Аднаўляць пазіцыю &карэткі",          IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Захоўваць пошукавыя &запыты",         IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Захоўваць гісторыю адкрытых &файлаў",  IDM_VIEW_NOSAVERECENT
+            MENUITEM "Аднаўляць пазіцыю &карэткі",           IDM_VIEW_NOPRESERVECARET
+            MENUITEM "Захоўваць пошукавыя &запыты",          IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Акно"
         BEGIN
@@ -447,34 +447,34 @@ BEGIN
         BEGIN
             POPUP "&Адлюстраванне"
             BEGIN
-                MENUITEM "Звычайны &GDI",               IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Звычайны &GDI (no ligatures)",     IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "&Накіраванне пісьма"
             BEGIN
-                MENUITEM "&Няма",                       IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "&Злева направа",              IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "&Справа налева",              IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "&Няма",                            IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "&Злева направа",                   IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "&Справа налева",                   IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Пашыраныя налады"
         BEGIN
-            MENUITEM "Захоўваць налады падчас &выхаду", IDM_VIEW_SAVESETTINGS
-            MENUITEM "Захаваць налады &зараз\tF7",      IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Адкрыць файл наладаў\tCtrl+F7",  CMD_OPENINIFILE
+            MENUITEM "Захоўваць налады падчас &выхаду",      IDM_VIEW_SAVESETTINGS
+            MENUITEM "Захаваць налады &зараз\tF7",           IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Адкрыць файл наладаў\tCtrl+F7",       CMD_OPENINIFILE
         END
     END
     POPUP "&Даведка"
     BEGIN
-        MENUITEM "Дапа&можнік Online\tF1",                  IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "Дапа&можнік Online\tF1",                   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&Запусціць інструмент адміністратара...", IDM_HELP_ADMINEXE
-        MENUITEM "Праверыць &даступныя абнаўленні",         IDM_HELP_UPDATEWEBSITE
+        MENUITEM "&Запусціць інструмент адміністратара...",  IDM_HELP_ADMINEXE
+        MENUITEM "Праверыць &даступныя абнаўленні",          IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "Параметры &камандавага радку...",         IDM_HELP_CMD
-        MENUITEM "&Пра праграму...\tShift+F1",              IDM_HELP_ABOUT
+        MENUITEM "Параметры &камандавага радку...",          IDM_HELP_CMD
+        MENUITEM "&Пра праграму...\tShift+F1",               IDM_HELP_ABOUT
     END
 END
 
