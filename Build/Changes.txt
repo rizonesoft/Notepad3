@@ -31,12 +31,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC1 Version 5.20.212.(build_#) (2020-02-12)
+Current RC1 Version 5.20.302.(build_#) (2020-03-02)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- Automatic scrolling when dragging text near window edge.
+    Patch by McLoo from https://sourceforge.net/p/scintilla/feature-requests/497/.
 - Multiple selection on end-of-lines from rectangular selection.
 - Infos of sreen/display for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
@@ -51,6 +53,11 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Add an end file "[~EOF~]" ins *.ini files.
+- Add file history to to recent docs jumplist.
+- AddFileToRecentDocs.
+- INI file read/write using synchronous file locking (shared read / exclusive write).
+- Reset build-of-the-day number in AppVeyor on new day.
 - Change version numbering of build_# (the build number is now daily based).
 - Remove AppVeyors build number, add build-of-the-day number, add short version of commit/local build ID.
 - Accelerator key remapping: move line up/down vs. jump folds.
@@ -95,12 +102,16 @@ CHANGES:
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout).
-- Update Oniguruma Regex (ONI) engine version 6.9.4 (2019/10/31).
+- Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/01/28).
 - Update Scintilla Library (SCI) version 4.3.0 (2020/01/16).
 
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
+- Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
+- Method to set document for big files.
+- ScintillaWin: IMEJPCancelAction (SCI)
+- Win file API locking mechanism to avoid multi process file write race conditions.
 - Menu entries for move line and folding control.
 - Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
@@ -112,6 +123,21 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Move hardcoded lexer <-> filename (w/o .ext) associations to configurable scheme (regex def).
+- Drag&drop rectangular selection shuffles chars.
+- Paint() hangs due to unnecessary LockWindowsUpdate().
+- Drag&drop selection should use configured slop settings.
+- Internal file-history submitted to taskbar JumpList
+- Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
+- Automatic scrolling when dragging text near window edge: make caret visible after drop.
+- No styling for big/large files (loading speedup and UI responsiveness).
+- Esc skip level on rect/multi-selection.
+- Avoid caret jump on cancel multi-selection (esc).
+- In case of "Transform BS", swallow single slashes not related to a ctrl-char.
+- Handling of default settings for deprecated 'SciDirectWriteTech=...'
+- Concurrent access to .ini-File (lock file).
+- Caret virtual space movement options: remove "SCVS_NOWRAPLINESTART".
+- Jump to selection "start/end" operations.
 - Word lists for LUA Lexer.
 - Line Comment (Toggle) for NIM Lexer.
 - Slow indentation (TAB/BACKTAB).

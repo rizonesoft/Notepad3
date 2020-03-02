@@ -447,7 +447,7 @@ BEGIN
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
-                MENUITEM "GDI 기본(&G)",                    IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "GDI 기본(&G) (no ligatures)",     IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",        IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
