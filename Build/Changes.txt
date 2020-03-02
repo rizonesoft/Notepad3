@@ -53,7 +53,6 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
-- Add an end file "[~EOF~]" ins *.ini files.
 - Add file history to to recent docs jumplist.
 - AddFileToRecentDocs.
 - INI file read/write using synchronous file locking (shared read / exclusive write).
