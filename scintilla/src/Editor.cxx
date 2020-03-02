@@ -143,11 +143,10 @@ Editor::Editor() : durationWrapOneLine(0.00001, 0.000001, 0.0001) {
 	wordSelectAnchorEndPos = 0;
 	wordSelectInitialCaretPos = -1;
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	caretPolicies.x = { CARET_SLOP | CARET_EVEN, 50 };
 	caretPolicies.y = { CARET_EVEN, 0 };
+
 	visiblePolicy = { 0, 0 };
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	searchAnchor = 0;
 
@@ -566,7 +565,7 @@ Sci::Position Editor::CurrentPosition() const {
 	return sel.MainCaret();
 }
 
-bool Editor::SelectionEmpty() const {
+bool Editor::SelectionEmpty() const noexcept {
 	return sel.Empty();
 }
 
@@ -790,7 +789,7 @@ void Editor::MultipleSelectAdd(AddNumber addNumber) {
 	}
 }
 
-bool Editor::RangeContainsProtected(Sci::Position start, Sci::Position end) const {
+bool Editor::RangeContainsProtected(Sci::Position start, Sci::Position end) const noexcept {
 	if (vs.ProtectionActive()) {
 		if (start > end) {
 			const Sci::Position t = start;
@@ -805,7 +804,7 @@ bool Editor::RangeContainsProtected(Sci::Position start, Sci::Position end) cons
 	return false;
 }
 
-bool Editor::SelectionContainsProtected() {
+bool Editor::SelectionContainsProtected() const {
 	for (size_t r=0; r<sel.Count(); r++) {
 		if (RangeContainsProtected(sel.Range(r).Start().Position(),
 			sel.Range(r).End().Position())) {
@@ -844,9 +843,8 @@ SelectionPosition Editor::MovePositionOutsideChar(SelectionPosition pos, Sci::Po
 	return pos;
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos, bool ensureVisible, CaretPolicies policies) {
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
+	bool ensureVisible, CaretPolicies policies) {
 	const Sci::Line currentLine = pdoc->SciLineFromPosition(newPos.Position());
 	if (ensureVisible) {
 		// In case in need of wrapping to ensure DisplayFromDoc works.
@@ -856,9 +854,7 @@ void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
 			}
 		}
 		const XYScrollPosition newXY = XYScrollToMakeVisible(
-			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			SelectionRange(posDrag.IsValid() ? posDrag : newPos), xysDefault, policies);
-			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		if (previousPos.IsValid() && (newXY.xOffset == xOffset)) {
 			// simple vertical scroll then invalidate
 			ScrollTo(newXY.topLine);
@@ -908,9 +904,7 @@ void Editor::MovePositionTo(SelectionPosition newPos, Selection::selTypes selt, 
 		SetEmptySelection(newPos);
 	}
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	MovedCaret(newPos, spCaret, ensureVisible, caretPolicies);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void Editor::MovePositionTo(Sci::Position newPos, Selection::selTypes selt, bool ensureVisible) {
@@ -1111,7 +1105,7 @@ Sci::Line Editor::DisplayFromPosition(Sci::Position pos) {
 /**
  * Ensure the caret is reasonably visible in context.
  *
-Caret policy in SciTE
+Caret policy in Scintilla
 
 If slop is set, we can define a slop value.
 This value defines an unwanted zone (UZ) where the caret is... unwanted.
@@ -1154,9 +1148,8 @@ slop | strict | jumps | even | Caret can go to the margin                 | When
   1  |   1    |   1   |   1  | No, kept out of UZ                         | moved to put caret at 3UZ of the margin
 */
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange & range, const XYScrollOptions options, CaretPolicies policies) {
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &range,
+	const XYScrollOptions options, CaretPolicies policies) {
 	const PRectangle rcClient = GetTextRectangle();
 	const Point ptOrigin = GetVisibleOriginInMain();
 	const Point pt = LocationFromPosition(range.caret) + ptOrigin;
@@ -1169,18 +1162,14 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange & ra
 	}
 
 	// Vertical positioning
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if ((options & xysVertical) && (pt.y < rcClient.top || ptBottomCaret.y >= rcClient.bottom || (policies.y.policy & CARET_STRICT) != 0)) {
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		const Sci::Line lineCaret = DisplayFromPosition(range.caret.Position());
 		const Sci::Line linesOnScreen = LinesOnScreen();
 		const Sci::Line halfScreen = std::max(linesOnScreen - 1, static_cast<Sci::Line>(2)) / 2;
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		const bool bSlop = (policies.y.policy & CARET_SLOP) != 0;
 		const bool bStrict = (policies.y.policy & CARET_STRICT) != 0;
 		const bool bJump = (policies.y.policy & CARET_JUMPS) != 0;
 		const bool bEven = (policies.y.policy & CARET_EVEN) != 0;
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		// It should be possible to scroll the window to show the caret,
 		// but this fails to remove the caret on GTK+
@@ -1276,12 +1265,10 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange & ra
 	// Horizontal positioning
 	if ((options & xysHorizontal) && !Wrapping()) {
 		const int halfScreen = std::max(static_cast<int>(rcClient.Width()) - 4, 4) / 2;
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		const bool bSlop = (policies.x.policy & CARET_SLOP) != 0;
 		const bool bStrict = (policies.x.policy & CARET_STRICT) != 0;
 		const bool bJump = (policies.x.policy & CARET_JUMPS) != 0;
 		const bool bEven = (policies.x.policy & CARET_EVEN) != 0;
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		if (bSlop) {	// A margin is defined
 			int xMoveL, xMoveR;
@@ -1424,17 +1411,13 @@ void Editor::SetXYScroll(XYScrollPosition newXY) {
 }
 
 void Editor::ScrollRange(SelectionRange range) {
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	SetXYScroll(XYScrollToMakeVisible(range, xysDefault, caretPolicies));
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void Editor::EnsureCaretVisible(bool useMargin, bool vert, bool horiz) {
 	SetXYScroll(XYScrollToMakeVisible(SelectionRange(posDrag.IsValid() ? posDrag : sel.RangeMain().caret),
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	static_cast<XYScrollOptions>((useMargin ? xysUseMargin : 0) | (vert ? xysVertical : 0) | (horiz ? xysHorizontal : 0)),
+		static_cast<XYScrollOptions>((useMargin?xysUseMargin:0)|(vert?xysVertical:0)|(horiz?xysHorizontal:0)),
 	caretPolicies));
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void Editor::ShowCaretAtCurrentPosition() {
@@ -1768,7 +1751,13 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 		}
 		RefreshPixMaps(surfaceWindow);	// In case pixmaps invalidated by scrollbar change
 	}
-	PLATFORM_ASSERT(marginView.pixmapSelPattern->Initialised());
+
+	if (!marginView.pixmapSelPattern->Initialised()) {
+		// When Direct2D is used, pixmap creation may fail with D2DERR_RECREATE_TARGET so
+		// abandon this paint to avoid further failures.
+		// Main drawing surface and pixmaps should be recreated by next paint.
+		return;
+	}
 
 	if (!view.bufferedDraw)
 		surfaceWindow->SetClip(rcArea);
@@ -1935,7 +1924,7 @@ void Editor::InsertCharacter(std::string_view sv, CharacterSource charSource) {
 		}
 		// Order selections by position in document.
 		std::sort(selPtrs.begin(), selPtrs.end(),
-			[](const SelectionRange *a, const SelectionRange *b) {return *a < *b;});
+			[](const SelectionRange *a, const SelectionRange *b) noexcept {return *a < *b;});
 
 		// Loop in reverse to avoid disturbing positions of selections yet to be processed.
 		for (std::vector<SelectionRange *>::reverse_iterator rit = selPtrs.rbegin();
@@ -3199,9 +3188,7 @@ void Editor::CursorUpOrDown(int direction, Selection::selTypes selt) {
 		sel.selType = Selection::selRectangle;
 		sel.Rectangular() = SelectionRange(posNew, rangeBase.anchor);
 		SetRectangularRange();
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		MovedCaret(posNew, caretToUse, true, caretPolicies);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	} else if (sel.selType == Selection::selLines && sel.MoveExtends()) {
 		// Calculate new caret position and call SetSelection(), which will ensure whole lines are selected.
 		const SelectionPosition posNew = MovePositionSoVisible(
@@ -3222,9 +3209,7 @@ void Editor::CursorUpOrDown(int direction, Selection::selTypes selt) {
 				SelectionRange(posNew, sel.Range(r).anchor) : SelectionRange(posNew);
 		}
 		sel.RemoveDuplicates();
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		MovedCaret(sel.RangeMain().caret, caretToUse, true, caretPolicies);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -3621,9 +3606,7 @@ int Editor::HorizontalMove(unsigned int iMessage) {
 
 	sel.RemoveDuplicates();
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	MovedCaret(sel.RangeMain().caret, SelectionPosition(INVALID_POSITION), true, caretPolicies);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	// Invalidate the new state of the selection
 	InvalidateWholeSelection();
@@ -3694,9 +3677,7 @@ int Editor::DelWordOrLine(unsigned int iMessage) {
 	// May need something stronger here: can selections overlap at this point?
 	sel.RemoveDuplicates();
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	MovedCaret(sel.RangeMain().caret, SelectionPosition(INVALID_POSITION), true, caretPolicies);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	// Invalidate the new state of the selection
 	InvalidateWholeSelection();
@@ -5482,7 +5463,6 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 	}
 	if (enforcePolicy) {
 		const Sci::Line lineDisplay = pcs->DisplayFromDoc(lineDoc);
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		if (visiblePolicy.policy & VISIBLE_SLOP) {
 			if ((topLine > lineDisplay) || ((visiblePolicy.policy & VISIBLE_STRICT) && (topLine + visiblePolicy.slop > lineDisplay))) {
 				SetTopLine(std::clamp<Sci::Line>(lineDisplay - visiblePolicy.slop, 0, MaxScrollPos()));
@@ -5501,7 +5481,6 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 				Redraw();
 			}
 		}
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -7344,7 +7323,6 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SEARCHPREV:
 		return SearchText(iMessage, wParam, lParam);
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case SCI_SETXCARETPOLICY:
 		caretPolicies.x = CaretPolicy(wParam, lParam);
 		break;
@@ -7356,7 +7334,6 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SETVISIBLEPOLICY:
 		visiblePolicy = CaretPolicy(wParam, lParam);
 		break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case SCI_LINESONSCREEN:
 		return LinesOnScreen();
