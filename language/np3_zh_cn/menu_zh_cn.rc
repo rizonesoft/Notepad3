@@ -160,15 +160,15 @@ BEGIN
         BEGIN
             MENUITEM "补全单词(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "光标向左跳过一个单词(&L)\tCtrl+ ←",      CMD_CTRLLEFT
-            MENUITEM "光标向右跳过一个单词(&R)\tCtrl+ →",      CMD_CTRLRIGHT
-            MENUITEM "删除光标左边的单词(&D)\tCtrl+Back",      CMD_CTRLBACK
-            MENUITEM "删除光标右边的单词(&W)\tCtrl+Del",       CMD_CTRLDEL
+            MENUITEM "光标向左跳过一个单词(&L)\tCtrl+←",      CMD_CTRLLEFT
+            MENUITEM "光标向右跳过一个单词(&R)\tCtrl+→",      CMD_CTRLRIGHT
+            MENUITEM "删除光标左边的单词(&D)\tCtrl+Backspace",      CMD_CTRLBACK
+            MENUITEM "删除光标右边的单词(&W)\tCtrl+Delete",       CMD_CTRLDEL
         END
         POPUP "行(&L)"
         BEGIN
-            MENUITEM "上移行(&U)\tCtrl+Alt+ ↑",                IDM_EDIT_MOVELINEUP
-            MENUITEM "下移行(&M)\tCtrl+Shift+ ↓",              IDM_EDIT_MOVELINEDOWN
+            MENUITEM "上移行(&U)\tAlt+↑",                IDM_EDIT_MOVELINEUP
+            MENUITEM "下移行(&M)\tAlt+↓",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "剪切选区或当前行(&I)\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "剪切选区所在整行或当前行(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
@@ -350,11 +350,11 @@ BEGIN
             MENUITEM "启用折叠(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "跳转到下一折叠点(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "跳转到上一折叠点(&P)\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "跳转到下一折叠点(&N)\tAlt++",         CMD_FOLDJUMPDOWN
+            MENUITEM "跳转到上一折叠点(&P)\tAlt+-",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "折叠(&C)\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "展开(&E)\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "折叠(&C)\tAlt+←",          CMD_FOLDCOLLAPSE
+            MENUITEM "展开(&E)\tAlt+→",            CMD_FOLDEXPAND
         END
         POPUP "显示(&D)"
         BEGIN
@@ -374,8 +374,8 @@ BEGIN
         END
         POPUP "缩放(&Z)"
         BEGIN
-            MENUITEM "放大(&I)\tCtrl+ +",                     IDM_VIEW_ZOOMIN
-            MENUITEM "缩小(&O)\tCtrl+ –",                     IDM_VIEW_ZOOMOUT
+            MENUITEM "放大(&I)\tCtrl++",                     IDM_VIEW_ZOOMIN
+            MENUITEM "缩小(&O)\tCtrl+–",                     IDM_VIEW_ZOOMOUT
             MENUITEM "重置缩放(&Z)\tCtrl+0",                  IDM_VIEW_RESETZOOM
         END
         POPUP "窗口位置(&P)"
@@ -447,7 +447,7 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "默认 GDI(&G)",                      IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "默认 GDI(&G) (no ligatures)",       IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC

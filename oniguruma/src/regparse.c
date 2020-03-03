@@ -8645,10 +8645,9 @@ onig_parse_tree(Node** root, const UChar* pattern, const UChar* end,
 
   p = (UChar* )pattern;
   r = parse_regexp(root, &p, (UChar* )end, env);
-
-#ifdef USE_CALL
   if (r != 0) return r;
 
+#ifdef USE_CALL
   if (env->has_call_zero != 0) {
     Node* zero_node;
     r = make_call_zero_body(*root, env, &zero_node);

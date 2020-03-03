@@ -2078,56 +2078,79 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 //  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component 
 //
 
-static bool _CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+#if TRUE
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
 {
-#define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
+  #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
 
-  ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
-
-  if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
-    RELEASE_RETURN(false);
+  if (!lpstrText || (lenText == 0)) {
+    SciCall_SetDocPointer(0);
   }
-  sptr_t const pNewDocumentPtr = (sptr_t)pDocLoad->ConvertToDocument(); // == SciCall_CreateDocument(lenText, docOptions);
-  if (!pNewDocumentPtr) {
-    RELEASE_RETURN(false);
-  }
-  SciCall_SetDocPointer(pNewDocumentPtr);
-  RELEASE_RETURN(true);
-}
+  else {
+#if TRUE
+    ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
 
-extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
-{
-  bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
-  bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB * 1024ULL * 1024ULL));
-
-  int const curOptions = SciCall_GetDocumentOptions();
-
-  bool result = false;
-
-  if (!bLargeFileLoaded && (curOptions & (SC_DOCUMENTOPTION_STYLES_NONE | SC_DOCUMENTOPTION_TEXT_LARGE)))
-  {
-    int const docOptions = SC_DOCUMENTOPTION_DEFAULT;
-    result = _CreateNewDocument(lpstrText, lenText, docOptions);
-  }
-  else if (!lpstrText || (lenText == 0)) {
-    SciCall_ClearAll();
-    result = true;
-  }
-  else if (bLargeFileLoaded)
-  {
-#ifdef NP3_LARGE_DOCUMENT_STYLES_NONE 
-    int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE) : SC_DOCUMENTOPTION_DEFAULT;
+    if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
+      RELEASE_RETURN(false);
+    }
+    sptr_t const pNewDocumentPtr = (sptr_t)pDocLoad->ConvertToDocument(); // == SciCall_CreateDocument(lenText, docOptions);
+    if (!pNewDocumentPtr) {
+      RELEASE_RETURN(false);
+    }
+    SciCall_SetDocPointer(pNewDocumentPtr);
+    SciCall_ReleaseDocument(pNewDocumentPtr);
 #else
-    int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_DEFAULT) : SC_DOCUMENTOPTION_DEFAULT;
+    sptr_t const pNewDocumentPtr = SciCall_CreateDocument(lenText, docOptions);
+    if (pNewDocumentPtr) {
+      SciCall_SetDocPointer(pNewDocumentPtr);
+      SciCall_ReleaseDocument(pNewDocumentPtr);
+    }
+    else {
+      SciCall_SetDocPointer(0);
+    }
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
 #endif
-
-    result = _CreateNewDocument(lpstrText, lenText, docOptions);
+  }
+  return true;
+}
+#else
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+{
+  UNUSED(docOptions);
+  if (!lpstrText || (lenText == 0)) {
+    SciCall_ClearAll();
   }
   else {
     SciCall_TargetWholeDocument();
     SciCall_ReplaceTarget(lenText, lpstrText);
-    result = true;
   }
-
-  return result;
+  return true;
 }
+#endif
+
+
+extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
+{
+  bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
+  bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB << 20));
+  int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE) 
+                                          : SC_DOCUMENTOPTION_DEFAULT;
+
+  if (SciCall_GetDocumentOptions() != docOptions)
+  {
+    // we have to create a new document with changed options
+    return CreateNewDocument(lpstrText, lenText, docOptions);
+  }
+  else {
+    if (!lpstrText || (lenText == 0)) {
+      SciCall_ClearAll();
+    }
+    else {
+      SciCall_TargetWholeDocument();
+      SciCall_ReplaceTarget(lenText, lpstrText);
+    }
+  }
+  return true;
+}
+

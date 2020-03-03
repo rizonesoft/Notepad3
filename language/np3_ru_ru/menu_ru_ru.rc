@@ -447,23 +447,23 @@ BEGIN
         BEGIN
             POPUP "&Рендеринг"
             BEGIN
-                MENUITEM "Стандартный &GDI",            IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Стандартный &GDI (no ligatures)",  IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Направление письма"
             BEGIN
-                MENUITEM "Нет",                         IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Слева направо",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Справа налево",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Нет",                              IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Слева направо",                    IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Справа налево",                    IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Расширенные настройки"
         BEGIN
-            MENUITEM "Сохранять настройки при &выходе", IDM_VIEW_SAVESETTINGS
-            MENUITEM "Сохранить настройки &сейчас\tF7", IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Открыть файл настроек\tCtrl+F7", CMD_OPENINIFILE
+            MENUITEM "Сохранять настройки при &выходе",      IDM_VIEW_SAVESETTINGS
+            MENUITEM "Сохранить настройки &сейчас\tF7",      IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Открыть файл настроек\tCtrl+F7",      CMD_OPENINIFILE
         END
     END
     POPUP "&Справка"

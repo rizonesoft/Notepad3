@@ -819,14 +819,15 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
   bool ok = false;
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
-    ok = OpenSettingsFile();
-    Style_ToIniSection(bForceAll);
-    ok = CloseSettingsFile(true);
+    if (OpenSettingsFile()) {
+      Style_ToIniSection(bForceAll);
+      ok = CloseSettingsFile(true);
+    }
   }
   else {
     LoadIniFile(szFilePathNorm); // reset
     Style_ToIniSection(bForceAll);
-    SaveIniFile(szFilePathNorm);
+    ok = SaveIniFile(szFilePathNorm);
   }
   return ok;
 }
@@ -968,17 +969,6 @@ static inline bool _IsItemInStyleString(LPCWSTR lpszStyleStrg, LPCWSTR item)
 //
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
-#ifdef  NP3_LARGE_DOCUMENT_STYLES_NONE
-  if (Flags.bLargeFileLoaded)
-  {
-    s_pLexCurrent = GetLargeFileLexer();
-    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
-    SciCall_StartStyling(0);
-    UpdateAllBars(false);
-    return;
-  }
-#endif
-
   // Select standard if NULL is specified
   if (!pLexNew) {
     pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
@@ -1480,6 +1470,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
+  SciCall_StartStyling(0);
+
   // apply lexer styles
   if (Flags.bLargeFileLoaded)
   {
@@ -1488,6 +1480,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   else {
     SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditDoStyling(0, -1);
     EditUpdateIndicators(0, -1, false);
   }
  
@@ -2024,10 +2017,18 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   LPCWSTR lpszFileName = PathFindFileName(lpszFile);
 
-  if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
-      (StrIsNotEmpty(lpszFile) && *lpszExt)) 
+  // check for filename regex match
+  if (!bFound && s_bAutoSelect && StrIsNotEmpty(lpszFile)) {
+    pLexSniffed = Style_RegExMatchLexer(lpszFileName);
+    if (pLexSniffed) {
+      pLexNew = pLexSniffed;
+      bFound = true;
+    }
+  }
+
+  if (!bFound && s_bAutoSelect && (StrIsNotEmpty(lpszFile) && *lpszExt)) 
   {
-    if (*lpszExt == L'.') ++lpszExt;
+    if (*lpszExt == L'.') { ++lpszExt; }
 
     if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
@@ -2040,11 +2041,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       }
     }
 
-    if (!bFound && StringCchCompareXI(lpszFileName,L"cmakelists.txt") == 0) {
-      pLexNew = &lexCmake;
-      bFound = true;
-    }
-
     // check associated extensions
     if (!bFound) {
       pLexSniffed = Style_MatchLexer(lpszExt, false);
@@ -2053,49 +2049,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
         bFound = true;
       }
     }
-
-    // check for filename regex match
-    if (!bFound) {
-      pLexSniffed = Style_RegExMatchLexer(lpszFileName);
-      if (pLexSniffed) {
-        pLexNew = pLexSniffed;
-        bFound = true;
-      }
-    }
-
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    StringCchCompareXI(lpszFileName, L"Readme") == 0) {
-    pLexNew = &lexANSI;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Makefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Kbuild") == 0))) {
-    pLexNew = &lexMAK;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Rakefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Podfile") == 0))) {
-    pLexNew = &lexRUBY;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(lpszFileName,L"mozconfig") == 0) {
-    pLexNew = &lexBASH;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName, L"Kconfig") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Doxyfile") == 0))) {
-    pLexNew = &lexCONF;
-    bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
