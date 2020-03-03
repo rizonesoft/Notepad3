@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC1 Version 5.20.302.(build_#) (2020-03-02)
+Current RC1 Version 5.20.303.(build_#) (2020-03-03)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- In About Resources: Data Sharing Service from https://workupload.com/. 
 - Automatic scrolling when dragging text near window edge.
     Patch by McLoo from https://sourceforge.net/p/scintilla/feature-requests/497/.
 - Multiple selection on end-of-lines from rectangular selection.
@@ -53,7 +54,6 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
-- Add an end file "[~EOF~]" ins *.ini files.
 - Add file history to to recent docs jumplist.
 - AddFileToRecentDocs.
 - INI file read/write using synchronous file locking (shared read / exclusive write).
@@ -123,6 +123,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Debug assertion (isspace() called on non ASCII char).
 - Correct return result of Styles export.
 - Scintilla method declaration.
 - Move hardcoded lexer <-> filename (w/o .ext) associations to configurable scheme (regex def).
