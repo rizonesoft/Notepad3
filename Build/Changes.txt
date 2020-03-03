@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC1 Version 5.20.302.(build_#) (2020-03-02)
+Current RC1 Version 5.20.303.(build_#) (2020-03-03)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- In About Resources: Data Sharing Service from https://workupload.com/. 
 - Automatic scrolling when dragging text near window edge.
     Patch by McLoo from https://sourceforge.net/p/scintilla/feature-requests/497/.
 - Multiple selection on end-of-lines from rectangular selection.
