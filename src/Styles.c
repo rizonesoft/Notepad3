@@ -3094,7 +3094,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.CurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.MainWndDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -4392,6 +4392,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
   if (hDlg != INVALID_HANDLE_VALUE) {
+    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;

@@ -864,6 +864,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   Scintilla_RegisterClasses(hInstance);
 
+  //SetProcessDPIAware(); -> .manifest
+  //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+
   // ----------------------------------------------------
   // MultiLingual
   //
@@ -876,6 +879,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h
   }
 
+  if (!Globals.hDlgIcon) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon));
+  }
+
   int const cxs = GetSystemMetrics(SM_CXSMICON);
   int const cys = GetSystemMetrics(SM_CYSMICON);
 
@@ -884,16 +891,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
-  if (!Globals.hDlgIcon) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIcon));
+  if (!Globals.hIconMsgUser) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxl, cyl, &(Globals.hIconMsgUser));
   }
-  if (!Globals.hIcon48) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxl, cxl, &(Globals.hIcon48));
-  }
-  if (!Globals.hIcon128) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hIcon128));
-  }
-
   if (!Globals.hIconMsgInfo) {
     LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxl, cyl, &(Globals.hIconMsgInfo));
   }
@@ -1224,10 +1224,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
   //UpdateWindowLayoutForDPI(Globals.hwndMain, 0, 0, 0, 0);
 
-  if (Globals.hIcon128) {
-    SendMessage(Globals.hwndMain, WM_SETICON, ICON_BIG, (LPARAM)Globals.hIcon128);
-  }
   if (Globals.hDlgIcon) {
+    SendMessage(Globals.hwndMain, WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIcon);
     SendMessage(Globals.hwndMain, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon);
   }
 
@@ -1958,8 +1956,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
-  Globals.CurrentDPI = GetCurrentDPI(hwnd);
-  Globals.CurrentPPI = GetCurrentPPI(hwnd);
+  Globals.MainWndDPI = GetCurrentDPI(hwnd);
+  Globals.MainWndPPI = GetCurrentPPI(hwnd);
 
   // Setup edit control
   Globals.hwndEdit = CreateWindowEx(
@@ -2068,7 +2066,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 //  _LoadBitmapFile()
 //
-static HBITMAP _LoadBitmapFile(LPCWSTR path)
+static HBITMAP _LoadBitmapFile(LPCWSTR path, bool bResizeToDPI)
 {
   WCHAR szTmp[MAX_PATH];
   if (PathIsRelative(path)) {
@@ -2077,11 +2075,13 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
     PathAppend(szTmp, path);
     path = szTmp;
   }
-
   if (!PathFileExists(path)) {
     return NULL;
   }
-  HBITMAP const hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+  HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+  if (bResizeToDPI) {
+    hbmp = ResizeImageForCurrentDPI(hbmp);
+  }
   return hbmp;
 }
 
@@ -2187,7 +2187,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmap, false);
 
     BITMAP bmp;
     ZeroMemory(&bmp, sizeof(BITMAP));
@@ -2214,9 +2214,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // use copy for alphablend a disabled Toolbar (if not provided)
   hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
-  // adjust to current DPI
-  hbmp = ResizeImageForCurrentDPI(hbmp);
-  hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
+  // do not adjust to current DPI -> else "blurry" images
+  //~hbmp = ResizeImageForCurrentDPI(hbmp);
+  //~hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
  
 
   HIMAGELIST himlOld = NULL;
@@ -2244,7 +2244,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // Add a Hot Toolbar Bitmap
   if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot, false);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
 
@@ -2268,8 +2268,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     himlOld = bi.himl;
   }
   if (hbmp) {
-    // adjust to current DPI
-    hbmp = ResizeImageForCurrentDPI(hbmp);
+    // do not adjust to current DPI -> else "blurry" images
+    //~hbmp = ResizeImageForCurrentDPI(hbmp);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
     mod = bmp.bmWidth % NUMTOOLBITMAPS;
@@ -2292,7 +2292,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // Add a disabled Toolbar Bitmap
   if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled, false);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
 
@@ -2316,8 +2316,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     himlOld = bi.himl;
   }
   if (hbmp) {
-    // adjust to current DPI
-    hbmp = ResizeImageForCurrentDPI(hbmp);
+    // do not adjust to current DPI -> else "blurry" images
+    //~hbmp = ResizeImageForCurrentDPI(hbmp);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
     mod = bmp.bmWidth % NUMTOOLBITMAPS;
@@ -2502,9 +2502,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  Globals.CurrentDPI.x = LOWORD(wParam);
-  Globals.CurrentDPI.y = HIWORD(wParam);
-  Globals.CurrentPPI = GetCurrentPPI(hwnd);
+  Globals.MainWndDPI.x = LOWORD(wParam);
+  Globals.MainWndDPI.y = HIWORD(wParam);
+  Globals.MainWndPPI = GetCurrentPPI(hwnd);
 
   DocPos const pos = SciCall_GetCurrentPos();
 
@@ -2514,29 +2514,28 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SciCall_InsertText(0, buf);
 #endif
 
+  //RECT* const rc = (RECT*)lParam;
+  UNUSED(lParam);
+  UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+  UpdateAllBars(true);
+
   Style_ResetCurrentLexer(Globals.hwndEdit);
-  SciCall_GotoPos(pos);
-  
-  // recreate toolbar and statusbar
-  Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
-
-  CreateBars(hwnd, Globals.hInstance);
-
-  RECT* const rc = (RECT*)lParam;
-  SendWMSize(hwnd, rc);
 
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
 
-  MarkAllOccurrences(0, false);
+  SciCall_GotoPos(pos);
+
   if (Flags.bLargeFileLoaded) {
     EditDoVisibleStyling();
   }
   else {
     EditDoStyling(0, -1);
   }
-  UpdateAllBars(true);
-  UpdateUI();
+  MarkAllOccurrences(0, false);
+
   EditUpdateVisibleIndicators();
+
+  UpdateUI();
 
   return 0;
 }
@@ -10662,8 +10661,8 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
   static HICON hIcon = NULL;
   if (!hIcon) {
-    hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 
-                      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+    LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), 
+                          GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
   }
   NOTIFYICONDATA nid;
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));

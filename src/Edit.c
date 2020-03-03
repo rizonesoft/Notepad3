@@ -6413,6 +6413,7 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
             (LPARAM) lpefr);
 
   if (hDlg != INVALID_HANDLE_VALUE) {
+    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
     ShowWindow(hDlg, SW_SHOW);
   }
   CoUninitialize();

@@ -568,11 +568,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT_LONG);
         SetDlgItemText(hwnd,IDC_AUTHORNAME,VERSION_AUTHORNAME);
 
-        if (hFontTitle)
-          DeleteObject(hFontTitle);
+        if (hFontTitle) { DeleteObject(hFontTitle); }
 
-        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_VERSION,WM_GETFONT,0,0)))
+        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
           hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+        }
         GetObject(hFontTitle,sizeof(LOGFONT),&lf);
         lf.lfWeight = FW_BOLD;
         lf.lfWidth = 8;

@@ -309,9 +309,8 @@ typedef struct _globals_t
   HWND      hwndStatus;
   DWORD     dwLastError;
   HMENU     hMainMenu;
-  HICON     hDlgIcon;
-  HICON     hIcon48;
-  HICON     hIcon128;
+  HICON     hDlgIcon; // Notepad3 Icon (256x256)
+  HICON     hIconMsgUser;
   HICON     hIconMsgInfo;
   HICON     hIconMsgWarn;
   HICON     hIconMsgError;
@@ -323,8 +322,8 @@ typedef struct _globals_t
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
   cpi_enc_t DOSEncoding;
-  DPI_T     CurrentDPI;
-  DPI_T     CurrentPPI;
+  DPI_T     MainWndDPI;
+  DPI_T     MainWndPPI;
   LANGID    iPrefLANGID;
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;

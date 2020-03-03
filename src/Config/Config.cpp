@@ -1182,11 +1182,13 @@ void LoadSettings()
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------
 
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
-
-  WCHAR tchHighDpiToolBar[32] = { L'\0' };
+  //int ResX, ResY;
+  //GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+  WCHAR tchHighDpiToolBar[64] = { L'\0' };
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
+
   s_iToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, -1);
   s_iToolBarTheme = clampi(s_iToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
   if (s_iToolBarTheme < 0) { // undefined: determine higher than Full-HD
@@ -1233,8 +1235,7 @@ void LoadSettings()
 
     s_WinInfo = s_DefWinInfo;
 
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
-
+    WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
     StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
     StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
     StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
@@ -1575,20 +1576,20 @@ static bool _SaveSettings(bool bForceSaveSettings)
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------
 
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+  //int ResX, ResY;
+  //GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
-  WCHAR tchHighDpiToolBar[32];
+  WCHAR tchHighDpiToolBar[64], tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-  IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, s_iToolBarTheme);
-
-  WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
   StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
   StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
   StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
   StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
   StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
   StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
+  IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, s_iToolBarTheme);
 
   if (Flags.bStickyWindowPosition)
   {
