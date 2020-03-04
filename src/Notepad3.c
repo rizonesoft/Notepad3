@@ -1059,10 +1059,10 @@ void EndWaitCursor()
 
 //=============================================================================
 //
-//  InitDefaultWndPos()
+//  GetFactoryDefaultWndPos()
 //
 //
-WININFO InitDefaultWndPos(const int flagsPos)
+WININFO GetFactoryDefaultWndPos(const int flagsPos)
 {
   RECT rc;
   GetWindowRect(GetDesktopWindow(), &rc);
@@ -1082,15 +1082,18 @@ WININFO InitDefaultWndPos(const int flagsPos)
 
 //=============================================================================
 //
-//  InitWindowPosition()
+//  SetWinInfoByFlag()
 //
 //
-void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
+void SetWinInfoByFlag(WININFO* pWinInfo, const int flagsPos)
 {
   WININFO winfo = *pWinInfo;
 
-  if (flagsPos == 0) {
-    winfo = s_WinInfo;
+  if (flagsPos < 0) {
+    winfo = GetMyWindowPlacement(Globals.hwndMain, NULL); // current window position
+  }
+  else if (flagsPos == 0) {
+    winfo = s_WinInfo; // initial window position
   }
   else if (flagsPos == 1) {
     winfo.x = winfo.y = winfo.cx = winfo.cy = CW_USEDEFAULT;
@@ -1103,9 +1106,9 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
   }
   else if (flagsPos == 3)
   {
-    winfo = InitDefaultWndPos(flagsPos);
+    winfo = GetFactoryDefaultWndPos(flagsPos);
   }
-  else if (flagsPos >= 4)
+  else if ((flagsPos >= 4) && (flagsPos < 256))
   {
     RECT rc;
     GetWindowRect(GetDesktopWindow(), &rc);
@@ -1147,7 +1150,7 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
       winfo.zoom = 100;
     }
   }
-  else { // restore window, move upper left corner to Work Area 
+  else { // ( > 256) restore window, move upper left corner to Work Area 
     
     MONITORINFO mi;
     RECT const rc = RectFromWinInfo(&winfo);
@@ -1195,7 +1198,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
-  InitWindowPosition(&s_WinInfo, Globals.CmdLnFlag_WindowPos);
+  SetWinInfoByFlag(&s_WinInfo, Globals.CmdLnFlag_WindowPos);
   s_WinCurrentWidth = s_WinInfo.cx;
 
   // get monitor coordinates from g_WinInfo
@@ -6240,11 +6243,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
         IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+        SetWinInfoByFlag(&s_DefWinInfo, -1); // use current win pos as new default
       }
       break;
 
     case CMD_CLEARSAVEDWINPOS:
-      s_DefWinInfo = InitDefaultWndPos(2);
+      s_DefWinInfo = GetFactoryDefaultWndPos(2);
       IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
     break;
 

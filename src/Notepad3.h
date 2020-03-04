@@ -113,8 +113,8 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE hInstance);
 HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
-WININFO InitDefaultWndPos(const int flagsPos);
-void InitWindowPosition(WININFO* pWinInfo, const int flagsPos);
+WININFO GetFactoryDefaultWndPos(const int flagsPos);
+void SetWinInfoByFlag(WININFO* pWinInfo, const int flagsPos);
 void BeginWaitCursor(LPCWSTR text);
 void EndWaitCursor();
 bool ActivatePrevInst();

@@ -1205,7 +1205,7 @@ void LoadSettings()
 
   // 1st set default window position 
 
-  s_DefWinInfo = InitDefaultWndPos(2); // std. default position
+  s_DefWinInfo = GetFactoryDefaultWndPos(2); // std. default position
 
   if (bExplicitDefaultWinPos) {
     int bMaxi = 0;
@@ -1216,9 +1216,9 @@ void LoadSettings()
       if (s_DefWinInfo.cy < 1) s_DefWinInfo.cy = CW_USEDEFAULT;
       if (bMaxi) s_DefWinInfo.max = true;
       if (itok == 4) s_DefWinInfo.max = false;
-      InitWindowPosition(&s_DefWinInfo, 0);
     }
     else {
+      s_DefWinInfo = GetFactoryDefaultWndPos(2);
       // overwrite bad defined default position
       StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
         L"%i,%i,%i,%i,%i", s_DefWinInfo.x, s_DefWinInfo.y, s_DefWinInfo.cx, s_DefWinInfo.cy, s_DefWinInfo.max);
