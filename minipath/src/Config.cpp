@@ -62,7 +62,9 @@ static BOOL const s_bSetSpaces = FALSE;
 
 // ----------------------------------------------------------------------------
 
-constexpr bool SI_Success(const SI_Error rc) noexcept { return (rc >= SI_Error::SI_OK); };
+constexpr bool SI_Success(const SI_Error rc) noexcept { 
+  return ((rc == SI_Error::SI_OK) || (rc == SI_Error::SI_UPDATED) || (rc == SI_Error::SI_INSERTED)); 
+};
 
 // ============================================================================
 
@@ -72,23 +74,24 @@ static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 extern "C" BOOL LoadIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.Reset();
-  SI_Error const rc = s_INI.LoadFile(lpIniFilePath);
-  return SI_Success(rc);
-}
-
-extern "C" BOOL SaveIniFile(LPCWSTR lpIniFilePath)
-{
   s_INI.SetSpaces(s_bSetSpaces);
-  SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
-  if (SI_Success(rc)) {
-    s_INI.Reset(); // done
-  }
+  s_INI.SetMultiLine(s_bUseMultiLine);
+  SI_Error const rc = s_INI.LoadFile(lpIniFilePath);
   return SI_Success(rc);
 }
 
 extern "C" void ReleaseIniFile()
 {
   s_INI.Reset();
+}
+
+extern "C" BOOL SaveIniFile(LPCWSTR lpIniFilePath)
+{
+  s_INI.SetSpaces(s_bSetSpaces);
+  s_INI.SetMultiLine(s_bUseMultiLine);
+  SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
+  ReleaseIniFile();
+  return SI_Success(rc);
 }
 
 
@@ -220,7 +223,6 @@ extern "C" BOOL IniSectionDelete(LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL 
 
 extern "C" BOOL IniSectionClear(LPCWSTR lpSectionName, BOOL bRemoveEmpty)
 {
-
   BOOL const ok = s_INI.Delete(lpSectionName, nullptr, bRemoveEmpty);
   if (!bRemoveEmpty) {
     SI_Error const rc = s_INI.SetValue(lpSectionName, nullptr, nullptr);
@@ -263,6 +265,9 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
     StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
   }
+  else {
+    StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+  }
   return (size_t)lstrlen(lpReturnedString);
 }
 // ============================================================================
@@ -271,17 +276,16 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  Ini.SetSpaces(s_bSetSpaces);
+  Ini.SetMultiLine(s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc)) 
   {
     SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
     rc = SI_Success(res) ? SI_Error::SI_OK : SI_Error::SI_FAIL;
-
     if (SI_Success(rc)) {
-      Ini.SetSpaces(s_bSetSpaces);
       rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
     }
-    Ini.Reset();
   }
   return SI_Success(rc);
 }
@@ -306,10 +310,11 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  Ini.SetSpaces(s_bSetSpaces);
+  Ini.SetMultiLine(s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc)) {
     Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
-    Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
   }
   Ini.Reset();
@@ -336,10 +341,11 @@ extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bValue)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  Ini.SetSpaces(s_bSetSpaces);
+  Ini.SetMultiLine(s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc)) {
     Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
-    Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
   }
   Ini.Reset();
@@ -351,6 +357,8 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bRemoveEmpty)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  Ini.SetMultiLine(s_bUseMultiLine);
+  Ini.SetSpaces(s_bSetSpaces);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc))
   {

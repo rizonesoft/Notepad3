@@ -16,6 +16,7 @@
 //#include <locale.h>
 #include <strsafe.h>
 #include <shlobj.h>
+#include <shobjidl.h>
 
 // ----------------------------------------------------------------------------
 
@@ -30,9 +31,13 @@ extern "C" {
 #include "resource.h"
 }
 
+// Scintilla
+#include "ILoader.h"
+
+
 extern "C" const int g_FontQuality[4];
-extern "C" WININFO   s_WinInfo;
-extern "C" WININFO   s_DefWinInfo;
+extern "C" WININFO   g_IniWinInfo;
+extern "C" WININFO   g_DefWinInfo;
 
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
@@ -288,7 +293,6 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
   else {
     StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
   }
-  Ini.Reset();
   return StringCchLenW(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
@@ -298,6 +302,7 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
+  Ini.SetMultiLine(s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc)) 
   {
@@ -307,7 +312,6 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
       rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
     }
   }
-  Ini.Reset();
   return SI_Success(rc);
 }
 // ============================================================================
@@ -323,7 +327,6 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
     //assert(!bHasMultiple);
     return iValue;
   }
-  Ini.Reset();
   return iDefault;
 }
 // ============================================================================
@@ -333,6 +336,7 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
+  Ini.SetMultiLine(s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc)) {
     Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
@@ -354,7 +358,6 @@ extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
     //assert(!bHasMultiple);
     return bValue;
   }
-  Ini.Reset();
   return bDefault;
 }
 // ============================================================================
@@ -364,6 +367,7 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
+  Ini.SetMultiLine(s_bUseMultiLine);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc)) {
     Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
@@ -378,11 +382,13 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
+  Ini.SetMultiLine(s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
   SI_Error rc = Ini.LoadFile(lpFilePath);
   if (SI_Success(rc))
   {
     Ini.Delete(lpSectionName, lpKeyName, bRemoveEmpty);
+    Ini.SetSpaces(s_bSetSpaces);
     rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
   }
   Ini.Reset();
@@ -414,6 +420,60 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 }
 // ============================================================================
 
+
+
+//=============================================================================
+//
+//  AddFilePathToRecentDocs()
+//
+extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
+{
+  if (Flags.ShellUseSystemMRU) 
+  {
+    SHAddToRecentDocs(SHARD_PATHW, szFilePath);
+#if 0
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
+
+    IShellItem* pShellItem = NULL;
+    HRESULT const hr = SHCreateItemFromParsingName(szFilePath, NULL, IID_PPV_ARGS(&pShellItem));
+
+    if (SUCCEEDED(hr))
+    {
+      SHARDAPPIDINFO info;
+      info.psi = pShellItem;
+      info.pszAppID = Settings2.AppUserModelID;  // our AppID - see above
+      SHAddToRecentDocs(SHARD_APPIDINFO, &info);
+      pShellItem->Release();
+    }
+    CoUninitialize();
+#endif
+  }
+}
+
+
+#if 0
+//=============================================================================
+//
+//  ClearDestinationsOnRecentDocs()
+//
+extern "C" void ClearDestinationsOnRecentDocs()
+{
+  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
+
+  IApplicationDestinations* pDestinations = NULL;
+  HRESULT hr = CoCreateInstance(CLSID_ApplicationDestinations, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pDestinations));
+    
+  if (SUCCEEDED(hr))
+  {
+    hr = pDestinations->SetAppID(Settings2.AppUserModelID);
+    if (SUCCEEDED(hr)) {
+      pDestinations->RemoveAllDestinations();
+    }
+    pDestinations->Release();
+  }
+  CoUninitialize();
+}
+#endif
 
 
 //=============================================================================
@@ -679,32 +739,32 @@ void LoadSettings()
   Flags.bDevDebugMode = IniSectionGetBool(IniSecSettings2, L"DevDebugMode", DefaultFlags.bDevDebugMode);
   Flags.bStickyWindowPosition = IniSectionGetBool(IniSecSettings2, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
 
-  if (Globals.flagReuseWindow == 0) {
+  if (Globals.CmdLnFlag_ReuseWindow == 0) {
     Flags.bReuseWindow = IniSectionGetBool(IniSecSettings2, L"ReuseWindow", DefaultFlags.bReuseWindow);
   }
   else {
-    Flags.bReuseWindow = (Globals.flagReuseWindow == 2);
+    Flags.bReuseWindow = (Globals.CmdLnFlag_ReuseWindow == 2);
   }
 
-  if (Globals.flagSingleFileInstance == 0) {
+  if (Globals.CmdLnFlag_SingleFileInstance == 0) {
     Flags.bSingleFileInstance = IniSectionGetBool(IniSecSettings2, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
   }
   else {
-    Flags.bSingleFileInstance = (Globals.flagSingleFileInstance == 2);
+    Flags.bSingleFileInstance = (Globals.CmdLnFlag_SingleFileInstance == 2);
   }
 
-  if (Globals.flagMultiFileArg == 0) {
+  if (Globals.CmdLnFlag_MultiFileArg == 0) {
     Flags.MultiFileArg = IniSectionGetBool(IniSecSettings2, L"MultiFileArg", DefaultFlags.MultiFileArg);
   }
   else {
-    Flags.MultiFileArg = (Globals.flagMultiFileArg == 2);
+    Flags.MultiFileArg = (Globals.CmdLnFlag_MultiFileArg == 2);
   }
 
-  if (Globals.flagShellUseSystemMRU == 0) {
+  if (Globals.CmdLnFlag_ShellUseSystemMRU == 0) {
     Flags.ShellUseSystemMRU = IniSectionGetBool(IniSecSettings2, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
   }
   else {
-    Flags.ShellUseSystemMRU = (Globals.flagShellUseSystemMRU == 2);
+    Flags.ShellUseSystemMRU = (Globals.CmdLnFlag_ShellUseSystemMRU == 2);
   }
 
   Flags.RelativeFileMRU = IniSectionGetBool(IniSecSettings2, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
@@ -719,7 +779,7 @@ void LoadSettings()
   Flags.NoCGIGuess = IniSectionGetBool(IniSecSettings2, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
   Flags.NoFileVariables = IniSectionGetInt(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
-  Flags.PrintFileAndLeave = Globals.flagPrintFileAndLeave;
+  Flags.PrintFileAndLeave = Globals.CmdLnFlag_PrintFileAndLeave;
 
   // --------------------------------------------------------------------------
 
@@ -762,6 +822,7 @@ void LoadSettings()
     Defaults2.UndoTransactionTimeout), 0UL, 86400000UL);
 
   // deprecated
+
   Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
   if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
     // cleanup
@@ -777,7 +838,7 @@ void LoadSettings()
     IniSectionDelete(IniSecSettings2, L"EnableBidirectionalSupport", false);
     bDirtyFlag = true;
   }
-  Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : 0;
+  Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : SC_BIDIRECTIONAL_DISABLED;
 
   Defaults2.IMEInteraction = -1;
   Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", Defaults2.IMEInteraction), -1, SC_IME_INLINE);
@@ -838,7 +899,7 @@ void LoadSettings()
   IniSectionGetString(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
     Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
 
-  Defaults2.FileLoadWarningMB = 256;
+  Defaults2.FileLoadWarningMB = 64;
   Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
 
   Defaults2.OpacityLevel = 75;
@@ -850,9 +911,10 @@ void LoadSettings()
   Defaults2.FileBrowserPath[0] = L'\0';
   IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
-  StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W(SAPPNAME));
-  IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
-
+  StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
+  if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
+    IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
+  }
   Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
   IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", Defaults2.ExtendedWhiteSpaceChars,
     Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
@@ -1040,8 +1102,10 @@ void LoadSettings()
   GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
   GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
   GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
-  GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3);  // set before
+  GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // set before
+  Defaults.RenderingTechnology = 0; // reset
   GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
+  Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
   GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
   GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, false);
 
@@ -1118,10 +1182,9 @@ void LoadSettings()
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------
 
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
-
-  WCHAR tchHighDpiToolBar[32] = { L'\0' };
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+  WCHAR tchHighDpiToolBar[64] = { L'\0' };
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
   s_iToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, -1);
   s_iToolBarTheme = clampi(s_iToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
@@ -1141,23 +1204,23 @@ void LoadSettings()
 
   // 1st set default window position 
 
-  s_DefWinInfo = InitDefaultWndPos(2); // std. default position
+  g_DefWinInfo = GetFactoryDefaultWndPos(2); // std. default position
 
   if (bExplicitDefaultWinPos) {
     int bMaxi = 0;
     int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
-      &s_DefWinInfo.x, &s_DefWinInfo.y, &s_DefWinInfo.cx, &s_DefWinInfo.cy, &bMaxi);
+      &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
     if (itok == 4 || itok == 5) { // scan successful
-      if (s_DefWinInfo.cx < 1) s_DefWinInfo.cx = CW_USEDEFAULT;
-      if (s_DefWinInfo.cy < 1) s_DefWinInfo.cy = CW_USEDEFAULT;
-      if (bMaxi) s_DefWinInfo.max = true;
-      if (itok == 4) s_DefWinInfo.max = false;
-      InitWindowPosition(&s_DefWinInfo, 0);
+      if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
+      if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
+      if (bMaxi) g_DefWinInfo.max = true;
+      if (itok == 4) g_DefWinInfo.max = false;
     }
     else {
+      g_DefWinInfo = GetFactoryDefaultWndPos(2);
       // overwrite bad defined default position
       StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-        L"%i,%i,%i,%i,%i", s_DefWinInfo.x, s_DefWinInfo.y, s_DefWinInfo.cx, s_DefWinInfo.cy, s_DefWinInfo.max);
+        L"%i,%i,%i,%i,%i", g_DefWinInfo.x, g_DefWinInfo.y, g_DefWinInfo.cx, g_DefWinInfo.cy, g_DefWinInfo.max);
       IniSectionSetString(IniSecSettings2, L"DefaultWindowPosition", Settings2.DefaultWindowPosition);
       bDirtyFlag = true;
     }
@@ -1165,12 +1228,10 @@ void LoadSettings()
 
   // 2nd set initial window position
 
-  if (!Globals.flagPosParam /*|| g_bStickyWinPos*/) {
+  if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
 
-    s_WinInfo = s_DefWinInfo;
-
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
-
+    WININFO winInfo = g_IniWinInfo;
+    WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
     StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
     StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
     StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
@@ -1178,22 +1239,25 @@ void LoadSettings()
     StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
     StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-    s_WinInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, CW_USEDEFAULT);
-    s_WinInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, CW_USEDEFAULT);
-    s_WinInfo.cx = IniSectionGetInt(IniSecWindow, tchSizeX, CW_USEDEFAULT);
-    s_WinInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, CW_USEDEFAULT);
-    s_WinInfo.max = IniSectionGetBool(IniSecWindow, tchMaximized, false);
-    s_WinInfo.zoom = IniSectionGetInt(IniSecWindow, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
-    if (Globals.iCfgVersionRead < CFG_VER_0001) { s_WinInfo.zoom = (s_WinInfo.zoom + 10) * 10; }
-    s_WinInfo.zoom = clampi(s_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+    winInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, g_IniWinInfo.x);
+    winInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, g_IniWinInfo.y);
+    winInfo.cx = IniSectionGetInt(IniSecWindow, tchSizeX, g_IniWinInfo.cx);
+    winInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, g_IniWinInfo.cy);
+    winInfo.max = IniSectionGetBool(IniSecWindow, tchMaximized, false);
+    winInfo.zoom = IniSectionGetInt(IniSecWindow, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
+    if (Globals.iCfgVersionRead < CFG_VER_0001) { winInfo.zoom = (winInfo.zoom + 10) * 10; }
+    winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-    if ((s_WinInfo.x == CW_USEDEFAULT) || (s_WinInfo.y == CW_USEDEFAULT) ||
-      (s_WinInfo.cx == CW_USEDEFAULT) || (s_WinInfo.cy == CW_USEDEFAULT))
+    if ((winInfo.x == CW_USEDEFAULT)  || (winInfo.y == CW_USEDEFAULT) ||
+        (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT))
     {
-      Globals.flagWindowPos = 2; // std. default position (CmdLn: /pd)
+      g_IniWinInfo = g_DefWinInfo;
+      Globals.CmdLnFlag_WindowPos = 2; // std. default position (CmdLn: /pd)
     }
-    else
-      Globals.flagWindowPos = 0; // init to g_WinInfo
+    else {
+      g_IniWinInfo = winInfo;
+      Globals.CmdLnFlag_WindowPos = 0; // init to g_IniWinInfo
+    }
   }
 
   // ------------------------------------------------------------------------
@@ -1233,14 +1297,14 @@ void LoadSettings()
 
   // File MRU
   Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);
-  MRU_Load(Globals.pFileMRU);
+  MRU_Load(Globals.pFileMRU, true);
 
   Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUfind);
+  MRU_Load(Globals.pMRUfind, false);
   SetFindPattern(Globals.pMRUfind->pszItems[0]);
 
   Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUreplace);
+  MRU_Load(Globals.pMRUreplace, false);
 
   CloseSettingsFile(bDirtyFlag);
 
@@ -1274,9 +1338,6 @@ void LoadSettings()
 
 static bool _SaveSettings(bool bForceSaveSettings)
 {
-  // update window placement 
-  s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
-
   if (!IsIniFileLoaded()) { return false; }
 
   // --------------------------------------------------------------------------
@@ -1507,42 +1568,22 @@ static bool _SaveSettings(bool bForceSaveSettings)
   //const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
   // --------------------------------------------------------------------------
 
+
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------
 
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
   WCHAR tchHighDpiToolBar[32];
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
   IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, s_iToolBarTheme);
 
-  WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
-  StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
-  StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
-  StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
-  StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
-  StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
-  StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
+  if (!Flags.bStickyWindowPosition) {
+    SaveWindowPositionSettings(false);
+  }
 
-  if (Flags.bStickyWindowPosition)
-  {
-    IniSectionDelete(IniSecWindow, tchPosX, false);
-    IniSectionDelete(IniSecWindow, tchPosY, false);
-    IniSectionDelete(IniSecWindow, tchSizeX, false);
-    IniSectionDelete(IniSecWindow, tchSizeY, false);
-    IniSectionDelete(IniSecWindow, tchMaximized, false);
-    IniSectionDelete(IniSecWindow, tchZoom, false);
-  }
-  else {
-    IniSectionSetInt(IniSecWindow, tchPosX, s_WinInfo.x);
-    IniSectionSetInt(IniSecWindow, tchPosY, s_WinInfo.y);
-    IniSectionSetInt(IniSecWindow, tchSizeX, s_WinInfo.cx);
-    IniSectionSetInt(IniSecWindow, tchSizeY, s_WinInfo.cy);
-    IniSectionSetBool(IniSecWindow, tchMaximized, s_WinInfo.max);
-    IniSectionSetInt(IniSecWindow, tchZoom, s_WinInfo.zoom);
-  }
 
   // --------------------------------------------------------------------------
   const WCHAR* const IniSecStyles = Constants.Styles_Section;
@@ -1559,6 +1600,52 @@ static bool _SaveSettings(bool bForceSaveSettings)
       IniSectionSetString(IniSecStyles, Constants.StylingThemeName, Theme_Files[Globals.idxSelectedTheme].szName);
       break;
   }
+
+  return true;
+}
+
+
+//=============================================================================
+//
+//  SaveWindowPositionSettings()   
+//
+bool SaveWindowPositionSettings(bool bClearSettings)
+{
+  if (!IsIniFileLoaded()) { return false; }
+
+  // set current window position as ne initial window
+  WININFO const winInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
+
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+  WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
+  StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
+  StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
+  StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
+  StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
+  StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
+  StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
+
+  if (bClearSettings) {
+    IniSectionDelete(Constants.Window_Section, tchPosX, false);
+    IniSectionDelete(Constants.Window_Section, tchPosY, false);
+    IniSectionDelete(Constants.Window_Section, tchSizeX, false);
+    IniSectionDelete(Constants.Window_Section, tchSizeY, false);
+    IniSectionDelete(Constants.Window_Section, tchMaximized, false);
+    IniSectionDelete(Constants.Window_Section, tchZoom, false);
+  }
+  else {
+    // overwrite last saved window position
+    IniSectionSetInt(Constants.Window_Section, tchPosX, winInfo.x);
+    IniSectionSetInt(Constants.Window_Section, tchPosY, winInfo.y);
+    IniSectionSetInt(Constants.Window_Section, tchSizeX, winInfo.cx);
+    IniSectionSetInt(Constants.Window_Section, tchSizeY, winInfo.cy);
+    IniSectionSetBool(Constants.Window_Section, tchMaximized, winInfo.max);
+    IniSectionSetInt(Constants.Window_Section, tchZoom, winInfo.zoom);
+    // set current window position as new initial window
+    g_IniWinInfo = winInfo;
+  }
+
 
   return true;
 }
@@ -1746,7 +1833,8 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
 {
   if (pmru) {
     int i = 0;
-    if (MRU_FindFile(pmru, pszFile, &i)) {
+    bool const bAlreadyInList = MRU_FindFile(pmru, pszFile, &i);
+    if (bAlreadyInList) {
       LocalFree(pmru->pszItems[i]);  // StrDup()
     }
     else {
@@ -1766,6 +1854,9 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
     }
     else {
       pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
+    }
+    if (!bAlreadyInList) {
+      AddFilePathToRecentDocs(pszFile);
     }
     pmru->iEncoding[0] = iEnc;
     pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
@@ -1853,20 +1944,23 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 }
 
 
-bool MRU_Load(LPMRULIST pmru)
+bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 {
   if (pmru) 
   {
     MRU_Empty(pmru);
+    //if (bFileProps) { ClearDestinationsOnRecentDocs(); }
 
     const WCHAR* const RegKey_Section = pmru->szRegKey;
 
     int n = 0;
-    for (int i = 0; i < pmru->iSize; i++) {
+    for (int i = 0; i < pmru->iSize; ++i)
+    {
       WCHAR tchName[32] = { L'\0' };
       StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
       WCHAR tchItem[2048] = { L'\0' };
-      if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
+      if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem)))
+      {
         size_t const len = StringCchLen(tchItem, 0);
         if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
           MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
@@ -1876,23 +1970,34 @@ bool MRU_Load(LPMRULIST pmru)
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
         int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
-        pmru->iEncoding[n] = (cpi_enc_t)Encoding_MapIniSetting(true, iCP);
+        pmru->iEncoding[n] = bFileProps ? (cpi_enc_t)Encoding_MapIniSetting(true, iCP) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-        pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1;
+        pmru->iCaretPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
-        pmru->iSelAnchPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1;
+        pmru->iSelAnchPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
 
         WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
         IniSectionGetString(RegKey_Section, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
-        pmru->pszBookMarks[n] = StrDup(wchBookMarks);
+        pmru->pszBookMarks[n] = bFileProps ? StrDup(wchBookMarks) : nullptr;
 
         ++n;
       }
     }
+    if (bFileProps) {
+      WCHAR szFilePath[MAX_PATH + 1];
+      for (int i = n - 1; i >= 0; --i) 
+      {
+        if (StrIsNotEmpty(pmru->pszItems[i])) {
+          PathAbsoluteFromApp(pmru->pszItems[i], szFilePath, COUNTOF(szFilePath), true);
+          AddFilePathToRecentDocs(szFilePath);
+        }
+      }
+    }
+
     return true;
   }
   return false;
@@ -1954,7 +2059,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
     if (IsIniFileLoaded()) {
 
       LPMRULIST pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
-      MRU_Load(pmruBase);
+      MRU_Load(pmruBase, bAddFiles);
 
       if (bAddFiles) {
         for (int i = pmru->iSize - 1; i >= 0; i--) {
@@ -1985,5 +2090,90 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
     }
   }
   return false;
+}
+
+// ////////////////////////////////////////////////////////////////////////////
+// Some C++ Extentions for Notepad3
+// ////////////////////////////////////////////////////////////////////////////
+
+//=============================================================================
+//
+//  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component 
+//
+
+#if TRUE
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+{
+  #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
+
+  if (!lpstrText || (lenText == 0)) {
+    SciCall_SetDocPointer(0);
+  }
+  else {
+#if TRUE
+    ILoader* const pDocLoad = reinterpret_cast<ILoader*>(SciCall_CreateLoader(static_cast<Sci_Position>(lenText) + 1, docOptions));
+
+    if (SC_STATUS_OK != pDocLoad->AddData(lpstrText, lenText)) {
+      RELEASE_RETURN(false);
+    }
+    sptr_t const pNewDocumentPtr = (sptr_t)pDocLoad->ConvertToDocument(); // == SciCall_CreateDocument(lenText, docOptions);
+    if (!pNewDocumentPtr) {
+      RELEASE_RETURN(false);
+    }
+    SciCall_SetDocPointer(pNewDocumentPtr);
+    SciCall_ReleaseDocument(pNewDocumentPtr);
+#else
+    sptr_t const pNewDocumentPtr = SciCall_CreateDocument(lenText, docOptions);
+    if (pNewDocumentPtr) {
+      SciCall_SetDocPointer(pNewDocumentPtr);
+      SciCall_ReleaseDocument(pNewDocumentPtr);
+    }
+    else {
+      SciCall_SetDocPointer(0);
+    }
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
+#endif
+  }
+  return true;
+}
+#else
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+{
+  UNUSED(docOptions);
+  if (!lpstrText || (lenText == 0)) {
+    SciCall_ClearAll();
+  }
+  else {
+    SciCall_TargetWholeDocument();
+    SciCall_ReplaceTarget(lenText, lpstrText);
+  }
+  return true;
+}
+#endif
+
+
+extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
+{
+  bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
+  bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB << 20));
+  int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE) 
+                                          : SC_DOCUMENTOPTION_DEFAULT;
+
+  if (SciCall_GetDocumentOptions() != docOptions)
+  {
+    // we have to create a new document with changed options
+    return CreateNewDocument(lpstrText, lenText, docOptions);
+  }
+  else {
+    if (!lpstrText || (lenText == 0)) {
+      SciCall_ClearAll();
+    }
+    else {
+      SciCall_TargetWholeDocument();
+      SciCall_ReplaceTarget(lenText, lpstrText);
+    }
+  }
+  return true;
 }
 

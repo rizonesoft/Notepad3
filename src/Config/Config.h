@@ -33,6 +33,7 @@ bool CreateIniFileEx(LPWSTR lpszIniFile);
 
 bool OpenSettingsFile();
 void LoadSettings();
+bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);
 bool CloseSettingsFile(bool bSaveChanges);
 
@@ -118,6 +119,9 @@ bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectio
 
 //==== MRU Functions ==========================================================
 
+void AddFilePathToRecentDocs(LPCWSTR szFilePath);
+//void ClearDestinationsOnRecentDocs();
+
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
 bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iAnchor, LPCWSTR pszBookMarks);
@@ -126,7 +130,7 @@ bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEn
 bool      MRU_Delete(LPMRULIST pmru, int iIndex);
 bool      MRU_Empty(LPMRULIST pmru);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
-bool      MRU_Load(LPMRULIST pmru);
+bool      MRU_Load(LPMRULIST pmru, bool bFileProps);
 void      MRU_Save(LPMRULIST pmru);
 bool      MRU_MergeSave(LPMRULIST pmru, bool, bool, bool);
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)

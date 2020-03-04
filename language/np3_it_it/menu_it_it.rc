@@ -447,16 +447,16 @@ BEGIN
         BEGIN
             POPUP "&Rendering"
             BEGIN
-                MENUITEM "Default &GDI",                IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Default &GDI (senza legature)", IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",       IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",           IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",           IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Bidirezionale"
             BEGIN
-                MENUITEM "Nessuno",                    IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Da SX a DX",                 IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Da DX a SX",                 IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Nessuno",                       IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Da SX a DX",                    IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Da DX a SX",                    IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "Configurazione &avanzata"

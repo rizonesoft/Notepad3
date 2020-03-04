@@ -17,6 +17,7 @@
 #ifndef _NP3_DIALOGS_H_
 #define _NP3_DIALOGS_H_
 
+#include <math.h>
 #include "TypeDefs.h"
 
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
@@ -106,6 +107,25 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID);
 int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
 int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
+// ----------------------------------------------------------------------------
+
+DPI_T GetCurrentDPI(HWND hwnd);
+DPI_T GetCurrentPPI(HWND hwnd);
+
+int GetSystemMetricsEx(int nValue);
+
+// ----------------------------------------------------------------------------
+
+inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.MainWndDPI.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleToCurrentDPI(float fVal) { return (int)lroundf((fVal * Globals.MainWndDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.MainWndDPI.y, Globals.MainWndPPI.y); }
+inline int ScaleFontSize(float fSize) { return (int)lroundf((fSize * Globals.MainWndDPI.y) / (float)Globals.MainWndPPI.y); }
+inline int ScaleFractionalFontSize(float fSize) { return (int)lroundf((fSize * 10.0f * Globals.MainWndDPI.y) / (float)Globals.MainWndPPI.y) * 10; }
+
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
+void SetUACIcon(const HMENU hMenu, const UINT nItem);
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
+HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------

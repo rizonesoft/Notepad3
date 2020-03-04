@@ -122,6 +122,16 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 //=============================================================================
 
+
+// Document Pointer Handling
+DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t)
+DeclareSciCallV01(SetDocPointer, SETDOCPOINTER, sptr_t, pdoc)
+DeclareSciCallR2(CreateDocument, CREATEDOCUMENT, sptr_t, DocPos, bytes, int, options)
+DeclareSciCallR2(CreateLoader, CREATELOADER, sptr_t, DocPos, bytes, int, options)
+DeclareSciCallV01(AddRefDocument, ADDREFDOCUMENT, sptr_t, pdoc)
+DeclareSciCallV01(ReleaseDocument, RELEASEDOCUMENT, sptr_t, pdoc)
+DeclareSciCallR0(GetDocumentOptions, GETDOCUMENTOPTIONS, int)
+
 //  Selection, positions and information
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
@@ -237,7 +247,7 @@ DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
 DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
-DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
+DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text)
 DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange)
 DeclareSciCallV0(UpperCase, UPPERCASE)
 DeclareSciCallV0(LowerCase, LOWERCASE)
@@ -301,7 +311,7 @@ DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, Doc
 DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative)
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
-DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, char* const)
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char* const)
 
 DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text)
 DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text)
@@ -366,6 +376,9 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 //
 //  Style definition
 //
+DeclareSciCallV0(ClearDocumentStyle, CLEARDOCUMENTSTYLE)
+DeclareSciCallV0(StyleResetDefault, STYLERESETDEFAULT)
+DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
 DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
@@ -454,6 +467,7 @@ DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber
 DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
 DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
 DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle)
 
 //=============================================================================
 //
@@ -584,6 +598,9 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
   return iMaxLineLen;
 }
 
+// respect VSlop settings 
+#define Sci_ScrollToLine(L)  SciCall_ScrollRange(SciCall_GetLineEndPosition(L), SciCall_PositionFromLine(L));
+
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
@@ -633,7 +650,7 @@ inline int Sci_GetCurrentEOL_W(LPWCH eol) {
 inline DocPos Sci_GetSelectionStartEx() {
   if (!Sci_IsMultiSelection()) { return SciCall_GetSelectionStart(); }
   DocPosU const nsel = SciCall_GetSelections();
-  DocPos selStart = SciCall_GetTextLength() + 1;
+  DocPos selStart = Sci_GetDocEndPosition() + 1;
   for (DocPosU i = 0; i < nsel; ++i) {
     DocPos const iStart = SciCall_GetSelectionNStart(i);
     if (iStart < selStart) { selStart = iStart; }

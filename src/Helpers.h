@@ -213,23 +213,6 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 // ----------------------------------------------------------------------------
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
-void SetUACIcon(const HMENU hMenu, const UINT nItem);
-
-// ----------------------------------------------------------------------------
-
-DPI_T GetCurrentDPI(HWND hwnd);
-DPI_T GetCurrentPPI(HWND hwnd);
-
-void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y); }
-inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
-inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
-
-int GetSystemMetricsEx(int nValue);
 
 // ----------------------------------------------------------------------------
 
@@ -292,7 +275,8 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 #define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
 
 
-
+bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead);
+bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten);
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);

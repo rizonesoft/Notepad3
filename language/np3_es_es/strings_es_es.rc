@@ -146,9 +146,9 @@ BEGIN
                             "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¿Quiere lanzar %s como aplicación elevada?"
     IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable.\n¿Consultar website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "¿Seguro que quiere abrir este archivo tan grande?"
+                            "¿Seguro que quiere abrir este archivo tan grande?\n\t(tamaño: %s >= %s)!\n(¡No se aplicarán el estilo y el resaltado de sintaxis!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "No puedo manejar ese archivo enorme (tamaño: %lli MB)!"
+                            "No puedo manejar ese archivo enorme (tamaño: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
     IDS_MUI_INDENT_CONSISTENT  "¡El archivo tiene una sangría consistente!"

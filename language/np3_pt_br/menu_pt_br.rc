@@ -438,25 +438,25 @@ BEGIN
                 MENUITEM "Mostrar &Caminho Completo",      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "Extrair &Texto\tCtrl+9",         IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reusar Janela",              IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Sempre no Topo\tAlt+T",      IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&zar para a Bandeja",   IDM_VIEW_MINTOTRAY
-            MENUITEM "&Modo Transparente\tAlt+G",   IDM_VIEW_TRANSPARENT
+            MENUITEM "&Reusar Janela",                 IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Sempre no Topo\tAlt+T",         IDM_VIEW_ALWAYSONTOP
+            MENUITEM "Minimi&zar para a Bandeja",      IDM_VIEW_MINTOTRAY
+            MENUITEM "&Modo Transparente\tAlt+G",      IDM_VIEW_TRANSPARENT
         END
         POPUP "&Tecnologia"
         BEGIN
             POPUP "&Renderização"
             BEGIN
-                MENUITEM "Padrão &GDI",               IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",   IDM_SET_RENDER_TECH_D2D
-                MENUITEM "&Reter DirectWrite",        IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",       IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Padrão &GDI (no ligatures)", IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",    IDM_SET_RENDER_TECH_D2D
+                MENUITEM "&Reter DirectWrite",         IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",        IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Bidirecional"
             BEGIN
-                MENUITEM "Nenhum",                    IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Esquerda para a Direita",   IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Direita para a Esquerda",   IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Nenhum",                     IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Esquerda para a Direita",    IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Direita para a Esquerda",    IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "Configurações &Avançadas"

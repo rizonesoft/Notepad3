@@ -146,9 +146,9 @@ BEGIN
                             "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra %s med utökade privilegier?"
     IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Vill du öppna denna stora fil?"
+                            "Vill du öppna denna stora fil?\n\t(storlek: %s >= %s)!\n(Stil och syntaxmarkering kommer inte användas!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Kan inte hantera så stor fil (storlek: %lli MB)!"
+                            "Kan inte hantera så stor fil (storlek: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Okändt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"

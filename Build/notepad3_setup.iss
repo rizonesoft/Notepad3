@@ -28,8 +28,9 @@
   #error Compile MiniPath x64 first
 #endif
 
+#define app_name      Notepad3
+#define app_publisher Rizonesoft
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
-#define app_name      "Notepad3"
 #define app_copyright "(c) Rizonesoft 2008-2019"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
@@ -38,7 +39,7 @@ AppId={#app_name}
 AppName={#app_name}
 AppVersion={#app_version}
 AppVerName={#app_name} {#app_version}
-AppPublisher=Rizonesoft
+AppPublisher={#app_publisher}
 AppPublisherURL=https://rizonesoft.com
 AppSupportURL=https://rizonesoft.com
 AppUpdatesURL=https://rizonesoft.com
@@ -190,16 +191,36 @@ Source: {#bindir}\Release_x64_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
+Source: Docs\Notepad3.txt;                                          DestDir: {app}\Docs;                                Flags: ignoreversion
+Source: Docs\crypto\encryption-doc.txt;                             DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
+Source: Docs\crypto\read_me.txt;                                    DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
+Source: Docs\uthash\banner.png;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\banner.svg;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\ChangeLog.txt;                                  DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\index.html;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\license.html;                                   DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\rss.png;                                        DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\styles.css;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\userguide.txt;                                  DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\utarray.txt;                                    DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\uthash.png;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\uthash-mini.png;                                DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\uthash-mini.svg;                                DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\utlist.txt;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\utringbuffer.txt;                               DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+Source: Docs\uthash\utstring.txt;                                   DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
 Name: "{userappdata}\Rizonesoft\Notepad3\themes"
 
 [Icons]
-Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {commonprograms}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: startup_icon;       Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
-Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklaunchicon;    Comment: {#app_name} {#app_version}; WorkingDir: {app};                           IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {commonprograms}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: startup_icon;      Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
+Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklaunchicon;    Comment: {#app_name} {#app_version}; WorkingDir: {app};                                               IconFilename: {app}\Notepad3.exe; IconIndex: 0
 
 
 [INI]
@@ -355,7 +376,7 @@ end;
 
 procedure AddReg();
 begin
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Notepad3');
+  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
 end;

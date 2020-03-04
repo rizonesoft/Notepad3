@@ -549,6 +549,8 @@
       </tr><tr>
 	<td>Andreas Falkenhahn</td>
 	<td>Mark Reay</td>
+	<td>David Shuman</td>
+	<td>McLoo</td>
     </tr>
     </table>
     <p>
@@ -565,17 +567,33 @@
     </h3>
     <ul>
 	<li>
-	Released 16 January 2020.
+	Released 4 March 2020.
 	</li>
 	<li>
-	Fix drag and drop between different encodings by always providing CF_UNICODETEXT only.
+	Add default argument for StyleContext::GetRelative.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1336/">Feature #1336</a>.
+	</li>
+	<li>
+	Fix drag and drop between different encodings on Win32 by always providing CF_UNICODETEXT only.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2151/">Bug #2151</a>.
+	</li>
+	<li>
+	Automatically scroll while dragging text.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/497/">Feature #497</a>.
 	</li>
 	<li>
 	On Win32, the numeric keypad with Alt pressed can be used to enter characters by number.
 	This can produce unexpected results in non-numlock mode when function keys are assigned.
 	Potentially problematic keys like Alt+KeypadUp are now ignored.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2152/">Bug #2152</a>.
+	</li>
+	<li>
+	Crash fixed with Direct2D on Win32 when updating driver.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2138/">Bug #2138</a>.
+	</li>
+	<li>
+	For SciTE on Win32, fix crashes when Lua script closes application.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2155/">Bug #2155</a>.
 	</li>
     </ul>
     <h3>

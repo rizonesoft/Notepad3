@@ -250,7 +250,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 		}
 
 		// Comments are allowed almost everywhere
-		if (!inStringBlk && !inCommentBlk && (OnlySpaces || isspace(sc.chPrev)) && sc.ch == ';')
+		if (!inStringBlk && !inCommentBlk && (OnlySpaces || isspacechar(sc.chPrev)) && sc.ch == ';')
 			sc.SetState(SCE_AHKL_COMMENTLINE);
 
 		// Exit Current State
@@ -412,7 +412,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 					sc.Forward(2);
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
-				} else if ((OnlySpaces || isspace(sc.chPrev)) &&
+				} else if ((OnlySpaces || isspacechar(sc.chPrev)) &&
 						 ((sc.ch == '@' && isalnum(sc.chNext & 0xFF)) || valDocComment.Contains(sc.ch))) {
 
 					if (valDocComment.Contains(sc.ch))
@@ -443,7 +443,7 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 			}
 
 			case SCE_AHKL_HEXNUMBER:	{
-				if (isspace(sc.ch) || SynOperator.Contains(sc.ch))
+				if (isspacechar(sc.ch) || SynOperator.Contains(sc.ch))
 					sc.SetState(SCE_AHKL_NEUTRAL);
 
 				else if (!isxdigit(sc.ch & 0xFF))
@@ -610,8 +610,8 @@ void SCI_METHOD LexerAHKL::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 			// Handle Expressions
 			if ((OnlySpaces && sc.ch == '.')  || sc.Match(" % ") || (sc.ch == '(')
-			|| ((valIdentifier.Contains(sc.chPrev) || isspace(sc.chPrev)) && sc.ch == '?')
-			|| ((valIdentifier.Contains(sc.chPrev) || isspace(sc.chPrev)) && ExpOperator.Contains(sc.ch) && sc.chNext == '=')
+			|| ((valIdentifier.Contains(sc.chPrev) || isspacechar(sc.chPrev)) && sc.ch == '?')
+			|| ((valIdentifier.Contains(sc.chPrev) || isspacechar(sc.chPrev)) && ExpOperator.Contains(sc.ch) && sc.chNext == '=')
 			||  (valIdentifier.Contains(sc.chPrev) && sc.ch == '[')) {
 
 				expLevel += 1;

@@ -366,29 +366,34 @@ void Style_DynamicThemesMenuCmd(int cmd)
 //  IsLexerStandard()
 //
 
-bool  IsLexerStandard(PEDITLEXER pLexer)
+inline bool  IsLexerStandard(PEDITLEXER pLexer)
 {
   return ( pLexer && ((pLexer == &lexStandard) || (pLexer == &lexStandard2nd)) );
 }
 
-PEDITLEXER  GetCurrentStdLexer()
+inline PEDITLEXER  GetCurrentStdLexer()
 {
   return (Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard);
 }
 
-bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
+inline bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && ((pStyle->rid == IDS_LEX_STD_STYLE) || (pStyle->rid == IDS_LEX_2ND_STYLE)));
 }
 
-bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
+inline bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && (pStyle->rid == IDS_LEX_STR_63126));
 }
 
-PEDITLEXER  GetDefaultLexer()
+inline PEDITLEXER  GetDefaultLexer()
 {
   return g_pLexArray[s_iDefaultLexer];
+}
+
+inline PEDITLEXER  GetLargeFileLexer()
+{
+  return &lexTEXT;
 }
 
 
@@ -814,14 +819,15 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
   bool ok = false;
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
-    ok = OpenSettingsFile();
-    Style_ToIniSection(bForceAll);
-    ok = CloseSettingsFile(true);
+    if (OpenSettingsFile()) {
+      Style_ToIniSection(bForceAll);
+      ok = CloseSettingsFile(true);
+    }
   }
   else {
     LoadIniFile(szFilePathNorm); // reset
     Style_ToIniSection(bForceAll);
-    SaveIniFile(szFilePathNorm);
+    ok = SaveIniFile(szFilePathNorm);
   }
   return ok;
 }
@@ -965,11 +971,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();
+    pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
     if (IsLexerStandard(pLexNew)) {
       pLexNew = GetCurrentStdLexer();
     }
   }
+  _IGNORE_NOTIFY_CHANGE_
 
   // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
   // assert(pLexNew != s_pLexCurrent);
@@ -1003,14 +1010,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // --------------------------------------------------------------------------
 
   // Clear
-  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+  SciCall_ClearDocumentStyle();
 
   // Default Values are always set
-  SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
+  SciCall_StyleResetDefault();
 
-
-  // constants
-  SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
+  // Constants
+  SciCall_StyleSetVisible(STYLE_DEFAULT, true);
 
   //~Style_SetACPfromCharSet(hwnd);
 
@@ -1155,7 +1161,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, rgb);
   SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, rgb);
 
-  if (pLexNew != &lexANSI) {
+  if (pLexNew != &lexANSI) 
+  {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
   }
   Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, false); // indent guide
@@ -1463,13 +1470,25 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
-  // apply lexer styles
-  Sci_ApplyLexerStyle(0, -1);
-  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+  SciCall_StartStyling(0);
 
+  // apply lexer styles
+  if (Flags.bLargeFileLoaded)
+  {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    EditUpdateVisibleIndicators();
+  }
+  else {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditDoStyling(0, -1);
+    EditUpdateIndicators(0, -1, false);
+  }
+ 
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   UpdateAllBars(false);
+
+  _OBSERVE_NOTIFY_CHANGE_
 }
 
 
@@ -1947,6 +1966,11 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 //
 bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
+  if (Flags.bLargeFileLoaded) {
+    Style_SetDefaultLexer(hwnd);
+    return true;
+  }
+
   LPCWSTR lpszExt = PathFindExtension(lpszFile);
   bool  bFound = false;
   PEDITLEXER pLexNew = NULL;
@@ -1993,10 +2017,18 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   LPCWSTR lpszFileName = PathFindFileName(lpszFile);
 
-  if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
-      (StrIsNotEmpty(lpszFile) && *lpszExt)) 
+  // check for filename regex match
+  if (!bFound && s_bAutoSelect && StrIsNotEmpty(lpszFile)) {
+    pLexSniffed = Style_RegExMatchLexer(lpszFileName);
+    if (pLexSniffed) {
+      pLexNew = pLexSniffed;
+      bFound = true;
+    }
+  }
+
+  if (!bFound && s_bAutoSelect && (StrIsNotEmpty(lpszFile) && *lpszExt)) 
   {
-    if (*lpszExt == L'.') ++lpszExt;
+    if (*lpszExt == L'.') { ++lpszExt; }
 
     if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
@@ -2009,11 +2041,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       }
     }
 
-    if (!bFound && StringCchCompareXI(lpszFileName,L"cmakelists.txt") == 0) {
-      pLexNew = &lexCmake;
-      bFound = true;
-    }
-
     // check associated extensions
     if (!bFound) {
       pLexSniffed = Style_MatchLexer(lpszExt, false);
@@ -2022,49 +2049,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
         bFound = true;
       }
     }
-
-    // check for filename regex match
-    if (!bFound) {
-      pLexSniffed = Style_RegExMatchLexer(lpszFileName);
-      if (pLexSniffed) {
-        pLexNew = pLexSniffed;
-        bFound = true;
-      }
-    }
-
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    StringCchCompareXI(lpszFileName, L"Readme") == 0) {
-    pLexNew = &lexANSI;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Makefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Kbuild") == 0))) {
-    pLexNew = &lexMAK;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Rakefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Podfile") == 0))) {
-    pLexNew = &lexRUBY;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(lpszFileName,L"mozconfig") == 0) {
-    pLexNew = &lexBASH;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName, L"Kconfig") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Doxyfile") == 0))) {
-    pLexNew = &lexCONF;
-    bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
@@ -3110,7 +3094,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.CurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.MainWndDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -4408,6 +4392,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
   if (hDlg != INVALID_HANDLE_VALUE) {
+    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;

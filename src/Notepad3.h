@@ -113,15 +113,15 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE hInstance);
 HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
-WININFO InitDefaultWndPos(const int flagsPos);
-void InitWindowPosition(WININFO* pWinInfo, const int flagsPos);
+WININFO GetFactoryDefaultWndPos(const int flagsPos);
+WININFO GetWinInfoByFlag(const int flagsPos);
 void BeginWaitCursor(LPCWSTR text);
 void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs);
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
-void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
+void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
 void InstallFileWatching(LPCWSTR lpszFile);
@@ -138,7 +138,6 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSaveSettingsCmds();
-void UpdateVisibleIndicators();
 inline void UpdateAllBars(bool force) { DrawMenuBar(Globals.hwndMain); UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();

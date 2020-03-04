@@ -199,8 +199,8 @@ BEGIN
             MENUITEM "&Text Einrückung",                         IDM_EDIT_INDENT
             MENUITEM "&Text Rückzug",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",         CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",           CMD_JUMP2SELEND
+            MENUITEM "Bewege Textcursor zum Anfang\tCtrl+,",     CMD_JUMP2SELSTART
+            MENUITEM "Bewege Textcursor zum Ende\tCtrl+.",       CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Umschließe Selektion"
             BEGIN
@@ -447,7 +447,7 @@ BEGIN
         BEGIN
             POPUP "&Rendering"
             BEGIN
-                MENUITEM "Standard &GDI",                       IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "Standard &GDI (keine Ligaturen)",     IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "&DirectWrite (Direct2D)",             IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                 IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC

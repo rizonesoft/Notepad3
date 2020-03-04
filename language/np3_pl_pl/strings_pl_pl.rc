@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Podniesiony)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Schowek"
     IDS_MUI_UNTITLED        "Bez nazwy"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -143,12 +143,12 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Niektóre znaki w tym tekście nie są obsługiwane przez wybrane kodowanie, i mogą zostanie zamienione na standardowe znaki po zapisaniu. Zaleca się wybrać inne kodowanie pliku. Kontynuować?"
     IDS_MUI_ERR_DROP        "Tylko jeden plik może być upuszczony w tym samym czasie!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nCzy chcesz uruchomić %s jako 'Podniesiony'?"
     IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Czy na pewno chcesz otworzyć ten duży plik?"
+                            "Czy na pewno chcesz otworzyć ten duży plik?\n\t(size: %s >= %s)!\n(Projekt i podświetlenie składni nie będzie zastosowane!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %lli MB)!"
+                            "Nie można przetworzyć tego pliku, jest zbyt duży (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Nieznane rozszerzenie nazwy pliku (%s)!\nCzy mimo to załadować?"
     IDS_MUI_INDENT_CONSISTENT  "Ten plik posiada jednolite wcięcie!"
@@ -183,8 +183,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "Aktywować zapisane ustawienia uruchamiając aplikację ponownie?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Przy kontynuacji bez restartu zapisane ustawienia nie będą używane i zostaną zastąpione przez wewnętrzne ustawienia po wyjściu z programu!"
     IDS_MUI_EXPORT_FAIL      "Błąd podczas eksportowania ustawień styu do ""%s""."
     IDS_MUI_REGEX_INVALID    "Błąd podczas oceny regularnego wyrażenia. Wyrażenie jest nieuzasadnione!"
     IDS_MUI_DROP_NO_FILE     "Nie rozpoznano żadnej sensownej nazwy pliku.\nJeśli upuścisz aplikację 32-bitową,\nprzeciągnij i upuść do paska narzędzi Notepad3'a."
@@ -246,7 +246,7 @@ BEGIN
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
     IDM_THEMES_DEFAULT      "Domyślne"
     IDM_THEMES_FILE_ITEM    "Ustawienia standardowe"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 

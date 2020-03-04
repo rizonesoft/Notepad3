@@ -271,192 +271,6 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
 
 //=============================================================================
 //
-//  ConvertIconToBitmap()
-//
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
-{
-  const HDC hScreenDC = GetDC(NULL);
-  const HBITMAP hbmpTmp = CreateCompatibleBitmap(hScreenDC, cx, cy);
-  const HDC hMemDC = CreateCompatibleDC(hScreenDC);
-  const HBITMAP hOldBmp = SelectObject(hMemDC, hbmpTmp);
-  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL);
-  SelectObject(hMemDC, hOldBmp);
-
-  const HBITMAP hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
-
-  DeleteObject(hbmpTmp);
-  DeleteDC(hMemDC);
-  ReleaseDC(NULL, hScreenDC);
-
-  return hDibBmp;
-}
-
-
-//=============================================================================
-//
-//  SetUACIcon()
-//
-void SetUACIcon(const HMENU hMenu, const UINT nItem)
-{
-  static bool bInitialized = false;
-  if (bInitialized) { return; }
-
-  //const int cx = GetSystemMetrics(SM_CYMENU) - 4;
-  //const int cy = cx;
-  int const cx = GetSystemMetrics(SM_CXSMICON);
-  int const cy = GetSystemMetrics(SM_CYSMICON);
-
-  if (Globals.hIconMsgShieldSmall)
-  {
-    MENUITEMINFO mii = { 0 };
-    mii.cbSize = sizeof(mii);
-    mii.fMask = MIIM_BITMAP;
-    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
-    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
-  }
-  bInitialized = true;
-}
-
-
-//=============================================================================
-//
-//  GetCurrentDPI()
-//
-DPI_T GetCurrentDPI(HWND hwnd) {
-
-  DPI_T curDPI = { 0, 0 };
-
-  if (IsWin10OrHigher()) {
-    HMODULE const hModule = GetModuleHandle(L"user32.dll");
-    if (hModule) {
-      FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
-      if (pfnGetDpiForWindow) {
-        curDPI.x = curDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
-      }
-    }
-  }
-
-  if ((curDPI.x == 0) && IsWin81OrHigher()) {
-    HMODULE hShcore = LoadLibrary(L"shcore.dll");
-    if (hShcore) {
-      FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
-      if (pfnGetDpiForMonitor) {
-        HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-        UINT dpiX = 0, dpiY = 0;
-        if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
-          curDPI.x = dpiX;
-          curDPI.y = dpiY;
-        }
-      }
-      FreeLibrary(hShcore);
-    }
-  }
-
-  if (curDPI.x == 0) {
-    HDC hDC = GetDC(hwnd);
-    curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
-    curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
-    ReleaseDC(hwnd, hDC);
-  }
-
-  curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
-  curDPI.y = max_u(curDPI.y, USER_DEFAULT_SCREEN_DPI);
-  return curDPI;
-}
-
-
-//=============================================================================
-//
-//  GetCurrentPPI()
-//  (font size) points per inch
-//
-DPI_T GetCurrentPPI(HWND hwnd) {
-  HDC const hDC = GetDC(hwnd);
-  DPI_T ppi;
-  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
-  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
-  ReleaseDC(hwnd, hDC);
-  return ppi;
-}
-
-/*
-if (!bSucceed) {
-  NONCLIENTMETRICS ncm;
-  ncm.cbSize = sizeof(NONCLIENTMETRICS);
-  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
-  if (ncm.lfMessageFont.lfHeight < 0)
-  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
-  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
-  if (*wSize == 0)
-    *wSize = 8;
-}*/
-
-
-//=============================================================================
-//
-//  GetSystemMetricsEx()
-//  get system metric for current DPI 
-// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
-//
-int GetSystemMetricsEx(int nValue) {
-
-  return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
-}
-
-
-//=============================================================================
-//
-//  UpdateWindowLayoutForDPI()
-//
-void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi)
-{
-  // only update yet
-  SetWindowPos(hWnd, hWnd, x_96dpi, y_96dpi, w_96dpi, h_96dpi,
-    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION );
-
-  // TODO: ...
-#if 0
-  DPI_T const wndDPI = GetCurrentDPI(hWnd);
-
-  int dpiScaledX = MulDiv(x_96dpi, wndDPI.x, 96);
-  int dpiScaledY = MulDiv(y_96dpi, wndDPI.y, 96);
-  int dpiScaledWidth = MulDiv(w_96dpi, wndDPI.y, 96);
-  int dpiScaledHeight = MulDiv(h_96dpi, wndDPI.y, 96);
-
-  SetWindowPos(hWnd, hWnd, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledY, SWP_NOZORDER | SWP_NOACTIVATE);
-#endif
-
-}
-
-
-//=============================================================================
-//
-//  ResizeImageForCurrentDPI()
-//
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp) 
-{
-  if (hbmp) {
-    BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
-      UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
-      UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (Globals.CurrentDPI.x > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (Globals.CurrentDPI.x - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (Globals.CurrentDPI.y - uDPIBase), uDPIUnit);
-        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
-        if (hCopy) {
-          hbmp = hCopy;
-        }
-      }
-    }
-  }
-  return hbmp;
-}
-
-
-//=============================================================================
-//
 //  PrivateSetCurrentProcessExplicitAppUserModelID()
 //
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
@@ -909,6 +723,53 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
   }
   return (!(ustate & (MF_GRAYED|MF_DISABLED)));
 }
+
+
+//=============================================================================
+//
+//  ReadFileXL()
+//
+bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead)
+{
+  DWORD dwRead = 0;
+  size_t bytesRead = 0ULL;
+  size_t bytesLeft = nNumberOfBytesToRead;
+  bool bReadOk = false;
+  do {
+    DWORD const chunk_size = (bytesLeft < (size_t)DWORD_MAX) ? (DWORD)bytesLeft : DWORD_MAX - 1UL;
+    bReadOk = ReadFile(hFile, &lpBuffer[bytesRead], chunk_size, &dwRead, NULL);
+    bytesRead += (size_t)dwRead;
+    bytesLeft -= (size_t)dwRead;
+  } 
+  while (bReadOk && ((dwRead != 0) && (bytesLeft > 0)));
+
+  *lpNumberOfBytesRead = bytesRead;
+  return (bytesRead == nNumberOfBytesToRead);
+}
+
+//=============================================================================
+//
+//  WriteFileXL()
+//
+bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten)
+{
+  DWORD dwWritten = 0;
+  size_t bytesWritten = 0ULL;
+  size_t bytesLeft = nNumberOfBytesToWrite;
+  bool bWriteOk = false;
+  do {
+    DWORD const chunk_size = (bytesLeft < (size_t)DWORD_MAX) ? (DWORD)bytesLeft : DWORD_MAX - 1UL;
+
+    bWriteOk = WriteFile(hFile, &lpBuffer[bytesWritten], chunk_size, &dwWritten, NULL);
+    bytesWritten += (size_t)dwWritten;
+    bytesLeft -= (size_t)dwWritten;
+  }
+  while (bWriteOk && ((dwWritten != 0) && (bytesLeft > 0)));
+  
+  *lpNumberOfBytesWritten = bytesWritten;
+  return (bytesWritten == nNumberOfBytesToWrite);
+}
+
 
 //=============================================================================
 //
@@ -1961,9 +1822,8 @@ size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
           --o;
       }
       else {
-        *o = '\\'; // revert
-        ++o;
-        *o = *s;
+        //~*o = '\\';  *++o = *s;   // revert
+        *o = *s;   // swallow single '\'
       }
     }
     else
@@ -2041,8 +1901,8 @@ size_t UnSlashW(LPWSTR pchInOut)
           --o;
       }
       else {
-        *o = '\\'; // revert
-        *++o = *s;
+        //~*o = '\\';  *++o = *s;   // revert
+        *o = *s;   // swallow single '\'
       }
     }
     else
@@ -2075,7 +1935,9 @@ int CheckRegExReplTarget(char* pszInput)
         return SCI_REPLACETARGETRE;
       }
     }
-    ++pszInput;
+    else {
+      ++pszInput;
+    }
   }
   return SCI_REPLACETARGET;
 }
@@ -2083,17 +1945,20 @@ int CheckRegExReplTarget(char* pszInput)
 
 void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
 {
-  if (bRegEx && iReplaceMsg) {
-    UnSlashLowOctal(pszInput);
-    *iReplaceMsg = CheckRegExReplTarget(pszInput);
+  if (iReplaceMsg) 
+  {
+    if (bRegEx) {
+      UnSlashLowOctal(pszInput);
+      *iReplaceMsg = CheckRegExReplTarget(pszInput);
+    }
+    else {
+      *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+    }
   }
-  else if (iReplaceMsg) {
-    *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
-  }
+  bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
 
   // regex handles backslashes itself
-  // except: replacement is not delegated to regex engine
-  if (!bRegEx || (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg))) {
+  if (!bRegEx || bStdReplace) {
     UnSlashA(pszInput, cpEdit);
   }
 }

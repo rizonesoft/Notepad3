@@ -19,6 +19,8 @@
 extern "C" {
 #include "Helpers.h"
 #include "MuiLanguage.h"
+#include "Dialogs.h"
+#include "SciCall.h"
 }
 
 #include <commctrl.h>
@@ -34,12 +36,9 @@ extern "C" {
 #include "Platform.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
 #include "resource.h"
 
-extern "C" {
-#include "Dialogs.h"
-#include "SciCall.h"
-}
 
 extern "C" float Style_GetBaseFontSize();
 
@@ -48,6 +47,7 @@ static HGLOBAL hDevMode = nullptr;
 static HGLOBAL hDevNames = nullptr;
 
 static void EditPrintInit();
+
 
 //=============================================================================
 //

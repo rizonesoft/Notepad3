@@ -145,6 +145,18 @@ struct WrapPending {
 	}
 };
 
+struct CaretPolicy {
+	int policy;	// Combination from CARET_SLOP, CARET_STRICT, CARET_JUMPS, CARET_EVEN
+	int slop;	// Pixels for X, lines for Y
+	CaretPolicy(uptr_t policy_=0, sptr_t slop_=0) noexcept :
+		policy(static_cast<int>(policy_)), slop(static_cast<int>(slop_)) {}
+};
+
+struct CaretPolicies {
+	CaretPolicy x;
+	CaretPolicy y;
+};
+
 /**
  */
 class Editor : public EditModel, public DocWatcher {
@@ -234,14 +246,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	SelectionText drag;
 
-	int caretXPolicy;
-	int caretXSlop;	///< Ensure this many pixels visible on both sides of caret
+	CaretPolicies caretPolicies;
 
-	int caretYPolicy;
-	int caretYSlop;	///< Ensure this many lines visible on both sides of caret
-
-	int visiblePolicy;
-	int visibleSlop;
+	CaretPolicy   visiblePolicy;
 
 	Sci::Position searchAnchor;
 
@@ -307,7 +314,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 		return ((virtualSpaceOptions & SCVS_USERACCESSIBLE) != 0);
 	}
 	Sci::Position CurrentPosition() const;
-	bool SelectionEmpty() const;
+	bool SelectionEmpty() const noexcept;
 	SelectionPosition SelectionStart();
 	SelectionPosition SelectionEnd();
 	void SetRectangularRange();
@@ -323,11 +330,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void SetEmptySelection(Sci::Position currentPos_);
 	enum AddNumber { addOne, addEach };
 	void MultipleSelectAdd(AddNumber addNumber);
-	bool RangeContainsProtected(Sci::Position start, Sci::Position end) const;
-	bool SelectionContainsProtected();
+	bool RangeContainsProtected(Sci::Position start, Sci::Position end) const noexcept;
+	bool SelectionContainsProtected() const;
 	Sci::Position MovePositionOutsideChar(Sci::Position pos, Sci::Position moveDir, bool checkLineEnd=true) const;
 	SelectionPosition MovePositionOutsideChar(SelectionPosition pos, Sci::Position moveDir, bool checkLineEnd=true) const;
-	void MovedCaret(SelectionPosition newPos, SelectionPosition previousPos, bool ensureVisible);
+	void MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
+		bool ensureVisible, CaretPolicies policies);
 	void MovePositionTo(SelectionPosition newPos, Selection::selTypes selt=Selection::noSel, bool ensureVisible=true);
 	void MovePositionTo(Sci::Position newPos, Selection::selTypes selt=Selection::noSel, bool ensureVisible=true);
 	SelectionPosition MovePositionSoVisible(SelectionPosition pos, int moveDir);
@@ -358,7 +366,8 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 		xysVertical=0x2,
 		xysHorizontal=0x4,
 		xysDefault=xysUseMargin|xysVertical|xysHorizontal};
-	XYScrollPosition XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options);
+	XYScrollPosition XYScrollToMakeVisible(const SelectionRange &range,
+		const XYScrollOptions options, CaretPolicies policies);
 	void SetXYScroll(XYScrollPosition newXY);
 	void EnsureCaretVisible(bool useMargin=true, bool vert=true, bool horiz=true);
 	void ScrollRange(SelectionRange range);
@@ -633,7 +642,7 @@ class AutoSurface {
 private:
 	std::unique_ptr<Surface> surf;
 public:
-	AutoSurface(Editor *ed, int technology = -1) {
+	AutoSurface(const Editor *ed, int technology = -1) {
 		if (ed->wMain.GetID()) {
 			surf.reset(Surface::Allocate(technology != -1 ? technology : ed->technology));
 			surf->Init(ed->wMain.GetID());

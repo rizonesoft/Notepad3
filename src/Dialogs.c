@@ -209,7 +209,6 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
 
-
       switch (lpMsgBox->uType & MB_ICONMASK)
       {
       case MB_ICONQUESTION:
@@ -225,7 +224,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgShield, 0);
         break;
       case MB_USERICON:
-        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIcon48, 0);
+        SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)Globals.hIconMsgUser, 0);
         break;
       case MB_ICONINFORMATION:  // = MB_ICONASTERISK
       default:
@@ -421,7 +420,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpszText = szText;
   mbp.lpszCaption = szTitle;
   mbp.dwStyle = MB_OK | MB_USERICON | MB_SETFOREGROUND;
-  mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND48);
+  mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
   mbp.dwLanguageId = Globals.iPrefLANGID;
@@ -473,15 +472,6 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 INT_PTR DisplayCmdLineHelp(HWND hwnd)
 {
   return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CMDLINEHELP), hwnd, CmdLineHelpProc, (LPARAM)L"");
-
-  //if (!hwnd) {
-  //  // text to std-out
-  //  //RedirectIOToConsole();
-  //  //fwprintf(stdout, L"\n!!! blahblub ???\n");
-  //  //fflush(stdout);
-  //  //SleepEx(5000,FALSE);
-  //}
-  //return(0);
 }
 
 #endif
@@ -657,6 +647,8 @@ static DWORD CALLBACK _LoadRtfCallbackW(
 //
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  static HFONT hVersionFont = NULL;
+
   switch (umsg)
   {
   case WM_INITDIALOG:
@@ -665,21 +657,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
     SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)) L" (" _W(_STRG(VERSION_COMMIT_ID)) L")");
-
-    static HFONT hFontTitle = NULL;
-    if (hFontTitle) { DeleteObject(hFontTitle); }
-    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
-      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-    }
-    LOGFONT lf;
-    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-    lf.lfWeight = FW_BOLD;
-    lf.lfWidth  = ScaleIntFontSize(8);
-    lf.lfHeight = ScaleIntFontSize(22);
-    // lf.lfQuality = ANTIALIASED_QUALITY;
-    hFontTitle = CreateFontIndirect(&lf);
-
-    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
     SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
@@ -802,21 +779,41 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     
     CenterDlgInParent(hwnd, NULL);
   }
-  return true;
-
+  // fall-through
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    {
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+
+      if (hVersionFont) { DeleteObject(hVersionFont); }
+      if (NULL == (hVersionFont = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
+        hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
+      }
+      LOGFONT lf;
+      GetObject(hVersionFont, sizeof(LOGFONT), &lf);
+      lf.lfWeight = FW_BOLD;
+      lf.lfWidth = ScaleIntFontSize(8);
+      lf.lfHeight = ScaleIntFontSize(22);
+      // lf.lfQuality = ANTIALIASED_QUALITY;
+      hVersionFont = CreateFontIndirect(&lf);
+      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+    }
     return true;
 
 
   case WM_PAINT:
-    if (Globals.hIcon128) {
-      RECT rt;
-      GetWindowRect(hwnd, &rt);
-      HDC hdc = GetWindowDC(hwnd);
-      DrawIconEx(hdc, 22, 44, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
-      ReleaseDC(hwnd, hdc);
+    {
+      if (Globals.hDlgIcon) {
+        RECT rt;
+        GetWindowRect(hwnd, &rt);
+        HDC hdc = GetWindowDC(hwnd);
+        DPI_T const wndDPI = GetCurrentDPI(hwnd);
+        int const iconSize = 128;
+        int const dpiScaledWidth = MulDiv(iconSize, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
+        int const dpiScaledHeight = MulDiv(iconSize, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+        DrawIconEx(hdc, 22, 44, Globals.hDlgIcon, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
+        ReleaseDC(hwnd, hdc);
+      }
     }
     return false;
 
@@ -887,7 +884,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
         int ResX, ResY;
         GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
-        DPI_T const wndDPI = GetCurrentDPI(Globals.hwndMain);
 
         // --------------------------------------------------------------------
 
@@ -918,7 +914,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", wndDPI.x, wndDPI.y, ScaleIntToCurrentDPI(100));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", Globals.MainWndDPI.x, Globals.MainWndDPI.y, ScaleIntToCurrentDPI(100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -3386,11 +3382,11 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
   if (StrIsNotEmpty(Globals.IniFile)) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
     StringCchCat(szParameters, COUNTOF(szParameters), Globals.IniFile);
-    StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
+    StringCchCat(szParameters, COUNTOF(szParameters), L"\"");
   }
-  else
+  else {
     StringCchCat(szParameters, COUNTOF(szParameters), L"0");
-
+  }
   StringCchCat(szParameters, COUNTOF(szParameters), L" -n");
 
   MONITORINFO mi;
@@ -3851,7 +3847,8 @@ void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame) {
   FreeMem(pm);
 }
 
-void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy) {
+void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
+{
   PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
   const int cxClient = LOWORD(lParam);
   const int cyClient = HIWORD(lParam);
@@ -4021,30 +4018,17 @@ void DeleteBitmapButton(HWND hwnd, int nCtlId)
 
 //=============================================================================
 //
-//  SendWMSize()
-//
-LRESULT SendWMSize(HWND hwnd, RECT* rc)
-{
-  if (!rc) {
-    RECT _rc;
-    GetClientRect(hwnd, &_rc);
-    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(_rc.right, _rc.bottom));
-  }
-  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
-}
-
-
-//=============================================================================
-//
 //  StatusSetText()
 //
 void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
 {
   if (lpszText) {
     UINT const uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
     SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
   }
 }
+
 
 
 //=============================================================================
@@ -4053,21 +4037,18 @@ void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
 //
 bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
 {
-
   WCHAR szText[256] = { L'\0' };
   UINT const uFlags = (nPart == STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+  StatusSetSimple(hwnd, (nPart == (UINT)STATUS_HELP));
 
-  if (!uID)
-  {
+  if (!uID) {
     SendMessage(hwnd, SB_SETTEXT, uFlags, 0);
     return true;
   }
 
-  if (!GetLngString(uID, szText, 256))
-    return false;
+  if (!GetLngString(uID, szText, 256)) { return false; }
 
   return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)szText);
-
 }
 
 
@@ -4278,6 +4259,224 @@ HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
     FreeMem(pDlgTemplate);
   }
   return hwnd;
+}
+
+
+
+
+
+
+//=============================================================================
+//
+//  ConvertIconToBitmap()
+//
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy)
+{
+  const HDC hScreenDC = GetDC(NULL);
+  const HBITMAP hbmpTmp = CreateCompatibleBitmap(hScreenDC, cx, cy);
+  const HDC hMemDC = CreateCompatibleDC(hScreenDC);
+  const HBITMAP hOldBmp = SelectObject(hMemDC, hbmpTmp);
+  DrawIconEx(hMemDC, 0, 0, hIcon, cx, cy, 0, NULL, DI_NORMAL);
+  SelectObject(hMemDC, hOldBmp);
+
+  const HBITMAP hDibBmp = (HBITMAP)CopyImage((HANDLE)hbmpTmp, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_CREATEDIBSECTION);
+
+  DeleteObject(hbmpTmp);
+  DeleteDC(hMemDC);
+  ReleaseDC(NULL, hScreenDC);
+
+  return hDibBmp;
+}
+
+
+//=============================================================================
+//
+//  SetUACIcon()
+//
+void SetUACIcon(const HMENU hMenu, const UINT nItem)
+{
+  static bool bInitialized = false;
+  if (bInitialized) { return; }
+
+  //const int cx = GetSystemMetrics(SM_CYMENU) - 4;
+  //const int cy = cx;
+  int const cx = GetSystemMetrics(SM_CXSMICON);
+  int const cy = GetSystemMetrics(SM_CYSMICON);
+
+  if (Globals.hIconMsgShieldSmall)
+  {
+    MENUITEMINFO mii = { 0 };
+    mii.cbSize = sizeof(mii);
+    mii.fMask = MIIM_BITMAP;
+    mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShieldSmall, cx, cy);
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+  }
+  bInitialized = true;
+}
+
+
+//=============================================================================
+//
+//  GetCurrentDPI()
+//
+DPI_T GetCurrentDPI(HWND hwnd) {
+
+  DPI_T curDPI = { 0, 0 };
+
+  if (IsWin10OrHigher()) {
+    HMODULE const hModule = GetModuleHandle(L"user32.dll");
+    if (hModule) {
+      FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
+      if (pfnGetDpiForWindow) {
+        curDPI.x = curDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
+      }
+    }
+  }
+
+  if ((curDPI.x == 0) && IsWin81OrHigher()) {
+    HMODULE hShcore = LoadLibrary(L"shcore.dll");
+    if (hShcore) {
+      FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
+      if (pfnGetDpiForMonitor) {
+        HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+        UINT dpiX = 0, dpiY = 0;
+        if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
+          curDPI.x = dpiX;
+          curDPI.y = dpiY;
+        }
+      }
+      FreeLibrary(hShcore);
+    }
+  }
+
+  if (curDPI.x == 0) {
+    HDC hDC = GetDC(hwnd);
+    curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
+    curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
+    ReleaseDC(hwnd, hDC);
+  }
+
+  curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
+  curDPI.y = max_u(curDPI.y, USER_DEFAULT_SCREEN_DPI);
+  return curDPI;
+}
+
+
+//=============================================================================
+//
+//  GetCurrentPPI()
+//  (font size) points per inch
+//
+DPI_T GetCurrentPPI(HWND hwnd) {
+  HDC const hDC = GetDC(hwnd);
+  DPI_T ppi;
+  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
+  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
+  ReleaseDC(hwnd, hDC);
+  return ppi;
+}
+
+/*
+if (!bSucceed) {
+  NONCLIENTMETRICS ncm;
+  ncm.cbSize = sizeof(NONCLIENTMETRICS);
+  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
+  if (ncm.lfMessageFont.lfHeight < 0)
+  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
+  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
+  if (*wSize == 0)
+    *wSize = 8;
+}*/
+
+
+//=============================================================================
+//
+//  GetSystemMetricsEx()
+//  get system metric for current DPI 
+// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
+//
+int GetSystemMetricsEx(int nValue) {
+
+  return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+}
+
+
+//=============================================================================
+//
+//  UpdateWindowLayoutForDPI()
+//
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi)
+{
+#if TRUE
+  // only update yet
+  SetWindowPos(hWnd, hWnd, x_96dpi, y_96dpi, w_96dpi, h_96dpi,
+    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
+
+#else
+  //@@@ TODO: ???
+  UNUSED(x_96dpi);
+  UNUSED(y_96dpi);
+  UNUSED(w_96dpi);
+  UNUSED(h_96dpi);
+
+  DPI_T const wndDPI = GetCurrentDPI(hWnd);
+
+  RECT rc;
+  GetWindowRect(hWnd, &rc);
+  //MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
+  LONG const width = rc.right - rc.left;
+  LONG const height = rc.bottom - rc.top;
+  int dpiScaledX = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
+  int dpiScaledY = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+  int dpiScaledWidth = MulDiv(width, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+  int dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+
+  SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight,
+               SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
+  //InvalidateRect(hWnd, NULL, TRUE);
+
+#endif
+}
+
+
+
+//=============================================================================
+//
+//  ResizeImageForCurrentDPI()
+//
+HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
+{
+  if (hbmp) {
+    BITMAP bmp;
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
+      UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
+      UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
+      if (Globals.MainWndDPI.x > (uDPIBase + uDPIUnit)) {
+        int width = MulDiv(bmp.bmWidth, (Globals.MainWndDPI.x - uDPIBase), uDPIUnit);
+        int height = MulDiv(bmp.bmHeight, (Globals.MainWndDPI.y - uDPIBase), uDPIUnit);
+        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+        if (hCopy) {
+          hbmp = hCopy;
+        }
+      }
+    }
+  }
+  return hbmp;
+}
+
+//=============================================================================
+//
+//  SendWMSize()
+//
+LRESULT SendWMSize(HWND hwnd, RECT* rc)
+{
+  if (!rc) {
+    RECT _rc;
+    GetClientRect(hwnd, &_rc);
+    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(_rc.right, _rc.bottom));
+  }
+  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
 }
 
 //  End of Dialogs.c
