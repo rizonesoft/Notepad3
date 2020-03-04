@@ -3382,11 +3382,11 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
   if (StrIsNotEmpty(Globals.IniFile)) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
     StringCchCat(szParameters, COUNTOF(szParameters), Globals.IniFile);
-    StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
+    StringCchCat(szParameters, COUNTOF(szParameters), L"\"");
   }
-  else
+  else {
     StringCchCat(szParameters, COUNTOF(szParameters), L"0");
-
+  }
   StringCchCat(szParameters, COUNTOF(szParameters), L" -n");
 
   MONITORINFO mi;
