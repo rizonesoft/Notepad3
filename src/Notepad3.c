@@ -77,8 +77,8 @@ SETTINGS2_T Defaults2;
 FOCUSEDVIEW_T FocusedView;
 FILEWATCHING_T FileWatching;
 
-WININFO   s_WinInfo = INIT_WININFO;
-WININFO   s_DefWinInfo = INIT_WININFO;
+WININFO   g_IniWinInfo = INIT_WININFO;
+WININFO   g_DefWinInfo = INIT_WININFO;
 
 COLORREF  g_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -1059,10 +1059,10 @@ void EndWaitCursor()
 
 //=============================================================================
 //
-//  InitDefaultWndPos()
+//  GetFactoryDefaultWndPos()
 //
 //
-WININFO InitDefaultWndPos(const int flagsPos)
+WININFO GetFactoryDefaultWndPos(const int flagsPos)
 {
   RECT rc;
   GetWindowRect(GetDesktopWindow(), &rc);
@@ -1082,15 +1082,18 @@ WININFO InitDefaultWndPos(const int flagsPos)
 
 //=============================================================================
 //
-//  InitWindowPosition()
+//  GetWinInfoByFlag()
 //
 //
-void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
+WININFO GetWinInfoByFlag(const int flagsPos)
 {
-  WININFO winfo = *pWinInfo;
+  WININFO winfo = INIT_WININFO;
 
-  if (flagsPos == 0) {
-    winfo = s_WinInfo;
+  if (flagsPos < 0) {
+    winfo = GetMyWindowPlacement(Globals.hwndMain, NULL); // current window position
+  }
+  else if (flagsPos == 0) {
+    winfo = g_IniWinInfo; // initial window position
   }
   else if (flagsPos == 1) {
     winfo.x = winfo.y = winfo.cx = winfo.cy = CW_USEDEFAULT;
@@ -1099,13 +1102,13 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
   }
   else if (flagsPos == 2)
   {
-    winfo = s_DefWinInfo; // NP3 default window position
+    winfo = g_DefWinInfo; // NP3 default window position
   }
   else if (flagsPos == 3)
   {
-    winfo = InitDefaultWndPos(flagsPos);
+    winfo = GetFactoryDefaultWndPos(flagsPos);
   }
-  else if (flagsPos >= 4)
+  else if ((flagsPos >= 4) && (flagsPos < 256))
   {
     RECT rc;
     GetWindowRect(GetDesktopWindow(), &rc);
@@ -1142,12 +1145,12 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
       winfo.cy = height;
     }
     if (flagsPos & 128) {
-      winfo = s_DefWinInfo;
+      winfo = g_DefWinInfo;
       winfo.max = true;
       winfo.zoom = 100;
     }
   }
-  else { // restore window, move upper left corner to Work Area 
+  else { // ( > 256) restore window, move upper left corner to Work Area 
     
     MONITORINFO mi;
     RECT const rc = RectFromWinInfo(&winfo);
@@ -1158,7 +1161,7 @@ void  InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
     winfo.y = wi.y;
   }
 
-  *pWinInfo = winfo;
+  return winfo;
 }
 
 
@@ -1195,11 +1198,11 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
-  InitWindowPosition(&s_WinInfo, Globals.CmdLnFlag_WindowPos);
-  s_WinCurrentWidth = s_WinInfo.cx;
+  g_IniWinInfo = GetWinInfoByFlag(Globals.CmdLnFlag_WindowPos);
+  s_WinCurrentWidth = g_IniWinInfo.cx;
 
-  // get monitor coordinates from g_WinInfo
-  WININFO srcninfo = s_WinInfo;
+  // get monitor coordinates from g_IniWinInfo
+  WININFO srcninfo = g_IniWinInfo;
   WinInfoToScreen(&srcninfo);
 
   Globals.hwndMain = CreateWindowEx(
@@ -1216,7 +1219,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
                hInstance,
                NULL);
 
-  if (s_WinInfo.max) {
+  if (g_IniWinInfo.max) {
     nCmdShow = SW_SHOWMAXIMIZED;
   }
   if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
@@ -1235,8 +1238,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
   }
   
-  if (s_WinInfo.zoom) {
-    SciCall_SetZoom(s_WinInfo.zoom);
+  if (g_IniWinInfo.zoom) {
+    SciCall_SetZoom(g_IniWinInfo.zoom);
   }
 
   SetMenu(Globals.hwndMain, Globals.hMainMenu);
@@ -5430,46 +5433,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         Flags.bStickyWindowPosition = !Flags.bStickyWindowPosition; // toggle
 
-        int ResX, ResY;
-        GetCurrentMonitorResolution(hwnd, &ResX, &ResY);
+        if (Flags.bStickyWindowPosition) { InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS); }
 
-        WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
+        if (OpenSettingsFile())
+        {
+          SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
 
-        StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
-        StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
-        StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
-        StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
-        StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
-        StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
-
-        if (OpenSettingsFile()) {
-
-          const WCHAR* const IniSecWindow = Constants.Window_Section;
-
-          if (Flags.bStickyWindowPosition)
+          if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) 
           {
-            // GetWindowPlacement
-            WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
-            IniSectionSetInt(IniSecWindow, tchPosX, wi.x);
-            IniSectionSetInt(IniSecWindow, tchPosY, wi.y);
-            IniSectionSetInt(IniSecWindow, tchSizeX, wi.cx);
-            IniSectionSetInt(IniSecWindow, tchSizeY, wi.cy);
-            IniSectionSetBool(IniSecWindow, tchMaximized, wi.max);
-            IniSectionSetInt(IniSecWindow, tchZoom, wi.zoom);
-
-            InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
-          }
-          else { // clear entries
-
-            IniSectionDelete(IniSecWindow, tchPosX, false);
-            IniSectionDelete(IniSecWindow, tchPosY, false);
-            IniSectionDelete(IniSecWindow, tchSizeX, false);
-            IniSectionDelete(IniSecWindow, tchSizeY, false);
-            IniSectionDelete(IniSecWindow, tchMaximized, false);
-            IniSectionDelete(IniSecWindow, tchZoom, false);
-          }
-
-          if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) {
             IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
           }
           else {
@@ -6220,18 +6191,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INITIALWINPOS:
-      SnapToWinInfoPos(hwnd, &s_WinInfo, SCR_NORMAL);
+      SnapToWinInfoPos(hwnd, g_IniWinInfo, SCR_NORMAL);
       break;
 
     case CMD_FULLSCRWINPOS:
       {
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
-        SnapToWinInfoPos(hwnd, &wi, SCR_FULL_SCREEN);
+        SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN);
       }
       break;
 
     case CMD_DEFAULTWINPOS:
-      SnapToWinInfoPos(hwnd, &s_DefWinInfo, SCR_NORMAL);
+      SnapToWinInfoPos(hwnd, g_DefWinInfo, SCR_NORMAL);
       break;
 
     case CMD_SAVEASDEFWINPOS:
@@ -6240,11 +6211,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
         IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+        g_DefWinInfo = GetWinInfoByFlag(-1); // use current win pos as new default
       }
       break;
 
     case CMD_CLEARSAVEDWINPOS:
-      s_DefWinInfo = InitDefaultWndPos(2);
+      g_DefWinInfo = GetFactoryDefaultWndPos(2);
       IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
     break;
 
@@ -7868,7 +7840,7 @@ void ParseCommandLine()
                   if (wi.cy < 1) wi.cy = CW_USEDEFAULT;
                   if (bMaximize) wi.max = true;
                   if (itok == 4) wi.max = false;
-                  s_WinInfo = wi; // set window placement
+                  g_IniWinInfo = wi; // set window placement
                 }
               }
             }
@@ -10597,7 +10569,7 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
 //  Aligns Notepad3 to the default window position on the current screen
 //
 
-void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
+void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
 {
   static WINDOWPLACEMENT s_wndplPrev;
   static bool s_bPrevShowMenubar = true;
@@ -10623,7 +10595,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
       Settings.ShowStatusbar = s_bPrevShowStatusbar;
     }
     else {
-      WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, pWinInfo, mode);
+      WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
       if (GetDoAnimateMinimize()) { DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition); }
       SetWindowPlacement(hWindow, &wndpl);
     }
