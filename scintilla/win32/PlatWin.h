@@ -47,10 +47,13 @@
 #define NP2_FORCE_COMPILE_C_AS_CPP	0
 
 #if NP2_FORCE_COMPILE_C_AS_CPP
-extern int GetSystemMetricsEx(int nIndex);
+extern int GetSystemMetricsDPIScaledX(HWND hwnd, int nIndex);
+extern int GetSystemMetricsDPIScaledY(HWND hwnd, int nIndex);
 #else
-extern "C" int GetSystemMetricsEx(int nIndex);
+extern "C" int GetSystemMetricsDPIScaledX(HWND hwnd, int nIndex);
+extern "C" int GetSystemMetricsDPIScaledY(HWND hwnd, int nIndex);
 #endif
+
 
 namespace Scintilla {
 

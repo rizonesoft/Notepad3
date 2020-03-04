@@ -109,18 +109,37 @@ int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
 // ----------------------------------------------------------------------------
 
+int GetSystemMetricsDPIScaledX(HWND hwnd, const int nValue);
+int GetSystemMetricsDPIScaledY(HWND hwnd, const int nValue);
+
 DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
 
-int GetSystemMetricsEx(int nValue);
+inline int ScaleIntToHwndDPIX(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToHwndDPIY(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+
+inline int ScaleFloatToHwndDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToHwndDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+
+inline int ScaleIntFontSize(HWND hwnd, int val) { 
+  DPI_T const dpi = GetCurrentDPI(hwnd);  
+  DPI_T const ppi = GetCurrentPPI(hwnd);  
+  return MulDiv((val), dpi.y, ppi.y); 
+}
+
+inline int ScaleFloatFontSize(HWND hwnd, float fSize) { 
+  DPI_T const dpi = GetCurrentDPI(hwnd);
+  DPI_T const ppi = GetCurrentPPI(hwnd);
+  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y);
+}
+
+inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { 
+  DPI_T const dpi = GetCurrentDPI(hwnd);
+  DPI_T const ppi = GetCurrentPPI(hwnd);
+  return (int)lroundf((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10;
+}
 
 // ----------------------------------------------------------------------------
-
-inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.MainWndDPI.y, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPI(float fVal) { return (int)lroundf((fVal * Globals.MainWndDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.MainWndDPI.y, Globals.MainWndPPI.y); }
-inline int ScaleFontSize(float fSize) { return (int)lroundf((fSize * Globals.MainWndDPI.y) / (float)Globals.MainWndPPI.y); }
-inline int ScaleFractionalFontSize(float fSize) { return (int)lroundf((fSize * 10.0f * Globals.MainWndDPI.y) / (float)Globals.MainWndPPI.y) * 10; }
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(const HMENU hMenu, const UINT nItem);

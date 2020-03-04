@@ -820,8 +820,8 @@ bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
-	return (xMove > GetSystemMetricsEx(SM_CXDRAG)) ||
-		(yMove > GetSystemMetricsEx(SM_CYDRAG));
+	return (xMove > GetSystemMetricsDPIScaledX(MainHWND(), SM_CXDRAG)) ||
+	       (yMove > GetSystemMetricsDPIScaledY(MainHWND(), SM_CYDRAG));
 }
 
 void ScintillaWin::StartDrag() {

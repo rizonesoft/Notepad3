@@ -1639,7 +1639,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
       if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
         iFrameSize = 2;
       }
-      iFrameSize = max_i(1, ScaleIntToCurrentDPI(iFrameSize));
+      iFrameSize = max_i(1, ScaleIntToHwndDPIY(hwnd, iFrameSize));
       SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
     }
 
@@ -1655,13 +1655,13 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 //
 //  _GetMarkerMarginWidth()
 //
-static int  _GetMarkerMarginWidth()
+static int  _GetMarkerMarginWidth(HWND hwnd)
 {
   float fSize = Style_GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
   float const zoomPercent = (float)SciCall_GetZoom();
-  return ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
+  return ScaleFloatToHwndDPIX(hwnd, (fSize * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
@@ -1670,8 +1670,7 @@ static int  _GetMarkerMarginWidth()
 //
 void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
-  UNUSED(hwnd);
-  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth() : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth(hwnd) : 0));
 }
 
 //=============================================================================
@@ -1680,8 +1679,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 //
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
-  UNUSED(hwnd);
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth() + 4 : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
 
@@ -3428,7 +3426,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   float fBaseFontSize = Style_GetCurrentFontSize();
 
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
     if (iStyle == STYLE_DEFAULT) {
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
@@ -3437,7 +3435,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     }
   }
   else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
     _SetBaseFontSize(fBaseFontSize);
   }
 
@@ -4452,7 +4450,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
           GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
+        int const cGrip = GetSystemMetricsDPIScaledX(hwnd, SM_CXHTHUMB);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 

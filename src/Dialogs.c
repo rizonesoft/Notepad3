@@ -792,8 +792,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       LOGFONT lf;
       GetObject(hVersionFont, sizeof(LOGFONT), &lf);
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth = ScaleIntFontSize(8);
-      lf.lfHeight = ScaleIntFontSize(22);
+      lf.lfWidth = ScaleIntFontSize(hwnd, 8);
+      lf.lfHeight = ScaleIntFontSize(hwnd, 22);
       // lf.lfQuality = ANTIALIASED_QUALITY;
       hVersionFont = CreateFontIndirect(&lf);
       SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
@@ -804,14 +804,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   case WM_PAINT:
     {
       if (Globals.hDlgIcon) {
-        RECT rt;
-        GetWindowRect(hwnd, &rt);
-        HDC hdc = GetWindowDC(hwnd);
-        DPI_T const wndDPI = GetCurrentDPI(hwnd);
         int const iconSize = 128;
-        int const dpiScaledWidth = MulDiv(iconSize, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-        int const dpiScaledHeight = MulDiv(iconSize, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-        DrawIconEx(hdc, 22, 44, Globals.hDlgIcon, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
+        int const dpiScaledWidth = ScaleIntToHwndDPIX(hwnd, iconSize);
+        int const dpiScaledHeight = ScaleIntToHwndDPIY(hwnd, iconSize);
+        HDC const hdc = GetWindowDC(hwnd);
+        DrawIconEx(hdc, 22, 44, Globals.hDlgIcon128, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
         ReleaseDC(hwnd, hdc);
       }
     }
@@ -914,7 +911,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", Globals.MainWndDPI.x, Globals.MainWndDPI.y, ScaleIntToCurrentDPI(100));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", Globals.MainWndDPI.x, Globals.MainWndDPI.y, ScaleIntToHwndDPIX(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -3827,7 +3824,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   HWND hwndCtl = GetDlgItem(hwnd, nIdGrip);
   SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
   /// TODO: per-window DPI
-  const int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
+  const int cGrip = GetSystemMetricsDPIScaledX(hwnd, SM_CXHTHUMB);
   SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
 }
 
@@ -4391,15 +4388,19 @@ if (!bSucceed) {
 
 //=============================================================================
 //
-//  GetSystemMetricsEx()
+//  GetSystemMetricsDPIScaled()
 //  get system metric for current DPI 
-// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
-//
-int GetSystemMetricsEx(int nValue) {
+//  https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
 
-  return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+int GetSystemMetricsDPIScaledX(HWND hwnd, const int nValue)
+{ 
+  return ScaleIntToHwndDPIX(hwnd, GetSystemMetrics(nValue));
 }
 
+int GetSystemMetricsDPIScaledY(HWND hwnd, const int nValue)
+{
+  return ScaleIntToHwndDPIY(hwnd, GetSystemMetrics(nValue));
+}
 
 //=============================================================================
 //

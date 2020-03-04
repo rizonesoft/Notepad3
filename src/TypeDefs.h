@@ -310,6 +310,7 @@ typedef struct _globals_t
   DWORD     dwLastError;
   HMENU     hMainMenu;
   HICON     hDlgIcon; // Notepad3 Icon (256x256)
+  HICON     hDlgIcon128; // Notepad3 Icon (128x128)
   HICON     hIconMsgUser;
   HICON     hIconMsgInfo;
   HICON     hIconMsgWarn;

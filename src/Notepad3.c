@@ -883,6 +883,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon));
   }
 
+  if (!Globals.hDlgIcon128) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128));
+  }
+
   int const cxs = GetSystemMetrics(SM_CXSMICON);
   int const cys = GetSystemMetrics(SM_CYSMICON);
 
