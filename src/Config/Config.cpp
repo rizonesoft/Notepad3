@@ -1662,9 +1662,10 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
-  BeginWaitCursor(tchMsg);
 
   bool ok = OpenSettingsFile();
+
+  BeginWaitCursor(tchMsg);
 
   if (ok) {
 
@@ -1687,6 +1688,8 @@ bool SaveAllSettings(bool bForceSaveSettings)
     }
   }
 
+  EndWaitCursor();
+
   if (ok) {
     ok = CloseSettingsFile(true);
   }
@@ -1696,7 +1699,6 @@ bool SaveAllSettings(bool bForceSaveSettings)
     Style_SaveSettings(bForceSaveSettings);
   }
 
-  EndWaitCursor();
   return ok;
 }
 

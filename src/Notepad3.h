@@ -198,9 +198,17 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
-static __forceinline bool CheckNotifyChangeEvent();
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+
+
+#define BeginWaitCursor(text)     __try { SciCall_SetCursor(SC_CURSORWAIT);                       \
+                                          StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); 
+
+#define EndWaitCursor()     } __finally { SciCall_SetCursor(SC_CURSORNORMAL);                      \
+                                          POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y); \
+                                          UpdateStatusbar(true); }
+
 
 #define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 

@@ -55,15 +55,12 @@ static void EditPrintInit();
 //
 void StatusUpdatePrintPage(int iPageNum)
 {
-  WCHAR tch[32] = { L'\0' };
-
+  WCHAR tch[80] = { L'\0' };
   FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
-
   StatusSetText(Globals.hwndStatus,255,tch);
-  StatusSetSimple(Globals.hwndStatus,true);
-
-  InvalidateRect(Globals.hwndStatus,nullptr,true);
-  UpdateWindow(Globals.hwndStatus);
+  //RedrawWindow(Globals.hwndStatus, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+  InvalidateRect(Globals.hwndStatus,NULL,TRUE);
+  //UpdateWindow(Globals.hwndStatus);
 }
 
 

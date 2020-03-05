@@ -3916,7 +3916,7 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
   bi.uAlign = BUTTON_IMAGELIST_ALIGN_RIGHT;
 
   SendMessage(hwndCtl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
-  InvalidateRect(hwndCtl, NULL, true);
+  InvalidateRect(hwndCtl, NULL, TRUE);
 
   if (himlOld) {
     ImageList_Destroy(himlOld);
@@ -3951,8 +3951,6 @@ void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
   }
 }
 
-
-
 //=============================================================================
 //
 //  StatusSetTextID()
@@ -3967,7 +3965,6 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
     SendMessage(hwnd, SB_SETTEXT, uFlags, 0);
     return true;
   }
-
   if (!GetLngString(uID, szText, 256)) { return false; }
 
   return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)szText);
@@ -4359,7 +4356,7 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
 
   SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight,
                SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
-  //InvalidateRect(hWnd, NULL, TRUE);
+  InvalidateRect(hWnd, NULL, TRUE);
 
 #endif
 }
@@ -4397,12 +4394,12 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
 //
 LRESULT SendWMSize(HWND hwnd, RECT* rc)
 {
-  if (!rc) {
-    RECT _rc;
-    GetClientRect(hwnd, &_rc);
-    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(_rc.right, _rc.bottom));
+  if (rc) {
+    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
   }
-  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
+  RECT wndrc;
+  GetClientRect(hwnd, &wndrc);
+  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
 }
 
 //  End of Dialogs.c

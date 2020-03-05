@@ -4803,8 +4803,6 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
     // remember x-pos for moving caret vertically
     SciCall_ChooseCaretX();
   }
-  UpdateToolbar();
-  UpdateStatusbar(false);
 }
 
 
@@ -5943,7 +5941,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             else {
               s_fwrdMatch = match;
             }
-            InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+            InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
             if (match != MATCH) {
               EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
               if (s_InitialTopLine >= 0) {
@@ -5988,7 +5986,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
             }
             EditClearAllOccurrenceMarkers(sg_pefrData->hwnd);
             Globals.iMarkOccurrencesCount = (DocPos)-1;
-            InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+            InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
           }
         }
         break;
@@ -6601,8 +6599,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
     return;
   }
 
-  bool const bWaitCursor = (Globals.iMarkOccurrencesCount > 4000) ? true : false;
-  if (bWaitCursor) { BeginWaitCursor(NULL); }
+  BeginWaitCursor(L"Mark Occ...");
 
   int const searchFlags = GetMarkAllOccSearchFlags();
 
@@ -6626,7 +6623,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   
   _OBSERVE_NOTIFY_CHANGE_;
 
-  if (bWaitCursor) { EndWaitCursor(); } 
+  EndWaitCursor();
 }
 
 
@@ -6938,10 +6935,9 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
-  if (bWaitCursor) { BeginWaitCursor(NULL); }
   Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
-  if (bWaitCursor) { EndWaitCursor(); }
+
+  BeginWaitCursor(L"Replace all...")
 
   if (Globals.iReplacedOccurrences > 0) 
   {
@@ -6959,6 +6955,8 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
       }
     }
   }
+
+  EndWaitCursor();
 
   return (Globals.iReplacedOccurrences > 0) ? true : false;
 }
@@ -6991,8 +6989,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 //
 void EditToggleView(HWND hwnd)
 {
-  bool const bWaitCursor = ((Globals.iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
-  if (bWaitCursor) { BeginWaitCursor(NULL); }
+  BeginWaitCursor(L"Toggle View...");
 
   FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
@@ -7007,7 +7004,7 @@ void EditToggleView(HWND hwnd)
     SciCall_SetReadOnly(false);
   }
 
-  if (bWaitCursor) { EndWaitCursor(); }
+  EndWaitCursor();
 }
 
 
@@ -7846,7 +7843,6 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           //int _id_hover = id_hover;
           id_hover = 0;
           id_capture = 0;
-          //InvalidateRect(GetDlgItem(hwnd,id_hover),NULL,false);
         }
       }
       return false;
@@ -7907,7 +7903,6 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           GetCapture();
           id_hover = dwId;
           id_capture = dwId;
-          //InvalidateRect(GetDlgItem(hwnd,dwId),NULL,false);
         }
         SetCursor(id_hover != 0?hCursorHover:hCursorNormal);
       }
