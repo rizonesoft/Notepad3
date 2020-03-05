@@ -31,7 +31,77 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC1 Version 5.20.303.(build_#) (2020-03-03)
+Current NewFeatures Version 5.20.304.(build_#) (2020-03-04)
+=====================================================
+-----------------------------------------------------
+NEW:
+-----------------------------------------------------
+- 
+
+-----------------------------------------------------
+CHANGES:
+-----------------------------------------------------
+- 
+
+-----------------------------------------------------
+ENHANCEMENT:
+-----------------------------------------------------
+- DPI awareness and multi monitor handling.
+
+-----------------------------------------------------
+FIXES:
+-----------------------------------------------------
+- 
+
+-----------------------------------------------------
+REMOVED:
+-----------------------------------------------------
+- 
+
+-----------------------------------------------------
+MAIN KNOWN ISSUES AND TO DO LIST:
+-----------------------------------------------------
+- Support for Fortran syntax scheme (#1766).
+- Support for kotlin syntax scheme (#1761).
+- Support for REXX syntax scheme (#1610).
+- Support for TypeScript syntax (#911).
+- Support for TOML syntax scheme (#832).
+- Selection of complex script is not properly handled (#2019).
+- Search multifiles or path (#2018).
+- Add text to multi-line to the end of another text after select with ALT+Mouse (#1911).
+- Ability to make our own language similar to notepad++ (#1902).
+- Detect Dark mode of Win10 (#1811).
+- Restore selection when reopen file (#1793).
+- Search the content of the files in a directory (#1728).
+- Is there any autosave option? (#1665).
+- Make Lexer's Keyword-Lists Case Sensitive (#1647).
+- Enhancement Request: CSV Syntax Scheme (#1603).
+- Right-to-Left (RTL) Alignment (#1558).
+- Insert HTML/XML tag - remembering last inserted tag (#1532).
+- Highlight matches position in the scroll bar (#1466).
+- Custom keywords for syntax highlighter (#1336).
+- Add a Tools menu to call external programs from Notepad3 (#1332).
+- Snippets engine (#1306).
+- Multiple word editing (#1126).
+- Easy syntax customizer (#916).
+- Minimal Find/Replace with advanced expand (#914).
+- Add support to create/modify keyboard shortcuts (#595).
+- Periodic backup of unsaved documents (#512).
+- Intellegent Backup with optional versioning (#370).
+- Change of behaviour for handling folded blocks (#331).
+
+-----------------------------------------------------
+TRANSLATIONS (MUI):
+-----------------------------------------------------
+- Korean (ko-KR) (to resume).
+- Portuguese Brazilian (pt-BR) (in progress).
+- Slovak (sk-SK) (to resume).
+- Turkish (tr-TR) (to resume).
+
+
+=====================================================
+Current RC2 Version 5.20.305.(build_#) (2020-03-05)
+// Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------
@@ -123,6 +193,8 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Sticky window position handling.
+- Initial, default and current  window position handling.
 - Debug assertion (isspace() called on non ASCII char).
 - Correct return result of Styles export.
 - Scintilla method declaration.
