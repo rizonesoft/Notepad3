@@ -7075,16 +7075,15 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             }
           }
         }
-        //else if (iUpd & SC_UPDATE_CONTENT) {
-          // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-          // using WM_COMMAND -> SCEN_CHANGE  instead!
+        //~else if (iUpd & SC_UPDATE_CONTENT) {
+          //~ ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+          //~ using WM_COMMAND -> SCEN_CHANGE  instead!
           //~~~MarkAllOccurrences(Settings2.UpdateDelayMarkAllCoccurrences, false);
-          //~~~UpdateVisibleIndicators();
+          //~~~EditUpdateVisibleIndicators(); // will lead to recursion
         //}
-        EditUpdateVisibleIndicators();
+        HandlePosChange();
         UpdateToolbar();
         UpdateStatusbar(false);
-        HandlePosChange();
       }
       else if (iUpd & SC_UPDATE_V_SCROLL)
       {
