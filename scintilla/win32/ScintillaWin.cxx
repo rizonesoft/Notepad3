@@ -820,8 +820,8 @@ bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
-	return (xMove > GetSystemMetricsEx(SM_CXDRAG)) ||
-		(yMove > GetSystemMetricsEx(SM_CYDRAG));
+	return (xMove > GetSystemMetricsDPIScaledX(MainHWND(), SM_CXDRAG)) ||
+	       (yMove > GetSystemMetricsDPIScaledY(MainHWND(), SM_CYDRAG));
 }
 
 void ScintillaWin::StartDrag() {
@@ -1021,6 +1021,7 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 }
 
 bool ScintillaWin::PaintDC(HDC hdc) {
+
 	if (technology == SC_TECHNOLOGY_DEFAULT) {
 		AutoSurface surfaceWindow(hdc, this);
 		if (surfaceWindow) {
@@ -1051,6 +1052,10 @@ bool ScintillaWin::PaintDC(HDC hdc) {
 
 sptr_t ScintillaWin::WndPaint() {
 	//ElapsedPeriod ep;
+	
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	if (paintState != notPainting) { return 0; } // prevent recursion loop
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	// Redirect assertions to debug output and save current state
 	const bool assertsPopup = Platform::ShowAssertionPopUps(false);
@@ -1066,8 +1071,8 @@ sptr_t ScintillaWin::WndPaint() {
 	const PRectangle rcClient = GetClientRectangle();
 	paintingAllText = BoundsContains(rcPaint, hRgnUpdate, rcClient);
 	if (!PaintDC(ps.hdc)) {
-				paintState = paintAbandoned;
-			}
+		paintState = paintAbandoned;
+	}
 	if (hRgnUpdate) {
 		::DeleteRgn(hRgnUpdate);
 		hRgnUpdate = {};
