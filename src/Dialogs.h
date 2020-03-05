@@ -121,7 +121,13 @@ inline int ScaleIntToHwndDPIY(HWND hwnd, int val) { DPI_T const dpi = GetCurrent
 inline int ScaleFloatToHwndDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleFloatToHwndDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
 
-inline int ScaleIntFontSize(HWND hwnd, int val) { 
+inline int ScaleIntFontSizeWidth(HWND hwnd, int val) { 
+  DPI_T const dpi = GetCurrentDPI(hwnd);  
+  DPI_T const ppi = GetCurrentPPI(hwnd);  
+  return MulDiv((val), dpi.x, ppi.x); 
+}
+
+inline int ScaleIntFontSizeHeight(HWND hwnd, int val) { 
   DPI_T const dpi = GetCurrentDPI(hwnd);  
   DPI_T const ppi = GetCurrentPPI(hwnd);  
   return MulDiv((val), dpi.y, ppi.y); 
