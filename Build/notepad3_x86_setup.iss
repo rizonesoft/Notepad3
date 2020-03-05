@@ -20,8 +20,8 @@
   #error Compile MiniPath x86 first
 #endif
 
-#define app_name      Notepad3
-#define app_publisher Rizonesoft
+#define app_name      "Notepad3"
+#define app_publisher "Rizonesoft"
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
 #define app_copyright "(c) Rizonesoft 2008-2019"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
@@ -336,7 +336,11 @@ begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
-end;
+
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', 'C:\\Program Files (x86)\\Notepad3\\Notepad3.exe,0');
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
+  
+  end;
 
 
 procedure CleanUpSettings();
