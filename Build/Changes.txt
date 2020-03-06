@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current NewFeatures Version 5.20.304.(build_#) (2020-03-04)
+Current NewFeatures Version 5.20.306.(build_#) (2020-03-06)
 =====================================================
 -----------------------------------------------------
 NEW:
@@ -51,7 +51,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
-- 
+- DPI scaling window on display dependent.
 
 -----------------------------------------------------
 REMOVED:
@@ -73,6 +73,7 @@ MAIN KNOWN ISSUES AND TO DO LIST:
 - Detect Dark mode of Win10 (#1811).
 - Restore selection when reopen file (#1793).
 - Search the content of the files in a directory (#1728).
+- Can't handle files >=4GB (#1713).
 - Is there any autosave option? (#1665).
 - Make Lexer's Keyword-Lists Case Sensitive (#1647).
 - Enhancement Request: CSV Syntax Scheme (#1603).
@@ -100,13 +101,14 @@ TRANSLATIONS (MUI):
 
 
 =====================================================
-Current RC2 Version 5.20.305.(build_#) (2020-03-05)
+Current RC2 Version 5.20.306.(build_#) (2020-03-06)
 // Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- "Open with Notepad3" Right-Click in Explorer Context Menu. 
 - In About Resources: Data Sharing Service from https://workupload.com/. 
 - Automatic scrolling when dragging text near window edge.
     Patch by McLoo from https://sourceforge.net/p/scintilla/feature-requests/497/.

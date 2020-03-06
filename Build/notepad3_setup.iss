@@ -1,6 +1,6 @@
 ;* Notepad3 - Installer script
 ;*
-;* (c) Rizonesoft 2008-2019 
+;* (c) Rizonesoft 2008-2020
 
 ; Requirements:
 ; Inno Setup: http://www.jrsoftware.org/isdl.php
@@ -398,6 +398,8 @@ procedure RemoveReg();
 begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
+  
+  RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
 end;
 
 
