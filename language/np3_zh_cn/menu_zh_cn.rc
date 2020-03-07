@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "切换工具栏(&G)",                       IDM_VIEW_TOGGLETB
             MENUITEM "自定义工具栏(&C)...",                  IDM_VIEW_CUSTOMIZETB
             MENUITEM "加载工具栏主题(&L)...",                IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
             MENUITEM "显示状态栏(&S)",                       IDM_VIEW_STATUSBAR
         END
         POPUP "缩放(&Z)"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "切换工具栏(&G)",                            IDM_VIEW_TOGGLETB
         MENUITEM "自定义工具栏(&C)...",                       IDM_VIEW_CUSTOMIZETB
         MENUITEM "加载工具栏主题(&L)...",                     IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",                       IDM_VIEW_DPISCALETB
         MENUITEM "显示状态栏(&S)",                            IDM_VIEW_STATUSBAR
     END
     POPUP "+"

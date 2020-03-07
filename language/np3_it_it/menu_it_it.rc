@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "Ca&mbia Toolbars",              IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Carica Tema Toolbar...",       IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
             MENUITEM "Mostra Barra di &Stato",        IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "Ca&mbia Toolbars",               IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizza Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Carica Tema Toolbar...",        IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",             IDM_VIEW_DPISCALETB
         MENUITEM "Mostra &Barra di stato",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

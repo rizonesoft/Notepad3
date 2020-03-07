@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
             MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
             MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "Tro&car Barra de &Ferramentas",                IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar Barra de Ferramentas...",        IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Carregar Tema da Barra de &Ferramentas...",   IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",                           IDM_VIEW_DPISCALETB
         MENUITEM "Mostrar Barra de &Status",                     IDM_VIEW_STATUSBAR
     END
     POPUP "+"

@@ -209,7 +209,6 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
       LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)lParam;
 
-
       switch (lpMsgBox->uType & MB_ICONMASK)
       {
       case MB_ICONQUESTION:
@@ -473,15 +472,6 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 INT_PTR DisplayCmdLineHelp(HWND hwnd)
 {
   return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CMDLINEHELP), hwnd, CmdLineHelpProc, (LPARAM)L"");
-
-  //if (!hwnd) {
-  //  // text to std-out
-  //  //RedirectIOToConsole();
-  //  //fwprintf(stdout, L"\n!!! blahblub ???\n");
-  //  //fflush(stdout);
-  //  //SleepEx(5000,FALSE);
-  //}
-  //return(0);
 }
 
 #endif
@@ -590,8 +580,6 @@ static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
 //  (EditStreamCallback)
 //  _LoadRtfCallback() RTF edit control StreamIn's callback function 
 //
-#if true
-
 static DWORD CALLBACK _LoadRtfCallback(
   DWORD_PTR dwCookie,  // (in) pointer to the string
   LPBYTE pbBuff,       // (in) pointer to the destination buffer
@@ -619,37 +607,6 @@ static DWORD CALLBACK _LoadRtfCallback(
 }
 // ----------------------------------------------------------------------------
 
-#else
-
-static DWORD CALLBACK _LoadRtfCallbackW(
-  DWORD_PTR dwCookie,  // (in) pointer to the string
-  LPBYTE pbBuff,       // (in) pointer to the destination buffer
-  LONG cb,             // (in) size in bytes of the destination buffer
-  LONG FAR* pcb        // (out) number of bytes transfered
-)
-{
-  LPWSTR* pstr = (LPWSTR*)dwCookie;
-  LONG const len = (LONG)StringCchLen(*pstr, 0);
-  LONG const size = len * sizeof(WCHAR);
-
-  cb -= (cb % sizeof(WCHAR));
-
-  if (size < cb) {
-    *pcb = size;
-    memcpy(pbBuff, (LPCWSTR)*pstr, *pcb);
-    *pstr += len;
-    //*pstr = '\0';
-  }
-  else {
-    *pcb = cb;
-    memcpy(pbBuff, (LPCWSTR)*pstr, *pcb);
-    *pstr += (cb / sizeof(WCHAR));
-  }
-  return 0;
-}
-// ----------------------------------------------------------------------------
-
-#endif
 
 //=============================================================================
 //
@@ -657,6 +614,10 @@ static DWORD CALLBACK _LoadRtfCallbackW(
 //
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  static HFONT hVersionFont = NULL;
+  static char pAboutResource[8192] = { '\0' };
+  static char* pAboutInfo = NULL;
+
   switch (umsg)
   {
   case WM_INITDIALOG:
@@ -665,21 +626,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
     SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)) L" (" _W(_STRG(VERSION_COMMIT_ID)) L")");
-
-    static HFONT hFontTitle = NULL;
-    if (hFontTitle) { DeleteObject(hFontTitle); }
-    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
-      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-    }
-    LOGFONT lf;
-    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-    lf.lfWeight = FW_BOLD;
-    lf.lfWidth  = ScaleIntFontSize(8);
-    lf.lfHeight = ScaleIntFontSize(22);
-    // lf.lfQuality = ANTIALIASED_QUALITY;
-    hFontTitle = CreateFontIndirect(&lf);
-
-    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
     SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
@@ -709,23 +655,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_AUTOURLDETECT, (WPARAM)1, (LPARAM)0);
 
-    //CHARFORMAT2 cf2;
-    //ZeroMemory(&cf2, sizeof(CHARFORMAT2));
-    //cf2.dwMask = CFM_LINK | CFM_UNDERLINE | CFM_COLOR | CFM_LINKPROTECTED;
-    //cf2.dwEffects = CFE_LINK | CFE_UNDERLINE | CFE_LINKPROTECTED;
-    //cf2.crTextColor = RGB(255, 0, 0);
-    //cf2.bUnderlineType = CFU_UNDERLINENONE;
-    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLEEX, 0, (LPARAM)SES_EX_HANDLEFRIENDLYURL);
-    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&cf2);
-
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-  #if true
-
-    static char pAboutResource[8192] = { '\0' };
-    static char* pAboutInfo = NULL;
-
-    char pAboutRes[4000];
+    char pAboutRes[4096];
     GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
     StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
     GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
@@ -754,59 +686,42 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
 
     pAboutInfo = pAboutResource;
-
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
-  #else
-
-    static WCHAR pAboutResource[8192] = { L'\0' };
-    static PWCHAR pAboutInfo = NULL;
-
-    WCHAR pAboutRes[4000];
-    GetLngString(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCopy(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngString(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-
-    pAboutInfo = pAboutResource;
-
-    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallbackW };
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, (WPARAM)(UINT)(SF_TEXT | SF_UNICODE), (LPARAM)&editStreamIn);
-
-    // EM_SETTEXTEX is Richedit 3.0 only
-    //SETTEXTEX ste;
-    //ste.flags = ST_SELECTION;  // replace everything
-    //ste.codepage = 1200;       // Unicode is codepage 1200
-    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETTEXTEX, (WPARAM)&ste, (LPARAM)pAboutInfo);
-
-  #endif
-    
     CenterDlgInParent(hwnd, NULL);
   }
-  return true;
-
+  // fall-through
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    {
+      // get current richedit box format
+      CHARFORMAT2 currentFormat;  ZeroMemory(&currentFormat, sizeof(CHARFORMAT2));  currentFormat.cbSize = sizeof(CHARFORMAT2);
+      currentFormat.dwMask = CFM_ALL2; // CFM_SIZE | CFM_FACE | CFM_CHARSET | CFM_LCID;  CFM_ALL;  CFM_ALL2;
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&currentFormat);
+
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+
+      // --- keep original font size ---
+      CHARFORMAT dpiCharFmt;  ZeroMemory(&dpiCharFmt, sizeof(CHARFORMAT));  dpiCharFmt.cbSize = sizeof(CHARFORMAT);
+      dpiCharFmt.dwMask = CFM_SIZE; //~ | CFM_FACE;
+      dpiCharFmt.yHeight = currentFormat.yHeight; // keep size
+      //~StringCchCopy(dpiCharFmt.szFaceName, COUNTOF(dpiCharFmt.szFaceName), L"Consolas");
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&dpiCharFmt);
+
+      // --- larger bold version string
+      if (hVersionFont) { DeleteObject(hVersionFont); }
+      if ((hVersionFont = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)) == NULL) {
+        hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
+      }
+      LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
+      lf.lfWeight = FW_BOLD;
+      lf.lfWidth = ScaleIntFontSizeW(hwnd, 8);
+      lf.lfHeight = ScaleIntFontSizeH(hwnd, 22);
+      // lf.lfQuality = ANTIALIASED_QUALITY;
+      hVersionFont = CreateFontIndirect(&lf);
+      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+    }
     return true;
 
 
@@ -887,7 +802,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
         int ResX, ResY;
         GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
-        DPI_T const wndDPI = GetCurrentDPI(Globals.hwndMain);
 
         // --------------------------------------------------------------------
 
@@ -918,7 +832,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", wndDPI.x, wndDPI.y, ScaleIntToCurrentDPI(100));
+        DPI_T dpi = GetCurrentDPI(hwnd);
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToCurrentDPIX(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -2588,7 +2503,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hbmp);
+        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
 
         HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
@@ -2745,7 +2660,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
         HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hbmp);
+        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
 
         HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
@@ -3831,7 +3746,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   HWND hwndCtl = GetDlgItem(hwnd, nIdGrip);
   SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
   /// TODO: per-window DPI
-  const int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
+  const int cGrip = GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
   SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
 }
 
@@ -3851,7 +3766,8 @@ void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame) {
   FreeMem(pm);
 }
 
-void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy) {
+void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
+{
   PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
   const int cxClient = LOWORD(lParam);
   const int cyClient = HIWORD(lParam);
@@ -3937,7 +3853,7 @@ void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
 {
   HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  hBmp = ResizeImageForCurrentDPI(hBmp);
+  hBmp = ResizeImageForCurrentDPI(hwnd, hBmp);
   BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
   BUTTON_IMAGELIST bi;
@@ -3997,7 +3913,7 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
   bi.uAlign = BUTTON_IMAGELIST_ALIGN_RIGHT;
 
   SendMessage(hwndCtl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
-  InvalidateRect(hwndCtl, NULL, true);
+  InvalidateRect(hwndCtl, NULL, TRUE);
 
   if (himlOld) {
     ImageList_Destroy(himlOld);
@@ -4063,7 +3979,6 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
     SendMessage(hwnd, SB_SETTEXT, uFlags, 0);
     return true;
   }
-
   if (!GetLngString(uID, szText, 256)) { return false; }
 
   return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)szText);
