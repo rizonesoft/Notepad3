@@ -1,6 +1,6 @@
 ;* Notepad3 - Installer script
 ;*
-;* (c) Rizonesoft 2008-2019 
+;* (c) Rizonesoft 2008-2020
 
 ; Requirements:
 ; Inno Setup: http://www.jrsoftware.org/isdl.php
@@ -28,8 +28,8 @@
   #error Compile MiniPath x64 first
 #endif
 
-#define app_name      Notepad3
-#define app_publisher Rizonesoft
+#define app_name      "Notepad3"
+#define app_publisher "Rizonesoft"
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
 #define app_copyright "(c) Rizonesoft 2008-2019"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
@@ -379,6 +379,10 @@ begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
+
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', 'C:\\Program Files\\Notepad3\\Notepad3.exe,0')
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', '"C:\\Program Files\\Notepad3\\Notepad3.exe" %1')
+
 end;
 
 
@@ -394,6 +398,8 @@ procedure RemoveReg();
 begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
+  
+  RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
 end;
 
 

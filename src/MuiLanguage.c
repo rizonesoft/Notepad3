@@ -17,6 +17,7 @@
 
 #include <muiload.h>
 #include <locale.h>
+#include <commctrl.h>
 
 #include "resource.h"
 #include "Dialogs.h"
@@ -57,6 +58,21 @@ MUILANGUAGE MUI_LanguageDLLs[] =
 
 //NUM_OF_MUI_LANGUAGES
 int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
+
+//=============================================================================
+//
+//  GetMUILanguageIndexByLangID
+//
+int GetMUILanguageIndexByLangID(LANGID iLanguageID)
+{
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
+    if (MUI_LanguageDLLs[lng].LangId == iLanguageID) {
+      return lng;
+    }
+  }
+  return -1;
+}
+
 
 //=============================================================================
 //
@@ -193,28 +209,30 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 }
 
 
+
 //=============================================================================
 //
 //  SetPreferredLanguage
 //
 void SetPreferredLanguage(LANGID iPreferredLanguageID)
 {
-  LANGID const prevLngID = Globals.iPrefLANGID;
-  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US); // internal
-  const WCHAR* szLocaleName = NULL;
-  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-    if (MUI_LanguageDLLs[lng].LangId == iPreferredLanguageID) {
-      Globals.iPrefLANGID = iPreferredLanguageID;
-      szLocaleName = MUI_LanguageDLLs[lng].szLocaleName;
-    }
-  }
-  if ((Globals.iPrefLANGID != prevLngID) && szLocaleName) 
+  int const langIdx = GetMUILanguageIndexByLangID(iPreferredLanguageID);
+  if (langIdx < 0)
   {
-    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0) 
+    Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US); // internal
+    return;
+  }
+
+  if (iPreferredLanguageID != Globals.iPrefLANGID)
+  {
+    Globals.iPrefLANGID = iPreferredLanguageID; // == MUI_LanguageDLLs[langIdx].LangId
+    const WCHAR* szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
+
+    if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0)
     {
       StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
-      
-      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) 
+
+      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0)
       {
         IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
       }
@@ -243,13 +261,13 @@ LANGID LoadLanguageResources()
     if (StringCchCompareXIW(MUI_LanguageDLLs[lng].szLocaleName, Settings2.PreferredLanguageLocaleName) == 0) {
       if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
         StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].szLocaleName);
-        StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L" ");
+        StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
       }
       iPrefLngIndex = lng;
       break;
     }
   }
-  StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[0].szLocaleName); // en-US
+  StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[0].szLocaleName); // en-US fallback
 
   // NOTES:
   // an application developer that makes the assumption the fallback list provided by the
@@ -264,19 +282,24 @@ LANGID LoadLanguageResources()
   {
     MsgBoxLastError(L"Trying to load Language resource!", ERROR_MUI_INVALID_LOCALE_NAME);
   }
-  DWORD langCount = 0;
+  ULONG langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
-  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
+  SetProcessPreferredUILanguages(0, L"\0\0", &langCount); // clear
+  if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
     MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
   }
+  //else {
+  //  SetThreadPreferredUILanguages(0, L"\0\0", &langCount); // clear
+  //  SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount);
+  //}
 
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
   HINSTANCE _hLangResourceContainer = NULL;
   Globals.bPrefLngNotAvail = (iPrefLngIndex < 0);
-  int iUsedLngId = (iPrefLngIndex >= 0) ? iPrefLngIndex : 0;
+  int iUsedLngIdx = (iPrefLngIndex >= 0) ? iPrefLngIndex : 0;
 
   if ((iPrefLngIndex >= 0) && MUI_LanguageDLLs[iPrefLngIndex].bHasDLL) {
     _hLangResourceContainer = (iPrefLngIndex == 0) ? Globals.hInstance :
@@ -284,7 +307,7 @@ LANGID LoadLanguageResources()
     if (_hLangResourceContainer) {
       MUI_LanguageDLLs[0].bIsActive = false;
       MUI_LanguageDLLs[iPrefLngIndex].bIsActive = true;
-      iUsedLngId = iPrefLngIndex;
+      iUsedLngIdx = iPrefLngIndex;
     }
   }
 
@@ -294,11 +317,13 @@ LANGID LoadLanguageResources()
     Globals.bPrefLngNotAvail = (iPrefLngIndex != 0);
     _hLangResourceContainer = Globals.hInstance;
     MUI_LanguageDLLs[0].bIsActive = true;
-    iUsedLngId = 0;
+    iUsedLngIdx = 0;
   }
 
+  // MUI Language for common controls
+  InitMUILanguage(MUI_LanguageDLLs[iUsedLngIdx].LangId);
+
   Globals.hLngResContainer = _hLangResourceContainer;
-  SetThreadUILanguage(MUI_LanguageDLLs[iUsedLngId].LangId);
 
   // ===  update language dependent items  ===
 
@@ -322,7 +347,7 @@ LANGID LoadLanguageResources()
   IniSectionGetString(StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
   ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
    
-  return MUI_LanguageDLLs[iUsedLngId].LangId;
+  return MUI_LanguageDLLs[iUsedLngIdx].LangId;
 }
 
 
