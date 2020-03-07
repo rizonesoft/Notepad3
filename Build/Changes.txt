@@ -31,83 +31,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current NewFeatures Version 5.20.306.(build_#) (2020-03-06)
-=====================================================
------------------------------------------------------
-NEW:
------------------------------------------------------
-- 
-
------------------------------------------------------
-CHANGES:
------------------------------------------------------
-- 
-
------------------------------------------------------
-ENHANCEMENT:
------------------------------------------------------
-- DPI awareness and multi monitor handling.
-
------------------------------------------------------
-FIXES:
------------------------------------------------------
-- DPI scaling window on display dependent.
-
------------------------------------------------------
-REMOVED:
------------------------------------------------------
-- 
-
------------------------------------------------------
-MAIN KNOWN ISSUES AND TO DO LIST:
------------------------------------------------------
-- Support for Fortran syntax scheme (#1766).
-- Support for kotlin syntax scheme (#1761).
-- Support for REXX syntax scheme (#1610).
-- Support for TypeScript syntax (#911).
-- Support for TOML syntax scheme (#832).
-- Selection of complex script is not properly handled (#2019).
-- Search multifiles or path (#2018).
-- Add text to multi-line to the end of another text after select with ALT+Mouse (#1911).
-- Ability to make our own language similar to notepad++ (#1902).
-- Detect Dark mode of Win10 (#1811).
-- Restore selection when reopen file (#1793).
-- Search the content of the files in a directory (#1728).
-- Can't handle files >=4GB (#1713).
-- Is there any autosave option? (#1665).
-- Make Lexer's Keyword-Lists Case Sensitive (#1647).
-- Enhancement Request: CSV Syntax Scheme (#1603).
-- Right-to-Left (RTL) Alignment (#1558).
-- Insert HTML/XML tag - remembering last inserted tag (#1532).
-- Highlight matches position in the scroll bar (#1466).
-- Custom keywords for syntax highlighter (#1336).
-- Add a Tools menu to call external programs from Notepad3 (#1332).
-- Snippets engine (#1306).
-- Multiple word editing (#1126).
-- Easy syntax customizer (#916).
-- Minimal Find/Replace with advanced expand (#914).
-- Add support to create/modify keyboard shortcuts (#595).
-- Periodic backup of unsaved documents (#512).
-- Intellegent Backup with optional versioning (#370).
-- Change of behaviour for handling folded blocks (#331).
-
------------------------------------------------------
-TRANSLATIONS (MUI):
------------------------------------------------------
-- Korean (ko-KR) (to resume).
-- Portuguese Brazilian (pt-BR) (in progress).
-- Slovak (sk-SK) (to resume).
-- Turkish (tr-TR) (to resume).
-
-
-=====================================================
-Current RC2 Version 5.20.306.(build_#) (2020-03-06)
+Current RC3 Version 5.20.307.(build_#) (2020-03-07)
 // Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- remove scaling of Toolbar image for DPI (avoid blurry images)
 - "Open with Notepad3" Right-Click in Explorer Context Menu. 
 - In About Resources: Data Sharing Service from https://workupload.com/. 
 - Automatic scrolling when dragging text near window edge.
@@ -126,9 +57,9 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
-- Add file history to to recent docs jumplist.
-- AddFileToRecentDocs.
-- INI file read/write using synchronous file locking (shared read / exclusive write).
+- Split undo typing sequence by line-breaks default -> true
+- Add file history to to recent docs (taskbar) jumplist.
+- NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
 - Reset build-of-the-day number in AppVeyor on new day.
 - Change version numbering of build_# (the build number is now daily based).
 - Remove AppVeyors build number, add build-of-the-day number, add short version of commit/local build ID.
@@ -139,41 +70,31 @@ CHANGES:
 - Add current Encoding and Lexer to "Copy Version Text".
 - Lexer keyword initializer list simplified.
 - Find/Replace dialog: in case of "transform backslashes" do Esc control seqs.
-- Remove "extra" drag n' drop handler.
-- Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=70".
-- UCHARDET: Confidence calculation for Single Byte Character Set (SBCS).
-- Replace "save modified file warning" by (silent) custom messagebox if message beeps are muted.
+- Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=92".
+- UCHARDET: Enhanced confidence calculation for Single Byte Character Set (SBCS).
+- Replace std messagebox "save modified file warning" by (silent) custom messagebox if message beeps are muted.
 - Don't Auto-Close blank untitled document, only empty untitled document.
-- Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
+- Encoding detection fallback: if "Load ASCII as UTF-8" is checked use UTF-8 (if valid) else current ANSI code-page.
 - Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
 - Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L
 - Change wording "Administrator" to "Elevated".
-- MiniPath - Notepad3 communication.
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
-- ESC Key clears active selection (before exiting Notepad3).
-- Refactoring source code (encoding detection).
-- Reduce big file size limit to 2GB (INT_MAX).
-- Conversion all *.RC files to encoding UTF-8 (no BOM/Signature).
+- ESC Key clears active selection (not exiting Notepad3 if configured) (Config: ExitOnESCSkipLevel=2).
+- Set large file size limit to 2GB (INT32_MAX).
+- Set big file size limit warning to 64MB  (syntax highlighting is switched off) (Config: FileLoadWarningMB=64).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
-- Copy instead of insert (filename, path, GUID).
-- Load (internal) Flags (Settings2) as part of LoadSettings() - one pass .ini-read.
+- Copy to clipboard instead of insert (filename, path, GUID).
 - Option [Settings2] LexerSQLNumberSignAsComment.
 - Option [Settings2] LineCommentPortfixStrg= e.g. add a space to comment chars.
 - Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
-- Thin rectangular (multi) selection after toggeling line-comment block.
-- Scintilla (SCI): allow CamelCase/StartCase word lists.
-- Borderless in Full Screen Mode.
-- Maximize window if "full work area" is requested.
-- Full Work Area Mode (F11) -> Full Screen Mode.
-- Relax UTF-8 orientation (lower confidence level for UCHARDET 
-    and use system's code-page as detection fallback by default).
+- Thin rectangular (multi) selection after toggeling line-comment block for multi insertion.
+- Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested)
 - Ctrl+Alt+Enter AutoCompletion behaviour.
-- Changed version of MarkDown-Lexer.
 - Menu and behavior for copy/paste and copy/paste line.
-- Allow each modification step to split undo typing sequence (set timeout < 20ms).
-- Split undo typing sequence (by line-breaks and/or timeout).
+- Allow each modification step to split undo typing sequence (set timeout 0 < to < 20ms).
+- Split undo typing sequence (by line-breaks and/or timeout) (UndoTransactionTimeout=0, LnBrk via Menu).
 - Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/01/28).
 - Update Scintilla Library (SCI) version 4.3.1 (2020/03/04).
 
@@ -195,6 +116,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Common controls will use preffered/available MUI language
 - Sticky window position handling.
 - Initial, default and current  window position handling.
 - Debug assertion (isspace() called on non ASCII char).
@@ -1530,4 +1452,50 @@ Version 1 Build 330 (24 June 2016)
 - Fixed Compiler warnings
 - Fixed Favorites Function
 - Removed Visual Studio 2010 to 2013 Support
+
+
+
+-----------------------------------------------------
+MAIN KNOWN ISSUES AND TO DO LIST:
+-----------------------------------------------------
+- Support for Fortran syntax scheme (#1766).
+- Support for kotlin syntax scheme (#1761).
+- Support for REXX syntax scheme (#1610).
+- Support for TypeScript syntax (#911).
+- Support for TOML syntax scheme (#832).
+- Selection of complex script is not properly handled (#2019).
+- Search multifiles or path (#2018).
+- Add text to multi-line to the end of another text after select with ALT+Mouse (#1911).
+- Ability to make our own language similar to notepad++ (#1902).
+- Detect Dark mode of Win10 (#1811).
+- Restore selection when reopen file (#1793).
+- Search the content of the files in a directory (#1728).
+- Can't handle files >=4GB (#1713).
+- Is there any autosave option? (#1665).
+- Make Lexer's Keyword-Lists Case Sensitive (#1647).
+- Enhancement Request: CSV Syntax Scheme (#1603).
+- Right-to-Left (RTL) Alignment (#1558).
+- Insert HTML/XML tag - remembering last inserted tag (#1532).
+- Highlight matches position in the scroll bar (#1466).
+- Custom keywords for syntax highlighter (#1336).
+- Add a Tools menu to call external programs from Notepad3 (#1332).
+- Snippets engine (#1306).
+- Multiple word editing (#1126).
+- Easy syntax customizer (#916).
+- Minimal Find/Replace with advanced expand (#914).
+- Add support to create/modify keyboard shortcuts (#595).
+- Periodic backup of unsaved documents (#512).
+- Intellegent Backup with optional versioning (#370).
+- Change of behaviour for handling folded blocks (#331).
+
+-----------------------------------------------------
+TRANSLATIONS (MUI):
+-----------------------------------------------------
+- Korean (ko-KR) (to resume).
+- Portuguese Brazilian (pt-BR) (in progress).
+- Slovak (sk-SK) (to resume).
+- Turkish (tr-TR) (to resume).
+
+
+
 

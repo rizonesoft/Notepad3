@@ -1107,7 +1107,7 @@ void LoadSettings()
   GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
   Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
   GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
-  GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, false);
+  GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, true);
 
   ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
