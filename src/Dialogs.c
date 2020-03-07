@@ -4080,9 +4080,9 @@ int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButt
   WCHAR tchItem[32] = { L'\0' };
 
   StringCchCopy(tchButtons, COUNTOF(tchButtons), L"");
-  int const c = min_i(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
+  int const cnt = min_i(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 
-  for (int i = 0; i < c; i++) {
+  for (int i = 0; i < cnt; i++) {
     TBBUTTON tbb;
     SendMessage(hwnd, TB_GETBUTTON, (WPARAM)i, (LPARAM)&tbb);
     StringCchPrintf(tchItem, COUNTOF(tchItem), L"%i ",
@@ -4091,8 +4091,9 @@ int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButt
   }
   TrimSpcW(tchButtons);
   StringCchCopyN(lpszButtons, cchButtons, tchButtons, COUNTOF(tchButtons));
-  return(c);
+  return cnt;
 }
+
 
 int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb)
 {

@@ -2217,9 +2217,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // use copy for alphablend a disabled Toolbar (if not provided)
   hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
-  // adjust to current DPI
-  hbmp = ResizeImageForCurrentDPI(hbmp);
-  hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
+  // don't adjust toolbar bitmap to current DPI
+  //~hbmp = ResizeImageForCurrentDPI(hbmp);
+  //~hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
  
 
   HIMAGELIST himlOld = NULL;
@@ -2271,8 +2271,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     himlOld = bi.himl;
   }
   if (hbmp) {
-    // adjust to current DPI
-    hbmp = ResizeImageForCurrentDPI(hbmp);
+    // don't adjust toolbar bitmap to current DPI
+    //~hbmp = ResizeImageForCurrentDPI(hbmp);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
     mod = bmp.bmWidth % NUMTOOLBITMAPS;
@@ -2319,8 +2319,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     himlOld = bi.himl;
   }
   if (hbmp) {
-    // adjust to current DPI
-    hbmp = ResizeImageForCurrentDPI(hbmp);
+    // don't adjust toolbar bitmap to current DPI
+    //~hbmp = ResizeImageForCurrentDPI(hbmp);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
     mod = bmp.bmWidth % NUMTOOLBITMAPS;
@@ -2521,10 +2521,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SciCall_GotoPos(pos);
   
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
-
   CreateBars(hwnd, Globals.hInstance);
-
   RECT* const rc = (RECT*)lParam;
   SendWMSize(hwnd, rc);
 
@@ -2552,12 +2549,10 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 {
-  UNUSED(hwnd);
   UNUSED(lParam);
   UNUSED(wParam);
   
   RECT rc, rc2;
-  HINSTANCE hInstance = (HINSTANCE)(INT_PTR)GetWindowLongPtr(hwnd,GWLP_HINSTANCE);
 
   // reinitialize edit frame
 
@@ -2593,9 +2588,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   }
 
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(Globals.hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
-
-  CreateBars(hwnd,hInstance);
+  CreateBars(hwnd,Globals.hInstance);
   SendWMSize(hwnd, NULL);
 
   if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
@@ -3495,12 +3488,11 @@ static void _DynamicLanguageMenuCmd(int cmd)
     DestroyMenu(Globals.hMainMenu);
     
     // desired language
-    SetPreferredLanguage(MUI_LanguageDLLs[iLngIdx].LangId);
+    LANGID const desiredLngID = MUI_LanguageDLLs[iLngIdx].LangId;
+    SetPreferredLanguage(desiredLngID);
 
     FreeLanguageResources();
-
-    // change to available (fall back: en-US)
-    SetPreferredLanguage(LoadLanguageResources());
+    LoadLanguageResources();
 
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
@@ -3510,11 +3502,8 @@ static void _DynamicLanguageMenuCmd(int cmd)
     }
 
     _InsertLanguageMenu(Globals.hMainMenu);
-
     Style_InsertThemesMenu(Globals.hMainMenu);
-
     SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-
     DrawMenuBar(Globals.hwndMain);
 
     MsgThemeChanged(Globals.hwndMain, (WPARAM)NULL, (LPARAM)NULL);
@@ -7206,8 +7195,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
           MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
         }
+        EditUpdateVisibleIndicators();
       }
-      EditUpdateVisibleIndicators();
     }
     break;
 
