@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
             MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
         END
         POPUP "Ма&штаб"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
         MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
         MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

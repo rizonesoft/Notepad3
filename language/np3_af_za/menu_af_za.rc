@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
             MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
         MENUITEM "&Pas Nutsbalk...",                        IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
         MENUITEM "Wys &Statusbalk",                         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

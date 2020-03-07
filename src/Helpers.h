@@ -222,14 +222,17 @@ DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
 
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y); }
-inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
-inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
+HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
+inline int ScaleIntToCurrentDPIX(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToCurrentDPIY(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleToCurrentDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd);  return float2int((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleToCurrentDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd);  return float2int((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntFontSizeW(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.x, ppi.x); }
+inline int ScaleIntFontSizeH(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.y, ppi.y); }
+inline int ScaleFontSize(HWND hwnd, float fSize) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * dpi.y) / (float)ppi.y); }
+inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10; }
 
-int GetSystemMetricsEx(int nValue);
+int GetSystemMetricsEx(HWND hwnd, int nValue);
 
 // ----------------------------------------------------------------------------
 
