@@ -7401,6 +7401,7 @@ void EditDoStyling(DocPos iStartPos, DocPos iEndPos)
     else {
       iStartPos = SciCall_PositionFromLine(SciCall_LineFromPosition(iStartPos));
     }
+
     if (iEndPos < 0) {
       Sci_ApplyLexerStyle(iStartPos, -1);
     }
