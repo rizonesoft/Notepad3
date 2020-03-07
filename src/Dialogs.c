@@ -4368,46 +4368,18 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
 //
 //  ResizeImageForCurrentDPI()
 //
-HBITMAP XXXResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
-{
-  if (hbmp) {
-    BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      DPI_T DPI = GetCurrentDPI(hwnd);
-      UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
-      UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
-      UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (DPI.x > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (DPI.x - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (DPI.y - uDPIBase), uDPIUnit);
-
-        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
-        if (hCopy) {
-          DeleteObject(hbmp);
-          hbmp = hCopy;
-        }
-      }
-    }
-  }
-  return hbmp;
-}
-
-
-//=============================================================================
-//
-//  ResizeImageForCurrentDPI()
-//
 HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
 {
   if (hbmp) {
     BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) 
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp))
     {
-      int const width = ScaleIntToHwndDPIX(hwnd, bmp.bmWidth);
-      int const height = ScaleIntToHwndDPIY(hwnd, bmp.bmHeight);
-      if ((width != bmp.bmWidth) || (height != bmp.bmHeight)) {
+      WORD const width = (WORD)ScaleIntToHwndDPIX(hwnd, bmp.bmWidth);
+      WORD const height = (WORD)ScaleIntToHwndDPIY(hwnd, bmp.bmHeight);
+      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) 
+      {
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
-        if (hCopy) {
+        if (hCopy && (hCopy != hbmp)) {
           DeleteObject(hbmp);
           hbmp = hCopy;
         }
