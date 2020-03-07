@@ -398,9 +398,9 @@ if (!bSucceed) {
 //  get system metric for current DPI 
 // https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
 //
-int GetSystemMetricsEx(int nValue) {
+int GetSystemMetricsEx(HWND hwnd, int nValue) {
 
-  return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+  return ScaleIntToCurrentDPIY(hwnd, GetSystemMetrics(nValue));
 }
 
 
@@ -433,19 +433,18 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
 //
 //  ResizeImageForCurrentDPI()
 //
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp) 
+HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp) 
 {
   if (hbmp) {
     BITMAP bmp;
     if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
-      UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
-      UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (Globals.CurrentDPI.x > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (Globals.CurrentDPI.x - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (Globals.CurrentDPI.y - uDPIBase), uDPIUnit);
+      DPI_T const DPI = GetCurrentDPI(hwnd);
+      int const width = MulDiv(bmp.bmWidth, DPI.x, USER_DEFAULT_SCREEN_DPI);
+      int const height = MulDiv(bmp.bmHeight, DPI.y, USER_DEFAULT_SCREEN_DPI);
+      if ((width != bmp.bmWidth) || (height != bmp.bmHeight)) {
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
         if (hCopy) {
+          DeleteObject(hbmp);
           hbmp = hCopy;
         }
       }
