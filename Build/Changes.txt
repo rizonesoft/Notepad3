@@ -116,6 +116,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Common controls will use preffered/available MUI language
 - Sticky window position handling.
 - Initial, default and current  window position handling.
 - Debug assertion (isspace() called on non ASCII char).
