@@ -150,7 +150,7 @@ inline int ScaleFractionalFontSize(HWND hwnd, float fSize) {
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
+HBITMAP ResizeImageForCurrentDPI(HWND hWnd, HBITMAP hbmp);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------

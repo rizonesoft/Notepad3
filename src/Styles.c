@@ -3092,7 +3092,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.MainWndDPI, &cf) ||
+    DPI_T const dpi = GetCurrentDPI(hwnd);
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, dpi, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }

@@ -325,8 +325,6 @@ typedef struct _globals_t
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
   cpi_enc_t DOSEncoding;
-  DPI_T     MainWndDPI;
-  DPI_T     MainWndPPI;
   LANGID    iPrefLANGID;
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;
@@ -447,6 +445,8 @@ typedef struct _settings_t
   bool ShowMenubar;
   bool ShowToolbar;
   bool ShowStatusbar;
+  int ToolBarTheme;
+  bool DpiScaleToolBar;
   int EncodingDlgSizeX;
   int EncodingDlgSizeY;
   int RecodeDlgSizeX;

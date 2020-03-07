@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "Przełącz paski narzędzi",                     IDM_VIEW_TOGGLETB
             MENUITEM "Dostosuj pasek narzędzi...",                  IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Załaduj motyw paska narzędzi...",            IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
             MENUITEM "Pokaż pasek stanu",                           IDM_VIEW_STATUSBAR
         END
         POPUP "&Powiększenie"
@@ -494,17 +495,18 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Przełącz Current Fold",                    IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Otwórz Web Action &1",                        CMD_WEBACTION1
-        MENUITEM "Otwórz Web Action &2",                        CMD_WEBACTION2
+        MENUITEM "Otwórz Web Action &1",                      CMD_WEBACTION1
+        MENUITEM "Otwórz Web Action &2",                      CMD_WEBACTION2
         MENUITEM "Otwórz łącze",                              CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Pokaż pasek menu",                             IDM_VIEW_MENUBAR
+        MENUITEM "Pokaż pasek menu",                          IDM_VIEW_MENUBAR
         MENUITEM "Pokaż pasek narzędzi",                      IDM_VIEW_TOOLBAR
         MENUITEM "Przełącz pasek narzędzi",                   IDM_VIEW_TOGGLETB
         MENUITEM "&Domyślny paski narzędzi...",               IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Załaduj schemat paska narzędzi...",        IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",                        IDM_VIEW_DPISCALETB
         MENUITEM "Pokaż pasek statusu",                       IDM_VIEW_STATUSBAR
     END
     POPUP "+"

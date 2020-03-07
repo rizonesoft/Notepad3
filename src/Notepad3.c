@@ -93,8 +93,6 @@ WCHAR     s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-int       s_iToolBarTheme = -1;
-
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
@@ -1918,9 +1916,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
-  Globals.MainWndDPI = GetCurrentDPI(hwnd);
-  Globals.MainWndPPI = GetCurrentPPI(hwnd);
-
   // Setup edit control
   Globals.hwndEdit = CreateWindowEx(
     WS_EX_CLIENTEDGE,
@@ -2028,7 +2023,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 //  _LoadBitmapFile()
 //
-static HBITMAP _LoadBitmapFile(LPCWSTR path, bool bResizeToDPI)
+static HBITMAP _LoadBitmapFile(LPCWSTR path)
 {
   WCHAR szTmp[MAX_PATH];
   if (PathIsRelative(path)) {
@@ -2041,9 +2036,6 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path, bool bResizeToDPI)
     return NULL;
   }
   HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
-  if (bResizeToDPI) {
-    hbmp = ResizeImageForCurrentDPI(hbmp);
-  }
   return hbmp;
 }
 
@@ -2113,7 +2105,7 @@ bool SelectExternalToolBar(HWND hwnd)
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
       IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
     }
-    s_iToolBarTheme = 2;
+    Settings.ToolBarTheme = 2;
     return true;
   }
   else {
@@ -2147,9 +2139,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
 
-  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmap, false);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
 
     BITMAP bmp;
     ZeroMemory(&bmp, sizeof(BITMAP));
@@ -2168,18 +2160,19 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
   }
   if (!hbmp) {
-    s_iToolBarTheme = s_iToolBarTheme % 2;
-    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
+    Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
+    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
   // use copy for alphablend a disabled Toolbar (if not provided)
   hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
-  // don't adjust toolbar bitmap to current DPI
-  //~hbmp = ResizeImageForCurrentDPI(hbmp);
-  //~hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
- 
+  // adjust toolbar bitmap to current DPI
+  if (Settings.DpiScaleToolBar) {
+    hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+    hbmpCopy = ResizeImageForCurrentDPI(hwnd, hbmpCopy);
+  }
 
   HIMAGELIST himlOld = NULL;
   BUTTON_IMAGELIST bi;
@@ -2204,9 +2197,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
 
   // Add a Hot Toolbar Bitmap
-  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot, false);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
 
@@ -2222,16 +2215,18 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       hbmp = NULL;
     }
   }
-  if (!hbmp && (s_iToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
+  if (!hbmp && (Settings.ToolBarTheme < 2)) {
+    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
   if (SendMessage(Globals.hwndToolbar, TB_GETHOTIMAGELIST, 0, (LPARAM)& bi)) {
     himlOld = bi.himl;
   }
   if (hbmp) {
-    // don't adjust toolbar bitmap to current DPI
-    //~hbmp = ResizeImageForCurrentDPI(hbmp);
+    // adjust toolbar bitmap to current DPI
+    if (Settings.DpiScaleToolBar) {
+      hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+    }
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
     mod = bmp.bmWidth % NUMTOOLBITMAPS;
@@ -2252,9 +2247,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
 
   // Add a disabled Toolbar Bitmap
-  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled, false);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled);
 
     GetObject(hbmp, sizeof(BITMAP), &bmp);
 
@@ -2270,17 +2265,18 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       hbmp = NULL;
     }
   }
-  if (!hbmp && (s_iToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
+  if (!hbmp && (Settings.ToolBarTheme < 2)) {
+    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
   if (SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
     himlOld = bi.himl;
   }
   if (hbmp) {
-    // don't adjust toolbar bitmap to current DPI
-    //~hbmp = ResizeImageForCurrentDPI(hbmp);
-
+    // adjust toolbar bitmap to current DPI
+    if (Settings.DpiScaleToolBar) {
+      hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
+    }
     GetObject(hbmp, sizeof(BITMAP), &bmp);
     mod = bmp.bmWidth % NUMTOOLBITMAPS;
     cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
@@ -2293,7 +2289,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
   else {  // create disabled Toolbar, no external bitmap is supplied
 
-    if ((s_iToolBarTheme == 2) && StrIsEmpty(s_tchToolbarBitmapDisabled))
+    if ((Settings.ToolBarTheme == 2) && StrIsEmpty(s_tchToolbarBitmapDisabled))
     {
       bool fProcessed = false;
       if (Flags.ToolbarLook == 1) {
@@ -2464,9 +2460,8 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  Globals.MainWndDPI.x = LOWORD(wParam);
-  Globals.MainWndDPI.y = HIWORD(wParam);
-  Globals.MainWndPPI = GetCurrentPPI(hwnd);
+  UNUSED(wParam); //MainWndDPI.x = LOWORD(wParam); //MainWndDPI.y = HIWORD(wParam);
+  UNUSED(lParam); 
 
   DocPos const pos = SciCall_GetCurrentPos();
 
@@ -2477,7 +2472,6 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 #endif
 
   //RECT* const rc = (RECT*)lParam;
-  UNUSED(lParam);
   UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
   UpdateAllBars(true);
 
@@ -3335,6 +3329,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
   EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
   CheckCmd(hmenu, IDM_VIEW_STATUSBAR, Settings.ShowStatusbar);
+  CheckCmd(hmenu, IDM_VIEW_DPISCALETB, Settings.DpiScaleToolBar);
 
   //i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
@@ -5296,7 +5291,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLETB:
-      s_iToolBarTheme = (s_iToolBarTheme + 1) % 3;
+      Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
       SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
@@ -5308,6 +5303,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (SelectExternalToolBar(hwnd)) {
         SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
+      break;
+
+    case IDM_VIEW_DPISCALETB:
+      Settings.DpiScaleToolBar = !Settings.DpiScaleToolBar;
+      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
     case IDM_VIEW_STATUSBAR:

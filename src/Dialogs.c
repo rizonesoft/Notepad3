@@ -835,7 +835,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", Globals.MainWndDPI.x, Globals.MainWndDPI.y, ScaleIntToHwndDPIX(hwnd, 100));
+        DPI_T dpi = GetCurrentDPI(hwnd);
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToHwndDPIX(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -2506,7 +2507,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hbmp);
+        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
 
         HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
@@ -2663,7 +2664,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
         HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hbmp);
+        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
 
         HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
@@ -3856,7 +3857,7 @@ void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
 {
   HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  hBmp = ResizeImageForCurrentDPI(hBmp);
+  hBmp = ResizeImageForCurrentDPI(hwnd, hBmp);
   BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
   BUTTON_IMAGELIST bi;
@@ -4363,24 +4364,26 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
 }
 
 
-
 //=============================================================================
 //
 //  ResizeImageForCurrentDPI()
 //
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
+HBITMAP XXXResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
 {
   if (hbmp) {
     BITMAP bmp;
     if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      DPI_T DPI = GetCurrentDPI(hwnd);
       UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
       UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
       UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (Globals.MainWndDPI.x > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (Globals.MainWndDPI.x - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (Globals.MainWndDPI.y - uDPIBase), uDPIUnit);
+      if (DPI.x > (uDPIBase + uDPIUnit)) {
+        int width = MulDiv(bmp.bmWidth, (DPI.x - uDPIBase), uDPIUnit);
+        int height = MulDiv(bmp.bmHeight, (DPI.y - uDPIBase), uDPIUnit);
+
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
         if (hCopy) {
+          DeleteObject(hbmp);
           hbmp = hCopy;
         }
       }
@@ -4388,6 +4391,32 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
   }
   return hbmp;
 }
+
+
+//=============================================================================
+//
+//  ResizeImageForCurrentDPI()
+//
+HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
+{
+  if (hbmp) {
+    BITMAP bmp;
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) 
+    {
+      int const width = ScaleIntToHwndDPIX(hwnd, bmp.bmWidth);
+      int const height = ScaleIntToHwndDPIY(hwnd, bmp.bmHeight);
+      if ((width != bmp.bmWidth) || (height != bmp.bmHeight)) {
+        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+        if (hCopy) {
+          DeleteObject(hbmp);
+          hbmp = hCopy;
+        }
+      }
+    }
+  }
+  return hbmp;
+}
+
 
 //=============================================================================
 //

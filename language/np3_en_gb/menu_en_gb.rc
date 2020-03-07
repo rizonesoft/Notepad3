@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
             MENUITEM "C&ustomise Toolbar...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
             MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
         MENUITEM "&Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"

@@ -370,6 +370,7 @@ BEGIN
             MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
             MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
             MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
+            MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
             MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
         END
         POPUP "&Nagyítás"
@@ -505,6 +506,7 @@ BEGIN
         MENUITEM "Váltás &Eszköztárak",               IDM_VIEW_TOGGLETB
         MENUITEM "Eszköztár testre&szabása...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Eszköztár té&ma betöltése...",      IDM_VIEW_LOADTHEMETB
+        MENUITEM "&DPI Scale Toolbar",                IDM_VIEW_DPISCALETB
         MENUITEM "&Állapotsor megjelenítése",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

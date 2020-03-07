@@ -50,8 +50,6 @@ extern "C" WCHAR     s_tchToolbarBitmap[MAX_PATH];
 extern "C" WCHAR     s_tchToolbarBitmapHot[MAX_PATH];
 extern "C" WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH];
 
-extern "C" int       s_iToolBarTheme;
-
 extern "C"           THEMEFILES Theme_Files[];
 
 // ----------------------------------------------------------------------------
@@ -1186,11 +1184,17 @@ void LoadSettings()
   int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
   WCHAR tchHighDpiToolBar[64] = { L'\0' };
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-  s_iToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, -1);
-  s_iToolBarTheme = clampi(s_iToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
-  if (s_iToolBarTheme < 0) { // undefined: determine higher than Full-HD
-    s_iToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
+
+  Defaults.ToolBarTheme = -1;
+  Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
+  Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
+  if (Settings.ToolBarTheme < 0) { // undefined: determine higher than Full-HD
+    Settings.ToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
   }
+
+  StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
+  Defaults.DpiScaleToolBar = false;
+  Settings.DpiScaleToolBar = IniSectionGetBool(IniSecWindow, tchHighDpiToolBar, Defaults.DpiScaleToolBar);
 
   // --------------------------------------------------------------
   // startup window  (ignore window position if /p was specified)
@@ -1576,9 +1580,22 @@ static bool _SaveSettings(bool bForceSaveSettings)
   int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
   int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
-  WCHAR tchHighDpiToolBar[32];
+  WCHAR tchHighDpiToolBar[64];
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-  IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, s_iToolBarTheme);
+  if (Settings.ToolBarTheme != Defaults.ToolBarTheme) {
+    IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, Settings.ToolBarTheme);
+  }
+  else {
+    IniSectionDelete(IniSecWindow, tchHighDpiToolBar, false);
+  }
+
+  StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
+  if (Settings.DpiScaleToolBar != Defaults.DpiScaleToolBar) {
+    IniSectionSetBool(IniSecWindow, tchHighDpiToolBar, Settings.DpiScaleToolBar);
+  }
+  else {
+    IniSectionDelete(IniSecWindow, tchHighDpiToolBar, false);
+  }
 
   if (!Flags.bStickyWindowPosition) {
     SaveWindowPositionSettings(false);
