@@ -52,6 +52,7 @@ extern int GetSystemMetricsEx(int nIndex);
 extern "C" int GetSystemMetricsEx(int nIndex);
 #endif
 
+
 namespace Scintilla {
 
 extern void Platform_Initialise(void *hInstance) noexcept;

@@ -4267,8 +4267,8 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 	}
 	if (!(posDrag == newPos)) {
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		int const slop_x = (caretPolicies.x.slop < 75) ? 75 : caretPolicies.x.slop;
-		int const slop_y = (caretPolicies.y.slop < 3) ? 3 : caretPolicies.y.slop;
+		int const slop_x = (caretPolicies.x.slop < 50) ? 50 : caretPolicies.x.slop;
+		int const slop_y = (caretPolicies.y.slop < 2) ? 2 : caretPolicies.y.slop;
 		const CaretPolicies dragCaretPolicies = {
 			CaretPolicy(CARET_SLOP | CARET_STRICT | CARET_EVEN, slop_x),
 			CaretPolicy(CARET_SLOP | CARET_STRICT | CARET_EVEN, slop_y)
