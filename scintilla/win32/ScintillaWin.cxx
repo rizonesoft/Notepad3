@@ -177,6 +177,8 @@ constexpr Point PointFromLParam(sptr_t lpoint) noexcept {
 }
 
 inline bool KeyboardIsKeyDown(int key) noexcept {
+    // the return value is a SHORT (16 bits), not a 32 bit value
+    // (in other words, 0x80000000 is not a valid bit mask)
 	return (::GetKeyState(key) & 0x8000) != 0;
 }
 
@@ -3486,7 +3488,7 @@ STDMETHODIMP ScintillaWin::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState, PO
 			NotifyURIDropped(putf.c_str());
 		} else {
 			FORMATETC fmtr = { cfColumnSelect, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-			const bool isRectangular = SUCCEEDED(pIDataSource->QueryGetData(&fmtr));
+			const bool isRectangular = (S_OK == pIDataSource->QueryGetData(&fmtr));
 
 			POINT rpt = { pt.x, pt.y };
 			::ScreenToClient(MainHWND(), &rpt);
