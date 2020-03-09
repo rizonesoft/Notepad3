@@ -1639,7 +1639,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
       if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
         iFrameSize = 2;
       }
-      iFrameSize = max_i(1, ScaleIntToCurrentDPIY(hwnd, iFrameSize));
+      iFrameSize = max_i(1, ScaleIntToDPI_Y(hwnd, iFrameSize));
       SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
     }
 

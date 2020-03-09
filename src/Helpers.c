@@ -400,7 +400,7 @@ if (!bSucceed) {
 //
 int GetSystemMetricsEx(HWND hwnd, int nValue) {
 
-  return ScaleIntToCurrentDPIY(hwnd, GetSystemMetrics(nValue));
+  return ScaleIntToDPI_Y(hwnd, GetSystemMetrics(nValue));
 }
 
 

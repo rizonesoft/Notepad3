@@ -223,8 +223,9 @@ DPI_T GetCurrentPPI(HWND hwnd);
 
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
 HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
-inline int ScaleIntToCurrentDPIX(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToCurrentDPIY(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleToCurrentDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd);  return float2int((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleToCurrentDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd);  return float2int((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleIntFontSizeW(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.x, ppi.x); }
