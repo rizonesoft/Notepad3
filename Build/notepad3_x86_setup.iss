@@ -1,6 +1,6 @@
 ;* Notepad3 - Installer script
 ;*
-;* (c) Rizonesoft 2008-2020 
+;* (c) Rizonesoft 2008-2020
 
 ; Requirements:
 ; Inno Setup: http://www.jrsoftware.org/isdl.php
@@ -170,6 +170,7 @@ Source: Docs\uthash\uthash-mini.svg;                                DestDir: {ap
 Source: Docs\uthash\utlist.txt;                                     DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
 Source: Docs\uthash\utringbuffer.txt;                               DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
 Source: Docs\uthash\utstring.txt;                                   DestDir: {app}\Docs\uthash;                         Flags: ignoreversion
+
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
@@ -341,8 +342,7 @@ begin
 
   RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
   RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
-  
-  end;
+end;
 
 
 procedure CleanUpSettings();
