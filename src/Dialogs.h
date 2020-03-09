@@ -112,14 +112,14 @@ int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 int GetSystemMetricsDPIScaledX(HWND hwnd, const int nValue);
 int GetSystemMetricsDPIScaledY(HWND hwnd, const int nValue);
 
-DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
+DPI_T GetCurrentDPI(HWND hwnd);
 
-inline int ScaleIntToHwndDPIX(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToHwndDPIY(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
 
-inline int ScaleFloatToHwndDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleFloatToHwndDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
 
 inline int ScaleIntFontSizeWidth(HWND hwnd, int val) { 
   DPI_T const dpi = GetCurrentDPI(hwnd);  

@@ -1022,8 +1022,8 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 	}
 }
 
-bool ScintillaWin::PaintDC(HDC hdc) {
-
+bool ScintillaWin::PaintDC(HDC hdc)
+{
 	if (technology == SC_TECHNOLOGY_DEFAULT) {
 		AutoSurface surfaceWindow(hdc, this);
 		if (surfaceWindow) {

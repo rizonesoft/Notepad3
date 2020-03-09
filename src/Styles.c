@@ -1639,7 +1639,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
       if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
         iFrameSize = 2;
       }
-      iFrameSize = max_i(1, ScaleIntToHwndDPIY(hwnd, iFrameSize));
+      iFrameSize = max_i(1, ScaleIntToDPI_Y(hwnd, iFrameSize));
       SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
     }
 
@@ -1661,7 +1661,7 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
   float const zoomPercent = (float)SciCall_GetZoom();
-  return ScaleFloatToHwndDPIX(hwnd, (fSize * zoomPercent) / 100.0f);
+  return ScaleFloatToDPI_X(hwnd, (fSize * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
