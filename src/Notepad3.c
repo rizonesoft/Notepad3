@@ -2192,10 +2192,12 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
   ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
   DPI_T dpi = GetCurrentDPI(hWnd);
-  if ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI))
+  if (!Settings.DpiScaleToolBar || 
+      ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI)))
   {
     return himl; // default DPI, we are done
   }
+  
 
   // Scale button icons/images 
   int const scx = ScaleIntToCurrentDPIX(hWnd, cx);
