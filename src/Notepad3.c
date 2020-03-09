@@ -155,8 +155,6 @@ static int       s_iExprError = -1;
 
 static WIN32_FIND_DATA s_fdCurFile;
 
-static HMODULE s_hRichEdit = INVALID_HANDLE_VALUE;
-
 static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
 static TBBUTTON  s_tbbMainWnd[] = { 
@@ -765,11 +763,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   FreeLanguageResources();
 
-  if (s_hRichEdit) {
-    FreeLibrary(s_hRichEdit);
-    s_hRichEdit = INVALID_HANDLE_VALUE;
-  }
-
   if (bIsInitialized) {
     UnregisterClass(s_wchWndClass, Globals.hInstance);
   }
@@ -862,17 +855,15 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   Scintilla_RegisterClasses(hInstance);
 
+  //SetProcessDPIAware(); -> .manifest
+  //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+
   // ----------------------------------------------------
   // MultiLingual
   //
   SetPreferredLanguage(LoadLanguageResources());
 
   // ----------------------------------------------------
-
-  if (s_hRichEdit == INVALID_HANDLE_VALUE) {
-    //s_hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
-    s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h
-  }
 
   int const cxs = GetSystemMetrics(SM_CXSMICON);
   int const cys = GetSystemMetrics(SM_CYSMICON);
@@ -1223,7 +1214,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
     SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
-  //UpdateWindowLayoutForDPI(Globals.hwndMain, 0, 0, 0, 0);
+  //~UpdateWindowLayoutForDPI(Globals.hwndMain, 0, 0, 0, 0);
 
   if (Globals.hIcon128) {
     SendMessage(Globals.hwndMain, WM_SETICON, ICON_BIG, (LPARAM)Globals.hIcon128);
@@ -2188,7 +2179,7 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
   int const cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
   int const cy = bmp.bmHeight;
 
-  HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
+  HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
   ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
   DPI_T dpi = GetCurrentDPI(hWnd);
@@ -2200,10 +2191,10 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
   
 
   // Scale button icons/images 
-  int const scx = ScaleIntToCurrentDPIX(hWnd, cx);
-  int const scy = ScaleIntToCurrentDPIX(hWnd, cy);
+  int const scx = ScaleIntToDPI_X(hWnd, cx);
+  int const scy = ScaleIntToDPI_Y(hWnd, cy);
 
-  HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, 0, 0);
+  HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
 
   for (int i = 0; i < NUMTOOLBITMAPS; ++i) 
   {
@@ -3375,7 +3366,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_STATUSBAR, Settings.ShowStatusbar);
   CheckCmd(hmenu, IDM_VIEW_DPISCALETB, Settings.DpiScaleToolBar);
 
-
   //i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
@@ -3542,7 +3532,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       EditUpdateVisibleIndicators();
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       break;
-
 
     case IDT_TIMER_UPDATE_STATUSBAR:
       _UpdateStatusbarDelayed((bool)lParam);
@@ -5604,7 +5593,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_HELP_ABOUT:
+      {
+        //~HMODULE hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
+        HMODULE hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
+        if (hRichEdit != INVALID_HANDLE_VALUE) {
         ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
+          FreeLibrary(hRichEdit);
+        }
+      }
       break;
 
     case IDM_SETPASS:
@@ -8824,7 +8820,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         StatusSetText(Globals.hwndStatus, cnt++, tchStatusBar[id]);
       }
     }
-    //InvalidateRect(Globals.hwndStatus,NULL,true);
   }
   // --------------------------------------------------------------------------
 
@@ -9336,9 +9331,10 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
 {
   WCHAR tch[MAX_PATH + 40];
   FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
+  bool fSuccess = false;
+
   BeginWaitCursor(tch);
 
-  bool fSuccess = false;
   if (fLoad) {
     fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,bSetSavePoint,status);
   }
@@ -9689,6 +9685,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
 
   EndWaitCursor();
+
   UpdateAllBars(true);
 
   return fSuccess;
