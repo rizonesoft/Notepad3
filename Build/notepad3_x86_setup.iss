@@ -147,6 +147,8 @@ Source: {#bindir}\Release_x86_v142\lng\pt-BR\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\pt-BR\np3lng.dll.mui;        DestDir: {app}\lng\pt-BR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\sv-SE\mplng.dll.mui;         DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\sv-SE\np3lng.dll.mui;        DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
@@ -334,11 +336,11 @@ end;
 procedure AddReg();
 begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
+  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
 
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', 'C:\\Program Files (x86)\\Notepad3\\Notepad3.exe,0');
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
   
   end;
 

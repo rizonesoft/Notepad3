@@ -370,7 +370,7 @@ BEGIN
             MENUITEM "To&ggle werkbalken",                              IDM_VIEW_TOGGLETB
             MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Laden een werkbalk thema...",                    IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                              IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI schaal de werkbalk",                         IDM_VIEW_DPISCALETB
             MENUITEM "Toon &statusbalk",                                IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -506,7 +506,7 @@ BEGIN
         MENUITEM "To&ggle werkbalken",                      IDM_VIEW_TOGGLETB
         MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Laden een werkbalk thema...",            IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
+        MENUITEM "&DPI schaal de werkbalk",                 IDM_VIEW_DPISCALETB
         MENUITEM "Toon &statusbalk",                        IDM_VIEW_STATUSBAR
     END
     POPUP "+"

@@ -370,7 +370,7 @@ BEGIN
             MENUITEM "Al&ternar les barras de herramientas",            IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Cargar un tema de herramientas...",              IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                              IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI escala la barra de herramientas",            IDM_VIEW_DPISCALETB
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -506,7 +506,7 @@ BEGIN
         MENUITEM "Al&ternar las barras de herramientas",        IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Cargar un tema de herramientas...",          IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
+        MENUITEM "&DPI escala la barra de herramientas",        IDM_VIEW_DPISCALETB
         MENUITEM "Mostrar la barra de &estado",                 IDM_VIEW_STATUSBAR
     END
     POPUP "+"

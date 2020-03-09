@@ -187,6 +187,10 @@ Source: {#bindir}\Release_x64_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode() 
+Source: {#bindir}\Release_x64_v142\lng\sv-SE\mplng.dll.mui;         DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\sv-SE\mplng.dll.mui;         DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: {#bindir}\Release_x64_v142\lng\sv-SE\np3lng.dll.mui;        DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v142\lng\sv-SE\np3lng.dll.mui;        DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode() 
 Source: {#bindir}\Release_x64_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
@@ -377,11 +381,11 @@ end;
 procedure AddReg();
 begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
+  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
 
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', 'C:\\Program Files\\Notepad3\\Notepad3.exe,0')
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', '"C:\\Program Files\\Notepad3\\Notepad3.exe" %1')
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
+  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
 
 end;
 

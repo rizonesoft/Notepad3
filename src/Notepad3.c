@@ -5510,12 +5510,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       ShellExecute(0, 0, ONLINE_HELP_WEBSITE, 0, 0, SW_SHOW);
       break;
 
-    case IDM_HELP_ABOUT: 
+    case IDM_HELP_ABOUT:
       {
         //~HMODULE hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
         HMODULE hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
         if (hRichEdit != INVALID_HANDLE_VALUE) {
-          ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
+        ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
           FreeLibrary(hRichEdit);
         }
       }

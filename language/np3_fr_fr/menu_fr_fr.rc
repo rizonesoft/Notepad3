@@ -368,9 +368,9 @@ BEGIN
             MENUITEM "Afficher la barre de &menus",         IDM_VIEW_MENUBAR
             MENUITEM "&Afficher la barre à outils",         IDM_VIEW_TOOLBAR
             MENUITEM "Al&terner les barres à outils",       IDM_VIEW_TOGGLETB
-            MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Gérer la barre à outils...",         IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Charger un thème d'outils...",       IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI échelle la barre à  outils",     IDM_VIEW_DPISCALETB
             MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -502,12 +502,12 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Afficher la barre de &menus",             IDM_VIEW_MENUBAR
-        MENUITEM "A&fficher la barre à outils",             IDM_VIEW_TOOLBAR
+        MENUITEM "&Afficher la barre à outils",             IDM_VIEW_TOOLBAR
         MENUITEM "Al&terner les barres à outils",           IDM_VIEW_TOGGLETB
         MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Charger un thème d'outils...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
-        MENUITEM "Affi&cher la barre d'état",               IDM_VIEW_STATUSBAR
+        MENUITEM "&DPI échelle la barre à  outils",         IDM_VIEW_DPISCALETB
+        MENUITEM "Affic&her la barre d'état",               IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
