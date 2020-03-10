@@ -184,6 +184,9 @@ typedef struct _enc_det_t
 
 } ENC_DET_T;
 
+// 0.0 - 1.0:  confidence bonus for local ANSI detection
+// 0 = no bonus, 1 = 100% confidence that, if local ANSI is detected, that it is local ANSI code-page
+#define LOCAL_ANSI_BONUS_FAC (0.66f) // ~2/3
 
 ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
                                   const cpi_enc_t iAnalyzeFallback,

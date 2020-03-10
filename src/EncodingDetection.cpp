@@ -507,6 +507,10 @@ extern "C" void ChangeEncodingCodePage(const cpi_enc_t cpi, UINT newCP)
 
 //=============================================================================
 
+constexpr float clampf(float x, float lower, float upper) { return (x < lower) ? lower : ((x > upper) ? upper : x); }
+
+//=============================================================================
+
 cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
 {
   cpi_enc_t iEncoding = CPI_NONE;
@@ -782,7 +786,8 @@ cpi_enc_t Encoding_AnalyzeText
   //~cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
   //~if (ced_cnf < 1.0f) 
   //~{
-    cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+  cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+  ucd_cnf = clampf(ucd_cnf, 0.0f, 1.0f);
   //~}
   //~else {
   //~  cpiEncoding_UCD = CPI_NONE;
@@ -791,11 +796,10 @@ cpi_enc_t Encoding_AnalyzeText
 
 #endif
 
-  float confidence = 0.0f;
-  float const ucd_confidence = ucd_cnf;
-  //~float const ced_confidence = ced_cnf;
   UINT const codePage_UCD = Encoding_GetCodePage(cpiEncoding_UCD);
-  //~UINT const codePage_CED = Encoding_GetCodePage(cpiEncoding_CED);
+  // extra bonus, if detected encoding is local codepage
+  float const bonus = (codePage_UCD == Encoding_GetCodePage(CPI_ANSI_DEFAULT)) ? (1.0f - ucd_cnf) * LOCAL_ANSI_BONUS_FAC : 0.0f;
+  float const ucd_confidence = clampf(ucd_cnf + bonus, 0.0f, 1.0f);
 
 
   if (Flags.bDevDebugMode)
@@ -847,7 +851,7 @@ cpi_enc_t Encoding_AnalyzeText
   // --------------------------------------------------------------------------
 
   cpi_enc_t iAnalyzedEncoding = cpiEncoding_UCD;
-  confidence = ucd_confidence;
+  float confidence = ucd_confidence;
 
   /* ~~~
   if ((cpiEncoding_UCD == cpiEncoding_CED) && !Encoding_IsNONE(cpiEncoding_UCD))

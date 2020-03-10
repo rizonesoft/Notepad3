@@ -3364,6 +3364,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
   CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
+  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles);
   CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
   CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
 
@@ -3386,13 +3387,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   else
     i = IDM_VIEW_NOESCFUNC;
   CheckMenuRadioItem(hmenu, IDM_VIEW_NOESCFUNC, IDM_VIEW_ESCEXIT, i, MF_BYCOMMAND);
-
-  EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, i);
-  EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, i);
-  EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, i);
-  EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, i);
-  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, i);
-  EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, i);
 
   EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel);
   EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel);
