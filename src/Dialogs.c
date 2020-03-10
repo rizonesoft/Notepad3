@@ -1687,10 +1687,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
         CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, SetBtn(Settings.SaveFindReplace));
 
-        //~if (!Settings.SaveRecentFiles) {
-        //~  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
-        //~  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
-        //~}
+        DialogEnableControl(hwnd,IDC_PRESERVECARET, Settings.SaveRecentFiles);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1911,6 +1908,13 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
           break;
 
         case IDC_FILEMRU:
+          break;
+
+        case IDC_SAVEMRU:
+          {
+            bool const bSaveMRU = IsButtonChecked(hwnd, IDC_SAVEMRU);
+            DialogEnableControl(hwnd, IDC_PRESERVECARET, bSaveMRU);
+          }
           break;
 
         case IDOK:
