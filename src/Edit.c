@@ -7231,6 +7231,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
     return true;
   }
+
   DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
   while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
@@ -7248,6 +7249,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   char pRoot[_MAX_AUTOC_WORD_LEN];
   DocPos const iRootLen = (iCurrentPos - iWordStartPos);
   StringCchCopyNA(pRoot, COUNTOF(pRoot), SciCall_GetRangePointer(iWordStartPos, iRootLen), (size_t)iRootLen);
+  if ((iRootLen <= 0) || StrIsEmptyA(pRoot)) { return true; } // nothing to find
 
   int iNumWords = 0;
   size_t iWListSize = 0;
