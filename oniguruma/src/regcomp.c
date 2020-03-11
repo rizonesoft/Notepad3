@@ -7063,8 +7063,12 @@ print_optimize_info(FILE* f, regex_t* reg)
     for (p = reg->exact; p < reg->exact_end; p++) {
       fputc(*p, f);
     }
-    fprintf(f, "]: length: %ld, dmin: %u, dmax: %u\n",
-            (reg->exact_end - reg->exact), reg->dist_min, reg->dist_max);
+    fprintf(f, "]: length: %ld, dmin: %u, ",
+            (reg->exact_end - reg->exact), reg->dist_min);
+    if (reg->dist_max == INFINITE_LEN)
+      fprintf(f, "dmax: inf.\n");
+    else
+      fprintf(f, "dmax: %u\n", reg->dist_max);
   }
   else if (reg->optimize & OPTIMIZE_MAP) {
     int c, i, n = 0;
