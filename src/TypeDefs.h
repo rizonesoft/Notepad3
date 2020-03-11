@@ -538,8 +538,7 @@ typedef struct _settings2_t
   int    ExitOnESCSkipLevel;
 
   float  AnalyzeReliableConfidenceLevel;
-  //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
-  //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
+  float  LocaleAnsiCodePageAnalysisBonus;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[64];

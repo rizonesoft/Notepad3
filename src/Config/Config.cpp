@@ -881,6 +881,11 @@ void LoadSettings()
   int const iARCLset = clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
   Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
 
+  int const iAnsiCPBonusDef = 33;
+  Defaults2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusDef / 100.0f;
+  int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", iAnsiCPBonusDef), 0, 100);
+  Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
+
   /* ~~~
   int const iRCEDCMdef = 85;
   Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
