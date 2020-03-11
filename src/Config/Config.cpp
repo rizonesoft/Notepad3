@@ -1061,9 +1061,9 @@ void LoadSettings()
   GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
   GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-  auto const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_UTF8);
+  auto const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_PREFERRED_ENCODING);
   GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
-  Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
+  Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_PREFERRED_ENCODING : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
   GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
   GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
   GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
