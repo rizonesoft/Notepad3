@@ -1231,7 +1231,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //  GetFileEncoding()
 //
 extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData, 
-                                             const cpi_enc_t iAnalyzeFallback,
+                                             cpi_enc_t iAnalyzeHint,
                                              bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
    
@@ -1271,19 +1271,24 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
   encDetRes.confidence = 0.0f;
 
   cpi_enc_t const Encoding4ASCII = (Settings.LoadASCIIasUTF8 && encDetRes.bValidUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+ 
+  // is encoding analysis hint valid
+  if (Encoding_IsUTF8(iAnalyzeHint) && !encDetRes.bValidUTF8) {
+    iAnalyzeHint = Encoding4ASCII;
+  }
 
   if (!IS_ENC_ENFORCED() || bForceEncDetection)
   {
     if (!bSkipANSICPDetection) 
     {
       // ---------------------------------------------------------------------------
-      Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeFallback);
+      Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
       // ---------------------------------------------------------------------------
     }
 
     if (encDetRes.analyzedEncoding == CPI_NONE)
     {
-      encDetRes.analyzedEncoding = iAnalyzeFallback;
+      encDetRes.analyzedEncoding = iAnalyzeHint;
       encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
     }
     else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
@@ -1359,11 +1364,9 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
   }
   else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
     encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
-    encDetRes.bIsAnalysisReliable = false;
   }
-  else if (Encoding_IsValid(iAnalyzeFallback)) {
-    encDetRes.Encoding = iAnalyzeFallback;
-    encDetRes.bIsAnalysisReliable = false;
+  else if (Encoding_IsValid(iAnalyzeHint)) {
+    encDetRes.Encoding = iAnalyzeHint;
   }
 
   if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = Encoding4ASCII; }
