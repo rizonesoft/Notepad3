@@ -410,9 +410,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dialogs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Dlapi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -577,6 +574,9 @@
     </ClInclude>
     <ClInclude Include="Config\SimpleIni.h">
       <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5384,7 +5384,7 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
         goto end_buf;
       }
     }
-    else if ((reg->anchor & ANCR_ANYCHAR_INF_ML)) {
+    else if ((reg->anchor & ANCR_ANYCHAR_INF_ML) && range > start) {
       goto begin_position;
     }
   }

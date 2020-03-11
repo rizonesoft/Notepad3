@@ -1150,16 +1150,16 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
 
-  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iEncFallback,
-                                                   bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
+  ENC_DET_T const encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iEncFallback,
+                                                         bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
   #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
 
   // --------------------------------------------------------------------------
 
   if (Flags.bDevDebugMode) {
-#if 1
-    SetAdditionalTitleInfo(Encoding_GetTitleInfoW());
+#if TRUE
+    SetAdditionalTitleInfo(Encoding_GetTitleInfo());
 #else
     DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
     int const iXOff = SciCall_GetXOffset();
@@ -1222,7 +1222,7 @@ bool EditLoadFile(
   else  // ===  ALL OTHERS  ===
   {
     // ===  UTF-8 ? ===
-    bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
+    bool const bValidUTF8 = encDetection.bValidUTF8;
     bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
     bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
@@ -7231,6 +7231,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
     return true;
   }
+
   DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
   while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
@@ -7248,6 +7249,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   char pRoot[_MAX_AUTOC_WORD_LEN];
   DocPos const iRootLen = (iCurrentPos - iWordStartPos);
   StringCchCopyNA(pRoot, COUNTOF(pRoot), SciCall_GetRangePointer(iWordStartPos, iRootLen), (size_t)iRootLen);
+  if ((iRootLen <= 0) || StrIsEmptyA(pRoot)) { return true; } // nothing to find
 
   int iNumWords = 0;
   size_t iWListSize = 0;
