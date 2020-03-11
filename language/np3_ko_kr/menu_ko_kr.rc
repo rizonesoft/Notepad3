@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "파일 끝 스크롤(&S)",                  IDM_VIEW_SCROLLPASTEOF
             MENUITEM "하이퍼 링크 툴팁 보이기(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "도구 모음(&T)"
+        POPUP "P&anels(&A)"
         BEGIN
-            MENUITEM "Show &Menubar",                     IDM_VIEW_MENUBAR
+            MENUITEM "Show &Menubar",                  IDM_VIEW_MENUBAR
             MENUITEM "도구 모음 보이기(&T)",               IDM_VIEW_TOOLBAR
-            MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
-            MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
-            MENUITEM "도구 모음 테마 변경(&L)...",          IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                 IDM_VIEW_DPISCALETB
             MENUITEM "상태 표시 줄 보이기(&S)",             IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "도구 모음 테마 변경(&L)...",          IDM_VIEW_LOADTHEMETB
+            MENUITEM "도구 모음 사용자 지정(&U)...",         IDM_VIEW_CUSTOMIZETB
+            MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",             IDM_VIEW_DPISCALETB
         END
         POPUP "확대/축소(&Z)"
         BEGIN
@@ -501,18 +502,19 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Menubar",                             IDM_VIEW_MENUBAR
-        MENUITEM "도구 모음 보이기(&T)",                       IDM_VIEW_TOOLBAR
-        MENUITEM "도구 모음 전환(&G)",                         IDM_VIEW_TOGGLETB
-        MENUITEM "도구 모음 사용자 지정(&C)...",               IDM_VIEW_CUSTOMIZETB
-        MENUITEM "도구 모음 테마 변경(&L)...",                 IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                        IDM_VIEW_DPISCALETB
-        MENUITEM "상태 표시 줄 보이기(&S)",                    IDM_VIEW_STATUSBAR
+        MENUITEM "Show &Menubar",                    IDM_VIEW_MENUBAR
+        MENUITEM "도구 모음 보이기(&T)",                 IDM_VIEW_TOOLBAR
+        MENUITEM "상태 표시 줄 보이기(&S)",               IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "도구 모음 테마 변경(&L)...",            IDM_VIEW_LOADTHEMETB
+        MENUITEM "도구 모음 사용자 지정(&U)...",           IDM_VIEW_CUSTOMIZETB
+        MENUITEM "도구 모음 전환(&G)",                   IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",               IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Notepad3 열기",                           IDM_TRAY_RESTORE
-        MENUITEM "Notepad3 종료",                           IDM_TRAY_EXIT
+        MENUITEM "Notepad3 열기",                      IDM_TRAY_RESTORE
+        MENUITEM "Notepad3 종료",                      IDM_TRAY_EXIT
     END
 END
 

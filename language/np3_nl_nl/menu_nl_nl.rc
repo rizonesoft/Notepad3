@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "Scrollen na einde van bes&tand",                  IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Toon &hyperlink tooltip",                         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Werkbalk"
+        POPUP "P&anelen"
         BEGIN
             MENUITEM "&Menubalk tonen",                                 IDM_VIEW_MENUBAR
             MENUITEM "&Werkbalk tonen",                                 IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle werkbalken",                              IDM_VIEW_TOGGLETB
-            MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Laden een werkbalk thema...",                    IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI schaal de werkbalk",                         IDM_VIEW_DPISCALETB
             MENUITEM "Toon &statusbalk",                                IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Laden een werkbalk thema...",                    IDM_VIEW_LOADTHEMETB
+            MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
+            MENUITEM "To&ggle werkbalken",                              IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI schaal de werkbalk",                         IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -502,12 +503,13 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Menubalk tonen",                         IDM_VIEW_MENUBAR
-        MENUITEM "Werk&balk tonen",                         IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle werkbalken",                      IDM_VIEW_TOGGLETB
-        MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Laden een werkbalk thema...",            IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI schaal de werkbalk",                 IDM_VIEW_DPISCALETB
+        MENUITEM "&Werkbalk tonen",                         IDM_VIEW_TOOLBAR
         MENUITEM "Toon &statusbalk",                        IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Laden een werkbalk thema...",            IDM_VIEW_LOADTHEMETB
+        MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB
+        MENUITEM "To&ggle werkbalken",                      IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI schaal de werkbalk",                 IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
