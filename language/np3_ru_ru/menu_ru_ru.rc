@@ -370,7 +370,7 @@ BEGIN
             MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
             MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
         END
         POPUP "Мас&штаб"
@@ -448,7 +448,7 @@ BEGIN
         BEGIN
             POPUP "&Рендеринг"
             BEGIN
-                MENUITEM "Стандартный &GDI (no ligatures)",  IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "Стандартный &GDI (без лигатур)",   IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
@@ -506,7 +506,7 @@ BEGIN
         MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
         MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
+        MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
     END
     POPUP "+"
