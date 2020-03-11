@@ -1,4 +1,4 @@
-Open 7-bit ASCII files in UTF-8 mode. is NOT checked !
+Open 7-bit ASCII files in UTF-8 mode is checked !
 ------------------------------------------------------
 Your update is merged. 👍
 Your comments and suggestions are welcome... 😃
