@@ -13,7 +13,6 @@
 *                                                                             *
 *******************************************************************************/
 
-//#include <locale.h>
 #include <strsafe.h>
 #include <shlobj.h>
 #include <shobjidl.h>
@@ -83,36 +82,79 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 
 // ============================================================================
 
+
+HANDLE AcquireFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
+{
+  HANDLE hFile = CreateFile(lpIniFilePath, 
+    GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
+  bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
+
+  return (bLocked ? hFile : INVALID_HANDLE_VALUE);
+}
+
+// ----------------------------------------------------------------------------
+
+
+bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
+{
+  bool bUnLocked = true;
+  if (hFile != INVALID_HANDLE_VALUE) {
+    FlushFileBuffers(hFile);
+    bUnLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &rOvrLpd);
+    CloseHandle(hFile);
+  }
+  return bUnLocked;
+}
+
+// ============================================================================
+
+
+
+// ============================================================================
+
+static OVERLAPPED s_OvrLpd = { 0 };
+static HANDLE s_INI_Hndl = INVALID_HANDLE_VALUE;
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-static bool s_INI_Loaded = false;
+
 
 extern "C" bool LoadIniFile(LPCWSTR lpIniFilePath)
 {
   s_INI.Reset();
-  s_INI_Loaded = false;
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
-  SI_Error const rc = s_INI.LoadFile(lpIniFilePath);
-  s_INI_Loaded = SI_Success(rc);
-  return s_INI_Loaded;
+
+  s_INI_Hndl = AcquireFileLock(lpIniFilePath, s_OvrLpd);
+  if (s_INI_Hndl == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  return SI_Success(s_INI.LoadFile(s_INI_Hndl));
 }
+
 
 extern "C" bool IsIniFileLoaded()
 {
-  return s_INI_Loaded;
+  return (s_INI_Hndl != INVALID_HANDLE_VALUE);
 }
+
 
 extern "C" void ReleaseIniFile()
 {
   s_INI.Reset();
-  s_INI_Loaded = false;
+  ReleaseFileLock(s_INI_Hndl, s_OvrLpd);
+  s_INI_Hndl = INVALID_HANDLE_VALUE;
+  ZeroMemory(&s_OvrLpd, sizeof(OVERLAPPED));
 }
 
-extern "C" bool SaveIniFile(LPCWSTR lpIniFilePath)
+
+extern "C" bool SaveIniFile()
 {
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
-  SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
+  SI_Error const rc = s_INI.SaveFile(s_INI_Hndl, s_bWriteSIG);
   ReleaseIniFile();
   return SI_Success(rc);
 }
@@ -279,10 +321,20 @@ extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 
 
 extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                   LPWSTR lpReturnedString, size_t cchReturnedString)
+  LPWSTR lpReturnedString, size_t cchReturnedString)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error const rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+    return StringCchLenW(lpReturnedString, cchReturnedString);
+  }
+
+  SI_Error const rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+
   if (SI_Success(rc)) {
     bool bHasMultiple = false;
     StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
@@ -300,16 +352,24 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  Ini.SetMultiLine(s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
   if (SI_Success(rc)) 
   {
     SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
     rc = SI_Success(res) ? SI_Error::SI_OK : SI_Error::SI_FAIL;
     if (SI_Success(rc)) {
-      rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+      rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
   }
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
@@ -318,8 +378,18 @@ extern "C" bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error const rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return iDefault;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+
+  if (SI_Success(rc))
+  {
     bool bHasMultiple = false;
     int const iValue = Ini.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
     //assert(!bHasMultiple);
@@ -334,13 +404,21 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  Ini.SetMultiLine(s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
-    Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
-    rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
   }
-  Ini.Reset();
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  if (SI_Success(rc))
+  {
+    Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
+    rc = Ini.SaveFile(hFile, s_bWriteSIG);
+  }
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
@@ -349,8 +427,18 @@ extern "C" bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 extern "C" bool IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error const rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return bDefault;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+  
+  if (SI_Success(rc))
+  {
     bool bHasMultiple = false;
     bool const bValue = Ini.GetBoolValue(lpSectionName, lpKeyName, bDefault, &bHasMultiple);
     //assert(!bHasMultiple);
@@ -365,13 +453,21 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  Ini.SetMultiLine(s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
-    Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
-    rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
   }
-  Ini.Reset();
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  if (SI_Success(rc))
+  {
+    Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
+    rc = Ini.SaveFile(hFile, s_bWriteSIG);
+  }
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
@@ -380,26 +476,40 @@ extern "C" bool IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 extern "C" bool IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  Ini.SetMultiLine(s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
   if (SI_Success(rc))
   {
     Ini.Delete(lpSectionName, lpKeyName, bRemoveEmpty);
-    Ini.SetSpaces(s_bSetSpaces);
-    rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+    rc = Ini.SaveFile(hFile, s_bWriteSIG);
   }
-  Ini.Reset();
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
 
 
-
 extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+
   if (SI_Success(rc))
   {
     bool bHasMultiple = false;
@@ -654,39 +764,51 @@ extern "C" bool TestIniFile() {
 
 extern "C" bool CreateIniFile()
 {
-  return(CreateIniFileEx(Globals.IniFile));
-}
-//=============================================================================
-
-extern "C" bool CreateIniFileEx(LPWSTR lpszIniFile)
-{
-  if (StrIsNotEmpty(lpszIniFile))
+  bool result = false;
+  if (StrIsNotEmpty(Globals.IniFile))
   {
-    WCHAR* pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
+    WCHAR* pwchTail = StrRChrW(Globals.IniFile, NULL, L'\\');
+
     if (pwchTail) {
       *pwchTail = 0;
-      SHCreateDirectoryEx(NULL, lpszIniFile, NULL);
+      SHCreateDirectoryEx(NULL, Globals.IniFile, NULL);
       *pwchTail = L'\\';
     }
     
-    HANDLE hFile = CreateFile(lpszIniFile,
-      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-      NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    Globals.dwLastError = GetLastError();
-    if (hFile != INVALID_HANDLE_VALUE) {
-      if (GetFileSize(hFile, NULL) == 0) {
-        DWORD dw;
-        //WriteFile(hFile,(LPCVOID)L"\xFE\xFF[Notepad3]\r\n",26,&dw,NULL); // UTF-16LE
-        WriteFile(hFile, (LPCVOID)L"\xEF\xBB\xBF[Notepad3]\r\n", 26, &dw, NULL);  // UTF-8 SIG
-        Globals.bIniFileFromScratch = true;
+    DWORD dwFileSize = 0UL;
+
+    if (!PathFileExists(Globals.IniFile)) {
+      HANDLE hFile = CreateFile(Globals.IniFile,
+        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+      if (hFile != INVALID_HANDLE_VALUE) {
+        CloseHandle(hFile);
       }
-      CloseHandle(hFile);
-      NormalizePathEx(lpszIniFile, MAX_PATH, true, Flags.bSearchPathIfRelative);
-      Style_SetIniFile(lpszIniFile);
-      return true;
     }
+    else {
+      OVERLAPPED ovrLpd = { 0 };
+      HANDLE hFile = AcquireFileLock(Globals.IniFile, ovrLpd);
+      if (hFile == INVALID_HANDLE_VALUE) {
+        Globals.dwLastError = GetLastError();
+        MsgBoxLastError(L"Accessing Settings-File failed!", Globals.dwLastError);
+        return result;
+      }
+      DWORD dwFSHigh = 0UL;
+      dwFileSize = GetFileSize(hFile, &dwFSHigh);
+      ReleaseFileLock(hFile, ovrLpd);
+    }
+
+    if ((dwFileSize == 0) && (dwFileSize != INVALID_FILE_SIZE)) {
+      result = IniFileSetString(Globals.IniFile, L"Notepad3", NULL, NULL);
+      Globals.bIniFileFromScratch = true;
+    }
+    else {
+      result = true;
+    }
+
+    return result;
   }
-  return false;
+  return result;
 }
 //=============================================================================
 
@@ -699,8 +821,8 @@ extern "C" bool CreateIniFileEx(LPWSTR lpszIniFile)
 bool OpenSettingsFile()
 {
   if (StrIsNotEmpty(Globals.IniFile)) {
+    CreateIniFile();
     if (!IsIniFileLoaded()) {
-      CreateIniFile();
       LoadIniFile(Globals.IniFile);
     }
   }
@@ -717,248 +839,250 @@ void LoadSettings()
 {
   CFG_VERSION const _ver = StrIsEmpty(Globals.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
-  OpenSettingsFile();
-
   bool bDirtyFlag = false;  // do we have to save the file on done
 
-  // --------------------------------------------------------------------------
-  const WCHAR* const IniSecSettings = Constants.Settings_Section;
-  const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
-  // --------------------------------------------------------------------------
+  __try {
 
-  // prerequisites
-  Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
+    OpenSettingsFile();
 
-  Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
-  Settings.SaveSettings = IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
-  
-  // ---  first set "hard coded" .ini-Settings  ---
+    // --------------------------------------------------------------------------
+    const WCHAR* const IniSecSettings = Constants.Settings_Section;
+    const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
+    // --------------------------------------------------------------------------
 
-  Flags.bDevDebugMode = IniSectionGetBool(IniSecSettings2, L"DevDebugMode", DefaultFlags.bDevDebugMode);
-  Flags.bStickyWindowPosition = IniSectionGetBool(IniSecSettings2, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
+    // prerequisites
+    Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
 
-  if (Globals.CmdLnFlag_ReuseWindow == 0) {
-    Flags.bReuseWindow = IniSectionGetBool(IniSecSettings2, L"ReuseWindow", DefaultFlags.bReuseWindow);
-  }
-  else {
-    Flags.bReuseWindow = (Globals.CmdLnFlag_ReuseWindow == 2);
-  }
+    Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
+    Settings.SaveSettings = IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
 
-  if (Globals.CmdLnFlag_SingleFileInstance == 0) {
-    Flags.bSingleFileInstance = IniSectionGetBool(IniSecSettings2, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
-  }
-  else {
-    Flags.bSingleFileInstance = (Globals.CmdLnFlag_SingleFileInstance == 2);
-  }
+    // ---  first set "hard coded" .ini-Settings  ---
 
-  if (Globals.CmdLnFlag_MultiFileArg == 0) {
-    Flags.MultiFileArg = IniSectionGetBool(IniSecSettings2, L"MultiFileArg", DefaultFlags.MultiFileArg);
-  }
-  else {
-    Flags.MultiFileArg = (Globals.CmdLnFlag_MultiFileArg == 2);
-  }
+    Flags.bDevDebugMode = IniSectionGetBool(IniSecSettings2, L"DevDebugMode", DefaultFlags.bDevDebugMode);
+    Flags.bStickyWindowPosition = IniSectionGetBool(IniSecSettings2, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
 
-  if (Globals.CmdLnFlag_ShellUseSystemMRU == 0) {
-    Flags.ShellUseSystemMRU = IniSectionGetBool(IniSecSettings2, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
-  }
-  else {
-    Flags.ShellUseSystemMRU = (Globals.CmdLnFlag_ShellUseSystemMRU == 2);
-  }
+    if (Globals.CmdLnFlag_ReuseWindow == 0) {
+      Flags.bReuseWindow = IniSectionGetBool(IniSecSettings2, L"ReuseWindow", DefaultFlags.bReuseWindow);
+    }
+    else {
+      Flags.bReuseWindow = (Globals.CmdLnFlag_ReuseWindow == 2);
+    }
 
-  Flags.RelativeFileMRU = IniSectionGetBool(IniSecSettings2, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
-  Flags.PortableMyDocs = IniSectionGetBool(IniSecSettings2, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
-  Flags.NoFadeHidden = IniSectionGetBool(IniSecSettings2, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
+    if (Globals.CmdLnFlag_SingleFileInstance == 0) {
+      Flags.bSingleFileInstance = IniSectionGetBool(IniSecSettings2, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
+    }
+    else {
+      Flags.bSingleFileInstance = (Globals.CmdLnFlag_SingleFileInstance == 2);
+    }
 
-  Flags.ToolbarLook = IniSectionGetInt(IniSecSettings2, L"ToolbarLook", DefaultFlags.ToolbarLook);
-  Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
+    if (Globals.CmdLnFlag_MultiFileArg == 0) {
+      Flags.MultiFileArg = IniSectionGetBool(IniSecSettings2, L"MultiFileArg", DefaultFlags.MultiFileArg);
+    }
+    else {
+      Flags.MultiFileArg = (Globals.CmdLnFlag_MultiFileArg == 2);
+    }
 
-  Flags.SimpleIndentGuides = IniSectionGetBool(IniSecSettings2, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
-  Flags.NoHTMLGuess = IniSectionGetBool(IniSecSettings2, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
-  Flags.NoCGIGuess = IniSectionGetBool(IniSecSettings2, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
-  Flags.NoFileVariables = IniSectionGetInt(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
+    if (Globals.CmdLnFlag_ShellUseSystemMRU == 0) {
+      Flags.ShellUseSystemMRU = IniSectionGetBool(IniSecSettings2, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
+    }
+    else {
+      Flags.ShellUseSystemMRU = (Globals.CmdLnFlag_ShellUseSystemMRU == 2);
+    }
 
-  Flags.PrintFileAndLeave = Globals.CmdLnFlag_PrintFileAndLeave;
+    Flags.RelativeFileMRU = IniSectionGetBool(IniSecSettings2, L"RelativeFileMRU", DefaultFlags.RelativeFileMRU);
+    Flags.PortableMyDocs = IniSectionGetBool(IniSecSettings2, L"PortableMyDocs", DefaultFlags.PortableMyDocs);
+    Flags.NoFadeHidden = IniSectionGetBool(IniSecSettings2, L"NoFadeHidden", DefaultFlags.NoFadeHidden);
 
-  // --------------------------------------------------------------------------
+    Flags.ToolbarLook = IniSectionGetInt(IniSecSettings2, L"ToolbarLook", DefaultFlags.ToolbarLook);
+    Flags.ToolbarLook = clampi(Flags.ToolbarLook, 0, 2);
 
-  LANGID lngID = 0;
-  Defaults2.PreferredLanguageLocaleName[0] = L'\0';
-  GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
+    Flags.SimpleIndentGuides = IniSectionGetBool(IniSecSettings2, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
+    Flags.NoHTMLGuess = IniSectionGetBool(IniSecSettings2, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
+    Flags.NoCGIGuess = IniSectionGetBool(IniSecSettings2, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
+    Flags.NoFileVariables = IniSectionGetInt(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
-  IniSectionGetString(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
-    Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
+    Flags.PrintFileAndLeave = Globals.CmdLnFlag_PrintFileAndLeave;
 
-  StringCchCopyW(Globals.InitialPreferredLanguage, COUNTOF(Globals.InitialPreferredLanguage), Settings2.PreferredLanguageLocaleName);
-   
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
-  IniSectionGetString(IniSecSettings2, L"DefaultExtension", Defaults2.DefaultExtension,
-    Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
-  StrTrim(Settings2.DefaultExtension, L" \t.\"");
+    LANGID lngID = 0;
+    Defaults2.PreferredLanguageLocaleName[0] = L'\0';
+    GetUserPreferredLanguage(Defaults2.PreferredLanguageLocaleName, COUNTOF(Defaults2.PreferredLanguageLocaleName), &lngID);
 
-  Defaults2.DefaultDirectory[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"DefaultDirectory", Defaults2.DefaultDirectory,
-    Settings2.DefaultDirectory, COUNTOF(Settings2.DefaultDirectory));
+    IniSectionGetString(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
+      Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
 
-  Defaults2.FileDlgFilters[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"FileDlgFilters", Defaults2.FileDlgFilters,
-    Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
+    StringCchCopyW(Globals.InitialPreferredLanguage, COUNTOF(Globals.InitialPreferredLanguage), Settings2.PreferredLanguageLocaleName);
 
-  Defaults2.FileCheckInverval = 2000UL;
-  Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval",
-    Defaults2.FileCheckInverval), 250UL, 300000UL);
-  FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
+    // --------------------------------------------------------------------------
 
-  Defaults2.AutoReloadTimeout = 2000UL;
-  Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout",
-    Defaults2.AutoReloadTimeout), 250UL, 300000UL);
-  FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
+    StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
+    IniSectionGetString(IniSecSettings2, L"DefaultExtension", Defaults2.DefaultExtension,
+      Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
+    StrTrim(Settings2.DefaultExtension, L" \t.\"");
 
-  Defaults2.UndoTransactionTimeout = 0UL;
-  Settings2.UndoTransactionTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"UndoTransactionTimeout",
-    Defaults2.UndoTransactionTimeout), 0UL, 86400000UL);
+    Defaults2.DefaultDirectory[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"DefaultDirectory", Defaults2.DefaultDirectory,
+      Settings2.DefaultDirectory, COUNTOF(Settings2.DefaultDirectory));
 
-  // deprecated
+    Defaults2.FileDlgFilters[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"FileDlgFilters", Defaults2.FileDlgFilters,
+      Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters) - 2);
 
-  Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
-  if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
-    // cleanup
-    IniSectionDelete(IniSecSettings2, L"SciDirectWriteTech", false);
-    bDirtyFlag = true;
-  }
-  Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, 0, 3);
+    Defaults2.FileCheckInverval = 2000UL;
+    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval",
+      Defaults2.FileCheckInverval), 250UL, 300000UL);
+    FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
 
-  // Settings2 deprecated
-  Defaults.Bidirectional = IniSectionGetInt(IniSecSettings2, L"EnableBidirectionalSupport", -111);
-  if ((Defaults.Bidirectional != -111) && Settings.SaveSettings) {
-    // cleanup
-    IniSectionDelete(IniSecSettings2, L"EnableBidirectionalSupport", false);
-    bDirtyFlag = true;
-  }
-  Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : SC_BIDIRECTIONAL_DISABLED;
+    Defaults2.AutoReloadTimeout = 2000UL;
+    Settings2.AutoReloadTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout",
+      Defaults2.AutoReloadTimeout), 250UL, 300000UL);
+    FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
 
-  Defaults2.IMEInteraction = -1;
-  Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", Defaults2.IMEInteraction), -1, SC_IME_INLINE);
-  // Korean IME use inline mode by default
-  if (Settings2.IMEInteraction == -1) { // auto detection once
-    // ScintillaWin::KoreanIME()
-    int const codePage = Scintilla_InputCodePage();
-    Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
-  }
+    Defaults2.UndoTransactionTimeout = 0UL;
+    Settings2.UndoTransactionTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"UndoTransactionTimeout",
+      Defaults2.UndoTransactionTimeout), 0UL, 86400000UL);
 
-  Defaults2.SciFontQuality = g_FontQuality[3];
-  Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), 0, 3);
+    // deprecated
 
-  Defaults2.MarkOccurrencesMaxCount = 2000;
-  Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(IniSecSettings2, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
-  if (Settings2.MarkOccurrencesMaxCount <= 0) { Settings2.MarkOccurrencesMaxCount = INT_MAX; }
+    Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
+    if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
+      // cleanup
+      IniSectionDelete(IniSecSettings2, L"SciDirectWriteTech", false);
+      bDirtyFlag = true;
+    }
+    Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, 0, 3);
 
-  Defaults2.UpdateDelayMarkAllOccurrences = 50;
-  Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences",
-    Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
-  Defaults2.DenyVirtualSpaceAccess = false;
-  Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(IniSecSettings2, L"DenyVirtualSpaceAccess", Defaults2.DenyVirtualSpaceAccess);
+    // Settings2 deprecated
+    Defaults.Bidirectional = IniSectionGetInt(IniSecSettings2, L"EnableBidirectionalSupport", -111);
+    if ((Defaults.Bidirectional != -111) && Settings.SaveSettings) {
+      // cleanup
+      IniSectionDelete(IniSecSettings2, L"EnableBidirectionalSupport", false);
+      bDirtyFlag = true;
+    }
+    Defaults.Bidirectional = (clampi(Defaults.Bidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : SC_BIDIRECTIONAL_DISABLED;
 
-  Defaults2.UseOldStyleBraceMatching = false;
-  Settings2.UseOldStyleBraceMatching = IniSectionGetBool(IniSecSettings2, L"UseOldStyleBraceMatching", Defaults2.UseOldStyleBraceMatching);
+    Defaults2.IMEInteraction = -1;
+    Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings2, L"IMEInteraction", Defaults2.IMEInteraction), -1, SC_IME_INLINE);
+    // Korean IME use inline mode by default
+    if (Settings2.IMEInteraction == -1) { // auto detection once
+      // ScintillaWin::KoreanIME()
+      int const codePage = Scintilla_InputCodePage();
+      Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
+    }
 
-  Defaults2.CurrentLineHorizontalSlop = 40;
-  Settings2.CurrentLineHorizontalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineHorizontalSlop", Defaults2.CurrentLineHorizontalSlop), 0, 240);
+    Defaults2.SciFontQuality = g_FontQuality[3];
+    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), 0, 3);
 
-  Defaults2.CurrentLineVerticalSlop = 5;
-  Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
+    Defaults2.MarkOccurrencesMaxCount = 2000;
+    Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(IniSecSettings2, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
+    if (Settings2.MarkOccurrencesMaxCount <= 0) { Settings2.MarkOccurrencesMaxCount = INT_MAX; }
 
-  Defaults2.NoCopyLineOnEmptySelection = false;
-  Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCopyLineOnEmptySelection", Defaults2.NoCopyLineOnEmptySelection);
-    
-  Defaults2.NoCutLineOnEmptySelection = false;
-  Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCutLineOnEmptySelection", Defaults2.NoCutLineOnEmptySelection);
-    
+    Defaults2.UpdateDelayMarkAllOccurrences = 50;
+    Settings2.UpdateDelayMarkAllOccurrences = clampi(IniSectionGetInt(IniSecSettings2, L"UpdateDelayMarkAllOccurrences",
+      Defaults2.UpdateDelayMarkAllOccurrences), USER_TIMER_MINIMUM, 10000);
+    Defaults2.DenyVirtualSpaceAccess = false;
+    Settings2.DenyVirtualSpaceAccess = IniSectionGetBool(IniSecSettings2, L"DenyVirtualSpaceAccess", Defaults2.DenyVirtualSpaceAccess);
 
-  int const iARCLdef = 92;
-  Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
-  int const iARCLset = clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
-  Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
+    Defaults2.UseOldStyleBraceMatching = false;
+    Settings2.UseOldStyleBraceMatching = IniSectionGetBool(IniSecSettings2, L"UseOldStyleBraceMatching", Defaults2.UseOldStyleBraceMatching);
 
-  int const iAnsiCPBonusDef = 33;
-  Defaults2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusDef / 100.0f;
-  int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", iAnsiCPBonusDef), 0, 100);
-  Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
+    Defaults2.CurrentLineHorizontalSlop = 40;
+    Settings2.CurrentLineHorizontalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineHorizontalSlop", Defaults2.CurrentLineHorizontalSlop), 0, 240);
 
-  /* ~~~
-  int const iRCEDCMdef = 85;
-  Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
-  int const iRCEDCMset = clampi(IniSectionGetInt(Settings2_Section, L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100);
-  Settings2.ReliableCEDConfidenceMapping = (float)iRCEDCMset / 100.0f;
+    Defaults2.CurrentLineVerticalSlop = 5;
+    Settings2.CurrentLineVerticalSlop = clampi(IniSectionGetInt(IniSecSettings2, L"CurrentLineVerticalSlop", Defaults2.CurrentLineVerticalSlop), 0, 25);
 
-  int const iURCEDCMdef = 20;
-  Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
-  int const iURCEDCMset = clampi(IniSectionGetInt(Settings2_Section, L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, iRCEDCMset);
-  Settings2.UnReliableCEDConfidenceMapping = (float)iURCEDCMset / 100.0f;
-  ~~~ */
+    Defaults2.NoCopyLineOnEmptySelection = false;
+    Settings2.NoCopyLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCopyLineOnEmptySelection", Defaults2.NoCopyLineOnEmptySelection);
 
-  Defaults2.AdministrationTool[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
-    Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
+    Defaults2.NoCutLineOnEmptySelection = false;
+    Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCutLineOnEmptySelection", Defaults2.NoCutLineOnEmptySelection);
 
-  Defaults2.FileLoadWarningMB = 64;
-  Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
 
-  Defaults2.OpacityLevel = 75;
-  Settings2.OpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"OpacityLevel", Defaults2.OpacityLevel), 10, 100);
+    int const iARCLdef = 92;
+    Defaults2.AnalyzeReliableConfidenceLevel = (float)iARCLdef / 100.0f;
+    int const iARCLset = clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", iARCLdef), 0, 100);
+    Settings2.AnalyzeReliableConfidenceLevel = (float)iARCLset / 100.0f;
 
-  Defaults2.FindReplaceOpacityLevel = 50;
-  Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", Defaults2.FindReplaceOpacityLevel), 10, 100);
+    int const iAnsiCPBonusDef = 33;
+    Defaults2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusDef / 100.0f;
+    int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", iAnsiCPBonusDef), 0, 100);
+    Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
 
-  Defaults2.FileBrowserPath[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
+    /* ~~~
+    int const iRCEDCMdef = 85;
+    Defaults2.ReliableCEDConfidenceMapping = (float)iRCEDCMdef / 100.0f;
+    int const iRCEDCMset = clampi(IniSectionGetInt(Settings2_Section, L"ReliableCEDConfidenceMapping", iRCEDCMdef), 0, 100);
+    Settings2.ReliableCEDConfidenceMapping = (float)iRCEDCMset / 100.0f;
 
-  StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
-  if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
-    IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
-  }
-  Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", Defaults2.ExtendedWhiteSpaceChars,
-    Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
+    int const iURCEDCMdef = 20;
+    Defaults2.UnReliableCEDConfidenceMapping = (float)iURCEDCMdef / 100.0f;
+    int const iURCEDCMset = clampi(IniSectionGetInt(Settings2_Section, L"UnReliableCEDConfidenceMapping", iURCEDCMdef), 0, iRCEDCMset);
+    Settings2.UnReliableCEDConfidenceMapping = (float)iURCEDCMset / 100.0f;
+    ~~~ */
 
-  Defaults2.AutoCompleteWordCharSet[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"AutoCompleteWordCharSet", Defaults2.AutoCompleteWordCharSet,
-    Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
+    Defaults2.AdministrationTool[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"AdministrationTool.exe", Defaults2.AdministrationTool,
+      Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
 
-  Defaults2.AutoCompleteFillUpChars[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"AutoCompleteFillUpChars", Defaults2.AutoCompleteFillUpChars,
-    Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
+    Defaults2.FileLoadWarningMB = 64;
+    Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
 
-  Defaults2.LineCommentPostfixStrg[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
-    Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
-  StrTrimW(Settings2.LineCommentPostfixStrg, L"\"");
+    Defaults2.OpacityLevel = 75;
+    Settings2.OpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"OpacityLevel", Defaults2.OpacityLevel), 10, 100);
 
-  StringCchCopyW(Defaults2.TimeStamp, COUNTOF(Defaults2.TimeStamp), L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $");
-  IniSectionGetString(IniSecSettings2, L"TimeStamp", Defaults2.TimeStamp, Settings2.TimeStamp, COUNTOF(Settings2.TimeStamp));
+    Defaults2.FindReplaceOpacityLevel = 50;
+    Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", Defaults2.FindReplaceOpacityLevel), 10, 100);
 
-  Defaults2.DateTimeShort[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
+    Defaults2.FileBrowserPath[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
-  Defaults2.DateTimeLong[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"DateTimeLong", Defaults2.DateTimeLong, Settings2.DateTimeLong, COUNTOF(Settings2.DateTimeLong));
+    StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
+    if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
+      IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
+    }
+    Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", Defaults2.ExtendedWhiteSpaceChars,
+      Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
 
-  StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
-  IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+    Defaults2.AutoCompleteWordCharSet[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"AutoCompleteWordCharSet", Defaults2.AutoCompleteWordCharSet,
+      Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
 
-  StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
-  IniSectionGetString(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+    Defaults2.AutoCompleteFillUpChars[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"AutoCompleteFillUpChars", Defaults2.AutoCompleteFillUpChars,
+      Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
 
-  Defaults2.LexerSQLNumberSignAsComment = true;
-  Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
+    Defaults2.LineCommentPostfixStrg[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
+      Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
+    StrTrimW(Settings2.LineCommentPostfixStrg, L"\"");
 
-  Defaults2.ExitOnESCSkipLevel = 2;
-  Settings2.ExitOnESCSkipLevel = clampi(IniSectionGetInt(IniSecSettings2, L"ExitOnESCSkipLevel", Defaults2.ExitOnESCSkipLevel), 0, 2);
+    StringCchCopyW(Defaults2.TimeStamp, COUNTOF(Defaults2.TimeStamp), L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $");
+    IniSectionGetString(IniSecSettings2, L"TimeStamp", Defaults2.TimeStamp, Settings2.TimeStamp, COUNTOF(Settings2.TimeStamp));
 
-  // --------------------------------------------------------------------------
-  // Settings: IniSecSettings
-  // --------------------------------------------------------------------------
+    Defaults2.DateTimeShort[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
+
+    Defaults2.DateTimeLong[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"DateTimeLong", Defaults2.DateTimeLong, Settings2.DateTimeLong, COUNTOF(Settings2.DateTimeLong));
+
+    StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
+    IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+
+    StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
+    IniSectionGetString(IniSecSettings2, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+
+    Defaults2.LexerSQLNumberSignAsComment = true;
+    Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", Defaults2.LexerSQLNumberSignAsComment);
+
+    Defaults2.ExitOnESCSkipLevel = 2;
+    Settings2.ExitOnESCSkipLevel = clampi(IniSectionGetInt(IniSecSettings2, L"ExitOnESCSkipLevel", Defaults2.ExitOnESCSkipLevel), 0, 2);
+
+    // --------------------------------------------------------------------------
+    // Settings: IniSecSettings
+    // --------------------------------------------------------------------------
 
 #define GET_BOOL_VALUE_FROM_INISECTION(VARNAME,DEFAULT) \
   Defaults.VARNAME = DEFAULT;                           \
@@ -976,347 +1100,350 @@ void LoadSettings()
   Defaults.VARNAME = (cpi_enc_t)DEFAULT;                       \
   Settings.VARNAME = (cpi_enc_t)clampi(IniSectionGetInt(IniSecSettings,  _W(_STRG(VARNAME)), (int)Defaults.VARNAME),(int)MIN,(int)MAX)
 
-  GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
-  GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
-  GET_BOOL_VALUE_FROM_INISECTION(SaveFindReplace, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
+    GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SaveFindReplace, false);
 
-  Defaults.EFR_Data.bFindClose = false;
-  Settings.EFR_Data.bFindClose = IniSectionGetBool(IniSecSettings, L"CloseFind", Defaults.EFR_Data.bFindClose);
-  Defaults.EFR_Data.bReplaceClose = false;
-  Settings.EFR_Data.bReplaceClose = IniSectionGetBool(IniSecSettings, L"CloseReplace", Defaults.EFR_Data.bReplaceClose);
-  Defaults.EFR_Data.bNoFindWrap = false;
-  Settings.EFR_Data.bNoFindWrap = IniSectionGetBool(IniSecSettings, L"NoFindWrap", Defaults.EFR_Data.bNoFindWrap);
-  Defaults.EFR_Data.bTransformBS = false;
-  Settings.EFR_Data.bTransformBS = IniSectionGetBool(IniSecSettings, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
-  Defaults.EFR_Data.bAutoEscCtrlChars = false;
-  Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
-  Defaults.EFR_Data.bWildcardSearch = false;
-  Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
-  Defaults.EFR_Data.bMarkOccurences = true;
-  Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(IniSecSettings, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
-  Defaults.EFR_Data.bHideNonMatchedLines = false;
-  Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(IniSecSettings, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
-  Defaults.EFR_Data.fuFlags = 0;
-  Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
+    Defaults.EFR_Data.bFindClose = false;
+    Settings.EFR_Data.bFindClose = IniSectionGetBool(IniSecSettings, L"CloseFind", Defaults.EFR_Data.bFindClose);
+    Defaults.EFR_Data.bReplaceClose = false;
+    Settings.EFR_Data.bReplaceClose = IniSectionGetBool(IniSecSettings, L"CloseReplace", Defaults.EFR_Data.bReplaceClose);
+    Defaults.EFR_Data.bNoFindWrap = false;
+    Settings.EFR_Data.bNoFindWrap = IniSectionGetBool(IniSecSettings, L"NoFindWrap", Defaults.EFR_Data.bNoFindWrap);
+    Defaults.EFR_Data.bTransformBS = false;
+    Settings.EFR_Data.bTransformBS = IniSectionGetBool(IniSecSettings, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
+    Defaults.EFR_Data.bAutoEscCtrlChars = false;
+    Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
+    Defaults.EFR_Data.bWildcardSearch = false;
+    Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
+    Defaults.EFR_Data.bMarkOccurences = true;
+    Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(IniSecSettings, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
+    Defaults.EFR_Data.bHideNonMatchedLines = false;
+    Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(IniSecSettings, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
+    Defaults.EFR_Data.fuFlags = 0;
+    Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
-  GetKnownFolderPath(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
-  if (IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
-    PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
-  }
-
-  GetKnownFolderPath(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
-  if (IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
-    PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
-  }
-
-  GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
-  GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
-  GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 2, 0, 6);
-
-  GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  Globals.fvBackup.bWordWrap = Settings.WordWrap;
-  GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.fvBackup.bTabsAsSpaces = Settings.TabsAsSpaces;
-  GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  Globals.fvBackup.bTabIndents = Settings.TabIndents;
-  GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.fvBackup.iTabWidth = Settings.TabWidth;
-  GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.fvBackup.iIndentWidth = Settings.IndentWidth;
-  GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.fvBackup.iLongLinesLimit = Settings.LongLinesLimit;
-  Globals.iWrapCol = Settings.LongLinesLimit;
-
-  Defaults.WordWrapSymbols = 22;
-  int const iWS = IniSectionGetInt(IniSecSettings, L"WordWrapSymbols", Defaults.WordWrapSymbols);
-  Settings.WordWrapSymbols = clampi(iWS % 10, 0, 2) + clampi((iWS % 100 - iWS % 10) / 10, 0, 2) * 10;
-
-  GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, true);
-  GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
-  GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
-  GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
-  GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
-  GET_BOOL_VALUE_FROM_INISECTION(ColorDefHotspot, true);
-  GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
-
-  GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
-  GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
-  GET_BOOL_VALUE_FROM_INISECTION(AutoCLexerKeyWords, false);
-  GET_BOOL_VALUE_FROM_INISECTION(AccelWordNavigation, false);
-  GET_BOOL_VALUE_FROM_INISECTION(EditLineCommentBlock, false);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowIndentGuides, false);
-  GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
-  GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
-  GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-  GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (Globals.iCfgVersionRead < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
-  GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
-
-  GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrences, true);
-  GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
-  GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
-  GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, true);
-
-  Defaults.MarkOccurrencesCurrentWord = !Defaults.MarkOccurrencesMatchWholeWords;
-  Settings.MarkOccurrencesCurrentWord = IniSectionGetBool(IniSecSettings, L"MarkOccurrencesCurrentWord", Defaults.MarkOccurrencesCurrentWord);
-  Settings.MarkOccurrencesCurrentWord = Settings.MarkOccurrencesCurrentWord && !Settings.MarkOccurrencesMatchWholeWords;
-
-  GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
-  GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
-
-  auto const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_PREFERRED_ENCODING);
-  GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
-  Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_PREFERRED_ENCODING : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
-  GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
-  GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
-  GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
-  GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
-  GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
-  GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
-  GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
-  GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
-  GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistEOLs, true);
-  GET_BOOL_VALUE_FROM_INISECTION(FixLineEndings, false);
-  GET_BOOL_VALUE_FROM_INISECTION(FixTrailingBlanks, false);
-  GET_INT_VALUE_FROM_INISECTION(PrintHeader, 1, 0, 3);
-  GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
-  GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
-
-  int const zoomScale = float2int(1000.0f / GetBaseFontSize(Globals.hwndMain));
-  Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
-  int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
-  if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
-  Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-
-  WCHAR localeInfo[3];
-  GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
-  LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
-  Defaults.PrintMargin.left = _margin;
-  Settings.PrintMargin.left = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginLeft", Defaults.PrintMargin.left), 0, 40000);
-  Defaults.PrintMargin.top = _margin;
-  Settings.PrintMargin.top = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginTop", Defaults.PrintMargin.top), 0, 40000);
-  Defaults.PrintMargin.right = _margin;
-  Settings.PrintMargin.right = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginRight", Defaults.PrintMargin.right), 0, 40000);
-  Defaults.PrintMargin.bottom = _margin;
-  Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
-
-  GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-  GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-  GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
-  GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
-  GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
-  GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
-  GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
-  GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
-  GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // set before
-  Defaults.RenderingTechnology = 0; // reset
-  GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
-  Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
-  GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
-  GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, true);
-
-  ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
-
-  // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
-  StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
-  IniSectionGetString(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
-
-  GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
-  GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
-
-  GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeX, 340, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeY, 292, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeX, 340, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeY, 292, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeX, 487, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeY, 339, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 305, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeY, 281, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 305, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeY, 281, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(AddToFavDlgSizeX, 317, INT_MIN, INT_MAX);
-
-  GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgSizeX, 494, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
-
-  GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeX, 833, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeY, 515, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
-  GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
-
-  // --------------------------------------------------------------------------
-  const WCHAR* const StatusBar_Section = L"Statusbar Settings";
-  // --------------------------------------------------------------------------
-
-  WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
-  IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
-  ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
-
-  for (bool& sbv : s_iStatusbarVisible) { sbv = false; }
-  int cnt = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    s_vSBSOrder[i] = -1;
-    int const id = s_iStatusbarSections[i];
-    if (id >= 0) {
-      s_vSBSOrder[cnt++] = id;
-      s_iStatusbarVisible[id] = true;
+    GetKnownFolderPath(FOLDERID_Desktop, Defaults.OpenWithDir, COUNTOF(Defaults.OpenWithDir));
+    if (IniSectionGetString(IniSecSettings, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
+      PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
     }
-  }
 
-  IniSectionGetString(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
-  ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
-
-  Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
-  Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
-
-
-  // --------------------------------------------------------------------------
-  const WCHAR* const ToolbarImg_Section = L"Toolbar Images";
-  // --------------------------------------------------------------------------
-
-  IniSectionGetString(ToolbarImg_Section, L"BitmapDefault", L"",
-    s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap));
-  IniSectionGetString(ToolbarImg_Section, L"BitmapHot", L"",
-    s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmap));
-  IniSectionGetString(ToolbarImg_Section, L"BitmapDisabled", L"",
-    s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmap));
-
-
-  // --------------------------------------------------------------------------
-  const WCHAR* const IniSecWindow = Constants.Window_Section;
-  // --------------------------------------------------------------------------
-
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
-
-  WCHAR tchHighDpiToolBar[64] = { L'\0' };
-  StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-
-  Defaults.ToolBarTheme = -1;
-  Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
-  Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
-  if (Settings.ToolBarTheme < 0) { // undefined: determine higher than Full-HD
-    Settings.ToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
-  }
-
-  StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
-  Defaults.DpiScaleToolBar = false;
-  Settings.DpiScaleToolBar = IniSectionGetBool(IniSecWindow, tchHighDpiToolBar, Defaults.DpiScaleToolBar);
-
-  // --------------------------------------------------------------
-  // startup window  (ignore window position if /p was specified)
-  // --------------------------------------------------------------
-
-  Defaults2.DefaultWindowPosition[0] = L'\0';
-  IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", Defaults2.DefaultWindowPosition,
-    Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
-
-  bool const bExplicitDefaultWinPos = (StringCchLenW(Settings2.DefaultWindowPosition, 0) != 0);
-
-  // 1st set default window position 
-
-  g_DefWinInfo = GetFactoryDefaultWndPos(2); // std. default position
-
-  if (bExplicitDefaultWinPos) {
-    int bMaxi = 0;
-    int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
-      &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
-    if (itok == 4 || itok == 5) { // scan successful
-      if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
-      if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
-      if (bMaxi) g_DefWinInfo.max = true;
-      if (itok == 4) g_DefWinInfo.max = false;
+    GetKnownFolderPath(FOLDERID_Favorites, Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir));
+    if (IniSectionGetString(IniSecSettings, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
+      PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
     }
-    else {
-      g_DefWinInfo = GetFactoryDefaultWndPos(2);
-      // overwrite bad defined default position
-      StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-        L"%i,%i,%i,%i,%i", g_DefWinInfo.x, g_DefWinInfo.y, g_DefWinInfo.cx, g_DefWinInfo.cy, g_DefWinInfo.max);
-      IniSectionSetString(IniSecSettings2, L"DefaultWindowPosition", Settings2.DefaultWindowPosition);
-      bDirtyFlag = true;
+
+    GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
+    GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
+    GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 2, 0, 6);
+
+    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  Globals.fvBackup.bWordWrap = Settings.WordWrap;
+    GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.fvBackup.bTabsAsSpaces = Settings.TabsAsSpaces;
+    GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  Globals.fvBackup.bTabIndents = Settings.TabIndents;
+    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.fvBackup.iTabWidth = Settings.TabWidth;
+    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.fvBackup.iIndentWidth = Settings.IndentWidth;
+    GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.fvBackup.iLongLinesLimit = Settings.LongLinesLimit;
+    Globals.iWrapCol = Settings.LongLinesLimit;
+
+    Defaults.WordWrapSymbols = 22;
+    int const iWS = IniSectionGetInt(IniSecSettings, L"WordWrapSymbols", Defaults.WordWrapSymbols);
+    Settings.WordWrapSymbols = clampi(iWS % 10, 0, 2) + clampi((iWS % 100 - iWS % 10) / 10, 0, 2) * 10;
+
+    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
+    GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
+    GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
+    GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ColorDefHotspot, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, true);
+
+    GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
+    GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
+    GET_BOOL_VALUE_FROM_INISECTION(AutoCLexerKeyWords, false);
+    GET_BOOL_VALUE_FROM_INISECTION(AccelWordNavigation, false);
+    GET_BOOL_VALUE_FROM_INISECTION(EditLineCommentBlock, false);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowIndentGuides, false);
+    GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
+    GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
+    GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (Globals.iCfgVersionRead < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
+    GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
+
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrences, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, true);
+
+    Defaults.MarkOccurrencesCurrentWord = !Defaults.MarkOccurrencesMatchWholeWords;
+    Settings.MarkOccurrencesCurrentWord = IniSectionGetBool(IniSecSettings, L"MarkOccurrencesCurrentWord", Defaults.MarkOccurrencesCurrentWord);
+    Settings.MarkOccurrencesCurrentWord = Settings.MarkOccurrencesCurrentWord && !Settings.MarkOccurrencesMatchWholeWords;
+
+    GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
+    GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
+
+    auto const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_PREFERRED_ENCODING);
+    GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
+    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_PREFERRED_ENCODING : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
+    GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
+    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
+    GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
+    GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
+    GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
+    GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistEOLs, true);
+    GET_BOOL_VALUE_FROM_INISECTION(FixLineEndings, false);
+    GET_BOOL_VALUE_FROM_INISECTION(FixTrailingBlanks, false);
+    GET_INT_VALUE_FROM_INISECTION(PrintHeader, 1, 0, 3);
+    GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
+    GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
+
+    int const zoomScale = float2int(1000.0f / GetBaseFontSize(Globals.hwndMain));
+    Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
+    int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
+    if (Globals.iCfgVersionRead < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
+    Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+
+    WCHAR localeInfo[3];
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
+    Defaults.PrintMargin.left = _margin;
+    Settings.PrintMargin.left = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginLeft", Defaults.PrintMargin.left), 0, 40000);
+    Defaults.PrintMargin.top = _margin;
+    Settings.PrintMargin.top = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginTop", Defaults.PrintMargin.top), 0, 40000);
+    Defaults.PrintMargin.right = _margin;
+    Settings.PrintMargin.right = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginRight", Defaults.PrintMargin.right), 0, 40000);
+    Defaults.PrintMargin.bottom = _margin;
+    Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
+
+    GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
+    GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
+    GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
+    GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
+    GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
+    GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
+    GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // set before
+    Defaults.RenderingTechnology = 0; // reset
+    GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
+    Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
+    GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SplitUndoTypingSeqOnLnBreak, true);
+
+    ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
+
+    // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
+    StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
+    IniSectionGetString(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+
+    GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
+
+    GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeX, 340, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeY, 292, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeX, 340, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeY, 292, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeX, 487, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeY, 339, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 305, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeY, 281, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 305, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeY, 281, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(AddToFavDlgSizeX, 317, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgSizeX, 494, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeX, 833, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeY, 515, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+
+    // --------------------------------------------------------------------------
+    const WCHAR* const StatusBar_Section = L"Statusbar Settings";
+    // --------------------------------------------------------------------------
+
+    WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
+    IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
+    ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
+
+    for (bool& sbv : s_iStatusbarVisible) { sbv = false; }
+    int cnt = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      s_vSBSOrder[i] = -1;
+      int const id = s_iStatusbarSections[i];
+      if (id >= 0) {
+        s_vSBSOrder[cnt++] = id;
+        s_iStatusbarVisible[id] = true;
+      }
     }
-  }
 
-  // 2nd set initial window position
+    IniSectionGetString(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
+    ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
 
-  if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
+    Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
+    Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
 
-    WININFO winInfo = g_IniWinInfo;
-    WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
-    StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
-    StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
-    StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
-    StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
-    StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
-    StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-    winInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, g_IniWinInfo.x);
-    winInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, g_IniWinInfo.y);
-    winInfo.cx = IniSectionGetInt(IniSecWindow, tchSizeX, g_IniWinInfo.cx);
-    winInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, g_IniWinInfo.cy);
-    winInfo.max = IniSectionGetBool(IniSecWindow, tchMaximized, false);
-    winInfo.zoom = IniSectionGetInt(IniSecWindow, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
-    if (Globals.iCfgVersionRead < CFG_VER_0001) { winInfo.zoom = (winInfo.zoom + 10) * 10; }
-    winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+    // --------------------------------------------------------------------------
+    const WCHAR* const ToolbarImg_Section = L"Toolbar Images";
+    // --------------------------------------------------------------------------
 
-    if ((winInfo.x == CW_USEDEFAULT)  || (winInfo.y == CW_USEDEFAULT) ||
+    IniSectionGetString(ToolbarImg_Section, L"BitmapDefault", L"",
+      s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap));
+    IniSectionGetString(ToolbarImg_Section, L"BitmapHot", L"",
+      s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmap));
+    IniSectionGetString(ToolbarImg_Section, L"BitmapDisabled", L"",
+      s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmap));
+
+
+    // --------------------------------------------------------------------------
+    const WCHAR* const IniSecWindow = Constants.Window_Section;
+    // --------------------------------------------------------------------------
+
+    int ResX, ResY;
+    GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+
+    WCHAR tchHighDpiToolBar[64] = { L'\0' };
+    StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
+
+    Defaults.ToolBarTheme = -1;
+    Settings.ToolBarTheme = IniSectionGetInt(IniSecWindow, tchHighDpiToolBar, Defaults.ToolBarTheme);
+    Settings.ToolBarTheme = clampi(Settings.ToolBarTheme, -1, StrIsEmpty(s_tchToolbarBitmap) ? 1 : 2);
+    if (Settings.ToolBarTheme < 0) { // undefined: determine higher than Full-HD
+      Settings.ToolBarTheme = (IsFullHD(Globals.hwndMain, -1, -1) <= 0) ? 0 : 1;
+    }
+
+    StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i DpiScaleToolBar", ResX, ResY);
+    Defaults.DpiScaleToolBar = false;
+    Settings.DpiScaleToolBar = IniSectionGetBool(IniSecWindow, tchHighDpiToolBar, Defaults.DpiScaleToolBar);
+
+    // --------------------------------------------------------------
+    // startup window  (ignore window position if /p was specified)
+    // --------------------------------------------------------------
+
+    Defaults2.DefaultWindowPosition[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", Defaults2.DefaultWindowPosition,
+      Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
+
+    bool const bExplicitDefaultWinPos = (StringCchLenW(Settings2.DefaultWindowPosition, 0) != 0);
+
+    // 1st set default window position 
+
+    g_DefWinInfo = GetFactoryDefaultWndPos(2); // std. default position
+
+    if (bExplicitDefaultWinPos) {
+      int bMaxi = 0;
+      int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
+        &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
+      if (itok == 4 || itok == 5) { // scan successful
+        if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
+        if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
+        if (bMaxi) g_DefWinInfo.max = true;
+        if (itok == 4) g_DefWinInfo.max = false;
+      }
+      else {
+        g_DefWinInfo = GetFactoryDefaultWndPos(2);
+        // overwrite bad defined default position
+        StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
+          L"%i,%i,%i,%i,%i", g_DefWinInfo.x, g_DefWinInfo.y, g_DefWinInfo.cx, g_DefWinInfo.cy, g_DefWinInfo.max);
+        IniSectionSetString(IniSecSettings2, L"DefaultWindowPosition", Settings2.DefaultWindowPosition);
+        bDirtyFlag = true;
+      }
+    }
+
+    // 2nd set initial window position
+
+    if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
+
+      WININFO winInfo = g_IniWinInfo;
+      WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
+      StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
+      StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
+      StringCchPrintf(tchSizeX, COUNTOF(tchSizeX), L"%ix%i SizeX", ResX, ResY);
+      StringCchPrintf(tchSizeY, COUNTOF(tchSizeY), L"%ix%i SizeY", ResX, ResY);
+      StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
+      StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
+
+      winInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, g_IniWinInfo.x);
+      winInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, g_IniWinInfo.y);
+      winInfo.cx = IniSectionGetInt(IniSecWindow, tchSizeX, g_IniWinInfo.cx);
+      winInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, g_IniWinInfo.cy);
+      winInfo.max = IniSectionGetBool(IniSecWindow, tchMaximized, false);
+      winInfo.zoom = IniSectionGetInt(IniSecWindow, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
+      if (Globals.iCfgVersionRead < CFG_VER_0001) { winInfo.zoom = (winInfo.zoom + 10) * 10; }
+      winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+
+      if ((winInfo.x == CW_USEDEFAULT) || (winInfo.y == CW_USEDEFAULT) ||
         (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT))
+      {
+        g_IniWinInfo = g_DefWinInfo;
+        Globals.CmdLnFlag_WindowPos = 2; // std. default position (CmdLn: /pd)
+      }
+      else {
+        g_IniWinInfo = winInfo;
+        Globals.CmdLnFlag_WindowPos = 0; // init to g_IniWinInfo
+      }
+    }
+
+    // ------------------------------------------------------------------------
+
+    // ---  override by resolution specific settings  ---
+    WCHAR tchSciDirectWriteTech[64];
+    StringCchPrintf(tchSciDirectWriteTech, COUNTOF(tchSciDirectWriteTech), L"%ix%i RenderingTechnology", ResX, ResY);
+    Settings.RenderingTechnology = clampi(IniSectionGetInt(IniSecWindow, tchSciDirectWriteTech, Settings.RenderingTechnology), 0, 3);
+
+    WCHAR tchSciFontQuality[64];
+    StringCchPrintf(tchSciFontQuality, COUNTOF(tchSciFontQuality), L"%ix%i SciFontQuality", ResX, ResY);
+    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), 0, 3);
+
+    IniSectionGetString(Constants.Styles_Section, Constants.StylingThemeName, L"", Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName));
+
+    // define scintilla internal codepage
+    int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
+
+    // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
+    /*
+    if (Settings.DefaultEncoding == CPI_ANSI_DEFAULT)
     {
-      g_IniWinInfo = g_DefWinInfo;
-      Globals.CmdLnFlag_WindowPos = 2; // std. default position (CmdLn: /pd)
+      // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
+      int acp = (int)GetACP();
+      if (acp == 932 || acp == 936 || acp == 949 || acp == 950) {
+        iSciDefaultCodePage = acp;
+      }
+      Settings.DefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
     }
-    else {
-      g_IniWinInfo = winInfo;
-      Globals.CmdLnFlag_WindowPos = 0; // init to g_IniWinInfo
-    }
+    */
+
+    // set flag for encoding default
+    Encoding_SetDefaultFlag(Settings.DefaultEncoding);
+
+    // define default charset
+    Globals.iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
+
+    // File MRU
+    Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);
+    MRU_Load(Globals.pFileMRU, true);
+
+    Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
+    MRU_Load(Globals.pMRUfind, false);
+    SetFindPattern(Globals.pMRUfind->pszItems[0]);
+
+    Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
+    MRU_Load(Globals.pMRUreplace, false);
+
   }
-
-  // ------------------------------------------------------------------------
-
-  // ---  override by resolution specific settings  ---
-  WCHAR tchSciDirectWriteTech[64];
-  StringCchPrintf(tchSciDirectWriteTech, COUNTOF(tchSciDirectWriteTech), L"%ix%i RenderingTechnology", ResX, ResY);
-  Settings.RenderingTechnology = clampi(IniSectionGetInt(IniSecWindow, tchSciDirectWriteTech, Settings.RenderingTechnology), 0, 3);
-
-  WCHAR tchSciFontQuality[64];
-  StringCchPrintf(tchSciFontQuality, COUNTOF(tchSciFontQuality), L"%ix%i SciFontQuality", ResX, ResY);
-  Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), 0, 3);
-
-  IniSectionGetString(Constants.Styles_Section, Constants.StylingThemeName, L"", Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName));
-
-  // define scintilla internal codepage
-  int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
-
-  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
-  /*
-  if (Settings.DefaultEncoding == CPI_ANSI_DEFAULT)
-  {
-    // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
-    int acp = (int)GetACP();
-    if (acp == 932 || acp == 936 || acp == 949 || acp == 950) {
-      iSciDefaultCodePage = acp;
-    }
-    Settings.DefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
+  __finally {
+    CloseSettingsFile(bDirtyFlag);
   }
-  */
-
-  // set flag for encoding default
-  Encoding_SetDefaultFlag(Settings.DefaultEncoding);
-
-  // define default charset
-  Globals.iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
-
-  // File MRU
-  Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);
-  MRU_Load(Globals.pFileMRU, true);
-
-  Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUfind, false);
-  SetFindPattern(Globals.pMRUfind->pszItems[0]);
-
-  Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
-  MRU_Load(Globals.pMRUreplace, false);
-
-  CloseSettingsFile(bDirtyFlag);
 
   // Scintilla Styles
   Style_Load();
@@ -1614,7 +1741,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
   switch (Globals.idxSelectedTheme) {
     case 1: 
-      Style_ToIniSection(false); // Scintilla Styles
+      Style_ToIniSection(Globals.bIniFileFromScratch); // Scintilla Styles
       // fall trough
     case 0:
       IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
@@ -1668,7 +1795,6 @@ bool SaveWindowPositionSettings(bool bClearSettings)
     // set current window position as new initial window
     g_IniWinInfo = winInfo;
   }
-
   
   return true;
 }
@@ -1681,36 +1807,56 @@ bool SaveWindowPositionSettings(bool bClearSettings)
 bool SaveAllSettings(bool bForceSaveSettings)
 {
   if (Flags.bDoRelaunchElevated) { return true; } // already saved before relaunch
-  if (Flags.bSettingsFileLocked) { return false; }
+  if (Flags.bSettingsFileSoftLocked) { return false; }
 
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
 
-  bool ok = OpenSettingsFile();
+  bool ok = false;
 
-  if (ok) {
+  __try {
 
-    _SaveSettings(bForceSaveSettings);
+    ok = OpenSettingsFile();
 
-    if (StrIsNotEmpty(Globals.IniFile))
-    {
-      // Cleanup unwanted MRU'selEmpty
-      if (!Settings.SaveRecentFiles) {
-        MRU_Empty(Globals.pFileMRU);
+    if (ok) {
+
+      _SaveSettings(bForceSaveSettings);
+
+      if (StrIsNotEmpty(Globals.IniFile))
+      {
+        if (!Settings.SaveRecentFiles) {
+          // Cleanup unwanted MRUs
+          MRU_Empty(Globals.pFileMRU);
+          MRU_Save(Globals.pFileMRU);
+        }
+        else {
+          int const cnt = MRU_Count(Globals.pFileMRU);
+          if (cnt == 0) {
+            MRU_Empty(Globals.pFileMRU);
+            MRU_Save(Globals.pFileMRU); // intension is to destroy the multi-instance saved list
+          }
+          else {
+            MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
+          }
+        }
+
+        if (!Settings.SaveFindReplace) {
+          // Cleanup unwanted MRUs
+          MRU_Empty(Globals.pMRUfind);
+          MRU_Save(Globals.pMRUfind);
+          MRU_Empty(Globals.pMRUreplace);
+          MRU_Save(Globals.pMRUreplace);
+        }
+        else {
+          MRU_MergeSave(Globals.pMRUfind, false, false, false);
+          MRU_MergeSave(Globals.pMRUreplace, false, false, false);
+        }
       }
-      MRU_Save(Globals.pFileMRU);
-
-      if (!Settings.SaveFindReplace) {
-        MRU_Empty(Globals.pMRUfind);
-        MRU_Empty(Globals.pMRUreplace);
-      }
-      MRU_Save(Globals.pMRUfind);
-      MRU_Save(Globals.pMRUreplace);
     }
-  }
 
-  if (ok) {
+  }
+  __finally {
     ok = CloseSettingsFile(true);
   }
 
@@ -1733,7 +1879,7 @@ bool CloseSettingsFile(bool bSaveChanges)
 {
   if (!IsIniFileLoaded() || StrIsEmpty(Globals.IniFile)) { return false; }
 
-  bool const ok = bSaveChanges ? SaveIniFile(Globals.IniFile) : true;
+  bool const ok = bSaveChanges ? SaveIniFile() : true;
 
   if (ok) {
     Globals.bIniFileFromScratch = false;
@@ -1799,7 +1945,7 @@ bool MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos
 {
   if (pmru) {
     int i = 0;
-    for (; i < pmru->iSize; i++) {
+    for (; i < pmru->iSize; ++i) {
       if (MRU_Compare(pmru, pmru->pszItems[i], pszNew) == 0) {
         LocalFree(pmru->pszItems[i]); // StrDup()
         break;
@@ -1830,7 +1976,7 @@ bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
   if (pmru) {
     WCHAR wchItem[MAX_PATH] = { L'\0' };
     int i = 0;
-    for (i = 0; i < pmru->iSize; i++) {
+    for (i = 0; i < pmru->iSize; ++i) {
       if (pmru->pszItems[i] == NULL) {
         *iIndex = i;
         return false;
@@ -1905,7 +2051,7 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
       LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
     }
     bool bZeroMoved = false;
-    for (i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; i++)
+    for (i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; ++i)
     {
       pmru->pszItems[i] = pmru->pszItems[i + 1];
       pmru->iEncoding[i] = pmru->iEncoding[i + 1];
@@ -1930,7 +2076,7 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 bool MRU_Empty(LPMRULIST pmru)
 {
   if (pmru) {
-    for (int i = 0; i < pmru->iSize; i++) {
+    for (int i = 0; i < pmru->iSize; ++i) {
       if (pmru->pszItems[i]) {
         LocalFree(pmru->pszItems[i]);  // StrDup()
         pmru->pszItems[i] = NULL;
@@ -2040,7 +2186,7 @@ void MRU_Save(LPMRULIST pmru)
       const WCHAR* const RegKey_Section = pmru->szRegKey;
       IniSectionClear(pmru->szRegKey, false);
 
-      for (int i = 0; i < pmru->iSize; i++) {
+      for (int i = 0; i < pmru->iSize; ++i) {
         if (pmru->pszItems[i]) {
           StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
           StringCchPrintf(tchItem, COUNTOF(tchItem), L"\"%s\"", pmru->pszItems[i]);

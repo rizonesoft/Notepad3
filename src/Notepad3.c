@@ -670,7 +670,7 @@ static void _InitGlobals()
   Flags.bDoRelaunchElevated = DefaultFlags.bDoRelaunchElevated = false;
   Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
 
-  Flags.bSettingsFileLocked = DefaultFlags.bSettingsFileLocked = false;
+  Flags.bSettingsFileSoftLocked = DefaultFlags.bSettingsFileSoftLocked = false;
 
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
@@ -5553,11 +5553,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (StrIsEmpty(Globals.IniFile)) {
 
           if (StrIsNotEmpty(Globals.IniFileDefault)) {
-            if (CreateIniFileEx(Globals.IniFileDefault)) {
-              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+            if (CreateIniFile()) {
               StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
+              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
               bCreateFailure = true;
             }
           }
@@ -8879,10 +8880,10 @@ void UpdateMarginWidth()
 //
 void UpdateSaveSettingsCmds()
 {
-    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileLocked);
-    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
+    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
 }
 
 
@@ -9458,7 +9459,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
     InstallFileWatching(NULL);
-    Flags.bSettingsFileLocked = false;
+    Flags.bSettingsFileSoftLocked = false;
     UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
@@ -9622,7 +9623,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetSaveNeeded(bReload);
 
     // consistent settings file handling (if loaded in editor)
-    Flags.bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    Flags.bSettingsFileSoftLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
     UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
@@ -10024,8 +10025,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     }
 
     // if current file is settings/config file: ask to start
-    // bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
-    if (Flags.bSettingsFileLocked && !s_flagAppIsClosing)
+    if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing)
     {
       //~ LoadSettings(); NOT all settings will be applied ...
       INT_PTR answer = 0;
