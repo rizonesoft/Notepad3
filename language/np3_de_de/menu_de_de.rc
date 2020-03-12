@@ -363,16 +363,16 @@ BEGIN
             MENUITEM "&Erweiterte Dokument Ende Ansicht",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Zeige einen &Hyperlink Tooltip",          IDM_VIEW_SHOW_HYPLNK_CALLTIP
             END
-        POPUP "P&anels"
+        POPUP "&Leisten"
         BEGIN
             MENUITEM "Zeige &Menüleiste",                       IDM_VIEW_MENUBAR
             MENUITEM "Zeige &Werkzeugleiste",                   IDM_VIEW_TOOLBAR
             MENUITEM "Zeige &Statusleiste",                     IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
-            MENUITEM "&Lade andere Toolbar...",                 IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Lade andere Werkzeugleiste...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "Werkzeugleiste &anpassen...",             IDM_VIEW_CUSTOMIZETB
             MENUITEM "Werkzeugleisten &Umschalten",             IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Skalierung der Toolbar",             IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI Skalierung der Werkzeugleiste",      IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -506,10 +506,10 @@ BEGIN
             MENUITEM "Zeige &Werkzeugleiste",                   IDM_VIEW_TOOLBAR
             MENUITEM "Zeige &Statusleiste",                     IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
-            MENUITEM "&Lade andere Toolbar...",                 IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Lade andere Werkzeugleiste...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "Werkzeugleiste &anpassen...",             IDM_VIEW_CUSTOMIZETB
             MENUITEM "Werkzeugleisten &Umschalten",             IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Skalierung der Toolbar",             IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI Skalierung der Werkzeugleiste",      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
