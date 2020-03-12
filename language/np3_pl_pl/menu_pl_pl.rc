@@ -363,7 +363,7 @@ BEGIN
             MENUITEM "Rozszerzony widok końca dokumentu",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Pokaż podpowiedź hiperłącza",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels"
+        POPUP "P&anele"
         BEGIN
             MENUITEM "Pokaż pasek menu",                            IDM_VIEW_MENUBAR
             MENUITEM "Pokaż pasek narzędzi",                        IDM_VIEW_TOOLBAR
@@ -372,7 +372,7 @@ BEGIN
             MENUITEM "&Załaduj motyw paska narzędzi...",            IDM_VIEW_LOADTHEMETB
             MENUITEM "Dostosuj pasek narzędzi...",                  IDM_VIEW_CUSTOMIZETB
             MENUITEM "Przełącz paski narzędzi",                     IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
+            MENUITEM "&Pasek narzędzi w skali DPI",                          IDM_VIEW_DPISCALETB
         END
         POPUP "&Powiększenie"
         BEGIN
@@ -509,7 +509,7 @@ BEGIN
         MENUITEM "&Załaduj motyw paska narzędzi...",          IDM_VIEW_LOADTHEMETB
         MENUITEM "Dostosuj pasek narzędzi...",                IDM_VIEW_CUSTOMIZETB
         MENUITEM "Przełącz paski narzędzi",                   IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",                        IDM_VIEW_DPISCALETB
+        MENUITEM "Pasek narzędzi w skali &DPI",                        IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
