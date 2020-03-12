@@ -29,8 +29,6 @@ extern "C" {
 bool FindIniFile();
 bool TestIniFile();
 bool CreateIniFile();
-bool CreateIniFileEx(LPWSTR lpszIniFile);
-
 bool OpenSettingsFile();
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);
@@ -41,8 +39,9 @@ bool CloseSettingsFile(bool bSaveChanges);
 
 bool LoadIniFile(LPCWSTR lpIniFilePath);
 bool IsIniFileLoaded();
-bool SaveIniFile(LPCWSTR lpIniFilePath);
 void ReleaseIniFile();
+bool SaveIniFile();
+
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, 
                            LPWSTR lpReturnedString, size_t cchReturnedString);
@@ -132,7 +131,7 @@ bool      MRU_Empty(LPMRULIST pmru);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);
 bool      MRU_Load(LPMRULIST pmru, bool bFileProps);
 void      MRU_Save(LPMRULIST pmru);
-bool      MRU_MergeSave(LPMRULIST pmru, bool, bool, bool);
+bool      MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUnexpandMyDocs);
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 // ----------------------------------------------------------------------------

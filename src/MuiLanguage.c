@@ -344,7 +344,7 @@ LANGID LoadLanguageResources()
   ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_PRFX_");
 
   GetLngString(IDS_MUI_STATUSBAR_POSTFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
-  IniSectionGetString(StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
+  IniFileGetString(Globals.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
   ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
    
   return MUI_LanguageDLLs[iUsedLngIdx].LangId;

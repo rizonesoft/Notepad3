@@ -694,7 +694,6 @@ cpi_enc_t AnalyzeText_CED
 
 cpi_enc_t AnalyzeText_UCHARDET(
   const char* const text, const size_t len, 
-  const cpi_enc_t encodingHint,
   float* pConfidence, char* encodingStrg, int cch)
 {
   cpi_enc_t cpiEncoding = CPI_NONE;
@@ -728,15 +727,10 @@ cpi_enc_t AnalyzeText_UCHARDET(
 
   uchardet_delete(hUcharDet);
 
-  // UCARDET does not rely on encodingHint, so make a bias here
-  confidence += (cpiEncoding == encodingHint) ? (1.0f - confidence) / 2.0f : 0.0f;
-  // Default ANSI CodePage detection ? -> bonus
-  confidence += (cpiEncoding == CPI_ANSI_DEFAULT) ? ((1.0f - confidence) * Settings2.LocaleAnsiCodePageAnalysisBonus) : 0.0f;
-
-
-  *pConfidence = confidence;
+  *pConfidence = clampf(confidence, 0.0f, 1.0f);
   return cpiEncoding;
 }
+
 
 // ============================================================================
 // ============================================================================
@@ -751,12 +745,8 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     return;
   }
 
-  float ucd_cnf = 0.0f;
+  float confidence_UCD = 0.0f;
   cpi_enc_t cpiEncoding_UCD = CPI_NONE;
-
-  //~float ced_cnf = 0.0f;
-  //~char encodingStrg_CED[MAX_ENC_STRG_LEN] = { '\0' };
-  //~cpi_enc_t cpiEncoding_CED = CPI_NONE;
 
 #if FALSE
   size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
@@ -764,7 +754,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
   if (len < largeFile)
   {
     // small file: do SERIAL encoding detection
-    cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+    cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
     cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
   }
   else {  // large file:  start ASYNC PARALLEL encoding detection
@@ -785,8 +775,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
   //~cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
   //~if (ced_cnf < 1.0f) 
   //~{
-  cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, encodingHint, &ucd_cnf, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
-  float const ucd_confidence = clampf(ucd_cnf, 0.0f, 1.0f);
+  cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
   //~}
   //~else {
@@ -801,7 +790,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
   switch (Encoding_GetCodePage(cpiEncoding_UCD))
   {
   case 28591:  // ISO 8859 - 1  mapped to  Windows - 1252  (HTML5 Standard advice)
-    cpiEncoding_UCD = Encoding_GetByCodePage(1252);
+    cpiEncoding_UCD = Encoding_GetByCodePage(1252); // auto detect default ANSI (!)
     break;
 
   /*
@@ -817,7 +806,13 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     break;
   }
 
-  pEncDetInfo->confidence = ucd_confidence;
+  // UCARDET does not rely on encodingHint, so make a bias here
+  confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
+  // Default ANSI CodePage detection ? -> bonus
+  confidence_UCD += (cpiEncoding_UCD == CPI_ANSI_DEFAULT) ? ((1.0f - confidence_UCD) * Settings2.LocaleAnsiCodePageAnalysisBonus) : 0.0f;
+
+
+  pEncDetInfo->confidence = confidence_UCD;
   pEncDetInfo->analyzedEncoding = cpiEncoding_UCD;
 
   
@@ -1234,35 +1229,48 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
                                              cpi_enc_t iAnalyzeHint,
                                              bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
-   
   ENC_DET_T encDetRes = INIT_ENC_DET_T;
 
   FileVars_Init(lpData, cbData, &Globals.fvCurFile);
 
   bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
   bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
-  encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
-  encDetRes.bIsReverse = bBOM_BE;
-
-  encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-  encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
-
-  // --- 1st check for force encodings ---
-  LPCWSTR lpszExt = PathFindExtension(pszFile);
-  bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
 
   #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
+  // --- 1st check for force encodings ---
+
+  LPCWSTR lpszExt = PathFindExtension(pszFile);
+  bool const bNfoDizDetected = (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")));
+
   encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
+
+  encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
+  encDetRes.bIsReverse = bBOM_BE;
+  encDetRes.bIs7BitASCII = IsValidUTF7(lpData, cbData);
+  if (encDetRes.bIs7BitASCII) {
+    bSkipUTFDetection = true;
+    bSkipANSICPDetection = true;
+    encDetRes.bValidUTF8 = true;
+  }
+  else {
+    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
+    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
+  }
 
   if (!IS_ENC_ENFORCED()) 
   {
-    encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
     // force file vars ?
+    encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
     if (Encoding_IsValid(encDetRes.fileVarEncoding) && (Globals.fvCurFile.mask & FV_ENCODING)) {
       encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
     }
   }
+  if (!IS_ENC_ENFORCED() && encDetRes.bIs7BitASCII)
+  {
+    encDetRes.forcedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+  }
+
 
   // --- 2nd Use Encoding Analysis if applicable
 
@@ -1270,12 +1278,8 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
 
   encDetRes.confidence = 0.0f;
 
-  cpi_enc_t const Encoding4ASCII = (Settings.LoadASCIIasUTF8 && encDetRes.bValidUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
- 
-  // is encoding analysis hint valid
-  if (Encoding_IsUTF8(iAnalyzeHint) && !encDetRes.bValidUTF8) {
-    iAnalyzeHint = Encoding4ASCII;
-  }
+  // analysis hint correction
+  if (Encoding_IsUTF8(iAnalyzeHint) && !encDetRes.bValidUTF8) { iAnalyzeHint = CPI_ANSI_DEFAULT; }
 
   if (!IS_ENC_ENFORCED() || bForceEncDetection)
   {
@@ -1291,8 +1295,9 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
       encDetRes.analyzedEncoding = iAnalyzeHint;
       encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
     }
-    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
-      encDetRes.analyzedEncoding = Encoding4ASCII;
+    else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) 
+    {
+      encDetRes.analyzedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
 
     if (!bSkipUTFDetection)
@@ -1317,10 +1322,11 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
       //}
     }
 
-    if (bForceEncDetection) {
+    if (bForceEncDetection) 
+    {
       if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
         // no bIsReliable check (forced unreliable detection)
-        encDetRes.forcedEncoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? Encoding4ASCII : encDetRes.analyzedEncoding;
+        encDetRes.forcedEncoding = encDetRes.analyzedEncoding;
       }
       else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
         encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
@@ -1333,8 +1339,6 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     _SetEncodingTitleInfo(&encDetRes);
   }
 
-  //bool const bIsUTF8orUnicodeAnalysis = Encoding_IsUTF8(encDetRes.analyzedEncoding) || Encoding_IsUNICODE(encDetRes.analyzedEncoding);
-
   int const iConfidence = float2int(encDetRes.confidence * 100.0f);
   int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
   encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
@@ -1344,7 +1348,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
   // --------------------------------------------------------------------------
 
   // init Preferred Encoding
-  encDetRes.Encoding = Encoding4ASCII;
+  encDetRes.Encoding = CPI_PREFERRED_ENCODING;
 
   if (IS_ENC_ENFORCED()) 
   {
@@ -1369,7 +1373,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData,
     encDetRes.Encoding = iAnalyzeHint;
   }
 
-  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = Encoding4ASCII; }
+  if (!Encoding_IsValid(encDetRes.Encoding)) { encDetRes.Encoding = CPI_PREFERRED_ENCODING; }
 
   return encDetRes;
 }

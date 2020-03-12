@@ -316,10 +316,10 @@ void Style_DynamicThemesMenuCmd(int cmd)
       // internal defaults
     }
     else if (Globals.idxSelectedTheme == 1) {
-      if (!Flags.bSettingsFileLocked) {
+      if (!Flags.bSettingsFileSoftLocked) {
         CreateIniFile();
         if (StrIsNotEmpty(Globals.IniFile)) {
-          Style_ExportToFile(Globals.IniFile, false);
+          Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
       }
     }
@@ -827,7 +827,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   else {
     LoadIniFile(szFilePathNorm); // reset
     Style_ToIniSection(bForceAll);
-    ok = SaveIniFile(szFilePathNorm);
+    ok = SaveIniFile();
   }
   return ok;
 }

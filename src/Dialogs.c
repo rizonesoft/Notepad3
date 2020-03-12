@@ -1652,6 +1652,13 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
+        // sync with other instances
+        if (Settings.SaveRecentFiles) {
+          if (MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs)) {
+            MRU_Load(Globals.pFileMRU, true);
+          }
+        }
+
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
@@ -1715,6 +1722,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         lpit->hThread = NULL;
         RemoveProp(hwnd,L"it");
         FreeMem(lpit);
+
+        if (Settings.SaveRecentFiles) {
+          MRU_Save(Globals.pFileMRU); // last instance on save wins
+        }
 
         Settings.SaveRecentFiles = IsButtonChecked(hwnd, IDC_SAVEMRU);
         Settings.SaveFindReplace = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
@@ -1835,10 +1846,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
               UINT const cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
               DialogEnableControl(hwnd, IDOK, (cnt > 0));
               // can't discard current file (myself)
-              int iCur = 0;
-              if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &iCur)) { iCur = -1; }
+              int cur = 0;
+              if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) { cur = -1; }
               int const item = ListView_GetNextItem(GetDlgItem(hwnd, IDC_FILEMRU), -1, LVNI_ALL | LVNI_SELECTED);
-              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (iCur != item));
+              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
             }
             break;
           }
@@ -1898,9 +1909,14 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
             UINT cnt = ListView_GetItemCount(GetDlgItem(hwnd, IDC_FILEMRU));
             if (cnt > 0) {
               UINT idx = ListView_GetTopIndex(GetDlgItem(hwnd, IDC_FILEMRU));
-              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVIS_FOCUSED, LVIS_FOCUSED);
               ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVSCW_AUTOSIZE_USEHEADER);
-              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVIS_SELECTED, LVIS_SELECTED);
+              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), ((cnt > 1) ? idx + 1 : idx), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+              //int cur = 0;
+              //if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) { cur = -1; }
+              //int const item = ListView_GetNextItem(GetDlgItem(hwnd, IDC_FILEMRU), -1, LVNI_ALL | LVNI_SELECTED);
+              //if ((cur == item) && (cnt > 1)) {
+              //  ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx + 1, LVIS_SELECTED, LVIS_SELECTED);
+              //}
             }
 
             lpit->hThread = CreateThread(NULL,0,FileMRUIconThread,(LPVOID)lpit,0,&dwtid);
@@ -1921,8 +1937,8 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         case IDC_REMOVE:
           {
             WCHAR tchFileName[MAX_PATH] = { L'\0' };
+            
             //int  iItem;
-
             //if ((iItem = SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETCURSEL,0,0)) != LB_ERR)
 
             UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
