@@ -363,7 +363,7 @@ BEGIN
             MENUITEM "&Scorri oltre la fine del file (EOF)",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostra Tooltip &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels"
+        POPUP "P&annelli"
         BEGIN
             MENUITEM "Mostra barra dei &Menu",        IDM_VIEW_MENUBAR
             MENUITEM "Mostra &Toolbar",               IDM_VIEW_TOOLBAR
@@ -372,7 +372,7 @@ BEGIN
             MENUITEM "&Carica Tema Toolbar...",       IDM_VIEW_LOADTHEMETB
             MENUITEM "&Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
             MENUITEM "Ca&mbia Toolbars",              IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
+            MENUITEM "Scala &DPI Toolbar",            IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -509,7 +509,7 @@ BEGIN
         MENUITEM "&Carica Tema Toolbar...",       IDM_VIEW_LOADTHEMETB
         MENUITEM "&Personalizza Toolbar...",      IDM_VIEW_CUSTOMIZETB
         MENUITEM "Ca&mbia Toolbars",              IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
+        MENUITEM "Scala &DPI Toolbar",            IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
