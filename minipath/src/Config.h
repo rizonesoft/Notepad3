@@ -34,12 +34,11 @@ extern "C" {
   int  FindIniFile();
   int  TestIniFile();
   int  CreateIniFile();
-  int  CreateIniFileEx(LPCWSTR);
 
   // ----------------------------------------------------------------------------
 
   BOOL LoadIniFile(LPCWSTR lpIniFilePath);
-  BOOL SaveIniFile(LPCWSTR lpIniFilePath);
+  BOOL SaveIniFile();
   void ReleaseIniFile();
 
   size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,

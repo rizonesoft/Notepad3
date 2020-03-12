@@ -49,7 +49,7 @@ extern "C" int flagPosParam;
 
 // ----------------------------------------------------------------------------
 
-#include "SimpleIni.h"
+#include "..\..\src\Config\SimpleIni.h"
 #include "Config.h"
 
 // ============================================================================
@@ -68,6 +68,45 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 
 // ============================================================================
 
+
+// ----------------------------------------------------------------------------
+// No mechanism for  EXCLUSIVE WRITE / SHARD READ:
+// cause we need completely synchronized exclusive access for READ _and_ WRITE
+// of complete file to preserve integrety of any transaction
+// ----------------------------------------------------------------------------
+
+HANDLE AcquireFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
+{
+  HANDLE hFile = CreateFile(lpIniFilePath, 
+    GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
+  bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
+
+  return (bLocked ? hFile : INVALID_HANDLE_VALUE);
+}
+
+// ----------------------------------------------------------------------------
+
+bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
+{
+  bool bUnLocked = true;
+  if (hFile != INVALID_HANDLE_VALUE) {
+    FlushFileBuffers(hFile);
+    bUnLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &rOvrLpd);
+    CloseHandle(hFile);
+  }
+  return bUnLocked;
+}
+
+// ============================================================================
+
+
+// ============================================================================
+
+static OVERLAPPED s_OvrLpd = { 0 };
+static HANDLE s_INI_Hndl = INVALID_HANDLE_VALUE;
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
 
@@ -76,20 +115,36 @@ extern "C" BOOL LoadIniFile(LPCWSTR lpIniFilePath)
   s_INI.Reset();
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
-  SI_Error const rc = s_INI.LoadFile(lpIniFilePath);
-  return SI_Success(rc);
+
+  s_INI_Hndl = AcquireFileLock(lpIniFilePath, s_OvrLpd);
+  if (s_INI_Hndl == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  return SI_Success(s_INI.LoadFile(s_INI_Hndl));
 }
+
+
+extern "C" bool IsIniFileLoaded()
+{
+  return (s_INI_Hndl != INVALID_HANDLE_VALUE);
+}
+
 
 extern "C" void ReleaseIniFile()
 {
   s_INI.Reset();
+  ReleaseFileLock(s_INI_Hndl, s_OvrLpd);
+  s_INI_Hndl = INVALID_HANDLE_VALUE;
+  ZeroMemory(&s_OvrLpd, sizeof(OVERLAPPED));
 }
 
-extern "C" BOOL SaveIniFile(LPCWSTR lpIniFilePath)
+
+extern "C" BOOL SaveIniFile()
 {
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
-  SI_Error const rc = s_INI.SaveFile(lpIniFilePath, s_bWriteSIG);
+  SI_Error const rc = s_INI.SaveFile(s_INI_Hndl, s_bWriteSIG);
   ReleaseIniFile();
   return SI_Success(rc);
 }
@@ -97,7 +152,7 @@ extern "C" BOOL SaveIniFile(LPCWSTR lpIniFilePath)
 
 //=============================================================================
 //
-//  Manipulation of (cached) INI file 
+//  Manipulation of (cached) ini file 
 //
 //=============================================================================
 
@@ -243,7 +298,7 @@ extern "C" BOOL IniClearAllSections(LPCWSTR lpPrefix, BOOL bRemoveEmpty)
   {
     if (lstrcmpi(section.pItem, lpPrefix) == 0)
     {
-       s_INI.Delete(section.pItem, nullptr, bRemoveEmpty);
+      IniSectionClear(section.pItem, bRemoveEmpty);
     }
   }
   return TRUE;
@@ -259,7 +314,17 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
                                    LPWSTR lpReturnedString, size_t cchReturnedString)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error const rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+    return (size_t)lstrlen(lpReturnedString);
+  }
+
+  SI_Error const rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+
   if (SI_Success(rc)) {
     bool bHasMultiple = false;
     StringCchCopyW(lpReturnedString, cchReturnedString, Ini.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
@@ -277,16 +342,24 @@ extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  Ini.SetMultiLine(s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
   if (SI_Success(rc)) 
   {
     SI_Error const res = Ini.SetValue(lpSectionName, lpKeyName, lpString, nullptr, !s_bUseMultiKey);
     rc = SI_Success(res) ? SI_Error::SI_OK : SI_Error::SI_FAIL;
     if (SI_Success(rc)) {
-      rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+      rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
   }
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
@@ -295,8 +368,18 @@ extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error const rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return iDefault;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+
+  if (SI_Success(rc))
+  {
     bool bHasMultiple = false;
     int const iValue = Ini.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
     //assert(!bHasMultiple);
@@ -311,13 +394,21 @@ extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  Ini.SetMultiLine(s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
-    Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
-    rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
   }
-  Ini.Reset();
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  if (SI_Success(rc))
+  {
+    Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
+    rc = Ini.SaveFile(hFile, s_bWriteSIG);
+  }
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
@@ -326,10 +417,20 @@ extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bDefault)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error const rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return bDefault;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+  
+  if (SI_Success(rc))
+  {
     bool bHasMultiple = false;
-    BOOL const bValue = Ini.GetBoolValue(lpSectionName, lpKeyName, bDefault, &bHasMultiple);
+    bool const bValue = Ini.GetBoolValue(lpSectionName, lpKeyName, bDefault, &bHasMultiple);
     //assert(!bHasMultiple);
     return bValue;
   }
@@ -342,13 +443,21 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  Ini.SetMultiLine(s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
-  if (SI_Success(rc)) {
-    Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
-    rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
   }
-  Ini.Reset();
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  if (SI_Success(rc))
+  {
+    Ini.SetBoolValue(lpSectionName, lpKeyName, bValue, nullptr, !s_bUseMultiKey);
+    rc = Ini.SaveFile(hFile, s_bWriteSIG);
+  }
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
@@ -357,26 +466,40 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bRemoveEmpty)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  Ini.SetMultiLine(s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
   if (SI_Success(rc))
   {
     Ini.Delete(lpSectionName, lpKeyName, bRemoveEmpty);
-    Ini.SetSpaces(s_bSetSpaces);
-    rc = Ini.SaveFile(lpFilePath, s_bWriteSIG);
+    rc = Ini.SaveFile(hFile, s_bWriteSIG);
   }
-  Ini.Reset();
+  ReleaseFileLock(hFile, ovrLpd);
+
   return SI_Success(rc);
 }
 // ============================================================================
 
 
-
 extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
 {
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
-  SI_Error rc = Ini.LoadFile(lpFilePath);
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hFile = AcquireFileLock(lpFilePath, ovrLpd);
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  SI_Error rc = Ini.LoadFile(hFile);
+  ReleaseFileLock(hFile, ovrLpd);
+
   if (SI_Success(rc))
   {
     bool bHasMultiple = false;
@@ -394,7 +517,6 @@ extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
   return SI_Success(rc);
 }
 // ============================================================================
-
 
 
 
@@ -441,39 +563,52 @@ void InitDefaultSettings()
 //
 int CreateIniFile()
 {
-  return(CreateIniFileEx(g_wchIniFile));
-}
-
-int CreateIniFileEx(LPCWSTR lpszIniFile) {
-
-  if (lpszIniFile && *lpszIniFile) 
+  int result = 0;
+  if (g_wchIniFile[0] != L'\0')
   {
-    WCHAR* pwchTail = StrRChrW(lpszIniFile, nullptr, L'\\');
+    WCHAR* pwchTail = StrRChrW(g_wchIniFile, NULL, L'\\');
+
     if (pwchTail) {
       *pwchTail = 0;
-      SHCreateDirectoryEx(nullptr, lpszIniFile, nullptr);
+      SHCreateDirectoryEx(NULL, g_wchIniFile, NULL);
       *pwchTail = L'\\';
     }
 
-    HANDLE hFile = CreateFile(lpszIniFile,
-      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-      nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-    if (hFile != INVALID_HANDLE_VALUE) {
-      if (GetFileSize(hFile, nullptr) == 0) {
-        DWORD dw;
-        WriteFile(hFile, (LPCVOID)L"\xFEFF[minipath]\r\n", 26, &dw, nullptr);
+    DWORD dwFileSize = 0UL;
+
+    if (!PathFileExists(g_wchIniFile)) {
+      HANDLE hFile = CreateFile(g_wchIniFile,
+        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+      if (hFile != INVALID_HANDLE_VALUE) {
+        CloseHandle(hFile);
       }
-      CloseHandle(hFile);
-      return(1);
     }
     else {
-      return(0);
+      OVERLAPPED ovrLpd = { 0 };
+      HANDLE hFile = AcquireFileLock(g_wchIniFile, ovrLpd);
+      if (hFile == INVALID_HANDLE_VALUE) {
+        return result;
+      }
+      DWORD dwFSHigh = 0UL;
+      dwFileSize = GetFileSize(hFile, &dwFSHigh);
+      ReleaseFileLock(hFile, ovrLpd);
     }
+
+    if ((dwFileSize == 0) && (dwFileSize != INVALID_FILE_SIZE)) {
+      result = IniFileSetString(g_wchIniFile, L"minipath", NULL, NULL);
+    }
+    else {
+      result = true;
+    }
+
+    return result;
   }
-  else {
-    return(0);
-  }
+  return result;
 }
+//=============================================================================
+
+
 
 //=============================================================================
 //
@@ -682,34 +817,39 @@ int TestIniFile() {
 //
 void LoadFlags()
 {
-  LoadIniFile(g_wchIniFile);
+  __try {
 
-  const WCHAR* const Settings_Section2 = L"Settings2";
+    LoadIniFile(g_wchIniFile);
 
-  if (!IniSectionGetString(Settings_Section2, L"PreferredLanguageLocaleName", L"",
-    g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)))
-  {
-    // try to fetch Locale Name from Notepad3.ini
-    IniFileGetString(g_wchNP3IniFile, L"Settings2", L"PreferredLanguageLocaleName", L"",
-      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+    const WCHAR* const Settings_Section2 = L"Settings2";
+
+    if (!IniSectionGetString(Settings_Section2, L"PreferredLanguageLocaleName", L"",
+      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)))
+    {
+      // try to fetch Locale Name from Notepad3.ini
+      IniFileGetString(g_wchNP3IniFile, L"Settings2", L"PreferredLanguageLocaleName", L"",
+        g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+    }
+
+    if (!flagNoReuseWindow) {
+
+      if (!IniSectionGetInt(Settings_Section2, L"ReuseWindow", 1))
+        flagNoReuseWindow = 1;
+    }
+
+    if (IniSectionGetInt(Settings_Section2, L"PortableMyDocs", 1))
+      flagPortableMyDocs = 1;
+
+    if (IniSectionGetInt(Settings_Section2, L"NoFadeHidden", 0))
+      flagNoFadeHidden = 1;
+
+    flagToolbarLook = IniSectionGetInt(Settings_Section2, L"ToolbarLook", 0);
+    flagToolbarLook = max(min(flagToolbarLook, 2), 0);
+
   }
-
-  if (!flagNoReuseWindow) {
-
-    if (!IniSectionGetInt(Settings_Section2, L"ReuseWindow", 1))
-      flagNoReuseWindow = 1;
+  __finally {
+    ReleaseIniFile();
   }
-
-  if (IniSectionGetInt(Settings_Section2, L"PortableMyDocs", 1))
-    flagPortableMyDocs = 1;
-
-  if (IniSectionGetInt(Settings_Section2, L"NoFadeHidden", 0))
-    flagNoFadeHidden = 1;
-
-  flagToolbarLook = IniSectionGetInt(Settings_Section2, L"ToolbarLook", 0);
-  flagToolbarLook = max(min(flagToolbarLook, 2), 0);
-
-  ReleaseIniFile();
 }
 
 
@@ -733,6 +873,8 @@ extern "C" LPWSTR lpFilterArg;
 
 void LoadSettings()
 {
+  __try {
+
   LoadIniFile(g_wchIniFile);
 
   const WCHAR* const Settings_Section = L"Settings";
@@ -865,7 +1007,10 @@ void LoadSettings()
     Settings.crCustom[i] = Defaults.crCustom[i];
   }
   
-  ReleaseIniFile();
+  }
+  __finally {
+    ReleaseIniFile();
+  }
 }
 
 
@@ -909,99 +1054,104 @@ void SaveSettings(BOOL bSaveSettingsNow)
     return;
   }
 
-  LoadIniFile(g_wchIniFile);
+  __try {
 
-  const WCHAR* const Settings_Section = L"Settings";
+    LoadIniFile(g_wchIniFile);
 
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SaveSettings", bSaveSettings);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SingleClick", bSingleClick);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TrackSelect", bTrackSelect);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FullRowSelect", bFullRowSelect);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"UseRecycleBin", fUseRecycleBin);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"NoConfirmDelete", fNoConfirmDelete);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ClearReadOnly", bClearReadOnly);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"RenameOnCollision", bRenameOnCollision);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FocusEdit", bFocusEdit);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"AlwaysOnTop", bAlwaysOnTop);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"MinimizeToTray", bMinimizeToTray);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TransparentMode", g_bTransparentMode);
+    const WCHAR* const Settings_Section = L"Settings";
 
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"EscFunction", iEscFunction);
-  
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"StartupDirectory", iStartupDir);
-  if (Settings.iStartupDir == 1) {
-    IniSectionSetString(Settings_Section, L"MRUDirectory", Settings.szCurDir);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SaveSettings", bSaveSettings);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SingleClick", bSingleClick);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TrackSelect", bTrackSelect);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FullRowSelect", bFullRowSelect);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"UseRecycleBin", fUseRecycleBin);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"NoConfirmDelete", fNoConfirmDelete);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ClearReadOnly", bClearReadOnly);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"RenameOnCollision", bRenameOnCollision);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"FocusEdit", bFocusEdit);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"AlwaysOnTop", bAlwaysOnTop);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"MinimizeToTray", bMinimizeToTray);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"TransparentMode", g_bTransparentMode);
+
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"EscFunction", iEscFunction);
+
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"StartupDirectory", iStartupDir);
+    if (Settings.iStartupDir == 1) {
+      IniSectionSetString(Settings_Section, L"MRUDirectory", Settings.szCurDir);
+    }
+    if (!Settings.bNP3sFavoritesSettings) {
+      PathRelativeToApp(Settings.g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+      IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
+    }
+
+    PathRelativeToApp(Settings.szQuickview, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+    IniSectionSetString(Settings_Section, L"Quikview.exe", wchTmp);
+    SAVE_STRING_IF_NOT_EQ_DEFAULT(L"Quikview.exe", szQuickviewParams);
+
+    PathRelativeToApp(Settings.tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+    if (lstrcmp(wchTmp, Defaults.tchOpenWithDir) != 0) {
+      IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
+    }
+
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"FillMask", dwFillMask);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"SortOptions", nSortFlags);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SortReverse", fSortRev);
+    SAVE_STRING_IF_NOT_EQ_DEFAULT(L"FileFilter", tchFilter);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"NegativeFilter", bNegFilter);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"DefColorNoFilter", bDefCrNoFilt);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"DefColorFilter", bDefCrFilter);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"ColorNoFilter", crNoFilt);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"ColorFilter", crFilter);
+    SAVE_STRING_IF_NOT_EQ_DEFAULT(L"ToolbarButtons", tchToolbarButtons);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowToolbar", bShowToolbar);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowStatusbar", bShowStatusbar);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowDriveBox", bShowDriveBox);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"GotoDlgSizeX", cxGotoDlg);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"OpenWithDlgSizeX", cxOpenWithDlg);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"OpenWithDlgSizeY", cyOpenWithDlg);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"CopyMoveDlgSizeX", cxCopyMoveDlg);
+
+    // cleanup
+    IniSectionDelete(Settings_Section, L"WriteTest", FALSE);
+
+    /*
+      SaveSettingsNow(): query Window Dimensions
+    */
+
+    if (bSaveSettingsNow)
+    {
+      WINDOWPLACEMENT wndpl;
+      ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
+      // GetWindowPlacement
+      wndpl.length = sizeof(WINDOWPLACEMENT);
+      GetWindowPlacement(hwndMain, &wndpl);
+
+      Settings.wi.x = wndpl.rcNormalPosition.left;
+      Settings.wi.y = wndpl.rcNormalPosition.top;
+      Settings.wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
+      Settings.wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
+    }
+
+    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
+    int ResX = GetSystemMetrics(SM_CXSCREEN);
+    int ResY = GetSystemMetrics(SM_CYSCREEN);
+    wsprintf(tchPosX, L"%ix%i PosX", ResX, ResY);
+    wsprintf(tchPosY, L"%ix%i PosY", ResX, ResY);
+    wsprintf(tchSizeX, L"%ix%i SizeX", ResX, ResY);
+    wsprintf(tchSizeY, L"%ix%i SizeY", ResX, ResY);
+    wsprintf(tchMaximized, L"%ix%i Maximized", ResX, ResY);
+
+    const WCHAR* const Windows_Section = L"Window";
+
+    IniSectionSetInt(Windows_Section, tchPosX, Settings.wi.x);
+    IniSectionSetInt(Windows_Section, tchPosY, Settings.wi.y);
+    IniSectionSetInt(Windows_Section, tchSizeX, Settings.wi.cx);
+    IniSectionSetInt(Windows_Section, tchSizeY, Settings.wi.cy);
+
   }
-  if (!Settings.bNP3sFavoritesSettings) {
-    PathRelativeToApp(Settings.g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
-    IniSectionSetString(Settings_Section, L"Favorites", wchTmp);
+  __finally {
+    SaveIniFile();
   }
-
-  PathRelativeToApp(Settings.szQuickview, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
-  IniSectionSetString(Settings_Section, L"Quikview.exe", wchTmp);
-  SAVE_STRING_IF_NOT_EQ_DEFAULT(L"Quikview.exe", szQuickviewParams);
-  
-  PathRelativeToApp(Settings.tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
-  if (lstrcmp(wchTmp, Defaults.tchOpenWithDir) != 0) {
-    IniSectionSetString(Settings_Section, L"OpenWithDir", wchTmp);
-  }
-
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"FillMask", dwFillMask);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"SortOptions", nSortFlags);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"SortReverse", fSortRev);
-  SAVE_STRING_IF_NOT_EQ_DEFAULT(L"FileFilter", tchFilter);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"NegativeFilter", bNegFilter);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"DefColorNoFilter", bDefCrNoFilt);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"DefColorFilter", bDefCrFilter);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"ColorNoFilter", crNoFilt);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"ColorFilter", crFilter);
-  SAVE_STRING_IF_NOT_EQ_DEFAULT(L"ToolbarButtons", tchToolbarButtons);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowToolbar", bShowToolbar);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowStatusbar", bShowStatusbar);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, L"ShowDriveBox", bShowDriveBox);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"GotoDlgSizeX", cxGotoDlg);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"OpenWithDlgSizeX", cxOpenWithDlg);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"OpenWithDlgSizeY", cyOpenWithDlg);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, L"CopyMoveDlgSizeX", cxCopyMoveDlg);
-
-  // cleanup
-  IniSectionDelete(Settings_Section, L"WriteTest", FALSE);
-
-  /*
-    SaveSettingsNow(): query Window Dimensions
-  */
-
-  if (bSaveSettingsNow)
-  {
-    WINDOWPLACEMENT wndpl;
-    ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
-    // GetWindowPlacement
-    wndpl.length = sizeof(WINDOWPLACEMENT);
-    GetWindowPlacement(hwndMain, &wndpl);
-
-    Settings.wi.x = wndpl.rcNormalPosition.left;
-    Settings.wi.y = wndpl.rcNormalPosition.top;
-    Settings.wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-    Settings.wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-  }
-
-  WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
-  int ResX = GetSystemMetrics(SM_CXSCREEN);
-  int ResY = GetSystemMetrics(SM_CYSCREEN);
-  wsprintf(tchPosX, L"%ix%i PosX", ResX, ResY);
-  wsprintf(tchPosY, L"%ix%i PosY", ResX, ResY);
-  wsprintf(tchSizeX, L"%ix%i SizeX", ResX, ResY);
-  wsprintf(tchSizeY, L"%ix%i SizeY", ResX, ResY);
-  wsprintf(tchMaximized, L"%ix%i Maximized", ResX, ResY);
-
-  const WCHAR* const Windows_Section = L"Window";
-
-  IniSectionSetInt(Windows_Section, tchPosX, Settings.wi.x);
-  IniSectionSetInt(Windows_Section, tchPosY, Settings.wi.y);
-  IniSectionSetInt(Windows_Section, tchSizeX, Settings.wi.cx);
-  IniSectionSetInt(Windows_Section, tchSizeY, Settings.wi.cy);
-
-  SaveIniFile(g_wchIniFile);
 }
 
 //=============================================================================

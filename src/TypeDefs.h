@@ -649,7 +649,6 @@ typedef struct _themeFiles
 
 //=============================================================================
 
-
 // ---------   common defines   --------
 
 #define NOTEPAD3_MODULE_DIR_ENV_VAR  L"NOTEPAD3MODULEDIR"

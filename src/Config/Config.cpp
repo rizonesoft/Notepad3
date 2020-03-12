@@ -83,6 +83,12 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 // ============================================================================
 
 
+// ----------------------------------------------------------------------------
+// No mechanism for  EXCLUSIVE WRITE / SHARD READ:
+// cause we need completely synchronized exclusive access for READ _and_ WRITE
+// of complete file to preserve integrety of any transaction
+// ----------------------------------------------------------------------------
+
 HANDLE AcquireFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
   HANDLE hFile = CreateFile(lpIniFilePath, 
@@ -97,7 +103,6 @@ HANDLE AcquireFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 
 // ----------------------------------------------------------------------------
 
-
 bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 {
   bool bUnLocked = true;
@@ -110,7 +115,6 @@ bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 }
 
 // ============================================================================
-
 
 
 // ============================================================================
@@ -308,7 +312,7 @@ extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
   {
     if (StringCchCompareNI(section.pItem, len, lpPrefix, len) == 0)
     {
-       s_INI.Delete(section.pItem, nullptr, bRemoveEmpty);
+      IniSectionClear(section.pItem, bRemoveEmpty);
     }
   }
   return true;
@@ -1831,14 +1835,8 @@ bool SaveAllSettings(bool bForceSaveSettings)
           MRU_Save(Globals.pFileMRU);
         }
         else {
-          int const cnt = MRU_Count(Globals.pFileMRU);
-          if (cnt == 0) {
-            MRU_Empty(Globals.pFileMRU);
-            MRU_Save(Globals.pFileMRU); // intension is to destroy the multi-instance saved list
-          }
-          else {
-            MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
-          }
+          //int const cnt = MRU_Count(Globals.pFileMRU);
+          MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs);
         }
 
         if (!Settings.SaveFindReplace) {
@@ -2040,34 +2038,33 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
 bool MRU_Delete(LPMRULIST pmru, int iIndex) 
 {
   if (pmru) {
-    int i;
-    if (iIndex < 0 || iIndex > pmru->iSize - 1) {
-      return false;
-    }
-    if (pmru->pszItems[iIndex]) {
-      LocalFree(pmru->pszItems[iIndex]);  // StrDup()
-    }
-    if (pmru->pszBookMarks[iIndex]) {
-      LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
-    }
-    bool bZeroMoved = false;
-    for (i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; ++i)
+    if (iIndex >= 0 || iIndex < pmru->iSize)
     {
-      pmru->pszItems[i] = pmru->pszItems[i + 1];
-      pmru->iEncoding[i] = pmru->iEncoding[i + 1];
-      pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
-      pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i + 1];
-      pmru->pszBookMarks[i] = pmru->pszBookMarks[i + 1];
+      if (pmru->pszItems[iIndex]) {
+        LocalFree(pmru->pszItems[iIndex]);  // StrDup()
+      }
+      if (pmru->pszBookMarks[iIndex]) {
+        LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
+      }
+      bool bZeroMoved = false;
+      for (int i = iIndex; (i < pmru->iSize - 1) && !bZeroMoved; ++i)
+      {
+        pmru->pszItems[i] = pmru->pszItems[i + 1];
+        pmru->iEncoding[i] = pmru->iEncoding[i + 1];
+        pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
+        pmru->iSelAnchPos[i] = pmru->iSelAnchPos[i + 1];
+        pmru->pszBookMarks[i] = pmru->pszBookMarks[i + 1];
 
-      bZeroMoved = (NULL == pmru->pszItems[i + 1]);
+        bZeroMoved = (NULL == pmru->pszItems[i + 1]);
 
-      pmru->pszItems[i + 1] = NULL;
-      pmru->iEncoding[i + 1] = 0;
-      pmru->iCaretPos[i + 1] = -1;
-      pmru->iSelAnchPos[i + 1] = -1;
-      pmru->pszBookMarks[i + 1] = NULL;
+        pmru->pszItems[i + 1] = NULL;
+        pmru->iEncoding[i + 1] = 0;
+        pmru->iCaretPos[i + 1] = -1;
+        pmru->iSelAnchPos[i + 1] = -1;
+        pmru->pszBookMarks[i + 1] = NULL;
+      }
+      return true;
     }
-    return true;
   }
   return false;
 }
@@ -2117,45 +2114,54 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 {
   if (pmru) 
   {
-    MRU_Empty(pmru);
-    //if (bFileProps) { ClearDestinationsOnRecentDocs(); }
-
-    const WCHAR* const RegKey_Section = pmru->szRegKey;
+    bool const bOpendByMe = !IsIniFileLoaded() ? OpenSettingsFile() : false;
 
     int n = 0;
-    for (int i = 0; i < pmru->iSize; ++i)
-    {
-      WCHAR tchName[32] = { L'\0' };
-      StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-      WCHAR tchItem[2048] = { L'\0' };
-      if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem)))
+    if (IsIniFileLoaded()) {
+
+      MRU_Empty(pmru);
+      //if (bFileProps) { ClearDestinationsOnRecentDocs(); }
+
+      const WCHAR* const RegKey_Section = pmru->szRegKey;
+
+      for (int i = 0; i < pmru->iSize; ++i)
       {
-        size_t const len = StringCchLen(tchItem, 0);
-        if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
-          MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
-          tchItem[len - 2] = L'\0'; // clear dangling '"'
+        WCHAR tchName[32] = { L'\0' };
+        StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+        WCHAR tchItem[2048] = { L'\0' };
+        if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem)))
+        {
+          size_t const len = StringCchLen(tchItem, 0);
+          if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
+            MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
+            tchItem[len - 2] = L'\0'; // clear dangling '"'
+          }
+          pmru->pszItems[n] = StrDup(tchItem);
+
+          StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
+          int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
+          pmru->iEncoding[n] = bFileProps ? (cpi_enc_t)Encoding_MapIniSetting(true, iCP) : 0;
+
+          StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
+          pmru->iCaretPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
+
+          StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
+          pmru->iSelAnchPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
+
+          StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
+
+          WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+          IniSectionGetString(RegKey_Section, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
+          pmru->pszBookMarks[n] = bFileProps ? StrDup(wchBookMarks) : nullptr;
+
+          ++n;
         }
-        pmru->pszItems[n] = StrDup(tchItem);
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-        int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
-        pmru->iEncoding[n] = bFileProps ? (cpi_enc_t)Encoding_MapIniSetting(true, iCP) : 0;
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-        pmru->iCaretPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"ANC%.2i", i + 1);
-        pmru->iSelAnchPos[n] = bFileProps ? ((Settings.PreserveCaretPos) ? IniSectionGetInt(RegKey_Section, tchName, 0) : -1) : -1;
-
-        StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
-
-        WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-        IniSectionGetString(RegKey_Section, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
-        pmru->pszBookMarks[n] = bFileProps ? StrDup(wchBookMarks) : nullptr;
-
-        ++n;
+      }
+      if (bOpendByMe) {
+        CloseSettingsFile(true);
       }
     }
+
     if (bFileProps) {
       WCHAR szFilePath[MAX_PATH + 1];
       for (int i = n - 1; i >= 0; --i) 
@@ -2176,7 +2182,6 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 void MRU_Save(LPMRULIST pmru)
 {
   if (pmru) {
-
     bool const bOpendByMe = !IsIniFileLoaded() ? OpenSettingsFile() : false;
 
     if (IsIniFileLoaded()) {
@@ -2211,9 +2216,9 @@ void MRU_Save(LPMRULIST pmru)
           }
         }
       }
-    }
-    if (bOpendByMe) {
-      CloseSettingsFile(true);
+      if (bOpendByMe) {
+        CloseSettingsFile(true);
+      }
     }
   }
 }
