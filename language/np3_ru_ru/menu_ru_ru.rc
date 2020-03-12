@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "Прокрутка за пределы последней строки",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Показывать &подсказку для гиперссылок",       IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Панель инстр&ументов"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-            MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
-            MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
         END
         POPUP "Мас&штаб"
         BEGIN
@@ -503,11 +504,12 @@ BEGIN
     BEGIN
         MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
-        MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

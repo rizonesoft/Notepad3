@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "&Rolagem Passa do Fim do Arquivo",            IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar Dica de &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Barra de Ferramentas"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Mostrar &Menu",                               IDM_VIEW_MENUBAR
             MENUITEM "Mostrar &Barra de Ferramentas",               IDM_VIEW_TOOLBAR
-            MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
-            MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
             MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
+            MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -501,18 +502,19 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar &Menu",                                IDM_VIEW_MENUBAR
-        MENUITEM "Mostrar Barra de &Ferramentas",                IDM_VIEW_TOOLBAR
-        MENUITEM "Tro&car Barra de &Ferramentas",                IDM_VIEW_TOGGLETB
-        MENUITEM "&Personalizar Barra de Ferramentas...",        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Carregar Tema da Barra de &Ferramentas...",   IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                           IDM_VIEW_DPISCALETB
-        MENUITEM "Mostrar Barra de &Status",                     IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar &Menu",                               IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar &Barra de Ferramentas",               IDM_VIEW_TOOLBAR
+        MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
+        MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir o Notepad3",   IDM_TRAY_RESTORE
-        MENUITEM "Sair do Notepad3",   IDM_TRAY_EXIT
+        MENUITEM "Abrir o Notepad3",                            IDM_TRAY_RESTORE
+        MENUITEM "Sair do Notepad3",                            IDM_TRAY_EXIT
     END
 END
 

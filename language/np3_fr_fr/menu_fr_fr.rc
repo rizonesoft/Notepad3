@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "&Défiler après la fin de fichier",    IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Afficher infobulle de &Hyperlink",    IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Barre à outils"
+        POPUP "P&anneauxs"
         BEGIN
             MENUITEM "Afficher la barre de &menus",         IDM_VIEW_MENUBAR
             MENUITEM "&Afficher la barre à outils",         IDM_VIEW_TOOLBAR
-            MENUITEM "Al&terner les barres à outils",       IDM_VIEW_TOGGLETB
-            MENUITEM "&Gérer la barre à outils...",         IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Charger un thème d'outils...",       IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI échelle la barre à  outils",     IDM_VIEW_DPISCALETB
             MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Charger un thème d'outils...",       IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Gérer la barre à outils...",         IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Al&terner les barres à outils",       IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI échelle la barre à  outils",     IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -503,11 +504,12 @@ BEGIN
     BEGIN
         MENUITEM "Afficher la barre de &menus",             IDM_VIEW_MENUBAR
         MENUITEM "&Afficher la barre à outils",             IDM_VIEW_TOOLBAR
-        MENUITEM "Al&terner les barres à outils",           IDM_VIEW_TOGGLETB
-        MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Charger un thème d'outils...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI échelle la barre à  outils",         IDM_VIEW_DPISCALETB
         MENUITEM "Affic&her la barre d'état",               IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR                                  
+        MENUITEM "&Charger un thème d'outils...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Al&terner les barres à outils",           IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI échelle la barre à  outils",         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
