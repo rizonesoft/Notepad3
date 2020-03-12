@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "&Görgetés a fájl vége után is",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "&Hivatkozások címke megjelenítése",       IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Eszköztár"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Menü&sor megjelenítése",                  IDM_VIEW_MENUBAR
             MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
-            MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
-            MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
             MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
+            MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
         END
         POPUP "&Nagyítás"
         BEGIN
@@ -495,19 +496,20 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Aktuális be&csukás váltása",  IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Webes művelet &1",          CMD_WEBACTION1
-        MENUITEM "Webes művelet &2",          CMD_WEBACTION2
+        MENUITEM "Webes művelet &1",            CMD_WEBACTION1
+        MENUITEM "Webes művelet &2",            CMD_WEBACTION2
         MENUITEM "Hiperhivat&kozás megnyitása", CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Menüs&or megjelenítése",            IDM_VIEW_MENUBAR
-        MENUITEM "&Eszköztár megjelenítése",          IDM_VIEW_TOOLBAR
-        MENUITEM "Váltás &Eszköztárak",               IDM_VIEW_TOGGLETB
-        MENUITEM "Eszköztár testre&szabása...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Eszköztár té&ma betöltése...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                IDM_VIEW_DPISCALETB
-        MENUITEM "&Állapotsor megjelenítése",         IDM_VIEW_STATUSBAR
+        MENUITEM "Menü&sor megjelenítése",                  IDM_VIEW_MENUBAR
+        MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
+        MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
+        MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

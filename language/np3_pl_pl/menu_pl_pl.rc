@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "Rozszerzony widok końca dokumentu",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Pokaż podpowiedź hiperłącza",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Pasek narzędzi"
+        POPUP "P&anels"
         BEGIN
-            MENUITEM "Pokaż pasek menu",                               IDM_VIEW_MENUBAR
+            MENUITEM "Pokaż pasek menu",                            IDM_VIEW_MENUBAR
             MENUITEM "Pokaż pasek narzędzi",                        IDM_VIEW_TOOLBAR
-            MENUITEM "Przełącz paski narzędzi",                     IDM_VIEW_TOGGLETB
-            MENUITEM "Dostosuj pasek narzędzi...",                  IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Załaduj motyw paska narzędzi...",            IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
             MENUITEM "Pokaż pasek stanu",                           IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Załaduj motyw paska narzędzi...",            IDM_VIEW_LOADTHEMETB
+            MENUITEM "Dostosuj pasek narzędzi...",                  IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Przełącz paski narzędzi",                     IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
         END
         POPUP "&Powiększenie"
         BEGIN
@@ -503,11 +504,12 @@ BEGIN
     BEGIN
         MENUITEM "Pokaż pasek menu",                          IDM_VIEW_MENUBAR
         MENUITEM "Pokaż pasek narzędzi",                      IDM_VIEW_TOOLBAR
-        MENUITEM "Przełącz pasek narzędzi",                   IDM_VIEW_TOGGLETB
-        MENUITEM "&Domyślny paski narzędzi...",               IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Załaduj schemat paska narzędzi...",        IDM_VIEW_LOADTHEMETB
+        MENUITEM "Pokaż pasek stanu",                         IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Załaduj motyw paska narzędzi...",          IDM_VIEW_LOADTHEMETB
+        MENUITEM "Dostosuj pasek narzędzi...",                IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Przełącz paski narzędzi",                   IDM_VIEW_TOGGLETB
         MENUITEM "&DPI Scale Toolbar",                        IDM_VIEW_DPISCALETB
-        MENUITEM "Pokaż pasek statusu",                       IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN

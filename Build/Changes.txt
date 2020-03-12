@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC3 Version 5.20.309.(build_#) (2020-03-09)
+Current RC3 Version 5.20.311.(build_#) (2020-03-11)
 // Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
@@ -116,6 +116,9 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Don't use analysis hint UTF-8, if file is invalid UTF-8.
+- Configurable default  ANSI code-page (locale) detection bonus.
+- No AutoCompletion on empty words (busy loop bug).
 - DPI Scaling Toolbar and DPI scaling selection mode.
 - Common controls will use preffered/available MUI language
 - Sticky window position handling.

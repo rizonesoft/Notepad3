@@ -989,10 +989,7 @@ bool EditLoadFile(
   bool bClearUndoHistory,
   EditFileIOStatus* const status)
 {
-  cpi_enc_t const iEncFallback = Settings.UseDefaultForFileEncoding ?
-                                 Settings.DefaultEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
-
-  status->iEncoding = iEncFallback;
+  status->iEncoding = Settings.DefaultEncoding;
   status->bUnicodeErr = false;
   status->bUnknownExt = false;
   status->bEncryptedRaw = false;
@@ -1000,7 +997,7 @@ bool EditLoadFile(
 
   HANDLE hFile = CreateFile(pszFile,
     GENERIC_READ,
-    FILE_SHARE_READ | FILE_SHARE_WRITE,
+    FILE_SHARE_READ|FILE_SHARE_WRITE,
     NULL,
     OPEN_EXISTING,
     FILE_ATTRIBUTE_NORMAL,
@@ -1096,7 +1093,7 @@ bool EditLoadFile(
 
   if (cbData == 0) {
     FileVars_Init(NULL, 0, &Globals.fvCurFile);
-    status->iEncoding = iEncFallback;
+    status->iEncoding = Settings.DefaultEncoding;
     status->iEOLMode = Settings.DefaultEOLMode;
     EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
@@ -1150,16 +1147,17 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
 
-  ENC_DET_T encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, iEncFallback,
-                                                   bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
+  ENC_DET_T const encDetection = Encoding_DetectEncoding(pszFile, lpData, cbData, 
+                                                         Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
+                                                         bSkipUTFDetection, bSkipANSICPDetection, bForceEncDetection);
 
   #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
 
   // --------------------------------------------------------------------------
 
   if (Flags.bDevDebugMode) {
-#if 1
-    SetAdditionalTitleInfo(Encoding_GetTitleInfoW());
+#if TRUE
+    SetAdditionalTitleInfo(Encoding_GetTitleInfo());
 #else
     DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
     int const iXOff = SciCall_GetXOffset();
@@ -1222,7 +1220,7 @@ bool EditLoadFile(
   else  // ===  ALL OTHERS  ===
   {
     // ===  UTF-8 ? ===
-    bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
+    bool const bValidUTF8 = encDetection.bValidUTF8;
     bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
     bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
 
@@ -1242,11 +1240,11 @@ bool EditLoadFile(
         EditDetectEOLMode(lpData, cbData, status);
       }
     }
-    else if (bIsCP_UTF7 && IsValidUTF7(lpData, cbData))
+    else if (bIsCP_UTF7 || encDetection.bIs7BitASCII)
     {
       // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
       EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
-      status->iEncoding = iEncFallback;
+      status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
       EditDetectEOLMode(lpData, cbData, status);
     }
     else { // ===  ALL OTHER NON UTF-8 ===
@@ -7229,6 +7227,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
     return true;
   }
+
   DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
   while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
@@ -7246,6 +7245,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   char pRoot[_MAX_AUTOC_WORD_LEN];
   DocPos const iRootLen = (iCurrentPos - iWordStartPos);
   StringCchCopyNA(pRoot, COUNTOF(pRoot), SciCall_GetRangePointer(iWordStartPos, iRootLen), (size_t)iRootLen);
+  if ((iRootLen <= 0) || StrIsEmptyA(pRoot)) { return true; } // nothing to find
 
   int iNumWords = 0;
   size_t iWListSize = 0;

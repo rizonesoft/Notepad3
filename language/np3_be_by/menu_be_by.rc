@@ -363,21 +363,22 @@ BEGIN
             MENUITEM "Пракручваць за мяжу апошняга радка",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Паказваць &падказку для гіперспасылак",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Паліца пры&ладаў"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-            MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
-            MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
         END
         POPUP "Ма&штаб"
         BEGIN
-            MENUITEM "Па&вялічыць\tCtrl+ +",        IDM_VIEW_ZOOMIN
-            MENUITEM "Па&меншыць\tCtrl+ –",         IDM_VIEW_ZOOMOUT
-            MENUITEM "&Скінуць\tCtrl+0",            IDM_VIEW_RESETZOOM
+            MENUITEM "Па&вялічыць\tCtrl+ +",          IDM_VIEW_ZOOMIN
+            MENUITEM "Па&меншыць\tCtrl+ –",           IDM_VIEW_ZOOMOUT
+            MENUITEM "&Скінуць\tCtrl+0",              IDM_VIEW_RESETZOOM
         END
         POPUP "Па&зіцыя"
         BEGIN
@@ -448,7 +449,7 @@ BEGIN
         BEGIN
             POPUP "&Адлюстраванне"
             BEGIN
-                MENUITEM "Звычайны &GDI (no ligatures)",     IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "Звычайны &GDI (без лігатураў)",    IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
@@ -483,36 +484,37 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Ад&мена",                     IDM_EDIT_UNDO
-        MENUITEM "&Паўтор",                     IDM_EDIT_REDO
+        MENUITEM "Ад&мена",                       IDM_EDIT_UNDO
+        MENUITEM "&Паўтор",                       IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "&Выразаць",                   IDM_EDIT_CUT
-        MENUITEM "&Капіяваць",                  IDM_EDIT_COPY
-        MENUITEM "Уст&авіць",                   IDM_EDIT_PASTE
-        MENUITEM "В&ыдаліць",                   IDM_EDIT_CLEAR
+        MENUITEM "&Выразаць",                     IDM_EDIT_CUT
+        MENUITEM "&Капіяваць",                    IDM_EDIT_COPY
+        MENUITEM "Уст&авіць",                     IDM_EDIT_PASTE
+        MENUITEM "В&ыдаліць",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Вылучыць у&сё",               IDM_EDIT_SELECTALL
+        MENUITEM "Вылучыць у&сё",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Згарнуць/разгарнуць &блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Згарнуць/разгарнуць &блок",     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Адкрыць вэб-дзеянне &1",      CMD_WEBACTION1
-        MENUITEM "Адкрыць вэб-дзеянне &2",      CMD_WEBACTION2
-        MENUITEM "Адкрыць &гіперспасылку",      CMD_OPEN_HYPERLINK
+        MENUITEM "Адкрыць вэб-дзеянне &1",        CMD_WEBACTION1
+        MENUITEM "Адкрыць вэб-дзеянне &2",        CMD_WEBACTION2
+        MENUITEM "Адкрыць &гіперспасылку",        CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
         MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
-        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",            IDM_VIEW_DPISCALETB
         MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Адкрыць Notepad3",            IDM_TRAY_RESTORE
-        MENUITEM "Закрыць Notepad3",            IDM_TRAY_EXIT
+        MENUITEM "Адкрыць Notepad3",              IDM_TRAY_RESTORE
+        MENUITEM "Закрыць Notepad3",              IDM_TRAY_EXIT
     END
 END
 

@@ -422,7 +422,7 @@ public:
     class FileHndlWriter : public OutputWriter {
       HANDLE m_file;
     public:
-      FileHndlWriter(HANDLE a_file) : m_file(a_file) {};
+      FileHndlWriter(HANDLE a_file) : m_file(a_file) { SetFilePointer(m_file, 0, 0, FILE_BEGIN); SetEndOfFile(m_file); };
       ~FileHndlWriter() { FlushFileBuffers(m_file); }
       void Write(const char* a_pBuf) override {
         DWORD nBytesWritten = 0UL;
@@ -1437,25 +1437,8 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
     return SI_Error::SI_FILE;
   }
 
-  SI_Error rc = SI_Error::SI_FILE;
+  SI_Error rc = LoadFile(hFile);
 
-  DWORD const flags = 0UL; // SHARED READ(!) ~ LOCKFILE_FAIL_IMMEDIATELY | LOCKFILE_EXCLUSIVE_LOCK
-  OVERLAPPED OvrLpd = { 0 };
-
-  bool bLocked = false;
-  try {
-    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd);
-    if (bLocked) {
-      rc = LoadFile(hFile);
-      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
-    }
-  }
-  catch (...) {
-    if (bLocked) {
-      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
-    }
-    throw; // re-throw to pass the exception to some other handler
-  }
   CloseHandle(hFile);
   return rc;
 }
@@ -1465,7 +1448,8 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
-    const SI_WCHAR_T * a_pwszFile
+    const SI_WCHAR_T * a_pwszFile,
+    bool               a_bUseLocking
     )
 {
 #ifdef _WIN32
@@ -1501,7 +1485,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 {
   DWORD dwFileSizeHigh = 0UL;
   DWORD const dwFileSize = GetFileSize(a_hFile, &dwFileSizeHigh);
-  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSize == 0) || (dwFileSizeHigh != 0UL)) {
+  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
     return SI_Error::SI_FILE;
   }
 
@@ -2645,31 +2629,14 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
 ) const
 {
   HANDLE hFile = CreateFile(a_pwszFile,
-    GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
     return SI_Error::SI_FILE;
   }
 
-  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;  // LOCK SHARED READ/WRITE(!) ~ LOCKFILE_FAIL_IMMEDIATELY
-  OVERLAPPED OvrLpd = { 0 };
-  SI_Error rc = SI_Error::SI_FILE;
-  
-  bool bLocked = false;
-  try {
-    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &OvrLpd);
-    if (bLocked) {
-      rc = SaveFile(hFile, a_bAddSignature);
-      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
-    }
-  }
-  catch(...) {
-    if (bLocked) {
-      bLocked = !UnlockFileEx(hFile, 0, MAXDWORD, 0, &OvrLpd);
-    }
-    throw; // re-throw to pass the exception to some other handler
-  }
+  SI_Error rc = SaveFile(hFile, a_bAddSignature);
 
   CloseHandle(hFile);
   return rc;

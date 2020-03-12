@@ -363,15 +363,16 @@ BEGIN
             MENUITEM "Rulla förbi slutet av filen",                 IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Visa verktygstips för hyperlänk",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Verktygsfält"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
             MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
-            MENUITEM "Växla verktygsfält",                          IDM_VIEW_TOGGLETB
-            MENUITEM "Anpassa verktygsfält...",                     IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Ladda tema för verktygsfält...",              IDM_VIEW_LOADTHEMETB
-            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
             MENUITEM "Visa statusfält",                             IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "Ladda tema för verktygsfält...",              IDM_VIEW_LOADTHEMETB
+            MENUITEM "Anpassa verktygsfält...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Växla verktygsfält",                          IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
         END
         POPUP "Förstoring"
         BEGIN
@@ -503,11 +504,12 @@ BEGIN
     BEGIN
         MENUITEM "Visa menyfält",                                   IDM_VIEW_MENUBAR
         MENUITEM "Visa verktygsfält",                               IDM_VIEW_TOOLBAR
-        MENUITEM "Växla verktygsfält",                              IDM_VIEW_TOGGLETB
-        MENUITEM "Anpassa verktygsfält...",                         IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Ladda tema för verktygsfält...",                  IDM_VIEW_LOADTHEMETB
-        MENUITEM "&DPI Scale Toolbar",                              IDM_VIEW_DPISCALETB
         MENUITEM "Visa statusfält",                                 IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "Ladda tema för verktygsfält...",                  IDM_VIEW_LOADTHEMETB
+        MENUITEM "Anpassa verktygsfält...",                         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Växla verktygsfält",                              IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",                              IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

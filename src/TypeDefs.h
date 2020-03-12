@@ -508,7 +508,7 @@ typedef struct _flags_t
   bool bDoRelaunchElevated;
   bool bSearchPathIfRelative;
 
-  bool bSettingsFileLocked;
+  bool bSettingsFileSoftLocked;
 
 } FLAGS_T, *PFLAGS_T;
 
@@ -540,8 +540,7 @@ typedef struct _settings2_t
   int    ExitOnESCSkipLevel;
 
   float  AnalyzeReliableConfidenceLevel;
-  //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
-  //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
+  float  LocaleAnsiCodePageAnalysisBonus;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[64];
@@ -651,7 +650,6 @@ typedef struct _themeFiles
 } THEMEFILES, * PTHEMEFILES;
 
 //=============================================================================
-
 
 // ---------   common defines   --------
 
