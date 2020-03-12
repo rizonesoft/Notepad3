@@ -290,6 +290,7 @@
     <ClCompile Include="src\minipath.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Config\SimpleIni.h" />
     <ClInclude Include="language\common_res.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Dialogs.h" />
@@ -298,7 +299,6 @@
     <ClInclude Include="src\Helpers.h" />
     <ClInclude Include="src\minipath.h" />
     <ClInclude Include="src\resource.h" />
-    <ClInclude Include="src\SimpleIni.h" />
     <ClInclude Include="src\version.h" />
   </ItemGroup>
   <ItemGroup>

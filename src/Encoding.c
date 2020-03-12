@@ -48,7 +48,7 @@ cpi_enc_t Encoding_Current(cpi_enc_t iEncoding)
     if (Encoding_IsValid(iEncoding))
       CurrentEncoding = iEncoding;
     else
-      CurrentEncoding = CPI_UTF8;
+      CurrentEncoding = CPI_PREFERRED_ENCODING;
   }
   return CurrentEncoding;
 }

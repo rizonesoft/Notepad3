@@ -506,7 +506,7 @@ typedef struct _flags_t
   bool bDoRelaunchElevated;
   bool bSearchPathIfRelative;
 
-  bool bSettingsFileLocked;
+  bool bSettingsFileSoftLocked;
 
 } FLAGS_T, *PFLAGS_T;
 
@@ -648,7 +648,6 @@ typedef struct _themeFiles
 } THEMEFILES, * PTHEMEFILES;
 
 //=============================================================================
-
 
 // ---------   common defines   --------
 

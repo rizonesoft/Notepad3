@@ -1529,28 +1529,33 @@ BOOL MRU_Load(LPMRULIST pmru) {
   WCHAR tchItem[1024];
 
   MRU_Empty(pmru);
-  LoadIniFile(g_wchIniFile);
+  __try {
+    LoadIniFile(g_wchIniFile);
 
-  const WCHAR* const RegKey_Section = pmru->szRegKey;
+    const WCHAR* const RegKey_Section = pmru->szRegKey;
 
-  for (i = 0; i < pmru->iSize; i++) {
-    StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
-    if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
-      size_t const len = (size_t)lstrlen(tchItem);
-      if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
-        MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
-        tchItem[len - 2] = L'\0'; // clear dangling '"'
+    for (i = 0; i < pmru->iSize; i++) {
+      StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+      if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
+        size_t const len = (size_t)lstrlen(tchItem);
+        if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
+          MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
+          tchItem[len - 2] = L'\0'; // clear dangling '"'
+        }
+        pmru->pszItems[n++] = StrDup(tchItem);
       }
-      pmru->pszItems[n++] = StrDup(tchItem);
     }
   }
-  ReleaseIniFile();
+  __finally {
+    ReleaseIniFile();
+  }
   return(1);
 }
 
 BOOL MRU_Save(LPMRULIST pmru) {
 
-  if (LoadIniFile(g_wchIniFile)) {
+  __try {
+    LoadIniFile(g_wchIniFile);
 
     WCHAR tchName[32];
     WCHAR tchItem[1024] = { L'\0' };
@@ -1565,10 +1570,11 @@ BOOL MRU_Save(LPMRULIST pmru) {
         IniSectionSetString(RegKey_Section, tchName, tchItem);
       }
     }
-    SaveIniFile(g_wchIniFile);
-    return TRUE;
   }
-  return FALSE;
+  __finally {
+    SaveIniFile(g_wchIniFile);
+  }
+  return TRUE;
 }
 
 void MRU_LoadToCombobox(HWND hwnd,LPCWSTR pszKey)
