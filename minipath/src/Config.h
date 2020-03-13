@@ -37,7 +37,7 @@ extern "C" {
 
   // ----------------------------------------------------------------------------
 
-  BOOL LoadIniFile(LPCWSTR lpIniFilePath);
+  BOOL LoadIniFile(LPCWSTR lpIniFilePath, BOOL bNeedReadWriteAccess);
   BOOL SaveIniFile();
   void ReleaseIniFile();
 

@@ -124,13 +124,15 @@ static HANDLE s_INI_Hndl = INVALID_HANDLE_VALUE;
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
 
-extern "C" BOOL LoadIniFile(LPCWSTR lpIniFilePath)
+extern "C" BOOL LoadIniFile(LPCWSTR lpIniFilePath, BOOL bNeedReadWriteAccess)
 {
   s_INI.Reset();
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
 
-  s_INI_Hndl = AcquireReadFileLock(lpIniFilePath, s_OvrLpd);
+  s_INI_Hndl = bNeedReadWriteAccess ? AcquireWriteFileLock(lpIniFilePath, s_OvrLpd) :
+                                      AcquireReadFileLock(lpIniFilePath, s_OvrLpd);;
+
   if (s_INI_Hndl == INVALID_HANDLE_VALUE) {
     return false;
   }
@@ -834,7 +836,7 @@ void LoadFlags()
 {
   __try {
 
-    LoadIniFile(g_wchIniFile);
+    LoadIniFile(g_wchIniFile, FALSE);
 
     const WCHAR* const Settings_Section2 = L"Settings2";
 
@@ -890,7 +892,7 @@ void LoadSettings()
 {
   __try {
 
-  LoadIniFile(g_wchIniFile);
+  LoadIniFile(g_wchIniFile, FALSE);
 
   const WCHAR* const Settings_Section = L"Settings";
 
@@ -1071,7 +1073,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
   __try {
 
-    LoadIniFile(g_wchIniFile);
+    LoadIniFile(g_wchIniFile, TRUE);
 
     const WCHAR* const Settings_Section = L"Settings";
 

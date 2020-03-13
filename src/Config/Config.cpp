@@ -138,13 +138,15 @@ static HANDLE s_INI_Hndl = INVALID_HANDLE_VALUE;
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
 
-extern "C" bool LoadIniFile(LPCWSTR lpIniFilePath)
+extern "C" bool LoadIniFile(LPCWSTR lpIniFilePath, bool bNeedReadWriteAccess)
 {
   s_INI.Reset();
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
 
-  s_INI_Hndl = AcquireReadFileLock(lpIniFilePath, s_OvrLpd);
+  s_INI_Hndl = bNeedReadWriteAccess ? AcquireWriteFileLock(lpIniFilePath, s_OvrLpd) : 
+                                      AcquireReadFileLock(lpIniFilePath, s_OvrLpd);;
+
   if (s_INI_Hndl == INVALID_HANDLE_VALUE) {
     return false;
   }
@@ -842,7 +844,7 @@ bool OpenSettingsFile()
   if (StrIsNotEmpty(Globals.IniFile)) {
     CreateIniFile();
     if (!IsIniFileLoaded()) {
-      LoadIniFile(Globals.IniFile);
+      LoadIniFile(Globals.IniFile, true);
     }
   }
   return IsIniFileLoaded();
