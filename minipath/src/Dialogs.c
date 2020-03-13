@@ -2700,7 +2700,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
               __try {
 
-                LoadIniFile(g_wchIniFile);
+                LoadIniFile(g_wchIniFile, TRUE);
 
                 const WCHAR* const TargetApp_Section = L"Target Application";
 

@@ -1163,7 +1163,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Load toolbar labels
   __try {
-    LoadIniFile(g_wchIniFile);
+    LoadIniFile(g_wchIniFile, FALSE);
     const WCHAR* const ToolbarLabels_Section = L"Toolbar Labels";
 
     n = 0;
@@ -3330,7 +3330,7 @@ void LoadTargetParamsOnce(void)
     return;
 
   __try {
-    LoadIniFile(g_wchIniFile);
+    LoadIniFile(g_wchIniFile, FALSE);
     const WCHAR* const TargetApp_Section = L"Target Application";
 
     if (IniSectionGetInt(TargetApp_Section, L"UseTargetApplication", 0xFB) != 0xFB) {

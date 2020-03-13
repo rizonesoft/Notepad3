@@ -544,7 +544,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
   if (bResetToDefault) {
     ReleaseIniFile();
   }
-  bool result = !bResetToDefault ? LoadIniFile(szFile) : true;
+  bool result = !bResetToDefault ? LoadIniFile(szFile, false) : true;
 
   if (result) {
 
@@ -825,7 +825,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     }
   }
   else {
-    LoadIniFile(szFilePathNorm); // reset
+    LoadIniFile(szFilePathNorm, true); // reset
     Style_ToIniSection(bForceAll);
     ok = SaveIniFile();
   }

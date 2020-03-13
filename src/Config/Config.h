@@ -37,7 +37,7 @@ bool CloseSettingsFile(bool bSaveChanges);
 
 // ----------------------------------------------------------------------------
 
-bool LoadIniFile(LPCWSTR lpIniFilePath);
+bool LoadIniFile(LPCWSTR lpIniFilePath, bool bNeedReadWriteAccess);
 bool IsIniFileLoaded();
 void ReleaseIniFile();
 bool SaveIniFile();
