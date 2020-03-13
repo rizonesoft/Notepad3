@@ -93,7 +93,7 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
   HANDLE hFile = CreateFile(lpIniFilePath, 
     GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
   bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
