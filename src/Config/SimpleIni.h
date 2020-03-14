@@ -1490,7 +1490,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
   }
 
   // allocate and ensure NULL terminated
-  auto* pData = new(std::nothrow) char[dwFileSize + 1];
+  auto* pData = new(std::nothrow) char[(size_t)dwFileSize + 1];
   if (!pData) {
     return SI_Error::SI_NOMEM;
   }
