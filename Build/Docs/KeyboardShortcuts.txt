@@ -38,7 +38,7 @@
         Ctrl+R                Run Command...
         Ctrl+Shift+1          Web Template 1
         Ctrl+Shift+2          Web Template 2
-    
+
       Encoding
       --------
         Shift+F8              Select UTF-8 as Default.
@@ -50,7 +50,7 @@
         Ctrl+Shift+F8         Reload an ASCII file as UTF-8 file.
         Alt+F8                Ignore Encoding Tags.
         F8                    Open Select Source Encoding to Reload file...
-    
+
       Favorites
       ---------
         Alt+I                 Open Favorites...
@@ -83,7 +83,7 @@
         Ctrl+ →               Cursor Word Right.
         Ctrl+Backspace        Delete Word Before/Left.
         Ctrl+Del              Delete Word After/Right.
-    
+
       Lines
       -----
         Alt+ ↑                Move Line (Block) Up.
@@ -107,7 +107,7 @@
         Alt+R                 Remove Empty Lines.
         Ctrl+Alt+B            Remove Blank Lines.
         Ctrl+Alt+D            Remove Duplicate Lines.
-    
+
       Selection
       ---------
         Ctrl+,                Jump to Selection Start.
@@ -124,7 +124,7 @@
         Tab                   Indent Selected Block.
         Shift+Tab             Unindent Selected Block.
         Ctrl+Tab              Insert Tabulator.
-    
+
           Enclose Selection
           ------------------
             Ctrl+1                Enclose within '' (Single Quotes).
@@ -134,7 +134,7 @@
             Ctrl+5                Enclose within {}.
             Ctrl+6                Enclose within `` (Backticks).
             Alt+Q                 Enclose With... (Enclose Before/After Selection).
-    
+
       Convert
       -------
         Ctrl+Shift+U          Selection in Uppercase.
@@ -150,7 +150,7 @@
         Ctrl+Shift+R          URL Decode.
         Ctrl+Alt+X            Char To HEX.
         Ctrl+Alt+C            Hex To Char.
-    
+
       Insert
       ------
         Ctrl+Enter            New Line Above.
@@ -162,7 +162,7 @@
         Shift+F5              Update Timestamps.
         Ctrl+Q                Block Comment (Toggle).
         Ctrl+Shift+Q          Stream Comment.
-    
+
       Miscellaneous
       -------------
         Ctrl+Shift+.          Copy GUID to Clipboard.
@@ -179,14 +179,14 @@
         Alt+Shift+Arrows      Rectangular Selection.
         Ctrl+F9               Copy Filename Only to Clipboard.
         Ctrl+Shift+F9         Copy Full Path to Clipboard.
-    
+
       Bookmarks
       ---------
         Ctrl+F2               Toggle Bookmark.
         F2                    Jump to Next Bookmark.
         Shift+F2              Jump to Previous Bookmark.
         Alt+F2                Clear All Bookmark.
-    
+
       Search
       ------
         Ctrl+F                Find...
@@ -217,7 +217,7 @@
       Mark Occurences
       ----------------
         Alt+A                 Show All Occurences.
-    
+
       Folding
       -------
         Ctrl+Shift+F          Toggle All Folds.
@@ -227,17 +227,17 @@
         Alt+ →                Expand Fold.
         Ctrl+PgUp/PgDn        Goto Previous/Next Block.
         Ctrl+Shift+PgUp/PgDn  Select to Previous/Next Block.
-    
+
       Display
       -------
         Ctrl+Alt+V           Show in Focused View.
-    
+
       Zoom
       ----
         Ctrl+ +               Zoom In.
         Ctrl+ –               Zoom Out.
         Ctrl+0                Reset Zoom.
-    
+
       Position
       --------
         Ctrl+Shift+K          Copy Window Position to Clipboard.
@@ -267,11 +267,11 @@
         Ctrl+Shift+L          Reuse Window.
         Alt+T                 Always On Top.
         Alt+G                 Transparent Mode.
-    
+
           Window Title Display
           --------------------
             Ctrl+9                Display Text Excerpt in Title.
-    
+
       Advanced Configuration
       ----------------------
         F7                    Save Settings Now.
@@ -302,7 +302,7 @@
 
   \b       Word boundary.
 
-  [...]    This indicates a set of characters, 
+  [...]    This indicates a set of characters,
            For example, [abc] means any of the characters a, b or c.
            You can also use ranges, for example [a-z] for any lower case character.
 
@@ -310,28 +310,28 @@
            For example, [^A-Za-z] means any character except an alphabetic character.
 
   \d       Any decimal digit.
-  
+
   \D       Any character that is not a decimal digit.
 
   \s       Any whitespace character.
-  
+
   \S       Any character that is not a whitespace character.
 
   \w       Any "word" character.
-  
+
   \W       Any "non-word" character.
 
   \x       This allows you to use a character x that would otherwise have a special meaning.
            For example, \[ would be interpreted as [ and not as the start of a character set.
 
   \xHH     Character with hex code HH.
-  
+
   ?        This matches preceding 0 or 1 times.
 
-  *        This matches 0 or more times. 
+  *        This matches 0 or more times.
            For example, Sa*m matches Sm, Sam, Saam, Saaam and so on.
 
-  +        This matches 1 or more times. 
+  +        This matches 1 or more times.
            For example, Sa+m matches Sam, Saam, Saaam and so on.
 
   *? or +? Non greedy matching of quantifiers "?" and "+".
@@ -361,11 +361,11 @@
     Notepad3  [/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]
               [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]
               [/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[…]]
-  
+
     file      Must be the last argument, no quoted spaces by default.
     +         Accept multiple file arguments (with quoted spaces).
     -         Accept single file argument (without quoted spaces).
-  
+
   Options:
     /?         Dispay this help message.
     …          Encoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).
@@ -393,14 +393,13 @@
     /vd        Print file (open printer dialog).
     /y         Search environment PATH in case of relative filename.
     /z         Skip next (usable for registry-based Notepad replacement).
-  
+
   Examples:
     Notepad3   /utf8sig /crlf d:\temp\Test.txt
                … Open a new file: "Test.txt" Encoding=UTF-8-BOM, EoL=CRLF.
     Notepad3   /v d:\temp\Test.txt
                … Print the file: "Test.txt" immediately.
-  
+
 
 ================================================================================
 
- 
