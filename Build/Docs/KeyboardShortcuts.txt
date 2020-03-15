@@ -1,304 +1,348 @@
-Keyboard Shortcuts for Notepad3 - 2020/02/11
+================================================================================
+=                                                                              =
+=            Notepad3 - light-weight Scintilla-based text editor for Windows   =
+=                                                                              =
+=                                                   (c) Rizonesoft 2008-2020   =
+=                                                 https://www.rizonesoft.com   =
+=                                                                              =
+================================================================================
 
-  File
 
+*** Keyboard Shortcuts ***               date: 2020/03/15
+---------------------------------------------------------
+
+
+  FILE
+  ------------------------
     Ctrl+N                New file.
-    Ctrl+F4               Close file, identical with Ctrl+N.
-    Ctrl+O                Open file.
+    Ctrl+F4               Close file (identical with Ctrl+N).
+    Ctrl+O                Open file...
     F5                    Reload file.
     Ctrl+S                Save file.
-    F6                    Save file as.
-    Ctrl+F6               Save file copy.
-    Ctrl+Alt+F6           Save with original file &Date/Time.
-    Ctrl+P                Print file.
-    Ctrl+M                Run MiniPath file browser plugin.
-    Ctrl+Alt+H            Open recent file.
+    F6                    Save file as...
+    Ctrl+F6               Save file Copy...
+    Ctrl+Alt+F6           Save with Original file &Date/Time.
+    Ctrl+P                Print file...
+    Ctrl+M                Run MiniPath file Browser plugin...
+    Ctrl+Alt+H            Open Recent file (History)...
     Alt+F4                Exit Notepad3.
+    Esc                   Optionally Minimize or Exit Notepad3.
+    Shift+Esc             Save file and Exit Notepad3.
 
-  Launch
+      Launch
+      ------
+        Alt+N                 Open Document in New Window.
+        Alt+Shift+N           Open New Empty Window.
+        Ctrl+L                Launch Document.
+        Alt+L                 Open With...
+        Ctrl+R                Run Command...
+        Ctrl+Shift+1          Web Template 1
+        Ctrl+Shift+2          Web Template 2
+    
+      Encoding
+      --------
+        Shift+F8              Select UTF-8 as Default.
+        F9                    Open Select Current file Encoding...
+        Ctrl+Alt+F            Recode to Default.
+        Ctrl+Shift+A          Recode to ANSI.
+        Ctrl+Shift+O          Recode to OEM.
+        Ctrl+Shift+F10        Recode to GB18030.
+        Ctrl+Shift+F8         Reload an ASCII file as UTF-8 file.
+        Alt+F8                Ignore Encoding Tags.
+        F8                    Open Select Source Encoding to Reload file...
+    
+      Favorites
+      ---------
+        Alt+I                 Open Favorites...
+        Alt+K                 Add Current File to Favorites...
+        Alt+F9                Manage Favorites...
 
-    Alt+N                 Open document in new window.
-    Alt+Shift+N           Open new empty window.
-    Ctrl+L                Launch document.
-    Alt+L                 Open with.
-    Ctrl+R                Run command.
-    Ctrl+Shift+1          Web Template 1
-    Ctrl+Shift+2          Web Template 2
 
-  Encoding
-  
-    Shift+F8              Select UTF-8 as default.
-    F9                    Open Select current file encoding.
-    Ctrl+Alt+F            Recode to Default.
-    Ctrl+Shift+O          Recode to ANSI.
-    Ctrl+Shift+A          Recode to OEM.
-    Ctrl+Shift+F10        Recode to GB18030.
-    Ctrl+Shift+F8         Reload an ASCII file as UTF-8 file.
-    Alt+F8                Ignore encoding tags.
-    F8                    Open Select source encoding to reload file.
-   
-  Favorites
-
-    Alt+I                 Open favorites.
-    Alt+K                 Add to favorites.
-    Alt+F9                Manage favorites.
-
-
-  Edit
-
+  EDIT
+  ------------------------
     Ctrl+Z                Undo.
     Alt+Backspace         Undo.
     Ctrl+Shift+Y          Undo.
     Ctrl+Y                Redo.
     Ctrl+Shift+Z          Redo.
-    Ctrl+X                Cut selection  / Cut current line, if no selection.
+    Ctrl+X                Cut.
     Shift+Del             Cut.
-    Ctrl+C                Copy selection / Copy current line, if no selection.
-    Alt+C                 Copy all.
-    Ctrl+E                Copy add.
+    Ctrl+C                Copy.
+    Alt+C                 Copy All.
+    Ctrl+E                Copy Add.
     Ctrl+V                Paste.
     Shift+Ins             Paste.
     Ctrl+K                Swap.
     Del                   Delete.
-    Ctrl+A                Select all.
+    Ctrl+A                Select All.
+
+      Words
+      -----
+        Ctrl+Alt+Enter        Complete Word.
+        Ctrl+ ←               Cursor Word Left.
+        Ctrl+ →               Cursor Word Right.
+        Ctrl+Backspace        Delete Word Before/Left.
+        Ctrl+Del              Delete Word After/Right.
     
-  Words
-
-    Ctrl+Alt+Enter        Complete Word.
-    Ctrl+Space            Select word (or line).
-    Ctrl+ ←               Cursor Word Left.
-    Ctrl+ →               Cursor Word Right.
-    Ctrl+Backspace        Delete word before/left.
-    Ctrl+Del              Delete word after/right.
-    Ctrl+Tab              Insert tabulator.
-
-  Lines
-
-    Alt+ ↑                Move line (block) up.
-    Alt+ ↓                Move line (block) down.
-    Ctrl+D                Duplicate line.
-    Ctrl+Shift+X          Cut line.
-    Ctrl+Shift+C          Copy line.
-    Ctrl+Shift+D          Delete line.
-    Ctrl+Shift+Backspace  Delete line left.
-    Ctrl+Shift+Del        Delete line right.
-    Ctrl+Shift+W          Column wrap.
-    Ctrl+I                Split lines.
-    Ctrl+J                Join lines.
-    Ctrl+Shift+J          Join paragraphs.
-
-  Selection
-
-    Tab                   Indent selected block.
-    Shift+Tab             Unindent selected block.
-    Alt+Q                 Enclose selection.
-    Alt+D                 Duplicate selection.
-    Alt+B                 Pad with spaces.
-    Alt+Z                 Strip first character.
-    Alt+U                 Strip last character.
-    Alt+W                 Strip trailing blanks.
-    Alt+P                 Compress whitespace.
-    Alt+R                 Remove blank lines.
-    Alt+M                 Modify lines.
-    Alt+O                 Sort lines.
-
-  Convert
-
-    Ctrl+Shift+U          Make uppercase.
-    Ctrl+U                Make lowercase.
-    Ctrl+Alt+I            Invert case.
-    Ctrl+Alt+T            Title case.
-    Ctrl+Alt+S            Sentence case.
-    Ctrl+Shift+S          Convert tabs to spaces.
-    Ctrl+Shift+T          Convert spaces to tabs.
-    Ctrl+Shift+A          Convert to ANSI.
-    Ctrl+Shift+O          Convert to OEM.
-
-  Insert
-
-    Ctrl+Enter            New Line Above
-    Alt+X                 HTML/XML tag.
-    Ctrl+F8               Encoding Identifier.
-    Ctrl+F5               Time/date (short form).
-    Ctrl+Shift+F5         Time/date (long form).
-    Shift+F5              Update timestamps.
-    Ctrl+Q                Block comment (toggle).
-    Ctrl+Shift+Q          Stream comment.
-
-  Miscellaneous
-
-    Alt+Shift+Arrows      Rectangular selection.
-    Ctrl+Shift+Enter      New line with toggled auto indent option. (orig-NP2: Ctrl+Enter)
-    Ctrl+PgUp/PgDn        Goto previous/next block.
-    Ctrl+Shift+PgUp/PgDn  Select to previous/next block.
-    Ctrl+F9               Copy Filename only to clipboard.
-    Ctrl+Shift+F9         Copy Full Path to clipboard.
-    Ctrl+Shift+.          Copy GUID to clipboard.
-    Ctrl+Shift+E          URL Encode.
-    Ctrl+Shift+R          URL Decode.
-    Ctrl+Alt+E            Escape C Special Chars.
-    Ctrl+Alt+U            Unescape C Special Chars.
-    Ctrl+B                Find matching brace.
-    Ctrl+Shift+B          Select to matching brace.
-    Ctrl+1                Enclose within ''.
-    Ctrl+2                Enclose within "".
-    Ctrl+3                Enclose within ().
-    Ctrl+4                Enclose within [].
-    Ctrl+5                Enclose within {}.
-    Ctrl+6                Enclose within ``.
-    Ctrl+,                Jump to selection start.
-    Ctrl+.                Jump to selection end.
-
-  Bookmarks
-
-    F2                    Jump to next bookmark.
-    Shift+F2              Jump to previous bookmark.
-    Ctrl+F2               Toggle bookmark.
-    Alt+F2                Clear all.
-
-  Search
-
-    Ctrl+F                Find.
-    Alt+F3                Save find text.
-    F3                    Find next.
-    Shift+F3              Find previous.
-    Ctrl+F3               Find next word or selection.
-    Ctrl+Shift+F3         Find previous word or selection.
-    Ctrl+Alt+F2           Expand selection to next match. (orig-NP2: F2)
-    Ctrl+Alt+Shift+F2     Expand selection to previous match. (orig-NP2: Shift+F2)
-    Ctrl+H                Replace.
-    F4                    Replace next.
-    Ctrl+G                Jump to line.
-
-
-  View
-
-    Ctrl+W                Toggle word wrap.
-    Ctrl+Alt+L            Show long line marker.
-    Ctrl+Shift+G          Show indentation guides.
-    Ctrl+Shift+N          Show line numbers.
-    Ctrl+Shift+M          Show selection margin.
-    Ctrl+Shift+7          Show wrap symbols.
-    Ctrl+Shift+8          Show whitespace.
-    Ctrl+Shift+9          Show line endings.
-    Ctrl+Shift+V          Toggle visual brace matching.
-    Ctrl+Shift+I          Highlight current line.
-    Ctrl+Shift+F          Toggle all folds.
-
-  Folding
-  
-    Alt+ +                Jump Next Fold.
-    Alt+ –                Jump Prev Fold.
-    Alt+ ←                Collapse Fold.
-    Alt+ →                Expand Fold.
-
-  Display
-  
-    Ctrl+Alt+V           Focused view. 
-  
-  Zoom
-
-    Ctrl+ +               Zoom in.
-    Ctrl+ –               Zoom out.
-    Ctrl+0                Reset zoom.
+      Lines
+      -----
+        Alt+ ↑                Move Line (Block) Up.
+        Alt+ ↓                Move Line (Block) Down.
+        Ctrl+X                Cut Selection or Current Line, if No Selection.
+        Ctrl+Shift+X          Cut Selection Whole Line(s).
+        Ctrl+C                Copy Selection or Current Line, if No Selection.
+        Ctrl+Shift+C          Copy Selection Whole Line(s).
+        Ctrl+D                Duplicate Line or Selection.
+        Alt+D                 Transpose Lines.
+        Ctrl+Shift+D          Delete Line.
+        Ctrl+Shift+Backspace  Delete Line Left.
+        Ctrl+Shift+Del        Delete Line Right.
+        Ctrl+Shift+W          Column wrap...
+        Ctrl+I                Split Lines.
+        Ctrl+J                Join Lines.
+        Ctrl+Alt+J            Fuse Lines.
+        Ctrl+Shift+J          Preserve Paragraphs.
+        Alt+Y                 Merge Empty Lines.
+        Ctrl+Alt+Y            Merge Blank Lines.
+        Alt+R                 Remove Empty Lines.
+        Ctrl+Alt+B            Remove Blank Lines.
+        Ctrl+Alt+D            Remove Duplicate Lines.
     
-  Position
-  
-    Ctrl+Shift+K          Copy window position to clipboard.
+      Selection
+      ---------
+        Ctrl+,                Jump to Selection Start.
+        Ctrl+.                Jump to Selection End.
+        Ctrl+D                Duplicate Selection or Line.
+        Alt+B                 Pad with Blanks.
+        Alt+Z                 Strip First Character.
+        Alt+U                 Strip Last Character.
+        Alt+W                 Strip Trailing Blanks.
+        Ctrl+Alt+P            Compress Blanks.
+        Alt+M                 Modify Lines...
+        Alt+J                 Align Lines...
+        Alt+O                 Sort Lines...
+        Tab                   Indent Selected Block.
+        Shift+Tab             Unindent Selected Block.
+        Ctrl+Tab              Insert Tabulator.
+    
+          Enclose Selection
+          ------------------
+            Ctrl+1                Enclose within '' (Single Quotes).
+            Ctrl+2                Enclose within "" (Double Quotes).
+            Ctrl+3                Enclose within ().
+            Ctrl+4                Enclose within [].
+            Ctrl+5                Enclose within {}.
+            Ctrl+6                Enclose within `` (Backticks).
+            Alt+Q                 Enclose With... (Enclose Before/After Selection).
+    
+      Convert
+      -------
+        Ctrl+Shift+U          Selection in Uppercase.
+        Ctrl+U                Selection in Lowercase.
+        Ctrl+Alt+U            Selection in Invert Case.
+        Ctrl+Alt+I            Selection in Title Case.
+        Ctrl+Alt+O            Selection in Sentence Case.
+        Ctrl+Shift+T          Convert in Selection Spaces to Tabs.
+        Ctrl+Shift+S          Convert in Selection Tabs to Spaces.
+        Ctrl+Alt+T            Convert in Selection Indent to Tabs.
+        Ctrl+Alt+S            Convert in Selection Indent to Spaces.
+        Ctrl+Shift+E          URL Encode.
+        Ctrl+Shift+R          URL Decode.
+        Ctrl+Alt+X            Char To HEX.
+        Ctrl+Alt+C            Hex To Char.
+    
+      Insert
+      ------
+        Ctrl+Enter            New Line Above.
+        Ctrl+Shift+Enter      New Line with Toggled Auto Indent Option. (orig-NP2: Ctrl+Enter)
+        Alt+X                 HTML/XML Tag...
+        Ctrl+F8               Encoding Identifier.
+        Ctrl+F5               Time/Date (Short Form).
+        Ctrl+Shift+F5         Time/Date (Long Form).
+        Shift+F5              Update Timestamps.
+        Ctrl+Q                Block Comment (Toggle).
+        Ctrl+Shift+Q          Stream Comment.
+    
+      Miscellaneous
+      -------------
+        Ctrl+Shift+.          Copy GUID to Clipboard.
+        Ctrl+Alt+E            Escape C Special Chars.
+        Ctrl+Alt+R            Unescape C Special Chars.
+        Ctrl+Alt+Num.keypad+  Increase Number.
+        Ctrl+Alt+Num.keypad-  Decrease Number.
+        Ctrl+B                Find Matching Brace.
+        Ctrl+Shift+B          Select to Matching Brace.
+        Ctrl+Alt+F2           Expand Selection to Next Match. (orig-NP2: F2)
+        Ctrl+Alt+Shift+F2     Expand Selection to Previous Match. (orig-NP2: Shift+F2)
+        Ctrl+Space            Select Word or Lines.
+        Ctrl+Shift+Space      Multi-Select All Matches.
+        Alt+Shift+Arrows      Rectangular Selection.
+        Ctrl+F9               Copy Filename Only to Clipboard.
+        Ctrl+Shift+F9         Copy Full Path to Clipboard.
+    
+      Bookmarks
+      ---------
+        Ctrl+F2               Toggle Bookmark.
+        F2                    Jump to Next Bookmark.
+        Shift+F2              Jump to Previous Bookmark.
+        Alt+F2                Clear All Bookmark.
+    
+      Search
+      ------
+        Ctrl+F                Find...
+        Alt+F3                Save Find Text.
+        F3                    Find Next.
+        Shift+F3              Find Previous.
+        Ctrl+F3               Find Next Word or Selection.
+        Ctrl+Shift+F3         Find Previous Word or Selection.
+        Ctrl+H                Replace...
+        F4                    Replace Next.
+        Ctrl+G                Jump to Line...
 
-  
-  Appearence
 
-    Ctrl+F12              Customize syntax schemes.
-    F12                   Select syntax scheme.
-    Shift+F12             Select 2nd default syntax scheme.
-    Alt+F12               Select default font.
-    F11                   Select default text syntax scheme.
-    Ctrl+F11              Select web source code syntax scheme.
-    Shift+F11             Select XML document syntax scheme.
+  VIEW
+  ------------------------
+    Ctrl+W                Toggle Word Wrap.
+    Ctrl+Alt+L            Show Long Line Marker.
+    Ctrl+Shift+G          Show Indentation Guides.
+    Ctrl+Shift+7          Show Wrap Symbols.
+    Ctrl+Shift+8          Show Whitespace.
+    Ctrl+Shift+9          Show Line Endings.
+    Ctrl+Alt+W            Show Hyperlink Hotspots.
+    Ctrl+Shift+V          Toggle Visual Brace Matching.
+    Ctrl+Shift+I          Highlight Current Line.
+    Ctrl+Shift+N          Show Line Numbers.
+    Ctrl+Shift+M          Show Selection Margin.
+
+      Mark Occurences
+      ----------------
+        Alt+A                 Show All Occurences.
+    
+      Folding
+      -------
+        Ctrl+Shift+F          Toggle All Folds.
+        Alt+ +                Jump Next Fold.
+        Alt+ –                Jump Prev Fold.
+        Alt+ ←                Collapse Fold.
+        Alt+ →                Expand Fold.
+        Ctrl+PgUp/PgDn        Goto Previous/Next Block.
+        Ctrl+Shift+PgUp/PgDn  Select to Previous/Next Block.
+    
+      Display
+      -------
+        Ctrl+Alt+V           Show in Focused View.
+    
+      Zoom
+      ----
+        Ctrl+ +               Zoom In.
+        Ctrl+ –               Zoom Out.
+        Ctrl+0                Reset Zoom.
+    
+      Position
+      --------
+        Ctrl+Shift+K          Copy Window Position to Clipboard.
+        Ctrl+Shift+P          Snap to Window Default Position.
+        Ctrl+F11              Snap to Initial Default Position.
+        F11                   Toggle To Full Area Window Position.
 
 
-  Settings
-
-    Ctrl+T                Tab settings.
-    Ctrl+Shift+H          Toggle auto close HTML/XML.
-
-  Windows
-
-    Ctrl+Shift+L          Reuse Window.
-    Alt+T                 Always on top.
-    Ctrl+G                Transparent mode.
-    Ctrl+9                Display text excerpt in title.
-
-  Advanced Configuration
-
-    F7                    Save settings now.
-    Ctrl+F7               Jump to ini-file.
+  APPEARENCE
+  -------------------------
+    Ctrl+F12              Customize Syntax Schemes...
+    F12                   Select Syntax Scheme...
+    Shift+F12             Select 2nd Common Base.
+    Alt+F12               Select Global Default Font...
+    Ctrl+Alt+F12          Select Current Scheme's Default Font...
 
 
-  Help
+  SETTINGS
+  ------------------------
+    Ctrl+T                Tab Settings...
+    Ctrl+Shift+H          Toggle Auto Close HTML/XML.
+    Ctrl+Alt+A            Select Accelerated Word Navigation.
+    Alt+F5                Select File Change Notification...
 
+      Windows
+      -------
+        Ctrl+Shift+L          Reuse Window.
+        Alt+T                 Always On Top.
+        Alt+G                 Transparent Mode.
+    
+          Window Title Display
+          --------------------
+            Ctrl+9                Display Text Excerpt in Title.
+    
+      Advanced Configuration
+      ----------------------
+        F7                    Save Settings Now.
+        Ctrl+F7               Open Settings File "Notepad3.ini".
+
+
+  HELP
+  ------------------------
     F1                    Online Documentation.
-    Shift+F1              Display Info version "About…"
-
-  Divers
-
-    Esc                   Optionally minimize or exit Notepad3.
-    Shift+Esc             Save file and exit Notepad3.
+    Shift+F1              Display Info Version "About..."
 
 
--------------------------------------------------------------------------------
 
-Regular Expression Syntax
+================================================================================
 
-  .      Matches any character
+*** Regular Expression Matching Syntax (Multi Lines) ***
+---------------------------------------------------------
 
-  \(     This marks the start of a region for tagging a match.
+  .        This matches any character.
 
-  \)     This marks the end of a tagged region.
+  ^        This matches empty string immediately after a New Line (unless used inside a set).
 
-  \n     Where n is 1 through 9 refers to the first through ninth
-         tagged region when replacing. For example, if the search
-         string was Fred\([1-9]\)XXX and the replace string was
-         Sam\1YYY, when applied to Fred2XXX this would generate
-         Sam2YYY.
+  $        This matches empty string immediately before End of Line.
 
-  \<     This matches the start of a word.
+  \<       This matches the start of a word.
 
-  \>     This matches the end of a word.
+  \>       This matches the end of a word.
 
-  \x     This allows you to use a character x that would otherwise
-         have a special meaning. For example, \[ would be interpreted
-         as [ and not as the start of a character set.
+  \b       Word boundary.
 
-  [...]  This indicates a set of characters, for example, [abc] means
-         any of the characters a, b or c. You can also use ranges, for
-         example [a-z] for any lower case character.
+  [...]    This indicates a set of characters, 
+           For example, [abc] means any of the characters a, b or c.
+           You can also use ranges, for example [a-z] for any lower case character.
 
-  [^...] The complement of the characters in the set. For example,
-         [^A-Za-z] means any character except an alphabetic character.
+  [^...]   The complement of the characters in the set.
+           For example, [^A-Za-z] means any character except an alphabetic character.
 
-  ^      This matches the start of a line (unless used inside a set,
-         see above).
+  \d       Any decimal digit.
+  
+  \D       Any character that is not a decimal digit.
 
-  $      This matches the end of a line.
+  \s       Any whitespace character.
+  
+  \S       Any character that is not a whitespace character.
 
-  *      This matches 0 or more times. For example, Sa*m matches Sm,
-         Sam, Saam, Saaam and so on.
+  \w       Any "word" character.
+  
+  \W       Any "non-word" character.
 
-  +      This matches 1 or more times. For example, Sa+m matches Sam,
-         Saam, Saaam and so on.
+  \x       This allows you to use a character x that would otherwise have a special meaning.
+           For example, \[ would be interpreted as [ and not as the start of a character set.
 
-  \d     Any decimal digit.
-  \D     Any character that is not a decimal digit.
+  \xHH     Character with hex code HH.
+  
+  ?        This matches preceding 0 or 1 times.
 
-  \s     Any whitespace character.
-  \S     Any character that is not a whitespace character.
+  *        This matches 0 or more times. 
+           For example, Sa*m matches Sm, Sam, Saam, Saaam and so on.
 
-  \w     Any "word" character.
-  \W     Any "non-word" character.
+  +        This matches 1 or more times. 
+           For example, Sa+m matches Sam, Saam, Saaam and so on.
 
-  \xHH   Character with hex code HH.
+  *? or +? Non greedy matching of quantifiers "?" and "+".
+
+  \(       This marks the start of a region for tagging a match.
+
+  \)       This marks the end of a tagged region.
+
+  \n       Where n is 1 through 9 refers to the first through ninth tagged region when replacing.
+           For example, if the search string was Fred\([1-9]\)XXX and the replace string was
+           Sam\1YYY, when applied to Fred2XXX this would generate Sam2YYY.
 
   -----> Examples (don't use quotes)
          - Quote lines: find "^" replace with "> "
@@ -307,54 +351,56 @@ Regular Expression Syntax
          - Convert tabs to double spaces: find "\t" replace with "  "
 
 
--------------------------------------------------------------------------------
 
-Command Line Help
+================================================================================
 
-Usage:
-  Notepad3  [/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]
-            [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]
-            [/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[…]]
+*** Command Line Help ***
+---------------------------------------------------------
 
-  file   Must be the last argument, no quoted spaces by default.
-  +      Accept multiple file arguments (with quoted spaces).
-  -      Accept single file argument (without quoted spaces).
+  Usage:
+    Notepad3  [/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]
+              [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]
+              [/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[…]]
+  
+    file      Must be the last argument, no quoted spaces by default.
+    +         Accept multiple file arguments (with quoted spaces).
+    -         Accept single file argument (without quoted spaces).
+  
+  Options:
+    /?         Dispay this help message.
+    …          Encoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).
+    …          Line ending mode (/crlf, /cr, /lf).
+    /e         File source encoding.
+    /g         Jump to specified position (/g -1 end of file).
+    /m         Match specified text (/m- last, /mr regex, /mb backslash).
+    /l         Auto-reload modified files.
+    /q         Force creation of new files without prompt.
+    /s         Select specified syntax scheme.
+    /d         Select default text scheme.
+    /h         Select Web Source Code scheme.
+    /x         Select XML Document scheme.
+    /c         Open new window and paste clipboard contents.
+    /b         Open new paste board to collect clipboard entries.
+    /n         Always open a new window (/ns single file instance).
+    /r         Reuse window (/rs single file instance).
+    /p         Set window position and size (/p0, /ps, /pf,l,t,r,b,m).
+    /t         Set window title.
+    /i         Start as tray icon.
+    /o         Keep window on top.
+    /f         Specify ini-file (/f0 no ini-file).
+    /u         Launch with elevated privileges.
+    /v         Print file immediately and quit.
+    /vd        Print file (open printer dialog).
+    /y         Search environment PATH in case of relative filename.
+    /z         Skip next (usable for registry-based Notepad replacement).
+  
+  Examples:
+    Notepad3   /utf8sig /crlf d:\temp\Test.txt
+               … Open a new file: "Test.txt" Encoding=UTF-8-BOM, EoL=CRLF.
+    Notepad3   /v d:\temp\Test.txt
+               … Print the file: "Test.txt" immediately.
+  
 
-Options:
-  /?     Dispay this help message.
-  …      Encoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).
-  …      Line ending mode (/crlf, /cr, /lf).
-  /e     File source encoding.
-  /g     Jump to specified position (/g -1 end of file).
-  /m     Match specified text (/m- last, /mr regex, /mb backslash).
-  /l     Auto-reload modified files.
-  /q     Force creation of new files without prompt.
-  /s     Select specified syntax scheme.
-  /d     Select default text scheme.
-  /h     Select Web Source Code scheme.
-  /x     Select XML Document scheme.
-  /c     Open new window and paste clipboard contents.
-  /b     Open new paste board to collect clipboard entries.
-  /n     Always open a new window (/ns single file instance).
-  /r     Reuse window (/rs single file instance).
-  /p     Set window position and size (/p0, /ps, /pf,l,t,r,b,m).
-  /t     Set window title.
-  /i     Start as tray icon.
-  /o     Keep window on top.
-  /f     Specify ini-file (/f0 no ini-file).
-  /u     Launch with elevated privileges.
-  /v     Print file immediately and quit.
-  /vd    Print file (open printer dialog).
-  /y     Search environment PATH in case of relative filename.
-  /z     Skip next (usable for registry-based Notepad replacement).
-
-Examples:
-  Notepad3  /utf8sig /crlf d:\temp\Test.txt
-             … Open a new file: "Test.txt" Encoding=UTF-8-BOM, EoL=CRLF.
-  Notepad3  /v d:\temp\Test.txt
-            … Print the file: "Test.txt" immediately.
-
-
--------------------------------------------------------------------------------
+================================================================================
 
  
