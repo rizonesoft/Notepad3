@@ -112,14 +112,14 @@ int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 int GetSystemMetricsDPIScaledX(HWND hwnd, const int nValue);
 int GetSystemMetricsDPIScaledY(HWND hwnd, const int nValue);
 
-DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
+DPI_T GetCurrentDPI(HWND hwnd);
 
-inline int ScaleIntToHwndDPIX(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToHwndDPIY(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
 
-inline int ScaleFloatToHwndDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleFloatToHwndDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
 
 inline int ScaleIntFontSizeWidth(HWND hwnd, int val) { 
   DPI_T const dpi = GetCurrentDPI(hwnd);  
@@ -150,7 +150,7 @@ inline int ScaleFractionalFontSize(HWND hwnd, float fSize) {
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
+HBITMAP ResizeImageForCurrentDPI(HWND hWnd, HBITMAP hbmp);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------

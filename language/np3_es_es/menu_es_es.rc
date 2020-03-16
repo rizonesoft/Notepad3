@@ -363,14 +363,16 @@ BEGIN
             MENUITEM "&Desplazarse después del final de archivo",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar información de &hipervínculos",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Barra de herram&ientas"
+        POPUP "P&aneles"
         BEGIN
             MENUITEM "Mostrar la barra de &menú",                       IDM_VIEW_MENUBAR
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
-            MENUITEM "Al&ternar les barras de herramientas",            IDM_VIEW_TOGGLETB
-            MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Cargar un tema de herramientas...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Cargar un tema de herramientas...",              IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Al&ternar les barras de herramientas",            IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI escala la barra de herramientas",            IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -502,10 +504,12 @@ BEGIN
     BEGIN
         MENUITEM "Mostrar la barra de &menú",                   IDM_VIEW_MENUBAR
         MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
-        MENUITEM "Al&ternar las barras de herramientas",        IDM_VIEW_TOGGLETB
-        MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Mostrar barra de &estado",                    IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
         MENUITEM "&Cargar un tema de herramientas...",          IDM_VIEW_LOADTHEMETB
-        MENUITEM "Mostrar la barra de &estado",                 IDM_VIEW_STATUSBAR
+        MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Al&ternar les barras de herramientas",        IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI escala la barra de herramientas",        IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

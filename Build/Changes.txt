@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC3 Version 5.20.307.(build_#) (2020-03-07)
+Current RC3 Version 5.20.315.(build_#) (2020-03-15)
 // Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
@@ -57,6 +57,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Update "KeyboardShortcuts.txt".
 - Split undo typing sequence by line-breaks default -> true
 - Add file history to to recent docs (taskbar) jumplist.
 - NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
@@ -96,7 +97,7 @@ CHANGES:
 - Allow each modification step to split undo typing sequence (set timeout 0 < to < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout) (UndoTransactionTimeout=0, LnBrk via Menu).
 - Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/01/28).
-- Update Scintilla Library (SCI) version 4.3.1 (2020/03/04).
+- Update Scintilla Library (SCI) version 4.3.2 (2020/03/06).
 
 -----------------------------------------------------
 ENHANCEMENT:
@@ -116,6 +117,10 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Don't use analysis hint UTF-8, if file is invalid UTF-8.
+- Configurable default  ANSI code-page (locale) detection bonus.
+- No AutoCompletion on empty words (busy loop bug).
+- DPI Scaling Toolbar and DPI scaling selection mode.
 - Common controls will use preffered/available MUI language
 - Sticky window position handling.
 - Initial, default and current  window position handling.

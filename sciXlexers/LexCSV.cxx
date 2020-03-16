@@ -36,6 +36,11 @@ using namespace Scintilla;
 namespace {
   // Use an unnamed namespace to protect the functions and classes from name conflicts
 
+  enum delim : unsigned int { eComma = 0, eSemic, eTab, ePipe, eMax };
+  static int const DelimList[eMax] = { ',',  ';',  '\t',  '|' };
+
+  // =================================================================================
+
   struct OptionsCSV {
     bool fold;
     bool foldCompact;
@@ -195,10 +200,17 @@ constexpr bool IsDoubleQuoteChar(const int ch) noexcept
 }
 // ----------------------------------------------------------------------------
 
-constexpr bool IsDelimiter(const int ch) noexcept 
+constexpr unsigned int IsDelimiter(const int ch) noexcept
 {
-  return ((ch == ',') || (ch == ';') || (ch == '\t'));
+  for (unsigned int i = 0; i < eMax; ++i)
+  {
+    if (DelimList[i] == ch) { return i; }
+  }
+  return eMax;
 }
+// ----------------------------------------------------------------------------
+
+
 // ----------------------------------------------------------------------------
 
 constexpr int GetStateByColumn(const int col) noexcept
@@ -231,17 +243,106 @@ constexpr int GetStateByColumn(const int col) noexcept
 }
 // ----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
 
 void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument* pAccess) 
 {
   Accessor styler(pAccess, nullptr);
-  StyleContext sc(startPos, length, initStyle, styler);
 
-  int csvColumn = 0;
+  // 2 passes:  1st pass: smart delimiter detection,   2nd pass: do styling
+
+  Sci_PositionU delimCount[eMax] = { 0 };
+  Sci_PositionU countPerPrevLine[eMax] = { 0 };
+
+  //Sci_PositionU totalCount[eMax] = { 0 };
+  //Sci_PositionU lineCount[eMax] = { 0 };
+
+  Sci_PositionU smartDelimVote[eMax] = { 0 };
+  Sci_PositionU columnAvg = 0;
+
+  // 1st PASS:
+
   bool isInSQString = false;
   bool isInDQString = false;
 
+  StyleContext cnt(startPos, length, initStyle, styler);
+  for (; cnt.More(); cnt.Forward())
+  {
+    // reset column infos
+    if (cnt.atLineStart)
+    {
+      isInSQString = false;
+      isInDQString = false;
+
+      for (unsigned int i = 0; i < eMax; ++i) 
+      {
+        Sci_PositionU const dlm = delimCount[i];
+        if (dlm > 0) {
+          smartDelimVote[i] += 1;
+
+          if ((dlm == countPerPrevLine[i])) {
+            smartDelimVote[i] += dlm; // bonus for column number
+          }
+
+          // e.g. delim=TAB, all columns decimal numbers with comma(,) as decimal-point => comma wins over TAB
+          if (dlm == columnAvg) {
+            smartDelimVote[i] += dlm; // correction for  #delimiter = (#columns - 1); 
+          }
+          columnAvg = (columnAvg == 0) ? dlm : (columnAvg + dlm - 1) >> 1;
+
+        }
+        countPerPrevLine[i] = dlm;
+        delimCount[i] = 0; 
+
+        //totalCount[i] += dlm;
+        //++lineCount[i];
+      }
+    } // cnt.atLineStart
+
+    if (IsSingleQuoteChar(cnt.ch)) {
+      if (!isInDQString) {
+        isInSQString = !isInSQString; // toggle
+      }
+    }
+    else if (IsDoubleQuoteChar(cnt.ch)) {
+      if (!isInSQString) {
+        isInDQString = !isInDQString; // toggle
+      }
+    }
+    else if (!isInSQString && !isInDQString) 
+    {
+      unsigned int i = IsDelimiter(cnt.ch);
+      if (i < eMax) { 
+        ++delimCount[i]; 
+      }
+    }
+  }
+  cnt.Complete();
+
+  // --------------------------
+  // smar delimiter selection
+  // --------------------------
+  int delim = DelimList[0];
+  Sci_PositionU maxVote = smartDelimVote[0];
+  for (unsigned int i = 1; i < eMax; ++i)
+  {
+    if (maxVote < smartDelimVote[i]) {
+      delim = DelimList[i];
+      maxVote = smartDelimVote[i];
+    }
+  }
+  // --------------------------
+
+  int const delimiter = delim;
+
+  // ------------------------------------------------------------------------------
+  // 2nd PASS
+  // ------------------------------------------------------------------------------
+
+  int csvColumn = 0;
+  isInSQString = false;
+  isInDQString = false;
+
+  StyleContext sc(startPos, length, initStyle, styler);
   for (; sc.More(); sc.Forward())
   {
     // reset context infos
@@ -262,7 +363,7 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
         isInDQString = !isInDQString; // toggle
       }
     }
-    else if (IsDelimiter(sc.ch)) {
+    else if (delimiter == sc.ch) {
       if (!isInSQString && !isInDQString) {
         sc.SetState(GetStateByColumn(++csvColumn));
       }

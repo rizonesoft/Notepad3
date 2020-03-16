@@ -363,20 +363,22 @@ BEGIN
             MENUITEM "&Scroll Past End of File",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Toolbar"
+        POPUP "P&anels"
         BEGIN
-            MENUITEM "Show &Menubar",               IDM_VIEW_MENUBAR
-            MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
-            MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
-            MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+            MENUITEM "Show &Menubar",                   IDM_VIEW_MENUBAR
+            MENUITEM "Show &Toolbar",                   IDM_VIEW_TOOLBAR
+            MENUITEM "Show &Statusbar",                 IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Load Toolbar Theme...",          IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Customize Toolbar...",           IDM_VIEW_CUSTOMIZETB
+            MENUITEM "To&ggle Toolbars",                IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",              IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Zoom &In\tCtrl+ +",           IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom &Out\tCtrl+ –",          IDM_VIEW_ZOOMOUT
-            MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
+            MENUITEM "Zoom &In\tCtrl+ +",               IDM_VIEW_ZOOMIN
+            MENUITEM "Zoom &Out\tCtrl+ –",              IDM_VIEW_ZOOMOUT
+            MENUITEM "Reset &Zoom\tCtrl+0",             IDM_VIEW_RESETZOOM
         END
         POPUP "&Position"
         BEGIN
@@ -502,10 +504,12 @@ BEGIN
     BEGIN
         MENUITEM "Show &Menubar",               IDM_VIEW_MENUBAR
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
-        MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

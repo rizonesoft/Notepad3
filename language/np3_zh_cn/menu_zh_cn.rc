@@ -350,11 +350,11 @@ BEGIN
             MENUITEM "启用折叠(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "跳转到下一折叠点(&N)\tAlt++",         CMD_FOLDJUMPDOWN
-            MENUITEM "跳转到上一折叠点(&P)\tAlt+-",         CMD_FOLDJUMPUP
+            MENUITEM "跳转到下一折叠点(&N)\tAlt++",          CMD_FOLDJUMPDOWN
+            MENUITEM "跳转到上一折叠点(&P)\tAlt+-",          CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "折叠(&C)\tAlt+←",          CMD_FOLDCOLLAPSE
-            MENUITEM "展开(&E)\tAlt+→",            CMD_FOLDEXPAND
+            MENUITEM "折叠(&C)\tAlt+←",                     CMD_FOLDCOLLAPSE
+            MENUITEM "展开(&E)\tAlt+→",                     CMD_FOLDEXPAND
         END
         POPUP "显示(&D)"
         BEGIN
@@ -363,14 +363,16 @@ BEGIN
             MENUITEM "允许滚动超过文件尾(&S)",                IDM_VIEW_SCROLLPASTEOF
             MENUITEM "显示超链接提示(&H)",                   IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "工具栏(&T)"
+        POPUP "面板(&A)"
         BEGIN
             MENUITEM "显示菜单栏(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "显示工具栏(&T)",                       IDM_VIEW_TOOLBAR
-            MENUITEM "切换工具栏(&G)",                       IDM_VIEW_TOGGLETB
-            MENUITEM "自定义工具栏(&C)...",                  IDM_VIEW_CUSTOMIZETB
-            MENUITEM "加载工具栏主题(&L)...",                IDM_VIEW_LOADTHEMETB
             MENUITEM "显示状态栏(&S)",                       IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "加载工具栏主题(&L)...",                IDM_VIEW_LOADTHEMETB
+            MENUITEM "自定义工具栏(&C)...",                  IDM_VIEW_CUSTOMIZETB
+            MENUITEM "切换工具栏(&G)",                       IDM_VIEW_TOGGLETB
+            MENUITEM "DPI 自适应(&D)",                  IDM_VIEW_DPISCALETB
         END
         POPUP "缩放(&Z)"
         BEGIN
@@ -500,12 +502,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "显示菜单栏(&M)",                            IDM_VIEW_MENUBAR
-        MENUITEM "显示工具栏(&T)",                            IDM_VIEW_TOOLBAR
-        MENUITEM "切换工具栏(&G)",                            IDM_VIEW_TOGGLETB
-        MENUITEM "自定义工具栏(&C)...",                       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "加载工具栏主题(&L)...",                     IDM_VIEW_LOADTHEMETB
-        MENUITEM "显示状态栏(&S)",                            IDM_VIEW_STATUSBAR
+         MENUITEM "显示菜单栏(&M)",                          IDM_VIEW_MENUBAR
+         MENUITEM "显示工具栏(&T)",                          IDM_VIEW_TOOLBAR
+         MENUITEM "显示状态栏(&S)",                          IDM_VIEW_STATUSBAR
+         MENUITEM SEPARATOR
+         MENUITEM "加载工具栏主题(&L)...",                    IDM_VIEW_LOADTHEMETB
+         MENUITEM "自定义工具栏(&C)...",                      IDM_VIEW_CUSTOMIZETB
+         MENUITEM "切换工具栏(&G)",                           IDM_VIEW_TOGGLETB
+         MENUITEM "DPI 自适应(&D)",                      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

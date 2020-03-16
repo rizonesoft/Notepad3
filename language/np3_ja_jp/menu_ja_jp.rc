@@ -361,16 +361,18 @@ BEGIN
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "ハイパーリンクのツールチップを表示(&H)",            IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "ツールバー(&T)"
+        POPUP "ウィンドウ構成(&A)"
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "アイコン大小の切替(&G)",                     IDM_VIEW_TOGGLETB
-            MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
             MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
-            MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
+            MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "アイコン大小の切替(&G)",                      IDM_VIEW_TOGGLETB
+            MENUITEM "ツールバーのDPI調整(&D)",                       IDM_VIEW_DPISCALETB
         END
         POPUP "拡大縮小(&Z)"
         BEGIN
@@ -380,13 +382,13 @@ BEGIN
         END
         POPUP "ウィンドウ位置(&P)"
         BEGIN
-            MENUITEM "ウインドウ位置を引数形式でコピー\tCtrl+Shift+K",   CMD_COPYWINPOS
-            MENUITEM "初期化位置へ移動\tCtrl+Shift+P",              CMD_DEFAULTWINPOS
-            MENUITEM "初期化位置として記憶",                         CMD_SAVEASDEFWINPOS
-            MENUITEM "記憶した初期化位置を消去",                     CMD_CLEARSAVEDWINPOS
-            MENUITEM "最初の位置へ移動\tCtrl+F11",                  CMD_INITIALWINPOS
-            MENUITEM "全画面表示の切替\tF11",                      CMD_FULLSCRWINPOS
-            MENUITEM "ウィンドウ位置の固定(&P)",                      IDM_VIEW_STICKYWINPOS
+            MENUITEM "ウインドウ位置を引数形式でコピー\tCtrl+Shift+K",     CMD_COPYWINPOS
+            MENUITEM "初期化位置へ移動\tCtrl+Shift+P",                CMD_DEFAULTWINPOS
+            MENUITEM "初期化位置として記憶",                            CMD_SAVEASDEFWINPOS
+            MENUITEM "記憶した初期化位置を消去",                        CMD_CLEARSAVEDWINPOS
+            MENUITEM "最初の位置へ移動\tCtrl+F11",                     CMD_INITIALWINPOS
+            MENUITEM "全画面表示の切替\tF11",                          CMD_FULLSCRWINPOS
+            MENUITEM "ウィンドウ位置の固定(&P)",                         IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "外観(&P)"
@@ -492,7 +494,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "すべて選択(&S)",                              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "ここの折りたたみを切替(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "ここの折りたたみを切替(&T)",                     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "ウェブ1で開く(&1)",                             CMD_WEBACTION1
         MENUITEM "ウェブ2で開く(&2)",                             CMD_WEBACTION2
@@ -500,12 +502,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "メニューバーを表示(&M)",                        IDM_VIEW_MENUBAR
-        MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "アイコン大小の切替(&G)",                    IDM_VIEW_TOGGLETB
-        MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
-        MENUITEM "ツールバーの独自アイコンを設定(&L)...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "ステータスバーの表示(&S)",                      IDM_VIEW_STATUSBAR
+        MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
+        MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
+        MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
+        MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+        MENUITEM "アイコン大小の切替(&G)",                      IDM_VIEW_TOGGLETB
+        MENUITEM "ツールバーのDPI調整(&D)",                       IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

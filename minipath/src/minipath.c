@@ -1162,37 +1162,41 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     DeleteObject(hbmpCopy);
 
   // Load toolbar labels
-  LoadIniFile(g_wchIniFile);
-  const WCHAR* const ToolbarLabels_Section = L"Toolbar Labels";
+  __try {
+    LoadIniFile(g_wchIniFile, FALSE);
+    const WCHAR* const ToolbarLabels_Section = L"Toolbar Labels";
 
-  n = 0;
-  for (i = 0; i < COUNTOF(tbbMainWnd); i++) {
+    n = 0;
+    for (i = 0; i < COUNTOF(tbbMainWnd); i++) {
 
-    if (tbbMainWnd[i].fsStyle == TBSTYLE_SEP)
-      continue;
-    else
-      n++;
+      if (tbbMainWnd[i].fsStyle == TBSTYLE_SEP)
+        continue;
+      else
+        n++;
 
-    wsprintf(tchIndex,L"%02i",n);
+      wsprintf(tchIndex, L"%02i", n);
 
-    if (IniSectionGetString(ToolbarLabels_Section,tchIndex,L"",tchDesc,COUNTOF(tchDesc)) &&
-        lstrcmpi(tchDesc,L"(none)") != 0) {
+      if (IniSectionGetString(ToolbarLabels_Section, tchIndex, L"", tchDesc, COUNTOF(tchDesc)) &&
+        lstrcmpi(tchDesc, L"(none)") != 0) {
 
-      tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
-      tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
+        tbbMainWnd[i].iString = SendMessage(hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
+        tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
+      }
+
+      else if ((n == 5 || n == 8) && lstrcmpi(tchDesc, L"(none)") != 0) {
+
+        GetLngString(42000 + n, tchDesc, COUNTOF(tchDesc));
+        tbbMainWnd[i].iString = SendMessage(hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
+        tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
+      }
+
+      else
+        tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
     }
-
-    else if ((n == 5 || n == 8) && lstrcmpi(tchDesc,L"(none)") != 0) {
-
-      GetLngString(42000+n,tchDesc,COUNTOF(tchDesc));
-      tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
-      tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
-    }
-
-    else
-      tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
   }
-  ReleaseIniFile();
+  __finally {
+    ReleaseIniFile();
+  }
 
   SendMessage(hwndToolbar,TB_SETEXTENDEDSTYLE,0,
     SendMessage(hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | TBSTYLE_EX_MIXEDBUTTONS);
@@ -2112,12 +2116,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (StrIsEmpty(g_wchIniFile)) {
           if (StrIsNotEmpty(g_wchIniFile2)) {
-            if (CreateIniFileEx(g_wchIniFile2)) {
-              lstrcpy(g_wchIniFile,g_wchIniFile2);
+            lstrcpy(g_wchIniFile, g_wchIniFile2);
+            if (CreateIniFile()) {
               lstrcpy(g_wchIniFile2,L"");
             }
-            else
+            else {
+              lstrcpy(g_wchIniFile, L""); // reset
               bCreateFailure = TRUE;
+            }
           }
           else
             break;
@@ -3323,31 +3329,34 @@ void LoadTargetParamsOnce(void)
   if (fLoaded)
     return;
 
-  LoadIniFile(g_wchIniFile);
-  const WCHAR* const TargetApp_Section = L"Target Application";
+  __try {
+    LoadIniFile(g_wchIniFile, FALSE);
+    const WCHAR* const TargetApp_Section = L"Target Application";
 
-  if (IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",0xFB) != 0xFB) {
-    eUseTargetApplication = IniSectionGetInt(TargetApp_Section,L"UseTargetApplication",eUseTargetApplication);
-    eTargetApplicationMode = IniSectionGetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
-    IniSectionGetString(TargetApp_Section,L"TargetApplicationPath",szTargetApplication,szTargetApplication,COUNTOF(szTargetApplication));
-    IniSectionGetString(TargetApp_Section,L"TargetApplicationParams",szTargetApplicationParams,szTargetApplicationParams,COUNTOF(szTargetApplicationParams));
-    IniSectionGetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
-    IniSectionGetString(TargetApp_Section,L"DDEMessage",szDDEMsg,szDDEMsg,COUNTOF(szDDEMsg));
-    IniSectionGetString(TargetApp_Section,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
-    IniSectionGetString(TargetApp_Section,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
+    if (IniSectionGetInt(TargetApp_Section, L"UseTargetApplication", 0xFB) != 0xFB) {
+      eUseTargetApplication = IniSectionGetInt(TargetApp_Section, L"UseTargetApplication", eUseTargetApplication);
+      eTargetApplicationMode = IniSectionGetInt(TargetApp_Section, L"TargetApplicationMode", eTargetApplicationMode);
+      IniSectionGetString(TargetApp_Section, L"TargetApplicationPath", szTargetApplication, szTargetApplication, COUNTOF(szTargetApplication));
+      IniSectionGetString(TargetApp_Section, L"TargetApplicationParams", szTargetApplicationParams, szTargetApplicationParams, COUNTOF(szTargetApplicationParams));
+      IniSectionGetString(TargetApp_Section, L"TargetApplicationWndClass", szTargetApplicationWndClass, szTargetApplicationWndClass, COUNTOF(szTargetApplicationWndClass));
+      IniSectionGetString(TargetApp_Section, L"DDEMessage", szDDEMsg, szDDEMsg, COUNTOF(szDDEMsg));
+      IniSectionGetString(TargetApp_Section, L"DDEApplication", szDDEApp, szDDEApp, COUNTOF(szDDEApp));
+      IniSectionGetString(TargetApp_Section, L"DDETopic", szDDETopic, szDDETopic, COUNTOF(szDDETopic));
+    }
+    else if ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(szTargetApplication)) {
+      eUseTargetApplication = UTA_LAUNCH_TARGET;
+      eTargetApplicationMode = TAM_SEND_DROP_MSG;
+      lstrcpy(szTargetApplication, L"Notepad3.exe");
+      lstrcpy(szTargetApplicationParams, L"");
+      lstrcpy(szTargetApplicationWndClass, L"Notepad3");
+      lstrcpy(szDDEMsg, L"");
+      lstrcpy(szDDEApp, L"");
+      lstrcpy(szDDETopic, L"");
+    }
   }
-  else if ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(szTargetApplication)) {
-    eUseTargetApplication = UTA_LAUNCH_TARGET;
-    eTargetApplicationMode = TAM_SEND_DROP_MSG;
-    lstrcpy(szTargetApplication,L"Notepad3.exe");
-    lstrcpy(szTargetApplicationParams,L"");
-    lstrcpy(szTargetApplicationWndClass,L"Notepad3");
-    lstrcpy(szDDEMsg,L"");
-    lstrcpy(szDDEApp,L"");
-    lstrcpy(szDDETopic,L"");
+  __finally {
+    ReleaseIniFile();
   }
-
-  ReleaseIniFile();
   fLoaded = TRUE;
 }
 

@@ -350,11 +350,11 @@ BEGIN
             MENUITEM "&Kode Vou",                           IDM_VIEW_FOLDING
             MENUITEM "&Wissel Voue\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Spring &Volgende Vou\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "&Spring Vorige Vou\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Spring &Volgende Vou\tAlt+ +",        CMD_FOLDJUMPDOWN
+            MENUITEM "&Spring Vorige Vou\tAlt+ –",          CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "Vou &Inmekaar\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Brei Vou Uit\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Vou &Inmekaar\tAlt+ ←",               CMD_FOLDCOLLAPSE
+            MENUITEM "&Brei Vou Uit\tAlt+ →",               CMD_FOLDEXPAND
         END
         POPUP "Ver&toning"
         BEGIN
@@ -363,14 +363,16 @@ BEGIN
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Wys &Hiperskakel Nutsmiddelwenk",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Nu&tsbalk"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
-            MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
+            MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
+            MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -500,12 +502,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Wys &Menubalk",                            IDM_VIEW_MENUBAR
+        MENUITEM "Wys &Menubalk",                           IDM_VIEW_MENUBAR
         MENUITEM "Wys &Nutsbalk",                           IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&Pas Nutsbalk...",                        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "Wys &Statusbalk",                         IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR                                 
+        MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
+        MENUITEM "Pas&maak Nutsbalk...",                    IDM_VIEW_CUSTOMIZETB
+        MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

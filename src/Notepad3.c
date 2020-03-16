@@ -93,8 +93,6 @@ WCHAR     s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-int       s_iToolBarTheme = -1;
-
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
@@ -156,8 +154,6 @@ static double    s_dExpression = 0.0;
 static int       s_iExprError = -1;
 
 static WIN32_FIND_DATA s_fdCurFile;
-
-static HMODULE s_hRichEdit = INVALID_HANDLE_VALUE;
 
 static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
@@ -394,6 +390,9 @@ static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
 static void  _SplitUndoTransaction(const int iModType);
+
+// => _BEGIN_UNDO_ACTION_
+// => _END_UNDO_ACTION_
 
 // ----------------------------------------------------------------------------
 
@@ -680,7 +679,7 @@ static void _InitGlobals()
   Flags.bDoRelaunchElevated = DefaultFlags.bDoRelaunchElevated = false;
   Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
 
-  Flags.bSettingsFileLocked = DefaultFlags.bSettingsFileLocked = false;
+  Flags.bSettingsFileSoftLocked = DefaultFlags.bSettingsFileSoftLocked = false;
 
   FocusedView.HideNonMatchedLines = false;
   FocusedView.CodeFoldingAvailable = false;
@@ -772,11 +771,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   }
 
   FreeLanguageResources();
-
-  if (s_hRichEdit) {
-    FreeLibrary(s_hRichEdit);
-    s_hRichEdit = INVALID_HANDLE_VALUE;
-  }
 
   if (bIsInitialized) {
     UnregisterClass(s_wchWndClass, Globals.hInstance);
@@ -879,11 +873,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetPreferredLanguage(LoadLanguageResources());
 
   // ----------------------------------------------------
-
-  if (s_hRichEdit == INVALID_HANDLE_VALUE) {
-    //s_hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
-    s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h
-  }
 
   // ICON_BIG
   int const cxb = GetSystemMetrics(SM_CXICON);
@@ -1325,13 +1314,13 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit, -1, 0);
-      _BEGIN_UNDO_ACTION_
+      _BEGIN_UNDO_ACTION_;
       if (!Sci_IsDocEmpty()) {
         SciCall_NewLine();
       }
       SciCall_Paste();
       SciCall_NewLine();
-      _END_UNDO_ACTION_
+      _END_UNDO_ACTION_;
       Settings.AutoIndent = bAutoIndent2;
       if (s_flagJumpTo)
         EditJumpTo(Globals.hwndEdit, s_iInitialLine, s_iInitialColumn);
@@ -1918,9 +1907,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
-  Globals.MainWndDPI = GetCurrentDPI(hwnd);
-  Globals.MainWndPPI = GetCurrentPPI(hwnd);
-
   // Setup edit control
   Globals.hwndEdit = CreateWindowEx(
     WS_EX_CLIENTEDGE,
@@ -2026,29 +2012,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
-//  _LoadBitmapFile()
-//
-static HBITMAP _LoadBitmapFile(LPCWSTR path, bool bResizeToDPI)
-{
-  WCHAR szTmp[MAX_PATH];
-  if (PathIsRelative(path)) {
-    GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
-    PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp));
-    PathAppend(szTmp, path);
-    path = szTmp;
-  }
-  if (!PathFileExists(path)) {
-    return NULL;
-  }
-  HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
-  if (bResizeToDPI) {
-    hbmp = ResizeImageForCurrentDPI(hbmp);
-  }
-  return hbmp;
-}
-
-//=============================================================================
-//
 //  SelectExternalToolBar() - Select and Load an external Bitmal as ToolBarImage
 //
 bool SelectExternalToolBar(HWND hwnd)
@@ -2113,7 +2076,7 @@ bool SelectExternalToolBar(HWND hwnd)
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
       IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
     }
-    s_iToolBarTheme = 2;
+    Settings.ToolBarTheme = 2;
     return true;
   }
   else {
@@ -2126,6 +2089,86 @@ bool SelectExternalToolBar(HWND hwnd)
 
 //=============================================================================
 //
+//  LoadBitmapFile()
+//
+static HBITMAP LoadBitmapFile(LPCWSTR path)
+{
+  WCHAR szTmp[MAX_PATH];
+  if (PathIsRelative(path)) {
+    GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
+    PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp));
+    PathAppend(szTmp, path);
+    path = szTmp;
+  }
+  if (!PathFileExists(path)) { return NULL; }
+
+  HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+
+  bool bDimOK = false;
+  int height = 16;
+  int width = height * NUMTOOLBITMAPS;
+
+  if (hbmp) { 
+    BITMAP bmp;  GetObject(hbmp, sizeof(BITMAP), &bmp);
+    width = bmp.bmWidth;
+    height = bmp.bmHeight;
+    bDimOK = (width >= (height * NUMTOOLBITMAPS));
+  }
+  if (!bDimOK) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path, (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
+    if (hbmp) { DeleteObject(hbmp); }
+    hbmp = NULL;
+  }
+  return hbmp;
+}
+
+
+//=============================================================================
+//
+//  CreateScaledImageListFromBitmap()
+//
+static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
+{
+  BITMAP bmp;
+  GetObject(hBmp, sizeof(BITMAP), &bmp);
+
+  int const mod = bmp.bmWidth % NUMTOOLBITMAPS;
+  int const cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
+  int const cy = bmp.bmHeight;
+
+  HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
+  ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
+
+  DPI_T dpi = GetCurrentDPI(hWnd);
+  if (!Settings.DpiScaleToolBar || 
+      ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI)))
+  {
+    return himl; // default DPI, we are done
+  }
+  
+
+  // Scale button icons/images 
+  int const scx = ScaleIntToDPI_X(hWnd, cx);
+  int const scy = ScaleIntToDPI_Y(hWnd, cy);
+
+  HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
+
+  for (int i = 0; i < NUMTOOLBITMAPS; ++i) 
+  {
+    HICON const hicon = ImageList_GetIcon(himl, i, ILD_TRANSPARENT | ILD_PRESERVEALPHA | ILD_SCALE);
+    ImageList_AddIcon(hsciml, hicon);
+    DestroyIcon(hicon);
+  }
+
+  ImageList_Destroy(himl);
+
+  return hsciml;
+}
+
+
+
+//=============================================================================
+//
 //  CreateBars() - Create Toolbar and Statusbar
 //
 //
@@ -2133,7 +2176,16 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
   DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
 
-  if (Globals.hwndToolbar) { DestroyWindow(Globals.hwndToolbar); }
+  if (Globals.hwndToolbar) 
+  { 
+    HIMAGELIST himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETIMAGELIST, 0, 0);
+    if (himl) { ImageList_Destroy(himl); }
+    himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETHOTIMAGELIST, 0, 0);
+    if (himl) { ImageList_Destroy(himl); }
+    himl = (HIMAGELIST)SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, 0);
+    if (himl) { ImageList_Destroy(himl); }
+    DestroyWindow(Globals.hwndToolbar); 
+  }
 
   OpenSettingsFile();
   bool bDirtyFlag = false;
@@ -2143,174 +2195,111 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   SendMessage(Globals.hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
+  // -------------------------
   // Add Toolbar Bitmap
+  // -------------------------
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
 
-  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmap, false);
-
-    BITMAP bmp;
-    ZeroMemory(&bmp, sizeof(BITMAP));
-    GetObject(hbmp, sizeof(BITMAP), &bmp);
-
-    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS)) && hbmp;
-
-    if (!dimOk) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmap, 
-        (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
+    hbmp = LoadBitmapFile(s_tchToolbarBitmap);
+    if (!hbmp) {
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
       IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
       bDirtyFlag = true;
-      DeleteObject(hbmp);
-      hbmp = NULL;
     }
   }
   if (!hbmp) {
-    s_iToolBarTheme = s_iToolBarTheme % 2;
-    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
+    Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
+    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
   // use copy for alphablend a disabled Toolbar (if not provided)
   hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
-  // don't adjust toolbar bitmap to current DPI
-  //~hbmp = ResizeImageForCurrentDPI(hbmp);
-  //~hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
- 
 
-  HIMAGELIST himlOld = NULL;
-  BUTTON_IMAGELIST bi;
-  if (SendMessage(Globals.hwndToolbar, TB_GETIMAGELIST, 0, (LPARAM)&bi)) {
-    himlOld = bi.himl;
-  }
-
-  BITMAP bmp;
-  GetObject(hbmp,sizeof(BITMAP),&bmp);
-  int mod = bmp.bmWidth % NUMTOOLBITMAPS;
-  int cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
-  int cy = bmp.bmHeight;
-  HIMAGELIST himl = ImageList_Create(cx,cy,ILC_COLOR32|ILC_MASK,0,0);
-  ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
+  HIMAGELIST himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
   DeleteObject(hbmp);
   hbmp = NULL;
+
   SendMessage(Globals.hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
-  if (himlOld) {
-    ImageList_Destroy(himlOld);
-    himlOld = NULL;
-  }
 
 
+  // --------------------------
   // Add a Hot Toolbar Bitmap
-  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
+  // --------------------------
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapHot))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot, false);
-
-    GetObject(hbmp, sizeof(BITMAP), &bmp);
-
-    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
-
-    if (!dimOk) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapHot,
-        (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
+    hbmp = LoadBitmapFile(s_tchToolbarBitmapHot);
+    if (!hbmp) {
       StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
       IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
       bDirtyFlag = true;
-      DeleteObject(hbmp);
-      hbmp = NULL;
     }
   }
-  if (!hbmp && (s_iToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
+  if (!hbmp && (Settings.ToolBarTheme < 2)) {
+    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
-  if (SendMessage(Globals.hwndToolbar, TB_GETHOTIMAGELIST, 0, (LPARAM)& bi)) {
-    himlOld = bi.himl;
-  }
-  if (hbmp) {
-    // don't adjust toolbar bitmap to current DPI
-    //~hbmp = ResizeImageForCurrentDPI(hbmp);
 
-    GetObject(hbmp, sizeof(BITMAP), &bmp);
-    mod = bmp.bmWidth % NUMTOOLBITMAPS;
-    cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
-    cy = bmp.bmHeight;
-    himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
-    ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
+  if (hbmp) 
+  {
+    himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
     DeleteObject(hbmp);
     hbmp = NULL;
+
     SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
   }
   else { // clear the old one
     SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
   }
-  if (himlOld) {
-    ImageList_Destroy(himlOld);
-    himlOld = NULL;
-  }
 
+
+  // ------------------------------
   // Add a disabled Toolbar Bitmap
-  if ((s_iToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
+  // ------------------------------
+  if ((Settings.ToolBarTheme == 2) && StrIsNotEmpty(s_tchToolbarBitmapDisabled))
   {
-    hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled, false);
-
-    GetObject(hbmp, sizeof(BITMAP), &bmp);
-
-    bool const dimOk = (bmp.bmWidth >= (bmp.bmHeight * NUMTOOLBITMAPS));
-
-    if (!dimOk) {
-      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, s_tchToolbarBitmapDisabled,
-        (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
+    hbmp = LoadBitmapFile(s_tchToolbarBitmapDisabled);
+    if (!hbmp) {
       StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
       IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
       bDirtyFlag = true;
-      DeleteObject(hbmp);
-      hbmp = NULL;
     }
   }
-  if (!hbmp && (s_iToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (s_iToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
+  if (!hbmp && (Settings.ToolBarTheme < 2)) {
+    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
-  if (SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
-    himlOld = bi.himl;
-  }
-  if (hbmp) {
-    // don't adjust toolbar bitmap to current DPI
-    //~hbmp = ResizeImageForCurrentDPI(hbmp);
 
-    GetObject(hbmp, sizeof(BITMAP), &bmp);
-    mod = bmp.bmWidth % NUMTOOLBITMAPS;
-    cx = (bmp.bmWidth - mod) / NUMTOOLBITMAPS;
-    cy = bmp.bmHeight;
-    himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
-    ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
+  if (hbmp)
+  {
+    himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
     DeleteObject(hbmp);
     hbmp = NULL;
+
     SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
   }
   else {  // create disabled Toolbar, no external bitmap is supplied
 
-    if ((s_iToolBarTheme == 2) && StrIsEmpty(s_tchToolbarBitmapDisabled))
+    if ((Settings.ToolBarTheme == 2) && StrIsEmpty(s_tchToolbarBitmapDisabled))
     {
-      bool fProcessed = false;
+      bool bProcessed = false;
       if (Flags.ToolbarLook == 1) {
-        fProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
+        bProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
       }
       else if (Flags.ToolbarLook == 2 || (!IsXPOrHigher() && Flags.ToolbarLook == 0)) {
-        fProcessed = BitmapGrayScale(hbmpCopy);
+        bProcessed = BitmapGrayScale(hbmpCopy);
       }
-      if (fProcessed && !IsXPOrHigher()) {
+      if (bProcessed && !IsXPOrHigher()) {
         BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
       }
-      if (fProcessed) {
-        if (SendMessage(Globals.hwndToolbar, TB_GETDISABLEDIMAGELIST, 0, (LPARAM)& bi)) {
-          himlOld = bi.himl;
-        }
-        himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, 0, 0);
-        ImageList_AddMasked(himl, hbmpCopy, CLR_DEFAULT);
+      if (bProcessed)
+      {
+        himl = CreateScaledImageListFromBitmap(hwnd, hbmpCopy);
+
         SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
       }
     }
@@ -2318,12 +2307,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (hbmpCopy) {
     DeleteObject(hbmpCopy);
+    hbmpCopy = NULL;
   }
-  if (himlOld) {
-    ImageList_Destroy(himlOld);
-    himlOld = NULL;
-  }
-
 
   // Load toolbar labels
   WCHAR tchDesc[256] = { L'\0' };
@@ -2354,20 +2339,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
     SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
   }
-  RECT rc;
-  SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
-  //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
 
+  CloseSettingsFile(bDirtyFlag);
 
-  // Create Statusbar 
-  DWORD const dwStatusbarStyle = Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
-
-  if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
-
-  Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
-
-
+  // ------------------------------
   // Create ReBar and add Toolbar
+  // ------------------------------
   DWORD const dwReBarStyle = Settings.ShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
 
   if (s_hwndReBar) { DestroyWindow(s_hwndReBar); }
@@ -2381,8 +2358,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   rbi.himl   = (HIMAGELIST)NULL;
   SendMessage(s_hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
 
+  RECT rc;
+  SendMessage(Globals.hwndToolbar, TB_GETITEMRECT, 0, (LPARAM)&rc);
+  //SendMessage(Globals.hwndToolbar,TB_SETINDENT,2,0);
 
-  REBARBANDINFO rbBand;
+  REBARBANDINFO rbBand;  ZeroMemory(&rbBand, sizeof(REBARBANDINFO));
 
   rbBand.cbSize  = sizeof(REBARBANDINFO);
   rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
@@ -2403,7 +2383,16 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;
 
-  CloseSettingsFile(bDirtyFlag);
+
+  // -------------------
+  // Create Statusbar 
+  // -------------------
+  DWORD const dwStatusbarStyle = Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
+
+  if (Globals.hwndStatus) { DestroyWindow(Globals.hwndStatus); }
+
+  Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
+   
 }
 
 
@@ -2464,9 +2453,8 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  Globals.MainWndDPI.x = LOWORD(wParam);
-  Globals.MainWndDPI.y = HIWORD(wParam);
-  Globals.MainWndPPI = GetCurrentPPI(hwnd);
+  UNUSED(wParam); //MainWndDPI.x = LOWORD(wParam); //MainWndDPI.y = HIWORD(wParam);
+  UNUSED(lParam); 
 
   DocPos const pos = SciCall_GetCurrentPos();
 
@@ -2477,7 +2465,6 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 #endif
 
   //RECT* const rc = (RECT*)lParam;
-  UNUSED(lParam);
   UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
   UpdateAllBars(true);
 
@@ -3335,6 +3322,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
   EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
   CheckCmd(hmenu, IDM_VIEW_STATUSBAR, Settings.ShowStatusbar);
+  CheckCmd(hmenu, IDM_VIEW_DPISCALETB, Settings.DpiScaleToolBar);
 
   //i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
@@ -3379,6 +3367,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
   CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
+  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles);
   CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
   CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
 
@@ -3401,13 +3390,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   else
     i = IDM_VIEW_NOESCFUNC;
   CheckMenuRadioItem(hmenu, IDM_VIEW_NOESCFUNC, IDM_VIEW_ESCEXIT, i, MF_BYCOMMAND);
-
-  EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, i);
-  EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, i);
-  EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, i);
-  EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, i);
-  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, i);
-  EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, i);
 
   EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel);
   EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel);
@@ -3501,10 +3483,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case SCEN_CHANGE:
       EditUpdateVisibleIndicators();
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
-      UpdateToolbar();
-      UpdateStatusbar(false);
       break;
-
 
     case IDT_TIMER_UPDATE_STATUSBAR:
       _UpdateStatusbarDelayed((bool)lParam);
@@ -3915,18 +3894,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_UNDO:
       if (SciCall_CanUndo()) {
-        _IGNORE_NOTIFY_CHANGE_
+        _IGNORE_NOTIFY_CHANGE_;
         SciCall_Undo();
-        _OBSERVE_NOTIFY_CHANGE_
+        _OBSERVE_NOTIFY_CHANGE_;
       }
       break;
 
 
     case IDM_EDIT_REDO:
       if (SciCall_CanRedo()) {
-        _IGNORE_NOTIFY_CHANGE_
+        _IGNORE_NOTIFY_CHANGE_;
         SciCall_Redo();
-        _OBSERVE_NOTIFY_CHANGE_
+        _OBSERVE_NOTIFY_CHANGE_;
       }
       break;
 
@@ -3939,15 +3918,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SciCall_IsSelectionEmpty())
         {
           if (!Settings2.NoCutLineOnEmptySelection) {
-            _BEGIN_UNDO_ACTION_
+            _BEGIN_UNDO_ACTION_;
             SciCall_LineCut();
-            _END_UNDO_ACTION_
+            _END_UNDO_ACTION_;
           }
         }
         else {
-          _BEGIN_UNDO_ACTION_
+          _BEGIN_UNDO_ACTION_;
           SciCall_Cut();
-          _END_UNDO_ACTION_
+          _END_UNDO_ACTION_;
         }
       }
       break;
@@ -3958,9 +3937,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (s_flagPasteBoard) {
         s_bLastCopyFromMe = true;
       }
-      _BEGIN_UNDO_ACTION_
+      _BEGIN_UNDO_ACTION_;
         SciCall_LineCut();
-      _END_UNDO_ACTION_
+      _END_UNDO_ACTION_;
     }
     break;
 
@@ -3994,9 +3973,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DocPos const iLineSelLast = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
         // copy incl last line-breaks
         DocPos const iSelLnEnd = SciCall_PositionFromLine(iLineSelLast) + SciCall_LineLength(iLineSelLast);
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_CopyRange(iSelLnStart, iSelLnEnd);
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
     }
       break;
 
@@ -4025,9 +4004,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_Paste();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
       }
       break;
 
@@ -4036,9 +4015,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
         }
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
       }
       break;
 
@@ -4097,47 +4076,47 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_DUPLINEORSELECTION:
-      _BEGIN_UNDO_ACTION_
+      _BEGIN_UNDO_ACTION_;
       if (SciCall_IsSelectionEmpty()) { 
         SciCall_LineDuplicate(); 
       } 
       else { 
         SciCall_SelectionDuplicate(); 
       }
-      _END_UNDO_ACTION_
+      _END_UNDO_ACTION_;
       break;
 
 
     case IDM_EDIT_LINETRANSPOSE:
-      _BEGIN_UNDO_ACTION_
+      _BEGIN_UNDO_ACTION_;
       SciCall_LineTranspose();
-      _END_UNDO_ACTION_
+      _END_UNDO_ACTION_;
       break;
 
 
     case IDM_EDIT_DELETELINE:
       {
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_LineDelete();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
       }
       break;
 
 
     case IDM_EDIT_DELETELINELEFT:
       {
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_DelLineLeft();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
       }
       break;
 
 
     case IDM_EDIT_DELETELINERIGHT:
       {
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_DelLineRight();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
       }
       break;
 
@@ -4177,9 +4156,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     //case CMD_DELETEBACK:
-    //  ///~_BEGIN_UNDO_ACTION_
+    //  ///~_BEGIN_UNDO_ACTION_;
     //  SciCall_DeleteBack();
-    //  ///~_END_UNDO_ACTION_
+    //  ///~_END_UNDO_ACTION_;
     //  break;
 
     case CMD_VK_INSERT:
@@ -4334,9 +4313,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTUPPERCASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_UpperCase();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
         EndWaitCursor();
       }
       break;
@@ -4345,9 +4324,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTLOWERCASE:
       {
         BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_LowerCase();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
         EndWaitCursor();
       }
       break;
@@ -4430,6 +4409,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INSERT_SHORTDATE:
     case IDM_EDIT_INSERT_LONGDATE:
       {
+        //~~~_BEGIN_UNDO_ACTION_;
+
         WCHAR tchDateTime[128] = { L'\0' };
         WCHAR tchTemplate[128] = { L'\0' };
         SYSTEMTIME st;
@@ -4467,6 +4448,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         char chDateTime[128] = { '\0' };
         WideCharToMultiByteEx(Encoding_SciCP,0,tchDateTime,-1,chDateTime,COUNTOF(chDateTime),NULL,NULL);
         EditReplaceSelection(chDateTime, false);
+
+        //~~~_END_UNDO_ACTION_;
       }
       break;
 
@@ -5296,7 +5279,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLETB:
-      s_iToolBarTheme = (s_iToolBarTheme + 1) % 3;
+      Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
       SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
@@ -5308,6 +5291,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (SelectExternalToolBar(hwnd)) {
         SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       }
+      break;
+
+    case IDM_VIEW_DPISCALETB:
+      Settings.DpiScaleToolBar = !Settings.DpiScaleToolBar;
+      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
     case IDM_VIEW_STATUSBAR:
@@ -5375,6 +5363,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
       }
       CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_ALWAYSONTOP, Settings.AlwaysOnTop);
+      UpdateToolbar();
       break;
 
 
@@ -5489,11 +5478,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (StrIsEmpty(Globals.IniFile)) {
 
           if (StrIsNotEmpty(Globals.IniFileDefault)) {
-            if (CreateIniFileEx(Globals.IniFileDefault)) {
-              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+            if (CreateIniFile()) {
               StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
+              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
               bCreateFailure = true;
             }
           }
@@ -5523,7 +5513,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_HELP_ABOUT:
+      {
+        //~HMODULE hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
+        HMODULE hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
+        if (hRichEdit != INVALID_HANDLE_VALUE) {
         ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
+          FreeLibrary(hRichEdit);
+        }
+      }
       break;
 
     case IDM_SETPASS:
@@ -5553,20 +5550,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           --skipLevel;
         }
         else if (s_bInMultiEditMode) {
-          _BEGIN_UNDO_ACTION_
+          _BEGIN_UNDO_ACTION_;
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
           EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
-          _END_UNDO_ACTION_
+          _END_UNDO_ACTION_;
           s_bInMultiEditMode = false;
           --skipLevel;
         }
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
-          _BEGIN_UNDO_ACTION_
+          _BEGIN_UNDO_ACTION_;
           EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
-          _END_UNDO_ACTION_
+          _END_UNDO_ACTION_;
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
 
@@ -5582,11 +5579,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           default:
+            _BEGIN_UNDO_ACTION_;
             EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
+            _END_UNDO_ACTION_;
             break;
           }
         }
+        _BEGIN_UNDO_ACTION_;
         SciCall_Cancel();
+        _END_UNDO_ACTION_;
       }
       break;
 
@@ -5598,7 +5599,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_INSERTNEWLINE:
       {
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
         if (iLine <= 0) {
@@ -5610,7 +5611,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_GotoPos(SciCall_GetLineEndPosition(iLine - 1));
           SciCall_NewLine();
         }
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
       }
       break;
 
@@ -5625,9 +5626,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CLEAR:
     //case CMD_CLEAR:
-        ///~_BEGIN_UNDO_ACTION_
+        ///~_BEGIN_UNDO_ACTION_;
         SciCall_Clear();
-        ///~_END_UNDO_ACTION_
+        ///~_END_UNDO_ACTION_;
       break;
 
 
@@ -5684,9 +5685,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if (iPos != iAnchor) {
-          _BEGIN_UNDO_ACTION_
+          _BEGIN_UNDO_ACTION_;
           SciCall_SetSel(iPos, iPos);
-          _END_UNDO_ACTION_
+          _END_UNDO_ACTION_;
         }
         else {
           if (iPos == iStartPos)
@@ -5709,9 +5710,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         const DocPos iEndPos = SciCall_GetLineEndPosition(iLine);
 
         if (iPos != iAnchor) {
-          _BEGIN_UNDO_ACTION_
+          _BEGIN_UNDO_ACTION_;
           SciCall_SetSel(iPos, iPos);
-          _END_UNDO_ACTION_
+          _END_UNDO_ACTION_;
         }
         else {
           if (iStartPos != iEndPos)
@@ -6755,9 +6756,9 @@ static void  _HandleAutoIndent(int const charAdded)
           }
         }
         if (*pLineBuf) {
-          _BEGIN_UNDO_ACTION_
+          _BEGIN_UNDO_ACTION_;
           SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
-          _END_UNDO_ACTION_
+          _END_UNDO_ACTION_;
         }
         FreeMem(pLineBuf);
       }
@@ -8051,7 +8052,6 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
   CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
-  SendWMSize(Globals.hwndToolbar, NULL);
 }
 
 
@@ -8804,10 +8804,10 @@ void UpdateMarginWidth()
 //
 void UpdateSaveSettingsCmds()
 {
-    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileLocked);
-    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileLocked);
+    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
 }
 
 
@@ -8950,7 +8950,8 @@ static int _SaveUndoSelection()
   int const token = _UndoRedoActionMap(-1, &pSel);
 
   if (token >= 0) {
-    SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
+    //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
+    SciCall_AddUndoAction(token, UNDO_NONE);
   }
   return token;
 }
@@ -9164,7 +9165,6 @@ bool RestoreAction(int token, DoAction doAct)
           break;
       }
     }
-
     PostMessage(hwndedit, SCI_SCROLLCARET, 0, 0);
     PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
   }
@@ -9383,7 +9383,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     }
     InstallFileWatching(NULL);
-    Flags.bSettingsFileLocked = false;
+    Flags.bSettingsFileSoftLocked = false;
     UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
@@ -9461,9 +9461,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
     if (bReload && !FileWatching.MonitoringLog) 
     {
-      _BEGIN_UNDO_ACTION_
+      _BEGIN_UNDO_ACTION_;
+      EditSetSelectionEx(0, 0, -1, -1);
+      _END_UNDO_ACTION_;
+
+      _BEGIN_UNDO_ACTION_;
       fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
-      _END_UNDO_ACTION_
+      _END_UNDO_ACTION_;
     }
     else {
       fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, &fioStatus, false, false);
@@ -9526,12 +9530,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       SciCall_GetText(COUNTOF(tchLog), tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         SciCall_DocumentEnd();
-        _BEGIN_UNDO_ACTION_
+        _BEGIN_UNDO_ACTION_;
         SciCall_NewLine();
         SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
         SciCall_DocumentEnd();
         SciCall_NewLine();
-        _END_UNDO_ACTION_
+        _END_UNDO_ACTION_;
         SciCall_DocumentEnd();
         SciCall_ScrollToEnd();
       }
@@ -9547,7 +9551,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetSaveNeeded(bReload);
 
     // consistent settings file handling (if loaded in editor)
-    Flags.bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    Flags.bSettingsFileSoftLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
     UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 
@@ -9947,8 +9951,7 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     }
 
     // if current file is settings/config file: ask to start
-    // bSettingsFileLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
-    if (Flags.bSettingsFileLocked && !s_flagAppIsClosing)
+    if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing)
     {
       //~ LoadSettings(); NOT all settings will be applied ...
       INT_PTR answer = 0;
@@ -10763,13 +10766,13 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit,-1,0);
-      _BEGIN_UNDO_ACTION_
+      _BEGIN_UNDO_ACTION_;
       if (!Sci_IsDocEmpty()) {
         SciCall_NewLine();
       }
       SciCall_Paste();
       SciCall_NewLine();
-      _END_UNDO_ACTION_
+      _END_UNDO_ACTION_;
       EditEnsureSelectionVisible();
       Settings.AutoIndent = bAutoIndent2;
     }

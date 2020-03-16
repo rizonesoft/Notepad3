@@ -325,8 +325,6 @@ typedef struct _globals_t
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
   cpi_enc_t DOSEncoding;
-  DPI_T     MainWndDPI;
-  DPI_T     MainWndPPI;
   LANGID    iPrefLANGID;
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;
@@ -447,6 +445,8 @@ typedef struct _settings_t
   bool ShowMenubar;
   bool ShowToolbar;
   bool ShowStatusbar;
+  int ToolBarTheme;
+  bool DpiScaleToolBar;
   int EncodingDlgSizeX;
   int EncodingDlgSizeY;
   int RecodeDlgSizeX;
@@ -508,7 +508,7 @@ typedef struct _flags_t
   bool bDoRelaunchElevated;
   bool bSearchPathIfRelative;
 
-  bool bSettingsFileLocked;
+  bool bSettingsFileSoftLocked;
 
 } FLAGS_T, *PFLAGS_T;
 
@@ -540,8 +540,7 @@ typedef struct _settings2_t
   int    ExitOnESCSkipLevel;
 
   float  AnalyzeReliableConfidenceLevel;
-  //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
-  //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
+  float  LocaleAnsiCodePageAnalysisBonus;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[64];
@@ -651,7 +650,6 @@ typedef struct _themeFiles
 } THEMEFILES, * PTHEMEFILES;
 
 //=============================================================================
-
 
 // ---------   common defines   --------
 

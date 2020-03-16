@@ -316,10 +316,10 @@ void Style_DynamicThemesMenuCmd(int cmd)
       // internal defaults
     }
     else if (Globals.idxSelectedTheme == 1) {
-      if (!Flags.bSettingsFileLocked) {
+      if (!Flags.bSettingsFileSoftLocked) {
         CreateIniFile();
         if (StrIsNotEmpty(Globals.IniFile)) {
-          Style_ExportToFile(Globals.IniFile, false);
+          Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
       }
     }
@@ -544,7 +544,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
   if (bResetToDefault) {
     ReleaseIniFile();
   }
-  bool result = !bResetToDefault ? LoadIniFile(szFile) : true;
+  bool result = !bResetToDefault ? LoadIniFile(szFile, false) : true;
 
   if (result) {
 
@@ -825,9 +825,9 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
     }
   }
   else {
-    LoadIniFile(szFilePathNorm); // reset
+    LoadIniFile(szFilePathNorm, true); // reset
     Style_ToIniSection(bForceAll);
-    ok = SaveIniFile(szFilePathNorm);
+    ok = SaveIniFile();
   }
   return ok;
 }
@@ -976,13 +976,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       pLexNew = GetCurrentStdLexer();
     }
   }
-  _IGNORE_NOTIFY_CHANGE_
+  bool const bFocusedView = FocusedView.HideNonMatchedLines;
+  if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
+
+  _IGNORE_NOTIFY_CHANGE_;
 
   // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
   // assert(pLexNew != s_pLexCurrent);
-
-  bool const bFocusedView = FocusedView.HideNonMatchedLines;
-  if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   // first set standard lexer's default values
   const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
@@ -1472,6 +1472,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   SciCall_StartStyling(0);
 
+  _OBSERVE_NOTIFY_CHANGE_;
+
   // apply lexer styles
   if (Flags.bLargeFileLoaded)
   {
@@ -1487,8 +1489,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   UpdateAllBars(false);
-
-  _OBSERVE_NOTIFY_CHANGE_
 }
 
 
@@ -1639,7 +1639,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
       if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
         iFrameSize = 2;
       }
-      iFrameSize = max_i(1, ScaleIntToHwndDPIY(hwnd, iFrameSize));
+      iFrameSize = max_i(1, ScaleIntToDPI_Y(hwnd, iFrameSize));
       SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
     }
 
@@ -1661,7 +1661,7 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
   float const zoomPercent = (float)SciCall_GetZoom();
-  return ScaleFloatToHwndDPIX(hwnd, (fSize * zoomPercent) / 100.0f);
+  return ScaleFloatToDPI_X(hwnd, (fSize * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
@@ -3092,7 +3092,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.MainWndDPI, &cf) ||
+    DPI_T const dpi = GetCurrentDPI(hwnd);
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, dpi, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }

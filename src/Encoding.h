@@ -57,6 +57,9 @@
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
+//#define CPI_PREFERRED_ENCODING  CPI_ANSI_DEFAULT
+#define CPI_PREFERRED_ENCODING  CPI_UTF8
+
 typedef struct _np2encoding {
 
   UINT        uFlags;
@@ -171,6 +174,7 @@ typedef struct _enc_det_t
 {
   cpi_enc_t Encoding; // final detection result
   // statistic:
+  char encodingStrg[64];
   cpi_enc_t forcedEncoding;
   cpi_enc_t fileVarEncoding;
   cpi_enc_t analyzedEncoding;
@@ -178,21 +182,25 @@ typedef struct _enc_det_t
   float     confidence;
   // flags:
   bool bIsAnalysisReliable;
+  bool bIs7BitASCII;
   bool bHasBOM;
   bool bIsReverse;
   bool bIsUTF8Sig;
+  bool bValidUTF8;
 
 } ENC_DET_T;
 
+#define INIT_ENC_DET_T  { CPI_NONE, "", CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false }
+
 
 ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,
-                                  const cpi_enc_t iAnalyzeFallback,
+                                  cpi_enc_t iAnalyzeHint,
                                   bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection);
 
 // ----------------------------------------------------------------------------
 
-const char*  Encoding_GetTitleInfoA();
-const WCHAR* Encoding_GetTitleInfoW();
+const WCHAR* Encoding_GetTitleInfo();
+//const char*  Encoding_GetTitleInfoA();
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

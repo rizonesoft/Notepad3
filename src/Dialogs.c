@@ -685,56 +685,65 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
     StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
 
+    // paint richedit box
     pAboutInfo = pAboutResource;
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
     CenterDlgInParent(hwnd, NULL);
   }
-  // fall-through
+  break;
+
 
   case WM_DPICHANGED:
     {
-      // get current richedit box format
-      CHARFORMAT2 currentFormat;  ZeroMemory(&currentFormat, sizeof(CHARFORMAT2));  currentFormat.cbSize = sizeof(CHARFORMAT2);
-      currentFormat.dwMask = CFM_ALL2; // CFM_SIZE | CFM_FACE | CFM_CHARSET | CFM_LCID;  CFM_ALL;  CFM_ALL2;
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&currentFormat);
-
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
 
-      // --- keep original font size ---
-      CHARFORMAT dpiCharFmt;  ZeroMemory(&dpiCharFmt, sizeof(CHARFORMAT));  dpiCharFmt.cbSize = sizeof(CHARFORMAT);
-      dpiCharFmt.dwMask = CFM_SIZE; //~ | CFM_FACE;
-      dpiCharFmt.yHeight = currentFormat.yHeight; // keep size
-      //~StringCchCopy(dpiCharFmt.szFaceName, COUNTOF(dpiCharFmt.szFaceName), L"Consolas");
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&dpiCharFmt);
+      DPI_T const dpi = GetCurrentDPI(hwnd);
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
 
-      // --- larger bold version string
-      if (hVersionFont) { DeleteObject(hVersionFont); }
-      if ((hVersionFont = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)) == NULL) {
-        hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
-      }
-      LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
-      lf.lfWeight = FW_BOLD;
-      lf.lfWidth = ScaleIntFontSizeWidth(hwnd, 8);
-      lf.lfHeight = ScaleIntFontSizeHeight(hwnd, 22);
-      // lf.lfQuality = ANTIALIASED_QUALITY;
-      hVersionFont = CreateFontIndirect(&lf);
-      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+      //~~// get current richedit box format
+      //~~CHARFORMAT2 currentFormat;  ZeroMemory(&currentFormat, sizeof(CHARFORMAT2));  currentFormat.cbSize = sizeof(CHARFORMAT2);
+      //~~currentFormat.dwMask = CFM_ALL2; // CFM_SIZE | CFM_FACE | CFM_CHARSET | CFM_LCID;  CFM_ALL;  CFM_ALL2;
+      //~~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&currentFormat);
+      //~~      
+      //~~//CHARFORMAT dpiCharFmt;  ZeroMemory(&dpiCharFmt, sizeof(CHARFORMAT));  dpiCharFmt.cbSize = sizeof(CHARFORMAT);
+      //~~//dpiCharFmt.dwMask = CFM_ALL; CFM_SIZE; //~ | CFM_FACE;
+      //~~CHARFORMAT2 dpiCharFmt = currentFormat;
+      //~~dpiCharFmt.yHeight = (currentFormat.yHeight == 180) ? ScaleIntToDPI_Y(hwnd, 180) : currentFormat.yHeight; // keep size
+      //~~//~StringCchCopy(dpiCharFmt.szFaceName, COUNTOF(dpiCharFmt.szFaceName), L"Segoe UI");
+      //~~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&dpiCharFmt);
     }
-    return true;
+    break;
 
 
   case WM_PAINT:
     {
       if (Globals.hDlgIcon128) {
         int const iconSize = 128;
-        int const dpiScaledWidth = ScaleIntToHwndDPIX(hwnd, iconSize);
-        int const dpiScaledHeight = ScaleIntToHwndDPIY(hwnd, iconSize);
+        int const dpiScaledWidth = ScaleIntToDPI_X(hwnd, iconSize);
+        int const dpiScaledHeight = ScaleIntToDPI_Y(hwnd, iconSize);
         HDC const hdc = GetWindowDC(hwnd);
-        DrawIconEx(hdc, 22, 44, Globals.hDlgIcon128, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
+        DrawIconEx(hdc, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44), 
+                   Globals.hDlgIcon128, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
         ReleaseDC(hwnd, hdc);
       }
+
+      // --- larger bold condensed version string
+      if (hVersionFont) { DeleteObject(hVersionFont); }
+      if ((hVersionFont = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)) == NULL) {
+        hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
+      }
+      LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
+      lf.lfWeight = FW_BOLD;
+      lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8);
+      lf.lfHeight = ScaleIntToDPI_Y(hwnd, 22);
+      //StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Segoe UI");
+      hVersionFont = CreateFontIndirect(&lf);
+      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
+
+      // rich edit control
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0);
     }
     return false;
 
@@ -835,7 +844,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", Globals.MainWndDPI.x, Globals.MainWndDPI.y, ScaleIntToHwndDPIX(hwnd, 100));
+        DPI_T dpi = GetCurrentDPI(hwnd);
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -1643,6 +1653,13 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
+        // sync with other instances
+        if (Settings.SaveRecentFiles) {
+          if (MRU_MergeSave(Globals.pFileMRU, true, Flags.RelativeFileMRU, Flags.PortableMyDocs)) {
+            MRU_Load(Globals.pFileMRU, true);
+          }
+        }
+
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
@@ -1678,10 +1695,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
         CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, SetBtn(Settings.SaveFindReplace));
 
-        //~if (!Settings.SaveRecentFiles) {
-        //~  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
-        //~  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
-        //~}
+        DialogEnableControl(hwnd,IDC_PRESERVECARET, Settings.SaveRecentFiles);
 
         CenterDlgInParent(hwnd, NULL);
       }
@@ -1709,6 +1723,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         lpit->hThread = NULL;
         RemoveProp(hwnd,L"it");
         FreeMem(lpit);
+
+        if (Settings.SaveRecentFiles) {
+          MRU_Save(Globals.pFileMRU); // last instance on save wins
+        }
 
         Settings.SaveRecentFiles = IsButtonChecked(hwnd, IDC_SAVEMRU);
         Settings.SaveFindReplace = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
@@ -1829,10 +1847,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
               UINT const cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
               DialogEnableControl(hwnd, IDOK, (cnt > 0));
               // can't discard current file (myself)
-              int iCur = 0;
-              if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &iCur)) { iCur = -1; }
+              int cur = 0;
+              if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) { cur = -1; }
               int const item = ListView_GetNextItem(GetDlgItem(hwnd, IDC_FILEMRU), -1, LVNI_ALL | LVNI_SELECTED);
-              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (iCur != item));
+              DialogEnableControl(hwnd, IDC_REMOVE, (cnt > 0) && (cur != item));
             }
             break;
           }
@@ -1892,9 +1910,14 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
             UINT cnt = ListView_GetItemCount(GetDlgItem(hwnd, IDC_FILEMRU));
             if (cnt > 0) {
               UINT idx = ListView_GetTopIndex(GetDlgItem(hwnd, IDC_FILEMRU));
-              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVIS_FOCUSED, LVIS_FOCUSED);
               ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVSCW_AUTOSIZE_USEHEADER);
-              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVIS_SELECTED, LVIS_SELECTED);
+              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), ((cnt > 1) ? idx + 1 : idx), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+              //int cur = 0;
+              //if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &cur)) { cur = -1; }
+              //int const item = ListView_GetNextItem(GetDlgItem(hwnd, IDC_FILEMRU), -1, LVNI_ALL | LVNI_SELECTED);
+              //if ((cur == item) && (cnt > 1)) {
+              //  ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx + 1, LVIS_SELECTED, LVIS_SELECTED);
+              //}
             }
 
             lpit->hThread = CreateThread(NULL,0,FileMRUIconThread,(LPVOID)lpit,0,&dwtid);
@@ -1904,12 +1927,19 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         case IDC_FILEMRU:
           break;
 
+        case IDC_SAVEMRU:
+          {
+            bool const bSaveMRU = IsButtonChecked(hwnd, IDC_SAVEMRU);
+            DialogEnableControl(hwnd, IDC_PRESERVECARET, bSaveMRU);
+          }
+          break;
+
         case IDOK:
         case IDC_REMOVE:
           {
             WCHAR tchFileName[MAX_PATH] = { L'\0' };
+            
             //int  iItem;
-
             //if ((iItem = SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETCURSEL,0,0)) != LB_ERR)
 
             UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
@@ -2506,7 +2536,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         HBITMAP hbmp = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDB_ENCODING), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hbmp);
+        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
 
         HIMAGELIST himl = ImageList_Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 0);
         ImageList_AddMasked(himl, hbmp, CLR_DEFAULT);
@@ -2663,7 +2693,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
         HBITMAP hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-        hbmp = ResizeImageForCurrentDPI(hbmp);
+        hbmp = ResizeImageForCurrentDPI(hwnd, hbmp);
 
         HIMAGELIST himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
         ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
@@ -3856,7 +3886,7 @@ void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
 {
   HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-  hBmp = ResizeImageForCurrentDPI(hBmp);
+  hBmp = ResizeImageForCurrentDPI(hwnd, hBmp);
   BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
   BUTTON_IMAGELIST bi;
@@ -4183,9 +4213,6 @@ HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 
 
 
-
-
-
 //=============================================================================
 //
 //  ConvertIconToBitmap()
@@ -4235,6 +4262,24 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
 }
 
 
+
+
+//=============================================================================
+//
+//  GetCurrentPPI()
+//  (font size) points per inch
+//
+DPI_T GetCurrentPPI(HWND hwnd) {
+  HDC const hDC = GetDC(hwnd);
+  DPI_T ppi;
+  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
+  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
+  ReleaseDC(hwnd, hDC);
+  return ppi;
+}
+
+
+
 //=============================================================================
 //
 //  GetCurrentDPI()
@@ -4270,10 +4315,7 @@ DPI_T GetCurrentDPI(HWND hwnd) {
   }
 
   if (curDPI.x == 0) {
-    HDC hDC = GetDC(hwnd);
-    curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
-    curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
-    ReleaseDC(hwnd, hDC);
+    curDPI = GetCurrentPPI(hwnd); // fallback to device caps
   }
 
   curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
@@ -4281,20 +4323,6 @@ DPI_T GetCurrentDPI(HWND hwnd) {
   return curDPI;
 }
 
-
-//=============================================================================
-//
-//  GetCurrentPPI()
-//  (font size) points per inch
-//
-DPI_T GetCurrentPPI(HWND hwnd) {
-  HDC const hDC = GetDC(hwnd);
-  DPI_T ppi;
-  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
-  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
-  ReleaseDC(hwnd, hDC);
-  return ppi;
-}
 
 /*
 if (!bSucceed) {
@@ -4317,12 +4345,12 @@ if (!bSucceed) {
 
 int GetSystemMetricsDPIScaledX(HWND hwnd, const int nValue)
 { 
-  return ScaleIntToHwndDPIX(hwnd, GetSystemMetrics(nValue));
+  return ScaleIntToDPI_X(hwnd, GetSystemMetrics(nValue));
 }
 
 int GetSystemMetricsDPIScaledY(HWND hwnd, const int nValue)
 {
-  return ScaleIntToHwndDPIY(hwnd, GetSystemMetrics(nValue));
+  return ScaleIntToDPI_Y(hwnd, GetSystemMetrics(nValue));
 }
 
 //=============================================================================
@@ -4363,24 +4391,23 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
 }
 
 
-
 //=============================================================================
 //
 //  ResizeImageForCurrentDPI()
 //
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
+HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
 {
   if (hbmp) {
     BITMAP bmp;
-    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
-      UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
-      UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (Globals.MainWndDPI.x > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (Globals.MainWndDPI.x - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (Globals.MainWndDPI.y - uDPIBase), uDPIUnit);
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp))
+    {
+      int const width = ScaleIntToDPI_X(hwnd, bmp.bmWidth);
+      int const height = ScaleIntToDPI_Y(hwnd, bmp.bmHeight);
+      if (((LONG)width != bmp.bmWidth) || ((LONG)height != bmp.bmHeight)) 
+      {
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
-        if (hCopy) {
+        if (hCopy && (hCopy != hbmp)) {
+          DeleteObject(hbmp);
           hbmp = hCopy;
         }
       }
@@ -4388,6 +4415,7 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
   }
   return hbmp;
 }
+
 
 //=============================================================================
 //
@@ -4402,5 +4430,7 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
   GetClientRect(hwnd, &wndrc);
   return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
 }
+
+
 
 //  End of Dialogs.c
