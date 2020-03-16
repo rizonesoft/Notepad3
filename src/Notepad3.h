@@ -146,8 +146,8 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
-#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
+#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyChangeEvent();
+#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); ObserveNotifyChangeEvent(); } }
 
 void HandlePosChange();
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
@@ -199,6 +199,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
 static __forceinline bool CheckNotifyChangeEvent();
+
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
 

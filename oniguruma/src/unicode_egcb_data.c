@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 
-#define GRAPHEME_BREAK_PROPERTY_VERSION  120100
+#define GRAPHEME_BREAK_PROPERTY_VERSION  130000
 
 /*
 CR
@@ -43,7 +43,7 @@ V
 ZWJ
 */
 
-static int EGCB_RANGE_NUM = 1326;
+static int EGCB_RANGE_NUM = 1344;
 static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x000000, 0x000009, EGCB_Control },
  {0x00000a, 0x00000a, EGCB_LF },
@@ -136,7 +136,7 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x000b47, 0x000b48, EGCB_SpacingMark },
  {0x000b4b, 0x000b4c, EGCB_SpacingMark },
  {0x000b4d, 0x000b4d, EGCB_Extend },
- {0x000b56, 0x000b57, EGCB_Extend },
+ {0x000b55, 0x000b57, EGCB_Extend },
  {0x000b62, 0x000b63, EGCB_Extend },
  {0x000b82, 0x000b82, EGCB_Extend },
  {0x000bbe, 0x000bbe, EGCB_Extend },
@@ -182,6 +182,7 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x000d4e, 0x000d4e, EGCB_Prepend },
  {0x000d57, 0x000d57, EGCB_Extend },
  {0x000d62, 0x000d63, EGCB_Extend },
+ {0x000d81, 0x000d81, EGCB_Extend },
  {0x000d82, 0x000d83, EGCB_SpacingMark },
  {0x000dca, 0x000dca, EGCB_Extend },
  {0x000dcf, 0x000dcf, EGCB_Extend },
@@ -267,7 +268,7 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x001a6d, 0x001a72, EGCB_SpacingMark },
  {0x001a73, 0x001a7c, EGCB_Extend },
  {0x001a7f, 0x001a7f, EGCB_Extend },
- {0x001ab0, 0x001abe, EGCB_Extend },
+ {0x001ab0, 0x001ac0, EGCB_Extend },
  {0x001b00, 0x001b03, EGCB_Extend },
  {0x001b04, 0x001b04, EGCB_SpacingMark },
  {0x001b34, 0x001b3a, EGCB_Extend },
@@ -329,6 +330,7 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x00a823, 0x00a824, EGCB_SpacingMark },
  {0x00a825, 0x00a826, EGCB_Extend },
  {0x00a827, 0x00a827, EGCB_SpacingMark },
+ {0x00a82c, 0x00a82c, EGCB_Extend },
  {0x00a880, 0x00a881, EGCB_SpacingMark },
  {0x00a8b4, 0x00a8c3, EGCB_SpacingMark },
  {0x00a8c4, 0x00a8c5, EGCB_Extend },
@@ -1189,6 +1191,7 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x010a3f, 0x010a3f, EGCB_Extend },
  {0x010ae5, 0x010ae6, EGCB_Extend },
  {0x010d24, 0x010d27, EGCB_Extend },
+ {0x010eab, 0x010eac, EGCB_Extend },
  {0x010f46, 0x010f50, EGCB_Extend },
  {0x011000, 0x011000, EGCB_SpacingMark },
  {0x011001, 0x011001, EGCB_Extend },
@@ -1215,6 +1218,8 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x0111bf, 0x0111c0, EGCB_SpacingMark },
  {0x0111c2, 0x0111c3, EGCB_Prepend },
  {0x0111c9, 0x0111cc, EGCB_Extend },
+ {0x0111ce, 0x0111ce, EGCB_SpacingMark },
+ {0x0111cf, 0x0111cf, EGCB_Extend },
  {0x01122c, 0x01122e, EGCB_SpacingMark },
  {0x01122f, 0x011231, EGCB_Extend },
  {0x011232, 0x011233, EGCB_SpacingMark },
@@ -1286,6 +1291,17 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x01182f, 0x011837, EGCB_Extend },
  {0x011838, 0x011838, EGCB_SpacingMark },
  {0x011839, 0x01183a, EGCB_Extend },
+ {0x011930, 0x011930, EGCB_Extend },
+ {0x011931, 0x011935, EGCB_SpacingMark },
+ {0x011937, 0x011938, EGCB_SpacingMark },
+ {0x01193b, 0x01193c, EGCB_Extend },
+ {0x01193d, 0x01193d, EGCB_SpacingMark },
+ {0x01193e, 0x01193e, EGCB_Extend },
+ {0x01193f, 0x01193f, EGCB_Prepend },
+ {0x011940, 0x011940, EGCB_SpacingMark },
+ {0x011941, 0x011941, EGCB_Prepend },
+ {0x011942, 0x011942, EGCB_SpacingMark },
+ {0x011943, 0x011943, EGCB_Extend },
  {0x0119d1, 0x0119d3, EGCB_SpacingMark },
  {0x0119d4, 0x0119d7, EGCB_Extend },
  {0x0119da, 0x0119db, EGCB_Extend },
@@ -1337,6 +1353,8 @@ static EGCB_RANGE_TYPE EGCB_RANGES[] = {
  {0x016f4f, 0x016f4f, EGCB_Extend },
  {0x016f51, 0x016f87, EGCB_SpacingMark },
  {0x016f8f, 0x016f92, EGCB_Extend },
+ {0x016fe4, 0x016fe4, EGCB_Extend },
+ {0x016ff0, 0x016ff1, EGCB_SpacingMark },
  {0x01bc9d, 0x01bc9e, EGCB_Extend },
  {0x01bca0, 0x01bca3, EGCB_Control },
  {0x01d165, 0x01d165, EGCB_Extend },

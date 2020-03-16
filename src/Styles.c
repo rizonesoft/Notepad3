@@ -976,13 +976,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       pLexNew = GetCurrentStdLexer();
     }
   }
-  _IGNORE_NOTIFY_CHANGE_
+  bool const bFocusedView = FocusedView.HideNonMatchedLines;
+  if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
+
+  _IGNORE_NOTIFY_CHANGE_;
 
   // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
   // assert(pLexNew != s_pLexCurrent);
-
-  bool const bFocusedView = FocusedView.HideNonMatchedLines;
-  if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   // first set standard lexer's default values
   const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
@@ -1472,6 +1472,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   SciCall_StartStyling(0);
 
+  _OBSERVE_NOTIFY_CHANGE_;
+
   // apply lexer styles
   if (Flags.bLargeFileLoaded)
   {
@@ -1487,8 +1489,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   UpdateAllBars(false);
-
-  _OBSERVE_NOTIFY_CHANGE_
 }
 
 

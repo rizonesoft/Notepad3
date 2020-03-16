@@ -36,7 +36,7 @@ using namespace Scintilla;
 namespace {
   // Use an unnamed namespace to protect the functions and classes from name conflicts
 
-  static enum delim : unsigned int { eComma = 0, eSemic, eTab, ePipe, eMax };
+  enum delim : unsigned int { eComma = 0, eSemic, eTab, ePipe, eMax };
   static int const DelimList[eMax] = { ',',  ';',  '\t',  '|' };
 
   // =================================================================================
@@ -275,7 +275,7 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
 
       for (unsigned int i = 0; i < eMax; ++i) 
       {
-        unsigned int const dlm = delimCount[i];
+        Sci_PositionU const dlm = delimCount[i];
         if (dlm > 0) {
           smartDelimVote[i] += 1;
 
@@ -322,7 +322,7 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
   // smar delimiter selection
   // --------------------------
   int delim = DelimList[0];
-  int maxVote = smartDelimVote[0];
+  Sci_PositionU maxVote = smartDelimVote[0];
   for (unsigned int i = 1; i < eMax; ++i)
   {
     if (maxVote < smartDelimVote[i]) {
