@@ -309,9 +309,14 @@ op2name(int opcode)
 }
 
 static void
+p_after_op(FILE* f)
+{
+  fputs("  ", f);
+}
+
+static void
 p_string(FILE* f, int len, UChar* s)
 {
-  fputs(":", f);
   while (len-- > 0) { fputc(*s++, f); }
 }
 
@@ -320,16 +325,27 @@ p_len_string(FILE* f, LengthType len, int mb_len, UChar* s)
 {
   int x = len * mb_len;
 
-  fprintf(f, ":%d:", len);
+  fprintf(f, "len:%d ", len);
   while (x-- > 0) { fputc(*s++, f); }
 }
 
 static void
 p_rel_addr(FILE* f, RelAddrType rel_addr, Operation* p, Operation* start)
 {
-  RelAddrType curr = (RelAddrType )(p - start);
+  char* flag;
+  char* space1;
+  char* space2;
+  RelAddrType curr;
+  AbsAddrType abs_addr;
 
-  fprintf(f, "{%d/%d}", rel_addr, curr + rel_addr);
+  curr = (RelAddrType )(p - start);
+  abs_addr = curr + rel_addr;
+
+  flag   = rel_addr <  0 ? ""  : "+";
+  space1 = rel_addr < 10 ? " " : "";
+  space2 = abs_addr < 10 ? " " : "";
+
+  fprintf(f, "%s%s%d => %s%d", space1, flag, rel_addr, space2, abs_addr);
 }
 
 static int
@@ -356,6 +372,21 @@ static void
 print_compiled_byte_code(FILE* f, regex_t* reg, int index,
                          Operation* start, OnigEncoding enc)
 {
+  static char* SaveTypeNames[] = {
+    "KEEP",
+    "S",
+    "RIGHT_RANGE"
+  };
+
+  static char* UpdateVarTypeNames[] = {
+    "KEEP_FROM_STACK_LAST",
+    "S_FROM_STACK",
+    "RIGHT_RANGE_FROM_STACK",
+    "RIGHT_RANGE_FROM_S_STACK",
+    "RIGHT_RANGE_TO_S",
+    "RIGHT_RANGE_INIT"
+  };
+
   int i, n;
   RelAddrType addr;
   LengthType  len;
@@ -371,6 +402,8 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   opcode = GET_OPCODE(reg, index);
 
   fprintf(f, "%s", op2name(opcode));
+  p_after_op(f);
+
   switch (opcode) {
   case OP_STR_1:
     p_string(f, 1, p->exact.s); break;
@@ -404,7 +437,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       mb_len = p->exact_len_n.len;
       len    = p->exact_len_n.n;
       q      = p->exact_len_n.s;
-      fprintf(f, ":%d:%d:", mb_len, len);
+      fprintf(f, "mblen:%d len:%d ", mb_len, len);
       n = len * mb_len;
       while (n-- > 0) { fputc(*q++, f); }
     }
@@ -413,7 +446,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_CCLASS:
   case OP_CCLASS_NOT:
     n = bitset_on_num(p->cclass.bsp);
-    fprintf(f, ":%d", n);
+    fprintf(f, "n:%d", n);
     break;
   case OP_CCLASS_MB:
   case OP_CCLASS_MB_NOT:
@@ -425,7 +458,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       GET_CODE_POINT(ncode, codes);
       codes++;
       GET_CODE_POINT(code, codes);
-      fprintf(f, ":%d:0x%x", ncode, code);
+      fprintf(f, "n:%d code:0x%x", ncode, code);
     }
     break;
   case OP_CCLASS_MIX:
@@ -440,7 +473,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       GET_CODE_POINT(ncode, codes);
       codes++;
       GET_CODE_POINT(code, codes);
-      fprintf(f, ":%d:%u:%u", n, code, ncode);
+      fprintf(f, "nsg:%d code:%u nmb:%u", n, code, ncode);
     }
     break;
 
@@ -454,19 +487,19 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_WORD_BEGIN:
   case OP_WORD_END:
     mode = p->word_boundary.mode;
-    fprintf(f, ":%d", mode);
+    fprintf(f, "mode:%d", mode);
     break;
 
   case OP_BACKREF_N:
   case OP_BACKREF_N_IC:
     mem = p->backref_n.n1;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "n:%d", mem);
     break;
   case OP_BACKREF_MULTI_IC:
   case OP_BACKREF_MULTI:
   case OP_BACKREF_CHECK:
-    fputs(" ", f);
     n = p->backref_general.num;
+    fprintf(f, "n:%d ", n);
     for (i = 0; i < n; i++) {
       mem = (n == 1) ? p->backref_general.n1 : p->backref_general.ns[i];
       if (i > 0) fputs(", ", f);
@@ -480,8 +513,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       LengthType level;
 
       level = p->backref_general.nest_level;
-      fprintf(f, ":%d", level);
-      fputs(" ", f);
+      fprintf(f, "level:%d ", level);
       n = p->backref_general.num;
       for (i = 0; i < n; i++) {
         mem = (n == 1) ? p->backref_general.n1 : p->backref_general.ns[i];
@@ -494,7 +526,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_MEM_START:
   case OP_MEM_START_PUSH:
     mem = p->memory_start.num;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "mem:%d", mem);
     break;
 
   case OP_MEM_END:
@@ -504,35 +536,33 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_MEM_END_PUSH_REC:
 #endif
     mem = p->memory_end.num;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "mem:%d", mem);
     break;
 
   case OP_JUMP:
     addr = p->jump.addr;
-    fputc(':', f);
     p_rel_addr(f, addr, p, start);
     break;
 
   case OP_PUSH:
   case OP_PUSH_SUPER:
     addr = p->push.addr;
-    fputc(':', f);
     p_rel_addr(f, addr, p, start);
     break;
 
 #ifdef USE_OP_PUSH_OR_JUMP_EXACT
   case OP_PUSH_OR_JUMP_EXACT1:
     addr = p->push_or_jump_exact1.addr;
-    fputc(':', f);
     p_rel_addr(f, addr, p, start);
+    fprintf(f, " c:");
     p_string(f, 1, &(p->push_or_jump_exact1.c));
     break;
 #endif
 
   case OP_PUSH_IF_PEEK_NEXT:
     addr = p->push_if_peek_next.addr;
-    fputc(':', f);
     p_rel_addr(f, addr, p, start);
+    fprintf(f, " c:");
     p_string(f, 1, &(p->push_if_peek_next.c));
     break;
 
@@ -540,19 +570,19 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_REPEAT_NG:
     mem = p->repeat.id;
     addr = p->repeat.addr;
-    fprintf(f, ":%d:", mem);
+    fprintf(f, "id:%d ", mem);
     p_rel_addr(f, addr, p, start);
     break;
 
   case OP_REPEAT_INC:
   case OP_REPEAT_INC_NG:
     mem = p->repeat.id;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "id:%d", mem);
     break;
 
   case OP_EMPTY_CHECK_START:
     mem = p->empty_check_start.mem;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "id:%d", mem);
     break;
   case OP_EMPTY_CHECK_END:
   case OP_EMPTY_CHECK_END_MEMST:
@@ -560,23 +590,23 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
   case OP_EMPTY_CHECK_END_MEMST_PUSH:
 #endif
     mem = p->empty_check_end.mem;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "id:%d", mem);
     break;
 
 #ifdef USE_CALL
   case OP_CALL:
     addr = p->call.addr;
-    fprintf(f, ":{/%d}", addr);
+    fprintf(f, "=> %d", addr);
     break;
 #endif
 
   case OP_MOVE:
-    fprintf(f, ":%d", p->move.n);
+    fprintf(f, "n:%d", p->move.n);
     break;
 
   case OP_STEP_BACK_START:
     addr = p->step_back_start.addr;
-    fprintf(f, ":%d:%d:",
+    fprintf(f, "init:%d rem:%d ",
             p->step_back_start.initial,
             p->step_back_start.remaining);
     p_rel_addr(f, addr, p, start);
@@ -584,7 +614,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
 
   case OP_POP_TO_MARK:
     mem = p->pop_to_mark.id;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "id:%d", mem);
     break;
 
   case OP_CUT_TO_MARK:
@@ -593,7 +623,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
 
       mem     = p->cut_to_mark.id;
       restore = p->cut_to_mark.restore_pos;
-      fprintf(f, ":%d:%d", mem, restore);
+      fprintf(f, "id:%d restore:%d", mem, restore);
     }
     break;
 
@@ -603,7 +633,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
 
       mem  = p->mark.id;
       save = p->mark.save_pos;
-      fprintf(f, ":%d:%d", mem, save);
+      fprintf(f, "id:%d save:%d", mem, save);
     }
     break;
 
@@ -613,7 +643,7 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
 
       type = p->save_val.type;
       mem  = p->save_val.id;
-      fprintf(f, ":%d:%d", type, mem);
+      fprintf(f, "%s id:%d", SaveTypeNames[type], mem);
     }
     break;
 
@@ -625,17 +655,17 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
       type = p->update_var.type;
       mem  = p->update_var.id;
       clear = p->update_var.clear;
-      fprintf(f, ":%d:%d", type, mem);
+      fprintf(f, "%s id:%d", UpdateVarTypeNames[type], mem);
       if (type == UPDATE_VAR_RIGHT_RANGE_FROM_S_STACK ||
           type ==  UPDATE_VAR_RIGHT_RANGE_FROM_STACK)
-        fprintf(f, ":%d", clear);
+        fprintf(f, " clear:%d", clear);
     }
     break;
 
 #ifdef USE_CALLOUT
   case OP_CALLOUT_CONTENTS:
     mem = p->callout_contents.num;
-    fprintf(f, ":%d", mem);
+    fprintf(f, "num:%d", mem);
     break;
 
   case OP_CALLOUT_NAME:
@@ -644,22 +674,22 @@ print_compiled_byte_code(FILE* f, regex_t* reg, int index,
 
       id  = p->callout_name.id;
       mem = p->callout_name.num;
-      fprintf(f, ":%d:%d", id, mem);
+      fprintf(f, "id:%d num:%d", id, mem);
     }
     break;
 #endif
 
   case OP_TEXT_SEGMENT_BOUNDARY:
     if (p->text_segment_boundary.not != 0)
-      fprintf(f, ":not");
+      fprintf(f, " not");
     break;
 
   case OP_CHECK_POSITION:
     switch (p->check_position.type) {
     case CHECK_POSITION_SEARCH_START:
-      fprintf(f, ":search-start"); break;
+      fprintf(f, "search-start"); break;
     case CHECK_POSITION_CURRENT_RIGHT_RANGE:
-      fprintf(f, ":current-right-range"); break;
+      fprintf(f, "current-right-range"); break;
     default:
       break;
     };
