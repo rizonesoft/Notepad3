@@ -14,20 +14,21 @@
 
   FILE
   ------------------------
-    Ctrl+N                New file.
-    Ctrl+F4               Close file (identical with Ctrl+N).
-    Ctrl+O                Open file...
-    F5                    Reload file.
-    Ctrl+S                Save file.
-    F6                    Save file as...
-    Ctrl+F6               Save file Copy...
-    Ctrl+Alt+F6           Save with Original file &Date/Time.
-    Ctrl+P                Print file...
-    Ctrl+M                Run MiniPath file Browser plugin...
-    Ctrl+Alt+H            Open Recent file (History)...
-    Alt+F4                Exit Notepad3.
-    Esc                   Optionally Minimize or Exit Notepad3.
-    Shift+Esc             Save file and Exit Notepad3.
+    Ctrl+N                    New file.
+    Ctrl+F4                   Close file (identical with Ctrl+N).
+    Ctrl+O                    Open file...
+    F5                        Reload file.
+    Ctrl+S                    Save file.
+    F6                        Save file as...
+    Ctrl+F6                   Save file Copy...
+    Ctrl+Alt+F6               Save with Original file &Date/Time.
+    Ctrl+P                    Print file...
+    Ctrl+M                    Run MiniPath file Browser plugin...
+    Ctrl+Alt+H                Open Recent file (History)...
+    Alt+F4                    Exit Notepad3.
+    Esc                       Cancel current state (AutoCompletion or Selection) 
+                              Minimize or Exit Notepad3 (otionally, if no state).
+    Shift+Esc                 Save file and Exit Notepad3.
 
       Launch
       ------
@@ -60,21 +61,21 @@
 
   EDIT
   ------------------------
-    Ctrl+Z                Undo.
-    Alt+Backspace         Undo.
-    Ctrl+Shift+Y          Undo.
-    Ctrl+Y                Redo.
-    Ctrl+Shift+Z          Redo.
-    Ctrl+X                Cut.
-    Shift+Del             Cut.
-    Ctrl+C                Copy.
-    Alt+C                 Copy All.
-    Ctrl+E                Copy Add.
-    Ctrl+V                Paste.
-    Shift+Ins             Paste.
-    Ctrl+K                Swap.
-    Del                   Delete.
-    Ctrl+A                Select All.
+    Ctrl+Z                    Undo.
+    Alt+Backspace             Undo.
+    Ctrl+Shift+Y              Undo.
+    Ctrl+Y                    Redo.
+    Ctrl+Shift+Z              Redo.
+    Ctrl+X                    Cut.
+    Shift+Del                 Cut.
+    Ctrl+C                    Copy.
+    Alt+C                     Copy All.
+    Ctrl+E                    Copy Add.
+    Ctrl+V                    Paste.
+    Shift+Ins                 Paste.
+    Ctrl+K                    Swap.
+    Del                       Delete.
+    Ctrl+A                    Select All.
 
       Words
       -----
@@ -127,13 +128,13 @@
 
           Enclose Selection
           ------------------
-            Ctrl+1                Enclose within '' (Single Quotes).
-            Ctrl+2                Enclose within "" (Double Quotes).
-            Ctrl+3                Enclose within ().
-            Ctrl+4                Enclose within [].
-            Ctrl+5                Enclose within {}.
-            Ctrl+6                Enclose within `` (Backticks).
-            Alt+Q                 Enclose With... (Enclose Before/After Selection).
+            Ctrl+1            Enclose within '' (Single Quotes).
+            Ctrl+2            Enclose within "" (Double Quotes).
+            Ctrl+3            Enclose within ().
+            Ctrl+4            Enclose within [].
+            Ctrl+5            Enclose within {}.
+            Ctrl+6            Enclose within `` (Backticks).
+            Alt+Q             Enclose With... (Enclose Before/After Selection).
 
       Convert
       -------
@@ -202,17 +203,17 @@
 
   VIEW
   ------------------------
-    Ctrl+W                Toggle Word Wrap.
-    Ctrl+Alt+L            Show Long Line Marker.
-    Ctrl+Shift+G          Show Indentation Guides.
-    Ctrl+Shift+7          Show Wrap Symbols.
-    Ctrl+Shift+8          Show Whitespace.
-    Ctrl+Shift+9          Show Line Endings.
-    Ctrl+Alt+W            Show Hyperlink Hotspots.
-    Ctrl+Shift+V          Toggle Visual Brace Matching.
-    Ctrl+Shift+I          Highlight Current Line.
-    Ctrl+Shift+N          Show Line Numbers.
-    Ctrl+Shift+M          Show Selection Margin.
+    Ctrl+W                    Toggle Word Wrap.
+    Ctrl+Alt+L                Show Long Line Marker.
+    Ctrl+Shift+G              Show Indentation Guides.
+    Ctrl+Shift+7              Show Wrap Symbols.
+    Ctrl+Shift+8              Show Whitespace.
+    Ctrl+Shift+9              Show Line Endings.
+    Ctrl+Alt+W                Show Hyperlink Hotspots.
+    Ctrl+Shift+V              Toggle Visual Brace Matching.
+    Ctrl+Shift+I              Highlight Current Line.
+    Ctrl+Shift+N              Show Line Numbers.
+    Ctrl+Shift+M              Show Selection Margin.
 
       Mark Occurences
       ----------------
@@ -225,12 +226,12 @@
         Alt+ –                Jump Prev Fold.
         Alt+ ←                Collapse Fold.
         Alt+ →                Expand Fold.
-        Ctrl+PgUp/PgDn        Goto Previous/Next Block.
-        Ctrl+Shift+PgUp/PgDn  Select to Previous/Next Block.
 
       Display
       -------
-        Ctrl+Alt+V           Show in Focused View.
+        Ctrl+Alt+V            Show in Focused View.
+        Ctrl+PgUp/PgDn        Goto Previous/Next Block.
+        Ctrl+Shift+PgUp/PgDn  Select to Previous/Next Block.
 
       Zoom
       ----
@@ -248,19 +249,19 @@
 
   APPEARENCE
   -------------------------
-    Ctrl+F12              Customize Syntax Schemes...
-    F12                   Select Syntax Scheme...
-    Shift+F12             Select 2nd Common Base.
-    Alt+F12               Select Global Default Font...
-    Ctrl+Alt+F12          Select Current Scheme's Default Font...
+    Ctrl+F12                  Customize Syntax Schemes...
+    F12                       Select Syntax Scheme...
+    Shift+F12                 Select 2nd Common Base.
+    Alt+F12                   Select Global Default Font...
+    Ctrl+Alt+F12              Select Current Scheme's Default Font...
 
 
   SETTINGS
   ------------------------
-    Ctrl+T                Tab Settings...
-    Ctrl+Shift+H          Toggle Auto Close HTML/XML.
-    Ctrl+Alt+A            Select Accelerated Word Navigation.
-    Alt+F5                Select File Change Notification...
+    Ctrl+T                    Tab Settings...
+    Ctrl+Shift+H              Toggle Auto Close HTML/XML.
+    Ctrl+Alt+A                Select Accelerated Word Navigation.
+    Alt+F5                    Select File Change Notification...
 
       Windows
       -------
@@ -270,7 +271,7 @@
 
           Window Title Display
           --------------------
-            Ctrl+9                Display Text Excerpt in Title.
+            Ctrl+9            Display Text Excerpt in Title.
 
       Advanced Configuration
       ----------------------
@@ -280,14 +281,15 @@
 
   HELP
   ------------------------
-    F1                    Online Documentation.
-    Shift+F1              Display Info Version "About..."
+    F1                        Online Documentation.
+    Shift+F1                  Display Info Version "About..."
 
 
 
 ================================================================================
 
 *** Regular Expression Matching Syntax (Multi Lines) ***
+    (Advanced features: see .\Oniguruma_RE.txt)
 ---------------------------------------------------------
 
   .        This matches any character.
@@ -384,6 +386,7 @@
     /n         Always open a new window (/ns single file instance).
     /r         Reuse window (/rs single file instance).
     /p         Set window position and size (/p0, /ps, /pf,l,t,r,b,m).
+               or /p <left>,<top>,<width>,<height>,<max>       [all integers]
     /t         Set window title.
     /i         Start as tray icon.
     /o         Keep window on top.
