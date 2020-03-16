@@ -363,7 +363,7 @@ BEGIN
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels(&A)"
+        POPUP "ウィンドウ構成(&A)"
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
@@ -372,7 +372,7 @@ BEGIN
             MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
             MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
             MENUITEM "アイコン大小の切替(&G)",                      IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",                       IDM_VIEW_DPISCALETB
+            MENUITEM "ツールバーのDPI調整(&D)",                       IDM_VIEW_DPISCALETB
         END
         POPUP "拡大縮小(&Z)"
         BEGIN
@@ -509,7 +509,7 @@ BEGIN
         MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
         MENUITEM "アイコン大小の切替(&G)",                      IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",                       IDM_VIEW_DPISCALETB
+        MENUITEM "ツールバーのDPI調整(&D)",                       IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
