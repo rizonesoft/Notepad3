@@ -277,7 +277,8 @@ Opties:\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
 /r\tHergebruik venster (/rs één bestand instantie).\r\n\
-/p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tof /p <links>,<top>,<breedte>,<hoogte>,<max>    [alle gehele getallen].\r\n\
 /t\tStel de titel van het venster in.\r\n\
 /i\tStart als systeemvak icoon.\r\n\
 /o\tHoud het venster bovenop.\r\n\
