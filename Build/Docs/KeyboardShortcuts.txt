@@ -385,8 +385,8 @@
     /b         Open new paste board to collect clipboard entries.
     /n         Always open a new window (/ns single file instance).
     /r         Reuse window (/rs single file instance).
-    /p         Set window position and size (/p0, /ps, /pf,l,t,r,b,m).
-               or /p <left>,<top>,<width>,<height>,<max>       [all integers]
+    /p         Set window position and size (/p0, /ps, /pf,l,t,r,b,m)
+               or /p <left>,<top>,<width>,<height>,<max>    [all integers].
     /t         Set window title.
     /i         Start as tray icon.
     /o         Keep window on top.
