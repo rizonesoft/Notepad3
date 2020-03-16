@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC3 Version 5.20.312.(build_#) (2020-03-12)
+Current RC3 Version 5.20.315.(build_#) (2020-03-15)
 // Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
@@ -57,6 +57,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Update "KeyboardShortcuts.txt".
 - Split undo typing sequence by line-breaks default -> true
 - Add file history to to recent docs (taskbar) jumplist.
 - NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
