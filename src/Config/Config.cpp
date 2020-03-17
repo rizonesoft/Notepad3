@@ -59,9 +59,9 @@ extern "C"           THEMEFILES Theme_Files[];
 // ============================================================================
 
 static bool const s_bIsUTF8 = true;
-static bool const s_bWriteSIG = true;     // BOM
+static bool const s_bWriteSIG = true;     // IniFileSetXXX()
 static bool const s_bUseMultiKey = false;
-static bool const s_bUseMultiLine = true; // find/repl with line breaks
+static bool const s_bUseMultiLine = true; // find/replace with line breaks
 static bool const s_bSetSpaces = false;
 
 // ----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 // ----------------------------------------------------------------------------
 // No mechanism for  EXCLUSIVE WRITE / SHARD READ:
 // cause we need completely synchronized exclusive access for READ _and_ WRITE
-// of complete file to preserve integrety of any transaction
+// of complete file to preserve integrity of any transaction
 // ----------------------------------------------------------------------------
 
 HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
@@ -170,11 +170,11 @@ extern "C" void ReleaseIniFile()
 }
 
 
-extern "C" bool SaveIniFile()
+extern "C" bool SaveIniFile(bool bAddSignature)
 {
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
-  SI_Error const rc = s_INI.SaveFile(s_INI_Hndl, s_bWriteSIG);
+  SI_Error const rc = s_INI.SaveFile(s_INI_Hndl, bAddSignature);
   ReleaseIniFile();
   return SI_Success(rc);
 }
@@ -1059,6 +1059,9 @@ void LoadSettings()
     Defaults2.FileBrowserPath[0] = L'\0';
     IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
+    Defaults2.GrepWinPath[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"grepWin.exe", Defaults2.GrepWinPath, Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
+
     StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
       IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
@@ -1895,7 +1898,7 @@ bool CloseSettingsFile(bool bSaveChanges)
 {
   if (!IsIniFileLoaded() || StrIsEmpty(Globals.IniFile)) { return false; }
 
-  bool const ok = bSaveChanges ? SaveIniFile() : true;
+  bool const ok = bSaveChanges ? SaveIniFile(true) : true;
 
   if (ok) {
     Globals.bIniFileFromScratch = false;

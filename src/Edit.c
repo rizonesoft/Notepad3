@@ -489,6 +489,30 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 }
 
 
+
+//=============================================================================
+//
+//  EditGetSelectedText()
+//
+size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
+{
+  char* pszText = NULL;
+  size_t const selSize = SciCall_GetSelText(NULL);
+  if (selSize > 0) {
+    pszText = AllocMem(selSize, HEAP_ZERO_MEMORY);
+    if (pszText) {
+      SciCall_GetSelText(pszText);
+      size_t const length = (size_t)MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, -1, pwchBuffer, wchLength);
+      FreeMem(pszText);
+      return length;
+    }
+    return 0;
+  }
+  return 0;
+}
+
+
+
 //=============================================================================
 //
 //  EditGetClipboardText()
@@ -1542,7 +1566,7 @@ bool EditSaveFile(
 void EditInvertCase(HWND hwnd)
 {
   UNUSED(hwnd);
-  const DocPos iCurPos = SciCall_GetCurrentPos(); 
+  const DocPos iCurPos = SciCall_GetCurrentPos();
   const DocPos iAnchorPos = SciCall_GetAnchor();
 
   if (iCurPos != iAnchorPos)
@@ -1556,16 +1580,13 @@ void EditInvertCase(HWND hwnd)
     const DocPos iSelEnd = SciCall_GetSelectionEnd();
     const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-    LPSTR pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
     LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-    if (pszText && pszTextW) {
-        
-      SciCall_GetSelText(pszText);
+    if (pszTextW) {
 
-      ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, (iSelSize - 1), pszTextW, iSelSize);
+      size_t const cchTextW = EditGetSelectedText(pszTextW, iSelSize);
 
       bool bChanged = false;
-      for (int i = 0; i < cchTextW; i++) {
+      for (size_t i = 0; i < cchTextW; i++) {
         if (IsCharUpperW(pszTextW[i])) {
           pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
           bChanged = true;
@@ -1577,17 +1598,18 @@ void EditInvertCase(HWND hwnd)
       }
 
       if (bChanged) {
+        char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+        WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, iSelSize, NULL, NULL);
         _BEGIN_UNDO_ACTION_;
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, SizeOfMem(pszText), NULL, NULL);
         SciCall_Clear();
         SciCall_AddText((iSelEnd - iSelStart), pszText);
         SciCall_SetSel(iAnchorPos, iCurPos);
         _END_UNDO_ACTION_;
+        FreeMem(pszText);
       }
-      }
-      FreeMem(pszText);
       FreeMem(pszTextW);
     }
+  }
 }
 
 
@@ -1611,17 +1633,14 @@ void EditTitleCase(HWND hwnd)
     const DocPos iSelEnd = SciCall_GetSelectionEnd();
     const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-    char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
     LPWSTR pszTextW = AllocMem((iSelSize * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
 
-    if (pszText == NULL || pszTextW == NULL) {
-      FreeMem(pszText);
+    if (pszTextW == NULL) {
       FreeMem(pszTextW);
       return;
     }
-    SciCall_GetSelText(pszText);
 
-    ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, (iSelSize - 1), pszTextW, iSelSize);
+    size_t const cchTextW = EditGetSelectedText(pszTextW, iSelSize);
 
     bool bChanged = false;
     LPWSTR pszMappedW = AllocMem(SizeOfMem(pszTextW), HEAP_ZERO_MEMORY);
@@ -1637,14 +1656,15 @@ void EditTitleCase(HWND hwnd)
     }
 
     if (bChanged) {
-      WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, SizeOfMem(pszText), NULL, NULL);
+      char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+      WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, iSelSize, NULL, NULL);
       _BEGIN_UNDO_ACTION_;
       SciCall_Clear();
       SciCall_AddText((iSelEnd - iSelStart), pszText);
       SciCall_SetSel(iAnchorPos, iCurPos);
       _END_UNDO_ACTION_;
+      FreeMem(pszText);
     }
-    FreeMem(pszText);
     FreeMem(pszTextW);
   }
 }
@@ -1669,21 +1689,18 @@ void EditSentenceCase(HWND hwnd)
     const DocPos iSelEnd = SciCall_GetSelectionEnd();
     const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-    char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
     LPWSTR pszTextW = AllocMem((iSelSize * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
 
-    if (pszText == NULL || pszTextW == NULL) {
-      FreeMem(pszText);
+    if (pszTextW == NULL) {
       FreeMem(pszTextW);
       return;
     }
-    SciCall_GetSelText(pszText);
 
-    ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, (iSelSize - 1), pszTextW, iSelSize);
+    size_t const cchTextW = EditGetSelectedText(pszTextW, iSelSize);
 
     bool bChanged = false;
     bool bNewSentence = true;
-    for (int i = 0; i < cchTextW; i++) {
+    for (size_t i = 0; i < cchTextW; i++) {
       if (StrChr(L".;!?\r\n", pszTextW[i])) {
         bNewSentence = true;
       }
@@ -1707,15 +1724,15 @@ void EditSentenceCase(HWND hwnd)
     }
 
     if (bChanged) {
-
+      char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+      WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, iSelSize, NULL, NULL);
       _BEGIN_UNDO_ACTION_;
-      WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, SizeOfMem(pszText), NULL, NULL);
       SciCall_Clear();
       SciCall_AddText((iSelEnd - iSelStart), pszText);
       SciCall_SetSel(iAnchorPos, iCurPos);
       _END_UNDO_ACTION_;
+      FreeMem(pszText);
     }
-    FreeMem(pszText);
     FreeMem(pszTextW);
   }
 }
@@ -6619,15 +6636,8 @@ void EditSelectionMultiSelectAll()
 {
   DocPos const iSelSize = SciCall_GetSelText(NULL);
 
-  if ((iSelSize > 1))
+  if (iSelSize > 1)
   {
-    char* pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
-    if (NULL == pszText) {
-      FreeMem(pszText);
-      return;
-    }
-    SciCall_GetSelText(pszText);
-
     int const searchFlags = IsMarkOccurrencesEnabled() ? GetMarkAllOccSearchFlags() : 
                             EditAddSearchFlags(0, false, false, true, false, false);
 
@@ -6661,8 +6671,6 @@ void EditSelectionMultiSelectAll()
     SciCall_ChooseCaretX();
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
-
-    FreeMem(pszText);
   }
 }
 

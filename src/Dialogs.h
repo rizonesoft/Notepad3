@@ -48,6 +48,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath);
 void DialogFileBrowse(HWND hwnd);
+void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
 
 int  MessageBoxLng(HWND hwnd, UINT uType, UINT uIdMsg, ...);

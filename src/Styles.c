@@ -827,7 +827,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   else {
     LoadIniFile(szFilePathNorm, true); // reset
     Style_ToIniSection(bForceAll);
-    ok = SaveIniFile();
+    ok = SaveIniFile(true);
   }
   return ok;
 }

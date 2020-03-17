@@ -3386,9 +3386,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
 //
 void DialogFileBrowse(HWND hwnd)
 {
-  WCHAR tchParam[MAX_PATH] = L"";
-  WCHAR tchExeFile[MAX_PATH] = L"";
-  WCHAR tchTemp[MAX_PATH];
+  WCHAR tchParam[MAX_PATH] = { L'\0' };
+  WCHAR tchExeFile[MAX_PATH] = { L'\0' };
+  WCHAR tchTemp[MAX_PATH] = { L'\0' };
 
   StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
 
@@ -3436,10 +3436,88 @@ void DialogFileBrowse(HWND hwnd)
 
 //=============================================================================
 //
+//  DialogGrepWin()
+//
+//
+void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
+{
+  WCHAR tchTemp[MAX_PATH] = { L'\0' };
+  
+  WCHAR tchModulePath[MAX_PATH] = { L'\0' };
+
+  WCHAR tchExeFile[MAX_PATH] = { L'\0' };
+  WCHAR tchParam[MAX_PATH] = { L'\0' };
+
+  WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
+  WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
+
+  const WCHAR* const tchParamFmt = L"/portable /searchpath:\"%s\" /searchfor:\"%s\" /content /regex:no /i:yes /utf8:yes /size:-1 /s:yes /h:yes /u:yes /b:no";
+
+  GetModuleFileName(NULL, tchModulePath, COUNTOF(tchModulePath));
+  NormalizePathEx(tchModulePath, COUNTOF(tchModulePath), true, false);
+
+  // grepWin executable
+  if (StrIsNotEmpty(Settings2.GrepWinPath)) {
+    //StringCchCopy(tchTemp, COUNTOF(tchTemp), Settings2.GrepWinPath);
+    //ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
+    StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Settings2.GrepWinPath);
+  }
+  if (StrIsEmpty(tchExeFile)) {
+    StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileSearchGrepWin);
+  }
+  if (PathIsRelative(tchExeFile)) {
+    StringCchCopy(tchTemp, COUNTOF(tchTemp), tchModulePath);
+    PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
+    PathAppend(tchTemp, tchExeFile);
+    if (PathFileExists(tchTemp)) {
+      StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
+    }
+  }
+  // working (grepwin.ini) directory
+  if (PathFileExists(tchExeFile)) {
+    StringCchCopy(tchGrepWinDir, COUNTOF(tchGrepWinDir), tchExeFile);
+    PathCchRemoveFileSpec(tchGrepWinDir, COUNTOF(tchGrepWinDir));
+    // grepWin INI-File
+    StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
+    PathAppend(tchIniFilePath, L"grepwin.ini");
+    if (LoadIniFile(tchIniFilePath, true)) {
+      StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s -g %%line%% - %%path%%", tchModulePath);
+      IniSectionSetString(L"global", L"editorcmd", tchTemp);
+      SaveIniFile(false);
+    }
+  }
+
+  // search directory
+  StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
+  if (StrIsNotEmpty(tchTemp)) {
+    PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
+  }
+  // grepWin arguments
+  StringCchPrintf(tchParam, COUNTOF(tchParam), tchParamFmt, tchTemp, searchPattern);
+
+  SHELLEXECUTEINFO sei;
+  ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+  sei.cbSize = sizeof(SHELLEXECUTEINFO);
+  sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
+  sei.hwnd = hwnd;
+  sei.lpVerb = NULL;
+  sei.lpFile = tchExeFile;
+  sei.lpParameters = tchParam;
+  sei.lpDirectory = tchGrepWinDir;
+  sei.nShow = SW_SHOWNORMAL;
+  ShellExecuteEx(&sei);
+
+  if ((INT_PTR)sei.hInstApp < 32) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BROWSE);
+  }
+}
+
+
+//=============================================================================
+//
 //  DialogAdminExe()
 //
 //
-
 void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
   WCHAR tchExe[MAX_PATH];

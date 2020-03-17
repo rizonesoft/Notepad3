@@ -56,6 +56,7 @@
 CONSTANTS_T const Constants = { 
     2                           // StdDefaultLexerID
   , L"minipath.exe"             // FileBrowserMiniPath
+  , L"grepWin.exe"              // FileSearchGrepWin
   , L"ThemeFileName"            // StylingThemeName
 
   , L"Settings"                 // Inifile Section "Settings"
@@ -3587,6 +3588,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_GREP_WIN_SEARCH:
+      {
+        WCHAR wchBuffer[SMALL_BUFFER] = { L'\0' };
+        EditGetSelectedText(wchBuffer, COUNTOF(wchBuffer));
+        DialogGrepWin(hwnd, wchBuffer);
+      }
+      break;
+
+
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
       SaveAllSettings(false);
@@ -5891,53 +5901,45 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
 
-          DocPos const cchSelection = SciCall_GetSelText(NULL);
+          WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
+          size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
 
-          char  mszSelection[HUGE_BUFFER] = { '\0' };
-          if ((1 < cchSelection) && (cchSelection < (DocPos)COUNTOF(mszSelection)))
+          if (1 < cchSelection)
           {
-            SciCall_GetSelText(mszSelection);
-
             // Check lpszSelection and truncate bad WCHARs
-            char* lpsz = StrChrA(mszSelection,13);
-            if (lpsz) *lpsz = '\0';
+            WCHAR* lpsz = StrChr(wszSelection, L'\r');
+            if (lpsz) *lpsz = L'\0';
 
-            lpsz = StrChrA(mszSelection,10);
-            if (lpsz) *lpsz = '\0';
+            lpsz = StrChr(wszSelection, L'\n');
+            if (lpsz) *lpsz = L'\0';
 
-            lpsz = StrChrA(mszSelection,9);
-            if (lpsz) *lpsz = '\0';
+            lpsz = StrChr(wszSelection, L'\t');
+            if (lpsz) *lpsz = L'\0';
 
-            if (StringCchLenA(mszSelection,COUNTOF(mszSelection))) {
+            int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
+            LPWSTR lpszCommand = AllocMem(sizeof(WCHAR) * cmdsz, HEAP_ZERO_MEMORY);
+            StringCchPrintf(lpszCommand, cmdsz, tchMaxPathBuffer, wszSelection);
+            ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
 
-              WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
-              MultiByteToWideCharEx(Encoding_SciCP,0,mszSelection,-1,wszSelection, HUGE_BUFFER);
-
-              int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
-              LPWSTR lpszCommand = AllocMem(sizeof(WCHAR)*cmdsz, HEAP_ZERO_MEMORY);
-              StringCchPrintf(lpszCommand,cmdsz,tchMaxPathBuffer,wszSelection);
-              ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
-
-              WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-              if (StrIsNotEmpty(Globals.CurrentFile)) {
-                StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-              }
-
-              SHELLEXECUTEINFO sei;
-              ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-              sei.cbSize = sizeof(SHELLEXECUTEINFO);
-              sei.fMask = SEE_MASK_NOZONECHECKS;
-              sei.hwnd = NULL;
-              sei.lpVerb = NULL;
-              sei.lpFile = lpszCommand;
-              sei.lpParameters = NULL;
-              sei.lpDirectory = wchDirectory;
-              sei.nShow = SW_SHOWNORMAL;
-              ShellExecuteEx(&sei);
-
-              FreeMem(lpszCommand);
+            WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+            if (StrIsNotEmpty(Globals.CurrentFile)) {
+              StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+              PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
             }
+
+            SHELLEXECUTEINFO sei;
+            ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+            sei.cbSize = sizeof(SHELLEXECUTEINFO);
+            sei.fMask = SEE_MASK_NOZONECHECKS;
+            sei.hwnd = NULL;
+            sei.lpVerb = NULL;
+            sei.lpFile = lpszCommand;
+            sei.lpParameters = NULL;
+            sei.lpDirectory = wchDirectory;
+            sei.nShow = SW_SHOWNORMAL;
+            ShellExecuteEx(&sei);
+
+            FreeMem(lpszCommand);
           }
         }
       }
@@ -8263,6 +8265,8 @@ const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", 
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
+  static char chSelectionBuffer[XHUGE_BUFFER];
+
   if (!Settings.ShowStatusbar) { return; }
 
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
@@ -8471,16 +8475,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bIsSelCharCountable)
     {
       DocPos const iSelSize = SciCall_GetSelText(NULL);
-      if (iSelSize < 2048) // should be fast !
+      if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
       {
-        char* selectionBuffer = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
-        if (selectionBuffer) {
-          SciCall_GetSelText(selectionBuffer);
-          //StrDelChrA(chExpression, " \r\n\t\v");
-          StrDelChrA(selectionBuffer, "\r\n");
-          s_dExpression = te_interp(selectionBuffer, &s_iExprError);
-          FreeMem(selectionBuffer);
-        }
+        SciCall_GetSelText(chSelectionBuffer);
+        //StrDelChrA(chExpression, " \r\n\t\v");
+        StrDelChrA(chSelectionBuffer, "\r\n");
+        s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
       }
       else {
         s_iExprError = -1;

@@ -278,6 +278,7 @@ typedef struct _constants_t
 {
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
+  const WCHAR* const FileSearchGrepWin;
   const WCHAR* const StylingThemeName;
 
   const WCHAR* const Settings_Section;
@@ -548,6 +549,7 @@ typedef struct _settings2_t
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
   WCHAR FileBrowserPath[MAX_PATH];
+  WCHAR GrepWinPath[MAX_PATH];
   WCHAR AppUserModelID[128];
   WCHAR AutoCompleteFillUpChars[64];
   WCHAR LineCommentPostfixStrg[64];
