@@ -4819,8 +4819,7 @@ void EditEnsureSelectionVisible()
   SciCall_EnsureVisible(iAnchorLine);
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
 
-  //SciCall_ScrollCaret();
-  Sci_ScrollToLine(iCurrentLine);
+  Sci_ScrollToLine(iCurrentLine, true);
 }
 
 
@@ -4847,7 +4846,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  Sci_ScrollToLine(iNewLine);
+  Sci_ScrollToLine(iNewLine, true);
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
@@ -6978,12 +6977,11 @@ void EditToggleView(HWND hwnd)
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
   if (FocusedView.HideNonMatchedLines) {
-    Sci_ScrollToLine(0);
+    Sci_ScrollToLine(0, false);
     SciCall_SetReadOnly(true);
   }
   else {
-    Sci_ScrollToLine(Sci_GetCurrentLineNumber());
-    SciCall_ScrollCaret();
+    Sci_ScrollToLine(Sci_GetCurrentLineNumber(), true);
     SciCall_SetReadOnly(false);
   }
 
