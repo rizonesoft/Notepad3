@@ -31,8 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC3 Version 5.20.316.(build_#) (2020-03-16)
-// Version 5.20.3xx.x (xx March 2020)
+Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------
@@ -76,7 +75,7 @@ CHANGES:
 - Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: if "Load ASCII as UTF-8" is checked use UTF-8 (if valid) else current ANSI code-page.
 - Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
-- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L
+- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L.
 - Change wording "Administrator" to "Elevated".
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
 - ESC Key clears active selection (not exiting Notepad3 if configured) (Config: ExitOnESCSkipLevel=2).
@@ -90,7 +89,7 @@ CHANGES:
 - Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
 - Thin rectangular (multi) selection after toggeling line-comment block for multi insertion.
-- Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested)
+- Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested).
 - Ctrl+Alt+Enter AutoCompletion behaviour.
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout 0 < to < 20ms).
@@ -103,10 +102,10 @@ ENHANCEMENT:
 -----------------------------------------------------
 - Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
 - Parameter to set document limit for big files (switch off highlighting).
-- ScintillaWin: IMEJPCancelAction (SCI)
+- ScintillaWin: IMEJPCancelAction (SCI).
 - File locking mechanism (.ini-file) to avoid multi process file write race conditions.
 - Menu entries for move line and folding control.
-- Multi-line Search Find/Replace, .
+- Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
 - Change to 1-pass (file open/close) to save settings in Notepad3.ini.
 - Enclosing selection with HTML-Tag - Remember last pattern (session).
@@ -120,7 +119,7 @@ FIXES:
 - Configurable default  ANSI code-page (locale) detection bonus.
 - No AutoCompletion on empty words (busy loop bug).
 - DPI Scaling Toolbar and DPI scaling selection mode.
-- Common controls will use preffered/available MUI language
+- Common controls will use preffered/available MUI language.
 - Sticky window position handling.
 - Initial, default and current  window position handling.
 - Debug assertion (isspace() called on non ASCII char).
@@ -130,7 +129,7 @@ FIXES:
 - Drag&drop rectangular selection shuffles chars.
 - Paint() hangs due to unnecessary LockWindowsUpdate().
 - Drag&drop selection should use configured slop settings.
-- Internal file-history submitted to taskbar JumpList
+- Internal file-history submitted to taskbar JumpList.
 - Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
 - Automatic scrolling when dragging text near window edge: make caret visible after drop.
 - No styling for big/large files (loading speedup and UI responsiveness).
@@ -160,7 +159,7 @@ FIXES:
 - Elevated relaunch after encoding change.
 - Sub dialog centering in multi monitor environment.
 - Modern style message box icons.
-- System MessageBox() for "not saved" warning on modified files
+- System MessageBox() for "not saved" warning on modified files.
 - Oniguruma RegEx engine: respect EOL mode on encoding type.
 - Wrong encoding detection settings for explicit config .ini-File load.
 - Disable HyperLink calltip on ESC, as long as caret is in hyperlink text range.
