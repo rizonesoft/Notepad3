@@ -196,6 +196,7 @@ Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x64_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
+Source: Docs\Oniguruma_RE.txt;                                      DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\Notepad3.txt;                                          DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\crypto\encryption-doc.txt;                             DestDir: {app}\Docs\crypto;                         Flags: ignoreversion
 Source: Docs\crypto\read_me.txt;                                    DestDir: {app}\Docs\crypto;                         Flags: ignoreversion

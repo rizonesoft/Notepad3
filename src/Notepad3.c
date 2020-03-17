@@ -2912,7 +2912,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        Sci_ScrollToLine(Sci_GetLastDocLineNumber());
+        Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -5233,7 +5233,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          Sci_ScrollToLine(Sci_GetLastDocLineNumber());
+          Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5243,7 +5243,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          Sci_ScrollToLine(Sci_GetCurrentLineNumber());
+          Sci_ScrollToLine(Sci_GetCurrentLineNumber(), true);
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -9645,7 +9645,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
     if (docView.bIsTail || FileWatching.MonitoringLog) {
       bPreserveView = false;
-      Sci_ScrollToLine(Sci_GetLastDocLineNumber());
+      Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
     }
   }
 

@@ -277,7 +277,8 @@ Options:\r\n\
 /b\tOuvrir un nouveau tableau de collage pour collecter les entrées\r\n\tdu presse-papiers.\r\n\
 /n\tToujours ouvrir une nouvelle fenêtre (/ns instance\r\n\tde fichier unique).\r\n\
 /r\tRéutiliser la fenêtre (/rs instance de fichier unique).\r\n\
-/p\tDéfinir la position et la taille de la fenêtre (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tDéfinir la position et la taille de la fenêtre (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tou /p <gauche>,<haut>,<largeur>,<hauteur>,<max>    [tous entiers].\r\n\
 /t\tDéfinir un titre de fenêtre.\r\n\
 /i\tDémarrer en tant que icône de barre de tâches.\r\n\
 /o\tFenêtre toujours visible.\r\n\
