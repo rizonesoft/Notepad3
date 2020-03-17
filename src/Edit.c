@@ -6983,6 +6983,7 @@ void EditToggleView(HWND hwnd)
   }
   else {
     Sci_ScrollToLine(Sci_GetCurrentLineNumber());
+    SciCall_ScrollCaret();
     SciCall_SetReadOnly(false);
   }
 
