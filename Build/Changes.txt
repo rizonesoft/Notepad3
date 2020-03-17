@@ -31,14 +31,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC3 Version 5.20.315.(build_#) (2020-03-15)
+Current RC3 Version 5.20.316.(build_#) (2020-03-16)
 // Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- remove scaling of Toolbar image for DPI (avoid blurry images)
+- Remove scaling of Toolbar image for DPI (avoid blurry images).
 - "Open with Notepad3" Right-Click in Explorer Context Menu. 
 - In About Resources: Data Sharing Service from https://workupload.com/. 
 - Automatic scrolling when dragging text near window edge.
@@ -58,7 +58,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - Update "KeyboardShortcuts.txt".
-- Split undo typing sequence by line-breaks default -> true
+- Split undo typing sequence by line-breaks default -> true.
 - Add file history to to recent docs (taskbar) jumplist.
 - NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
 - Reset build-of-the-day number in AppVeyor on new day.

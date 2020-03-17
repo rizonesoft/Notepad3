@@ -277,7 +277,8 @@ Opzioni:\r\n\
 /b\tApri una nuova Paste Board per collezionare il testo copiato negli Appunti.\r\n\
 /n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
 /r\tRiutilizza finestra (/rs istanza singola).\r\n\
-/p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
 /t\tImposta titolo della finestra.\r\n\
 /i\tAvvia come icona nella Tray.\r\n\
 /o\tMantieni finestra in primo piano.\r\n\
