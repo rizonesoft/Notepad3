@@ -38,20 +38,19 @@ Current RC3 Version 5.20.316.(build_#) (2020-03-16)
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- Remove scaling of Toolbar image for DPI (avoid blurry images).
-- "Open with Notepad3" Right-Click in Explorer Context Menu. 
+- Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
+- "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
 - In About Resources: Data Sharing Service from https://workupload.com/. 
-- Automatic scrolling when dragging text near window edge.
-    Patch by McLoo from https://sourceforge.net/p/scintilla/feature-requests/497/.
-- Multiple selection on end-of-lines from rectangular selection.
-- Infos of sreen/display for "Copy Version Info" button.
+- Automatic scrolling when dragging selected text near window edge (SCI).
+- break rectangular selection into multiple selection on end-of-lines (move caret).
+- Infos of sreen/display/dpi for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
 - Language dependent status bar abreviations.
 - Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
-- Preserve File Modification Date/Time: Option stays until new Session is loaded.
+- Preserve File Modification Date/Time: Option stays until new session is started.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
 
 -----------------------------------------------------
@@ -103,11 +102,11 @@ CHANGES:
 ENHANCEMENT:
 -----------------------------------------------------
 - Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
-- Method to set document for big files.
+- Parameter to set document limit for big files (switch off highlighting).
 - ScintillaWin: IMEJPCancelAction (SCI)
-- Win file API locking mechanism to avoid multi process file write race conditions.
+- File locking mechanism (.ini-file) to avoid multi process file write race conditions.
 - Menu entries for move line and folding control.
-- Multi-line Search Find/Replace.
+- Multi-line Search Find/Replace, .
 - Apply Start Case to AutoHotkey Lexer.
 - Change to 1-pass (file open/close) to save settings in Notepad3.ini.
 - Enclosing selection with HTML-Tag - Remember last pattern (session).
