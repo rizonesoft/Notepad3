@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Uruchom"
         BEGIN
-            MENUITEM "Otwórz Eksplorator pliku",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nowe okno\tAlt+N",                  IDM_FILE_NEWWINDOW
             MENUITEM "&Puste okno\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Szablon Web &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Szablon Web &2\tCtrl+Shift+2",       CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Otwórz Eksplorator pliku",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Kodowanie"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 z &sygnaturą",                  IDM_ENCODING_UTF8SIGN
             MENUITEM "&Więcej...\tF9",                      IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Przekoduj na domyślny\tCtrl+Alt+F",          CMD_RECODEDEFAULT
+            MENUITEM "Przekoduj na domyślny",                      CMD_RECODEDEFAULT
             MENUITEM "Przekoduj na &ANSI\tCtrl+Shift+A",           CMD_RECODEANSI
             MENUITEM "Przekoduj na &OEM\tCtrl+Shift+O",            CMD_RECODEOEM
             MENUITEM "Przekoduj na &GB18030\tCtrl+Shift+F10",      CMD_RECODEGB18030

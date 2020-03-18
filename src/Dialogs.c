@@ -3442,12 +3442,9 @@ void DialogFileBrowse(HWND hwnd)
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 {
   WCHAR tchTemp[MAX_PATH] = { L'\0' };
-  
   WCHAR tchModulePath[MAX_PATH] = { L'\0' };
-
   WCHAR tchExeFile[MAX_PATH] = { L'\0' };
-  WCHAR tchParam[MAX_PATH] = { L'\0' };
-
+  WCHAR tchParam[MAX_PATH * 2] = { L'\0' };
   WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
   WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
 
@@ -3481,7 +3478,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
     PathAppend(tchIniFilePath, L"grepwin.ini");
     if (LoadIniFile(tchIniFilePath, true)) {
-      StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s -g %%line%% - %%path%%", tchModulePath);
+      //~StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% /m %s - %%path%%", tchModulePath, searchPattern);
+      StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% - %%path%%", tchModulePath);
       IniSectionSetString(L"global", L"editorcmd", tchTemp);
       SaveIniFile(false);
     }
@@ -3494,6 +3492,9 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   }
   // grepWin arguments
   StringCchPrintf(tchParam, COUNTOF(tchParam), tchParamFmt, tchTemp, searchPattern);
+  //if (StrIsNotEmpty(searchPattern)) {
+  //  SetClipboardTextW(hwnd, searchPattern, StringCchLen(searchPattern, 0));
+  //}
 
   SHELLEXECUTEINFO sei;
   ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));

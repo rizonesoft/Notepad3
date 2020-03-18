@@ -779,6 +779,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   OleUninitialize();
 
+  if (s_lpMatchArg) {
+    LocalFree(s_lpMatchArg);  // StrDup()
+    s_lpMatchArg = NULL;
+  }
+
   if (s_lpOrigFileArg) {
     FreeMem(s_lpOrigFileArg);
     s_lpOrigFileArg = NULL;
@@ -1365,8 +1370,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         EditEnsureSelectionVisible();
       }
     }
-    LocalFree(s_lpMatchArg);  // StrDup()
-    s_lpMatchArg = NULL;
   }
 
   // Check for Paste Board option -- after loading files
@@ -2805,6 +2808,30 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (params->iInitialLine == 0)
           params->iInitialLine = 1;
         EditJumpTo(Globals.hwndEdit, params->iInitialLine, params->iInitialColumn);
+      }
+
+      if (params->flagMatchText) {
+        s_flagMatchText = params->flagMatchText;
+        if (s_lpMatchArg) { LocalFree(s_lpMatchArg); }  // StrDup()
+        s_lpMatchArg = StrDup(StrEnd(&params->wchData, 0) + 1);
+
+        WideCharToMultiByteEx(Encoding_SciCP, 0, s_lpMatchArg, -1, Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), NULL, NULL);
+
+        if (s_flagMatchText & 4)
+          Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+        else if (s_flagMatchText & 8)
+          Settings.EFR_Data.bTransformBS = true;
+
+        if (s_flagMatchText & 2) {
+          if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
+          EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditEnsureSelectionVisible();
+        }
+        else {
+          if (!s_flagJumpTo) { SciCall_DocumentStart(); }
+          EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditEnsureSelectionVisible();
+        }
       }
 
       s_flagLexerSpecified = false;
@@ -10201,6 +10228,9 @@ bool ActivatePrevInst()
         if (s_lpSchemeArg) {
           cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
         }
+        if (s_lpMatchArg) {
+          cb += ((StringCchLen(s_lpMatchArg, 0) + 1) * sizeof(WCHAR));
+        }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
         params->flagChangeNotify = FWM_DONT_CARE;
@@ -10210,8 +10240,9 @@ bool ActivatePrevInst()
           StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(s_lpSchemeArg,0)+1),s_lpSchemeArg);
           params->iInitialLexer = -1;
         }
-        else
+        else {
           params->iInitialLexer = s_iInitialLexer;
+        }
         params->flagJumpTo = s_flagJumpTo ? 1 : 0;
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
@@ -10220,12 +10251,17 @@ bool ActivatePrevInst()
         params->flagSetEOLMode = s_flagSetEOLMode;
         params->flagTitleExcerpt = 0;
 
+        params->flagMatchText = s_flagMatchText;
+        if (s_lpMatchArg) {
+          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (StringCchLen(s_lpMatchArg, 0) + 1), s_lpMatchArg);
+        }
+
         cds.dwData = DATA_NOTEPAD3_PARAMS;
         cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        FreeMem(params);
+        FreeMem(params);    params = NULL;
 
         return true;
       }
@@ -10269,13 +10305,17 @@ bool ActivatePrevInst()
         size_t cb = sizeof(np3params);
         cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
 
-        if (s_lpSchemeArg)
-          cb += (StringCchLenW(s_lpSchemeArg,0) + 1) * sizeof(WCHAR);
-
+        if (s_lpSchemeArg) {
+          cb += (StringCchLenW(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR);
+        }
         size_t cchTitleExcerpt = StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
         if (cchTitleExcerpt) {
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
         }
+        if (s_lpMatchArg) {
+          cb += ((StringCchLen(s_lpMatchArg, 0) + 1) * sizeof(WCHAR));
+        }
+
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = true;
         StringCchCopy(&params->wchData, StringCchLenW(s_lpFileArg,0)+1,s_lpFileArg);
@@ -10303,6 +10343,12 @@ bool ActivatePrevInst()
         else {
           params->flagTitleExcerpt = 0;
         }
+
+        params->flagMatchText = s_flagMatchText;
+        if (s_lpMatchArg) {
+          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (StringCchLen(s_lpMatchArg, 0) + 1), s_lpMatchArg);
+        }
+
         cds.dwData = DATA_NOTEPAD3_PARAMS;
         cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;

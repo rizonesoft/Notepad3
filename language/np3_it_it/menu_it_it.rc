@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Esegui"
         BEGIN
-            MENUITEM "Apri &Esplora File",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nuova finestra\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Finestra vuota\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Template Web &1\tCtrl+Shift+1",     CMD_WEBACTION1
             MENUITEM "Template Web &2\tCtrl+Shift+2",     CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Apri &Esplora File",                IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Encoding"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",             IDM_ENCODING_UTF8SIGN
             MENUITEM "&Altri...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Ricodifica con Encoding di &Default\tCtrl+Alt+F", CMD_RECODEDEFAULT
+            MENUITEM "Ricodifica con Encoding di &Default",             CMD_RECODEDEFAULT
             MENUITEM "Ricodifica come &ANSI\tCtrl+Shift+A",             CMD_RECODEANSI
             MENUITEM "Ricodifica come &OEM\tCtrl+Shift+O",              CMD_RECODEOEM
             MENUITEM "Ricodifica come &GB18030\tCtrl+Shift+F10",        CMD_RECODEGB18030
