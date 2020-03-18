@@ -8,7 +8,7 @@
 #define SAPPNAME "Notepad3"
 #define VERSION_MAJOR 5
 #define VERSION_MINOR 20
-#define VERSION_REV 318
+#define VERSION_REV 319
 #define VERSION_BUILD 1
 #define SCINTILLA_VER 432
 #define ONIGURUMA_REGEX_VER 6.9.4
