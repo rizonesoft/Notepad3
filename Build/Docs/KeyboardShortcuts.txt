@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/03/16
+*** Keyboard Shortcuts ***               date: 2020/03/17
 ---------------------------------------------------------
 
 
@@ -98,7 +98,7 @@
         Ctrl+Shift+D          Delete Line.
         Ctrl+Shift+Backspace  Delete Line Left.
         Ctrl+Shift+Del        Delete Line Right.
-        Ctrl+Shift+W          Column wrap...
+        Ctrl+Shift+W          Column Wrap...
         Ctrl+I                Split Lines.
         Ctrl+J                Join Lines.
         Ctrl+Alt+J            Fuse Lines.
