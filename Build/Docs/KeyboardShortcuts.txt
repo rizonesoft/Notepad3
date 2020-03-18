@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/03/17
+*** Keyboard Shortcuts ***               date: 2020/03/18
 ---------------------------------------------------------
 
 
@@ -27,7 +27,7 @@
     Ctrl+Alt+H                Open Recent file (History)...
     Alt+F4                    Exit Notepad3.
     Esc                       Cancel current state (AutoCompletion or Selection) 
-                              Minimize or Exit Notepad3 (otionally, if no state).
+                              Minimize or Exit Notepad3 (optionally, if no state).
     Shift+Esc                 Save file and Exit Notepad3.
 
       Launch
