@@ -280,6 +280,7 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 
 bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead);
 bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten);
+void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);

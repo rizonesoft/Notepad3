@@ -810,10 +810,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   Globals.hPrevInst = hPrevInstance;
   Globals.hndlProcessHeap = GetProcessHeap();
 
-  WCHAR wchAppDir[2 * MAX_PATH + 4] = { L'\0' };
-  GetModuleFileName(NULL,wchAppDir,COUNTOF(wchAppDir));
-  PathCchRemoveFileSpec(wchAppDir, COUNTOF(wchAppDir));
-  PathCanonicalizeEx(wchAppDir,COUNTOF(wchAppDir));
+  WCHAR wchAppDir[MAX_PATH] = { L'\0' };
+  PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
 
   if (!GetCurrentDirectory(COUNTOF(Globals.WorkingDirectory),Globals.WorkingDirectory)) {
     StringCchCopy(Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory),wchAppDir);
@@ -2099,8 +2097,7 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
 {
   WCHAR szTmp[MAX_PATH];
   if (PathIsRelative(path)) {
-    GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
-    PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp));
+    PathGetAppDirectory(szTmp, COUNTOF(szTmp));
     PathAppend(szTmp, path);
     path = szTmp;
   }
@@ -10050,10 +10047,8 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
       ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
       if (PathIsRelative(tchInitialDir)) {
         WCHAR tchModule[MAX_PATH] = { L'\0' };
-        GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
-        PathCchRemoveFileSpec(tchModule, COUNTOF(tchModule));
+        PathGetAppDirectory(tchModule, COUNTOF(tchModule));
         PathCchAppend(tchModule,COUNTOF(tchModule),tchInitialDir);
-        PathCchCanonicalize(tchInitialDir,COUNTOF(tchInitialDir),tchModule);
       }
     }
     else
@@ -10094,8 +10089,9 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   StringCchCopy(szNewFile,COUNTOF(szNewFile),lpstrFile);
   Style_GetOpenDlgFilterStr(s_szFilter,COUNTOF(s_szFilter));
 
-  if (StrIsNotEmpty(lpstrInitialDir))
-    StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),lpstrInitialDir);
+  if (StrIsNotEmpty(lpstrInitialDir)) {
+    StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), lpstrInitialDir);
+  }
   else if (StrIsNotEmpty(Globals.CurrentFile)) {
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.CurrentFile);
     PathCchRemoveFileSpec(tchInitialDir, COUNTOF(tchInitialDir));
@@ -10104,15 +10100,13 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     ExpandEnvironmentStrings(Settings2.DefaultDirectory,tchInitialDir,COUNTOF(tchInitialDir));
     if (PathIsRelative(tchInitialDir)) {
       WCHAR tchModule[MAX_PATH] = { L'\0' };
-      GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
-      PathCchRemoveFileSpec(tchModule, COUNTOF(tchModule));
+      PathGetAppDirectory(tchModule, COUNTOF(tchModule));
       PathCchAppend(tchModule,COUNTOF(tchModule),tchInitialDir);
-      PathCchCanonicalize(tchInitialDir,COUNTOF(tchInitialDir),tchModule);
     }
   }
-  else
-    StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.WorkingDirectory);
-
+  else {
+    StringCchCopy(tchInitialDir, COUNTOF(tchInitialDir), Globals.WorkingDirectory);
+  }
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
   ofn.lStructSize = sizeof(OPENFILENAME);
   ofn.hwndOwner = hwnd;
@@ -10451,6 +10445,7 @@ bool RelaunchElevated(LPWSTR lpNewCmdLnArgs)
   ExtractFirstArgument(lpCmdLine, lpExe, szOrigArgs, (int)wlen);
   // override
   GetModuleFileName(NULL, lpExe, COUNTOF(lpExe)); // full path
+  PathCanonicalizeEx(lpExe, COUNTOF(lpExe));
   if (lpNewCmdLnArgs) {
     StringCchCopy(szOrigArgs, COUNTOF(szOrigArgs), lpNewCmdLnArgs);
   }

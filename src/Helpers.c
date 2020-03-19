@@ -790,6 +790,19 @@ bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount
   return false;
 }
 
+
+//=============================================================================
+//
+//  PathGetModuleDirectory()
+//
+void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest)
+{
+  GetModuleFileName(NULL, lpszDest, cchDest);
+  PathCanonicalizeEx(lpszDest, cchDest);
+  PathCchRemoveFileSpec(lpszDest, (size_t)cchDest);
+}
+
+
 //=============================================================================
 //
 //  PathRelativeToApp()
@@ -798,47 +811,52 @@ void PathRelativeToApp(
   LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bSrcIsFile,
   bool bUnexpandEnv,bool bUnexpandMyDocs) {
 
-  WCHAR wchAppPath[MAX_PATH] = { L'\0' };
+  WCHAR wchAppDir[MAX_PATH] = { L'\0' };
   WCHAR wchWinDir[MAX_PATH] = { L'\0' };
   WCHAR wchUserFiles[MAX_PATH] = { L'\0' };
   WCHAR wchPath[MAX_PATH] = { L'\0' };
   WCHAR wchResult[MAX_PATH] = { L'\0' };
-  DWORD dwAttrTo = (bSrcIsFile) ? 0 : FILE_ATTRIBUTE_DIRECTORY;
+  DWORD dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
 
-  GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
-  PathCanonicalizeEx(wchAppPath,MAX_PATH);
-  PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
+  PathGetAppDirectory(wchAppDir, COUNTOF(wchAppDir));
+
   (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
   if (bUnexpandMyDocs &&
       !PathIsRelative(lpszSrc) &&
-      !PathIsPrefix(wchUserFiles,wchAppPath) &&
+      !PathIsPrefix(wchUserFiles,wchAppDir) &&
        PathIsPrefix(wchUserFiles,lpszSrc) &&
-       PathRelativePathTo(wchPath,wchUserFiles,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo)) {
+       PathRelativePathTo(wchPath,wchUserFiles,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo)) 
+  {
     StringCchCopy(wchUserFiles,COUNTOF(wchUserFiles),L"%CSIDL:MYDOCUMENTS%");
     PathCchAppend(wchUserFiles,COUNTOF(wchUserFiles),wchPath);
     StringCchCopy(wchPath,COUNTOF(wchPath),wchUserFiles);
   }
-  else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppPath,wchWinDir,NULL))
-    StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
+  else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppDir, wchWinDir, NULL)) {
+    StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
+  }
   else {
-    if (!PathRelativePathTo(wchPath,wchAppPath,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo))
-      StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
+    if (!PathRelativePathTo(wchPath, wchAppDir, FILE_ATTRIBUTE_DIRECTORY, lpszSrc, dwAttrTo)) {
+      StringCchCopyN(wchPath, COUNTOF(wchPath), lpszSrc, COUNTOF(wchPath));
+    }
   }
 
   if (bUnexpandEnv) {
-    if (!PathUnExpandEnvStrings(wchPath,wchResult,COUNTOF(wchResult)))
-      StringCchCopyN(wchResult,COUNTOF(wchResult),wchPath,COUNTOF(wchResult));
+    if (!PathUnExpandEnvStrings(wchPath, wchResult, COUNTOF(wchResult))) {
+      StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
+    }
   }
-  else
-    StringCchCopyN(wchResult,COUNTOF(wchResult),wchPath,COUNTOF(wchResult));
-
+  else {
+    StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchResult));
+  }
   int cchLen = (cchDest == 0) ? MAX_PATH : cchDest;
-  if (lpszDest == NULL || lpszSrc == lpszDest)
-    StringCchCopyN(lpszSrc,cchLen,wchResult,cchLen);
-  else
-    StringCchCopyN(lpszDest,cchLen,wchResult,cchLen);
+  if (lpszDest == NULL || lpszSrc == lpszDest) {
+    StringCchCopyN(lpszSrc, cchLen, wchResult, cchLen);
+  }
+  else {
+    StringCchCopyN(lpszDest, cchLen, wchResult, cchLen);
+  }
 }
 
 
@@ -870,9 +888,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
     ExpandEnvironmentStringsEx(wchPath,COUNTOF(wchPath));
 
   if (PathIsRelative(wchPath)) {
-    GetModuleFileName(NULL,wchResult,COUNTOF(wchResult));
-    PathCanonicalizeEx(wchResult, COUNTOF(wchResult));
-    PathCchRemoveFileSpec(wchResult, COUNTOF(wchResult));
+    PathGetAppDirectory(wchResult, COUNTOF(wchResult));
     PathCchAppend(wchResult,COUNTOF(wchResult),wchPath);
   }
   else
@@ -1004,7 +1020,6 @@ bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 //
 bool PathCreateDeskLnk(LPCWSTR pszDocument)
 {
-
   WCHAR tchExeFile[MAX_PATH] = { L'\0' };
   WCHAR tchDocTemp[MAX_PATH] = { L'\0' };
   WCHAR tchArguments[MAX_PATH+16] = { L'\0' };
@@ -1021,6 +1036,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
 
   // init strings
   GetModuleFileName(NULL,tchExeFile,COUNTOF(tchExeFile));
+  PathCanonicalizeEx(tchExeFile, COUNTOF(tchExeFile));
 
   StringCchCopy(tchDocTemp,COUNTOF(tchDocTemp),pszDocument);
   PathQuoteSpaces(tchDocTemp);

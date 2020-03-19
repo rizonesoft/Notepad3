@@ -694,6 +694,7 @@ extern "C" bool FindIniFile()
   WCHAR tchModule[MAX_PATH] = { L'\0' };
 
   GetModuleFileName(NULL, tchModule, COUNTOF(tchModule));
+  PathCanonicalizeEx(tchModule, COUNTOF(tchModule));
 
   // set env path to module dir
   StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
