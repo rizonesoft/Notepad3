@@ -286,7 +286,7 @@ Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /u\t以管理员权限启动。\r\n\
 /v\t打印文件并退出。\r\n\
 /vd\t打印文件（打开打印机对话框）。\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\t在环境变量 PATH 中查找相对路径。\r\n\
 /z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
 示例：\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
