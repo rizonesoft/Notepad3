@@ -3386,21 +3386,20 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath)
 //
 void DialogFileBrowse(HWND hwnd)
 {
+  WCHAR tchTemp[MAX_PATH] = { L'\0' };
   WCHAR tchParam[MAX_PATH] = { L'\0' };
   WCHAR tchExeFile[MAX_PATH] = { L'\0' };
-  WCHAR tchTemp[MAX_PATH] = { L'\0' };
 
-  StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
-
-  if (StrIsNotEmpty(Settings2.FileBrowserPath))
-  {
-    ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
+  if (StrIsNotEmpty(Settings2.FileBrowserPath)) {
+    ExtractFirstArgument(Settings2.FileBrowserPath, tchExeFile, tchParam, COUNTOF(tchExeFile));
+    ExpandEnvironmentStringsEx(tchExeFile, COUNTOF(tchExeFile));
   }
   if (StrIsEmpty(tchExeFile)) {
     StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
   }
   if (PathIsRelative(tchExeFile)) {
     GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
+    NormalizePathEx(tchTemp, COUNTOF(tchTemp), true, false);
     PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
     PathAppend(tchTemp, tchExeFile);
     if (PathFileExists(tchTemp)) {
@@ -3434,6 +3433,31 @@ void DialogFileBrowse(HWND hwnd)
 }
 
 
+
+typedef struct _grepwin_ini
+{
+  const WCHAR* const key;
+  const int          val;
+} 
+grepWin_t;
+
+static grepWin_t grepWinIniSettings[13] = 
+{
+  { L"onlyone",           1 },
+  { L"AllSize",           1 },
+  { L"Size",           2000 },
+  { L"CaseSensitive",     0 },
+  { L"CreateBackup",      1 },
+  { L"DateLimit",         0 },
+  { L"IncludeBinary",     0 },
+  { L"IncludeHidden",     1 },
+  { L"IncludeSubfolders", 1 },
+  { L"IncludeSystem",     1 },
+  { L"UseFileMatchRegex", 0 },
+  { L"UseRegex",          1 },
+  { L"UTF8",              1 }
+};
+
 //=============================================================================
 //
 //  DialogGrepWin()
@@ -3444,20 +3468,20 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   WCHAR tchTemp[MAX_PATH] = { L'\0' };
   WCHAR tchModulePath[MAX_PATH] = { L'\0' };
   WCHAR tchExeFile[MAX_PATH] = { L'\0' };
-  WCHAR tchParam[MAX_PATH * 2] = { L'\0' };
+  WCHAR tchOptions[MAX_PATH] = { L'\0' };
+  WCHAR tchParams[MAX_PATH * 2] = { L'\0' };
   WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
   WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
 
-  const WCHAR* const tchParamFmt = L"/portable /searchpath:\"%s\" /searchfor:\"%s\" /content /regex:no /i:yes /utf8:yes /size:-1 /s:yes /h:yes /u:yes /b:no";
+  const WCHAR* const tchParamFmt = L"/portable /content %s /searchpath:\"%s\" /searchfor:\"%s\"";
 
   GetModuleFileName(NULL, tchModulePath, COUNTOF(tchModulePath));
   NormalizePathEx(tchModulePath, COUNTOF(tchModulePath), true, false);
 
   // grepWin executable
   if (StrIsNotEmpty(Settings2.GrepWinPath)) {
-    //StringCchCopy(tchTemp, COUNTOF(tchTemp), Settings2.GrepWinPath);
-    //ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
-    StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Settings2.GrepWinPath);
+    ExtractFirstArgument(Settings2.GrepWinPath, tchExeFile, tchOptions, COUNTOF(tchExeFile));
+    ExpandEnvironmentStringsEx(tchExeFile, COUNTOF(tchExeFile));
   }
   if (StrIsEmpty(tchExeFile)) {
     StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileSearchGrepWin);
@@ -3474,13 +3498,29 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   if (PathFileExists(tchExeFile)) {
     StringCchCopy(tchGrepWinDir, COUNTOF(tchGrepWinDir), tchExeFile);
     PathCchRemoveFileSpec(tchGrepWinDir, COUNTOF(tchGrepWinDir));
+    // relative Notepad3 path (for grepWin's EditorCmd)
+    PathRelativePathTo(tchModulePath, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchModulePath, FILE_ATTRIBUTE_NORMAL);
     // grepWin INI-File
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
     PathAppend(tchIniFilePath, L"grepwin.ini");
+    
     if (LoadIniFile(tchIniFilePath, true)) {
+      // preserve [global] user settings from last call
+      const WCHAR* const section = L"global";
+      for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
+        int const iVal = IniSectionGetInt(section, grepWinIniSettings[i].key, grepWinIniSettings[i].val);
+        IniSectionSetInt(section, grepWinIniSettings[i].key, iVal);
+      }
       //~StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% /m %s - %%path%%", tchModulePath, searchPattern);
       StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% - %%path%%", tchModulePath);
       IniSectionSetString(L"global", L"editorcmd", tchTemp);
+
+      // [settings]
+      int const iEscClose = IniSectionSetInt(L"settings", L"escclose", (Settings.EscFunction == 2) ? 1 : 0);
+      IniSectionSetInt(L"settings", L"escclose", iEscClose);
+      int const iBackupFolder = IniSectionSetInt(L"settings", L"backupinfolder", 1);
+      IniSectionSetInt(L"settings", L"backupinfolder", iBackupFolder);
+
       SaveIniFile(false);
     }
   }
@@ -3490,8 +3530,9 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   if (StrIsNotEmpty(tchTemp)) {
     PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
   }
+
   // grepWin arguments
-  StringCchPrintf(tchParam, COUNTOF(tchParam), tchParamFmt, tchTemp, searchPattern);
+  StringCchPrintf(tchParams, COUNTOF(tchParams), tchParamFmt, tchOptions, tchTemp, searchPattern);
   //if (StrIsNotEmpty(searchPattern)) {
   //  SetClipboardTextW(hwnd, searchPattern, StringCchLen(searchPattern, 0));
   //}
@@ -3503,7 +3544,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   sei.hwnd = hwnd;
   sei.lpVerb = NULL;
   sei.lpFile = tchExeFile;
-  sei.lpParameters = tchParam;
+  sei.lpParameters = tchParams;
   sei.lpDirectory = tchGrepWinDir;
   sei.nShow = SW_SHOWNORMAL;
   ShellExecuteEx(&sei);

@@ -154,7 +154,6 @@ copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y
 copy "%NP3_GREPWIN_DIR%\GPL_v3.0_LICENSE.txt" "%NP3_PORTAPP_DIR%\Other\Help\grepWin_GPL_v3.0_LICENSE.txt" /Y /V
 copy /B "%NP3_GREPWIN_DIR%\grepWin-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin.exe" /Y /V
 copy /B "%NP3_GREPWIN_DIR%\grepWin-x64-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin.exe" /Y /V
-copy /B "%NP3_GREPWIN_DIR%\grepWin-1.9.2.7z" /B "%NP3_PORTAPP_DIR%\Other\Source\" /Y /V
 
 :: --------------------------------------------------------------------------------------------------------------------
 
