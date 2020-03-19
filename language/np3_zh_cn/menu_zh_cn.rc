@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "启动(&L)"
         BEGIN
-            MENUITEM "打开资源管理器(&E)",                   IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "打开资源管理器(&E)",                      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 带签名(&S)",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "重新编码为默认(&E)\tCtrl+Alt+F",            CMD_RECODEDEFAULT
+            MENUITEM "重新编码为默认(&E)",                        CMD_RECODEDEFAULT
             MENUITEM "重新编码为 ANSI(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "重新编码为 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "重新编码为 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -175,7 +177,7 @@ BEGIN
             MENUITEM "复制选区或当前行(&C)\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "复制选区所在整行或当前行(&Y)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "复写上一行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "复写当前行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "删除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR

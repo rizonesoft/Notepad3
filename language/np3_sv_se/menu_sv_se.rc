@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Kör"
         BEGIN
-            MENUITEM "Öppna filutforskaren",                        IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
             MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Webbmall &1\tCtrl+Shift+1",                   CMD_WEBACTION1
             MENUITEM "Webbmall &2\tCtrl+Shift+2",                   CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Öppna filutforskaren",                        IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "Teckenkodning"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 med &signatur",                         IDM_ENCODING_UTF8SIGN
             MENUITEM "Mer...\tF9",                                  IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Omkoda till standardkodning\tCtrl+Alt+F",     CMD_RECODEDEFAULT
+            MENUITEM "Omkoda till standardkodning",                 CMD_RECODEDEFAULT
             MENUITEM "Omkoda till &ANSI\tCtrl+Shift+A",             CMD_RECODEANSI
             MENUITEM "Omkoda till &OEM\tCtrl+Shift+O",              CMD_RECODEOEM
             MENUITEM "Omkoda till &GB18030\tCtrl+Shift+F10",        CMD_RECODEGB18030
@@ -363,7 +365,7 @@ BEGIN
             MENUITEM "Rulla förbi slutet av filen",                 IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Visa verktygstips för hyperlänk",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels"
+        POPUP "Fält"
         BEGIN
             MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
             MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
@@ -372,7 +374,7 @@ BEGIN
             MENUITEM "Ladda tema för verktygsfält...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Anpassa verktygsfält...",                     IDM_VIEW_CUSTOMIZETB
             MENUITEM "Växla verktygsfält",                          IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
+            MENUITEM "Skala verktygsfält enligt DPI",               IDM_VIEW_DPISCALETB
         END
         POPUP "Förstoring"
         BEGIN
@@ -509,7 +511,7 @@ BEGIN
         MENUITEM "Ladda tema för verktygsfält...",                  IDM_VIEW_LOADTHEMETB
         MENUITEM "Anpassa verktygsfält...",                         IDM_VIEW_CUSTOMIZETB
         MENUITEM "Växla verktygsfält",                              IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",                              IDM_VIEW_DPISCALETB
+        MENUITEM "Skala verktygsfält enligt DPI",                   IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts ***               date: 2020/03/15
+*** Keyboard Shortcuts ***               date: 2020/03/18
 ---------------------------------------------------------
 
 
@@ -21,13 +21,13 @@
     Ctrl+S                    Save file.
     F6                        Save file as...
     Ctrl+F6                   Save file Copy...
-    Ctrl+Alt+F6               Save with Original file &Date/Time.
+    Ctrl+Alt+F6               Save with Original file "Date/Time".
     Ctrl+P                    Print file...
     Ctrl+M                    Run MiniPath file Browser plugin...
     Ctrl+Alt+H                Open Recent file (History)...
     Alt+F4                    Exit Notepad3.
     Esc                       Cancel current state (AutoCompletion or Selection) 
-                              Minimize or Exit Notepad3 (otionally, if no state).
+                              Minimize or Exit Notepad3 (optionally, if no state).
     Shift+Esc                 Save file and Exit Notepad3.
 
       Launch
@@ -98,7 +98,7 @@
         Ctrl+Shift+D          Delete Line.
         Ctrl+Shift+Backspace  Delete Line Left.
         Ctrl+Shift+Del        Delete Line Right.
-        Ctrl+Shift+W          Column wrap...
+        Ctrl+Shift+W          Column Wrap...
         Ctrl+I                Split Lines.
         Ctrl+J                Join Lines.
         Ctrl+Alt+J            Fuse Lines.
@@ -385,8 +385,8 @@
     /b         Open new paste board to collect clipboard entries.
     /n         Always open a new window (/ns single file instance).
     /r         Reuse window (/rs single file instance).
-    /p         Set window position and size (/p0, /ps, /pf,l,t,r,b,m).
-               or /p <left>,<top>,<width>,<height>,<max>       [all integers]
+    /p         Set window position and size (/p0, /ps, /pf,l,t,r,b,m)
+               or /p <left>,<top>,<width>,<height>,<max>    [all integers].
     /t         Set window title.
     /i         Start as tray icon.
     /o         Keep window on top.

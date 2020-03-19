@@ -56,6 +56,7 @@
 CONSTANTS_T const Constants = { 
     2                           // StdDefaultLexerID
   , L"minipath.exe"             // FileBrowserMiniPath
+  , L"grepWin.exe"              // FileSearchGrepWin
   , L"ThemeFileName"            // StylingThemeName
 
   , L"Settings"                 // Inifile Section "Settings"
@@ -778,6 +779,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   OleUninitialize();
 
+  if (s_lpMatchArg) {
+    LocalFree(s_lpMatchArg);  // StrDup()
+    s_lpMatchArg = NULL;
+  }
+
   if (s_lpOrigFileArg) {
     FreeMem(s_lpOrigFileArg);
     s_lpOrigFileArg = NULL;
@@ -1364,8 +1370,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         EditEnsureSelectionVisible();
       }
     }
-    LocalFree(s_lpMatchArg);  // StrDup()
-    s_lpMatchArg = NULL;
   }
 
   // Check for Paste Board option -- after loading files
@@ -2806,6 +2810,30 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EditJumpTo(Globals.hwndEdit, params->iInitialLine, params->iInitialColumn);
       }
 
+      if (params->flagMatchText) {
+        s_flagMatchText = params->flagMatchText;
+        if (s_lpMatchArg) { LocalFree(s_lpMatchArg); }  // StrDup()
+        s_lpMatchArg = StrDup(StrEnd(&params->wchData, 0) + 1);
+
+        WideCharToMultiByteEx(Encoding_SciCP, 0, s_lpMatchArg, -1, Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), NULL, NULL);
+
+        if (s_flagMatchText & 4)
+          Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+        else if (s_flagMatchText & 8)
+          Settings.EFR_Data.bTransformBS = true;
+
+        if (s_flagMatchText & 2) {
+          if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
+          EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditEnsureSelectionVisible();
+        }
+        else {
+          if (!s_flagJumpTo) { SciCall_DocumentStart(); }
+          EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditEnsureSelectionVisible();
+        }
+      }
+
       s_flagLexerSpecified = false;
       s_flagQuietCreate = false;
 
@@ -2912,7 +2940,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        Sci_ScrollToLine(Sci_GetLastDocLineNumber());
+        Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -3584,6 +3612,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_BROWSE:
         DialogFileBrowse(hwnd);
+      break;
+
+
+    case IDM_GREP_WIN_SEARCH:
+      {
+        WCHAR wchBuffer[SMALL_BUFFER] = { L'\0' };
+        EditGetSelectedText(wchBuffer, COUNTOF(wchBuffer));
+        DialogGrepWin(hwnd, wchBuffer);
+      }
       break;
 
 
@@ -5233,7 +5270,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          Sci_ScrollToLine(Sci_GetLastDocLineNumber());
+          Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5243,7 +5280,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          Sci_ScrollToLine(Sci_GetCurrentLineNumber());
+          Sci_ScrollToLine(Sci_GetCurrentLineNumber(), true);
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -5891,53 +5928,45 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
 
-          DocPos const cchSelection = SciCall_GetSelText(NULL);
+          WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
+          size_t const cchSelection = EditGetSelectedText(wszSelection, HUGE_BUFFER);
 
-          char  mszSelection[HUGE_BUFFER] = { '\0' };
-          if ((1 < cchSelection) && (cchSelection < (DocPos)COUNTOF(mszSelection)))
+          if (1 < cchSelection)
           {
-            SciCall_GetSelText(mszSelection);
-
             // Check lpszSelection and truncate bad WCHARs
-            char* lpsz = StrChrA(mszSelection,13);
-            if (lpsz) *lpsz = '\0';
+            WCHAR* lpsz = StrChr(wszSelection, L'\r');
+            if (lpsz) *lpsz = L'\0';
 
-            lpsz = StrChrA(mszSelection,10);
-            if (lpsz) *lpsz = '\0';
+            lpsz = StrChr(wszSelection, L'\n');
+            if (lpsz) *lpsz = L'\0';
 
-            lpsz = StrChrA(mszSelection,9);
-            if (lpsz) *lpsz = '\0';
+            lpsz = StrChr(wszSelection, L'\t');
+            if (lpsz) *lpsz = L'\0';
 
-            if (StringCchLenA(mszSelection,COUNTOF(mszSelection))) {
+            int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
+            LPWSTR lpszCommand = AllocMem(sizeof(WCHAR) * cmdsz, HEAP_ZERO_MEMORY);
+            StringCchPrintf(lpszCommand, cmdsz, tchMaxPathBuffer, wszSelection);
+            ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
 
-              WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
-              MultiByteToWideCharEx(Encoding_SciCP,0,mszSelection,-1,wszSelection, HUGE_BUFFER);
-
-              int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
-              LPWSTR lpszCommand = AllocMem(sizeof(WCHAR)*cmdsz, HEAP_ZERO_MEMORY);
-              StringCchPrintf(lpszCommand,cmdsz,tchMaxPathBuffer,wszSelection);
-              ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
-
-              WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-              if (StrIsNotEmpty(Globals.CurrentFile)) {
-                StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
-                PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-              }
-
-              SHELLEXECUTEINFO sei;
-              ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-              sei.cbSize = sizeof(SHELLEXECUTEINFO);
-              sei.fMask = SEE_MASK_NOZONECHECKS;
-              sei.hwnd = NULL;
-              sei.lpVerb = NULL;
-              sei.lpFile = lpszCommand;
-              sei.lpParameters = NULL;
-              sei.lpDirectory = wchDirectory;
-              sei.nShow = SW_SHOWNORMAL;
-              ShellExecuteEx(&sei);
-
-              FreeMem(lpszCommand);
+            WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+            if (StrIsNotEmpty(Globals.CurrentFile)) {
+              StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+              PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
             }
+
+            SHELLEXECUTEINFO sei;
+            ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+            sei.cbSize = sizeof(SHELLEXECUTEINFO);
+            sei.fMask = SEE_MASK_NOZONECHECKS;
+            sei.hwnd = NULL;
+            sei.lpVerb = NULL;
+            sei.lpFile = lpszCommand;
+            sei.lpParameters = NULL;
+            sei.lpDirectory = wchDirectory;
+            sei.nShow = SW_SHOWNORMAL;
+            ShellExecuteEx(&sei);
+
+            FreeMem(lpszCommand);
           }
         }
       }
@@ -8263,6 +8292,8 @@ const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", 
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
+  static char chSelectionBuffer[XHUGE_BUFFER];
+
   if (!Settings.ShowStatusbar) { return; }
 
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
@@ -8471,16 +8502,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bIsSelCharCountable)
     {
       DocPos const iSelSize = SciCall_GetSelText(NULL);
-      if (iSelSize < 2048) // should be fast !
+      if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
       {
-        char* selectionBuffer = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
-        if (selectionBuffer) {
-          SciCall_GetSelText(selectionBuffer);
-          //StrDelChrA(chExpression, " \r\n\t\v");
-          StrDelChrA(selectionBuffer, "\r\n");
-          s_dExpression = te_interp(selectionBuffer, &s_iExprError);
-          FreeMem(selectionBuffer);
-        }
+        SciCall_GetSelText(chSelectionBuffer);
+        //StrDelChrA(chExpression, " \r\n\t\v");
+        StrDelChrA(chSelectionBuffer, "\r\n");
+        s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
       }
       else {
         s_iExprError = -1;
@@ -9645,7 +9672,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
     if (docView.bIsTail || FileWatching.MonitoringLog) {
       bPreserveView = false;
-      Sci_ScrollToLine(Sci_GetLastDocLineNumber());
+      Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
     }
   }
 
@@ -10201,6 +10228,9 @@ bool ActivatePrevInst()
         if (s_lpSchemeArg) {
           cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
         }
+        if (s_lpMatchArg) {
+          cb += ((StringCchLen(s_lpMatchArg, 0) + 1) * sizeof(WCHAR));
+        }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
         params->flagChangeNotify = FWM_DONT_CARE;
@@ -10210,8 +10240,9 @@ bool ActivatePrevInst()
           StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(s_lpSchemeArg,0)+1),s_lpSchemeArg);
           params->iInitialLexer = -1;
         }
-        else
+        else {
           params->iInitialLexer = s_iInitialLexer;
+        }
         params->flagJumpTo = s_flagJumpTo ? 1 : 0;
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
@@ -10220,12 +10251,17 @@ bool ActivatePrevInst()
         params->flagSetEOLMode = s_flagSetEOLMode;
         params->flagTitleExcerpt = 0;
 
+        params->flagMatchText = s_flagMatchText;
+        if (s_lpMatchArg) {
+          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (StringCchLen(s_lpMatchArg, 0) + 1), s_lpMatchArg);
+        }
+
         cds.dwData = DATA_NOTEPAD3_PARAMS;
         cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        FreeMem(params);
+        FreeMem(params);    params = NULL;
 
         return true;
       }
@@ -10269,13 +10305,17 @@ bool ActivatePrevInst()
         size_t cb = sizeof(np3params);
         cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
 
-        if (s_lpSchemeArg)
-          cb += (StringCchLenW(s_lpSchemeArg,0) + 1) * sizeof(WCHAR);
-
+        if (s_lpSchemeArg) {
+          cb += (StringCchLenW(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR);
+        }
         size_t cchTitleExcerpt = StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
         if (cchTitleExcerpt) {
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
         }
+        if (s_lpMatchArg) {
+          cb += ((StringCchLen(s_lpMatchArg, 0) + 1) * sizeof(WCHAR));
+        }
+
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = true;
         StringCchCopy(&params->wchData, StringCchLenW(s_lpFileArg,0)+1,s_lpFileArg);
@@ -10303,6 +10343,12 @@ bool ActivatePrevInst()
         else {
           params->flagTitleExcerpt = 0;
         }
+
+        params->flagMatchText = s_flagMatchText;
+        if (s_lpMatchArg) {
+          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (StringCchLen(s_lpMatchArg, 0) + 1), s_lpMatchArg);
+        }
+
         cds.dwData = DATA_NOTEPAD3_PARAMS;
         cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;

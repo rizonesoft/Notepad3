@@ -40,7 +40,7 @@ bool CloseSettingsFile(bool bSaveChanges);
 bool LoadIniFile(LPCWSTR lpIniFilePath, bool bNeedReadWriteAccess);
 bool IsIniFileLoaded();
 void ReleaseIniFile();
-bool SaveIniFile();
+bool SaveIniFile(bool bAddSignature);
 
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, 

@@ -31,34 +31,32 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current RC3 Version 5.20.315.(build_#) (2020-03-15)
-// Version 5.20.3xx.x (xx March 2020)
+Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- remove scaling of Toolbar image for DPI (avoid blurry images)
-- "Open with Notepad3" Right-Click in Explorer Context Menu. 
+- Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
+- "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
 - In About Resources: Data Sharing Service from https://workupload.com/. 
-- Automatic scrolling when dragging text near window edge.
-    Patch by McLoo from https://sourceforge.net/p/scintilla/feature-requests/497/.
-- Multiple selection on end-of-lines from rectangular selection.
-- Infos of sreen/display for "Copy Version Info" button.
+- Automatic scrolling when dragging selected text near window edge (SCI).
+- break rectangular selection into multiple selection on end-of-lines (move caret).
+- Infos of sreen/display/dpi for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
 - Language dependent status bar abreviations.
 - Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
-- Preserve File Modification Date/Time: Option stays until new Session is loaded.
+- Preserve File Modification Date/Time: Option stays until new session is started.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
 - Update "KeyboardShortcuts.txt".
-- Split undo typing sequence by line-breaks default -> true
+- Split undo typing sequence by line-breaks default -> true.
 - Add file history to to recent docs (taskbar) jumplist.
 - NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
 - Reset build-of-the-day number in AppVeyor on new day.
@@ -77,7 +75,7 @@ CHANGES:
 - Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: if "Load ASCII as UTF-8" is checked use UTF-8 (if valid) else current ANSI code-page.
 - Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
-- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L
+- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L.
 - Change wording "Administrator" to "Elevated".
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
 - ESC Key clears active selection (not exiting Notepad3 if configured) (Config: ExitOnESCSkipLevel=2).
@@ -91,7 +89,7 @@ CHANGES:
 - Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
 - Thin rectangular (multi) selection after toggeling line-comment block for multi insertion.
-- Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested)
+- Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested).
 - Ctrl+Alt+Enter AutoCompletion behaviour.
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout 0 < to < 20ms).
@@ -103,9 +101,9 @@ CHANGES:
 ENHANCEMENT:
 -----------------------------------------------------
 - Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
-- Method to set document for big files.
-- ScintillaWin: IMEJPCancelAction (SCI)
-- Win file API locking mechanism to avoid multi process file write race conditions.
+- Parameter to set document limit for big files (switch off highlighting).
+- ScintillaWin: IMEJPCancelAction (SCI).
+- File locking mechanism (.ini-file) to avoid multi process file write race conditions.
 - Menu entries for move line and folding control.
 - Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
@@ -121,7 +119,7 @@ FIXES:
 - Configurable default  ANSI code-page (locale) detection bonus.
 - No AutoCompletion on empty words (busy loop bug).
 - DPI Scaling Toolbar and DPI scaling selection mode.
-- Common controls will use preffered/available MUI language
+- Common controls will use preffered/available MUI language.
 - Sticky window position handling.
 - Initial, default and current  window position handling.
 - Debug assertion (isspace() called on non ASCII char).
@@ -131,7 +129,7 @@ FIXES:
 - Drag&drop rectangular selection shuffles chars.
 - Paint() hangs due to unnecessary LockWindowsUpdate().
 - Drag&drop selection should use configured slop settings.
-- Internal file-history submitted to taskbar JumpList
+- Internal file-history submitted to taskbar JumpList.
 - Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
 - Automatic scrolling when dragging text near window edge: make caret visible after drop.
 - No styling for big/large files (loading speedup and UI responsiveness).
@@ -161,7 +159,7 @@ FIXES:
 - Elevated relaunch after encoding change.
 - Sub dialog centering in multi monitor environment.
 - Modern style message box icons.
-- System MessageBox() for "not saved" warning on modified files
+- System MessageBox() for "not saved" warning on modified files.
 - Oniguruma RegEx engine: respect EOL mode on encoding type.
 - Wrong encoding detection settings for explicit config .ini-File load.
 - Disable HyperLink calltip on ESC, as long as caret is in hyperlink text range.

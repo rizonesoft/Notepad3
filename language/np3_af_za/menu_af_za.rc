@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Begin"
         BEGIN
-            MENUITEM "Maak File &Explorer Oop",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nuwe Venster\tAlt+N",                IDM_FILE_NEWWINDOW
             MENUITEM "Lê&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Maak File &Explorer Oop",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Enkodering"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",               IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Hercodeer na &Standaard\tCtrl+Alt+F",    CMD_RECODEDEFAULT
+            MENUITEM "Hercodeer na &Standaard",                CMD_RECODEDEFAULT
             MENUITEM "Hercodeer na &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
             MENUITEM "Hercodeer na &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Hercodeer na &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030

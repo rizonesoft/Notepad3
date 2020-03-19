@@ -40,6 +40,7 @@ typedef struct np3params {
   cpi_enc_t           flagSetEncoding;
   int                 flagSetEOLMode;
   int                 flagTitleExcerpt;
+  int                 flagMatchText;
   WCHAR               wchData;
 } 
 np3params, *LPnp3params;

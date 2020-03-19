@@ -44,7 +44,7 @@ set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\Portabl
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
 call :RESOLVEPATH NP3_DISTRIB_DIR %SCRIPT_DIR%..\Build
-call :RESOLVEPATH NP3_DOC_DIR %SCRIPT_DIR%..\Build\doc
+call :RESOLVEPATH NP3_DOC_DIR %SCRIPT_DIR%..\Build\Docs
 ::call :RESOLVEPATH NP3_THEMES_DIR %SCRIPT_DIR%..\themes
 call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\themes
 ::call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v141
@@ -52,12 +52,15 @@ call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\themes
 call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v142
 call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v142
 
+call :RESOLVEPATH NP3_GREPWIN_DIR %SCRIPT_DIR%..\Build\grepWin
+
 call :RESOLVEPATH NP3_PORTAPP_DIR %SCRIPT_DIR%Notepad3Portable
 call :RESOLVEPATH NP3_PORTAPP_INFO %NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 call :RESOLVEPATH NP3_PORTAPP_INSTALL %NP3_PORTAPP_DIR%\App\AppInfo\installer
 
 call :RESOLVEPATH NP3_BUILD_VER %SCRIPT_DIR%..\Versions\build.txt
 call :RESOLVEPATH NP3_BUILD_NAME %SCRIPT_DIR%_buildname.txt
+
 
 :: --------------------------------------------------------------------------------------------------------------------
 
@@ -94,6 +97,7 @@ copy "%NP3_DISTRIB_DIR%\License.txt" "%NP3_PORTAPP_DIR%\Other\Help\License.txt" 
 copy "%NP3_DISTRIB_DIR%\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Help\Readme.txt" /Y /V
 copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\Other\Help\Notepad3.txt" /Y /V
 copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\Other\Help\KeyboardShortcuts.txt" /Y /V
+copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\Other\Help\Oniguruma_RE.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\Other\Help\encryption-doc.txt" /Y /V
 
 
@@ -147,6 +151,11 @@ copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
+copy "%NP3_GREPWIN_DIR%\GPL_v3.0_LICENSE.txt" "%NP3_PORTAPP_DIR%\Other\Help\grepWin_GPL_v3.0_LICENSE.txt" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\grepWin-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin.exe" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\grepWin-x64-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin.exe" /Y /V
+
+:: --------------------------------------------------------------------------------------------------------------------
 
 call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%_tmp.ini"
 

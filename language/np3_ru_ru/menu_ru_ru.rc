@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Запустить"
         BEGIN
-            MENUITEM "Открыть Прово&дник",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Копи&ю окна\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое окно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Веб-шаблон &1\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "Веб-шаблон &2\tCtrl+Shift+2",        CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Открыть Прово&дник",                 IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "Ко&дировка"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 с BO&M",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "Е&щё...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Переоткрыть в ко&дировке по умолчанию\tCtrl+Alt+F",   CMD_RECODEDEFAULT
+            MENUITEM "Переоткрыть в ко&дировке по умолчанию",               CMD_RECODEDEFAULT
             MENUITEM "Переоткрыть в A&NSI\tCtrl+Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
             MENUITEM "Переоткрыть в &GB18030\tCtrl+Shift+F10",              CMD_RECODEGB18030
@@ -363,7 +365,7 @@ BEGIN
             MENUITEM "Прокрутка за пределы последней строки",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Показывать &подсказку для гиперссылок",       IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels"
+        POPUP "Панел&и"
         BEGIN
             MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
