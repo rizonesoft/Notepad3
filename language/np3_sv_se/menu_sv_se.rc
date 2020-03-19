@@ -363,7 +363,7 @@ BEGIN
             MENUITEM "Rulla förbi slutet av filen",                 IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Visa verktygstips för hyperlänk",             IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels"
+        POPUP "Fält"
         BEGIN
             MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
             MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
@@ -372,7 +372,7 @@ BEGIN
             MENUITEM "Ladda tema för verktygsfält...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Anpassa verktygsfält...",                     IDM_VIEW_CUSTOMIZETB
             MENUITEM "Växla verktygsfält",                          IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
+            MENUITEM "Skala verktygsfält enligt DPI",               IDM_VIEW_DPISCALETB
         END
         POPUP "Förstoring"
         BEGIN
@@ -509,7 +509,7 @@ BEGIN
         MENUITEM "Ladda tema för verktygsfält...",                  IDM_VIEW_LOADTHEMETB
         MENUITEM "Anpassa verktygsfält...",                         IDM_VIEW_CUSTOMIZETB
         MENUITEM "Växla verktygsfält",                              IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",                              IDM_VIEW_DPISCALETB
+        MENUITEM "Skala verktygsfält enligt DPI",                   IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
