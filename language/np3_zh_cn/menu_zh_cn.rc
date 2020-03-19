@@ -177,7 +177,7 @@ BEGIN
             MENUITEM "复制选区或当前行(&C)\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "复制选区所在整行或当前行(&Y)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "复写上一行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "复写当前行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "删除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
