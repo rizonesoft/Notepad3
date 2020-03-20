@@ -80,11 +80,10 @@ void  EditSplitLines(HWND hwnd);
 void  EditJoinLinesEx(bool,bool);
 void  EditSortLines(HWND hwnd,int iSortFlags);
 
-void  EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol);
-const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd);
-void  EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView);
+void  EditJumpTo(DocLn iNewLine, DocPos iNewCol);
 void  EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions();
+void  EditScrollToLine(const DocLn iDocLine);
 void  EditEnsureSelectionVisible();
 void	EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);

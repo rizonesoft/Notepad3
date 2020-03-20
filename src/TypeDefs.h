@@ -624,25 +624,6 @@ typedef struct _editfileiostatus
 
 //=============================================================================
 
-typedef struct _docviewpos_t
-{
-  DocPos iCurPos;
-  DocPos iAnchorPos;
-  //DocPos vSpcCaretPos;
-  //DocPos vSpcAnchorPos;
-  DocLn  iCurrLine;
-  DocPos iCurColumn;
-  DocLn  iVisTopLine;
-  DocLn  iDocTopLine;
-  int    iXOffset;
-  bool   bIsTail;
-
-} DOCVIEWPOS_T, * PDOCVIEWPOS_T;
-
-#define INIT_DOCVIEWPOS { 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, false }
-
-//=============================================================================
-
 typedef struct _themeFiles
 {
   UINT    rid;

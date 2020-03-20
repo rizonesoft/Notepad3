@@ -993,6 +993,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
             if (StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME), CSTRLEN(_W(SAPPNAME))) == 0 ||
               StringCchCompareNI(arg1, COUNTOF(arg1), L"notepad3.exe", CSTRLEN(L"notepad3.exe")) == 0) {
               GetModuleFileName(NULL, arg1, COUNTOF(arg1));
+              PathCanonicalizeEx(arg1, COUNTOF(arg1));
               bQuickExit = true;
             }
 
@@ -3398,9 +3399,7 @@ void DialogFileBrowse(HWND hwnd)
     StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
   }
   if (PathIsRelative(tchExeFile)) {
-    GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
-    NormalizePathEx(tchTemp, COUNTOF(tchTemp), true, false);
-    PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
+    PathGetAppDirectory(tchTemp, COUNTOF(tchTemp));
     PathAppend(tchTemp, tchExeFile);
     if (PathFileExists(tchTemp)) {
       StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
@@ -3476,7 +3475,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   const WCHAR* const tchParamFmt = L"/portable /content %s /searchpath:\"%s\" /searchfor:\"%s\"";
 
   GetModuleFileName(NULL, tchModulePath, COUNTOF(tchModulePath));
-  NormalizePathEx(tchModulePath, COUNTOF(tchModulePath), true, false);
+  PathCanonicalizeEx(tchModulePath, COUNTOF(tchModulePath));
 
   // grepWin executable
   if (StrIsNotEmpty(Settings2.GrepWinPath)) {
@@ -3499,7 +3498,9 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     StringCchCopy(tchGrepWinDir, COUNTOF(tchGrepWinDir), tchExeFile);
     PathCchRemoveFileSpec(tchGrepWinDir, COUNTOF(tchGrepWinDir));
     // relative Notepad3 path (for grepWin's EditorCmd)
-    PathRelativePathTo(tchModulePath, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchModulePath, FILE_ATTRIBUTE_NORMAL);
+    if (PathRelativePathToW(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchModulePath, FILE_ATTRIBUTE_NORMAL)) {
+      StringCchCopy(tchModulePath, COUNTOF(tchModulePath), tchTemp);
+    }
     // grepWin INI-File
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
     PathAppend(tchIniFilePath, L"grepwin.ini");
@@ -3570,8 +3571,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
   WCHAR tchExePath[MAX_PATH];
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
     // try Notepad3's dir path
-    GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
-    PathCchRemoveFileSpec(tchExePath, COUNTOF(tchExePath));
+    PathGetAppDirectory(tchExePath, COUNTOF(tchExePath));
     PathCchAppend(tchExePath, COUNTOF(tchExePath), tchExe);
   }
 
