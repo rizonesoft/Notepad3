@@ -4794,14 +4794,11 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
       if (vSpcCurrent > 0) {
         SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
       }
-      SciCall_ScrollRange(iAnchorPos, iCurrentPos);
     }
     else {
       SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
     }
-
-    // remember x-pos for moving caret vertically
-    SciCall_ChooseCaretX();
+    EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
   }
   
   //~~~_END_UNDO_ACTION_;~~~
@@ -4822,6 +4819,21 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 
 //=============================================================================
 //
+//  EditScrollToLine() - normalize View
+//
+void EditScrollToLine(const DocLn iDocLine)
+{
+  if (iDocLine == Sci_GetCurrentLineNumber()) {
+    Sci_ScrollChooseCaret();
+  }
+  //~Sci_ScrollToLine(iDocLine);
+  DocLn const vSlop = max_ln(2, Settings2.CurrentLineVerticalSlop);
+  SciCall_SetFirstVisibleLine(clampp((iDocLine - vSlop), 0, Sci_GetLastDocLineNumber()));
+}
+
+
+//=============================================================================
+//
 //  EditEnsureSelectionVisible()
 //
 void EditEnsureSelectionVisible()
@@ -4834,7 +4846,7 @@ void EditEnsureSelectionVisible()
   SciCall_EnsureVisible(iAnchorLine);
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
 
-  Sci_ScrollToLine(iCurrentLine, true);
+  EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
 }
 
 
@@ -4842,66 +4854,25 @@ void EditEnsureSelectionVisible()
 //
 //  EditJumpTo()
 //
-void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
+void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
 {
-  UNUSED(hwnd);
   // jump to end with line set to -1
   if (iNewLine < 0) {
     SciCall_DocumentEnd();
     return;
   }
-  const DocLn iMaxLine = SciCall_GetLineCount();
+  DocLn const iMaxLine = SciCall_GetLineCount();
   // Line maximum is iMaxLine - 1 (doc line count starts with 0)
   iNewLine = (min_ln(iNewLine, iMaxLine) - 1);
-  const DocPos iLineEndPos = SciCall_GetLineEndPosition(iNewLine);
+  DocPos const iLineEndPos = SciCall_GetLineEndPosition(iNewLine);
   
   // Column minimum is 1
   DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
-  iNewCol = max_p(0, min_p((iNewCol - colOffset), iLineEndPos));
+  iNewCol = clampp((iNewCol - colOffset), 0, iLineEndPos);
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  Sci_ScrollToLine(iNewLine, true);
-
-  // remember x-pos for moving caret vertically
-  SciCall_ChooseCaretX();
-}
-
-
-
-//=============================================================================
-//
-//  EditGetCurrentDocView()
-//
-const DOCVIEWPOS_T EditGetCurrentDocView(HWND hwnd)
-{
-  UNUSED(hwnd);
-  DOCVIEWPOS_T docView = INIT_DOCVIEWPOS;
-  docView.iCurPos = Sci_IsMultiOrRectangleSelection() ? SciCall_GetSelectionNCaret(0) : SciCall_GetCurrentPos();
-  docView.iAnchorPos = Sci_IsMultiOrRectangleSelection() ? SciCall_GetSelectionNAnchor(SciCall_GetSelections() - 1) : SciCall_GetAnchor();
-  //docView.vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
-  //docView.vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
-  docView.iCurrLine = SciCall_LineFromPosition(docView.iCurPos);
-  docView.iCurColumn = SciCall_GetColumn(docView.iCurPos);
-  docView.iVisTopLine = SciCall_GetFirstVisibleLine();
-  docView.iDocTopLine = SciCall_DocLineFromVisible(docView.iVisTopLine);
-  docView.iXOffset = SciCall_GetXOffset();
-  docView.bIsTail = (docView.iCurPos == docView.iAnchorPos) && (docView.iCurrLine >= (SciCall_GetLineCount() - 1));
-  return docView;
-}
-
-
-//=============================================================================
-//
-//  EditSetDocView()
-//
-void EditSetDocView(HWND hwnd, const DOCVIEWPOS_T docView)
-{
-  EditJumpTo(hwnd, docView.iCurrLine + 1, docView.iCurColumn + 1);
-  DocLn const iNewTopLine = SciCall_GetFirstVisibleLine();
-  SciCall_EnsureVisible(iNewTopLine);
-  SciCall_LineScroll(0, docView.iVisTopLine - iNewTopLine);
-  SciCall_SetXOffset(docView.iXOffset);
+  EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
 }
 
 
@@ -6663,12 +6634,8 @@ void EditSelectionMultiSelectAll()
     DocPos const iMainCaret = SciCall_GetSelectionNCaret(0);
     if (iMainAnchor > iMainCaret) {
       SciCall_SwapMainAnchorCaret();
-      SciCall_ScrollRange(iMainCaret, iMainAnchor);
     }
-    else {
-      SciCall_ScrollRange(iMainAnchor, iMainCaret);
-    }
-    SciCall_ChooseCaretX();
+    EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
   }
@@ -6983,11 +6950,11 @@ void EditToggleView(HWND hwnd)
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
   if (FocusedView.HideNonMatchedLines) {
-    Sci_ScrollToLine(0, false);
+    EditScrollToLine(0);
     SciCall_SetReadOnly(true);
   }
   else {
-    Sci_ScrollToLine(Sci_GetCurrentLineNumber(), true);
+    EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
     SciCall_SetReadOnly(false);
   }
 
@@ -7727,7 +7694,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
           if ((iNewLine > 0) && (iNewLine <= iMaxLnNum) && (iNewCol > 0))
           {
-            EditJumpTo(Globals.hwndEdit, iNewLine, iNewCol);
+            EditJumpTo(iNewLine, iNewCol);
             EndDialog(hwnd, IDOK);
           }
           else {
@@ -8706,7 +8673,7 @@ void EditFoldClick(DocLn ln, int mode)
   EditFoldPerformAction(ln, mode, SNIFF);
 
   if (fGotoFoldPoint) {
-    EditJumpTo(Globals.hwndEdit, ln + 1, 0);
+    EditJumpTo(ln + 1, 0);
   }
 }
 
@@ -8725,7 +8692,7 @@ void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action)
       {
         if ((SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln))
         {
-          EditJumpTo(Globals.hwndEdit, ln + 1, 0);
+          EditJumpTo(ln + 1, 0);
           return;
         }
       }
@@ -8736,7 +8703,7 @@ void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action)
       {
         if ((SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln))
         {
-          EditJumpTo(Globals.hwndEdit, ln + 1, 0);
+          EditJumpTo(ln + 1, 0);
           return;
         }
       }
