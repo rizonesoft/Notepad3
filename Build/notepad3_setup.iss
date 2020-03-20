@@ -31,7 +31,7 @@
 #define app_name      "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version   GetFileVersion(bindir + "\Release_x86_v142\Notepad3.exe")
-#define app_copyright "(c) Rizonesoft 2008-2019"
+#define app_copyright "(c) Rizonesoft 2008-2020"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
 [Setup]

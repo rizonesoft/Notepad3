@@ -6,7 +6,7 @@
 * Config.cpp                                                                  *
 *   Methods to read and write configuration                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2020   *
+*                                                  (c) Rizonesoft 2008-2016   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
