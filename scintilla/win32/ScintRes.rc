@@ -1,7 +1,7 @@
 // Resource file for Scintilla
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
-// Copyright 1998-2010 by Neil Hodgson <neilh@scintilla.org>
+// Copyright 1998-2020 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <windows.h>
@@ -30,7 +30,7 @@ BEGIN
 			VALUE	"FileDescription",	"Scintilla.DLL - a Source Editing Component vNP3\0"
 			VALUE	"FileVersion",	VERSION_SCINTILLA "\0"
 			VALUE	"InternalName",	"Scintilla vNP3\0"
-			VALUE	"LegalCopyright",	"Copyright 1998-2019 by Neil Hodgson\0"
+			VALUE	"LegalCopyright",	"Copyright 1998-2020 by Neil Hodgson\0"
 			VALUE	"OriginalFilename",	"Scintilla.DLL\0"
 			VALUE	"ProductName",	"Scintilla vNP3\0"
 			VALUE	"ProductVersion",	VERSION_SCINTILLA "\0"
