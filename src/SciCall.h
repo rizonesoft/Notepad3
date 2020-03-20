@@ -599,7 +599,10 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 }
 
 // respect VSlop settings 
-#define Sci_ScrollToLine(L,C)  { SciCall_ScrollRange(SciCall_PositionFromLine(L), SciCall_GetLineEndPosition(L)); if (C) { SciCall_ScrollCaret(); } }
+inline void Sci_ScrollChooseCaret()      { SciCall_ScrollCaret(); SciCall_ChooseCaretX(); }
+inline void Sci_ScrollToLine(DocLn line) { SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
+inline void Sci_ScrollToCurrentLine()    { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
+
 
 #define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 
