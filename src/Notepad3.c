@@ -1302,7 +1302,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           }
         }
         if (s_flagJumpTo) { // Jump to position
-          EditJumpTo(Globals.hwndEdit,s_iInitialLine,s_iInitialColumn);
+          EditJumpTo(s_iInitialLine,s_iInitialColumn);
         }
       }
     }
@@ -1359,7 +1359,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     if (SciCall_CanPaste()) {
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
-      EditJumpTo(Globals.hwndEdit, -1, 0);
+      EditJumpTo(-1, 0);
       _BEGIN_UNDO_ACTION_;
       if (!Sci_IsDocEmpty()) {
         SciCall_NewLine();
@@ -1369,7 +1369,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       _END_UNDO_ACTION_;
       Settings.AutoIndent = bAutoIndent2;
       if (s_flagJumpTo)
-        EditJumpTo(Globals.hwndEdit, s_iInitialLine, s_iInitialColumn);
+        EditJumpTo(s_iInitialLine, s_iInitialColumn);
       else
         EditEnsureSelectionVisible();
     }
@@ -2848,7 +2848,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (params->flagJumpTo) {
         if (params->iInitialLine == 0)
           params->iInitialLine = 1;
-        EditJumpTo(Globals.hwndEdit, params->iInitialLine, params->iInitialColumn);
+        EditJumpTo(params->iInitialLine, params->iInitialColumn);
       }
 
       s_flagLexerSpecified = false;
@@ -2957,7 +2957,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
+        EditScrollToLine(Sci_GetLastDocLineNumber());
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -4778,7 +4778,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
             SciCall_EnsureVisible(iNextLine);
             SciCall_GotoLine(iNextLine);
-            SciCall_ScrollCaret();
+            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
         }
     }
     break;
@@ -4799,7 +4799,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
             SciCall_EnsureVisible(iNextLine);
             SciCall_GotoLine(iNextLine);
-            SciCall_ScrollCaret();
+            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
         }
     }
     break;
@@ -4870,9 +4870,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_SELTONEXT:
           {
             SciCall_RotateSelection();
-            DocPosU const iMain = SciCall_GetMainSelection();
-            SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iMain), SciCall_GetSelectionNCaret(iMain));
-            SciCall_ChooseCaretX();
+            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
           }
           break;
 
@@ -4881,13 +4879,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             DocPosU const iMain = SciCall_GetMainSelection();
             if (iMain > 0) {
               SciCall_SetMainSelection(iMain - 1);
-              SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iMain - 1), SciCall_GetSelectionNCaret(iMain - 1));
             } else {
               DocPosU const iNewMain = SciCall_GetSelections() - 1;
               SciCall_SetMainSelection(iNewMain);
-              SciCall_ScrollRange(SciCall_GetSelectionNAnchor(iNewMain), SciCall_GetSelectionNCaret(iNewMain));
             }
-            SciCall_ChooseCaretX();
+            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
           }
           break;
 
@@ -5311,7 +5307,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
+          EditScrollToLine(Sci_GetLastDocLineNumber());
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5321,7 +5317,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          Sci_ScrollToLine(Sci_GetCurrentLineNumber(), true);
+          EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -9713,7 +9709,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   if (StrIsEmpty(szFileName)) { return false; }
 
   bool bPreserveView = true;
-  DOCVIEWPOS_T const docView = EditGetCurrentDocView(Globals.hwndEdit);
+  DocLn const curLineNum = Sci_GetCurrentLineNumber();
+  bool const bIsAtDocEnd = (curLineNum >= (Sci_GetLastDocLineNumber() - Settings2.CurrentLineVerticalSlop));
 
   Encoding_SrcWeak(CPI_NONE);
   if (bIgnoreCmdLnEnc) {
@@ -9731,9 +9728,10 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   }
 
   if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-    if (docView.bIsTail || FileWatching.MonitoringLog) {
+    if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
-      Sci_ScrollToLine(Sci_GetLastDocLineNumber(), false);
+      SciCall_DocumentEnd();
+      EditScrollToLine(Sci_GetLastDocLineNumber());
     }
   }
 
@@ -9744,12 +9742,12 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+      EditScrollToLine(Sci_GetLastDocLineNumber());
     }
   }
 
   if (bPreserveView) {
-    EditSetDocView(Globals.hwndEdit, docView);
+    EditJumpTo(curLineNum, 0);
   }
 
   SciCall_SetSavePoint();
@@ -10856,7 +10854,7 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
     if (SciCall_CanPaste()) {
       bool bAutoIndent2 = Settings.AutoIndent;
       Settings.AutoIndent = 0;
-      EditJumpTo(Globals.hwndEdit,-1,0);
+      EditJumpTo(-1,0);
       _BEGIN_UNDO_ACTION_;
       if (!Sci_IsDocEmpty()) {
         SciCall_NewLine();
