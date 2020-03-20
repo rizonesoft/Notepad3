@@ -9619,14 +9619,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         SciCall_DocumentEnd();
         SciCall_NewLine();
         _END_UNDO_ACTION_;
-        SciCall_DocumentEnd();
         SciCall_ScrollToEnd();
       }
       // set historic caret/selection  pos
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
       {
-        //~SciCall_SetSelection(iCaretPos, iAnchorPos); // no scroll
         SciCall_SetSel(iAnchorPos, iCaretPos); // scroll into view
+        EditScrollToLine(Sci_GetCurrentLineNumber());
       }
     }
 
