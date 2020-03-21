@@ -52,7 +52,9 @@ void  EditChar2Hex(HWND hwnd);
 void  EditHex2Char(HWND hwnd);
 void  EditFindMatchingBrace();
 void  EditSelectToMatchingBrace();
-void  EditModifyNumber(HWND hwnd,bool);
+void  EditModifyNumber(HWND hwnd, bool bIncrease);
+void  EditUpdateTimestamps();
+void  EditInsertTimestamps(bool bShortFmt);
 
 void  EditTabsToSpaces(int nTabWidth,bool);
 void  EditSpacesToTabs(int nTabWidth,bool);
