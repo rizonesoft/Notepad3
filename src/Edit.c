@@ -23,6 +23,7 @@
 #include <string.h>
 #include <limits.h>
 #include <shellapi.h>
+#include <time.h>
 
 #include "Styles.h"
 #include "Dialogs.h"
@@ -2241,6 +2242,176 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
   }
   UNUSED(hwnd);
 }
+
+
+//=============================================================================
+//
+//  _GetDateFormatProc() - date format information provided by the EnumDateFormatsExEx()
+//
+static unsigned int  _DateFmtIdx = 0;
+
+static BOOL CALLBACK _GetDateFormatProc(LPWSTR lpDateFormatString, CALID CalendarID, LPARAM lParam)
+{
+  UNUSED(CalendarID);
+  static unsigned int count = 0;
+
+  LPWSTR const pwchFind = (LPWSTR)lParam;
+
+  if (StrIsEmpty(pwchFind)) {
+    count = 0; // begin
+    StringCchCopy(pwchFind, SMALL_BUFFER, lpDateFormatString); // default
+    if (count == _DateFmtIdx) { return FALSE; } // found
+  }
+  else if (count == _DateFmtIdx) {
+    StringCchCopy(pwchFind, SMALL_BUFFER, lpDateFormatString);
+    return FALSE; // found
+  }
+
+  ++count;
+  return TRUE;
+}
+
+
+
+//=============================================================================
+//
+//  _GetCurrentDateTimeString()
+//
+static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen, bool bShortFmt)
+{
+  WCHAR wchTemplate[SMALL_BUFFER] = { L'\0' };
+  StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), bShortFmt ? Settings2.DateTimeShort : Settings2.DateTimeLong);
+
+  SYSTEMTIME st;
+  GetLocalTime(&st);
+
+  if (StrIsNotEmpty(wchTemplate))
+  {
+    struct tm sst;
+    sst.tm_isdst = -1;
+    sst.tm_sec = (int)st.wSecond;
+    sst.tm_min = (int)st.wMinute;
+    sst.tm_hour = (int)st.wHour;
+    sst.tm_mday = (int)st.wDay;
+    sst.tm_mon = (int)st.wMonth - 1;
+    sst.tm_year = (int)st.wYear - 1900;
+    sst.tm_wday = (int)st.wDayOfWeek;
+    mktime(&sst);
+    wcsftime(pwchDateTimeStrg, cchBufLen, wchTemplate, &sst);
+  }
+  else {
+    WCHAR wchFormat[SMALL_BUFFER] = { L'\0' };
+    _DateFmtIdx = 0; // (bShortFmt ? Settings2.DateFormatShort : Settings2.DateFormatLong);
+    EnumDateFormatsExEx(_GetDateFormatProc, Settings2.PreferredLanguageLocaleName, (bShortFmt ? DATE_SHORTDATE : DATE_LONGDATE), (LPARAM)wchFormat);
+
+    WCHAR wchDate[SMALL_BUFFER] = { L'\0' };
+    GetDateFormatEx(Settings2.PreferredLanguageLocaleName, DATE_AUTOLAYOUT, &st, wchFormat, wchDate, COUNTOF(wchDate), NULL);
+
+    WCHAR wchTime[SMALL_BUFFER] = { L'\0' };
+    GetTimeFormatEx(Settings2.PreferredLanguageLocaleName, TIME_NOSECONDS, &st, NULL, wchTime, COUNTOF(wchTime));
+
+    StringCchPrintf(pwchDateTimeStrg, cchBufLen, L"%s %s", wchTime, wchDate);
+  }
+}
+
+
+
+//=============================================================================
+//
+//  EditInsertTimestamps()
+//
+void EditInsertTimestamps(bool bShortFmt)
+{
+  //~~~_BEGIN_UNDO_ACTION_;
+
+
+  WCHAR wchDateTime[SMALL_BUFFER] = { L'\0' };
+  _GetCurrentDateTimeString(wchDateTime, COUNTOF(wchDateTime), bShortFmt);
+
+  char chDateTime[MIDSZ_BUFFER] = { '\0' };
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchDateTime, -1, chDateTime, COUNTOF(chDateTime), NULL, NULL);
+  EditReplaceSelection(chDateTime, false);
+
+  //~~~_END_UNDO_ACTION_;
+}
+
+
+//=============================================================================
+//
+//  EditUpdateTimestamps()
+//
+void EditUpdateTimestamps()
+{
+  //WCHAR wchTempBuf[SMALL_BUFFER] = { L'\0' };
+  WCHAR wchFindLong[SMALL_BUFFER] = { L'\0' };
+  WCHAR wchFindShort[SMALL_BUFFER] = { L'\0' };
+  if (StrIsNotEmpty(Settings2.TimeStampRegExLong)) {
+    StringCchCopy(wchFindLong, COUNTOF(wchFindLong), Settings2.TimeStampRegExLong);
+    StrTrim(wchFindLong, L" ");
+  }
+  if (StrIsNotEmpty(Settings2.TimeStampRegExShort)) {
+    StringCchCopy(wchFindShort, COUNTOF(wchFindShort), Settings2.TimeStampRegExShort);
+    StrTrim(wchFindShort, L" ");
+  }
+
+  if (StrIsEmpty(wchFindLong)) 
+  {
+    _DateFmtIdx = 0; // Settings2.DateFormatLong;
+    EnumDateFormatsExEx(_GetDateFormatProc, Settings2.PreferredLanguageLocaleName, DATE_LONGDATE, (LPARAM)wchFindLong);
+
+    // TODO: replace Format by corresponding RegEx Pattern
+    //StringCchCopy(wchFindLong, COUNTOF(wchFindLong), wchTempBuf);
+  }
+
+  if (StrIsEmpty(wchFindShort))
+  {
+    _DateFmtIdx = 0; // Settings2.DateFormatShort;
+    EnumDateFormatsExEx(_GetDateFormatProc, Settings2.PreferredLanguageLocaleName, DATE_SHORTDATE, (LPARAM)wchFindShort);
+
+    // TODO: replace Format by corresponding RegEx Pattern
+    //StringCchCopy(wchFindShort, COUNTOF(wchFindShort), wchTempBuf);
+  }
+
+  // -----------------------------------------------
+
+  WCHAR wchReplaceLong[SMALL_BUFFER] = { L'\0' };
+  _GetCurrentDateTimeString(wchReplaceLong, COUNTOF(wchReplaceLong), false);
+
+  EDITFINDREPLACE efrTS_L = EFR_INIT_DATA;
+  efrTS_L.hwnd = Globals.hwndEdit;
+  efrTS_L.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFindLong, -1, efrTS_L.szFind, COUNTOF(efrTS_L.szFind), NULL, NULL);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplaceLong, -1, efrTS_L.szReplace, COUNTOF(efrTS_L.szReplace), NULL, NULL);
+
+  if (!SciCall_IsSelectionEmpty())
+  {
+    EditReplaceAllInSelection(Globals.hwndEdit, &efrTS_L, true);
+  }
+  else {
+    EditReplaceAll(Globals.hwndEdit, &efrTS_L, true);
+  }
+
+  // -----------------------------------------------
+
+  WCHAR wchReplaceShort[SMALL_BUFFER] = { L'\0' };
+  _GetCurrentDateTimeString(wchReplaceLong, COUNTOF(wchReplaceLong), true);
+
+  EDITFINDREPLACE efrTS_S = EFR_INIT_DATA;
+  efrTS_S.hwnd = Globals.hwndEdit;
+  efrTS_S.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFindShort, -1, efrTS_S.szFind, COUNTOF(efrTS_S.szFind), NULL, NULL);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplaceShort, -1, efrTS_S.szReplace, COUNTOF(efrTS_S.szReplace), NULL, NULL);
+
+  if (!SciCall_IsSelectionEmpty())
+  {
+    EditReplaceAllInSelection(Globals.hwndEdit, &efrTS_S, true);
+  }
+  else {
+    EditReplaceAll(Globals.hwndEdit, &efrTS_S, true);
+  }
+
+}
+
 
 
 //=============================================================================
