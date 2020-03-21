@@ -201,10 +201,6 @@ static TBBUTTON  s_tbbMainWnd[] = {
 };
 static const int NUMTOOLBITMAPS = 29;
 
-#if _WIN32_WINNT < _WIN32_WINNT_WIN8
-DWORD		kSystemLibraryLoadFlags = 0;
-#endif
-
 // ----------------------------------------------------------------------------
 
 const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
@@ -667,7 +663,7 @@ static void _InitGlobals()
   Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
   Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
   Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
-  Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsXPOrHigher() ? 1 : 2;
+  Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsWindowsXPSP3OrGreater() ? 1 : 2;
   Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
   Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
   Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
@@ -820,8 +816,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
-  // check if running at least on Windows 7
-  if (!IsWin7OrHigher()) {
+  // check if running at least on Windows 7 (SP1)
+  if (!IsWindows7SP1OrGreater()) {
     MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
     return 1; // exit
   }
@@ -858,11 +854,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
   icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
   InitCommonControlsEx(&icex);
-
-#if _WIN32_WINNT < _WIN32_WINNT_WIN8
-  // see LoadD2D() in PlatWin.cxx
-  kSystemLibraryLoadFlags = (IsWin8OrHigher() || GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetDefaultDllDirectories")) ? LOAD_LIBRARY_SEARCH_SYSTEM32 : 0;
-#endif
 
   Scintilla_RegisterClasses(hInstance);
 
@@ -1705,7 +1696,7 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
-  if (IsVistaOrHigher()) {
+  if (IsWindowsVistaOrGreater()) {
     // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
     //~SciCall_SetBufferedDraw(true);  // default is true 
@@ -1943,7 +1934,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
     SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
     SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-    if (IsVistaOrHigher()) {
+    if (IsWindowsVistaOrGreater()) {
       s_cxEditFrame = 0;
       s_cyEditFrame = 0;
     }
@@ -2138,7 +2129,7 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
   HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
   ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
-  DPI_T dpi = GetCurrentDPI(hWnd);
+  DPI_T dpi = Scintilla_GetCurrentDPI(hWnd);
   if (!Settings.DpiScaleToolBar || 
       ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI)))
   {
@@ -2289,10 +2280,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       if (Flags.ToolbarLook == 1) {
         bProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
       }
-      else if (Flags.ToolbarLook == 2 || (!IsXPOrHigher() && Flags.ToolbarLook == 0)) {
+      else if (Flags.ToolbarLook == 2 || (!IsWindowsXPSP3OrGreater() && Flags.ToolbarLook == 0)) {
         bProcessed = BitmapGrayScale(hbmpCopy);
       }
-      if (bProcessed && !IsXPOrHigher()) {
+      if (bProcessed && !IsWindowsXPSP3OrGreater()) {
         BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
       }
       if (bProcessed)
@@ -2509,7 +2500,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
     SetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(Globals.hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
     SetWindowPos(Globals.hwndEdit,NULL,0,0,0,0,SWP_NOZORDER|SWP_FRAMECHANGED|SWP_NOMOVE|SWP_NOSIZE);
 
-    if (IsVistaOrHigher()) {
+    if (IsWindowsVistaOrGreater()) {
       s_cxEditFrame = 0;
       s_cyEditFrame = 0;
     }
@@ -10332,7 +10323,7 @@ bool RelaunchMultiInst() {
 //
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs) 
 {
-  if (!IsVistaOrHigher() || !Flags.bDoRelaunchElevated ||
+  if (!IsWindowsVistaOrGreater() || !Flags.bDoRelaunchElevated ||
       s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
       s_flagDisplayHelp) 
   {

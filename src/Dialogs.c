@@ -699,7 +699,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     {
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
 
-      DPI_T const dpi = GetCurrentDPI(hwnd);
+      DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
 
       //~~// get current richedit box format
@@ -844,7 +844,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        DPI_T dpi = GetCurrentDPI(hwnd);
+        DPI_T dpi = Scintilla_GetCurrentDPI(hwnd);
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
@@ -3920,7 +3920,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   HWND hwndCtl = GetDlgItem(hwnd, nIdGrip);
   SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
   /// TODO: per-window DPI
-  const int cGrip = GetSystemMetricsDPIScaledX(hwnd, SM_CXHTHUMB);
+  const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
   SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
 }
 
@@ -4419,52 +4419,6 @@ DPI_T GetCurrentPPI(HWND hwnd) {
   return ppi;
 }
 
-
-
-//=============================================================================
-//
-//  GetCurrentDPI()
-//
-DPI_T GetCurrentDPI(HWND hwnd) {
-
-  DPI_T curDPI = { 0, 0 };
-
-  if (IsWin10OrHigher()) {
-    HMODULE const hModule = GetModuleHandle(L"user32.dll");
-    if (hModule) {
-      FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
-      if (pfnGetDpiForWindow) {
-        curDPI.x = curDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
-      }
-    }
-  }
-
-  if ((curDPI.x == 0) && IsWin81OrHigher()) {
-    HMODULE hShcore = LoadLibrary(L"shcore.dll");
-    if (hShcore) {
-      FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
-      if (pfnGetDpiForMonitor) {
-        HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-        UINT dpiX = 0, dpiY = 0;
-        if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
-          curDPI.x = dpiX;
-          curDPI.y = dpiY;
-        }
-      }
-      FreeLibrary(hShcore);
-    }
-  }
-
-  if (curDPI.x == 0) {
-    curDPI = GetCurrentPPI(hwnd); // fallback to device caps
-  }
-
-  curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
-  curDPI.y = max_u(curDPI.y, USER_DEFAULT_SCREEN_DPI);
-  return curDPI;
-}
-
-
 /*
 if (!bSucceed) {
   NONCLIENTMETRICS ncm;
@@ -4477,22 +4431,6 @@ if (!bSucceed) {
     *wSize = 8;
 }*/
 
-
-//=============================================================================
-//
-//  GetSystemMetricsDPIScaled()
-//  get system metric for current DPI 
-//  https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
-
-int GetSystemMetricsDPIScaledX(HWND hwnd, const int nValue)
-{ 
-  return ScaleIntToDPI_X(hwnd, GetSystemMetrics(nValue));
-}
-
-int GetSystemMetricsDPIScaledY(HWND hwnd, const int nValue)
-{
-  return ScaleIntToDPI_Y(hwnd, GetSystemMetrics(nValue));
-}
 
 //=============================================================================
 //
