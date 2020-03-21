@@ -1319,7 +1319,6 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 	if (lParam & GCS_RESULTSTR) {
 		AddWString(imc.GetCompositionString(GCS_RESULTSTR), CharacterSource::imeResult);
-		initialCompose = true;
 	}
 
 	if (lParam & GCS_COMPSTR) {
