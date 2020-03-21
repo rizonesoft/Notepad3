@@ -72,12 +72,6 @@ typedef DocPos         DocLn;   // Sci::Line
 //typedef intptr_t cpi_enc_t;
 typedef int cpi_enc_t;
 
-typedef struct _dpi_t
-{
-  UINT x;
-  UINT y;
-} DPI_T;
-
 typedef struct _wi
 {
   int x;

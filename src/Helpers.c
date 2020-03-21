@@ -214,26 +214,26 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 {
   StringCchCopy(szVersionStr, cchVersionStr, L"OS Version: Windows ");
   
-  if (IsWin10OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2016 " : L"10 ");
+  if (IsWindows10OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2016 " : L"10 ");
   }
-  else if (IsWin81OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 R2 " : L"8.1");
+  else if (IsWindows8Point1OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 R2 " : L"8.1");
   }
-  else if (IsWin8OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 " : L"8");
+  else if (IsWindows8OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 " : L"8");
   }
-  else if (IsWin71OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 R2 " : L"7 (SP1)");
+  else if (IsWindows7SP1OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2008 R2 " : L"7 (SP1)");
   }
-  else if (IsWin7OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 " : L"7");
+  else if (IsWindows7OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2008 " : L"7");
   }
   else {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Unkown Server " : L"?");
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Unkown Server " : L"?");
   }
   
-  if (IsWin10OrHigher()) {
+  if (IsWindows10OrGreater()) {
     WCHAR win10ver[80] = { L'\0' };
     if (s_OSversion.dwOSVersionInfoSize == 0) { _GetTrueWindowsVersion(); }
     DWORD const build = s_OSversion.dwBuildNumber;
@@ -312,7 +312,7 @@ bool IsProcessElevated() {
   // Vista, GetTokenInformation returns FALSE with the 
   // ERROR_INVALID_PARAMETER error code because TokenElevation is 
   // not supported on those operating systems.
-  if (!IsVistaOrHigher()) { return false; }
+  if (!IsWindowsVistaOrGreater()) { return false; }
 
   bool bIsElevated = false;
   HANDLE hToken = NULL;

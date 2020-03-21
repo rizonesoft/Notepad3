@@ -43,6 +43,7 @@
 #include <richedit.h>
 #include <windowsx.h>
 #include <shlwapi.h>
+#include <VersionHelpers.h>
 
 #include "Platform.h"
 #include "Scintilla.h"
@@ -69,13 +70,9 @@
 #endif
 
 #if _WIN32_WINNT < _WIN32_WINNT_WIN8
-#if NP2_FORCE_COMPILE_C_AS_CPP
 extern DWORD kSystemLibraryLoadFlags;
 #else
-extern "C" DWORD kSystemLibraryLoadFlags;
-#endif
-#else
-#define kSystemLibraryLoadFlags		LOAD_LIBRARY_SEARCH_SYSTEM32
+#define kSystemLibraryLoadFlags	 LOAD_LIBRARY_SEARCH_SYSTEM32
 #endif
 
 namespace Scintilla {
@@ -2631,7 +2628,7 @@ PRectangle ListBoxX::GetDesiredRect() {
 
 	rcDesired.right = rcDesired.left + TextOffset() + width + (TextInset.x * 2);
 	if (Length() > rows)
-		rcDesired.right += GetSystemMetricsDPIScaledX(GetHWND(), SM_CXVSCROLL);
+		rcDesired.right += GetSystemMetricsEx(GetHWND(), SM_CXVSCROLL);
 
 	AdjustWindowRect(&rcDesired);
 	return rcDesired;
@@ -2879,7 +2876,7 @@ POINT ListBoxX::MinTrackSize() const {
 
 POINT ListBoxX::MaxTrackSize() const {
 	const int width = maxCharWidth * maxItemCharacters + static_cast<int>(TextInset.x) * 2 +
-		TextOffset() + GetSystemMetricsDPIScaledX(GetHWND(), SM_CXVSCROLL);
+		TextOffset() + GetSystemMetricsEx(GetHWND(), SM_CXVSCROLL);
 	PRectangle rc = PRectangle::FromInts(0, 0,
 		std::max(MinClientWidth(), width),
 		ItemHeight() * lti.Count());
@@ -2990,7 +2987,7 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const noexcept {
 	// window caption height + frame, even if one is hovering over the bottom edge of
 	// the frame, so workaround that here
 	if (hit >= HTTOP && hit <= HTTOPRIGHT) {
-		const int minHeight = GetSystemMetricsDPIScaledY(hwnd, SM_CYMINTRACK);
+		const int minHeight = GetSystemMetricsEx(hwnd, SM_CYMINTRACK);
 		const int yPos = GET_Y_LPARAM(lParam);
 		if ((rc.Height() < minHeight) && (yPos > ((rc.top + rc.bottom)/2))) {
 			hit += HTBOTTOM - HTTOP;
@@ -2998,9 +2995,9 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const noexcept {
 	}
 #if LISTBOXX_USE_BORDER || LISTBOXX_USE_FAKE_FRAME
 	else if (hit < HTSIZEFIRST || hit > HTSIZELAST) {
-		const int cx = GetSystemMetricsDPIScaledX(hwnd, SM_CXVSCROLL);
+		const int cx = GetSystemMetricsEx(hwnd, SM_CXVSCROLL);
 #if LISTBOXX_USE_BORDER
-		const PRectangle rcInner = rc.Deflate(GetSystemMetricsDPIScaledX(hwnd, SM_CXBORDER), GetSystemMetricsDPIScaledY(hwnd, SM_CYBORDER));
+		const PRectangle rcInner = rc.Deflate(GetSystemMetricsEx(hwnd, SM_CXBORDER), GetSystemMetricsEx(GetHWND(), SM_CYBORDER));
 #else
 		const PRectangle rcInner = rc.Deflate(ListBoxXFakeFrameSize, ListBoxXFakeFrameSize);
 #endif
@@ -3573,6 +3570,73 @@ void Platform_Finalise(bool fromDllMain) noexcept {
 #if !USE_SRW_LOCK
 	::DeleteCriticalSection(&crPlatformLock);
 #endif
+}
+
+
+//=============================================================================
+//
+//  GetCurrentDPI()
+//
+#ifdef _WIN64
+typedef INT_PTR(FAR WINAPI* FARPROCHWND)(HWND);
+typedef INT_PTR(FAR WINAPI* FARPROCMONI)(HMONITOR, int, UINT*, UINT*);
+#else
+typedef int (FAR WINAPI* FARPROCHWND)(HWND);
+typedef int (FAR WINAPI* FARPROCMONI)(HMONITOR, int, UINT*, UINT*);
+#endif  // _WIN64
+
+
+DPI_T GetCurrentDPI(HWND hwnd) {
+
+	DPI_T curDPI = { 0, 0 };
+
+	if (IsWindows10OrGreater()) {
+		HMODULE const hModule = GetModuleHandle(L"user32.dll");
+		if (hModule) {
+			FARPROCHWND const pfnGetDpiForWindow = (FARPROCHWND)GetProcAddress(hModule, "GetDpiForWindow");
+			if (pfnGetDpiForWindow) {
+				curDPI.x = curDPI.y = (int)pfnGetDpiForWindow(hwnd);
+			}
+		}
+	}
+
+	if ((curDPI.x == 0) && IsWindows8Point1OrGreater()) {
+		HMODULE hShcore = LoadLibrary(L"shcore.dll");
+		if (hShcore) {
+			FARPROCMONI const pfnGetDpiForMonitor = (FARPROCMONI)GetProcAddress(hShcore, "GetDpiForMonitor");
+			if (pfnGetDpiForMonitor) {
+				HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+				UINT dpiX = 0, dpiY = 0;
+				if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
+					curDPI.x = dpiX;
+					curDPI.y = dpiY;
+				}
+			}
+			FreeLibrary(hShcore);
+		}
+	}
+
+	if (curDPI.x == 0) {
+		HDC hDC = GetDC(hwnd);
+		curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
+		curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
+		ReleaseDC(hwnd, hDC);
+	}
+
+	curDPI.x = std::max((int)curDPI.x, USER_DEFAULT_SCREEN_DPI);
+	curDPI.y = std::max((int)curDPI.y, USER_DEFAULT_SCREEN_DPI);
+	return curDPI;
+}
+
+//=============================================================================
+//
+//  GetSystemMetricsEx()
+//  get system metric for current DPI 
+// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
+//
+int GetSystemMetricsEx(HWND hwnd, int nIndex)
+{
+	return ScaleIntToDPI_Y(hwnd, GetSystemMetrics(nIndex));
 }
 
 }
