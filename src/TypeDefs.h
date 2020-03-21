@@ -353,7 +353,6 @@ typedef struct _globals_t
   unsigned  idxSelectedTheme;
 
   WCHAR     SelectedThemeName[128];
-  WCHAR     InitialPreferredLanguage[LOCALE_NAME_MAX_LENGTH + 1];
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -544,16 +543,21 @@ typedef struct _settings2_t
   WCHAR DefaultExtension[64];
   WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
-
   WCHAR FileBrowserPath[MAX_PATH];
+
   WCHAR AppUserModelID[128];
   WCHAR AutoCompleteFillUpChars[64];
   WCHAR LineCommentPostfixStrg[64];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
-  WCHAR TimeStamp[128];
+
+  //int DateFormatLong;
+  //int DateFormatShort;
   WCHAR DateTimeShort[128];
+  WCHAR TimeStampRegExShort[256];
   WCHAR DateTimeLong[128];
+  WCHAR TimeStampRegExLong[256];
+
   WCHAR WebTemplate1[MAX_PATH];
   WCHAR WebTemplate2[MAX_PATH];
   WCHAR AdministrationTool[MAX_PATH];

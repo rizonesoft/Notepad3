@@ -933,8 +933,6 @@ void LoadSettings()
     IniSectionGetString(IniSecSettings2, L"PreferredLanguageLocaleName", Defaults2.PreferredLanguageLocaleName,
       Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
 
-    StringCchCopyW(Globals.InitialPreferredLanguage, COUNTOF(Globals.InitialPreferredLanguage), Settings2.PreferredLanguageLocaleName);
-
     // --------------------------------------------------------------------------
 
     StringCchCopyW(Defaults2.DefaultExtension, COUNTOF(Defaults2.DefaultExtension), L"txt");
@@ -1080,14 +1078,20 @@ void LoadSettings()
       Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
     StrTrimW(Settings2.LineCommentPostfixStrg, L"\"");
 
-    StringCchCopyW(Defaults2.TimeStamp, COUNTOF(Defaults2.TimeStamp), L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $");
-    IniSectionGetString(IniSecSettings2, L"TimeStamp", Defaults2.TimeStamp, Settings2.TimeStamp, COUNTOF(Settings2.TimeStamp));
-
-    Defaults2.DateTimeShort[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
+    //Defaults2.DateFormatLong = 0;
+    //Settings2.DateFormatLong = clampi(IniSectionGetInt(IniSecSettings2, L"DateFormatLong", Defaults2.DateFormatLong), 0, 100);
+    //Defaults2.DateFormatShort = 0;
+    //Settings2.DateFormatShort = clampi(IniSectionGetInt(IniSecSettings2, L"DateFormatShort", Defaults2.DateFormatShort), 0, 100);
 
     Defaults2.DateTimeLong[0] = L'\0';
     IniSectionGetString(IniSecSettings2, L"DateTimeLong", Defaults2.DateTimeLong, Settings2.DateTimeLong, COUNTOF(Settings2.DateTimeLong));
+    Defaults2.TimeStampRegExLong[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"TimeStampRegExLong", Defaults2.TimeStampRegExLong, Settings2.TimeStampRegExLong, COUNTOF(Settings2.TimeStampRegExLong));
+
+    Defaults2.DateTimeShort[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
+    Defaults2.TimeStampRegExShort[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"TimeStampRegExShort", Defaults2.TimeStampRegExShort, Settings2.TimeStampRegExShort, COUNTOF(Settings2.TimeStampRegExShort));
 
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));

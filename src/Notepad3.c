@@ -26,7 +26,6 @@
 #include <string.h>
 //#include <pathcch.h>
 //#include <locale.h>
-#include <time.h>
 
 #include "Edit.h"
 #include "Styles.h"
@@ -966,7 +965,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
   if (Globals.bPrefLngNotAvail) {
-    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Globals.InitialPreferredLanguage);
+    InfoBoxLng(MB_ICONWARNING, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
   }
 
   MSG msg;
@@ -4471,49 +4470,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INSERT_SHORTDATE:
     case IDM_EDIT_INSERT_LONGDATE:
-      {
-        //~~~_BEGIN_UNDO_ACTION_;
-
-        WCHAR tchDateTime[128] = { L'\0' };
-        WCHAR tchTemplate[128] = { L'\0' };
-        SYSTEMTIME st;
-        //int   iSelStart;
-
-        GetLocalTime(&st);
-
-        StringCchCopyW(tchTemplate, COUNTOF(tchTemplate),
-          (iLoWParam == IDM_EDIT_INSERT_SHORTDATE) ? Settings2.DateTimeShort : Settings2.DateTimeLong);
-
-        if (StringCchLenW(tchTemplate,0) > 0)
-        {
-          struct tm sst;
-          sst.tm_isdst       = -1;
-          sst.tm_sec         = (int)st.wSecond;
-          sst.tm_min         = (int)st.wMinute;
-          sst.tm_hour        = (int)st.wHour;
-          sst.tm_mday        = (int)st.wDay;
-          sst.tm_mon         = (int)st.wMonth - 1;
-          sst.tm_year        = (int)st.wYear - 1900;
-          sst.tm_wday        = (int)st.wDayOfWeek;
-          mktime(&sst);
-          wcsftime(tchDateTime,COUNTOF(tchDateTime),tchTemplate,&sst);
-        }
-        else {
-          WCHAR tchDate[64] = { L'\0' };
-          WCHAR tchTime[64] = { L'\0' };
-          GetDateFormat(LOCALE_USER_DEFAULT,(
-            iLoWParam == IDM_EDIT_INSERT_SHORTDATE) ? DATE_SHORTDATE : DATE_LONGDATE,
-            &st,NULL,tchDate,COUNTOF(tchDate));
-          GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,NULL,tchTime,COUNTOF(tchTime));
-
-          StringCchPrintf(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
-        }
-        char chDateTime[128] = { '\0' };
-        WideCharToMultiByteEx(Encoding_SciCP,0,tchDateTime,-1,chDateTime,COUNTOF(chDateTime),NULL,NULL);
-        EditReplaceSelection(chDateTime, false);
-
-        //~~~_END_UNDO_ACTION_;
-      }
+      EditInsertTimestamps((iLoWParam == IDM_EDIT_INSERT_SHORTDATE));
       break;
 
 
@@ -5902,54 +5859,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_TIMESTAMPS:
-      {
-        WCHAR wchFind[128] = { L'\0' };
-        WCHAR wchTemplate[128] = { L'\0' };
-        WCHAR wchReplace[128] = { L'\0' };
-
-        SYSTEMTIME st;
-        struct tm sst;
-
-        EDITFINDREPLACE efrTS = EFR_INIT_DATA;
-        efrTS.hwnd = Globals.hwndEdit;
-        efrTS.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
-
-        StringCchCopyW(wchFind, COUNTOF(wchFind), Settings2.TimeStamp);
-
-        WCHAR *pwchSep = StrChr(wchFind, L'|');
-        if (pwchSep) {
-          StringCchCopy(wchTemplate,COUNTOF(wchTemplate),pwchSep + 1);
-          *pwchSep = 0;
-        }
-
-        StrTrim(wchFind,L" ");
-        StrTrim(wchTemplate,L" ");
-
-        if (StringCchLenW(wchFind,COUNTOF(wchFind)) == 0 || StringCchLenW(wchTemplate,COUNTOF(wchTemplate)) == 0)
-          break;
-
-        GetLocalTime(&st);
-        sst.tm_isdst = -1;
-        sst.tm_sec   = (int)st.wSecond;
-        sst.tm_min   = (int)st.wMinute;
-        sst.tm_hour  = (int)st.wHour;
-        sst.tm_mday  = (int)st.wDay;
-        sst.tm_mon   = (int)st.wMonth - 1;
-        sst.tm_year  = (int)st.wYear - 1900;
-        sst.tm_wday  = (int)st.wDayOfWeek;
-        mktime(&sst);
-        wcsftime(wchReplace,COUNTOF(wchReplace),wchTemplate,&sst);
-
-        WideCharToMultiByteEx(Encoding_SciCP, 0, wchFind, -1, efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
-        WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplace, -1, efrTS.szReplace, COUNTOF(efrTS.szReplace), NULL, NULL);
-
-        if (!SciCall_IsSelectionEmpty()) {
-          EditReplaceAllInSelection(Globals.hwndEdit, &efrTS, true);
-        }
-        else {
-          EditReplaceAll(Globals.hwndEdit, &efrTS, true);
-        }
-      }
+      EditUpdateTimestamps();
       break;
 
 
