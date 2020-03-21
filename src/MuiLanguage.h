@@ -32,7 +32,20 @@ typedef struct _muilanguage
 
 extern MUILANGUAGE MUI_LanguageDLLs[];
 int MuiLanguages_CountOf();
-int  GetMUILanguageIndexByLangID(LANGID iLanguageID);
+
+
+typedef struct _gwlang_ini
+{
+  const LANGID       lngid;
+  const WCHAR* const filename;
+}
+grepWinLng_t;
+
+extern grepWinLng_t grepWinLangResName[];
+int grepWinLang_CountOf();
+
+
+int GetMUILanguageIndexByLangID(LANGID iLanguageID);
 
 bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* pLangID);
 void SetPreferredLanguage(LANGID iPreferredLanguageID);

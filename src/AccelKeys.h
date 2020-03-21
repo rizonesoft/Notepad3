@@ -7,7 +7,7 @@
 * AccelKeys.h                                                           *
 *   Load Accelerator Keys at Runtime                                          *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2018   *
+*                                                  (c) Rizonesoft 2008-2020  *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

@@ -152,8 +152,12 @@ copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 copy "%NP3_GREPWIN_DIR%\GPL_v3.0_LICENSE.txt" "%NP3_PORTAPP_DIR%\Other\Help\grepWin_GPL_v3.0_LICENSE.txt" /Y /V
-copy /B "%NP3_GREPWIN_DIR%\grepWin-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin.exe" /Y /V
-copy /B "%NP3_GREPWIN_DIR%\grepWin-x64-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin.exe" /Y /V
+mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin"
+copy /B "%NP3_GREPWIN_DIR%\grepWin-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\grepWin_portable.exe" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\" /Y /V
+mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin"
+copy /B "%NP3_GREPWIN_DIR%\grepWin-x64-1.9.2_portable.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\grepWin_portable.exe" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\" /Y /V
 
 :: --------------------------------------------------------------------------------------------------------------------
 

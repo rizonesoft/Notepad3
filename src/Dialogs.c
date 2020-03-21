@@ -3432,6 +3432,11 @@ void DialogFileBrowse(HWND hwnd)
 }
 
 
+//=============================================================================
+//
+//  DialogGrepWin() - Prerequisites
+//
+//
 
 typedef struct _grepwin_ini
 {
@@ -3505,6 +3510,15 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
     PathAppend(tchIniFilePath, L"grepwin.ini");
     
+    // get grepWin language
+    int lngIdx = -1;
+    for (int i = 0; i < grepWinLang_CountOf(); ++i) {
+      if (grepWinLangResName[i].lngid == Globals.iPrefLANGID) {
+        lngIdx = i;
+        break;
+      }
+    }
+
     if (LoadIniFile(tchIniFilePath, true)) {
       // preserve [global] user settings from last call
       const WCHAR* const section = L"global";
@@ -3512,6 +3526,13 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         int const iVal = IniSectionGetInt(section, grepWinIniSettings[i].key, grepWinIniSettings[i].val);
         IniSectionSetInt(section, grepWinIniSettings[i].key, iVal);
       }
+
+      if (lngIdx >= 0) {
+        IniSectionSetString(L"global", L"languagefile", grepWinLangResName[lngIdx].filename);
+      } else {
+        IniSectionDelete(L"global", L"languagefile", false);
+      }
+
       //~StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% /m %s - %%path%%", tchModulePath, searchPattern);
       StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% - %%path%%", tchModulePath);
       IniSectionSetString(L"global", L"editorcmd", tchTemp);

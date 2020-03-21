@@ -1,0 +1,516 @@
+# Chinese language file for grepWin
+# Copyright (C) 2018 -=XARA=-
+# This file is distributed under the same license as the PACKAGE package.
+# -=XARA=- (x1983@msn.com), 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-02 21:00\n"
+"PO-Revision-Date: 2018-10-03 10:04\n"
+"Last-Translator: =XARA=- <x1983@msn.com>\n"
+"Language-Team: Chinese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+# msgid/msgstr fields for Accelerator keys
+# Format is: "ID:xxxxxx:VACS+X" where:
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
+
+#. Resource IDs: (149)
+#, c-format
+msgid "%ld more matches"
+msgstr "还有 %ld 个匹配"
+
+#. Resource IDs: (1069)
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号."
+
+#. Resource IDs: (119)
+msgid "&About grepWin..."
+msgstr "关于 grepWin(&A)..."
+
+#. Resource IDs: (1049)
+msgid "&Replace"
+msgstr "替换(&R)"
+
+#. Resource IDs: (123)
+msgid "&Search"
+msgstr "搜索(&S)"
+
+#. Resource IDs: (1013)
+msgid "..."
+msgstr "..."
+
+#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+msgid "/"
+msgstr "/"
+
+#. Resource IDs: (1052, 135)
+msgid "About grepWin"
+msgstr "关于 grepWin"
+
+#. Resource IDs: (1021)
+msgid "Add to Presets"
+msgstr "添至预置"
+
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr "所有文件"
+
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr "所有日期"
+
+#. Resource IDs: (1005)
+msgid "All sizes"
+msgstr "所有大小"
+
+#. Resource IDs: (124)
+#, c-format
+msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr "您确定想要将\n%s\n替换为\n%s\n而不创建备份吗?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr "起止于"
+
+#. Resource IDs: (2)
+msgid "Cancel"
+msgstr "取消"
+
+#. Resource IDs: (1068)
+msgid "Command line to start an editor at a specific line:"
+msgstr "用于在指定的行来启动编辑器的命令行:"
+
+#. Resource IDs: (1060)
+msgid "Content"
+msgstr "内容"
+
+#. Resource IDs: (145)
+msgid "Copy filename to clipboard"
+msgstr "复制文件名称到剪贴板"
+
+#. Resource IDs: (146)
+msgid "Copy filenames to clipboard"
+msgstr ""复制文件名称到剪贴"
+
+#. Resource IDs: (143)
+msgid "Copy path to clipboard"
+msgstr "复制路径到剪贴板"
+
+#. Resource IDs: (144)
+msgid "Copy paths to clipboard"
+msgstr "复制路径到剪贴板"
+
+#. Resource IDs: (147)
+msgid "Copy text result to clipboard"
+msgstr "复制文本结果到剪贴板"
+
+#. Resource IDs: (148)
+msgid "Copy text results to clipboard"
+msgstr "复制文本结果到剪贴板"
+
+#. Resource IDs: (1029)
+msgid "Create backup files"
+msgstr "创建备份文件"
+
+#. Resource IDs: (1077)
+msgid "Create backup files in a separate folder"
+msgstr "在单独的目录创建备份文件"
+
+#. Resource IDs: (139)
+msgid "Date modified"
+msgstr "修改日期"
+
+#. Resource IDs: (137)
+msgid "Dialog"
+msgstr "对话框"
+
+#. Resource IDs: (1051)
+msgid "Dot matches newline"
+msgstr "点号匹配新行"
+
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr "双击选择一个预置"
+
+#. Resource IDs: (65535 - PopupMenu)
+msgid "Dummy"
+msgstr ""
+
+#. Resource IDs: (1067)
+msgid "Editor"
+msgstr "编辑器"
+
+#. Resource IDs: (138)
+msgid "Encoding"
+msgstr "编码"
+
+#. Resource IDs: (1056)
+msgid "Enter a name for the regex:"
+msgstr "为正则输入一个名称:"
+
+#. Resource IDs: (1062)
+msgid "Escape key closes grepWin"
+msgstr "ESC 键关闭 grepWin"
+
+#. Resource IDs: (1041)
+msgid "Exclude dirs (Regex):"
+msgstr "排除目录(正则):"
+
+#. Resource IDs: (1039)
+msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
+msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则, 前置 \"-\" 用于排除(&D)"
+
+#. Resource IDs: (1059)
+msgid "Files"
+msgstr "文件"
+
+#. Resource IDs: (109)
+msgid "GREPWIN"
+msgstr "GREPWIN"
+
+#. Resource IDs: (156)
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgstr "如果启用, 则将在要搜索/替换的目录内创建一个备份目录,并将文件备份到该目录."
+
+#. Resource IDs: (1050)
+msgid "Include binary files"
+msgstr "包含二进制文件"
+
+#. Resource IDs: (1010)
+msgid "Include hidden items"
+msgstr "包含隐藏项目"
+
+#. Resource IDs: (1011)
+msgid "Include subfolders"
+msgstr "包含子文件夹"
+
+#. Resource IDs: (1009)
+msgid "Include system items"
+msgstr "包含系统项目"
+
+#. Resource IDs: (153)
+msgid "Invalid path!"
+msgstr "无效路径!"
+
+#. Resource IDs: (1019)
+msgid "KB"
+msgstr "KB"
+
+#. Resource IDs: (1075)
+msgid "Language:"
+msgstr "语言"
+
+#. Resource IDs: (1017)
+msgid "Limit search"
+msgstr "限定搜索"
+
+#. Resource IDs: (134)
+msgid "Line"
+msgstr "行号"
+
+#. Resource IDs: (150)
+#, c-format
+msgid "Line %5ld : %30s\n"
+msgstr "行 %5ld : %30s\n"
+
+#. Resource IDs: (135)
+msgid "Matches"
+msgstr "匹配"
+
+#. Resource IDs: (104)
+msgid "Name"
+msgstr "名称"
+
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr "晚于"
+
+#. Resource IDs: (115)
+msgid "Newline is matched by '.'"
+msgstr "新行匹配 \".\" 号"
+
+#. Resource IDs: (1)
+msgid "OK"
+msgstr "确定"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr "早于"
+
+#. Resource IDs: (1062)
+msgid "Only one instance"
+msgstr "仅单实例"
+
+#. Resource IDs: (142)
+msgid "Open containing folder"
+msgstr "打开包含的文件夹"
+
+#. Resource IDs: (141)
+msgid "Open with Editor"
+msgstr "使用编辑器打开"
+
+#. Resource IDs: (1056)
+msgid "Paste text to test the regex with:"
+msgstr "粘贴文本以测试正则:"
+
+#. Resource IDs: (137)
+msgid "Path"
+msgstr "路径"
+
+#. Resource IDs: (131)
+msgid "Preset name"
+msgstr "预置名称"
+
+#. Resource IDs: (1022, 132)
+msgid "Presets"
+msgstr "预置"
+
+#. Resource IDs: (1065)
+msgid "Press F1 for help"
+msgstr "按 F1 键查看帮助"
+
+#. Resource IDs: (154)
+msgid "Programs"
+msgstr "应用程序"
+
+#. Resource IDs: (32775 - Menu)
+msgid "Re&name Preset"
+msgstr "重命名预置(&N)"
+
+#. Resource IDs: (130)
+msgid "Regex Test"
+msgstr "正则测试"
+
+#. Resource IDs: (1046)
+msgid "Regex match"
+msgstr "正则匹配"
+
+#. Resource IDs: (65535)
+msgid "Regex replace string:"
+msgstr "正则替换字符串:"
+
+#. Resource IDs: (1001)
+msgid "Regex search"
+msgstr "正则搜索"
+
+#. Resource IDs: (65535)
+msgid "Regex search string:"
+msgstr "正则搜索字符串:"
+
+#. Resource IDs: (152)
+msgid "Relative paths are not allowed. Please enter an absolute path!"
+msgstr "不允许使用相对路径. 请输入一个绝对路径!"
+
+#. Resource IDs: (32771 - Menu)
+msgid "Remo&ve Preset"
+msgstr "移除预置(&V)"
+
+#. Resource IDs: (106)
+msgid "Replace string"
+msgstr "替换字符串"
+
+#. Resource IDs: (1027)
+msgid "Replace with:"
+msgstr "替换为:"
+
+#. Resource IDs: (126)
+msgid "S&top"
+msgstr "停止(&T)"
+
+#. Resource IDs: (1, 1016)
+msgid "Search"
+msgstr "搜索"
+
+#. Resource IDs: (1026)
+msgid "Search &for:"
+msgstr "搜索(&F):"
+
+#. Resource IDs: (65535)
+msgid "Search &in"
+msgstr "搜索于（&I）"
+
+#. Resource IDs: (1042)
+msgid "Search case-sensitive"
+msgstr "大小写敏感搜索"
+
+#. Resource IDs: (1015)
+msgid "Search in"
+msgstr "搜索于"
+
+#. Resource IDs: (1018)
+msgid "Search results"
+msgstr "搜索结果"
+
+#. Resource IDs: (105)
+msgid "Search string"
+msgstr "搜索字符串"
+
+#. Resource IDs: (128)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中."
+
+#. Resource IDs: (140)
+msgid "Select Editor Application..."
+msgstr "选择编辑器应用程序..."
+
+#. Resource IDs: (127)
+msgid "Select path to search"
+msgstr "选择要搜索的路径"
+
+#. Resource IDs: (1071)
+msgid "Settings"
+msgstr "设置"
+
+#. Resource IDs: (133)
+msgid "Size"
+msgstr "大小"
+
+#. Resource IDs: (1006)
+msgid "Size is"
+msgstr "大小为"
+
+#. Resource IDs: (1028)
+msgid "Test regex"
+msgstr "测试正则"
+
+#. Resource IDs: (136)
+msgid "Text"
+msgstr "文本"
+
+#. Resource IDs: (1048)
+msgid "Text match"
+msgstr "文本匹配"
+
+#. Resource IDs: (1002)
+msgid "Text search"
+msgstr "文本搜索"
+
+#. Resource IDs: (65535)
+msgid "The regex search string matches:"
+msgstr "正则搜索字符串匹配:"
+
+#. Resource IDs: (65535)
+msgid "The resulting text after replacing:"
+msgstr "替换后的结果文本:"
+
+#. Resource IDs: (1074)
+msgid "This adds a new entry to the context menu named \"Open with Editor\""
+msgstr "这将在上下文菜单中添加一个名为\"使用编辑器打开\"的条目."
+
+#. Resource IDs: (1053)
+msgid "Treat files as UTF8"
+msgstr "将文件视为 UTF8"
+
+#. Resource IDs: (1045)
+msgid "Visit our website"
+msgstr "访问我们的网站"
+
+#. Resource IDs: (116)
+msgid "a regular expression used for searching. Press F1 for more info."
+msgstr "用于搜索的正则表达式. 按 F1 键获取更多信息."
+
+#. Resource IDs: (125)
+msgid "an empty string"
+msgstr "空字符串"
+
+#. Resource IDs: (130)
+msgid "binary"
+msgstr "二进制"
+
+#. Resource IDs: (118)
+msgid "click to edit the text as a multiline text"
+msgstr "点击这里将该文本作为多行文本来编辑"
+
+#. Resource IDs: (121)
+msgid "equal to"
+msgstr "等于"
+
+#. Resource IDs: (122)
+msgid "greater than"
+msgstr "大于"
+
+#. Resource IDs: (103, 129)
+msgid "grepWin"
+msgstr "grepWin"
+
+#. Resource IDs: (138)
+msgid "grepWin Settings"
+msgstr "grepWin 设置"
+
+#. Resource IDs: (157)
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr "按住 SHIFT 键来查找不包含搜索字符串的文件"
+
+#. Resource IDs: (132)
+msgid "invalid regex!"
+msgstr "无效的正则表达式!"
+
+#. Resource IDs: (120)
+msgid "less than"
+msgstr "小于"
+
+#. Resource IDs: (111)
+msgid "no match"
+msgstr "无匹配"
+
+#. Resource IDs: (110)
+msgid "no text to replace with"
+msgstr "没有要替换为的文本"
+
+#. Resource IDs: (107)
+msgid "no text to test with available"
+msgstr "没有要测试的文本"
+
+#. Resource IDs: (112)
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "仅匹配此样式的文件被搜索.\r\n使用 \"|\" 作为分隔符.\r\n例如: *.cpp|*.h"
+
+#. Resource IDs: (129)
+msgid "read error"
+msgstr "读取错误"
+
+#. Resource IDs: (131)
+msgid "regex ok"
+msgstr "正则 OK"
+
+#. Resource IDs: (117)
+msgid "reuse grepWin instances."
+msgstr "复用 grepWin 实例"
+
+#. Resource IDs: (151)
+#, c-format
+msgid "scanning file '%s'"
+msgstr "正在扫描文件 '%s'"
+
+#. Resource IDs: (108)
+msgid "search string is empty"
+msgstr "搜索字符串为空"
+
+#. Resource IDs: (114)
+msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n比如:  c:\\temp|d:\\logs"
+
+#. Resource IDs: (113)
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在Windows中是隐藏的, 所以通常不扫描它们."
+
