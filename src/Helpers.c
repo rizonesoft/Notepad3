@@ -214,26 +214,26 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 {
   StringCchCopy(szVersionStr, cchVersionStr, L"OS Version: Windows ");
   
-  if (IsWin10OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2016 " : L"10 ");
+  if (IsWindows10OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2016 " : L"10 ");
   }
-  else if (IsWin81OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 R2 " : L"8.1");
+  else if (IsWindows8Point1OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 R2 " : L"8.1");
   }
-  else if (IsWin8OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2012 " : L"8");
+  else if (IsWindows8OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 " : L"8");
   }
-  else if (IsWin71OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 R2 " : L"7 (SP1)");
+  else if (IsWindows7SP1OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2008 R2 " : L"7 (SP1)");
   }
-  else if (IsWin7OrHigher()) {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Server 2008 " : L"7");
+  else if (IsWindows7OrGreater()) {
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2008 " : L"7");
   }
   else {
-    StringCchCat(szVersionStr, cchVersionStr, IsWinServer() ? L"Unkown Server " : L"?");
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Unkown Server " : L"?");
   }
   
-  if (IsWin10OrHigher()) {
+  if (IsWindows10OrGreater()) {
     WCHAR win10ver[80] = { L'\0' };
     if (s_OSversion.dwOSVersionInfoSize == 0) { _GetTrueWindowsVersion(); }
     DWORD const build = s_OSversion.dwBuildNumber;
@@ -320,53 +320,6 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
 
 //=============================================================================
 //
-//  GetCurrentDPI()
-//
-DPI_T GetCurrentDPI(HWND hwnd) {
-
-  DPI_T curDPI = { 0, 0 };
-
-  if (IsWin10OrHigher()) {
-    HMODULE const hModule = GetModuleHandle(L"user32.dll");
-    if (hModule) {
-      FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
-      if (pfnGetDpiForWindow) {
-        curDPI.x = curDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
-      }
-    }
-  }
-
-  if ((curDPI.x == 0) && IsWin81OrHigher()) {
-    HMODULE hShcore = LoadLibrary(L"shcore.dll");
-    if (hShcore) {
-      FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
-      if (pfnGetDpiForMonitor) {
-        HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-        UINT dpiX = 0, dpiY = 0;
-        if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
-          curDPI.x = dpiX;
-          curDPI.y = dpiY;
-        }
-      }
-      FreeLibrary(hShcore);
-    }
-  }
-
-  if (curDPI.x == 0) {
-    HDC hDC = GetDC(hwnd);
-    curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
-    curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
-    ReleaseDC(hwnd, hDC);
-  }
-
-  curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
-  curDPI.y = max_u(curDPI.y, USER_DEFAULT_SCREEN_DPI);
-  return curDPI;
-}
-
-
-//=============================================================================
-//
 //  GetCurrentPPI()
 //  (font size) points per inch
 //
@@ -390,18 +343,6 @@ if (!bSucceed) {
   if (*wSize == 0)
     *wSize = 8;
 }*/
-
-
-//=============================================================================
-//
-//  GetSystemMetricsEx()
-//  get system metric for current DPI 
-// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
-//
-int GetSystemMetricsEx(HWND hwnd, int nValue) {
-
-  return ScaleIntToDPI_Y(hwnd, GetSystemMetrics(nValue));
-}
 
 
 //=============================================================================
@@ -438,7 +379,7 @@ HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp)
   if (hbmp) {
     BITMAP bmp;
     if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      DPI_T const DPI = GetCurrentDPI(hwnd);
+      DPI_T const DPI = Scintilla_GetCurrentDPI(hwnd);
       int const width = MulDiv(bmp.bmWidth, DPI.x, USER_DEFAULT_SCREEN_DPI);
       int const height = MulDiv(bmp.bmHeight, DPI.y, USER_DEFAULT_SCREEN_DPI);
       if ((width != bmp.bmWidth) || (height != bmp.bmHeight)) {
@@ -497,7 +438,7 @@ bool IsProcessElevated() {
   // Vista, GetTokenInformation returns FALSE with the 
   // ERROR_INVALID_PARAMETER error code because TokenElevation is 
   // not supported on those operating systems.
-  if (!IsVistaOrHigher()) { return false; }
+  if (!IsWindowsVistaOrGreater()) { return false; }
 
   bool bIsElevated = false;
   HANDLE hToken = NULL;

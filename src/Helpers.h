@@ -24,6 +24,8 @@
 #include <heapapi.h>
 #include <versionhelpers.h>
 
+#include <Scintilla.h>
+
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
 
@@ -178,30 +180,6 @@ inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); 
 
 // ----------------------------------------------------------------------------
 
-//#define Is2k()    (g_uWinVer >= 0x0500)
-#define IsXPOrHigher()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
-#define IsXP1OrHigher()    IsWindowsXPSP1OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 1 (SP1)version.
-#define IsXP2OrHigher()    IsWindowsXPSP2OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 2 (SP2)version.
-#define IsXP3OrHigher()    IsWindowsXPSP3OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 3 (SP3)version.
-
-#define IsVistaOrHigher()  IsWindowsVistaOrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows Vista version.
-#define IsVista1OrHigher() IsWindowsVistaSP1OrGreater()  // Indicates if the current OS version matches,or is greater than,the Windows Vista with Service Pack 1 (SP1)version.
-#define IsVista2OrHigher() IsWindowsVistaSP2OrGreater()  // Indicates if the current OS version matches,or is greater than,the Windows Vista with Service Pack 2 (SP2)version.
-
-#define IsWin7OrHigher()   IsWindows7OrGreater()         // Indicates if the current OS version matches,or is greater than,the Windows 7 version.
-#define IsWin71OrHigher()  IsWindows7SP1OrGreater()      // Indicates if the current OS version matches,or is greater than,the Windows 7 with Service Pack 1 (SP1)version.
-#define IsWin8OrHigher()   IsWindows8OrGreater()         // Indicates if the current OS version matches,or is greater than,the Windows 8 version.
-#define IsWin81OrHigher()  IsWindows8Point1OrGreater()   // Indicates if the current OS version matches,or is greater than,the Windows 8.1 version.
-                                                         //   For Windows 10,IsWindows8Point1OrGreater returns false unless the application contains a manifest that includes
-                                                         //   a compatibility section that contains the GUIDs that designate Windows 8.1 and/or Windows 10.
-
-#define IsWin10OrHigher()  IsWindows10OrGreater()        // Indicates if the current OS version matches, or is greater than, the Windows 10 version.
-                                                         //   For Windows 10,IsWindows10OrGreater returns false unless the application contains a manifest that includes
-                                                         //   a compatibility section that contains the GUID that designates Windows 10.
-
-#define IsWinServer()      IsWindowsServer()             // Indicates if the current OS is a Windows Server release.
-                                                         //   Applications that need to distinguish between server and client versions of Windows should call this function.
-
 void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 
 // ----------------------------------------------------------------------------
@@ -218,22 +196,20 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem);
 
 // ----------------------------------------------------------------------------
 
-DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
 
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
 HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
 
-inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPIX(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd);  return float2int((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPIY(HWND hwnd, float fVal) { DPI_T const dpi = GetCurrentDPI(hwnd);  return float2int((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntFontSizeW(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.x, ppi.x); }
-inline int ScaleIntFontSizeH(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.y, ppi.y); }
-inline int ScaleFontSize(HWND hwnd, float fSize) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * dpi.y) / (float)ppi.y); }
-inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { DPI_T const dpi = GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10; }
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleToCurrentDPIX(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return float2int((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleToCurrentDPIY(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return float2int((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntFontSizeW(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.x, ppi.x); }
+inline int ScaleIntFontSizeH(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.y, ppi.y); }
+inline int ScaleFontSize(HWND hwnd, float fSize) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * dpi.y) / (float)ppi.y); }
+inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10; }
 
-int GetSystemMetricsEx(HWND hwnd, int nValue);
 
 // ----------------------------------------------------------------------------
 
