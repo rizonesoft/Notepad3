@@ -54,16 +54,15 @@
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
 CONSTANTS_T const Constants = { 
-    2                           // StdDefaultLexerID
-  , L"minipath.exe"             // FileBrowserMiniPath
-  , L"grepWin.exe"              // FileSearchGrepWin
-  , L"ThemeFileName"            // StylingThemeName
-
-  , L"Settings"                 // Inifile Section "Settings"
-  , L"Settings2"                // Inifile Section "Settings2"
-  , L"Window"                   // Inifile Section "Window"
-  , L"Styles"                   // Inifile Section "Styles"
-  , L"Suppressed Messages"      // Inifile Section "SuppressedMessages"
+    2                                    // StdDefaultLexerID
+  , L"minipath.exe"                      // FileBrowserMiniPath
+  , L"grepWin\\grepWin_portable.exe"     // FileSearchGrepWin
+  , L"ThemeFileName"                     // StylingThemeName
+  , L"Settings"                          // Inifile Section "Settings"
+  , L"Settings2"                         // Inifile Section "Settings2"
+  , L"Window"                            // Inifile Section "Window"
+  , L"Styles"                            // Inifile Section "Styles"
+  , L"Suppressed Messages"               // Inifile Section "SuppressedMessages"
 };
 
 FLAGS_T     Flags;

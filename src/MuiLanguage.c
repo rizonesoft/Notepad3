@@ -59,6 +59,29 @@ MUILANGUAGE MUI_LanguageDLLs[] =
 //NUM_OF_MUI_LANGUAGES
 int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
 
+
+
+grepWinLng_t grepWinLangResName[] =
+{
+  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                   L"Deutsch.lang"},
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),              L"English.lang"},
+  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),          L"Spanish.lang"},
+  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                 L"Italiano.lang"},
+  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                     L"Nederlands.lang"},
+  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),            L"Polski.lang"},
+  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),          L"Russian.lang"},
+  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), L"Brazilian_Portuguese.lang"},
+  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),      L"Chinese.lang"},
+  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),         L"Japanese.lang"}
+};
+
+int grepWinLang_CountOf() { return COUNTOF(grepWinLangResName); };
+
+
+// ----------------------------------------------------------------------------
+
+
+
 //=============================================================================
 //
 //  GetMUILanguageIndexByLangID
