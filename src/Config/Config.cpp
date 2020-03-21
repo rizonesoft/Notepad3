@@ -809,17 +809,18 @@ extern "C" bool CreateIniFile()
       HANDLE hFile = CreateFile(Globals.IniFile,
         GENERIC_READ, FILE_SHARE_READ,
         nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-      if (hFile == INVALID_HANDLE_VALUE) {
-        Globals.dwLastError = GetLastError();
-        MsgBoxLastError(L"Read Access to Settings-File failed!", Globals.dwLastError);
-        return result;
+
+      if (hFile != INVALID_HANDLE_VALUE) {
+        DWORD dwFSHigh = 0UL;
+        dwFileSize = GetFileSize(hFile, &dwFSHigh);
+        CloseHandle(hFile);
       }
-      DWORD dwFSHigh = 0UL;
-      dwFileSize = GetFileSize(hFile, &dwFSHigh);
-      CloseHandle(hFile);
+      else {
+        dwFileSize = INVALID_FILE_SIZE;
+      }
     }
 
-    if ((dwFileSize == 0) && (dwFileSize != INVALID_FILE_SIZE)) {
+    if (dwFileSize == 0) {
       result = IniFileSetString(Globals.IniFile, L"Notepad3", NULL, NULL);
       Globals.bIniFileFromScratch = true;
     }
