@@ -36,9 +36,18 @@ set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR
 :: ====================================================================================================================
 
 :: --- Environment ---
+
+if exist D:\PortableApps\PortableApps.comInstaller\ (
+    set PORTAPP_ROOT_DIR=D:\PortableApps
+) else (
+    if exist D:\Rizonesoft\PortableApps\PortableApps\PortableApps.comInstaller\ (
+        set PORTAPP_ROOT_DIR=D:\Rizonesoft\PortableApps\PortableApps
+    ) else (
+      goto :END
+    )
+)
+
 set SCRIPT_DIR=%~dp0
-set PORTAPP_ROOT_DIR=D:\PortableApps
-::set PORTAPP_ROOT_DIR=D:\Rizonesoft\PortableApps\PortableApps
 set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
@@ -201,7 +210,7 @@ goto :END
         >> "%~4" echo(!modified!
         endlocal
     )
-    goto:EOF
+    goto :EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETDATE
@@ -215,19 +224,19 @@ goto :END
     ::echo datestamp: "%datestamp%"
     ::echo timestamp: "%timestamp%"
     ::echo fullstamp: "%fullstamp%"
-    goto:EOF
+    goto :EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETFILEVER
     set "file=%~1"
-    if not defined file goto:EOF
-    if not exist "%file%" goto:EOF
+    if not defined file goto :EOF
+    if not exist "%file%" goto :EOF
     set "FILEVER="
     for /F "tokens=2 delims==" %%a in ('
         wmic datafile where name^="%file:\=\\%" Get Version /value 
     ') do set "FILEVER=%%a"
     ::echo %file% = %FILEVER% 
-    goto:EOF
+    goto :EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETBUILD
@@ -235,7 +244,7 @@ goto :END
     set /a BUILD = %nxbuild% - 1
     set /p DEVNAME=<%NP3_BUILD_NAME%
     set DEVNAME=%DEVNAME:"=%
-    goto:EOF
+    goto :EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 rem Resolve path to absolute.
@@ -244,7 +253,7 @@ rem Param 2: Path to resolve.
 rem Return: Resolved absolute path.
 :RESOLVEPATH
     set %1=%~dpfn2
-    goto:EOF
+    goto :EOF
 :: --------------------------------------------------------------------------------------------------------------------
     
 :: ====================================================================================================================
