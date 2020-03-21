@@ -50,6 +50,7 @@
 #include <shlwapi.h>
 #include <shlobj.h>
 #include <shellapi.h>
+#include <VersionHelpers.h>
 
 #define DebugDragAndDropDataFormat		0
 
@@ -150,6 +151,7 @@ constexpr UINT SC_WORK_IDLE = 5002;
 #endif
 
 #if _WIN32_WINNT < _WIN32_WINNT_WIN8
+DWORD	kSystemLibraryLoadFlags = 0;
 using SetCoalescableTimerSig = UINT_PTR (WINAPI *)(HWND hwnd, UINT_PTR nIDEvent,
 	UINT uElapse, TIMERPROC lpTimerFunc, ULONG uToleranceDelay);
 #endif
@@ -822,8 +824,8 @@ bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
-	return (xMove > GetSystemMetricsEx(SM_CXDRAG)) ||
-		(yMove > GetSystemMetricsEx(SM_CYDRAG));
+	return (xMove > GetSystemMetricsEx(MainHWND(), SM_CXDRAG)) ||
+		(yMove > GetSystemMetricsEx(MainHWND(), SM_CYDRAG));
 }
 
 void ScintillaWin::StartDrag() {
@@ -3779,7 +3781,14 @@ namespace Scintilla {
 // Must be called once only.
 extern "C" __declspec(dllexport)
 int Scintilla_RegisterClasses(void *hInstance) {
+
+#if _WIN32_WINNT < _WIN32_WINNT_WIN8
+	// see LoadD2D() in PlatWin.cxx
+	kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() || GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetDefaultDllDirectories")) ? LOAD_LIBRARY_SEARCH_SYSTEM32 : 0;
+#endif
+
 	Platform_Initialise(hInstance);
+
 	const bool result = ScintillaWin::Register(static_cast<HINSTANCE>(hInstance));
 #ifdef SCI_LEXER
 	Scintilla_LinkLexers();
@@ -3797,3 +3806,14 @@ extern "C" __declspec(dllexport)
 int Scintilla_InputCodePage(void) {
 	return InputCodePage();
 }
+
+extern "C" __declspec(dllexport)
+DPI_T Scintilla_GetCurrentDPI(void* hwnd) {
+	return GetCurrentDPI(static_cast<HWND>(hwnd));
+}
+
+extern "C" __declspec(dllexport)
+int Scintilla_GetSystemMetricsEx(void* hwnd, int nIndex) {
+	return GetSystemMetricsEx(static_cast<HWND>(hwnd), nIndex);
+}
+

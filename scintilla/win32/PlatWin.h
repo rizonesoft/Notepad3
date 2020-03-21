@@ -43,15 +43,6 @@
 #endif
 
 
-// force compile C as CPP
-#define NP2_FORCE_COMPILE_C_AS_CPP	0
-
-#if NP2_FORCE_COMPILE_C_AS_CPP
-extern int GetSystemMetricsEx(int nIndex);
-#else
-extern "C" int GetSystemMetricsEx(int nIndex);
-#endif
-
 
 namespace Scintilla {
 
@@ -85,6 +76,12 @@ extern bool LoadD2D() noexcept;
 extern ID2D1Factory *pD2DFactory;
 extern IDWriteFactory *pIDWriteFactory;
 #endif
+
+
+DPI_T GetCurrentDPI(HWND hwnd);
+int GetSystemMetricsEx(HWND hwnd, int nIndex);
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
 
 }
 

@@ -12,6 +12,7 @@
 #include "ChooseFont.h"
 #include "FontEnumeration.h"
 #include "GdiTextRenderer.h"
+#include "Scintilla.h"
 
 extern "C" {
 #include "../resource.h"

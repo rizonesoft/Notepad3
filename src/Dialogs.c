@@ -699,7 +699,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     {
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
 
-      DPI_T const dpi = GetCurrentDPI(hwnd);
+      DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
 
       //~~// get current richedit box format
@@ -844,7 +844,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        DPI_T dpi = GetCurrentDPI(hwnd);
+        DPI_T dpi = Scintilla_GetCurrentDPI(hwnd);
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
@@ -3778,7 +3778,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   HWND hwndCtl = GetDlgItem(hwnd, nIdGrip);
   SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
   /// TODO: per-window DPI
-  const int cGrip = GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
+  const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
   SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
 }
 

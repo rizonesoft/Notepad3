@@ -3094,7 +3094,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    DPI_T const dpi = GetCurrentDPI(hwnd);
+    DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
     if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, dpi, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
@@ -4452,7 +4452,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
           GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        int cGrip = GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
+        int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
