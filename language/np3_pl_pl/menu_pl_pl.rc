@@ -282,7 +282,7 @@ BEGIN
             MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
             MENUITEM "Multiwybór-wszystko pasujące\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Podział operacji cofania przy przenoszeniu wierszy",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Zakładki"
