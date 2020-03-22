@@ -13,7 +13,7 @@ NULL,
 
 
 EDITLEXER lexRC = { 
-SCLEX_CPP, IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; dlg", L"", 
+SCLEX_CPP, IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; dlg; lang", L"", 
 &KeyWords_RC, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
