@@ -21,6 +21,7 @@
 
 extern "C" {
 #include "Dlapi.h"
+#include "Dialogs.h"
 #include "minipath.h"
 #include "resource.h"
 }
@@ -68,42 +69,65 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 
 // ============================================================================
 
-
 // ----------------------------------------------------------------------------
 // No mechanism for  EXCLUSIVE WRITE / SHARD READ:
 // cause we need completely synchronized exclusive access for READ _and_ WRITE
-// of complete file to preserve integrety of any transaction
+// of complete file to preserve integrity of any transaction
 // ----------------------------------------------------------------------------
 
 HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
+  if (StrIsEmpty(lpIniFilePath)) { return INVALID_HANDLE_VALUE; }
+  
+  bool bLocked = false;
+
   HANDLE hFile = CreateFile(lpIniFilePath, 
-    GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+    OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
-  bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
-
+  if (hFile != INVALID_HANDLE_VALUE)
+  {
+    bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
+    if (!bLocked) {
+      MsgBoxLastError(L"AcquireWriteFileLock(): NO EXCLUSIVE LOCK ACQUIRED!", 0);
+    }
+  }
+  else {
+    MsgBoxLastError(L"AcquireWriteFileLock(): INVALID FILE HANDLE!", 0);
+  }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
 
 // ----------------------------------------------------------------------------
+
+#define LOCKFILE_SHARED_LOCK (0x00000000)
 
 HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
+  if (StrIsEmpty(lpIniFilePath)) { return INVALID_HANDLE_VALUE; }
+
+  bool bLocked = false;
+
   HANDLE hFile = CreateFile(lpIniFilePath,
-    GENERIC_READ, FILE_SHARE_READ,
-    nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
-  bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
-
+  if (hFile != INVALID_HANDLE_VALUE) 
+  {
+    bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
+    if (!bLocked) {
+      MsgBoxLastError(L"AcquireReadFileLock(): NO READER LOCK ACQUIRED!", 0);
+    }
+  }
+  else {
+    MsgBoxLastError(L"AcquireReadFileLock(): INVALID FILE HANDLE", 0);
+  }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
 
 // ----------------------------------------------------------------------------
 
-bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
+BOOL ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 {
   bool bUnLocked = true;
   if (hFile != INVALID_HANDLE_VALUE) {
@@ -116,53 +140,59 @@ bool ReleaseFileLock(HANDLE hFile, OVERLAPPED& rOvrLpd)
 
 // ============================================================================
 
-
-// ============================================================================
-
-static OVERLAPPED s_OvrLpd = { 0 };
-static HANDLE s_INI_Hndl = INVALID_HANDLE_VALUE;
+static BOOL s_bIniFileCacheLoaded = FALSE;
 static CSimpleIni s_INI(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
-
-extern "C" BOOL LoadIniFile(LPCWSTR lpIniFilePath, BOOL bNeedReadWriteAccess)
-{
+extern "C" BOOL ResetIniFileCache() {
   s_INI.Reset();
+  s_bIniFileCacheLoaded = false;
+  return true;
+}
+
+extern "C" BOOL LoadIniFileCache(LPCWSTR lpIniFilePath)
+{
+  ResetIniFileCache();
+  
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
 
-  s_INI_Hndl = bNeedReadWriteAccess ? AcquireWriteFileLock(lpIniFilePath, s_OvrLpd) :
-                                      AcquireReadFileLock(lpIniFilePath, s_OvrLpd);;
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hIniFile = AcquireReadFileLock(lpIniFilePath, ovrLpd);
 
-  if (s_INI_Hndl == INVALID_HANDLE_VALUE) {
+  if (hIniFile == INVALID_HANDLE_VALUE) {
     return false;
   }
 
-  return SI_Success(s_INI.LoadFile(s_INI_Hndl));
+  s_bIniFileCacheLoaded = SI_Success(s_INI.LoadFile(hIniFile));
+
+  ReleaseFileLock(hIniFile, ovrLpd);
+
+  return s_bIniFileCacheLoaded;
 }
 
 
-extern "C" bool IsIniFileLoaded()
+extern "C" BOOL IsIniFileCached() { return s_bIniFileCacheLoaded; }
+
+
+extern "C" BOOL SaveIniFileCache(LPCWSTR lpIniFilePath)
 {
-  return (s_INI_Hndl != INVALID_HANDLE_VALUE);
+  if (!s_bIniFileCacheLoaded) { return false; }
+
+  OVERLAPPED ovrLpd = { 0 };
+  HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
+
+  if (hIniFile == INVALID_HANDLE_VALUE) {
+    return false;
 }
 
-
-extern "C" void ReleaseIniFile()
-{
-  s_INI.Reset();
-  ReleaseFileLock(s_INI_Hndl, s_OvrLpd);
-  s_INI_Hndl = INVALID_HANDLE_VALUE;
-  ZeroMemory(&s_OvrLpd, sizeof(OVERLAPPED));
-}
-
-
-extern "C" BOOL SaveIniFile()
-{
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
-  SI_Error const rc = s_INI.SaveFile(s_INI_Hndl, s_bWriteSIG);
-  ReleaseIniFile();
-  return SI_Success(rc);
+
+  bool const res = SI_Success(s_INI.SaveFile(hIniFile, s_bWriteSIG));
+
+  ReleaseFileLock(hIniFile, ovrLpd);
+
+  return res;
 }
 
 
@@ -329,6 +359,11 @@ extern "C" BOOL IniClearAllSections(LPCWSTR lpPrefix, BOOL bRemoveEmpty)
 extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
                                    LPWSTR lpReturnedString, size_t cchReturnedString)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    StringCchCopyW(lpReturnedString, cchReturnedString, lpDefault);
+    return (size_t)lstrlen(lpReturnedString);
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
   OVERLAPPED ovrLpd = { 0 };
@@ -356,6 +391,10 @@ extern "C" size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LP
 
 extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return false;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
 
@@ -383,6 +422,10 @@ extern "C" BOOL IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCW
 
 extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return iDefault;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
   OVERLAPPED ovrLpd = { 0 };
@@ -408,6 +451,10 @@ extern "C" int IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR 
 
 extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return false;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
 
@@ -432,6 +479,10 @@ extern "C" BOOL IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
 extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bDefault)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return bDefault;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
   OVERLAPPED ovrLpd = { 0 };
@@ -457,6 +508,10 @@ extern "C" BOOL IniFileGetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bValue)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return false;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
 
@@ -481,6 +536,10 @@ extern "C" BOOL IniFileSetBool(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWST
 
 extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, BOOL bRemoveEmpty)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return false;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
   Ini.SetSpaces(s_bSetSpaces);
 
@@ -505,6 +564,10 @@ extern "C" BOOL IniFileDelete(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR
 
 extern "C" BOOL IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName, IterSectionFunc_t callBack)
 {
+  if (StrIsEmpty(lpFilePath)) {
+    return false;
+  }
+
   CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
 
   OVERLAPPED ovrLpd = { 0 };
@@ -592,10 +655,11 @@ int CreateIniFile()
 
     DWORD dwFileSize = 0UL;
 
-    if (!PathFileExists(g_wchIniFile)) {
+    if (!PathFileExists(g_wchIniFile)) 
+    {
       HANDLE hFile = CreateFile(g_wchIniFile,
-        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-        nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+        GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
       if (hFile != INVALID_HANDLE_VALUE) {
         CloseHandle(hFile);
       }
@@ -836,7 +900,7 @@ void LoadFlags()
 {
   __try {
 
-    LoadIniFile(g_wchIniFile, FALSE);
+    LoadIniFileCache(g_wchIniFile);
 
     const WCHAR* const Settings_Section2 = L"Settings2";
 
@@ -865,7 +929,7 @@ void LoadFlags()
 
   }
   __finally {
-    ReleaseIniFile();
+    ResetIniFileCache();
   }
 }
 
@@ -892,7 +956,7 @@ void LoadSettings()
 {
   __try {
 
-  LoadIniFile(g_wchIniFile, FALSE);
+  LoadIniFileCache(g_wchIniFile);
 
   const WCHAR* const Settings_Section = L"Settings";
 
@@ -1026,7 +1090,7 @@ void LoadSettings()
   
   }
   __finally {
-    ReleaseIniFile();
+    ResetIniFileCache();
   }
 }
 
@@ -1073,7 +1137,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
   __try {
 
-    LoadIniFile(g_wchIniFile, TRUE);
+    LoadIniFileCache(g_wchIniFile);
 
     const WCHAR* const Settings_Section = L"Settings";
 
@@ -1167,7 +1231,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
 
   }
   __finally {
-    SaveIniFile();
+    SaveIniFileCache(g_wchIniFile);
   }
 }
 

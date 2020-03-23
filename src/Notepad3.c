@@ -2223,7 +2223,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     DestroyWindow(Globals.hwndToolbar); 
   }
 
-  OpenSettingsFile();
+  bool bOpendByMe = false;
+  OpenSettingsFile(&bOpendByMe);
   bool bDirtyFlag = false;
 
   Globals.hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
@@ -2376,7 +2377,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
   }
 
-  CloseSettingsFile(bDirtyFlag);
+  CloseSettingsFile(bDirtyFlag, bOpendByMe);
 
   // ------------------------------
   // Create ReBar and add Toolbar
@@ -5336,19 +5337,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (Flags.bStickyWindowPosition) { InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS); }
 
-        if (OpenSettingsFile())
-        {
-          SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
+        bool bOpendByMe = false;
+        OpenSettingsFile(&bOpendByMe);
 
-          if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) 
-          {
-            IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
-          }
-          else {
-            IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
-          }
+        SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
+
+        if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
+        {
+          IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
         }
-        CloseSettingsFile(true);
+        else {
+          IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
+        }
+
+        CloseSettingsFile(true, bOpendByMe);
       }
       break;
 
@@ -5505,7 +5507,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
           if (StrIsNotEmpty(Globals.IniFileDefault)) {
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
-            if (CreateIniFile()) {
+            if (CreateIniFile(Globals.IniFile)) {
               StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
@@ -9405,7 +9407,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (bCreateFile) {
       HANDLE hFile = CreateFile(szFileName,
                       GENERIC_READ | GENERIC_WRITE,
-                      FILE_SHARE_READ|FILE_SHARE_WRITE,
+                      FILE_SHARE_READ | FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
       Globals.dwLastError = GetLastError();
       fSuccess = (hFile != INVALID_HANDLE_VALUE);

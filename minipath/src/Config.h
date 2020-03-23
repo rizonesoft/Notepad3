@@ -37,9 +37,10 @@ extern "C" {
 
   // ----------------------------------------------------------------------------
 
-  BOOL LoadIniFile(LPCWSTR lpIniFilePath, BOOL bNeedReadWriteAccess);
-  BOOL SaveIniFile();
-  void ReleaseIniFile();
+  BOOL LoadIniFileCache(LPCWSTR lpIniFilePath);
+  BOOL IsIniFileCached();
+  BOOL SaveIniFileCache(LPCWSTR lpIniFilePath);
+  BOOL ResetIniFileCache();
 
   size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
     LPWSTR lpReturnedString, size_t cchReturnedString);
@@ -51,6 +52,8 @@ extern "C" {
 
   BOOL IniSectionSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
   BOOL IniSectionSetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
+  BOOL IniSectionSetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue);
+  BOOL IniSectionSetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llValue);
   BOOL IniSectionSetHex(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
   BOOL IniSectionSetDouble(LPCWSTR lpSectionName, LPCWSTR lpKeyName, double dValue);
   BOOL IniSectionSetBool(LPCWSTR lpSectionName, LPCWSTR lpName, BOOL bValue);

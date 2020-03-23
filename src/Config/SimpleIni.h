@@ -1434,7 +1434,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
     nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
-    MsgBoxLastError(L"CSimpleIni::LoadFile(): INVALID_HANDLE_VALUE!", 0); // @@@§§§
+    MsgBoxLastError(L"CSimpleIni::LoadFile(): INVALID_HANDLE_VALUE!", 0);
     return SI_Error::SI_FILE;
   }
 
@@ -2634,7 +2634,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
     nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
-    MsgBoxLastError(L"CSimpleIni::SaveFile(): INVALID_HANDLE_VALUE!", 0); // @@@§§§
+    MsgBoxLastError(L"CSimpleIni::SaveFile(): INVALID_HANDLE_VALUE!", 0);
     return SI_Error::SI_FILE;
   }
 

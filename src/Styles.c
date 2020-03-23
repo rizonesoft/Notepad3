@@ -539,16 +539,24 @@ bool Style_Import(HWND hwnd)
 //
 bool Style_ImportFromFile(const WCHAR* szFile)
 {
-  bool bResetToDefault = (!szFile || szFile[0] == L'\0') ? true : false;
+  bool bFactoryReset = StrIsEmpty(szFile) ? true : false;
 
-  if (bResetToDefault) {
-    ReleaseIniFile();
+  bool bIsStdIniFile = false;
+
+  if (!bFactoryReset) {
+    WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
+    StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
+    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
+    if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
+      bIsStdIniFile = true;
+    }
   }
-  bool result = !bResetToDefault ? LoadIniFile(szFile, false) : true;
+
+  bool const result = bIsStdIniFile ? OpenSettingsFile(&bIsStdIniFile) :
+                     (bFactoryReset ? ResetIniFileCache() : LoadIniFileCache(szFile));
 
   if (result) {
-
-    if (bResetToDefault)
+    if (bFactoryReset)
     {
       for (int i = 0; i < 16; i++) {
         g_colorCustom[i] = s_colorDefault[i];
@@ -638,9 +646,8 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         }
       }
     }
-
-    ReleaseIniFile();
-    result = true;
+    
+    CloseSettingsFile(false, bIsStdIniFile);
   }
   return result;
 }
@@ -819,15 +826,29 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
   bool ok = false;
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
-    if (OpenSettingsFile()) {
+    bool bOpendByMe = false;
+    if (OpenSettingsFile(&bOpendByMe)) {
       Style_ToIniSection(bForceAll);
-      ok = CloseSettingsFile(true);
+      ok = CloseSettingsFile(true, bOpendByMe);
     }
   }
   else {
-    LoadIniFile(szFilePathNorm, true); // reset
-    Style_ToIniSection(bForceAll);
-    ok = SaveIniFile();
+    if (StrIsNotEmpty(szFilePathNorm))
+    {
+      if (!PathFileExists(szFilePathNorm))      {
+        HANDLE hFile = CreateFile(szFilePathNorm,
+          GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+          CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hFile != INVALID_HANDLE_VALUE) {
+          CloseHandle(hFile); // done
+        }
+      }
+      if (LoadIniFileCache(szFilePathNorm)) {
+        Style_ToIniSection(bForceAll);
+        ok = SaveIniFileCache(szFilePathNorm);
+        ResetIniFileCache();
+      }
+    }
   }
   return ok;
 }

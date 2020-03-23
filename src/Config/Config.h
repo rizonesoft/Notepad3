@@ -29,19 +29,19 @@ extern "C" {
 bool FindIniFile();
 bool TestIniFile();
 bool CreateIniFile();
-bool OpenSettingsFile();
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);
-bool CloseSettingsFile(bool bSaveChanges);
+
+bool OpenSettingsFile(bool* keepCached);
+bool CloseSettingsFile(bool bSaveChanges, bool keepCached);
 
 // ----------------------------------------------------------------------------
 
-bool LoadIniFile(LPCWSTR lpIniFilePath, bool bNeedReadWriteAccess);
-bool IsIniFileLoaded();
-void ReleaseIniFile();
-bool SaveIniFile();
-
+bool LoadIniFileCache(LPCWSTR lpIniFilePath);
+bool IsIniFileCached();
+bool SaveIniFileCache(LPCWSTR lpIniFilePath);
+bool ResetIniFileCache();
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault, 
                            LPWSTR lpReturnedString, size_t cchReturnedString);

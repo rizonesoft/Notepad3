@@ -185,6 +185,17 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 }
 
 
+DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+#ifdef _DEBUG
+  return MsgBoxLastError(lpszMessage, dwErrID);
+#else
+  UNUSED(lpszMessage);
+  return dwErrID;
+#endif
+}
+
+
 //=============================================================================
 //
 //  _InfoBoxLngDlgProc()

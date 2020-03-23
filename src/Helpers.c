@@ -1545,13 +1545,13 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
 
   if (bRealPath) {
     // get real path name (by zufuliu)
-    HANDLE hFile = CreateFile(lpszPath, // file to open
-      GENERIC_READ,                     // open for reading
-      FILE_SHARE_READ,                  // share for reading
-      NULL,                             // default security
-      OPEN_EXISTING,                    // existing file only
-      FILE_ATTRIBUTE_NORMAL,            // normal file
-      NULL);                            // no attr. template
+    HANDLE hFile = CreateFile(lpszPath,   // file to open
+      GENERIC_READ,                       // open for reading
+      FILE_SHARE_READ | FILE_SHARE_WRITE, // share anyway
+      NULL,                               // default security
+      OPEN_EXISTING,                      // existing file only
+      FILE_ATTRIBUTE_NORMAL,              // normal file
+      NULL);                              // no attr. template
 
     if (hFile != INVALID_HANDLE_VALUE) {
       if (GetFinalPathNameByHandleW(hFile, tmpFilePath,
