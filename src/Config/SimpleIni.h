@@ -1434,6 +1434,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
     nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
+    MsgBoxLastError(L"CSimpleIni::LoadFile(): INVALID_HANDLE_VALUE!", 0); // @@@§§§
     return SI_Error::SI_FILE;
   }
 
@@ -2629,10 +2630,11 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
 ) const
 {
   HANDLE hFile = CreateFile(a_pwszFile,
-    FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
     nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
   if (hFile == INVALID_HANDLE_VALUE) {
+    MsgBoxLastError(L"CSimpleIni::SaveFile(): INVALID_HANDLE_VALUE!", 0); // @@@§§§
     return SI_Error::SI_FILE;
   }
 

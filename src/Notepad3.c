@@ -9404,7 +9404,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
     if (bCreateFile) {
       HANDLE hFile = CreateFile(szFileName,
-                      GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
+                      GENERIC_READ | GENERIC_WRITE,
+                      FILE_SHARE_READ|FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
       Globals.dwLastError = GetLastError();
       fSuccess = (hFile != INVALID_HANDLE_VALUE);

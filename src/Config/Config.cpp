@@ -91,13 +91,22 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 
 HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
-  HANDLE hFile = CreateFile(lpIniFilePath, 
-    GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+  bool bLocked = false;
+
+  HANDLE hFile = CreateFile(lpIniFilePath,
+    GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
     nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
-  bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
-
+  if (hFile != INVALID_HANDLE_VALUE) {
+    DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
+    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
+    if (!bLocked) {
+      MsgBoxLastError(L"AcquireWriteFileLock(): NO LOCK ACQUIRED!", 0); // @@@§§§
+    }
+  }
+  else {
+    MsgBoxLastError(L"AcquireWriteFileLock(): INVALID_HANDLE_VALUE!", 0); // @@@§§§
+  }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
 
@@ -105,13 +114,22 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 
 HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
 {
+  bool bLocked = false;
+
   HANDLE hFile = CreateFile(lpIniFilePath,
     GENERIC_READ, FILE_SHARE_READ,
     nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-  DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
-  bool const bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
-
+  if (hFile != INVALID_HANDLE_VALUE) {
+    DWORD const flags = LOCKFILE_EXCLUSIVE_LOCK;
+    bLocked = LockFileEx(hFile, flags, 0, MAXDWORD, 0, &rOvrLpd);
+    if (!bLocked) {
+      MsgBoxLastError(L"AcquireReadFileLock(): NO LOCK ACQUIRED!", 0); // @@@§§§
+    }
+  }
+  else {
+    MsgBoxLastError(L"AcquireReadFileLock(): INVALID_HANDLE_VALUE", 0); // @@@§§§
+  }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
 
@@ -816,6 +834,7 @@ extern "C" bool CreateIniFile()
         CloseHandle(hFile);
       }
       else {
+        MsgBoxLastError(L"CreateIniFile(): INVALID_HANDLE_VALUE!", 0); // @@@§§§
         dwFileSize = INVALID_FILE_SIZE;
       }
     }
