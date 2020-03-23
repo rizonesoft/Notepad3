@@ -47,41 +47,6 @@ extern HICON   g_hDlgIcon;
 extern LANGID  g_iPrefLANGID;
 
 
-int ErrorMessage(int iLevel, UINT uIdMsg, ...)
-{
-
-  WCHAR szText[256 * 2] = { L'\0' };
-  WCHAR szTitle[256 * 2] = { L'\0' };
-  int iIcon;
-
-  if (!GetLngString(uIdMsg,szText,COUNTOF(szText)))
-    return(0);
-
-  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
-  int const t = clampi(vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1)), 0, 1023);
-  szTitle[t] = L'\0';
-
-  WCHAR* c = StrChr(szTitle,L'\n');
-  if (c)
-  {
-    lstrcpy(szText,(c + 1));
-    *c = '\0';
-  }
-  else
-  {
-    lstrcpy(szText,szTitle);
-    lstrcpy(szTitle,L"");
-  }
-
-  iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
-
-  HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : hwndMain;
-
-  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLANGID);
-}
-
-
 //=============================================================================
 //
 // BFFCallBack()
@@ -2700,7 +2665,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
               __try {
 
-                LoadIniFile(g_wchIniFile, TRUE);
+                LoadIniFileCache(g_wchIniFile);
 
                 const WCHAR* const TargetApp_Section = L"Target Application";
 
@@ -2768,7 +2733,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
               }
               __finally {
-                SaveIniFile();
+                SaveIniFileCache(g_wchIniFile);
               }
               EndDialog(hwnd, IDOK);
             }
@@ -2791,6 +2756,101 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
   return FALSE;
 }
 
+
+//=============================================================================
+//
+//  ErrorMessage()
+//
+int ErrorMessage(int iLevel, UINT uIdMsg, ...)
+{
+
+  WCHAR szText[256 * 2] = { L'\0' };
+  WCHAR szTitle[256 * 2] = { L'\0' };
+  int iIcon;
+
+  if (!GetLngString(uIdMsg, szText, COUNTOF(szText)))
+    return(0);
+
+  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  int const t = clampi(vswprintf_s(szTitle, COUNTOF(szTitle), szText, (LPVOID)((PUINT_PTR)&uIdMsg + 1)), 0, 1023);
+  szTitle[t] = L'\0';
+
+  WCHAR* c = StrChr(szTitle, L'\n');
+  if (c)
+  {
+    lstrcpy(szText, (c + 1));
+    *c = '\0';
+  }
+  else
+  {
+    lstrcpy(szText, szTitle);
+    lstrcpy(szTitle, L"");
+  }
+
+  iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
+
+  HWND focus = GetFocus();
+  HWND hwnd = focus ? focus : hwndMain;
+
+  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLANGID);
+}
+
+
+//=============================================================================
+//
+//  MsgBoxLastError()
+//
+DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
+
+  LPVOID lpMsgBuf = NULL;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    g_iPrefLANGID,
+    (LPTSTR)&lpMsgBuf,
+    0, NULL);
+
+  if (lpMsgBuf) {
+    // Display the error message and exit the process
+    size_t const len = lstrlen((LPCWSTR)lpMsgBuf) + lstrlen(lpszMessage) + 80;
+
+    LPWSTR lpDisplayBuf = LocalAlloc(LPTR, len * sizeof(WCHAR));
+
+    if (lpDisplayBuf) {
+      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
+        lpszMessage, dwErrID, (LPCWSTR)lpMsgBuf);
+
+      // center message box to main
+      HWND focus = GetFocus();
+      HWND hwnd = focus ? focus : hwndMain;
+
+      MessageBoxEx(hwnd, lpDisplayBuf, L"MiniPath - ERROR", MB_ICONERROR, g_iPrefLANGID);
+
+      LocalFree(lpDisplayBuf);
+    }
+    LocalFree(lpMsgBuf); // LocalAlloc()
+  }
+  return dwErrID;
+}
+
+
+DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+#ifdef _DEBUG
+  return MsgBoxLastError(lpszMessage, dwErrID);
+#else
+  UNUSED(lpszMessage);
+  return dwErrID;
+#endif
+}
 
 
 // End of Dialogs.c

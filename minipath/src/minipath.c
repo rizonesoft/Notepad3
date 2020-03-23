@@ -1163,7 +1163,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Load toolbar labels
   __try {
-    LoadIniFile(g_wchIniFile, FALSE);
+    LoadIniFileCache(g_wchIniFile);
     const WCHAR* const ToolbarLabels_Section = L"Toolbar Labels";
 
     n = 0;
@@ -1195,7 +1195,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     }
   }
   __finally {
-    ReleaseIniFile();
+    ResetIniFileCache();
   }
 
   SendMessage(hwndToolbar,TB_SETEXTENDEDSTYLE,0,
@@ -3330,7 +3330,7 @@ void LoadTargetParamsOnce(void)
     return;
 
   __try {
-    LoadIniFile(g_wchIniFile, FALSE);
+    LoadIniFileCache(g_wchIniFile);
     const WCHAR* const TargetApp_Section = L"Target Application";
 
     if (IniSectionGetInt(TargetApp_Section, L"UseTargetApplication", 0xFB) != 0xFB) {
@@ -3355,7 +3355,7 @@ void LoadTargetParamsOnce(void)
     }
   }
   __finally {
-    ReleaseIniFile();
+    ResetIniFileCache();
   }
   fLoaded = TRUE;
 }

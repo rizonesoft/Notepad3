@@ -14,7 +14,6 @@
 *                                                                             *
 *******************************************************************************/
 
-int  ErrorMessage(int,UINT,...);
 BOOL GetDirectory(HWND,int,LPWSTR,LPCWSTR,BOOL);
 BOOL GetDirectory2(HWND,int,LPWSTR,int);
 
@@ -45,5 +44,8 @@ BOOL NewDirDlg(HWND,LPWSTR);
 INT_PTR CALLBACK FindWinDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK FindTargetDlgProc(HWND, UINT, WPARAM, LPARAM);
 
+int  ErrorMessage(int, UINT, ...);
+DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
+DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
 // End of Dialogs.h
