@@ -1535,7 +1535,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
 
   MRU_Empty(pmru);
   __try {
-    LoadIniFile(g_wchIniFile, FALSE);
+    LoadIniFileCache(g_wchIniFile);
 
     const WCHAR* const RegKey_Section = pmru->szRegKey;
 
@@ -1552,7 +1552,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
     }
   }
   __finally {
-    ReleaseIniFile();
+    ResetIniFileCache();
   }
   return(1);
 }
@@ -1560,7 +1560,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
 BOOL MRU_Save(LPMRULIST pmru) {
 
   __try {
-    LoadIniFile(g_wchIniFile, TRUE);
+    LoadIniFileCache(g_wchIniFile);
 
     WCHAR tchName[32];
     WCHAR tchItem[1024] = { L'\0' };
@@ -1577,7 +1577,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
     }
   }
   __finally {
-    SaveIniFile();
+    SaveIniFileCache(g_wchIniFile);
   }
   return TRUE;
 }
