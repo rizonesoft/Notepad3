@@ -63,16 +63,25 @@ int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
 
 grepWinLng_t grepWinLangResName[] =
 {
-  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                   L"Deutsch.lang"},
-  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),              L"English.lang"},
-  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),          L"Spanish.lang"},
-  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                 L"Italiano.lang"},
-  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                     L"Nederlands.lang"},
-  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),            L"Polski.lang"},
-  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),          L"Russian.lang"},
-  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), L"Brazilian_Portuguese.lang"},
-  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),      L"Chinese.lang"},
-  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),         L"Japanese.lang"}
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),              L"[en-US] English (United States).lang"},
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),              L"[af-ZA] Afrikaans (Suid-Afrika).lang"},
+  { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),   L"[be-BY] Беларуская (Беларусь).lang"},
+  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                   L"[de-DE] Deutsch (Deutschland).lang"},
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),              L"[en-GB] English (United Kingdom).lang"},
+  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),          L"[es-ES] Español (España).lang"},
+  { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                   L"[fr-FR] Français (France).lang"},
+  { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),     L"[hu-HU] Magyar (Magyarország).lang"},
+  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                 L"[it-IT] Italiano (Italia).lang"},
+  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),         L"[ja-JP] 日本語 （日本）.lang"},
+  { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                   L"[ko-KR] 한국어 (대한민국).lang"},
+  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                     L"[nl-NL] Nederlands (Nederland).lang"},
+  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),            L"[pl-PL] Polski (Polska)Polski.lang"},
+  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), L"[pt-BR] Português (Brasil).lang"},
+  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),          L"[ru-RU] Русский (Pоссия).lang"},
+  { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA),          L"[sk-SK] Slovenčina (Slovensko).lang"},
+  { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH),                 L"[sv-SE] Svenska (Sverige).lang"},
+  { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY),          L"[tr-TR] Türkçe (Türkiye).lang"},
+  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),      L"[zh-CN] 简体中文 （中国）.lang"}
 };
 
 int grepWinLang_CountOf() { return COUNTOF(grepWinLangResName); };

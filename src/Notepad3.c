@@ -55,7 +55,7 @@
 CONSTANTS_T const Constants = { 
     2                                    // StdDefaultLexerID
   , L"minipath.exe"                      // FileBrowserMiniPath
-  , L"grepWin\\grepWin_portable.exe"     // FileSearchGrepWin
+  , L"grepWin\\grepWinNP3_portable.exe"  // FileSearchGrepWin
   , L"ThemeFileName"                     // StylingThemeName
   , L"Settings"                          // Inifile Section "Settings"
   , L"Settings2"                         // Inifile Section "Settings2"
