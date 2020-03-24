@@ -185,6 +185,17 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 }
 
 
+DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+#ifdef _DEBUG
+  return MsgBoxLastError(lpszMessage, dwErrID);
+#else
+  UNUSED(lpszMessage);
+  return dwErrID;
+#endif
+}
+
+
 //=============================================================================
 //
 //  _InfoBoxLngDlgProc()
@@ -3510,6 +3521,16 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
     PathAppend(tchIniFilePath, L"grepwin.ini");
     
+    if (!PathFileExists(tchIniFilePath)) {
+      HANDLE hFile = CreateFile(tchIniFilePath,
+        GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+      if (hFile != INVALID_HANDLE_VALUE) {
+        WriteFile(hFile, "\xEF\xBB\xBF", 3, NULL, NULL);
+        CloseHandle(hFile); // done
+      }
+    }
+
     // get grepWin language
     int lngIdx = -1;
     for (int i = 0; i < grepWinLang_CountOf(); ++i) {
@@ -3519,7 +3540,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       }
     }
 
-    if (LoadIniFile(tchIniFilePath, true)) {
+    if (LoadIniFileCache(tchIniFilePath)) 
+    {
       // preserve [global] user settings from last call
       const WCHAR* const section = L"global";
       for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
@@ -3528,9 +3550,13 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       }
 
       if (lngIdx >= 0) {
-        IniSectionSetString(L"global", L"languagefile", grepWinLangResName[lngIdx].filename);
+        IniSectionGetString(L"global", L"languagefile", grepWinLangResName[lngIdx].filename, tchTemp, COUNTOF(tchTemp));
+        IniSectionSetString(L"global", L"languagefile", tchTemp);
       } else {
-        IniSectionDelete(L"global", L"languagefile", false);
+        IniSectionGetString(L"global", L"languagefile", L"", tchTemp, COUNTOF(tchTemp));
+        if (StrIsEmpty(tchTemp)) {
+          IniSectionDelete(L"global", L"languagefile", false);
+        }
       }
 
       //~StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /g %%line%% /m %s - %%path%%", tchModulePath, searchPattern);
@@ -3543,7 +3569,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       int const iBackupFolder = IniSectionSetInt(L"settings", L"backupinfolder", 1);
       IniSectionSetInt(L"settings", L"backupinfolder", iBackupFolder);
 
-      SaveIniFile(false);
+      SaveIniFileCache(tchIniFilePath);
+      ResetIniFileCache();
     }
   }
 
