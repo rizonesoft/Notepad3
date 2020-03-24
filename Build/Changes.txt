@@ -42,9 +42,9 @@ NEW:
 - In About Resources: Data Sharing Service from https://workupload.com/. 
 - Automatic scrolling when dragging selected text near window edge (SCI).
 - break rectangular selection into multiple selection on end-of-lines (move caret).
-- Infos of sreen/display/dpi for "Copy Version Info" button.
+- Infos of screen/display/dpi for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
-- Language dependent status bar abreviations.
+- Language dependent status bar abbreviations.
 - Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
@@ -57,7 +57,7 @@ CHANGES:
 -----------------------------------------------------
 - Update "KeyboardShortcuts.txt".
 - Split undo typing sequence by line-breaks default -> true.
-- Add file history to to recent docs (taskbar) jumplist.
+- Add file history to recent docs (taskbar) jumplist.
 - NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
 - Reset build-of-the-day number in AppVeyor on new day.
 - Change version numbering of build_# (the build number is now daily based).
@@ -74,13 +74,13 @@ CHANGES:
 - Replace std messagebox "save modified file warning" by (silent) custom messagebox if message beeps are muted.
 - Don't Auto-Close blank untitled document, only empty untitled document.
 - Encoding detection fallback: if "Load ASCII as UTF-8" is checked use UTF-8 (if valid) else current ANSI code-page.
-- Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
+- Use Ctrl+Shift+L for toggle "Menu: Reuse Window" option.
 - Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L.
 - Change wording "Administrator" to "Elevated".
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
 - ESC Key clears active selection (not exiting Notepad3 if configured) (Config: ExitOnESCSkipLevel=2).
 - Set large file size limit to 2GB (INT32_MAX).
-- Set big file size limit warning to 64MB  (syntax highlighting is switched off) (Config: FileLoadWarningMB=64).
+- Set big file size limit warning to 64MB (syntax highlighting is switched off) (Config: FileLoadWarningMB=64).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
 - Copy to clipboard instead of insert (filename, path, GUID).
@@ -88,9 +88,9 @@ CHANGES:
 - Option [Settings2] LineCommentPortfixStrg= e.g. add a space to comment chars.
 - Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
-- Thin rectangular (multi) selection after toggeling line-comment block for multi insertion.
+- Thin rectangular (multi) selection after toggling line-comment block for multi insertion.
 - Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested).
-- Ctrl+Alt+Enter AutoCompletion behaviour.
+- Ctrl+Alt+Enter AutoCompletion behavior.
 - Menu and behavior for copy/paste and copy/paste line.
 - Allow each modification step to split undo typing sequence (set timeout 0 < to < 20ms).
 - Split undo typing sequence (by line-breaks and/or timeout) (UndoTransactionTimeout=0, LnBrk via Menu).
@@ -116,12 +116,12 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - Don't use analysis hint UTF-8, if file is invalid UTF-8.
-- Configurable default  ANSI code-page (locale) detection bonus.
+- Configurable default ANSI code-page (locale) detection bonus.
 - No AutoCompletion on empty words (busy loop bug).
 - DPI Scaling Toolbar and DPI scaling selection mode.
-- Common controls will use preffered/available MUI language.
+- Common controls will use preferred/available MUI language.
 - Sticky window position handling.
-- Initial, default and current  window position handling.
+- Initial, default and current window position handling.
 - Debug assertion (isspace() called on non ASCII char).
 - Correct return result of Styles export.
 - Scintilla method declaration.
@@ -167,13 +167,13 @@ FIXES:
 - Batch lexer: handle comment after ampersand(&) command sequence.
 - Bug in replace on single step find/replace.
 - Convert to Hex and vice versa: work on (stream-)selection (original source by ZuFuLiu).
-- Comparison warning: signed/unsignd mismatch.
+- Comparison warning: signed/unsigned mismatch.
 - Canonical ini-file style section order for settings from scratch.
 - Prevent concurrent settings-file-access (re-launch elevated).
 - Small fixes on "Relaunch Elevated" functionality.
 - Minor fixes for window positioning by cmdline parameter.
 - Minor correction of HotKey.
-- Ctrl+Shift-C/X and Paste behaviour.
+- Ctrl+Shift-C/X and Paste behavior.
 - Markdown highlight overflow.
 - Redo initial selection after replace (ins/del).
 - Hyperlink Regex detection and Update visible indicator issue.
