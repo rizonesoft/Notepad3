@@ -308,6 +308,8 @@ BEGIN
             MENUITEM "替换(&R)...\tCtrl+H",                  IDM_EDIT_REPLACE
             MENUITEM "替换下一个(&X)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "查看(&V)"

@@ -308,6 +308,8 @@ BEGIN
             MENUITEM "Ersätt...\tCtrl+H",                           IDM_EDIT_REPLACE
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Visa"

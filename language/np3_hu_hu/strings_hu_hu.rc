@@ -127,6 +127,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Hiba ""%s"" betöltésekor."
     IDS_MUI_ERR_SAVEFILE    "Hiba ""%s"" mentésekor."
     IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található.\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "A kijelölt fájlhoz nincs hozzáférésünk!\nEl szeretné távolítani a listából?"
     IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon létrehozásakor."
     IDS_MUI_ERR_PREVWINDISABLED

@@ -323,6 +323,7 @@ size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
 size_t UnSlashW(LPWSTR pchInOut);
+size_t UnSlashQuotes(LPWSTR pchInOut);
 
 void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
 void TransformMetaChars(char* pszInput, bool, int iEOLMode);

@@ -127,6 +127,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Błąd podczas ładowania ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Błąd podczas zapisu ""%s""."
     IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglądarki pliku.\nWtyczkę przeglądarki pliku do MiniPath można pobrać z https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Brak dostępu do wybranego pliku!\nCzy chcesz usunąć go z listy?"
     IDS_MUI_ERR_CREATELINK  "Błąd podczas tworzenia skrótu na Pulpicie."
     IDS_MUI_ERR_PREVWINDISABLED

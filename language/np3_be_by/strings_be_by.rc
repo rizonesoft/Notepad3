@@ -127,6 +127,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Памылка чытання «%s»."
     IDS_MUI_ERR_SAVEFILE    "Памылка захоўвання «%s»."
     IDS_MUI_ERR_BROWSE      "Не знойдзены плагін аглядніка файлаў.\nПлагін MiniPath можна спампаваць з сайта https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Няма доступа да выбранага файла!\nХочаце выдаліць яго са спіску?"
     IDS_MUI_ERR_CREATELINK  "Памылка стварэння цэтліка на Працоўным стале."
     IDS_MUI_ERR_PREVWINDISABLED

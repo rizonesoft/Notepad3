@@ -308,6 +308,8 @@ BEGIN
             MENUITEM "&Reemplazar...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vista"

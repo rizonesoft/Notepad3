@@ -300,14 +300,16 @@ BEGIN
         POPUP "찾기(&S)"
         BEGIN
             MENUITEM "찾기(&F)...\tCtrl+F",                     IDM_EDIT_FIND
-            MENUITEM "검색어로 지정\tAlt+F3",                     IDM_EDIT_SAVEFIND
+            MENUITEM "검색어로 지정\tAlt+F3",                    IDM_EDIT_SAVEFIND
             MENUITEM "다음 찾기(&X)\tF3",                        IDM_EDIT_FINDNEXT
             MENUITEM "이전 찾기(&V)\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "다음 선택 찾기\tCtrl+F3",                   CMD_FINDNEXTSEL
-            MENUITEM "이전 선택 찾기\tCtrl+Shift+F3",             CMD_FINDPREVSEL
-            MENUITEM "바꾸기(&R)...\tCtrl+H",                   IDM_EDIT_REPLACE
-            MENUITEM "다음 바꾸기(&X)\tF4",                       IDM_EDIT_REPLACENEXT
+            MENUITEM "다음 선택 찾기\tCtrl+F3",                  CMD_FINDNEXTSEL
+            MENUITEM "이전 선택 찾기\tCtrl+Shift+F3",            CMD_FINDPREVSEL
+            MENUITEM "바꾸기(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
+            MENUITEM "다음 바꾸기(&X)\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "바로가기(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",            IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "보기(&V)"
