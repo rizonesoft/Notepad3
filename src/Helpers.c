@@ -1257,7 +1257,7 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
     }
   }
   TrimSpcW(lpArg1);
-  UnSlashQuotes(lpArg1);
+  UnSlashChar(lpArg1, L'"');
 
   if (lpArg2) {
     TrimSpcW(lpArg2);
@@ -1945,32 +1945,29 @@ size_t UnSlashW(LPWSTR pchInOut)
 }
 
 
-size_t UnSlashQuotes(LPWSTR pchInOut)
+size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch)
 {
-  LPWSTR s = pchInOut;
-  LPWSTR o = pchInOut;
   LPCWSTR const sStart = pchInOut;
 
+  LPWSTR s = pchInOut;
+  LPWSTR o = pchInOut;
   while (*s) {
-    if (*s == '\\') {
+    if (*s == L'\\') {
       ++s;
-      if (*s == L'"')
-        *o = L'"';
-      else if (*s == L'\\')
-        *o = L'\\';
+      if (*s == wch)
+        *o++ = wch;
       else {
-        *o = *s;   // swallow single '\'
+        *o++ = L'\\'; // restore
+        *o++ = *s;
       }
     }
     else
-      *o = *s;
-
-    ++o;
+      *o++ = *s;
     if (*s) {
       ++s;
     }
   }
-  *o = '\0';
+  *o = L'\0';
   return (size_t)((ptrdiff_t)(o - sStart));
 }
 
