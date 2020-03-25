@@ -127,6 +127,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Errore aprendo ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Errore salvando ""%s""."
     IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato.\nMiniPath può essere scaricato su https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dalla lista?"
     IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop."
     IDS_MUI_ERR_PREVWINDISABLED

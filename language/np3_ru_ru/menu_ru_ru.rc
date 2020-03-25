@@ -308,6 +308,8 @@ BEGIN
             MENUITEM "&Заменить...\tCtrl+H",                        IDM_EDIT_REPLACE
             MENUITEM "За&менить далее\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "Пе&рейти...\tCtrl+G",                         IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Вид"

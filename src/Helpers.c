@@ -1221,6 +1221,8 @@ bool TrimStringW(LPWSTR lpString)
 //
 //  ExtractFirstArgument()
 //
+
+
 bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
 {
   StringCchCopy(lpArg1, len, lpArgs);
@@ -1240,6 +1242,10 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
   LPWSTR psz;
   if (bQuoted) {
     psz = StrChr(lpArg1, L'\"');
+    // skip esc'd quotes
+    while (psz && (psz[-1] == L'\\')) {
+      psz = StrChr(psz + 1, L'\"');
+    }
   }
   else {
     psz = StrChr(lpArg1, L' ');
@@ -1251,6 +1257,7 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
     }
   }
   TrimSpcW(lpArg1);
+  UnSlashQuotes(lpArg1);
 
   if (lpArg2) {
     TrimSpcW(lpArg2);
@@ -1790,6 +1797,8 @@ size_t UnSlashA(LPSTR pchInOut, UINT cpEdit)
         *o = '\t';
       else if (*s == 'v')
         *o = '\v';
+      else if (*s == '"')
+        *o = '"';
       else if (*s == '\\')
         *o = '\\';
       else if (*s == 'x' || *s == 'u') {
@@ -1879,6 +1888,8 @@ size_t UnSlashW(LPWSTR pchInOut)
         *o = L'\t';
       else if (*s == L'v')
         *o = L'\v';
+      else if (*s == L'"')
+        *o = L'"';
       else if (*s == L'\\')
         *o = L'\\';
       else if (*s == L'x' || *s == L'u') {
@@ -1932,6 +1943,37 @@ size_t UnSlashW(LPWSTR pchInOut)
   *o = '\0';
   return (size_t)((ptrdiff_t)(o - sStart));
 }
+
+
+size_t UnSlashQuotes(LPWSTR pchInOut)
+{
+  LPWSTR s = pchInOut;
+  LPWSTR o = pchInOut;
+  LPCWSTR const sStart = pchInOut;
+
+  while (*s) {
+    if (*s == '\\') {
+      ++s;
+      if (*s == L'"')
+        *o = L'"';
+      else if (*s == L'\\')
+        *o = L'\\';
+      else {
+        *o = *s;   // swallow single '\'
+      }
+    }
+    else
+      *o = *s;
+
+    ++o;
+    if (*s) {
+      ++s;
+    }
+  }
+  *o = '\0';
+  return (size_t)((ptrdiff_t)(o - sStart));
+}
+
 
 /**
  *  check, if we have regex sub-group referencing 

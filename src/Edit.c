@@ -6625,6 +6625,12 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     if (!bSuppressNotFound) {
       InfoBoxLng(MB_OK, L"MsgNotFound", IDS_MUI_NOTFOUND);
     }
+    //@@@
+    WCHAR fnd[256];
+    WCHAR msg[256];
+    MultiByteToWideChar(CP_UTF8, 0, szFind, -1, fnd, (int)COUNTOF(fnd));
+    StringCchPrintf(msg, COUNTOF(msg), L"Suchbegriff:'%s'", fnd);
+    MsgBoxLastError(msg, 0);
     return false;
   }
 

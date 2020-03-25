@@ -308,6 +308,8 @@ BEGIN
             MENUITEM "&Remplacer...\tCtrl+H",                           IDM_EDIT_REPLACE
             MENUITEM "Remplacer suivan&t\tF4",                          IDM_EDIT_REPLACENEXT
             MENUITEM "&Aller à...\tCtrl+G",                             IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Affichage"

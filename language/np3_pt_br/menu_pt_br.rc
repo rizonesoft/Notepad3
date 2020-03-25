@@ -308,6 +308,8 @@ BEGIN
             MENUITEM "&Substituir...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vizualizar"
