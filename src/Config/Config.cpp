@@ -1243,6 +1243,8 @@ void LoadSettings()
     Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
     Defaults.EFR_Data.bWildcardSearch = false;
     Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
+    Defaults.EFR_Data.bOverlappingFind = false;
+    Settings.EFR_Data.bOverlappingFind = IniSectionGetBool(IniSecSettings, L"OverlappingFind", Defaults.EFR_Data.bOverlappingFind);
     Defaults.EFR_Data.bMarkOccurences = true;
     Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(IniSecSettings, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
     Defaults.EFR_Data.bHideNonMatchedLines = false;
@@ -1663,6 +1665,12 @@ static bool _SaveSettings(bool bForceSaveSettings)
   }
   else {
     IniSectionDelete(IniSecSettings, L"WildcardSearch", false);
+  }
+  if (Settings.EFR_Data.bOverlappingFind != Defaults.EFR_Data.bOverlappingFind) {
+    IniSectionSetBool(IniSecSettings, L"OverlappingFind", Settings.EFR_Data.bOverlappingFind);
+  }
+  else {
+    IniSectionDelete(IniSecSettings, L"OverlappingFind", false);
   }
   if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
     IniSectionSetBool(IniSecSettings, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);

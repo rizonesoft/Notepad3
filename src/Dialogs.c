@@ -3452,25 +3452,25 @@ void DialogFileBrowse(HWND hwnd)
 typedef struct _grepwin_ini
 {
   const WCHAR* const key;
-  const int          val;
+  const WCHAR* const val;
 } 
 grepWin_t;
 
 static grepWin_t grepWinIniSettings[13] = 
 {
-  { L"onlyone",           1 },
-  { L"AllSize",           1 },
-  { L"Size",           2000 },
-  { L"CaseSensitive",     0 },
-  { L"CreateBackup",      1 },
-  { L"DateLimit",         0 },
-  { L"IncludeBinary",     0 },
-  { L"IncludeHidden",     1 },
-  { L"IncludeSubfolders", 1 },
-  { L"IncludeSystem",     1 },
-  { L"UseFileMatchRegex", 0 },
-  { L"UseRegex",          0 },
-  { L"UTF8",              1 }
+  { L"onlyone",           L"true" },
+  { L"AllSize",           L"1" },
+  { L"Size",              L"2000" },
+  { L"CaseSensitive",     L"0" },
+  { L"CreateBackup",      L"1" },
+  { L"DateLimit",         L"0" },
+  { L"IncludeBinary",     L"0" },
+  { L"IncludeHidden",     L"1" },
+  { L"IncludeSubfolders", L"1" },
+  { L"IncludeSystem",     L"1" },
+  { L"UseFileMatchRegex", L"0" },
+  { L"UseRegex",          L"0" },
+  { L"UTF8",              L"1" }
 };
 
 //=============================================================================
@@ -3505,7 +3505,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
   }
 
-  // working (grepwin.ini) directory
+  // working (grepWinNP3.ini) directory
   WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
   WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
 
@@ -3519,7 +3519,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
 
     // grepWin INI-File
-    const WCHAR* const gwIniFileName = L"grepwin.ini";
+    const WCHAR* const gwIniFileName = L"grepWinNP3.ini";
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), StrIsNotEmpty(Globals.IniFile) ? Globals.IniFile : Globals.IniFileDefault);
     PathRemoveFileSpec(tchIniFilePath);
     PathAppend(tchIniFilePath, gwIniFileName);
@@ -3550,10 +3550,12 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     if (LoadIniFileCache(tchIniFilePath)) 
     {
       // preserve [global] user settings from last call
-      const WCHAR* const section = L"global";
+      const WCHAR* const globalSection = L"global";
+
+      WCHAR value[HUGE_BUFFER];
       for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
-        int const iVal = IniSectionGetInt(section, grepWinIniSettings[i].key, grepWinIniSettings[i].val);
-        IniSectionSetInt(section, grepWinIniSettings[i].key, iVal);
+        IniSectionGetString(globalSection, grepWinIniSettings[i].key, grepWinIniSettings[i].val, value, COUNTOF(value));
+        IniSectionSetString(globalSection, grepWinIniSettings[i].key, value);
       }
 
       if (lngIdx >= 0) {
@@ -3567,16 +3569,13 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       }
 
       StringCchPrintf(tchTemp, COUNTOF(tchTemp), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", tchNotepad3Path);
-      IniSectionSetString(L"global", L"editorcmd", tchTemp);
+      IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 
       // [settings]
       int const iEscClose = IniSectionSetInt(L"settings", L"escclose", (Settings.EscFunction == 2) ? 1 : 0);
       IniSectionSetInt(L"settings", L"escclose", iEscClose);
       int const iBackupFolder = IniSectionSetInt(L"settings", L"backupinfolder", 1);
       IniSectionSetInt(L"settings", L"backupinfolder", iBackupFolder);
-
-      // search pattern
-      IniSectionSetString(L"global", L"searchfor", searchPattern);
 
       // search directory
       WCHAR tchSearchDir[MAX_PATH] = { L'\0' };
@@ -3587,7 +3586,10 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       else {
         StringCchCopy(tchSearchDir, COUNTOF(tchSearchDir), Globals.WorkingDirectory);
       }
-      IniSectionSetString(L"global", L"searchpath", tchSearchDir);
+      IniSectionSetString(globalSection, L"searchpath", tchSearchDir);
+
+      // search pattern
+      IniSectionSetString(globalSection, L"searchfor", searchPattern);
 
       SaveIniFileCache(tchIniFilePath);
       ResetIniFileCache();
@@ -3597,7 +3599,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   // grepWin arguments
   const WCHAR* const tchParamFmt = L"/portable /content %s /inipath:\"%s\"";
   WCHAR tchParams[MAX_PATH + 80] = { L'\0' };
-  // relative grepwin.ini path (for shorter cmdline)
+  // relative grepWinNP3.ini path (for shorter cmdline)
   if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchIniFilePath, FILE_ATTRIBUTE_NORMAL)) {
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchTemp);
   }

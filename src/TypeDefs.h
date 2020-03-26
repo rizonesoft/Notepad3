@@ -189,6 +189,7 @@ typedef struct _editfindreplace
   bool bAutoEscCtrlChars;
   bool bFindClose;
   bool bReplaceClose;
+  bool bOverlappingFind;
   bool bNoFindWrap;
   bool bWildcardSearch;
   bool bMarkOccurences;
@@ -198,7 +199,7 @@ typedef struct _editfindreplace
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
-#define EFR_INIT_DATA  { "", "", 0, false, false, false, false, false, false, false, false, true, NULL }
+#define EFR_INIT_DATA  { "", "", 0, false, false, false, false, false, false, false, false, false, true, NULL }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
