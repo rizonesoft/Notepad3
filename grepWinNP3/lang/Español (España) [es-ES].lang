@@ -43,8 +43,8 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr ""
 
 #. Resource IDs: (119)
-msgid "&About grepWin..."
-msgstr "%Acerca de grepWin..."
+msgid "&About grepWinNP3..."
+msgstr "%Acerca de grepWinNP3..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -63,8 +63,8 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1052, 135)
-msgid "About grepWin"
-msgstr "Acerca de grepWin"
+msgid "About grepWinNP3"
+msgstr "Acerca de grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -168,8 +168,8 @@ msgid "Enter a name for the regex:"
 msgstr "Ingrese nombre para el regex:"
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWin"
-msgstr "Tecla Escape cierra grepWin"
+msgid "Escape key closes grepWinNP3"
+msgstr "Tecla Escape cierra grepWinNP3"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -184,7 +184,7 @@ msgid "Files"
 msgstr "Archivos"
 
 #. Resource IDs: (109)
-msgid "GREPWIN"
+msgid "GREPWINNP3"
 msgstr "REPWI"
 
 #. Resource IDs: (156)
@@ -446,12 +446,12 @@ msgid "greater than"
 msgstr "mayor a"
 
 #. Resource IDs: (103, 129)
-msgid "grepWin"
-msgstr "grepWin"
+msgid "grepWinNP3"
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
-msgid "grepWin Settings"
-msgstr "Opciones de grepWin"
+msgid "grepWinNP3 Settings"
+msgstr "Opciones de grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -490,8 +490,8 @@ msgid "regex ok"
 msgstr "regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWin instances."
-msgstr "reutilice instancias de grepWin."
+msgid "reuse grepWinNP3 instances."
+msgstr "reutilice instancias de grepWinNP3."
 
 #. Resource IDs: (151)
 #, c-format

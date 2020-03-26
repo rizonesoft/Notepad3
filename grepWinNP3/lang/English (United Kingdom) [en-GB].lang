@@ -43,7 +43,7 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr ""
 
 #. Resource IDs: (119)
-msgid "&About grepWin..."
+msgid "&About grepWinNP3..."
 msgstr ""
 
 #. Resource IDs: (1049)
@@ -63,7 +63,7 @@ msgid "/"
 msgstr ""
 
 #. Resource IDs: (1052, 135)
-msgid "About grepWin"
+msgid "About grepWinNP3"
 msgstr ""
 
 #. Resource IDs: (1021)
@@ -168,7 +168,7 @@ msgid "Enter a name for the regex:"
 msgstr ""
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWin"
+msgid "Escape key closes grepWinNP3"
 msgstr ""
 
 #. Resource IDs: (1041)
@@ -184,7 +184,7 @@ msgid "Files"
 msgstr ""
 
 #. Resource IDs: (109)
-msgid "GREPWIN"
+msgid "GREPWINNP3"
 msgstr ""
 
 #. Resource IDs: (156)
@@ -446,11 +446,11 @@ msgid "greater than"
 msgstr ""
 
 #. Resource IDs: (103, 129)
-msgid "grepWin"
+msgid "grepWinNP3"
 msgstr ""
 
 #. Resource IDs: (138)
-msgid "grepWin Settings"
+msgid "grepWinNP3 Settings"
 msgstr ""
 
 #. Resource IDs: (157)
@@ -490,7 +490,7 @@ msgid "regex ok"
 msgstr ""
 
 #. Resource IDs: (117)
-msgid "reuse grepWin instances."
+msgid "reuse grepWinNP3 instances."
 msgstr ""
 
 #. Resource IDs: (151)
