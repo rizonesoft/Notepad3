@@ -5253,6 +5253,20 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
       }
     }
 
+    bIsFlagSet = lpefr->bOverlappingFind;
+    if (IsButtonChecked(hwnd, IDC_FIND_OVERLAPPING)) {
+      if (!bIsFlagSet) {
+        lpefr->bOverlappingFind = true;
+        lpefr->bStateChanged = false; // no effect on state
+      }
+    }
+    else {
+      if (bIsFlagSet) {
+        lpefr->bOverlappingFind = false;
+        lpefr->bStateChanged = false; // no effect on state
+      }
+    }
+
     bIsFlagSet = lpefr->bNoFindWrap;
     if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
       if (!bIsFlagSet) {
@@ -5709,6 +5723,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
         DialogEnableControl(hwnd, IDC_FINDTRANSFORMBS, false);
       }
+
+      CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, sg_pefrData->bOverlappingFind ? BST_CHECKED : BST_UNCHECKED);
 
       if (sg_pefrData->bMarkOccurences) {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
@@ -6188,6 +6204,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
         break;
 
+      case IDC_FIND_OVERLAPPING:
+        _SetSearchFlags(hwnd, sg_pefrData);
+        _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+        break;
+
       case IDC_FINDTRANSFORMBS:
         {
           s_SaveTFBackSlashes = IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS);
@@ -6425,6 +6446,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_FIND_OVERLAPPING, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_FINDAUTOESCCTRLCHR, BST_UNCHECKED);
         PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_FINDTEXT)), 1);
@@ -6579,8 +6601,15 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     SetFocus(hwnd);
   }
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
-  EditSetCaretToSelectionEnd();
-  DocPos start = SciCall_GetSelectionEnd();
+  DocPos start = 0;
+  if (lpefr->bOverlappingFind) {
+    EditSetCaretToSelectionStart();
+    start = SciCall_PositionAfter(SciCall_GetSelectionStart());
+  }
+  else {
+    EditSetCaretToSelectionEnd();
+    start = SciCall_GetSelectionEnd();
+  }
   DocPos end = iDocEndPos;
 
   if (start >= end) {
@@ -6669,8 +6698,16 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   int const sFlags = (int)(lpefr->fuFlags);
 
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
-  EditSetCaretToSelectionStart();
-  DocPos start = SciCall_GetSelectionStart();
+
+  DocPos start = 0;
+  if (lpefr->bOverlappingFind) {
+    EditSetCaretToSelectionEnd();
+    start = SciCall_PositionBefore(SciCall_GetSelectionEnd());
+  }
+  else {
+    EditSetCaretToSelectionStart();
+    start = SciCall_GetSelectionStart();
+  }
   DocPos end = 0;
 
   if (start <= end) {

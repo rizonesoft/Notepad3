@@ -348,6 +348,7 @@
 #define IDC_INDENT_SPC_MODX             18116
 #define IDC_ADDFAV_FILES                18117
 #define IDC_INFO_GROUPBOX               18118
+#define IDC_FIND_OVERLAPPING            18119
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
