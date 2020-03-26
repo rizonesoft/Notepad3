@@ -3505,7 +3505,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
   }
 
-  // working (grepwin.ini) directory
+  // working (grepWinNP3.ini) directory
   WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
   WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
 
@@ -3519,7 +3519,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
 
     // grepWin INI-File
-    const WCHAR* const gwIniFileName = L"grepwin.ini";
+    const WCHAR* const gwIniFileName = L"grepWinNP3.ini";
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), StrIsNotEmpty(Globals.IniFile) ? Globals.IniFile : Globals.IniFileDefault);
     PathRemoveFileSpec(tchIniFilePath);
     PathAppend(tchIniFilePath, gwIniFileName);
@@ -3599,7 +3599,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   // grepWin arguments
   const WCHAR* const tchParamFmt = L"/portable /content %s /inipath:\"%s\"";
   WCHAR tchParams[MAX_PATH + 80] = { L'\0' };
-  // relative grepwin.ini path (for shorter cmdline)
+  // relative grepWinNP3.ini path (for shorter cmdline)
   if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchIniFilePath, FILE_ATTRIBUTE_NORMAL)) {
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchTemp);
   }
