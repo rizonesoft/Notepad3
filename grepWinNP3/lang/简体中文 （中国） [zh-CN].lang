@@ -39,7 +39,7 @@ msgid "%ld more matches"
 msgstr "还有 %ld 个匹配"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号."
 
 #. Resource IDs: (119)
@@ -510,3 +510,6 @@ msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n�
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在Windows中是隐藏的, 所以通常不扫描它们."
 
+#. Resource IDs: (1061)
+msgid "Reset"
+msgstr "[zh-CN]"

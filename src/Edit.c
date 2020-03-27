@@ -2135,7 +2135,8 @@ void EditFindMatchingBrace()
   if (iMatchingBracePos != (DocPos)-1) {
     iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
     _BEGIN_UNDO_ACTION_;
-    EditSetSelectionEx(iMatchingBracePos, iMatchingBracePos, -1, -1);
+    SciCall_GotoPos(iMatchingBracePos);
+    Sci_ScrollToCurrentLine();
     _END_UNDO_ACTION_;
   }
 }
@@ -3077,7 +3078,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     }
   }
   else {
-    EditSetSelectionEx(iInitialPos, iInitialPos, -1, -1);
+    SciCall_GotoPos(iInitialPos);
+    Sci_ScrollToCurrentLine();
   }
 
   _END_UNDO_ACTION_;
@@ -4969,7 +4971,7 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
     else {
       SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
     }
-    EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+    EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
   }
   
   //~~~_END_UNDO_ACTION_;~~~
@@ -4990,10 +4992,11 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 
 //=============================================================================
 //
-//  EditScrollToLine() - normalize View
+//  EditNormalizeView() 
 //
-void EditScrollToLine(const DocLn iDocLine)
+void EditNormalizeView(const DocLn iDocLine)
 {
+  SciCall_EnsureVisible(iDocLine);
   if (iDocLine == Sci_GetCurrentLineNumber()) {
     Sci_ScrollChooseCaret();
   }
@@ -5017,7 +5020,7 @@ void EditEnsureSelectionVisible()
   SciCall_EnsureVisible(iAnchorLine);
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
 
-  EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+  Sci_ScrollToCurrentLine(); // normalize view
 }
 
 
@@ -5043,7 +5046,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+  Sci_ScrollToCurrentLine();
 }
 
 
@@ -6850,7 +6853,7 @@ void EditSelectionMultiSelectAll()
     if (iMainAnchor > iMainCaret) {
       SciCall_SwapMainAnchorCaret();
     }
-    EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+    EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
   }
@@ -7165,11 +7168,11 @@ void EditToggleView(HWND hwnd)
   EditHideNotMarkedLineRange(hwnd, FocusedView.HideNonMatchedLines);
 
   if (FocusedView.HideNonMatchedLines) {
-    EditScrollToLine(0);
+    SciCall_GotoPos(0);
     SciCall_SetReadOnly(true);
   }
   else {
-    EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+    Sci_ScrollToCurrentLine();
     SciCall_SetReadOnly(false);
   }
 
