@@ -2887,12 +2887,12 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         POINT ptc;
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(Globals.hwndEdit, &ptc);
-        DocPos iNewPos = SciCall_PositionFromPoint(ptc.x, ptc.y);
-        EditSetSelectionEx(iNewPos, iNewPos, -1, -1);
+        SciCall_GotoPos(SciCall_PositionFromPoint(ptc.x, ptc.y));
+        SciCall_ScrollCaret();
       }
 
       if (pt.x == -1 && pt.y == -1) {
-        DocPos iCurrentPos = SciCall_GetCurrentPos();
+        DocPos const iCurrentPos = SciCall_GetCurrentPos();
         pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
         pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
         ClientToScreen(Globals.hwndEdit, &pt);
@@ -2904,8 +2904,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   case IDC_TOOLBAR:
   case IDC_STATUSBAR:
   case IDC_REBAR:
-    if (pt.x == -1 && pt.y == -1)
-      GetCursorPos(&pt);
+    if (pt.x == -1 && pt.y == -1) { GetCursorPos(&pt); }
     imenu = 1;
     break;
   }
@@ -2948,10 +2947,11 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditScrollToLine(Sci_GetLastDocLineNumber());
+        EditNormalizeView(Sci_GetLastDocLineNumber());
       }
       else {
         SciCall_GotoPos(iCurPos);
+        Sci_ScrollToCurrentLine();
       }
     }
   }
@@ -4725,9 +4725,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (iNextLine != (DocLn)-1)
         {
-            SciCall_EnsureVisible(iNextLine);
             SciCall_GotoLine(iNextLine);
-            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+            EditNormalizeView(Sci_GetCurrentLineNumber());
         }
     }
     break;
@@ -4746,9 +4745,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (iNextLine != (DocLn)-1)
         {
-            SciCall_EnsureVisible(iNextLine);
             SciCall_GotoLine(iNextLine);
-            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+            EditNormalizeView(Sci_GetCurrentLineNumber());
         }
     }
     break;
@@ -4819,7 +4817,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_SELTONEXT:
           {
             SciCall_RotateSelection();
-            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+            EditNormalizeView(Sci_GetCurrentLineNumber());
           }
           break;
 
@@ -4832,7 +4830,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               DocPosU const iNewMain = SciCall_GetSelections() - 1;
               SciCall_SetMainSelection(iNewMain);
             }
-            EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+            EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
           }
           break;
 
@@ -5256,7 +5254,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditScrollToLine(Sci_GetLastDocLineNumber());
+          EditNormalizeView(Sci_GetLastDocLineNumber());
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5266,7 +5264,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditScrollToLine(Sci_GetCurrentLineNumber()); // normalize view
+          EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -5582,7 +5580,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
-          EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
+          SciCall_GotoPos(iCurPos);
+          Sci_ScrollToCurrentLine();
           _END_UNDO_ACTION_;
           s_bInMultiEditMode = false;
           --skipLevel;
@@ -5590,7 +5589,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
           _BEGIN_UNDO_ACTION_;
-          EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
+          SciCall_GotoPos(iCurPos);
+          Sci_ScrollToCurrentLine();
           _END_UNDO_ACTION_;
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
@@ -5608,7 +5608,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
           default:
             _BEGIN_UNDO_ACTION_;
-            EditSetSelectionEx(iCurPos, iCurPos, -1, -1);
+            SciCall_GotoPos(iCurPos);
+            Sci_ScrollToCurrentLine();
             _END_UNDO_ACTION_;
             break;
           }
@@ -9449,7 +9450,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     if (bReload && !FileWatching.MonitoringLog) 
     {
       _BEGIN_UNDO_ACTION_;
-      EditSetSelectionEx(0, 0, -1, -1);
+      SciCall_GotoPos(0);
+      Sci_ScrollToCurrentLine();
       _END_UNDO_ACTION_;
 
       _BEGIN_UNDO_ACTION_;
@@ -9529,7 +9531,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
       {
         SciCall_SetSel(iAnchorPos, iCaretPos); // scroll into view
-        EditScrollToLine(Sci_GetCurrentLineNumber());
+        EditNormalizeView(Sci_GetCurrentLineNumber());
       }
     }
 
@@ -9634,7 +9636,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditScrollToLine(Sci_GetLastDocLineNumber());
+      EditNormalizeView(Sci_GetLastDocLineNumber());
     }
   }
 
@@ -9645,7 +9647,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditScrollToLine(Sci_GetLastDocLineNumber());
+      EditNormalizeView(Sci_GetLastDocLineNumber());
     }
   }
 
