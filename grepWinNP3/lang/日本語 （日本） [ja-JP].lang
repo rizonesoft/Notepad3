@@ -39,7 +39,7 @@ msgid "%ld more matches"
 msgstr "%ld 以上の一致"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動"
 
 #. Resource IDs: (119)
@@ -510,3 +510,6 @@ msgstr "現在のパスは再帰的に検索されます.\r\nパスは \"|\" で
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, \".svn\" フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
 
+#. Resource IDs: (1061)
+msgid "Reset"
+msgstr "[ja-JP]"

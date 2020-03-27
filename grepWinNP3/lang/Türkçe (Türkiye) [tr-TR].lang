@@ -39,7 +39,7 @@ msgid "%ld more matches"
 msgstr "%ld daha fazla eşleşme"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% dosyanın yolu, %line% ile atlanacak satırla değiştirilir"
 
 #. Resource IDs: (119)
@@ -510,3 +510,6 @@ msgstr "özyinelemede aranan yollar.\r\n| sembolü ile ayrı yollar.\r\nÖrnek: 
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\r\nÖrnek: ^(CVS|images)$\r\nNot: klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar."
 
+#. Resource IDs: (1061)
+msgid "Reset"
+msgstr "[tr-TR]"

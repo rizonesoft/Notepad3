@@ -39,7 +39,7 @@ msgid "%ld more matches"
 msgstr "... %ld więcej dopasowań"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% jest zastępowana ścieżką pliku, %line% z linią, aby przejść do."
 
 #. Resource IDs: (119)
@@ -510,3 +510,6 @@ msgstr "Ścieżka(-i), która(-e) jest(są) przeszukiwana(-e) regularnie.\r\nOdd
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Można wykluczyć katalogi, np. CVS i obrazy.\r\nPrzykład: ^(CVS|obrazy)$\r\nUwaga, foldery '.svn' są ukryte w Windows, więc zwykle nie są one skanowane."
 
+#. Resource IDs: (1061)
+msgid "Reset"
+msgstr "[pl-PL]"

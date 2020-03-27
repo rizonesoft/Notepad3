@@ -600,7 +600,7 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
 
 // respect VSlop settings 
 inline void Sci_ScrollChooseCaret()      { SciCall_ScrollCaret(); SciCall_ChooseCaretX(); }
-inline void Sci_ScrollToLine(DocLn line) { SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
+inline void Sci_ScrollToLine(DocLn line) { SciCall_EnsureVisible(line); SciCall_ScrollRange(SciCall_PositionFromLine(line), SciCall_GetLineEndPosition(line)); }
 inline void Sci_ScrollToCurrentLine()    { Sci_ScrollToLine(Sci_GetCurrentLineNumber()); }
 
 
