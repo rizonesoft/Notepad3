@@ -43,8 +43,8 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr "%path% заменяется на путь к файлу, %line% на соответствующую строку."
 
 #. Resource IDs: (119)
-msgid "&About grepWin..."
-msgstr "&О grepWin..."
+msgid "&About grepWinNP3..."
+msgstr "&О grepWinNP3..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -63,8 +63,8 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1052, 135)
-msgid "About grepWin"
-msgstr "О grepWin"
+msgid "About grepWinNP3"
+msgstr "О grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -168,8 +168,8 @@ msgid "Enter a name for the regex:"
 msgstr "Имя набора:"
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWin"
-msgstr "Esc для выхода из grepWin"
+msgid "Escape key closes grepWinNP3"
+msgstr "Esc для выхода из grepWinNP3"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -184,8 +184,8 @@ msgid "Files"
 msgstr "Файлы"
 
 #. Resource IDs: (109)
-msgid "GREPWIN"
-msgstr "GREPWIN"
+msgid "GREPWINNP3"
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -344,10 +344,6 @@ msgstr "Поиск"
 msgid "Search &for:"
 msgstr "Поиск:"
 
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Поиск в"
-
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
 msgstr "С учётом регистра"
@@ -450,12 +446,12 @@ msgid "greater than"
 msgstr "больше"
 
 #. Resource IDs: (103, 129)
-msgid "grepWin"
-msgstr "grepWin"
+msgid "grepWinNP3"
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
-msgid "grepWin Settings"
-msgstr "Настройки grepWin"
+msgid "grepWinNP3 Settings"
+msgstr "Настройки grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -494,8 +490,8 @@ msgid "regex ok"
 msgstr "Regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWin instances."
-msgstr "Всегда использовать текущее окно grepWin"
+msgid "reuse grepWinNP3 instances."
+msgstr "Всегда использовать текущее окно grepWinNP3"
 
 #. Resource IDs: (151)
 #, c-format

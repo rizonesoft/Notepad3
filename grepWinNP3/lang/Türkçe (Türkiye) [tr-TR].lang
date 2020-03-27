@@ -43,7 +43,7 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr "%path% dosyanın yolu, %line% ile atlanacak satırla değiştirilir"
 
 #. Resource IDs: (119)
-msgid "&About grepWin..."
+msgid "&About grepWinNP3..."
 msgstr "%GrepWin hakkında ..."
 
 #. Resource IDs: (1049)
@@ -63,7 +63,7 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1052, 135)
-msgid "About grepWin"
+msgid "About grepWinNP3"
 msgstr "GrepWin Hakkında"
 
 #. Resource IDs: (1021)
@@ -168,8 +168,8 @@ msgid "Enter a name for the regex:"
 msgstr "Regex için Bir Ad Girin:"
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWin"
-msgstr "Escape Tuşu grepWin'i Kapatır"
+msgid "Escape key closes grepWinNP3"
+msgstr "Escape Tuşu grepWinNP3'i Kapatır"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -184,8 +184,8 @@ msgid "Files"
 msgstr "Dosyalar"
 
 #. Resource IDs: (109)
-msgid "GREPWIN"
-msgstr "grepWin"
+msgid "GREPWINNP3"
+msgstr "grepWinNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -446,12 +446,12 @@ msgid "greater than"
 msgstr "Büyük"
 
 #. Resource IDs: (103, 129)
-msgid "grepWin"
-msgstr "grepWin"
+msgid "grepWinNP3"
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
-msgid "grepWin Settings"
-msgstr "grepWin Ayarları"
+msgid "grepWinNP3 Settings"
+msgstr "grepWinNP3 Ayarları"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -490,8 +490,8 @@ msgid "regex ok"
 msgstr "regex Seçildi."
 
 #. Resource IDs: (117)
-msgid "reuse grepWin instances."
-msgstr "grepWin örneklerini yeniden kullanın."
+msgid "reuse grepWinNP3 instances."
+msgstr "grepWinNP3 örneklerini yeniden kullanın."
 
 #. Resource IDs: (151)
 #, c-format

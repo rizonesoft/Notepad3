@@ -43,8 +43,8 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr "%path% viene sostituito dal percorso del file, %line% dalla riga a cui saltare"
 
 #. Resource IDs: (119)
-msgid "&About grepWin..."
-msgstr "&Informazioni su grepWin..."
+msgid "&About grepWinNP3..."
+msgstr "&Informazioni su grepWinNP3..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -63,8 +63,8 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1052, 135)
-msgid "About grepWin"
-msgstr "Informazioni su grepWin"
+msgid "About grepWinNP3"
+msgstr "Informazioni su grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -168,8 +168,8 @@ msgid "Enter a name for the regex:"
 msgstr "Inserisci un nome per l'espressione regolare:"
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWin"
-msgstr "Il tasto Escape chiude grepWin"
+msgid "Escape key closes grepWinNP3"
+msgstr "Il tasto Escape chiude grepWinNP3"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -184,8 +184,8 @@ msgid "Files"
 msgstr "File"
 
 #. Resource IDs: (109)
-msgid "GREPWIN"
-msgstr "GREPWIN"
+msgid "GREPWINNP3"
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -446,12 +446,12 @@ msgid "greater than"
 msgstr "più grande di"
 
 #. Resource IDs: (103, 129)
-msgid "grepWin"
-msgstr "grepWin"
+msgid "grepWinNP3"
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
-msgid "grepWin Settings"
-msgstr "Impostazioni grepWin"
+msgid "grepWinNP3 Settings"
+msgstr "Impostazioni grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -490,8 +490,8 @@ msgid "regex ok"
 msgstr "espressione regolare valida"
 
 #. Resource IDs: (117)
-msgid "reuse grepWin instances."
-msgstr "riusa istanze di grepWin"
+msgid "reuse grepWinNP3 instances."
+msgstr "riusa istanze di grepWinNP3"
 
 #. Resource IDs: (151)
 #, c-format

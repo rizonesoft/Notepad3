@@ -33,19 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-# msgid/msgstr fields for Accelerator keys
-# Format is: "ID:xxxxxx:VACS+X" where:
-#    ID:xxxxx = the menu ID corresponding to the accelerator
-#    V = Virtual key (or blank if not used) - nearly always set!
-#    A = Alt key     (or blank if not used)
-#    C = Ctrl key    (or blank if not used)
-#    S = Shift key   (or blank if not used)
-#    X = upper case character
-# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
-# ONLY Accelerator Keys with corresponding alphanumeric characters can be
-# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
-# ONLY change the msgstr field. Do NOT change any other.
-# If you do not want to change an Accelerator Key, copy msgid to msgstr
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -56,8 +43,8 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動"
 
 #. Resource IDs: (119)
-msgid "&About grepWin..."
-msgstr "grepWin について(&A)..."
+msgid "&About grepWinNP3..."
+msgstr "grepWinNP3 について(&A)..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -76,8 +63,8 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1052, 135)
-msgid "About grepWin"
-msgstr "grepWin について"
+msgid "About grepWinNP3"
+msgstr "grepWinNP3 について"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -181,8 +168,8 @@ msgid "Enter a name for the regex:"
 msgstr "正規表現の名前を入力:"
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWin"
-msgstr "ESC キーで grepWin を閉じる"
+msgid "Escape key closes grepWinNP3"
+msgstr "ESC キーで grepWinNP3 を閉じる"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -197,8 +184,8 @@ msgid "Files"
 msgstr "ファイル検索"
 
 #. Resource IDs: (109)
-msgid "GREPWIN"
-msgstr "GREPWIN"
+msgid "GREPWINNP3"
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -459,12 +446,12 @@ msgid "greater than"
 msgstr "より大きい"
 
 #. Resource IDs: (103, 129)
-msgid "grepWin"
-msgstr "grepWin"
+msgid "grepWinNP3"
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
-msgid "grepWin Settings"
-msgstr "grepWin - オプション設定"
+msgid "grepWinNP3 Settings"
+msgstr "grepWinNP3 - オプション設定"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -503,8 +490,8 @@ msgid "regex ok"
 msgstr "正規表現 - OK"
 
 #. Resource IDs: (117)
-msgid "reuse grepWin instances."
-msgstr "grepWin のインスタンスを再利用."
+msgid "reuse grepWinNP3 instances."
+msgstr "grepWinNP3 のインスタンスを再利用."
 
 #. Resource IDs: (151)
 #, c-format
