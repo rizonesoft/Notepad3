@@ -3062,7 +3062,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   }
   else {
     SciCall_GotoPos(iInitialPos);
-    SciCall_ScrollCaret();
+    Sci_ScrollToCurrentLine();
   }
 
   _END_UNDO_ACTION_;
@@ -5031,7 +5031,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  Sci_ScrollToCurrentLine(); // normalize view
+  Sci_ScrollToCurrentLine();
 }
 
 
@@ -7119,7 +7119,6 @@ void EditToggleView(HWND hwnd)
 
   if (FocusedView.HideNonMatchedLines) {
     SciCall_GotoPos(0);
-    Sci_ScrollToCurrentLine();
     SciCall_SetReadOnly(true);
   }
   else {

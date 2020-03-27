@@ -2503,6 +2503,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   Style_ResetCurrentLexer(Globals.hwndEdit);
   SciCall_GotoPos(pos);
+  Sci_ScrollToCurrentLine();
   
   // recreate toolbar and statusbar
   CreateBars(hwnd, Globals.hInstance);
@@ -2887,8 +2888,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         POINT ptc;
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(Globals.hwndEdit, &ptc);
-        SciCall_GotoPos(SciCall_PositionFromPoint(ptc.x, ptc.y));
-        SciCall_ScrollCaret();
+        //~SciCall_GotoPos(SciCall_PositionFromPoint(ptc.x, ptc.y));
       }
 
       if (pt.x == -1 && pt.y == -1) {
@@ -5581,7 +5581,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
           SciCall_GotoPos(iCurPos);
-          Sci_ScrollToCurrentLine();
           _END_UNDO_ACTION_;
           s_bInMultiEditMode = false;
           --skipLevel;
@@ -5590,7 +5589,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
           _BEGIN_UNDO_ACTION_;
           SciCall_GotoPos(iCurPos);
-          Sci_ScrollToCurrentLine();
           _END_UNDO_ACTION_;
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
@@ -5609,7 +5607,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           default:
             _BEGIN_UNDO_ACTION_;
             SciCall_GotoPos(iCurPos);
-            Sci_ScrollToCurrentLine();
             _END_UNDO_ACTION_;
             break;
           }
