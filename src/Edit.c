@@ -4624,12 +4624,12 @@ void EditJoinLinesEx(bool bPreserveParagraphs, bool bCRLF2Space)
 //  EditSortLines()
 //
 typedef struct _SORTLINE {
-  WCHAR *pwszLine;
-  WCHAR *pwszSortEntry;
+  wchar_t* pwszLine;
+  wchar_t* pwszSortEntry;
 } SORTLINE;
 
-typedef int (__stdcall * FNSTRCMP)(LPCWSTR,LPCWSTR);
-typedef int (__stdcall * FNSTRLOGCMP)(LPCWSTR, LPCWSTR);
+typedef int (*FNSTRCMP)(const wchar_t*, const wchar_t*);
+typedef int (*FNSTRLOGCMP)(const wchar_t*, const wchar_t*);
 
 // ----------------------------------------------------------------------------
 
@@ -4666,15 +4666,26 @@ int CmpLexicographicalRev(const void* s1, const void* s2) { return -1 * CmpLexic
 
 //int CmpLexicographicalIRev(const void* s1, const void* s2) { return -1 * CmpLexicographicalI(s1, s2); }
 
+// non inlined for function pointer
+static int _wcscmp_s(const wchar_t* s1, const wchar_t* s2) { return wcscmp_s(s1, s2); }
+static int _wcscoll_s(const wchar_t* s1, const wchar_t* s2) { return wcscoll_s(s1, s2); }
+static int _wcsicmp_s(const wchar_t* s1, const wchar_t* s2) { return wcsicmp_s(s1, s2); }
+static int _wcsicoll_s(const wchar_t* s1, const wchar_t* s2) { return wcsicoll_s(s1, s2); }
+
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 int CmpStdLogical(const void *s1, const void *s2) {
-  int cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  if (cmp == 0) {
-    cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
+  if (s1 && s2) {
+    int cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
+    if (cmp == 0) {
+      cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
+    }
+    return (cmp) ? cmp : CmpStd(s1, s2);
   }
-  return (cmp) ? cmp : CmpStd(s1, s2);
+  else {
+    return (s1 ? 1 : (s2 ? -1 : 0));
+  }
 }
 
 int CmpStdLogicalRev(const void* s1, const void* s2) { return -1 * CmpStdLogical(s1, s2); }
@@ -4825,8 +4836,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   char* pmszResOffset = pmszResult;
   char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
 
-  FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? ((iSortFlags & SORT_LEXICOGRAPH) ? wcsicmp_s : wcsicoll_s) :
-                                                           ((iSortFlags & SORT_LEXICOGRAPH) ? wcscmp_s  :  wcscoll_s);
+  FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? ((iSortFlags & SORT_LEXICOGRAPH) ? _wcsicmp_s : _wcsicoll_s) :
+                                                           ((iSortFlags & SORT_LEXICOGRAPH) ? _wcscmp_s  : _wcscoll_s);
 
   bool bLastDup = false;
   for (DocLn i = 0; i < iLineCount; ++i) {

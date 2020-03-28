@@ -217,15 +217,16 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 static void SetMuiLocaleAll(LPCWSTR pszLocaleStr)
 {
   const WCHAR* const pszLocaleCur = _wsetlocale(LC_ALL, pszLocaleStr);
-#ifdef _DEBUG
   if (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0) {
     //const _locale_t pCurLocale = _get_current_locale();
+    _wsetlocale(LC_ALL, L""); // system standard
+#ifdef _DEBUG
     WCHAR msg[128];
     StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
       pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
     MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
-  }
 #endif
+  }
 }
 
 void SetPreferredLanguage(LANGID iPreferredLanguageID)
