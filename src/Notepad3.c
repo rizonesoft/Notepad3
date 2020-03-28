@@ -383,7 +383,7 @@ static UT_array* UndoRedoSelectionUTArray = NULL;
 static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
-static int   _UndoRedoActionMap(int token, UndoRedoSelection_t** selection);
+static int   _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection);
 static void  _SplitUndoTransaction(const int iModType);
 
 // => _BEGIN_UNDO_ACTION_
@@ -1349,12 +1349,10 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (s_flagMatchText & 2) {
         if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
         EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
-        EditEnsureSelectionVisible();
       }
       else {
         if (!s_flagJumpTo) { SciCall_DocumentStart(); }
         EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
-        EditEnsureSelectionVisible();
       }
     }
   }
@@ -2813,12 +2811,10 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (s_flagMatchText & 2) {
           if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
           EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
-          EditEnsureSelectionVisible();
         }
         else {
           if (!s_flagJumpTo) { SciCall_DocumentStart(); }
           EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
-          EditEnsureSelectionVisible();
         }
       }
 
@@ -8800,7 +8796,6 @@ static int _SaveUndoSelection()
 
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   CopyUndoRedoSelection(&sel, NULL); // init
-  UndoRedoSelection_t* pSel = &sel;
 
   DocPosU const numOfSel = SciCall_GetSelections();
 
@@ -8815,22 +8810,24 @@ static int _SaveUndoSelection()
 
   int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
 
-  pSel->selMode_undo = selMode;
+  sel.selMode_undo = selMode;
 
   switch (selMode)
   {
     case NP3_SEL_MULTI:
     {
       for (DocPosU i = 0; i < numOfSel; ++i) {
-        DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
-        utarray_push_back(pSel->anchorPos_undo, &anchorPos);
-        DocPos const curPos = SciCall_GetSelectionNCaret(i);
-        utarray_push_back(pSel->curPos_undo, &curPos);
-        if (!Settings2.DenyVirtualSpaceAccess) {
+        if (sel.anchorPos_undo && sel.curPos_undo) {
+          DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+          utarray_push_back(sel.anchorPos_undo, &anchorPos);
+          DocPos const curPos = SciCall_GetSelectionNCaret(i);
+          utarray_push_back(sel.curPos_undo, &curPos);
+        }
+        if (!Settings2.DenyVirtualSpaceAccess && sel.anchorVS_undo && sel.curVS_undo) {
           DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
-          utarray_push_back(pSel->anchorVS_undo, &anchorVS);
+          utarray_push_back(sel.anchorVS_undo, &anchorVS);
           DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
-          utarray_push_back(pSel->curVS_undo, &curVS);
+          utarray_push_back(sel.curVS_undo, &curVS);
         }
       }
     }
@@ -8840,14 +8837,14 @@ static int _SaveUndoSelection()
     case SC_SEL_THIN:
     {
       DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
-      utarray_push_back(pSel->anchorPos_undo, &anchorPos);
+      utarray_push_back(sel.anchorPos_undo, &anchorPos);
       DocPos const curPos = SciCall_GetRectangularSelectionCaret();
-      utarray_push_back(pSel->curPos_undo, &curPos);
+      utarray_push_back(sel.curPos_undo, &curPos);
       if (!Settings2.DenyVirtualSpaceAccess) {
         DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-        utarray_push_back(pSel->anchorVS_undo, &anchorVS);
+        utarray_push_back(sel.anchorVS_undo, &anchorVS);
         DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-        utarray_push_back(pSel->curVS_undo, &curVS);
+        utarray_push_back(sel.curVS_undo, &curVS);
       }
     }
     break;
@@ -8857,16 +8854,17 @@ static int _SaveUndoSelection()
     default:
     {
       DocPos const anchorPos = SciCall_GetAnchor();
-      utarray_push_back(pSel->anchorPos_undo, &anchorPos);
+      utarray_push_back(sel.anchorPos_undo, &anchorPos);
       DocPos const curPos = SciCall_GetCurrentPos();
-      utarray_push_back(pSel->curPos_undo, &curPos);
+      utarray_push_back(sel.curPos_undo, &curPos);
       DocPos const dummy = (DocPos)-1;
-      utarray_push_back(pSel->anchorVS_undo, &dummy);
-      utarray_push_back(pSel->curVS_undo, &dummy);
+      utarray_push_back(sel.anchorVS_undo, &dummy);
+      utarray_push_back(sel.curVS_undo, &dummy);
     }
     break;
   }
 
+  const UndoRedoSelection_t* pSel = &sel;
   int const token = _UndoRedoActionMap(-1, &pSel);
 
   if (token >= 0) {
@@ -9097,7 +9095,7 @@ bool RestoreAction(int token, DoAction doAct)
 //  _UndoRedoActionMap()
 //
 //
-static int  _UndoRedoActionMap(int token, UndoRedoSelection_t** selection)
+static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
 {
   if (UndoRedoSelectionUTArray == NULL) { return -1; };
 
@@ -10299,7 +10297,13 @@ bool RelaunchMultiInst() {
       PROCESS_INFORMATION pi;
       ZeroMemory(&pi,sizeof(PROCESS_INFORMATION));
 
-      CreateProcess(NULL,lpCmdLineNew,NULL,NULL,false,0,NULL,Globals.WorkingDirectory,&si,&pi);
+      CreateProcess(NULL, lpCmdLineNew, NULL, NULL, false, CREATE_NEW_PROCESS_GROUP, NULL, Globals.WorkingDirectory, &si, &pi);
+      
+      // don't wait for it to finish.
+      //::WaitForSingleObject(pi.hProcess, INFINITE);
+      // free up resources...
+      CloseHandle(pi.hThread);
+      CloseHandle(pi.hProcess);
     }
 
     LocalFree(lpCmdLineNew); // StrDup()

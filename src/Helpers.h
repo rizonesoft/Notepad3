@@ -367,6 +367,29 @@ __inline ptrdiff_t MultiByteToWideCharEx(
 
 #endif 
 
+// ============================================================================
+
+inline int wcscmp_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? wcscmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+inline int wcscoll_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? wcscoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+inline int wcsicmp_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? _wcsicmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+inline int wcsicoll_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? _wcsicoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+// ============================================================================
 
 inline void SwabEx(char* src, char* dest, size_t n)
 {

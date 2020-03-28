@@ -115,7 +115,9 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
-- Don't use analysis hint UTF-8, if file is invalid UTF-8.
+- Locale dependent string comparison and Logical Number comparison.
+- Review scroll behavior for context menu and Stop scrolling on context menu click.
+- Do not use analysis hint UTF-8, if file is invalid UTF-8.
 - Configurable default ANSI code-page (locale) detection bonus.
 - No AutoCompletion on empty words (busy loop bug).
 - DPI Scaling Toolbar and DPI scaling selection mode.

@@ -114,6 +114,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\tr-TR"
+         if exist "$(TargetDir)..\tr-TR\mplng.dll.mui" del /f /q "$(TargetDir)..\tr-TR\mplng.dll.mui"
+         if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x041F -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\tr-TR\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\tr-TR\mplng.dll.mui"
       </Command>
@@ -140,6 +142,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\tr-TR"
+         if exist "$(TargetDir)..\tr-TR\mplng.dll.mui" del /f /q "$(TargetDir)..\tr-TR\mplng.dll.mui"
+         if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x041F -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\tr-TR\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\tr-TR\mplng.dll.mui"
       </Command>
@@ -172,6 +176,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\tr-TR"
+         if exist "$(TargetDir)..\tr-TR\mplng.dll.mui" del /f /q "$(TargetDir)..\tr-TR\mplng.dll.mui"
+         if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x041F -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\tr-TR\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\tr-TR\mplng.dll.mui"
       </Command>
@@ -204,6 +210,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\tr-TR"
+         if exist "$(TargetDir)..\tr-TR\mplng.dll.mui" del /f /q "$(TargetDir)..\tr-TR\mplng.dll.mui"
+         if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x041F -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\tr-TR\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\tr-TR\mplng.dll.mui"
       </Command>
