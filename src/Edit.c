@@ -4634,16 +4634,18 @@ typedef int (__stdcall * FNSTRLOGCMP)(LPCWSTR, LPCWSTR);
 // ----------------------------------------------------------------------------
 
 int CmpStd(const void *s1, const void *s2) {
-  int const cmp = StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
-  return (cmp) ? cmp : StrCmp(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+  //~StrCmp()
+  int const cmp =      wcscoll_s(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
+  return (cmp) ? cmp : wcscoll_s(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
 }
 
 int CmpStdRev(const void* s1, const void* s2) { return -1 * CmpStd(s1, s2); }
 
 
 int CmpStdI(const void* s1, const void* s2) {
-  int const cmp = StrCmpI(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
-  return (cmp) ? cmp : StrCmpI(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
+  //~StrCmpI()
+  int const cmp =      wcsicoll_s(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
+  return (cmp) ? cmp : wcsicoll_s(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
 }
 
 int CmpStdIRev(const void* s1, const void* s2) { return -1 * CmpStdI(s1, s2); }
@@ -4651,14 +4653,9 @@ int CmpStdIRev(const void* s1, const void* s2) { return -1 * CmpStdI(s1, s2); }
 // ----------------------------------------------------------------------------
 
 int CmpLexicographical(const void *s1, const void *s2) {
-  LPCWSTR const pwszSE1 = ((SORTLINE*)s1)->pwszSortEntry;
-  LPCWSTR const pwszSE2 = ((SORTLINE*)s2)->pwszSortEntry;
-  if (pwszSE1 && pwszSE2) {
-    int const cmp = wcscmp(pwszSE1, pwszSE2);
-    return (cmp) ? cmp : wcscmp(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
+  int const cmp =      wcscmp_s(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
+  return (cmp) ? cmp : wcscmp_s(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
   }
-  return pwszSE1 ? -1 : (pwszSE2 ? 1 : 0);
-}
 
 //int CmpLexicographicalI(const void* s1, const void* s2) {
 //  int const cmp = _wcsicmp(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
@@ -4734,14 +4731,14 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
   char* pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
 
+  int ichlMax = 3;
   DocPos cchTotal = 0;
-  DocPos ichlMax = 3;
   DocLn iZeroLenLineCount = 0;
   for (DocLn i = 0, iLn = iLineStart; iLn <= iLineEnd; ++iLn, ++i) {
 
-    DocPos const cchm = SciCall_LineLength(iLn);
+    int const cchm = (int)SciCall_LineLength(iLn);
     cchTotal += cchm;
-    ichlMax = max_p(ichlMax, cchm);
+    ichlMax = max_i(ichlMax, cchm);
 
     SciCall_GetLine_Safe(iLn, pmsz);
 
@@ -4754,12 +4751,12 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     }
     StrTrimA(pmsz, "\r\n"); // ignore line-breaks 
 
-    ptrdiff_t const cchw = MultiByteToWideCharEx(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
-    if (cchw > 0) {
+    int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0);
+    if (cchw > 1) {
       int tabs = _iTabWidth;
-      ptrdiff_t const lnLen = (sizeof(WCHAR) * (cchw + 1));
+      ptrdiff_t const lnLen = (sizeof(WCHAR) * cchw);
       pLines[i].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
-      MultiByteToWideCharEx(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, lnLen / sizeof(WCHAR));
+      MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, cchw);
       pLines[i].pwszSortEntry = pLines[i].pwszLine;
       if (iSortFlags & SORT_COLUMN) {
         int col = 0;
@@ -4828,7 +4825,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   char* pmszResOffset = pmszResult;
   char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
 
-  FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpI : StrCmp;
+  FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? ((iSortFlags & SORT_LEXICOGRAPH) ? wcsicmp_s : wcsicoll_s) :
+                                                           ((iSortFlags & SORT_LEXICOGRAPH) ? wcscmp_s  :  wcscoll_s);
 
   bool bLastDup = false;
   for (DocLn i = 0; i < iLineCount; ++i) {
@@ -4853,8 +4851,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         }
       }
       if (!bDropLine) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pLines[i].pwszLine, -1, 
-                            pmszBuf, (ichlMax + 1), NULL, NULL);
+        WideCharToMultiByte(Encoding_SciCP, 0, pLines[i].pwszLine, -1, pmszBuf, (ichlMax + 1), NULL, NULL);
         StringCchCatA(pmszResult, lenRes, pmszBuf);
         StringCchCatA(pmszResult, lenRes, mszEOL);
       }
