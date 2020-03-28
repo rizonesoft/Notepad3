@@ -5021,15 +5021,18 @@ void EditNormalizeView(const DocLn iDocLine)
 //
 void EditEnsureSelectionVisible()
 {
-  DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
-  DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
+  DocPos const posCurrent = SciCall_GetCurrentPos();
+  DocPos const posAnchor  = SciCall_GetAnchor();
+  DocLn const iCurrentLine = SciCall_LineFromPosition(posCurrent);
+  DocLn const iAnchorLine = SciCall_LineFromPosition(posAnchor);
 
   // Ensure that the first and last lines of a selection are always unfolded
   // This needs to be done *before* the SCI_SETSEL message
   SciCall_EnsureVisible(iAnchorLine);
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
 
-  Sci_ScrollToCurrentLine(); // normalize view
+  SciCall_ScrollRange(posCurrent, posAnchor);
+  Sci_ScrollChooseCaret();
 }
 
 
@@ -5055,7 +5058,9 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  Sci_ScrollToCurrentLine();
+
+  //~EditEnsureSelectionVisible();
+  EditNormalizeView(Sci_GetCurrentLineNumber());
 }
 
 

@@ -114,6 +114,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
+        if exist "$(TargetDir)..\en-GB\np3lng.dll.mui" del /f /q "$(TargetDir)..\en-GB\np3lng.dll.mui"
+        if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\np3lng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-GB\np3lng.dll.mui"
       </Command>
@@ -140,6 +142,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
+        if exist "$(TargetDir)..\en-GB\np3lng.dll.mui" del /f /q "$(TargetDir)..\en-GB\np3lng.dll.mui"
+        if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\np3lng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-GB\np3lng.dll.mui"
       </Command>
@@ -172,6 +176,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
+        if exist "$(TargetDir)..\en-GB\np3lng.dll.mui" del /f /q "$(TargetDir)..\en-GB\np3lng.dll.mui"
+        if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\np3lng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-GB\np3lng.dll.mui"
       </Command>
@@ -204,6 +210,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
+        if exist "$(TargetDir)..\en-GB\np3lng.dll.mui" del /f /q "$(TargetDir)..\en-GB\np3lng.dll.mui"
+        if exist "$(TargetDir)$(TargetFileName).discard" del /f /q "$(TargetDir)$(TargetFileName).discard"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\np3lng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-GB\np3lng.dll.mui"
       </Command>
