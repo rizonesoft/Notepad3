@@ -214,19 +214,38 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, LANGID* p
 //
 //  SetPreferredLanguage
 //
+static void SetMuiLocaleAll(LPCWSTR pszLocaleStr)
+{
+  const WCHAR* const pszLocaleCur = _wsetlocale(LC_ALL, pszLocaleStr);
+  if (StringCchCompareXI(pszLocaleStr, pszLocaleCur) != 0) {
+    //const _locale_t pCurLocale = _get_current_locale();
+    _wsetlocale(LC_ALL, L""); // system standard
+#ifdef _DEBUG
+    WCHAR msg[128];
+    StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
+      pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
+    MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
+#endif
+  }
+}
+
 void SetPreferredLanguage(LANGID iPreferredLanguageID)
 {
   int const langIdx = GetMUILanguageIndexByLangID(iPreferredLanguageID);
   if (langIdx < 0)
   {
     Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US); // internal
+    SetMuiLocaleAll(MUI_LanguageDLLs[0].szLocaleName);
     return;
   }
 
   if (iPreferredLanguageID != Globals.iPrefLANGID)
   {
     Globals.iPrefLANGID = iPreferredLanguageID; // == MUI_LanguageDLLs[langIdx].LangId
-    const WCHAR* szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
+
+    const WCHAR* const szLocaleName = MUI_LanguageDLLs[langIdx].szLocaleName;
+
+    SetMuiLocaleAll(szLocaleName);
 
     if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, szLocaleName) != 0)
     {
