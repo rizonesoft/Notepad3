@@ -4676,7 +4676,8 @@ static int _wcsicoll_s(const wchar_t* s1, const wchar_t* s2) { return wcsicoll_s
 // ----------------------------------------------------------------------------
 
 int CmpStdLogical(const void *s1, const void *s2) {
-  if (s1 && s2) {
+  if (StrIsNotEmpty(s1) && StrIsNotEmpty(s2))
+  {
     int cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry, ((SORTLINE*)s2)->pwszSortEntry);
     if (cmp == 0) {
       cmp = StrCmpLogicalW(((SORTLINE*)s1)->pwszLine, ((SORTLINE*)s2)->pwszLine);
@@ -4684,7 +4685,7 @@ int CmpStdLogical(const void *s1, const void *s2) {
     return (cmp) ? cmp : CmpStd(s1, s2);
   }
   else {
-    return (s1 ? 1 : (s2 ? -1 : 0));
+    return (StrIsNotEmpty(s1) ? 1 : (StrIsNotEmpty(s2) ? -1 : 0));
   }
 }
 
