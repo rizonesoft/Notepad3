@@ -43,7 +43,7 @@ Thumbs.db
 /Build/Signing/Password.txt
 /distrib/Notepad3*.exe
 
-/Version_*.cmd
+# /Version_*.cmd
 /Versions/build.txt
 /Versions/day.txt
 /Versions/commit_id.txt
