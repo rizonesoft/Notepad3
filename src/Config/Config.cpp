@@ -1564,7 +1564,9 @@ void LoadSettings()
 
     Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
     MRU_Load(Globals.pMRUfind, false);
-    SetFindPattern(Globals.pMRUfind->pszItems[0]);
+    if (IsFindPatternEmpty()) {
+      SetFindPattern(Globals.pMRUfind->pszItems[0]);
+    }
 
     Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
     MRU_Load(Globals.pMRUreplace, false);

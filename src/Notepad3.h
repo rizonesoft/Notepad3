@@ -158,8 +158,10 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position);
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
 void SetFindPatternMB(LPCSTR chFindPattern);
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
+size_t LengthOfFindPattern();
+LPCWSTR GetFindPattern();
+void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
+void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 
