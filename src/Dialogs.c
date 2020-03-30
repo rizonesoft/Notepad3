@@ -158,18 +158,18 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
     NULL,
     dwErrID,
     Globals.iPrefLANGID,
-    (LPTSTR)&lpMsgBuf,
+    (LPWSTR)&lpMsgBuf,
     0, NULL);
 
   if (lpMsgBuf) {
     // Display the error message and exit the process
-    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW(lpszMessage, 0) + 80;
+    size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
     LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     if (lpDisplayBuf) {
-      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
-        lpszMessage, dwErrID, (LPCWSTR)lpMsgBuf);
-
+      WCHAR msgFormat[128] = { L'\0' };
+      GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
+      StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
       // center message box to main
       HWND focus = GetFocus();
       HWND hwnd = focus ? focus : Globals.hwndMain;

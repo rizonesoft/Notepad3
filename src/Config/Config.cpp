@@ -102,11 +102,17 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
   {
     bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
     if (!bLocked) {
-      MsgBoxLastError(L"AcquireWriteFileLock(): NO EXCLUSIVE LOCK ACQUIRED!", 0);
+      wchar_t msg[MAX_PATH + 128] = { 0 };
+      StringCchPrintf(msg, ARRAYSIZE(msg),
+        L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
+      MsgBoxLastError(msg, 0);
     }
   }
   else {
-    MsgBoxLastError(L"AcquireWriteFileLock(): INVALID FILE HANDLE!", 0);
+    wchar_t msg[MAX_PATH + 128] = { 0 };
+    StringCchPrintf(msg, ARRAYSIZE(msg),
+      L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+    MsgBoxLastError(msg, 0);
   }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -129,11 +135,17 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
   {
     bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
     if (!bLocked) {
-      MsgBoxLastError(L"AcquireReadFileLock(): NO READER LOCK ACQUIRED!", 0);
+      wchar_t msg[MAX_PATH + 128] = { 0 };
+      StringCchPrintf(msg, ARRAYSIZE(msg),
+        L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
+      MsgBoxLastError(msg, 0);
     }
   }
   else {
-    MsgBoxLastError(L"AcquireReadFileLock(): INVALID FILE HANDLE", 0);
+    wchar_t msg[MAX_PATH + 128] = { 0 };
+    StringCchPrintf(msg, ARRAYSIZE(msg),
+      L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+    MsgBoxLastError(msg, 0);
   }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -915,7 +927,10 @@ extern "C" bool CreateIniFile()
         CloseHandle(hFile); // done
       }
       else {
-        MsgBoxLastError(L"CreateIniFile(): FAILD TO CREATE INITIAL INI FILE!", 0);
+        wchar_t msg[MAX_PATH + 128] = { 0 };
+        StringCchPrintf(msg, ARRAYSIZE(msg),
+          L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", Globals.IniFile);
+        MsgBoxLastError(msg, 0);
       }
     }
     else {
@@ -929,7 +944,10 @@ extern "C" bool CreateIniFile()
         CloseHandle(hFile);
       }
       else {
-        MsgBoxLastError(L"CreateIniFile(): FAILED TO GET FILESIZE!", 0);
+        wchar_t msg[MAX_PATH + 128] = { 0 };
+        StringCchPrintf(msg, ARRAYSIZE(msg),
+          L"CreateIniFile(%s): FAILED TO GET FILESIZE!", Globals.IniFile);
+        MsgBoxLastError(msg, 0);
         dwFileSize = INVALID_FILE_SIZE;
       }
     }
