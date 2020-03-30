@@ -92,6 +92,8 @@ WCHAR     s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR     s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
+int       s_flagMatchText = 0;
+
 // ------------------------------------
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
@@ -530,7 +532,6 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 //
 static LPWSTR                s_lpSchemeArg = NULL;
 static LPWSTR                s_lpOrigFileArg = NULL;
-static LPWSTR                s_lpMatchArg = NULL;
 static WCHAR                 s_lpFileArg[MAX_PATH + 1] = { L'\0' };
 
 static cpi_enc_t             s_flagSetEncoding = CPI_NONE;
@@ -541,7 +542,6 @@ static bool                  s_flagKeepTitleExcerpt = false;
 static bool                  s_flagNewFromClipboard = false;
 static bool                  s_flagPasteBoard = false;
 static bool                  s_flagJumpTo = false;
-static int                   s_flagMatchText = 0;
 static FILE_WATCHING_MODE    s_flagChangeNotify = FWM_DONT_CARE;
 static bool                  s_flagQuietCreate = false;
 static bool                  s_flagLexerSpecified = false;
@@ -772,11 +772,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   }
 
   OleUninitialize();
-
-  if (s_lpMatchArg) {
-    LocalFree(s_lpMatchArg);  // StrDup()
-    s_lpMatchArg = NULL;
-  }
 
   if (s_lpOrigFileArg) {
     FreeMem(s_lpOrigFileArg);
@@ -1108,6 +1103,111 @@ WININFO GetWinInfoByFlag(const int flagsPos)
 }
 
 
+
+//=============================================================================
+//
+//  Set/Get FindPattern()
+// 
+static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
+
+bool IsFindPatternEmpty()
+{
+  return  StrIsEmpty(sCurrentFindPattern);
+}
+
+//=============================================================================
+//
+//  SetFindPattern()
+// 
+void SetFindPattern(LPCWSTR wchFindPattern)
+{
+  StringCchCopy(sCurrentFindPattern, COUNTOF(sCurrentFindPattern), (wchFindPattern ? wchFindPattern : L""));
+}
+
+//=============================================================================
+//
+//  SetFindPatternMB()
+// 
+void SetFindPatternMB(LPCSTR chFindPattern)
+{
+  MultiByteToWideCharEx(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
+}
+
+
+//=============================================================================
+//
+//  LengthOfFindPattern()
+// 
+size_t LengthOfFindPattern()
+{
+  return StringCchLen(sCurrentFindPattern, 0);
+}
+
+
+//=============================================================================
+//
+//  GetFindPattern()
+// 
+LPCWSTR GetFindPattern()
+{
+  return sCurrentFindPattern;
+}
+
+
+//=============================================================================
+//
+//  CopyFindPattern()
+// 
+void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
+{
+  StringCchCopy(wchFindPattern, bufferCount, sCurrentFindPattern);
+}
+
+//=============================================================================
+//
+//  CopyFindPatternMB()
+// 
+void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
+{
+  WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
+}
+
+
+
+static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
+
+//=============================================================================
+//
+// SetFindReplaceData()
+//
+static void SetFindReplaceData()
+{
+  s_FindReplaceData = Settings.EFR_Data; // reset
+
+  if (s_flagMatchText) // cmd line
+  {
+    if (!IsFindPatternEmpty()) {
+      CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
+    }
+    if (s_flagMatchText & 4) {
+      s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+    }
+    if (s_flagMatchText & 8) {
+      s_FindReplaceData.fuFlags |= SCFIND_MATCHCASE;
+    }
+    if (s_flagMatchText & 16) {
+      s_FindReplaceData.fuFlags |= SCFIND_DOT_MATCH_ALL;
+    }
+    if (s_flagMatchText & 32) {
+      s_FindReplaceData.bTransformBS = true;
+    }
+    s_FindReplaceData.bOverlappingFind = false;
+    s_FindReplaceData.bWildcardSearch = false;
+    s_FindReplaceData.bReplaceClose = false;
+  }
+}
+
+
 //=============================================================================
 //
 // InitApplication()
@@ -1335,24 +1435,19 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Match Text
-  if (s_flagMatchText && StrIsNotEmpty(s_lpMatchArg)) 
+  if (s_flagMatchText && !IsFindPatternEmpty()) 
   {
     if (!Sci_IsDocEmpty()) {
 
-      WideCharToMultiByteEx(Encoding_SciCP,0,s_lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
-
-      if (s_flagMatchText & 4)
-        Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
-      else if (s_flagMatchText & 8)
-        Settings.EFR_Data.bTransformBS = true;
+      SetFindReplaceData(); // s_FindReplaceData
 
       if (s_flagMatchText & 2) {
         if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
-        EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
+        EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
       }
       else {
         if (!s_flagJumpTo) { SciCall_DocumentStart(); }
-        EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
+        EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
       }
     }
   }
@@ -2791,30 +2886,23 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
 
       if (params->flagJumpTo) {
-        if (params->iInitialLine == 0)
-          params->iInitialLine = 1;
+        s_flagJumpTo = true;
         EditJumpTo(params->iInitialLine, params->iInitialColumn);
       }
 
-      if (params->flagMatchText) {
+      if (params->flagMatchText)
+      {
         s_flagMatchText = params->flagMatchText;
-        if (s_lpMatchArg) { LocalFree(s_lpMatchArg); }  // StrDup()
-        s_lpMatchArg = StrDup(StrEnd(&params->wchData, 0) + 1);
-
-        WideCharToMultiByteEx(Encoding_SciCP, 0, s_lpMatchArg, -1, Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), NULL, NULL);
-
-        if (s_flagMatchText & 4)
-          Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
-        else if (s_flagMatchText & 8)
-          Settings.EFR_Data.bTransformBS = true;
+        SetFindPattern(StrEnd(&params->wchData, 0) + 1);
+        SetFindReplaceData(); // s_FindReplaceData
 
         if (s_flagMatchText & 2) {
           if (!s_flagJumpTo) { SciCall_DocumentEnd(); }
-          EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
         }
         else {
           if (!s_flagJumpTo) { SciCall_DocumentStart(); }
-          EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
         }
       }
 
@@ -4729,16 +4817,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_FIND:
+      SetFindReplaceData(); // s_FindReplaceData
       if (!IsWindow(Globals.hwndDlgFindReplace)) {
         Globals.bFindReplCopySelOrClip = true;
-        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, false);
+        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
       }
       else {
         Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
         if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
           SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
           DestroyWindow(Globals.hwndDlgFindReplace);
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, false);
+          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
         }
         else {
           SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -4749,16 +4838,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_REPLACE:
+      SetFindReplaceData(); // s_FindReplaceData
       if (!IsWindow(Globals.hwndDlgFindReplace)) {
         Globals.bFindReplCopySelOrClip = true;
-        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, true);
+        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
       }
       else {
         Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
         if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
           SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
           DestroyWindow(Globals.hwndDlgFindReplace);
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, true);
+          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
         }
         else {
           SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -4803,7 +4893,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break; // done
       }
 
-      if (IsFindPatternEmpty() && !StringCchLenA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind)))
+      SetFindReplaceData(); // s_FindReplaceData
+
+      if (IsFindPatternEmpty() && !StrIsEmptyA(s_FindReplaceData.szFind))
       {
         if (iLoWParam != IDM_EDIT_REPLACENEXT) {
           SendWMCommand(hwnd, IDM_EDIT_FIND);
@@ -4817,16 +4909,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         switch (iLoWParam) {
 
           case IDM_EDIT_FINDNEXT:
-            EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
+            EditFindNext(Globals.hwndEdit,&s_FindReplaceData,false,false);
             break;
 
           case IDM_EDIT_FINDPREV:
-            EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
+            EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,false,false);
             break;
 
           case IDM_EDIT_REPLACENEXT:
             if (Globals.bReplaceInitialized) {
-              EditReplace(Globals.hwndEdit, &Settings.EFR_Data);
+              EditReplace(Globals.hwndEdit, &s_FindReplaceData);
             }
             else {
               SendWMCommand(hwnd, IDM_EDIT_REPLACE);
@@ -4834,11 +4926,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_SELTONEXT:
-            EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,true,false);
+            EditFindNext(Globals.hwndEdit,&s_FindReplaceData,true,false);
             break;
 
           case IDM_EDIT_SELTOPREV:
-            EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,true,false);
+            EditFindPrev(Globals.hwndEdit,&s_FindReplaceData,true,false);
             break;
         }
       }
@@ -4863,18 +4955,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_GetSelText(szSelection);
 
-        StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), szSelection);
-        Settings.EFR_Data.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
-        Settings.EFR_Data.bTransformBS = false;
+        SetFindReplaceData(); // s_FindReplaceData
 
-        LPWSTR pszTextW = AllocMem(cchSelection * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-        if (pszTextW == NULL) {
-          FreeMem(szSelection);
-          break;
-        }
-        MultiByteToWideCharEx(Encoding_SciCP, 0, szSelection, -1, pszTextW, cchSelection);
-        MRU_Add(Globals.pMRUfind, pszTextW, 0, -1, -1, NULL);
-        SetFindPattern(pszTextW);
+        SetFindPatternMB(szSelection);
+        MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
+
+        StringCchCopyA(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind), szSelection);
+        s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
+        s_FindReplaceData.bTransformBS = false;
 
         switch (iLoWParam) {
 
@@ -4882,16 +4970,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           break;
 
         case CMD_FINDNEXTSEL:
-          EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false);
           break;
 
         case CMD_FINDPREVSEL:
-          EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
+          EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false);
           break;
         }
      
         FreeMem(szSelection);
-        FreeMem(pszTextW);
       }
     }
     break;
@@ -7366,55 +7453,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 }
 
 
-
-//=============================================================================
-//
-//  Set/Get FindPattern()
-// 
-static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
-
-bool IsFindPatternEmpty()
-{
-  return (StringCchLenW(sCurrentFindPattern, COUNTOF(sCurrentFindPattern)) == 0);
-}
-
-//=============================================================================
-//
-//  SetFindPattern()
-// 
-void SetFindPattern(LPCWSTR wchFindPattern)
-{
-  StringCchCopyW(sCurrentFindPattern, COUNTOF(sCurrentFindPattern), (wchFindPattern ? wchFindPattern : L""));
-}
-
-//=============================================================================
-//
-//  SetFindPatternMB()
-// 
-void SetFindPatternMB(LPCSTR chFindPattern)
-{
-  MultiByteToWideCharEx(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
-}
-
-//=============================================================================
-//
-//  GetFindPattern()
-// 
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount)
-{
-  StringCchCopyW(wchFindPattern, bufferCount, sCurrentFindPattern);
-}
-
-//=============================================================================
-//
-//  GetFindPatternMB()
-// 
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
-{
-    WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferCount, NULL, NULL);
-}
-
-
 //=============================================================================
 //
 //  ParseCommandLine()
@@ -7674,38 +7712,52 @@ void ParseCommandLine()
               break;
 
             case L'M':
-            {
-              bool bFindUp = false;
-              bool bRegex = false;
-              bool bTransBS = false;
+              {
+                bool bFindUp = false;
+                bool bMatchCase = false;
+                bool bRegex = false;
+                bool bDotMatchAll = false;
+                bool bTransBS = false;
 
-              if (StrChr(lp1, L'-'))
-                bFindUp = true;
-              if (StrChr(lp1, L'R'))
-                bRegex = true;
-              if (StrChr(lp1, L'B'))
-                bTransBS = true;
-
-              if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                if (s_lpMatchArg) { LocalFree(s_lpMatchArg); }  // StrDup()
-                s_lpMatchArg = StrDup(lp1);
-                s_flagMatchText = 1;
-
-                if (bFindUp)
-                  s_flagMatchText |= 2;
-
-                if (bRegex) {
-                  s_flagMatchText &= ~8;
-                  s_flagMatchText |= 4;
+                if (StrChr(lp1, L'-')) {
+                  bFindUp = true;
                 }
-
-                if (bTransBS) {
-                  s_flagMatchText &= ~4;
-                  s_flagMatchText |= 8;
+                if (StrChr(lp1, L'C')) {
+                  bMatchCase = true;
+                }
+                if (StrChr(lp1, L'R')) {
+                  bRegex = true;
+                  bTransBS = true;
+                }
+                if (StrChr(lp1, L'A')) {
+                  bDotMatchAll = true;
+                }
+                if (StrChr(lp1, L'B')) {
+                  bTransBS = true;
+                }
+                if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) 
+                {
+                  SetFindPattern(lp1);
+                  
+                  s_flagMatchText = 1;
+                  if (bFindUp) {
+                    s_flagMatchText |= 2;
+                  }
+                  if (bRegex) {
+                    s_flagMatchText |= 4;
+                  }
+                  if (bMatchCase) {
+                    s_flagMatchText |= 8;
+                  }
+                  if (bDotMatchAll) {
+                    s_flagMatchText |= 16;
+                  }
+                  if (bTransBS) {
+                    s_flagMatchText |= 32;
+                  }
                 }
               }
-            }
-            break;
+              break;
 
             case L'L':
               if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O')
@@ -7959,7 +8011,7 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(Globals.hwndToolbar, IDT_EDIT_FIND, b2);
   //EnableTool(Globals.hwndToolbar, ,b2);
-  //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && StringCchLenA(Settings.EFR_Data.szFind,0));
+  //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && !StrIsEmptyA(s_FindReplaceData.szFind));
   EnableTool(Globals.hwndToolbar, IDT_EDIT_REPLACE, b2 && !ro);
 
   EnableTool(Globals.hwndToolbar, IDT_EDIT_CUT, !b1 && !ro);
@@ -9433,7 +9485,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
 
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
-    SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
+    if (IsFindPatternEmpty()) {
+      SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
+    }
 
     // Install watching of the current file
     if (!bReload && FileWatching.ResetFileWatching) {
@@ -10119,8 +10173,9 @@ bool ActivatePrevInst()
         if (s_lpSchemeArg) {
           cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
         }
-        if (s_lpMatchArg) {
-          cb += ((StringCchLen(s_lpMatchArg, 0) + 1) * sizeof(WCHAR));
+
+        if (!IsFindPatternEmpty()) {
+          cb += ((LengthOfFindPattern() + 1) * sizeof(WCHAR));
         }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
@@ -10143,8 +10198,8 @@ bool ActivatePrevInst()
         params->flagTitleExcerpt = 0;
 
         params->flagMatchText = s_flagMatchText;
-        if (s_lpMatchArg) {
-          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (StringCchLen(s_lpMatchArg, 0) + 1), s_lpMatchArg);
+        if (!IsFindPatternEmpty()) {
+          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
         }
 
         cds.dwData = DATA_NOTEPAD3_PARAMS;
@@ -10203,8 +10258,8 @@ bool ActivatePrevInst()
         if (cchTitleExcerpt) {
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
         }
-        if (s_lpMatchArg) {
-          cb += ((StringCchLen(s_lpMatchArg, 0) + 1) * sizeof(WCHAR));
+        if (!IsFindPatternEmpty()) {
+          cb += ((LengthOfFindPattern() + 1) * sizeof(WCHAR));
         }
 
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
@@ -10236,8 +10291,8 @@ bool ActivatePrevInst()
         }
 
         params->flagMatchText = s_flagMatchText;
-        if (s_lpMatchArg) {
-          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (StringCchLen(s_lpMatchArg, 0) + 1), s_lpMatchArg);
+        if (!IsFindPatternEmpty()) {
+          StringCchCopy(StrEnd(&params->wchData, 0) + 1, (LengthOfFindPattern() + 1), GetFindPattern());
         }
 
         cds.dwData = DATA_NOTEPAD3_PARAMS;

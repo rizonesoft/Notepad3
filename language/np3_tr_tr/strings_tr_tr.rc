@@ -144,7 +144,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
     IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application??"
+                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"

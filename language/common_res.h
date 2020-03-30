@@ -80,6 +80,7 @@
 #define IDS_MUI_WARN_LOAD_BIG_FILE      13015
 #define IDS_MUI_ERR_FILE_TOO_LARGE      13016
 #define IDS_MUI_WARN_UNKNOWN_EXT        13017
+#define IDS_MUI_ERR_DLG_FORMAT          13018
 // keep order (CRLF(0),  CR(1),  LF(2))
 #define IDS_MUI_EOLMODENAME_CRLF        13020
 #define IDS_MUI_EOLMODENAME_CR          13021
