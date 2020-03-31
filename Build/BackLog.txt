@@ -1,7 +1,9 @@
-.LOG
+#.LOG
 ################################################################################
-===  Notepad3  B A C K L O G  : Priority List of ToDos === 
-################################################################################
+===  Notepad3  B A C K L O G  : List of things ToDo ===  encoding: UTF-8
+================================================================================
+
++  Title Indicator (Changed/Deleted file on disk (#2179)
 
 +  Migration to lexilla (Scintilla's Lexer library concept)
    (Add Lexers: Kotlin, Julia, Fortran, ...)
@@ -17,10 +19,15 @@
 
 +  
 
-+  Extending MiniPath.exe for "Search text in many files" capability ...
-   (Search for free tools, which may be bound to Notepad3 (like minipath.exe) ... )
-
+################################################################################
+===   I T E M S   D O N E   ===
 ================================================================================
 
-09:57 14.03.2020
-- Created
+-  Extending MiniPath.exe for "Search text in many files" capability ...
+   (Search for free tools, which may be bound to Notepad3 (like minipath.exe) ... )
+=> Found, adapt and integrate "grepWin(NP3) from Stefan Kühn (author of BowPad)
+
+   
+   
+################################################################################
+
