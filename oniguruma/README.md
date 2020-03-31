@@ -30,9 +30,11 @@ Supported character encodings:
 Master branch
 -------------
 
+* POSIX API disabled by default for Unix (* Enabled by: configure --enable-posix-api=yes)
 * Update Unicode version 13.0.0
+* NEW: Code point sequence notation \x{HHHH HHHH ...}, \o{OOOO OOOO ...}
 * NEW API: retry limit in search functions
-* Limit on maximum nesting level of subexp call (16)
+* NEW API: maximum nesting level of subexp call
 * Fixed behavior of isolated options in Perl and Java syntaxes.  /...(?i).../
 
 
@@ -225,7 +227,16 @@ Install
 
    (I have checked by Visual Studio Community 2015)
 
+Alternatively, you can build and install oniguruma using [vcpkg](https://github.com/microsoft/vcpkg/) dependency manager:
 
+   1. git clone https://github.com/Microsoft/vcpkg.git
+   2. cd vcpkg
+   3. ./bootstrap-vcpkg.bat
+   4. ./vcpkg integrate install
+   5. ./vcpkg install oniguruma
+
+The oniguruma port in vcpkg is kept up to date by microsoft team members and community contributors.
+If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
 
 Regular Expressions
 -------------------

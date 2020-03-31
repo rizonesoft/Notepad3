@@ -3544,6 +3544,129 @@ scan_octal_number(UChar** src, UChar* end, int minlen, int maxlen,
   return ONIG_NORMAL;
 }
 
+static int
+scan_number_of_base(UChar** src, UChar* end, int minlen,
+                    OnigEncoding enc, OnigCodePoint* rcode, int base)
+{
+  int r;
+
+  if (base == 16)
+    r = scan_hexadecimal_number(src, end, minlen, 8, enc, rcode);
+  else if (base == 8)
+    r = scan_octal_number(src, end, minlen, 11, enc, rcode);
+  else
+    r = ONIGERR_INVALID_CODE_POINT_VALUE;
+
+  return r;
+}
+
+#define IS_CODE_POINT_DIVIDE(c)  ((c) == ' ' || (c) == '\n')
+
+enum CPS_STATE {
+  CPS_EMPTY = 0,
+  CPS_START = 1,
+  CPS_RANGE = 2
+};
+
+static int
+check_code_point_sequence(UChar* p, UChar* end, int base, OnigEncoding enc,
+                          int in_cc)
+{
+  int r;
+  int n;
+  int end_digit;
+  int state;
+  OnigCodePoint code;
+  OnigCodePoint c;
+  PFETCH_READY;
+
+  end_digit = FALSE;
+  state = CPS_START;
+  n = 0;
+  while (! PEND) {
+  start:
+    PFETCH(c);
+    if (c == '}') {
+    end_char:
+      if (state == CPS_RANGE) return ONIGERR_INVALID_CODE_POINT_VALUE;
+      return n;
+    }
+
+    if (IS_CODE_POINT_DIVIDE(c)) {
+      while (! PEND) {
+        PFETCH(c);
+        if (! IS_CODE_POINT_DIVIDE(c)) break;
+      }
+      if (IS_CODE_POINT_DIVIDE(c))
+        return ONIGERR_INVALID_CODE_POINT_VALUE;
+    }
+    else if (c == '-' && in_cc == TRUE) {
+    range:
+      if (state != CPS_START) return ONIGERR_INVALID_CODE_POINT_VALUE;
+      if (PEND) return ONIGERR_INVALID_CODE_POINT_VALUE;
+      end_digit = FALSE;
+      state = CPS_RANGE;
+      goto start;
+    }
+    else if (end_digit == TRUE) {
+      if (base == 16) {
+        if (IS_CODE_XDIGIT_ASCII(enc, c))
+          return ONIGERR_TOO_LONG_WIDE_CHAR_VALUE;
+      }
+      else if (base == 8) {
+        if (IS_CODE_DIGIT_ASCII(enc, c) && c < '8')
+          return ONIGERR_TOO_LONG_WIDE_CHAR_VALUE;
+      }
+
+      return ONIGERR_INVALID_CODE_POINT_VALUE;
+    }
+
+    if (c == '}') goto end_char;
+    if (c == '-' && in_cc == TRUE) goto range;
+
+    PUNFETCH;
+    r = scan_number_of_base(&p, end, 1, enc, &code, base);
+    if (r != 0) return r;
+    n++;
+    end_digit = TRUE;
+    state = (state == CPS_RANGE) ? CPS_EMPTY : CPS_START;
+  }
+
+  return ONIGERR_INVALID_CODE_POINT_VALUE;
+}
+
+static int
+get_next_code_point(UChar** src, UChar* end, int base, OnigEncoding enc, int in_cc, OnigCodePoint* rcode)
+{
+  int r;
+  OnigCodePoint c;
+  UChar* p = *src;
+  PFETCH_READY;
+
+  while (! PEND) {
+    PFETCH(c);
+    if (! IS_CODE_POINT_DIVIDE(c)) break;
+  }
+  if (IS_CODE_POINT_DIVIDE(c))
+    return ONIGERR_INVALID_CODE_POINT_VALUE;
+
+  if (c == '}') {
+    *src = p;
+    return 1; /* end of sequence */
+  }
+  else if (c == '-' && in_cc == TRUE) {
+    *src = p;
+    return 2; /* range */
+  }
+
+  PUNFETCH;
+  r = scan_number_of_base(&p, end, 1, enc, rcode, base);
+  if (r != 0) return r;
+
+  *src = p;
+  return ONIG_NORMAL;
+}
+
 
 #define BB_WRITE_CODE_POINT(bbuf,pos,code) \
     BB_WRITE(bbuf, pos, &(code), SIZE_CODE_POINT)
@@ -4229,8 +4352,9 @@ enum TokenSyms {
 
 typedef struct {
   enum TokenSyms type;
+  int code_point_continue;
   int escaped;
-  int base;   /* is number: 8, 16 (used in [....]) */
+  int base_num;   /* is number: 8, 16 (used in [....]) */
   UChar* backp;
   union {
     UChar* s;
@@ -4267,6 +4391,11 @@ typedef struct {
   } u;
 } PToken;
 
+static void
+ptoken_init(PToken* tok)
+{
+  tok->code_point_continue = 0;
+}
 
 static int
 fetch_interval(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
@@ -4836,7 +4965,7 @@ str_exist_check_with_esc(OnigCodePoint s[], int n, UChar* from, UChar* to,
 }
 
 static int
-fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
+fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 {
   int r;
   OnigCodePoint code;
@@ -4847,6 +4976,24 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
   UChar* p = *src;
   PFETCH_READY;
 
+  if (tok->code_point_continue != 0) {
+    r = get_next_code_point(&p, end, tok->base_num, enc, TRUE, &code);
+    if (r == 1) {
+      tok->code_point_continue = 0;
+    }
+    else if (r == 2) {
+      tok->type = TK_CC_RANGE;
+      goto end;
+    }
+    else if (r == 0) {
+      tok->type   = TK_CODE_POINT;
+      tok->u.code = code;
+      goto end;
+    }
+    else
+      return r; /* error */
+  }
+
   if (PEND) {
     tok->type = TK_EOT;
     return tok->type;
@@ -4854,9 +5001,9 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
   PFETCH(c);
   tok->type = TK_CHAR;
-  tok->base = 0;
-  tok->u.code = c;
-  tok->escaped = 0;
+  tok->base_num = 0;
+  tok->u.code   = c;
+  tok->escaped  = 0;
 
   if (c == ']') {
     tok->type = TK_CC_CLOSE;
@@ -4953,16 +5100,8 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
             return ONIGERR_TOO_LONG_WIDE_CHAR_VALUE;
         }
 
-        if (p > prev + enclen(enc, prev) && !PEND && (PPEEK_IS('}'))) {
-          PINC;
-          tok->type   = TK_CODE_POINT;
-          tok->base   = 8;
-          tok->u.code = code;
-        }
-        else {
-          /* can't read nothing or invalid format */
-          p = prev;
-        }
+        tok->base_num = 8;
+        goto brace_code_point_entry;
       }
       break;
 
@@ -4980,10 +5119,20 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
             return ONIGERR_TOO_LONG_WIDE_CHAR_VALUE;
         }
 
-        if (p > prev + enclen(enc, prev) && !PEND && (PPEEK_IS('}'))) {
-          PINC;
+        tok->base_num = 16;
+      brace_code_point_entry:
+        if ((p > prev + enclen(enc, prev))) {
+          if (PEND) return ONIGERR_INVALID_CODE_POINT_VALUE;
+          if (PPEEK_IS('}')) {
+            PINC;
+          }
+          else {
+            r = check_code_point_sequence(p, end, tok->base_num, enc, TRUE);
+            if (r < 0) return r;
+            if (r == 0) return ONIGERR_INVALID_CODE_POINT_VALUE;
+            tok->code_point_continue = TRUE;
+          }
           tok->type   = TK_CODE_POINT;
-          tok->base   = 16;
           tok->u.code = code;
         }
         else {
@@ -4998,8 +5147,8 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           code = 0; /* but, it's not error */
         }
         tok->type = TK_CRUDE_BYTE;
-        tok->base = 16;
-        tok->u.byte = (UChar )code;
+        tok->base_num = 16;
+        tok->u.byte   = (UChar )code;
       }
       break;
 
@@ -5013,9 +5162,9 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
         }
-        tok->type   = TK_CODE_POINT;
-        tok->base   = 16;
-        tok->u.code = code;
+        tok->type = TK_CODE_POINT;
+        tok->base_num = 16;
+        tok->u.code   = code;
       }
       break;
 
@@ -5031,8 +5180,8 @@ fetch_token_in_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           code = 0; /* but, it's not error */
         }
         tok->type = TK_CRUDE_BYTE;
-        tok->base = 8;
-        tok->u.byte = (UChar )code;
+        tok->base_num = 8;
+        tok->u.byte   = (UChar )code;
       }
       break;
 
@@ -5096,15 +5245,29 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
   UChar* p = *src;
   PFETCH_READY;
 
+  if (tok->code_point_continue != 0) {
+    r = get_next_code_point(&p, end, tok->base_num, enc, FALSE, &code);
+    if (r == 1) {
+      tok->code_point_continue = 0;
+    }
+    else if (r == 0) {
+      tok->type   = TK_CODE_POINT;
+      tok->u.code = code;
+      goto out;
+    }
+    else
+      return r; /* error */
+  }
+
  start:
   if (PEND) {
     tok->type = TK_EOT;
     return tok->type;
   }
 
-  tok->type  = TK_STRING;
-  tok->base  = 0;
-  tok->backp = p;
+  tok->type = TK_STRING;
+  tok->base_num = 0;
+  tok->backp    = p;
 
   PFETCH(c);
   if (IS_MC_ESC_CODE(c, syn)) {
@@ -5359,15 +5522,8 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
             return ONIGERR_TOO_LONG_WIDE_CHAR_VALUE;
         }
 
-        if ((p > prev + enclen(enc, prev)) && !PEND && PPEEK_IS('}')) {
-          PINC;
-          tok->type   = TK_CODE_POINT;
-          tok->u.code = code;
-        }
-        else {
-          /* can't read nothing or invalid format */
-          p = prev;
-        }
+        tok->base_num = 8;
+        goto brace_code_point_entry;
       }
       break;
 
@@ -5384,8 +5540,19 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
             return ONIGERR_TOO_LONG_WIDE_CHAR_VALUE;
         }
 
-        if ((p > prev + enclen(enc, prev)) && !PEND && PPEEK_IS('}')) {
-          PINC;
+        tok->base_num = 16;
+      brace_code_point_entry:
+        if ((p > prev + enclen(enc, prev))) {
+          if (PEND) return ONIGERR_INVALID_CODE_POINT_VALUE;
+          if (PPEEK_IS('}')) {
+            PINC;
+          }
+          else {
+            r = check_code_point_sequence(p, end, tok->base_num, enc, FALSE);
+            if (r < 0) return r;
+            if (r == 0) return ONIGERR_INVALID_CODE_POINT_VALUE;
+            tok->code_point_continue = TRUE;
+          }
           tok->type   = TK_CODE_POINT;
           tok->u.code = code;
         }
@@ -5401,8 +5568,8 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           code = 0; /* but, it's not error */
         }
         tok->type = TK_CRUDE_BYTE;
-        tok->base = 16;
-        tok->u.byte = (UChar )code;
+        tok->base_num = 16;
+        tok->u.byte   = (UChar )code;
       }
       break;
 
@@ -5416,9 +5583,9 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         if (p == prev) {  /* can't read nothing. */
           code = 0; /* but, it's not error */
         }
-        tok->type   = TK_CODE_POINT;
-        tok->base   = 16;
-        tok->u.code = code;
+        tok->type = TK_CODE_POINT;
+        tok->base_num = 16;
+        tok->u.code   = code;
       }
       break;
 
@@ -5466,8 +5633,8 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
           code = 0; /* but, it's not error */
         }
         tok->type = TK_CRUDE_BYTE;
-        tok->base = 8;
-        tok->u.byte = (UChar )code;
+        tok->base_num = 8;
+        tok->u.byte   = (UChar )code;
       }
       else if (c != '0') {
         PINC;
@@ -5863,9 +6030,7 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ScanEnv* env)
     }
   }
 
-#ifdef USE_VARIABLE_META_CHARS
  out:
-#endif
   *src = p;
   return tok->type;
 }
@@ -6416,10 +6581,10 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
   INC_PARSE_DEPTH(env->parse_depth);
 
   prev_cc = (CClassNode* )NULL;
-  r = fetch_token_in_cc(tok, src, end, env);
+  r = fetch_token_cc(tok, src, end, env);
   if (r == TK_CHAR && tok->u.code == (OnigCodePoint )'^' && tok->escaped == 0) {
     neg = 1;
-    r = fetch_token_in_cc(tok, src, end, env);
+    r = fetch_token_cc(tok, src, end, env);
   }
   else {
     neg = 0;
@@ -6461,19 +6626,19 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
       break;
 
     case TK_CRUDE_BYTE:
-      /* tok->base != 0 : octal or hexadec. */
-      if (! ONIGENC_IS_SINGLEBYTE(env->enc) && tok->base != 0) {
+      /* tok->base_num != 0 : octal or hexadec. */
+      if (! ONIGENC_IS_SINGLEBYTE(env->enc) && tok->base_num != 0) {
         int i, j;
         UChar buf[ONIGENC_CODE_TO_MBC_MAXLEN];
         UChar* bufe = buf + ONIGENC_CODE_TO_MBC_MAXLEN;
         UChar* psave = p;
-        int base = tok->base;
+        int base_num = tok->base_num;
 
         buf[0] = tok->u.byte;
         for (i = 1; i < ONIGENC_MBC_MAXLEN(env->enc); i++) {
-          r = fetch_token_in_cc(tok, &p, end, env);
+          r = fetch_token_cc(tok, &p, end, env);
           if (r < 0) goto err;
-          if (r != TK_CRUDE_BYTE || tok->base != base) {
+          if (r != TK_CRUDE_BYTE || tok->base_num != base_num) {
             fetched = 1;
             break;
           }
@@ -6496,7 +6661,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         else if (i > len) { /* fetch back */
           p = psave;
           for (i = 1; i < len; i++) {
-            r = fetch_token_in_cc(tok, &p, end, env);
+            r = fetch_token_cc(tok, &p, end, env);
           }
           fetched = 0;
         }
@@ -6577,7 +6742,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
 
     case TK_CC_RANGE:
       if (state == CS_VALUE) {
-        r = fetch_token_in_cc(tok, &p, end, env);
+        r = fetch_token_cc(tok, &p, end, env);
         if (r < 0) goto err;
 
         fetched = 1;
@@ -6604,7 +6769,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         in_code = tok->u.code;
         in_raw = 0;
 
-        r = fetch_token_in_cc(tok, &p, end, env);
+        r = fetch_token_cc(tok, &p, end, env);
         if (r < 0) goto err;
 
         fetched = 1;
@@ -6619,7 +6784,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
         goto any_char_in;  /* [!--] is allowed */
       }
       else { /* CS_COMPLETE */
-        r = fetch_token_in_cc(tok, &p, end, env);
+        r = fetch_token_cc(tok, &p, end, env);
         if (r < 0) goto err;
 
         fetched = 1;
@@ -6702,7 +6867,7 @@ parse_cc(Node** np, PToken* tok, UChar** src, UChar* end, ScanEnv* env)
     if (fetched)
       r = tok->type;
     else {
-      r = fetch_token_in_cc(tok, &p, end, env);
+      r = fetch_token_cc(tok, &p, end, env);
       if (r < 0) goto err;
     }
   }
@@ -8587,6 +8752,7 @@ parse_regexp(Node** top, UChar** src, UChar* end, ScanEnv* env)
   int r;
   PToken tok;
 
+  ptoken_init(&tok);
   r = fetch_token(&tok, src, end, env);
   if (r < 0) return r;
   r = parse_alts(top, &tok, TK_EOT, src, end, env, FALSE);

@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.5  2020/02/19
+Oniguruma API  Version 6.9.5  2020/03/25
 
 #include <oniguruma.h>
 
@@ -611,8 +611,8 @@ Oniguruma API  Version 6.9.5  2020/02/19
 
 
 # int onig_foreach_name(regex_t* reg,
-                        int (*func)(const UChar*, const UChar*, int,int*,regex_t*,void*),
-                        void* arg)
+          int (*func)(const UChar*, const UChar*, int,int*,regex_t*,void*),
+          void* arg)
 
   Iterate function call for all names.
 
@@ -904,6 +904,21 @@ Oniguruma API  Version 6.9.5  2020/02/19
 
   Set a retry limit count of a search process.
   0 means unlimited.
+
+  normal return: ONIG_NORMAL
+
+
+# int onig_get_subexp_call_max_nest_level(void)
+
+  Return the limit of subexp call nest level.
+  (default: 24)
+
+  normal return: current limit value
+
+
+# int onig_set_subexp_call_max_nest_level(int max_level)
+
+  Set a limit level of subexp call nest level.
 
   normal return: ONIG_NORMAL
 
