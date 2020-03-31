@@ -935,6 +935,10 @@ int onig_set_capture_num_limit P_((int num));
 ONIG_EXTERN
 int onig_set_parse_depth_limit P_((unsigned int depth));
 ONIG_EXTERN
+int onig_get_subexp_call_max_nest_level P_((void));
+ONIG_EXTERN
+int onig_set_subexp_call_max_nest_level P_((int level));
+ONIG_EXTERN
 int onig_unicode_define_user_property P_((const char* name, OnigCodePoint* ranges));
 ONIG_EXTERN
 int onig_end P_((void));
