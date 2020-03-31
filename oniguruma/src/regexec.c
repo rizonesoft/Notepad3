@@ -1221,7 +1221,7 @@ struct OnigCalloutArgsStruct {
 #define RETRY_IN_MATCH_ARG_INIT(msa,mpv)
 #endif
 
-#if defined(USE_CALL) && defined(SUBEXP_CALL_MAX_NEST_LEVEL)
+#if defined(USE_CALL)
 #define POP_CALL  else if (stk->type == STK_RETURN) {subexp_call_nest_counter++;} else if (stk->type == STK_CALL_FRAME) {subexp_call_nest_counter--;}
 #else
 #define POP_CALL
@@ -2541,6 +2541,7 @@ backref_check_at_nested_level(regex_t* reg,
 }
 #endif /* USE_BACKREF_WITH_LEVEL */
 
+static int SubexpCallMaxNestLevel = DEFAULT_SUBEXP_CALL_MAX_NEST_LEVEL;
 
 #ifdef ONIG_DEBUG_STATISTICS
 
@@ -2867,7 +2868,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
   OnigEncoding encode = reg->enc;
   OnigCaseFoldType case_fold_flag = reg->case_fold_flag;
 
-#if defined(USE_CALL) && defined(SUBEXP_CALL_MAX_NEST_LEVEL)
+#ifdef USE_CALL
   unsigned long subexp_call_nest_counter = 0;
 #endif
 
@@ -3189,7 +3190,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
     CASE_OP(CCLASS)
       DATA_ENSURE(1);
       if (BITSET_AT(p->cclass.bsp, *s) == 0) goto fail;
-      s++;
+      s += enclen(encode, s);
       INC_OP;
       JUMP_OUT_WITH_SPREV_SET;
 
@@ -4046,11 +4047,9 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
 #ifdef USE_CALL
     CASE_OP(CALL)
-#ifdef SUBEXP_CALL_MAX_NEST_LEVEL
-      if (subexp_call_nest_counter == SUBEXP_CALL_MAX_NEST_LEVEL)
+      if (subexp_call_nest_counter == SubexpCallMaxNestLevel)
         goto fail;
       subexp_call_nest_counter++;
-#endif
       addr = p->call.addr;
       INC_OP; STACK_PUSH_CALL_FRAME(p);
       p = reg->ops + addr;
@@ -4060,9 +4059,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
     CASE_OP(RETURN)
       STACK_RETURN(p);
       STACK_PUSH_RETURN;
-#ifdef SUBEXP_CALL_MAX_NEST_LEVEL
       subexp_call_nest_counter--;
-#endif
       JUMP_OUT;
 #endif
 
@@ -5685,6 +5682,19 @@ onig_scan(regex_t* reg, const UChar* str, const UChar* end,
   }
 
   return n;
+}
+
+extern int
+onig_get_subexp_call_max_nest_level(void)
+{
+  return SubexpCallMaxNestLevel;
+}
+
+extern int
+onig_set_subexp_call_max_nest_level(int level)
+{
+  SubexpCallMaxNestLevel = level;
+  return 0;
 }
 
 extern OnigEncoding
