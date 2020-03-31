@@ -63,25 +63,25 @@ int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
 
 grepWinLng_t grepWinLangResName[] =
 {
-  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),              L".\\lng\\gwLng\\English (United States) [en-US].lang"},
-  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),              L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang"},
-  { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),   L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang"},
-  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                   L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang"},
-  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),              L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang"},
-  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),          L".\\lng\\gwLng\\Español (España) [es-ES].lang"},
-  { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                   L".\\lng\\gwLng\\Français (France) [fr-FR].lang"},
-  { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),     L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang"},
-  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                 L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang"},
-  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),         L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang"},
-  { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                   L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang"},
-  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                     L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang"},
-  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),            L".\\lng\\gwLng\\Polski (Polska)Polski [pl-PL].lang"},
-  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), L".\\lng\\gwLng\\Português (Brasil) [pt-BR].lang"},
-  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),          L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang"},
-  { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA),          L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang"},
-  { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH),                 L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang"},
-  { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY),          L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang"},
-  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),      L".\\lng\\gwLng\\简体中文 （中国）[zh-CN].lang"}
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),                 L".\\lng\\gwLng\\English (United States) [en-US].lang"},
+  { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA),   L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang"},
+  { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),      L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang"},
+  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                      L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang"},
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),                 L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang"},
+  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),             L".\\lng\\gwLng\\Español (España) [es-ES].lang"},
+  { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                      L".\\lng\\gwLng\\Français (France) [fr-FR].lang"},
+  { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),        L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang"},
+  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                    L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang"},
+  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),            L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang"},
+  { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                      L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang"},
+  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                        L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang"},
+  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),               L".\\lng\\gwLng\\Polski (Polska)Polski [pl-PL].lang"},
+  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN),    L".\\lng\\gwLng\\Português (Brasil) [pt-BR].lang"},
+  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),             L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang"},
+  { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA),             L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang"},
+  { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH),                    L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang"},
+  { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY),             L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang"},
+  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),         L".\\lng\\gwLng\\简体中文 （中国）[zh-CN].lang"}
 };
 
 int grepWinLang_CountOf() { return COUNTOF(grepWinLangResName); };
