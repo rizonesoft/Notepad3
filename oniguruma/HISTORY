@@ -1,9 +1,26 @@
 History
 
+2020/04/03: Release Candidate 1 for Version 6.9.5
+
+2020/03/30: remove src/*.py and src/*.sh from distribution files
+2020/03/27: NEW: Code point sequence notation \x{HHHH ...}, \o{OOOO ...}
+2020/03/24: NEW API: maximum nesting level of subexp call
+2020/03/22: #165: change enable-posix-api default from YES to NO
+2020/03/15: update Unicode version to 13.0.0
+2020/03/10: add test_back.c
+2020/03/08: tune output of debug in print_optimize_info()
+2020/03/02: fix #186: Allow regset search to succeed at end of string
+2020/02/13: NEW API: retry-limit-in-search functions
+2020/01/20: add ONIG_SYN_VARIABLE_LEN_LOOK_BEHIND flag
+2019/12/27: add USE_REGSET switch
+2019/12/20: remove OPTIMIZE_STR_CASE_FOLD
+2019/12/13: add test/test_syntax.c
+2019/12/13: add ONIG_SYN_ISOLATED_OPTION_CONTINUE_BRANCH flag
+
+
 2019/11/29: Version 6.9.4
 
 2019/11/22: Release Candidate 3 for Version 6.9.4
-
 2019/11/20: fix a problem found by libFuzzer test
 2019/11/14: Release Candidate 2 for Version 6.9.4
 2019/11/12: fix integer overflow by nested quantifier

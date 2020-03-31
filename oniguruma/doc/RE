@@ -1,4 +1,4 @@
-Oniguruma Regular Expressions Version 6.9.5    2020/01/28
+Oniguruma Regular Expressions Version 6.9.5    2020/03/27
 
 syntax: ONIG_SYNTAX_ONIGURUMA (default)
 
@@ -32,6 +32,15 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
   \M-\C-x      meta control char      (character code point value)
 
  (* \b as backspace is effective in character class only)
+
+
+2.1 Code point sequences
+
+  Hexadecimal code point  (1-8 digits)
+  \x{7HHHHHHH 7HHHHHHH ... 7HHHHHHH}
+
+  Octal code point  (1-11 digits)
+  \o{17777777777 17777777777 ... 17777777777}
 
 
 3. Character types
