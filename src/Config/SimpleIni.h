@@ -1436,12 +1436,9 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
       GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
       nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hFile == INVALID_HANDLE_VALUE) {
-      wchar_t msg[MAX_PATH + 128] = { 0 };
-      StringCchPrintf(msg, ARRAYSIZE(msg),
-        L"CSimpleIni::LoadFile(%s): INVALID_HANDLE_VALUE!", a_pwszFile);
-      MsgBoxLastError(msg, 0);
+    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
 
+    if (hFile == INVALID_HANDLE_VALUE) {
       return SI_Error::SI_FILE;
     }
 
@@ -2644,11 +2641,9 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
       nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
+    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
+
     if (hFile == INVALID_HANDLE_VALUE) {
-      wchar_t msg[MAX_PATH + 128] = { 0 };
-      StringCchPrintf(msg, ARRAYSIZE(msg),
-        L"CSimpleIni::SaveFile(%s): INVALID_HANDLE_VALUE!", a_pwszFile);
-      MsgBoxLastError(msg, 0);
       return SI_Error::SI_FILE;
     }
 
