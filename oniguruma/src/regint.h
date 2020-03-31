@@ -88,7 +88,7 @@
 #define DEFAULT_RETRY_LIMIT_IN_MATCH    10000000
 #define DEFAULT_RETRY_LIMIT_IN_SEARCH          0 /* unlimited */
 #define DEFAULT_PARSE_DEPTH_LIMIT           4096
-#define SUBEXP_CALL_MAX_NEST_LEVEL            16
+#define DEFAULT_SUBEXP_CALL_MAX_NEST_LEVEL    20
 
 
 #include "regenc.h"
