@@ -31,7 +31,51 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Version 5.20.4xx.x (xx April 2020)
+Current NF Version 5.20.331.(build_#) (2020-03-31)
+=====================================================
+-----------------------------------------------------
+NEW:
+-----------------------------------------------------
+- 
+- Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
+- Add "Overlapping Search" in Find/Replace dialog window.
+- Integration on "grepWinNP3", a very Powerful and Fast Search Tool in files.
+
+-----------------------------------------------------
+CHANGES:
+-----------------------------------------------------
+- 
+- Add filepath to message on file locking error.
+
+-----------------------------------------------------
+ENHANCEMENT:
+-----------------------------------------------------
+-
+- DPI awareness and multi monitor handling.
+
+-----------------------------------------------------
+FIXES:
+-----------------------------------------------------
+- 
+- "grepWinNP3" ordered map of languages for selection box.
+- Translatable error message format (msgbox).
+- DPI scaling window on display dependent.
+
+-----------------------------------------------------
+REMOVED:
+-----------------------------------------------------
+- 
+- 
+
+-----------------------------------------------------
+TRANSLATIONS (MUI):
+-----------------------------------------------------
+- 
+- 
+
+
+=====================================================
+Version 5.20.3xx.x (xx March 2020)
 =====================================================
 
 -----------------------------------------------------

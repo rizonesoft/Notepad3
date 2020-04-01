@@ -126,6 +126,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "加载“%s”时遇到错误。"
     IDS_MUI_ERR_SAVEFILE    "保存“%s”时遇到错误。"
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载。"
     IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
