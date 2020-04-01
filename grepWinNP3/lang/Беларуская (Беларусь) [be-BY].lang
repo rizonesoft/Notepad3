@@ -1,4 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
+# encoding: UTF-8
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
@@ -414,7 +415,7 @@ msgid "This adds a new entry to the context menu named \"Open with Editor\""
 msgstr "Функция добавляет в контекстное меню результатов пункт \"Открыть в редакторе\""
 
 #. Resource IDs: (1053)
-msgid "Treat files as UTF8"
+msgid "Treat files as UTF-8"
 msgstr "Файлы как UTF-8"
 
 #. Resource IDs: (1045)
@@ -478,8 +479,8 @@ msgid "no text to test with available"
 msgstr "нечего тестировать"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Искать только соответствующие шаблону файлы.\r\nВертикальная черта \"|\" как разделитель.\r\nПример: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "Искать только соответствующие шаблону файлы.\r\nВертикальная черта ""|"" как разделитель.\r\nПример: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -513,3 +514,4 @@ msgstr "Вы можете исключить, например, CVS и изоб�
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr "[be-BY]"
+
