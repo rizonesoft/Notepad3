@@ -1,4 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
+# encoding: UTF-8
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
@@ -414,8 +415,8 @@ msgid "This adds a new entry to the context menu named \"Open with Editor\""
 msgstr "Dit voegt in het Context menu toe: \"Openen in Editor\""
 
 #. Resource IDs: (1053)
-msgid "Treat files as UTF8"
-msgstr "Bestanden als UTF8"
+msgid "Treat files as UTF-8"
+msgstr "Bestanden als UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
@@ -478,8 +479,8 @@ msgid "no text to test with available"
 msgstr "geen tekst om te testen beschikbaar"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "alleen bestanden die overeenkomen met dit patroon, worden doorzocht.\r\nGebruik \"|\" als scheidingsteken.\r\nVoorbeeld: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "alleen bestanden die overeenkomen met dit patroon, worden doorzocht.\r\nGebruik ""|"" als scheidingsteken.\r\nVoorbeeld: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -513,3 +514,4 @@ msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\r\nVoorbeeld: ^(CVS|
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr "Reset"
+

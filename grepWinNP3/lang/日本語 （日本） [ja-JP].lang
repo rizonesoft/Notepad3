@@ -1,4 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
+# encoding: UTF-8
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
@@ -414,7 +415,7 @@ msgid "This adds a new entry to the context menu named \"Open with Editor\""
 msgstr "コンテキストメニュー項目に新規エントリを追加 - \"エディタで開く\""
 
 #. Resource IDs: (1053)
-msgid "Treat files as UTF8"
+msgid "Treat files as UTF-8"
 msgstr "ファイルを UTF-8 として扱う"
 
 #. Resource IDs: (1045)
@@ -478,8 +479,8 @@ msgid "no text to test with available"
 msgstr "テストするテキストが存在しません"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "このパターンに一致するファイルのみ検索.\r\n区切り記号として \"|\" を使用します.\r\n指定例: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "このパターンに一致するファイルのみ検索.\r\n区切り記号として ""|"" を使用します.\r\n指定例: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -508,8 +509,9 @@ msgstr "現在のパスは再帰的に検索されます.\r\nパスは \"|\" で
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, \".svn\" フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
+msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, '.svn' フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
 
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr "[ja-JP]"
+
