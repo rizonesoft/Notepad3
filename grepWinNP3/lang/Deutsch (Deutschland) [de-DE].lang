@@ -515,3 +515,7 @@ msgstr "Sie können Ordner ausschlissen, z.B. CVS und Bilder.\r\nBeispiel: ^(CVS
 msgid "Reset"
 msgstr "Standard"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+

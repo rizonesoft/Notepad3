@@ -513,5 +513,9 @@ msgstr "puoi escludere le cartelle, ad es. CVS e immagini.\r\nEsempio: ^(CVS|imm
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr "[it-IT]"
+msgstr ""
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
 

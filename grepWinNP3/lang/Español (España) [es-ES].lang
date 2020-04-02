@@ -513,5 +513,9 @@ msgstr "puede excluir directorios,ej. CVS e imagenes.\r\nEjemplo: ^(CVS|imagenes
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr "[es-ES]"
+msgstr ""
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
 

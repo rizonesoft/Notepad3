@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current NF Version 5.20.331.(build_#) (2020-03-31)
+Current NF Version 5.20.402.(build_#) (2020-04-02)
 =====================================================
 -----------------------------------------------------
 NEW:
@@ -50,13 +50,16 @@ CHANGES:
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
--
+- 
+- "grepWinNP3": add "Dark mode" settings.
+- "grepWinNP3": asynchronous search & replace version.
 - DPI awareness and multi monitor handling.
 
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
 - 
+- Don't protect backslash (double'\\') for pattern argument.
 - "grepWinNP3" ordered map of languages for selection box.
 - Translatable error message format (msgbox).
 - DPI scaling window on display dependent.
@@ -75,7 +78,7 @@ TRANSLATIONS (MUI):
 
 
 =====================================================
-Version 5.20.3xx.x (xx March 2020)
+Version 5.20.4xx.x (xx April 2020)
 =====================================================
 
 -----------------------------------------------------
