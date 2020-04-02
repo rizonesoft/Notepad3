@@ -1,6 +1,6 @@
 History
 
-2020/04/03: Release Candidate 1 for Version 6.9.5
+2020/04/05: Release Candidate 1 for Version 6.9.5
 
 2020/03/30: remove src/*.py and src/*.sh from distribution files
 2020/03/27: NEW: Code point sequence notation \x{HHHH ...}, \o{OOOO ...}
