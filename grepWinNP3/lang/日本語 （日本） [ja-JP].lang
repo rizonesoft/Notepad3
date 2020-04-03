@@ -513,5 +513,9 @@ msgstr "特定のディレクトリを除外できます。指定例: CVS およ
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr "[ja-JP]"
+msgstr ""
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
 

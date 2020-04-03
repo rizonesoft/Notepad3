@@ -513,5 +513,9 @@ msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\r\nVoorbeeld: ^(CVS|
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr "Reset"
+msgstr ""
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
 

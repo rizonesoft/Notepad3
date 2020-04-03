@@ -513,5 +513,9 @@ msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr "[zh-CN]"
+msgstr ""
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
 

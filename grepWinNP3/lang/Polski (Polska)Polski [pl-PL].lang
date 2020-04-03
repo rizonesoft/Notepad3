@@ -513,5 +513,9 @@ msgstr "Można wykluczyć katalogi, np. CVS i obrazy.\r\nPrzykład: ^(CVS|obrazy
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr "[pl-PL]"
+msgstr ""
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
 
