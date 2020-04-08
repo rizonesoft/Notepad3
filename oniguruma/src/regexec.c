@@ -3190,7 +3190,8 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
     CASE_OP(CCLASS)
       DATA_ENSURE(1);
       if (BITSET_AT(p->cclass.bsp, *s) == 0) goto fail;
-      s += enclen(encode, s);
+      if (ONIGENC_IS_MBC_HEAD(encode, s)) goto fail;
+      s++;
       INC_OP;
       JUMP_OUT_WITH_SPREV_SET;
 
