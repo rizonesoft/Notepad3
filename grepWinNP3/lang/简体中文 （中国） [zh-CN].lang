@@ -511,6 +511,10 @@ msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n�
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, '.svn' 目录在Windows中是隐藏的, 所以通常不扫描它们."
 
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
+
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr ""

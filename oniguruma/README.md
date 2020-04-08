@@ -27,7 +27,7 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
-Master branch
+Version 6.9.5
 -------------
 
 * POSIX API disabled by default for Unix (* Enabled by: configure --enable-posix-api=yes)
