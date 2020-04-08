@@ -37,9 +37,9 @@ extern "C" {
 #define ONIGURUMA
 #define ONIGURUMA_VERSION_MAJOR   6
 #define ONIGURUMA_VERSION_MINOR   9
-#define ONIGURUMA_VERSION_TEENY   4
+#define ONIGURUMA_VERSION_TEENY   5
 
-#define ONIGURUMA_VERSION_INT     60904
+#define ONIGURUMA_VERSION_INT     60905
 
 #ifndef P_
 #if defined(__STDC__) || defined(_WIN32)
