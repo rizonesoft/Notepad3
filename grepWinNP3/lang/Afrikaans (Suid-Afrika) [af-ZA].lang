@@ -511,6 +511,10 @@ msgstr "het pad wordt recursief doorzocht.\r\nScheidt de paden met het | symbool
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\r\nVoorbeeld: ^(CVS|images)$\r\nOpmerking: '.svn' mappen zijn in Windows normaal verborgen en worden daarom normaal niet doorzocht."
 
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
+
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr ""
