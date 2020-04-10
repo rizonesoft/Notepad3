@@ -134,6 +134,10 @@ msgstr "Создавать бэкапы"
 msgid "Create backup files in a separate folder"
 msgstr "Создавать бэкапы файлов в отдельной папке"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "Темная тема"
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Изменен"
@@ -173,6 +177,10 @@ msgstr "Esc для выхода из grepWinNP3"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Исключить папки (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ".рсш"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -413,8 +421,8 @@ msgid "This adds a new entry to the context menu named \"Open with Editor\""
 msgstr "Добавить пункт в контекстное меню 'Открыть в редакторе'"
 
 #. Resource IDs: (1053)
-msgid "Treat files as UTF8"
-msgstr "Файлы как UTF8"
+msgid "Treat files as UTF-8"
+msgstr "Файлы как UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
@@ -509,14 +517,6 @@ msgstr "Рекурсивный поиск путей.\r\nРазделение п
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Вы можете исключить, например, CVS и изображения.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', как правило, скрыты в Windows, поэтому они обычно не сканируются."
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr ".рсш"
-
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr ""
-
-#. Resource IDs: (1064)
-msgid "Dark mode"
-msgstr "Темная тема"
