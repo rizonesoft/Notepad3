@@ -1282,7 +1282,7 @@ void LoadSettings()
 
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
-    GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 2, 0, 6);
+    GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 0, 0, 6);
 
     GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  Globals.fvBackup.bWordWrap = Settings.WordWrap;
     GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.fvBackup.bTabsAsSpaces = Settings.TabsAsSpaces;
@@ -1296,7 +1296,7 @@ void LoadSettings()
     int const iWS = IniSectionGetInt(IniSecSettings, L"WordWrapSymbols", Defaults.WordWrapSymbols);
     Settings.WordWrapSymbols = clampi(iWS % 10, 0, 2) + clampi((iWS % 100 - iWS % 10) / 10, 0, 2) * 10;
 
-    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, false);
     GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
