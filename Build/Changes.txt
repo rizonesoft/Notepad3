@@ -55,6 +55,7 @@ NEW:
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Change default settings for word/long-line wrapping.
 - Update "KeyboardShortcuts.txt".
 - Split undo typing sequence by line-breaks default -> true.
 - Add file history to recent docs (taskbar) jumplist.
