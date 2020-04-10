@@ -27,7 +27,7 @@ msgstr ""
 # e.g. "V CS+Q" == Ctrl + Shift + 'Q'
 
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
-# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+# updated i.e. function keys (F2), special keys (Delete, Home) etc. will not.
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
@@ -39,7 +39,7 @@ msgstr "%ld 以上の一致"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動"
+msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動, %pattern% with the search string."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -503,7 +503,7 @@ msgstr "検索文字列が空白です"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "現在のパスは再帰的に検索されます.\r\nパスは \"|\" で区切ることができます.\r\n指定例:  c:\\temp|d:\\logs"
+msgstr "現在のパスは再帰的に検索されます.\r\nパスは | で区切ることができます.\r\n指定例:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."

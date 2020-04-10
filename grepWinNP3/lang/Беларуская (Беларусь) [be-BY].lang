@@ -27,7 +27,7 @@ msgstr ""
 # e.g. "V CS+Q" == Ctrl + Shift + 'Q'
 
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
-# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+# updated i.e. function keys (F2), special keys (Delete, Home) etc. will not.
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
@@ -39,7 +39,7 @@ msgstr "больше %ld совпадений"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% заменяется на путь к файлу, %line% на соответствующую строку."
+msgstr "%path% заменяется на путь к файлу, %line% на соответствующую строку, %pattern% with the search string."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -477,7 +477,7 @@ msgid "no text to test with available"
 msgstr "Тестировать нечего"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "Поиск файлов, только соответствующих шаблону.\r\nЧерта '|' как разделитель.\r\nПример: *.cpp|*.h"
 
 #. Resource IDs: (129)
@@ -503,7 +503,7 @@ msgstr "Строка поиска пуста"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "Рекурсивный поиск путей.\r\nРазделение путей знаком \"|\".\r\nПример: c:\\temp|d:\\logs"
+msgstr "Рекурсивный поиск путей.\r\nРазделение путей знаком |.\r\nПример: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
