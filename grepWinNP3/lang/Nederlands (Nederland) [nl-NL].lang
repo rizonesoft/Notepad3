@@ -27,7 +27,7 @@ msgstr ""
 # e.g. "V CS+Q" == Ctrl + Shift + 'Q'
 
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
-# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+# updated i.e. function keys (F2), special keys (Delete, Home) etc. will not.
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
@@ -39,7 +39,7 @@ msgstr "%ld meer gevonden"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% wordt vervangen door het pad van het bestand, %line% door de juiste regel"
+msgstr "%path% wordt vervangen door het pad van het bestand, %line% door de juiste regel, %pattern% met de zoekreeks."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -67,15 +67,15 @@ msgstr "Over grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Naar Favorieten"
+msgstr "Toev. Vooringesteld"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr ""
+msgstr "Alle bestanden"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Alle data"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
@@ -84,11 +84,11 @@ msgstr "Alle afmetingen"
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Wilt u echt \n%s\ndoor\n%s\n vervangen zonder een backup te maken?"
+msgstr "Wilt u echt\n%s\ndoor\n%s\nvervangen zonder een backup te maken?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Tussen datum"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -112,7 +112,7 @@ msgstr "Kopieer bestanden naar klembord"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Kopieer Padnaam"
+msgstr "Kopieer padnaam"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
@@ -120,7 +120,7 @@ msgstr "Kopieer padnamen"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Kopieer tekst"
+msgstr "Kopieer tekstresultaat"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
@@ -132,7 +132,7 @@ msgstr "Maak backup bestanden"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr ""
+msgstr "Maak backup bestanden in een aparte map"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -144,11 +144,11 @@ msgstr "Dialoog"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Is geen nieuwe regel"
+msgstr "Punt betekent nieuwe lijn"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr ""
+msgstr "Dubbelklik om te selecteren"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -164,7 +164,7 @@ msgstr "Codering"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Naam voor de Regex:"
+msgstr "Voer een naam in voor de Regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWinNP3"
@@ -176,11 +176,11 @@ msgstr "Exclusief mappen (Regex):"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Bestand komt overeen:\nGebruik '|' om meerdere patronen te scheiden, zet '-' vooraan om uit te sluiten"
+msgstr "Bestand komt overeen:\ngebruik '|' om meerdere patronen te scheiden, prefix '-' om uit te sluiten"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "Bestand"
+msgstr "Bestanden"
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -188,15 +188,15 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr ""
+msgstr "Indien ingeschakeld, wordt er een backup map gemaakt in de map die wordt doorzocht/vervangen en van de bestanden wordt een backup gemaakt in die map"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Inclusief binaire bestanden"
+msgstr "Binaire bestanden"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Inclusief verborgen bestanden"
+msgstr "Verborgen bestanden"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -241,7 +241,7 @@ msgstr "Naam"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Nieuwer dan"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -253,7 +253,7 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Ouder dan"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -277,11 +277,11 @@ msgstr "Pad"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Favoriet naam"
+msgstr "Vooringesteld naam"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Favorieten"
+msgstr "Vooringesteld"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
@@ -289,11 +289,11 @@ msgstr "Druk op F1 voor Help"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr ""
+msgstr "Programma's"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "Hernoem Favorieten"
+msgstr "Hernoem Vooringesteld"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
@@ -321,11 +321,11 @@ msgstr "Relatieve paden niet toegestaan. Geef een absoluut pad!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Favorieten Wissen"
+msgstr "Vooringesteld Wissen"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "Vervang String"
+msgstr "Vervangen String"
 
 #. Resource IDs: (1027)
 msgid "Replace with:"
@@ -345,7 +345,7 @@ msgstr "Zoeken naar:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "HOOFD/klein gevoelig"
+msgstr "Hoofd-kleinletter gevoelig"
 
 #. Resource IDs: (1015)
 msgid "Search in"
@@ -386,7 +386,7 @@ msgstr "Grootte is"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Test Regex"
+msgstr "Regex testen"
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -454,7 +454,7 @@ msgstr "grepWinNP3 instellingen"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr ""
+msgstr "houd de shift-toets ingedrukt om bestanden te vinden die de zoekreeks NIET bevatten"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -511,12 +511,12 @@ msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\r\nVoorbeeld: ^(CVS|
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Donkere modus"

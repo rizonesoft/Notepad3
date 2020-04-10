@@ -27,7 +27,7 @@ msgstr ""
 # e.g. "V CS+Q" == Ctrl + Shift + 'Q'
 
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
-# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+# updated i.e. function keys (F2), special keys (Delete, Home) etc. will not.
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
@@ -39,7 +39,7 @@ msgstr "还有 %ld 个匹配"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号."
+msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号, %pattern% with the search string."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -108,7 +108,7 @@ msgstr "复制文件名称到剪贴板"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""复制文件名称到剪贴"
+msgstr "复制文件名称到剪贴"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
@@ -176,7 +176,7 @@ msgstr "排除目录(正则):"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则, 前置 \"-\" 用于排除(&D)"
+msgstr "文件名称匹配:\n使用 '|' 号来分隔多个文本匹配规则, 前置 '-' 用于排除(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -503,7 +503,7 @@ msgstr "搜索字符串为空"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n比如:  c:\\temp|d:\\logs"
+msgstr "将被递归搜索的路径.\r\n使用 | 符号来分隔路径.\r\n比如:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
