@@ -134,6 +134,14 @@ msgstr "Créer des fichiers backups"
 msgid "Create backup files in a separate folder"
 msgstr "Créer des fichiers backups dans un dossier séparé"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "Mode sombre"
+
+#. Resource IDs: (159)
+msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Date de modification"
@@ -173,6 +181,10 @@ msgstr "La touche Esc ferme grepWinNP3"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Exclure des dossiers (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -517,6 +529,6 @@ msgstr "Ext"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#. Resource IDs: (1064)
-msgid "Dark mode"
-msgstr "Mode sombre"
+#. Resource IDs: (1088)
+msgid "Max # of concurrent worker"
+msgstr ""
