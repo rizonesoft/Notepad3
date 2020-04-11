@@ -363,7 +363,7 @@ BEGIN
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Wys &Hiperskakel Nutsmiddelwenk",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "P&anels"
+        POPUP "P&anele"
         BEGIN
             MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
@@ -372,7 +372,7 @@ BEGIN
             MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
             MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
-            MENUITEM "&DPI Scale Toolbar",                  IDM_VIEW_DPISCALETB
+            MENUITEM "&DPI Skaal Balk",                  	IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -509,7 +509,7 @@ BEGIN
         MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "Pas&maak Nutsbalk...",                    IDM_VIEW_CUSTOMIZETB
         MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&DPI Scale Toolbar",                      IDM_VIEW_DPISCALETB
+        MENUITEM "&DPI Skaal Balk",                      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
