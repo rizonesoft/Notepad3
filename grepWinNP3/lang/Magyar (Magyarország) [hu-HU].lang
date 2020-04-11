@@ -134,6 +134,14 @@ msgstr ""
 msgid "Create backup files in a separate folder"
 msgstr ""
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
+#. Resource IDs: (159)
+msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr ""
@@ -172,6 +180,10 @@ msgstr ""
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
+msgstr ""
+
+#. Resource IDs: (158)
+msgid "Ext"
 msgstr ""
 
 #. Resource IDs: (1039)
@@ -509,14 +521,10 @@ msgstr ""
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr ""
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr ""
-
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr ""
 
-#. Resource IDs: (1064)
-msgid "Dark mode"
+#. Resource IDs: (1088)
+msgid "Max # of concurrent worker"
 msgstr ""

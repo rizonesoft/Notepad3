@@ -134,6 +134,14 @@ msgstr "バックアップ ファイルを作成"
 msgid "Create backup files in a separate folder"
 msgstr "別のフォルダ内にバックアップを作成"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
+#. Resource IDs: (159)
+msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "更新日時"
@@ -173,6 +181,10 @@ msgstr "ESC キーで grepWinNP3 を閉じる"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "除外ディレクトリ(正規表現):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -509,14 +521,10 @@ msgstr "現在のパスは再帰的に検索されます.\r\nパスは | で区�
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, '.svn' フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr ""
-
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr ""
 
-#. Resource IDs: (1064)
-msgid "Dark mode"
+#. Resource IDs: (1088)
+msgid "Max # of concurrent worker"
 msgstr ""

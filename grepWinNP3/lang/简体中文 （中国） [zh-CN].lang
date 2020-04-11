@@ -134,6 +134,14 @@ msgstr "创建备份文件"
 msgid "Create backup files in a separate folder"
 msgstr "在单独的目录创建备份文件"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
+#. Resource IDs: (159)
+msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
@@ -173,6 +181,10 @@ msgstr "ESC 键关闭 grepWinNP3"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "排除目录(正则):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -509,14 +521,10 @@ msgstr "将被递归搜索的路径.\r\n使用 | 符号来分隔路径.\r\n比�
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, '.svn' 目录在Windows中是隐藏的, 所以通常不扫描它们."
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr ""
-
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr ""
 
-#. Resource IDs: (1064)
-msgid "Dark mode"
+#. Resource IDs: (1088)
+msgid "Max # of concurrent worker"
 msgstr ""

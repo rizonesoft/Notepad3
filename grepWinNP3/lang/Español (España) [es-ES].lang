@@ -134,6 +134,14 @@ msgstr "Crear respaldo de archivos"
 msgid "Create backup files in a separate folder"
 msgstr "Crear respaldo de archivos en una carpeta separada"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "Modo oscuro"
+
+#. Resource IDs: (159)
+msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Fecha modificado"
@@ -173,6 +181,10 @@ msgstr "Tecla Escape cierra grepWinNP3"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Excluir directorios (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -509,14 +521,10 @@ msgstr "la(s) ruta(s) que se busca(n) recursivamente.\r\nSepare rutas con el sí
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "puede excluir directorios, ej. CVS e imagenes.\r\nEjemplo: ^(CVS|imagenes)$\r\nNota, carpetas '.svn' están 'ocultas' en Windows, por lo que usualmente no son analizadas."
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Ext"
-
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr "Reiniciar"
 
-#. Resource IDs: (1064)
-msgid "Dark mode"
-msgstr "Modo oscuro"
+#. Resource IDs: (1088)
+msgid "Max # of concurrent worker"
+msgstr ""
