@@ -31,7 +31,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Current NF Version 5.20.410.(build_#) (2020-04-10)
+Current NF Version 5.20.411.(build_#) (2020-04-11)
 =====================================================
 -----------------------------------------------------
 NEW:
@@ -79,12 +79,13 @@ TRANSLATIONS (MUI):
 
 
 =====================================================
-Version 5.20.4xx.x (xx April 2020)
+Version 5.20.411.x (11 April 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- Executables and ddl's are now signed.
 - Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
 - "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
 - In About Resources: Data Sharing Service from https://workupload.com. 
