@@ -31,12 +31,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
-Version 5.20.4xx.x (xx April 2020)
+Version 5.20.411.x (11 April 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
+- Exacutables and ddl's are now signed.
 - Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
 - "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
 - In About Resources: Data Sharing Service from https://workupload.com/. 
