@@ -79,13 +79,13 @@ TRANSLATIONS (MUI):
 
 
 =====================================================
-Version 5.20.411.x (11 April 2020)
+Version 5.20.411.2 (11 April 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- Executables and ddl's are now signed.
+- Executables and dll's are now signed.
 - Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
 - "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
 - In About Resources: Data Sharing Service from https://workupload.com. 
