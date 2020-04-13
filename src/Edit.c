@@ -4980,7 +4980,8 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
     else {
       SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
     }
-    EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+    //~EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+    EditEnsureSelectionVisible();
   }
   
   //~~~_END_UNDO_ACTION_;~~~
@@ -6877,7 +6878,8 @@ void EditSelectionMultiSelectAll()
     if (iMainAnchor > iMainCaret) {
       SciCall_SwapMainAnchorCaret();
     }
-    EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+    //~EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+    EditEnsureSelectionVisible();
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
   }
