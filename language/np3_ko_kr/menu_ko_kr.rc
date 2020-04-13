@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "실행(&L)"
         BEGIN
-            MENUITEM "Open File &Explorer",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "새 창에 열기(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "빈 창 열기(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "웹 템플릿 1(&1)\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "웹 템플릿 2(&2)\tCtrl+Shift+2",        CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open File &Explorer",                 IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "인코딩(&E)"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "서명 있는 UTF-8(&S)",                  IDM_ENCODING_UTF8SIGN
             MENUITEM "기타(&M)...\tF9",                     IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "기본값으로 표시(&F)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
+            MENUITEM "기본값으로 표시(&F)",                   CMD_RECODEDEFAULT
             MENUITEM "ANSI로 표시(&N)\tCtrl+Shift+A",        CMD_RECODEANSI
             MENUITEM "OEM으로 표시(&O)\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "GB18030으로 표시(&G)\tCtrl+Shift+F10",  CMD_RECODEGB18030
@@ -298,14 +300,16 @@ BEGIN
         POPUP "찾기(&S)"
         BEGIN
             MENUITEM "찾기(&F)...\tCtrl+F",                     IDM_EDIT_FIND
-            MENUITEM "검색어로 지정\tAlt+F3",                     IDM_EDIT_SAVEFIND
+            MENUITEM "검색어로 지정\tAlt+F3",                    IDM_EDIT_SAVEFIND
             MENUITEM "다음 찾기(&X)\tF3",                        IDM_EDIT_FINDNEXT
             MENUITEM "이전 찾기(&V)\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "다음 선택 찾기\tCtrl+F3",                   CMD_FINDNEXTSEL
-            MENUITEM "이전 선택 찾기\tCtrl+Shift+F3",             CMD_FINDPREVSEL
-            MENUITEM "바꾸기(&R)...\tCtrl+H",                   IDM_EDIT_REPLACE
-            MENUITEM "다음 바꾸기(&X)\tF4",                       IDM_EDIT_REPLACENEXT
+            MENUITEM "다음 선택 찾기\tCtrl+F3",                  CMD_FINDNEXTSEL
+            MENUITEM "이전 선택 찾기\tCtrl+Shift+F3",            CMD_FINDPREVSEL
+            MENUITEM "바꾸기(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
+            MENUITEM "다음 바꾸기(&X)\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "바로가기(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",            IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "보기(&V)"

@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fehler beim laden ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fehler beim speichern ""%s""."
-    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDer MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDas MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden."
+    IDS_MUI_ERR_GREPWIN     "Kein Datei-Suchen-Plugin gefunden.\nDas grepWinNP3 Datei-Suchen-Plugin kann hier https://rizonesoft.com herunter geladen werden."
     IDS_MUI_ERR_MRUDLG      "Es kann nicht auf die ausgewählte Datei zugegriffen werden!\nMöchtest Du den Eintrag aus der Liste entfernen?"
     IDS_MUI_ERR_CREATELINK  "Fehler beim erzeugen des Desktop-Links."
     IDS_MUI_ERR_PREVWINDISABLED

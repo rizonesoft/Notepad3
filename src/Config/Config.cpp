@@ -59,9 +59,9 @@ extern "C"           THEMEFILES Theme_Files[];
 // ============================================================================
 
 static bool const s_bIsUTF8 = true;
-static bool const s_bWriteSIG = true;     // BOM
+static bool const s_bWriteSIG = true;     // IniFileSetXXX()
 static bool const s_bUseMultiKey = false;
-static bool const s_bUseMultiLine = true; // find/repl with line breaks
+static bool const s_bUseMultiLine = true; // find/replace with line breaks
 static bool const s_bSetSpaces = false;
 
 // ----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
   
   bool bLocked = false;
 
-  HANDLE hFile = CreateFile(lpIniFilePath,
+  HANDLE hFile = CreateFile(lpIniFilePath, 
     GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
     OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -102,11 +102,17 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
   {
     bLocked = LockFileEx(hFile, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, 0, &rOvrLpd); // wait for exclusive lock
     if (!bLocked) {
-      MsgBoxLastError(L"AcquireWriteFileLock(): NO EXCLUSIVE LOCK ACQUIRED!", 0);
+      wchar_t msg[MAX_PATH + 128] = { 0 };
+      StringCchPrintf(msg, ARRAYSIZE(msg),
+        L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
+      MsgBoxLastError(msg, 0);
     }
   }
   else {
-    MsgBoxLastError(L"AcquireWriteFileLock(): INVALID FILE HANDLE!", 0);
+    wchar_t msg[MAX_PATH + 128] = { 0 };
+    StringCchPrintf(msg, ARRAYSIZE(msg),
+      L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+    MsgBoxLastError(msg, 0);
   }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -129,11 +135,17 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
   {
     bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
     if (!bLocked) {
-      MsgBoxLastError(L"AcquireReadFileLock(): NO READER LOCK ACQUIRED!", 0);
+      wchar_t msg[MAX_PATH + 128] = { 0 };
+      StringCchPrintf(msg, ARRAYSIZE(msg),
+        L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
+      MsgBoxLastError(msg, 0);
     }
   }
   else {
-    MsgBoxLastError(L"AcquireReadFileLock(): INVALID FILE HANDLE", 0);
+    wchar_t msg[MAX_PATH + 128] = { 0 };
+    StringCchPrintf(msg, ARRAYSIZE(msg),
+      L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+    MsgBoxLastError(msg, 0);
   }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -197,7 +209,7 @@ extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 
   if (hIniFile == INVALID_HANDLE_VALUE) {
     return false;
-  }
+}
 
   s_INI.SetSpaces(s_bSetSpaces);
   s_INI.SetMultiLine(s_bUseMultiLine);
@@ -663,7 +675,7 @@ extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
   if (StrIsEmpty(szFilePath)) {
     return;
   }
-  if (Flags.ShellUseSystemMRU)
+  if (Flags.ShellUseSystemMRU) 
   {
     SHAddToRecentDocs(SHARD_PATHW, szFilePath);
 #if 0
@@ -801,6 +813,7 @@ extern "C" bool FindIniFile()
   WCHAR tchModule[MAX_PATH] = { L'\0' };
 
   GetModuleFileName(NULL, tchModule, COUNTOF(tchModule));
+  PathCanonicalizeEx(tchModule, COUNTOF(tchModule));
 
   // set env path to module dir
   StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
@@ -914,7 +927,10 @@ extern "C" bool CreateIniFile()
         CloseHandle(hFile); // done
       }
       else {
-        MsgBoxLastError(L"CreateIniFile(): FAILD TO CREATE INITIAL INI FILE!", 0);
+        wchar_t msg[MAX_PATH + 128] = { 0 };
+        StringCchPrintf(msg, ARRAYSIZE(msg),
+          L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", Globals.IniFile);
+        MsgBoxLastError(msg, 0);
       }
     }
     else {
@@ -928,7 +944,10 @@ extern "C" bool CreateIniFile()
         CloseHandle(hFile);
       }
       else {
-        MsgBoxLastError(L"CreateIniFile(): FAILED TO GET FILESIZE!", 0);
+        wchar_t msg[MAX_PATH + 128] = { 0 };
+        StringCchPrintf(msg, ARRAYSIZE(msg),
+          L"CreateIniFile(%s): FAILED TO GET FILESIZE!", Globals.IniFile);
+        MsgBoxLastError(msg, 0);
         dwFileSize = INVALID_FILE_SIZE;
       }
     }
@@ -1155,6 +1174,9 @@ void LoadSettings()
     Defaults2.FileBrowserPath[0] = L'\0';
     IniSectionGetString(IniSecSettings2, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
 
+    Defaults2.GrepWinPath[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"grepWin.exe", Defaults2.GrepWinPath, Settings2.GrepWinPath, COUNTOF(Settings2.GrepWinPath));
+
     StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W("Rizonesoft." SAPPNAME));
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
       IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
@@ -1239,6 +1261,8 @@ void LoadSettings()
     Settings.EFR_Data.bAutoEscCtrlChars = IniSectionGetBool(IniSecSettings, L"AutoEscCtrlChars", Defaults.EFR_Data.bAutoEscCtrlChars);
     Defaults.EFR_Data.bWildcardSearch = false;
     Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
+    Defaults.EFR_Data.bOverlappingFind = false;
+    Settings.EFR_Data.bOverlappingFind = IniSectionGetBool(IniSecSettings, L"OverlappingFind", Defaults.EFR_Data.bOverlappingFind);
     Defaults.EFR_Data.bMarkOccurences = true;
     Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(IniSecSettings, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
     Defaults.EFR_Data.bHideNonMatchedLines = false;
@@ -1432,8 +1456,8 @@ void LoadSettings()
     const WCHAR* const IniSecWindow = Constants.Window_Section;
     // --------------------------------------------------------------------------
 
-    int ResX, ResY;
-    GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+    int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
     WCHAR tchHighDpiToolBar[64] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
@@ -1558,7 +1582,9 @@ void LoadSettings()
 
     Globals.pMRUfind = MRU_Create(_s_RecentFind, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
     MRU_Load(Globals.pMRUfind, false);
-    SetFindPattern(Globals.pMRUfind->pszItems[0]);
+    if (IsFindPatternEmpty()) {
+      SetFindPattern(Globals.pMRUfind->pszItems[0]);
+    }
 
     Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
     MRU_Load(Globals.pMRUreplace, false);
@@ -1659,6 +1685,12 @@ static bool _SaveSettings(bool bForceSaveSettings)
   }
   else {
     IniSectionDelete(IniSecSettings, L"WildcardSearch", false);
+  }
+  if (Settings.EFR_Data.bOverlappingFind != Defaults.EFR_Data.bOverlappingFind) {
+    IniSectionSetBool(IniSecSettings, L"OverlappingFind", Settings.EFR_Data.bOverlappingFind);
+  }
+  else {
+    IniSectionDelete(IniSecSettings, L"OverlappingFind", false);
   }
   if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
     IniSectionSetBool(IniSecSettings, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
@@ -1835,8 +1867,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
   const WCHAR* const IniSecWindow = Constants.Window_Section;
   // --------------------------------------------------------------------------
 
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
   WCHAR tchHighDpiToolBar[64];
   StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
@@ -1891,8 +1923,8 @@ bool SaveWindowPositionSettings(bool bClearSettings)
   // set current window position as ne initial window
   WININFO const winInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
-  int ResX, ResY;
-  GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
+  int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+  int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
   WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64];
   StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
   StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
@@ -1936,11 +1968,12 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
-  BeginWaitCursor(tchMsg);
 
   bool ok = false;
 
-  __try {
+  BeginWaitCursor(tchMsg);
+
+__try {
 
     bool dummy = false;
     ok = OpenSettingsFile(&dummy);
@@ -1975,12 +2008,12 @@ bool SaveAllSettings(bool bForceSaveSettings)
       }
     }
 
-    // separate INI files for Style-Themes
-    if (Globals.idxSelectedTheme >= 2) {
-      Style_SaveSettings(bForceSaveSettings);
-    }
-
+  // separate INI files for Style-Themes
+  if (Globals.idxSelectedTheme >= 2) {
+    Style_SaveSettings(bForceSaveSettings);
   }
+
+}
   __finally {
     ok = CloseSettingsFile(true, false);
   }

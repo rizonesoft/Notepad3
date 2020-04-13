@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Lan&zar"
         BEGIN
-            MENUITEM "Abrir &Explorador de archivos",       IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "V&entana vacía\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Plantilla Web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Plantilla Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Abrir &Explorador de archivos",       IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "C&odificación"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 con &signatura",                IDM_ENCODING_UTF8SIGN
             MENUITEM "&Más...\tF9",                         IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Recodificar a &Defecto\tCtrl+Alt+F",      CMD_RECODEDEFAULT
+            MENUITEM "Recodificar a &Defecto",                  CMD_RECODEDEFAULT
             MENUITEM "Recodificar a &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
             MENUITEM "Recodificar a &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Recodificar a &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "&Reemplazar...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vista"

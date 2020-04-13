@@ -191,25 +191,6 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 // ----------------------------------------------------------------------------
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
-void SetUACIcon(const HMENU hMenu, const UINT nItem);
-
-// ----------------------------------------------------------------------------
-
-DPI_T GetCurrentPPI(HWND hwnd);
-
-void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
-
-inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPIX(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return float2int((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPIY(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  return float2int((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntFontSizeW(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.x, ppi.x); }
-inline int ScaleIntFontSizeH(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return MulDiv((val), dpi.y, ppi.y); }
-inline int ScaleFontSize(HWND hwnd, float fSize) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * dpi.y) / (float)ppi.y); }
-inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);  DPI_T const ppi = GetCurrentPPI(hwnd);  return float2int((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10; }
-
 
 // ----------------------------------------------------------------------------
 
@@ -249,6 +230,9 @@ bool IsRunAsAdmin();
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
 bool BitmapGrayScale(HBITMAP hbmp);
+
+//HBITMAP ScaleBitmap(HBITMAP hBmp, WORD wNewWidth, WORD wNewHeight);
+
 bool VerifyContrast(COLORREF cr1,COLORREF cr2);
 bool IsFontAvailable(LPCWSTR lpszFontName);
 
@@ -274,6 +258,7 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 
 bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead);
 bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten);
+void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
@@ -338,6 +323,7 @@ size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
 size_t UnSlashW(LPWSTR pchInOut);
+size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
 
 void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
 void TransformMetaChars(char* pszInput, bool, int iEOLMode);

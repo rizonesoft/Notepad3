@@ -46,7 +46,6 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINWND48           ICON     DISCARDABLE    "Notepad3_48.ico"
 IDI_MUI_RUN             ICON                    "Run.ico"
 IDI_MUI_STYLES          ICON                    "Styles.ico"
 

@@ -31,6 +31,54 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 =====================================================
+Current NF Version 5.20.411.(build_#) (2020-04-11)
+=====================================================
+-----------------------------------------------------
+NEW:
+-----------------------------------------------------
+- 
+- "waifu2x" scaled std toolbar bitmaps.
+- Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
+- Add "Overlapping Search" in Find/Replace dialog window.
+- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.2).
+
+-----------------------------------------------------
+CHANGES:
+-----------------------------------------------------
+- 
+- Add filepath to message on file locking error.
+
+-----------------------------------------------------
+ENHANCEMENT:
+-----------------------------------------------------
+- 
+- "grepWinNP3": add "Dark mode" settings.
+- "grepWinNP3": asynchronous search & replace version.
+- DPI awareness and multi monitor handling.
+
+-----------------------------------------------------
+FIXES:
+-----------------------------------------------------
+- 
+- Don't protect backslash (double'\\') for pattern argument.
+- "grepWinNP3" ordered map of languages for selection box.
+- Translatable error message format (msgbox).
+- DPI scaling window on display dependent.
+
+-----------------------------------------------------
+REMOVED:
+-----------------------------------------------------
+- 
+- 
+
+-----------------------------------------------------
+TRANSLATIONS (MUI):
+-----------------------------------------------------
+- 
+- 
+
+
+=====================================================
 Version 5.20.411.2 (11 April 2020)
 =====================================================
 
@@ -40,7 +88,7 @@ NEW:
 - Executables and dll's are now signed.
 - Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
 - "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
-- In About Resources: Data Sharing Service from https://workupload.com/. 
+- In About Resources: Data Sharing Service from https://workupload.com. 
 - Automatic scrolling when dragging selected text near window edge (SCI).
 - break rectangular selection into multiple selection on end-of-lines (move caret).
 - Infos of screen/display/dpi for "Copy Version Info" button.

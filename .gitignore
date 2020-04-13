@@ -65,7 +65,9 @@ Thumbs.db
 /np3portableapp/Notepad3Portable/App/Notepad3/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/lng
+/np3portableapp/Notepad3Portable/App/Notepad3/x64/grepWin/*.*
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/lng
+/np3portableapp/Notepad3Portable/App/Notepad3/x86/grepWin/*.*
 /np3portableapp/Notepad3Portable/App/themes
 /np3portableapp/Notepad3Portable/Other/Help/*.txt

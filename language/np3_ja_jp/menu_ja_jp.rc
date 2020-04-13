@@ -77,19 +77,21 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "エクスプローラーを開く(&E)",                   IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",             IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
-            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM "同じファイルを開く(&N)\tAlt+N",             IDM_FILE_NEWWINDOW
+            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "管理者権限で再起動(&R)",                 IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "管理者権限で再起動(&R)",                    IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "開いている文書を実行(&D)\tCtrl+L",         IDM_FILE_LAUNCH
+            MENUITEM "開いている文書を実行(&D)\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
             MENUITEM "ファイル名を指定して実行(&C)...\tCtrl+R",    IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "ウェブ1で開く(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "ウェブ2で開く(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "エクスプローラーを開く(&E)", IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "文字コード(&E)"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
             MENUITEM "その他の文字コードを指定(&M)...\tF9",        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトで読み直し(&D)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
+            MENUITEM "デフォルトで読み直し(&D)",                   CMD_RECODEDEFAULT
             MENUITEM "ANSI で読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "OEM で読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "GB18030 で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -297,15 +299,17 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "検索(&S)"
         BEGIN
-            MENUITEM "検索(&F)...\tCtrl+F",                      IDM_EDIT_FIND
-            MENUITEM "検索文字列候補に追加\tAlt+F3",             IDM_EDIT_SAVEFIND
+            MENUITEM "検索(&F)...\tCtrl+F",                       IDM_EDIT_FIND
+            MENUITEM "検索文字列候補に追加\tAlt+F3",               IDM_EDIT_SAVEFIND
             MENUITEM "次を検索(&X)\tF3",                          IDM_EDIT_FINDNEXT
             MENUITEM "前へ検索(&V)\tShift+F3",                    IDM_EDIT_FINDPREV
             MENUITEM "選択部分で次を検索\tCtrl+F3",                CMD_FINDNEXTSEL
             MENUITEM "選択部分で前へ検索\tCtrl+Shift+F3",          CMD_FINDPREVSEL
             MENUITEM "置換(&R)...\tCtrl+H",                       IDM_EDIT_REPLACE
             MENUITEM "置換し次へ(&X)\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",              IDM_EDIT_GOTOLINE
+            MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",              IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "表示(&V)"

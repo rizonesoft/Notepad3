@@ -189,7 +189,7 @@ BEGIN
     "E",            IDM_EDIT_URLENCODE,               VIRTKEY, SHIFT, CONTROL, NOINVERT
     //~"E",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(Edit)
     "F",            IDM_EDIT_FIND,                    VIRTKEY, CONTROL, NOINVERT
-    "F",            CMD_RECODEDEFAULT,                VIRTKEY, CONTROL, ALT, NOINVERT
+    "F",            IDM_GREP_WIN_SEARCH,              VIRTKEY, CONTROL, ALT, NOINVERT
     //"F",            IDM_VIEW_FOLDING, (issue #1609) VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     "F",            IDM_VIEW_TOGGLEFOLDS,             VIRTKEY, SHIFT, CONTROL, NOINVERT
     //~"F",            MMMMMMMMMMMMMMMMMM,            VIRTKEY, ALT, NOINVERT  /// Menu(File)

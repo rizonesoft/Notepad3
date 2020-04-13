@@ -61,12 +61,15 @@ call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\themes
 call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v142
 call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v142
 
+call :RESOLVEPATH NP3_GREPWIN_DIR %SCRIPT_DIR%..\grepWinNP3
+
 call :RESOLVEPATH NP3_PORTAPP_DIR %SCRIPT_DIR%Notepad3Portable
 call :RESOLVEPATH NP3_PORTAPP_INFO %NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 call :RESOLVEPATH NP3_PORTAPP_INSTALL %NP3_PORTAPP_DIR%\App\AppInfo\installer
 
 call :RESOLVEPATH NP3_BUILD_VER %SCRIPT_DIR%..\Versions\build.txt
 call :RESOLVEPATH NP3_BUILD_NAME %SCRIPT_DIR%_buildname.txt
+
 
 :: --------------------------------------------------------------------------------------------------------------------
 
@@ -157,6 +160,15 @@ copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
+copy "%NP3_GREPWIN_DIR%\GPL_v3.0_LICENSE.txt" "%NP3_PORTAPP_DIR%\Other\Help\grepWin_GPL_v3.0_LICENSE.txt" /Y /V
+mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
+copy /B "%NP3_GREPWIN_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWinNP3.exe" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\lang\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
+mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
+copy /B "%NP3_GREPWIN_DIR%\grepWinNP3_x64.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWinNP3.exe" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\lang\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
+
+:: --------------------------------------------------------------------------------------------------------------------
 
 call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%_tmp.ini"
 

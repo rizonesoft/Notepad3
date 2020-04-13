@@ -40,6 +40,7 @@ typedef struct np3params {
   cpi_enc_t           flagSetEncoding;
   int                 flagSetEOLMode;
   int                 flagTitleExcerpt;
+  int                 flagMatchText;
   WCHAR               wchData;
 } 
 np3params, *LPnp3params;
@@ -157,8 +158,10 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position);
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
 void SetFindPatternMB(LPCSTR chFindPattern);
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
+size_t LengthOfFindPattern();
+LPCWSTR GetFindPattern();
+void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
+void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 
@@ -198,10 +201,17 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
-static __forceinline bool CheckNotifyChangeEvent();
-
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+
+
+#define BeginWaitCursor(text)     __try { SciCall_SetCursor(SC_CURSORWAIT);                       \
+                                          StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); 
+
+#define EndWaitCursor()     } __finally { SciCall_SetCursor(SC_CURSORNORMAL);                      \
+                                          POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y); \
+                                          UpdateStatusbar(true); }
+
 
 #define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 

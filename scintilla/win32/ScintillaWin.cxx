@@ -1024,7 +1024,8 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 	}
 }
 
-bool ScintillaWin::PaintDC(HDC hdc) {
+bool ScintillaWin::PaintDC(HDC hdc)
+{
 	if (technology == SC_TECHNOLOGY_DEFAULT) {
 		AutoSurface surfaceWindow(hdc, this);
 		if (surfaceWindow) {
@@ -1055,6 +1056,10 @@ bool ScintillaWin::PaintDC(HDC hdc) {
 
 sptr_t ScintillaWin::WndPaint() {
 	//ElapsedPeriod ep;
+	
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	if (paintState != notPainting) { return 0; } // prevent recursion loop
+	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	// Redirect assertions to debug output and save current state
 	const bool assertsPopup = Platform::ShowAssertionPopUps(false);

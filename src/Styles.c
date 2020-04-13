@@ -646,7 +646,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         }
       }
     }
-    
+
     CloseSettingsFile(false, bIsStdIniFile);
   }
   return result;
@@ -835,7 +835,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   else {
     if (StrIsNotEmpty(szFilePathNorm))
     {
-      if (!PathFileExists(szFilePathNorm))      {
+      if (!PathFileExists(szFilePathNorm)) {
         HANDLE hFile = CreateFile(szFilePathNorm,
           GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -1682,7 +1682,7 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
   float const zoomPercent = (float)SciCall_GetZoom();
-  return ScaleToCurrentDPIY(hwnd, (fSize * zoomPercent) / 100.0f);
+  return ScaleFloatToDPI_X(hwnd, (fSize * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
@@ -1691,7 +1691,6 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
 //
 void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
-  UNUSED(hwnd);
   SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth(hwnd) : 0));
 }
 
@@ -1701,7 +1700,6 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 //
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
-  UNUSED(hwnd);
   SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
@@ -3758,7 +3756,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   {
     case WM_INITDIALOG:
       {
-        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+        SET_NP3_DLG_ICON_SMALL(hwnd);
 
         ResizeDlg_Init(hwnd, Settings.CustomSchemesDlgSizeX, Settings.CustomSchemesDlgSizeY, IDC_RESIZEGRIP);
 
@@ -4414,6 +4412,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
   if (hDlg != INVALID_HANDLE_VALUE) {
+    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;
@@ -4443,8 +4442,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   {
     case WM_INITDIALOG:
       {
-        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-        
+        SET_NP3_DLG_ICON_SMALL(hwnd);
+
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         RECT rc;

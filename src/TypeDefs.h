@@ -189,6 +189,7 @@ typedef struct _editfindreplace
   bool bAutoEscCtrlChars;
   bool bFindClose;
   bool bReplaceClose;
+  bool bOverlappingFind;
   bool bNoFindWrap;
   bool bWildcardSearch;
   bool bMarkOccurences;
@@ -198,7 +199,7 @@ typedef struct _editfindreplace
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
-#define EFR_INIT_DATA  { "", "", 0, false, false, false, false, false, false, false, false, true, NULL }
+#define INIT_EFR_DATA  { "", "", 0, false, false, false, false, false, false, false, false, false, true, NULL }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
@@ -272,6 +273,7 @@ typedef struct _constants_t
 {
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
+  const WCHAR* const FileSearchGrepWin;
   const WCHAR* const StylingThemeName;
 
   const WCHAR* const Settings_Section;
@@ -303,9 +305,11 @@ typedef struct _globals_t
   HWND      hwndStatus;
   DWORD     dwLastError;
   HMENU     hMainMenu;
-  HICON     hDlgIcon;
-  HICON     hIcon48;
-  HICON     hIcon128;
+  HICON     hDlgIcon256;   // Notepad3 Icon (256x256)
+  HICON     hDlgIcon128;   // Notepad3 Icon (128x128)
+  HICON     hDlgIconBig;
+  HICON     hDlgIconSmall;
+  HICON     hIconMsgUser;
   HICON     hIconMsgInfo;
   HICON     hIconMsgWarn;
   HICON     hIconMsgError;
@@ -537,8 +541,9 @@ typedef struct _settings2_t
   WCHAR DefaultExtension[64];
   WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
-  WCHAR FileBrowserPath[MAX_PATH];
 
+  WCHAR FileBrowserPath[MAX_PATH];
+  WCHAR GrepWinPath[MAX_PATH];
   WCHAR AppUserModelID[128];
   WCHAR AutoCompleteFillUpChars[64];
   WCHAR LineCommentPostfixStrg[64];
@@ -643,6 +648,11 @@ typedef struct _themeFiles
 #define INTERNET_MAX_URL_LENGTH         (INTERNET_MAX_SCHEME_LENGTH \
                                         + sizeof("://") \
                                         + INTERNET_MAX_PATH_LENGTH)
+
+#define SET_NP3_DLG_ICON_BIG(hwnd)  if(Globals.hDlgIconBig){SendMessage((hwnd),WM_SETICON,ICON_BIG,(LPARAM)Globals.hDlgIconBig);}
+#define SET_NP3_DLG_ICON_SMALL(hwnd)  if(Globals.hDlgIconSmall){SendMessage((hwnd),WM_SETICON,ICON_SMALL,(LPARAM)Globals.hDlgIconSmall);}
+
+// ----------------------------------------------------------------------------
 
 //=============================================================================
 

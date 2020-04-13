@@ -2980,14 +2980,14 @@ void ListBoxX::StartResize(WPARAM hitCode) noexcept {
 
 LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const noexcept {
 	const PRectangle rc = GetPosition();
-
-	LRESULT hit = ::DefWindowProc(GetHWND(), WM_NCHITTEST, wParam, lParam);
+	const HWND hwnd = GetHWND();
+	LRESULT hit = ::DefWindowProc(hwnd, WM_NCHITTEST, wParam, lParam);
 	// There is an apparent bug in the DefWindowProc hit test code whereby it will
 	// return HTTOPXXX if the window in question is shorter than the default
 	// window caption height + frame, even if one is hovering over the bottom edge of
 	// the frame, so workaround that here
 	if (hit >= HTTOP && hit <= HTTOPRIGHT) {
-		const int minHeight = GetSystemMetricsEx(GetHWND(), SM_CYMINTRACK);
+		const int minHeight = GetSystemMetricsEx(hwnd, SM_CYMINTRACK);
 		const int yPos = GET_Y_LPARAM(lParam);
 		if ((rc.Height() < minHeight) && (yPos > ((rc.top + rc.bottom)/2))) {
 			hit += HTBOTTOM - HTTOP;
@@ -2995,9 +2995,9 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const noexcept {
 	}
 #if LISTBOXX_USE_BORDER || LISTBOXX_USE_FAKE_FRAME
 	else if (hit < HTSIZEFIRST || hit > HTSIZELAST) {
-		const int cx = GetSystemMetricsEx(GetHWND(), SM_CXVSCROLL);
+		const int cx = GetSystemMetricsEx(hwnd, SM_CXVSCROLL);
 #if LISTBOXX_USE_BORDER
-		const PRectangle rcInner = rc.Deflate(GetSystemMetricsEx(GetHWND(), SM_CXBORDER), GetSystemMetricsEx(GetHWND(), SM_CYBORDER));
+		const PRectangle rcInner = rc.Deflate(GetSystemMetricsEx(hwnd, SM_CXBORDER), GetSystemMetricsEx(GetHWND(), SM_CYBORDER));
 #else
 		const PRectangle rcInner = rc.Deflate(ListBoxXFakeFrameSize, ListBoxXFakeFrameSize);
 #endif

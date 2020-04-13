@@ -2,6 +2,13 @@
 // Microsoft Visual C++ generated include file.
 // Used by Notepad3.rc
 //
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#ifndef WINVER
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+
 #ifndef IDC_STATIC
 #define IDC_STATIC                     (-1)
 #endif

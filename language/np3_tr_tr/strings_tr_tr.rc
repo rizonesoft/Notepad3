@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
     IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
     IDS_MUI_ERR_PREVWINDISABLED

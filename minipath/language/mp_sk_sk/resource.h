@@ -2,6 +2,12 @@
 // Von Microsoft Visual C++ generierte Includedatei.
 // Verwendet durch menu_sk_sk.rc
 //
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#ifndef WINVER
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
 
 // Next default values for new objects
 // 

@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" 파일을 읽는 도중 오류가 발생하였습니다."
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 도중 오류가 발생하였습니다."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다.\nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED
