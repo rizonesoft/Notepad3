@@ -4959,11 +4959,12 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
       if (vSpcCurrent > 0) {
         SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
       }
+      EditEnsureSelectionVisible();
     }
     else {
       SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
+      SciCall_ChooseCaretX();
     }
-    EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
   }
   UpdateToolbar();
   UpdateStatusbar(false);
@@ -5006,15 +5007,12 @@ void EditNormalizeView(const DocLn iDocLine)
 //
 void EditEnsureSelectionVisible()
 {
+  // Ensure that the first and last lines of a selection are always unfolded
   DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
   DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
-
-  // Ensure that the first and last lines of a selection are always unfolded
-  // This needs to be done *before* the SCI_SETSEL message
   SciCall_EnsureVisible(iAnchorLine);
-  if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iCurrentLine); }
-
-  Sci_ScrollToCurrentLine(); // normalize view
+  Sci_ScrollToLine(iCurrentLine);
+  Sci_ScrollChooseCaret();
 }
 
 
@@ -6810,7 +6808,8 @@ void EditSelectionMultiSelectAll()
     if (iMainAnchor > iMainCaret) {
       SciCall_SwapMainAnchorCaret();
     }
-    EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+    //~EditNormalizeView(Sci_GetCurrentLineNumber());
+    EditEnsureSelectionVisible();
 
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
 
