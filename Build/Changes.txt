@@ -28,11 +28,13 @@ NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
 SCI - (SCI)ntilla Library
 UCD - (UCD)ARDET is an Encoding Detector Library
+GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current NF Version 5.20.411.(build_#) (2020-04-11)
+Current BETA Version 5.20.413.(build_#) (2020-04-13)
 =====================================================
+
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
@@ -40,7 +42,7 @@ NEW:
 - "waifu2x" scaled std toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
-- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.2).
+- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.4) (GRE).
 
 -----------------------------------------------------
 CHANGES:
@@ -52,16 +54,17 @@ CHANGES:
 ENHANCEMENT:
 -----------------------------------------------------
 - 
-- "grepWinNP3": add "Dark mode" settings.
-- "grepWinNP3": asynchronous search & replace version.
+- "grepWinNP3": add "Dark mode" settings (GRE).
+- "grepWinNP3": asynchronous search & replace version (GRE).
 - DPI awareness and multi monitor handling.
 
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
 - 
+- View selection on wrapped long-lines vs. normalizing view.
 - Don't protect backslash (double'\\') for pattern argument.
-- "grepWinNP3" ordered map of languages for selection box.
+- "grepWinNP3" ordered map of languages for selection box (GRE).
 - Translatable error message format (msgbox).
 - DPI scaling window on display dependent.
 
