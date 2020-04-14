@@ -126,9 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "読み込み失敗 ""%s"""
     IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s"""
-    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は https://rizonesoft.com からダウンロードできます。"
-    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
+    IDS_MUI_ERR_DLG_FORMAT  "エラー '%s', 原因:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は以下からダウンロードできます。 https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません。\nファイル検索プラグインの grepWinNP3 は以下からダウンロードできます。https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか？"
     IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
     IDS_MUI_ERR_PREVWINDISABLED
