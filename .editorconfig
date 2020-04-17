@@ -21,6 +21,9 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 
+[**.{lang}]
+charset = utf-8
+
 [**.{ini}]
 charset = utf-8-sig
 

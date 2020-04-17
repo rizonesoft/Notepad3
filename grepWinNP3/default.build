@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<project name="grepWin" default="grepWin">
+
+  <include buildfile="default.build.user" />
+
+  <property name="configuration" value="release" />
+  <!-- the signinfo.txt file has to contain one line with parameters for signtool.exe,
+       for example:
+       /t "url/to/timestamp/server" /q
+  -->
+  <loadfile file="signinfo.txt" property="signinfo" failonerror="false" />
+
+  <property name="solutionname" value="grepWin.sln"/>
+
+  <!-- ====================================================================== -->
+  <!-- Configuration targets                                                  -->
+  <!-- ====================================================================== -->
+  <target name="debug">
+    <description>
+      Sets the environment up to build the debug versions.
+    </description>
+    <property name="configuration" value="debug" />
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Project targets                                                        -->
+  <!-- ====================================================================== -->
+  <target name="clean" depends="VSNET">
+    <description>
+      Cleans every subproject.
+    </description>
+    <exec program="msbuild.exe" >
+      <arg value="${solutionname}" />
+      <arg value="/t:Clean" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=Win32" />
+      <arg value="/verbosity:quiet" />
+      <arg value="/maxcpucount" />
+    </exec>
+    <exec program="msbuild.exe" >
+      <arg value="${solutionname}" />
+      <arg value="/t:Clean" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=x64" />
+      <arg value="/verbosity:quiet" />
+      <arg value="/maxcpucount" />
+    </exec>
+  </target>
+
+  <target name="VersionInfo" depends="VSNET,env">
+    <description>
+      Sets the version information as properties, env variables
+      and sets up the different version specific files.
+    </description>
+    <nant target="versioninfo">
+      <buildfiles>
+        <include name="versioninfo.build" />
+      </buildfiles>
+    </nant>
+    <loadfile file="src\version.in" property="versionheaderfile">
+      <filterchain>
+        <replacetokens begintoken="$" endtoken="$">
+          <token key="MajorVersion" value="${environment::get-variable('MajorVersion')}" />
+          <token key="MinorVersion" value="${environment::get-variable('MinorVersion')}" />
+          <token key="MicroVersion" value="${environment::get-variable('Microversion')}" />
+          <token key="WCREV" value="${environment::get-variable('WCREV')}" />
+          <token key="WCDATE" value="${environment::get-variable('WCDATE')}" />
+        </replacetokens>
+      </filterchain>
+    </loadfile>
+    <echo file="src\version.h" message="${versionheaderfile}" />
+  </target>
+
+  <target name="pot">
+    <description>
+      Generates the template pot file used for translations
+    </description>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\English.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Deutsch.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Chinese.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Nederlands.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Polski.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Spanish.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Italiano.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Japanese.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Français.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Turkish.lang" />
+    </exec>
+  </target>
+
+  <target name="grepWin" depends="VersionInfo">
+    <description>
+      Builds grepWin.
+    </description>
+    <exec program="msbuild.exe" >
+      <arg value="${solutionname}" />
+      <arg value="/t:rebuild" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=Win32" />
+      <arg value="/verbosity:minimal" />
+      <arg value="/maxcpucount" />
+    </exec>
+    <exec program="msbuild.exe" >
+      <arg value="${solutionname}" />
+      <arg value="/t:rebuild" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=x64" />
+      <arg value="/verbosity:minimal" />
+      <arg value="/maxcpucount" />
+    </exec>
+  </target>
+
+  <target name="setup" depends="grepWin">
+    <description>
+      Uses WiX to create an msi installer file.
+    </description>
+    <nant target="setup">
+      <buildfiles>
+        <include name="src\Setup\setup.build" />
+      </buildfiles>
+    </nant>
+    <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
+    <copy file="bin\Release\grepWin.exe" tofile="bin\grepWin-${verstring}_portable.exe" />
+    <copy file="bin\Release64\grepWin.exe" tofile="bin\grepWin-x64-${verstring}_portable.exe" />
+
+    <exec program="checksum" output="bin\checksum.txt">
+      <arg value="-t" />
+      <arg value="sha256" />
+      <arg value="-f" />
+      <arg value="bin\grepWin-${verstring}.msi" />
+    </exec>
+    <loadfile file="bin\checksum.txt" property="checksum" />
+    <exec program="checksum" output="bin\checksum64.txt">
+      <arg value="-t" />
+      <arg value="sha256" />
+      <arg value="-f" />
+      <arg value="bin\grepWin-${verstring}-x64.msi" />
+    </exec>
+    <loadfile file="bin\checksum64.txt" property="checksum64" />
+
+    <loadfile file="choco\grepwin.nuspec" property="nuspecfile">
+      <filterchain>
+        <replacetokens begintoken="$" endtoken="$">
+          <token key="MajorVersion" value="${environment::get-variable('MajorVersion')}" />
+          <token key="MinorVersion" value="${environment::get-variable('MinorVersion')}" />
+          <token key="MicroVersion" value="${environment::get-variable('Microversion')}" />
+          <token key="WCREV" value="${environment::get-variable('WCREV')}" />
+          <token key="WCDATE" value="${environment::get-variable('WCDATE')}" />
+        </replacetokens>
+      </filterchain>
+    </loadfile>
+    <echo file="choco\package\grepwin.nuspec" message="${nuspecfile}" />
+    <loadfile file="choco\chocolateyInstall.ps1" property="cinstfile">
+      <filterchain>
+        <replacetokens begintoken="$" endtoken="$">
+          <token key="MajorVersion" value="${environment::get-variable('MajorVersion')}" />
+          <token key="MinorVersion" value="${environment::get-variable('MinorVersion')}" />
+          <token key="MicroVersion" value="${environment::get-variable('Microversion')}" />
+          <token key="WCREV" value="${environment::get-variable('WCREV')}" />
+          <token key="WCDATE" value="${environment::get-variable('WCDATE')}" />
+          <token key="checksum" value="${string::trim(checksum)}" />
+          <token key="checksum64" value="${string::trim(checksum64)}" />
+        </replacetokens>
+      </filterchain>
+    </loadfile>
+    <echo file="choco\package\tools\chocolateyInstall.ps1" message="${cinstfile}" />
+    <echo>
+      now start an admin console in choco\package and then run
+      choco pack
+      to upload the package, run
+      cpush grepWin-x.x.x.nupkg
+    </echo>
+  </target>
+
+  <target name="msi" depends="VersionInfo">
+    <description>
+      Builds the msi installer from already built binaries.
+    </description>
+    <nant target="setup">
+      <buildfiles>
+        <include name="src\Setup\setup.build" />
+      </buildfiles>
+    </nant>
+  </target>
+
+
+</project>

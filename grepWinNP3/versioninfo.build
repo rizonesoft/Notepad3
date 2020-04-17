@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="VersionInfo" default="versioninfo">
+
+    <target name="versioninfo">
+
+        <exec program="GitWCRev.exe">
+            <arg value="." />
+            <arg value="version.build.in" />
+            <arg value="version.build" />
+        </exec>
+
+        <nant target="setversioninfo">
+            <buildfiles>
+                <include name="version.build" />
+            </buildfiles>
+        </nant>
+    </target>
+
+</project>

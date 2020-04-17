@@ -4885,7 +4885,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               DocPosU const iNewMain = SciCall_GetSelections() - 1;
               SciCall_SetMainSelection(iNewMain);
             }
-            //EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+            //~EditNormalizeView(Sci_GetCurrentLineNumber());
             EditEnsureSelectionVisible();
           }
           break;
@@ -5304,7 +5304,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
+          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -9517,9 +9517,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       // set historic caret/selection  pos
       else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
       {
-        SciCall_SetSel(iAnchorPos, iCaretPos); // scroll into view
-        //~EditNormalizeView(Sci_GetCurrentLineNumber());
-        EditEnsureSelectionVisible();
+        EditSetSelectionEx(iAnchorPos, iCaretPos, 0, 0);
       }
     }
 

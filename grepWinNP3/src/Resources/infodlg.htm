@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="iso-8859-1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Regex Help</title>
+    <style>
+        html {
+            width: 400px
+        }
+
+        body {
+            font: 80% "Lucida Grande", Verdana, Arial, Sans-Serif
+        }
+
+        code {
+            font-family: monospace, serif;
+            font-size: 1em
+        }
+
+        h1 {
+            font-size: 1.4em;
+            margin: 8px auto 4px
+        }
+
+        table, th, td {
+            border-collapse: collapse;
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        .style1 {
+            width: 188px
+        }
+
+        .style2 {
+            width: 188px;
+            height: 26px
+        }
+
+        .style3 {
+            width: 188px;
+            height: 17px
+        }
+
+        .style4 {
+            width: 360px;
+            height: 17px
+        }
+
+        .style5 {
+            width: 360px;
+            height: 26px
+        }
+
+        .td-left {
+            text-align: left
+        }
+
+        .td-right {
+            text-align: right
+        }
+    </style>
+</head>
+<body>
+    <p>this help file shows only the basics of a regular expression search, and
+    it's here only to show the flavor of the used regex.</p>
+    <p>If you're not familiar with regular expressions, please consult
+    a tutorial like <a href="https://www.regular-expressions.info/tutorial.html" target="_blank">https://www.regular-expressions.info/tutorial.html</a></p>
+    <table>
+        <tr>
+            <td colspan="2"><h1>Regular expression examples</h1></td>
+        </tr>
+        <tr>
+            <td class="style1">.</td>
+            <td class="td-left">Matches all characters</td>
+        </tr>
+        <tr>
+            <td class="style1">+</td>
+            <td class="td-left">Matches the previous expression one or more times</td>
+        </tr>
+        <tr>
+            <td class="style2">*</td>
+            <td class="style5 td-left">Matches the previous expression zero or more times</td>
+        </tr>
+        <tr>
+            <td class="style2">\</td>
+            <td class="style5 td-left">Escapes special characters</td>
+        </tr>
+        <tr>
+            <td class="style2">\Q...\E</td>
+            <td class="style5 td-left">Matches the characters between <code>\Q</code> and <code>\E</code> literally, suppressing the meaning of special characters.</td>
+        </tr>
+        <tr>
+            <td class="style2">[a-c]</td>
+            <td class="style5 td-left">Matches a, b and c</td>
+        </tr>
+        <tr>
+            <td class="style2">\d</td>
+            <td class="style5 td-left">Matches all digits</td>
+        </tr>
+        <tr>
+            <td class="style2">\w</td>
+            <td class="style5 td-left">Matches all word characters</td>
+        </tr>
+        <tr>
+            <td class="style2">\s</td>
+            <td class="style5 td-left">Matches all whitespace characters</td>
+        </tr>
+        <tr>
+            <td class="style3">^</td>
+            <td class="style4 td-left">Matches the start of a line</td>
+        </tr>
+        <tr>
+            <td class="style3">$</td>
+            <td class="style4 td-left">Matches the end of a line</td>
+        </tr>
+        <tr>
+            <td class="style3">\x{FFFF}</td>
+            <td class="style4 td-left">Matches the unicode character FFFF</td>
+        </tr>
+        <tr>
+            <td class="style3">$1..$9</td>
+            <td class="style4 td-left">groups are referenced in the replace expression by <code>$i</code> for the i-th group</td>
+        </tr>
+        <tr>
+            <td class="style3">${count08}</td>
+            <td class="style4 td-left">replaced with numbers starting from 1, incrementing by 1 for every match. The numbers after "count" are optional and indicate how many leading spaces the output should use, or if the number is preceded by a zero how many leading zeros.</td>
+        </tr>
+        <tr>
+            <td class="style3">${count08(start)}</td>
+            <td class="style4 td-left">same as <code>${count}</code>, but with "start" as the start value for counting</td>
+        </tr>
+        <tr>
+            <td class="style3">${count08(start, increment)}</td>
+            <td class="style4 td-left">same as <code>${count(start)}</code>, but with "increment" as the increment value instead of the default 1</td>
+        </tr>
+        <tr>
+            <td class="style3">${filepath}</td>
+            <td class="style4 td-left">replaced with the path of the currently searched file</td>
+        </tr>
+        <tr>
+            <td class="style3">${filename}</td>
+            <td class="style4 td-left">replaced with the name of the currently searched file. The name does not include the file extension</td>
+        </tr>
+        <tr>
+            <td class="style3">${fileext}</td>
+            <td class="style4 td-left">replaced with the extension of the currently searched file</td>
+        </tr>
+        <tr>
+            <td class="style3"></td>
+            <td class="td-right"><button tabindex="1" type="submit" onclick="window.close();">Close</button></td>
+        </tr>
+    </table>
+</body>
+</html>
