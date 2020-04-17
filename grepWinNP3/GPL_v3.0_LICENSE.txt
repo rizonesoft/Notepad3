@@ -626,8 +626,8 @@ grepWin is developed by Stefan Küng (https://tools.stefankueng.com/grepWin.html
 Original grepWin binaries (currently v1.9.2) and corresponding source code (according to GPL v3.0)
 can be retrived at folowing location https://github.com/stefankueng/grepWin/releases/tag/1.9.2.
 
-Modified grepWinNP3 binaries (Notepad3 MOD, currently v1.9.2) and corresponding source code
+Modified grepWinNP3 binaries (Notepad3 MOD, currently v2.0.x) and corresponding source code
 (according to GPL v3.0) can be retrived at folowing location:
-https://github.com/RaiKoHoff/grepWin/tree/grepWinNP3.
+https://github.com/rizonesoft/Notepad3/tree/master/grepWinNP3.
 
 ########################################################################################################
