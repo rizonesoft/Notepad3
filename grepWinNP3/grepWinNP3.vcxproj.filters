@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{cf0213c9-090b-4d7b-b520-15dfdc2a8dc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sktoolslib_mod">
+      <UniqueIdentifier>{9e218bba-f3cf-4af8-b8b0-538877ab3ae2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AboutDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bookmarks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BookmarksDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\grepWin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InfoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NameDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RegexTestDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SearchDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SearchInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MultiLineEditDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RegexReplaceFormatter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShellContextMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Theme.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\AeroControls.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\AeroGlass.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\AutoComplete.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\BaseDialog.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\BaseWindow.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\BrowseFolder.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\CmdLineParser.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\codecvt.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\DebugOutput.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\DirFileEnum.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\DlgResizer.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\DropFiles.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\EditDoubleClick.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\FileDropTarget.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\hyperlink.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\Language.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\PathUtils.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\RegHistory.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\Registry.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\StringUtils.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\SysImageList.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\SysInfo.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\TextFile.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\UnicodeUtils.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+    <ClCompile Include="sktoolslib_mod\DarkModeHelper.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bookmarks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BookmarksDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InfoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NameDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RegexTestDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SearchDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SearchInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MultiLineEditDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RegexReplaceFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LineData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SearchMT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShellContextMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Theme.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\AeroControls.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\AeroGlass.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\AutoComplete.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\BaseDialog.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\BaseWindow.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\BrowseFolder.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\CmdLineParser.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\codecvt.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\DebugOutput.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\DirFileEnum.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\DlgResizer.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\DropFiles.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\EditDoubleClick.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\FileDropTarget.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\hyperlink.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\Language.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\maxpath.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\PathUtils.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\RegHistory.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\Registry.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\ResString.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\StringUtils.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\SysImageList.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\SysInfo.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\TextFile.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\UnicodeUtils.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\SimpleIni.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\DarkModeHelper.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\ThreadPool.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default.build">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="version.build.in">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="versioninfo.build">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="src\Resources\infodlg.htm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\version.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\packages.config" />
+    <None Include="src\Resources\grepWinNP3.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\Resources\grepWin.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="src\compatibility.manifest">
+      <Filter>Resource Files</Filter>
+    </Manifest>
+  </ItemGroup>
+</Project>

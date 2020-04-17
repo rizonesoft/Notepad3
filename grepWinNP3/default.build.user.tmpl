@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<!-- use this file to set the paths to the required tools
+     grepWin needs to build everything.
+
+     First make a copy of this file and rename the copy to
+     default.build.user
+     then adjust the paths in the "value" field.
+
+     Note: make sure you don't forget the path separator (";")
+     if you're prepending/appending your paths to the system PATH variable!
+     You will get linker errors if you forget them.
+-->
+
+<project name="ToolPaths" default="env">
+
+  <!-- ====================================================================== -->
+  <!-- These two targets have to exist in doc.build.user                      -->
+  <!-- ====================================================================== -->
+
+  <target name="VSNET" description="Checks if the env variables for VS2015 are set">
+    <if test="${not environment::variable-exists('VCINSTALLDIR')}">
+      <fail>You must first call "%VS140COMNTOOLS%\vsvars32.bat"</fail>
+    </if>
+  </target>
+
+  <target name="env" depends="VSNET">
+    <!--
+      WiX3 installer already sets an environment variable to
+      its target folder. We need to move it to the \bin folder
+      conditionally as "manual" installations   might not have
+      that sub-folder.
+    -->
+
+    <if test="${not environment::variable-exists('WIX')}">
+      <setenv>
+        <!--
+          TODO: change path value, if WIX is not defined
+        -->
+        <variable name="WIX" value="C:\WiX" />
+      </setenv>
+    </if>
+    <if test="${file::exists(environment::get-variable('WIX') + '\bin\candle.exe')}">
+      <setenv>
+        <variable name="WIX" value="%WIX%\bin" />
+      </setenv>
+    </if>
+    <!--
+      specifies the tool to use for signing the binaries.
+      change to "scsigntool.exe" in case you're using a smart card and have scsigntool set up
+    -->
+    <property name="signtool" value="scsigntool.exe" />
+
+    <!--
+      Update environment & we are good to go.
+    -->
+
+    <setenv>
+      <variable name="PATH" value="D:\smartcardtools\x64;%PATH%" />
+      <variable name="PATH" value="%WIX%;%PATH%" />
+      <variable name="WIXUI" value="%WIX%" />
+    </setenv>
+  </target>
+</project>

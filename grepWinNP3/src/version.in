@@ -1,0 +1,12 @@
+#pragma once
+
+#define FILEVER         $MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$
+#define PRODUCTVER      $MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$
+#define STRFILEVER      "$MajorVersion$.$MinorVersion$.$MicroVersion$.$WCREV$\0"
+#define STRPRODUCTVER   "$MajorVersion$.$MinorVersion$.$MicroVersion$.$WCREV$\0"
+
+#define GREPWIN_VERMAJOR    $MajorVersion$
+#define GREPWIN_VERMINOR    $MinorVersion$
+#define GREPWIN_VERMICRO    $MicroVersion$
+#define GREPWIN_VERBUILD    $WCREV$
+#define GREPWIN_VERDATE     "$WCDATE$"
