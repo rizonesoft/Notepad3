@@ -5,6 +5,8 @@
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 #pragma once
+#ifndef PLATWIN_H
+#define PLATWIN_H
 
 // sdkddkver.h
 #ifndef _WIN32_WINNT_VISTA
@@ -41,14 +43,6 @@
 #endif
 
 
-// force compile C as CPP
-#define NP2_FORCE_COMPILE_C_AS_CPP	0
-
-#if NP2_FORCE_COMPILE_C_AS_CPP
-extern int GetSystemMetricsEx(int nIndex);
-#else
-extern "C" int GetSystemMetricsEx(int nIndex);
-#endif
 
 namespace Scintilla {
 
@@ -61,10 +55,34 @@ constexpr RECT RectFromPRectangle(PRectangle prc) noexcept {
 	return rc;
 }
 
+constexpr POINT POINTFromPoint(Point pt) noexcept {
+	return POINT{ static_cast<LONG>(pt.x), static_cast<LONG>(pt.y) };
+}
+
+constexpr Point PointFromPOINT(POINT pt) noexcept {
+	return Point::FromInts(pt.x, pt.y);
+}
+
+constexpr HWND HwndFromWindowID(WindowID wid) noexcept {
+	return static_cast<HWND>(wid);
+}
+
+inline HWND HwndFromWindow(const Window &w) noexcept {
+	return HwndFromWindowID(w.GetID());
+}
+
 #if defined(USE_D2D)
 extern bool LoadD2D() noexcept;
 extern ID2D1Factory *pD2DFactory;
 extern IDWriteFactory *pIDWriteFactory;
 #endif
 
+
+DPI_T GetCurrentDPI(HWND hwnd);
+int GetSystemMetricsEx(HWND hwnd, int nIndex);
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+
 }
+
+#endif

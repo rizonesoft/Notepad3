@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Error cargando ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Error guardando ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "No se encontró plug-in para el navegador de archivos.\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "¡No hay acceso al archivo seleccionado!\n¿Desea eliminarlo de la lista?"
     IDS_MUI_ERR_CREATELINK  "Error al crear el enlace de escritorio."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¿Quiere lanzar %s como aplicación elevada?"
     IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable.\n¿Consultar website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "¿Seguro que quiere abrir este archivo tan grande?"
+                            "¿Seguro que quiere abrir este archivo tan grande?\n\t(tamaño: %s >= %s)!\n(¡No se aplicarán el estilo y el resaltado de sintaxis!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "No puedo manejar ese archivo enorme (tamaño: %lli MB)!"
+                            "No puedo manejar ese archivo enorme (tamaño: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
     IDS_MUI_INDENT_CONSISTENT  "¡El archivo tiene una sangría consistente!"
@@ -277,7 +279,8 @@ Opciones:\r\n\
 /b\tAbre una nueva tabla de pegar para recoger las entradas\r\n\tdel portapapeles.\r\n\
 /n\tSiempre abre una nueva ventana (/ns instancia de archivo único).\r\n\
 /r\tReutilizar la ventana (/rs instancia de archivo único).\r\n\
-/p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps,\r\n\t/pf,l,t,r,b,m).\r\n\
+/p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps,\r\n\t/pf,l,t,r,b,m)\r\n\
+\to /p <izquierda>,<arriba>,<ancho>,<altura>,<max>    [todos enteros].\r\n\
 /t\tEstablecer el título de la ventana.\r\n\
 /i\tComenzar como un icono de la barra de tareas.\r\n\
 /o\tVentana siempre visible.\r\n\

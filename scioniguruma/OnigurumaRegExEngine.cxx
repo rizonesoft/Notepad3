@@ -387,10 +387,8 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 // ============================================================================
 
 
-
 const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
 {
-
   if (m_MatchPos < 0) {
     *length = SciPos(-1);
     return nullptr;
@@ -400,16 +398,17 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
 
   m_SubstBuffer.clear();
 
-  //TODO: allow for arbitrary number of groups/regions
-
-  for (size_t j = 0; j < rawReplStrg.length(); j++) 
+  for (size_t j = 0; j < rawReplStrg.length(); ++j) 
   {
     bool bReplaced = false;
     if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
     {
       if ((rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))
       {
-        int const grpNum = rawReplStrg[j + 1] - '0';
+        // group # limit = 99 / TODO: allow for arbitrary number of groups/regions
+
+        bool const digit2nd = ((rawReplStrg[j + 2] >= '0') && (rawReplStrg[j + 2] <= '9')) && (m_Region.num_regs > 10);
+        int const grpNum = digit2nd ? (rawReplStrg[j + 1] - '0') * 10 + (rawReplStrg[j + 2] - '0') : (rawReplStrg[j + 1] - '0');
         if (grpNum < m_Region.num_regs)
         {
           auto const rBeg = SciPos(m_Region.beg[grpNum]);
@@ -418,13 +417,13 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
           m_SubstBuffer.append(doc->RangePointer(rBeg, len), static_cast<size_t>(len));
         }
         bReplaced = true;
-        ++j;
+        j += digit2nd ? 2 : 1;
       }
       else if (rawReplStrg[j] == '$')
       {
         size_t k = ((rawReplStrg[j + 1] == '+') && (rawReplStrg[j + 2] == '{')) ? (j + 3) : ((rawReplStrg[j + 1] == '{') ? (j + 2) : 0);
         if (k > 0) {
-          // named group replacemment
+          // named group replacement
           auto const name_beg = UCharCPtr(&(rawReplStrg[k]));
           while (rawReplStrg[k] &&  IsCharAlphaNumericA(rawReplStrg[k])) { ++k; }
           if (rawReplStrg[k] == '}')
@@ -442,10 +441,8 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
           }
         }
       }
-      else if ((rawReplStrg[j] == '\\') && (rawReplStrg[j+1] == '\\')){
-        m_SubstBuffer.push_back('\\');
-        bReplaced = true;
-        ++j;
+      else if ((rawReplStrg[j + 1] == '$') || (rawReplStrg[j + 1] == '\\')) {
+        ++j; //  '\$' -> '$' or '\\' -> '\'
       }
     }
     if (!bReplaced) { m_SubstBuffer.push_back(rawReplStrg[j]); }
@@ -567,6 +564,8 @@ std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
         // former behavior convenience: 
         // change "\\<n>" to deelx's group reference ($<n>)
         tmpStr.push_back('$');
+        tmpStr.push_back(ch);
+        continue;
       }
       switch (ch) {
         // check for escape seq:
@@ -574,10 +573,7 @@ std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
         tmpStr.push_back('\a');
         break;
       case 'b':
-        tmpStr.push_back('\b');
-        break;
-      case '\x1B':
-        tmpStr.push_back('\e');
+        tmpStr.push_back('\x1B');
         break;
       case 'f':
         tmpStr.push_back('\f');

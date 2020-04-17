@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "启动(&L)"
         BEGIN
-            MENUITEM "打开资源管理器(&E)",                   IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "打开资源管理器(&E)",                      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "编码(&E)"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 带签名(&S)",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "更多编码(&M)...\tF9",                    IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "重新编码为默认(&E)\tCtrl+Alt+F",            CMD_RECODEDEFAULT
+            MENUITEM "重新编码为默认(&E)",                        CMD_RECODEDEFAULT
             MENUITEM "重新编码为 ANSI(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "重新编码为 OEM(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "重新编码为 GB18030(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -160,22 +162,22 @@ BEGIN
         BEGIN
             MENUITEM "补全单词(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "光标向左跳过一个单词(&L)\tCtrl+ ←",      CMD_CTRLLEFT
-            MENUITEM "光标向右跳过一个单词(&R)\tCtrl+ →",      CMD_CTRLRIGHT
-            MENUITEM "删除光标左边的单词(&D)\tCtrl+Back",      CMD_CTRLBACK
-            MENUITEM "删除光标右边的单词(&W)\tCtrl+Del",       CMD_CTRLDEL
+            MENUITEM "光标向左跳过一个单词(&L)\tCtrl+←",      CMD_CTRLLEFT
+            MENUITEM "光标向右跳过一个单词(&R)\tCtrl+→",      CMD_CTRLRIGHT
+            MENUITEM "删除光标左边的单词(&D)\tCtrl+Backspace",      CMD_CTRLBACK
+            MENUITEM "删除光标右边的单词(&W)\tCtrl+Delete",       CMD_CTRLDEL
         END
         POPUP "行(&L)"
         BEGIN
-            MENUITEM "上移行(&U)\tCtrl+Alt+ ↑",                IDM_EDIT_MOVELINEUP
-            MENUITEM "下移行(&M)\tCtrl+Shift+ ↓",              IDM_EDIT_MOVELINEDOWN
+            MENUITEM "上移行(&U)\tAlt+↑",                IDM_EDIT_MOVELINEUP
+            MENUITEM "下移行(&M)\tAlt+↓",              IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "剪切选区或当前行(&I)\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "剪切选区所在整行或当前行(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
             MENUITEM "复制选区或当前行(&C)\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "复制选区所在整行或当前行(&Y)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "复写上一行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "复写当前行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "删除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "替换(&R)...\tCtrl+H",                  IDM_EDIT_REPLACE
             MENUITEM "替换下一个(&X)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "查看(&V)"
@@ -350,11 +354,11 @@ BEGIN
             MENUITEM "启用折叠(&F)",                         IDM_VIEW_FOLDING
             MENUITEM "切换折叠(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "跳转到下一折叠点(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "跳转到上一折叠点(&P)\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "跳转到下一折叠点(&N)\tAlt++",          CMD_FOLDJUMPDOWN
+            MENUITEM "跳转到上一折叠点(&P)\tAlt+-",          CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "折叠(&C)\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "展开(&E)\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "折叠(&C)\tAlt+←",                     CMD_FOLDCOLLAPSE
+            MENUITEM "展开(&E)\tAlt+→",                     CMD_FOLDEXPAND
         END
         POPUP "显示(&D)"
         BEGIN
@@ -363,19 +367,21 @@ BEGIN
             MENUITEM "允许滚动超过文件尾(&S)",                IDM_VIEW_SCROLLPASTEOF
             MENUITEM "显示超链接提示(&H)",                   IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "工具栏(&T)"
+        POPUP "面板(&A)"
         BEGIN
             MENUITEM "显示菜单栏(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "显示工具栏(&T)",                       IDM_VIEW_TOOLBAR
-            MENUITEM "切换工具栏(&G)",                       IDM_VIEW_TOGGLETB
-            MENUITEM "自定义工具栏(&C)...",                  IDM_VIEW_CUSTOMIZETB
-            MENUITEM "加载工具栏主题(&L)...",                IDM_VIEW_LOADTHEMETB
             MENUITEM "显示状态栏(&S)",                       IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "加载工具栏主题(&L)...",                IDM_VIEW_LOADTHEMETB
+            MENUITEM "自定义工具栏(&C)...",                  IDM_VIEW_CUSTOMIZETB
+            MENUITEM "切换工具栏(&G)",                       IDM_VIEW_TOGGLETB
+            MENUITEM "DPI 自适应(&D)",                  IDM_VIEW_DPISCALETB
         END
         POPUP "缩放(&Z)"
         BEGIN
-            MENUITEM "放大(&I)\tCtrl+ +",                     IDM_VIEW_ZOOMIN
-            MENUITEM "缩小(&O)\tCtrl+ –",                     IDM_VIEW_ZOOMOUT
+            MENUITEM "放大(&I)\tCtrl++",                     IDM_VIEW_ZOOMIN
+            MENUITEM "缩小(&O)\tCtrl+–",                     IDM_VIEW_ZOOMOUT
             MENUITEM "重置缩放(&Z)\tCtrl+0",                  IDM_VIEW_RESETZOOM
         END
         POPUP "窗口位置(&P)"
@@ -447,7 +453,7 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "默认 GDI(&G)",                      IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "默认 GDI（无连字）(&G)",       IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
@@ -500,12 +506,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "显示菜单栏(&M)",                            IDM_VIEW_MENUBAR
-        MENUITEM "显示工具栏(&T)",                            IDM_VIEW_TOOLBAR
-        MENUITEM "切换工具栏(&G)",                            IDM_VIEW_TOGGLETB
-        MENUITEM "自定义工具栏(&C)...",                       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "加载工具栏主题(&L)...",                     IDM_VIEW_LOADTHEMETB
-        MENUITEM "显示状态栏(&S)",                            IDM_VIEW_STATUSBAR
+         MENUITEM "显示菜单栏(&M)",                          IDM_VIEW_MENUBAR
+         MENUITEM "显示工具栏(&T)",                          IDM_VIEW_TOOLBAR
+         MENUITEM "显示状态栏(&S)",                          IDM_VIEW_STATUSBAR
+         MENUITEM SEPARATOR
+         MENUITEM "加载工具栏主题(&L)...",                    IDM_VIEW_LOADTHEMETB
+         MENUITEM "自定义工具栏(&C)...",                      IDM_VIEW_CUSTOMIZETB
+         MENUITEM "切换工具栏(&G)",                           IDM_VIEW_TOGGLETB
+         MENUITEM "DPI 自适应(&D)",                      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

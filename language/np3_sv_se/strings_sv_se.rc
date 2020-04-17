@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fel vid laddning ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fel vid sparande ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades.\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Tillgång saknas för vald fil!\nVill du ta bort den från listan?"
     IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra %s med utökade privilegier?"
     IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Vill du öppna denna stora fil?"
+                            "Vill du öppna denna stora fil?\n\t(storlek: %s >= %s)!\n(Stil och syntaxmarkering kommer inte användas!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Kan inte hantera så stor fil (storlek: %lli MB)!"
+                            "Kan inte hantera så stor fil (storlek: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Okändt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"
@@ -277,7 +279,8 @@ Tillval:\r\n\
 /b\tÖppna urklippsbordet för att samla alla urklipp.\r\n\
 /n\tÖppna alltid nytt fönster (/ns enkel filinstans).\r\n\
 /r\tÅteranvänd fönster (/rs enkel filinstans).\r\n\
-/p\tAnge fönsterposition och storlek (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tAnge fönsterposition och storlek (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\teller /p <vänster>,<topp>,<bredd>,<höjd>,<max>    [alla heltal].\r\n\
 /t\tAnge fönstertitel.\r\n\
 /i\tStarta som ikon i verktygsfältet.\r\n\
 /o\tVisa alltid fönstret överst.\r\n\

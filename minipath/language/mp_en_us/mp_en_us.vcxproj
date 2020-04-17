@@ -114,6 +114,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-US"
+         if exist "$(TargetDir)..\mplng.dll" del /f /q "$(TargetDir)..\mplng.dll"
+         if exist "$(TargetDir)..\en-US\mplng.dll.mui" del /f /q "$(TargetDir)..\en-US\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0409 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\mplng.dll" "$(TargetDir)..\en-US\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
@@ -139,6 +141,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-US"
+         if exist "$(TargetDir)..\mplng.dll" del /f /q "$(TargetDir)..\mplng.dll"
+         if exist "$(TargetDir)..\en-US\mplng.dll.mui" del /f /q "$(TargetDir)..\en-US\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0409 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\mplng.dll" "$(TargetDir)..\en-US\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
@@ -170,6 +174,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-US"
+         if exist "$(TargetDir)..\mplng.dll" del /f /q "$(TargetDir)..\mplng.dll"
+         if exist "$(TargetDir)..\en-US\mplng.dll.mui" del /f /q "$(TargetDir)..\en-US\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0409 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\mplng.dll" "$(TargetDir)..\en-US\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>
@@ -201,6 +207,8 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-US"
+         if exist "$(TargetDir)..\mplng.dll" del /f /q "$(TargetDir)..\mplng.dll"
+         if exist "$(TargetDir)..\en-US\mplng.dll.mui" del /f /q "$(TargetDir)..\en-US\mplng.dll.mui"
         "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\$(PlatformShortName)\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0409 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\mplng.dll" "$(TargetDir)..\en-US\mplng.dll.mui"
       </Command>
       <Message>MUI Split</Message>

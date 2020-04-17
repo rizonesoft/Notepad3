@@ -47,41 +47,6 @@ extern HICON   g_hDlgIcon;
 extern LANGID  g_iPrefLANGID;
 
 
-int ErrorMessage(int iLevel, UINT uIdMsg, ...)
-{
-
-  WCHAR szText[256 * 2] = { L'\0' };
-  WCHAR szTitle[256 * 2] = { L'\0' };
-  int iIcon;
-
-  if (!GetLngString(uIdMsg,szText,COUNTOF(szText)))
-    return(0);
-
-  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
-  int const t = clampi(vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1)), 0, 1023);
-  szTitle[t] = L'\0';
-
-  WCHAR* c = StrChr(szTitle,L'\n');
-  if (c)
-  {
-    lstrcpy(szText,(c + 1));
-    *c = '\0';
-  }
-  else
-  {
-    lstrcpy(szText,szTitle);
-    lstrcpy(szTitle,L"");
-  }
-
-  iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
-
-  HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : hwndMain;
-
-  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLANGID);
-}
-
-
 //=============================================================================
 //
 // BFFCallBack()
@@ -568,11 +533,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT_LONG);
         SetDlgItemText(hwnd,IDC_AUTHORNAME,VERSION_AUTHORNAME);
 
-        if (hFontTitle)
-          DeleteObject(hFontTitle);
+        if (hFontTitle) { DeleteObject(hFontTitle); }
 
-        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_VERSION,WM_GETFONT,0,0)))
+        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
           hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+        }
         GetObject(hFontTitle,sizeof(LOGFONT),&lf);
         lf.lfWeight = FW_BOLD;
         lf.lfWidth = 8;
@@ -2687,87 +2652,92 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             int i;
 
             // input validation
-            if ((IsDlgButtonChecked(hwnd,IDC_TARGET) && GetDlgItemText(hwnd,IDC_TARGETPATH,tch,COUNTOF(tch)) == 0) ||
-                (IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG) && StrIsEmpty(szTargetWndClass)) ||
-                (IsDlgButtonChecked(hwnd,IDC_USEDDE) &&
-                  (GetDlgItemText(hwnd,IDC_DDEMSG,tch,COUNTOF(tch)) == 0 ||
-                   GetDlgItemText(hwnd,IDC_DDEAPP,tch,COUNTOF(tch)) == 0 ||
-                   GetDlgItemText(hwnd,IDC_DDETOPIC,tch,COUNTOF(tch)) == 0)))
+            if ((IsDlgButtonChecked(hwnd, IDC_TARGET) && GetDlgItemText(hwnd, IDC_TARGETPATH, tch, COUNTOF(tch)) == 0) ||
+              (IsDlgButtonChecked(hwnd, IDC_SENDDROPMSG) && StrIsEmpty(szTargetWndClass)) ||
+              (IsDlgButtonChecked(hwnd, IDC_USEDDE) &&
+              (GetDlgItemText(hwnd, IDC_DDEMSG, tch, COUNTOF(tch)) == 0 ||
+                GetDlgItemText(hwnd, IDC_DDEAPP, tch, COUNTOF(tch)) == 0 ||
+                GetDlgItemText(hwnd, IDC_DDETOPIC, tch, COUNTOF(tch)) == 0)))
 
-              ErrorMessage(1,IDS_ERR_INVALIDTARGET);
+              ErrorMessage(1, IDS_ERR_INVALIDTARGET);
 
-              else {
+            else {
 
-                LoadIniFile(g_wchIniFile);
+              __try {
+
+                LoadIniFileCache(g_wchIniFile);
+
                 const WCHAR* const TargetApp_Section = L"Target Application";
 
                 i = (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_LAUNCH));
                 eUseTargetApplication = ((i) ? UTA_UNDEFINED : UTA_LAUNCH_TARGET);
-                IniSectionSetInt(TargetApp_Section,L"UseTargetApplication",eUseTargetApplication);
+                IniSectionSetInt(TargetApp_Section, L"UseTargetApplication", eUseTargetApplication);
 
                 if (eUseTargetApplication != UTA_UNDEFINED) {
-                  GetDlgItemText(hwnd,IDC_TARGETPATH,tch,COUNTOF(tch));
-                  ExtractFirstArgument(tch,szTargetApplication,szTargetApplicationParams);
+                  GetDlgItemText(hwnd, IDC_TARGETPATH, tch, COUNTOF(tch));
+                  ExtractFirstArgument(tch, szTargetApplication, szTargetApplicationParams);
                 }
                 else {
-                  lstrcpy(szTargetApplication,L"");
-                  lstrcpy(szTargetApplicationParams,L"");
+                  lstrcpy(szTargetApplication, L"");
+                  lstrcpy(szTargetApplicationParams, L"");
                 }
-                IniSectionSetString(TargetApp_Section,L"TargetApplicationPath",szTargetApplication);
-                IniSectionSetString(TargetApp_Section,L"TargetApplicationParams",szTargetApplicationParams);
+                IniSectionSetString(TargetApp_Section, L"TargetApplicationPath", szTargetApplication);
+                IniSectionSetString(TargetApp_Section, L"TargetApplicationParams", szTargetApplicationParams);
 
                 if (eUseTargetApplication == UTA_UNDEFINED) {
                   eTargetApplicationMode = TAM_ALWAYS_RUN;
-                  IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
+                  IniSectionSetInt(TargetApp_Section, L"TargetApplicationMode", eTargetApplicationMode);
                 }
                 else {
-                  if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_ALWAYSRUN)) {
+                  if (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_ALWAYSRUN)) {
                     eTargetApplicationMode = TAM_ALWAYS_RUN;
-                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
+                    IniSectionSetInt(TargetApp_Section, L"TargetApplicationMode", eTargetApplicationMode);
                   }
-                  else if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG)) {
+                  else if (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_SENDDROPMSG)) {
                     eTargetApplicationMode = TAM_SEND_DROP_MSG;
-                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
+                    IniSectionSetInt(TargetApp_Section, L"TargetApplicationMode", eTargetApplicationMode);
                   }
                   else {
                     eTargetApplicationMode = TAM_SEND_DDE_MSG;
-                    IniSectionSetInt(TargetApp_Section,L"TargetApplicationMode",eTargetApplicationMode);
+                    IniSectionSetInt(TargetApp_Section, L"TargetApplicationMode", eTargetApplicationMode);
                   }
                 }
 
-                if (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG) && !i) {
-                  lstrcpy(szTargetApplicationWndClass,szTargetWndClass);
-                  IniSectionSetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass);
+                if (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_SENDDROPMSG) && !i) {
+                  lstrcpy(szTargetApplicationWndClass, szTargetWndClass);
+                  IniSectionSetString(TargetApp_Section, L"TargetApplicationWndClass", szTargetApplicationWndClass);
                 }
                 else {
-                  lstrcpy(szTargetApplicationWndClass,L"");
-                  IniSectionSetString(TargetApp_Section,L"TargetApplicationWndClass",szTargetApplicationWndClass);
+                  lstrcpy(szTargetApplicationWndClass, L"");
+                  IniSectionSetString(TargetApp_Section, L"TargetApplicationWndClass", szTargetApplicationWndClass);
                 }
 
-                i = (BST_CHECKED == IsDlgButtonChecked(hwnd,IDC_USEDDE));
+                i = (BST_CHECKED == IsDlgButtonChecked(hwnd, IDC_USEDDE));
                 if (i)
-                  GetDlgItemText(hwnd,IDC_DDEMSG,szDDEMsg,COUNTOF(szDDEMsg));
+                  GetDlgItemText(hwnd, IDC_DDEMSG, szDDEMsg, COUNTOF(szDDEMsg));
                 else
-                  lstrcpy(szDDEMsg,L"");
-                IniSectionSetString(TargetApp_Section,L"DDEMessage",szDDEMsg);
-
-                if (i)
-                  GetDlgItemText(hwnd,IDC_DDEAPP,szDDEApp,COUNTOF(szDDEApp));
-                else
-                  lstrcpy(szDDEApp,L"");
-                IniSectionSetString(TargetApp_Section,L"DDEApplication",szDDEApp);
+                  lstrcpy(szDDEMsg, L"");
+                IniSectionSetString(TargetApp_Section, L"DDEMessage", szDDEMsg);
 
                 if (i)
-                  GetDlgItemText(hwnd,IDC_DDETOPIC,szDDETopic,COUNTOF(szDDETopic));
+                  GetDlgItemText(hwnd, IDC_DDEAPP, szDDEApp, COUNTOF(szDDEApp));
                 else
-                  lstrcpy(szDDETopic,L"");
-                IniSectionSetString(TargetApp_Section,L"DDETopic",szDDETopic);
+                  lstrcpy(szDDEApp, L"");
+                IniSectionSetString(TargetApp_Section, L"DDEApplication", szDDEApp);
 
-                SaveIniFile(g_wchIniFile);
+                if (i)
+                  GetDlgItemText(hwnd, IDC_DDETOPIC, szDDETopic, COUNTOF(szDDETopic));
+                else
+                  lstrcpy(szDDETopic, L"");
+                IniSectionSetString(TargetApp_Section, L"DDETopic", szDDETopic);
 
-                EndDialog(hwnd,IDOK);
               }
+              __finally {
+                SaveIniFileCache(g_wchIniFile);
+              }
+              EndDialog(hwnd, IDOK);
             }
+          }
           break;
 
 
@@ -2786,6 +2756,101 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
   return FALSE;
 }
 
+
+//=============================================================================
+//
+//  ErrorMessage()
+//
+int ErrorMessage(int iLevel, UINT uIdMsg, ...)
+{
+
+  WCHAR szText[256 * 2] = { L'\0' };
+  WCHAR szTitle[256 * 2] = { L'\0' };
+  int iIcon;
+
+  if (!GetLngString(uIdMsg, szText, COUNTOF(szText)))
+    return(0);
+
+  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  int const t = clampi(vswprintf_s(szTitle, COUNTOF(szTitle), szText, (LPVOID)((PUINT_PTR)&uIdMsg + 1)), 0, 1023);
+  szTitle[t] = L'\0';
+
+  WCHAR* c = StrChr(szTitle, L'\n');
+  if (c)
+  {
+    lstrcpy(szText, (c + 1));
+    *c = '\0';
+  }
+  else
+  {
+    lstrcpy(szText, szTitle);
+    lstrcpy(szTitle, L"");
+  }
+
+  iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
+
+  HWND focus = GetFocus();
+  HWND hwnd = focus ? focus : hwndMain;
+
+  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLANGID);
+}
+
+
+//=============================================================================
+//
+//  MsgBoxLastError()
+//
+DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
+
+  LPVOID lpMsgBuf = NULL;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    g_iPrefLANGID,
+    (LPTSTR)&lpMsgBuf,
+    0, NULL);
+
+  if (lpMsgBuf) {
+    // Display the error message and exit the process
+    size_t const len = lstrlen((LPCWSTR)lpMsgBuf) + lstrlen(lpszMessage) + 80;
+
+    LPWSTR lpDisplayBuf = LocalAlloc(LPTR, len * sizeof(WCHAR));
+
+    if (lpDisplayBuf) {
+      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
+        lpszMessage, dwErrID, (LPCWSTR)lpMsgBuf);
+
+      // center message box to main
+      HWND focus = GetFocus();
+      HWND hwnd = focus ? focus : hwndMain;
+
+      MessageBoxEx(hwnd, lpDisplayBuf, L"MiniPath - ERROR", MB_ICONERROR, g_iPrefLANGID);
+
+      LocalFree(lpDisplayBuf);
+    }
+    LocalFree(lpMsgBuf); // LocalAlloc()
+  }
+  return dwErrID;
+}
+
+
+DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+#ifdef _DEBUG
+  return MsgBoxLastError(lpszMessage, dwErrID);
+#else
+  UNUSED(lpszMessage);
+  return dwErrID;
+#endif
+}
 
 
 // End of Dialogs.c

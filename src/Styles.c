@@ -316,10 +316,10 @@ void Style_DynamicThemesMenuCmd(int cmd)
       // internal defaults
     }
     else if (Globals.idxSelectedTheme == 1) {
-      if (!Flags.bSettingsFileLocked) {
+      if (!Flags.bSettingsFileSoftLocked) {
         CreateIniFile();
         if (StrIsNotEmpty(Globals.IniFile)) {
-          Style_ExportToFile(Globals.IniFile, false);
+          Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
       }
     }
@@ -366,29 +366,34 @@ void Style_DynamicThemesMenuCmd(int cmd)
 //  IsLexerStandard()
 //
 
-bool  IsLexerStandard(PEDITLEXER pLexer)
+inline bool  IsLexerStandard(PEDITLEXER pLexer)
 {
   return ( pLexer && ((pLexer == &lexStandard) || (pLexer == &lexStandard2nd)) );
 }
 
-PEDITLEXER  GetCurrentStdLexer()
+inline PEDITLEXER  GetCurrentStdLexer()
 {
   return (Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard);
 }
 
-bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
+inline bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && ((pStyle->rid == IDS_LEX_STD_STYLE) || (pStyle->rid == IDS_LEX_2ND_STYLE)));
 }
 
-bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
+inline bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && (pStyle->rid == IDS_LEX_STR_63126));
 }
 
-PEDITLEXER  GetDefaultLexer()
+inline PEDITLEXER  GetDefaultLexer()
 {
   return g_pLexArray[s_iDefaultLexer];
+}
+
+inline PEDITLEXER  GetLargeFileLexer()
+{
+  return &lexTEXT;
 }
 
 
@@ -534,16 +539,24 @@ bool Style_Import(HWND hwnd)
 //
 bool Style_ImportFromFile(const WCHAR* szFile)
 {
-  bool bResetToDefault = (!szFile || szFile[0] == L'\0') ? true : false;
+  bool bFactoryReset = StrIsEmpty(szFile) ? true : false;
 
-  if (bResetToDefault) {
-    ReleaseIniFile();
+  bool bIsStdIniFile = false;
+
+  if (!bFactoryReset) {
+    WCHAR szFilePathNorm[MAX_PATH] = { L'\0' };
+    StringCchCopy(szFilePathNorm, COUNTOF(szFilePathNorm), szFile);
+    NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
+    if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
+      bIsStdIniFile = true;
+    }
   }
-  bool result = !bResetToDefault ? LoadIniFile(szFile) : true;
+
+  bool const result = bIsStdIniFile ? OpenSettingsFile(&bIsStdIniFile) :
+                     (bFactoryReset ? ResetIniFileCache() : LoadIniFileCache(szFile));
 
   if (result) {
-
-    if (bResetToDefault)
+    if (bFactoryReset)
     {
       for (int i = 0; i < 16; i++) {
         g_colorCustom[i] = s_colorDefault[i];
@@ -634,8 +647,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
       }
     }
 
-    ReleaseIniFile();
-    result = true;
+    CloseSettingsFile(false, bIsStdIniFile);
   }
   return result;
 }
@@ -814,14 +826,29 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
 
   bool ok = false;
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
-    ok = OpenSettingsFile();
-    Style_ToIniSection(bForceAll);
-    ok = CloseSettingsFile(true);
+    bool bOpendByMe = false;
+    if (OpenSettingsFile(&bOpendByMe)) {
+      Style_ToIniSection(bForceAll);
+      ok = CloseSettingsFile(true, bOpendByMe);
+    }
   }
   else {
-    LoadIniFile(szFilePathNorm); // reset
-    Style_ToIniSection(bForceAll);
-    SaveIniFile(szFilePathNorm);
+    if (StrIsNotEmpty(szFilePathNorm))
+    {
+      if (!PathFileExists(szFilePathNorm)) {
+        HANDLE hFile = CreateFile(szFilePathNorm,
+          GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+          CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hFile != INVALID_HANDLE_VALUE) {
+          CloseHandle(hFile); // done
+        }
+      }
+      if (LoadIniFileCache(szFilePathNorm)) {
+        Style_ToIniSection(bForceAll);
+        ok = SaveIniFileCache(szFilePathNorm);
+        ResetIniFileCache();
+      }
+    }
   }
   return ok;
 }
@@ -965,17 +992,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 {
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();
+    pLexNew = Flags.bLargeFileLoaded ? GetLargeFileLexer() : GetDefaultLexer();
     if (IsLexerStandard(pLexNew)) {
       pLexNew = GetCurrentStdLexer();
     }
   }
+  bool const bFocusedView = FocusedView.HideNonMatchedLines;
+  if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
+
+  _IGNORE_NOTIFY_CHANGE_;
 
   // ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
   // assert(pLexNew != s_pLexCurrent);
-
-  bool const bFocusedView = FocusedView.HideNonMatchedLines;
-  if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   // first set standard lexer's default values
   const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
@@ -1003,14 +1031,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // --------------------------------------------------------------------------
 
   // Clear
-  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+  SciCall_ClearDocumentStyle();
 
   // Default Values are always set
-  SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
+  SciCall_StyleResetDefault();
 
-
-  // constants
-  SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
+  // Constants
+  SciCall_StyleSetVisible(STYLE_DEFAULT, true);
 
   //~Style_SetACPfromCharSet(hwnd);
 
@@ -1155,7 +1182,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SciCall_IndicSetFore(_SC_INDIC_IME_CONVERTED, rgb);
   SciCall_IndicSetFore(_SC_INDIC_IME_UNKNOWN, rgb);
 
-  if (pLexNew != &lexANSI) {
+  if (pLexNew != &lexANSI) 
+  {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
   }
   Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, false); // indent guide
@@ -1463,10 +1491,22 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
-  // apply lexer styles
-  Sci_ApplyLexerStyle(0, -1);
-  EditUpdateIndicators(Globals.hwndEdit, 0, -1, false);
+  SciCall_StartStyling(0);
 
+  _OBSERVE_NOTIFY_CHANGE_;
+
+  // apply lexer styles
+  if (Flags.bLargeFileLoaded)
+  {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+    EditUpdateVisibleIndicators();
+  }
+  else {
+    SciCall_SetIdleStyling(SC_IDLESTYLING_NONE);
+    EditDoStyling(0, -1);
+    EditUpdateIndicators(0, -1, false);
+  }
+ 
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
   UpdateAllBars(false);
@@ -1620,7 +1660,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
       if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
         iFrameSize = 2;
       }
-      iFrameSize = max_i(1, ScaleIntToCurrentDPI(iFrameSize));
+      iFrameSize = max_i(1, ScaleIntToDPI_Y(hwnd, iFrameSize));
       SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
     }
 
@@ -1636,13 +1676,13 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 //
 //  _GetMarkerMarginWidth()
 //
-static int  _GetMarkerMarginWidth()
+static int  _GetMarkerMarginWidth(HWND hwnd)
 {
   float fSize = Style_GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
   float const zoomPercent = (float)SciCall_GetZoom();
-  return ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
+  return ScaleFloatToDPI_X(hwnd, (fSize * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
@@ -1651,8 +1691,7 @@ static int  _GetMarkerMarginWidth()
 //
 void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
-  UNUSED(hwnd);
-  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth() : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth(hwnd) : 0));
 }
 
 //=============================================================================
@@ -1661,8 +1700,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 //
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
-  UNUSED(hwnd);
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth() + 4 : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
 
@@ -1947,6 +1985,11 @@ bool Style_HasLexerForExt(LPCWSTR lpszFile)
 //
 bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
+  if (Flags.bLargeFileLoaded) {
+    Style_SetDefaultLexer(hwnd);
+    return true;
+  }
+
   LPCWSTR lpszExt = PathFindExtension(lpszFile);
   bool  bFound = false;
   PEDITLEXER pLexNew = NULL;
@@ -1993,10 +2036,18 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   LPCWSTR lpszFileName = PathFindFileName(lpszFile);
 
-  if (!bFound && s_bAutoSelect && /* s_bAutoSelect == false skips lexer search */
-      (StrIsNotEmpty(lpszFile) && *lpszExt)) 
+  // check for filename regex match
+  if (!bFound && s_bAutoSelect && StrIsNotEmpty(lpszFile)) {
+    pLexSniffed = Style_RegExMatchLexer(lpszFileName);
+    if (pLexSniffed) {
+      pLexNew = pLexSniffed;
+      bFound = true;
+    }
+  }
+
+  if (!bFound && s_bAutoSelect && (StrIsNotEmpty(lpszFile) && *lpszExt)) 
   {
-    if (*lpszExt == L'.') ++lpszExt;
+    if (*lpszExt == L'.') { ++lpszExt; }
 
     if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
@@ -2009,11 +2060,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       }
     }
 
-    if (!bFound && StringCchCompareXI(lpszFileName,L"cmakelists.txt") == 0) {
-      pLexNew = &lexCmake;
-      bFound = true;
-    }
-
     // check associated extensions
     if (!bFound) {
       pLexSniffed = Style_MatchLexer(lpszExt, false);
@@ -2022,49 +2068,6 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
         bFound = true;
       }
     }
-
-    // check for filename regex match
-    if (!bFound) {
-      pLexSniffed = Style_RegExMatchLexer(lpszFileName);
-      if (pLexSniffed) {
-        pLexNew = pLexSniffed;
-        bFound = true;
-      }
-    }
-
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    StringCchCompareXI(lpszFileName, L"Readme") == 0) {
-    pLexNew = &lexANSI;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Makefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Kbuild") == 0))) {
-    pLexNew = &lexMAK;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName,L"Rakefile") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Podfile") == 0))) {
-    pLexNew = &lexRUBY;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-      StringCchCompareXI(lpszFileName,L"mozconfig") == 0) {
-    pLexNew = &lexBASH;
-    bFound = true;
-  }
-
-  if (!bFound && s_bAutoSelect && lpszFile &&
-    ((StringCchCompareXI(lpszFileName, L"Kconfig") == 0) ||
-    (StringCchCompareXI(lpszFileName, L"Doxyfile") == 0))) {
-    pLexNew = &lexCONF;
-    bFound = true;
   }
 
   if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
@@ -3110,7 +3113,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.CurrentDPI, &cf) ||
+    DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, dpi, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -3444,7 +3448,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   float fBaseFontSize = Style_GetCurrentFontSize();
 
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
     if (iStyle == STYLE_DEFAULT) {
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
@@ -3453,7 +3457,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     }
   }
   else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
     _SetBaseFontSize(fBaseFontSize);
   }
 
@@ -3752,7 +3756,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   {
     case WM_INITDIALOG:
       {
-        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+        SET_NP3_DLG_ICON_SMALL(hwnd);
 
         ResizeDlg_Init(hwnd, Settings.CustomSchemesDlgSizeX, Settings.CustomSchemesDlgSizeY, IDC_RESIZEGRIP);
 
@@ -4408,6 +4412,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
   if (hDlg != INVALID_HANDLE_VALUE) {
+    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;
@@ -4437,8 +4442,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   {
     case WM_INITDIALOG:
       {
-        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-        
+        SET_NP3_DLG_ICON_SMALL(hwnd);
+
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         RECT rc;
@@ -4467,7 +4472,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
           GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        int cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
+        int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 

@@ -105,8 +105,6 @@
 #define IDPP_PROG                       113
 #define IDC_TRANSL_AUTH                 114
 
-#define IDR_MAINWND48                   200
-
 #define IDS_APPTITLE                    10000
 #define IDS_NUMFILES                    10001
 #define IDS_NUMFILES2                   10002

@@ -2,6 +2,13 @@
 // Microsoft Visual C++ generated include file.
 // Used by minipath.rc
 //
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#ifndef WINVER
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+
 #define IDR_RT_MANIFEST                   1
 
 #include "../language/common_res.h"

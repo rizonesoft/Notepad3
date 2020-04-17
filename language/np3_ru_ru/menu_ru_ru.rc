@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Запустить"
         BEGIN
-            MENUITEM "Открыть Прово&дник",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Копи&ю окна\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое окно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Веб-шаблон &1\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "Веб-шаблон &2\tCtrl+Shift+2",        CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Открыть Прово&дник",                 IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "Ко&дировка"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 с BO&M",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "Е&щё...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Переоткрыть в ко&дировке по умолчанию\tCtrl+Alt+F",   CMD_RECODEDEFAULT
+            MENUITEM "Переоткрыть в ко&дировке по умолчанию",               CMD_RECODEDEFAULT
             MENUITEM "Переоткрыть в A&NSI\tCtrl+Shift+A",                   CMD_RECODEANSI
             MENUITEM "Переоткрыть в &OEM\tCtrl+Shift+O",                    CMD_RECODEOEM
             MENUITEM "Переоткрыть в &GB18030\tCtrl+Shift+F10",              CMD_RECODEGB18030
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "&Заменить...\tCtrl+H",                        IDM_EDIT_REPLACE
             MENUITEM "За&менить далее\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "Пе&рейти...\tCtrl+G",                         IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Вид"
@@ -363,14 +367,16 @@ BEGIN
             MENUITEM "Прокрутка за пределы последней строки",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Показывать &подсказку для гиперссылок",       IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Панель инстр&ументов"
+        POPUP "Панел&и"
         BEGIN
             MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-            MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
-            MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
         END
         POPUP "Мас&штаб"
         BEGIN
@@ -447,23 +453,23 @@ BEGIN
         BEGIN
             POPUP "&Рендеринг"
             BEGIN
-                MENUITEM "Стандартный &GDI",            IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Стандартный &GDI (без лигатур)",   IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Направление письма"
             BEGIN
-                MENUITEM "Нет",                         IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Слева направо",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Справа налево",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Нет",                              IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Слева направо",                    IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Справа налево",                    IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Расширенные настройки"
         BEGIN
-            MENUITEM "Сохранять настройки при &выходе", IDM_VIEW_SAVESETTINGS
-            MENUITEM "Сохранить настройки &сейчас\tF7", IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Открыть файл настроек\tCtrl+F7", CMD_OPENINIFILE
+            MENUITEM "Сохранять настройки при &выходе",      IDM_VIEW_SAVESETTINGS
+            MENUITEM "Сохранить настройки &сейчас\tF7",      IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Открыть файл настроек\tCtrl+F7",      CMD_OPENINIFILE
         END
     END
     POPUP "&Справка"
@@ -502,10 +508,12 @@ BEGIN
     BEGIN
         MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
-        MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Загрузить тему панели...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Пе&реключить панели инструментов",    IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI-масштабирование панели",         IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

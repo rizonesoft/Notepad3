@@ -40,6 +40,7 @@ typedef struct np3params {
   cpi_enc_t           flagSetEncoding;
   int                 flagSetEOLMode;
   int                 flagTitleExcerpt;
+  int                 flagMatchText;
   WCHAR               wchData;
 } 
 np3params, *LPnp3params;
@@ -113,15 +114,15 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE hInstance);
 HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
-WININFO InitDefaultWndPos(const int flagsPos);
-void InitWindowPosition(WININFO* pWinInfo, const int flagsPos);
+WININFO GetFactoryDefaultWndPos(const int flagsPos);
+WININFO GetWinInfoByFlag(const int flagsPos);
 void BeginWaitCursor(LPCWSTR text);
 void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs);
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
-void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
+void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
 void InstallFileWatching(LPCWSTR lpszFile);
@@ -138,7 +139,6 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSaveSettingsCmds();
-void UpdateVisibleIndicators();
 inline void UpdateAllBars(bool force) { DrawMenuBar(Globals.hwndMain); UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
@@ -147,8 +147,8 @@ int  BeginUndoAction();
 void EndUndoAction(int token);
 bool RestoreAction(int token, DoAction doAct);
 
-#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
-#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
+#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyChangeEvent();
+#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); ObserveNotifyChangeEvent(); } }
 
 void HandlePosChange();
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
@@ -158,8 +158,10 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position);
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);
 void SetFindPatternMB(LPCSTR chFindPattern);
-void GetFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
-void GetFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
+size_t LengthOfFindPattern();
+LPCWSTR GetFindPattern();
+void CopyFindPattern(LPWSTR wchFindPattern, size_t bufferCount);
+void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount);
 
 bool ConsistentIndentationCheck(EditFileIOStatus* fioStatus);
 
@@ -199,9 +201,17 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
-static __forceinline bool CheckNotifyChangeEvent();
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+
+
+#define BeginWaitCursor(text)     __try { SciCall_SetCursor(SC_CURSORWAIT);                       \
+                                          StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); 
+
+#define EndWaitCursor()     } __finally { SciCall_SetCursor(SC_CURSORNORMAL);                      \
+                                          POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y); \
+                                          UpdateStatusbar(true); }
+
 
 #define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 

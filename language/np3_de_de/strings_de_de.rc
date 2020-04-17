@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fehler beim laden ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fehler beim speichern ""%s""."
-    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDer MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDas MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden."
+    IDS_MUI_ERR_GREPWIN     "Kein Datei-Suchen-Plugin gefunden.\nDas grepWinNP3 Datei-Suchen-Plugin kann hier https://rizonesoft.com herunter geladen werden."
     IDS_MUI_ERR_MRUDLG      "Es kann nicht auf die ausgewählte Datei zugegriffen werden!\nMöchtest Du den Eintrag aus der Liste entfernen?"
     IDS_MUI_ERR_CREATELINK  "Fehler beim erzeugen des Desktop-Links."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du %s mit erhöhten Rechten starten?"
     IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen."
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?"
+                            "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?\n\t(Größe: %s >= %s)!\n(Styling und Syntax Highlighting wird nicht angewendet!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "Notepad3 kann so große Dateien nicht laden (Größe: %lli MB)!"
+                            "Notepad3 kann so große Dateien nicht laden (Größe: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unbekannte Dateierweiterung (%s)!\nSollen die Daten trotzdem geladen werden?"
     IDS_MUI_INDENT_CONSISTENT  "Die Datei hat einheitliche Einrückungen!"
@@ -277,7 +279,8 @@ Optionen:\r\n\
 /b\tÖffne ein neues 'Paste Board' um die Einträge\r\n\tder Zwischenablage zu sammeln.\r\n\
 /n\tÖffne immer ein neues Fenster (/ns single file instance).\r\n\
 /r\tBenutze geöffnetes Fenster erneut (/rs single file instance).\r\n\
-/p\tSetze Fenster: Position und Größe (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tSetze Fenster: Position und Größe (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\toder /p <links>,<oben>,<breite>,<höhe>,<max>    [ganzzahlig].\r\n\
 /t\tSetze Fenster-Titel.\r\n\
 /i\tStarte als 'Tray-Icon'.\r\n\
 /o\tHalte Fenster immer auf oberster Ebene.\r\n\

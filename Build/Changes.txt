@@ -28,29 +28,91 @@ NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
 SCI - (SCI)ntilla Library
 UCD - (UCD)ARDET is an Encoding Detector Library
+GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.212.(build_#) (2020-02-12)
+Current BETA Version 5.20.416.(build_#) (2020-04-16)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- Multiple selection on end-of-lines from rectangular selection.
-- Infos of sreen/display for "Copy Version Info" button.
+- 
+- "waifu2x" scaled std toolbar bitmaps.
+- Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
+- Add "Overlapping Search" in Find/Replace dialog window.
+- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.4) (GRE).
+
+-----------------------------------------------------
+CHANGES:
+-----------------------------------------------------
+- 
+- Add filepath to message on file locking error.
+
+-----------------------------------------------------
+ENHANCEMENT:
+-----------------------------------------------------
+- 
+- "grepWinNP3": add "Dark mode" settings (GRE).
+- "grepWinNP3": asynchronous search & replace version (GRE).
+- DPI awareness and multi monitor handling.
+
+-----------------------------------------------------
+FIXES:
+-----------------------------------------------------
+- 
+- View selection on wrapped long-lines vs. normalizing view.
+- Don't protect backslash (double'\\') for pattern argument.
+- "grepWinNP3" ordered map of languages for selection box (GRE).
+- Translatable error message format (msgbox).
+- DPI scaling window on display dependent.
+
+-----------------------------------------------------
+REMOVED:
+-----------------------------------------------------
+- 
+- 
+
+-----------------------------------------------------
+TRANSLATIONS (MUI):
+-----------------------------------------------------
+- 
+- 
+
+
+=====================================================
+Version 5.20.411.2 (11 April 2020)
+=====================================================
+
+-----------------------------------------------------
+NEW:
+-----------------------------------------------------
+- Executables and dll's are now signed.
+- Fix DPI scaling of Toolbar bitmaps (avoid slicing by rounding errors).
+- "Open with Notepad3" Right-Click in Explorer Context Menu (install/setup version). 
+- In About Resources: Data Sharing Service from https://workupload.com. 
+- Automatic scrolling when dragging selected text near window edge (SCI).
+- break rectangular selection into multiple selection on end-of-lines (move caret).
+- Infos of screen/display/dpi for "Copy Version Info" button.
 - Preserve stream selection in file history (w/ text position remembering).
-- Language dependent status bar abreviations.
+- Language dependent status bar abbreviations.
 - Copy directory to clipboard and Open path in explorer.
 - Toggle menu bar option.
 - Add Lexicographical Line Sort Order.
 - CSV Prism Color Lexer.
-- Preserve File Modification Date/Time: Option stays until new Session is loaded.
+- Preserve File Modification Date/Time: Option stays until new session is started.
 - Save with Original File Date/Time - Ctrl+Alt+F6.
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
+- Change default settings for word/long-line wrapping.
+- Update "KeyboardShortcuts.txt".
+- Split undo typing sequence by line-breaks default -> true.
+- Add file history to recent docs (taskbar) jumplist.
+- NP3 INI file read/write using file locking (shared read / exclusive write) for multiple instances.
+- Reset build-of-the-day number in AppVeyor on new day.
 - Change version numbering of build_# (the build number is now daily based).
 - Remove AppVeyors build number, add build-of-the-day number, add short version of commit/local build ID.
 - Accelerator key remapping: move line up/down vs. jump folds.
@@ -60,47 +122,41 @@ CHANGES:
 - Add current Encoding and Lexer to "Copy Version Text".
 - Lexer keyword initializer list simplified.
 - Find/Replace dialog: in case of "transform backslashes" do Esc control seqs.
-- Remove "extra" drag n' drop handler.
-- Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=70".
-- UCHARDET: Confidence calculation for Single Byte Character Set (SBCS).
-- Replace "save modified file warning" by (silent) custom messagebox if message beeps are muted.
+- Upper confidence level for UCHARDET to: "AnalyzeReliableConfidenceLevel=92".
+- UCHARDET: Enhanced confidence calculation for Single Byte Character Set (SBCS).
+- Replace std messagebox "save modified file warning" by (silent) custom messagebox if message beeps are muted.
 - Don't Auto-Close blank untitled document, only empty untitled document.
-- Encoding detection fallback: explicitly defined or (UTF-8 (if valid) else current ANSI code-page).
-- Use Ctrl+Shift+L  for toggle "Menu: Reuse Window" option.
-- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L
+- Encoding detection fallback: if "Load ASCII as UTF-8" is checked use UTF-8 (if valid) else current ANSI code-page.
+- Use Ctrl+Shift+L for toggle "Menu: Reuse Window" option.
+- Inversion of Accelerator key Ctrl+Alt+L with Ctrl+Shift+L.
 - Change wording "Administrator" to "Elevated".
-- MiniPath - Notepad3 communication.
 - Hidden "ExitOnESCSkipLevel" feature (Exit on ESC can ignore a selection).
-- ESC Key clears active selection (before exiting Notepad3).
-- Refactoring source code (encoding detection).
-- Reduce big file size limit to 2GB (INT_MAX).
-- Conversion all *.RC files to encoding UTF-8 (no BOM/Signature).
+- ESC Key clears active selection (not exiting Notepad3 if configured) (Config: ExitOnESCSkipLevel=2).
+- Set large file size limit to 2GB (INT32_MAX).
+- Set big file size limit warning to 64MB (syntax highlighting is switched off) (Config: FileLoadWarningMB=64).
 - New Notepad3 Icon (Notepad3 icon by Vexels.com designed by smanashova@gmail.com).
 - Initial default big toolbar only for monitors > Full-HD.
-- Copy instead of insert (filename, path, GUID).
-- Load (internal) Flags (Settings2) as part of LoadSettings() - one pass .ini-read.
+- Copy to clipboard instead of insert (filename, path, GUID).
 - Option [Settings2] LexerSQLNumberSignAsComment.
 - Option [Settings2] LineCommentPortfixStrg= e.g. add a space to comment chars.
 - Option [Settings2] NoCopyLineOnEmptySelection and NoCutLineOnEmptySelection.
 - Appearance of INFOBOX4 (MB_YESNOCANCEL).
-- Thin rectangular (multi) selection after toggeling line-comment block.
-- Scintilla (SCI): allow CamelCase/StartCase word lists.
-- Borderless in Full Screen Mode.
-- Maximize window if "full work area" is requested.
-- Full Work Area Mode (F11) -> Full Screen Mode.
-- Relax UTF-8 orientation (lower confidence level for UCHARDET 
-    and use system's code-page as detection fallback by default).
-- Ctrl+Alt+Enter AutoCompletion behaviour.
-- Changed version of MarkDown-Lexer.
+- Thin rectangular (multi) selection after toggling line-comment block for multi insertion.
+- Full Work Area Mode (F11) -> Full Screen Mode (Maximize window if "full work area" is requested).
+- Ctrl+Alt+Enter AutoCompletion behavior.
 - Menu and behavior for copy/paste and copy/paste line.
-- Allow each modification step to split undo typing sequence (set timeout < 20ms).
-- Split undo typing sequence (by line-breaks and/or timeout).
-- Update Oniguruma Regex (ONI) engine version 6.9.4 (2019/10/31).
-- Update Scintilla Library (SCI) version 4.3.0 (2020/01/16).
+- Allow each modification step to split undo typing sequence (set timeout 0 < to < 20ms).
+- Split undo typing sequence (by line-breaks and/or timeout) (UndoTransactionTimeout=0, LnBrk via Menu).
+- Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/01/28).
+- Update Scintilla Library (SCI) version 4.3.2 (2020/03/06).
 
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
+- Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
+- Parameter to set document limit for big files (switch off highlighting).
+- ScintillaWin: IMEJPCancelAction (SCI).
+- File locking mechanism (.ini-file) to avoid multi process file write race conditions.
 - Menu entries for move line and folding control.
 - Multi-line Search Find/Replace.
 - Apply Start Case to AutoHotkey Lexer.
@@ -112,6 +168,33 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Locale dependent string comparison and Logical Number comparison.
+- Review scroll behavior for context menu and Stop scrolling on context menu click.
+- Do not use analysis hint UTF-8, if file is invalid UTF-8.
+- Configurable default ANSI code-page (locale) detection bonus.
+- No AutoCompletion on empty words (busy loop bug).
+- DPI Scaling Toolbar and DPI scaling selection mode.
+- Common controls will use preferred/available MUI language.
+- Sticky window position handling.
+- Initial, default and current window position handling.
+- Debug assertion (isspace() called on non ASCII char).
+- Correct return result of Styles export.
+- Scintilla method declaration.
+- Move hardcoded lexer <-> filename (w/o .ext) associations to configurable scheme (regex def).
+- Drag&drop rectangular selection shuffles chars.
+- Paint() hangs due to unnecessary LockWindowsUpdate().
+- Drag&drop selection should use configured slop settings.
+- Internal file-history submitted to taskbar JumpList.
+- Load files larger than 2GB (64-bit) - Limit to 4GB (Scintilla problems).
+- Automatic scrolling when dragging text near window edge: make caret visible after drop.
+- No styling for big/large files (loading speedup and UI responsiveness).
+- Esc skip level on rect/multi-selection.
+- Avoid caret jump on cancel multi-selection (esc).
+- In case of "Transform BS", swallow single slashes not related to a ctrl-char.
+- Handling of default settings for deprecated 'SciDirectWriteTech=...'
+- Concurrent access to .ini-File (lock file).
+- Caret virtual space movement options: remove "SCVS_NOWRAPLINESTART".
+- Jump to selection "start/end" operations.
 - Word lists for LUA Lexer.
 - Line Comment (Toggle) for NIM Lexer.
 - Slow indentation (TAB/BACKTAB).
@@ -131,7 +214,7 @@ FIXES:
 - Elevated relaunch after encoding change.
 - Sub dialog centering in multi monitor environment.
 - Modern style message box icons.
-- System MessageBox() for "not saved" warning on modified files
+- System MessageBox() for "not saved" warning on modified files.
 - Oniguruma RegEx engine: respect EOL mode on encoding type.
 - Wrong encoding detection settings for explicit config .ini-File load.
 - Disable HyperLink calltip on ESC, as long as caret is in hyperlink text range.
@@ -139,13 +222,13 @@ FIXES:
 - Batch lexer: handle comment after ampersand(&) command sequence.
 - Bug in replace on single step find/replace.
 - Convert to Hex and vice versa: work on (stream-)selection (original source by ZuFuLiu).
-- Comparison warning: signed/unsignd mismatch.
+- Comparison warning: signed/unsigned mismatch.
 - Canonical ini-file style section order for settings from scratch.
 - Prevent concurrent settings-file-access (re-launch elevated).
 - Small fixes on "Relaunch Elevated" functionality.
 - Minor fixes for window positioning by cmdline parameter.
 - Minor correction of HotKey.
-- Ctrl+Shift-C/X and Paste behaviour.
+- Ctrl+Shift-C/X and Paste behavior.
 - Markdown highlight overflow.
 - Redo initial selection after replace (ins/del).
 - Hyperlink Regex detection and Update visible indicator issue.
@@ -164,11 +247,7 @@ REMOVED:
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
-- Korean (ko-KR) (to resume).
-- Portuguese Brazilian (pt-BR) (in progress).
-- Slovak (sk-SK) (to resume).
 - Swedish (sv-SE).
-- Turkish (tr-TR) (to resume).
 
 
 =====================================================
@@ -238,8 +317,6 @@ REMOVED:
 TRANSLATIONS (MUI):
 -----------------------------------------------------
 - Polish (pl-PL).
-- Portuguese Brazilian (pt-BR) (in progress).
-- Turkish (tr-TR) (in progress).
 
 
 =====================================================
@@ -348,7 +425,6 @@ TRANSLATIONS (MUI):
 - Hungarian (hu-HU).
 - Italian (it-IT).
 - Korean (ko-KR).
-- Polish (pl-PL) (in progress).
 
 
 =====================================================
@@ -1427,4 +1503,6 @@ Version 1 Build 330 (24 June 2016)
 - Fixed Compiler warnings
 - Fixed Favorites Function
 - Removed Visual Studio 2010 to 2013 Support
+
+
 

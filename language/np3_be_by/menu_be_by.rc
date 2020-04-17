@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Запусціць"
         BEGIN
-            MENUITEM "Адкрыць Права&днік",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Копі&ю акна\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Пустое акно\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Вэб-шаблон &1\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "Вэб-шаблон &2\tCtrl+Shift+2",        CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Адкрыць Права&днік",                 IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "Кадо&ўка"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 з BO&M",                       IDM_ENCODING_UTF8SIGN
             MENUITEM "Я&шчэ...\tF9",                       IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы\tCtrl+Alt+F", CMD_RECODEDEFAULT
+            MENUITEM "Пераадкрыць у прадвызначанай ка&доўцы",             CMD_RECODEDEFAULT
             MENUITEM "Пераадкрыць у A&NSI\tCtrl+Shift+A",                 CMD_RECODEANSI
             MENUITEM "Пераадкрыць у &OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
             MENUITEM "Пераадкрыць у &GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "&Замяніць...\tCtrl+H",                        IDM_EDIT_REPLACE
             MENUITEM "За&мяніць далей\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "Пе&райсці...\tCtrl+G",                        IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Выгляд"
@@ -363,20 +367,22 @@ BEGIN
             MENUITEM "Пракручваць за мяжу апошняга радка",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Паказваць &падказку для гіперспасылак",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Паліца пры&ладаў"
+        POPUP "П&аліцы"
         BEGIN
             MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-            MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
-            MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
         END
         POPUP "Ма&штаб"
         BEGIN
-            MENUITEM "Па&вялічыць\tCtrl+ +",        IDM_VIEW_ZOOMIN
-            MENUITEM "Па&меншыць\tCtrl+ –",         IDM_VIEW_ZOOMOUT
-            MENUITEM "&Скінуць\tCtrl+0",            IDM_VIEW_RESETZOOM
+            MENUITEM "Па&вялічыць\tCtrl+ +",          IDM_VIEW_ZOOMIN
+            MENUITEM "Па&меншыць\tCtrl+ –",           IDM_VIEW_ZOOMOUT
+            MENUITEM "&Скінуць\tCtrl+0",              IDM_VIEW_RESETZOOM
         END
         POPUP "Па&зіцыя"
         BEGIN
@@ -425,9 +431,9 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Гісторыя"
         BEGIN
-            MENUITEM "Захоўваць гісторыю адкрытых &файлаў", IDM_VIEW_NOSAVERECENT
-            MENUITEM "Аднаўляць пазіцыю &карэткі",          IDM_VIEW_NOPRESERVECARET
-            MENUITEM "Захоўваць пошукавыя &запыты",         IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "Захоўваць гісторыю адкрытых &файлаў",  IDM_VIEW_NOSAVERECENT
+            MENUITEM "Аднаўляць пазіцыю &карэткі",           IDM_VIEW_NOPRESERVECARET
+            MENUITEM "Захоўваць пошукавыя &запыты",          IDM_VIEW_NOSAVEFINDREPL
         END
         POPUP "&Акно"
         BEGIN
@@ -447,34 +453,34 @@ BEGIN
         BEGIN
             POPUP "&Адлюстраванне"
             BEGIN
-                MENUITEM "Звычайны &GDI",               IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Звычайны &GDI (без лігатураў)",    IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "&Накіраванне пісьма"
             BEGIN
-                MENUITEM "&Няма",                       IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "&Злева направа",              IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "&Справа налева",              IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "&Няма",                            IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "&Злева направа",                   IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "&Справа налева",                   IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Пашыраныя налады"
         BEGIN
-            MENUITEM "Захоўваць налады падчас &выхаду", IDM_VIEW_SAVESETTINGS
-            MENUITEM "Захаваць налады &зараз\tF7",      IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "&Адкрыць файл наладаў\tCtrl+F7",  CMD_OPENINIFILE
+            MENUITEM "Захоўваць налады падчас &выхаду",      IDM_VIEW_SAVESETTINGS
+            MENUITEM "Захаваць налады &зараз\tF7",           IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "&Адкрыць файл наладаў\tCtrl+F7",       CMD_OPENINIFILE
         END
     END
     POPUP "&Даведка"
     BEGIN
-        MENUITEM "Дапа&можнік Online\tF1",                  IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "Дапа&можнік Online\tF1",                   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&Запусціць інструмент адміністратара...", IDM_HELP_ADMINEXE
-        MENUITEM "Праверыць &даступныя абнаўленні",         IDM_HELP_UPDATEWEBSITE
+        MENUITEM "&Запусціць інструмент адміністратара...",  IDM_HELP_ADMINEXE
+        MENUITEM "Праверыць &даступныя абнаўленні",          IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "Параметры &камандавага радку...",         IDM_HELP_CMD
-        MENUITEM "&Пра праграму...\tShift+F1",              IDM_HELP_ABOUT
+        MENUITEM "Параметры &камандавага радку...",          IDM_HELP_CMD
+        MENUITEM "&Пра праграму...\tShift+F1",               IDM_HELP_ABOUT
     END
 END
 
@@ -482,35 +488,37 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Ад&мена",                     IDM_EDIT_UNDO
-        MENUITEM "&Паўтор",                     IDM_EDIT_REDO
+        MENUITEM "Ад&мена",                       IDM_EDIT_UNDO
+        MENUITEM "&Паўтор",                       IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "&Выразаць",                   IDM_EDIT_CUT
-        MENUITEM "&Капіяваць",                  IDM_EDIT_COPY
-        MENUITEM "Уст&авіць",                   IDM_EDIT_PASTE
-        MENUITEM "В&ыдаліць",                   IDM_EDIT_CLEAR
+        MENUITEM "&Выразаць",                     IDM_EDIT_CUT
+        MENUITEM "&Капіяваць",                    IDM_EDIT_COPY
+        MENUITEM "Уст&авіць",                     IDM_EDIT_PASTE
+        MENUITEM "В&ыдаліць",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Вылучыць у&сё",               IDM_EDIT_SELECTALL
+        MENUITEM "Вылучыць у&сё",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Згарнуць/разгарнуць &блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Згарнуць/разгарнуць &блок",     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Адкрыць вэб-дзеянне &1",      CMD_WEBACTION1
-        MENUITEM "Адкрыць вэб-дзеянне &2",      CMD_WEBACTION2
-        MENUITEM "Адкрыць &гіперспасылку",      CMD_OPEN_HYPERLINK
+        MENUITEM "Адкрыць вэб-дзеянне &1",        CMD_WEBACTION1
+        MENUITEM "Адкрыць вэб-дзеянне &2",        CMD_WEBACTION2
+        MENUITEM "Адкрыць &гіперспасылку",        CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
         MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
-        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
         MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Вызначыць тэму паліцы...",     IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Пераключ&ыць паліцы прыладаў",  IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI-маштабаванне паліцы",      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Адкрыць Notepad3",            IDM_TRAY_RESTORE
-        MENUITEM "Закрыць Notepad3",            IDM_TRAY_EXIT
+        MENUITEM "Адкрыць Notepad3",              IDM_TRAY_RESTORE
+        MENUITEM "Закрыць Notepad3",              IDM_TRAY_EXIT
     END
 END
 

@@ -15,14 +15,20 @@
 extern "C" {
 #endif
 
+typedef struct _dpi_t {	int x;	int y; } DPI_T;
+
 #if defined(_WIN32)
 /* Return false on failure: */
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-__declspec(dllexport) int Scintilla_RegisterClasses(void *hInstance);
-__declspec(dllexport) int Scintilla_ReleaseResources(void);
-__declspec(dllexport) int Scintilla_InputCodePage(void);
+
+__declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
+__declspec(dllexport) int   Scintilla_ReleaseResources(void);
+__declspec(dllexport) int   Scintilla_InputCodePage(void);
+__declspec(dllexport) DPI_T Scintilla_GetCurrentDPI(void* hwnd);
+__declspec(dllexport) int   Scintilla_GetSystemMetricsEx(void* hwnd, int nIndex);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
+
 int Scintilla_LinkLexers(void);
 
 #ifdef __cplusplus

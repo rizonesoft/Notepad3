@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Памылка чытання «%s»."
     IDS_MUI_ERR_SAVEFILE    "Памылка захоўвання «%s»."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Не знойдзены плагін аглядніка файлаў.\nПлагін MiniPath можна спампаваць з сайта https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Няма доступа да выбранага файла!\nХочаце выдаліць яго са спіску?"
     IDS_MUI_ERR_CREATELINK  "Памылка стварэння цэтліка на Працоўным стале."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Файл «%s» нельга захаваць з прычыны абароны ад змянення.\n\nЖадаеце запусціць %s з павышанымі правамі?"
     IDS_MUI_ERR_ADMINEXE    "Не знойдены інструмент адміністратара\nНаведаць сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?"
+                            "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?\n\t(памер: %s >= %s)!\n(Стылі і схема сінтаксісу не будуць скарыстаны!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Немагчыма апрацаваць гэты вялікі файл (памер: %lli МБ)!"
+                            "Немагчыма апрацаваць гэты вялікі файл (памер: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл мае аднолькавага выгляду водступы!"
@@ -277,7 +279,8 @@ Notepad3 \t[/?] [...[Кадоўка]] [...[Канчаткі радкоў]] [/e] 
 /b\tАдкрыць новае акно для збірання змяненняў буфера абмену.\r\n\
 /n\tЗаўсёды адкрываць новае акно (/ns адзін экзэмпляр файла).\r\n\
 /r\tВыкарыстаць былое акно (/rs адзін экзэмпляр файла).\r\n\
-/p\tЗадаць пазіцыю і памер акна (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tЗадаць пазіцыю і памер акна (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tці /p <left>,<top>,<width>,<height>,<max>    [цэлыя лікі].\r\n\
 /t\tЗадаць назву акна.\r\n\
 /i\tЗапусціць значком на паліцы задач.\r\n\
 /o\tЗверху іншых вокнаў.\r\n\

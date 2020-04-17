@@ -24,6 +24,8 @@
 #include <heapapi.h>
 #include <versionhelpers.h>
 
+#include "Scintilla.h"
+
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
 
@@ -178,30 +180,6 @@ inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); 
 
 // ----------------------------------------------------------------------------
 
-//#define Is2k()    (g_uWinVer >= 0x0500)
-#define IsXPOrHigher()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
-#define IsXP1OrHigher()    IsWindowsXPSP1OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 1 (SP1)version.
-#define IsXP2OrHigher()    IsWindowsXPSP2OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 2 (SP2)version.
-#define IsXP3OrHigher()    IsWindowsXPSP3OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 3 (SP3)version.
-
-#define IsVistaOrHigher()  IsWindowsVistaOrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows Vista version.
-#define IsVista1OrHigher() IsWindowsVistaSP1OrGreater()  // Indicates if the current OS version matches,or is greater than,the Windows Vista with Service Pack 1 (SP1)version.
-#define IsVista2OrHigher() IsWindowsVistaSP2OrGreater()  // Indicates if the current OS version matches,or is greater than,the Windows Vista with Service Pack 2 (SP2)version.
-
-#define IsWin7OrHigher()   IsWindows7OrGreater()         // Indicates if the current OS version matches,or is greater than,the Windows 7 version.
-#define IsWin71OrHigher()  IsWindows7SP1OrGreater()      // Indicates if the current OS version matches,or is greater than,the Windows 7 with Service Pack 1 (SP1)version.
-#define IsWin8OrHigher()   IsWindows8OrGreater()         // Indicates if the current OS version matches,or is greater than,the Windows 8 version.
-#define IsWin81OrHigher()  IsWindows8Point1OrGreater()   // Indicates if the current OS version matches,or is greater than,the Windows 8.1 version.
-                                                         //   For Windows 10,IsWindows8Point1OrGreater returns false unless the application contains a manifest that includes
-                                                         //   a compatibility section that contains the GUIDs that designate Windows 8.1 and/or Windows 10.
-
-#define IsWin10OrHigher()  IsWindows10OrGreater()        // Indicates if the current OS version matches, or is greater than, the Windows 10 version.
-                                                         //   For Windows 10,IsWindows10OrGreater returns false unless the application contains a manifest that includes
-                                                         //   a compatibility section that contains the GUID that designates Windows 10.
-
-#define IsWinServer()      IsWindowsServer()             // Indicates if the current OS is a Windows Server release.
-                                                         //   Applications that need to distinguish between server and client versions of Windows should call this function.
-
 void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 
 // ----------------------------------------------------------------------------
@@ -213,23 +191,6 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 // ----------------------------------------------------------------------------
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
-HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
-void SetUACIcon(const HMENU hMenu, const UINT nItem);
-
-// ----------------------------------------------------------------------------
-
-DPI_T GetCurrentDPI(HWND hwnd);
-DPI_T GetCurrentPPI(HWND hwnd);
-
-void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-inline int ScaleIntToCurrentDPI(int val) { return MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntFontSize(int val) { return MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y); }
-inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
-inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
-
-int GetSystemMetricsEx(int nValue);
 
 // ----------------------------------------------------------------------------
 
@@ -269,6 +230,9 @@ bool IsRunAsAdmin();
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
 bool BitmapGrayScale(HBITMAP hbmp);
+
+//HBITMAP ScaleBitmap(HBITMAP hBmp, WORD wNewWidth, WORD wNewHeight);
+
 bool VerifyContrast(COLORREF cr1,COLORREF cr2);
 bool IsFontAvailable(LPCWSTR lpszFontName);
 
@@ -292,7 +256,9 @@ inline bool IsButtonUnchecked(HWND hwnd, int iButtonID) { return (IsDlgButtonChe
 #define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
 
 
-
+bool ReadFileXL(HANDLE hFile, char* const lpBuffer, const size_t nNumberOfBytesToRead, size_t* const lpNumberOfBytesRead);
+bool WriteFileXL(HANDLE hFile, const char* const lpBuffer, const size_t nNumberOfBytesToWrite, size_t* const lpNumberOfBytesWritten);
+void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest);
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
@@ -357,6 +323,7 @@ size_t SlashW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 
 size_t UnSlashA(LPSTR pchInOut, UINT cpEdit);
 size_t UnSlashW(LPWSTR pchInOut);
+size_t UnSlashChar(LPWSTR pchInOut, WCHAR wch);
 
 void TransformBackslashes(char* pszInput, bool, UINT cpEdit, int* iReplaceMsg);
 void TransformMetaChars(char* pszInput, bool, int iEOLMode);
@@ -400,6 +367,29 @@ __inline ptrdiff_t MultiByteToWideCharEx(
 
 #endif 
 
+// ============================================================================
+
+inline int wcscmp_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? wcscmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+inline int wcscoll_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? wcscoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+inline int wcsicmp_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? _wcsicmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+inline int wcsicoll_s(const wchar_t* s1, const wchar_t* s2)
+{
+  return (s1 && s2) ? _wcsicoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
+}
+
+// ============================================================================
 
 inline void SwabEx(char* src, char* dest, size_t n)
 {
@@ -583,6 +573,7 @@ inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); re
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
+// ----------------------------------------------------------------------------
 
 #endif //_NP3_HELPERS_H_
 

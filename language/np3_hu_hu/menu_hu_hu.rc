@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "In&dítás"
         BEGIN
-            MENUITEM "Fájl&böngésző megnyitása",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Új ablak\tAlt+N",                   IDM_FILE_NEWWINDOW
             MENUITEM "&Üres ablak\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web sablon &2\tCtrl+Shift+2",        CMD_WEBACTION2
             MENUITEM "Web sablon &1\tCtrl+Shift+1",        CMD_WEBACTION1
+            MENUITEM SEPARATOR
+            MENUITEM "Fájl&böngésző megnyitása",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Kódolás"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",              IDM_ENCODING_UTF8SIGN
             MENUITEM "&Továbbiak...\tF9",                  IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Újrakódolás az ala&pért.-re\tCtrl+Alt+F", CMD_RECODEDEFAULT
+            MENUITEM "Újrakódolás az ala&pért.-re",             CMD_RECODEDEFAULT
             MENUITEM "Újrakódolás A&NSI-ra\tCtrl+Shift+A",      CMD_RECODEANSI
             MENUITEM "Újrakódolás &OEM-re\tCtrl+Shift+O",       CMD_RECODEOEM
             MENUITEM "Újrakódolás &GB18030-ra\tCtrl+Shift+F10", CMD_RECODEGB18030
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "&Csere...\tCtrl+H",                      IDM_EDIT_REPLACE
             MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Nézet"
@@ -363,14 +367,16 @@ BEGIN
             MENUITEM "&Görgetés a fájl vége után is",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "&Hivatkozások címke megjelenítése",       IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Eszköztár"
+        POPUP "P&anelek"
         BEGIN
             MENUITEM "Menü&sor megjelenítése",                  IDM_VIEW_MENUBAR
             MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
-            MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
-            MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
             MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
+            MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI skálázás eszköztár",                 IDM_VIEW_DPISCALETB
         END
         POPUP "&Nagyítás"
         BEGIN
@@ -394,7 +400,7 @@ BEGIN
         MENUITEM "Sa&blonok testreszabása...\tCtrl+F12",               IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "S&zínkiemelés sablon...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&2. általános alap\tShift+F12",                          IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2. általános alap\tShift+F12",                      IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Általános betűtí&pus...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "&Jelenlegi sablon alap betűtípusa...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -447,16 +453,16 @@ BEGIN
         BEGIN
             POPUP "&Renderelés"
             BEGIN
-                MENUITEM "Alapértelmezett &GDI",        IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Alapértelmezett &GDI (ligatúrák nélkül)", IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",             IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",                 IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "K&étirányú"
             BEGIN
-                MENUITEM "Nincs",                        IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Balról jobbra",                IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Jobbról balra",                IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Nincs",                          IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Balról jobbra",                  IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Jobbról balra",                  IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Haladó konfiguráció"
@@ -494,18 +500,20 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Aktuális be&csukás váltása",  IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Webes művelet &1",          CMD_WEBACTION1
-        MENUITEM "Webes művelet &2",          CMD_WEBACTION2
+        MENUITEM "Webes művelet &1",            CMD_WEBACTION1
+        MENUITEM "Webes művelet &2",            CMD_WEBACTION2
         MENUITEM "Hiperhivat&kozás megnyitása", CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Menüs&or megjelenítése",            IDM_VIEW_MENUBAR
-        MENUITEM "&Eszköztár megjelenítése",          IDM_VIEW_TOOLBAR
-        MENUITEM "Váltás &Eszköztárak",               IDM_VIEW_TOGGLETB
-        MENUITEM "Eszköztár testre&szabása...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Eszköztár té&ma betöltése...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Állapotsor megjelenítése",         IDM_VIEW_STATUSBAR
+        MENUITEM "Menü&sor megjelenítése",                  IDM_VIEW_MENUBAR
+        MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
+        MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "Eszköztár té&ma betöltése...",            IDM_VIEW_LOADTHEMETB
+        MENUITEM "Eszköztár testresza&bása...",             IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Váltás &Eszköztárak",                     IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI skálázás eszköztár",                 IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

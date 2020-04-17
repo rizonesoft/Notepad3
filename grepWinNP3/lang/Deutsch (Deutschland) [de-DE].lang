@@ -1,0 +1,530 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+#
+# encoding: UTF-8
+# Language: German (Germany) resources
+# Last-Translator: (de-DE) Deutsche Übersetzung von Stefan Küng
+#
+
+#, fuzzy
+msgid ""
+msgstr ""
+
+# msgid/msgstr fields for Accelerator keys
+# Format is: "ID:xxxxxx:VACS+X" where:
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, Home) etc. will not.
+
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
+
+#. Resource IDs: (149)
+#, c-format
+msgid "%ld more matches"
+msgstr "%ld mehr Übereinstimmungen"
+
+#. Resource IDs: (1069)
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
+msgstr "%path% wird durch den Pfad der Datei ersetzt - %line% mit der Zeile, zu der gesprungen wird - %pattern% mit dem Suchbegriff."
+
+#. Resource IDs: (119)
+msgid "&About grepWinNP3..."
+msgstr "Ü&ber grepWinNP3..."
+
+#. Resource IDs: (1049)
+msgid "&Replace"
+msgstr "&Ersetzen"
+
+#. Resource IDs: (123)
+msgid "&Search"
+msgstr "&Suchen"
+
+#. Resource IDs: (1013)
+msgid "..."
+msgstr "..."
+
+#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+msgid "/"
+msgstr "/"
+
+#. Resource IDs: (1052, 135)
+msgid "About grepWinNP3"
+msgstr "Über grepWinNP3"
+
+#. Resource IDs: (1021)
+msgid "Add to Presets"
+msgstr "Zu Presets hinzufügen"
+
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr "Alle Dateien"
+
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr "Alle Daten"
+
+#. Resource IDs: (1005)
+msgid "All sizes"
+msgstr "Alle Größen"
+
+#. Resource IDs: (124)
+#, c-format
+msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr "Sind Sie sicher, dass Sie\n%s\ndurch\n%s\n ersetzen wollen, ohne Backups zu erstellen?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr "Zwischen"
+
+#. Resource IDs: (2)
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#. Resource IDs: (1068)
+msgid "Command line to start an editor at a specific line:"
+msgstr "Kommando um einen Editor an spezifizierter Zeile zu öffnen"
+
+#. Resource IDs: (1060)
+msgid "Content"
+msgstr "Inhalt"
+
+#. Resource IDs: (145)
+msgid "Copy filename to clipboard"
+msgstr "Dateiname in Zwischenablage kopieren"
+
+#. Resource IDs: (146)
+msgid "Copy filenames to clipboard"
+msgstr "Dateinamen in Zwischenablage kopieren"
+
+#. Resource IDs: (143)
+msgid "Copy path to clipboard"
+msgstr "Pfad in Zwischenablage kopieren"
+
+#. Resource IDs: (144)
+msgid "Copy paths to clipboard"
+msgstr "Pfade in Zwischenablage kopieren"
+
+#. Resource IDs: (147)
+msgid "Copy text result to clipboard"
+msgstr "Textresultat in Zwischenablage kopieren"
+
+#. Resource IDs: (148)
+msgid "Copy text results to clipboard"
+msgstr "Textresultate in Zwischenablage kopieren"
+
+#. Resource IDs: (1029)
+msgid "Create backup files"
+msgstr "Backup-Dateien erstellen"
+
+#. Resource IDs: (1077)
+msgid "Create backup files in a separate folder"
+msgstr "Backup-Dateien in einem separaten Ordner erstellen"
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "Dunkler Modus"
+
+#. Resource IDs: (159)
+msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgstr "Bitte zunächst den 'Dark Mode' in den Windows System Einstellungen erlauben (>= Win10 v1803)."
+
+#. Resource IDs: (139)
+msgid "Date modified"
+msgstr "Modifiziert am"
+
+#. Resource IDs: (137)
+msgid "Dialog"
+msgstr "Dialog"
+
+#. Resource IDs: (1051)
+msgid "Dot matches newline"
+msgstr "Punkt entspricht Zeilenvorschub"
+
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr "Führen Sie einen Doppelklick aus, um ein Preset auszuwählen"
+
+#. Resource IDs: (65535 - PopupMenu)
+msgid "Dummy"
+msgstr "Dummy"
+
+#. Resource IDs: (1067)
+msgid "Editor"
+msgstr "Editor"
+
+#. Resource IDs: (138)
+msgid "Encoding"
+msgstr "Encoding"
+
+#. Resource IDs: (1056)
+msgid "Enter a name for the regex:"
+msgstr "Geben Sie einen Name für die Regex ein:"
+
+#. Resource IDs: (1062)
+msgid "Escape key closes grepWinNP3"
+msgstr "Escape Taste schließt grepWinNP3"
+
+#. Resource IDs: (1041)
+msgid "Exclude dirs (Regex):"
+msgstr "Verzeichnisse ausschließen (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
+
+#. Resource IDs: (1039)
+msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
+msgstr "Dateinamen-Übereinstimmung:\n'|' zum Trennen multipler Text- Übereinstimmungsmuster, zum Ausschließen '-' vorans&tellen"
+
+#. Resource IDs: (1059)
+msgid "Files"
+msgstr "Dateien"
+
+#. Resource IDs: (109)
+msgid "GREPWINNP3"
+msgstr "GREPWINNP3"
+
+#. Resource IDs: (156)
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgstr "Wenn aktiviert, wird ein Backup-Ordner innerhalb des Ordners erstellt, in dem gesucht/ersetzt wird, und die Dateien werden in diesen Ordner gesichert."
+
+#. Resource IDs: (1050)
+msgid "Include binary files"
+msgstr "Binärdateien einbeziehen"
+
+#. Resource IDs: (1010)
+msgid "Include hidden items"
+msgstr "Versteckte Items einbeziehen"
+
+#. Resource IDs: (1011)
+msgid "Include subfolders"
+msgstr "Unterordner einbeziehen"
+
+#. Resource IDs: (1009)
+msgid "Include system items"
+msgstr "System-Items einbeziehen"
+
+#. Resource IDs: (153)
+msgid "Invalid path!"
+msgstr "Pfad ungültig!"
+
+#. Resource IDs: (1019)
+msgid "KB"
+msgstr "KB"
+
+#. Resource IDs: (1075)
+msgid "Language:"
+msgstr "Sprache:"
+
+#. Resource IDs: (1017)
+msgid "Limit search"
+msgstr "Suche begrenzen"
+
+#. Resource IDs: (134)
+msgid "Line"
+msgstr "Zeile"
+
+#. Resource IDs: (150)
+#, c-format
+msgid "Line %5ld : %30s\n"
+msgstr "Zeile %5ld : %30s\n"
+
+#. Resource IDs: (135)
+msgid "Matches"
+msgstr "Übereinstimmungen"
+
+#. Resource IDs: (104)
+msgid "Name"
+msgstr "Name"
+
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr "Neuer als"
+
+#. Resource IDs: (115)
+msgid "Newline is matched by '.'"
+msgstr "Zeilenvorschub entspricht in '.'"
+
+#. Resource IDs: (1)
+msgid "OK"
+msgstr "OK"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr "Älter als"
+
+#. Resource IDs: (1063)
+msgid "Only one instance"
+msgstr "Nur eine Instanz"
+
+#. Resource IDs: (142)
+msgid "Open containing folder"
+msgstr "Enthaltenen Ordner öffnen"
+
+#. Resource IDs: (141)
+msgid "Open with Editor"
+msgstr "Mit Editor öffnen"
+
+#. Resource IDs: (1056)
+msgid "Paste text to test the regex with:"
+msgstr "Fügen Sie Text ein, um die Regex zu testen mit:"
+
+#. Resource IDs: (137)
+msgid "Path"
+msgstr "Pfad"
+
+#. Resource IDs: (131)
+msgid "Preset name"
+msgstr "Preset-Name"
+
+#. Resource IDs: (1022, 132)
+msgid "Presets"
+msgstr "Presets"
+
+#. Resource IDs: (1065)
+msgid "Press F1 for help"
+msgstr "Für Hilfe drücken Sie F1"
+
+#. Resource IDs: (154)
+msgid "Programs"
+msgstr "Programme"
+
+#. Resource IDs: (32775 - Menu)
+msgid "Re&name Preset"
+msgstr "Preset um&benennen"
+
+#. Resource IDs: (130)
+msgid "Regex Test"
+msgstr "Regex-Test"
+
+#. Resource IDs: (1046)
+msgid "Regex match"
+msgstr "Regex-Übereinstimmung"
+
+#. Resource IDs: (65535)
+msgid "Regex replace string:"
+msgstr "Regex-Ersetzungsstring:"
+
+#. Resource IDs: (1001)
+msgid "Regex search"
+msgstr "Regex-Suche"
+
+#. Resource IDs: (65535)
+msgid "Regex search string:"
+msgstr "Regex-Suchstring:"
+
+#. Resource IDs: (152)
+msgid "Relative paths are not allowed. Please enter an absolute path!"
+msgstr "Relative Pfade sind nicht erlaubt. Bitte geben Sie einen absoluten Pfad ein!"
+
+#. Resource IDs: (32771 - Menu)
+msgid "Remo&ve Preset"
+msgstr "Preset entf&ernen"
+
+#. Resource IDs: (106)
+msgid "Replace string"
+msgstr "Ersetzungsstring"
+
+#. Resource IDs: (1027)
+msgid "Replace with:"
+msgstr "Ersetzen durch:"
+
+#. Resource IDs: (126)
+msgid "S&top"
+msgstr "S&topp"
+
+#. Resource IDs: (1, 1016)
+msgid "Search"
+msgstr "Suchen"
+
+#. Resource IDs: (1026)
+msgid "Search &for:"
+msgstr "Suche &nach:"
+
+#. Resource IDs: (1042)
+msgid "Search case-sensitive"
+msgstr "Case-sensitive suchen"
+
+#. Resource IDs: (1015)
+msgid "Search in"
+msgstr "Suche in"
+
+#. Resource IDs: (1018)
+msgid "Search results"
+msgstr "Suchresultate"
+
+#. Resource IDs: (105)
+msgid "Search string"
+msgstr "Suchstring"
+
+#. Resource IDs: (128)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+msgstr "Gesucht %ld Dateien, übersprungen %ld Dateien. Gefunden %ld Übereinstimmungen in %ld Dateien."
+
+#. Resource IDs: (140)
+msgid "Select Editor Application..."
+msgstr "Editor-Applikation auswählen ..."
+
+#. Resource IDs: (127)
+msgid "Select path to search"
+msgstr "Pfad zum Suchen auswählen"
+
+#. Resource IDs: (1071)
+msgid "Settings"
+msgstr "Einstellungen"
+
+#. Resource IDs: (133)
+msgid "Size"
+msgstr "Größe"
+
+#. Resource IDs: (1006)
+msgid "Size is"
+msgstr "Größe ist:"
+
+#. Resource IDs: (1028)
+msgid "Test regex"
+msgstr "Regex testen"
+
+#. Resource IDs: (136)
+msgid "Text"
+msgstr "Text"
+
+#. Resource IDs: (1048)
+msgid "Text match"
+msgstr "Text-Übereinstimmung"
+
+#. Resource IDs: (1002)
+msgid "Text search"
+msgstr "Textsuche"
+
+#. Resource IDs: (65535)
+msgid "The regex search string matches:"
+msgstr "Die Regex-Suchstring-Übereinstimmungen:"
+
+#. Resource IDs: (65535)
+msgid "The resulting text after replacing:"
+msgstr "Der resultierende Text nach Ersetzung:"
+
+#. Resource IDs: (1074)
+msgid "This adds a new entry to the context menu named \"Open with Editor\""
+msgstr "Dies fügt dem Kontetxmenü einen neuen Eintrag hinzu, benannt \"Mit Editor öffnen\"."
+
+#. Resource IDs: (1053)
+msgid "Treat files as UTF-8"
+msgstr "Dateien als UTF-8 behandeln"
+
+#. Resource IDs: (1045)
+msgid "Visit our website"
+msgstr "Unsere Website besuchen"
+
+#. Resource IDs: (116)
+msgid "a regular expression used for searching. Press F1 for more info."
+msgstr "Ein regulärer zur Suche verwendeter Ausdruck. Für mehr Informationen drücken Sie F1."
+
+#. Resource IDs: (125)
+msgid "an empty string"
+msgstr "Ein leerer String"
+
+#. Resource IDs: (130)
+msgid "binary"
+msgstr "Binär"
+
+#. Resource IDs: (118)
+msgid "click to edit the text as a multiline text"
+msgstr "Klicken Sie, um den Text als mehrzeiligen Text zu bearbeiten."
+
+#. Resource IDs: (121)
+msgid "equal to"
+msgstr "Gleich"
+
+#. Resource IDs: (122)
+msgid "greater than"
+msgstr "Größer als"
+
+#. Resource IDs: (103, 129)
+msgid "grepWinNP3"
+msgstr "grepWinNP3"
+
+#. Resource IDs: (138)
+msgid "grepWinNP3 Settings"
+msgstr "grepWinNP3 Einstellungen"
+
+#. Resource IDs: (157)
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr "Halten Sie die Shifttaste gedrückt, um Dateien zu finden, die den Suchstring NICHT enthalten."
+
+#. Resource IDs: (132)
+msgid "invalid regex!"
+msgstr "Regex ungültig!"
+
+#. Resource IDs: (120)
+msgid "less than"
+msgstr "Kleiner als"
+
+#. Resource IDs: (111)
+msgid "no match"
+msgstr "Keine Übereinstimmung"
+
+#. Resource IDs: (110)
+msgid "no text to replace with"
+msgstr "Kein Text zum Ersetzen durch"
+
+#. Resource IDs: (107)
+msgid "no text to test with available"
+msgstr "Kein Text zum Testen mit verfügbar"
+
+#. Resource IDs: (112)
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "Nur Dateien, die diesem Muster entsprechen, werden gesucht.\r\nVerwenden Sie \"|\" als Trennzeichen.\r\nBeispiel: *.cpp|*.h"
+
+#. Resource IDs: (129)
+msgid "read error"
+msgstr "Lesefehler"
+
+#. Resource IDs: (131)
+msgid "regex ok"
+msgstr "Regex OK"
+
+#. Resource IDs: (117)
+msgid "reuse grepWin instances."
+msgstr "grepWin-Instanzen wiederverwenden."
+
+#. Resource IDs: (151)
+#, c-format
+msgid "scanning file '%s'"
+msgstr "Scanning der Datei '%s'"
+
+#. Resource IDs: (108)
+msgid "search string is empty"
+msgstr "Suchstring ist leer"
+
+#. Resource IDs: (114)
+msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgstr "Der Pfad bzw. die Pfade, der bzw. die rekursiv gesucht wird bzw. werden.\r\nSeparieren Sie Pfade mit dem | Symbol.\r\nBeispiel: c:\\temp|d:\\logs"
+
+#. Resource IDs: (113)
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "Sie können Verzeichnisse ausschließen, z.B. CVS und Images.\r\nBeispiel: ^(CVS|images)$\r\nHinweis´, '.svn'-Ordner sind in Windows 'versteckt', so werden diese üblicherweise nicht gescannt."
+
+#. Resource IDs: (1061)
+msgid "Reset"
+msgstr "Standard"
+
+#. Resource IDs: (1088)
+msgid "Max # of concurrent worker"
+msgstr "Max # an gleichz. Worker"

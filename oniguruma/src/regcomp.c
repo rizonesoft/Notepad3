@@ -408,12 +408,12 @@ onig_set_default_case_fold_flag(OnigCaseFoldType case_fold_flag)
 }
 
 static int
-int_multiply_cmp(int x, int y, int v)
+len_multiply_cmp(OnigLen x, int y, OnigLen v)
 {
   if (x == 0 || y == 0) return -1;
 
-  if (x < INT_MAX / y) {
-    int xy = x * y;
+  if (x < INFINITE_LEN / y) {
+    OnigLen xy = x * (OnigLen )y;
     if (xy > v) return 1;
     else {
       if (xy == v) return 0;
@@ -421,7 +421,7 @@ int_multiply_cmp(int x, int y, int v)
     }
   }
   else
-    return 1;
+    return v == INFINITE_LEN ? 0 : 1;
 }
 
 extern int
@@ -429,7 +429,7 @@ onig_positive_int_multiply(int x, int y)
 {
   if (x == 0 || y == 0) return 0;
 
-  if (x < INT_MAX / y)
+  if (x < ONIG_INT_MAX / y)
     return x * y;
   else
     return -1;
@@ -1394,7 +1394,7 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
   /* anychar repeat */
   if (is_anychar_infinite_greedy(qn)) {
     if (qn->lower <= 1 ||
-        int_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0) {
+        len_multiply_cmp((OnigLen )tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0) {
       if (IS_NOT_NULL(qn->next_head_exact))
         return OPSIZE_ANYCHAR_STAR_PEEK_NEXT + tlen * qn->lower;
       else
@@ -1408,7 +1408,7 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
 
   if (infinite &&
       (qn->lower <= 1 ||
-       int_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
+       len_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     if (qn->lower == 1 && tlen > QUANTIFIER_EXPAND_LIMIT_SIZE) {
       len = OPSIZE_JUMP;
     }
@@ -1439,7 +1439,7 @@ compile_length_quantifier_node(QuantNode* qn, regex_t* reg)
   }
   else if (!infinite && qn->greedy &&
            (qn->upper == 1 ||
-            int_multiply_cmp(tlen + OPSIZE_PUSH, qn->upper,
+            len_multiply_cmp((OnigLen )tlen + OPSIZE_PUSH, qn->upper,
                              QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     len = tlen * qn->lower;
     len += (OPSIZE_PUSH + tlen) * (qn->upper - qn->lower);
@@ -1467,7 +1467,8 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
 
   if (is_anychar_infinite_greedy(qn) &&
       (qn->lower <= 1 ||
-       int_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
+       len_multiply_cmp((OnigLen )tlen, qn->lower,
+                        QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     r = compile_tree_n_times(NODE_QUANT_BODY(qn), qn->lower, reg, env);
     if (r != 0) return r;
     if (IS_NOT_NULL(qn->next_head_exact)) {
@@ -1491,7 +1492,8 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
 
   if (infinite &&
       (qn->lower <= 1 ||
-       int_multiply_cmp(tlen, qn->lower, QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
+       len_multiply_cmp((OnigLen )tlen, qn->lower,
+                        QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     int addr;
 
     if (qn->lower == 1 && tlen > QUANTIFIER_EXPAND_LIMIT_SIZE) {
@@ -1586,7 +1588,7 @@ compile_quantifier_node(QuantNode* qn, regex_t* reg, ScanEnv* env)
   }
   else if (! infinite && qn->greedy &&
            (qn->upper == 1 ||
-            int_multiply_cmp(tlen + OPSIZE_PUSH, qn->upper,
+            len_multiply_cmp((OnigLen )tlen + OPSIZE_PUSH, qn->upper,
                              QUANTIFIER_EXPAND_LIMIT_SIZE) <= 0)) {
     int n = qn->upper - qn->lower;
 
@@ -1973,7 +1975,7 @@ compile_length_anchor_node(AnchorNode* node, regex_t* reg)
     if (node->char_min_len == node->char_max_len)
       len = OPSIZE_MARK + OPSIZE_STEP_BACK_START + tlen + OPSIZE_CUT_TO_MARK;
     else {
-      len = OPSIZE_SAVE_VAL + OPSIZE_UPDATE_VAR + OPSIZE_MARK + OPSIZE_PUSH + OPSIZE_UPDATE_VAR + OPSIZE_FAIL + OPSIZE_JUMP + OPSIZE_STEP_BACK_START + OPSIZE_STEP_BACK_NEXT + tlen + OPSIZE_CHECK_POSITION + OPSIZE_CUT_TO_MARK + OPSIZE_UPDATE_VAR + OPSIZE_POP;
+      len = OPSIZE_SAVE_VAL + OPSIZE_UPDATE_VAR + OPSIZE_MARK + OPSIZE_PUSH + OPSIZE_UPDATE_VAR + OPSIZE_FAIL + OPSIZE_JUMP + OPSIZE_STEP_BACK_START + OPSIZE_STEP_BACK_NEXT + tlen + OPSIZE_CHECK_POSITION + OPSIZE_CUT_TO_MARK + OPSIZE_UPDATE_VAR;
 
       if (IS_NOT_NULL(node->lead_node)) {
         int llen = compile_length_tree(node->lead_node, reg);
@@ -2091,7 +2093,8 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
     r = add_op(reg, OP_UPDATE_VAR);
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
-    COP(reg)->update_var.id   = mid1;
+    COP(reg)->update_var.id    = mid1;
+    COP(reg)->update_var.clear = FALSE;
     r = add_op(reg, OP_FAIL);
     if (r != 0) return r;
 
@@ -2125,9 +2128,8 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ScanEnv* env)
     r = add_op(reg, OP_UPDATE_VAR);
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
-    COP(reg)->update_var.id   = mid1;
-
-    r = add_op(reg, OP_POP);
+    COP(reg)->update_var.id    = mid1;
+    COP(reg)->update_var.clear = TRUE;
   }
 
   return r;
@@ -2242,6 +2244,7 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
     COP(reg)->update_var.id   = mid1;
+    COP(reg)->update_var.clear = FALSE;
 
     r = add_op(reg, OP_POP); /* pop save val */
     if (r != 0) return r;
@@ -2252,6 +2255,7 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
     if (r != 0) return r;
     COP(reg)->update_var.type = UPDATE_VAR_RIGHT_RANGE_FROM_STACK;
     COP(reg)->update_var.id   = mid1;
+    COP(reg)->update_var.clear = FALSE;
 
     r = add_op(reg, OP_POP); /* pop mark */
     if (r != 0) return r;
@@ -2405,6 +2409,7 @@ compile_gimmick_node(GimmickNode* node, regex_t* reg)
     if (r != 0) return r;
     COP(reg)->update_var.type = node->detail_type;
     COP(reg)->update_var.id   = node->id;
+    COP(reg)->update_var.clear = FALSE;
     break;
 
 #ifdef USE_CALLOUT
@@ -4826,11 +4831,13 @@ is_all_code_len_1_items(int n, OnigCaseFoldCodeItem items[])
 }
 
 static int
-get_min_max_byte_len_case_fold_items(int n, OnigCaseFoldCodeItem items[], int* rmin, int* rmax)
+get_min_max_byte_len_case_fold_items(int n, OnigCaseFoldCodeItem items[],
+                                     OnigLen* rmin, OnigLen* rmax)
 {
-  int i, len, minlen, maxlen;
+  int i;
+  OnigLen len, minlen, maxlen;
 
-  minlen = INT_MAX;
+  minlen = INFINITE_LEN;
   maxlen = 0;
   for (i = 0; i < n; i++) {
     OnigCaseFoldCodeItem* item = items + i;
@@ -4925,7 +4932,7 @@ unravel_cf_string_add(Node** rlist, Node** rsn, UChar* s, UChar* end,
 
 static int
 unravel_cf_string_alt_or_cc_add(Node** rlist, int n,
-            OnigCaseFoldCodeItem items[], int byte_len, OnigEncoding enc,
+            OnigCaseFoldCodeItem items[], OnigEncoding enc,
             OnigCaseFoldType case_fold_flag, UChar* s, UChar* end)
 {
   int r, i;
@@ -4982,7 +4989,7 @@ unravel_cf_string_alt_or_cc_add(Node** rlist, int n,
 static int
 unravel_cf_look_behind_add(Node** rlist, Node** rsn,
                 int n, OnigCaseFoldCodeItem items[], OnigEncoding enc,
-                UChar* s, int one_len)
+                UChar* s, OnigLen one_len)
 {
   int r, i, found;
 
@@ -5028,7 +5035,8 @@ unravel_cf_look_behind_add(Node** rlist, Node** rsn,
 static int
 unravel_case_fold_string(Node* node, regex_t* reg, int state)
 {
-  int r, n, one_len, min_len, max_len, in_look_behind;
+  int r, n, in_look_behind;
+  OnigLen min_len, max_len, one_len;
   UChar *start, *end, *p, *q;
   StrNode* snode;
   Node *sn, *list;
@@ -5056,7 +5064,7 @@ unravel_case_fold_string(Node* node, regex_t* reg, int state)
       goto err;
     }
 
-    one_len = enclen(enc, p);
+    one_len = (OnigLen )enclen(enc, p);
     if (n == 0) {
       q = p + one_len;
       r = unravel_cf_string_add(&list, &sn, p, q, 0 /* flag */);
@@ -5082,7 +5090,7 @@ unravel_case_fold_string(Node* node, regex_t* reg, int state)
         }
 
         q = p + max_len;
-        r = unravel_cf_string_alt_or_cc_add(&list, n, items, max_len, enc,
+        r = unravel_cf_string_alt_or_cc_add(&list, n, items, enc,
                                             reg->case_fold_flag, p, q);
         if (r != 0) goto err;
         sn = NULL_NODE;
@@ -7055,8 +7063,12 @@ print_optimize_info(FILE* f, regex_t* reg)
     for (p = reg->exact; p < reg->exact_end; p++) {
       fputc(*p, f);
     }
-    fprintf(f, "]: length: %ld, dmin: %u, dmax: %u\n",
-            (reg->exact_end - reg->exact), reg->dist_min, reg->dist_max);
+    fprintf(f, "]: length: %ld, dmin: %u, ",
+            (reg->exact_end - reg->exact), reg->dist_min);
+    if (reg->dist_max == INFINITE_LEN)
+      fprintf(f, "dmax: inf.\n");
+    else
+      fprintf(f, "dmax: %u\n", reg->dist_max);
   }
   else if (reg->optimize & OPTIMIZE_MAP) {
     int c, i, n = 0;
@@ -7325,6 +7337,7 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 
       COP(reg)->update_var.type = UPDATE_VAR_KEEP_FROM_STACK_LAST;
       COP(reg)->update_var.id   = 0; /* not used */
+      COP(reg)->update_var.clear = FALSE;
     }
 
     r = add_op(reg, OP_END);
@@ -7347,6 +7360,9 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
 #endif
 #ifdef USE_CALLOUT
         || (IS_NOT_NULL(reg->extp) && reg->extp->callout_num != 0)
+#endif
+#ifdef USE_CALL
+        || scan_env.num_call > 0
 #endif
         )
       reg->stack_pop_level = STACK_POP_LEVEL_ALL;

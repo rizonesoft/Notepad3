@@ -282,7 +282,7 @@ val SC_IME_INLINE=1
 # Is the IME displayed in a window or inline?
 get IMEInteraction GetIMEInteraction=2678(,)
 
-# Choose to display the the IME in a winow or inline.
+# Choose to display the IME in a window or inline.
 set void SetIMEInteraction=2679(IMEInteraction imeInteraction,)
 
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
@@ -2666,6 +2666,7 @@ ali SCVS_NOWRAPLINESTART=NO_WRAP_LINE_START
 
 # Set options for virtual space behaviour.
 set void SetVirtualSpaceOptions=2596(VirtualSpace virtualSpaceOptions,)
+
 # Return options for virtual space behaviour.
 get VirtualSpace GetVirtualSpaceOptions=2597(,)
 

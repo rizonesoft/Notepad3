@@ -55,6 +55,8 @@ onig_error_code_to_format(int code)
     p = "parse depth limit over"; break;
   case ONIGERR_RETRY_LIMIT_IN_MATCH_OVER:
     p = "retry-limit-in-match over"; break;
+  case ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER:
+    p = "retry-limit-in-search over"; break;
   case ONIGERR_TYPE_BUG:
     p = "undefined type (bug)"; break;
   case ONIGERR_PARSER_BUG:

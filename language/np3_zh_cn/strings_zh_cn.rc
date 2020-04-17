@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "加载“%s”时遇到错误。"
     IDS_MUI_ERR_SAVEFILE    "保存“%s”时遇到错误。"
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载。"
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
     IDS_MUI_ERR_CREATELINK  "创建桌面快捷方式时遇到错误。"
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "文件“%s”不能被保存，它可能是受保护的。\n\n是否希望提升 %s 的权限？"
     IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "是否确实要打开一个如此庞大的文件？"
+                            "是否确实要打开一个如此庞大的文件？\n\t（大小 %s >= %s）\n样式和语法高亮将被禁用。"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "无法处理如此庞大的文件（大小 %lli MB）！"
+                            "无法处理如此庞大的文件（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
     IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
@@ -277,7 +279,8 @@ Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）。\r\n\
 /n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）。\r\n\
 /r\t重用已存在的窗口（/rs 对于每个文件只允许打开一个实例）。\r\n\
-/p\t设置窗口位置和大小（/p0, /ps, /pf,l,t,r,b,m）。\r\n\
+/p\t设置窗口位置和大小（/p0, /ps, /pf,左,上,宽,高,最大化）\r\n\
+\t或 /p <左>,<上>,<宽>,<高>,<最大化>    ［均为整数］。\r\n\
 /t\t设置窗口标题。\r\n\
 /i\t以托盘图标状态启动。\r\n\
 /o\t窗口置顶。\r\n\
@@ -285,7 +288,7 @@ Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /u\t以管理员权限启动。\r\n\
 /v\t打印文件并退出。\r\n\
 /vd\t打印文件（打开打印机对话框）。\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\t在环境变量 PATH 中查找相对路径。\r\n\
 /z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
 示例：\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

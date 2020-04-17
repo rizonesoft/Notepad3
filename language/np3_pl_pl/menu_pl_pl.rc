@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Uruchom"
         BEGIN
-            MENUITEM "Otwórz Eksplorator pliku",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",       IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nowe okno\tAlt+N",                  IDM_FILE_NEWWINDOW
             MENUITEM "&Puste okno\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Szablon Web &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Szablon Web &2\tCtrl+Shift+2",       CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Otwórz Eksplorator pliku",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Kodowanie"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 z &sygnaturą",                  IDM_ENCODING_UTF8SIGN
             MENUITEM "&Więcej...\tF9",                      IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Przekoduj na domyślny\tCtrl+Alt+F",          CMD_RECODEDEFAULT
+            MENUITEM "Przekoduj na domyślny",                      CMD_RECODEDEFAULT
             MENUITEM "Przekoduj na &ANSI\tCtrl+Shift+A",           CMD_RECODEANSI
             MENUITEM "Przekoduj na &OEM\tCtrl+Shift+O",            CMD_RECODEOEM
             MENUITEM "Przekoduj na &GB18030\tCtrl+Shift+F10",      CMD_RECODEGB18030
@@ -199,8 +201,8 @@ BEGIN
             MENUITEM "&Wcięcie",                              IDM_EDIT_INDENT
             MENUITEM "&Bez wcięcia",                          IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",      CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",        CMD_JUMP2SELEND
+            MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
+            MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "&Ujęcie zaznaczenia"
             BEGIN
@@ -282,7 +284,7 @@ BEGIN
             MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
             MENUITEM "Multiwybór-wszystko pasujące\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Podział operacji cofania przy przenoszeniu wierszy",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Zakładki"
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "&Zamień...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Zamień następny\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Przejdź do wiersza...\tCtrl+G",              IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Widok"
@@ -345,16 +349,16 @@ BEGIN
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "Margines\tCtrl+Shift+M",                          IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "&Składanie"
         BEGIN
             MENUITEM "Składanie kodu",                              IDM_VIEW_FOLDING
             MENUITEM "&Przełącz składanie kodu\tCtrl+Shift+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Przeskocz do nast.\tAlt+ +",         CMD_FOLDJUMPDOWN
+            MENUITEM "Przeskocz do poprzed.\tAlt+ –",         CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Zwiń zagięcie\tAlt+ ←",          CMD_FOLDCOLLAPSE
+            MENUITEM "&Rozwiń zagięcie\tAlt+ →",            CMD_FOLDEXPAND
         END
         POPUP "&Pokaż"
         BEGIN
@@ -363,14 +367,16 @@ BEGIN
             MENUITEM "Rozszerzony widok końca dokumentu",           IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Pokaż podpowiedź hiperłącza",                 IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Pasek narzędzi"
+        POPUP "P&anele"
         BEGIN
-            MENUITEM "Pokaż pasek menu",                               IDM_VIEW_MENUBAR
+            MENUITEM "Pokaż pasek menu",                            IDM_VIEW_MENUBAR
             MENUITEM "Pokaż pasek narzędzi",                        IDM_VIEW_TOOLBAR
-            MENUITEM "Przełącz paski narzędzi",                     IDM_VIEW_TOGGLETB
-            MENUITEM "Dostosuj pasek narzędzi...",                  IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Załaduj motyw paska narzędzi...",            IDM_VIEW_LOADTHEMETB
             MENUITEM "Pokaż pasek stanu",                           IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Załaduj motyw paska narzędzi...",            IDM_VIEW_LOADTHEMETB
+            MENUITEM "Dostosuj pasek narzędzi...",                  IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Przełącz paski narzędzi",                     IDM_VIEW_TOGGLETB
+            MENUITEM "&Pasek narzędzi w skali DPI",                          IDM_VIEW_DPISCALETB
         END
         POPUP "&Powiększenie"
         BEGIN
@@ -447,10 +453,10 @@ BEGIN
         BEGIN
             POPUP "&Renderowanie"
             BEGIN
-                MENUITEM "Domyślne &GDI",               IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",     IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Retain",         IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",         IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Domyślne &GDI (bez ligatury)",      IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",           IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Retain",               IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",               IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Dwukierunkowa"
             BEGIN
@@ -494,18 +500,20 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Przełącz Current Fold",                    IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Otwórz Web Action &1",                        CMD_WEBACTION1
-        MENUITEM "Otwórz Web Action &2",                        CMD_WEBACTION2
+        MENUITEM "Otwórz Web Action &1",                      CMD_WEBACTION1
+        MENUITEM "Otwórz Web Action &2",                      CMD_WEBACTION2
         MENUITEM "Otwórz łącze",                              CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Pokaż pasek menu",                             IDM_VIEW_MENUBAR
+        MENUITEM "Pokaż pasek menu",                          IDM_VIEW_MENUBAR
         MENUITEM "Pokaż pasek narzędzi",                      IDM_VIEW_TOOLBAR
-        MENUITEM "Przełącz pasek narzędzi",                   IDM_VIEW_TOGGLETB
-        MENUITEM "&Domyślny paski narzędzi...",               IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Załaduj schemat paska narzędzi...",        IDM_VIEW_LOADTHEMETB
-        MENUITEM "Pokaż pasek statusu",                       IDM_VIEW_STATUSBAR
+        MENUITEM "Pokaż pasek stanu",                         IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Załaduj motyw paska narzędzi...",          IDM_VIEW_LOADTHEMETB
+        MENUITEM "Dostosuj pasek narzędzi...",                IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Przełącz paski narzędzi",                   IDM_VIEW_TOGGLETB
+        MENUITEM "Pasek narzędzi w skali &DPI",                        IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

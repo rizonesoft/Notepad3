@@ -19,6 +19,8 @@
 extern "C" {
 #include "Helpers.h"
 #include "MuiLanguage.h"
+#include "Dialogs.h"
+#include "SciCall.h"
 }
 
 #include <commctrl.h>
@@ -34,12 +36,9 @@ extern "C" {
 #include "Platform.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
 #include "resource.h"
 
-extern "C" {
-#include "Dialogs.h"
-#include "SciCall.h"
-}
 
 extern "C" float Style_GetBaseFontSize();
 
@@ -49,21 +48,19 @@ static HGLOBAL hDevNames = nullptr;
 
 static void EditPrintInit();
 
+
 //=============================================================================
 //
 //  EditPrint() - Code from SciTE
 //
 void StatusUpdatePrintPage(int iPageNum)
 {
-  WCHAR tch[32] = { L'\0' };
-
+  WCHAR tch[80] = { L'\0' };
   FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
-
   StatusSetText(Globals.hwndStatus,255,tch);
-  StatusSetSimple(Globals.hwndStatus,true);
-
-  InvalidateRect(Globals.hwndStatus,nullptr,true);
-  UpdateWindow(Globals.hwndStatus);
+  //RedrawWindow(Globals.hwndStatus, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+  InvalidateRect(Globals.hwndStatus,NULL,TRUE);
+  //UpdateWindow(Globals.hwndStatus);
 }
 
 
@@ -443,7 +440,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         WCHAR tch[512];
         WCHAR *p1,*p2;
 
-        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+        SET_NP3_DLG_ICON_SMALL(hwnd);
 
         UDACCEL const acc[1] = { { 0, 10 } };
         SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);

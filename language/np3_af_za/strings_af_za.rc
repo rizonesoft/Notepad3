@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Kon nie ""%s"" laai nie."
     IDS_MUI_ERR_SAVEFILE    "Kon nie ""%s"" stoor nie."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen lêerblaaier plugin is gevind nie.\nDie MiniPath-lêerblaaier plugin kan afgelaai word vanaf https://www.rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot die gekose lêer nie!\nWil jy dit uit die lys verwyder?"
     IDS_MUI_ERR_CREATELINK  "Kon nie die Desktop skakel skep nie."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Die lêer %s kan nie gestoor word nie en kan beskermd wees.\n\nWil jy begin %s as 'n 'Verhoogde' toepassing?"
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Is jy seker jy wil hierdie groot lêer oopmaak?"
+                            "Is jy seker jy wil hierdie groot lêer oopmaak?\n\t(Grootte: %s >= %s)!\n(Styling en sintaksis-uitlig word nie toegepas nie!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Kan nie daardie groot lêer hanteer nie (Grootte: %lli MB)!"
+                            "Kan nie daardie groot lêer hanteer nie (Grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
     IDS_MUI_INDENT_CONSISTENT  "Die lêer het 'n konsekwente indentasie!"
@@ -191,7 +193,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik om die lêer oop te maak."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik om skakel in leser oop te maak."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "Die behoud van die oorspronklike tydstempel vir lêerveranderings is geaktiveer.\nHierdie opsie bly vir hierdie sessie!"
 END
 
 STRINGTABLE
@@ -277,7 +279,8 @@ Opsies:\r\n\
 /b\tMaak 'n nuwe plakbord oop om klipbordinskrywings te versamel.\r\n\
 /n\tMaak altyd 'n nuwe venster oop (/ns enkele lêer instansie).\r\n\
 /r\tHergebruik venster (/rs enkele lêer instansie).\r\n\
-/p\tStel venster posisie en grootte (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tStel venster posisie en grootte (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>,<max>    [alle heelgetalle].\r\n\
 /t\tStel venster titel.\r\n\
 /i\tBegin as tray ikoon.\r\n\
 /o\tHou venster bo-op.\r\n\

@@ -48,7 +48,7 @@ cpi_enc_t Encoding_Current(cpi_enc_t iEncoding)
     if (Encoding_IsValid(iEncoding))
       CurrentEncoding = iEncoding;
     else
-      CurrentEncoding = CPI_UTF8;
+      CurrentEncoding = CPI_PREFERRED_ENCODING;
   }
   return CurrentEncoding;
 }
@@ -325,7 +325,7 @@ typedef struct _ee {
 ENCODINGENTRY, *PENCODINGENTRY;
 
 int CmpEncoding(const void *s1, const void *s2) {
-  return StrCmp(((const PENCODINGENTRY)s1)->wch, ((const PENCODINGENTRY)s2)->wch);
+  return wcscmp_s(((const PENCODINGENTRY)s1)->wch, ((const PENCODINGENTRY)s2)->wch);
 }
 // ============================================================================
 

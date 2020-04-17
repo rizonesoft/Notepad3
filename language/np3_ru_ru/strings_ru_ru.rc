@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Ошибка загрузки «%s»."
     IDS_MUI_ERR_SAVEFILE    "Ошибка сохранения «%s»."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Не найден плагин браузера файлов.\nПлагин MiniPath можно загрузить с сайта https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Нет доступа к выбранному файлу!\nХотите удалить его из списка?"
     IDS_MUI_ERR_CREATELINK  "Ошибка создания ярлыка на Рабочем столе."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Файл «%s» не может быть сохранен и может быть защищен.\n\nХотите запустить %s с повышенными правами?"
     IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Вы уверены, что хотите открыть этот очень большой файл?"
+                            "Вы уверены, что хотите открыть этот очень большой файл?\n\t(размер: %s >= %s)!\n(Стили и схема синтаксиса не будут применены!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Невозможно обработать этот большой файл (размер: %lli МБ)!"
+                            "Невозможно обработать этот большой файл (размер: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"
     IDS_MUI_INDENT_CONSISTENT  "Файл имеет одинакового вида отступы!"
@@ -277,7 +279,8 @@ Notepad3 \t[/?] [...[Кодировка]] [...[Окончания строк]] [
 /b\tОткрыть новое окно для сбора изменений буфера обмена.\r\n\
 /n\tВсегда открывать новое окно (/ns один экземпляр файла).\r\n\
 /r\tПереиспользовать окно (/rs один экземпляр файла).\r\n\
-/p\tЗадать положение и размер окна (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tЗадать положение и размер окна (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tили /p <left>,<top>,<width>,<height>,<max>    [целые числа].\r\n\
 /t\tЗадать заголовок окна.\r\n\
 /i\tЗапустить иконкой в области уведомлений.\r\n\
 /o\tПоверх других окон.\r\n\

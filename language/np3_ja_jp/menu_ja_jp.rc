@@ -77,19 +77,21 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "エクスプローラーを開く(&E)",                   IDM_FILE_EXPLORE_DIR
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Alt+F",             IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "同じファイルを開く(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
-            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
+            MENUITEM "同じファイルを開く(&N)\tAlt+N",             IDM_FILE_NEWWINDOW
+            MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "管理者権限で再起動(&R)",                 IDM_FILE_LAUNCH_ELEVATED
+            MENUITEM "管理者権限で再起動(&R)",                    IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
-            MENUITEM "開いている文書を実行(&D)\tCtrl+L",         IDM_FILE_LAUNCH
+            MENUITEM "開いている文書を実行(&D)\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "別のプログラムで開く(&O)...\tAlt+L",         IDM_FILE_OPENWITH
             MENUITEM "ファイル名を指定して実行(&C)...\tCtrl+R",    IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "ウェブ1で開く(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "ウェブ2で開く(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "エクスプローラーを開く(&E)", IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "文字コード(&E)"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 BOM (&S)",                        IDM_ENCODING_UTF8SIGN
             MENUITEM "その他の文字コードを指定(&M)...\tF9",        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトで読み直し(&D)\tCtrl+Alt+F",        CMD_RECODEDEFAULT
+            MENUITEM "デフォルトで読み直し(&D)",                   CMD_RECODEDEFAULT
             MENUITEM "ANSI で読み直し(&A)\tCtrl+Shift+A",         CMD_RECODEANSI
             MENUITEM "OEM で読み直し(&O)\tCtrl+Shift+O",          CMD_RECODEOEM
             MENUITEM "GB18030 で読み直し(&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -297,15 +299,17 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "検索(&S)"
         BEGIN
-            MENUITEM "検索(&F)...\tCtrl+F",                      IDM_EDIT_FIND
-            MENUITEM "検索文字列候補に追加\tAlt+F3",             IDM_EDIT_SAVEFIND
+            MENUITEM "検索(&F)...\tCtrl+F",                       IDM_EDIT_FIND
+            MENUITEM "検索文字列候補に追加\tAlt+F3",               IDM_EDIT_SAVEFIND
             MENUITEM "次を検索(&X)\tF3",                          IDM_EDIT_FINDNEXT
             MENUITEM "前へ検索(&V)\tShift+F3",                    IDM_EDIT_FINDPREV
             MENUITEM "選択部分で次を検索\tCtrl+F3",                CMD_FINDNEXTSEL
             MENUITEM "選択部分で前へ検索\tCtrl+Shift+F3",          CMD_FINDPREVSEL
             MENUITEM "置換(&R)...\tCtrl+H",                       IDM_EDIT_REPLACE
             MENUITEM "置換し次へ(&X)\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",              IDM_EDIT_GOTOLINE
+            MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Alt+F",              IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "表示(&V)"
@@ -361,16 +365,18 @@ BEGIN
             MENUITEM "単語一望モード\tCtrl+Alt+V",                 IDM_VIEW_TOGGLE_VIEW
             MENUITEM "編集制限モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "ハイパーリンクのツールチップを表示(&H)",            IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "ツールバー(&T)"
+        POPUP "ウィンドウ構成(&A)"
         BEGIN
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
-            MENUITEM "アイコン大小の切替(&G)",                     IDM_VIEW_TOGGLETB
-            MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
             MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
-            MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
+            MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "アイコン大小の切替(&G)",                      IDM_VIEW_TOGGLETB
+            MENUITEM "ツールバーのDPI調整(&D)",                       IDM_VIEW_DPISCALETB
         END
         POPUP "拡大縮小(&Z)"
         BEGIN
@@ -380,13 +386,13 @@ BEGIN
         END
         POPUP "ウィンドウ位置(&P)"
         BEGIN
-            MENUITEM "ウインドウ位置を引数形式でコピー\tCtrl+Shift+K",   CMD_COPYWINPOS
-            MENUITEM "初期化位置へ移動\tCtrl+Shift+P",              CMD_DEFAULTWINPOS
-            MENUITEM "初期化位置として記憶",                         CMD_SAVEASDEFWINPOS
-            MENUITEM "記憶した初期化位置を消去",                     CMD_CLEARSAVEDWINPOS
-            MENUITEM "最初の位置へ移動\tCtrl+F11",                  CMD_INITIALWINPOS
-            MENUITEM "全画面表示の切替\tF11",                      CMD_FULLSCRWINPOS
-            MENUITEM "ウィンドウ位置の固定(&P)",                      IDM_VIEW_STICKYWINPOS
+            MENUITEM "ウインドウ位置を引数形式でコピー\tCtrl+Shift+K",     CMD_COPYWINPOS
+            MENUITEM "初期化位置へ移動\tCtrl+Shift+P",                CMD_DEFAULTWINPOS
+            MENUITEM "初期化位置として記憶",                            CMD_SAVEASDEFWINPOS
+            MENUITEM "記憶した初期化位置を消去",                        CMD_CLEARSAVEDWINPOS
+            MENUITEM "最初の位置へ移動\tCtrl+F11",                     CMD_INITIALWINPOS
+            MENUITEM "全画面表示の切替\tF11",                          CMD_FULLSCRWINPOS
+            MENUITEM "ウィンドウ位置の固定(&P)",                         IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "外観(&P)"
@@ -447,7 +453,7 @@ BEGIN
         BEGIN
             POPUP "描画方式(&R)"
             BEGIN
-                MENUITEM "標準GDI (&G)",                    IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "標準GDI (合字未対応)(&G)",     IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D)(&D)",      IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",          IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
@@ -492,7 +498,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "すべて選択(&S)",                              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "ここの折りたたみを切替(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "ここの折りたたみを切替(&T)",                     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "ウェブ1で開く(&1)",                             CMD_WEBACTION1
         MENUITEM "ウェブ2で開く(&2)",                             CMD_WEBACTION2
@@ -500,12 +506,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "メニューバーを表示(&M)",                        IDM_VIEW_MENUBAR
-        MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
-        MENUITEM "アイコン大小の切替(&G)",                    IDM_VIEW_TOGGLETB
-        MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
-        MENUITEM "ツールバーの独自アイコンを設定(&L)...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "ステータスバーの表示(&S)",                      IDM_VIEW_STATUSBAR
+        MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
+        MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
+        MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "独自アイコンを設定(&L)...",                   IDM_VIEW_LOADTHEMETB
+        MENUITEM "ツールバーの編集(&C)...",                     IDM_VIEW_CUSTOMIZETB
+        MENUITEM "アイコン大小の切替(&G)",                      IDM_VIEW_TOGGLETB
+        MENUITEM "ツールバーのDPI調整(&D)",                       IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

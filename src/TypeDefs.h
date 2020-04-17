@@ -72,12 +72,6 @@ typedef DocPos         DocLn;   // Sci::Line
 //typedef intptr_t cpi_enc_t;
 typedef int cpi_enc_t;
 
-typedef struct _dpi_t
-{
-  UINT x;
-  UINT y;
-} DPI_T;
-
 typedef struct _wi
 {
   int x;
@@ -195,6 +189,7 @@ typedef struct _editfindreplace
   bool bAutoEscCtrlChars;
   bool bFindClose;
   bool bReplaceClose;
+  bool bOverlappingFind;
   bool bNoFindWrap;
   bool bWildcardSearch;
   bool bMarkOccurences;
@@ -204,7 +199,7 @@ typedef struct _editfindreplace
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
-#define EFR_INIT_DATA  { "", "", 0, false, false, false, false, false, false, false, false, true, NULL }
+#define INIT_EFR_DATA  { "", "", 0, false, false, false, false, false, false, false, false, false, true, NULL }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
@@ -278,6 +273,7 @@ typedef struct _constants_t
 {
   int const          StdDefaultLexerID; // Pure Text Files
   const WCHAR* const FileBrowserMiniPath;
+  const WCHAR* const FileSearchGrepWin;
   const WCHAR* const StylingThemeName;
 
   const WCHAR* const Settings_Section;
@@ -309,9 +305,11 @@ typedef struct _globals_t
   HWND      hwndStatus;
   DWORD     dwLastError;
   HMENU     hMainMenu;
-  HICON     hDlgIcon;
-  HICON     hIcon48;
-  HICON     hIcon128;
+  HICON     hDlgIcon256;   // Notepad3 Icon (256x256)
+  HICON     hDlgIcon128;   // Notepad3 Icon (128x128)
+  HICON     hDlgIconBig;
+  HICON     hDlgIconSmall;
+  HICON     hIconMsgUser;
   HICON     hIconMsgInfo;
   HICON     hIconMsgWarn;
   HICON     hIconMsgError;
@@ -323,8 +321,6 @@ typedef struct _globals_t
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
   cpi_enc_t DOSEncoding;
-  DPI_T     CurrentDPI;
-  DPI_T     CurrentPPI;
   LANGID    iPrefLANGID;
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;
@@ -334,13 +330,13 @@ typedef struct _globals_t
   FILEVARS  fvBackup;
   int       iWrapCol;
 
-  bool      flagPosParam;
-  int       flagWindowPos;
-  int       flagReuseWindow;
-  int       flagSingleFileInstance;
-  int       flagMultiFileArg;
-  int       flagShellUseSystemMRU;
-  int       flagPrintFileAndLeave;
+  bool      CmdLnFlag_PosParam;
+  int       CmdLnFlag_WindowPos;
+  int       CmdLnFlag_ReuseWindow;
+  int       CmdLnFlag_SingleFileInstance;
+  int       CmdLnFlag_MultiFileArg;
+  int       CmdLnFlag_ShellUseSystemMRU;
+  int       CmdLnFlag_PrintFileAndLeave;
    
   bool      bZeroBasedColumnIndex;
   bool      bZeroBasedCharacterCount;
@@ -355,7 +351,6 @@ typedef struct _globals_t
   unsigned  idxSelectedTheme;
 
   WCHAR     SelectedThemeName[128];
-  WCHAR     InitialPreferredLanguage[LOCALE_NAME_MAX_LENGTH + 1];
 
   FR_STATES FindReplaceMatchFoundState;
 
@@ -445,6 +440,8 @@ typedef struct _settings_t
   bool ShowMenubar;
   bool ShowToolbar;
   bool ShowStatusbar;
+  int ToolBarTheme;
+  bool DpiScaleToolBar;
   int EncodingDlgSizeX;
   int EncodingDlgSizeY;
   int RecodeDlgSizeX;
@@ -487,6 +484,7 @@ typedef struct _flags_t
   int  ToolbarLook;
   int PrintFileAndLeave;
 
+  bool bLargeFileLoaded;
   bool bDevDebugMode;
   bool bStickyWindowPosition;
   bool bReuseWindow;
@@ -505,7 +503,7 @@ typedef struct _flags_t
   bool bDoRelaunchElevated;
   bool bSearchPathIfRelative;
 
-  bool bSettingsFileLocked;
+  bool bSettingsFileSoftLocked;
 
 } FLAGS_T, *PFLAGS_T;
 
@@ -537,8 +535,7 @@ typedef struct _settings2_t
   int    ExitOnESCSkipLevel;
 
   float  AnalyzeReliableConfidenceLevel;
-  //~float  ReliableCEDConfidenceMapping;   // = 0.85f;
-  //~float  UnReliableCEDConfidenceMapping; //= 0.20f;
+  float  LocaleAnsiCodePageAnalysisBonus;
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
   WCHAR DefaultExtension[64];
@@ -546,14 +543,20 @@ typedef struct _settings2_t
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
   WCHAR FileBrowserPath[MAX_PATH];
-  WCHAR AppUserModelID[32];
+  WCHAR GrepWinPath[MAX_PATH];
+  WCHAR AppUserModelID[128];
   WCHAR AutoCompleteFillUpChars[64];
   WCHAR LineCommentPostfixStrg[64];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
-  WCHAR TimeStamp[128];
+
+  //int DateFormatLong;
+  //int DateFormatShort;
   WCHAR DateTimeShort[128];
+  WCHAR TimeStampRegExShort[256];
   WCHAR DateTimeLong[128];
+  WCHAR TimeStampRegExLong[256];
+
   WCHAR WebTemplate1[MAX_PATH];
   WCHAR WebTemplate2[MAX_PATH];
   WCHAR AdministrationTool[MAX_PATH];
@@ -600,7 +603,6 @@ typedef struct _editfileiostatus
   cpi_enc_t iEncoding;
   int iEOLMode;
 
-  bool bFileTooBig;
   bool bUnicodeErr;
 
   // inconsistent line endings
@@ -617,26 +619,7 @@ typedef struct _editfileiostatus
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
-
-//=============================================================================
-
-typedef struct _docviewpos_t
-{
-  DocPos iCurPos;
-  DocPos iAnchorPos;
-  //DocPos vSpcCaretPos;
-  //DocPos vSpcAnchorPos;
-  DocLn  iCurrLine;
-  DocPos iCurColumn;
-  DocLn  iVisTopLine;
-  DocLn  iDocTopLine;
-  int    iXOffset;
-  bool   bIsTail;
-
-} DOCVIEWPOS_T, * PDOCVIEWPOS_T;
-
-#define INIT_DOCVIEWPOS { 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, false }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
 
 //=============================================================================
 
@@ -649,7 +632,6 @@ typedef struct _themeFiles
 } THEMEFILES, * PTHEMEFILES;
 
 //=============================================================================
-
 
 // ---------   common defines   --------
 
@@ -666,6 +648,11 @@ typedef struct _themeFiles
 #define INTERNET_MAX_URL_LENGTH         (INTERNET_MAX_SCHEME_LENGTH \
                                         + sizeof("://") \
                                         + INTERNET_MAX_PATH_LENGTH)
+
+#define SET_NP3_DLG_ICON_BIG(hwnd)  if(Globals.hDlgIconBig){SendMessage((hwnd),WM_SETICON,ICON_BIG,(LPARAM)Globals.hDlgIconBig);}
+#define SET_NP3_DLG_ICON_SMALL(hwnd)  if(Globals.hDlgIconSmall){SendMessage((hwnd),WM_SETICON,ICON_SMALL,(LPARAM)Globals.hDlgIconSmall);}
+
+// ----------------------------------------------------------------------------
 
 //=============================================================================
 

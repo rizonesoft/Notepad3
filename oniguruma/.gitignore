@@ -48,6 +48,7 @@ m4/*.m4
 /test/testp
 /test/test_regset
 /test/test_syntax
+/test/test_back
 /test/kofu-utf8.txt
 
 # sample/

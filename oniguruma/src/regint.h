@@ -64,7 +64,7 @@
 #define USE_STUBBORN_CHECK_CAPTURES_IN_EMPTY_REPEAT     /* /(?:()|())*\2/ */
 #define USE_NEWLINE_AT_END_OF_STRING_HAS_EMPTY_LINE     /* /\n$/ =~ "\n" */
 #define USE_WARNING_REDUNDANT_NESTED_REPEAT_OPERATOR
-#define USE_RETRY_LIMIT_IN_MATCH
+#define USE_RETRY_LIMIT
 #ifdef USE_GOTO_LABELS_AS_VALUES
 #define USE_THREADED_CODE
 #define USE_DIRECT_THREADED_CODE
@@ -86,7 +86,9 @@
 #define INIT_MATCH_STACK_SIZE                160
 #define DEFAULT_MATCH_STACK_LIMIT_SIZE         0 /* unlimited */
 #define DEFAULT_RETRY_LIMIT_IN_MATCH    10000000
+#define DEFAULT_RETRY_LIMIT_IN_SEARCH          0 /* unlimited */
 #define DEFAULT_PARSE_DEPTH_LIMIT           4096
+#define DEFAULT_SUBEXP_CALL_MAX_NEST_LEVEL    20
 
 
 #include "regenc.h"
@@ -180,9 +182,14 @@
 #define CHECK_NULL_RETURN_MEMERR(p)   if (IS_NULL(p)) return ONIGERR_MEMORY
 #define NULL_UCHARP                   ((UChar* )0)
 
+#ifndef ONIG_INT_MAX
+#define ONIG_INT_MAX    INT_MAX
+#endif
+
 #define CHAR_MAP_SIZE              256
 #define INFINITE_LEN               ONIG_INFINITE_DISTANCE
-#define LOOK_BEHIND_MAX_CHAR_LEN   INT_MAX
+#define STEP_BACK_MAX_CHAR_LEN     65535 /* INT_MAX is too big */
+#define LOOK_BEHIND_MAX_CHAR_LEN   STEP_BACK_MAX_CHAR_LEN
 
 /* escape other system UChar definition */
 #ifdef ONIG_ESCAPE_UCHAR_COLLISION
@@ -881,6 +888,7 @@ typedef struct {
     struct {
       UpdateVarType type;
       MemNumType id;
+      int clear;  /* UPDATE_VAR_RIGHT_RANGE_FROM_S_STACK or UPDATE_VAR_RIGHT_RANGE_FROM_STACK */
     } update_var;
     struct {
       AbsAddrType addr;

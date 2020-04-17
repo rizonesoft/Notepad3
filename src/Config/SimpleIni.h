@@ -246,6 +246,7 @@
 #include <list>
 #include <algorithm>
 #include <stdio.h>
+#include <strsafe.h>
 
 #ifdef SI_SUPPORT_IOSTREAMS
 # include <iostream>
@@ -294,7 +295,7 @@ enum class SI_Error : int {
 
 #if defined(_WIN32)
 # define SI_HAS_WIDE_FILE
-//# define SI_USE_LOCKING_WIDE_FILE
+# define SI_USE_LOCKING_WIDE_FILE
 # define SI_WCHAR_T     wchar_t
 #elif defined(SI_CONVERT_ICU)
 # define SI_HAS_WIDE_FILE
@@ -419,25 +420,20 @@ public:
     };
 
 #ifdef SI_USE_LOCKING_WIDE_FILE
-    class FileWriterLocking : public OutputWriter {
+    class FileHndlWriter : public OutputWriter {
       HANDLE m_file;
-      LPOVERLAPPED m_pOvrLpd;
     public:
-      FileWriterLocking(HANDLE a_file, LPOVERLAPPED a_pOvrLpd)
-        : m_file(a_file)
-        , m_pOvrLpd(a_pOvrLpd) { }
-      ~FileWriterLocking() {
-        FlushFileBuffers(m_file);
-      }
+      FileHndlWriter(HANDLE a_file) : m_file(a_file) { SetFilePointer(m_file, 0, 0, FILE_BEGIN); SetEndOfFile(m_file); };
+      ~FileHndlWriter() { FlushFileBuffers(m_file); }
       void Write(const char* a_pBuf) override {
         DWORD nBytesWritten = 0UL;
         DWORD const nBytesToWrite = static_cast<DWORD>(strlen(a_pBuf));
-        WriteFile(m_file, a_pBuf, nBytesToWrite, &nBytesWritten, m_pOvrLpd);
+        WriteFile(m_file, a_pBuf, nBytesToWrite, &nBytesWritten, NULL);
       }
     private:
-      FileWriterLocking() = delete;
-      FileWriterLocking(const FileWriterLocking&) = delete;             // disable
-      FileWriterLocking& operator=(const FileWriterLocking&) = delete;  // disable
+      FileHndlWriter() = delete;
+      FileHndlWriter(const FileHndlWriter&) = delete;             // disable
+      FileHndlWriter& operator=(const FileHndlWriter&) = delete;  // disable
     };
 #endif
 
@@ -636,7 +632,7 @@ public:
         @return SI_Error    See error definitions
     */
 #ifdef SI_USE_LOCKING_WIDE_FILE
-    SI_Error LoadFile( HANDLE a_hFile, DWORD dwFileSize, LPOVERLAPPED pOvrLpd);
+    SI_Error LoadFile( HANDLE a_hFile);
 #else
     SI_Error LoadFile( FILE * a_fpFile );
 #endif
@@ -728,7 +724,6 @@ public:
 #ifdef SI_USE_LOCKING_WIDE_FILE
     SI_Error SaveFile(
       HANDLE a_hFile,
-      LPOVERLAPPED a_pOvrLpd,
       bool   a_bAddSignature = false
     ) const;
 #else
@@ -1435,31 +1430,24 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
   const SI_WCHAR_T* a_pwszFile
 )
 {
-  HANDLE hFile = CreateFile(a_pwszFile,
-    GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (a_pwszFile && a_pwszFile[0])
+  {
+    HANDLE hFile = CreateFile(a_pwszFile,
+      GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+      nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-  if (hFile == INVALID_HANDLE_VALUE) {
-    return SI_Error::SI_FILE;
+    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
+
+    if (hFile == INVALID_HANDLE_VALUE) {
+      return SI_Error::SI_FILE;
+    }
+
+    SI_Error rc = LoadFile(hFile);
+
+    CloseHandle(hFile);
+    return rc;
   }
-
-  DWORD dwFileSizeHigh = 0UL;
-  DWORD const dwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
-    return SI_Error::SI_FILE;
-  }
-
-  OVERLAPPED OvrLpd;  ZeroMemory(&OvrLpd, sizeof(OVERLAPPED));
-
-  DWORD const flags = 0UL; // SHARED READ(!) ~ LOCKFILE_FAIL_IMMEDIATELY | LOCKFILE_EXCLUSIVE_LOCK
-  LockFileEx(hFile, flags, 0, dwFileSize, dwFileSizeHigh, &OvrLpd);
-
-  SI_Error const rc = LoadFile(hFile, dwFileSize, &OvrLpd);
-
-  UnlockFileEx(hFile, 0, dwFileSize, dwFileSizeHigh, &OvrLpd);
-
-  CloseHandle(hFile);
-  return rc;
+  return SI_Error::SI_FILE;
 }
 
 #else
@@ -1467,7 +1455,8 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
-    const SI_WCHAR_T * a_pwszFile
+    const SI_WCHAR_T * a_pwszFile,
+    bool               a_bUseLocking
     )
 {
 #ifdef _WIN32
@@ -1498,11 +1487,17 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
-  HANDLE a_hFile, DWORD dwFileSize, LPOVERLAPPED pOvrLpd
+  HANDLE a_hFile
 )
 {
+  DWORD dwFileSizeHigh = 0UL;
+  DWORD const dwFileSize = GetFileSize(a_hFile, &dwFileSizeHigh);
+  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
+    return SI_Error::SI_FILE;
+  }
+
   // allocate and ensure NULL terminated
-  auto* pData = new(std::nothrow) char[dwFileSize + 1];
+  auto* pData = new(std::nothrow) char[(size_t)dwFileSize + 1];
   if (!pData) {
     return SI_Error::SI_NOMEM;
   }
@@ -1510,7 +1505,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
 
   // load the raw file data
   DWORD nBytesRead = 0UL;
-  BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, pOvrLpd);
+  BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, nullptr);
   if ((result == FALSE) || (nBytesRead != dwFileSize)) {
     delete[] pData;
     return SI_Error::SI_FILE;
@@ -2640,31 +2635,24 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
   bool              a_bAddSignature
 ) const
 {
-  HANDLE hFile = CreateFile(a_pwszFile,
-    GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-    NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (a_pwszFile && a_pwszFile[0]) 
+  {
+    HANDLE hFile = CreateFile(a_pwszFile,
+      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+      nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-  if (hFile == INVALID_HANDLE_VALUE) {
-    return SI_Error::SI_FILE;
+    SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
+
+    if (hFile == INVALID_HANDLE_VALUE) {
+      return SI_Error::SI_FILE;
+    }
+
+    SI_Error rc = SaveFile(hFile, a_bAddSignature);
+
+    CloseHandle(hFile);
+    return rc;
   }
-
-  DWORD dwFileSizeHigh = 0UL;
-  DWORD const dwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
-    return SI_Error::SI_FILE;
-  }
-
-  OVERLAPPED OvrLpd;  ZeroMemory(&OvrLpd, sizeof(OVERLAPPED));
-
-  DWORD const flags = 0UL; // SHARED READ(!) ~ LOCKFILE_FAIL_IMMEDIATELY | LOCKFILE_EXCLUSIVE_LOCK
-  LockFileEx(hFile, flags, 0, dwFileSize, dwFileSizeHigh, &OvrLpd);
-
-  SI_Error const rc = SaveFile(hFile, &OvrLpd, a_bAddSignature);
-
-  UnlockFileEx(hFile, 0, dwFileSize, dwFileSizeHigh, &OvrLpd);
-
-  CloseHandle(hFile);
-  return rc;
+  return SI_Error::SI_FILE;
 }
 
 #else
@@ -2705,11 +2693,10 @@ template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
   HANDLE a_hFile,
-  LPOVERLAPPED a_pOvrLpd,
   bool   a_bAddSignature
 ) const
 {
-  FileWriterLocking writer(a_hFile, a_pOvrLpd);
+  FileHndlWriter writer(a_hFile);
   return Save(writer, a_bAddSignature);
 }
 #else

@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" 파일을 읽는 도중 오류가 발생하였습니다."
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 도중 오류가 발생하였습니다."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다.\nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             """%s"" 파일을 저장할 수 없으며 보호되어 있을 수 있습니다.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "사용 가능한 관리 도구를 찾을 수 없습니다. https://rizonesoft.com 에서 확인 하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "이 대용량 파일을 열겠습니까?"
+                            "이 대용량 파일을 열겠습니까?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %lli MB)!"
+                            "Can't handle that huge file (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "알 수 없는 확장자 (%s)!\n데이터를 로딩 하시겠습니까?"
     IDS_MUI_INDENT_CONSISTENT   "들여쓰기가 일관적입니다!"
@@ -227,7 +229,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역 testinsovr"
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역 ghost"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s - 스타일 +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s - 스타일"
@@ -277,7 +279,8 @@ Notepad3 \t[/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
 /b\t클립보드 항목 수집용 붙여넣기판으로 열기.\r\n\
 /n\t항상 새 창 열기 (/ns 단일 파일 인스턴스).\r\n\
 /r\t윈도우 다시 사용 (/rs 단일 파일 인스턴스).\r\n\
-/p\t윈도우 위치와 크기 지정 (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\t윈도우 위치와 크기 지정 (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
 /t\t윈도우 타이틀 지정.\r\n\
 /i\t트레이 아이콘으로 실행.\r\n\
 /o\t최상위 창으로.\r\n\

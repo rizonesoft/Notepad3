@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "読み込み失敗 ""%s"""
     IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s"""
-    IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は https://rizonesoft.com からダウンロードできます。"
+    IDS_MUI_ERR_DLG_FORMAT  "エラー '%s', 原因:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "ファイルブラウザプラグインがありません。\nこのプラグイン MiniPath は以下からダウンロードできます。 https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません。\nファイル検索プラグインの grepWinNP3 は以下からダウンロードできます。https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか？"
     IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "「%s」を保存できませんでした。保護されている可能性があります。\n\n権限を昇格して %s を起動しますか？"
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3 の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "大容量のファイルです。このファイルを開きますか？"
+                            "大容量のファイルです。このファイルを開きますか？\n\t(サイズ: %s >= %s)!\n(配色や構文ハイライトは適用されません!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "大容量すぎて処理できません！ (サイズ: %lli MB)"
+                            "大容量すぎて処理できません！ (サイズ: %s)"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "%s は設定のない拡張子です。\n読み込みますか？"
     IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
@@ -278,6 +280,7 @@ Notepad3 \t[/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l
 /n\t新しいウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
 /r\tひとつウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
 /p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max]] (/p0, /ps,\r\n\t/pf,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>,<max>    [すべて整数]\r\n\
 /t\tタイトルバーの文字列を指定 [/t text]\r\n\
 /i\tシステムトレイ内に起動\r\n\
 /o\t常に手前に表示\r\n\
@@ -337,31 +340,31 @@ IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
-\\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
-\\cf0 are permitted provided that the following conditions are met:\\par\
+\\cf0 変更の有無にかかわらず、ソースやバイナリとしての再配布と使用は\\par\
+\\cf0 以下の条件が満たされている場合に許可されています:\\par\
 \\cf0 \\par\
-\\cf0 1. Redistributions of source code must retain the above copyright\\par\
-\\cf0 notice, this list of conditions and the following disclaimer.\\par\
+\\cf0 1. ソースコードの再配布には、上記の著作権表示、この条件の箇条書き、\\par\
+\\cf0 以下の免責事項を保つ必要があります。\\par\
 \\cf0 \\par\
-\\cf0 2. Redistributions in binary form must reproduce the above copyright\\par\
-\\cf0 notice, this list of conditions and the following disclaimer in the\\par\
-\\cf0 documentation and/or other materials provided with the distribution.\\par\
+\\cf0 2. バイナリ形式での再配布には、上記の著作権表示、この条件の箇条書き、\\par\
+\\cf0 以下の免責事項を、配布物と共に提供される文書や他の資料中に\\par\
+\\cf0 複製する必要があります。\\par\
 \\cf0 \\par\
-\\cf0 3. Neither the name of Florian Balmer nor the names of its contributors\\par\
-\\cf0 may be used to endorse or promote products derived from this software\\par\
-\\cf0 without specific prior written permission.\\par\
+\\cf0 3. Florian Balmer とその貢献者の名前を、\\par\
+\\cf0 このソフトウェアから派生した製品を宣伝するために\\par\
+\\cf0 使用することは、明確な事前の書面による許可なくできません。\\par\
 \\cf0 \\par\
-\\cf0 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\\par\
-\\cf0 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED\\par\
-\\cf0 TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\\par\
-\\cf0 PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\\par\
-\\cf0 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\\par\
-\\cf0 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\\par\
-\\cf0 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\\par\
-\\cf0 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\\par\
-\\cf0 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\\par\
-\\cf0 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\\par\
-\\cf0 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\\par\
+\\cf0 本ソフトウェアは、著作権所有者と貢献者によって「現状のまま」提供され\\par\
+\\cf0 商品性の黙示保証および特定目的への適合性に限らず\\par\
+\\cf0 あらゆる明示的あるいは黙示的な保証は否認されている。\\par\
+\\cf0 いかなる原因また責任理論においても\\par\
+\\cf0 契約、厳格責任、不法行為を問わず (過失その他を含む)\\par\
+\\cf0 そのような損害の可能性を知らされてたとしても\\par\
+\\cf0 本ソフトウェアの使用からなんらかの形で発生した\\par\
+\\cf0 直接、間接、偶発、特別、懲罰的、また間接的損害\\par\
+\\cf0 (以下に限定されないが、代替品やサービスの調達;\\par\
+\\cf0 使用、データや利益の損失;事業中断) に対し\\par\
+\\cf0 いかなる場合も著作権所有者と貢献者は責任を負わない。\\par\
 }"
 
 END

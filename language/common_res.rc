@@ -46,7 +46,6 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINWND48           ICON     DISCARDABLE    "Notepad3_48.ico"
 IDI_MUI_RUN             ICON                    "Run.ico"
 IDI_MUI_STYLES          ICON                    "Styles.ico"
 
@@ -118,7 +117,6 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 \\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
 \\cf0 ltGuillaume\\tab https://github.com/ltGuillaume\\par\
 \\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
-\\cf0 marciliocn\\tab https://github.com/marciliocn\\par\
 \\cf0 RaffaeleBianc0\\tab https://github.com/RaffaeleBianc0\\par\
 \\cf0 rizonesoft\\tab https://github.com/rizonesoft\\par\
 \\cf0 ThreeLightsBeyond\\tab https://github.com/ThreeLightsBeyond\\par\
@@ -129,6 +127,7 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 
 IDS_MUI_ABOUT_MORE  "\
 \\cf0 NotepadCrypt (Version Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java\\par\
+\\cf0 Data Sharing Service\\tab https://workupload.com\\par\
 \\cf0 \\par\
 "
 

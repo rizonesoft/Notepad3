@@ -17,7 +17,9 @@
 #ifndef _NP3_DIALOGS_H_
 #define _NP3_DIALOGS_H_
 
+#include <math.h>
 #include "TypeDefs.h"
+#include "Scintilla.h"
 
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
 bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);
@@ -47,11 +49,13 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, LPCWSTR lpcwFilePath);
 void DialogFileBrowse(HWND hwnd);
+void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
 
 int  MessageBoxLng(HWND hwnd, UINT uType, UINT uIdMsg, ...);
 INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMessage, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
+DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, 
                     int iFormat, bool bIsElevated, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
@@ -106,6 +110,46 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID);
 int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
 int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
+// ----------------------------------------------------------------------------
+
+DPI_T GetCurrentPPI(HWND hwnd);
+
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+
+inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+
+inline int ScaleIntFontSizeWidth(HWND hwnd, int val) { 
+  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+  DPI_T const ppi = GetCurrentPPI(hwnd);  
+  return MulDiv((val), dpi.x, ppi.x); 
+}
+
+inline int ScaleIntFontSizeHeight(HWND hwnd, int val) { 
+  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+  DPI_T const ppi = GetCurrentPPI(hwnd);  
+  return MulDiv((val), dpi.y, ppi.y); 
+}
+
+inline int ScaleFloatFontSize(HWND hwnd, float fSize) { 
+  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+  DPI_T const ppi = GetCurrentPPI(hwnd);
+  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y);
+}
+
+inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { 
+  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+  DPI_T const ppi = GetCurrentPPI(hwnd);
+  return (int)lroundf((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10;
+}
+
+// ----------------------------------------------------------------------------
+
+HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
+void SetUACIcon(const HMENU hMenu, const UINT nItem);
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
+HBITMAP ResizeImageForCurrentDPI(HWND hWnd, HBITMAP hbmp);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------

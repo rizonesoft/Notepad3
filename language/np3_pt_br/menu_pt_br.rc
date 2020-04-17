@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Executar"
         BEGIN
-            MENUITEM "Abri &Gerenciador de Arquivos",   IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",    IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nova Janela\tAlt+N",             IDM_FILE_NEWWINDOW
             MENUITEM "Janela &Vazia\tAlt+Shift+N",      IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Modelo Web &1\tCtrl+Shift+1",     CMD_WEBACTION1
             MENUITEM "Modelo Web &2\tCtrl+Shift+2",     CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Abri &Gerenciador de Arquivos",   IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Codificação"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 com &Assinatura",    IDM_ENCODING_UTF8SIGN
             MENUITEM "&Mais...\tF9",             IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Recodificar para o &Padrão\tCtrl+Alt+F",      CMD_RECODEDEFAULT
+            MENUITEM "Recodificar para o &Padrão",                  CMD_RECODEDEFAULT
             MENUITEM "Recodificar para &ANSI\tCtrl+Shift+A",        CMD_RECODEANSI
             MENUITEM "Recodificar para &OEM\tCtrl+Shift+O",         CMD_RECODEOEM
             MENUITEM "Recodificar para &GB18030\tCtrl+Shift+F10",   CMD_RECODEGB18030
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "&Substituir...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Vizualizar"
@@ -363,14 +367,16 @@ BEGIN
             MENUITEM "&Rolagem Passa do Fim do Arquivo",            IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar Dica de &Hyperlink",                  IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "&Barra de Ferramentas"
+        POPUP "P&anels"
         BEGIN
             MENUITEM "Mostrar &Menu",                               IDM_VIEW_MENUBAR
             MENUITEM "Mostrar &Barra de Ferramentas",               IDM_VIEW_TOOLBAR
-            MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
-            MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
+            MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -438,25 +444,25 @@ BEGIN
                 MENUITEM "Mostrar &Caminho Completo",      IDM_VIEW_SHOWFULLPATH
                 MENUITEM "Extrair &Texto\tCtrl+9",         IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "&Reusar Janela",              IDM_VIEW_REUSEWINDOW
-            MENUITEM "&Sempre no Topo\tAlt+T",      IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&zar para a Bandeja",   IDM_VIEW_MINTOTRAY
-            MENUITEM "&Modo Transparente\tAlt+G",   IDM_VIEW_TRANSPARENT
+            MENUITEM "&Reusar Janela",                 IDM_VIEW_REUSEWINDOW
+            MENUITEM "&Sempre no Topo\tAlt+T",         IDM_VIEW_ALWAYSONTOP
+            MENUITEM "Minimi&zar para a Bandeja",      IDM_VIEW_MINTOTRAY
+            MENUITEM "&Modo Transparente\tAlt+G",      IDM_VIEW_TRANSPARENT
         END
         POPUP "&Tecnologia"
         BEGIN
             POPUP "&Renderização"
             BEGIN
-                MENUITEM "Padrão &GDI",               IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",   IDM_SET_RENDER_TECH_D2D
-                MENUITEM "&Reter DirectWrite",        IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",       IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Padrão &GDI (no ligatures)", IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",    IDM_SET_RENDER_TECH_D2D
+                MENUITEM "&Reter DirectWrite",         IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",        IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Bidirecional"
             BEGIN
-                MENUITEM "Nenhum",                    IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Esquerda para a Direita",   IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Direita para a Esquerda",   IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Nenhum",                     IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Esquerda para a Direita",    IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Direita para a Esquerda",    IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "Configurações &Avançadas"
@@ -500,17 +506,19 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar &Menu",                                IDM_VIEW_MENUBAR
-        MENUITEM "Mostrar Barra de &Ferramentas",                IDM_VIEW_TOOLBAR
-        MENUITEM "Tro&car Barra de &Ferramentas",                IDM_VIEW_TOGGLETB
-        MENUITEM "&Personalizar Barra de Ferramentas...",        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Carregar Tema da Barra de &Ferramentas...",   IDM_VIEW_LOADTHEMETB
-        MENUITEM "Mostrar Barra de &Status",                     IDM_VIEW_STATUSBAR
+        MENUITEM "Mostrar &Menu",                               IDM_VIEW_MENUBAR
+        MENUITEM "Mostrar &Barra de Ferramentas",               IDM_VIEW_TOOLBAR
+        MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Carregar Barra de Ferramentas do Tema...",   IDM_VIEW_LOADTHEMETB
+        MENUITEM "C&ustomizar Barra de Ferramentas...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Al&ternar Barra de Ferramentas",              IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Scale Toolbar",                          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir o Notepad3",   IDM_TRAY_RESTORE
-        MENUITEM "Sair do Notepad3",   IDM_TRAY_EXIT
+        MENUITEM "Abrir o Notepad3",                            IDM_TRAY_RESTORE
+        MENUITEM "Sair do Notepad3",                            IDM_TRAY_EXIT
     END
 END
 

@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Errore aprendo ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Errore salvando ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato.\nMiniPath può essere scaricato su https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dalla lista?"
     IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi aprire %s con diritti amministrativi?"
     IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Sei sicuro di voler aprire questo file grande?"
+                            "Sei sicuro di voler aprire questo file grande?\n\t(dimensione: %s >= %s)!\n(Le evidenziature di stile e sintassi non saranno applicate!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Impossibile gestire un file così grande (dimensione: %lli MB)!"
+                            "Impossibile gestire un file così grande (dimensione: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Estensione sconosciuta (%s)!\nProseguire con il caricamento?"
     IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
@@ -277,7 +279,8 @@ Opzioni:\r\n\
 /b\tApri una nuova Paste Board per collezionare il testo copiato negli Appunti.\r\n\
 /n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
 /r\tRiutilizza finestra (/rs istanza singola).\r\n\
-/p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>,<max>    [numeri interi].\r\n\
 /t\tImposta titolo della finestra.\r\n\
 /i\tAvvia come icona nella Tray.\r\n\
 /o\tMantieni finestra in primo piano.\r\n\

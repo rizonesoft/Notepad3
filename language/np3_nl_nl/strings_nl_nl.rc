@@ -126,7 +126,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fout bij  laden ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Fout bij bewaren ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen plugin voor bestandsbrowser gevonden.\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWilt u het uit de lijst verwijderen?"
     IDS_MUI_ERR_CREATELINK  "Fout bij het maken van de bureaubladkoppeling."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -146,9 +148,9 @@ BEGIN
                             "Het bestand ""%s"" kan niet worden opgeslagen en kan worden beveiligd.\n\nWilt u %s als verhoogde applicatie starten?"
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Weet je zeker dat je dit grote bestand wilt openen?"
+                            "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Styling en syntax highlighting wordt niet toegepast!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Kan dat enorme bestand niet aan (grootte: %lli MB)!"
+                            "Kan dat enorme bestand niet aan (grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende bestandsnaamextensie (%s)!\nGegevens toch laden?"
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
@@ -277,7 +279,8 @@ Opties:\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
 /r\tHergebruik venster (/rs één bestand instantie).\r\n\
-/p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\tof /p <links>,<top>,<breedte>,<hoogte>,<max>    [alle gehele getallen].\r\n\
 /t\tStel de titel van het venster in.\r\n\
 /i\tStart als systeemvak icoon.\r\n\
 /o\tHoud het venster bovenop.\r\n\

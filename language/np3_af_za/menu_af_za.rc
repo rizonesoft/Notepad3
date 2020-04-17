@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Begin"
         BEGIN
-            MENUITEM "Maak File &Explorer Oop",                 IDM_FILE_EXPLORE_DIR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nuwe Venster\tAlt+N",                IDM_FILE_NEWWINDOW
             MENUITEM "Lê&er Venster\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -90,6 +90,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Maak File &Explorer Oop",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         POPUP "&Enkodering"
@@ -101,7 +103,7 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",               IDM_ENCODING_UTF8SIGN
             MENUITEM "&Meer...\tF9",                        IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Hercodeer na &Standaard\tCtrl+Alt+F",    CMD_RECODEDEFAULT
+            MENUITEM "Hercodeer na &Standaard",                CMD_RECODEDEFAULT
             MENUITEM "Hercodeer na &ANSI\tCtrl+Shift+A",       CMD_RECODEANSI
             MENUITEM "Hercodeer na &OEM\tCtrl+Shift+O",        CMD_RECODEOEM
             MENUITEM "Hercodeer na &GB18030\tCtrl+Shift+F10",  CMD_RECODEGB18030
@@ -199,8 +201,8 @@ BEGIN
             MENUITEM "&Inkeep",                             IDM_EDIT_INDENT
             MENUITEM "&Ontkeep",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "Jump to Sele&ction Start\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "Jump to Selectio&n End\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM "Spring na die &Seleksie Begin\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "Sprin&g na die Seleksie Einde\tCtrl+.",      CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Omsluit S&eleksie"
             BEGIN
@@ -306,6 +308,8 @@ BEGIN
             MENUITEM "Verv&ang...\tCtrl+H",                          IDM_EDIT_REPLACE
             MENUITEM "Vervang Volge&nde\tF4",                        IDM_EDIT_REPLACENEXT
             MENUITEM "&Gaan na...\tCtrl+G",                          IDM_EDIT_GOTOLINE
+            MENUITEM SEPARATOR
+            MENUITEM "&Search in Files\tCtrl+Alt+F",                 IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Aansig"
@@ -350,11 +354,11 @@ BEGIN
             MENUITEM "&Kode Vou",                           IDM_VIEW_FOLDING
             MENUITEM "&Wissel Voue\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Spring &Volgende Vou\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "&Spring Vorige Vou\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Spring &Volgende Vou\tAlt+ +",        CMD_FOLDJUMPDOWN
+            MENUITEM "&Spring Vorige Vou\tAlt+ –",          CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "Vou &Inmekaar\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Brei Vou Uit\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "Vou &Inmekaar\tAlt+ ←",               CMD_FOLDCOLLAPSE
+            MENUITEM "&Brei Vou Uit\tAlt+ →",               CMD_FOLDEXPAND
         END
         POPUP "Ver&toning"
         BEGIN
@@ -363,14 +367,16 @@ BEGIN
             MENUITEM "Rol na Einde Van Die &Lêer",          IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Wys &Hiperskakel Nutsmiddelwenk",     IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
-        POPUP "Nu&tsbalk"
+        POPUP "P&anele"
         BEGIN
-            MENUITEM "Show &Menubar",                       IDM_VIEW_MENUBAR
+            MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
-            MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
+            MENUITEM SEPARATOR
+            MENUITEM "&Laai Toolbar Tema...",               IDM_VIEW_LOADTHEMETB
+            MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
+            MENUITEM "To&ggle Nutsbalke",                   IDM_VIEW_TOGGLETB
+            MENUITEM "&DPI Skaal Balk",                  	IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
@@ -447,10 +453,10 @@ BEGIN
         BEGIN
             POPUP "&Lewering"
             BEGIN
-                MENUITEM "Verstek &GDI",                    IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
-                MENUITEM "DirectWrite &Behou",              IDM_SET_RENDER_TECH_D2DRETAIN
-                MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "Verstek &GDI (Geen ligature nie)",    IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "DirectWrite (&Direct2D)",         	IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite &Behou",              	IDM_SET_RENDER_TECH_D2DRETAIN
+                MENUITEM "Direct&Write GDI DC",             	IDM_SET_RENDER_TECH_D2DDC
             END
             POPUP "Bidirectionele"
             BEGIN
@@ -500,12 +506,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Wus &Menubar",                            IDM_VIEW_MENUBAR
+        MENUITEM "Wys &Menubalk",                           IDM_VIEW_MENUBAR
         MENUITEM "Wys &Nutsbalk",                           IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&Pas Nutsbalk...",                        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "Wys &Statusbalk",                         IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR                                 
+        MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
+        MENUITEM "Pas&maak Nutsbalk...",                    IDM_VIEW_CUSTOMIZETB
+        MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB
+        MENUITEM "&DPI Skaal Balk",                      IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

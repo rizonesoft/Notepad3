@@ -530,7 +530,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			} else if (!IsADoxygenChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
-				if (!isspace(sc.ch) || !kw_pldoc.InList(s + 1)) {
+				if (!isspacechar(sc.ch) || !kw_pldoc.InList(s + 1)) {
 					sc.ChangeState(SCE_SQL_COMMENTDOCKEYWORDERROR);
 				}
 				sc.SetState(styleBeforeDCKeyword);
