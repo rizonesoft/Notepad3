@@ -1284,7 +1284,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 0, 0, 6);
 
-    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  Globals.fvBackup.bWordWrap = Settings.WordWrap;
+    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, true); Globals.fvBackup.bWordWrap = Settings.WordWrap;
     GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.fvBackup.bTabsAsSpaces = Settings.TabsAsSpaces;
     GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  Globals.fvBackup.bTabIndents = Settings.TabIndents;
     GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.fvBackup.iTabWidth = Settings.TabWidth;
@@ -1292,11 +1292,11 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.fvBackup.iLongLinesLimit = Settings.LongLinesLimit;
     Globals.iWrapCol = Settings.LongLinesLimit;
 
-    Defaults.WordWrapSymbols = 22;
+    Defaults.WordWrapSymbols = 2;
     int const iWS = IniSectionGetInt(IniSecSettings, L"WordWrapSymbols", Defaults.WordWrapSymbols);
     Settings.WordWrapSymbols = clampi(iWS % 10, 0, 2) + clampi((iWS % 100 - iWS % 10) / 10, 0, 2) * 10;
 
-    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, false);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, true);
     GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
@@ -1971,7 +1971,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
   bool ok = false;
 
-  BeginWaitCursor(tchMsg);
+  BeginWaitCursor(true,tchMsg);
 
 __try {
 

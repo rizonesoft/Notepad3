@@ -3929,7 +3929,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
           }
         }
-        BeginWaitCursor(L"Recoding...");
+        BeginWaitCursor(true,L"Recoding...");
         _IGNORE_NOTIFY_CHANGE_;
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
 
@@ -3984,7 +3984,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_CR:
     case IDM_LINEENDINGS_LF:
       {
-        BeginWaitCursor(L"Line Breaks...");
+        BeginWaitCursor(true,L"Line Breaks...");
         _IGNORE_NOTIFY_CHANGE_;
         int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
         SciCall_SetEOLMode(_eol_mode);
@@ -4275,105 +4275,77 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,s_wchPrefixSelection,s_wchAppendSelection)) {
-        BeginWaitCursor(NULL);
         EditEncloseSelection(s_wchPrefixSelection,s_wchAppendSelection);
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_PADWITHSPACES:
-      BeginWaitCursor(NULL);
       EditPadWithSpaces(Globals.hwndEdit,false,false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_STRIP1STCHAR:
-      BeginWaitCursor(NULL);
       EditStripFirstCharacter(Globals.hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_STRIPLASTCHAR:
-      BeginWaitCursor(NULL);
       EditStripLastCharacter(Globals.hwndEdit, false, false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_TRIMLINES:
-      BeginWaitCursor(NULL);
       EditStripLastCharacter(Globals.hwndEdit, false, true);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_COMPRESS_BLANKS:
-      BeginWaitCursor(NULL);
       EditCompressBlanks(Globals.hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_MERGEBLANKLINES:
-      BeginWaitCursor(NULL);
       EditRemoveBlankLines(Globals.hwndEdit, true, true);
-      EndWaitCursor();
       break;
 
     case IDM_EDIT_MERGEEMPTYLINES:
-      BeginWaitCursor(NULL);
       EditRemoveBlankLines(Globals.hwndEdit, true, false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_REMOVEBLANKLINES:
-      BeginWaitCursor(NULL);
       EditRemoveBlankLines(Globals.hwndEdit, false, true);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_REMOVEEMPTYLINES:
-      BeginWaitCursor(NULL);
       EditRemoveBlankLines(Globals.hwndEdit, false, false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_REMOVEDUPLICATELINES:
-      BeginWaitCursor(NULL);
       EditRemoveDuplicateLines(Globals.hwndEdit, false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_MODIFYLINES:
       if (EditModifyLinesDlg(hwnd,s_wchPrefixLines,s_wchAppendLines)) {
-        BeginWaitCursor(NULL);
         EditModifyLines(s_wchPrefixLines,s_wchAppendLines);
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_ALIGN:
       if (EditAlignDlg(hwnd,&s_iAlignMode)) {
-        BeginWaitCursor(NULL);
         EditAlignText(s_iAlignMode);
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_SORTLINES:
       if (EditSortDlg(hwnd,&s_iSortOptions)) {
-        BeginWaitCursor(NULL);
         EditSortLines(Globals.hwndEdit,s_iSortOptions);
-        EndWaitCursor();
       }
       break;
 
@@ -4384,108 +4356,80 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol))
         {
           Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
-          BeginWaitCursor(NULL);
           EditWrapToColumn(Globals.iWrapCol);
-          EndWaitCursor();
         }
       }
       break;
 
 
     case IDM_EDIT_SPLITLINES:
-      BeginWaitCursor(NULL);
       EditSplitLines(Globals.hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_JOINLINES:
-      BeginWaitCursor(NULL);
       EditJoinLinesEx(false, true);
-      EndWaitCursor();
       break;
 
     case IDM_EDIT_JOINLN_NOSP:
-      BeginWaitCursor(NULL);
       EditJoinLinesEx(false, false);
-      EndWaitCursor();
       break;
 
     case IDM_EDIT_JOINLINES_PARA:
-      BeginWaitCursor(NULL);
       EditJoinLinesEx(true, true);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTUPPERCASE:
       {
-        BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
         SciCall_UpperCase();
         _END_UNDO_ACTION_;
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_CONVERTLOWERCASE:
       {
-        BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
         SciCall_LowerCase();
         _END_UNDO_ACTION_;
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_INVERTCASE:
-      BeginWaitCursor(NULL);
       EditInvertCase(Globals.hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_TITLECASE:
-      BeginWaitCursor(NULL);
       EditTitleCase(Globals.hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_SENTENCECASE:
-      BeginWaitCursor(NULL);
       EditSentenceCase(Globals.hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTTABS:
-      BeginWaitCursor(NULL);
       EditTabsToSpaces(Globals.fvCurFile.iTabWidth, false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTSPACES:
-      BeginWaitCursor(NULL);
       EditSpacesToTabs(Globals.fvCurFile.iTabWidth, false);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTTABS2:
-      BeginWaitCursor(NULL);
       EditTabsToSpaces(Globals.fvCurFile.iTabWidth, true);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CONVERTSPACES2:
-      BeginWaitCursor(NULL);
       EditSpacesToTabs(Globals.fvCurFile.iTabWidth, true);
-      EndWaitCursor();
       break;
 
 
@@ -4572,8 +4516,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_LINECOMMENT:
       {
-        BeginWaitCursor(NULL);
-
         switch (SciCall_GetLexer()) {
           case SCLEX_CPP:
           case SCLEX_D:
@@ -4635,15 +4577,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             // do nothing
             break;
         }
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_STREAMCOMMENT:
       {
-        BeginWaitCursor(NULL);
-
         switch (SciCall_GetLexer()) {
           case SCLEX_D:
             //~EditEncloseSelection(Globals.hwndEdit, L"/+", L"+/");
@@ -4703,43 +4642,34 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             // do nothing
             break;
         }
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_URLENCODE:
       {
-        BeginWaitCursor(NULL);
         EditURLEncode(Globals.hwndEdit);
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_URLDECODE:
       {
-        BeginWaitCursor(NULL);
         EditURLDecode(Globals.hwndEdit);
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_ESCAPECCHARS:
       {
-        BeginWaitCursor(NULL);
         EditEscapeCChars(Globals.hwndEdit);
-        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_UNESCAPECCHARS:
       {
-        BeginWaitCursor(NULL);
         EditUnescapeCChars(Globals.hwndEdit);
-        EndWaitCursor();
       }
       break;
 
@@ -9224,7 +9154,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
   FormatLngStringW(tch, COUNTOF(tch), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
   bool fSuccess = false;
 
-  BeginWaitCursor(tch);
+  BeginWaitCursor(true,tch);
 
   if (fLoad) {
     fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,bForceEncDetection,bSetSavePoint,status);
@@ -9254,6 +9184,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
   return(fSuccess);
 }
 
+
 //=============================================================================
 //
 //  ConsistentIndentationCheck()
@@ -9276,10 +9207,8 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
       bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
       SciCall_SetBackSpaceUnIndents(true);
 
-      BeginWaitCursor(NULL);
       EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
       EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
-      EndWaitCursor();
 
       SciCall_SetUseTabs(useTabs);
       SciCall_SetTabIndents(tabIndents);
@@ -9450,7 +9379,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   bool bUnknownLexer = s_flagLexerSpecified;
 
-  BeginWaitCursor(L"Styling...");
+  BeginWaitCursor(true,L"Styling...");
 
   if (fSuccess) 
   {

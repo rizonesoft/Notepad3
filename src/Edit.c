@@ -6808,8 +6808,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
     return;
   }
 
-  BeginWaitCursor(L"Mark Occ...");
-
   int const searchFlags = GetMarkAllOccSearchFlags();
 
   _IGNORE_NOTIFY_CHANGE_;
@@ -6831,8 +6829,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   }
   
   _OBSERVE_NOTIFY_CHANGE_;
-
-  EndWaitCursor();
 }
 
 
@@ -7093,7 +7089,7 @@ bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
   DocPos const end = Sci_GetDocEndPosition();
   DocPos enlargement = 0;
 
-  BeginWaitCursor(NULL);
+  BeginWaitCursor(true,L"Replace all...")
   Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
   EndWaitCursor();
 
@@ -7129,8 +7125,6 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 
   Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
-  BeginWaitCursor(L"Replace all...")
-
   if (Globals.iReplacedOccurrences > 0) 
   {
     if (currPos < anchorPos)
@@ -7147,8 +7141,6 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
       }
     }
   }
-
-  EndWaitCursor();
 
   return (Globals.iReplacedOccurrences > 0) ? true : false;
 }
@@ -7181,7 +7173,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 //
 void EditToggleView(HWND hwnd)
 {
-  BeginWaitCursor(L"Toggle View...");
+  BeginWaitCursor(true,L"Toggle View...");
 
   FocusedView.HideNonMatchedLines = !FocusedView.HideNonMatchedLines; // toggle
 
