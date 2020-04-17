@@ -68,16 +68,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)obj\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)obj\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\grepWin\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\grepWin\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)obj\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)obj\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\grepWin\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\grepWin\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
@@ -95,7 +95,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>sktoolslib_mod;src\last</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>sktoolslib_mod;src\last;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -120,7 +120,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>sktoolslib_mod;src\last</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>sktoolslib_mod;src\last;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -144,7 +144,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>sktoolslib_mod;src\last</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>sktoolslib_mod;src\last;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -173,7 +173,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>sktoolslib_mod;src\last</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>sktoolslib_mod;src\last;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -294,9 +294,27 @@
     <None Include="default.build">
       <SubType>Designer</SubType>
     </None>
+    <None Include="translations\Afrikaans (Suid-Afrika) [af-ZA].lang" />
+    <None Include="translations\Deutsch (Deutschland) [de-DE].lang" />
+    <None Include="translations\English (United Kingdom) [en-GB].lang" />
+    <None Include="translations\English (United States) [en-US].lang" />
+    <None Include="translations\Español (España) [es-ES].lang" />
+    <None Include="translations\Français (France) [fr-FR].lang" />
+    <None Include="translations\Italiano (Italia) [it-IT].lang" />
+    <None Include="translations\Magyar (Magyarország) [hu-HU].lang" />
+    <None Include="translations\Nederlands (Nederland) [nl-NL].lang" />
+    <None Include="translations\Polski (Polska)Polski [pl-PL].lang" />
+    <None Include="translations\Português (Brasil) [pt-BR].lang" />
+    <None Include="translations\Slovenčina (Slovensko) [sk-SK].lang" />
+    <None Include="translations\Svenska (Sverige) [sv-SE].lang" />
+    <None Include="translations\Türkçe (Türkiye) [tr-TR].lang" />
+    <None Include="translations\Беларуская (Беларусь) [be-BY].lang" />
+    <None Include="translations\Русский (Pоссия) [ru-RU].lang" />
+    <None Include="translations\日本語 （日本） [ja-JP].lang" />
+    <None Include="translations\简体中文 （中国） [zh-CN].lang" />
+    <None Include="translations\한국어 (대한민국) [ko-KR].lang" />
     <None Include="version.build.in" />
     <None Include="versioninfo.build" />
-    <None Include="..\packages.config" />
     <None Include="src\Resources\grepWinNP3.ico" />
     <None Include="src\Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>

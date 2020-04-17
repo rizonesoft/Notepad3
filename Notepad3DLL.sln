@@ -2,6 +2,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D32CB10B-1891-471D-B780-5445BC67C1E2}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "grepWinNP3", "grepWinNP3\grepWinNP3.vcxproj", "{0049F8CF-1BEC-4E6E-B457-0187A33AD522}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Notepad3", "src\Notepad3DLL.vcxproj", "{BAAD32AB-CD47-12FD-873C-0BBC204B7641}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4B141102-3379-4F20-A9B0-F7418EFF3DAA} = {4B141102-3379-4F20-A9B0-F7418EFF3DAA}
@@ -159,6 +168,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Build\Changes.txt = Build\Changes.txt
+		packages.config = packages.config
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ko_kr", "language\np3_ko_kr\np3_ko_kr.vcxproj", "{0FA07345-601B-474E-99C0-7E61E70DA72E}"
@@ -255,6 +265,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_sk_sk", "language\np3_s
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "grepWinNP3", "grepWinNP3", "{3F7359FE-EC69-42E8-BB21-7E59D622D57D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -263,6 +275,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Debug|Win32.Build.0 = Debug|Win32
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Debug|x64.ActiveCfg = Debug|x64
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Debug|x64.Build.0 = Debug|x64
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Release|Win32.ActiveCfg = Release|Win32
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Release|Win32.Build.0 = Release|Win32
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Release|x64.ActiveCfg = Release|x64
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522}.Release|x64.Build.0 = Release|x64
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641}.Debug|Win32.Build.0 = Debug|Win32
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641}.Debug|x64.ActiveCfg = Debug|x64
@@ -600,6 +620,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{0049F8CF-1BEC-4E6E-B457-0187A33AD522} = {3F7359FE-EC69-42E8-BB21-7E59D622D57D}
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641} = {C3735E17-6EAE-4CC5-980E-30BCEF094862}
 		{781B17E7-427F-488F-A8E9-360BA38A10F3} = {D21C1F85-6FA3-4695-82CD-DDC5690E2D66}
 		{5877B917-512B-49F5-B514-1B4159E7A9CA} = {C3735E17-6EAE-4CC5-980E-30BCEF094862}

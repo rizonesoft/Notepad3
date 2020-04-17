@@ -19,6 +19,9 @@
     <Filter Include="sktoolslib_mod">
       <UniqueIdentifier>{9e218bba-f3cf-4af8-b8b0-538877ab3ae2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="translations">
+      <UniqueIdentifier>{5fd907ec-eafb-47ec-aa1a-6c84ea9ec37e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AboutDlg.cpp">
@@ -298,9 +301,65 @@
     <None Include="src\version.in">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="..\packages.config" />
     <None Include="src\Resources\grepWinNP3.ico">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="translations\Afrikaans (Suid-Afrika) [af-ZA].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Deutsch (Deutschland) [de-DE].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\English (United Kingdom) [en-GB].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\English (United States) [en-US].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Español (España) [es-ES].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Français (France) [fr-FR].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Italiano (Italia) [it-IT].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Magyar (Magyarország) [hu-HU].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Nederlands (Nederland) [nl-NL].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Polski (Polska)Polski [pl-PL].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Português (Brasil) [pt-BR].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Slovenčina (Slovensko) [sk-SK].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Svenska (Sverige) [sv-SE].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Türkçe (Türkiye) [tr-TR].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Беларуская (Беларусь) [be-BY].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\Русский (Pоссия) [ru-RU].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\한국어 (대한민국) [ko-KR].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\日本語 （日本） [ja-JP].lang">
+      <Filter>translations</Filter>
+    </None>
+    <None Include="translations\简体中文 （中国） [zh-CN].lang">
+      <Filter>translations</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
