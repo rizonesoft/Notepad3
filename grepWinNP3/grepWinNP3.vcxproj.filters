@@ -361,6 +361,7 @@
     <None Include="translations\简体中文 （中国） [zh-CN].lang">
       <Filter>translations</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\Resources\grepWin.rc">

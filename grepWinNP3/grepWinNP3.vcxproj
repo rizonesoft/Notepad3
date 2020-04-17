@@ -294,6 +294,7 @@
     <None Include="default.build">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="translations\Afrikaans (Suid-Afrika) [af-ZA].lang" />
     <None Include="translations\Deutsch (Deutschland) [de-DE].lang" />
     <None Include="translations\English (United Kingdom) [en-GB].lang" />
