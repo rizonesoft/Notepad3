@@ -116,8 +116,6 @@ bool InitApplication(HINSTANCE hInstance);
 HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
 WININFO GetFactoryDefaultWndPos(const int flagsPos);
 WININFO GetWinInfoByFlag(const int flagsPos);
-void BeginWaitCursor(LPCWSTR text);
-void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR lpNewCmdLnArgs);
@@ -205,12 +203,8 @@ void ObserveNotifyChangeEvent();
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
 
 
-#define BeginWaitCursor(text)     __try { SciCall_SetCursor(SC_CURSORWAIT);                       \
-                                          StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); 
-
-#define EndWaitCursor()     } __finally { SciCall_SetCursor(SC_CURSORNORMAL);                      \
-                                          POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y); \
-                                          UpdateStatusbar(true); }
+#define BeginWaitCursor(cond,text)   if (cond) { __try { SciCall_SetCursor(SC_CURSORWAIT);  StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); 
+#define EndWaitCursor()   } __finally { SciCall_SetCursor(SC_CURSORNORMAL); POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y);  UpdateStatusbar(true); } }
 
 
 #define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }

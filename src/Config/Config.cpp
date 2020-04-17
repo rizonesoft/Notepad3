@@ -1971,7 +1971,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
   bool ok = false;
 
-  BeginWaitCursor(tchMsg);
+  BeginWaitCursor(true,tchMsg);
 
 __try {
 
