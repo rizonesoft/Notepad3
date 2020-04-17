@@ -55,9 +55,6 @@ image:
 init:
   - git config --global core.autocrlf input
 
-cache:
-  - packages -> **\packages.config
-
 # clone directory
 clone_folder: c:\projects\notepad3
 
@@ -136,6 +133,9 @@ platform:
 configuration:
   - Release
 #  - Debug
+
+cache:
+  - packages -> **\packages.config
 
 build:
   parallel: true
