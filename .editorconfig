@@ -55,9 +55,9 @@ indent_style = tab
 indent_size = 4
 tab_width = 4
 
-[grepWinNP3/**.{rc}]
-charset = utf-16le
+[grepWinNP3/src/**.{rc}]
+charset = utf-16
 
 [grepWinNP3/src/resource.h]
-charset = utf-16le
+charset = utf-16
 
