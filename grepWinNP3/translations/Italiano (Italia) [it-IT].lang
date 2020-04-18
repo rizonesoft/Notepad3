@@ -421,8 +421,8 @@ msgid "The resulting text after replacing:"
 msgstr "Il testo risultante dopo la sostituzione:"
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "Questo aggiunge una nuova voce al menu contestuale denominato \"Apri con l'Editor\""
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Questo aggiunge una nuova voce al menu contestuale denominato 'Apri con l'Editor'"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -466,7 +466,7 @@ msgstr "Impostazioni grepWinNP3"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "tieni premuto il tasto \"Maiusc\" per trovare i file che NON contengono la stringa di ricerca"
+msgstr "tieni premuto il tasto 'Maiusc' per trovare i file che NON contengono la stringa di ricerca"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -489,8 +489,8 @@ msgid "no text to test with available"
 msgstr "nessun testo disponibile da provare"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "vengono cercati solo i file che corrispondono a questo modello.\r\nUsa ""|"" come delimitatore.\r\nEsempio: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+msgstr "vengono cercati solo i file che corrispondono a questo modello.\nUsa '|' come delimitatore.\nEsempio: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -514,12 +514,12 @@ msgid "search string is empty"
 msgstr "la stringa di ricerca è vuota"
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "il percorso(i) che viene cercato in modo ricorsivo.\r\nSeparare i percorsi con il | simbolo.\r\nEsempio: c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+msgstr "il percorso(i) che viene cercato in modo ricorsivo.\nSeparare i percorsi con il'|'simbolo.\nEsempio: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "puoi escludere le cartelle, ad es. CVS e immagini.\r\nEsempio: ^(CVS|immagini)$\r\nNota, le cartelle '.svn' sono 'nascoste' su Windows, quindi di solito non vengono scansionate."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "puoi escludere le cartelle, ad es. CVS e immagini.\nEsempio: ^(CVS|immagini)$\nNota, le cartelle '.svn' sono 'nascoste' su Windows, quindi di solito non vengono scansionate."
 
 #. Resource IDs: (1061)
 msgid "Reset"

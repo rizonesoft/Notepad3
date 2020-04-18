@@ -276,6 +276,7 @@
     <ClInclude Include="src\Bookmarks.h" />
     <ClInclude Include="src\BookmarksDlg.h" />
     <ClInclude Include="src\InfoDlg.h" />
+    <ClInclude Include="src\last\version.h" />
     <ClInclude Include="src\LineData.h" />
     <ClInclude Include="src\MultiLineEditDlg.h" />
     <ClInclude Include="src\NameDlg.h" />

@@ -421,8 +421,8 @@ msgid "The resulting text after replacing:"
 msgstr "Resultaat tekst na vervangen:"
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "Dit voegt in het Context menu toe: \"Openen in Editor\""
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Dit voegt in het Context menu toe: 'Openen in Editor'"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -489,8 +489,8 @@ msgid "no text to test with available"
 msgstr "geen tekst om te testen beschikbaar"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "alleen bestanden die overeenkomen met dit patroon, worden doorzocht.\r\nGebruik ""|"" als scheidingsteken.\r\nVoorbeeld: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+msgstr "alleen bestanden die overeenkomen met dit patroon, worden doorzocht.\nGebruik '|' als scheidingsteken.\nVoorbeeld: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -514,12 +514,12 @@ msgid "search string is empty"
 msgstr "zoekstring is leeg"
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "het pad wordt recursief doorzocht.\r\nScheidt de paden met het | symbool.\r\nVoorbeeld: c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+msgstr "het pad wordt recursief doorzocht.\nScheidt de paden met het'|'symbool.\nVoorbeeld: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\r\nVoorbeeld: ^(CVS|images)$\r\nOpmerking: '.svn' mappen zijn in Windows normaal verborgen en worden daarom normaal niet doorzocht."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\nVoorbeeld: ^(CVS|images)$\nOpmerking: '.svn' mappen zijn in Windows normaal verborgen en worden daarom normaal niet doorzocht."
 
 #. Resource IDs: (1061)
 msgid "Reset"
