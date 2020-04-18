@@ -521,10 +521,6 @@ msgstr "Chemin(s) de recherche récursive.\n'|' pour ajouter un chemin.\nExemple
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Il est possible d'exclure des dossiers. Exemple: ^(CVS|images)$ pour exclure CVS et images.\nLes dossiers '.svn' sont 'cachés' sous Windows et ne sont normalement pas parcourus."
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Ext"
-
 #. Resource IDs: (1061)
 msgid "Reset"
 msgstr "Réinitialiser"

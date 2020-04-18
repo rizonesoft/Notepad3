@@ -198,7 +198,7 @@ BEGIN
     LTEXT           "Specifica impostazioni avanzate di MiniPath.",IDC_STATIC,40,15,160,8
     CONTROL         "&Usa cartella di avvio:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "Utilizzati di &recente.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         "Cartella ""&Preferiti"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         """&Preferiti"" Cartella.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Rimuovi attributo ""Sola lettura"" dai file salvati.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10

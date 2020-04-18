@@ -198,7 +198,7 @@ BEGIN
     LTEXT           "Spécifier les paramètres avancés pour MiniPath.",IDC_STATIC,40,15,160,8
     CONTROL         "&Dossier de démarrage:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "Plus &récemment utilisé.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         "Dossier ""&Favoris"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         """&Favoris"" Dossier.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Effacer l'attribut en lecture seule des fichiers enregistrés.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10

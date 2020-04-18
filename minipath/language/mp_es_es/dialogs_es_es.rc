@@ -198,7 +198,7 @@ BEGIN
     LTEXT           "Especificar las configuraciones advanzadas para MiniPath.",IDC_STATIC,40,15,180,8
     CONTROL         "&Carpeta de inicio:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "Más &recientemente usado.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,90,10
-    CONTROL         "Carpeta ""&Favoritos"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         """&Favoritos"" Carpeta.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Quitar atributo de sólo lectura de los archivos guardados.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10

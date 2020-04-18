@@ -54,85 +54,85 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "Back"
-    IDT_HISTORY_FORWARD     "Forward"
-    IDT_UPDIR               "Upper Directory"
-    IDT_ROOT                "Root Directory"
-    IDT_VIEW_FAVORITES      "Favourites"
-    IDT_FILE_PREV           "Previous File"
-    IDT_FILE_NEXT           "Next File"
-    IDT_FILE_RUN            "Run"
-    IDT_FILE_QUICKVIEW      "Quickview"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_COPYMOVE       "Copy/Move"
-    IDT_FILE_DELETE         "Delete"
-    IDT_FILE_DELETE2        "Delete (No Recycle)"
+    IDT_HISTORY_BACK        "Späť"
+    IDT_HISTORY_FORWARD     "Vpred"
+    IDT_UPDIR               "Nadradený adresár"
+    IDT_ROOT                "Koreňový adresár"
+    IDT_VIEW_FAVORITES      "Obľúbené"
+    IDT_FILE_PREV           "Predchádzajúci súbor"
+    IDT_FILE_NEXT           "Ďalší súbor"
+    IDT_FILE_RUN            "Spustiť"
+    IDT_FILE_QUICKVIEW      "Rýchly náhľad"
+    IDT_FILE_SAVEAS         "Uložiť ako"
+    IDT_FILE_COPYMOVE       "Kopírovať/presunúť"
+    IDT_FILE_DELETE         "Zmazať (do Koša)"
+    IDT_FILE_DELETE2        "Zmazať (priamo)"
     IDT_VIEW_FILTER         "Filter"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Object(s)"
-    IDS_NUMFILES2           "%s Object(s) | Filter"
-    IDS_SAVEFILE            "Saving ""%s""..."
-    IDS_OPEN_FILE_WITH      "Open with %s"
+    IDS_NUMFILES            "%s Objekt(y)"
+    IDS_NUMFILES2           "%s Objekt(y) | Filter"
+    IDS_SAVEFILE            "Ukladanie ""%s""..."
+    IDS_OPEN_FILE_WITH      "Otvoriť v %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory.\nCheck the disk or the network connection."
-    IDS_ERR_FILE            "File Access Error\nNo access to ""%s"".\nThe file may be used by another application.\nCheck the disk or the network connection."
-    IDS_ERR_NEW             "File Access Error\nFile could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s"".\nProbably an already existing file is write-protected."
-    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file."
-    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
-    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
-    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
-    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
-    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
-    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
-    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
+    IDS_ERR_CD              "Chyba prístupu k adresáru\nŽiadny prístup k zadanému adresáru.\nSkontrolujte disk alebo sieťové pripojenie."
+    IDS_ERR_FILE            "Chyba prístupu k súboru\nŽiadny prístup k ""%s"".\nSúbor môže používať iná aplikácia.\nSkontrolujte disk alebo sieťové pripojenie."
+    IDS_ERR_NEW             "Chyba prístupu k súboru\nSúbor sa nepodarilo vytvoriť.\nSkontrolujte disk alebo sieťové pripojenie."
+    IDS_ERR_NEWDIR          "Chyba prístupu k adresáru\nAdresár sa nepodarilo vytvoriť.\nSkontrolujte disk alebo sieťové pripojenie."
+    IDS_ERR_SAVEAS1         "Chyba uloženia súboru\nChyba ukladania ""%s"".\nPravdepodobne už existujúci súbor je chránený proti zápisu."
+    IDS_ERR_SAVEAS2         "Chyba uloženia súboru\nChyba pri odstraňovaní atribútu uloženého súboru iba na čítanie."
+    IDS_ERR_CMDLINE         "MiniPath\nChyba pri prístupe k súboru alebo adresáru zadanému v príkazovom riadku."
+    IDS_ERR_STARTUPDIR      "MiniPath\nŽiadny prístup k spúšťaciemu adresáru."
+    IDS_ERR_DROP1           "MiniPath\nŽiadny prístup k zrušenému súboru alebo adresáru."
+    IDS_ERR_DROP2           "MiniPath\nNaraz môže byť zrušený iba jeden súbor alebo adresár."
+    IDS_ERR_FAVORITES       "Obľúbené\nŽiadny prístup do priečinka ""Obľúbené"".\nV dialógovom okne ""Možnosti"" zadajte platný adresár."
+    IDS_ERR_LNK_GETPATH     "Chyba odkazu\nPre prepojený objekt nie je žiadna platná cesta k súboru.\nOdkaz pravdepodobne neodkazuje na súbor alebo adresár."
+    IDS_ERR_LNK_NOACCESS    "Chyba odkazu\nŽiadny prístup k súboru prepojeného objektu.\nSkontrolujte disk alebo sieťové pripojenie."
+    IDS_ERR_CREATELINK      "Chyba odkazu\nChyba pri vytváraní zadaného odkazu.\nCieľový adresár je pravdepodobne chránený proti zápisu."
+    IDS_ERR_FILTER          "Chyba filtra súborov\nNeboli zadané žiadne ďalšie filtre.\nĎalšie informácie nájdete v súbore Readme MiniPath."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nExistujúce okno MiniPath je zaneprázdnené alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
-    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
-    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
-    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExistujúce cieľové okno je zaneprázdnené alebo má aktívne dialógové okno.\nChcete otvoriť nové okno?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nSkontrolujte, či sú vyplnené všetky povinné polia.\nAk je príslušná možnosť povolená, budete musieť tiež nájsť cieľové okno."
+    IDS_ERR_INIOPEN         "MiniPath\nŽiadny prístup ku konfiguračnému súboru MiniPath."
+    IDS_ERR_INICREATE       "Uložiť nastavenia\nChyba pri vytváraní konfiguračného súboru."
+    IDS_ERR_INIWRITE        "Uložiť nastavenia\nNastavenia sa neuložili!\nKu konfiguračnému súboru nie je prístup na zápis."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "Find Executable"
-    IDS_GETQUICKVIEWER      "Find Quickview"
-    IDS_GETTARGET           "Find Editor"
-    IDS_NEWFILE             "New File"
-    IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Select a new directory."
-    IDS_FAVORITES           "Specify the ""Favourites"" directory."
+    IDS_SEARCHEXE           "Nájsť spustiteľný súbor"
+    IDS_GETQUICKVIEWER      "Nájsť Quickview"
+    IDS_GETTARGET           "Nájsť Editor"
+    IDS_NEWFILE             "Nový súbor"
+    IDS_FILTER_ALL          "Všetky súbory (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "Spustiteľné súbory (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nVšetky súbory (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Vybrať nový adresár."
+    IDS_FAVORITES           "Zadať adresár ""Obľúbené""."
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "&Keep on Top"
-    SC_ABOUT                "&Info..."
+    SC_ALWAYSONTOP          "&Vždy na vrchu"
+    SC_ABOUT                "&O programe..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Select the directory with links to your favourite applications."
-    IDS_COPYMOVE            "Select a destination directory."
-    IDS_CREATELINK          "Select a destination directory for the new link."
-    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "Slovenský preklad od ghost"
+    IDS_OPENWITH            "Vyberte adresár s odkazmi na vaše obľúbené aplikácie."
+    IDS_COPYMOVE            "Vyberte cieľový adresár."
+    IDS_CREATELINK          "Vyberte cieľový adresár pre nový odkaz."
+    IDS_SAVESETTINGS        "Uložiť nastavenia\nAktuálne nastavenie programu bolo uložené."
+    IDS_MUI_TRANSL_AUTHOR   "(sk-SK) Slovenský preklad Rudolfin"
 END
 
 
