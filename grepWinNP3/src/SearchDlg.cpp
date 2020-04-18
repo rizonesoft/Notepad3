@@ -624,6 +624,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_RESULTCONTENT, true);
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 0, 0);
             ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
+            EnableWindow(GetDlgItem(*this, IDC_SETTINGSBUTTON), TRUE);
             KillTimer(*this, LABELUPDATETIMER);
         }
         break;
@@ -787,7 +788,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_REPLACE:
     case IDOK:
         {
-            if (IsEvaluationThreadRunning())
+            if (IsSearchThreadRunning())
             {
                 InterlockedExchange(&s_Cancelled, TRUE);
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETSTATE, PBST_PAUSED, 0);
@@ -850,13 +851,14 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 InterlockedExchange(&s_Cancelled, FALSE);
                 InterlockedExchange(&s_NOTSearch, ((GetKeyState(VK_SHIFT) & 0x8000) != 0) ? TRUE : FALSE);
                 ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
+				EnableWindow(GetDlgItem(*this, IDC_SETTINGSBUTTON), FALSE);
 
                 // now start the thread which does the searching
                 InterlockedExchange(&s_SearchThreadRunning, TRUE);
                 SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
                 DWORD  dwThreadId = 0;
                 HANDLE hThread = CreateThread(
-                    nullptr,              // no security attribute
+                    nullptr,           // no security attribute
                     0,                 // default stack size
                     SearchThreadEntry,
                     (LPVOID)this,      // thread parameter
@@ -873,30 +875,39 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     InterlockedExchange(&s_Cancelled, TRUE);
                     InterlockedExchange(&s_SearchThreadRunning, FALSE);
                     ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
+                    EnableWindow(GetDlgItem(*this, IDC_SETTINGSBUTTON), TRUE);
                 }
 
-                InterlockedExchange(&s_EvaluationThreadRunning, TRUE);
-                // now start the thread which does result evaluation
-                dwThreadId = 0;
-                hThread    = CreateThread(
-                    nullptr, // no security attribute
-                    0,       // default stack size
-                    EvaluationThreadEntry,
-                    (LPVOID)this, // thread parameter
-                    0,            // not suspended
-                    &dwThreadId); // returns thread ID
-                if (hThread != nullptr)
+                DWORD const nMax = std::thread::hardware_concurrency() << 2;
+                DWORD const nOfWorker = bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMax) : 
+                                                    DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\MaxNumOfWorker", nMax));
+
+                if (nOfWorker > 1)
                 {
-                    // Closing the handle of a running thread just decreases
-                    // the ref count for the thread object.
-                    CloseHandle(hThread);
-                }
-                else
-                {
-                    InterlockedExchange(&s_Cancelled, TRUE);
-                    SendMessage(*this, SEARCH_END, 0, 0);
-                    InterlockedExchange(&s_EvaluationThreadRunning, FALSE);
-                    ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
+                    InterlockedExchange(&s_EvaluationThreadRunning, TRUE);
+                    // now start the thread which does result evaluation
+                    dwThreadId = 0;
+                    hThread    = CreateThread(
+                        nullptr, // no security attribute
+                        0,       // default stack size
+                        EvaluationThreadEntry,
+                        (LPVOID)this, // thread parameter
+                        0,            // not suspended
+                        &dwThreadId); // returns thread ID
+                    if (hThread != nullptr)
+                    {
+                        // Closing the handle of a running thread just decreases
+                        // the ref count for the thread object.
+                        CloseHandle(hThread);
+                    }
+                    else
+                    {
+                        InterlockedExchange(&s_Cancelled, TRUE);
+                        SendMessage(*this, SEARCH_END, 0, 0);
+                        InterlockedExchange(&s_EvaluationThreadRunning, FALSE);
+                        ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
+                        EnableWindow(GetDlgItem(*this, IDC_SETTINGSBUTTON), TRUE);
+                    }
                 }
             }
         }
@@ -2464,11 +2475,11 @@ DWORD CSearchDlg::SearchThread()
     std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[MAX_PATH_NEW]);
 
     DWORD const nMaxNumOfWorker = std::thread::hardware_concurrency() << 2;
-    DWORD const nWorker = max(min(bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMaxNumOfWorker >> 1) : 
-                          DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\MaxNumOfWorker", nMaxNumOfWorker >> 1)), nMaxNumOfWorker), 1);
+    DWORD const nOfWorker       = max(min(bPortable ? g_iniFile.GetLongValue(L"global", L"MaxNumOfWorker", nMaxNumOfWorker >> 1) : 
+		                                              DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\MaxNumOfWorker", nMaxNumOfWorker >> 1)), nMaxNumOfWorker), 1);
 
     s_SearchThreadMap.clear();
-    s_SearchThreadMap.set_max_worker(nWorker);
+    s_SearchThreadMap.set_max_worker(nOfWorker);
 
     // split the path string into single paths and
     // add them to an array
@@ -2631,35 +2642,43 @@ DWORD CSearchDlg::SearchThread()
                     sInfoPtr->filesize     = fullfilesize;
                     sInfoPtr->modifiedtime = ft;
 
-                    if ((bSearch && bPattern) || bAlwaysSearch)
+                    SearchFlags_t searchFlags = {
+                        bAlwaysSearch,
+                        m_bUTF8,
+                        m_bIncludeBinary,
+                        m_bUseRegex,
+                        m_bCaseSensitive,
+                        m_bDotMatchesNewline,
+                        m_bCreateBackup,
+                        (DWORD(m_regBackupInFolder) != 0),
+                        m_bReplace
+					};
+
+                    if (nOfWorker > 1)
                     {
-                        if (m_searchString.empty())
+						if ((bSearch && bPattern) || bAlwaysSearch)
                         {
-                            s_SearchThreadMap.insert_ready(sInfoPtr, 1);
-                        }
-                        else
-                        {
-                            SearchFlags_t searchFlags = {
-                                bAlwaysSearch,
-                                m_bUTF8,
-                                m_bIncludeBinary,
-                                m_bUseRegex,
-                                m_bCaseSensitive,
-                                m_bDotMatchesNewline,
-                                m_bCreateBackup,
-                                (DWORD(m_regBackupInFolder) != 0),
-                                m_bReplace
-                            };
+                            if (m_searchString.empty())
+                            {
+                                s_SearchThreadMap.insert_ready(sInfoPtr, 1);
+                            }
+                            else
+                            {
+                                std::shared_future<int> foundFuture = std::async(std::launch::async, SearchFile, sInfoPtr, searchRoot, searchFlags,
+                                                                                 m_searchString, SearchStringutf16, m_replaceString);
 
-                            std::shared_future<int> foundFuture = std::async(std::launch::async, SearchFile, sInfoPtr, searchRoot, searchFlags, 
-                                                                             m_searchString, SearchStringutf16, m_replaceString);
-
-                            s_SearchThreadMap.insert_future(sInfoPtr, foundFuture);
+                                s_SearchThreadMap.insert_future(sInfoPtr, foundFuture);
+                            }
                         }
+						else
+						{
+							s_SearchThreadMap.insert_ready(sInfoPtr, -1);
+						}
                     }
                     else
                     {
-                        s_SearchThreadMap.insert_ready(sInfoPtr, -1);
+                        int const nFound = SearchFile(sInfoPtr, searchRoot, searchFlags, m_searchString, SearchStringutf16, m_replaceString);
+                        SendMessage(*this, SEARCH_PROGRESS, (WPARAM)sInfoPtr.get(), nFound);
                     }
                 }
                 else // directory: search for filename
@@ -2721,8 +2740,19 @@ DWORD CSearchDlg::SearchThread()
         } // empty searchpath
     } // pathvector
 
-    InterlockedExchange(&s_SearchThreadRunning, FALSE);
+	if (nOfWorker <= 1)
+    {
+        SendMessage(*this, SEARCH_END, 0, 0);
 
+		// refresh cursor
+        POINT pt;
+        GetCursorPos(&pt);
+        SetCursorPos(pt.x, pt.y);
+
+		PostMessage(m_hwnd, WM_GREPWIN_THREADEND, 0, 0);
+	}
+
+	InterlockedExchange(&s_SearchThreadRunning, FALSE);
     return 0L;
 }
 

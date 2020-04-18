@@ -421,7 +421,7 @@ msgid "The resulting text after replacing:"
 msgstr "Полученный текст после замены:"
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr "Добавить пункт в контекстное меню 'Открыть в редакторе'"
 
 #. Resource IDs: (1053)
@@ -489,8 +489,8 @@ msgid "no text to test with available"
 msgstr "Тестировать нечего"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Поиск файлов, только соответствующих шаблону.\r\nЧерта '|' как разделитель.\r\nПример: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+msgstr "Поиск файлов, только соответствующих шаблону.\nЧерта '|' как разделитель.\nПример: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -514,12 +514,12 @@ msgid "search string is empty"
 msgstr "Строка поиска пуста"
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "Рекурсивный поиск путей.\r\nРазделение путей знаком |.\r\nПример: c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+msgstr "Рекурсивный поиск путей.\nРазделение путей знаком |.\nПример: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Вы можете исключить, например, CVS и изображения.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', как правило, скрыты в Windows, поэтому они обычно не сканируются."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "Вы можете исключить, например, CVS и изображения.\nПример: ^(CVS|images)$\nВнимание: папки '.svn', как правило, скрыты в Windows, поэтому они обычно не сканируются."
 
 #. Resource IDs: (1061)
 msgid "Reset"

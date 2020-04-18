@@ -257,7 +257,7 @@ msgstr "晚于"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "新行匹配 \".\" 号"
+msgstr "新行匹配 '.' 号"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -421,8 +421,8 @@ msgid "The resulting text after replacing:"
 msgstr "替换后的结果文本:"
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "这将在上下文菜单中添加一个名为\"使用编辑器打开\"的条目."
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "这将在上下文菜单中添加一个名为'使用编辑器打开'的条目."
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -489,8 +489,8 @@ msgid "no text to test with available"
 msgstr "没有要测试的文本"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "仅匹配此样式的文件被搜索.\r\n使用 ""|"" 作为分隔符.\r\n例如: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+msgstr "仅匹配此样式的文件被搜索.\n使用 '|' 作为分隔符.\n例如: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -514,12 +514,12 @@ msgid "search string is empty"
 msgstr "搜索字符串为空"
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "将被递归搜索的路径.\r\n使用 | 符号来分隔路径.\r\n比如:  c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+msgstr "将被递归搜索的路径.\n使用'|'符号来分隔路径.\n比如:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, '.svn' 目录在Windows中是隐藏的, 所以通常不扫描它们."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "你可以排除目录, 比如: CVS 和 images.\n例如: ^(CVS|images)$\n注意, '.svn' 目录在Windows中是隐藏的, 所以通常不扫描它们."
 
 #. Resource IDs: (1061)
 msgid "Reset"
