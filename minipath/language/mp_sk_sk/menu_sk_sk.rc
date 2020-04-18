@@ -57,72 +57,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
+        MENUITEM "&Otvoriť",                       IDM_FILE_OPEN
+        MENUITEM "Otvoriť v inej &aplikácii...",   IDM_FILE_OPENWITH
+        MENUITEM "&Rýchly náhľad",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "&Kopírovať názov",                  IDM_POP_COPYNAME
+        MENUITEM "Vytvoriť &prepojenie...",             IDM_FILE_CREATELINK
+        MENUITEM "&Uložiť ako...",                 IDM_FILE_SAVEAS
+        MENUITEM "Kopírovať/&Presunúť...",               IDM_FILE_COPYMOVE
+        MENUITEM "O&dstrániť...",                  IDM_FILE_DELETE
+        MENUITEM "Pre&menovať...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "&Spustiť",                     IDM_FILE_LAUNCH
+        MENUITEM "Spustiť s ar&gumentami...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "&Vlastnosti",                 IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "&Nový súbor...",                IDM_FILE_NEW
+        MENUITEM "Nový a&dresár...",           IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "&Filter súborov...",             IDM_VIEW_FILTER
+        MENUITEM "&Reset filtra",               IDM_VIEW_FILTERALL
+        POPUP "&Zobraziť"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "&Adresáre",            IDM_VIEW_FOLDERS
+            MENUITEM "&Súbory",                  IDM_VIEW_FILES
+            MENUITEM "S&ystémové objekty",         IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "Z&oradiť"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "Podľa &názvu",                IDM_SORT_NAME
+            MENUITEM "Podľa &veľkosti",                IDM_SORT_SIZE
+            MENUITEM "Podľa &typu",                IDM_SORT_TYPE
+            MENUITEM "Podľa &dátumu",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "&Obrátene",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "O&bľúbené položky",             IDM_VIEW_FAVORITES
+        MENUITEM "&Upraviť obľúbené položky",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Adresáre...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Zobraziť &disky",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Uložiť &nastavenia",              IDM_VIEW_SAVESETTINGS
+        MENUITEM "Nastaviť &cieľ...",            IDM_VIEW_FINDTARGET
+        MENUITEM "&Možnosti...",                 IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Adresáre...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Vlastnosti disku",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Zobraziť &disky",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "&Zobraziť panel nástrojov",               IDM_VIEW_TOOLBAR
+        MENUITEM "&Upraviť panel nástrojov...",            IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Zobraziť &stavový riadok",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "Otvoriť MiniPath",               IDM_TRAY_RESTORE
+        MENUITEM "Ukončiť MiniPath",               IDM_TRAY_EXIT
     END
 END
 
