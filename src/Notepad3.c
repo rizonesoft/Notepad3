@@ -1724,7 +1724,7 @@ static void  _SetWrapStartIndent()
 //
 static void  _SetWrapIndentMode()
 {
-  int const wrap_mode = (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
+  int const wrap_mode = (!Settings.WordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
 
   SciCall_SetWrapMode(wrap_mode);
 
@@ -3369,7 +3369,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
-  CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
+  CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Settings.WordWrap);
   CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
   CheckCmd(hmenu, IDM_VIEW_TABSASSPACES, Globals.fvCurFile.bTabsAsSpaces);
   CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
@@ -3568,12 +3568,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
   if (bIsLngMenuCmd) {
     _DynamicLanguageMenuCmd(iLoWParam);
+    UpdateAllBars(true);
     return FALSE; 
   }
 
   bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
   if (bIsThemesMenuCmd) {
     Style_DynamicThemesMenuCmd(iLoWParam);
+    UpdateAllBars(true);
     return FALSE;
   }
 
@@ -3586,11 +3588,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_UPDATE_STATUSBAR:
       _UpdateStatusbarDelayed((bool)lParam);
-      return FALSE;
+      break;
 
     case IDT_TIMER_UPDATE_TOOLBAR:
       _UpdateToolbarDelayed();
-      return FALSE;
+      break;
 
     case IDT_TIMER_MAIN_MRKALL:
       EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
@@ -3598,11 +3600,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_CLEAR_CALLTIP:
       CancelCallTip();
-      return FALSE;
+      break;
 
     case IDT_TIMER_UNDO_TRANSACTION:
       _SplitUndoTransaction((int)lParam);
-      return FALSE;
+      break;
 
 
     case IDM_FILE_NEW:
@@ -3901,7 +3903,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_EXIT:
       CloseApplication();
-      return FALSE;
+      break;
 
 
     case IDM_ENCODING_ANSI:
@@ -4964,8 +4966,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAP:
-      Globals.fvCurFile.bWordWrap = !Globals.fvCurFile.bWordWrap;
-      Settings.WordWrap = Globals.fvCurFile.bWordWrap;
+      Settings.WordWrap = !Settings.WordWrap;
       _SetWrapIndentMode(Globals.hwndEdit);
       EditEnsureSelectionVisible();
       break;
@@ -5294,7 +5295,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOW : SW_HIDE));
       UpdateStatusbar(Settings.ShowStatusbar);
       SendWMSize(hwnd, NULL);
-      return FALSE;
+      break;
 
 
     case IDM_VIEW_STICKYWINPOS:
@@ -6298,6 +6299,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     default:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
+
+  UpdateAllBars(true);
 
   return FALSE;
 }
@@ -7926,7 +7929,7 @@ static void  _UpdateToolbarDelayed()
   EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsSaveNeeded(ISN_GET) /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Settings.WordWrap);
   CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
   CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
