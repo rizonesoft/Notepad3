@@ -1,0 +1,13 @@
+# EditorConfig is awesome: https://EditorConfig.org
+#
+# VisualStudio: https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2019
+
+# top-most EditorConfig file
+#root = false
+
+[language/**.{h,rc}]
+charset = utf-8
+# space (w=4) indentation
+indent_style = space
+indent_size = 4
+tab_width = 4

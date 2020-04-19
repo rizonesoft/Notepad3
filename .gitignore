@@ -44,6 +44,7 @@ Thumbs.db
 /distrib/Notepad3*.exe
 
 /packages
+/other_sln/packages
 
 /Version_*.cmd
 /Versions/build.txt

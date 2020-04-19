@@ -313,7 +313,7 @@ msgstr "Regex-Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex-Übereinstimmung"
+msgstr "Regex-Pattern"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -406,7 +406,7 @@ msgstr "Text"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Text-Übereinstimmung"
+msgstr "Text-Pattern"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -478,7 +478,7 @@ msgstr "Kleiner als"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "Keine Übereinstimmung"
+msgstr "Nichts gefunden"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
