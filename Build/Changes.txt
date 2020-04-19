@@ -48,6 +48,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Installer to let the user select the target directory.
 - Default long-line wrap settings.
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).
 - "grepWinNP3": move packages.config to corresponding project folder(GRE).
@@ -82,7 +83,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 -----------------------------------------------------
 - 
-- 
+- Slovak (sk-SK).
 
 
 =====================================================
