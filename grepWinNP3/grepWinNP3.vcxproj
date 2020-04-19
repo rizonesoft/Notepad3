@@ -292,6 +292,7 @@
     <ClInclude Include="src\Theme.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="default.build">
       <SubType>Designer</SubType>
     </None>

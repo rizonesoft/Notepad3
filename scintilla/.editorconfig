@@ -2,7 +2,7 @@
 #
 # VisualStudio: https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2019
 
-# top-most EditorConfig file
+# top-most EditorConfig file for this project (Scintilla)
 root = true
 
 # Windows-style newlines with a newline ending every file
@@ -10,23 +10,23 @@ root = true
 charset = utf-8
 end_of_line = crlf
 insert_final_newline = true
-trim_trailing_whitespace = false
+trim_trailing_whitespace = true
 
 # Matches multiple files with brace expansion notation
 [**.{h,c,cpp,hpp,cxx}]
 # Set default charset
 charset = utf-8
-# 2 space indentation
-indent_style = space
-indent_size = 2
-tab_width = 2
+# tab (w=4) indentation
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[**.{rc}]
+charset = utf-8
+# space (w=4) indentation
+indent_style = tab
+indent_size = 4
+tab_width = 4
 
 [**.{ini}]
 charset = utf-8-sig
-
-[language/**.{h,rc}]
-charset = utf-8
-# space (w=4) indentation
-indent_style = space
-indent_size = 4
-tab_width = 4

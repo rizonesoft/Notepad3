@@ -494,9 +494,6 @@
     <ClInclude Include="src\Style.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnicodeFromUTF8.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\UniConversion.h">
       <Filter>src</Filter>
     </ClInclude>

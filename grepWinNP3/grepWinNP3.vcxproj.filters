@@ -365,6 +365,7 @@
       <Filter>translations</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\Resources\grepWin.rc">
