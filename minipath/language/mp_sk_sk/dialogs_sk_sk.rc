@@ -76,7 +76,7 @@ CAPTION "Spustiť"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Zadejte názov programu, priečinka alebo dokumentu,\nktorý chcete spustiť.",IDC_STATIC,35,7,188,17
+    LTEXT           "Zadajte názov programu, priečinka alebo dokumentu,\nktorý chcete spustiť.",IDC_STATIC,35,7,171,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -102,7 +102,7 @@ CAPTION "Prejsť na"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Zadajte názov súboru alebo adresára, ktorý chcete otvoriť,\nalebo vyberte nedávno navštívený adresár zo zoznamu.",IDC_STATIC,35,7,182,17
+    LTEXT           "Zadajte názov súboru alebo adresára, ktorý chcete otvoriť,\nalebo vyberte nedávno navštívený adresár zo zoznamu.",IDC_STATIC,35,7,187,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Zrušiť",IDCANCEL,167,66,50,14
@@ -114,11 +114,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filter súborov"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Zadajte nový &filter súborov. Viac filtrov oddeľte ;",IDC_STATIC,7,7,170,8
+    LTEXT           "Zadajte nový &filter súborov. Viac filtrov oddeľte ';'",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
     CONTROL         "&Vylúčiť súbory zodpovedajúce filtru.",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,127,10
     DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,127,58,50,14
 END
@@ -128,9 +128,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Premenovať"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Aktuálny:",IDC_STATIC,7,9,28,8
+    LTEXT           "Aktuálny:",IDC_STATIC,7,9,30,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&Nový:",IDC_STATIC,7,26,18,8
+    LTEXT           "&Nový:",IDC_STATIC,7,26,20,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,53,50,14,WS_DISABLED
     PUSHBUTTON      "Zrušiť",IDCANCEL,115,53,50,14
@@ -158,8 +158,8 @@ BEGIN
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "Akcia:",IDC_STATIC,7,66,24,8
-    CONTROL         "&Kopírovať",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "&Presunúť",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    CONTROL         "&Kopírovať",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,49,10
+    CONTROL         "&Presunúť",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,49,10
     DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "Zrušiť",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
@@ -174,8 +174,8 @@ BEGIN
     LTEXT           "Zadajte obecné nastavenia MiniPath.",IDC_STATIC,40,15,153,8
     CONTROL         "&Otvárať položky len jedným kliknutím myši.",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
-    CONTROL         "Zvýrazniť výber &položky.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Zvýrazniť výber &celého riadku.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "Zvýrazniť výber &položky.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,92,10
+    CONTROL         "Zvýrazniť výber &celého riadku.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,110,10
     CONTROL         "Po otvorení súboru vždy &aktivovať cieľové okno.",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
@@ -184,9 +184,9 @@ BEGIN
     CONTROL         "Minimalizovať na &panel úloh (kliknutím reaktivovať).",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
     CONTROL         "Pokúsiť sa znova použiť &existujúce okno pri spustení MiniPath.",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,212,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Uložiť nastavenia pri ukončení.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "&Uložiť nastavenia pri ukončení.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,116,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -201,17 +201,17 @@ BEGIN
     CONTROL         """O&bľúbené"" položky.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Vymazať atribút uložených súborov len na čítanie.",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,174,10
     CONTROL         "Pre&menovať kopírované súbory pri kolízii názvov.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,172,10
     CONTROL         "&Presúvať odstránené súbory do Koša.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "Nepotvrdzovať odstránenie &súboru (neodporúča sa).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,180,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "&Funkcia klávesy Esc:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimalizovať MiniPa&th.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "&Ukončiť MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "Minimalizovať MiniPa&th.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,90,10
+    CONTROL         "&Ukončiť MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,74,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "Položky"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Vzhľad položiek v zozname adresárov.",IDC_STATIC,40,15,118,8
+    LTEXT           "Vzhľad položiek v zozname adresárov.",IDC_STATIC,40,15,126,8
     GROUPBOX        "Farby",IDC_STATIC,10,41,205,134
-    LTEXT           "Ak nie je nastavený žiadny filter, použiť túto farbu textu:",IDC_STATIC,20,54,136,8
-    CONTROL         "&Predvolená farba Windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    LTEXT           "Ak nie je nastavený žiadny filter, použiť túto farbu textu:",IDC_STATIC,20,54,178,8
+    CONTROL         "&Predvolená farba Windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,102,10
     CONTROL         "&Vlastná farba:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Vybrať farbu...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Pri aktívnom filtri použiť túto farbu textu:",IDC_STATIC,20,105,146,8
-    CONTROL         "Pr&edvolená farba Windows.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Pr&edvolená farba Windows.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,102,10
     CONTROL         "V&lastná farba:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Vybrať farbu...",IDC_COLOR_PICK2,120,130,50,14
@@ -257,19 +257,19 @@ BEGIN
     CONTROL         "Nepoužívať konkrétnu cieľovú aplikáciu, priamo spúšťať vybraný súbor.",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
     CONTROL         "Použiť nasledujúcu cieľovú aplikáciu:",IDC_TARGET,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,135,10
     LTEXT           "Zadajte akciu, ak je cieľová aplikácia už spustená:",IDC_STATIC,7,64,196,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
     LTEXT           "Správa:",IDC_STATIC,20,120,32,8
     CONTROL         "Žiadna, spustiť cieľovú aplikáciu pri každom otvorení súboru.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,211,10
     CONTROL         "Odoslať správu do okna cieľovej aplikácie:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,155,10
     CONTROL         "Vykonať nasledujúci príkaz DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Aplikácia:",IDC_STATIC,128,120,38,8
     PUSHBUTTON      "Nájsť okno...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "Téma:",IDC_STATIC,198,120,20,8
+    LTEXT           "Téma:",IDC_STATIC,198,120,24,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
