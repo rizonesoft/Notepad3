@@ -55,68 +55,68 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_FILE_RECENT         "History"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW            "Nový"
+    IDT_FILE_OPEN           "Otvoriť"
+    IDT_FILE_BROWSE         "Prehľadať"
+    IDT_FILE_SAVE           "Uložiť"
+    IDT_FILE_RECENT         "Naposledy použité súbory"
+    IDT_EDIT_UNDO           "Späť"
+    IDT_EDIT_REDO           "Znova"
+    IDT_EDIT_CUT            "Vystrihnúť"
+    IDT_EDIT_COPY           "Kopírovať"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE          "Vložiť"
+    IDT_EDIT_FIND           "Hľadať"
+    IDT_EDIT_REPLACE        "Zameniť"
+    IDT_VIEW_WORDWRAP       "Zalomenie textu"
+    IDT_VIEW_ZOOMIN         "Zväčšiť"
+    IDT_VIEW_ZOOMOUT        "Zmenšiť"
+    IDT_VIEW_SCHEME         "Výber schémy"
+    IDT_VIEW_SCHEMECONFIG   "Prispôsobenie schémy"
+    IDT_FILE_EXIT           "Koniec"
+    IDT_FILE_SAVEAS         "Uložiť ako"
+    IDT_FILE_SAVECOPY       "Uložiť kópiu"
+    IDT_EDIT_CLEAR          "Zmazať"
+    IDT_FILE_PRINT          "Tlačiť"
+    IDT_FILE_OPENFAV        "Obľúbené"
+    IDT_FILE_ADDTOFAV       "Pridať do Obľúbených"
+    IDT_VIEW_TOGGLEFOLDS    "Prepnúť uzol"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW     "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
-    IDT_VIEW_PIN_ON_TOP      "Always On Top"
+    IDT_FILE_LAUNCH          "Spustiť dokument"
+    IDT_VIEW_TOGGLE_VIEW     "Zamerať zobrazenie"
+    IDT_VIEW_CHASING_DOCTAIL "Monitorovať logovanie"
+    IDT_VIEW_PIN_ON_TOP      "Vždy na vrchu"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Schránka"
+    IDS_MUI_UNTITLED        "Bez názvu"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_READONLY        "(Len na čítanie)"
+    IDS_MUI_LOADFILE        "Načítanie ""%s""..."
+    IDS_MUI_SAVEFILE        "Ukladanie ""%s""..."
+    IDS_MUI_PRINTFILE       "Tlač stránky %i..."
+    IDS_MUI_SAVINGSETTINGS  "Ukladanie nastavení..."
+    IDS_MUI_LINKDESCRIPTION "Upraviť v Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
+    IDS_MUI_FILTER_ALL      "Všetky súbory (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Spustiteľné súbory (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Všetky súbory (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Konfiguračné súbory (*.ini)|*.ini|Všetky súbory (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmapové súbory (*.bmp)|*.bmp|Všetky súbory (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Vyberte adresár s odkazmi na vaše obľúbené aplikácie."
+    IDS_MUI_FAVORITES       "Vyberte adresár s odkazmi na vaše obľúbené súbory."
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
@@ -124,36 +124,36 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
-    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
+    IDS_MUI_ERR_LOADFILE    "Chyba načítania ""%s""."
+    IDS_MUI_ERR_SAVEFILE    "Chyba ukladania ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Chyba '%s', príčina:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov.\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok.\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Nemáte prístup k vybranému súboru!\nChcete ho odstrániť zo zoznamu?"
+    IDS_MUI_ERR_CREATELINK  "Chyba pri vytváraní odkazu na pracovnú plochu."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+                            "Existujúce okno Notepad3 je zaneprázdnené alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno programu Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA  "Konverzné tabuľky kódových stránok pre vybraté kódovanie nie sú vo vašom systéme k dispozícii."
+    IDS_MUI_ERR_UNICODE     "Pri prevode tohto súboru Unicode došlo k chybe.\nAk sa súbor uloží, údaje sa stratia!"
+    IDS_MUI_ERR_BITMAP      "Chyba pri načítaní bitmapy ""%s"".\nPotrebné rozmery: %i x %i (šírka >= %i x výška)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error elevating user rights!"
+                            "Chyba pri zvyšovaní užívateľských práv!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
-    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
+    IDS_MUI_ERR_UNICODE2    "Vybrané kódovanie nepodporuje niektoré znaky v aktuálnom texte a pri ukladaní môžu byť nahradené predvolenými zástupnými symbolmi. Odporúča sa zvoliť iné kódovanie súborov. Pokračovať?"
+    IDS_MUI_ERR_DROP        "Len jeden súbor môže byť zmazaný v rovnakom čase!"
     IDS_MUI_ERR_ACCESSDENIED
                             "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
+    IDS_MUI_ERR_ADMINEXE    "Nenašiel sa žiadny spustiteľný súbor správy.\nSkontrolujte webovú stránku https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Súbor je príliš veľký. Chcete ho otvoriť?\n\t(veľkosť: %s >= %s)!\n(Štýly a zvýraznenie syntaxie sa nepoužijú!)"
     IDS_MUI_ERR_FILE_TOO_LARGE 
-                            "Can't handle that huge file (size: %s)!"
+                            "Nedá sa spracovať tento veľký súbor (veľkosť: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unknown file name extension (%s)!\nLoading data anyway?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+                            "Neznáma prípona názvu súboru (%s)!\nNačítať aj napriek tomu?"
+    IDS_MUI_INDENT_CONSISTENT  "Súbor má konzistentné odsadenie!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -161,69 +161,69 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND        "The specified text was not found."
-    IDS_MUI_REPLCOUNT       "%i occurrences of the specified text have been replaced."
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_SELRECT         "Táto operácia nemôže byť vykonaná s týmto výberom."
+    IDS_MUI_SELMULTI        "Táto operácia nemôže byť vykonaná s viacnásobným výberom."
+    IDS_MUI_SELRECTORMULTI  "Táto operácia nemôže byť vykonaná s obdĺžnikovým alebo viacnásobným výberom."
+    IDS_MUI_BUFFERTOOSMALL  "Túto operáciu nie je možné vykonať (riadky sú príliš dlhé)."
+    IDS_MUI_FIND_WRAPFW     "Bol dosiahnutý koniec dokumentu. Vyhľadávanie bude pokračovať od začiatku."
+    IDS_MUI_FIND_WRAPRE     "Bol dosiahnutý začiatok dokumentu. Vyhľadávanie bude pokračovať od konca."
+    IDS_MUI_NOTFOUND        "Zadaný text sa nenašiel."
+    IDS_MUI_REPLCOUNT       "%i výskytov v hľadanom reťazci bolo zamenených."
+    IDS_MUI_ASK_ENCODING    "Prepínanie kódovania súboru z jedného na iné môže spôsobiť, že nepodporované znaky budú nahradené predvolenými znakmi a história spätných krokov sa vymaže. Chcete pokračovať?"
+    IDS_MUI_ASK_ENCODING2   "Chystáte sa zmeniť kódovanie prázdneho súboru. Upozorňujeme, že týmto sa vymaže história spätných krokov, pretože sa nedá synchronizovať s novým kódovaním. Pokračovať?"
+    IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+                            "Aktuálny súbor bol upravený externým programom. Znovu ho načítať?"
+    IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
+    IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna."
+    IDS_MUI_SAVEDSETTINGS   "Aktuálne nastavenie programu bolo uložené."
+    IDS_MUI_CREATEINI_FAIL  "Chyba pri vytváraní konfiguračného súboru."
+    IDS_MUI_WRITEINI_FAIL   "Chyba pri zápise do konfiguračného súboru."
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+                            "Nebol nájdený žiadny existujúci konfiguračný súbor.\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
-    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
+    IDS_MUI_RELOADSETTINGS   "Aktivovať uložené nastavenia opätovným spustením aplikácie?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Pri pokračovaní bez opätovného spustenia sa uložené nastavenia nepoužijú a pri ukončení programu budú prepísané vnútornými nastaveniami!"
+    IDS_MUI_EXPORT_FAIL      "Chyba pri exportovaní nastavenia štýlu do ""%s""."
+    IDS_MUI_REGEX_INVALID    "Chyba pri vyhodnocovaní regulárneho výrazu. Výraz je neplatný!"
     IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + kliknutím otvoríte súbor."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
-    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_ASK_SAVE        "Uložiť zmeny do:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Navrátiť súbor do naposledy uloženého stavu?"
+    IDS_MUI_ASK_RECODE      "Záznam vyžaduje načítanie súboru z disku, neuložené zmeny sa stratia!"
+    IDS_MUI_ASK_CREATE      """%s"" nebol nájdený.\nChcete tento súbor vytvoriť?"
+    IDS_MUI_PRINT_HEADER    "Názov súboru, aktuálny dátum a čas|Názov súboru, aktuálny dátum|Názov súboru|Nechať prázdne"
+    IDS_MUI_PRINT_FOOTER    "Číslo strany|Nechať prázdne"
+    IDS_MUI_PRINT_COLOR     "Normálne|Inverzne (tmavé pozadie)|Čiernobiele| Farebne | Farebne (okrem čísel riadkov)|Farby obrazovky"
+    IDS_MUI_PRINT_PAGENUM   "Strana %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory."
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
+    IDS_MUI_PRINT_EMPTY     "Tento dokument neobsahuje žiadny text na vytlačenie."
+    IDS_MUI_PRINT_ERROR     "Chyba tlače ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "Zástupca aktuálneho súboru bol vytvorený v priečinku Obľúbené."
+    IDS_MUI_FAV_FAILURE     "Zástupca aktuálneho súboru nebol vytvorený.\nUistite sa, či už neexistuje súbor s rovnakým názvom."
+    IDS_MUI_READONLY_MODIFY "Atribúty ""%s"" nemôžu byť zmenené."
+    IDS_MUI_SAVEPOS         "&Uložiť pozíciu\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Reset pozície\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Tlač...\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Prístupová fráza je neplatná.\nNačítať ďalšiu?"
+    IDS_MUI_NOPASS          "Dešifrovanie bolo zrušené!\nČítať šifrované nespracované údaje?"
     IDS_MUI_STY_BASESTD     "BASE (Default Style):"
     IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
-    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
+    IDS_MUI_STY_LEXDEF      "%s - Predvolený štýl:"
+    IDS_MUI_STY_LEXSTYLE    "%s's  Štýl:"
     IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
 END
 
@@ -231,24 +231,24 @@ STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(sk-SK) Slovenský preklad Rudolfin"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
-    IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
+    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Štýl +++"
+    IDS_MUI_TITLE_FIXCUR    " %s: %s Štýl"
+    IDS_MUI_TITLE_RELARB    " +++ Štýl '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    " Štýl '%s' (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "Priradené prípony súborov:"
+    IDS_MUI_EXAMPLE_TEXT    "Rýchla hnedá líška preskočí lenivého psa, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %ti):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %ti):"
+    IDS_MUI_GOTO_LINE       "Riadok (1 - %ti):"
+    IDS_MUI_GOTO_COLUMN     "Stĺpec (1 - %ti):"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "&Language"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
-    IDM_THEMES_DEFAULT      "Factory Default"
-    IDM_THEMES_FILE_ITEM    "Standard Settings"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_MENU_LANGUAGE   "&Jazyk prostredia"
+    IDS_MUI_MENU_THEMES     "&Výber motívu"
+    IDM_THEMES_DEFAULT      "Predvolené nastavenia"
+    IDM_THEMES_FILE_ITEM    "Štandardné nastavenia"
+    IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
 END
 
@@ -316,16 +316,16 @@ IDS_MUI_ABOUT_RTF_0  "{\
 \\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset238 Arial;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 \\f1V\\'fdvoj\\f0 :\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Vývojári:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 Prispievatelia:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / \\f1Kni\\'9enice\\f0 :\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Knižnice:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 \\f1Po\\'efakovanie\\f0 :\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Uznanie:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
 \\cf0 \\fs20\\b1\\ul1 Zdroje:\\ul0\\b0\\fs18\\par\
