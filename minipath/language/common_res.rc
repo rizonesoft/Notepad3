@@ -46,6 +46,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+IDI_MINIPATH            ICON                    "..\\res\\minipath_small.ico"
 IDI_RUN                 ICON                    "..\\res\\Run.ico"
 IDI_PROGS               ICON                    "..\\res\\Progs.ico"
 IDI_OPTIONS             ICON                    "..\\res\\Options.ico"
