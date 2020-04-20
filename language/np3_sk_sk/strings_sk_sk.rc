@@ -337,34 +337,34 @@ IDS_MUI_ABOUT_RTF_5  "\
 IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 Licencia:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
-\\cf0 Notepad3 a MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
+\\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
-\\cf0 Redistribúcia a použitie v zdrojovej a binárnej forme, s úpravou alebo bez nej\\par\
-\\cf0 sú povolené za predpokladu, že sú splnené tieto podmienky:\\par\
+\\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
+\\cf0 are permitted provided that the following conditions are met:\\par\
 \\cf0 \\par\
-\\cf0 1. Redistribúciou zdrojového kódu sa musia zachovať vyššie uvedené autorské práva\\par\
-\\cf0 s upozornením na tento zoznam podmienok a nasledujúcim vylúčením zodpovednosti.\\par\
+\\cf0 1. Redistributions of source code must retain the above copyright\\par\
+\\cf0 notice, this list of conditions and the following disclaimer.\\par\
 \\cf0 \\par\
-\\cf0 2. Redistribúciou v binárnej podobe musia byť reprodukované vyššie uvedené autorské práva\\par\
-\\cf0 s upozornením na tento zoznam podmienok a nasledujúcim vylúčením zodpovednosti\\par\
-\\cf0 v dokumentácii a/alebo v iných materiáloch, dodávaných s distribúciou.\\par\
+\\cf0 2. Redistributions in binary form must reproduce the above copyright\\par\
+\\cf0 notice, this list of conditions and the following disclaimer in the\\par\
+\\cf0 documentation and/or other materials provided with the distribution.\\par\
 \\cf0 \\par\
-\\cf0 3. Meno Florian Balmer ani mená jeho prispievateľov nesmú byť\\par\
-\\cf0 bez predchádzajúceho písomného súhlasu použité na podporu\\par\
-\\cf0 alebo propagáciu produktov odvodených z tohto softvéru.\\par\
+\\cf0 3. Neither the name of Florian Balmer nor the names of its contributors\\par\
+\\cf0 may be used to endorse or promote products derived from this software\\par\
+\\cf0 without specific prior written permission.\\par\
 \\cf0 \\par\
-\\cf0 TENTO SOFTVÉR POSKYTUJÚ DRŽITELIA AUTORSKÝCH PRÁV A PRISPIEVATELIA TAK\\par\
-\\cf0 'AKO JE' A AKÉKOĽVEK VÝSLOVNÉ ALEBO IMPLICITNÉ ZÁRUKY, VRÁTANE, ALE NIE\\par\
-\\cf0 VÝLUČNE, IMPLIKOVANÝCH ZÁRUK OBCHODOVATEĽNOSTI A VHODNOSTI NA KONKRÉTNY\\par\
-\\cf0 ÚČEL SÚ ZAMIETNUTÉ. ZA ŽIADNYCH OKOLNOSTÍ NEVYHRADZUJÚ AUTORSKÉ PRÁVA\\par\
-\\cf0 VLASTNÍKOV ALEBO DODÁVATEĽOV ZODPOVEDNOSŤ ZA ŽIADNE PRIAME, NEPRIAME,\\par\
-\\cf0 NÁHODNÉ, ZVLÁŠTNE, EXEMPLÁRNE ALEBO NÁSLEDNÉ ŠKODY (VRÁTANE, ALE NIE\\par\
-\\cf0 OBMEDZENÉ NA OBSTARÁVANIE NÁHRADNÝCH TOVAROV ALEBO SLUŽIEB; STRATA\\par\
-\\cf0 POUŽITIA, ÚDAJOV ALEBO ZISKOV; ALEBO PRERUŠENIA ČINNOSTI), ZA PÔSOBENIA\\par\
-\\cf0 TEÓRIE ZODPOVEDNOSTI, ČI UŽ NA ZÁKAZKU, PRIAMU ZODPOVEDNOSŤ, ALEBO DELIKT\\par\
-\\cf0 (VRÁTANE NEDBANLIVOSTI ALEBO INAK) V ŽIADNOM PRÍPADE VZNIKNUTÉ Z POUŽÍVANIA\\par\
-\\cf0 TOHTO SOFTVÉRU, AJ KEĎ INFORMOVALI O MOŽNOSTI TAKÉHOTO POŠKODENIA.\\par\
+\\cf0 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\\par\
+\\cf0 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED\\par\
+\\cf0 TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\\par\
+\\cf0 PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\\par\
+\\cf0 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\\par\
+\\cf0 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\\par\
+\\cf0 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\\par\
+\\cf0 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\\par\
+\\cf0 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\\par\
+\\cf0 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\\par\
+\\cf0 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\\par\
 }"
 
 END
