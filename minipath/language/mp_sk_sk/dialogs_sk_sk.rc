@@ -182,7 +182,7 @@ BEGIN
     CONTROL         "Okno &MiniPath vždy navrchu.",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "Minimalizovať na &panel úloh (kliknutím reaktivovať).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,176,10
     CONTROL         "Pokúsiť sa znova použiť &existujúce okno pri spustení MiniPath.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,212,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
@@ -198,7 +198,7 @@ BEGIN
     LTEXT           "Ďalšie možnosti nastavenia programu MiniPath.",IDC_STATIC,40,15,160,8
     CONTROL         "Po spustení &otvoriť:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "&Naposledy použité.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """O&bľúbené"" položky.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         """O&bľúbené"" položky.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,79,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Vymazať atribút uložených súborov len na čítanie.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,174,10
