@@ -97,7 +97,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (Zvýšené oprávnenia)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Schránka"
     IDS_MUI_UNTITLED        "Bez názvu"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -145,7 +145,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Vybrané kódovanie nepodporuje niektoré znaky v aktuálnom texte a pri ukladaní môžu byť nahradené predvolenými zástupnými symbolmi. Odporúča sa zvoliť iné kódovanie súborov. Pokračovať?"
     IDS_MUI_ERR_DROP        "Len jeden súbor môže byť zmazaný v rovnakom čase!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
+                            "Súbor ""%s"" nie je možné uložiť, môže byť chránený.\n\nChcete spustiť %s ako aplikáciu so 'Zvýšeným oprávnením'?"
     IDS_MUI_ERR_ADMINEXE    "Nenašiel sa žiadny spustiteľný súbor správy.\nSkontrolujte webovú stránku https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Súbor je príliš veľký. Chcete ho otvoriť?\n\t(veľkosť: %s >= %s)!\n(Štýly a zvýraznenie syntaxie sa nepoužijú!)"
@@ -255,56 +255,56 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Použitie:\r\n\
+Notepad3 \t[/?] [...[Kódovanie]] [...[Režim ukončenia riadku]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
-...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
-Examples:\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disk:][cesta]názov súboru[...]]\r\n\r\n\
+súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú medzery.\r\n\
++\tAkceptuje viac argumentov súborov (s medzerami).\r\n\
+-\tAkceptuje argument jedného súboru (bez medzier).\r\n\r\n\
+Možnosti:\r\n\
+/?\tZobrazenie tejto správy nápovedy.\r\n\
+...\tKódovanie (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tRežim ukončenia riadku (/crlf, /cr, /lf).\r\n\
+/e\tKódovanie súboru zdroja.\r\n\
+/g\tPrejsť na zadanú pozíciu (/g -1 koniec súboru).\r\n\
+/m\tZhoda zadaného textu (/m- last, /mr regex, /mb backslash).\r\n\
+/l\tAutomatické načítanie upravených súborov.\r\n\
+/q\tVynútenie vytvárania nových súborov bez výzvy.\r\n\
+/s\tVýber zadanej syntaktickej schémy.\r\n\
+/d\tVýber predvolenej textovej schémy.\r\n\
+/h\tVýber schémy webového zdrojového kódu.\r\n\
+/x\tVýber schémy XML dokumentu.\r\n\
+/c\tOtvorenie nového okna a vloženie obsahu schránky.\r\n\
+/b\tOtvorenie nového panela na vkladanie a zber záznamov zo schránky.\r\n\
+/n\tVždy otvoriť nové okno (/ns inštancia jedného súboru).\r\n\
+/r\tOpätovné použitie okna (/rs inštancia jedného súboru).\r\n\
+/p\tNastavenie polohy a veľkosti okna (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\talebo /p <vľavo>,<hore>,<šírka>,<výška>,<max> [všetky čísla celé].\r\n\
+/t\tNastavenie titulku okna.\r\n\
+/i\tZačať ako ikona na paneli úloh.\r\n\
+/o\tPonechanie okna vždy na vrchu.\r\n\
+/f\tUrčenie ini-súboru (/f0 bez ini-súboru).\r\n\
+/u\tSpustenie so zvýšenými oprávneniami.\r\n\
+/v\tOkamžité vytlačenie súboru a ukončenie.\r\n\
+/vd\tTlač súboru cez dialógové okno tlačiarne.\r\n\
+/y\tVyhľadanie prostredia cesty v prípade relatívneho názvu súboru.\r\n\
+/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows pomocou registrov).\r\n\r\n\
+Príklady:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Otvoriť nový súbor: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately.\
+ \t... Tlač súboru: ""Test.txt"" immediately.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
-Style format:\r\n\
-font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+Prípony názvov súborov musia byť oddelené znakom ';'\r\n\
+použiť \\<regex>; na definovanie vzoru zodpovedajúceho názvu súboru:\r\n\
+   \\xyz$;   => názov súboru (meno.prípona) s 'xyz' ako posledné znaky.\r\n\r\n\
+Štýl formátovania:\r\n\
+font:Názov; veľkosť:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+Vlastnosti štýlu je možné kopírovať a vkladať, alebo pretiahnuť myšou.\
 "
 
 END
@@ -337,34 +337,34 @@ IDS_MUI_ABOUT_RTF_5  "\
 IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 Licencia:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
-\\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
+\\cf0 Notepad3 a MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
-\\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
-\\cf0 are permitted provided that the following conditions are met:\\par\
+\\cf0 Redistribúcia a použitie v zdrojovej a binárnej forme, s úpravou alebo bez nej\\par\
+\\cf0 sú povolené za predpokladu, že sú splnené tieto podmienky:\\par\
 \\cf0 \\par\
-\\cf0 1. Redistributions of source code must retain the above copyright\\par\
-\\cf0 notice, this list of conditions and the following disclaimer.\\par\
+\\cf0 1. Redistribúciou zdrojového kódu sa musia zachovať vyššie uvedené autorské práva\\par\
+\\cf0 s upozornením na tento zoznam podmienok a nasledujúcim vylúčením zodpovednosti.\\par\
 \\cf0 \\par\
-\\cf0 2. Redistributions in binary form must reproduce the above copyright\\par\
-\\cf0 notice, this list of conditions and the following disclaimer in the\\par\
-\\cf0 documentation and/or other materials provided with the distribution.\\par\
+\\cf0 2. Redistribúciou v binárnej podobe musia byť reprodukované vyššie uvedené autorské práva\\par\
+\\cf0 s upozornením na tento zoznam podmienok a nasledujúcim vylúčením zodpovednosti\\par\
+\\cf0 v dokumentácii a/alebo v iných materiáloch, dodávaných s distribúciou.\\par\
 \\cf0 \\par\
-\\cf0 3. Neither the name of Florian Balmer nor the names of its contributors\\par\
-\\cf0 may be used to endorse or promote products derived from this software\\par\
-\\cf0 without specific prior written permission.\\par\
+\\cf0 3. Meno Florian Balmer ani mená jeho prispievateľov nesmú byť\\par\
+\\cf0 bez predchádzajúceho písomného súhlasu použité na podporu\\par\
+\\cf0 alebo propagáciu produktov odvodených z tohto softvéru.\\par\
 \\cf0 \\par\
-\\cf0 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\\par\
-\\cf0 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED\\par\
-\\cf0 TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\\par\
-\\cf0 PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\\par\
-\\cf0 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\\par\
-\\cf0 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\\par\
-\\cf0 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\\par\
-\\cf0 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\\par\
-\\cf0 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\\par\
-\\cf0 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\\par\
-\\cf0 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\\par\
+\\cf0 TENTO SOFTVÉR POSKYTUJÚ DRŽITELIA AUTORSKÝCH PRÁV A PRISPIEVATELIA TAK\\par\
+\\cf0 'AKO JE' A AKÉKOĽVEK VÝSLOVNÉ ALEBO IMPLICITNÉ ZÁRUKY, VRÁTANE, ALE NIE\\par\
+\\cf0 VÝLUČNE, IMPLIKOVANÝCH ZÁRUK OBCHODOVATEĽNOSTI A VHODNOSTI NA KONKRÉTNY\\par\
+\\cf0 ÚČEL SÚ ZAMIETNUTÉ. ZA ŽIADNYCH OKOLNOSTÍ NEVYHRADZUJÚ AUTORSKÉ PRÁVA\\par\
+\\cf0 VLASTNÍKOV ALEBO DODÁVATEĽOV ZODPOVEDNOSŤ ZA ŽIADNE PRIAME, NEPRIAME,\\par\
+\\cf0 NÁHODNÉ, ZVLÁŠTNE, EXEMPLÁRNE ALEBO NÁSLEDNÉ ŠKODY (VRÁTANE, ALE NIE\\par\
+\\cf0 OBMEDZENÉ NA OBSTARÁVANIE NÁHRADNÝCH TOVAROV ALEBO SLUŽIEB; STRATA\\par\
+\\cf0 POUŽITIA, ÚDAJOV ALEBO ZISKOV; ALEBO PRERUŠENIA ČINNOSTI), ZA PÔSOBENIA\\par\
+\\cf0 TEÓRIE ZODPOVEDNOSTI, ČI UŽ NA ZÁKAZKU, PRIAMU ZODPOVEDNOSŤ, ALEBO DELIKT\\par\
+\\cf0 (VRÁTANE NEDBANLIVOSTI ALEBO INAK) V ŽIADNOM PRÍPADE VZNIKNUTÉ Z POUŽÍVANIA\\par\
+\\cf0 TOHTO SOFTVÉRU, AJ KEĎ INFORMOVALI O MOŽNOSTI TAKÉHOTO POŠKODENIA.\\par\
 }"
 
 END
