@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.416.(build_#) (2020-04-16)
+Current BETA Version 5.20.419.(build_#) (2020-04-19)
 =====================================================
 
 -----------------------------------------------------
@@ -48,6 +48,10 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Installer to let the user select the target directory.
+- Default long-line wrap settings.
+- Remove spinning wait-cursor for text operations (may need reactivation for long operations).
+- "grepWinNP3": move packages.config to corresponding project folder(GRE).
 - Add filepath to message on file locking error.
 
 -----------------------------------------------------
@@ -62,6 +66,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- "grepWinNP3": optimized single-tread worker option (GRE).
 - View selection on wrapped long-lines vs. normalizing view.
 - Don't protect backslash (double'\\') for pattern argument.
 - "grepWinNP3" ordered map of languages for selection box (GRE).
@@ -78,7 +83,7 @@ REMOVED:
 TRANSLATIONS (MUI):
 -----------------------------------------------------
 - 
-- 
+- Slovak (sk-SK).
 
 
 =====================================================

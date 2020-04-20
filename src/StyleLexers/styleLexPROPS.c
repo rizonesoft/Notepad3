@@ -6,7 +6,7 @@ KEYWORDLIST KeyWords_PROPS = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexPROPS = { 
-SCLEX_PROPERTIES, IDS_LEX_CONF, L"Configuration Files", L"ini; inf; properties; oem; sif; url; sed; theme; clw", L"", 
+SCLEX_PROPERTIES, IDS_LEX_CONF, L"Configuration Files", L"ini; inf; properties; oem; sif; url; sed; theme; clw; editorconfig", L"", 
 &KeyWords_PROPS, {
     { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ {SCE_PROPS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },

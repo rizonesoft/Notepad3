@@ -49,11 +49,7 @@ extern WCHAR     g_wchIniFile[MAX_PATH];
 //
 void BeginWaitCursor()
 {
-
-  DestroyCursor(
-    SetCursor(
-    LoadCursor(NULL,IDC_WAIT)));
-
+  DestroyCursor(SetCursor(LoadCursor(NULL,IDC_WAIT)));
 }
 
 
@@ -63,11 +59,7 @@ void BeginWaitCursor()
 //
 void EndWaitCursor()
 {
-
-  DestroyCursor(
-    SetCursor(
-    LoadCursor(NULL,IDC_ARROW)));
-
+  DestroyCursor(SetCursor(LoadCursor(NULL,IDC_ARROW)));
 }
 
 

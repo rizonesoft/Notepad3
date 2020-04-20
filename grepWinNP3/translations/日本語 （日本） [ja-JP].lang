@@ -188,7 +188,7 @@ msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "ファイル名の一致:\n\"|\" で複数のテキスト一致パターンを区切る場合は \"-\" を除外してください"
+msgstr "ファイル名の一致:\n'|' で複数のテキスト一致パターンを区切る場合は '-' を除外してください"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -421,8 +421,8 @@ msgid "The resulting text after replacing:"
 msgstr "置換後のテキスト:"
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "コンテキストメニュー項目に新規エントリを追加 - \"エディタで開く\""
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "コンテキストメニュー項目に新規エントリを追加 - 'エディタで開く'"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -489,8 +489,8 @@ msgid "no text to test with available"
 msgstr "テストするテキストが存在しません"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "このパターンに一致するファイルのみ検索.\r\n区切り記号として ""|"" を使用します.\r\n指定例: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+msgstr "このパターンに一致するファイルのみ検索.\n区切り記号として '|' を使用します.\n指定例: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -514,12 +514,12 @@ msgid "search string is empty"
 msgstr "検索文字列が空白です"
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "現在のパスは再帰的に検索されます.\r\nパスは | で区切ることができます.\r\n指定例:  c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+msgstr "現在のパスは再帰的に検索されます.\nパスは'|'で区切ることができます.\n指定例:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, '.svn' フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\n指定例: ^(CVS|images)$\n注意, '.svn' フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
 
 #. Resource IDs: (1061)
 msgid "Reset"

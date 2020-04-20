@@ -276,6 +276,7 @@
     <ClInclude Include="src\Bookmarks.h" />
     <ClInclude Include="src\BookmarksDlg.h" />
     <ClInclude Include="src\InfoDlg.h" />
+    <ClInclude Include="src\last\version.h" />
     <ClInclude Include="src\LineData.h" />
     <ClInclude Include="src\MultiLineEditDlg.h" />
     <ClInclude Include="src\NameDlg.h" />
@@ -291,9 +292,11 @@
     <ClInclude Include="src\Theme.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="default.build">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="translations\Afrikaans (Suid-Afrika) [af-ZA].lang" />
     <None Include="translations\Deutsch (Deutschland) [de-DE].lang" />
     <None Include="translations\English (United Kingdom) [en-GB].lang" />

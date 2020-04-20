@@ -313,7 +313,7 @@ msgstr "Regex-Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex-Übereinstimmung"
+msgstr "Regex-Pattern"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -406,7 +406,7 @@ msgstr "Text"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Text-Übereinstimmung"
+msgstr "Text-Pattern"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -421,8 +421,8 @@ msgid "The resulting text after replacing:"
 msgstr "Der resultierende Text nach Ersetzung:"
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "Dies fügt dem Kontetxmenü einen neuen Eintrag hinzu, benannt \"Mit Editor öffnen\"."
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Dies fügt dem Kontetxmenü einen neuen Eintrag hinzu, benannt 'Mit Editor öffnen'."
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -478,7 +478,7 @@ msgstr "Kleiner als"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "Keine Übereinstimmung"
+msgstr "Nichts gefunden"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
@@ -489,8 +489,8 @@ msgid "no text to test with available"
 msgstr "Kein Text zum Testen mit verfügbar"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Nur Dateien, die diesem Muster entsprechen, werden gesucht.\r\nVerwenden Sie \"|\" als Trennzeichen.\r\nBeispiel: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
+msgstr "Nur Dateien, die diesem Muster entsprechen, werden gesucht.\nVerwenden Sie '|' als Trennzeichen.\nBeispiel: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -514,12 +514,12 @@ msgid "search string is empty"
 msgstr "Suchstring ist leer"
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "Der Pfad bzw. die Pfade, der bzw. die rekursiv gesucht wird bzw. werden.\r\nSeparieren Sie Pfade mit dem | Symbol.\r\nBeispiel: c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
+msgstr "Der Pfad bzw. die Pfade, der bzw. die rekursiv gesucht wird bzw. werden.\nSeparieren Sie Pfade mit dem '|' Symbol.\nBeispiel: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Sie können Verzeichnisse ausschließen, z.B. CVS und Images.\r\nBeispiel: ^(CVS|images)$\r\nHinweis´, '.svn'-Ordner sind in Windows 'versteckt', so werden diese üblicherweise nicht gescannt."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "Sie können Verzeichnisse ausschließen, z.B. CVS und Images.\nBeispiel: ^(CVS|images)$\nHinweis´, '.svn'-Ordner sind in Windows 'versteckt', so werden diese üblicherweise nicht gescannt."
 
 #. Resource IDs: (1061)
 msgid "Reset"

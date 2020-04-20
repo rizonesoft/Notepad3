@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: Afrikaans (South Africa) resources
-# Last-Translator: (af-ZA) Afrikaanse vertaling deur Rizonesoft
+# Last-Translator: (sv-SE) Svensk översättning av ThreeLightsBeyond
 #
 
 #, fuzzy
@@ -421,7 +421,7 @@ msgid "The resulting text after replacing:"
 msgstr ""
 
 #. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named \"Open with Editor\""
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
 msgstr ""
 
 #. Resource IDs: (1053)
@@ -489,7 +489,7 @@ msgid "no text to test with available"
 msgstr ""
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr ""
 
 #. Resource IDs: (129)
@@ -514,11 +514,11 @@ msgid "search string is empty"
 msgstr ""
 
 #. Resource IDs: (114)
-msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
 msgstr ""
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr ""
 
 #. Resource IDs: (1061)

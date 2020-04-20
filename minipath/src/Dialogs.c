@@ -43,7 +43,7 @@
 //  L"Title\nMessage Text"
 //
 extern HWND    hwndMain;
-extern HICON   g_hDlgIcon;
+extern HICON   g_hDlgIconSmall;
 extern LANGID  g_iPrefLANGID;
 
 
@@ -161,7 +161,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         MakeBitmapButton(hwnd,IDC_SEARCHEXE,g_hInstance,IDB_OPEN);
 
@@ -361,7 +361,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         GetMenuString(GetSystemMenu(GetParent(hwnd),FALSE),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
@@ -527,7 +527,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         WCHAR wch[256];
         LOGFONT lf;
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         SetDlgItemText(hwnd,IDC_VERSION,VERSION_FILEVERSION_LONG);
         SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT_LONG);
@@ -569,6 +569,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         CenterDlgInParent(hwnd);
       }
       return TRUE;
+
+
 
     case WM_NOTIFY:
       {
@@ -620,7 +622,7 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
     case WM_INITDIALOG:
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
       if (StrIsNotEmpty(g_wchIniFile)) {
         if (Settings.bSaveSettings)
@@ -727,7 +729,7 @@ INT_PTR CALLBACK AdvancedPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
     case WM_INITDIALOG:
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
       if (Settings.bClearReadOnly)
         CheckDlgButton(hwnd,IDC_CLEARREADONLY,BST_CHECKED);
@@ -890,7 +892,7 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_INITDIALOG:
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
       m_bDefCrNoFilt = Settings.bDefCrNoFilt;
       m_bDefCrFilter = Settings.bDefCrFilter;
@@ -1053,7 +1055,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         WCHAR tch[MAX_PATH];
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         MakeBitmapButton(hwnd,IDC_BROWSE_Q,g_hInstance,IDB_OPEN);
         MakeBitmapButton(hwnd,IDC_BROWSE_F,g_hInstance,IDB_OPEN);
@@ -1228,7 +1230,7 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
   psh.dwFlags     = PSH_PROPSHEETPAGE | PSH_NOAPPLYNOW | PSH_PROPTITLE | PSH_USEHICON;
   psh.hwndParent  = hwnd;
   psh.hInstance   = hInstance;
-  psh.hIcon       = g_hDlgIcon;
+  psh.hIcon       = g_hDlgIconSmall;
   psh.pszCaption  = L"MiniPath";
   psh.nPages      = 4;
   psh.nStartPage  = 0;
@@ -1321,7 +1323,7 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         MakeBitmapButton(hwnd,IDC_BROWSEFILTER,NULL,OBM_COMBO);
 
@@ -1488,7 +1490,7 @@ INT_PTR CALLBACK RenameFileDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
       lpfod = (LPFILEOPDLGDATA)lParam;
       SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lpfod);
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
       SetDlgItemText(hwnd,IDC_OLDNAME,lpfod->szSource);
       SetDlgItemText(hwnd,IDC_NEWNAME,lpfod->szSource);
@@ -1641,7 +1643,7 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         GetMenuString(GetSystemMenu(GetParent(hwnd),FALSE),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
@@ -1923,7 +1925,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         GetMenuString(GetSystemMenu(GetParent(hwnd),FALSE),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
@@ -2201,7 +2203,7 @@ INT_PTR CALLBACK NewDirDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       lpfod = (LPFILEOPDLGDATA)lParam;
       SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lpfod);
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
       SendDlgItemMessage(hwnd,IDC_NEWDIR,EM_LIMITTEXT,MAX_PATH-1,0);
 
@@ -2291,7 +2293,7 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       hIconCross2 = LoadIcon(g_hInstance,MAKEINTRESOURCE(IDI_CROSS2));
       hCursorCross = LoadCursor(g_hInstance,MAKEINTRESOURCE(IDC_CROSSHAIR));
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
       CenterDlgInParent(hwnd);
       bHasCapture = FALSE;
@@ -2474,7 +2476,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         //if (!SendMessage(hwndToolTip,TTM_ADDTOOL,0,(LPARAM)&ti))
         //  DestroyWindow(hwndToolTip);
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (g_hDlgIconSmall) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall); }
 
         // Bitmap für den Browse-Button
         MakeBitmapButton(hwnd,IDC_BROWSE,g_hInstance,IDB_OPEN);

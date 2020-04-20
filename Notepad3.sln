@@ -156,7 +156,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Build\Changes.txt = Build\Changes.txt
-		packages.config = packages.config
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_ko_kr", "language\np3_ko_kr\np3_ko_kr.vcxproj", "{0FA07345-601B-474E-99C0-7E61E70DA72E}"
@@ -208,6 +207,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notepad3", "Notepad3", "{C3735E17-6EAE-4CC5-980E-30BCEF094862}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiniPath", "MiniPath", "{D21C1F85-6FA3-4695-82CD-DDC5690E2D66}"
+	ProjectSection(SolutionItems) = preProject
+		minipath\.editorconfig = minipath\.editorconfig
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "language", "language", "{8FD783D5-8709-432D-A88E-6E3073AFF220}"
 EndProject

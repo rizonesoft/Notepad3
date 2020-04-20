@@ -39,7 +39,9 @@ WCHAR     g_wchIniFile[MAX_PATH];
 WCHAR     g_wchIniFile2[MAX_PATH];
 WCHAR     g_wchNP3IniFile[MAX_PATH];
 
-HICON     g_hDlgIcon = NULL;
+//HICON     g_hDlgIcon128 = NULL;
+HICON     g_hDlgIconBig = NULL;
+HICON     g_hDlgIconSmall = NULL;
 
 WCHAR     g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID    g_iPrefLANGID;
@@ -367,9 +369,23 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 //
 BOOL InitApplication(HINSTANCE hInstance)
 {
-  if (!g_hDlgIcon) {
-    g_hDlgIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
-                           GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+  // ICON_BIG
+  int const cxb = GetSystemMetrics(SM_CXICON);
+  int const cyb = GetSystemMetrics(SM_CYICON);
+  // ICON_SMALL
+  int const cxs = GetSystemMetrics(SM_CXSMICON);
+  int const cys = GetSystemMetrics(SM_CYSMICON);
+
+  //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
+
+  //if (!g_hDlgIcon128) {
+  //  LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &g_hDlgIcon128);
+  //}
+  if (!g_hDlgIconBig) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &g_hDlgIconBig);
+  }
+  if (!g_hDlgIconSmall) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &g_hDlgIconSmall);
   }
 
   WNDCLASS wc;
@@ -380,7 +396,7 @@ BOOL InitApplication(HINSTANCE hInstance)
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = g_hDlgIcon;
+  wc.hIcon         = g_hDlgIconSmall;
   wc.hCursor       = LoadCursor(hInstance,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = NULL;
