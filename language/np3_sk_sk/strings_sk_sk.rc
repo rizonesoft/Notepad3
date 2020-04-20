@@ -289,7 +289,7 @@ Možnosti:\r\n\
 /v\tOkamžité vytlačenie súboru a ukončenie.\r\n\
 /vd\tTlač súboru cez dialógové okno tlačiarne.\r\n\
 /y\tVyhľadanie prostredia cesty v prípade relatívneho názvu súboru.\r\n\
-/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows pomocou registrov).\r\n\r\n\
+/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows\r\n\tpomocou registrov).\r\n\r\n\
 Príklady:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Otvoriť nový súbor: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
