@@ -1332,7 +1332,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
                 COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchSpecificStyle);
 
-  Style_SetLongLineEdge(hwnd, Settings.LongLinesLimit);
+  size_t cnt = 0;
+  int edgeCol[MIDSZ_BUFFER] = { L'\0' };
+  if (Settings.MarkLongLines) {
+    cnt = ReadVectorFromString(Settings.MultiEdgeLines, edgeCol, MIDSZ_BUFFER, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+  }
+  Style_SetMultiEdgeLine(hwnd, edgeCol, cnt);
 
   Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 
                           COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue));
@@ -1590,11 +1595,15 @@ void Style_SetReadonly(HWND hwnd, bool bReadonly)
 //
 //  Style_SetLongLineEdge()
 //
-void Style_SetLongLineEdge(HWND hwnd, const int iLongLineLimit)
+void Style_SetMultiEdgeLine(HWND hwnd, const int colVec[], const size_t count)
 {
   UNUSED(hwnd);
   COLORREF rgb;
-  if (Settings.LongLineMode == EDGE_BACKGROUND) {
+
+  int const iLongLineLimit = (count > 0) ? colVec[count - 1] : Defaults.LongLinesLimit;
+  int const mLongLineMode = (count > 1) ? EDGE_MULTILINE : Settings.LongLineMode;
+
+  if (mLongLineMode == EDGE_BACKGROUND) {
     if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) { // edge back
       rgb = GetSysColor(COLOR_3DSHADOW);
     }
@@ -1606,17 +1615,19 @@ void Style_SetLongLineEdge(HWND hwnd, const int iLongLineLimit)
   }
   if (Settings.MarkLongLines) 
   {
-    switch (Settings.LongLineMode) {
+    switch (mLongLineMode) {
       case EDGE_LINE:
       case EDGE_BACKGROUND:
-        SciCall_SetEdgeMode(Settings.LongLineMode);
+        SciCall_SetEdgeMode(mLongLineMode);
         SciCall_SetEdgeColour(rgb);
         SciCall_SetEdgeColumn(iLongLineLimit);
         break;
       case EDGE_MULTILINE:
-        SciCall_SetEdgeMode(Settings.LongLineMode);
+        SciCall_SetEdgeMode(mLongLineMode);
         SciCall_MultiEdgeClearAll();
-        SciCall_MultiEdgeAddLine(iLongLineLimit, rgb);
+        for (size_t i = 0; i < count; ++i) {
+          SciCall_MultiEdgeAddLine(colVec[i], rgb);
+        }
         break;
       default:
         SciCall_SetEdgeMode(EDGE_NONE);

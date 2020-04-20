@@ -2538,14 +2538,28 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLe
 //  ReadVectorFromString()
 //
 //
-int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault)
+static int _cmpifunc(const void* a, const void* b) { return (*(int*)a - *(int*)b); }
+
+size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int iMin, int iMax, int iDefault, bool ordered)
 {
   static WCHAR wchTmpBuff[SMALL_BUFFER];
 
   StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
   TrimSpcW(wchTmpBuff);
+
+  // replace ',' and ';' by space
+  WCHAR* s = wchTmpBuff;
+  while (s) {
+    s = StrChr(wchTmpBuff, L',');  // next
+    if (s && *s) { *s++ = L' '; }
+  }
+  s = wchTmpBuff;
+  while (s) {
+    s = StrChr(wchTmpBuff, L';');  // next
+    if (s && *s) { *s++ = L' '; }
+  }
   // ensure single spaces only
-  WCHAR *p = StrStr(wchTmpBuff, L"  ");
+  const WCHAR *p = StrStr(wchTmpBuff, L"  ");
   while (p) {
     MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLenW(p,0) + 1) * sizeof(WCHAR));
     p = StrStr(wchTmpBuff, L"  ");  // next
@@ -2558,9 +2572,9 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
   wchTmpBuff[len + 1] = L'\0'; // double zero at the end
 
   // fill default
-  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
+  for (size_t i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
   // insert values
-  int n = 0;
+  size_t n = 0;
   p = wchTmpBuff;
   while (*p) {
     int iValue;
@@ -2571,6 +2585,11 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
     }
     p = StrEnd(p,0) + 1;
   }
+
+  if (ordered) {
+    qsort(iVector, n, sizeof(int), _cmpifunc);
+  }
+
   return n;
 }
 

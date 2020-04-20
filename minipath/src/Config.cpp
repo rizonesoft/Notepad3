@@ -116,11 +116,17 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
   {
     bLocked = LockFileEx(hFile, LOCKFILE_SHARED_LOCK, 0, MAXDWORD, 0, &rOvrLpd);
     if (!bLocked) {
-      MsgBoxLastError(L"AcquireReadFileLock(): NO READER LOCK ACQUIRED!", 0);
+      wchar_t msg[MAX_PATH + 128] = { 0 };
+      StringCchPrintf(msg, ARRAYSIZE(msg),
+        L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
+      MsgBoxLastError(msg, 0);
     }
   }
   else {
-    MsgBoxLastError(L"AcquireReadFileLock(): INVALID FILE HANDLE", 0);
+    wchar_t msg[MAX_PATH + 128] = { 0 };
+    StringCchPrintf(msg, ARRAYSIZE(msg),
+      L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
+    MsgBoxLastError(msg, 0);
   }
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
@@ -148,6 +154,7 @@ extern "C" BOOL ResetIniFileCache() {
   s_bIniFileCacheLoaded = false;
   return true;
 }
+
 
 extern "C" BOOL LoadIniFileCache(LPCWSTR lpIniFilePath)
 {

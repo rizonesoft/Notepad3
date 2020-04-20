@@ -1959,7 +1959,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   else {
     SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
   }
-  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Globals.fvCurFile.iLongLinesLimit, 0);
+  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Settings.LongLinesLimit, 0);
 
   // general margin
   SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, (WPARAM)SC_MARGINOPTION_SUBLINESELECT, 0);
@@ -4987,22 +4987,55 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LONGLINEMARKER:
-      Settings.MarkLongLines = !Settings.MarkLongLines;
-      Style_SetLongLineEdge(Globals.hwndEdit, Settings.LongLinesLimit);
+      {
+        Settings.MarkLongLines = !Settings.MarkLongLines;
+        size_t cnt = 0;
+        int edgeCol[MIDSZ_BUFFER] = { L'\0' };
+        if (Settings.MarkLongLines) {
+          cnt = ReadVectorFromString(Settings.MultiEdgeLines, edgeCol, MIDSZ_BUFFER, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+        }
+        Style_SetMultiEdgeLine(Globals.hwndEdit, edgeCol, cnt);
+      }
       break;
 
 
-    case IDM_VIEW_LONGLINESETTINGS: {
-        int _iLongLinesLimit = Globals.fvCurFile.iLongLinesLimit;
-        if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, &_iLongLinesLimit)) {
-          if (_iLongLinesLimit != Globals.fvCurFile.iLongLinesLimit) {
-            _iLongLinesLimit = clampi(_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
-            Globals.fvCurFile.iLongLinesLimit = _iLongLinesLimit;
-            Settings.LongLinesLimit = _iLongLinesLimit;
-            Globals.iWrapCol = _iLongLinesLimit;
+    case IDM_VIEW_LONGLINESETTINGS:
+      {
+        int _iLongLinesLimit = Settings.LongLinesLimit;
+
+        WCHAR wchColumnList[MIDSZ_BUFFER];
+        StringCchCopy(wchColumnList, COUNTOF(wchColumnList), Settings.MultiEdgeLines);
+
+        if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, wchColumnList)) {
+
+          int edgeCol[MIDSZ_BUFFER];
+          size_t const cnt = ReadVectorFromString(wchColumnList, edgeCol, MIDSZ_BUFFER, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+
+          if (cnt == 0) {
+            Settings.MarkLongLines = false;
           }
-          Settings.MarkLongLines = true;
-          Style_SetLongLineEdge(Globals.hwndEdit, Settings.LongLinesLimit);
+          else if (cnt == 1) {
+            _iLongLinesLimit = edgeCol[0];
+            Settings.MarkLongLines = true;
+            //~Settings.LongLineMode = EDGE_LINE|EDGE_BACKGROUND; // set by Dlg
+          }
+          else {
+            _iLongLinesLimit = edgeCol[cnt - 1];
+            Settings.MarkLongLines = true;
+            Settings.LongLineMode = EDGE_MULTILINE;
+          }
+          Globals.iWrapCol = _iLongLinesLimit;
+          Settings.LongLinesLimit = _iLongLinesLimit;
+          Globals.fvCurFile.iLongLinesLimit = _iLongLinesLimit;
+
+          Settings.MultiEdgeLines[0] = L'\0'; // empty
+          WCHAR col[32];
+          for (size_t i = 0; i < cnt; ++i) {
+            StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), edgeCol[i]);
+            StringCchCat(Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines), col);
+          }
+
+          Style_SetMultiEdgeLine(Globals.hwndEdit, edgeCol, cnt);
         }
       }
       break;
@@ -5888,12 +5921,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendWMCommand(hwnd, IDM_VIEW_LONGLINEMARKER);
       else {
         if (iLoWParam == CMD_INCLINELIMIT)
-          Globals.fvCurFile.iLongLinesLimit++;
+          Settings.LongLinesLimit++;
         else
-          Globals.fvCurFile.iLongLinesLimit--;
-        Globals.fvCurFile.iLongLinesLimit = clampi(Globals.fvCurFile.iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
-        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Globals.fvCurFile.iLongLinesLimit,0);
-        //Settings.LongLinesLimit = Globals.fvCurFile.iLongLinesLimit;
+          Settings.LongLinesLimit--;
+        Globals.fvCurFile.iLongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
+        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
+        //Globals.fvCurFile.iLongLinesLimit = Settings.LongLinesLimit;
       }
       break;
 ~~~ */

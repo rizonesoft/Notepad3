@@ -2319,10 +2319,7 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //=============================================================================
 //
 //  LongLineSettingsDlgProc()
-//
-//  Controls: 100 Edit
-//            101 Radio1
-//            102 Radio2
+//  MIDSZ_BUFFER
 //
 static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -2333,19 +2330,26 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SET_NP3_DLG_ICON_SMALL(hwnd);
 
-      // TODO: @@@  set GUI IDS for hard coded numbers
-      UINT const iNumber = *((UINT*)lParam);
-      SetDlgItemInt(hwnd, 100, iNumber, false);
-      SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 15, 0);
+      LPWSTR pszColumnList = (LPWSTR)lParam;
+      SetDlgItemText(hwnd, IDC_MULTIEDGELINE, pszColumnList);
+      SendDlgItemMessage(hwnd, IDC_MULTIEDGELINE, EM_LIMITTEXT, MIDSZ_BUFFER, 0);
 
-      if (Settings.LongLineMode == EDGE_BACKGROUND) {
-        CheckRadioButton(hwnd, 101, 102, 102);
+      BOOL fTranslated;
+      /*UINT const iCol = */ GetDlgItemInt(hwnd, IDC_MULTIEDGELINE, &fTranslated, FALSE);
+      if (fTranslated) {
+        if (Settings.LongLineMode == EDGE_BACKGROUND) {
+          CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_BACKGRDCOLOR);
+        }
+        else {
+          CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_SHOWEDGELINE);
+        }
       }
       else {
-        CheckRadioButton(hwnd, 101, 102, 101);
+        CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_SHOWEDGELINE);
+        DialogEnableControl(hwnd, IDC_SHOWEDGELINE, false);
+        DialogEnableControl(hwnd, IDC_BACKGRDCOLOR, false);
       }
       CenterDlgInParent(hwnd, NULL);
-
     }
     return true;
 
@@ -2359,19 +2363,47 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
     switch (LOWORD(wParam)) {
 
-    case IDOK:
+    case IDC_MULTIEDGELINE:
       {
         BOOL fTranslated;
-        UINT const iNewNumber = GetDlgItemInt(hwnd, 100, &fTranslated, FALSE);
-
+        /*UINT const iCol = */ GetDlgItemInt(hwnd, IDC_MULTIEDGELINE, &fTranslated, FALSE);
         if (fTranslated) {
-          UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
-          *piNumber = iNewNumber;
-          Settings.LongLineMode = IsButtonChecked(hwnd, 101) ? EDGE_LINE : EDGE_BACKGROUND;
+          DialogEnableControl(hwnd, IDC_SHOWEDGELINE, true);
+          DialogEnableControl(hwnd, IDC_BACKGRDCOLOR, true);
+          CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR,
+            (Settings.LongLineMode == EDGE_LINE) ? IDC_SHOWEDGELINE : IDC_BACKGRDCOLOR);
+        }
+        else {
+          DialogEnableControl(hwnd, IDC_SHOWEDGELINE, false);
+          DialogEnableControl(hwnd, IDC_BACKGRDCOLOR, false);
+          CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_SHOWEDGELINE);
+        }
+      }
+      break;
+
+    case IDC_SHOWEDGELINE:
+    case IDC_BACKGRDCOLOR:
+      if (IsDialogItemEnabled(hwnd, IDC_SHOWEDGELINE))
+      {
+        Settings.LongLineMode = IsButtonChecked(hwnd, IDC_SHOWEDGELINE) ? EDGE_LINE : EDGE_BACKGROUND;
+      }
+      break;
+
+    case IDOK:
+      {
+        WCHAR wchColumnList[MIDSZ_BUFFER];
+        GetDlgItemText(hwnd, IDC_MULTIEDGELINE, wchColumnList, MIDSZ_BUFFER);
+
+        bool const bOkay = true; // TODO: parse list OK
+        if (bOkay)
+        {
+          LPWSTR pszColumnList = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
+          StringCchCopy(pszColumnList, MIDSZ_BUFFER, wchColumnList);
+          Settings.LongLineMode = IsButtonChecked(hwnd, IDC_SHOWEDGELINE) ? EDGE_LINE : EDGE_BACKGROUND;
           EndDialog(hwnd, IDOK);
         }
         else {
-          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, 100)), 1);
+          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_MULTIEDGELINE)), 1);
         }
       }
       break;
@@ -2392,19 +2424,15 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 //
 //  LongLineSettingsDlg()
 //
-bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
+bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg, LPWSTR pColList)
 {
-
-  INT_PTR iResult;
-
-  iResult = ThemedDialogBoxParam(
-              Globals.hLngResContainer,
-              MAKEINTRESOURCE(uidDlg),
-              hwnd,
-              LongLineSettingsDlgProc,(LPARAM)iNumber);
+  INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              LongLineSettingsDlgProc, (LPARAM)pColList);
 
   return (iResult == IDOK) ? true : false;
-
 }
 
 

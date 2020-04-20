@@ -7858,7 +7858,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, 
           (int)clampp(iMaxLnNum, 0, INT_MAX));
         FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN, 
-          (int)clampp(max_p(iLineEndPos, (DocPos)Globals.fvCurFile.iLongLinesLimit), 0, INT_MAX));
+          (int)clampp(max_p(iLineEndPos, (DocPos)Settings.LongLinesLimit), 0, INT_MAX));
         SetDlgItemText(hwnd, IDC_LINE_TEXT, wchLineCaption);
         SetDlgItemText(hwnd, IDC_COLUMN_TEXT, wchColumnCaption);
 
