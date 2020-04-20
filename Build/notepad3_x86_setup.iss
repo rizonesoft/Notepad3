@@ -52,7 +52,6 @@ SolidCompression=yes
 EnableDirDoesntExistWarning=no
 AllowNoIcons=yes
 ShowTasksTreeLines=yes
-DisableDirPage=yes
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
 DisableWelcomePage=yes
