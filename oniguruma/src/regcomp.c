@@ -829,14 +829,21 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
                            NODE_IS_FIXED_CLEN_MIN_SURE(node));
         }
         else {
-          r = node_char_len1(NODE_BODY(node), reg, ci, env, level);
-          if (r < 0) break;
+          if (NODE_IS_MARK1(node)) {
+            mmcl_set_min_max(ci, 0, INFINITE_LEN, FALSE);
+          }
+          else {
+            NODE_STATUS_ADD(node, MARK1);
+            r = node_char_len1(NODE_BODY(node), reg, ci, env, level);
+            NODE_STATUS_REMOVE(node, MARK1);
+            if (r < 0) break;
 
-          en->min_char_len = ci->min;
-          en->max_char_len = ci->max;
-          NODE_STATUS_ADD(node, FIXED_CLEN);
-          if (ci->min_is_sure != 0)
-            NODE_STATUS_ADD(node, FIXED_CLEN_MIN_SURE);
+            en->min_char_len = ci->min;
+            en->max_char_len = ci->max;
+            NODE_STATUS_ADD(node, FIXED_CLEN);
+            if (ci->min_is_sure != 0)
+              NODE_STATUS_ADD(node, FIXED_CLEN_MIN_SURE);
+          }
         }
         /* can't optimize look-behind if capture exists. */
         ci->min_is_sure = FALSE;

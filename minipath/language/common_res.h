@@ -4,8 +4,6 @@
 #ifndef _COMMON_RES_H_
 #define _COMMON_RES_H_
 
-#define IDC_STATIC                       (-1)
-
 #define IDR_MAINWND                     100
 #define IDC_COMMANDLINE                 100
 #define IDD_ABOUT                       100
@@ -104,6 +102,7 @@
 #define IDPP_ITEMS                      112
 #define IDPP_PROG                       113
 #define IDC_TRANSL_AUTH                 114
+#define IDI_MINIPATH                    115
 
 #define IDS_APPTITLE                    10000
 #define IDS_NUMFILES                    10001
@@ -225,5 +224,6 @@
 #define SC_ALWAYSONTOP                  60001
 #define SC_ABOUT                        60002
 
+#define IDC_STATIC                       (-1)
 
 #endif //_COMMON_RES_H_

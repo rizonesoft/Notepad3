@@ -1,6 +1,6 @@
-Oniguruma Regular Expressions Version 6.9.5    2020/03/27
+Oniguruma Regular Expressions Version 6.9.5    2020/04/09
 
-syntax: ONIG_SYNTAX_ONIGURUMA (default)
+syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
 
 
 1. Syntax elements
@@ -21,15 +21,15 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default)
   \f           form feed              (0x0C)
   \a           bell                   (0x07)
   \e           escape                 (0x1B)
-  \nnn         octal char             (encoded byte value)
-  \o{17777777777} wide octal char     (character code point value)
-  \uHHHH       wide hexadecimal char  (character code point value)
-  \xHH         hexadecimal char       (encoded byte value)
-  \x{7HHHHHHH} wide hexadecimal char  (character code point value)
-  \cx          control char           (character code point value)
-  \C-x         control char           (character code point value)
-  \M-x         meta  (x|0x80)         (character code point value)
-  \M-\C-x      meta control char      (character code point value)
+  \nnn         octal char                    (encoded byte value)
+  \xHH         hexadecimal char              (encoded byte value)
+  \x{7HHHHHHH} (1-8 digits) hexadecimal char (code point value)
+  \o{17777777777} (1-11 digits) octal char   (code point value)
+  \uHHHH       hexadecimal char              (code point value)
+  \cx          control char                  (code point value)
+  \C-x         control char                  (code point value)
+  \M-x         meta  (x|0x80)                (code point value)
+  \M-\C-x      meta control char             (code point value)
 
  (* \b as backspace is effective in character class only)
 

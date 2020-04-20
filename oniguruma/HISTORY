@@ -1,7 +1,10 @@
 History
 
-2020/04/05: Release Candidate 1 for Version 6.9.5
+2020/04/DD: Version 6.9.5
 
+2020/04/12: Release Candidate 2 for Version 6.9.5
+2020/04/09: fix a problem (found by oss-fuzz test on my PC)
+2020/04/05: Release Candidate 1 for Version 6.9.5
 2020/03/30: remove src/*.py and src/*.sh from distribution files
 2020/03/27: NEW: Code point sequence notation \x{HHHH ...}, \o{OOOO ...}
 2020/03/24: NEW API: maximum nesting level of subexp call
