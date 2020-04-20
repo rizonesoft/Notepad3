@@ -188,7 +188,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Zhoda názvov súborov:\npoužiť '|' na oddelenie viacerých vzorov textovej zhody, na &začiatok '-' na vylúčenie"
+msgstr "Zhoda názvov súborov:\nznak '|' oddelí viac vzorov text. zhody, na &začiatok '-' na vylúčenie"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -281,7 +281,7 @@ msgstr "Otvoriť pomocou editora"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Vložiť text na otestovanie regex pomocou:"
+msgstr "Vložiť text na otestovanie regex:"
 
 #. Resource IDs: (137)
 msgid "Path"
@@ -434,7 +434,7 @@ msgstr "Navštívte našu webovú stránku"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "regulárny výraz používaný na vyhľadávanie. Stlačením klávesy F1 získate viac informácií."
+msgstr "regulárny výraz používaný na vyhľadávanie. Stlač F1 pre viac informácií."
 
 #. Resource IDs: (125)
 msgid "an empty string"
