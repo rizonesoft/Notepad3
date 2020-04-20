@@ -1291,6 +1291,8 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.fvBackup.iIndentWidth = Settings.IndentWidth;
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.fvBackup.iLongLinesLimit = Settings.LongLinesLimit;
     Globals.iWrapCol = Settings.LongLinesLimit;
+    StringCchPrintf(Defaults.MultiEdgeLines, COUNTOF(Defaults.MultiEdgeLines), L"%i", Settings.LongLinesLimit);
+    IniSectionGetString(IniSecSettings, L"MultiEdgeLines", Defaults.MultiEdgeLines, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
 
     Defaults.WordWrapSymbols = 2;
     int const iWS = IniSectionGetInt(IniSecSettings, L"WordWrapSymbols", Defaults.WordWrapSymbols);
@@ -1420,7 +1422,7 @@ void LoadSettings()
 
     WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
     IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
-    ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
+    ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
     for (bool& sbv : s_iStatusbarVisible) { sbv = false; }
     int cnt = 0;
@@ -1434,7 +1436,7 @@ void LoadSettings()
     }
 
     IniSectionGetString(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
-    ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
+    ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
 
     Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
     Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
@@ -1733,7 +1735,6 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabIndents);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapMode);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapIndent);
@@ -1755,7 +1756,14 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoDetectIndentSettings);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLineMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLineMode);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLinesLimit);
+  if (StringCchCompareX(Settings.MultiEdgeLines, Defaults.MultiEdgeLines) != 0) {
+    IniSectionSetString(IniSecSettings, L"MultiEdgeLines", Settings.MultiEdgeLines);
+  }
+  else {
+    IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
+  }
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowSelectionMargin);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowCodeFolding);

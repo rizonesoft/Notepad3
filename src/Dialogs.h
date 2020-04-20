@@ -32,7 +32,7 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile);
 bool ChangeNotifyDlg(HWND hwnd);
 bool ColumnWrapDlg(HWND hwnd,UINT uidDlg,UINT * iNumber);
 bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);
-bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);
+bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg, LPWSTR pColList);
 bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);
 bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding);
 bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding);
@@ -163,7 +163,8 @@ inline void AttentionBeep(UINT uType) { if (!Settings.MuteMessageBeep) { Message
 #define DialogHideControl(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; ShowWindow(hctrl, (b)?SW_HIDE:SW_SHOW); }
 
- 
+inline bool IsDialogItemEnabled(HWND hdlg, int id) { return IsWindowEnabled(GetDlgItem(hdlg, id)); }
+
 // --- Themed Dialogs ---------------------------------------------------------
 
 #ifndef DLGTEMPLATEEX

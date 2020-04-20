@@ -1,6 +1,7 @@
 //{{NO_DEPENDENCIES}}
 // common language (MUI) defines
 //
+#pragma once
 #ifndef _COMMON_RES_H_
 #define _COMMON_RES_H_
 
@@ -350,6 +351,9 @@
 #define IDC_ADDFAV_FILES                18117
 #define IDC_INFO_GROUPBOX               18118
 #define IDC_FIND_OVERLAPPING            18119
+#define IDC_MULTIEDGELINE               18120
+#define IDC_SHOWEDGELINE                18121
+#define IDC_BACKGRDCOLOR                18122
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

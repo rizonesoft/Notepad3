@@ -468,6 +468,7 @@ typedef struct _settings_t
   WCHAR OpenWithDir[MAX_PATH];
   WCHAR FavoritesDir[MAX_PATH];
   WCHAR ToolbarButtons[MIDSZ_BUFFER];
+  WCHAR MultiEdgeLines[MIDSZ_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 
