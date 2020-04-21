@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,97,73,10
     CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,124,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,140,10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
     PUSHBUTTON      "Maak toe",IDCANCEL,221,111,55,14
@@ -132,11 +132,11 @@ BEGIN
     CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,66,75,10
     CONTROL         "&Moenie omdraai nie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,75,10
-    CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,77,10
+    CONTROL         "Maak toe &na vervang",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,77,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,126,73,10
     CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,156,124,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,156,140,10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,23,55,14
     PUSHBUTTON      "Ve&rvang",IDC_REPLACE,221,43,55,14
@@ -196,7 +196,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "Maak 8-bit *.&nfo/diz lêers in DOS-437 wyse oop.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
-    CONTROL         "Ontleed enkoderinglêer &tags..",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Ontleed enkoderinglêer &tags.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
     CONTROL         "Voer &ANSI-kodebladanalise uit.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
@@ -294,7 +294,7 @@ BEGIN
     CONTROL         "Stel geselekteerde skema as &standaard.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,150,10
     CONTROL         "&Outo-kies volgens lêernaam uitbreiding.",IDC_AUTOSELECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,130,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Kanselleer",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,117,10,10
