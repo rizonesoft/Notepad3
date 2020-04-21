@@ -2337,11 +2337,13 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
       BOOL fTranslated;
       /*UINT const iCol = */ GetDlgItemInt(hwnd, IDC_MULTIEDGELINE, &fTranslated, FALSE);
       if (fTranslated) {
-        if (Settings.LongLineMode == EDGE_BACKGROUND) {
-          CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_BACKGRDCOLOR);
-        }
-        else {
-          CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_SHOWEDGELINE);
+        switch (Settings.LongLineMode) {
+          case EDGE_BACKGROUND:
+            CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_BACKGRDCOLOR);
+            break;
+          default:
+            CheckRadioButton(hwnd, IDC_SHOWEDGELINE, IDC_BACKGRDCOLOR, IDC_SHOWEDGELINE);
+            break;
         }
       }
       else {
@@ -4266,7 +4268,8 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
   p = tchButtons;
   while (*p) {
     int iCmd;
-    if (swscanf_s(p, L"%i", &iCmd) == 1) {
+    //if (swscanf_s(p, L"%i", &iCmd) == 1) {
+    if (StrToIntEx(p, STIF_DEFAULT, &iCmd)) {
      iCmd = (iCmd == 0) ? 0 : iCmd + cmdBase - 1;
       for (int i = 0; i < ctbb; i++) {
         if (ptbb[i].idCommand == iCmd) {

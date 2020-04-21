@@ -1332,12 +1332,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
                 COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchSpecificStyle);
 
-  size_t cnt = 0;
-  int edgeCol[MIDSZ_BUFFER] = { L'\0' };
-  if (Settings.MarkLongLines) {
-    cnt = ReadVectorFromString(Settings.MultiEdgeLines, edgeCol, MIDSZ_BUFFER, 0, LONG_LINES_MARKER_LIMIT, 0, true);
-  }
-  Style_SetMultiEdgeLine(hwnd, edgeCol, cnt);
+  int edgeColumns[MIDSZ_BUFFER] = { 0 };
+  size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
+  Style_SetMultiEdgeLine(edgeColumns, cnt);
 
   Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 
                           COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue));
@@ -1595,13 +1592,15 @@ void Style_SetReadonly(HWND hwnd, bool bReadonly)
 //
 //  Style_SetLongLineEdge()
 //
-void Style_SetMultiEdgeLine(HWND hwnd, const int colVec[], const size_t count)
+void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
 {
-  UNUSED(hwnd);
   COLORREF rgb;
 
-  int const iLongLineLimit = (count > 0) ? colVec[count - 1] : Defaults.LongLinesLimit;
+  int const iLongLineLimit = (count > 0) ? colVec[count - 1] : Settings.LongLinesLimit;
   int const mLongLineMode = (count > 1) ? EDGE_MULTILINE : Settings.LongLineMode;
+
+  Settings.LongLinesLimit = iLongLineLimit; // normalize
+  Globals.iWrapCol = iLongLineLimit;  // long line limit should be explicit wrap column too
 
   if (mLongLineMode == EDGE_BACKGROUND) {
     if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) { // edge back
@@ -2006,11 +2005,11 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   PEDITLEXER pLexNew = NULL;
   PEDITLEXER pLexSniffed = NULL;
 
-  if ((Globals.fvCurFile.mask & FV_MODE) && Globals.fvCurFile.tchMode[0]) {
+  if ((Globals.fvCurFile.mask & FV_MODE) && Globals.fvCurFile.chMode[0]) {
 
     PEDITLEXER pLexMode;
     WCHAR wchMode[MICRO_BUFFER] = { L'\0' };
-    MultiByteToWideCharEx(Encoding_SciCP, 0, Globals.fvCurFile.tchMode, -1, wchMode, MICRO_BUFFER);
+    MultiByteToWideCharEx(Encoding_SciCP, 0, Globals.fvCurFile.chMode, -1, wchMode, MICRO_BUFFER);
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
@@ -2679,8 +2678,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st)
       *p = L'\0';
     TrimSpcW(tch);
     int iValue = 0;
-    int itok = swscanf_s(tch, L"%i", &iValue);
-    if (itok == 1) {
+    if (StrToIntEx(tch, STIF_DEFAULT, &iValue)) {
       *iOutValue = clampi(iValue, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
       return true;
     }
@@ -2703,7 +2701,8 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st)
 //    if (p)
 //      *p = L'\0';
 //    TrimStringW(tch);
-//    if (1 == swscanf_s(tch, L"%i", val)) { return true; }
+//    //if (1 == swscanf_s(tch, L"%i", val)) { return true; }
+//    if (StrToIntEx(tch, STIF_DEFAULT, val)) { return true; }
 //  }
 //  return false;
 //}

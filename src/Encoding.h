@@ -160,7 +160,7 @@ inline bool IsDBCSCodePage(UINT cp) {
 #define FV_ENCODING       64
 #define FV_MODE          128
 
-bool       FileVars_Init(const char* lpData, size_t cbData, LPFILEVARS lpfv);
+bool       FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVARS lpfv);
 bool       FileVars_Apply(LPFILEVARS lpfv);
 bool       FileVars_ParseInt(char* pszData, char* pszName, int* piValue);
 bool       FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue);
