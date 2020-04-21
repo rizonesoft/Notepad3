@@ -372,7 +372,9 @@ LANGID LoadLanguageResources()
   }
 
   // MUI Language for common controls
-  InitMUILanguage(MUI_LanguageDLLs[iUsedLngIdx].LangId);
+  LANGID const langID = MUI_LanguageDLLs[iUsedLngIdx].LangId;
+  SetThreadUILanguage(langID);
+  InitMUILanguage(langID);
 
   Globals.hLngResContainer = _hLangResourceContainer;
 
