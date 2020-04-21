@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Lancer"
         BEGIN
-            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "Rec&hercher dans fichiers\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nouvelle fenêtre\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Fenêtre vide\tAlt+Shift+N",          IDM_FILE_NEWWINDOW2
@@ -305,11 +305,11 @@ BEGIN
             MENUITEM "Recherche pré&cédente\tShift+F3",                 IDM_EDIT_FINDPREV
             MENUITEM "Recherche sélection suivante\tCtrl+F3",           CMD_FINDNEXTSEL
             MENUITEM "Recherche sélection précédente\tCtrl+Shift+F3",   CMD_FINDPREVSEL
-            MENUITEM "&Remplacer...\tCtrl+H",                           IDM_EDIT_REPLACE
+            MENUITEM "Rem&placer...\tCtrl+H",                           IDM_EDIT_REPLACE
             MENUITEM "Remplacer suivan&t\tF4",                          IDM_EDIT_REPLACENEXT
             MENUITEM "&Aller à...\tCtrl+G",                             IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Search in Files\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
+            MENUITEM "Rec&hercher dans fichiers\tCtrl+Alt+F",                    IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Affichage"
