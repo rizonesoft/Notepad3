@@ -200,7 +200,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
     CONTROL         "&ANSI kódlap elemzés végrehajtása.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "&UNICODE detektálás engedélyezése.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "&UNICODE detektálás engedélyezése.",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,140,151,50,14
 END
@@ -228,9 +229,9 @@ CAPTION "Inkonzisztens sorvégek"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Inkonzisztens sorvégek vannak e fájlban:",IDC_STATIC,7,7,180,8
-    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC,10,38,34,8
     LTEXT           "%s sor(ok).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s sor(ok).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s sor(ok).",IDC_EOL_SUM_LF,48,38,136,8
@@ -354,34 +355,34 @@ CAPTION "Inkonzisztens behúzások"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistika: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabulátorok[%i]:",IDC_INDENT_WIDTH_TAB,34,18,50,8,SS_LEFT
-    LTEXT           "Üres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,34,30,60,8,SS_LEFT
-    LTEXT           "Vegyes[x]:",IDC_STATIC,34,42,30,8,SS_LEFT
-    LTEXT           "%s sor(ok)",IDC_INDENT_SUM_SPC,104,30,52,8,SS_RIGHT
-    LTEXT           "%s sor(ok)",IDC_INDENT_SUM_TAB,104,18,52,8,SS_RIGHT
-    LTEXT           "%s sor(ok)",IDC_INDENT_SUM_MIX,104,42,52,8,SS_RIGHT
+    LTEXT           "Tabulátorok[%i]:",IDC_INDENT_WIDTH_TAB,34,18,50,8
+    LTEXT           "Üres karakterek[%i]:",IDC_INDENT_WIDTH_SPC,34,30,60,8
+    LTEXT           "Vegyes[x]:",IDC_STATIC,34,42,30,8
+    RTEXT           "%s sor(ok)",IDC_INDENT_SUM_SPC,104,30,52,8
+    RTEXT           "%s sor(ok)",IDC_INDENT_SUM_TAB,104,18,52,8
+    RTEXT           "%s sor(ok)",IDC_INDENT_SUM_MIX,104,42,52,8
     GROUPBOX        "Minden újrarendezése ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tab-ok",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
     CONTROL         "&Üres karakt.",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,44,10
-    LTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_TAB_MODX,60,72,124,8,SS_RIGHT
-    LTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_SPC_MODX,60,84,124,8,SS_RIGHT
+    RTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_TAB_MODX,60,72,124,8
+    RTEXT           "%s sor(ok) helytelen behúzással",IDC_INDENT_SPC_MODX,60,84,124,8
     PUSHBUTTON      "&Igen",IDOK,80,98,50,14
     PUSHBUTTON      "&Nem",IDCANCEL,134,98,50,14
     CONTROL         "&Ez az ablak mindig megjelenik.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
-IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
+IDD_MUI_LONGLINES DIALOGEX 0, 0, 279, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Hosszú sorok"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Sor korlátja:",IDC_STATIC,7,10,60,8
-    EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Vonal megjel.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
-    CONTROL         "&Háttérszín változtatása.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Mégsem",IDCANCEL,127,24,50,14
+    LTEXT           "&Multi edge-line pos:",IDC_STATIC,7,10,80,8
+    EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
+    CONTROL         "&Vonal megjel.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "&Háttérszín változtatása.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
+    PUSHBUTTON      "Mégsem",IDCANCEL,222,34,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
@@ -837,7 +838,7 @@ BEGIN
     IDD_MUI_LONGLINES, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 177
+        RIGHTMARGIN, 272
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
     END

@@ -200,7 +200,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,123,10
     CONTROL         "Определять кодовую страницу &ANSI",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,142,10
-    CONTROL         "Включить определение &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,129,10
+    CONTROL         "Включить определение &UNICODE",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,129,10
     DEFPUSHBUTTON   "OK",IDOK,101,151,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,154,151,50,14
 END
@@ -228,9 +229,9 @@ CAPTION "Разные окончания строк"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "В файле обнаружены строки с разными окончаниями:",IDC_STATIC,7,7,183,8
-    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC,10,38,34,8
     LTEXT           "%s",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s",IDC_EOL_SUM_LF,48,38,136,8
@@ -354,34 +355,34 @@ CAPTION "Разные отступы"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Статистика по строкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
-    LTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,18,18,66,8,SS_RIGHT
-    LTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,18,30,66,8,SS_RIGHT
-    LTEXT           "Смешанные[x]:",IDC_STATIC,18,42,66,8,SS_RIGHT
-    LTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
-    LTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
-    LTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
+    LTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,40,18,55,8
+    LTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,42,30,55,8
+    LTEXT           "Смешанные[x]:",IDC_STATIC,33,42,55,8    
+    RTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
+    RTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
+    RTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
     GROUPBOX        "Переформатировать все? ",IDC_STATIC,7,60,217,56,WS_GROUP
     CONTROL         "&Табуляция",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,52,10
     CONTROL         "&Пробелы",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,52,10
-    LTEXT           "Cтрок с нестандартным размером: %s",IDC_INDENT_TAB_MODX,71,72,145,8
-    LTEXT           "Cтрок с нестандартным размером: %s",IDC_INDENT_SPC_MODX,71,84,145,8
+    RTEXT           "Cтрок с нестандартным размером: %s",IDC_INDENT_TAB_MODX,71,72,145,8
+    RTEXT           "Cтрок с нестандартным размером: %s",IDC_INDENT_SPC_MODX,71,84,145,8
     PUSHBUTTON      "&Да",IDOK,115,98,50,14
     PUSHBUTTON      "&Нет",IDCANCEL,169,98,50,14
     CONTROL         "&Всегда показывать этот диалог",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,125,10
 END
 
-IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
+IDD_MUI_LONGLINES DIALOGEX 0, 0, 279, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Длинные строки"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Граница:",IDC_STATIC,7,10,32,8
-    EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Показать &линию",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,72,10
-    CONTROL         "Изменять &фоновый цвет",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,99,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Отмена",IDCANCEL,127,24,50,14
+    LTEXT           "&Multi edge-line pos:",IDC_STATIC,7,10,80,8
+    EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
+    CONTROL         "Показать &линию",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "Изменять &фоновый цвет",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,222,34,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 245, 100
@@ -837,7 +838,7 @@ BEGIN
     IDD_MUI_LONGLINES, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 177
+        RIGHTMARGIN, 272
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
     END
