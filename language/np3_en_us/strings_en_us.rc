@@ -336,9 +336,6 @@ IDS_MUI_ABOUT_RTF_5  "\
 
 END
 
-//
-// Lines added to synchronize the number of lines of all "strings_xx_yy.rc" files.
-//
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -200,7 +200,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,168,10
     CONTROL         "Effectuer une analyse de la page de code &ANSI.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Activer la détection &UNICODE..",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Activer la détection &UNICODE.",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,140,151,50,14
 END
@@ -228,9 +229,9 @@ CAPTION "Fins de ligne incohérentes"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Fins de ligne incohérentes trouvées dans le fichier:",IDC_STATIC,7,7,180,8
-    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC,10,38,34,8
     LTEXT           "%s ligne(s).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s ligne(s).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s ligne(s).",IDC_EOL_SUM_LF,48,38,136,8
@@ -341,7 +342,7 @@ BEGIN
     CONTROL         "Touche &Retour arrière reformate retrait.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "&Avertissement de retrait incohérent.",IDC_WARN_INCONSISTENT_INDENTS,
-                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     CONTROL         "&Détection automatique de tabulation ou de retrait.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,160,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
@@ -354,34 +355,34 @@ CAPTION "Retrait incohérent"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistiques: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabul.[%i]:",IDC_INDENT_WIDTH_TAB,54,18,40,8,SS_LEFT
-    LTEXT           "Blancs[%i]:",IDC_INDENT_WIDTH_SPC,54,30,40,8,SS_LEFT
-    LTEXT           "Mixte[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
-    LTEXT           "%s ligne(s)",IDC_INDENT_SUM_TAB,90,18,52,8,SS_RIGHT
-    LTEXT           "%s ligne(s)",IDC_INDENT_SUM_SPC,90,30,52,8,SS_RIGHT
-    LTEXT           "%s ligne(s)",IDC_INDENT_SUM_MIX,90,42,52,8,SS_RIGHT
+    LTEXT           "Tabul.[%i]:",IDC_INDENT_WIDTH_TAB,54,18,40,8
+    LTEXT           "Blancs[%i]:",IDC_INDENT_WIDTH_SPC,54,30,40,8
+    LTEXT           "Mixte[x]:",IDC_STATIC,54,42,30,8
+    RTEXT           "%s ligne(s)",IDC_INDENT_SUM_TAB,90,18,52,8
+    RTEXT           "%s ligne(s)",IDC_INDENT_SUM_SPC,90,30,52,8
+    RTEXT           "%s ligne(s)",IDC_INDENT_SUM_MIX,90,42,52,8
     GROUPBOX        "Re-retrait tout? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,28,10
     CONTROL         "&Blancs",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,30,10
-    LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_TAB_MODX,45,72,124,8,SS_RIGHT
-    LTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_SPC_MODX,45,84,124,8,SS_RIGHT
+    RTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_TAB_MODX,45,72,124,8
+    RTEXT           "%s ligne(s) avec retrait irrégulièr",IDC_INDENT_SPC_MODX,45,84,124,8
     PUSHBUTTON      "&Oui",IDOK,80,98,50,14
     PUSHBUTTON      "&Non",IDCANCEL,134,98,50,14
     CONTROL         "&Toujours afficher ce dialogue.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
-IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
+IDD_MUI_LONGLINES DIALOGEX 0, 0, 279, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Longues Lignes"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Limite longues lignes:",IDC_STATIC,7,10,80,8
-    EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Montrer la ligne de bord.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,87,10
-    CONTROL         "&Changer la couleur de fond.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Annuler",IDCANCEL,127,24,50,14
+    LTEXT           "&Limite ligne multiples pos:",IDC_STATIC,7,10,80,8
+    EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
+    CONTROL         "&Montrer la ligne de bord.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "&Changer la couleur de fond.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
+    PUSHBUTTON      "Annuler",IDCANCEL,222,34,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
