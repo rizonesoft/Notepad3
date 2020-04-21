@@ -53,6 +53,8 @@ CHANGES:
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).
 - "grepWinNP3": move packages.config to corresponding project folder(GRE).
 - Add filepath to message on file locking error.
+- Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/04/20).
+- Update Scintilla Library (SCI) version 4.3.2 (2020/03/06).
 
 -----------------------------------------------------
 ENHANCEMENT:

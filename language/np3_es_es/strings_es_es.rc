@@ -337,41 +337,38 @@ IDS_MUI_ABOUT_RTF_5  "\
 IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Licencia Notepad3:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
-\\cf0 Notepad3 y MiniPath Copyright \\u0169   2008-2020 Rizonesoft, Todos derechos reservados.\\par\
+\\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
-\\cf0 La redistribución y el uso en las formas de código fuente y binario, con o sin\\par\
-\\cf0 modificaciones, están permitidos siempre que se cumplan las siguientes condiciones:\\par\
+\\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
+\\cf0 are permitted provided that the following conditions are met:\\par\
 \\cf0 \\par\
-\\cf0 1. Las redistribuciones del código fuente deben conservar el aviso de copyright\\par\
-\\cf0 anterior, esta lista de condiciones y el siguiente descargo de responsabilidad.\\par\
+\\cf0 1. Redistributions of source code must retain the above copyright\\par\
+\\cf0 notice, this list of conditions and the following disclaimer.\\par\
 \\cf0 \\par\
-\\cf0 2. Las redistribuciones en formato binario deben reproducir el aviso de copyright\\par\
-\\cf0 anterior, esta lista de condiciones y el siguiente descargo de responsabilidad\\par\
-\\cf0 en la documentación y/u otros materiales suministrados con la distribución.\\par\
+\\cf0 2. Redistributions in binary form must reproduce the above copyright\\par\
+\\cf0 notice, this list of conditions and the following disclaimer in the\\par\
+\\cf0 documentation and/or other materials provided with the distribution.\\par\
 \\cf0 \\par\
-\\cf0 3. Ni el nombre de Florian Balmer ni los nombres de sus contribuidores pueden\\par\
-\\cf0 usarse para respaldar o promocionar productos derivados de este software sin\\par\
-\\cf0 permiso específico previo y por escrito.\\par\
+\\cf0 3. Neither the name of Florian Balmer nor the names of its contributors\\par\
+\\cf0 may be used to endorse or promote products derived from this software\\par\
+\\cf0 without specific prior written permission.\\par\
 \\cf0 \\par\
-\\cf0 ESTE SOFTWARE SE SUMINISTRA POR LOS PROPIETARIOS DEL COPYRIGHT Y\\par\
-\\cf0 CONTRIBUIDORES 'TAL CUAL' Y CUALQUIER GARANTÍA EXPRESA O IMPLÍCITA,\\par\
-\\cf0 INCLUYENDO, PERO NO LIMITADO A, LAS GARANTÍAS IMPLÍCITAS DE COMERCIALIZACIÓN\\par\
-\\cf0 Y ADECUACIÓN PARA UN PROPÓSITO PARTICULAR SON RECHAZADAS. EN NINGÚN CASO\\par\
-\\cf0 LOS PROPIETARIOS DEL COPYRIGHT Y CONTRIBUIDORES SERÁN RESPONSABLES POR\\par\
-\\cf0 NINGÚN DAÑO DIRECTO, INDIRECTO, INCIDENTAL, ESPECIAL, EJEMPLAR O COSECUENCIAL\\par\
-\\cf0 (INCLUYENDO, PERO NO LIMITADO A, LA ADQUISICIÓN O SUSTITUCIÓN DE BIENES\\par\
-\\cf0 O SERVICIOS; LA PÉRDIDA DE USO, DE DATOS O DE BENEFICIOS; O INTERRUPCIÓN\\par\
-\\cf0 DE LA ACTIVIDAD EMPRESARIAL) O POR CUALQUIER TEORÍA DE RESPONSABILIDAD, YA\\par\
-\\cf0 SEA POR CONTRATO, RESPONSABILIDAD ESTRICTA O AGRAVIO (INCLUYENDO NEGLIGENCIA\\par\
-\\cf0 O CUALQUIER OTRA CAUSA) QUE SURJA DE CUALQUIER FORMA DEL USO DE ESTE\\par\
-\\cf0 SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.\\par\
+\\cf0 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\\par\
+\\cf0 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED\\par\
+\\cf0 TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\\par\
+\\cf0 PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\\par\
+\\cf0 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\\par\
+\\cf0 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\\par\
+\\cf0 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\\par\
+\\cf0 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\\par\
+\\cf0 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\\par\
+\\cf0 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\\par\
+\\cf0 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\\par\
 }"
 
 END
 
-// Lines added to synchronize the number of lines of all "strings_xx_yy.rc" files.
-//
 #endif    // Spanish (Spain, International Sort) resources
 /////////////////////////////////////////////////////////////////////////////
 

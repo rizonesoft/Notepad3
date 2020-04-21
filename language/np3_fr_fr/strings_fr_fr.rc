@@ -337,37 +337,34 @@ IDS_MUI_ABOUT_RTF_5  "\
 IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Licence Notepad3:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
-\\cf0 Notepad3 et MiniPath Copyright \\u0169   2008-2020 Rizonesoft, Tous droits réservés.\\par\
+\\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
-\\cf0 La redistribution et l'utilisation sous formes source et binaire, avec ou sans modification,\\par\
-\\cf0 sont autorisées à condition que les conditions suivantes soient remplies: \\par\
+\\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
+\\cf0 are permitted provided that the following conditions are met:\\par\
 \\cf0 \\par\
-\\cf0 1. Les redistributions du code source doivent conserver l'avis de copyright ci-dessus,\\par\
-\\cf0 cette liste de conditions et la décharge de responsabilité suivante.\\par\
+\\cf0 1. Redistributions of source code must retain the above copyright\\par\
+\\cf0 notice, this list of conditions and the following disclaimer.\\par\
 \\cf0 \\par\
-\\cf0 2. Les redistributions sous forme binaire doivent conserver l'avis de copyright ci-dessus,\\par\
-\\cf0 cette liste de conditions et la décharge de responsabilité suivante dans la documentation\\par\
-\\cf0 et/ou d'autres matériels fournis avec la distribution.\\par\
+\\cf0 2. Redistributions in binary form must reproduce the above copyright\\par\
+\\cf0 notice, this list of conditions and the following disclaimer in the\\par\
+\\cf0 documentation and/or other materials provided with the distribution.\\par\
 \\cf0 \\par\
-\\cf0 3. Ni le nom de Florian Balmer ni les noms de ses contributeurs ne peut être utilisé\\par\
-\\cf0 pour endosser ou promouvoir des produits dérivés de ce logiciel sans autorisation\\par\
-\\cf0 écrite préalable spécifique.\\par\
+\\cf0 3. Neither the name of Florian Balmer nor the names of its contributors\\par\
+\\cf0 may be used to endorse or promote products derived from this software\\par\
+\\cf0 without specific prior written permission.\\par\
 \\cf0 \\par\
-\\cf0 CE LOGICIEL EST FOURNI PAR LES PROPRIÉTAIRES DU COPYRIGHT ET LES\\par\
-\\cf0 CONTRIBUTEURS 'TEL QUEL' ET TOUTES GARANTIES, IMPLICITES OU EXPRESSES,\\par\
-\\cf0 NOTAMMENT ET SANS QUE CELA SOIT LIMITATIF, LES GARANTIES MARCHANDES ET\\par\
-\\cf0 D'ADAPTABILITÉ POUR UN USAGE PRÉCIS, SONT EXCLUES. EN AUCUN CAS LES\\par\
-\\cf0 PROPRIÉTAIRES DU COPYRIGHT ET CONTRIBUTEURS NE POURRONT ÊTRE CONSIDÉRÉS\\par\
-\\cf0 COMME RESPONSABLES EN CAS DE DOMMAGE DIRECTS, INDIRECTS, INCIDENTS,\\par\
-\\cf0 SPÉCIAUX, EXEMPLAIRES OU CONSÉCUTIFS (NOTAMMENT, ET SANS QUE CELA SOIT\\par\
-\\cf0 LIMITATIF, LA FOURNITURE DE MARCHANDISES OU DE SERVICES DE REMPLACEMENT,\\par\
-\\cf0 LA PERTE D'UTILISATION, DE DONNÉES OU DE PROFITS; OU D'INTERRUPTION\\par\
-\\cf0 D'ACTIVITÉS) CAUSÉS DE QUELQUE MANIÈRE QUE CE SOIT ET DE TOUTE THÉORIE\\par\
-\\cf0  DE RESPONSABILITÉ, QU'ELLE SOIT CONTRACTUELLE,QUASI-DÉLICTUELLE OU\\par\
-\\cf0 DÉLICTUELLE (COMPRENANT TOUT ACTE DE NÉGLIGENCE OU AUTRE) QUI POURRAIENT\\par\
-\\cf0 SURVENIR DE L'USAGE DE CE LOGICIEL, MÊME SI LA POSSIBILITÉ D'UN TEL\\par\
-\\cf0 DOMMAGE AVAIT ÉTÉ ÉNONCÉ.\\par\
+\\cf0 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\\par\
+\\cf0 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED\\par\
+\\cf0 TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A\\par\
+\\cf0 PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\\par\
+\\cf0 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\\par\
+\\cf0 SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\\par\
+\\cf0 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\\par\
+\\cf0 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\\par\
+\\cf0 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\\par\
+\\cf0 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\\par\
+\\cf0 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\\par\
 }"
 
 END
