@@ -219,7 +219,10 @@ static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-  HMODULE hLangResourceContainer = LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
+  HMODULE const hLangResourceContainer = LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
+
+  // MUI Language for common controls
+  InitMUILanguage(langID);
 
   //if (!hLangResourceContainer)
   //{
