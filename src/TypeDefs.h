@@ -171,10 +171,10 @@ typedef struct _filevars
   int        iTabWidth;
   int        iIndentWidth;
   int        iWrapColumn;
-  int        iLongLinesLimit;
-  char       tchEncoding[64];
+  char       chEncoding[64];
   cpi_enc_t  iEncoding;
-  char       tchMode[32];
+  char       chMode[32];
+  WCHAR      wchMultiEdgeLines[SMALL_BUFFER];
 
 } FILEVARS, *LPFILEVARS;
 
@@ -327,7 +327,6 @@ typedef struct _globals_t
   LPMRULIST pMRUreplace;
   CALLTIPTYPE CallTipType;
   FILEVARS  fvCurFile;
-  FILEVARS  fvBackup;
   int       iWrapCol;
 
   bool      CmdLnFlag_PosParam;

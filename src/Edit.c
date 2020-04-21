@@ -1124,8 +1124,7 @@ bool EditLoadFile(
   CloseHandle(hFile);
 
   if (cbData == 0) {
-    FileVars_Init(NULL, 0, &Globals.fvCurFile);
-    status->iEncoding = Settings.DefaultEncoding;
+    FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
     status->iEOLMode = Settings.DefaultEOLMode;
     EditSetNewText(hwnd, "", 0, bClearUndoHistory);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
@@ -1160,7 +1159,7 @@ bool EditLoadFile(
     bool const bIsUTF8Sig = IsUTF8Signature(lpData);
     Encoding_Forced(bIsUTF8Sig ? CPI_UTF8SIGN : CPI_UTF8);
     
-    FileVars_Init(NULL, 0, &Globals.fvCurFile);
+    FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
     status->iEncoding = Encoding_Forced(CPI_GET);
     status->iEOLMode = Settings.DefaultEOLMode;
 
@@ -1243,7 +1242,7 @@ bool EditLoadFile(
       status->bUnicodeErr = true;
     }
 
-    FileVars_Init(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
+    FileVars_GetFromData(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
     EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory);
     EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
     FreeMem(lpDataUTF8);
@@ -1272,7 +1271,7 @@ bool EditLoadFile(
         EditDetectEOLMode(lpData, cbData, status);
       }
     }
-    else if (bIsCP_UTF7 || encDetection.bIs7BitASCII)
+    else if (!IS_ENC_ENFORCED() && (bIsCP_UTF7 || encDetection.bIs7BitASCII))
     {
       // load UTF-7/ASCII(7-bit) as ANSI/UTF-8
       EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);

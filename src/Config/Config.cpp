@@ -1284,15 +1284,22 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 0, 0, 6);
 
-    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, true); Globals.fvBackup.bWordWrap = Settings.WordWrap;
-    GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.fvBackup.bTabsAsSpaces = Settings.TabsAsSpaces;
-    GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  Globals.fvBackup.bTabIndents = Settings.TabIndents;
-    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.fvBackup.iTabWidth = Settings.TabWidth;
-    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.fvBackup.iIndentWidth = Settings.IndentWidth;
-    GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.fvBackup.iLongLinesLimit = Settings.LongLinesLimit;
+    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, true); Globals.fvCurFile.bWordWrap = Settings.WordWrap;
+    GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.fvCurFile.bTabsAsSpaces = Settings.TabsAsSpaces;
+    GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  Globals.fvCurFile.bTabIndents = Settings.TabIndents;
+    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.fvCurFile.iTabWidth = Settings.TabWidth;
+    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.fvCurFile.iIndentWidth = Settings.IndentWidth;
+    
+    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (Globals.iCfgVersionRead < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
+    GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_MULTILINE);
+    GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);
     Globals.iWrapCol = Settings.LongLinesLimit;
-    StringCchPrintf(Defaults.MultiEdgeLines, COUNTOF(Defaults.MultiEdgeLines), L"%i", Settings.LongLinesLimit);
+
+    _itow_s(Settings.LongLinesLimit, Defaults.MultiEdgeLines, COUNTOF(Defaults.MultiEdgeLines), 10);
     IniSectionGetString(IniSecSettings, L"MultiEdgeLines", Defaults.MultiEdgeLines, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
+    size_t const n = NormalizeColumnVector(NULL, Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines));
+    StringCchCopy(Globals.fvCurFile.wchMultiEdgeLines, COUNTOF(Globals.fvCurFile.wchMultiEdgeLines), Settings.MultiEdgeLines);
+    if (n > 1) { Settings.LongLineMode = EDGE_MULTILINE; }
 
     Defaults.WordWrapSymbols = 2;
     int const iWS = IniSectionGetInt(IniSecSettings, L"WordWrapSymbols", Defaults.WordWrapSymbols);
@@ -1316,8 +1323,6 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
-    GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (Globals.iCfgVersionRead < CFG_VER_0002)); Defaults.MarkLongLines = false; // new default
-    GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true); FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
@@ -1334,9 +1339,12 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    auto const iPrefEncIniSetting = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_PREFERRED_ENCODING);
-    GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CPI_NONE, INT_MAX);
-    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_PREFERRED_ENCODING : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
+    auto const iDefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_PREFERRED_ENCODING);
+    GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iDefaultEncoding, CPI_NONE, INT_MAX);
+    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_PREFERRED_ENCODING : 
+                                                                         (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
+    Globals.fvCurFile.iEncoding = Settings.DefaultEncoding;
+
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
@@ -1559,19 +1567,6 @@ void LoadSettings()
     // define scintilla internal codepage
     int const iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
 
-    // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
-    /*
-    if (Settings.DefaultEncoding == CPI_ANSI_DEFAULT)
-    {
-      // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
-      int acp = (int)GetACP();
-      if (acp == 932 || acp == 936 || acp == 949 || acp == 950) {
-        iSciDefaultCodePage = acp;
-      }
-      Settings.DefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
-    }
-    */
-
     // set flag for encoding default
     Encoding_SetDefaultFlag(Settings.DefaultEncoding);
 
@@ -1775,6 +1770,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewWhiteSpace);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewEOLs);
 
+  // encoding: internal<->external mapping
   Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(false, (int)Settings.DefaultEncoding);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
   Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding);

@@ -615,7 +615,6 @@ static void _InitGlobals()
   ZeroMemory(&Flags, sizeof(FLAGS_T));
 
   ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
-  ZeroMemory(&(Globals.fvBackup), sizeof(FILEVARS));
   
   Globals.hDlgIcon256   = NULL;
   Globals.hDlgIcon128   = NULL;
@@ -629,7 +628,7 @@ static void _InitGlobals()
   Globals.uConsoleCodePage = 0;
   Globals.iAvailLngCount = 1;
   Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-  Globals.iWrapCol = 0;
+  Globals.iWrapCol = 80;
   Globals.CallTipType = CT_NONE;
 
   Globals.CmdLnFlag_PosParam = false;
@@ -1724,7 +1723,7 @@ static void  _SetWrapStartIndent()
 //
 static void  _SetWrapIndentMode()
 {
-  int const wrap_mode = (!Settings.WordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
+  int const wrap_mode = (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
 
   SciCall_SetWrapMode(wrap_mode);
 
@@ -3369,7 +3368,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
-  CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Settings.WordWrap);
+  CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
   CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
   CheckCmd(hmenu, IDM_VIEW_TABSASSPACES, Globals.fvCurFile.bTabsAsSpaces);
   CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
@@ -4967,6 +4966,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAP:
       Settings.WordWrap = !Settings.WordWrap;
+      Globals.fvCurFile.bWordWrap = Settings.WordWrap;
       _SetWrapIndentMode(Globals.hwndEdit);
       EditEnsureSelectionVisible();
       break;
@@ -4990,52 +4990,51 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         Settings.MarkLongLines = !Settings.MarkLongLines;
         size_t cnt = 0;
-        int edgeCol[MIDSZ_BUFFER] = { L'\0' };
+        int edgeColumns[SMALL_BUFFER] = { 0 };
         if (Settings.MarkLongLines) {
-          cnt = ReadVectorFromString(Settings.MultiEdgeLines, edgeCol, MIDSZ_BUFFER, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+          cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
         }
-        Style_SetMultiEdgeLine(Globals.hwndEdit, edgeCol, cnt);
+        Style_SetMultiEdgeLine(edgeColumns, cnt);
       }
       break;
 
 
     case IDM_VIEW_LONGLINESETTINGS:
       {
-        int _iLongLinesLimit = Settings.LongLinesLimit;
+        int _iLongLinesLimit = Defaults.LongLinesLimit;
 
-        WCHAR wchColumnList[MIDSZ_BUFFER];
-        StringCchCopy(wchColumnList, COUNTOF(wchColumnList), Settings.MultiEdgeLines);
+        if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines)) {
 
-        if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, wchColumnList)) {
-
-          int edgeCol[MIDSZ_BUFFER];
-          size_t const cnt = ReadVectorFromString(wchColumnList, edgeCol, MIDSZ_BUFFER, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+          int edgeColumns[SMALL_BUFFER];
+          size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
 
           if (cnt == 0) {
             Settings.MarkLongLines = false;
           }
           else if (cnt == 1) {
-            _iLongLinesLimit = edgeCol[0];
+            _iLongLinesLimit = edgeColumns[0];
             Settings.MarkLongLines = true;
             //~Settings.LongLineMode = EDGE_LINE|EDGE_BACKGROUND; // set by Dlg
           }
           else {
-            _iLongLinesLimit = edgeCol[cnt - 1];
+            _iLongLinesLimit = edgeColumns[cnt - 1];
             Settings.MarkLongLines = true;
             Settings.LongLineMode = EDGE_MULTILINE;
           }
           Globals.iWrapCol = _iLongLinesLimit;
           Settings.LongLinesLimit = _iLongLinesLimit;
-          Globals.fvCurFile.iLongLinesLimit = _iLongLinesLimit;
 
-          Settings.MultiEdgeLines[0] = L'\0'; // empty
+          // new multi-edge lines setting
           WCHAR col[32];
+          Settings.MultiEdgeLines[0] = L'\0';
           for (size_t i = 0; i < cnt; ++i) {
-            StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), edgeCol[i]);
+            StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), edgeColumns[i]);
             StringCchCat(Settings.MultiEdgeLines, COUNTOF(Settings.MultiEdgeLines), col);
           }
+          // make current too
+          StringCchCopy(Globals.fvCurFile.wchMultiEdgeLines, COUNTOF(Globals.fvCurFile.wchMultiEdgeLines), Settings.MultiEdgeLines);
 
-          Style_SetMultiEdgeLine(Globals.hwndEdit, edgeCol, cnt);
+          Style_SetMultiEdgeLine(edgeColumns, cnt);
         }
       }
       break;
@@ -5043,8 +5042,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TABSASSPACES:
       {
-        Globals.fvCurFile.bTabsAsSpaces = !Globals.fvCurFile.bTabsAsSpaces;
-        Settings.TabsAsSpaces = Globals.fvCurFile.bTabsAsSpaces;
+        Settings.TabsAsSpaces = !Settings.TabsAsSpaces;
+        Globals.fvCurFile.bTabsAsSpaces = Settings.TabsAsSpaces;
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
       }
       break;
@@ -7962,7 +7961,7 @@ static void  _UpdateToolbarDelayed()
   EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsSaveNeeded(ISN_GET) /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
-  CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Settings.WordWrap);
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
   CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
   CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
@@ -9297,7 +9296,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
     if (!s_flagKeepTitleExcerpt) { StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L""); }
-    FileVars_Init(NULL,0,&Globals.fvCurFile);
+    FileVars_GetFromData(NULL,0,&Globals.fvCurFile); // init-reset
 
     EditSetNewText(Globals.hwndEdit, "", 0, true);
 
@@ -9363,7 +9362,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       Globals.dwLastError = GetLastError();
       fSuccess = (hFile != INVALID_HANDLE_VALUE);
       if (fSuccess) {
-        FileVars_Init(NULL,0,&Globals.fvCurFile);
+        FileVars_GetFromData(NULL,0,&Globals.fvCurFile); // init/reset
         EditSetNewText(Globals.hwndEdit,"",0, true);
         Style_SetDefaultLexer(Globals.hwndEdit);
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
@@ -9373,9 +9372,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
           Encoding_HasChanged(fioStatus.iEncoding);
         }
         else {
-          fioStatus.iEncoding = Settings.DefaultEncoding;
-          Encoding_Current(Settings.DefaultEncoding);
-          Encoding_HasChanged(Settings.DefaultEncoding);
+          fioStatus.iEncoding = Globals.fvCurFile.iEncoding;
+          Encoding_Current(Globals.fvCurFile.iEncoding);
+          Encoding_HasChanged(Globals.fvCurFile.iEncoding);
         }
         s_bFileReadOnly = false;
       }

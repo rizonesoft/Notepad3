@@ -2578,8 +2578,9 @@ size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int i
   p = wchTmpBuff;
   while (*p) {
     int iValue;
-    if (swscanf_s(p, L"%i", &iValue) == 1) {
-      if (n < iCount) {
+    if (n < iCount) {
+      //if (swscanf_s(p, L"%i", &iValue) == 1) {
+      if (StrToIntEx(p, STIF_DEFAULT, &iValue)) {
         iVector[n++] = clampi(iValue, iMin, iMax);
       }
     }
@@ -2593,6 +2594,27 @@ size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int i
   return n;
 }
 
+size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
+{
+  if (chStrg_in) {
+    MultiByteToWideChar(CP_UTF8, 0, chStrg_in, -1, wchStrg_out, (int)iCount);
+  }
+  StrTrim(wchStrg_out, L"\"'");
+
+  int* intVector = (int*)AllocMem(iCount * sizeof(int), HEAP_ZERO_MEMORY);
+  if (!intVector) { return 0; }
+
+  size_t const cnt = ReadVectorFromString(wchStrg_out, intVector, iCount, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+
+  WCHAR col[32];
+  wchStrg_out[0] = L'\0';
+  for (size_t i = 0; i < cnt; ++i) {
+    StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), intVector[i]);
+    StringCchCat(wchStrg_out, iCount, col);
+  }
+  FreeMem(intVector);
+  return cnt;
+}
 
 //=============================================================================
 //
