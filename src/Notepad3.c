@@ -419,7 +419,8 @@ void ObserveNotifyChangeEvent()
   }
   if (CheckNotifyChangeEvent()) {
     EditUpdateVisibleIndicators();
-    UpdateAllBars(false);
+    UpdateToolbar();
+    UpdateStatusbar(false);
   }
 }
 
@@ -1481,7 +1482,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   Globals.iReplacedOccurrences = 0;
   Globals.iMarkOccurrencesCount = IsMarkOccurrencesEnabled() ? 0 : (DocPos)-1;
 
-  UpdateAllBars(false);
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
 
   // print file immediately and quit
   if (Globals.CmdLnFlag_PrintFileAndLeave)
@@ -1595,7 +1598,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditUpdateIndicators(0, -1, false);
       }
       MarkAllOccurrences(0, true);
-      UpdateAllBars(false);
+      UpdateToolbar();
+      UpdateStatusbar(true);
+      UpdateMarginWidth();
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
@@ -2549,7 +2554,9 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   //RECT* const rc = (RECT*)lParam;
   UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-  UpdateAllBars(true);
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
 
   Style_ResetCurrentLexer(Globals.hwndEdit);
 
@@ -2633,8 +2640,10 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
     EditDoStyling(0, -1);
   }
 
-  UpdateAllBars(true);
   UpdateUI();
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
   EditUpdateVisibleIndicators();
 
   return 0;
@@ -2698,7 +2707,10 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   s_WinCurrentWidth = cx;
-  UpdateAllBars(false);
+
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
 
   return 0;
 }
@@ -2911,7 +2923,9 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       FreeMem(params);
     }
 
-    UpdateAllBars(false);
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
   }
 
   return 0;
@@ -3567,14 +3581,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
   if (bIsLngMenuCmd) {
     _DynamicLanguageMenuCmd(iLoWParam);
-    UpdateAllBars(true);
-    return FALSE; 
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
+    return FALSE;
   }
 
   bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_DEFAULT) && (iLoWParam < (int)(IDM_THEMES_DEFAULT + ThemeItems_CountOf())));
   if (bIsThemesMenuCmd) {
     Style_DynamicThemesMenuCmd(iLoWParam);
-    UpdateAllBars(true);
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
     return FALSE;
   }
 
@@ -3613,7 +3631,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_OPEN:
       FileLoad(false,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, false, L"");
-      UpdateAllBars(true);
       break;
 
 
@@ -3628,7 +3645,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       // revert in any case (manually forced)
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
-      UpdateAllBars(true);
       break;
 
 
@@ -3678,6 +3694,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
           s_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
+        UpdateToolbar();
       }
       break;
 
@@ -3689,7 +3706,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_GREP_WIN_SEARCH:
       {
-        WCHAR wchBuffer[SMALL_BUFFER] = { L'\0' };
+        WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
         EditGetSelectedText(wchBuffer, COUNTOF(wchBuffer));
         DialogGrepWin(hwnd, wchBuffer);
       }
@@ -3895,7 +3912,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             FileLoad(true, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
           }
         }
-        UpdateAllBars(true);
       }
       break;
 
@@ -3947,6 +3963,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
+        UpdateToolbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -3969,7 +3987,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
             Encoding_Forced(iNewEncoding);
             FileLoad(true, false, true, true, true, false, tchMaxPathBuffer);
-            UpdateAllBars(true);
           }
         }
       }
@@ -3978,6 +3995,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_ENCODING_SETDEFAULT:
       SelectDefEncodingDlg(hwnd, &Settings.DefaultEncoding);
+      UpdateToolbar();
+      UpdateStatusbar(false);
       break;
 
 
@@ -3992,6 +4011,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
+        UpdateToolbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -4945,7 +4966,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
       }
       PostWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
-      UpdateAllBars(false);
+      UpdateStatusbar(true);
+      UpdateMarginWidth();
       break;
 
 
@@ -4953,14 +4975,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, true);
       }
-      UpdateAllBars(false);
+      UpdateToolbar();
+      UpdateStatusbar(true);
+      UpdateMarginWidth();
       break;
 
     case IDM_VIEW_CURRENTSCHEME:
       if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, false);
       }
-      UpdateAllBars(false);
+      UpdateToolbar();
+      UpdateStatusbar(true);
+      UpdateMarginWidth();
       break;
 
 
@@ -4969,6 +4995,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Globals.fvCurFile.bWordWrap = Settings.WordWrap;
       _SetWrapIndentMode(Globals.hwndEdit);
       EditEnsureSelectionVisible();
+      UpdateToolbar();
       break;
 
 
@@ -4976,6 +5003,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP, &Settings.WordWrapIndent)) {
         _SetWrapIndentMode(Globals.hwndEdit);
         _SetWrapVisualFlags(Globals.hwndEdit);
+        UpdateToolbar();
       }
       break;
 
@@ -4983,6 +5011,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_WORDWRAPSYMBOLS:
       Settings.ShowWordWrapSymbols = !Settings.ShowWordWrapSymbols;
       _SetWrapVisualFlags(Globals.hwndEdit);
+      UpdateToolbar();
       break;
 
 
@@ -6331,10 +6360,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     default:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-
-  UpdateAllBars(true);
-
-  return FALSE;
+  return 0;
 }
 
 
@@ -7194,6 +7220,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
 
     case SCN_ZOOM:
+      UpdateToolbar();
       UpdateMarginWidth();
       break;
 
@@ -7965,10 +7992,12 @@ static void  _UpdateToolbarDelayed()
   CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
   CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
-  bool b1 = SciCall_IsSelectionEmpty();
-  bool b2 = !Sci_IsDocEmpty();
-  bool ro = SciCall_GetReadOnly();
-  bool tv = FocusedView.HideNonMatchedLines;
+  bool const b1 = SciCall_IsSelectionEmpty();
+  bool const b2 = !Sci_IsDocEmpty();
+  bool const ro = SciCall_GetReadOnly();
+  bool const tv = FocusedView.HideNonMatchedLines;
+  bool const zi = (SciCall_GetZoom() > 100);
+  bool const zo = (SciCall_GetZoom() < 100);
 
   EnableTool(Globals.hwndToolbar, IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
   EnableTool(Globals.hwndToolbar, IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
@@ -7989,6 +8018,9 @@ static void  _UpdateToolbarDelayed()
 
   EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
   CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
+
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN, zi);
+  CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT, zo);
 }
 
 
@@ -9309,7 +9341,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     s_bFileReadOnly = false;
     SciCall_SetSavePoint();
 
-    UpdateAllBars(false);
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
 
     // Terminate file watching
     if (FileWatching.ResetFileWatching) {
@@ -9545,8 +9579,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
 
   EndWaitCursor();
-
-  UpdateAllBars(true);
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
 
   return fSuccess;
 }
@@ -9605,6 +9640,10 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   }
 
   SciCall_SetSavePoint();
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
+
   return true;
 }
 
@@ -9934,7 +9973,6 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
       InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
     }
   }
-
   return fSuccess;
 }
 

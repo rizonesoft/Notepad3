@@ -137,7 +137,6 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSaveSettingsCmds();
-inline void UpdateAllBars(bool force) { DrawMenuBar(Globals.hwndMain); UpdateToolbar(); UpdateStatusbar(force); UpdateMarginWidth(); }
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();

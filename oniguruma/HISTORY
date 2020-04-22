@@ -1,6 +1,6 @@
 History
 
-2020/04/DD: Version 6.9.5
+2020/04/20: Version 6.9.5
 
 2020/04/12: Release Candidate 2 for Version 6.9.5
 2020/04/09: fix a problem (found by oss-fuzz test on my PC)
