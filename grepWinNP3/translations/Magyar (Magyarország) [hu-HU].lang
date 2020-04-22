@@ -35,168 +35,168 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr ""
+msgstr "%ld további találat"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr ""
+msgstr "%path% le lesz cserélve a fájl útvonalával, %line% a sorral, ahova ugrik, %pattern% a keresési szöveggel"
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr ""
+msgstr "A grepWinNP3 &névjegye..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr ""
+msgstr "&Csere"
 
 #. Resource IDs: (123)
 msgid "&Search"
-msgstr ""
+msgstr "&Keresés"
 
 #. Resource IDs: (1013)
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #. Resource IDs: (1061, 1063, 1064, 1066, 1067)
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
-msgstr ""
+msgstr "A grepWinNP3 névjegye"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr ""
+msgstr "Hozzáadás az előre beállítottakhoz"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr ""
+msgstr "Minden fájl"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Minden dátum"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr ""
+msgstr "Minden méret"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr ""
+msgstr "Biztosan lecseréli ezt:\n%s\nerre:\n%s\nbiztonsági másolat nélkül"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Között"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr ""
+msgstr "Mégsem"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr ""
+msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr ""
+msgstr "Tartalom"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr ""
+msgstr "Fájlnév vágólapra másolása"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""
+msgstr "Fájlnevek vágólapra másolása"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr ""
+msgstr "Útvonal vágólapra másolása"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr ""
+msgstr "Útvonalak vágólapra másolása"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr ""
+msgstr "Eredmény szöveg vágólapra másolása"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr ""
+msgstr "Eredmények vágólapra másolása"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr ""
+msgstr "Biztonsági mentés készítése"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr ""
+msgstr "Biztonsági mentés készítése egy külön mappában"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Sötét mód"
 
 #. Resource IDs: (159)
 msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
-msgstr ""
+msgstr "Kérem, engedélyezze a sötét módot a Windows rendszerbeállításoknál (>= Win10 v1803)."
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr ""
+msgstr "Módosítás dátuma"
 
 #. Resource IDs: (137)
 msgid "Dialog"
-msgstr ""
+msgstr "Párbeszédablak"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr ""
+msgstr "A pont új sorra illeszkedik"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr ""
+msgstr "Dupa kattintás kiválasztja az előre beállítottakhoz"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr ""
+msgstr "Dummy"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr ""
+msgstr "Szerkesztő"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr ""
+msgstr "Kódolás"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr ""
+msgstr "Adjon nevet a regex-nek:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWinNP3"
-msgstr ""
+msgstr "Escape bezárja a grepWinNP3-at"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr ""
+msgstr "Kihagyandó könyvtárak (Regex):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Kit"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr ""
+msgstr "Illeszkedő fájlnevek:\nHasználja a '|' jelet a különböző illeszkedési minták elválasztására, tegye elé a '-' jelet a kihagyáshoz"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr ""
+msgstr "Fájlok"
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
-msgstr ""
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
