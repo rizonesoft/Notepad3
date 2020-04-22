@@ -348,9 +348,11 @@ void Style_DynamicThemesMenuCmd(int cmd)
   if (result) {
     Style_ResetCurrentLexer(Globals.hwndEdit);
     SendWMSize(Globals.hwndMain, NULL);
-    UpdateUI();
     _EnableSchemeConfig(Globals.idxSelectedTheme != 0);
-    UpdateAllBars(true);
+    UpdateUI();
+    UpdateToolbar();
+    UpdateStatusbar(true);
+    UpdateMarginWidth();
   }
 
   CheckCmd(Globals.hMainMenu, Theme_Files[Globals.idxSelectedTheme].rid, true);
@@ -1511,7 +1513,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
  
   if (bFocusedView) { EditToggleView(Globals.hwndEdit); }
 
-  UpdateAllBars(false);
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateMarginWidth();
 }
 
 
