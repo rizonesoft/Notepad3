@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.419.(build_#) (2020-04-19)
+Current BETA Version 5.20.421.(build_#) (2020-04-21)
 =====================================================
 
 -----------------------------------------------------
@@ -42,12 +42,13 @@ NEW:
 - "waifu2x" scaled std toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
-- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.4) (GRE).
+- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.5) (GRE).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
 - 
+- Filevar tag "fill-column" changes to support multi-column marker.
 - Installer to let the user select the target directory.
 - Default long-line wrap settings.
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).

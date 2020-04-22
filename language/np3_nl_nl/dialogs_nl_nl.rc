@@ -94,7 +94,7 @@ BEGIN
     CONTROL         "A&uto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "Reguliere &expressie zoeken",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "Punt &matches alles",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
+    CONTROL         "&Overlappende zoek",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "Wikkelen niet ron&d",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,65,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "A&uto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "Reguliere &expressie zoeken",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Punt &matches alles",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
+    CONTROL         "&Overlappende zoek",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "Wikkelen niet ron&d",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "S&luiten na vervangen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,85,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,73,10
@@ -200,7 +200,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,140,10
     CONTROL         "Analyse van &ANSI-codepagina uitvoeren.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    CONTROL         "Schakel &UNICODE-detectie in.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
+    CONTROL         "Schakel &UNICODE-detectie in.",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,140,151,50,14
 END
@@ -228,9 +229,9 @@ CAPTION "Inconsistent regeleinden"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Inconsistent regeleinden gevonden in bestand:",IDC_STATIC,7,7,180,8
-    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC,10,38,34,8
     LTEXT           "%s lijn(en).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s lijn(en).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s lijn(en).",IDC_EOL_SUM_LF,48,38,136,8
@@ -354,34 +355,34 @@ CAPTION "Inconsistente inspringing"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistieken: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
-    LTEXT           "Blancos[%i]:",IDC_INDENT_WIDTH_SPC,54,30,35,8,SS_LEFT
+    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Blancos[%i]:",IDC_INDENT_WIDTH_SPC,54,30,35,8
     LTEXT           "Gemengd[x]:",IDC_STATIC,54,42,40,8,SS_LEFT
-    LTEXT           "%s lijn(en)",IDC_INDENT_SUM_TAB,96,18,52,8,SS_RIGHT
-    LTEXT           "%s lijn(en)",IDC_INDENT_SUM_SPC,96,30,52,8,SS_RIGHT
-    LTEXT           "%s lijn(en)",IDC_INDENT_SUM_MIX,96,42,52,8,SS_RIGHT
+    RTEXT           "%s lijn(en)",IDC_INDENT_SUM_TAB,96,18,52,8
+    RTEXT           "%s lijn(en)",IDC_INDENT_SUM_SPC,96,30,52,8
+    RTEXT           "%s lijn(en)",IDC_INDENT_SUM_MIX,96,42,52,8,
     GROUPBOX        "Opnieuw inspringen alles ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "&Blancos",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,33,10
-    LTEXT           "%s lijn(en) met onregelmatige inspringen",IDC_INDENT_TAB_MODX,50,72,130,8,SS_RIGHT
-    LTEXT           "%s lijn(en) met onregelmatige inspringen",IDC_INDENT_SPC_MODX,50,84,130,8,SS_RIGHT
+    RTEXT           "%s lijn(en) met onregelmat. inspringen",IDC_INDENT_TAB_MODX,50,72,130,8
+    RTEXT           "%s lijn(en) met onregelmat. inspringen",IDC_INDENT_SPC_MODX,50,84,130,8
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,134,98,50,14
     CONTROL         "&Dit dialoogvenster altijd tonen.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
-IDD_MUI_LONGLINES DIALOGEX 0, 0, 184, 55
+IDD_MUI_LONGLINES DIALOGEX 0, 0, 279, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Lange lijnen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Limiet lange lijnen:",IDC_STATIC,7,10,60,8
-    EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Ton&en rand lijn.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
-    CONTROL         "Veranderen achtergrond kleur.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,127,24,50,14
+    LTEXT           "&Lijnlimiet meerdere pos:",IDC_STATIC,7,10,80,8
+    EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
+    CONTROL         "Ton&en rand lijn.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "Veranderen achtergrond kleur.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,222,34,50,14
 END
 
 IDD_MUI_WORDWRAP DIALOGEX 0, 0, 196, 100
@@ -837,7 +838,7 @@ BEGIN
     IDD_MUI_LONGLINES, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 177
+        RIGHTMARGIN, 272
         TOPMARGIN, 7
         BOTTOMMARGIN, 48
     END

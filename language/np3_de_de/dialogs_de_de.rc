@@ -229,9 +229,9 @@ CAPTION "Inkonsistente Zeilenumbrüche"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Inkonsistente Zeilenumbrüche gefunden:",IDC_STATIC,7,7,180,8
-    LTEXT           "CR+LF:",IDC_STATIC,10,18,34,8,SS_RIGHT
-    LTEXT           "CR:",IDC_STATIC,10,28,34,8,SS_RIGHT
-    LTEXT           "LF:",IDC_STATIC,10,38,34,8,SS_RIGHT
+    RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
+    RTEXT           "CR:",IDC_STATIC,10,28,34,8
+    RTEXT           "LF:",IDC_STATIC,10,38,34,8
     LTEXT           "%s Zeile(n).",IDC_EOL_SUM_CRLF,48,18,136,8
     LTEXT           "%s Zeile(n).",IDC_EOL_SUM_CR,48,28,136,8
     LTEXT           "%s Zeile(n).",IDC_EOL_SUM_LF,48,38,136,8
@@ -355,17 +355,17 @@ CAPTION "Inkonsistente Einrückungen"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistik: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8,SS_LEFT
-    LTEXT           "Blanks[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8,SS_LEFT
-    LTEXT           "Mixed[x]:",IDC_STATIC,54,42,30,8,SS_LEFT
-    LTEXT           "%s Zeile(n)",IDC_INDENT_SUM_TAB,84,18,52,8,SS_RIGHT
-    LTEXT           "%s Zeile(n)",IDC_INDENT_SUM_SPC,84,30,52,8,SS_RIGHT
-    LTEXT           "%s Zeile(n)",IDC_INDENT_SUM_MIX,84,42,52,8,SS_RIGHT
+    LTEXT           "Tabs[%i]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Blanks[%i]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "Mixed[x]:",IDC_STATIC,54,42,30,8
+    RTEXT           "%s Zeile(n)",IDC_INDENT_SUM_TAB,84,18,52,8
+    RTEXT           "%s Zeile(n)",IDC_INDENT_SUM_SPC,84,30,52,8
+    RTEXT           "%s Zeile(n)",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Alles Neu Einrücken ? ",IDC_STATIC,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    LTEXT           "%s Zeile(n) m. irregulärer Tiefe",IDC_INDENT_TAB_MODX,40,72,124,8,SS_RIGHT
-    LTEXT           "%s Zeile(n) m. irregulärer Tiefe",IDC_INDENT_SPC_MODX,40,84,124,8,SS_RIGHT
+    RTEXT           "%s Zeile(n) m. irregulärer Tiefe",IDC_INDENT_TAB_MODX,40,72,124,8
+    RTEXT           "%s Zeile(n) m. irregulärer Tiefe",IDC_INDENT_SPC_MODX,40,84,124,8
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
     PUSHBUTTON      "&Nein",IDCANCEL,134,98,50,14
     CONTROL         "&Diesen Dialog immer anzeigen.",IDC_WARN_INCONSISTENT_INDENTS,

@@ -140,7 +140,7 @@ msgstr "Mode sombre"
 
 #. Resource IDs: (159)
 msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
-msgstr ""
+msgstr "Veuillez d'abord activer le mode sombre dans les paramètres de Windows (> = Win10 v1803)."
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -527,4 +527,4 @@ msgstr "Réinitialiser"
 
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
-msgstr ""
+msgstr "Max # de travailleurs concurrent"
