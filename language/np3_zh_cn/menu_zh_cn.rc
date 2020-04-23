@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "启动(&L)"
         BEGIN
-            MENUITEM "&Search in Files\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "在文件中查找(&S)...\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新窗口(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空窗口(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "替换下一个(&X)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Search in Files\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "在文件中查找(&S)...\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "查看(&V)"
