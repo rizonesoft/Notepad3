@@ -39,7 +39,7 @@ msgstr "还有 %ld 个匹配"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号, %pattern% with the search string."
+msgstr "%path% 被替换为文件的路径，%line% 被替换为要转至的行号，%pattern% 被替换为查找的字符串。"
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -51,7 +51,7 @@ msgstr "替换(&R)"
 
 #. Resource IDs: (123)
 msgid "&Search"
-msgstr "搜索(&S)"
+msgstr "查找(&S)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -67,7 +67,7 @@ msgstr "关于 grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "添至预置"
+msgstr "添加到预置方案"
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -84,7 +84,7 @@ msgstr "所有大小"
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "您确定想要将\n%s\n替换为\n%s\n而不创建备份吗?"
+msgstr "您确定想要将\n%s\n替换为\n%s\n而不创建备份吗？"
 
 #. Resource IDs: (1081)
 msgid "Between"
@@ -96,7 +96,7 @@ msgstr "取消"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "用于在指定的行来启动编辑器的命令行:"
+msgstr "用于编辑指定的行的命令："
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -104,11 +104,11 @@ msgstr "内容"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "复制文件名称到剪贴板"
+msgstr "复制文件名到剪贴板"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "复制文件名称到剪贴"
+msgstr "复制文件名到剪贴板"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
@@ -136,11 +136,11 @@ msgstr "在单独的目录创建备份文件"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "暗色模式"
 
 #. Resource IDs: (159)
 msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
-msgstr ""
+msgstr "请先在 Windows 设置中启用暗色模式。（>= Win10 v1803）"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -152,11 +152,11 @@ msgstr "对话框"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "点号匹配新行"
+msgstr ". 匹配换行"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "双击选择一个预置"
+msgstr "双击选择一个预置方案"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -172,23 +172,23 @@ msgstr "编码"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "为正则输入一个名称:"
+msgstr "为正则表达式输入一个名称："
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWinNP3"
-msgstr "ESC 键关闭 grepWinNP3"
+msgstr "Esc 键关闭 grepWinNP3"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "排除目录(正则):"
+msgstr "排除目录（正则）："
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "扩展名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "文件名称匹配:\n使用 '|' 号来分隔多个文本匹配规则, 前置 '-' 用于排除(&D)"
+msgstr "文件名称匹配：\n使用 | 来分隔多个文本匹配规则, 前置 - 用于排除(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -200,7 +200,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "如果启用, 则将在要搜索/替换的目录内创建一个备份目录,并将文件备份到该目录."
+msgstr "如果启用, 则在要查找/替换的目录内创建一个备份目录，并将文件备份到该目录。"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -220,7 +220,7 @@ msgstr "包含系统项目"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "无效路径!"
+msgstr "无效路径！"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -232,7 +232,7 @@ msgstr "语言"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "限定搜索"
+msgstr "限定查找"
 
 #. Resource IDs: (134)
 msgid "Line"
@@ -257,7 +257,7 @@ msgstr "晚于"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "新行匹配 '.' 号"
+msgstr "新行匹配 ."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -281,7 +281,7 @@ msgstr "使用编辑器打开"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "粘贴文本以测试正则:"
+msgstr "粘贴文本以测试正则："
 
 #. Resource IDs: (137)
 msgid "Path"
@@ -289,11 +289,11 @@ msgstr "路径"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "预置名称"
+msgstr "预置方案名称"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "预置"
+msgstr "预置方案"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
@@ -305,7 +305,7 @@ msgstr "应用程序"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "重命名预置(&N)"
+msgstr "重命名预置方案(&N)"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
@@ -317,23 +317,23 @@ msgstr "正则匹配"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "正则替换字符串:"
+msgstr "正则替换字符串："
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "正则搜索"
+msgstr "正则查找"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "正则搜索字符串:"
+msgstr "正则查找字符串："
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "不允许使用相对路径. 请输入一个绝对路径!"
+msgstr "不允许使用相对路径，请输入一个绝对路径。"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "移除预置(&V)"
+msgstr "移除预置方案(&V)"
 
 #. Resource IDs: (106)
 msgid "Replace string"
@@ -341,7 +341,7 @@ msgstr "替换字符串"
 
 #. Resource IDs: (1027)
 msgid "Replace with:"
-msgstr "替换为:"
+msgstr "替换为："
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -349,40 +349,40 @@ msgstr "停止(&T)"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "搜索"
+msgstr "查找"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "搜索(&F):"
+msgstr "查找(&F)："
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "大小写敏感搜索"
+msgstr "大小写敏感查找"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "搜索于"
+msgstr "查找于"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "搜索结果"
+msgstr "查找结果"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "搜索字符串"
+msgstr "查找字符串"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中."
+msgstr "已查找 %ld 个文件，已跳过 %ld 个文件。已找到 %ld 个匹配（在 %ld 个文件中）。"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "选择编辑器应用程序..."
+msgstr "选择编辑器..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "选择要搜索的路径"
+msgstr "选择要查找的路径"
 
 #. Resource IDs: (1071)
 msgid "Settings"
@@ -410,19 +410,19 @@ msgstr "文本匹配"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "文本搜索"
+msgstr "文本查找"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "正则搜索字符串匹配:"
+msgstr "正则表达式匹配："
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "替换后的结果文本:"
+msgstr "替换后的结果："
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "这将在上下文菜单中添加一个名为'使用编辑器打开'的条目."
+msgstr "这将在上下文菜单中添加一个名为“使用编辑器打开”的选项。"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -434,7 +434,7 @@ msgstr "访问我们的网站"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "用于搜索的正则表达式. 按 F1 键获取更多信息."
+msgstr "用于查找的正则表达式。按 F1 键获取更多信息。"
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -466,11 +466,11 @@ msgstr "grepWinNP3 设置"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "按住 SHIFT 键来查找不包含搜索字符串的文件"
+msgstr "按住 Shift 键来查找不包含查找字符串的文件"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "无效的正则表达式!"
+msgstr "无效的正则表达式！"
 
 #. Resource IDs: (120)
 msgid "less than"
@@ -482,7 +482,7 @@ msgstr "无匹配"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "没有要替换为的文本"
+msgstr "没有要替换的文本"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
@@ -490,7 +490,7 @@ msgstr "没有要测试的文本"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
-msgstr "仅匹配此样式的文件被搜索.\n使用 '|' 作为分隔符.\n例如: *.cpp|*.h"
+msgstr "仅查找特定类型的文件。\n使用 | 作为分隔符。\n例如：*.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -507,24 +507,24 @@ msgstr "复用 grepWinNP3 实例"
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "正在扫描文件 '%s'"
+msgstr "正在扫描文件“%s”"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "搜索字符串为空"
+msgstr "查找字符串为空"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
-msgstr "将被递归搜索的路径.\n使用'|'符号来分隔路径.\n比如:  c:\\temp|d:\\logs"
+msgstr "要递归查找的路径。\n使用 | 来分隔路径。\n例如：c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "你可以排除目录, 比如: CVS 和 images.\n例如: ^(CVS|images)$\n注意, '.svn' 目录在Windows中是隐藏的, 所以通常不扫描它们."
+msgstr "你可以排除目录，例如 CVS 和图片。\n例如：^(CVS|images)$\n注意：.svn 目录在 Windows 中是隐藏的，所以通常不会扫描。"
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr ""
+msgstr "重置"
 
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
-msgstr ""
+msgstr "并发任务上限数"
