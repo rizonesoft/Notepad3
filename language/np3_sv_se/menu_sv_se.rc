@@ -55,7 +55,7 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "Fil"
+    POPUP "Arkiv"
     BEGIN
         MENUITEM "Ny\tCtrl+N",                                      IDM_FILE_NEW
         MENUITEM "Öppna...\tCtrl+O",                                IDM_FILE_OPEN
@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Kör"
         BEGIN
-            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
+            MENUITEM "Sök i filer\tCtrl+Alt+F",                     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Nytt fönster\tAlt+N",                         IDM_FILE_NEWWINDOW
             MENUITEM "Tomt fönster\tAlt+Shift+N",                   IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Search in Files\tCtrl+Alt+F",                IDM_GREP_WIN_SEARCH
+            MENUITEM "Sök i filer\tCtrl+Alt+F",                     IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "Visa"
@@ -416,7 +416,7 @@ BEGIN
         MENUITEM "Kompletera ord automatiskt",                      IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_VIEW_AUTOCLEXKEYWORDS
         MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
-        MENUITEM "Aktivera redigering av radkommentar",             IDM_VIEW_EDIT_LINECOMMENT
+        MENUITEM "Redigering av radkommentar",                      IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "Endast en instans per fil",                       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_VIEW_CHANGENOTIFY
