@@ -32,13 +32,14 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.421.(build_#) (2020-04-21)
+Current BETA Version 5.20.423.(build_#) (2020-04-23)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 - 
+- Toolbar hint for zoomed view.
 - "waifu2x" scaled std toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
@@ -69,6 +70,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Menu flickering.
 - "grepWinNP3": optimized single-tread worker option (GRE).
 - View selection on wrapped long-lines vs. normalizing view.
 - Don't protect backslash (double'\\') for pattern argument.
