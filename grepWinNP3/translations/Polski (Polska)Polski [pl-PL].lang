@@ -43,7 +43,7 @@ msgstr "%path% jest zastępowana ścieżką pliku, %line% z linią, aby przejś�
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr "&O grepWinNP3..."
+msgstr "&O programie grepWinNP3..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -63,7 +63,7 @@ msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
-msgstr "O grepWinNP3"
+msgstr "O programie grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -136,11 +136,11 @@ msgstr "Twórz zapasowe kopie plików w osobnym folderze"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Tryb ciemny"
 
 #. Resource IDs: (159)
 msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
-msgstr ""
+msgstr "Proszę najpierw włączyć tryb ciemny w ustawieniach systemu Windows (>= Win10 v1803)"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -160,7 +160,7 @@ msgstr "Kliknij dwukrotnie, aby wybrać predefiniowane ustawienie"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "Dummy"
+msgstr "Pusty wyraz"
 
 #. Resource IDs: (1067)
 msgid "Editor"
@@ -184,7 +184,7 @@ msgstr "Wyklucz katalogi (Regex):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -523,8 +523,8 @@ msgstr "Można wykluczyć katalogi, np. CVS i obrazy.\nPrzykład: ^(CVS|obrazy)$
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr ""
+msgstr "Resetuj"
 
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
-msgstr ""
+msgstr "Maks. # jednoczesnych sesji"
