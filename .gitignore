@@ -62,6 +62,8 @@ Thumbs.db
 /np3portableapp/*.7z
 /np3portableapp/*.paf.exe
 /np3portableapp/_buildname.txt
+/np3portableapp/Signing_for*.cmd
+/np3portableapp/Signing_log*.txt
 /np3portableapp/Notepad3Portable/Notepad3Portable.exe
 /np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
 /np3portableapp/Notepad3Portable/App/DefaultData/settings
