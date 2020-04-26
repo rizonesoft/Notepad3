@@ -1,7 +1,7 @@
 @echo off
 setlocal enableextensions
 :: encoding: UTF-8
-chcp 65001  >nul 2>&1
+chcp 65001 >nul 2>&1
 
 :: ====================================================================================================================
 :: Build batch to create a PortableApps.com's (https://portableapps.com/development) 
@@ -192,8 +192,17 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 :: - build Launcher -
 "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
+:: Signing "Notepad3Portable.exe" (".exe" file is created by "Launcher")
+:: call %SCRIPT_DIR%Signing_for_EXE_NP3_1st.cmd
+
 :: - build Installer -
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
+
+:: Signing "Notepad3Portable_x.xx.xxx.x.paf.exe" (".paf.exe" file is created by "Installer")
+:: call %SCRIPT_DIR%Signing_for_EXE_NP3_2nd.cmd
+
+:: Creation of a "7-Zip" file by appending the extension ".7z"
+copy /B %SCRIPT_DIR%Notepad3Portable_*.paf.exe %SCRIPT_DIR%Notepad3Portable_*.paf.exe.7z /Y /V
 
 :: rename
 ::echo rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
