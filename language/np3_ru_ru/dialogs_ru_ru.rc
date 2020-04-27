@@ -93,7 +93,7 @@ BEGIN
     CONTROL         "&Управляющие символы",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,95,10
     CONTROL         "Авто&экр. упр. символов",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,73,94,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,97,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,75,10
+    CONTROL         "Перекрыва&ющийся поиск",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,102,10
     CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
     CONTROL         "Не з&ацикливать",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,70,10
     CONTROL         "&Закрыть после поиска",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,92,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Авто&экр. упр. символов",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,102,94,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,94,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,75,10
+    CONTROL         "Перекрыва&ющийся поиск",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,102,10
     CONTROL         "Не з&ацикливать",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,70,10
     CONTROL         "&Закрыть после замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,93,10
     CONTROL         "Отметить в&хождения",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,89,10
@@ -357,7 +357,7 @@ BEGIN
     GROUPBOX        "Статистика по строкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
     LTEXT           "Табуляция[%i]:",IDC_INDENT_WIDTH_TAB,40,18,55,8
     LTEXT           "Пробелы[%i]:",IDC_INDENT_WIDTH_SPC,42,30,55,8
-    LTEXT           "Смешанные[x]:",IDC_STATIC,33,42,55,8    
+    LTEXT           "Смешанные[x]:",IDC_STATIC,33,42,55,8
     RTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     RTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     RTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
