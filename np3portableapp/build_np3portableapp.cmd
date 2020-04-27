@@ -198,11 +198,16 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 :: - build Installer -
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
-:: Signing "Notepad3Portable_x.xx.xxx.x.paf.exe" (".paf.exe" file is created by "Installer")
+:: Signing "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" (".paf.exe" file is created by "Installer")
 :: call %SCRIPT_DIR%Signing_for_EXE_NP3_2nd.cmd
 
 :: Creation of a "7-Zip" file by appending the extension ".7z"
-copy /B %SCRIPT_DIR%Notepad3Portable_*.paf.exe %SCRIPT_DIR%Notepad3Portable_*.paf.exe.7z /Y /V
+set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe
+if exist %Notepad3Portable.paf.exe% (
+    copy /B %Notepad3Portable.paf.exe% %Notepad3Portable.paf.exe%.7z /Y /V
+) else (
+    echo. "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" does not exist
+)
 
 :: rename
 ::echo rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
