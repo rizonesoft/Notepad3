@@ -29,10 +29,12 @@ SET INPUTDIRx86=bin\Release_x86_v142
 SET INPUTDIRx64=bin\Release_x64_v142
 SET "TEMP_NAME=temp_zip"
 
-IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
-IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe" CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
-IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
-IF NOT EXIST "..\%INPUTDIRx64%\minipath.exe" CALL :SUBMSG "ERROR" "Compile MiniPath x64 first!"
+IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
+IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
+IF NOT EXIST "..\%INPUTDIRx86%\grepWinNP3.exe" CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x64 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\grepWinNP3.exe" CALL :SUBMSG "ERROR" "Compile MiniPath x64 first!"
 
 CALL :SubGetVersion
 CALL :SubDetectSevenzipPath
@@ -80,21 +82,23 @@ EXIT /B
 SET "ZIP_NAME=Notepad3_%NP2_VER%_%2%SUFFIX%"
 TITLE Creating %ZIP_NAME%.zip...
 CALL :SUBMSG "INFO" "Creating %ZIP_NAME%.zip..."
-
+echo off
 IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "Packages"    MD "Packages"
 
-FOR %%A IN ("Changes.txt" "License.txt" "Readme.txt" "Notepad3.ini" "minipath.ini"^
-	"..\%1\Notepad3.exe" "..\%1\minipath.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
+FOR %%A IN ("Changes.txt" "License.txt" "Readme.txt" "..\grepWinNP3\GPL_v3.0_LICENSE.txt" "Notepad3.ini" "minipath.ini"^
+    "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\grepWinNP3.exe" "..\grepWinNP3") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "LNG=%TEMP_NAME%\lng"
+SET "GRP=%TEMP_NAME%\lng\gwLng\"
 SET "THEMES=%TEMP_NAME%\themes"
 SET "DOCS=%TEMP_NAME%\Docs"
 IF NOT EXIST %LNG% MD %LNG%
 IF NOT EXIST %THEMES% MD %THEMES%
 IF NOT EXIST %DOCS% MD %DOCS%
 XCOPY /E /Y /V "..\%1\lng" "%LNG%" /EXCLUDE:Ignore.txt
+XCOPY /E /Y /V "..\grepWinNP3\translations" "%GRP%"
 XCOPY /E /Y /V "themes" "%THEMES%"
 XCOPY /E /Y /V "Docs" "%DOCS%"
 
@@ -103,8 +107,8 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mx=9^
- "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "Changes.txt"^
- "Readme.txt" "Favorites" "minipath.exe" "minipath.ini" "lng" "themes" "Docs">NUL
+ "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "GPL_v3.0_LICENSE.txt" "Changes.txt"^
+ "Readme.txt" "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"
