@@ -657,8 +657,11 @@ static void
 mmcl_alt_merge(MinMaxCharLen* to, MinMaxCharLen* alt)
 {
   if (to->min > alt->min) {
-    to->min = alt->min;
-    if (alt->min_is_sure != 0)
+    to->min         = alt->min;
+    to->min_is_sure = alt->min_is_sure;
+  }
+  else if (to->min == alt->min) {
+    if (alt->min_is_sure != FALSE)
       to->min_is_sure = TRUE;
   }
 
@@ -883,15 +886,15 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
     }
     break;
 
+  case NODE_GIMMICK:
+    mmcl_set(ci, 0);
+    break;
+
   case NODE_ANCHOR:
+  zero:
     mmcl_set(ci, 0);
     /* can't optimize look-behind if anchor exists. */
     ci->min_is_sure = FALSE;
-    break;
-
-  case NODE_GIMMICK:
-  zero:
-    mmcl_set(ci, 0);
     break;
 
   case NODE_BACKREF:
@@ -7735,14 +7738,18 @@ print_indent_tree(FILE* f, Node* node, int indent)
     break;
 
   case NODE_CCLASS:
+#define CCLASS_MBUF_MAX_OUTPUT_NUM   10
+
     fprintf(f, "<cclass:%p>", node);
     if (IS_NCCLASS_NOT(CCLASS_(node))) fputs(" not", f);
     if (CCLASS_(node)->mbuf) {
       BBuf* bbuf = CCLASS_(node)->mbuf;
-      for (i = 0; i < bbuf->used; i++) {
+      fprintf(f, " mbuf(%u) ", bbuf->used);
+      for (i = 0; i < bbuf->used && i < CCLASS_MBUF_MAX_OUTPUT_NUM; i++) {
         if (i > 0) fprintf(f, ",");
         fprintf(f, "%0x", bbuf->p[i]);
       }
+      if (i < bbuf->used) fprintf(f, "...");
     }
     break;
 

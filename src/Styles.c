@@ -805,7 +805,6 @@ void Style_ToIniSection(bool bForceAll)
   // cleanup old (< v4) stuff 
   IniSectionDelete(L"Default Text", NULL, true);
   IniSectionDelete(L"2nd Default Text", NULL, true);
-
 }
 
 
@@ -1495,9 +1494,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   Style_SetInvisible(hwnd, false); // set fixed invisible style
 
-  SciCall_StartStyling(0);
-
   _OBSERVE_NOTIFY_CHANGE_;
+
+  SciCall_StartStyling(0);
 
   // apply lexer styles
   if (Flags.bLargeFileLoaded)

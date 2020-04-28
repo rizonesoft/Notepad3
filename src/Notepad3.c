@@ -1793,18 +1793,21 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
-  if (IsWindowsVistaOrGreater()) {
-    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
-    //~SciCall_SetBufferedDraw(true);  // default is true 
-    if (Settings.RenderingTechnology > 0) {
-      SciCall_SetTechnology(s_DirectWriteTechnology[Settings.RenderingTechnology]);
-      SciCall_SetBufferedDraw(false);
-      // experimental
-      SciCall_SetBidirectional(s_SciBidirectional[Settings.Bidirectional]);
-    }
+  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
+  // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
+  //~SCI_SETBUFFEREDDRAW(true);  // default is true 
+  if (Settings.RenderingTechnology > 0) 
+  {
+    SendMessage(hwndEditCtrl, SCI_SETTECHNOLOGY, (WPARAM)s_DirectWriteTechnology[Settings.RenderingTechnology], 0);
+    SendMessage(hwndEditCtrl, SCI_SETBUFFEREDDRAW, 0, 0); // false
+    SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, (WPARAM)s_SciBidirectional[Settings.Bidirectional], 0); // experimental
   }
-  Encoding_Current(Settings.DefaultEncoding);
+  //~SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_TWO, 0); // (= default)
+  SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0);
+  //~SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
+  //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
+  SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 4096, 0);
 
   //int const evtMask = SC_MODEVENTMASKALL;
   // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
@@ -1821,9 +1824,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
   SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 (Sci:default)
-  SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
-  //SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_DOCUMENT, 0);
-  //SendMessage(hwndEditCtrl, SCI_SETPHASESDRAW, SC_PHASES_MULTIPLE, 0); // default: SC_PHASES_TWO
 
   SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
@@ -1843,10 +1843,10 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_NONE, 0); // needed for focused view
   // Idle Styling (very large text)
   //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //~~~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);
+  SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_NONE, 0); // needed for focused view
 
   // assign command keys
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
@@ -2091,6 +2091,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
     return -1LL;
   }
   Style_SetDefaultLexer(Globals.hwndEdit);
+
+  Encoding_Current(Settings.DefaultEncoding);
 
   ObserveNotifyChangeEvent();
 
