@@ -1,5 +1,9 @@
 History
 
+2020/04/26: Version 6.9.5 revised 1
+
+2020/04/24: fix #192: Unexpected regex match
+
 2020/04/20: Version 6.9.5
 
 2020/04/12: Release Candidate 2 for Version 6.9.5

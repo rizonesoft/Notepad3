@@ -27,6 +27,12 @@ Supported character encodings:
 * doc/SYNTAX.md: contributed by seanofw
 
 
+Version 6.9.5 revised 1
+-----------------------
+
+* Fixed Issue #192
+
+
 Version 6.9.5
 -------------
 
