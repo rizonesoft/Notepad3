@@ -5843,6 +5843,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
   case WM_DESTROY:
     {
       _SetSearchFlags(hwnd, sg_pefrData); // sync
+      Settings.EFR_Data = *sg_pefrData;   // remember options
 
       if (!s_bSwitchedFindReplace)
       {
@@ -5904,7 +5905,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wPara
       DeleteObject(hBrushBlue);
       ResizeDlg_Destroy(hwnd, &Settings.FindReplaceDlgSizeX, NULL);
     }
-    return false;
+    return 0;
 
 
   case WM_SIZE: {
