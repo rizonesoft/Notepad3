@@ -112,6 +112,9 @@ Source: {#bindir}\Release_x86_v142\Notepad3.exe;                    DestDir: {ap
 Source: License.txt;                                                DestDir: {app};                                     Flags: ignoreversion
 Source: Readme.txt;                                                 DestDir: {app};                                     Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\minipath.exe;                    DestDir: {app};                                     Flags: ignoreversion;
+Source: "..\grepWinNP3\GPL_v3.0_LICENSE.txt";                       DestDir: {app};                                     Flags: ignoreversion;
+Source: "..\grepWinNP3\translations\*.lang";                        DestDir: {app}\lng\gwLng;                           Flags: ignoreversion;
+Source: {#bindir}\Release_x86_v142\grepWinNP3.exe;                  DestDir: {app};                                     Flags: ignoreversion;
 Source: Notepad3.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3;         Flags: onlyifdoesntexist uninsneveruninstall
 Source: minipath.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3;         Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Dark.ini;                                            DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
@@ -146,8 +149,12 @@ Source: {#bindir}\Release_x86_v142\lng\pt-BR\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\pt-BR\np3lng.dll.mui;        DestDir: {app}\lng\pt-BR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\sk-SK\mplng.dll.mui;         DestDir: {app}\lng\sk-SK;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\sk-SK\np3lng.dll.mui;        DestDir: {app}\lng\sk-SK;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\sv-SE\mplng.dll.mui;         DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\sv-SE\np3lng.dll.mui;        DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\tr-TR\mplng.dll.mui;         DestDir: {app}\lng\tr-TR;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\tr-TR\np3lng.dll.mui;        DestDir: {app}\lng\tr-TR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
