@@ -63,12 +63,6 @@
 #define LOAD_LIBRARY_SEARCH_SYSTEM32 0x00000800
 #endif
 
-#if _WIN32_WINNT < _WIN32_WINNT_VISTA
-#define USE_SRW_LOCK	0
-#else
-#define USE_SRW_LOCK	1
-#endif
-
 #if _WIN32_WINNT < _WIN32_WINNT_WIN8
 extern DWORD kSystemLibraryLoadFlags;
 #else
@@ -238,7 +232,6 @@ HFONT FormatAndMetrics::HFont() const noexcept {
 #define CLEARTYPE_QUALITY 5
 #endif
 
-namespace {
 
 inline void *PointerFromWindow(HWND hWnd) noexcept {
 	return reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, 0));
@@ -248,11 +241,8 @@ inline void SetWindowPointer(HWND hWnd, void *ptr) noexcept {
 	::SetWindowLongPtr(hWnd, 0, reinterpret_cast<LONG_PTR>(ptr));
 }
 
-#if USE_SRW_LOCK
-SRWLOCK srwPlatformLock = SRWLOCK_INIT;
-#else
-CRITICAL_SECTION crPlatformLock;
-#endif
+namespace {
+
 HINSTANCE hinstPlatformRes {};
 
 HCURSOR reverseArrowCursor {};
@@ -1057,8 +1047,8 @@ class SurfaceD2D : public Surface {
 	ID2D1SolidColorBrush *pBrush;
 
 	int logPixelsY;
-	float dpiScaleX;
-	float dpiScaleY;
+	//float dpiScaleX;
+	//float dpiScaleY;
 
 	void Clear() noexcept;
 	void SetFont(const Font &font_) noexcept;
@@ -1143,8 +1133,8 @@ SurfaceD2D::SurfaceD2D() noexcept :
 	pBrush = nullptr;
 
 	logPixelsY = 72;
-	dpiScaleX = 1.0;
-	dpiScaleY = 1.0;
+	//dpiScaleX = 1.0;
+	//dpiScaleY = 1.0;
 }
 
 SurfaceD2D::~SurfaceD2D() noexcept {
@@ -1178,8 +1168,8 @@ void SurfaceD2D::Release() noexcept {
 void SurfaceD2D::SetScale() noexcept {
 	HDC hdcMeasure = ::CreateCompatibleDC({});
 	logPixelsY = ::GetDeviceCaps(hdcMeasure, LOGPIXELSY);
-	dpiScaleX = ::GetDeviceCaps(hdcMeasure, LOGPIXELSX) / 96.0f;
-	dpiScaleY = logPixelsY / 96.0f;
+	//dpiScaleX = ::GetDeviceCaps(hdcMeasure, LOGPIXELSX) / 96.0f;
+	//dpiScaleY = logPixelsY / 96.0f;
 	::DeleteDC(hdcMeasure);
 }
 
@@ -2215,7 +2205,7 @@ RECT RectFromMonitor(HMONITOR hMonitor) noexcept {
 }
 
 void Window::SetPositionRelative(PRectangle rc, const Window *relativeTo) noexcept {
-	const LONG style = ::GetWindowLong(HwndFromWindowID(wid), GWL_STYLE);
+	const DWORD style = GetWindowStyle(HwndFromWindowID(wid));
 	if (style & WS_POPUP) {
 		POINT ptOther = {0, 0};
 		::ClientToScreen(HwndFromWindow(*relativeTo), &ptOther);
@@ -2285,43 +2275,26 @@ void FlipBitmap(HBITMAP bitmap, int width, int height) noexcept {
 	}
 }
 
-HCURSOR GetReverseArrowCursor() noexcept {
-	if (reverseArrowCursor)
-		return reverseArrowCursor;
-
-#if USE_SRW_LOCK
-	::AcquireSRWLockExclusive(&srwPlatformLock);
-#else
-	::EnterCriticalSection(&crPlatformLock);
-#endif
-	HCURSOR cursor = reverseArrowCursor;
-	if (!cursor) {
-		cursor = ::LoadCursor(nullptr, IDC_ARROW);
+void LoadReverseArrowCursor() noexcept {
+	HCURSOR cursor = ::LoadCursor(nullptr, IDC_ARROW);
 		ICONINFO info;
 		if (::GetIconInfo(cursor, &info)) {
 			BITMAP bmp;
 			if (::GetObject(info.hbmMask, sizeof(bmp), &bmp)) {
 				FlipBitmap(info.hbmMask, bmp.bmWidth, bmp.bmHeight);
-				if (info.hbmColor)
+			if (info.hbmColor) {
 					FlipBitmap(info.hbmColor, bmp.bmWidth, bmp.bmHeight);
+			}
 				info.xHotspot = bmp.bmWidth - 1 - info.xHotspot;
 
 				reverseArrowCursor = ::CreateIconIndirect(&info);
-				if (reverseArrowCursor)
-					cursor = reverseArrowCursor;
 			}
 
 			::DeleteObject(info.hbmMask);
-			if (info.hbmColor)
+		if (info.hbmColor) {
 				::DeleteObject(info.hbmColor);
 		}
 	}
-#if USE_SRW_LOCK
-	::ReleaseSRWLockExclusive(&srwPlatformLock);
-#else
-	::LeaveCriticalSection(&crPlatformLock);
-#endif
-	return cursor;
 }
 
 }
@@ -2347,7 +2320,7 @@ void Window::SetCursor(Cursor curs) noexcept {
 		::SetCursor(::LoadCursor(nullptr, IDC_HAND));
 		break;
 	case cursorReverseArrow:
-		::SetCursor(GetReverseArrowCursor());
+		::SetCursor(reverseArrowCursor);
 		break;
 	case cursorArrow:
 	case cursorInvalid:	// Should not occur, but just in case.
@@ -2469,9 +2442,9 @@ class ListBoxX : public ListBox {
 	void Paint(HDC) noexcept;
 	static LRESULT CALLBACK ControlWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-	static const Point ItemInset;	// Padding around whole item
-	static const Point TextInset;	// Padding around text
-	static const Point ImageInset;	// Padding around image
+	static constexpr Point ItemInset {0, 0};	// Padding around whole item
+	static constexpr Point TextInset {2, 0};	// Padding around text
+	static constexpr Point ImageInset {1, 0};	// Padding around image
 
 public:
 	ListBoxX() noexcept : lineHeight(10), fontCopy{}, technology(0), lb{}, unicodeMode(false),
@@ -2504,7 +2477,7 @@ public:
 	void Select(int n) override;
 	int GetSelection() const noexcept override;
 	int Find(const char *prefix) const noexcept override;
-	void GetValue(int n, char *value, int len) const override;
+	void GetValue(int n, char *value, int len) const noexcept override;
 	void RegisterImage(int type, const char *xpm_data) override;
 	void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) override;
 	void ClearRegisteredImages() noexcept override;
@@ -2515,9 +2488,6 @@ public:
 	static LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
 };
 
-const Point ListBoxX::ItemInset(0, 0);
-const Point ListBoxX::TextInset(2, 0);
-const Point ListBoxX::ImageInset(1, 0);
 #if LISTBOXX_USE_FAKE_FRAME
 constexpr int ListBoxXFakeFrameSize = 4;
 #endif
@@ -2646,7 +2616,7 @@ int ListBoxX::CaretFromEdge() const {
 }
 
 void ListBoxX::Clear() noexcept {
-	::SendMessage(lb, LB_RESETCONTENT, 0, 0);
+	ListBox_ResetContent(lb);
 	maxItemCharacters = 0;
 	widestItem = nullptr;
 	lti.Clear();
@@ -2667,13 +2637,13 @@ void ListBoxX::Select(int n) {
 	// selected states
 	SetRedraw(false);
 	CentreItem(n);
-	::SendMessage(lb, LB_SETCURSEL, n, 0);
+	ListBox_SetCurSel(lb, n);
 	OnSelChange();
 	SetRedraw(true);
 }
 
 int ListBoxX::GetSelection() const noexcept {
-	return static_cast<int>(::SendMessage(lb, LB_GETCURSEL, 0, 0));
+	return ListBox_GetCurSel(lb);
 }
 
 // This is not actually called at present
@@ -2681,7 +2651,7 @@ int ListBoxX::Find(const char *) const noexcept {
 	return LB_ERR;
 }
 
-void ListBoxX::GetValue(int n, char *value, int len) const {
+void ListBoxX::GetValue(int n, char *value, int len) const noexcept {
 	const ListItemData item = lti.Get(n);
 	strncpy(value, item.text, len);
 	value[len-1] = '\0';
@@ -2833,8 +2803,8 @@ void ListBoxX::SetList(const char *list, const char separator, const char typese
 	// Finally populate the listbox itself with the correct number of items
 	const int count = lti.Count();
 	::SendMessage(lb, LB_INITSTORAGE, count, 0);
-	for (int j=0; j<count; j++) {
-		::SendMessage(lb, LB_ADDSTRING, 0, j+1);
+	for (intptr_t j = 0; j < count; j++) {
+		ListBox_AddItemData(lb, j + 1);
 	}
 	SetRedraw(true);
 }
@@ -2958,7 +2928,7 @@ void ListBoxX::StartResize(WPARAM hitCode) noexcept {
 			break;
 
 		// Note that the current hit test code prevents the left edge cases ever firing
-		// as we don't want the left edge to be moveable
+		// as we don't want the left edge to be movable
 		case HTLEFT:
 		case HTTOP:
 		case HTTOPLEFT:
@@ -3022,7 +2992,7 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const noexcept {
 	}
 #endif
 
-	// Nerver permit resizing that moves the left edge. Allow movement of top or bottom edge
+	// Never permit resizing that moves the left edge. Allow movement of top or bottom edge
 	// depending on whether the list is above or below the caret
 	switch (hit) {
 		case HTLEFT:
@@ -3078,10 +3048,10 @@ void ListBoxX::CentreItem(int n) {
 		const POINT extent = GetClientExtent();
 		const int visible = extent.y/ItemHeight();
 		if (visible < Length()) {
-			const LRESULT top = ::SendMessage(lb, LB_GETTOPINDEX, 0, 0);
+			const int top = ListBox_GetTopIndex(lb);
 			const int half = (visible - 1) / 2;
 			if (n > (top + half))
-				::SendMessage(lb, LB_SETTOPINDEX, n - half , 0);
+				ListBox_SetTopIndex(lb, n - half);
 		}
 	}
 }
@@ -3107,7 +3077,7 @@ void ListBoxX::Paint(HDC hDC) noexcept {
 	::DeleteObject(hBitmap);
 }
 
-LRESULT CALLBACK ListBoxX::ControlWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR /*dwRefData*/) {
+LRESULT CALLBACK ListBoxX::ControlWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR /*dwRefData*/) {
 	try {
 		ListBoxX *lbx = static_cast<ListBoxX *>(PointerFromWindow(::GetParent(hWnd)));
 		switch (iMessage) {
@@ -3134,7 +3104,7 @@ LRESULT CALLBACK ListBoxX::ControlWndProc(HWND hWnd, UINT iMessage, WPARAM wPara
 				const LRESULT lResult = ::SendMessage(hWnd, LB_ITEMFROMPOINT, 0, lParam);
 				const int item = LOWORD(lResult);
 				if (HIWORD(lResult) == 0 && item >= 0) {
-					::SendMessage(hWnd, LB_SETCURSEL, item, 0);
+				ListBox_SetCurSel(hWnd, item);
 					if (lbx) {
 						lbx->OnSelChange();
 					}
@@ -3155,6 +3125,10 @@ LRESULT CALLBACK ListBoxX::ControlWndProc(HWND hWnd, UINT iMessage, WPARAM wPara
 		case WM_MBUTTONDOWN:
 			// disable the scroll wheel button click action
 			return 0;
+
+		case WM_NCDESTROY:
+			RemoveWindowSubclass(hWnd, ControlWndProc, uIdSubclass);
+			break;
 		}
 	} catch (...) {
 	}
@@ -3214,7 +3188,7 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 
 	case WM_DESTROY:
 		lb = nullptr;
-		::SetWindowLong(hWnd, 0, 0);
+		SetWindowPointer(hWnd, nullptr);
 		return ::DefWindowProc(hWnd, iMessage, wParam, lParam);
 
 	case WM_ERASEBKGND:
@@ -3320,11 +3294,11 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 				linesToScroll = 3;
 			}
 			linesToScroll *= (wheelDelta / WHEEL_DELTA);
-			LRESULT top = ::SendMessage(lb, LB_GETTOPINDEX, 0, 0) + linesToScroll;
+			int top = ListBox_GetTopIndex(lb) + linesToScroll;
 			if (top < 0) {
 				top = 0;
 			}
-			::SendMessage(lb, LB_SETTOPINDEX, top, 0);
+			ListBox_SetTopIndex(lb, top);
 			// update wheel delta residue
 			if (wheelDelta >= 0)
 				wheelDelta = wheelDelta % WHEEL_DELTA;
@@ -3524,10 +3498,8 @@ void Platform::Assert(const char *, const char *, int) noexcept {
 #endif
 
 void Platform_Initialise(void *hInstance) noexcept {
-#if !USE_SRW_LOCK
-	::InitializeCriticalSection(&crPlatformLock);
-#endif
 	hinstPlatformRes = static_cast<HINSTANCE>(hInstance);
+	LoadReverseArrowCursor();
 	ListBoxX_Register();
 }
 
@@ -3567,9 +3539,6 @@ void Platform_Finalise(bool fromDllMain) noexcept {
 	if (reverseArrowCursor)
 		::DestroyCursor(reverseArrowCursor);
 	ListBoxX_Unregister();
-#if !USE_SRW_LOCK
-	::DeleteCriticalSection(&crPlatformLock);
-#endif
 }
 
 

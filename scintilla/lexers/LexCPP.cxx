@@ -6,12 +6,9 @@
 // Copyright 1998-2005 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cassert>
+#include <cstring>
 
 #include <utility>
 #include <string>
@@ -144,10 +141,10 @@ BracketPair FindBracketPair(std::vector<std::string> &tokens) {
 void highlightTaskMarker(StyleContext &sc, LexAccessor &styler,
 		int activity, const WordList &markerList, bool caseSensitive){
 	if ((isoperator(sc.chPrev) || IsASpace(sc.chPrev)) && markerList.Length()) {
-		const int lengthMarker = 50;
+		constexpr Sci_PositionU lengthMarker = 50;
 		char marker[lengthMarker+1] = "";
-		const Sci_Position currPos = sc.currentPos;
-		int i = 0;
+		const Sci_PositionU currPos = sc.currentPos;
+		Sci_PositionU i = 0;
 		while (i < lengthMarker) {
 			const char ch = styler.SafeGetCharAt(currPos + i);
 			if (IsASpace(ch) || isoperator(ch)) {
@@ -166,18 +163,14 @@ void highlightTaskMarker(StyleContext &sc, LexAccessor &styler,
 	}
 }
 
-struct EscapeSequence {
-	int digitsLeft;
-	CharacterSet setHexDigits;
-	CharacterSet setOctDigits;
-	CharacterSet setNoneNumeric;
-	CharacterSet *escapeSetValid;
-	EscapeSequence() {
-		digitsLeft = 0;
-		escapeSetValid = nullptr;
-		setHexDigits = CharacterSet(CharacterSet::setDigits, "ABCDEFabcdef");
-		setOctDigits = CharacterSet(CharacterSet::setNone, "01234567");
-	}
+class EscapeSequence {
+	const CharacterSet setHexDigits = CharacterSet(CharacterSet::setDigits, "ABCDEFabcdef");
+	const CharacterSet setOctDigits = CharacterSet(CharacterSet::setNone, "01234567");
+	const CharacterSet setNoneNumeric;
+	const CharacterSet *escapeSetValid = nullptr;
+	int digitsLeft = 0;
+public:
+	EscapeSequence() = default;
 	void resetEscapeState(int nextChar) {
 		digitsLeft = 0;
 		escapeSetValid = &setNoneNumeric;
@@ -197,6 +190,9 @@ struct EscapeSequence {
 	}
 	bool atEscapeEnd(int currChar) const {
 		return (digitsLeft <= 0) || !escapeSetValid->Contains(currChar);
+	}
+	void consumeDigit() noexcept {
+		digitsLeft--;
 	}
 };
 
@@ -245,7 +241,7 @@ struct PPDefinition {
 	}
 };
 
-const int inactiveFlag = 0x40;
+constexpr int inactiveFlag = 0x40;
 
 class LinePPState {
 	// Track the state of preprocessor conditionals to allow showing active and inactive
@@ -272,8 +268,7 @@ class LinePPState {
 		}
 	}
 public:
-	LinePPState() noexcept {
-	}
+	LinePPState() noexcept = default;
 	bool IsActive() const noexcept {
 		return state == 0;
 	}
@@ -318,14 +313,14 @@ public:
 class PPStates {
 	std::vector<LinePPState> vlls;
 public:
-	LinePPState ForLine(Sci_Position line) const {
+	LinePPState ForLine(Sci_Position line) const noexcept {
 		if ((line > 0) && (vlls.size() > static_cast<size_t>(line))) {
 			return vlls[line];
 		} else {
 			return LinePPState();
 		}
 	}
-	void Add(Sci_Position line, const LinePPState& lls) {
+	void Add(Sci_Position line, LinePPState lls) {
 		vlls.resize(line+1);
 		vlls[line] = lls;
 	}
@@ -533,7 +528,7 @@ class LexerCPP : public ILexer5 {
 			return !arguments.empty();
 		}
 	};
-	typedef std::map<std::string, SymbolValue> SymbolTable;
+	using SymbolTable = std::map<std::string, SymbolValue>;
 	SymbolTable preprocessorDefinitionsStart;
 	OptionsCPP options;
 	OptionSetCPP osCPP;
@@ -558,8 +553,7 @@ public:
 	LexerCPP(LexerCPP &&) = delete;
 	void operator=(const LexerCPP &) = delete;
 	void operator=(LexerCPP &&) = delete;
-	virtual ~LexerCPP() {
-	}
+	virtual ~LexerCPP() = default;
 	void SCI_METHOD Release() noexcept override {
 		delete this;
 	}
@@ -888,7 +882,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			lineCurrent++;
 			lineEndNext = styler.LineEnd(lineCurrent);
 			vlls.Add(lineCurrent, preproc);
-			if (rawStringTerminator != "") {
+			if (!rawStringTerminator.empty()) {
 				rawSTNew.Set(lineCurrent-1, rawStringTerminator);
 			}
 		}
@@ -899,7 +893,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				lineCurrent++;
 				lineEndNext = styler.LineEnd(lineCurrent);
 				vlls.Add(lineCurrent, preproc);
-				if (rawStringTerminator != "") {
+				if (!rawStringTerminator.empty()) {
 					rawSTNew.Set(lineCurrent-1, rawStringTerminator);
 				}
 				sc.Forward();
@@ -1110,7 +1104,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				}
 				break;
 			case SCE_C_ESCAPESEQUENCE:
-				escapeSeq.digitsLeft--;
+				escapeSeq.consumeDigit();
 				if (!escapeSeq.atEscapeEnd(sc.ch)) {
 					break;
 				}
@@ -1162,9 +1156,9 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			case SCE_C_REGEX:
 				if (sc.atLineStart) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
-				} else if (! inRERange && sc.ch == '/') {
+				} else if (!inRERange && sc.ch == '/') {
 					sc.Forward();
-					while (IsASCII(sc.ch) && islower(sc.ch))
+					while (IsLowerCase(sc.ch))
 						sc.Forward();    // gobble regex flags
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '\\' && ((sc.currentPos+1) < lineEndNext)) {
@@ -1384,7 +1378,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 									if (startValue < restOfLine.length())
 										value = restOfLine.substr(startValue);
 									preprocessorDefinitions[key] = SymbolValue(value, args);
-									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value, false, args));
+									ppDefineHistory.emplace_back(lineCurrent, key, value, false, args);
 									definitionsChanged = true;
 								} else {
 									// Value
@@ -1395,7 +1389,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 									if (OnlySpaceOrTab(value))
 										value = "1";	// No value defaults to 1
 									preprocessorDefinitions[key] = value;
-									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value));
+									ppDefineHistory.emplace_back(lineCurrent, key, value);
 									definitionsChanged = true;
 								}
 							}
@@ -1403,10 +1397,10 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 							if (options.updatePreprocessor && preproc.IsActive()) {
 								const std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 5, false);
 								std::vector<std::string> tokens = Tokenize(restOfLine);
-								if (tokens.size() >= 1) {
+								if (!tokens.empty()) {
 									const std::string key = tokens[0];
 									preprocessorDefinitions.erase(key);
-									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, "", true));
+									ppDefineHistory.emplace_back(lineCurrent, key, "", true);
 									definitionsChanged = true;
 								}
 							}
@@ -1590,7 +1584,7 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 	}
 
 	// Evaluate identifiers
-	const size_t maxIterations = 100;
+	constexpr size_t maxIterations = 100;
 	size_t iterations = 0;	// Limit number of iterations in case there is a recursive macro.
 	for (size_t i = 0; (i<tokens.size()) && (iterations < maxIterations);) {
 		iterations++;
@@ -1781,7 +1775,7 @@ bool LexerCPP::EvaluateExpression(const std::string &expr, const SymbolTable &pr
 
 	// "0" or "" -> false else true
 	const bool isFalse = tokens.empty() ||
-		((tokens.size() == 1) && ((tokens[0] == "") || tokens[0] == "0"));
+		((tokens.size() == 1) && (((tokens[0]).empty()) || tokens[0] == "0"));
 	return !isFalse;
 }
 

@@ -15,12 +15,10 @@
 extern "C" {
 #endif
 
-typedef struct _dpi_t {	int x;	int y; } DPI_T;
-
 #if defined(_WIN32)
 /* Return false on failure: */
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-
+typedef struct _dpi_t {	int x;	int y; } DPI_T;
 __declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
 __declspec(dllexport) int   Scintilla_ReleaseResources(void);
 __declspec(dllexport) int   Scintilla_InputCodePage(void);
@@ -28,7 +26,6 @@ __declspec(dllexport) DPI_T Scintilla_GetCurrentDPI(void* hwnd);
 __declspec(dllexport) int   Scintilla_GetSystemMetricsEx(void* hwnd, int nIndex);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
-
 int Scintilla_LinkLexers(void);
 
 #ifdef __cplusplus
@@ -72,6 +69,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_CANREDO 2016
 #define SCI_MARKERLINEFROMHANDLE 2017
 #define SCI_MARKERDELETEHANDLE 2018
+#define SCI_MARKERHANDLEFROMLINE 2732
+#define SCI_MARKERNUMBERFROMLINE 2733
 #define SCI_GETUNDOCOLLECTION 2019
 #define SCWS_INVISIBLE 0
 #define SCWS_VISIBLEALWAYS 1
@@ -113,10 +112,17 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_IME_INLINE 1
 #define SCI_GETIMEINTERACTION 2678
 #define SCI_SETIMEINTERACTION 2679
+#define SC_ALPHA_TRANSPARENT 0
+#define SC_ALPHA_OPAQUE 255
+#define SC_ALPHA_NOALPHA 256
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCI_ISIMEOPEN 2900
 #define SCI_ISIMEMODECJK 2901
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+#define SC_CURSORNORMAL -1
+#define SC_CURSORARROW 2
+#define SC_CURSORWAIT 4
+#define SC_CURSORREVERSEARROW 7
 #define MARKER_MAX 31
 #define SC_MARK_CIRCLE 0
 #define SC_MARK_ROUNDRECT 1
@@ -308,6 +314,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define INDIC_POINTCHARACTER 19
 #define INDIC_GRADIENT 20
 #define INDIC_GRADIENTCENTRE 21
+#define INDIC_CONTAINER 8
 #define INDIC_IME 32
 #define INDIC_IME_MAX 35
 #define INDIC_MAX 35
@@ -744,10 +751,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETMOUSEDOWNCAPTURES 2385
 #define SCI_SETMOUSEWHEELCAPTURES 2696
 #define SCI_GETMOUSEWHEELCAPTURES 2697
-#define SC_CURSORNORMAL -1
-#define SC_CURSORARROW 2
-#define SC_CURSORWAIT 4
-#define SC_CURSORREVERSEARROW 7
 #define SCI_SETCURSOR 2386
 #define SCI_GETCURSOR 2387
 #define SCI_SETCONTROLCHARSYMBOL 2388
@@ -842,18 +845,15 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_SETLENGTHFORENCODE 2448
 #define SCI_ENCODEDFROMUTF8 2449
 #define SCI_FINDCOLUMN 2456
-#define SCI_GETCARETSTICKY 2457
-#define SCI_SETCARETSTICKY 2458
 #define SC_CARETSTICKY_OFF 0
 #define SC_CARETSTICKY_ON 1
 #define SC_CARETSTICKY_WHITESPACE 2
+#define SCI_GETCARETSTICKY 2457
+#define SCI_SETCARETSTICKY 2458
 #define SCI_TOGGLECARETSTICKY 2459
 #define SCI_SETPASTECONVERTENDINGS 2467
 #define SCI_GETPASTECONVERTENDINGS 2468
 #define SCI_SELECTIONDUPLICATE 2469
-#define SC_ALPHA_TRANSPARENT 0
-#define SC_ALPHA_OPAQUE 255
-#define SC_ALPHA_NOALPHA 256
 #define SCI_SETCARETLINEBACKALPHA 2470
 #define SCI_GETCARETLINEBACKALPHA 2471
 #define CARETSTYLE_INVISIBLE 0
