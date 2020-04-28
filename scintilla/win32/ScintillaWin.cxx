@@ -71,7 +71,7 @@ Used by VSCode, Atom etc.
 #include "ILexer.h"
 #include "Scintilla.h"
 
-//#include "CharacterCategory.h"
+//~#include "CharacterCategory.h"
 #include "Position.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
@@ -162,14 +162,6 @@ namespace {
 
 const TCHAR *callClassName = L"CallTip";
 
-inline void *PointerFromWindow(HWND hWnd) noexcept {
-	return reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, 0));
-}
-
-inline void SetWindowPointer(HWND hWnd, void *ptr) noexcept {
-	::SetWindowLongPtr(hWnd, 0, reinterpret_cast<LONG_PTR>(ptr));
-}
-
 inline void SetWindowID(HWND hWnd, int identifier) noexcept {
 	::SetWindowLongPtr(hWnd, GWLP_ID, identifier);
 }
@@ -241,7 +233,7 @@ public:
 	STDMETHODIMP_(ULONG)Release() noexcept override;
 
 	// IEnumFORMATETC
-	STDMETHODIMP Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) override;
+	STDMETHODIMP Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) noexcept override;
 	STDMETHODIMP Skip(ULONG celt) noexcept override;
 	STDMETHODIMP Reset() noexcept override;
 	STDMETHODIMP Clone(IEnumFORMATETC **ppenum) override;
@@ -437,7 +429,7 @@ class ScintillaWin :
 	explicit ScintillaWin(HWND hwnd);
 	// ~ScintillaWin() in public section
 
-	void Init();
+	void Init() noexcept;
 	void Finalise() noexcept override;
 #if defined(USE_D2D)
 	void EnsureRenderTarget(HDC hdc) noexcept;
@@ -520,7 +512,7 @@ class ScintillaWin :
 	std::string CaseMapString(const std::string &s, int caseMapping) override;
 	void Copy(bool asBinary) override;
 	void CopyAllowLine() override;
-	bool CanPaste() override;
+	bool CanPaste()  noexcept override;
 	void Paste(bool asBinary) override;
 	void CreateCallTipWindow(PRectangle rc) noexcept override;
 #if SCI_EnablePopupMenu
@@ -694,7 +686,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 ScintillaWin::~ScintillaWin() = default;
 
-void ScintillaWin::Init() {
+void ScintillaWin::Init() noexcept {
 	// Initialize COM.  If the app has already done this it will have
 	// no effect.  If the app hasn't, we really shouldn't ask them to call
 	// it just so this internal feature works.
@@ -1024,8 +1016,7 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 	}
 }
 
-bool ScintillaWin::PaintDC(HDC hdc)
-{
+bool ScintillaWin::PaintDC(HDC hdc) {
 	if (technology == SC_TECHNOLOGY_DEFAULT) {
 		AutoSurface surfaceWindow(hdc, this);
 		if (surfaceWindow) {
@@ -1062,7 +1053,7 @@ sptr_t ScintillaWin::WndPaint() {
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	// Redirect assertions to debug output and save current state
-	const bool assertsPopup = Platform::ShowAssertionPopUps(false);
+	//const bool assertsPopup = Platform::ShowAssertionPopUps(false);
 	paintState = painting;
 	PAINTSTRUCT ps = {};
 
@@ -1091,7 +1082,7 @@ sptr_t ScintillaWin::WndPaint() {
 	paintState = notPainting;
 
 	// Restore debug output state
-	Platform::ShowAssertionPopUps(assertsPopup);
+	//Platform::ShowAssertionPopUps(assertsPopup);
 
 	//Platform::DebugPrintf("Paint took %g\n", ep.Duration());
 	return 0;
@@ -1227,7 +1218,7 @@ void ScintillaWin::EscapeHanja() {
 
 	// ImmEscapeW() may overwrite uniChar[] with a null terminated string.
 	// So enlarge it enough to Maximum 4 as in UTF-8.
-	constexpr unsigned int safeLength = UTF8MaxBytes + 1;
+	constexpr size_t safeLength = UTF8MaxBytes + 1;
 	std::string oneChar(safeLength, '\0');
 	pdoc->GetCharRange(oneChar.data(), currentPos, oneCharLen);
 
@@ -1238,7 +1229,7 @@ void ScintillaWin::EscapeHanja() {
 		// Set the candidate box position since IME may show it.
 		SetCandidateWindowPos();
 		// IME_ESC_HANJA_MODE appears to receive the first character only.
-		if (ImmEscapeW(GetKeyboardLayout(0), imc.hIMC, IME_ESC_HANJA_MODE, uniChar.data())) {
+		if (::ImmEscapeW(GetKeyboardLayout(0), imc.hIMC, IME_ESC_HANJA_MODE, uniChar.data())) {
 			SetSelection(currentPos, currentPos + oneCharLen);
 		}
 	}
@@ -2096,18 +2087,18 @@ bool ScintillaWin::FineTickerRunning(TickReason reason) noexcept {
 
 void ScintillaWin::FineTickerStart(TickReason reason, int millis, int tolerance) noexcept {
 	FineTickerCancel(reason);
-	const UINT_PTR idEvent = fineTimerStart + static_cast<UINT_PTR>(reason);
+	const UINT_PTR eventID = fineTimerStart + static_cast<UINT_PTR>(reason);
 #if _WIN32_WINNT < _WIN32_WINNT_WIN8
 	if (SetCoalescableTimerFn && tolerance) {
-		timers[reason] = SetCoalescableTimerFn(MainHWND(), idEvent, millis, nullptr, tolerance);
+		timers[reason] = SetCoalescableTimerFn(MainHWND(), eventID, millis, nullptr, tolerance);
 	} else {
-		timers[reason] = ::SetTimer(MainHWND(), idEvent, millis, nullptr);
+		timers[reason] = ::SetTimer(MainHWND(), eventID, millis, nullptr);
 	}
 #else
 	if (tolerance) {
-		timers[reason] = SetCoalescableTimer(MainHWND(), idEvent, millis, nullptr, tolerance);
+		timers[reason] = SetCoalescableTimer(MainHWND(), eventID, millis, nullptr, tolerance);
 	} else {
-		timers[reason] = ::SetTimer(MainHWND(), idEvent, millis, nullptr);
+		timers[reason] = ::SetTimer(MainHWND(), eventID, millis, nullptr);
 	}
 #endif
 }
@@ -2485,7 +2476,7 @@ void ScintillaWin::CopyAllowLine() {
 	CopyToClipboard(selectedText);
 }
 
-bool ScintillaWin::CanPaste() {
+bool ScintillaWin::CanPaste() noexcept {
 	if (!Editor::CanPaste())
 		return false;
 	return ::IsClipboardFormatAvailable(CF_UNICODETEXT);
@@ -2663,7 +2654,7 @@ STDMETHODIMP_(ULONG)FormatEnumerator::Release() noexcept {
 }
 
 /// Implement IEnumFORMATETC
-STDMETHODIMP FormatEnumerator::Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) {
+STDMETHODIMP FormatEnumerator::Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) noexcept {
 	if (!rgelt) return E_POINTER;
 	ULONG putPos = 0;
 	while ((pos < formats.size()) && (putPos < celt)) {
@@ -2999,7 +2990,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 }
 
 void ScintillaWin::GetIntelliMouseParameters() noexcept {
-	// This retrieves the number of lines per scroll as configured inthe Mouse Properties sheet in Control Panel
+	// This retrieves the number of lines per scroll as configured in the Mouse Properties sheet in Control Panel
 	::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &linesPerScroll, 0);
 }
 
@@ -3636,7 +3627,7 @@ LRESULT CALLBACK ScintillaWin::CTWndProc(
 			}
 		} else {
 			if (iMessage == WM_NCDESTROY) {
-				::SetWindowLong(hWnd, 0, 0);
+				SetWindowPointer(hWnd, nullptr);
 				return ::DefWindowProc(hWnd, iMessage, wParam, lParam);
 			} else if (iMessage == WM_PAINT) {
 				PAINTSTRUCT ps;
@@ -3764,7 +3755,7 @@ LRESULT CALLBACK ScintillaWin::SWndProc(
 				delete sci;
 			} catch (...) {
 			}
-			::SetWindowLong(hWnd, 0, 0);
+			SetWindowPointer(hWnd, nullptr);
 			return ::DefWindowProc(hWnd, iMessage, wParam, lParam);
 		} else {
 			return sci->WndProc(iMessage, wParam, lParam);
@@ -3795,6 +3786,8 @@ int Scintilla_RegisterClasses(void *hInstance) {
 	Platform_Initialise(hInstance);
 
 	const bool result = ScintillaWin::Register(static_cast<HINSTANCE>(hInstance));
+	//@@@CharClassify::InitUnicodeData();
+	
 #ifdef SCI_LEXER
 	Scintilla_LinkLexers();
 #endif

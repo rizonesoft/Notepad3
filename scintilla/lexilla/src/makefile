@@ -55,6 +55,8 @@ endif
 # Take care of changing Unix style '/' directory separator to '\' on Windows
 normalize = $(if $(windir),$(subst /,\,$1),$1)
 
+PYTHON = $(if $(windir),pyw,python3)
+
 ifdef windir
     DEL = $(if $(wildcard $(dir $(SHELL))rm.exe), $(dir $(SHELL))rm.exe -f, del /q)
 else
@@ -89,7 +91,7 @@ analyze:
 	$(CXX) --analyze $(DEFINES) $(INCLUDES) $(BASE_FLAGS) $(CXXFLAGS) *.cxx ../../lexlib/*.cxx ../../lexers/*.cxx
 
 depend deps.mak:
-	python DepGen.py
+	$(PYTHON) DepGen.py
 
 LEXERS:=$(sort $(notdir $(wildcard ../../lexers/Lex*.cxx)))
 
