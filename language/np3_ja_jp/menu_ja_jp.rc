@@ -315,7 +315,7 @@ BEGIN
     POPUP "表示(&V)"
     BEGIN
         MENUITEM "右端で折り返す(&R)\tCtrl+W",                 IDM_VIEW_WORDWRAP
-        MENUITEM "行の長さのガイド(&L)\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
+        MENUITEM "行の長さガイド(&L)\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",             IDM_VIEW_WORDWRAPSYMBOLS
@@ -410,7 +410,7 @@ BEGIN
         MENUITEM "タブキーで空白を入力(&S)",                        IDM_VIEW_TABSASSPACES
         MENUITEM "タブキーの設定(&T)...\tCtrl+T",                  IDM_VIEW_TABSETTINGS
         MENUITEM "折り返し方の設定(&W)...",                        IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "行の長さのガイド設定(&L)...",                     IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "行の長さガイドの設定(&L)...",                     IDM_VIEW_LONGLINESETTINGS
         MENUITEM "自動インデント(&D)",                             IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
