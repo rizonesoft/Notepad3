@@ -1188,6 +1188,7 @@ static void SetFindReplaceData()
   {
     if (!IsFindPatternEmpty()) {
       CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
+      CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
     }
     if (s_flagMatchText & 4) {
       s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
@@ -4771,42 +4772,46 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_FIND:
-      SetFindReplaceData(); // s_FindReplaceData
-      if (!IsWindow(Globals.hwndDlgFindReplace)) {
-        Globals.bFindReplCopySelOrClip = true;
-        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
-      }
-      else {
-        Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
-        if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
-          SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
-          DestroyWindow(Globals.hwndDlgFindReplace);
+      {
+        SetFindReplaceData(); // s_FindReplaceData
+        if (!IsWindow(Globals.hwndDlgFindReplace)) {
+          Globals.bFindReplCopySelOrClip = true;
           Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
         }
         else {
-          SetForegroundWindow(Globals.hwndDlgFindReplace);
-          PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+          Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
+          if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
+            SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
+            DestroyWindow(Globals.hwndDlgFindReplace);
+            Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+          }
+          else {
+            SetForegroundWindow(Globals.hwndDlgFindReplace);
+            PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+          }
         }
       }
       break;
 
 
     case IDM_EDIT_REPLACE:
-      SetFindReplaceData(); // s_FindReplaceData
-      if (!IsWindow(Globals.hwndDlgFindReplace)) {
-        Globals.bFindReplCopySelOrClip = true;
-        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
-      }
-      else {
-        Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
-        if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
-          SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
-          DestroyWindow(Globals.hwndDlgFindReplace);
+      {
+        SetFindReplaceData(); // s_FindReplaceData
+        if (!IsWindow(Globals.hwndDlgFindReplace)) {
+          Globals.bFindReplCopySelOrClip = true;
           Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
         }
         else {
-          SetForegroundWindow(Globals.hwndDlgFindReplace);
-          PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+          Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
+          if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
+            SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
+            DestroyWindow(Globals.hwndDlgFindReplace);
+            Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+          }
+          else {
+            SetForegroundWindow(Globals.hwndDlgFindReplace);
+            PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+          }
         }
       }
       break;
