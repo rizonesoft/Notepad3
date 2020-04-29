@@ -156,7 +156,7 @@ msgstr "A pont új sorra illeszkedik"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Dupla kattintás kiválasztja a sablonokhoz"
+msgstr "Dupla kattintás egy sablon kiválasztásához"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -216,7 +216,7 @@ msgstr "Alkönyvtárak is"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Rendszerlemek is"
+msgstr "Rendszerelemek is"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"

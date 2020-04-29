@@ -410,7 +410,7 @@ BEGIN
         MENUITEM "Tabulátorok mint s&zóköz",                    IDM_VIEW_TABSASSPACES
         MENUITEM "&Tab beállítások...\tCtrl+T",                 IDM_VIEW_TABSETTINGS
         MENUITEM "&Sortörés beállítások...",                    IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Hosszú sorok beállítások...",                IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "&Hosszú sorok beállításai...",                IDM_VIEW_LONGLINESETTINGS
         MENUITEM "A&utomatikus behúzás",                        IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "HTML/&XML aut. lezárás\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "Szó kie&gészítés",                            IDM_VIEW_AUTOCOMPLETEWORDS
