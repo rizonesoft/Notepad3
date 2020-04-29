@@ -184,7 +184,7 @@ msgstr "Wyklucz katalogi (Regex):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Ext"
+msgstr "Rozszerz."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
