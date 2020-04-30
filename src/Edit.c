@@ -7701,6 +7701,11 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
 
     _ClearIndicatorInRange(indicator, indicator2nd, _start, end);
 
+    //~if (indicator == INDIC_NP3_HYPERLINK) {
+    //~  SciCall_StartStyling(start);
+    //~  SciCall_SetStyling(mlen, _STYLE_GETSTYLEID(STY_URL_HOTSPOT));
+    //~}
+    //~else {
     SciCall_SetIndicatorCurrent(indicator);
     SciCall_IndicatorFillRange(start, mlen);
     if (indicator2nd >= 0) {

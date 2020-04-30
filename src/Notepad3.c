@@ -6587,10 +6587,10 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 //
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation)
 {
+  //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
   CancelCallTip();
-  //PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
 
-  if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) == 0) { return false; }
+  if (!SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position)) { return false; }
 
   bool bHandled = false;
   DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
@@ -6605,21 +6605,22 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
   const WCHAR* chkPreFix = L"file://";
 
-  if (operation & COPY_HYPERLINK)
+  if (operation & SELECT_HYPERLINK)
+  {
+    SciCall_SetSelection(firstPos, lastPos);
+    bHandled = true;
+  }
+  else if (operation & COPY_HYPERLINK)
   {
     if (cchTextW > 0) {
-
-      LPWSTR pszEscapedW = (LPWSTR)AllocMem(length * 3 * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+      DWORD cchEscapedW = (DWORD)(length * 3);
+      LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
       if (pszEscapedW == NULL) {
         return false;
       }
-      DWORD cchEscapedW = (DWORD)(length * 3);
       DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
       UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
-
-      //SetClipboardTextW(Globals.hwndMain, szTextW, cchTextW);
       SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
-
       FreeMem(pszEscapedW);
       bHandled = true;
     }
@@ -6668,7 +6669,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     bHandled = true;
   }
 
-  SciCall_SetEmptySelection(position);
+  if (!(operation & SELECT_HYPERLINK)) { SciCall_SetEmptySelection(position); }
 
   return bHandled;
 }
@@ -6956,15 +6957,16 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
 //
 static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
 {
-  static int  _s_indic_click_modifiers = 0;
+  static int  _s_indic_click_modifiers = SCMOD_NORM;
 
   switch (pnmh->code)
   {
+    // unused:
     case SCN_HOTSPOTCLICK:
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTRELEASECLICK:
     case SCN_CALLTIPCLICK:
-      return FALSE;
+      return 0;
 
     case SCN_AUTOCSELECTION:
     {
@@ -7107,6 +7109,18 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     break;
 
 
+    case SCN_DOUBLECLICK:
+      if (scn->modifiers & SCMOD_SHIFT)
+      {
+        HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
+      }
+      else
+      {
+        HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER); // COPY_HYPERLINK
+      }
+    break;
+
+
     case SCN_INDICATORCLICK:
     {
       _s_indic_click_modifiers = scn->modifiers;
@@ -7118,20 +7132,23 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     {
       if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0)
       {
-        if (_s_indic_click_modifiers & SCMOD_CTRL) {
+        if (_s_indic_click_modifiers & SCMOD_CTRL)
+        {
           HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER);
         }
-        else if (_s_indic_click_modifiers & SCMOD_ALT) {
+        else if (_s_indic_click_modifiers & SCMOD_ALT)
+        {
           HandleHotSpotURLClicked(scn->position, OPEN_WITH_NOTEPAD3); // if applicable (file://)
         }
       }
       else if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, scn->position) > 0)
       {
-        if (_s_indic_click_modifiers & SCMOD_ALT) {
+        if (_s_indic_click_modifiers & SCMOD_ALT)
+        {
           HandleColorDefClicked(Globals.hwndEdit, scn->position);
         }
       }
-      _s_indic_click_modifiers = 0;
+      _s_indic_click_modifiers = SCMOD_NORM;
     }
     break;
 
@@ -7142,7 +7159,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
       if (Globals.CallTipType != CT_NONE) { CancelCallTip(); }
 
-      if (Sci_IsMultiSelection()) {
+      if (Sci_IsMultiSelection())
+      {
         SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
         DocPosU const selCount = SciCall_GetSelections();
         for (DocPosU s = 0; s < selCount; ++s)
