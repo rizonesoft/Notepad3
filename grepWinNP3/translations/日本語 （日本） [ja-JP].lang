@@ -39,7 +39,7 @@ msgstr "%ld 以上の一致"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動, %pattern% with the search string."
+msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動 - %pattern% で検索語句"
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -136,11 +136,11 @@ msgstr "別のフォルダ内にバックアップを作成"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "ダークモード"
 
 #. Resource IDs: (159)
 msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
-msgstr ""
+msgstr "先に Windows の色の設定から「黒」を選択してください (Win 10 v1803 以上)"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -523,8 +523,8 @@ msgstr "特定のディレクトリを除外できます。指定例: CVS およ
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr ""
+msgstr "初期化"
 
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
-msgstr ""
+msgstr "最大スレッド数"

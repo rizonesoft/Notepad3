@@ -70,6 +70,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Initial behavior on open Find/Replace dialog.
 - Lost Find/Replace dialog settings.
 - Lazy syntax styling (copy into multi-line string, etc.).
 - ToolsMenu flickering.
