@@ -4187,12 +4187,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELECTALLMATCHES:
     {
       if (!Sci_IsMultiOrRectangleSelection()) {
-        if (SciCall_IsSelectionEmpty()) {
-          if (!IsMarkOccurrencesEnabled() || Settings.MarkOccurrencesCurrentWord) {
+        if (!IsWindow(Globals.hwndDlgFindReplace)) {
+          if (SciCall_IsSelectionEmpty()) {
             EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
           }
+          EditSelectionMultiSelectAll();
         }
-        EditSelectionMultiSelectAll();
+        else {
+          SetFindReplaceData();  // s_FindReplaceData 
+          EditSelectionMultiSelectAllEx(s_FindReplaceData);
+        }
       }
     }
     break;
@@ -4776,14 +4780,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetFindReplaceData(); // s_FindReplaceData
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
           Globals.bFindReplCopySelOrClip = true;
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+          /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
         }
         else {
           Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
           if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
             SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
             DestroyWindow(Globals.hwndDlgFindReplace);
-            Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
           }
           else {
             SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -4799,14 +4803,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetFindReplaceData(); // s_FindReplaceData
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
           Globals.bFindReplCopySelOrClip = true;
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+          /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
         }
         else {
           Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
           if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
             SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
             DestroyWindow(Globals.hwndDlgFindReplace);
-            Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
           }
           else {
             SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -6583,10 +6587,10 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 //
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation)
 {
+  //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
   CancelCallTip();
-  //PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
 
-  if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) == 0) { return false; }
+  if (!SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position)) { return false; }
 
   bool bHandled = false;
   DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
@@ -6601,21 +6605,22 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
 
   const WCHAR* chkPreFix = L"file://";
 
-  if (operation & COPY_HYPERLINK)
+  if (operation & SELECT_HYPERLINK)
+  {
+    SciCall_SetSelection(firstPos, lastPos);
+    bHandled = true;
+  }
+  else if (operation & COPY_HYPERLINK)
   {
     if (cchTextW > 0) {
-
-      LPWSTR pszEscapedW = (LPWSTR)AllocMem(length * 3 * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+      DWORD cchEscapedW = (DWORD)(length * 3);
+      LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
       if (pszEscapedW == NULL) {
         return false;
       }
-      DWORD cchEscapedW = (DWORD)(length * 3);
       DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
       UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
-
-      //SetClipboardTextW(Globals.hwndMain, szTextW, cchTextW);
       SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
-
       FreeMem(pszEscapedW);
       bHandled = true;
     }
@@ -6664,7 +6669,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     bHandled = true;
   }
 
-  SciCall_SetEmptySelection(position);
+  if (!(operation & SELECT_HYPERLINK)) { SciCall_SetEmptySelection(position); }
 
   return bHandled;
 }
@@ -6952,15 +6957,16 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
 //
 static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
 {
-  static int  _s_indic_click_modifiers = 0;
+  static int  _s_indic_click_modifiers = SCMOD_NORM;
 
   switch (pnmh->code)
   {
+    // unused:
     case SCN_HOTSPOTCLICK:
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTRELEASECLICK:
     case SCN_CALLTIPCLICK:
-      return FALSE;
+      return 0;
 
     case SCN_AUTOCSELECTION:
     {
@@ -7103,6 +7109,18 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     break;
 
 
+    case SCN_DOUBLECLICK:
+      if (scn->modifiers & SCMOD_SHIFT)
+      {
+        HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
+      }
+      else
+      {
+        HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER); // COPY_HYPERLINK
+      }
+    break;
+
+
     case SCN_INDICATORCLICK:
     {
       _s_indic_click_modifiers = scn->modifiers;
@@ -7114,20 +7132,23 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     {
       if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0)
       {
-        if (_s_indic_click_modifiers & SCMOD_CTRL) {
+        if (_s_indic_click_modifiers & SCMOD_CTRL)
+        {
           HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER);
         }
-        else if (_s_indic_click_modifiers & SCMOD_ALT) {
+        else if (_s_indic_click_modifiers & SCMOD_ALT)
+        {
           HandleHotSpotURLClicked(scn->position, OPEN_WITH_NOTEPAD3); // if applicable (file://)
         }
       }
       else if (SciCall_IndicatorValueAt(INDIC_NP3_COLOR_DEF, scn->position) > 0)
       {
-        if (_s_indic_click_modifiers & SCMOD_ALT) {
+        if (_s_indic_click_modifiers & SCMOD_ALT)
+        {
           HandleColorDefClicked(Globals.hwndEdit, scn->position);
         }
       }
-      _s_indic_click_modifiers = 0;
+      _s_indic_click_modifiers = SCMOD_NORM;
     }
     break;
 
@@ -7138,7 +7159,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
       if (Globals.CallTipType != CT_NONE) { CancelCallTip(); }
 
-      if (Sci_IsMultiSelection()) {
+      if (Sci_IsMultiSelection())
+      {
         SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
         DocPosU const selCount = SciCall_GetSelections();
         for (DocPosU s = 0; s < selCount; ++s)
@@ -8258,6 +8280,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
   bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
   bool const   bIsMultiSelection = Sci_IsMultiSelection();
+  bool const   bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
 
   bool bIsUpdateNeeded = bForceRedraw;
 
@@ -8266,7 +8289,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_DOCLINE] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_DOCLINE] || bIsWindowFindReplace)
   {
     static DocLn s_iLnFromPos = -1;
     static DocLn s_iLnCnt = -1;
@@ -8295,7 +8318,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   static WCHAR tchCol[32] = { L'\0' };
 
-  if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || bIsWindowFindReplace)
   {
     DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
 
@@ -8359,7 +8382,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchSel[32] = { L'\0' };
 
   // number of selected chars in statusbar
-  if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || bIsWindowFindReplace)
   {
     static bool s_bIsSelCountable = false;
     static bool s_bIsMultiSelection = false;
@@ -8492,7 +8515,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchOcc[32] = { L'\0' };
 
   // number of occurrence marks found
-  if (s_iStatusbarVisible[STATUS_OCCURRENCE] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
   {
     static DocPos s_iMarkOccurrencesCount = (DocPos)-111;
     static bool s_bMOVisible = false;
@@ -8527,7 +8550,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // number of replaced pattern
-  if (s_iStatusbarVisible[STATUS_OCCREPLACE] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace)
   {
     static int s_iReplacedOccurrences = -1;
 
@@ -8717,7 +8740,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // --------------------------------------------------------------------------
 
   // update Find/Replace dialog (if any)
-  if (Globals.hwndDlgFindReplace) {
+  if (bIsWindowFindReplace) {
     static WCHAR tchReplOccs[32] = { L'\0' };
     if (Globals.iReplacedOccurrences > 0)
       StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);

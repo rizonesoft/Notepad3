@@ -382,10 +382,16 @@ DeclareSciCallV2(StyleSetVisible, STYLESETVISIBLE, int, style, bool, visible)
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
 DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
-DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style)
+DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
+
 DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
+DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, iStyle, bool, hotspot)
+DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour)
+DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour)
+DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline)
+DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, underline)
 
 //=============================================================================
 //
@@ -444,6 +450,9 @@ DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, int, margin, int, cursor)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag)
+DeclareSciCallR2(MarkerNumberFromLine, MARKERNUMBERFROMLINE, int, DocLn, line, int, which)
+DeclareSciCallR2(MarkerHandleFromLine, MARKERHANDLEFROMLINE, int, DocLn, line, int, which)
+
 DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
 
 //=============================================================================

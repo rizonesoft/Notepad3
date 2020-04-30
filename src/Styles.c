@@ -1564,6 +1564,11 @@ void Style_SetUrlHotSpot(HWND hwnd)
   SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK, activeFG);
   SciCall_IndicSetHoverStyle(INDIC_NP3_HYPERLINK_U, indicHoverStyle);
   SciCall_IndicSetHoverFore(INDIC_NP3_HYPERLINK_U, activeFG);
+
+  // style for hotspot 
+  //~SciCall_StyleSetHotspot(_STYLE_GETSTYLEID(STY_URL_HOTSPOT), true);
+  //~SciCall_SetHotspotActiveUnderline(false);
+  //~SciCall_SetHotspotSigleLine(true);
 }
 
 
@@ -1583,7 +1588,7 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
 
 //=============================================================================
 //
-//  Style_SetInvisible()
+//  Style_SetReadonly()
 //
 void Style_SetReadonly(HWND hwnd, bool bReadonly)
 {
@@ -1593,7 +1598,7 @@ void Style_SetReadonly(HWND hwnd, bool bReadonly)
 
 //=============================================================================
 //
-//  Style_SetLongLineEdge()
+//  Style_SetMultiEdgeLine()
 //
 void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
 {

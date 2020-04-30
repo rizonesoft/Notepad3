@@ -112,7 +112,7 @@ void  EditClearAllOccurrenceMarkers(HWND hwnd);
 void  EditToggleView(HWND hwnd);
 void  EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
 int   EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
-void  EditMarkAll(char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd);
+void  EditMarkAll(char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel);
 void  EditDoVisibleStyling();
 void  EditDoStyling(DocPos iStartPos, DocPos iEndPos);
 void  EditUpdateVisibleIndicators();
@@ -127,6 +127,7 @@ void  EditBookmarkClick(const DocLn ln, const int modifiers);
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditHideNotMarkedLineRange(HWND hwnd, bool bHideLines);
 void  EditSelectionMultiSelectAll();
+void  EditSelectionMultiSelectAllEx(EDITFINDREPLACE edFndRpl);
 
 //
 //  Folding Functions
@@ -150,9 +151,11 @@ void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action);
 
 #define NP3_BRACES_TO_MATCH "()[]{}"
 
-#define GetMarkAllOccSearchFlags()  EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,\
-                                      Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false)
-
+inline int GetMarkAllOccSearchFlags()
+{
+  return EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,
+    Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
+}
 
 #endif //_NP3_EDIT_H_
 
