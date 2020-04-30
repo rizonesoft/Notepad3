@@ -4187,12 +4187,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELECTALLMATCHES:
     {
       if (!Sci_IsMultiOrRectangleSelection()) {
-        if (SciCall_IsSelectionEmpty()) {
-          if (!IsMarkOccurrencesEnabled() || Settings.MarkOccurrencesCurrentWord) {
+        if (!IsWindow(Globals.hwndDlgFindReplace)) {
+          if (SciCall_IsSelectionEmpty()) {
             EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
           }
+          EditSelectionMultiSelectAll();
         }
-        EditSelectionMultiSelectAll();
+        else {
+          SetFindReplaceData();  // s_FindReplaceData 
+          EditSelectionMultiSelectAllEx(s_FindReplaceData);
+        }
       }
     }
     break;
@@ -4776,14 +4780,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetFindReplaceData(); // s_FindReplaceData
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
           Globals.bFindReplCopySelOrClip = true;
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+          /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
         }
         else {
           Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
           if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
             SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
             DestroyWindow(Globals.hwndDlgFindReplace);
-            Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
           }
           else {
             SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -4799,14 +4803,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SetFindReplaceData(); // s_FindReplaceData
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
           Globals.bFindReplCopySelOrClip = true;
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+          /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
         }
         else {
           Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
           if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
             SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
             DestroyWindow(Globals.hwndDlgFindReplace);
-            Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
           }
           else {
             SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -8258,6 +8262,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
   bool const   bIsSelCharCountable = !(bIsSelectionEmpty || Sci_IsMultiOrRectangleSelection());
   bool const   bIsMultiSelection = Sci_IsMultiSelection();
+  bool const   bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
 
   bool bIsUpdateNeeded = bForceRedraw;
 
@@ -8266,7 +8271,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   // ------------------------------------------------------
 
-  if (s_iStatusbarVisible[STATUS_DOCLINE] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_DOCLINE] || bIsWindowFindReplace)
   {
     static DocLn s_iLnFromPos = -1;
     static DocLn s_iLnCnt = -1;
@@ -8295,7 +8300,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   static WCHAR tchCol[32] = { L'\0' };
 
-  if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || bIsWindowFindReplace)
   {
     DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
 
@@ -8359,7 +8364,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchSel[32] = { L'\0' };
 
   // number of selected chars in statusbar
-  if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || bIsWindowFindReplace)
   {
     static bool s_bIsSelCountable = false;
     static bool s_bIsMultiSelection = false;
@@ -8492,7 +8497,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchOcc[32] = { L'\0' };
 
   // number of occurrence marks found
-  if (s_iStatusbarVisible[STATUS_OCCURRENCE] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace)
   {
     static DocPos s_iMarkOccurrencesCount = (DocPos)-111;
     static bool s_bMOVisible = false;
@@ -8527,7 +8532,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // number of replaced pattern
-  if (s_iStatusbarVisible[STATUS_OCCREPLACE] || Globals.hwndDlgFindReplace)
+  if (s_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace)
   {
     static int s_iReplacedOccurrences = -1;
 
@@ -8717,7 +8722,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // --------------------------------------------------------------------------
 
   // update Find/Replace dialog (if any)
-  if (Globals.hwndDlgFindReplace) {
+  if (bIsWindowFindReplace) {
     static WCHAR tchReplOccs[32] = { L'\0' };
     if (Globals.iReplacedOccurrences > 0)
       StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);

@@ -444,6 +444,9 @@ DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, int, margin, int, cursor)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag)
+DeclareSciCallR2(MarkerNumberFromLine, MARKERNUMBERFROMLINE, int, DocLn, line, int, which)
+DeclareSciCallR2(MarkerHandleFromLine, MARKERHANDLEFROMLINE, int, DocLn, line, int, which)
+
 DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
 
 //=============================================================================
