@@ -6632,14 +6632,13 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     if (cchTextW > 0) {
       DWORD cchEscapedW = (DWORD)(length * 3);
       LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-      if (pszEscapedW == NULL) {
-        return false;
+      if (pszEscapedW) {
+        DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
+        UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
+        SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
+        FreeMem(pszEscapedW);
+        bHandled = true;
       }
-      DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
-      UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
-      SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
-      FreeMem(pszEscapedW);
-      bHandled = true;
     }
   }
   else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW))
