@@ -413,6 +413,8 @@
 #define CMD_SAVEASDEFWINPOS             20055
 #define CMD_CLEARSAVEDWINPOS            20056
 #define CMD_CHECK_INDENTATION           20057
+#define CMD_ARROW_UP                    20058
+#define CMD_ARROW_DOWN                  20059
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501

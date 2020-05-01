@@ -5697,6 +5697,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case CMD_ARROW_UP:
+      if (Sci_IsMultiSelection())
+      {
+        SciCall_Cancel();
+      }
+      SciCall_LineUp();
+      break;
+    
+    case CMD_ARROW_DOWN:
+      if (Sci_IsMultiSelection())
+      {
+        SciCall_Cancel();
+      }
+      SciCall_LineDown();
+      break;
+    
+
     case CMD_SCROLLUP:
       if (Sci_IsMultiSelection())
       {
