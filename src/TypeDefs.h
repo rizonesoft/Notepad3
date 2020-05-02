@@ -34,7 +34,6 @@
 #define WIN32_LEAN_AND_MEAN 1
 
 #include <windows.h>
-//#include <winuser.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions

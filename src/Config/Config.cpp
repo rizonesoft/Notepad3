@@ -177,6 +177,8 @@ extern "C" bool ResetIniFileCache() {
 
 extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
 {
+  if (StrIsEmpty(lpIniFilePath)) { return false; }
+
   ResetIniFileCache();
   
   s_INI.SetSpaces(s_bSetSpaces);

@@ -188,6 +188,9 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr);
 #define RGB_GET_G(color)    ((BYTE)(((0xFF<<8)&(color))>>8))
 #define RGB_GET_B(color)    ((BYTE)(((0xFF<<16)&(color))>>16))
 
+#define GET_X_LPARAM(lp)    ((int)(short)LOWORD(lp))  // windowsx.h
+#define GET_Y_LPARAM(lp)    ((int)(short)HIWORD(lp))  // windowsx.h
+
 // ----------------------------------------------------------------------------
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
