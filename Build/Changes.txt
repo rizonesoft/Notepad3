@@ -32,13 +32,14 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.429.(build_#) (2020-04-29)
+Current BETA Version 5.20.501.(build_#) (2020-05-01)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 - 
+- Regex multi-select feature.
 - Toolbar hint for zoomed view.
 - "waifu2x" scaled std toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
@@ -49,6 +50,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Open hyperlink on double-click.
 - Filevar tag "fill-column" changes to support multi-column marker.
 - Installer to let the user select the target directory.
 - Default long-line wrap settings.
