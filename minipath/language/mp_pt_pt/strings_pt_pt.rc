@@ -15,10 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Portuguese (Brazil) resources
+// Portuguese (Portugal) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
-LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTG)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -132,11 +132,11 @@ BEGIN
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(pt-BR) Tradução em português brasileiro por fcgouveia"
+    IDS_MUI_TRANSL_AUTHOR   "(pt-PT) Tradução em português por Lacn0755"
 END
 
 
-#endif    // Portuguese (Brazil) resources
+#endif    // Portuguese (Portugal) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
