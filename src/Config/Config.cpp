@@ -784,24 +784,16 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 // ============================================================================
 
 
-static bool  _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
+static bool _HandleIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
-  WCHAR tch[MAX_PATH] = { L'\0' };
-  if (IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch))) 
+  WCHAR wchPath[MAX_PATH] = { L'\0' };
+  if (PathFileExists(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath)))
   {
-    if (_CheckIniFile(tch, lpszModule)) {
-      StringCchCopy(lpszFile, MAX_PATH, tch);
-      return true;
+    if (!_CheckIniFile(wchPath, lpszModule)) {
+      PathCanonicalizeEx(wchPath, COUNTOF(wchPath));
     }
-    WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
-    ExpandEnvironmentStrings(tch, tchFileExpanded, COUNTOF(tchFileExpanded));
-    if (PathIsRelative(tchFileExpanded)) {
-      StringCchCopy(lpszFile, MAX_PATH, lpszModule);
-      StringCchCopy(PathFindFileName(lpszFile), MAX_PATH, tchFileExpanded);
-      return true;
-    }
-    StringCchCopy(lpszFile, MAX_PATH, tchFileExpanded);
-    return true;
+    StringCchCopy(lpszFile, MAX_PATH, wchPath);
+    return true;  // try to use redirection path
   }
   return false;
 }
@@ -811,52 +803,50 @@ static bool  _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWST
 extern "C" bool FindIniFile()
 {
   bool bFound = false;
-  WCHAR tchPath[MAX_PATH] = { L'\0' };
-  WCHAR tchModule[MAX_PATH] = { L'\0' };
 
+  WCHAR tchModule[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL, tchModule, COUNTOF(tchModule));
   PathCanonicalizeEx(tchModule, COUNTOF(tchModule));
 
   // set env path to module dir
-  StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
-  PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
-  SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, tchPath);
+  WCHAR wchIniFilePath[MAX_PATH] = { L'\0' };
+  StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), tchModule);
+  PathCchRemoveFileSpec(wchIniFilePath, COUNTOF(wchIniFilePath));
 
-  if (StrIsNotEmpty(Globals.IniFile)) {
+  SetEnvironmentVariable(NOTEPAD3_MODULE_DIR_ENV_VAR, wchIniFilePath);
+
+  if (StrIsNotEmpty(Globals.IniFile))
+  {
     if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
       return bFound;
     }
-    if (!_CheckIniFile(Globals.IniFile, tchModule)) {
-      ExpandEnvironmentStringsEx(Globals.IniFile, COUNTOF(Globals.IniFile));
-      if (PathIsRelative(Globals.IniFile)) {
-        StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
-        PathCchRemoveFileSpec(tchPath, COUNTOF(tchPath));
-        PathCchAppend(tchPath, COUNTOF(tchPath), Globals.IniFile);
-        StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), tchPath);
-      }
-    }
+   
+    PathCanonicalizeEx(Globals.IniFile, COUNTOF(Globals.IniFile));
+    bFound = _CheckIniFile(wchIniFilePath, tchModule);
   }
-  else {
-    StringCchCopy(tchPath, COUNTOF(tchPath), PathFindFileName(tchModule));
-    PathCchRenameExtension(tchPath, COUNTOF(tchPath), L".ini");
-
-    bFound = _CheckIniFile(tchPath, tchModule);
+  else 
+  {
+    StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), PathFindFileName(tchModule));
+    PathCchRenameExtension(wchIniFilePath, COUNTOF(wchIniFilePath), L".ini");
+    bFound = _CheckIniFile(wchIniFilePath, tchModule);
 
     if (!bFound) {
-      StringCchCopy(tchPath, COUNTOF(tchPath), L"Notepad3.ini");
-      bFound = _CheckIniFile(tchPath, tchModule);
+      StringCchCopy(wchIniFilePath, COUNTOF(wchIniFilePath), _W(SAPPNAME) L".ini");
+      bFound = _CheckIniFile(wchIniFilePath, tchModule);
     }
 
     if (bFound)
     {
       // allow two redirections: administrator -> user -> custom
-      if (_CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule))
+      if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule)) // 1st
       {
-        _CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule);
+        _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", wchIniFilePath, tchModule);  // 2nd
+        bFound = _CheckIniFile(wchIniFilePath, tchModule);
       }
-      StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), tchPath);
+      StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), wchIniFilePath);
     }
-    else {
+    else // force default name
+    {
       StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), tchModule);
       PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
     }

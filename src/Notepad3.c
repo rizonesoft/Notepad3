@@ -6619,7 +6619,6 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
   bool bHandled = false;
   if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position))
   {
-
     DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
     DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
     DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
@@ -9506,10 +9505,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
   bool bUnknownLexer = s_flagLexerSpecified;
 
-  BeginWaitCursor(true,L"Styling...");
-
-  if (fSuccess) 
+  if (fSuccess)
   {
+    BeginWaitCursor(true, L"Styling...");
+
+    SciCall_GotoPos(0);
+
     if (!s_IsThisAnElevatedRelaunch) {
       Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
     }
@@ -9570,11 +9571,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         _END_UNDO_ACTION_;
         SciCall_ScrollToEnd();
       }
-      // set historic caret/selection  pos
-      else if ((iCaretPos >= 0) && (iAnchorPos >= 0))
-      {
-        EditSetSelectionEx(iAnchorPos, iCaretPos, 0, 0);
-      }
+    }
+
+    // set historic caret/selection  pos
+    if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0))
+    {
+      EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
     }
 
     //bReadOnly = false;
@@ -9631,12 +9633,13 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
       SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
     }
+  
+    EndWaitCursor();
   }
   else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt)) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFileName));
   }
 
-  EndWaitCursor();
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
