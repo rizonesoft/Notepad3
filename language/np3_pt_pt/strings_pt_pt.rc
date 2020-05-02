@@ -15,10 +15,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Portuguese (Brazil) resources
+// Portuguese (Portugal) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
-LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTG)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE
 #pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
@@ -229,7 +229,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(pt-BR) Tradução em português brasileiro por fcgouveia"
+    IDS_MUI_TRANSL_AUTHOR   "(pt-PT) Tradução em português por Lacn0755"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
@@ -316,27 +316,27 @@ IDS_MUI_ABOUT_RTF_0  "{\
 \\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Desenvolvimento:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Colaboradores:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Bibliotecas:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Agradecimentos:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Recursos:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Licenças:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
 "
 
 END
 
-#endif    // Portuguese (Brazil) resources
+#endif    // Portuguese (Portugal) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
