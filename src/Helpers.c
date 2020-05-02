@@ -798,8 +798,8 @@ bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount
 void PathGetAppDirectory(LPWSTR lpszDest, DWORD cchDest)
 {
   GetModuleFileName(NULL, lpszDest, cchDest);
-  PathCanonicalizeEx(lpszDest, cchDest);
   PathCchRemoveFileSpec(lpszDest, (size_t)cchDest);
+  PathCanonicalizeEx(lpszDest, cchDest);
 }
 
 
@@ -884,20 +884,20 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
     }
   }
 
-  if (bExpandEnv)
-    ExpandEnvironmentStringsEx(wchPath,COUNTOF(wchPath));
-
+  if (bExpandEnv) {
+    ExpandEnvironmentStringsEx(wchPath, COUNTOF(wchPath));
+  }
   if (PathIsRelative(wchPath)) {
     PathGetAppDirectory(wchResult, COUNTOF(wchResult));
     PathCchAppend(wchResult,COUNTOF(wchResult),wchPath);
   }
-  else
-    StringCchCopyN(wchResult,COUNTOF(wchResult),wchPath,COUNTOF(wchPath));
-
+  else {
+    StringCchCopyN(wchResult, COUNTOF(wchResult), wchPath, COUNTOF(wchPath));
+  }
   PathCanonicalizeEx(wchResult,MAX_PATH);
-  if (PathGetDriveNumber(wchResult) != -1)
-    CharUpperBuff(wchResult,1);
-
+  if (PathGetDriveNumber(wchResult) != -1) {
+    CharUpperBuff(wchResult, 1);
+  }
   if (lpszDest == NULL || lpszSrc == lpszDest)
     StringCchCopyN(lpszSrc,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
   else
@@ -975,7 +975,6 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
   }
 
   if (bSucceeded) {
-    ExpandEnvironmentStringsEx(pszResPath,cchResPath);
     PathCanonicalizeEx(pszResPath,cchResPath);
   }
 
@@ -1321,7 +1320,7 @@ void PathFixBackslashes(LPWSTR lpsz)
 //
 void ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc)
 {
-  WCHAR szBuf[HUGE_BUFFER];
+  WCHAR szBuf[XXXL_BUFFER];
   if (ExpandEnvironmentStrings(lpSrc, szBuf, COUNTOF(szBuf))) {
     StringCchCopyN(lpSrc, dwSrc, szBuf, COUNTOF(szBuf));
   }
@@ -1333,12 +1332,22 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc)
 //  PathCanonicalizeEx()
 //
 //
-void PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer)
+bool PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath)
 {
-  WCHAR szDst[MAX_PATH] = { L'\0' };
-  if (PathCchCanonicalize(szDst, MAX_PATH, lpszPath) == S_OK) {
-    StringCchCopy(lpszPath, cchBuffer, szDst);
+  WCHAR filePath[MAX_PATH] = { L'\0' };
+  StringCchCopyN(filePath, COUNTOF(filePath), lpszPath, cchPath);
+
+  ExpandEnvironmentStringsEx(filePath, COUNTOF(filePath));
+  
+  if (PathIsRelative(filePath))
+  {
+    WCHAR tchModule[MAX_PATH] = { L'\0' };
+    GetModuleFileName(NULL, tchModule, COUNTOF(tchModule));
+    PathCchRemoveFileSpec(tchModule, COUNTOF(tchModule));
+    PathCchAppend(tchModule, COUNTOF(tchModule), lpszPath);
+    StringCchCopyN(filePath, COUNTOF(filePath), tchModule, COUNTOF(tchModule));
   }
+  return (PathCchCanonicalize(lpszPath, cchPath, filePath) == S_OK);
 }
 
 
@@ -1410,7 +1419,6 @@ void PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSo
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative)
 {
   WCHAR tmpFilePath[MAX_PATH] = { L'\0' };
-
   StringCchCopyN(tmpFilePath, COUNTOF(tmpFilePath), lpszPath, cchBuffer);
   ExpandEnvironmentStringsEx(tmpFilePath, COUNTOF(tmpFilePath));
   
