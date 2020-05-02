@@ -1671,24 +1671,19 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		}
 		break;
 
-		case WM_MOUSEMOVE: {
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#if 0
-			const Point pt = PointFromLParam(lParam);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		case WM_MBUTTONDOWN:
+			// send to main window
+			::SetFocus(MainHWND());
+			//::DefWindowProc(MainHWND(), iMessage, wParam, lParam); // does not propagate - filter msg ?
+			::SendMessage(GetParent(MainHWND()), WM_MBUTTONDOWN, wParam, lParam);
+			break;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
-			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
-			// https://blogs.msdn.com/b/oldnewthing/archive/2003/10/01/55108.aspx
-			XYPOSITION const dx = abs(ptMouseLast.x - pt.x);
-			XYPOSITION const dy = abs(ptMouseLast.y - pt.y);
-			if ((dx > XYPOSITION(1)) || (dy > XYPOSITION(1))) {
-				SetTrackMouseLeaveEvent(true);
-				ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
-			}
-#endif
+		case WM_MOUSEMOVE: {
 			const Point pt = PointFromLParam(lParam);
 			SetTrackMouseLeaveEvent(true);
 			ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		}
 		break;
 

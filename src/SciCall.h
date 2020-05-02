@@ -155,6 +155,7 @@ DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, li
 
 DeclareSciCallR2(PositionFromPoint, POSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
 DeclareSciCallR2(CharPositionFromPoint, CHARPOSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
+DeclareSciCallR2(CharPositionFromPointClose, CHARPOSITIONFROMPOINTCLOSE, DocPos, int, pt_x, int, pt_y)
 DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position)
 DeclareSciCallR01(PointYFromPosition, POINTYFROMPOSITION, int, DocPos, position)
 
@@ -209,6 +210,8 @@ DeclareSciCallV0(NewLine, NEWLINE)
 DeclareSciCallV0(Tab, TAB)
 DeclareSciCallV0(BackTab, BACKTAB)
 DeclareSciCallV0(VCHome, VCHOME)
+DeclareSciCallV0(LineUp, LINEUP)
+DeclareSciCallV0(LineDown, LINEDOWN)
 DeclareSciCallV0(LineUpExtend, LINEUPEXTEND)
 DeclareSciCallV0(LineScrollUp, LINESCROLLUP)
 DeclareSciCallV0(LineDownExtend, LINEDOWNEXTEND)

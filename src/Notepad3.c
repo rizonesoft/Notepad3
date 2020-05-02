@@ -1671,6 +1671,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_SYSCOMMAND:
       return MsgSysCommand(hwnd, umsg, wParam, lParam);
+
+    case WM_MBUTTONDOWN:
+      {
+        DocPos const pos = SciCall_CharPositionFromPointClose(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        if (pos >= 0) {
+          HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
+        }
+      }
       break;
 
     case WM_MOUSEWHEEL:
@@ -1810,12 +1818,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   //~SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 1024, 0); // default = 1024
   SendMessage(hwndEditCtrl, SCI_SETPOSITIONCACHE, 4096, 0);
 
-  //int const evtMask = SC_MODEVENTMASKALL;
   // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
   // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER, 
   // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER, 
   // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
   //  
+  ///~ int const evtMask = SC_MODEVENTMASKALL; (!) - don't listen to all events (SC_MOD_CHANGESTYLE) => RECURSON!
+  ///~ SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)evtMask, 0);
   ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE; 
   /// SC_MOD_CHANGESTYLE and SC_MOD_CHANGEINDICATOR needs SCI_SETCOMMANDEVENTS=true
 
@@ -5697,6 +5706,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case CMD_ARROW_UP:
+      if (Sci_IsMultiSelection())
+      {
+        SciCall_Cancel();
+      }
+      SciCall_LineUp();
+      break;
+    
+    case CMD_ARROW_DOWN:
+      if (Sci_IsMultiSelection())
+      {
+        SciCall_Cancel();
+      }
+      SciCall_LineDown();
+      break;
+    
+
     case CMD_SCROLLUP:
       if (Sci_IsMultiSelection())
       {
@@ -6590,83 +6616,84 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
   //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
   CancelCallTip();
 
-  if (!SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position)) { return false; }
-
   bool bHandled = false;
-  DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
-  DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
-  DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
-
-  const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
-
-  WCHAR szTextW[INTERNET_MAX_URL_LENGTH+1];
-  ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, szTextW, COUNTOF(szTextW));
-  szTextW[cchTextW] = L'\0';
-
-  const WCHAR* chkPreFix = L"file://";
-
-  if (operation & SELECT_HYPERLINK)
+  if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position))
   {
-    SciCall_SetSelection(firstPos, lastPos);
-    bHandled = true;
-  }
-  else if (operation & COPY_HYPERLINK)
-  {
-    if (cchTextW > 0) {
-      DWORD cchEscapedW = (DWORD)(length * 3);
-      LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-      if (pszEscapedW == NULL) {
-        return false;
-      }
-      DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
-      UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
-      SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
-      FreeMem(pszEscapedW);
+
+    DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
+    DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
+    DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
+
+    const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
+
+    WCHAR szTextW[INTERNET_MAX_URL_LENGTH + 1];
+    ptrdiff_t const cchTextW = MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, length, szTextW, COUNTOF(szTextW));
+    szTextW[cchTextW] = L'\0';
+
+    const WCHAR* chkPreFix = L"file://";
+
+    if (operation & SELECT_HYPERLINK)
+    {
+      SciCall_SetSelection(firstPos, lastPos);
       bHandled = true;
     }
-  }
-  else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW))
-  {
-    size_t const lenPfx = StringCchLenW(chkPreFix, 0);
-    WCHAR* szFileName = &(szTextW[lenPfx]);
-    szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
-    StrTrimW(szFileName, L"/");
-
-    PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
-    if (PathIsDirectory(szFileName))
+    else if (operation & COPY_HYPERLINK)
     {
-      WCHAR tchFile[MAX_PATH] = { L'\0' };
-      if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
-      {
-        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+      if (cchTextW > 0) {
+        DWORD cchEscapedW = (DWORD)(length * 3);
+        LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscapedW * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (pszEscapedW) {
+          DWORD const flags = (DWORD)(URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8);
+          UrlEscape(szTextW, pszEscapedW, &cchEscapedW, flags);
+          SetClipboardTextW(Globals.hwndMain, pszEscapedW, cchEscapedW);
+          FreeMem(pszEscapedW);
+          bHandled = true;
+        }
       }
     }
-    else {
-      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
-    }
-    bHandled = true;
-  }
-  else if (operation & OPEN_WITH_BROWSER) // open in web browser
-  {
-    WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-    if (StrIsNotEmpty(Globals.CurrentFile)) {
-      StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
-      PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
-    }
+    else if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrI(szTextW, chkPreFix) == szTextW))
+    {
+      size_t const lenPfx = StringCchLenW(chkPreFix, 0);
+      WCHAR* szFileName = &(szTextW[lenPfx]);
+      szTextW[lenPfx + MAX_PATH] = L'\0'; // limit length
+      StrTrimW(szFileName, L"/");
 
-    SHELLEXECUTEINFO sei;
-    ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
-    sei.cbSize = sizeof(SHELLEXECUTEINFO);
-    sei.fMask = SEE_MASK_NOZONECHECKS;
-    sei.hwnd = NULL;
-    sei.lpVerb = NULL;
-    sei.lpFile = szTextW;
-    sei.lpParameters = NULL;
-    sei.lpDirectory = wchDirectory;
-    sei.nShow = SW_SHOWNORMAL;
-    ShellExecuteEx(&sei);
+      PathCanonicalizeEx(szFileName, (DWORD)(COUNTOF(szTextW) - lenPfx));
+      if (PathIsDirectory(szFileName))
+      {
+        WCHAR tchFile[MAX_PATH] = { L'\0' };
+        if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
+        {
+          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
+        }
+      }
+      else {
+        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szFileName);
+      }
+      bHandled = true;
+    }
+    else if (operation & OPEN_WITH_BROWSER) // open in web browser
+    {
+      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+      if (StrIsNotEmpty(Globals.CurrentFile)) {
+        StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
+        PathCchRemoveFileSpec(wchDirectory, COUNTOF(wchDirectory));
+      }
 
-    bHandled = true;
+      SHELLEXECUTEINFO sei;
+      ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+      sei.cbSize = sizeof(SHELLEXECUTEINFO);
+      sei.fMask = SEE_MASK_NOZONECHECKS;
+      sei.hwnd = NULL;
+      sei.lpVerb = NULL;
+      sei.lpFile = szTextW;
+      sei.lpParameters = NULL;
+      sei.lpDirectory = wchDirectory;
+      sei.nShow = SW_SHOWNORMAL;
+      ShellExecuteEx(&sei);
+
+      bHandled = true;
+    }
   }
 
   if (!(operation & SELECT_HYPERLINK)) { SciCall_SetEmptySelection(position); }
@@ -7110,13 +7137,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
 
     case SCN_DOUBLECLICK:
-      if (scn->modifiers & SCMOD_SHIFT)
       {
         HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
-      }
-      else
-      {
-        HandleHotSpotURLClicked(scn->position, OPEN_WITH_BROWSER); // COPY_HYPERLINK
       }
     break;
 
@@ -7292,26 +7314,34 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
-
 static bool s_mod_ctrl_pressed = false;
 
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
 
+  static bool _guard = false;
+  if (_guard) { return !0; } else { _guard = true; } // avoid recursion
+
+  #define GUARD_RETURN(res) { _guard = false; return(res); }
+
   LPNMHDR const pnmh = (LPNMHDR)lParam;
   const SCNotification* const scn = (SCNotification*)lParam;
 
   if (!CheckNotifyChangeEvent()) 
   {
-    return _MsgNotifyLean(pnmh, scn);
+    LRESULT const res = _MsgNotifyLean(pnmh, scn);
+    GUARD_RETURN(res);
   }
 
   switch(pnmh->idFrom)
   {
     case IDC_EDIT:
-      return _MsgNotifyFromEdit(hwnd, pnmh, scn);
-
+      {
+        LRESULT const res = _MsgNotifyFromEdit(hwnd, pnmh, scn);
+        GUARD_RETURN(res);
+      }
+      
     // ------------------------------------------------------------------------
 
     case IDC_TOOLBAR:
@@ -7334,10 +7364,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand, tch, COUNTOF(tch));
             StringCchCopyN(((LPTBNOTIFY)lParam)->pszText, ((LPTBNOTIFY)lParam)->cchText, tch, ((LPTBNOTIFY)lParam)->cchText);
             CopyMemory(&((LPTBNOTIFY)lParam)->tbButton, &s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem], sizeof(TBBUTTON));
-            return TRUE;
+            GUARD_RETURN(!0);
           }
         }
-        return FALSE;
+        break;
 
         case TBN_RESET:
         {
@@ -7347,12 +7377,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
         }
-        return FALSE;
+        break;
 
         default:
-          return FALSE;
+          break;
       }
-      return TRUE;
+      break;
 
     // ------------------------------------------------------------------------
 
@@ -7369,10 +7399,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             {
               case STATUS_EOLMODE:
                 EditEnsureConsistentLineEndings(Globals.hwndEdit);
-                return TRUE;
+                GUARD_RETURN(!0);
 
               default:
-                return FALSE;
+                break;
             }
           }
           break;
@@ -7386,11 +7416,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
                 PostWMCommand(hwnd, IDM_EDIT_GOTOLINE);
-                return TRUE;
+                GUARD_RETURN(!0);
 
               case STATUS_CODEPAGE:
                 PostWMCommand(hwnd, IDM_ENCODING_SELECT);
-                return TRUE;
+                GUARD_RETURN(!0);
 
               case STATUS_EOLMODE:
                 {
@@ -7406,19 +7436,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                   if (i > IDM_LINEENDINGS_LF) { i = IDM_LINEENDINGS_CRLF; }
                   PostWMCommand(hwnd, i);
                 }
-                return TRUE;
+                GUARD_RETURN(!0);
 
               case STATUS_OVRMODE:
                 PostWMCommand(hwnd, CMD_VK_INSERT);
-                return TRUE;
+                GUARD_RETURN(!0);
 
               case STATUS_2ND_DEF:
                 PostWMCommand(hwnd, IDM_VIEW_USE2NDDEFAULT);
-                return TRUE;
+                GUARD_RETURN(!0);
 
               case STATUS_LEXER:
                 PostWMCommand(hwnd, IDM_VIEW_SCHEME);
-                return TRUE;
+                GUARD_RETURN(!0);
 
               case STATUS_TINYEXPR:
                 {
@@ -7437,7 +7467,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 break;
 
               default:
-                return FALSE;
+                break;
             }
           }
           break;
@@ -7454,15 +7484,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         // ToolTip
         case TTN_NEEDTEXT:
+          if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
           {
-            if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
-            {
-              WCHAR tch[SMALL_BUFFER] = { L'\0' };
-              GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
-              WCHAR* pttText = ((LPTOOLTIPTEXT)lParam)->szText;
-              size_t const ttLen = COUNTOF(((LPTOOLTIPTEXT)lParam)->szText);
-              StringCchCopyN(pttText, ttLen, tch,COUNTOF(tch));
-            }
+            WCHAR tch[SMALL_BUFFER] = { L'\0' };
+            GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
+            WCHAR* pttText = ((LPTOOLTIPTEXT)lParam)->szText;
+            size_t const ttLen = COUNTOF(((LPTOOLTIPTEXT)lParam)->szText);
+            StringCchCopyN(pttText, ttLen, tch,COUNTOF(tch));
           }
           break;
           
@@ -7472,7 +7500,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
   }
-  return FALSE;
+  GUARD_RETURN(0);
 }
 
 
