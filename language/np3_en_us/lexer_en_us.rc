@@ -464,6 +464,7 @@ BEGIN
     IDS_LEX_STR_63364       "Property Name"
     IDS_LEX_STR_63365       "LD Keyword"
     IDS_LEX_STR_63366       "ESC Sequence"
+    IDS_LEX_STR_63367       "Header Text"
 END
 
 STRINGTABLE
