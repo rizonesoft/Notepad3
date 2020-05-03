@@ -6471,26 +6471,31 @@ void HandlePosChange()
 //
 typedef enum _indic_id_t { _I_NONE = 0, _I_HYPERLINK = 1, _I_COLOR_PATTERN = 2 } _INDIC_ID_T;
 
+static DocPos prevCursorPosition = -1;
+
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
-  static DocPos prevPosition = -1;
   static DocPos prevStartPosition = -1;
   static DocPos prevEndPosition = -1;
 
-  if (prevPosition < 0) { prevPosition = position; }
-  if (prevStartPosition < 0) { prevStartPosition = position; }
-  if (prevEndPosition < 0) { prevEndPosition = position; }
+  if (position >= 0) {
+    if (prevCursorPosition < 0) { prevCursorPosition = position; }
+    if (prevStartPosition < 0) { prevStartPosition = position; }
+    if (prevEndPosition < 0) { prevEndPosition = position; }
+  }
 
   switch (uid)
   {
     case SCN_DWELLSTART:
     {
+      if (position < 0) { CancelCallTip(); prevCursorPosition = -1;  return; }
+        
       _INDIC_ID_T indicator_type = _I_NONE;
 
       if (Settings.HyperlinkHotspot) {
         if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0) {
           indicator_type = _I_HYPERLINK;
-          if (position != prevPosition) {
+          if (position != prevCursorPosition) {
             CancelCallTip();
           }
         }
@@ -6518,8 +6523,6 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
       }
 
       // ----------------------------------------------------------------------
-
-      if (position < 0) { prevPosition = -1;  return; }
 
       if ((position < prevStartPosition) || (position > prevEndPosition)) { s_bCallTipEscDisabled = false; }
 
@@ -6549,11 +6552,10 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           else {
             GetLngString(IDS_MUI_URL_OPEN_BROWSER, wchCalltipAdd, COUNTOF(wchCalltipAdd));
           }
-          CHAR  chAdd[MIDSZ_BUFFER] = { L'\0' };
-          WideCharToMultiByteEx(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, COUNTOF(chAdd), NULL, NULL);
+          CHAR  chAdd[LARGE_BUFFER] = { L'\0' };
+          WideCharToMultiByte(Encoding_SciCP, 0, wchCalltipAdd, -1, chAdd, (int)COUNTOF(chAdd), NULL, NULL);
 
-          char chCallTip[LARGE_BUFFER] = { '\0' };
-          //StringCchCatA(chCallTip, COUNTOF(chCallTip), "=> ");
+          char chCallTip[HUGE_BUFFER] = { '\0' };
           StringCchCatA(chCallTip, COUNTOF(chCallTip), chText);
           StringCchCatA(chCallTip, COUNTOF(chCallTip), chAdd);
           //SciCall_CallTipSetPosition(true);
@@ -6580,7 +6582,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
           SciCall_IndicatorFillRange(firstPos, length);
         }
       }
-      prevPosition = position;
+      prevCursorPosition = position;
       prevStartPosition = firstPos;
       prevEndPosition = lastPos;
     }
@@ -6589,11 +6591,13 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
     case SCN_DWELLEND:
     {
       if ((position >= prevStartPosition) && ((position <= prevEndPosition))) { return; } // avoid flickering
+      
       CancelCallTip();
 
       DocPos const curPos = SciCall_GetCurrentPos();
       if ((curPos >= prevStartPosition) && ((curPos <= prevEndPosition))) { return; } // no change for if caret in range
       s_bCallTipEscDisabled = false;
+      prevCursorPosition = -1;
 
       SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DWELL);
       SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
@@ -6991,7 +6995,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     case SCN_HOTSPOTCLICK:
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTRELEASECLICK:
-    case SCN_CALLTIPCLICK:
       return 0;
 
     case SCN_AUTOCSELECTION:
@@ -7136,9 +7139,20 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
 
     case SCN_DOUBLECLICK:
+    {
+      HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
+    }
+    break;
+
+
+    case SCN_CALLTIPCLICK:
+    {
+      if (prevCursorPosition >= 0)
       {
-        HandleHotSpotURLClicked(scn->position, SELECT_HYPERLINK); // COPY_HYPERLINK
+        //~HandleHotSpotURLClicked(SciCall_CallTipPosStart(), OPEN_WITH_BROWSER);
+        HandleHotSpotURLClicked(prevCursorPosition, OPEN_WITH_BROWSER);
       }
+    }
     break;
 
 
