@@ -7361,13 +7361,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       switch (pnmh->code)
       {
-        case TBN_ENDADJUST:
-          UpdateToolbar();
-          break;
-
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
-          break;
+          // (!) must exist and return true 
+          GUARD_RETURN(!0);
 
         case TBN_GETBUTTONINFO:
         {
@@ -7380,7 +7377,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             GUARD_RETURN(!0);
           }
         }
-        break;
+        GUARD_RETURN(0);
 
         case TBN_RESET:
         {
@@ -7390,10 +7387,14 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
         }
-        break;
+        GUARD_RETURN(0);
+
+        case TBN_ENDADJUST:
+          UpdateToolbar();
+          GUARD_RETURN(!0);
 
         default:
-          break;
+          GUARD_RETURN(0);
       }
       break;
 
