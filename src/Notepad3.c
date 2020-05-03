@@ -3515,10 +3515,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_NOESCFUNC;
   CheckMenuRadioItem(hmenu, IDM_VIEW_NOESCFUNC, IDM_VIEW_ESCEXIT, i, MF_BYCOMMAND);
 
-  EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel);
-  EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel);
   bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
-  EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
+  EnableCmd(hmenu, CMD_OPEN_HYPERLINK, !mrs && bIsHLink);
+  EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
+  EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
 
   i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
