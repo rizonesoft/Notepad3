@@ -32,13 +32,15 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.501.(build_#) (2020-05-01)
+Current BETA Version 5.20.504.(build_#) (2020-05-04)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 - 
+- Strip first char: allow multi-selection.
+- Open default browser while clicking hyperlink tooltip.
 - Regex multi-select feature.
 - Toolbar hint for zoomed view.
 - "waifu2x" scaled std toolbar bitmaps.
@@ -50,7 +52,11 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
-- Open hyperlink on double-click.
+- Markdown Lexer: new defaults for Header lines.
+- Strip first char: do not apply on all text (empty selection).
+- Reorganization Context menu.
+- Bigger prev/next button-icons (Customize Schemes... dialog).
+- Hyperlink double-click and MMB-click behavior.
 - Filevar tag "fill-column" changes to support multi-column marker.
 - Installer to let the user select the target directory.
 - Default long-line wrap settings.
@@ -72,6 +78,9 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Custiomize toolbar dialog closes immediately.
+- ".ini-file" acquire lock for invalid file path.
+- Cancel multi-selection on line up/down key.
 - Initial behavior on open Find/Replace dialog.
 - Lost Find/Replace dialog settings.
 - Lazy syntax styling (copy into multi-line string, etc.).
@@ -93,7 +102,12 @@ REMOVED:
 TRANSLATIONS (MUI):
 -----------------------------------------------------
 - 
+- Chinese Taiwan (zh-TW) in progress...
+- Indonesian (id-ID) in progress...
+- Portuguese (pt-PT) in progress...
+- Portuguese Brazilian (pt-BR) in progress...
 - Slovak (sk-SK).
+- Vietnamese (vi-VN) in progress...
 
 
 =====================================================
