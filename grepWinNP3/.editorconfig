@@ -28,7 +28,7 @@ charset = utf-8
 charset = utf-8-sig
 
 [**.{rc}]
-charset = utf-16
+charset = latin1
 
 [src/resource.h]
-charset = utf-16
+charset = latin1
