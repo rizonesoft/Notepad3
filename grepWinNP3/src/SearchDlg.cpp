@@ -804,6 +804,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_RELATIVEPATH).c_str());
                     break;
                 }
+                if (!PathFileExists(m_searchpath.c_str()))
+                {
+                    ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
+                    break;
+                }
 
                 m_searchedItems = 0;
                 m_totalitems = 0;

@@ -37,6 +37,10 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "%ld autres correspondances"
 
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% est remplacé par le chemin du fichier, %line% par la ligne à atteindre, %pattern% avec la chaîne de recherche."
@@ -139,7 +143,7 @@ msgid "Dark mode"
 msgstr "Mode sombre"
 
 #. Resource IDs: (159)
-msgid "Please enable dark mode first in the Windows system settings (>= Win10 v1803)."
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
 msgstr "Veuillez d'abord activer le mode sombre dans les paramètres de Windows (> = Win10 v1803)."
 
 #. Resource IDs: (139)
