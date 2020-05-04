@@ -1,5 +1,5 @@
 // Microsoft Visual C++ generated resource script.
-//
+// encoding: CP-1252
 #include "..\resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -21,6 +21,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -36,10 +37,11 @@ IDI_GREPWIN             ICON                    "grepWinNP3.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Englisch (USA) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -159,8 +161,8 @@ BEGIN
     ICON            IDI_GREPWIN,IDC_STATIC,17,18,20,20,SS_CENTERIMAGE
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
-    LTEXT           "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!",IDC_NP3_DISCLAIMER,50,47,198,8
-    LTEXT           "Visit Stefan Küng's website",IDC_WEBLINK,50,68,150,8
+    LTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,50,47,198,8
+    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,68,150,8
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135
@@ -399,15 +401,16 @@ BEGIN
     IDS_ERR_PATHNOTEXIST    "Path does not exist or is not accessible!"
 END
 
-#endif    // Englisch (USA) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Schweiz) resources
+// German (Switzerland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -438,7 +441,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Deutsch (Schweiz) resources
+#endif    // German (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
