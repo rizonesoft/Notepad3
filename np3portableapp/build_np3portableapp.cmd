@@ -160,13 +160,22 @@ copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
+:: Copy all current "grepWinNP3" files
 copy "%NP3_GREPWIN_DIR%\GPL_v3.0_LICENSE.txt" "%NP3_PORTAPP_DIR%\Other\Help\grepWin_GPL_v3.0_LICENSE.txt" /Y /V
 
-mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
+	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\*.*"
+) else (
+	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
+)
 copy /B "%NP3_GREPWIN_DIR%\translations\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
-mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
+	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\*.*"
+) else (
+	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
+)
 copy /B "%NP3_GREPWIN_DIR%\translations\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
@@ -193,13 +202,13 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: Signing "Notepad3Portable.exe" (".exe" file is created by "Launcher")
-:: call %SCRIPT_DIR%Signing_for_EXE_NP3_1st.cmd
+:: call %SCRIPT_DIR%Signing_for_NP3P_1st_EXE.cmd
 
 :: - build Installer -
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: Signing "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" (".paf.exe" file is created by "Installer")
-:: call %SCRIPT_DIR%Signing_for_EXE_NP3_2nd.cmd
+:: call %SCRIPT_DIR%Signing_for_NP3P_2nd_EXE.cmd
 
 :: Creation of a "7-Zip" file by appending the extension ".7z"
 set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe
