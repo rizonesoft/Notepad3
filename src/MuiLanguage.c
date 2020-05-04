@@ -34,27 +34,30 @@ extern prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
 MUILANGUAGE MUI_LanguageDLLs[] =
 {
-  { IDS_MUI_LANG_EN_US, L"en-US", L"English (United States)\t\t\t[%s]",  MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
+  { IDS_MUI_LANG_EN_US, L"en-US", L"English (United States)\t\t\t[%s]",          MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
   // ----------------------------
-  { IDS_MUI_LANG_AF_ZA, L"af-ZA", L"Afrikaans (Suid-Afrika)\t\t\t[%s]",  MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
-  { IDS_MUI_LANG_BE_BY, L"be-BY", L"Беларуская (Беларусь)\t\t\t[%s]",    MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
-  { IDS_MUI_LANG_DE_DE, L"de-DE", L"Deutsch (Deutschland)\t\t\t[%s]",    MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
-  { IDS_MUI_LANG_EN_GB, L"en-GB", L"English (United Kingdom)\t\t\t[%s]", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
-  { IDS_MUI_LANG_ES_ES, L"es-ES", L"Español (España)\t\t\t[%s]",         MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
-  { IDS_MUI_LANG_FR_FR, L"fr-FR", L"Français (France)\t\t\t[%s]",        MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
-  { IDS_MUI_LANG_HU_HU, L"hu-HU", L"Magyar (Magyarország)\t\t\t[%s]",    MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
-  { IDS_MUI_LANG_IT_IT, L"it-IT", L"Italiano (Italia)\t\t\t[%s]",        MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
-  { IDS_MUI_LANG_JP_JP, L"ja-JP", L"日本語 （日本）\t\t\t[%s]",           MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
-  { IDS_MUI_LANG_KO_KR, L"ko-KR", L"한국어 (대한민국)\t\t\t[%s]",         MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
-  { IDS_MUI_LANG_NL_NL, L"nl-NL", L"Nederlands (Nederland)\t\t\t[%s]",   MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
-  { IDS_MUI_LANG_PL_PL, L"pl-PL", L"Polski (Polska)\t\t\t[%s]",          MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
-  { IDS_MUI_LANG_PT_BR, L"pt-BR", L"Português (Brasil)\t\t\t[%s]",       MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
-  { IDS_MUI_LANG_PT_PT, L"pt-PT", L"Português (Portugal)\t\t\t[%s]",     MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE), false, false },
-  { IDS_MUI_LANG_RU_RU, L"ru-RU", L"Русский (Pоссия)\t\t\t[%s]",         MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
-  { IDS_MUI_LANG_SK_SK, L"sk-SK", L"Slovenčina (Slovensko)\t\t\t[%s]",   MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), false, false },
-  { IDS_MUI_LANG_SV_SE, L"sv-SE", L"Svenska (Sverige)\t\t\t[%s]",        MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), false, false },
-  { IDS_MUI_LANG_TR_TR, L"tr-TR", L"Türkçe (Türkiye)\t\t\t[%s]",         MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
-  { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"简体中文 （中国）\t\t\t[%s]",         MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
+  { IDS_MUI_LANG_AF_ZA, L"af-ZA", L"Afrikaans (Suid-Afrika)\t\t\t[%s]",          MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
+  { IDS_MUI_LANG_BE_BY, L"be-BY", L"Беларуская (Беларусь)\t\t\t[%s]",            MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
+  { IDS_MUI_LANG_DE_DE, L"de-DE", L"Deutsch (Deutschland)\t\t\t[%s]",            MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
+  { IDS_MUI_LANG_EN_GB, L"en-GB", L"English (United Kingdom)\t\t\t[%s]",         MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
+  { IDS_MUI_LANG_ES_ES, L"es-ES", L"Español (España)\t\t\t[%s]",                 MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
+  { IDS_MUI_LANG_FR_FR, L"fr-FR", L"Français (France)\t\t\t[%s]",                MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
+  { IDS_MUI_LANG_HU_HU, L"hu-HU", L"Magyar (Magyarország)\t\t\t[%s]",            MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
+  { IDS_MUI_LANG_ID_ID, L"id-ID", L"Bahasa Indonesia (Indonesia)\t\t\t[%s]",     MAKELANGID(LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA), false, false },
+  { IDS_MUI_LANG_IT_IT, L"it-IT", L"Italiano (Italia)\t\t\t[%s]",                MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
+  { IDS_MUI_LANG_JP_JP, L"ja-JP", L"日本語 （日本）\t\t\t[%s]",                   MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
+  { IDS_MUI_LANG_KO_KR, L"ko-KR", L"한국어 (대한민국)\t\t\t[%s]",                 MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
+  { IDS_MUI_LANG_NL_NL, L"nl-NL", L"Nederlands (Nederland)\t\t\t[%s]",          MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
+  { IDS_MUI_LANG_PL_PL, L"pl-PL", L"Polski (Polska)\t\t\t[%s]",                  MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND), false, false },
+  { IDS_MUI_LANG_PT_BR, L"pt-BR", L"Português Brasileiro (Brasil)\t\t\t[%s]",    MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
+  { IDS_MUI_LANG_PT_PT, L"pt-PT", L"Português (Portugal)\t\t\t[%s]",             MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE), false, false },
+  { IDS_MUI_LANG_RU_RU, L"ru-RU", L"Русский (Pоссия)\t\t\t[%s]",                 MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
+  { IDS_MUI_LANG_SK_SK, L"sk-SK", L"Slovenčina (Slovensko)\t\t\t[%s]",           MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA), false, false },
+  { IDS_MUI_LANG_SV_SE, L"sv-SE", L"Svenska (Sverige)\t\t\t[%s]",                MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH), false, false },
+  { IDS_MUI_LANG_TR_TR, L"tr-TR", L"Türkçe (Türkiye)\t\t\t[%s]",                 MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY), false, false },
+  { IDS_MUI_LANG_VI_VN, L"vi-VN", L"Tiếng Việt (Việt Nam)\t\t\t[%s]",            MAKELANGID(LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM), false, false },
+  { IDS_MUI_LANG_ZH_CN, L"zh-CN", L"简体中文 （中国）\t\t\t[%s]",                 MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false},
+  { IDS_MUI_LANG_ZH_TW, L"zh-TW", L"繁體中文 （台灣）\t\t\t[%s]",                 MAKELANGID(LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL), false, false}
 };
 
 //NUM_OF_MUI_LANGUAGES
@@ -64,26 +67,29 @@ int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
 
 grepWinLng_t grepWinLangResName[] =
 {
-  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),                 L".\\lng\\gwLng\\English (United States) [en-US].lang"},
-  { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA),   L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang"},
-  { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),      L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang"},
-  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                      L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang"},
-  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),                 L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang"},
-  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),             L".\\lng\\gwLng\\Español (España) [es-ES].lang"},
-  { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                      L".\\lng\\gwLng\\Français (France) [fr-FR].lang"},
-  { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),        L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang"},
-  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                    L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang"},
-  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),            L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang"},
-  { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                      L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang"},
-  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                        L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang"},
-  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),               L".\\lng\\gwLng\\Polski (Polska)Polski [pl-PL].lang"},
-  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN),    L".\\lng\\gwLng\\Português (Brasil) [pt-BR].lang"},
-  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE),              L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang"},
-  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),             L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang"},
-  { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA),             L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang"},
-  { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH),                    L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang"},
-  { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY),             L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang"},
-  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),         L".\\lng\\gwLng\\简体中文 （中国）[zh-CN].lang"}
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),                         L".\\lng\\gwLng\\English (United States) [en-US].lang"},
+  { MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA),           L".\\lng\\gwLng\\Afrikaans (Suid-Afrika) [af-ZA].lang"},
+  { MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS),              L".\\lng\\gwLng\\Беларуская (Беларусь) [be-BY].lang"},
+  { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                              L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang"},
+  { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),                         L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang"},
+  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),                     L".\\lng\\gwLng\\Español (España) [es-ES].lang"},
+  { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                              L".\\lng\\gwLng\\Français (France) [fr-FR].lang"},
+  { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),                L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang"},
+  { MAKELANGID(LANG_INDONESIAN, SUBLANG_INDONESIAN_INDONESIA),            L".\\lng\\gwLng\\Bahasa Indonesia (Indonesia) [id-ID].lang"},
+  { MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN),                            L".\\lng\\gwLng\\Italiano (Italia) [it-IT].lang"},
+  { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),                    L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang"},
+  { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                              L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang"},
+  { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                                L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang"},
+  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),                       L".\\lng\\gwLng\\Polski (Polska)Polski [pl-PL].lang"},
+  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN),            L".\\lng\\gwLng\\Português Brasileiro (Brasil) [pt-BR].lang"},
+  { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE),                      L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang"},
+  { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),                     L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang"},
+  { MAKELANGID(LANG_SLOVAK, SUBLANG_SLOVAK_SLOVAKIA),                     L".\\lng\\gwLng\\Slovenčina (Slovensko) [sk-SK].lang"},
+  { MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH),                            L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang"},
+  { MAKELANGID(LANG_TURKISH, SUBLANG_TURKISH_TURKEY),                     L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang"},
+  { MAKELANGID(LANG_VIETNAMESE, SUBLANG_VIETNAMESE_VIETNAM),              L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang"},
+  { MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED),                 L".\\lng\\gwLng\\简体中文 （中国） [zh-CN].lang"},
+  { MAKELANGID(LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL),    L".\\lng\\gwLng\\繁體中文 （台灣） [zh-TW].lang"}
 };
 
 int grepWinLang_CountOf() { return COUNTOF(grepWinLangResName); };
