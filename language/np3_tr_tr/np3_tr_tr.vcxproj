@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{15428F5A-16F1-4DA5-9F12-0411183E3DC0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>np3engb</RootNamespace>
+    <RootNamespace>np3trtr</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
