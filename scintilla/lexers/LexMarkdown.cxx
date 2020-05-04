@@ -77,6 +77,7 @@ static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU e
 // Set the state on text section from current to length characters,
 // then set the rest until the newline to default, except for any characters matching token
 
+#if 0
 constexpr bool IsHdrToken(const int ch, const int tok) noexcept {
 	return ((ch == tok) || (ch == ' ') || (ch == '\n') || (ch == '\r'));
 }
@@ -96,6 +97,15 @@ static void SetStateAndZoom(const int state, const Sci_Position length, const in
         }
         sc.Forward();
     }
+    sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
+}
+#endif
+
+static void SetStateAndZoom(const int state, const Sci_Position length, const int token, StyleContext &sc) {
+	(void)(token);
+    sc.SetState(state);
+    sc.Forward(length);
+    while (sc.More() && !sc.atLineStart) { sc.Forward(); }
     sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
 }
 

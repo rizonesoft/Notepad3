@@ -1,5 +1,11 @@
 # vscode-nls
 
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### Header 6
 
 CommonJS module to support externalization and localization. The module only depends on Node.js however its
 primary use case is for VSCode extensions.
