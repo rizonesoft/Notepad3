@@ -3830,6 +3830,8 @@ void EditStripFirstCharacter(HWND hwnd)
 {
   UNUSED(hwnd);
 
+  if (SciCall_IsSelectionEmpty()) { return; }
+
   DocPos const iSelStart = SciCall_IsSelectionEmpty() ? 0 : SciCall_GetSelectionStart();
   DocPos const iSelEnd = SciCall_IsSelectionEmpty() ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
   DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
@@ -3842,10 +3844,6 @@ void EditStripFirstCharacter(HWND hwnd)
 
   if (SciCall_IsSelectionRectangle()) 
   {
-    if (SciCall_IsSelectionEmpty()) {
-      SciCall_Clear();
-    }
-    else {
       const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
       const DocPos selCaretMainPos = SciCall_GetRectangularSelectionCaret();
       const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
@@ -3879,10 +3877,12 @@ void EditStripFirstCharacter(HWND hwnd)
       SciCall_SetRectangularSelectionCaret(selCaretMainPos - remCount);
       if (vSpcCaretMainPos > 0)
         SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
-    }
   }
   else if (Sci_IsMultiSelection()) {
-    // not implemented
+    EditSetCaretToSelectionStart();
+    SciCall_CharLeft();   // -> thin multi-selection at begin
+    SciCall_CharRight();  // -> no SCI_DEL, so use SCI_DELBACK:
+    SciCall_DeleteBack();
   }
   else // SC_SEL_LINES | SC_SEL_STREAM
   {
@@ -3907,6 +3907,8 @@ void EditStripFirstCharacter(HWND hwnd)
 void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly)
 {
   UNUSED(hwnd);
+
+  if (SciCall_IsSelectionEmpty() && !bIgnoreSelection) { return; }
 
   DocPos const iSelStart = (SciCall_IsSelectionEmpty() || bIgnoreSelection) ? 0 : SciCall_GetSelectionStart();
   DocPos const iSelEnd = (SciCall_IsSelectionEmpty() || bIgnoreSelection) ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
