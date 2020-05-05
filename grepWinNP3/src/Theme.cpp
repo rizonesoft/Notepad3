@@ -137,6 +137,8 @@ bool CTheme::RemoveRegisteredCallback(int id)
 
 bool CTheme::SetThemeForDialog(HWND hWnd, bool bDark)
 {
+    if (IsDarkModeAllowed())
+{
     DarkModeHelper::Instance().AllowDarkModeForWindow(hWnd, bDark);
     if (bDark)
     {
@@ -148,6 +150,7 @@ bool CTheme::SetThemeForDialog(HWND hWnd, bool bDark)
     }
     EnumChildWindows(hWnd, AdjustThemeForChildrenProc, bDark ? TRUE : FALSE);
     ::RedrawWindow(hWnd, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
+    }
     return true;
 }
 

@@ -138,7 +138,6 @@ DarkModeHelper::DarkModeHelper()
                 else if (micro > 17762)
                     m_bCanHaveDarkMode = true;
             }
-            m_bCanHaveDarkMode = true;
         }
     }
 
