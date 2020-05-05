@@ -502,7 +502,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb)
     return ANSI;
 }
 
-bool CTextFile::CalculateLines(volatile LONG *bCancelled)
+bool CTextFile::CalculateLines(volatile LONG * bCancelled)
 {
     // fill an array with starting positions for every line in the loaded file
     if (pFileBuf == NULL)
@@ -512,7 +512,7 @@ bool CTextFile::CalculateLines(volatile LONG *bCancelled)
     linepositions.clear();
     linepositions.reserve(textcontent.size() / 10);
     size_t pos = 0;
-    for (auto it = textcontent.begin(); it != textcontent.end() && ((bCancelled == nullptr) || !InterlockedAnd(bCancelled, TRUE)); ++it)
+    for (auto it = textcontent.begin(); it != textcontent.end() && ((bCancelled == nullptr) || !InterlockedExchangeAdd(bCancelled, 0)); ++it)
     {
         if (*it == '\r')
         {
