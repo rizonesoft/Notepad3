@@ -621,6 +621,7 @@ static void _InitGlobals()
   Globals.hDlgIcon128   = NULL;
   Globals.hDlgIconBig   = NULL;
   Globals.hDlgIconSmall = NULL;
+  Globals.hDlgIconPrefs = NULL;
 
   Globals.hMainMenu = NULL;
   Globals.pFileMRU = NULL;
@@ -882,6 +883,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   if (!Globals.hDlgIconSmall) {
     LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall));
+  }
+
+  if (!Globals.hDlgIconPrefs) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs));
   }
 
   if (!Globals.hIconMsgUser) {

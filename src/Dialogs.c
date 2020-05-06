@@ -702,8 +702,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
     CenterDlgInParent(hwnd, NULL);
+
   }
   break;
+
+
+  case WM_DESTROY:
+    if (hVersionFont) { DeleteObject(hVersionFont); }
+    break;
 
 
   case WM_DPICHANGED:
@@ -730,33 +736,33 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   case WM_PAINT:
     {
-      if (Globals.hDlgIcon128) {
+      HDC const hDC = GetWindowDC(hwnd);
+
+      if (Globals.hDlgIcon256) {
         int const iconSize = 128;
         int const dpiScaledWidth = ScaleIntToDPI_X(hwnd, iconSize);
         int const dpiScaledHeight = ScaleIntToDPI_Y(hwnd, iconSize);
-        HDC const hdc = GetWindowDC(hwnd);
-        DrawIconEx(hdc, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44), 
-                   Globals.hDlgIcon128, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
-        ReleaseDC(hwnd, hdc);
+        DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44),
+          Globals.hDlgIcon256, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
       }
-
       // --- larger bold condensed version string
+      int const height = -MulDiv(14, GetDeviceCaps(hDC, LOGPIXELSY), 72);
       if (hVersionFont) { DeleteObject(hVersionFont); }
-      if ((hVersionFont = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)) == NULL) {
-        hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
-      }
+      hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
       LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8);
-      lf.lfHeight = ScaleIntToDPI_Y(hwnd, 22);
+      lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
+      lf.lfWidth = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
       //StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Segoe UI");
       hVersionFont = CreateFontIndirect(&lf);
       SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
 
+      ReleaseDC(hwnd, hDC);
+
       // rich edit control
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0);
     }
-    return false;
+    return 0;
 
 
   case WM_NOTIFY:
