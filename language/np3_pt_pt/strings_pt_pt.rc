@@ -112,13 +112,13 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Todos os ficheiros (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Ficheiros executáveis (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Ficheiros de configuração (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Ficheiros Bitmap (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Ficheiros executáveis (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Todos os ficheiros (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Ficheiros de configuração (*.ini)|*.ini|Todos os ficheiros (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Ficheiros Bitmap (*.bmp)|*.bmp|Todos os ficheiros (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Seleccione a pasta com ligações para os seus programas favoritos."
     IDS_MUI_FAVORITES       "Seleccione a pasta com ligações para os seus ficheiros favoritos."
     IDS_MUI_BACKSLASHHELP   "Transformações de barra invertida\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "Correspondência de sintaxe RegExp (Multi Linhas)\n\n.\tCorresponde a qualquer caractere\n^\tCadeia vazia imediatamente após vova linha\n$\tCadeia vazia imediatamente antes do fim da linha\n\\<\tInício de uma palavra\n\\>\tFim de uma palavra\n\\b\tLimite da palavra\n[...]\tUm conjunto de caracteres ([abc]) ou um intervalo ([a-z])\n[^...]\tCaracteres NÃO incluidos no conjunto ou intervalo\n\\d\tQualquer dígito decimal\n\\D\tQualquer caractere não-dígito\n\\s\tQualquer caractere de espaço em branco\n\\S\tNão é um caractere de espaço em branco\n\\w\tAny ""word"" char\n\\W\tQualquer caractere ""não-palavra""\n\\x\tCaractere Escape com qualquer outro significado \r\n\tespecial\n\\xHH\tCaractere com código hex HH\n?\tCorrespondência precedente 0 ou 1 vezes\n*\tCorrespondência precedente 0 ou mais vezes\n+\tCorrespondência precedente 1 ou mais vezes\n*? ou +?\tCorrespondência de quantificadores 'Non greedy' ""?"" e ""+""\n(\tInício de uma região\n)\tFim de uma região\n\\n\tRefere-se a uma região ao substituir (n é 1-9)\n"
+    IDS_MUI_REGEXPHELP      "Correspondência de sintaxe RegExp (Multi Linhas)\n\n.\tCorresponde a qualquer caractere\n^\tCadeia vazia imediatamente após nova linha\n$\tCadeia vazia imediatamente antes do fim da linha\n\\<\tInício de uma palavra\n\\>\tFim de uma palavra\n\\b\tLimite da palavra\n[...]\tUm conjunto de caracteres ([abc]) ou um intervalo ([a-z])\n[^...]\tCaracteres NÃO incluidos no conjunto ou intervalo\n\\d\tQualquer dígito decimal\n\\D\tQualquer caractere não-dígito\n\\s\tQualquer caractere de espaço em branco\n\\S\tNão é um caractere de espaço em branco\n\\w\tQualquer caractere ""palavra""\n\\W\tQualquer caractere ""não-palavra""\n\\x\tCaractere Escape com qualquer outro significado especial\n\\xHH\tCaractere com código hex HH\n?\tCorrespondência precedente 0 ou 1 vezes\n*\tCorrespondência precedente 0 ou mais vezes\n+\tCorrespondência precedente 1 ou mais vezes\n*? ou +?\tCorrespondência de quantificadores 'Non greedy' ""?"" e ""+""\n(\tInício de uma região\n)\tFim de uma região\n\\n\tRefere-se a uma região ao substituir (n é 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Procura com jokers\n\n*\tCorresponde a zero ou mais caracteres.\n?\tCorresponde exactamente a um caractere. "
 END
 
@@ -255,7 +255,7 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
+Utilização:\r\n\
 Notepad3 \t[/?] [...[Codificação]] [...[Modo fim de linha]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidade:][caminho]ficheiro[...]]\r\n\r\n\
@@ -267,13 +267,13 @@ Opções:\r\n\
 ...\tCodificação (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tModo fim de linha (/crlf, /cr, /lf).\r\n\
 /e\tCodificação do ficheiro de origem.\r\n\
-/g\tSaltar para posição indicada (/g -1 fim do ficheiro).\r\n\
-/m\tCorresponder ao texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
+/g\tSalta para posição indicada (/g -1 fim do ficheiro).\r\n\
+/m\tCorresponde ao texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
 /l\tAuto-recarrega ficheiros modificados.\r\n\
 /q\tForça a criação de novos ficheiros sem perguntar.\r\n\
 /s\tSelecciona esquema de sintaxe especificado.\r\n\
 /d\tSelecciona esquema padrão de texto.\r\n\
-/h\tSeleccionar esquema código fonte Web.\r\n\
+/h\tSelecciona esquema código fonte Web.\r\n\
 /x\tSelecciona esquema de documento XML.\r\n\
 /c\tAbre nova janela e cola conteúdo da área de transferência.\r\n\
 /b\tAbre novo quadro de colagem para recolher entradas da área \r\n\tde transferência.\r\n\
@@ -283,7 +283,7 @@ Opções:\r\n\
 \tou /p <esquerda>,<superior>,<largura>,<altura>,<máx>    [todos inteiros].\r\n\
 /t\tDefine título da janela.\r\n\
 /i\tInicia como ícone na área de notificação.\r\n\
-/o\tMantem janela sempre visível.\r\n\
+/o\tMantém a janela sempre visível.\r\n\
 /f\tEspecifica ficheiro ini (/f0 sem ficheiro ini).\r\n\
 /u\tCarrega com previlégios elevados.\r\n\
 /v\tImprime ficheiro de imediato e sai.\r\n\
