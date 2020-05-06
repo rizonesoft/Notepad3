@@ -80,8 +80,8 @@ BEGIN
     IDS_ENC_MAC_CENTRAL_EUROP      "C;Centraleuropeisk (Mac);Mac (Central)"
     IDS_ENC_WIN_1250               "C;Centraleuropeisk (Windows-1250);Windows-1250"
     IDS_ENC_GB18030                "C;Kinesisk (GB18030);GB-18030"
+    IDS_ENC_GBK_936                "C;kinesisk (GBK);GBK-936"
     IDS_ENC_GB2312_80              "C;Förenklad kinesisk (GB2312-80);GB-2312-80"
-    IDS_ENC_GBK_936                "C;Förenklad kinesisk (GBK-936);GBK-936"
     IDS_ENC_MAC_ZH_CN              "C;Förenklad kinesisk (Mac);Mac (zh-cn)"
     IDS_ENC_BIG5                   "C;Traditionell kinesisk (Big5);Big5"
     IDS_ENC_MAC_ZH_TW              "C;Traditionell kinesisk (Mac);Mac (zh-tw)"
@@ -151,14 +151,14 @@ STRINGTABLE
 BEGIN
     IDS_ENC_EUC_JAPANESE           "C;Japansk (EUC);Japansk (EUC)"
     IDS_ENC_EUC_KOREAN             "C;Koreansk (EUC);Koreansk (EUC)"
-    IDS_ENC_ISO_2022_CN            "C;Traditionell kinesisk (ISO-2022);ISO-2022-CN"
-    IDS_ENC_HZ_GB2312              "C;Förenklad kinesisk (HZ-GB2312);HZ-GB2312"
+    IDS_ENC_ISO_2022_CN            "C;kinesisk (ISO-2022);ISO-2022-CN"
+    IDS_ENC_HZ_GB2312              "C;Förenklad kinesisk (B2312);HZ-GB2312"
     IDS_ENC_ISO_2022_JP            "C;Japansk (ISO-2022);ISO-2022-JP"
     IDS_ENC_ISO_2022_KR            "C;Koreansk (ISO-2022);ISO-2022-KR"
     IDS_ENC_X_CHINESE_CNS          "C;Traditionell kinesisk (CNS);x-Kinesisk-cns"
     IDS_ENC_JOHAB                  "C;Koreansk (Johab);Koreansk (Johab)"
     IDS_ENC_ISO_8859_10            "B;Nordisk (ISO-8859-10);ISO-8859-10"
-    IDS_ENC_BIG5_HKSCS             "C;Kinesisk Hong Kong (Big5HKSCS);Big5HKSCS"
+    IDS_ENC_BIG5_HKSCS             "C;Traditionell Kinesisk (Big5HKSCS);Big5HKSCS"
 END
 
 
