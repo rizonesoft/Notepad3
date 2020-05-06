@@ -101,8 +101,8 @@ BEGIN
     CONTROL         "Com &joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,97,63,10
     CONTROL         "Modo transparente ao perder o foco",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,129,10
-    DEFPUSHBUTTON   "&Localizar seguinte",IDOK,206,7,61,14
-    PUSHBUTTON      "Localizar &anterior",IDC_FINDPREV,205,24,61,14
+    DEFPUSHBUTTON   "&Local. seguinte",IDOK,211,7,55,14
+    PUSHBUTTON      "Local. &anterior",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Fechar",IDCANCEL,211,111,55,14
     CONTROL         "<a>Ir para Substituir (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,115,84,10
@@ -137,8 +137,8 @@ BEGIN
     CONTROL         "Com &joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,126,63,10
     CONTROL         "Modo transparente ao perder o foco",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,156,132,10
-    DEFPUSHBUTTON   "&Localizar seguinte",IDOK,211,7,61,14
-    PUSHBUTTON      "Localizar &anterior",IDC_FINDPREV,211,23,61,14
+    DEFPUSHBUTTON   "&Local. seguinte",IDOK,211,7,55,14
+    PUSHBUTTON      "Local. &anterior",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "Substitui&r",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "Na &selecção",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Substituir &tudo",IDC_REPLACEALL,211,75,55,14
@@ -525,7 +525,7 @@ BEGIN
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,14,8
     LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "Número da linha do documento.",IDC_STATIC,57,72,74,8
+    LTEXT           "Número da linha do documento.",IDC_STATIC,57,72,109,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,19,8
     LTEXT           "Número contínuo.",IDC_STATIC,57,82,66,8
@@ -544,7 +544,7 @@ BEGIN
     LTEXT           "Etiq. de fe&cho (pode ser editada):",IDC_STATIC,7,37,114,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X vezes",IDC_STATIC,148,50,24,8
+    LTEXT           "X vezes",IDC_STATIC,148,50,29,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,125,24,50,14
 END
