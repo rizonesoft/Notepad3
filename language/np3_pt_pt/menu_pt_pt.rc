@@ -63,7 +63,7 @@ BEGIN
         MENUITEM "&Guardar\tCtrl+S",                                   IDM_FILE_SAVE
         MENUITEM "Guardar c&omo...\tF6",                                 IDM_FILE_SAVEAS
         MENUITEM "Guardar &cópia...\tCtrl+F6",                          IDM_FILE_SAVECOPY
-        MENUITEM "Guardar com &data/hora original do fcheiro\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Guardar com &data/hora original do ficheiro\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "Só de leitu&ra",                             IDM_FILE_READONLY
         MENUITEM SEPARATOR
@@ -217,7 +217,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Com...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicar selecção/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplicar selecção/Linha\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Preencher com espaços\tAlt+B",           IDM_EDIT_PADWITHSPACES
             MENUITEM "Remover o primeiro caractere\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
@@ -269,8 +269,8 @@ BEGIN
         BEGIN
             MENUITEM "Copiar &GUID para área de transferência\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",    IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",  IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "Caracteres C &Escape\tCtrl+Alt+E",    IDM_EDIT_ESCAPECCHARS
+            MENUITEM "Caracteres C &Unescape\tCtrl+Alt+R",  IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "Aumentar número\tCtrl+Alt+NK+",  CMD_INCREASENUM
             MENUITEM "Diminuir número\tCtrl+Alt+NK-",  CMD_DECREASENUM
@@ -324,14 +324,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Definição de &cor do realce",          IDM_VIEW_COLORDEFHOTSPOTS
-        MENUITEM "Correpondência &visual das chavetas\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
+        MENUITEM "Correspondência &visual das chavetas\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Realçar l&inha actual\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&Não realçar",               IDM_VIEW_HILITCURLN_NONE
             MENUITEM "&Cor de fundo",           IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Contorno do esquema",              IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Marcar &corrências"
+        POPUP "Marcar &ocorrências"
         BEGIN
             MENUITEM "&Activas\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
@@ -364,7 +364,7 @@ BEGIN
         BEGIN
             MENUITEM "Vista focada\tCtrl+Alt+V",        IDM_VIEW_TOGGLE_VIEW
             MENUITEM "Registo de &monitorização",                 IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Rolagem para aém do fim do ficheiro",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Rolagem para além do fim do ficheiro",        IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Mostrar dica da &hiperligação",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         POPUP "P&ainéis"
@@ -375,13 +375,13 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Carregar tema da barra de ferramentas...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "&Personalizar barra de ferramentas...",           IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Mostrar&/ocultar barras de ferramentas",                IDM_VIEW_TOGGLETB
+            MENUITEM "&Alternar barras de ferramentas",                IDM_VIEW_TOGGLETB
             MENUITEM "Escala &DPI da barra de ferramentas",              IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN
             MENUITEM "Zoom &+\tCtrl+ +",               IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom &-tCtrl+ –",              IDM_VIEW_ZOOMOUT
+            MENUITEM "Zoom &-\tCtrl+ –",              IDM_VIEW_ZOOMOUT
             MENUITEM "Repor &Zoom\tCtrl+0",             IDM_VIEW_RESETZOOM
         END
         POPUP "&Posição"
@@ -425,7 +425,7 @@ BEGIN
         BEGIN
             MENUITEM "&Nenhuma",                       IDM_VIEW_NOESCFUNC
             MENUITEM "&Minimizar o Notepad3",          IDM_VIEW_ESCMINIMIZE
-            MENUITEM "&sair do Notepad3",              IDM_VIEW_ESCEXIT
+            MENUITEM "&Sair do Notepad3",              IDM_VIEW_ESCEXIT
         END
         MENUITEM "Guardar &antes de executar ferramentas",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
         MENUITEM SEPARATOR

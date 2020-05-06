@@ -62,7 +62,7 @@ BEGIN
     IDS_ENC_UTF16LE                "A4;Unicode (UTF-16 LE);Unicode (UTF-16) LE"
     IDS_ENC_UTF16BE                "A5;Unicode (UTF-16 BE);Unicode (UTF-16) BE"
     IDS_ENC_UTF8                   "A6;UTF-8;Unicode (UTF-8)"
-    IDS_ENC_UTF8SIG                "A7;UTF-8 Signature;Unicode (UTF-8) Signature"
+    IDS_ENC_UTF8SIG                "A7;UTF-8 Assinatura;Unicode (UTF-8) Assinatura"
 END
 
 STRINGTABLE
@@ -94,13 +94,13 @@ BEGIN
     IDS_ENC_ISO_8859_5             "C;Círilico (ISO-8859-5);ISO-8859-5"
     IDS_ENC_KOI8_R                 "C;Círilico (KOI8-R);KOI8-R"
     IDS_ENC_KOI8_U                 "C;Círilico (KOI8-U);KOI8-U"
-    IDS_ENC_MAC_CYRILLIC           "C;Círilico (Mac);Mac (Cyrillic)"
+    IDS_ENC_MAC_CYRILLIC           "C;Círilico (Mac);Mac (Cirílico)"
     IDS_ENC_WIN_1251               "C;Círilico (Windows-1251);Windows-1251"
     IDS_ENC_ISO_8859_13            "C;Estónio (ISO-8859-13);ISO-8859-13"
     IDS_ENC_DOS_863                "C;Francês Canadiano (DOS-863);DOS-863"
     IDS_ENC_DOS_737                "C;Grego (DOS-737);DOS-737"
     IDS_ENC_ISO_8859_7             "C;Grego (ISO-8859-7);ISO-8859-7"
-    IDS_ENC_MAC_GREEK              "C;Grego (Mac);Mac (Greek)"
+    IDS_ENC_MAC_GREEK              "C;Grego (Mac);Mac (Grego)"
     IDS_ENC_WIN_1253               "C;Grego (Windows-1253);Windows-1253"
     IDS_ENC_DOS_869                "C;Grego, Moderno (DOS-869);DOS-869"
     IDS_ENC_DOS_862                "C;Hebreu (DOS-862);DOS-862"
@@ -122,7 +122,7 @@ BEGIN
     IDS_ENC_ISO_8859_15            "C;Latin 9 (ISO-8859-15);ISO-8859-15"
     IDS_ENC_DOS_865                "C;Nórdico (DOS-865);DOS-865"
     IDS_ENC_DOS_437                "C;OEM Estados Unidos (DOS-437);DOS-437"
-    IDS_ENC_DOS_858                "C;OEM Multilingual Latin 1 (DOS-858);DOS-858"
+    IDS_ENC_DOS_858                "C;OEM Latino Multilíngue 1 (DOS-858);DOS-858"
     IDS_ENC_DOS_860                "C;Português (DOS-860);DOS-860"
     IDS_ENC_MAC_ROMANIAN           "C;Romeno (Mac);Mac (Romeno)"
 END

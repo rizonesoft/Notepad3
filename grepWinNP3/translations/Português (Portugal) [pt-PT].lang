@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: Portuguese (Portugal) resources
-# Last-Translator: (pt-PT) Tradução para português por Lacn0755
+# Last-Translator: (pt-PT) Tradução em português por Luis Neves
 #
 
 #, fuzzy
@@ -192,7 +192,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Ficheiros correspondentes:\nusar '|' para separar vários padrões de texto correspondentes, prece&der com '-' para excluir"
+msgstr "Ficheiros correspondentes:\nusar '|' p/ separar padrões de texto correspondentes\nprece&der c/ '-' para excluir"
 
 #. Resource IDs: (1059)
 msgid "Files"
