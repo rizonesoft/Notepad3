@@ -223,7 +223,7 @@ BEGIN
     IDS_MUI_STY_BASESTD     "BASE (Estilo padrão):"
     IDS_MUI_STY_BASE2ND     "BASE (2º Estilo padrão):"
     IDS_MUI_STY_LEXDEF      "%s - Estilo padrão:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Estilo:"
+    IDS_MUI_STY_LEXSTYLE    "Estilo de %s:"
     IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
 END
 
@@ -231,8 +231,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(pt-PT) Tradução para português por Lacn0755"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Estilo +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Estilo"
+    IDS_MUI_TITLE_RELCUR    " +++ %s: Esrilo %s +++"
+    IDS_MUI_TITLE_FIXCUR    " %s: Estilo %s"
     IDS_MUI_TITLE_RELARB    " +++ Estilo '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Estilo '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Extensões de ficheiro associadas:"
@@ -300,11 +300,11 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 IDS_MUI_STYLEEDIT_HELP "\
 As extensões de ficheiro devem ser separadas por ';'\r\n\
 usar \\<regex>; para definir um padrão de correspondência ao nome do ficheiro:\r\n\
-   \\xyz$;   => nomes de ficheiro(nome base+ext) com 'xyz' como últimos caracteres.\r\n\r\n\
+   \\xyz$;   => nomes de ficheiro(nome+ext) com 'xyz' como últimos caracteres.\r\n\r\n\
 Formato do estilo:\r\n\
 tipo de letra:Nome; tamanho:[+/-]nn.mm; negrito; itálico; sublinhado;\r\n\
 1º plano:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Propriedades do estilo podem ser copiadas usando copiar e colar ou arrastar e largar.\
+Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/largar.\
 "
 
 END
