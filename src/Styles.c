@@ -3866,16 +3866,16 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       {
         HDC const hDC = GetWindowDC(hwnd);
       
-        if (Globals.hDlgIconPrefs) {
-          int const iconSize = 64;
-          int const dpiScaledWidth = ScaleIntToDPI_X(hwnd, iconSize);
-          int const dpiScaledHeight = ScaleIntToDPI_Y(hwnd, iconSize);
-          DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 340), ScaleIntToDPI_Y(hwnd, 60),
-            Globals.hDlgIconPrefs, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
+        int const iconSize = 64;
+        int const dpiWidth = ScaleIntToDPI_X(hwnd, iconSize);
+        int const dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
+        HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
+        if (hicon) {
+          DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 340), ScaleIntToDPI_Y(hwnd, 62), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
         }
 
         // Set title font
-        int const height = -MulDiv(14, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
         if (hFontTitle) { DeleteObject(hFontTitle); }
         hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
         LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
@@ -3952,7 +3952,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, dy, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, 0, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, dy, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_TITLE, dx, 0, SWP_NOMOVE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL_ROOT, 0, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_ROOT, 0, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL, 0, dy, SWP_NOSIZE);
@@ -3966,9 +3967,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_NEXTSTYLE, dx, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_IMPORT, 0, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_EXPORT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_HELP, dx, dy, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
       }
       return TRUE;
+
 
     case WM_GETMINMAXINFO:
       ResizeDlg_GetMinMaxInfo(hwnd, lParam);

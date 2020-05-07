@@ -621,7 +621,9 @@ static void _InitGlobals()
   Globals.hDlgIcon128   = NULL;
   Globals.hDlgIconBig   = NULL;
   Globals.hDlgIconSmall = NULL;
-  Globals.hDlgIconPrefs = NULL;
+  Globals.hDlgIconPrefs256 = NULL;
+  Globals.hDlgIconPrefs128 = NULL;
+  Globals.hDlgIconPrefs64  = NULL;
 
   Globals.hMainMenu = NULL;
   Globals.pFileMRU = NULL;
@@ -885,8 +887,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall));
   }
 
-  if (!Globals.hDlgIconPrefs) {
-    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs));
+  if (!Globals.hDlgIconPrefs256) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256));
+  }
+  if (!Globals.hDlgIconPrefs128) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128));
+  }
+  if (!Globals.hDlgIconPrefs64) {
+    LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64));
   }
 
   if (!Globals.hIconMsgUser) {

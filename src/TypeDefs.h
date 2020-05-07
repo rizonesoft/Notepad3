@@ -308,7 +308,9 @@ typedef struct _globals_t
   HICON     hDlgIcon128;   // Notepad3 Icon (128x128)
   HICON     hDlgIconBig;
   HICON     hDlgIconSmall;
-  HICON     hDlgIconPrefs;
+  HICON     hDlgIconPrefs256;
+  HICON     hDlgIconPrefs128;
+  HICON     hDlgIconPrefs64;
   HICON     hIconMsgUser;
   HICON     hIconMsgInfo;
   HICON     hIconMsgWarn;
