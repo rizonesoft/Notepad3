@@ -3560,7 +3560,8 @@ DPI_T GetCurrentDPI(HWND hwnd) {
 	DPI_T curDPI = { 0, 0 };
 
 	if (IsWindows10OrGreater()) {
-		HMODULE const hModule = GetModuleHandle(L"user32.dll");
+		static HMODULE hModule = nullptr;
+		if (!hModule) { hModule = GetModuleHandle(L"user32.dll"); }
 		if (hModule) {
 			FARPROCHWND const pfnGetDpiForWindow = (FARPROCHWND)GetProcAddress(hModule, "GetDpiForWindow");
 			if (pfnGetDpiForWindow) {
@@ -3570,7 +3571,7 @@ DPI_T GetCurrentDPI(HWND hwnd) {
 	}
 
 	if ((curDPI.x == 0) && IsWindows8Point1OrGreater()) {
-		HMODULE hShcore = LoadLibrary(L"shcore.dll");
+		HMODULE const hShcore = LoadLibrary(L"shcore.dll");
 		if (hShcore) {
 			FARPROCMONI const pfnGetDpiForMonitor = (FARPROCMONI)GetProcAddress(hShcore, "GetDpiForMonitor");
 			if (pfnGetDpiForMonitor) {

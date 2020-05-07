@@ -636,9 +636,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
     SET_NP3_DLG_ICON_SMALL(hwnd);
 
-    SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)) L" (" _W(_STRG(VERSION_COMMIT_ID)) L")");
-
-    SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
+    SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
+    SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION L", ID='" _W(_STRG(VERSION_COMMIT_ID)) L"'");
     SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
     SetDlgItemText(hwnd, IDC_AUTHORNAME, _W(VERSION_AUTHORNAME));
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
@@ -702,8 +701,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
     CenterDlgInParent(hwnd, NULL);
+
   }
   break;
+
+
+  case WM_DESTROY:
+    if (hVersionFont) { DeleteObject(hVersionFont); }
+    break;
 
 
   case WM_DPICHANGED:
@@ -730,33 +735,34 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   case WM_PAINT:
     {
-      if (Globals.hDlgIcon128) {
-        int const iconSize = 128;
-        int const dpiScaledWidth = ScaleIntToDPI_X(hwnd, iconSize);
-        int const dpiScaledHeight = ScaleIntToDPI_Y(hwnd, iconSize);
-        HDC const hdc = GetWindowDC(hwnd);
-        DrawIconEx(hdc, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44), 
-                   Globals.hDlgIcon128, dpiScaledWidth, dpiScaledHeight, 0, NULL, DI_NORMAL);
-        ReleaseDC(hwnd, hdc);
+      HDC const hDC = GetWindowDC(hwnd);
+
+      int const iconSize = 128;
+      int const dpiWidth = ScaleIntToDPI_X(hwnd, iconSize);
+      int const dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
+      HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIcon256 : Globals.hDlgIcon128;
+      if (hicon) {
+        DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 22), ScaleIntToDPI_Y(hwnd, 44), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
       }
 
       // --- larger bold condensed version string
+      int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
       if (hVersionFont) { DeleteObject(hVersionFont); }
-      if ((hVersionFont = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)) == NULL) {
-        hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
-      }
+      hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
       LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8);
-      lf.lfHeight = ScaleIntToDPI_Y(hwnd, 22);
+      lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
+      lf.lfWidth = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
       //StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Segoe UI");
       hVersionFont = CreateFontIndirect(&lf);
       SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
 
+      ReleaseDC(hwnd, hDC);
+
       // rich edit control
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0);
     }
-    return false;
+    return 0;
 
 
   case WM_NOTIFY:

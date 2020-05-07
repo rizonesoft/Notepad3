@@ -3770,6 +3770,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
   static WCHAR tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
 
+  static HFONT hFontTitle = NULL;
+
   switch(umsg)
   {
     case WM_INITDIALOG:
@@ -3837,21 +3839,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         MakeBitmapButton(hwnd,IDC_PREVSTYLE,Globals.hInstance,IDB_PREV);
         MakeBitmapButton(hwnd,IDC_NEXTSTYLE,Globals.hInstance,IDB_NEXT);
 
-        // Setup title font
-        static HFONT hFontTitle = NULL;
-        if (hFontTitle) {
-          DeleteObject(hFontTitle);
-        }
-        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_TITLE,WM_GETFONT,0,0)))
-          hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-
-        LOGFONT lf;
-        GetObject(hFontTitle,sizeof(LOGFONT),&lf);
-        lf.lfHeight += lf.lfHeight / 5;
-        lf.lfWeight = FW_BOLD;
-        hFontTitle = CreateFontIndirect(&lf);
-        SendDlgItemMessage(hwnd,IDC_TITLE,WM_SETFONT,(WPARAM)hFontTitle,true);
-
         if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
         {
           CenterDlgInParent(hwnd, NULL);
@@ -3870,8 +3857,37 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 
         bWarnedNoIniFile = false;
+
+        PostMessage(hwnd, WM_PAINT, 0, 0);
       }
-      return true;
+      return !0;
+
+    case WM_PAINT:
+      {
+        HDC const hDC = GetWindowDC(hwnd);
+      
+        int const iconSize = 64;
+        int const dpiWidth = ScaleIntToDPI_X(hwnd, iconSize);
+        int const dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
+        HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
+        if (hicon) {
+          DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 340), ScaleIntToDPI_Y(hwnd, 62), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+        }
+
+        // Set title font
+        int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+        if (hFontTitle) { DeleteObject(hFontTitle); }
+        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+        LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+        lf.lfWeight = FW_BOLD;
+        lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
+        lf.lfWidth = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+        hFontTitle = CreateFontIndirect(&lf);
+        SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+
+        ReleaseDC(hwnd, hDC);
+      }
+      return 0;
 
     case WM_ACTIVATE:
       DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
@@ -3936,7 +3952,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, dy, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, 0, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, dy, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_TITLE, dx, 0, SWP_NOMOVE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL_ROOT, 0, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_ROOT, 0, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL, 0, dy, SWP_NOSIZE);
@@ -3950,9 +3967,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_NEXTSTYLE, dx, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_IMPORT, 0, dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_EXPORT, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_HELP, dx, dy, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
       }
       return TRUE;
+
 
     case WM_GETMINMAXINFO:
       ResizeDlg_GetMinMaxInfo(hwnd, lParam);
@@ -4540,12 +4559,12 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         CenterDlgInParent(hwnd, NULL);
       }
-      return true;
+      return !0;
 
 
     case WM_DPICHANGED:
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      return true;
+      return !0;
 
 
     case WM_DESTROY:
@@ -4555,7 +4574,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         s_cxStyleSelectDlg = rc.right-rc.left;
         s_cyStyleSelectDlg = rc.bottom-rc.top;
       }
-      return false;
+      return 0;
 
 
     case WM_SIZE:

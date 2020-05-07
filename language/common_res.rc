@@ -49,7 +49,8 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MUI_RUN             ICON                    "Run.ico"
-IDI_MUI_STYLES          ICON                    "Styles.ico"
+//IDI_MUI_STYLES          ICON                    "Styles.ico"
+IDI_MUI_STYLES          ICON                    "Preferences.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -72,32 +73,33 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_DEV  "\
-\\cf0 \\b1 Florian 'Flo' Balmer (Notepad2)\\b0\\tab http://www.flos-freeware.ch\\par\
-\\cf0 RaiKoHoff\\tab https://github.com/RaiKoHoff\\par\
+\\cf0 \\b1 Florian 'Flo' Balmer (Notepad2)\\b0\\tab http://www.flos-freeware.ch/\\par\
+\\cf0 RaiKoHoff\\tab https://github.com/RaiKoHoff/\\par\
 \\cf0 \\par\
 "
 
 IDS_MUI_ABOUT_CONTRIBS  "\
-\\cf0 Derick Payne (\\u0169   Rizonesoft)\\tab https://www.rizonesoft.com\\par\
-\\cf0 XhmikosR (Notepad2-mod)\\tab https://xhmikosr.github.io/notepad2-mod\\par\
-\\cf0 Kai Liu (CodeFolding)\\tab https://code.kliu.org/misc/notepad2\\par\
+\\cf0 Derick Payne (\\u0169   Rizonesoft)\\tab https://www.rizonesoft.com/\\par\
+\\cf0 XhmikosR (Notepad2-mod)\\tab https://xhmikosr.github.io/notepad2-mod/\\par\
+\\cf0 Kai Liu (CodeFolding)\\tab https://code.kliu.org/misc/notepad2/\\par\
 \\cf0 RL Vision (Bookmarks)\\tab https://www.rlvision.com/notepad2/about.php\\par\
 \\cf0 Aleksandar Lekov (MarkOcc./AutoCompl.)\\par\
 \\cf0 Bruno Barbieri\\par\
 \\cf0 Matthew Ellis (MinimizeToTray)\\par\
-\\cf0 Igal Tabachnik (RelaunchElevated)\\tab https://github.com/hmemcpy\\par\
-\\cf0 Et alii @ GitHub\\tab https://github.com/XhmikosR/notepad2-mod/graphs/contributors\\par\
+\\cf0 Igal Tabachnik (RelaunchElevated)\\tab https://github.com/hmemcpy/\\par\
+\\cf0 Et alii @ GitHub\\tab https://github.com/XhmikosR/notepad2-mod/graphs/contributors/\\par\
+\\cf0 Some Icons by Pixel perfect (Flaticon)\\tab https://www.flaticon.com/\\par\
 \\cf0 \\par\
 "
 
 IDS_MUI_ABOUT_LIBS  "\
-\\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
-\\cf0 K.Kosako (Oniguruma Regex)\\tab https://github.com/kkos/oniguruma\\par\
-\\cf0 Stefan Küng (grepWin)\\tab https://github.com/stefankueng/grepWin\\par\
+\\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org/\\par\
+\\cf0 K.Kosako (Oniguruma Regex)\\tab https://github.com/kkos/oniguruma/\\par\
+\\cf0 Stefan Küng (grepWin)\\tab https://github.com/stefankueng/grepWin/\\par\
 \\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
-\\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash\\par\
-\\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet\\par\
-\\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr\\par\
+\\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash/\\par\
+\\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet/\\par\
+\\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr/\\par\
 \\cf0 \\par\
 "
 
@@ -107,44 +109,44 @@ IDS_MUI_ABOUT_LIBS  "\
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
-\\cf0 alexantr\\tab https://github.com/alexantr\\par\
-\\cf0 AlexIljin\\tab https://github.com/AlexIljin\\par\
+\\cf0 alexantr\\tab https://github.com/alexantr/\\par\
+\\cf0 AlexIljin\\tab https://github.com/AlexIljin/\\par\
 \\cf0 craigo-\\tab https://github.com/craigo-/\\par\
-\\cf0 Crane70\\tab https://github.com/Crane70\\par\
-\\cf0 engelhro\\tab https://github.com/engelhro\\par\
-\\cf0 Hexaae\\tab https://github.com/Hexaae\\par\
-\\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
-\\cf0 jupester\\tab https://github.com/jupester\\par\
-\\cf0 kofifus\\tab https://github.com/kofifus\\par\
-\\cf0 Lacn0755\\tab https://github.com/Lacn0755\\par\
-\\cf0 leeoniya\\tab https://github.com/leeoniya\\par\
-\\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
-\\cf0 ltGuillaume\\tab https://github.com/ltGuillaume\\par\
-\\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
-\\cf0 RaffaeleBianc0\\tab https://github.com/RaffaeleBianc0\\par\
-\\cf0 Rudolfin\\tab https://github.com/Rudolfin\\par\
-\\cf0 rizonesoft\\tab https://github.com/rizonesoft\\par\
-\\cf0 ThreeLightsBeyond\\tab https://github.com/ThreeLightsBeyond\\par\
-\\cf0 xsak\\tab https://github.com/xsak\\par\
-\\cf0 zufuliu\\tab https://github.com/zufuliu\\par\
+\\cf0 Crane70\\tab https://github.com/Crane70/\\par\
+\\cf0 engelhro\\tab https://github.com/engelhro/\\par\
+\\cf0 Hexaae\\tab https://github.com/Hexaae/\\par\
+\\cf0 hpwamr\\tab https://github.com/hpwamr/\\par\
+\\cf0 jupester\\tab https://github.com/jupester/\\par\
+\\cf0 kofifus\\tab https://github.com/kofifus/\\par\
+\\cf0 Lacn0755\\tab https://github.com/Lacn0755/\\par\
+\\cf0 leeoniya\\tab https://github.com/leeoniya/\\par\
+\\cf0 lhmouse\\tab https://github.com/lhmouse/\\par\
+\\cf0 ltGuillaume\\tab https://github.com/ltGuillaume/\\par\
+\\cf0 maboroshin\\tab https://github.com/maboroshin/\\par\
+\\cf0 RaffaeleBianc0\\tab https://github.com/RaffaeleBianc0/\\par\
+\\cf0 Rudolfin\\tab https://github.com/Rudolfin/\\par\
+\\cf0 rizonesoft\\tab https://github.com/rizonesoft/\\par\
+\\cf0 ThreeLightsBeyond\\tab https://github.com/ThreeLightsBeyond/\\par\
+\\cf0 xsak\\tab https://github.com/xsak/\\par\
+\\cf0 zufuliu\\tab https://github.com/zufuliu/\\par\
 \\cf0 \\par\
 "
 
 IDS_MUI_ABOUT_MORE  "\
-\\cf0 NotepadCrypt (Version Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java\\par\
-\\cf0 Data Sharing Service\\tab https://workupload.com\\par\
+\\cf0 NotepadCrypt (Version Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java/\\par\
+\\cf0 Data Sharing Service\\tab https://workupload.com/\\par\
 \\cf0 \\par\
 "
 
 IDS_MUI_ABOUT_LICENSES  "\
 \\cf0 Scintilla\\tab https://www.scintilla.org/License.txt\\par\
-\\cf0 Oniguruma Regex\\tab https://github.com/kkos/oniguruma/blob/master/COPYING\\par\
-\\cf0 grepWin\\tab https://github.com/stefankueng/grepWin/blob/master/LICENSE\\par\
+\\cf0 Oniguruma Regex\\tab https://github.com/kkos/oniguruma/blob/master/COPYING/\\par\
+\\cf0 grepWin\\tab https://github.com/stefankueng/grepWin/blob/master/LICENSE/\\par\
 \\cf0 uthash\\tab https://troydhanson.github.io/uthash/license.html\\par\
-\\cf0 uchardet\\tab https://www.freedesktop.org/wiki/Software/uchardet/#license\\par\
-\\cf0 TinyExpr\\tab https://github.com/codeplea/tinyexpr/blob/master/LICENSE\\par\
-\\cf0 Notepad3 icon by Vexels.com\\tab https://www.vexels.com\\par\
-\\cf0   -  designed by\\tab mailto:smanashova@gmail.com\\par\
+\\cf0 uchardet\\tab https://www.freedesktop.org/wiki/Software/uchardet/#license/\\par\
+\\cf0 TinyExpr\\tab https://github.com/codeplea/tinyexpr/blob/master/LICENSE/\\par\
+\\cf0 Notepad3 icon by Vexels.com\\tab https://www.vexels.com/\\par\
+\\cf0   -  designed by\\tab mailto:smanashova@gmail.com/\\par\
 \\cf0 \\par\
 \\cf0 \\par\
 "
@@ -156,7 +158,7 @@ IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 Licence:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2020 Rizonesoft, All rights reserved.\\par\
-\\cf0 https://www.rizonesoft.com\\par\
+\\cf0 https://www.rizonesoft.com/\\par\
 \\cf0 \\par\
 \\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
 \\cf0 are permitted provided that the following conditions are met:\\par\
