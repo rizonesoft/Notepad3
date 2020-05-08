@@ -37,10 +37,10 @@ IDI_GREPWIN             ICON                    "grepWinNP3.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Neutral resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -401,15 +401,15 @@ BEGIN
     IDS_ERR_PATHNOTEXIST    "Path does not exist or is not accessible!"
 END
 
-#endif    // English (United States) resources
+#endif        // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Switzerland) resources
+// Neutral resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
-LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
@@ -441,7 +441,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // German (Switzerland) resources
+#endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
 

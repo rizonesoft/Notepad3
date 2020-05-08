@@ -4942,10 +4942,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_GetSelText(szSelection);
 
-        SetFindReplaceData(); // s_FindReplaceData
-
         SetFindPatternMB(szSelection);
         MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
+
+        SetFindReplaceData(); // s_FindReplaceData
 
         StringCchCopyA(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind), szSelection);
         s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));

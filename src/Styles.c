@@ -603,7 +603,6 @@ bool Style_ImportFromFile(const WCHAR* szFile)
     s_cxStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
     s_cyStyleSelectDlg = clampi(IniSectionGetInt(IniSecStyles, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
 
-
     // Lexer 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
@@ -3891,11 +3890,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
     case WM_ACTIVATE:
       DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
-      return true;
-
-    case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      return true;
+      return !0;
 
     case WM_DESTROY:
       {
@@ -3929,19 +3924,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       }
       return false;
 
+    case WM_SIZE:
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      return !0;
 
-    case WM_SYSCOMMAND:
-      if (wParam == IDS_MUI_SAVEPOS) {
-        PostWMCommand(hwnd, IDACC_SAVEPOS);
-        return true;
-      }
-      else if (wParam == IDS_MUI_RESETPOS) {
-        PostWMCommand(hwnd, IDACC_RESETPOS);
-        return true;
-      }
-      else
-        return false;
-
+#if 0
     case WM_SIZE: 
       {
         int dx;
@@ -3970,12 +3958,25 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_HELP, dx, dy, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
       }
-      return TRUE;
-
+      return !0;
+#endif
 
     case WM_GETMINMAXINFO:
       ResizeDlg_GetMinMaxInfo(hwnd, lParam);
-      return TRUE;
+      return !0;
+
+
+    case WM_SYSCOMMAND:
+      if (wParam == IDS_MUI_SAVEPOS) {
+        PostWMCommand(hwnd, IDACC_SAVEPOS);
+        return !0;
+      }
+      else if (wParam == IDS_MUI_RESETPOS) {
+        PostWMCommand(hwnd, IDACC_RESETPOS);
+        return !0;
+      }
+      else
+        return 0;
 
 
     case WM_NOTIFY:
@@ -4466,11 +4467,8 @@ static int _s_idefaultLexer = -1;
 
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   static int cxClient;
   static int cyClient;
-  static int mmiPtMaxY;
-  static int mmiPtMinX;
 
   static HWND hwndLV;
   static int  iInternalDefault;
@@ -4481,53 +4479,25 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       {
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-
-        RECT rc;
-        GetClientRect(hwnd,&rc);
-        cxClient = rc.right - rc.left;
-        cyClient = rc.bottom - rc.top;
-
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE)|WS_THICKFRAME,false,0);
-        mmiPtMinX = rc.right-rc.left;
-        mmiPtMaxY = rc.bottom-rc.top;
-
-        if (s_cxStyleSelectDlg < (rc.right-rc.left))
-          s_cxStyleSelectDlg = rc.right-rc.left;
-        if (s_cyStyleSelectDlg < (rc.bottom-rc.top))
-          s_cyStyleSelectDlg = rc.bottom-rc.top;
-        SetWindowPos(hwnd,NULL,rc.left,rc.top,s_cxStyleSelectDlg,s_cyStyleSelectDlg,SWP_NOZORDER);
-
-        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
-        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
-
-        WCHAR tch[MAX_PATH] = { L'\0' };
-        GetMenuString(GetSystemMenu(GetParent(hwnd),false),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
-        InsertMenu(GetSystemMenu(hwnd,false),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
-        InsertMenu(GetSystemMenu(hwnd,false),SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
-
-        SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
-          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
-
-        int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
-        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
-                     cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
+        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
         SHFILEINFO shfi;
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
+
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
-            &shfi,sizeof(SHFILEINFO),SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+            &shfi,sizeof(SHFILEINFO), SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
 
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
-            &shfi,sizeof(SHFILEINFO),SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+            &shfi,sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_NORMAL);
 
         //SetExplorerTheme(hwndLV);
+        LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
         ListView_SetExtendedListViewStyle(hwndLV,/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(hwndLV,0,&lvc);
 
@@ -4563,71 +4533,41 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      {
+        UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      }
       return !0;
 
 
     case WM_DESTROY:
       {
-        RECT rc;
-        GetWindowRect(hwnd,&rc);
-        s_cxStyleSelectDlg = rc.right-rc.left;
-        s_cyStyleSelectDlg = rc.bottom-rc.top;
+        ResizeDlg_Destroy(hwnd, &s_cxStyleSelectDlg, &s_cyStyleSelectDlg);
       }
       return 0;
 
 
     case WM_SIZE:
       {
-        RECT rc;
+        ResizeDlg_Size(hwnd, lParam, &cxClient, &cyClient);
 
-        int dxClient = LOWORD(lParam) - cxClient;
-        int dyClient = HIWORD(lParam) - cyClient;
-        cxClient = LOWORD(lParam);
-        cyClient = HIWORD(lParam);
-
-        GetWindowRect(GetDlgItem(hwnd,IDC_RESIZEGRIP),&rc);
-        MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,true);
-
-        GetWindowRect(GetDlgItem(hwnd,IDOK),&rc);
-        MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDOK),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDOK),NULL,true);
-
-        GetWindowRect(GetDlgItem(hwnd,IDCANCEL),&rc);
-        MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDCANCEL),NULL,rc.left+dxClient,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDCANCEL),NULL,true);
-
-        GetWindowRect(GetDlgItem(hwnd,IDC_STYLELIST),&rc);
-        MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDC_STYLELIST),NULL,0,0,rc.right-rc.left+dxClient,rc.bottom-rc.top+dyClient,SWP_NOZORDER|SWP_NOMOVE);
-        ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_STYLELIST),0,LVSCW_AUTOSIZE_USEHEADER);
-        InvalidateRect(GetDlgItem(hwnd,IDC_STYLELIST),NULL,true);
-
-        GetWindowRect(GetDlgItem(hwnd,IDC_AUTOSELECT),&rc);
-        MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDC_AUTOSELECT),NULL,rc.left,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDC_AUTOSELECT),NULL,true);
-
-        GetWindowRect(GetDlgItem(hwnd,IDC_DEFAULTSCHEME),&rc);
-        MapWindowPoints(NULL,hwnd,(LPPOINT)&rc,2);
-        SetWindowPos(GetDlgItem(hwnd,IDC_DEFAULTSCHEME),NULL,rc.left,rc.top+dyClient,0,0,SWP_NOZORDER|SWP_NOSIZE);
-        InvalidateRect(GetDlgItem(hwnd,IDC_DEFAULTSCHEME),NULL,true);
-      }
-      return true;
+        HDWP hdwp;
+        hdwp = BeginDeferWindowPos(6);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, cyClient, SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_DEFAULTSCHEME, 0, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_AUTOSELECT, 0, cyClient, SWP_NOSIZE);
+        EndDeferWindowPos(hdwp);
+    
+        ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_STYLELIST), 0, LVSCW_AUTOSIZE_USEHEADER);
+    }
+      return !0;
 
 
     case WM_GETMINMAXINFO:
-      {
-        LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
-        lpmmi->ptMinTrackSize.x = mmiPtMinX;
-        lpmmi->ptMinTrackSize.y = mmiPtMaxY;
-        //lpmmi->ptMaxTrackSize.y = mmiPtMaxY;
-      }
-      return true;
+      ResizeDlg_GetMinMaxInfo(hwnd, lParam);
+      return !0;
 
 
     case WM_NOTIFY: 
@@ -4652,7 +4592,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           }
         }
       }
-      return true;
+      return !0;
 
 
     case WM_COMMAND:
@@ -4688,9 +4628,9 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         } // switch()
       } // WM_COMMAND 
-      return true;
+      return !0;
   }
-  return false;
+  return 0;
 }
 
 

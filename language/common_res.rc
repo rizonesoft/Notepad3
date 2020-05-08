@@ -1,8 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Language independant string resources
 /////////////////////////////////////////////////////////////////////////////
-// encoding: UTF-8
-#pragma code_page(65001)  // UTF-8
+// encoding: CP-1252
 #include "common_res.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -14,6 +13,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -69,6 +69,12 @@ IDR_RIZBITMAP           BITMAP                  "rizonesoft.bmp"
 IDC_COPY                CURSOR                  "Copy.cur"
 
 
+// =============================================================================
+// Following Text is streamed to RichEdit Control supporting ANSI CP-1252 only
+// Unicode characters have to be encoded using '\\uN<ch>' squences.
+// Example: Küng => K\\u252üng
+// =============================================================================
+
 STRINGTABLE
 BEGIN
 
@@ -95,7 +101,7 @@ IDS_MUI_ABOUT_CONTRIBS  "\
 IDS_MUI_ABOUT_LIBS  "\
 \\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org/\\par\
 \\cf0 K.Kosako (Oniguruma Regex)\\tab https://github.com/kkos/oniguruma/\\par\
-\\cf0 Stefan KÃ¼ng (grepWin)\\tab https://github.com/stefankueng/grepWin/\\par\
+\\cf0 Stefan K\\u252üng (grepWin)\\tab https://github.com/stefankueng/grepWin/\\par\
 \\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash/\\par\
 \\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet/\\par\
@@ -188,7 +194,6 @@ IDS_MUI_ABOUT_RTF_6  "\
 }"
 
 END
-
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

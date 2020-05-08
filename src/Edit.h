@@ -91,8 +91,8 @@ void	EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
 HWND  EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);
-bool  EditFindNext(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool,bool);
-bool  EditFindPrev(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool,bool);
+bool  EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd);
+bool  EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd);
 bool  EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr);
 int   EditReplaceAllInRange(HWND hwnd,LPCEDITFINDREPLACE lpefr,DocPos iStartPos,DocPos iEndPos,DocPos* enlargement);
 bool  EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);
