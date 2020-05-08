@@ -1186,7 +1186,6 @@ void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 }
 
 
-
 static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
 
 //=============================================================================
@@ -1197,12 +1196,13 @@ static void SetFindReplaceData()
 {
   s_FindReplaceData = Settings.EFR_Data; // reset
 
+  if (!IsFindPatternEmpty()) {
+    CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
+    CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
+  }
+
   if (s_flagMatchText) // cmd line
   {
-    if (!IsFindPatternEmpty()) {
-      CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
-      CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
-    }
     if (s_flagMatchText & 4) {
       s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
     }
