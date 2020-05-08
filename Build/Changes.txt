@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.506.(build_#) (2020-05-06)
+Current BETA Version 5.20.508.(build_#) (2020-05-08)
 =====================================================
 
 -----------------------------------------------------
@@ -52,6 +52,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Preparations for dpi-aware resizable "Customize Schemes..." dialog.
+- DPI change handling: About & C-Schemes dialog.
 - Markdown Lexer: new defaults for Header lines.
 - Strip first char: do not apply on all text (empty selection).
 - Reorganization Context menu.
