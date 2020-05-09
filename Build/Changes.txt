@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.508.(build_#) (2020-05-08)
+Current BETA Version 5.20.509.(build_#) (2020-05-09)
 =====================================================
 
 -----------------------------------------------------
@@ -52,6 +52,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Minor changes for dialog handling on DPI changed.
 - Preparations for dpi-aware resizable "Customize Schemes..." dialog.
 - DPI change handling: About & C-Schemes dialog.
 - Markdown Lexer: new defaults for Header lines.
@@ -80,6 +81,9 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Broken x86 (32-bit) build.
+- Theme scheme file handling (file extension inheritance).
+- Remember find pattern (Ctrl+F3).
 - Custiomize toolbar dialog closes immediately.
 - ".ini-file" acquire lock for invalid file path.
 - Cancel multi-selection on line up/down key.
