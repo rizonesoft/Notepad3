@@ -3552,7 +3552,7 @@ typedef INT_PTR(FAR WINAPI* FARPROCDPI)(int, UINT);
 typedef INT_PTR(FAR WINAPI* FARPROCMONI)(HMONITOR, int, UINT*, UINT*);
 #else
 typedef int (FAR WINAPI* FARPROCHWND)(HWND);
-typedef int (FAR WINAPI* FARPROCHDPI)(int, UINT);
+typedef int (FAR WINAPI* FARPROCDPI)(int, UINT);
 typedef int (FAR WINAPI* FARPROCMONI)(HMONITOR, int, UINT*, UINT*);
 #endif  // _WIN64
 
