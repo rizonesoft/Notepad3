@@ -1088,7 +1088,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1286,7 +1286,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1459,7 +1459,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SET_NP3_DLG_ICON_SMALL(hwnd);
 
-      ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
+      ResizeDlg_Init(hwnd, Settings.AddToFavDlgSizeX, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP, RSZ_ONLY_X);
 
       LPCWSTR const pszName = (LPCWSTR)lParam;
       SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
@@ -1687,7 +1687,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
           lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
           lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
         }
-        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -2733,7 +2733,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP,RSZ_BOTH);
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
@@ -3960,7 +3960,7 @@ typedef struct _resizeDlg {
 
 typedef const RESIZEDLG* LPCRESIZEDLG;
 
-void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection) 
+void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection)
 {
   RESIZEDLG* const pm = (RESIZEDLG*)AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
   pm->direction = iDirection;
@@ -3970,16 +3970,21 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   pm->cxClient = rc.right - rc.left;
   pm->cyClient = rc.bottom - rc.top;
 
-  AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, FALSE, 0);
+
+  if (pm->direction < 0)
+    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) & ~WS_THICKFRAME, FALSE, 0);
+  else  
+    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, FALSE, 0);
+
   pm->mmiPtMinX = rc.right - rc.left;
   pm->mmiPtMinY = rc.bottom - rc.top;
   
   // only one direction
   switch (iDirection) {
-  case ResizeDlgDirection_OnlyX:
+  case RSZ_ONLY_X:
     pm->mmiPtMaxY = pm->mmiPtMinY;
     break;
-  case ResizeDlgDirection_OnlyY:
+  case RSZ_ONLY_Y:
     pm->mmiPtMaxX = pm->mmiPtMinX;
     break;
   }
@@ -3991,7 +3996,11 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
 
   SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
 
-  SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
+  if (pm->direction < 0)
+    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_THICKFRAME);
+  else  
+    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
+
   SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
   WCHAR wch[MAX_PATH];
@@ -3999,11 +4008,14 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
   InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
 
-  HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
-  SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-
-  const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
-  SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+  if ((pm->direction >= 0)) {
+    HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
+    if (hwndCtl) {
+      SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+      const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
+      SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+    }
+  }
 }
 
 
@@ -4048,11 +4060,10 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
 
   // only one direction
   switch (pm->direction) {
-  case ResizeDlgDirection_OnlyX:
+  case RSZ_ONLY_X:
     lpmmi->ptMaxTrackSize.y = pm->mmiPtMaxY;
     break;
-
-  case ResizeDlgDirection_OnlyY:
+  case RSZ_ONLY_Y:
     lpmmi->ptMaxTrackSize.x = pm->mmiPtMaxX;
     break;
   }
@@ -4542,7 +4553,7 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
   LONG const height = rc.bottom - rc.top;
   int dpiScaledX = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
   int dpiScaledY = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledWidth = MulDiv(width, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+  int dpiScaledWidth = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
   int dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
 
   SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight,

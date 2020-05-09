@@ -325,8 +325,7 @@ void Style_DynamicThemesMenuCmd(int cmd)
     }
     else if (PathFileExists(Theme_Files[Globals.idxSelectedTheme].szFilePath))
     {
-      bool const bIndependentFromStandardSettings = true;
-      Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, bIndependentFromStandardSettings);
+      Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, false);
     }
   }
 
@@ -613,9 +612,10 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         Lexer_Section = (iLexer == 0) ? L"Default Text" : L"2nd Default Text";
       }
 
-      IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
-        g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
-
+      if (bIsStdIniFile) {
+        IniSectionGetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
+          g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
+      }
       // don't allow empty extensions settings => use default ext
       if (StrIsEmpty(g_pLexArray[iLexer]->szExtensions)) {
         StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), g_pLexArray[iLexer]->pszDefExt);
@@ -631,7 +631,7 @@ bool Style_ImportFromFile(const WCHAR* szFile)
         ++i;
       }
 
-      if (Globals.iCfgVersionRead < CFG_VER_0004)
+      if (bIsStdIniFile && (Globals.iCfgVersionRead < CFG_VER_0004))
       {
         // handling "Text Files" lexer
         if (StringCchCompareXI(L"Text Files", g_pLexArray[iLexer]->pszName) == 0)
@@ -707,15 +707,14 @@ bool Style_Export(HWND hwnd)
 //  Style_ToIniSection()
 //
 
-#define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)        \
-  if ((VALUE) != (DEFAULT)) {                                              \
+#define SAVE_STYLE_IF_NOT_EQ_DEFAULT(TYPE, VARNAME, VALUE, DEFAULT)      \
+  if ((VALUE) != (DEFAULT)) {                                            \
     IniSectionSet##TYPE(IniSecStyles, _W(_STRG(VARNAME)), (VALUE));      \
-  } else {                                                                 \
+  } else {                                                               \
     IniSectionDelete(IniSecStyles, _W(_STRG(VARNAME)), false);           \
   }
 
-
-void Style_ToIniSection(bool bForceAll)
+void Style_ToIniSection(bool bForceAll, bool bIsStdIniFile)
 {
   // Custom colors
   const WCHAR* const CustomColors_Section = L"Custom Colors";
@@ -772,7 +771,7 @@ void Style_ToIniSection(bool bForceAll)
   {
     LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
 
-    if (bForceAll || (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0))
+    if (bForceAll || (bIsStdIniFile && (StringCchCompareXI(g_pLexArray[iLexer]->szExtensions, g_pLexArray[iLexer]->pszDefExt) != 0)))
     {
       IniSectionSetString(Lexer_Section, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
     }
@@ -825,10 +824,13 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   NormalizePathEx(szFilePathNorm, COUNTOF(szFilePathNorm), true, false);
 
   bool ok = false;
+  bool bIsStdIniFile = false;
+
   if (StringCchCompareXI(szFilePathNorm, Globals.IniFile) == 0) {
     bool bOpendByMe = false;
+    bIsStdIniFile = true;
     if (OpenSettingsFile(&bOpendByMe)) {
-      Style_ToIniSection(bForceAll);
+      Style_ToIniSection(bForceAll, bIsStdIniFile);
       ok = CloseSettingsFile(true, bOpendByMe);
     }
   }
@@ -844,7 +846,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
         }
       }
       if (LoadIniFileCache(szFilePathNorm)) {
-        Style_ToIniSection(bForceAll);
+        Style_ToIniSection(bForceAll, bIsStdIniFile);
         ok = SaveIniFileCache(szFilePathNorm);
         ResetIniFileCache();
       }
@@ -3777,7 +3779,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       {
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd, Settings.CustomSchemesDlgSizeX, Settings.CustomSchemesDlgSizeY, IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd, 0, 0, IDC_RESIZEGRIP, RSZ_NONE);
 
         GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
@@ -3898,7 +3900,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         DeleteBitmapButton(hwnd, IDC_STYLEBACK);
         DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
         DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
-        ResizeDlg_Destroy(hwnd, &Settings.CustomSchemesDlgSizeX, &Settings.CustomSchemesDlgSizeY);
+        ResizeDlg_Destroy(hwnd, NULL, NULL);
 
         // free old backup
         int cnt = 0;
@@ -4479,7 +4481,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       {
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP, RSZ_BOTH);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
@@ -4532,18 +4534,18 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       return !0;
 
 
-    case WM_DPICHANGED:
-      {
-        UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-      }
-      return !0;
-
-
     case WM_DESTROY:
       {
         ResizeDlg_Destroy(hwnd, &s_cxStyleSelectDlg, &s_cyStyleSelectDlg);
       }
       return 0;
+
+
+    case WM_DPICHANGED:
+      {
+        UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      }
+      return !0;
 
 
     case WM_SIZE:
@@ -4552,12 +4554,12 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         HDWP hdwp;
         hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDOK, cxClient, cyClient, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, cxClient, cyClient, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, cyClient, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_DEFAULTSCHEME, 0, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_AUTOSELECT, 0, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_DEFAULTSCHEME, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_AUTOSELECT, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
     
         ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_STYLELIST), 0, LVSCW_AUTOSIZE_USEHEADER);

@@ -49,7 +49,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MUI_RUN             ICON                    "Run.ico"
-//IDI_MUI_STYLES          ICON                    "Styles.ico"
 IDI_MUI_STYLES          ICON                    "Preferences.ico"
 
 
@@ -58,7 +57,7 @@ IDI_MUI_STYLES          ICON                    "Preferences.ico"
 // Bitmap
 //
 
-IDR_RIZBITMAP           BITMAP                  "rizonesoft.bmp"
+IDR_RIZBITMAP           BITMAP                  "rizonesoft_t.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
