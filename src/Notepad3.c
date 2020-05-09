@@ -1186,7 +1186,6 @@ void CopyFindPatternMB(LPSTR chFindPattern, size_t bufferCount)
 }
 
 
-
 static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
 
 //=============================================================================
@@ -1197,12 +1196,13 @@ static void SetFindReplaceData()
 {
   s_FindReplaceData = Settings.EFR_Data; // reset
 
+  if (!IsFindPatternEmpty()) {
+    CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
+    CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
+  }
+
   if (s_flagMatchText) // cmd line
   {
-    if (!IsFindPatternEmpty()) {
-      CopyFindPatternMB(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind));
-      CopyFindPatternMB(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind));
-    }
     if (s_flagMatchText & 4) {
       s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
     }
@@ -4942,10 +4942,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_GetSelText(szSelection);
 
-        SetFindReplaceData(); // s_FindReplaceData
-
         SetFindPatternMB(szSelection);
         MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
+
+        SetFindReplaceData(); // s_FindReplaceData
 
         StringCchCopyA(s_FindReplaceData.szFind, COUNTOF(s_FindReplaceData.szFind), szSelection);
         s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));

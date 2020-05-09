@@ -1407,12 +1407,9 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeY, 281, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(AddToFavDlgSizeX, 317, INT_MIN, INT_MAX);
 
-    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgSizeX, 494, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
 
-    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeX, 833, INT_MIN, INT_MAX);
-    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgSizeY, 515, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
     GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
 
@@ -1845,12 +1842,9 @@ static bool _SaveSettings(bool bForceSaveSettings)
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FavoritesDlgSizeY);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AddToFavDlgSizeX);
 
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgSizeX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FindReplaceDlgPosY);
 
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeX);
-  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgSizeY);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
@@ -1894,7 +1888,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 
   switch (Globals.idxSelectedTheme) {
     case 1: 
-      Style_ToIniSection(Globals.bIniFileFromScratch); // Scintilla Styles
+      Style_ToIniSection(Globals.bIniFileFromScratch, true); // Scintilla Styles
       // fall trough
     case 0:
       IniSectionDelete(IniSecStyles, Constants.StylingThemeName, false);
@@ -2004,14 +1998,18 @@ __try {
       }
     }
 
+    if (Globals.idxSelectedTheme == 1) {
+      Style_SaveSettings(bForceSaveSettings);
+    }
+
+  }
+  __finally {
+    ok = CloseSettingsFile(true, false);
+  }
+
   // separate INI files for Style-Themes
   if (Globals.idxSelectedTheme >= 2) {
     Style_SaveSettings(bForceSaveSettings);
-  }
-
-}
-  __finally {
-    ok = CloseSettingsFile(true, false);
   }
 
   EndWaitCursor();

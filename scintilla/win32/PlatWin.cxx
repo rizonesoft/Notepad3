@@ -3548,9 +3548,11 @@ void Platform_Finalise(bool fromDllMain) noexcept {
 //
 #ifdef _WIN64
 typedef INT_PTR(FAR WINAPI* FARPROCHWND)(HWND);
+typedef INT_PTR(FAR WINAPI* FARPROCDPI)(int, UINT);
 typedef INT_PTR(FAR WINAPI* FARPROCMONI)(HMONITOR, int, UINT*, UINT*);
 #else
 typedef int (FAR WINAPI* FARPROCHWND)(HWND);
+typedef int (FAR WINAPI* FARPROCDPI)(int, UINT);
 typedef int (FAR WINAPI* FARPROCMONI)(HMONITOR, int, UINT*, UINT*);
 #endif  // _WIN64
 
@@ -3561,7 +3563,7 @@ DPI_T GetCurrentDPI(HWND hwnd) {
 
 	if (IsWindows10OrGreater()) {
 		static HMODULE hModule = nullptr;
-		if (!hModule) { hModule = GetModuleHandle(L"user32.dll"); }
+		if (!hModule) { hModule = GetModuleHandle(L"User32.dll"); }
 		if (hModule) {
 			FARPROCHWND const pfnGetDpiForWindow = (FARPROCHWND)GetProcAddress(hModule, "GetDpiForWindow");
 			if (pfnGetDpiForWindow) {
@@ -3606,7 +3608,18 @@ DPI_T GetCurrentDPI(HWND hwnd) {
 //
 int GetSystemMetricsEx(HWND hwnd, int nIndex)
 {
+	if (IsWindows10OrGreater()) {
+		static HMODULE hModule = nullptr;
+		if (!hModule) { hModule = GetModuleHandle(L"User32.dll"); }
+		if (hModule) {
+			FARPROCHWND const pfnGetDpiForWindow = (FARPROCHWND)GetProcAddress(hModule, "GetDpiForWindow");
+			FARPROCDPI const pfnGetSystemMetricsForDpi = (FARPROCDPI)GetProcAddress(hModule, "GetSystemMetricsForDpi");
+			if (pfnGetDpiForWindow && pfnGetSystemMetricsForDpi) {
+				return (int)pfnGetSystemMetricsForDpi(nIndex, (UINT)pfnGetDpiForWindow(hwnd));
+			}
+		}
+	}
 	return ScaleIntToDPI_Y(hwnd, GetSystemMetrics(nIndex));
 }
 
-}
+} // namespace Scintilla

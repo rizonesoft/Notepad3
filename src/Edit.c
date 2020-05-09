@@ -5675,7 +5675,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       EditSetCaretToSelectionStart(); // avoid search text selection jumps to next match (before ResizeDlg_InitX())
 
-      ResizeDlg_InitX(hwnd, Settings.FindReplaceDlgSizeX, IDC_RESIZEGRIP);
+      ResizeDlg_Init(hwnd, 0, 0, IDC_RESIZEGRIP, RSZ_NONE);
 
       sg_pefrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
 
@@ -5910,13 +5910,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       DeleteObject(hBrushRed);
       DeleteObject(hBrushGreen);
       DeleteObject(hBrushBlue);
-      ResizeDlg_Destroy(hwnd, &Settings.FindReplaceDlgSizeX, NULL);
+      ResizeDlg_Destroy(hwnd, NULL, NULL);
       sg_pefrData = NULL;
       Globals.hwndDlgFindReplace = NULL;
     }
     return 0;
 
 
+#if 0
   case WM_SIZE: {
       int dx;
       bool const isReplace = (GetDlgItem(hwnd, IDC_REPLACETEXT) != NULL);
@@ -5940,6 +5941,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       EndDeferWindowPos(hdwp);
     }
     return true;
+#endif
 
 
   case WM_GETMINMAXINFO:

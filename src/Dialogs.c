@@ -668,8 +668,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
     char pAboutRes[4096];
+    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), "");
     GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
     GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
     StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
     GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
@@ -710,7 +711,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     if (hVersionFont) { DeleteObject(hVersionFont); }
     break;
 
-
+  case WM_SIZE:
   case WM_DPICHANGED:
     {
       UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
@@ -1087,7 +1088,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1121,12 +1122,10 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
     case WM_SIZE:
       {
-        int dx;
-        int dy;
-        HDWP hdwp;
-
+        int dx, dy;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
+        HDWP hdwp;
         hdwp = BeginDeferWindowPos(6);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
@@ -1138,12 +1137,12 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
         ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVSCW_AUTOSIZE_USEHEADER);
       }
-      return true;
+      return !0;
 
 
     case WM_GETMINMAXINFO:
       ResizeDlg_GetMinMaxInfo(hwnd,lParam);
-      return true;
+      return !0;
 
 
     case WM_NOTIFY:
@@ -1287,7 +1286,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1321,12 +1320,10 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_SIZE:
       {
-        int dx;
-        int dy;
-        HDWP hdwp;
-
+        int dx, dy;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
+        HDWP hdwp;
         hdwp = BeginDeferWindowPos(6);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
@@ -1462,7 +1459,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SET_NP3_DLG_ICON_SMALL(hwnd);
 
-      ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
+      ResizeDlg_Init(hwnd, Settings.AddToFavDlgSizeX, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP, RSZ_ONLY_X);
 
       LPCWSTR const pszName = (LPCWSTR)lParam;
       SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
@@ -1690,7 +1687,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
           lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
           lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
         }
-        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -2736,7 +2733,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP,RSZ_BOTH);
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
@@ -3963,9 +3960,9 @@ typedef struct _resizeDlg {
 
 typedef const RESIZEDLG* LPCRESIZEDLG;
 
-void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection) 
+void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection)
 {
-  RESIZEDLG* pm = (RESIZEDLG*)AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
+  RESIZEDLG* const pm = (RESIZEDLG*)AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
   pm->direction = iDirection;
 
   RECT rc;
@@ -3973,16 +3970,21 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
   pm->cxClient = rc.right - rc.left;
   pm->cyClient = rc.bottom - rc.top;
 
-  AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, FALSE, 0);
+
+  if (pm->direction < 0)
+    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) & ~WS_THICKFRAME, FALSE, 0);
+  else  
+    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, FALSE, 0);
+
   pm->mmiPtMinX = rc.right - rc.left;
   pm->mmiPtMinY = rc.bottom - rc.top;
+  
   // only one direction
   switch (iDirection) {
-  case ResizeDlgDirection_OnlyX:
+  case RSZ_ONLY_X:
     pm->mmiPtMaxY = pm->mmiPtMinY;
     break;
-
-  case ResizeDlgDirection_OnlyY:
+  case RSZ_ONLY_Y:
     pm->mmiPtMaxX = pm->mmiPtMinX;
     break;
   }
@@ -3994,33 +3996,41 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDir
 
   SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
 
-  SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
+  if (pm->direction < 0)
+    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_THICKFRAME);
+  else  
+    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
+
   SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-  WCHAR wch[64];
+  WCHAR wch[MAX_PATH];
   GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
   InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
   InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
 
-  HWND hwndCtl = GetDlgItem(hwnd, nIdGrip);
-  SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-  /// TODO: per-window DPI
-  const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
-  SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+  if ((pm->direction >= 0)) {
+    HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
+    if (hwndCtl) {
+      SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+      const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
+      SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+    }
+  }
 }
 
-void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame) {
-  PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+
+void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame)
+{
+  PRESIZEDLG const pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
 
   RECT rc;
   GetWindowRect(hwnd, &rc);
   if (cxFrame) {
-    *cxFrame = rc.right - rc.left;
+    *cxFrame = (rc.right - rc.left);
   }
   if (cyFrame) {
-    *cyFrame = rc.bottom - rc.top;
+    *cyFrame = (rc.bottom - rc.top);
   }
-
   RemoveProp(hwnd, RESIZEDLG_PROP_KEY);
   FreeMem(pm);
 }
@@ -4040,7 +4050,8 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
   pm->cyClient = cyClient;
 }
 
-void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam) {
+void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
+{
   LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
 
   LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
@@ -4049,11 +4060,10 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam) {
 
   // only one direction
   switch (pm->direction) {
-  case ResizeDlgDirection_OnlyX:
+  case RSZ_ONLY_X:
     lpmmi->ptMaxTrackSize.y = pm->mmiPtMaxY;
     break;
-
-  case ResizeDlgDirection_OnlyY:
+  case RSZ_ONLY_Y:
     lpmmi->ptMaxTrackSize.x = pm->mmiPtMaxX;
     break;
   }
@@ -4071,7 +4081,6 @@ int ResizeDlg_GetAttr(HWND hwnd, int index) {
     const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
     return pm->attrs[index];
   }
-
   return 0;
 }
 
@@ -4083,7 +4092,7 @@ static inline int GetDlgCtlHeight(HWND hwndDlg, int nCtlId) {
 }
 
 void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
-  HWND hwndCtl = GetDlgItem(hwndDlg, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwndDlg, nCtlId);
   RECT rc;
   GetWindowRect(hwndCtl, &rc);
   MapWindowPoints(NULL, hwndDlg, (LPPOINT)& rc, 2);
@@ -4093,7 +4102,7 @@ void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
 
 
 HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlags) {
-  HWND hwndCtl = GetDlgItem(hwndDlg, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwndDlg, nCtlId);
   RECT rc;
   GetWindowRect(hwndCtl, &rc);
   MapWindowPoints(NULL, hwndDlg, (LPPOINT)& rc, 2);
@@ -4524,19 +4533,18 @@ if (!bSucceed) {
 //
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi)
 {
-#if TRUE
+#if FALSE
   // only update yet
   SetWindowPos(hWnd, hWnd, x_96dpi, y_96dpi, w_96dpi, h_96dpi,
     SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
 
 #else
-  //@@@ TODO: ???
   UNUSED(x_96dpi);
   UNUSED(y_96dpi);
   UNUSED(w_96dpi);
   UNUSED(h_96dpi);
 
-  DPI_T const wndDPI = GetCurrentDPI(hWnd);
+  DPI_T const wndDPI = Scintilla_GetCurrentDPI(hWnd);
 
   RECT rc;
   GetWindowRect(hWnd, &rc);
@@ -4545,11 +4553,12 @@ void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, 
   LONG const height = rc.bottom - rc.top;
   int dpiScaledX = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
   int dpiScaledY = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledWidth = MulDiv(width, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+  int dpiScaledWidth = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
   int dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
 
   SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight,
-               SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION);
+               SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION | SWP_FRAMECHANGED);
+
   InvalidateRect(hWnd, NULL, TRUE);
 
 #endif
