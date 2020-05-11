@@ -49,7 +49,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MUI_RUN             ICON                    "Run.ico"
-//IDI_MUI_STYLES          ICON                    "Styles.ico"
 IDI_MUI_STYLES          ICON                    "Preferences.ico"
 
 
@@ -58,7 +57,7 @@ IDI_MUI_STYLES          ICON                    "Preferences.ico"
 // Bitmap
 //
 
-IDR_RIZBITMAP           BITMAP                  "rizonesoft.bmp"
+IDR_RIZBITMAP           BITMAP                  "rizonesoft_t.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +70,7 @@ IDC_COPY                CURSOR                  "Copy.cur"
 
 // =============================================================================
 // Following Text is streamed to RichEdit Control supporting ANSI CP-1252 only
-// Unicode characters have to be encoded using '\\uN<ch>' squences.
+// Unicode characters have to be encoded using '\\uN<ch>' sequences.
 // Example: Küng => K\\u252üng
 // =============================================================================
 
@@ -129,6 +128,7 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 \\cf0 lhmouse\\tab https://github.com/lhmouse/\\par\
 \\cf0 ltGuillaume\\tab https://github.com/ltGuillaume/\\par\
 \\cf0 maboroshin\\tab https://github.com/maboroshin/\\par\
+\\cf0 MadDogVachon\\tab https://github.com/MadDogVachon/\\par\
 \\cf0 RaffaeleBianc0\\tab https://github.com/RaffaeleBianc0/\\par\
 \\cf0 Rudolfin\\tab https://github.com/Rudolfin/\\par\
 \\cf0 rizonesoft\\tab https://github.com/rizonesoft/\\par\

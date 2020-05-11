@@ -35,7 +35,7 @@ bool   Style_Import(HWND hwnd);
 bool   Style_ImportFromFile(const WCHAR* szFile);
 void   Style_SaveSettings(bool bForceSaveSettings);
 bool   Style_Export(HWND hwnd);
-void   Style_ToIniSection(bool bForceAll);
+void   Style_ToIniSection(bool bForceAll, bool bIsStdIniFile);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
