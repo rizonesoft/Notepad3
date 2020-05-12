@@ -457,10 +457,10 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 //}
 
 inline size_t StringCchLenA(LPCSTR s, size_t n) {
-  n = (n ? n : STRSAFE_MAX_CCH); return strnlen_s(s, n);
+  n = (n ? n : STRSAFE_MAX_CCH); return (s ? strnlen_s(s, n) : 0LL);
 }
 inline size_t StringCchLenW(LPCWSTR s, size_t n) {
-  n = (n ? n : STRSAFE_MAX_CCH); return wcsnlen_s(s, n);
+  n = (n ? n : STRSAFE_MAX_CCH); return (s ? wcsnlen_s(s, n) : 0LL);
 }
 
 #if defined(UNICODE) || defined(_UNICODE)  

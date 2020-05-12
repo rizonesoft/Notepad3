@@ -4292,11 +4292,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
               GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
 
-              COLORREF cr = (COLORREF)-1; // SciCall_StyleGetFore(STYLE_DEFAULT);
+              COLORREF cr = COLORREF_MAX; // SciCall_StyleGetFore(STYLE_DEFAULT);
               Style_StrGetColor(tch, FOREGROUND_LAYER, &cr);
               MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
 
-              cr = (COLORREF)-1; // SciCall_StyleGetBack(STYLE_DEFAULT);
+              cr = COLORREF_MAX; // SciCall_StyleGetBack(STYLE_DEFAULT);
               Style_StrGetColor(tch, BACKGROUND_LAYER, &cr);
               MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
             }

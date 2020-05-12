@@ -402,7 +402,6 @@ extern "C" bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty)
 }
 // ============================================================================
 
-
 extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 {
   size_t const len = StringCchLen(lpPrefix, 0);
@@ -2123,7 +2122,7 @@ bool MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex)
 }
 
 
-bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
+bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs,
   cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks)
 {
   if (pmru) {
@@ -2144,7 +2143,7 @@ bool MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool bRelativePath, bool bUnex
     }
     if (bRelativePath) {
       WCHAR wchFile[MAX_PATH] = { L'\0' };
-      PathRelativeToApp((LPWSTR)pszFile, wchFile, COUNTOF(wchFile), true, true, bUnexpandMyDocs);
+      PathRelativeToApp(pszFile, wchFile, COUNTOF(wchFile), true, true, bUnexpandMyDocs);
       pmru->pszItems[0] = StrDup(wchFile);  // LocalAlloc()
     }
     else {
@@ -2261,7 +2260,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
         if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem)))
         {
           size_t const len = StringCchLen(tchItem, 0);
-          if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
+          if ((len > 1) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
             MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
             tchItem[len - 2] = L'\0'; // clear dangling '"'
           }

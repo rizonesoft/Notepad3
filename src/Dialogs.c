@@ -3896,16 +3896,18 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
 //
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 {
-  RECT rcDlg;
-  GetWindowRect(hDlg, &rcDlg);
+  if (hDlg) {
+    RECT rcDlg;
+    GetWindowRect(hDlg, &rcDlg);
 
-  HWND const hParent = GetParent(hDlg);
-  RECT rcParent;
-  GetWindowRect(hParent, &rcParent);
+    HWND const hParent = GetParent(hDlg);
+    RECT rcParent;
+    GetWindowRect(hParent, &rcParent);
 
-  // return positions relative to parent window
-  *xDlg = (rcDlg.left - rcParent.left);
-  *yDlg = (rcDlg.top - rcParent.top);
+    // return positions relative to parent window
+    if (xDlg) { *xDlg = (rcDlg.left - rcParent.left); }
+    if (yDlg) { *yDlg = (rcDlg.top - rcParent.top); }
+  }
 }
 
 
@@ -4149,7 +4151,7 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
   if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi)) {
     himlOld = bi.himl;
   }
-  if (IsWindowEnabled(hwndCtl) && crColor != ((COLORREF)-1)) {
+  if (IsWindowEnabled(hwndCtl) && (crColor != COLORREF_MAX)) {
     colormap[0].from = RGB(0x00, 0x00, 0x00);
     colormap[0].to = GetSysColor(COLOR_3DSHADOW);
   }
@@ -4158,7 +4160,7 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
     colormap[0].to = RGB(0xFF, 0xFF, 0xFF);
   }
 
-  if (IsWindowEnabled(hwndCtl) && (crColor != (COLORREF)-1)) {
+  if (IsWindowEnabled(hwndCtl) && (crColor != COLORREF_MAX)) {
 
     if (crColor == RGB(0xFF, 0xFF, 0xFF)) {
       crColor = RGB(0xFF, 0xFF, 0xFE);
@@ -4354,17 +4356,17 @@ inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
   else
     pw = (WORD*)(pTemplate + 1);
 
-  if (*pw == (WORD)-1)
+  if (*pw == WORD_MAX)
     pw += 2;
   else
-    while (*pw++);
+    while (*pw++){}
 
-  if (*pw == (WORD)-1)
+  if (*pw == WORD_MAX)
     pw += 2;
   else
-    while (*pw++);
+    while (*pw++){}
 
-  while (*pw++);
+  while (*pw++){}
 
   return (BYTE*)pw;
 }
