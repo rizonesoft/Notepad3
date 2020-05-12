@@ -3048,7 +3048,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditNormalizeView(Sci_GetLastDocLineNumber());
+        EditEnsureSelectionVisible();
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -4761,7 +4761,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (iNextLine != (DocLn)-1)
         {
             SciCall_GotoLine(iNextLine);
-            EditNormalizeView(Sci_GetCurrentLineNumber());
+            EditEnsureSelectionVisible();
         }
     }
     break;
@@ -4781,7 +4781,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (iNextLine != (DocLn)-1)
         {
             SciCall_GotoLine(iNextLine);
-            EditNormalizeView(Sci_GetCurrentLineNumber());
+            EditEnsureSelectionVisible();
         }
     }
     break;
@@ -4856,7 +4856,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_SELTONEXT:
           {
             SciCall_RotateSelection();
-            //~EditNormalizeView(Sci_GetCurrentLineNumber());
             EditEnsureSelectionVisible();
           }
           break;
@@ -4870,7 +4869,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               DocPosU const iNewMain = SciCall_GetSelections() - 1;
               SciCall_SetMainSelection(iNewMain);
             }
-            //~EditNormalizeView(Sci_GetCurrentLineNumber());
             EditEnsureSelectionVisible();
           }
           break;
@@ -5319,7 +5317,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditNormalizeView(Sci_GetLastDocLineNumber());
+          EditEnsureSelectionVisible();
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5329,7 +5327,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditNormalizeView(Sci_GetCurrentLineNumber());
+          EditEnsureSelectionVisible();
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -9709,7 +9707,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditNormalizeView(Sci_GetLastDocLineNumber());
+      EditEnsureSelectionVisible();
     }
   }
 
@@ -9720,7 +9718,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditNormalizeView(Sci_GetLastDocLineNumber());
+      EditEnsureSelectionVisible();
     }
   }
 

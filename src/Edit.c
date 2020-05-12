@@ -4977,12 +4977,12 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
       if (vSpcCurrent > 0) {
         SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
       }
-      EditEnsureSelectionVisible();
+      SciCall_ScrollCaret();
     }
     else {
       SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
-      SciCall_ChooseCaretX();
     }
+    SciCall_ChooseCaretX();
   }
   
   //~~~_END_UNDO_ACTION_;~~~
@@ -5005,15 +5005,19 @@ void EditEnsureConsistentLineEndings(HWND hwnd)
 //
 //  EditNormalizeView() 
 //
-void EditNormalizeView(const DocLn iDocLine)
+void EditNormalizeView(const DocLn iDocumentLine)
 {
-  SciCall_EnsureVisible(iDocLine);
-  if (iDocLine == Sci_GetCurrentLineNumber()) {
+  SciCall_EnsureVisible(iDocumentLine);
+  Sci_ScrollToLine(iDocumentLine);
+  if (iDocumentLine == Sci_GetCurrentLineNumber()) {
     Sci_ScrollChooseCaret();
   }
-  //~Sci_ScrollToLine(iDocLine);
   DocLn const vSlop = max_ln(2, Settings2.CurrentLineVerticalSlop);
-  SciCall_SetFirstVisibleLine(clampp((iDocLine - vSlop), 0, Sci_GetLastDocLineNumber()));
+  DocLn const iVisibleFromDocLine = SciCall_VisibleFromDocLine(iDocumentLine - vSlop);
+  //DocLn const iDocLineFromVisible = SciCall_DocLineFromVisible(iVisibleFromDocLine);
+  if (iVisibleFromDocLine >= 0) {
+    SciCall_SetFirstVisibleLine(iVisibleFromDocLine);
+  }
 }
 
 
@@ -5026,9 +5030,8 @@ void EditEnsureSelectionVisible()
   // Ensure that the first and last lines of a selection are always unfolded
   DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
   DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
-  SciCall_EnsureVisible(iAnchorLine);
-  Sci_ScrollToLine(iCurrentLine);
-  Sci_ScrollChooseCaret();
+  if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iAnchorLine); } 
+  EditNormalizeView(iCurrentLine);
 }
 
 
@@ -5056,9 +5059,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-
-  //~EditEnsureSelectionVisible();
-  EditNormalizeView(Sci_GetCurrentLineNumber());
+  EditEnsureSelectionVisible();
 }
 
 
@@ -6866,10 +6867,9 @@ void EditSelectionMultiSelectAll()
       SciCall_SwapMainAnchorCaret();
     }
 
-    //~EditNormalizeView(Sci_GetCurrentLineNumber()); // normalize view
-    EditEnsureSelectionVisible();
-
     SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd); //restore
+
+    EditEnsureSelectionVisible();
   }
 }
 
