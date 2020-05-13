@@ -218,8 +218,8 @@ static void _FillThemesMenuTable()
 
         if (!FindNextFile(hFindFile, &FindFileData)) { break; }
       }
+      FindClose(hFindFile);
     }
-    FindClose(hFindFile);
   }
 
   for (++iTheme; iTheme < ThemeItems_CountOf(); ++iTheme) 
@@ -1957,7 +1957,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
         if (f) {
           e = StrChr(f, L';');
           if (!e) {
-            e = f + lstrlen(f);
+            e = f + StringCchLen(f, 0);
           }
           ++f; // exclude '\'
           char regexpat[MAX_PATH] = { '\0' };

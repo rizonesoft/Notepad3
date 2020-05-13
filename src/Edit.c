@@ -1053,6 +1053,7 @@ bool EditLoadFile(
   if (!okay || bLargerThan2GB) {
     if (!okay) {
       Globals.dwLastError = GetLastError();
+      CloseHandle(hFile);
       return false;
     }
     else {
@@ -3209,7 +3210,7 @@ void EditAlignText(int nMode)
 
               DocPos const length = iMaxLength * 3;
               StringCchCopy(wchNewLineBuf, iBufCount, pWords[0]);
-              p = StrEnd(wchNewLineBuf, iBufCount);
+              p = (WCHAR*)StrEnd(wchNewLineBuf, iBufCount);
 
               for (int i = 1; i < iWords; i++) {
                 for (int j = 0; j < iSpacesPerGap; j++) {
@@ -3221,18 +3222,18 @@ void EditAlignText(int nMode)
                   *p = 0;
                 }
                 StringCchCat(p, (length - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
-                p = StrEnd(p, 0);
+                p = (WCHAR*)StrEnd(p, 0);
               }
             }
             else {
               StringCchCopy(wchNewLineBuf, iBufCount, pWords[0]);
-              p = StrEnd(wchNewLineBuf, iBufCount);
+              p = (WCHAR*)StrEnd(wchNewLineBuf, iBufCount);
 
               for (int i = 1; i < iWords; i++) {
                 *p++ = L' ';
                 *p = 0;
                 StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
-                p = StrEnd(p, 0);
+                p = (WCHAR*)StrEnd(p, 0);
               }
             }
 
@@ -3268,7 +3269,7 @@ void EditAlignText(int nMode)
                 StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
                 iOddSpaces--;
               }
-              p = StrEnd(p, 0);
+              p = (WCHAR*)StrEnd(p, 0);
             }
 
             ptrdiff_t const cch = WideCharToMultiByteEx(Encoding_SciCP, 0, wchNewLineBuf, -1,

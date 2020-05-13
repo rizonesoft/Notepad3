@@ -42,7 +42,7 @@
 #define nsSBCSGroupProber_h__
 
 
-#define MAX_NUM_OF_SBCS_PROBERS 109
+#define MAX_NUM_OF_SBCS_PROBERS 120
 
 class nsCharSetProber;
 

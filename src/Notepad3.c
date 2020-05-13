@@ -2325,7 +2325,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
   if (!hbmp) {
     Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
-    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
+    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -2353,7 +2353,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
   }
   if (!hbmp && (Settings.ToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
+    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -2383,7 +2383,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
   }
   if (!hbmp && (Settings.ToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
+    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 

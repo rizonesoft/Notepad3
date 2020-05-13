@@ -53,6 +53,11 @@ typedef enum {
 
 class nsCharSetProber {
 public:
+  // non copyable
+  nsCharSetProber() = default;
+  nsCharSetProber(const nsCharSetProber&) = delete;
+  nsCharSetProber& operator=(const nsCharSetProber&) = delete;
+  
   virtual ~nsCharSetProber() {};
   virtual const char* GetCharSetName() = 0;
   virtual nsProbingState HandleData(const char* aBuf, PRUint32 aLen) = 0;

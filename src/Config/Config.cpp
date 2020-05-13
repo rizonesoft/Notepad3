@@ -1420,6 +1420,7 @@ void LoadSettings()
     IniSectionGetString(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
     ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
+    // cppcheck-suppress useStlAlgorithm
     for (bool& sbv : s_iStatusbarVisible) { sbv = false; }
     int cnt = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {

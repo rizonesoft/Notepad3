@@ -3896,18 +3896,18 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
 //
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 {
-  if (hDlg) {
-    RECT rcDlg;
-    GetWindowRect(hDlg, &rcDlg);
+  if (!hDlg) { return; }
 
-    HWND const hParent = GetParent(hDlg);
-    RECT rcParent;
-    GetWindowRect(hParent, &rcParent);
+  RECT rcDlg;
+  GetWindowRect(hDlg, &rcDlg);
 
-    // return positions relative to parent window
-    if (xDlg) { *xDlg = (rcDlg.left - rcParent.left); }
-    if (yDlg) { *yDlg = (rcDlg.top - rcParent.top); }
-  }
+  HWND const hParent = GetParent(hDlg);
+  RECT rcParent;
+  GetWindowRect(hParent, &rcParent);
+
+  // return positions relative to parent window
+  if (xDlg) { *xDlg = (rcDlg.left - rcParent.left); }
+  if (yDlg) { *yDlg = (rcDlg.top - rcParent.top); }
 }
 
 

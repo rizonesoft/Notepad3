@@ -78,7 +78,7 @@ bool   Style_StrGetSize(LPCWSTR lpszStyle,float* f);
 bool   Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize);
 bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb);
 bool   Style_StrGetCase(LPCWSTR lpszStyle,int* i);
-bool   Style_StrGetAlpha(LPCWSTR lpszStyle,int* i,bool);
+bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);
 void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest,bool,bool);
 bool   Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,LPCWSTR sLexerName,LPCWSTR sStyleName,bool,bool,bool,bool);

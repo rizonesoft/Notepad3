@@ -139,7 +139,6 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
   return n;
 }
 
-
 //=============================================================================
 //
 //  GetWinVersionString()
@@ -149,6 +148,8 @@ static OSVERSIONINFOEX s_OSversion = { 0 };
 
 static void _GetTrueWindowsVersion()
 {
+  if (s_OSversion.dwOSVersionInfoSize != 0) { return; }
+
   // clear
   ZeroMemory(&s_OSversion, sizeof(OSVERSIONINFOEX));
   s_OSversion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
@@ -174,12 +175,14 @@ static void _GetTrueWindowsVersion()
 #pragma warning ( disable: 4996 )
   // if function failed, use fallback to old version
   if (pRtlGetVersion == NULL) {
+    // cppcheck-suppress GetVersionExCalled
     GetVersionEx((OSVERSIONINFO*)& s_OSversion);
   }
 #pragma warning ( pop )
 
 }
 // ----------------------------------------------------------------------------
+
 
 static DWORD _Win10BuildToReleaseId(DWORD build)
 {
@@ -234,11 +237,10 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
   }
   
   if (IsWindows10OrGreater()) {
-    WCHAR win10ver[80] = { L'\0' };
-    if (s_OSversion.dwOSVersionInfoSize == 0) { _GetTrueWindowsVersion(); }
+    _GetTrueWindowsVersion();
     DWORD const build = s_OSversion.dwBuildNumber;
-    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)", 
-      _Win10BuildToReleaseId(build) , build);
+    WCHAR win10ver[80] = { L'\0' };
+    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)", _Win10BuildToReleaseId(build) , build);
     StringCchCat(szVersionStr, cchVersionStr, win10ver);
   }
 }
@@ -261,7 +263,6 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
       SetClipboardData(CF_UNICODETEXT, hData);
     }
     CloseClipboard();
-    // cppcheck-suppress memleak // ClipBoard is owner now
     return true; 
   }
   CloseClipboard();

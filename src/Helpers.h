@@ -22,7 +22,7 @@
 #include <math.h>
 #include <shlwapi.h>
 #include <heapapi.h>
-#include <versionhelpers.h>
+#include <VersionHelpers.h>
 
 #include "Scintilla.h"
 
@@ -472,10 +472,12 @@ inline size_t StringCchLenW(LPCWSTR s, size_t n) {
 // ----------------------------------------------------------------------------
 
 inline char* StrEndA(const char* pStart, size_t siz) {
+  // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
   return (char*)(pStart + StringCchLenA(pStart, siz));
 }
 
 inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
+  // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
   return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
 }
 
