@@ -3550,7 +3550,9 @@ check_node_in_look_behind(Node* node, int not, int* used)
       if (r != 0) break;
 
       if (en->type == BAG_MEMORY) {
-        if (NODE_IS_BACKREF(node) || NODE_IS_CALLED(node)) *used = TRUE;
+        if (NODE_IS_BACKREF(node) || NODE_IS_CALLED(node)
+         || NODE_IS_REFERENCED(node))
+          *used = TRUE;
       }
       else if (en->type == BAG_IF_ELSE) {
         if (IS_NOT_NULL(en->te.Then)) {
@@ -5225,7 +5227,7 @@ quantifiers_memory_node_info(Node* node)
 __inline
 #endif
 static int
-tune_call_node_call(CallNode* cn, ScanEnv* env, int state)
+check_call_reference(CallNode* cn, ScanEnv* env, int state)
 {
   MemEnv* mem_env = SCANENV_MEMENV(env);
 
@@ -5251,6 +5253,8 @@ tune_call_node_call(CallNode* cn, ScanEnv* env, int state)
                                      cn->name, cn->name_end);
       return ONIGERR_UNDEFINED_NAME_REFERENCE;
     }
+
+    NODE_STATUS_ADD(NODE_CALL_BODY(cn), REFERENCED);
   }
   else {
     int *refs;
@@ -5400,7 +5404,7 @@ tune_call(Node* node, ScanEnv* env, int state)
       CALL_(node)->entry_count--;
     }
 
-    r = tune_call_node_call(CALL_(node), env, state);
+    r = check_call_reference(CALL_(node), env, state);
     break;
 
   default:
@@ -7889,6 +7893,8 @@ print_indent_tree(FILE* f, Node* node, int indent)
       fprintf(f, "memory:%d", BAG_(node)->m.regnum);
       if (NODE_IS_CALLED(node))
         fprintf(f, ", called");
+      else if (NODE_IS_REFERENCED(node))
+        fprintf(f, ", referenced");
       if (NODE_IS_FIXED_ADDR(node))
         fprintf(f, ", fixed-addr");
       break;

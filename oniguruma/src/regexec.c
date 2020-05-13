@@ -2366,6 +2366,10 @@ static int string_cmp_ic(OnigEncoding enc, int case_fold_flag,
       p1++;
       p2++;
     }
+    if (s2 >= end2) {
+      if (s1 < end1) return 0;
+      else           break;
+    }
   }
 
   *ps2 = s2;
