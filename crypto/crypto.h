@@ -29,7 +29,7 @@
 
 bool IsEncryptionRequired();
 
-int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t size, void** result, size_t *resultlen);
+int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, size_t fileSize, void** result, size_t *resultlen);
 bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_t*written);
 
 bool GetFileKey(HWND hwnd);

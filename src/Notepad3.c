@@ -101,7 +101,7 @@ static bool      s_bIsRunAsAdmin = false;
 static bool      s_flagSaveOnRelaunch = false;
 static bool      s_IsThisAnElevatedRelaunch = false;
 
-static WCHAR     s_wchWndClass[64] = _W(SAPPNAME);
+static WCHAR     s_wchWndClass[64] = { L'\0' };
 
 static HWND      s_hwndEditFrame = NULL;
 static HWND      s_hwndNextCBChain = NULL;
@@ -695,10 +695,10 @@ static void _InitGlobals()
 //  _InsertLanguageMenu()
 //
 
-typedef struct _lng_menu_t {
-  LANGID LangID;
-  const WCHAR* MenuItem;
-} LNG_MENU_T;
+//typedef struct _lng_menu_t {
+//  LANGID LangID;
+//  const WCHAR* MenuItem;
+//} LNG_MENU_T;
 
 static HMENU s_hmenuLanguage = NULL;
 
@@ -839,6 +839,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
   // Adapt window class name
+  StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
   if (s_bIsProcessElevated) {
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
   }
@@ -2218,13 +2219,10 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
 
   bool bDimOK = false;
   int height = 16;
-  int width = height * NUMTOOLBITMAPS;
-
   if (hbmp) { 
     BITMAP bmp;  GetObject(hbmp, sizeof(BITMAP), &bmp);
-    width = bmp.bmWidth;
     height = bmp.bmHeight;
-    bDimOK = (width >= (height * NUMTOOLBITMAPS));
+    bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
   }
   if (!bDimOK) {
     InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path, (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
@@ -2325,7 +2323,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
   if (!hbmp) {
     Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
-    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
+    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -2353,7 +2351,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
   }
   if (!hbmp && (Settings.ToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
+    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -2383,7 +2381,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
   }
   if (!hbmp && (Settings.ToolBarTheme < 2)) {
-    LPWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
+    LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -2905,7 +2903,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           if (params->flagLexerSpecified) {
             if (params->iInitialLexer < 0) {
-              WCHAR wchExt[32] = L".";
+              WCHAR wchExt[32] = { L'\0' };
+              StringCchCopy(wchExt, COUNTOF(wchExt), L".");
               StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData, 0) + 1, 31);
               Style_SetLexerFromName(Globals.hwndEdit, &params->wchData, wchExt);
             }
@@ -3048,7 +3047,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditNormalizeView(Sci_GetLastDocLineNumber());
+        EditEnsureSelectionVisible();
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -4761,7 +4760,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (iNextLine != (DocLn)-1)
         {
             SciCall_GotoLine(iNextLine);
-            EditNormalizeView(Sci_GetCurrentLineNumber());
+            EditEnsureSelectionVisible();
         }
     }
     break;
@@ -4781,7 +4780,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (iNextLine != (DocLn)-1)
         {
             SciCall_GotoLine(iNextLine);
-            EditNormalizeView(Sci_GetCurrentLineNumber());
+            EditEnsureSelectionVisible();
         }
     }
     break;
@@ -4856,7 +4855,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           case IDM_EDIT_SELTONEXT:
           {
             SciCall_RotateSelection();
-            //~EditNormalizeView(Sci_GetCurrentLineNumber());
             EditEnsureSelectionVisible();
           }
           break;
@@ -4870,7 +4868,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
               DocPosU const iNewMain = SciCall_GetSelections() - 1;
               SciCall_SetMainSelection(iNewMain);
             }
-            //~EditNormalizeView(Sci_GetCurrentLineNumber());
             EditEnsureSelectionVisible();
           }
           break;
@@ -5319,7 +5316,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditNormalizeView(Sci_GetLastDocLineNumber());
+          EditEnsureSelectionVisible();
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5329,7 +5326,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditNormalizeView(Sci_GetCurrentLineNumber());
+          EditEnsureSelectionVisible();
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -6792,28 +6789,27 @@ static void  _HandleAutoIndent(int const charAdded)
           SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
         }
       }
-    }
-
-    if (iCurLine > 0/* && iLineLength <= 2*/)
-    {
-      DocLn const iPrevLine = iCurLine - 1;
-      DocPos const iPrevLineLength = SciCall_LineLength(iPrevLine);
-      char* pLineBuf = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
-      if (pLineBuf)
+      //~if (iLineLength <= 2)
       {
-        SciCall_GetLine_Safe(iPrevLine, pLineBuf);
-        for (char* pPos = pLineBuf; *pPos; pPos++) {
-          if ((*pPos != ' ') && (*pPos != '\t')) {
-            *pPos = '\0';
-            break;
+        DocLn const iPrevLine = iCurLine - 1;
+        DocPos const iPrevLineLength = SciCall_LineLength(iPrevLine);
+        char* pLineBuf = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
+        if (pLineBuf)
+        {
+          SciCall_GetLine_Safe(iPrevLine, pLineBuf);
+          for (char* pPos = pLineBuf; *pPos; pPos++) {
+            if ((*pPos != ' ') && (*pPos != '\t')) {
+              *pPos = '\0';
+              break;
+            }
           }
+          if (*pLineBuf) {
+            _BEGIN_UNDO_ACTION_;
+            SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
+            _END_UNDO_ACTION_;
+          }
+          FreeMem(pLineBuf);
         }
-        if (*pLineBuf) {
-          _BEGIN_UNDO_ACTION_;
-          SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
-          _END_UNDO_ACTION_;
-        }
-        FreeMem(pLineBuf);
       }
     }
   }
@@ -8316,8 +8312,6 @@ const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", 
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
-  static char chSelectionBuffer[XHUGE_BUFFER];
-
   if (!Settings.ShowStatusbar) { return; }
 
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
@@ -8482,7 +8476,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_SELCTLINES])
   {
     static bool s_bIsSelectionEmpty = true;
-    static bool s_bIsMultiSelection = false;
     static DocLn s_iLinesSelected = -1;
 
     DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
@@ -8493,6 +8486,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bForceRedraw || ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected)))
     {
+      static bool s_bIsMultiSelection = false;
       static WCHAR tchLinesSelected[32] = { L'\0' };
       if (bIsSelectionEmpty || bIsMultiSelection) {
         tchLinesSelected[0] = L'-';
@@ -8526,11 +8520,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bIsSelCharCountable)
     {
+      static char chSelectionBuffer[XHUGE_BUFFER];
       DocPos const iSelSize = SciCall_GetSelText(NULL);
       if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
       {
         SciCall_GetSelText(chSelectionBuffer);
-        //StrDelChrA(chExpression, " \r\n\t\v");
+        //~StrDelChrA(chExpression, " \r\n\t\v");
         StrDelChrA(chSelectionBuffer, "\r\n");
         s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
       }
@@ -8826,10 +8821,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateMarginWidth()
 {
-  static char chLines[32] = { '\0' };
-
   if (Settings.ShowLineNumbers)
   {
+    static char chLines[32] = { '\0' };
     StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
 
     int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
@@ -9709,7 +9703,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditNormalizeView(Sci_GetLastDocLineNumber());
+      EditEnsureSelectionVisible();
     }
   }
 
@@ -9720,7 +9714,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditNormalizeView(Sci_GetLastDocLineNumber());
+      EditEnsureSelectionVisible();
     }
   }
 

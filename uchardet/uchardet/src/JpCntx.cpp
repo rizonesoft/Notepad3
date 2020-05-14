@@ -184,7 +184,7 @@ void JapaneseContextAnalysis::Reset(PRBool aIsPreferredLanguage)
 }
 #define DONT_KNOW (float)-1
 
-float  JapaneseContextAnalysis::GetConfidence(void)
+float  JapaneseContextAnalysis::GetConfidence() const
 {
   //This is just one way to calculate confidence. It works well for me.
   if (mTotalRel > mDataThreshold)

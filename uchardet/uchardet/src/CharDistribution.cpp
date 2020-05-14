@@ -47,7 +47,7 @@
 #include "LangModels/GB18030Freq.tab"
 
 //return confidence base on received data
-float CharDistributionAnalysis::GetConfidence()
+float CharDistributionAnalysis::GetConfidence() const
 {
   //if we didn't receive any character in our consideration range, or the
   // number of frequent characters is below the minimum threshold, return

@@ -155,6 +155,7 @@ typedef enum {
 
 #define MB_ICONSHIELD 0x000000B0L
 
+#define COLORREF_MAX (DWORD_MAX)
 // --------------------------------------------------------------------------
 
 typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO, CT_DWELL } CALLTIPTYPE;
@@ -170,9 +171,9 @@ typedef struct _filevars
   int        iTabWidth;
   int        iIndentWidth;
   int        iWrapColumn;
-  char       chEncoding[64];
   cpi_enc_t  iEncoding;
   char       chMode[32];
+  char       chEncoding[64];
   WCHAR      wchMultiEdgeLines[SMALL_BUFFER];
 
 } FILEVARS, *LPFILEVARS;
@@ -181,8 +182,6 @@ typedef struct _filevars
 
 typedef struct _editfindreplace
 {
-  char szFind[FNDRPL_BUFFER];
-  char szReplace[FNDRPL_BUFFER];
   UINT fuFlags;
   bool bTransformBS;
   bool bAutoEscCtrlChars;
@@ -195,10 +194,12 @@ typedef struct _editfindreplace
   bool bHideNonMatchedLines;
   bool bStateChanged;
   HWND hwnd;
+  char szFind[FNDRPL_BUFFER];
+  char szReplace[FNDRPL_BUFFER];
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { "", "", 0, false, false, false, false, false, false, false, false, false, true, NULL }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, false, true, NULL, "", ""  }
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
@@ -351,14 +352,12 @@ typedef struct _globals_t
   bool      bDocHasInconsistentEOLs;
   unsigned  idxSelectedTheme;
 
-  WCHAR     SelectedThemeName[128];
-
   FR_STATES FindReplaceMatchFoundState;
 
+  WCHAR     SelectedThemeName[128];
   WCHAR     WorkingDirectory[MAX_PATH];
   WCHAR     IniFile[MAX_PATH];
   WCHAR     IniFileDefault[MAX_PATH];
-
   WCHAR     CurrentFile[MAX_PATH];
 
 } GLOBALS_T, *PGLOBALS_T;
@@ -549,8 +548,6 @@ typedef struct _settings2_t
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
 
-  //int DateFormatLong;
-  //int DateFormatShort;
   WCHAR DateTimeShort[128];
   WCHAR TimeStampRegExShort[256];
   WCHAR DateTimeLong[128];
@@ -601,24 +598,22 @@ typedef struct _editfileiostatus
 {
   cpi_enc_t iEncoding;
   int iEOLMode;
-
   bool bUnicodeErr;
-
-  // inconsistent line endings
-  bool bInconsistentEOLs;
-  DocLn eolCount[3];
-
   bool bCancelDataLoss;
   bool bUnknownExt;
   bool bEncryptedRaw;
 
+  // inconsistent line endings
+  bool bInconsistentEOLs;
   // inconsistent indentation
   INDENT_TYPE iGlobalIndent;
+
+  DocLn eolCount[3];
   DocLn indentCount[5];
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, {0,0,0}, false, false, false, I_MIX_LN, {0,0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, false, false, I_MIX_LN, {0,0,0}, {0,0,0,0,0} }
 
 //=============================================================================
 

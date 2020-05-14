@@ -22,7 +22,7 @@
 #include <math.h>
 #include <shlwapi.h>
 #include <heapapi.h>
-#include <versionhelpers.h>
+#include <VersionHelpers.h>
 
 #include "Scintilla.h"
 
@@ -273,7 +273,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument);
 bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
 
 void  ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc);
-bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
+bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath);
 DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
 void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
@@ -457,10 +457,10 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 //}
 
 inline size_t StringCchLenA(LPCSTR s, size_t n) {
-  n = (n ? n : STRSAFE_MAX_CCH); return strnlen_s(s, n);
+  n = (n ? n : STRSAFE_MAX_CCH); return (s ? strnlen_s(s, n) : 0LL);
 }
 inline size_t StringCchLenW(LPCWSTR s, size_t n) {
-  n = (n ? n : STRSAFE_MAX_CCH); return wcsnlen_s(s, n);
+  n = (n ? n : STRSAFE_MAX_CCH); return (s ? wcsnlen_s(s, n) : 0LL);
 }
 
 #if defined(UNICODE) || defined(_UNICODE)  
@@ -472,10 +472,12 @@ inline size_t StringCchLenW(LPCWSTR s, size_t n) {
 // ----------------------------------------------------------------------------
 
 inline char* StrEndA(const char* pStart, size_t siz) {
+  // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
   return (char*)(pStart + StringCchLenA(pStart, siz));
 }
 
 inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
+  // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
   return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
 }
 

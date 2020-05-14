@@ -139,7 +139,6 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
   return n;
 }
 
-
 //=============================================================================
 //
 //  GetWinVersionString()
@@ -149,6 +148,8 @@ static OSVERSIONINFOEX s_OSversion = { 0 };
 
 static void _GetTrueWindowsVersion()
 {
+  if (s_OSversion.dwOSVersionInfoSize != 0) { return; }
+
   // clear
   ZeroMemory(&s_OSversion, sizeof(OSVERSIONINFOEX));
   s_OSversion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
@@ -181,6 +182,8 @@ static void _GetTrueWindowsVersion()
 }
 // ----------------------------------------------------------------------------
 
+
+
 static DWORD _Win10BuildToReleaseId(DWORD build)
 {
   if (build >= 18363) {
@@ -204,9 +207,10 @@ static DWORD _Win10BuildToReleaseId(DWORD build)
   else if (build >= 14393) {
     return 1607;
   }
-  else {
-    return 1507;
+  else if (build >= 10586) {
+    return 1511;
   }
+  return 0; // 10240
 }
 // ----------------------------------------------------------------------------
 
@@ -234,11 +238,10 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
   }
   
   if (IsWindows10OrGreater()) {
-    WCHAR win10ver[80] = { L'\0' };
-    if (s_OSversion.dwOSVersionInfoSize == 0) { _GetTrueWindowsVersion(); }
+    _GetTrueWindowsVersion();
     DWORD const build = s_OSversion.dwBuildNumber;
-    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)", 
-      _Win10BuildToReleaseId(build) , build);
+    WCHAR win10ver[80] = { L'\0' };
+    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %i (Build %i)", _Win10BuildToReleaseId(build) , build);
     StringCchCat(szVersionStr, cchVersionStr, win10ver);
   }
 }
@@ -261,7 +264,6 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
       SetClipboardData(CF_UNICODETEXT, hData);
     }
     CloseClipboard();
-    // cppcheck-suppress memleak // ClipBoard is owner now
     return true; 
   }
   CloseClipboard();
@@ -510,9 +512,10 @@ bool IsRunAsAdmin()
   PSID pAdministratorsGroup = NULL;
 
   Globals.dwLastError = ERROR_SUCCESS;
-  const WCHAR* pLastErrMsg = L"";
 
   do {
+    //const WCHAR* pLastErrMsg = L"";
+    
     // Allocate and initialize a SID of the administrators group.
     SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
     if (!AllocateAndInitializeSid(
@@ -524,7 +527,7 @@ bool IsRunAsAdmin()
       &pAdministratorsGroup))
     {
       Globals.dwLastError = GetLastError();
-      pLastErrMsg = L"AllocateAndInitializeSid()";
+      //pLastErrMsg = L"AllocateAndInitializeSid()";
       break;
     }
 
@@ -533,7 +536,7 @@ bool IsRunAsAdmin()
     if (!CheckTokenMembership(NULL, pAdministratorsGroup, &fIsRunAsAdmin))
     {
       Globals.dwLastError = GetLastError();
-      pLastErrMsg = L"CheckTokenMembership()";
+      //pLastErrMsg = L"CheckTokenMembership()";
       break;
     }
 
@@ -879,9 +882,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
     PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
   else {
-    if (lpszSrc) {
-      StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
-    }
+    StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
   }
 
   if (bExpandEnv) {
@@ -1902,10 +1903,9 @@ size_t UnSlashW(LPWSTR pchInOut)
         *o = L'\\';
       else if (*s == L'x' || *s == L'u') {
         bool bShort = (*s == L'x');
-        WCHAR val = L'\0';
         int hex = GetHexDigitW(*(s + 1));
         if (hex >= 0) {
-          val = (WCHAR)hex;
+          WCHAR val = (WCHAR)hex;
           hex = GetHexDigitW(*(++s + 1));
           if (hex >= 0) {
             ++s;

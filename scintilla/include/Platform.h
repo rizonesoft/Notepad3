@@ -319,7 +319,7 @@ struct FontParameters {
 	int characterSet;
 	const char *localeName;
 
-	FontParameters(
+	explicit FontParameters(
 		const char *faceName_,
 		float size_=10,
 		int weight_=400,

@@ -537,7 +537,7 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
     auto pointSize = static_cast<float>(wcstod(fontSizeText, nullptr));
     if (pointSize <= 0.0f) { pointSize = 10.0f; }
 
-    FontFaceInfo fontFaceInfo(fontFamilyName, packedAttributes);
+    FontFaceInfo const fontFaceInfo(fontFamilyName, packedAttributes);
 
     // Recreate current text format object
     SafeRelease(&m_currentTextFormat);

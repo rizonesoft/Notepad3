@@ -4565,7 +4565,7 @@ fetch_interval(UChar** src, UChar* end, PToken* tok, ScanEnv* env)
 
 /* \M-, \C-, \c, or \... */
 static int
-fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
+fetch_escaped_value_raw(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
 {
   int v;
   OnigCodePoint c;
@@ -4584,7 +4584,7 @@ fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
       if (PEND) return ONIGERR_END_PATTERN_AT_META;
       PFETCH_S(c);
       if (c == MC_ESC(env->syntax)) {
-        v = fetch_escaped_value(&p, end, env, &c);
+        v = fetch_escaped_value_raw(&p, end, env, &c);
         if (v < 0) return v;
       }
       c = ((c & 0xff) | 0x80);
@@ -4613,7 +4613,7 @@ fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
       }
       else {
         if (c == MC_ESC(env->syntax)) {
-          v = fetch_escaped_value(&p, end, env, &c);
+          v = fetch_escaped_value_raw(&p, end, env, &c);
           if (v < 0) return v;
         }
         c &= 0x9f;
@@ -4632,6 +4632,21 @@ fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
 
   *src = p;
   *val = c;
+  return 0;
+}
+
+static int
+fetch_escaped_value(UChar** src, UChar* end, ScanEnv* env, OnigCodePoint* val)
+{
+  int r;
+  int len;
+
+  r = fetch_escaped_value_raw(src, end, env, val);
+  if (r != 0) return r;
+
+  len = ONIGENC_CODE_TO_MBCLEN(env->enc, *val);
+  if (len < 0) return len;
+
   return 0;
 }
 
@@ -5193,7 +5208,7 @@ fetch_token_cc(PToken* tok, UChar** src, UChar* end, ScanEnv* env, int state)
           else {
             int curr_state;
 
-	    curr_state = (state == CS_RANGE) ? CPS_EMPTY : CPS_START;
+            curr_state = (state == CS_RANGE) ? CPS_EMPTY : CPS_START;
             r = check_code_point_sequence_cc(p, end, tok->base_num, enc,
                                              curr_state);
             if (r < 0) return r;
@@ -8420,8 +8435,9 @@ parse_exp(Node** np, PToken* tok, int term, UChar** src, UChar* end,
   case TK_CODE_POINT:
     {
       UChar buf[ONIGENC_CODE_TO_MBC_MAXLEN];
-      len = ONIGENC_CODE_TO_MBC(env->enc, tok->u.code, buf);
+      len = ONIGENC_CODE_TO_MBCLEN(env->enc, tok->u.code);
       if (len < 0) return len;
+      len = ONIGENC_CODE_TO_MBC(env->enc, tok->u.code, buf);
 #ifdef NUMBERED_CHAR_IS_NOT_CASE_AMBIG
       *np = node_new_str_crude(buf, buf + len, env->options);
 #else

@@ -900,7 +900,7 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), encodingUCD);
   }
   else {
-    const WCHAR* const ukn = (!encodingUCD || (encodingUCD[0] == L'\0')) ? L"<unknown>" : encodingUCD;
+    const WCHAR* const ukn = (encodingUCD[0] == L'\0') ? L"<unknown>" : encodingUCD;
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? L"ASCII" : ukn);
   }
   WCHAR tmpBuf[80] = { '\0' };

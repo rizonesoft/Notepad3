@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
+    <builddir>../Bin</builddir>
     <platform>win64</platform>
+    <importproject>Notepad3.vcxproj</importproject>
     <analyze-all-vs-configs>true</analyze-all-vs-configs>
+    <check-headers>true</check-headers>
+    <check-unused-templates>false</check-unused-templates>
+    <max-ctu-depth>10</max-ctu-depth>
     <libraries>
-        <library>std</library>
+        <library>Notepad3</library>
+        <library>microsoft_sal</library>
         <library>windows</library>
     </libraries>
+    <suppressions>
+        <suppression>unusedFunction</suppression>
+    </suppressions>
     <addons>
         <addon>cert</addon>
     </addons>

@@ -61,7 +61,7 @@ public:
         }
     }
 
-    virtual void Report(const char* charset, float confidence)
+    void Report(const char* charset, float confidence) override
     {
         if (m_charset) {
             free(m_charset);
@@ -70,7 +70,7 @@ public:
         m_confidence = confidence;
     }
 
-    virtual void Reset()
+    void Reset() override
     {
         nsUniversalDetector::Reset();
         if (m_charset) {

@@ -63,7 +63,7 @@ bool IniSectionSetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue);
 bool IniSectionSetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llValue);
 bool IniSectionSetHex(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
 bool IniSectionSetDouble(LPCWSTR lpSectionName, LPCWSTR lpKeyName, double dValue);
-bool IniSectionSetBool(LPCWSTR lpSectionName, LPCWSTR lpName, bool bValue);
+bool IniSectionSetBool(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue);
 
 inline bool IniSectionSetPos(LPCWSTR lpSectionName, LPCWSTR lpKeyName, DocPos posValue) {
   return IniSectionSetLongLong(lpSectionName, lpKeyName, posValue);
@@ -123,9 +123,9 @@ void AddFilePathToRecentDocs(LPCWSTR szFilePath);
 
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize);
 bool      MRU_Destroy(LPMRULIST pmru);
-bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iAnchor, LPCWSTR pszBookMarks);
+bool      MRU_Add(LPMRULIST pmru, LPCWSTR pszNew, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks);
 bool      MRU_FindFile(LPMRULIST pmru, LPCWSTR pszFile, int* iIndex);
-bool      MRU_AddFile(LPMRULIST pmru, LPCWSTR pszFile, bool, bool, cpi_enc_t iEnc, DocPos iPos, DocPos iAnchor, LPCWSTR pszBookMarks);
+bool      MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexpandMyDocs, cpi_enc_t iEnc, DocPos iPos, DocPos iSelAnc, LPCWSTR pszBookMarks);
 bool      MRU_Delete(LPMRULIST pmru, int iIndex);
 bool      MRU_Empty(LPMRULIST pmru);
 int       MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem);

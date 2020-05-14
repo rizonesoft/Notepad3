@@ -446,13 +446,13 @@ DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int,
 //
 //  Margins
 //
-DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, int, margin, int, type)
-DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, int, margin)
-DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, int, margin, int, pixelWidth)
-DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, int, margin, int, mask)
-DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
-DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
-DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, int, margin, int, cursor)
+DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, uintptr_t, margin, int, type)
+DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, uintptr_t, margin)
+DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, uintptr_t, margin, int, pixelWidth)
+DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, uintptr_t, margin, int, mask)
+DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, uintptr_t, margin, bool, sensitive)
+DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, uintptr_t, margin, COLORREF, colour)
+DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, uintptr_t, margin, int, cursor)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag)

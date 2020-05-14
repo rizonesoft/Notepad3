@@ -52,13 +52,14 @@ void DialogFileBrowse(HWND hwnd);
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
 
-int  MessageBoxLng(HWND hwnd, UINT uType, UINT uIdMsg, ...);
-INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMessage, ...);
+int  MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...);
+INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 DWORD DbgMsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 
-bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, 
-                    int iFormat, bool bIsElevated, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
+bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
+                    LPCWSTR lpszFile, int iFormat, bool bModified,
+                    UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt);
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
@@ -140,7 +141,7 @@ inline int ScaleFractionalFontSize(HWND hwnd, float fSize) {
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(const HMENU hMenu, const UINT nItem);
 void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
-HBITMAP ResizeImageForCurrentDPI(HWND hWnd, HBITMAP hbmp);
+HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 
 // ----------------------------------------------------------------------------

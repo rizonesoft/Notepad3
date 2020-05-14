@@ -36,13 +36,14 @@ typedef struct tagDLDATA // dl
   UINT cbidl;                // Size of pidl
   LPITEMIDLIST  pidl;        // Directory Id
   LPSHELLFOLDER lpsf;        // IShellFolder Interface to pidl
-  WCHAR szPath[MAX_PATH];    // Pathname to Directory Id
   int iDefIconFolder;        // Default Folder Icon
   int iDefIconFile;          // Default File Icon
   bool bNoFadeHidden;        // Flag passed from GetDispInfo()
   HANDLE hThread;            // Thread Handle
   HANDLE hExitThread;        // Flag is set when Icon Thread should terminate
   HANDLE hTerminatedThread;  // Flag is set when Icon Thread has terminated
+
+  WCHAR szPath[MAX_PATH];    // Pathname to Directory Id
 
 } DLDATA, *LPDLDATA;
 
@@ -1049,10 +1050,7 @@ int DriveBox_Fill(HWND hwnd)
   COMBOBOXEXITEM  cbei;
   LPDC_ITEMDATA   lpdcid;
 
-  ULONG dwAttributes = 0;
-
   DWORD grfFlags = SHCONTF_FOLDERS;
-
 
   // Init ComboBox
   SendMessage(hwnd,WM_SETREDRAW,0,0);
@@ -1105,7 +1103,7 @@ int DriveBox_Fill(HWND hwnd)
 
             // Add item to the List if it is part of the
             // Filesystem
-            dwAttributes = SFGAO_FILESYSTEM;
+            ULONG dwAttributes = SFGAO_FILESYSTEM;
 
             lpsf->lpVtbl->GetAttributesOf(
                             lpsf,
