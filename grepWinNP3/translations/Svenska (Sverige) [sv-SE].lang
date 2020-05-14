@@ -8,7 +8,7 @@
 "Content-Transfer-Encoding: 8bit\n"
 #
 # encoding: UTF-8
-# Language: Afrikaans (South Africa) resources
+# Language: Swedish (Sweden) resources
 # Last-Translator: (sv-SE) Svensk översättning av ThreeLightsBeyond
 #
 
@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr ""
+msgstr "%ld fler träffar"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
@@ -43,245 +43,245 @@ msgstr ""
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr ""
+msgstr "%path% ersätts med sökväg till filen, %line% med raden att hoppa till, %pattern% med söksträngen."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr ""
+msgstr "Om grepWinNP3"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr ""
+msgstr "Ersätt"
 
 #. Resource IDs: (123)
 msgid "&Search"
-msgstr ""
+msgstr "Sök"
 
 #. Resource IDs: (1013)
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #. Resource IDs: (1061, 1063, 1064, 1066, 1067)
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
-msgstr ""
+msgstr "Om grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr ""
+msgstr "Lägg till favoriter"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr ""
+msgstr "Alla filer"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Alla datum"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr ""
+msgstr "Alla storlekar"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr ""
+msgstr "Är du säker du vill ersätta \n%s\nmed\n%s\nutan att skapa säkerhetskopior?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Mellan"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr ""
+msgstr "Kommando för att starta editor på en secifik rad:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr ""
+msgstr "Innehåll"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr ""
+msgstr "Kopiera filnamn till urklipp"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""
+msgstr "Kopiera filnamn till urklipp"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr ""
+msgstr "Kopiera sökväg till urklipp"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr ""
+msgstr "Kopiera sökvägar till urklipp"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr ""
+msgstr "Kopiera textresultat till urklipp"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr ""
+msgstr "Kopiera textresultat till urklipp"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr ""
+msgstr "Kopiera säkerhetskopior"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr ""
+msgstr "Kopiera säkerhetskopior i separat mapp"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Mörkt läge"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "Aktivera mörkt läge i Windows syteminställningar (>= Win10 v1803)."
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr ""
+msgstr "Datum modifierad"
 
 #. Resource IDs: (137)
 msgid "Dialog"
-msgstr ""
+msgstr "Dialogruta"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr ""
+msgstr "Punkt matchar nyrad"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr ""
+msgstr "Dubbelklicka för att välja en förinställd inställning"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr ""
+msgstr "Dummy"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr ""
+msgstr "Teckenkodning"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr ""
+msgstr "Ange ett namn för regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWinNP3"
-msgstr ""
+msgstr "Esc-tangenten stänger grepWinNP3"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr ""
+msgstr "Exkludera mappar (Regex):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr ""
+msgstr "Filnamn matchar:\nanvänd '|' för att separera multipla textmatchningsmönster, lägg till '-' i början för att exkludera"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr ""
+msgstr "Filer"
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
-msgstr ""
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr ""
+msgstr "En mapp med en säkerhetskopia skapas innuti mappen du söker i, och filer säkerhetskopieras skapas för filerna till denna mapp"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr ""
+msgstr "Inkludera binära filer"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr ""
+msgstr "Inkludera gömda filer"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr ""
+msgstr "Inkludera undermappar"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr ""
+msgstr "Inkludera systemfiler"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr ""
+msgstr "Ogiltig mapp!"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr ""
+msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr ""
+msgstr "Språk:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr ""
+msgstr "Begränsa sökning"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr ""
+msgstr "Rad"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr ""
+msgstr "Rad %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr ""
+msgstr "Träffar"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Nyare än"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr ""
+msgstr "Nyrad matchar med '.'"
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Äldre än"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr ""
+msgstr "Bara en instans"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr ""
+msgstr "Öppna innehållande mapp"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr ""
+msgstr "Öppna med editor"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
@@ -289,246 +289,246 @@ msgstr ""
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr ""
+msgstr "Sökväg"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr ""
+msgstr "Förvalt namn"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr ""
+msgstr "Förval"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr ""
+msgstr "Tryck in F1 för hjälp"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr ""
+msgstr "Program"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr ""
+msgstr "Byt namn på förval"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr ""
+msgstr "Regex Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr ""
+msgstr "Regex träff"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr ""
+msgstr "Regex ersätt sträng:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr ""
+msgstr "Regex sökning"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr ""
+msgstr "Regex söksträng:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr ""
+msgstr "Relativ sökväg är inte tillåten. Var vänlig ange en absolut sökväg!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr ""
+msgstr "Ta bort förval"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr ""
+msgstr "Ersätt sträng"
 
 #. Resource IDs: (1027)
 msgid "Replace with:"
-msgstr ""
+msgstr "Ersätt med:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr ""
+msgstr "Avsluta"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr ""
+msgstr "Sök"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr ""
+msgstr "Sök efter:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr ""
+msgstr "Skiftlägeskänslig sökning"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr ""
+msgstr "Sök i"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr ""
+msgstr "Sökresultat"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr ""
+msgstr "Sök sträng"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr ""
+msgstr "Sök %ld filer, hoppade över %ld filer. Hittade %ld träffar i %ld filer."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr ""
+msgstr "Välj editor ..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr ""
+msgstr "Välj mapp att söka i"
 
 #. Resource IDs: (1071)
 msgid "Settings"
-msgstr ""
+msgstr "Inställningar"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr ""
+msgstr "Storlek"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr ""
+msgstr "Storlek är"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr ""
+msgstr "Testa regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr ""
+msgstr "Textträffar"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr ""
+msgstr "Textsökning"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr ""
+msgstr "Regex sökning matchar:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr ""
+msgstr "Text efter ersättning:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr ""
+msgstr "Lägger till ny post i snabbmenyn med rubriken 'Öppna med editor'"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
-msgstr ""
+msgstr "Behandlar filer som UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
-msgstr ""
+msgstr "Besök vår webbsida"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr ""
+msgstr "ett reguljärt uttryck använt för sökning. Tryck F1 för mer information."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr ""
+msgstr "En tom sträng"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr ""
+msgstr "binär"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr ""
+msgstr "klicka för att redigera text som multiradstext"
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr ""
+msgstr "lika med"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr ""
+msgstr "större än"
 
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
-msgstr ""
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
-msgstr ""
+msgstr "grepWinNP3 inställningar"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr ""
+msgstr "håll ner shift-tangenten för att hitta filer som inte innhåller söksträngen"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr ""
+msgstr "felaktig rexex!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr ""
+msgstr "mindre än"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr ""
+msgstr "ingen träff"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr ""
+msgstr "ingen text att ersätta med"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr ""
+msgstr "ingen text att testa med"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "söker bara efter filer som matchar detta mönster.\nAnvänd '|' som avgränsare.\nExempelvis: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr ""
+msgstr "läsfel"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr ""
+msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr ""
+msgstr "återanvänd grepWinNP3-instanser."
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr ""
+msgstr "söker i filen '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr ""
+msgstr "söksträngen är tom"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
-msgstr ""
+msgstr "sökväg(arna) söks rekursivt.\nSeparera sökvägar med '|' symbolen.\nExempelvis: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
+msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\nExempelvis: ^(CVS|bilder)$\nMärk,, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
 
 #. Resource IDs: (1061)
 msgid "Reset"
-msgstr ""
+msgstr "Återställ"
 
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
-msgstr ""
+msgstr "Maximalt # samtidiga instanser"
