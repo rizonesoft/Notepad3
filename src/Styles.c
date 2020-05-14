@@ -303,8 +303,7 @@ static void _EnableSchemeConfig(const bool bEnable)
 void Style_DynamicThemesMenuCmd(int cmd)
 {
   unsigned const iThemeIdx = (unsigned)(cmd - IDM_THEMES_DEFAULT); // consecutive IDs
-
-  if ((iThemeIdx < 0) || (iThemeIdx >= ThemeItems_CountOf())) {
+  if (iThemeIdx >= ThemeItems_CountOf()) {
     return;
   }
   if (iThemeIdx == Globals.idxSelectedTheme) { return; }
@@ -721,10 +720,10 @@ void Style_ToIniSection(bool bForceAll, bool bIsStdIniFile)
 
   for (int i = 0; i < 16; i++) {
     WCHAR tch[32] = { L'\0' };
-    WCHAR wch[32] = { L'\0' };
     StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
     if ((g_colorCustom[i] != s_colorDefault[i]) || (bForceAll && !Globals.bIniFileFromScratch))
     {
+      WCHAR wch[32] = { L'\0' };
       StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
         (int)GetRValue(g_colorCustom[i]), (int)GetGValue(g_colorCustom[i]), (int)GetBValue(g_colorCustom[i]));
 
@@ -2808,7 +2807,6 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   int  iValue;
   COLORREF dColor;
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  WCHAR wchDefFontName[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   // ---------   Font settings   ---------
@@ -2816,6 +2814,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   {
     if (!StrStrI(lpszStyleDest, L"font:")) {
       if (Style_StrGetFont(lpszStyleSrc, tch, COUNTOF(tch))) {
+        WCHAR wchDefFontName[BUFSIZE_STYLE_VALUE] = { L'\0' };
         Style_StrGetFont(L"font:Default", wchDefFontName, COUNTOF(wchDefFontName));
         if ((StringCchCompareXI(tch, L"Default") == 0) || (StringCchCompareXI(tch, wchDefFontName) == 0)) {
           StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:Default");
@@ -3771,8 +3770,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
   static WCHAR tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
 
-  static HFONT hFontTitle = NULL;
-
   switch(umsg)
   {
     case WM_INITDIALOG:
@@ -3876,6 +3873,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
 
         // Set title font
+        static HFONT hFontTitle = NULL;
         int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
         if (hFontTitle) { DeleteObject(hFontTitle); }
         hFontTitle = GetStockObject(DEFAULT_GUI_FONT);

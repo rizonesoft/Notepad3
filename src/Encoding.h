@@ -114,7 +114,7 @@ void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding);
 const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding);
 const char* Encoding_GetParseNames(const cpi_enc_t iEncoding);
 int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch);
-int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cch);
+int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch);
 
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
@@ -174,7 +174,6 @@ typedef struct _enc_det_t
 {
   cpi_enc_t Encoding; // final detection result
   // statistic:
-  char encodingStrg[64];
   cpi_enc_t forcedEncoding;
   cpi_enc_t fileVarEncoding;
   cpi_enc_t analyzedEncoding;
@@ -188,9 +187,11 @@ typedef struct _enc_det_t
   bool bIsUTF8Sig;
   bool bValidUTF8;
 
+  char encodingStrg[64];
+  
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, "", CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(LPWSTR pszFile, const char* lpData, const size_t cbData,

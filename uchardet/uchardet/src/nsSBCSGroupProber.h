@@ -50,12 +50,12 @@ class nsSBCSGroupProber : public nsCharSetProber {
 public:
   nsSBCSGroupProber();
   virtual ~nsSBCSGroupProber();
-  nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName();
-  nsProbingState GetState(void) {return mState;};
-  void      Reset(void);
-  float     GetConfidence(void);
-  void      SetOpion() {};
+  nsProbingState HandleData(const char* aBuf, PRUint32 aLen) override;
+  const char* GetCharSetName() override;
+  nsProbingState GetState(void) override { return mState; };
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
+  void      SetOpion() override {};
 
 #ifdef DEBUG_chardet
   void  DumpStatus();

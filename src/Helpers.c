@@ -175,13 +175,13 @@ static void _GetTrueWindowsVersion()
 #pragma warning ( disable: 4996 )
   // if function failed, use fallback to old version
   if (pRtlGetVersion == NULL) {
-    // cppcheck-suppress GetVersionExCalled
     GetVersionEx((OSVERSIONINFO*)& s_OSversion);
   }
 #pragma warning ( pop )
 
 }
 // ----------------------------------------------------------------------------
+
 
 
 static DWORD _Win10BuildToReleaseId(DWORD build)
@@ -207,9 +207,10 @@ static DWORD _Win10BuildToReleaseId(DWORD build)
   else if (build >= 14393) {
     return 1607;
   }
-  else {
-    return 1507;
+  else if (build >= 10586) {
+    return 1511;
   }
+  return 0; // 10240
 }
 // ----------------------------------------------------------------------------
 
@@ -511,9 +512,10 @@ bool IsRunAsAdmin()
   PSID pAdministratorsGroup = NULL;
 
   Globals.dwLastError = ERROR_SUCCESS;
-  const WCHAR* pLastErrMsg = L"";
 
   do {
+    //const WCHAR* pLastErrMsg = L"";
+    
     // Allocate and initialize a SID of the administrators group.
     SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
     if (!AllocateAndInitializeSid(
@@ -525,7 +527,7 @@ bool IsRunAsAdmin()
       &pAdministratorsGroup))
     {
       Globals.dwLastError = GetLastError();
-      pLastErrMsg = L"AllocateAndInitializeSid()";
+      //pLastErrMsg = L"AllocateAndInitializeSid()";
       break;
     }
 
@@ -534,7 +536,7 @@ bool IsRunAsAdmin()
     if (!CheckTokenMembership(NULL, pAdministratorsGroup, &fIsRunAsAdmin))
     {
       Globals.dwLastError = GetLastError();
-      pLastErrMsg = L"CheckTokenMembership()";
+      //pLastErrMsg = L"CheckTokenMembership()";
       break;
     }
 
@@ -880,9 +882,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
     PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
   else {
-    if (lpszSrc) {
-      StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
-    }
+    StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
   }
 
   if (bExpandEnv) {
@@ -1903,10 +1903,9 @@ size_t UnSlashW(LPWSTR pchInOut)
         *o = L'\\';
       else if (*s == L'x' || *s == L'u') {
         bool bShort = (*s == L'x');
-        WCHAR val = L'\0';
         int hex = GetHexDigitW(*(s + 1));
         if (hex >= 0) {
-          val = (WCHAR)hex;
+          WCHAR val = (WCHAR)hex;
           hex = GetHexDigitW(*(++s + 1));
           if (hex >= 0) {
             ++s;

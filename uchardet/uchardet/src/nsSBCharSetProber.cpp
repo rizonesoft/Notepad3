@@ -42,11 +42,9 @@
 
 nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  unsigned char order;
-
   for (PRUint32 i = 0; i < aLen; i++)
   {
-    order = mModel->charToOrderMap[(unsigned char)aBuf[i]];
+    unsigned char const order = mModel->charToOrderMap[(unsigned char)aBuf[i]];
 
     if (order < SYMBOL_CAT_ORDER)
     {
@@ -116,7 +114,7 @@ float nsSingleByteCharSetProber::GetConfidence()
   if ((mTotalChar > 0) && (mTotalSeqs > 0))
   {
     // weighted good sequence count
-    PRUint32 const probableSeqs = mSeqCounters[POSITIVE_CAT] + (mSeqCounters[PROBABLE_CAT] >> 2);
+    //PRUint32 const probableSeqs = mSeqCounters[POSITIVE_CAT] + (mSeqCounters[PROBABLE_CAT] >> 2);
     PRUint32 const validSeqs = mTotalSeqs - mSeqCounters[NEGATIVE_CAT];
 
     float r = rfactor(mSeqCounters[POSITIVE_CAT], mTotalSeqs) / mModel->mTypicalPositiveRatio;

@@ -12,7 +12,13 @@
         <library>microsoft_sal</library>
         <library>windows</library>
     </libraries>
+    <suppressions>
+        <suppression>unusedFunction</suppression>
+    </suppressions>
     <addons>
         <addon>cert</addon>
     </addons>
+    <tools>
+        <tool>clang-tidy</tool>
+    </tools>
 </project>

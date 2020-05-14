@@ -76,10 +76,10 @@ public:
     mLastCharOrder = order;
   };
 
-  float GetConfidence(void);
+  float GetConfidence(void) const;
   void      Reset(PRBool aIsPreferredLanguage);
-  void      SetOpion(){};
-  PRBool GotEnoughData() {return mTotalRel > ENOUGH_REL_THRESHOLD;};
+  static void SetOpion(){};
+  PRBool GotEnoughData() const {return mTotalRel > ENOUGH_REL_THRESHOLD;};
 
 protected:
   virtual PRInt32 GetOrder(const char* str, PRUint32 *charLen) = 0;
@@ -110,9 +110,9 @@ class SJISContextAnalysis : public JapaneseContextAnalysis
 {
   //SJISContextAnalysis(){};
 protected:
-  PRInt32 GetOrder(const char* str, PRUint32 *charLen);
+  PRInt32 GetOrder(const char* str, PRUint32 *charLen) override;
 
-  PRInt32 GetOrder(const char* str)
+  PRInt32 GetOrder(const char* str) override
   {
     //We only interested in Hiragana, so first byte is '\202'
     if (*str == '\202' &&
@@ -126,8 +126,8 @@ protected:
 class EUCJPContextAnalysis : public JapaneseContextAnalysis
 {
 protected:
-  PRInt32 GetOrder(const char* str, PRUint32 *charLen);
-  PRInt32 GetOrder(const char* str)
+  PRInt32 GetOrder(const char* str, PRUint32 *charLen) override;
+  PRInt32 GetOrder(const char* str) override
     //We only interested in Hiragana, so first byte is '\244'
   {
     if (*str == '\244' &&

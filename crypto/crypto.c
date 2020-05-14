@@ -123,7 +123,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
         CheckDlgButton(hDlg, IDC_PWD_CHECK3, SetBtn(hasMasterFileKey));
-        CheckDlgButton(hDlg, IDC_PWD_CHECK2, SetBtn(hasBinFileKey | useFileKey));
+        CheckDlgButton(hDlg, IDC_PWD_CHECK2, SetBtn(hasBinFileKey || useFileKey));
         CheckDlgButton(hDlg, IDC_PWD_CHECK1, SetBtn(useMasterKey));
         CenterDlgInParent(hDlg, NULL);
         // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT1 ) );
@@ -274,12 +274,11 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             }
             InvalidateRect(hDlg, NULL, TRUE);
             return true;
-            break;
           }
         case IDOK:
           {
               bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
-              WCHAR newKey[WKEY_LEN] = L"\0";
+              WCHAR newKey[WKEY_LEN] = { L'\0' };
               GetDlgItemText(hDlg, IDC_PWD_EDIT3, newKey, COUNTOF(newKey));
 
               if (useMas) {

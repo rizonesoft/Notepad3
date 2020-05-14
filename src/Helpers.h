@@ -273,7 +273,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument);
 bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
 
 void  ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc);
-bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
+bool  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchPath);
 DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
 void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
 DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
