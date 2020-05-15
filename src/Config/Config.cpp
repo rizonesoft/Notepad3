@@ -673,13 +673,13 @@ extern "C" bool IniFileIterateSection(LPCWSTR lpFilePath, LPCWSTR lpSectionName,
 //
 extern "C" void AddFilePathToRecentDocs(LPCWSTR szFilePath)
 {
-  if (StrIsEmpty(szFilePath)) {
-    return;
-  }
+  if (StrIsEmpty(szFilePath)) { return; }
+
   if (Flags.ShellUseSystemMRU) 
   {
+#if TRUE
     SHAddToRecentDocs(SHARD_PATHW, szFilePath);
-#if 0
+#else
     (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY | COINIT_DISABLE_OLE1DDE);
 
     IShellItem* pShellItem = NULL;
@@ -2150,14 +2150,16 @@ bool MRU_AddFile(LPMRULIST pmru, LPWSTR pszFile, bool bRelativePath, bool bUnexp
     else {
       pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
     }
-    if (!bAlreadyInList) {
-      AddFilePathToRecentDocs(pszFile);
-    }
+
     pmru->iEncoding[0] = iEnc;
     pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : -1);
     pmru->iSelAnchPos[0] = (Settings.PreserveCaretPos ? iSelAnc : -1);
     pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
-    return true;
+
+    if (!bAlreadyInList) {
+      AddFilePathToRecentDocs(pszFile);
+    }
+    return bAlreadyInList;
   }
   return false;
 }
@@ -2288,18 +2290,6 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
       }
       CloseSettingsFile(false, bOpendByMe);
     }
-
-    if (bFileProps) {
-      WCHAR szFilePath[MAX_PATH + 1];
-      for (int i = n - 1; i >= 0; --i) 
-      {
-        if (StrIsNotEmpty(pmru->pszItems[i])) {
-          PathAbsoluteFromApp(pmru->pszItems[i], szFilePath, COUNTOF(szFilePath), true);
-          AddFilePathToRecentDocs(szFilePath);
-        }
-      }
-    }
-
     return true;
   }
   return false;

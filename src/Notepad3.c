@@ -9377,7 +9377,7 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 bool FileLoad(bool bDontSave, bool bNew, bool bReload, 
               bool bSkipUnicodeDetect, bool bSkipANSICPDetection, bool bForceEncDetection, LPCWSTR lpszFile)
 {
-  WCHAR szFileName[MAX_PATH] = { L'\0' };
+  WCHAR szFilePath[MAX_PATH] = { L'\0' };
   bool fSuccess = false;
 
   EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
@@ -9440,35 +9440,35 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
 
   if (StrIsEmpty(lpszFile)) {
-    if (!OpenFileDlg(Globals.hwndMain, szFileName, COUNTOF(szFileName), NULL)) {
+    if (!OpenFileDlg(Globals.hwndMain, szFilePath, COUNTOF(szFilePath), NULL)) {
       return false;
     }
   }
   else {
-    StringCchCopy(szFileName, COUNTOF(szFileName), lpszFile);
+    StringCchCopy(szFilePath, COUNTOF(szFilePath), lpszFile);
   }
-  NormalizePathEx(szFileName, COUNTOF(szFileName), true, Flags.bSearchPathIfRelative);
+  NormalizePathEx(szFilePath, COUNTOF(szFilePath), true, Flags.bSearchPathIfRelative);
 
   // change current directory to prevent directory lock on another path
   WCHAR szFolder[MAX_PATH];
-  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder), szFileName))) {
+  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder), szFilePath))) {
     if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
       SetCurrentDirectory(szFolder);
     }
   }
  
   // Ask to create a new file...
-  if (!bReload && !PathFileExists(szFileName))
+  if (!bReload && !PathFileExists(szFilePath))
   {
     bool bCreateFile = s_flagQuietCreate;
     if (!bCreateFile) {
-      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, PathFindFileName(szFileName));
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, PathFindFileName(szFilePath));
       if ((IDOK == answer) || (IDYES == answer)) {
         bCreateFile = true;
       }
     }
     if (bCreateFile) {
-      HANDLE hFile = CreateFile(szFileName,
+      HANDLE hFile = CreateFile(szFilePath,
                       GENERIC_READ | GENERIC_WRITE,
                       FILE_SHARE_READ | FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
@@ -9500,7 +9500,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
   else {
     int idx;
-    if (!bReload && MRU_FindFile(Globals.pFileMRU,szFileName,&idx)) {
+    if (!bReload && MRU_FindFile(Globals.pFileMRU,szFilePath,&idx)) {
       fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
       if (Encoding_IsValid(fioStatus.iEncoding)) {
         Encoding_SrcWeak(fioStatus.iEncoding);
@@ -9517,11 +9517,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       _END_UNDO_ACTION_;
 
       _BEGIN_UNDO_ACTION_;
-      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
+      fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
       _END_UNDO_ACTION_;
     }
     else {
-      fSuccess = FileIO(true, szFileName, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, &fioStatus, false, false);
+      fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !s_IsThisAnElevatedRelaunch, &fioStatus, false, false);
     }
   }
 
@@ -9537,7 +9537,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
     }
 
-    StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
+    StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFilePath);
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
 
@@ -9556,13 +9556,14 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     DocPos iCaretPos = -1;
     DocPos iAnchorPos = -1;
     LPCWSTR pszBookMarks = L"";
-    if (!bReload && MRU_FindFile(Globals.pFileMRU,szFileName,&idx)) {
+    if (!bReload && MRU_FindFile(Globals.pFileMRU,szFilePath,&idx)) {
       iCaretPos = Globals.pFileMRU->iCaretPos[idx];
       iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
-    if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch)) {
-      MRU_AddFile(Globals.pFileMRU, szFileName, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
+    if (!(Flags.bDoRelaunchElevated || s_IsThisAnElevatedRelaunch))
+    {
+      MRU_AddFile(Globals.pFileMRU, szFilePath, Flags.RelativeFileMRU, Flags.PortableMyDocs, fioStatus.iEncoding, iCaretPos, iAnchorPos, pszBookMarks);
     }
 
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
@@ -9625,7 +9626,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
 
-    if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
+    if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath))
     {
       if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
         SciCall_ConvertEOLs(fioStatus.iEOLMode);
@@ -9640,7 +9641,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     bool const bCheckIndent = bCheckFile && !Flags.bLargeFileLoaded && Settings.WarnInconsistentIndents;
 
-    if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFileName))
+    if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, szFilePath))
     {
       EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
       ConsistentIndentationCheck(&fioStatus);
@@ -9659,7 +9660,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     EndWaitCursor();
   }
   else if (!(Flags.bLargeFileLoaded || fioStatus.bUnknownExt)) {
-    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFileName));
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, PathFindFileName(szFilePath));
   }
 
   UpdateToolbar();
