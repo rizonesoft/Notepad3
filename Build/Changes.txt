@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.513.(build_#) (2020-05-13)
+Current BETA Version 5.20.514.(build_#) (2020-05-14)
 =====================================================
 
 -----------------------------------------------------
@@ -81,6 +81,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Scroll/normalize selection in view.
+- Fixing some CppCheck complaints.
 - Broken x86 (32-bit) build.
 - Theme scheme file handling (file extension inheritance).
 - Remember find pattern (Ctrl+F3).
