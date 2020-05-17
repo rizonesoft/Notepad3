@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2019 - Stefan Kueng
+// Copyright (C) 2012-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -294,36 +294,98 @@ class CStringUtils
 {
 public:
     // trim from both ends
-    static inline std::string &trim(std::string &s) {
+    static inline std::string& trim(std::string& s)
+    {
         return ltrim(rtrim(s));
+    }
+    static inline std::string& trim(std::string& s, const std::string& trimchars)
+    {
+        return ltrim(rtrim(s, trimchars), trimchars);
+    }
+    static inline std::string& trim(std::string& s, wint_t trimchar)
+    {
+        return ltrim(rtrim(s, trimchar), trimchar);
     }
 
     // trim from start
-    static inline std::string &ltrim(std::string &s) {
-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wint_t c) {return !iswspace(c); }));
+    static inline std::string& ltrim(std::string& s)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wint_t c) { return !iswspace(c); }));
+        return s;
+    }
+    static inline std::string& ltrim(std::string& s, const std::string& trimchars)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&trimchars](wint_t c) { return trimchars.find((char)c) == std::string::npos; }));
+        return s;
+    }
+    static inline std::string& ltrim(std::string& s, wint_t trimchar)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&trimchar](wint_t c) { return c != trimchar; }));
         return s;
     }
 
     // trim from end
-    static inline std::string &rtrim(std::string &s) {
-        s.erase(std::find_if(s.rbegin(), s.rend(), [](wint_t c) {return !iswspace(c); }).base(), s.end());
+    static inline std::string& rtrim(std::string& s)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [](wint_t c) { return !iswspace(c); }).base(), s.end());
+        return s;
+    }
+    static inline std::string& rtrim(std::string& s, const std::string& trimchars)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [&trimchars](wint_t c) { return trimchars.find((char)c) == std::string::npos; }).base(), s.end());
+        return s;
+    }
+    static inline std::string& rtrim(std::string& s, wint_t trimchar)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [&trimchar](wint_t c) { return c != trimchar; }).base(), s.end());
         return s;
     }
 
     // trim from both ends
-    static inline std::wstring &trim(std::wstring &s) {
+    static inline std::wstring& trim(std::wstring& s)
+    {
         return ltrim(rtrim(s));
+    }
+    static inline std::wstring& trim(std::wstring& s, const std::wstring& trimchars)
+    {
+        return ltrim(rtrim(s, trimchars), trimchars);
+    }
+    static inline std::wstring& trim(std::wstring& s, wint_t trimchar)
+    {
+        return ltrim(rtrim(s, trimchar), trimchar);
     }
 
     // trim from start
-    static inline std::wstring &ltrim(std::wstring &s) {
-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wint_t c) {return !iswspace(c); }));
+    static inline std::wstring& ltrim(std::wstring& s)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wint_t c) { return !iswspace(c); }));
+        return s;
+    }
+    static inline std::wstring& ltrim(std::wstring& s, const std::wstring& trimchars)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&trimchars](wint_t c) { return trimchars.find(c) == std::wstring::npos; }));
+        return s;
+    }
+    static inline std::wstring& ltrim(std::wstring& s, wint_t trimchar)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [&trimchar](wint_t c) { return c != trimchar; }));
         return s;
     }
 
     // trim from end
-    static inline std::wstring &rtrim(std::wstring &s) {
-        s.erase(std::find_if(s.rbegin(), s.rend(), [](wint_t c) {return !iswspace(c); }).base(), s.end());
+    static inline std::wstring& rtrim(std::wstring& s)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [](wint_t c) { return !iswspace(c); }).base(), s.end());
+        return s;
+    }
+    static inline std::wstring& rtrim(std::wstring& s, const std::wstring& trimchars)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [&trimchars](wint_t c) { return trimchars.find(c) == std::wstring::npos; }).base(), s.end());
+        return s;
+    }
+    static inline std::wstring& rtrim(std::wstring& s, wint_t trimchar)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [&trimchar](wint_t c) { return c != trimchar; }).base(), s.end());
         return s;
     }
 

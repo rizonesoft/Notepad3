@@ -271,6 +271,10 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Älter als"
 
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Keine Warnung bei Textersetzung ohne Backup"
+
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Nur eine Instanz"

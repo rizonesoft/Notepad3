@@ -76,9 +76,10 @@ public:
     void                    SetSearchPath(const std::wstring& path) {m_searchpath = path; SearchReplace(m_searchpath, L"/", L"\\"); }
     void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
     void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
-    void                    SetExcludeFileMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
+    void                    SetDirExcludeRegexMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
     void                    SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
     void                    SetUseRegex(bool reg) { m_bUseRegex = reg; }
+    void                    SetPreset(const std::wstring& preset);
 
     void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}

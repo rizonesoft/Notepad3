@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: English (United States) resources
-# Last-Translator: (en-US) English translation by RaiKoHoff
+# Last-Translator: (en-US) English translation by Stefan Kueng
 #
 
 #, fuzzy
@@ -269,6 +269,10 @@ msgstr ""
 
 #. Resource IDs: (1080)
 msgid "Older than"
+msgstr ""
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
 msgstr ""
 
 #. Resource IDs: (1063)

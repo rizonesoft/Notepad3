@@ -149,6 +149,7 @@ bool CTheme::SetThemeForDialog(HWND hWnd, bool bDark)
         RemoveWindowSubclass(hWnd, MainSubclassProc, SubclassID);
     }
     EnumChildWindows(hWnd, AdjustThemeForChildrenProc, bDark ? TRUE : FALSE);
+    EnumThreadWindows(GetCurrentThreadId(), AdjustThemeForChildrenProc, bDark ? TRUE : FALSE);
     ::RedrawWindow(hWnd, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
     }
     return true;
@@ -219,11 +220,11 @@ BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
         else if ((wcscmp(szWndClassName, WC_COMBOBOXEX) == 0) ||
                  (wcscmp(szWndClassName, WC_COMBOBOX) == 0))
         {
-            SetWindowTheme(hwnd, L"DarkMode_Explorer", nullptr);
+            SetWindowTheme(hwnd, L"Explorer", nullptr);
             HWND hCombo = hwnd;
             if (wcscmp(szWndClassName, WC_COMBOBOXEX) == 0)
             {
-                SendMessage(hwnd, CBEM_SETWINDOWTHEME, 0, (LPARAM)L"DarkMode_Explorer");
+                SendMessage(hwnd, CBEM_SETWINDOWTHEME, 0, (LPARAM)L"Explorer");
                 hCombo = (HWND)SendMessage(hwnd, CBEM_GETCOMBOCONTROL, 0, 0);
             }
             if (hCombo)
@@ -237,9 +238,9 @@ BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
                     DarkModeHelper::Instance().AllowDarkModeForWindow(info.hwndItem, (BOOL)lParam);
                     DarkModeHelper::Instance().AllowDarkModeForWindow(info.hwndCombo, (BOOL)lParam);
 
-                    SetWindowTheme(info.hwndList, L"DarkMode_Explorer", nullptr);
-                    SetWindowTheme(info.hwndItem, L"DarkMode_Explorer", nullptr);
-                    SetWindowTheme(info.hwndCombo, L"DarkMode_Explorer", nullptr);
+                    SetWindowTheme(info.hwndList, L"Explorer", nullptr);
+                    SetWindowTheme(info.hwndItem, L"Explorer", nullptr);
+                    SetWindowTheme(info.hwndCombo, L"Explorer", nullptr);
                 }
             }
         }
@@ -272,7 +273,19 @@ BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
             SendMessage(hwnd, PBM_SETBKCOLOR, 0, (LPARAM)darkBkColor);
             SendMessage(hwnd, PBM_SETBARCOLOR, 0, (LPARAM)RGB(100,100,0));
         }
-        else if (FAILED(SetWindowTheme(hwnd, L"DarkMode_Explorer", nullptr)))
+        else if (wcscmp(szWndClassName, L"Auto-Suggest Dropdown") == 0)
+        {
+            SetWindowTheme(hwnd, L"Explorer", nullptr);
+            // note: since the list control used to show the suggest dropdown has
+            // the style LVS_OWNERDRAWFIXED setting the theme has no effect.
+            // that's why we don't enumerate over the children of the "Auto-Suggest Dropdown"
+            //EnumChildWindows(hwnd, AdjustThemeForChildrenProc, lParam);
+        }
+        else if (wcscmp(szWndClassName, TOOLTIPS_CLASSW) == 0)
+        {
+            SetWindowTheme(hwnd, L"Explorer", nullptr);
+        }
+        else
             SetWindowTheme(hwnd, L"Explorer", nullptr);
     }
     else

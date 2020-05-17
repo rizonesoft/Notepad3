@@ -283,10 +283,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetFileMask(parser.GetVal(_T("filemaskregex")), true);
             if (parser.HasVal(_T("filemask")))
                 searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
-            if (parser.HasVal(_T("filemaskexclude")))
-                searchDlg.SetExcludeFileMask(parser.GetVal(_T("filemaskexclude")));
+            if (parser.HasVal(_T("direxcluderegex")))
+                searchDlg.SetDirExcludeRegexMask(parser.GetVal(_T("direxcluderegex")));
+            else if (parser.HasVal(_T("filemaskexclude")))
+                searchDlg.SetDirExcludeRegexMask(parser.GetVal(_T("filemaskexclude")));
             if (parser.HasVal(_T("replacewith")))
                 searchDlg.SetReplaceWith(parser.GetVal(_T("replacewith")));
+            if (parser.HasVal(_T("preset")))
+                searchDlg.SetPreset(parser.GetVal(_T("preset")));
 
             if (parser.HasVal(_T("i")))
                 searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes"))!=0);
