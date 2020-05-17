@@ -131,21 +131,24 @@ void CBookmarks::RemoveBookmark(const std::wstring& name)
 Bookmark CBookmarks::GetBookmark( const std::wstring& name )
 {
     Bookmark bk;
-    bk.Name = name;
-    bk.Search               = GetValue(name.c_str(), L"searchString",       L"");
-    bk.Replace              = GetValue(name.c_str(), L"replaceString",      L"");
-    bk.UseRegex             = wcscmp(GetValue(name.c_str(), L"useregex",           L"false"), L"true") == 0;
-    bk.CaseSensitive        = wcscmp(GetValue(name.c_str(), L"casesensitive",      L"false"), L"true") == 0;
-    bk.DotMatchesNewline    = wcscmp(GetValue(name.c_str(), L"dotmatchesnewline",  L"false"), L"true") == 0;
-    bk.Backup               = wcscmp(GetValue(name.c_str(), L"backup",             L"false"), L"true") == 0;
-    bk.Utf8                 = wcscmp(GetValue(name.c_str(), L"utf8",               L"false"), L"true") == 0;
-    bk.IncludeSystem        = wcscmp(GetValue(name.c_str(), L"includesystem",      L"false"), L"true") == 0;
-    bk.IncludeFolder        = wcscmp(GetValue(name.c_str(), L"includefolder",      L"false"), L"true") == 0;
-    bk.IncludeHidden        = wcscmp(GetValue(name.c_str(), L"includehidden",      L"false"), L"true") == 0;
-    bk.IncludeBinary        = wcscmp(GetValue(name.c_str(), L"includebinary",      L"false"), L"true") == 0;
-    bk.ExcludeDirs          = GetValue(name.c_str(), L"excludedirs",        L"");
-    bk.FileMatch            = GetValue(name.c_str(), L"filematch",          L"");
-    bk.FileMatchRegex       = wcscmp(GetValue(name.c_str(), L"filematchregex",     L"false"), L"true") == 0;
+    if (GetSectionSize(name.c_str()) >= 0)
+    {
+        bk.Name = name;
+        bk.Search               = GetValue(name.c_str(), L"searchString",       L"");
+        bk.Replace              = GetValue(name.c_str(), L"replaceString",      L"");
+        bk.UseRegex             = wcscmp(GetValue(name.c_str(), L"useregex",           L"false"), L"true") == 0;
+        bk.CaseSensitive        = wcscmp(GetValue(name.c_str(), L"casesensitive",      L"false"), L"true") == 0;
+        bk.DotMatchesNewline    = wcscmp(GetValue(name.c_str(), L"dotmatchesnewline",  L"false"), L"true") == 0;
+        bk.Backup               = wcscmp(GetValue(name.c_str(), L"backup",             L"false"), L"true") == 0;
+        bk.Utf8                 = wcscmp(GetValue(name.c_str(), L"utf8",               L"false"), L"true") == 0;
+        bk.IncludeSystem        = wcscmp(GetValue(name.c_str(), L"includesystem",      L"false"), L"true") == 0;
+        bk.IncludeFolder        = wcscmp(GetValue(name.c_str(), L"includefolder",      L"false"), L"true") == 0;
+        bk.IncludeHidden        = wcscmp(GetValue(name.c_str(), L"includehidden",      L"false"), L"true") == 0;
+        bk.IncludeBinary        = wcscmp(GetValue(name.c_str(), L"includebinary",      L"false"), L"true") == 0;
+        bk.ExcludeDirs          = GetValue(name.c_str(), L"excludedirs",        L"");
+        bk.FileMatch            = GetValue(name.c_str(), L"filematch",          L"");
+        bk.FileMatchRegex       = wcscmp(GetValue(name.c_str(), L"filematchregex",     L"false"), L"true") == 0;
+    }
 
     return bk;
 }

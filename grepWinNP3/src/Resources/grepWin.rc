@@ -32,16 +32,6 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 // remains consistent on all systems.
 IDI_GREPWIN             ICON                    "grepWinNP3.ico"
 
-#endif    // Neutral resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Neutral resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -153,7 +143,7 @@ BEGIN
 END
 
 IDD_ABOUT DIALOGEX 0, 0, 263, 86
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About grepWinNP3"
 FONT 9, "MS Shell Dlg 2", 400, 0, 0x1
 BEGIN
@@ -175,7 +165,7 @@ BEGIN
     CONTROL         "",IDC_TEXTCONTENT,"RichEdit20W",WS_VSCROLL | WS_TABSTOP | 0x1084,7,7,303,96
 END
 
-IDD_SETTINGS DIALOGEX 0, 0, 317, 189
+IDD_SETTINGS DIALOGEX 0, 0, 317, 209
 STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "grepWinNP3 Settings"
 FONT 9, "MS Shell Dlg 2", 400, 0, 0x1
@@ -189,17 +179,19 @@ BEGIN
     LTEXT           "This adds a new entry to the context menu named 'Open with Editor'",IDC_STATIC3,13,66,288,16
     LTEXT           "Language:",IDC_STATIC4,16,92,119,8
     COMBOBOX        IDC_LANGUAGE,151,90,159,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Escape key closes grepWinNP3",IDC_ESCKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,106,183,10
+    CONTROL         "Escape key closes grepWinNP3",IDC_ESCKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,106,252,10
     CONTROL         "Create backup files in a separate folder",IDC_BACKUPINFOLDER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,148,10
-    DEFPUSHBUTTON   "OK",IDOK,204,168,50,13
-    PUSHBUTTON      "Cancel",IDCANCEL,260,168,50,13
-    CONTROL         "Only one instance",IDC_ONLYONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,138,10
-    CONTROL         "Dark mode",IDC_DARKMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,150,10
-    LTEXT           "",IDC_DARKMODEINFO,17,154,179,23,WS_DISABLED
-    RTEXT           "Max # of concurrent worker",IDC_TEXT_NUMOFWORKER,147,144,119,9,0,WS_EX_RIGHT
-    EDITTEXT        IDC_MAXNUMWORKER,270,142,31,13,ES_RIGHT | ES_NUMBER | WS_GROUP,WS_EX_RIGHT
-    CONTROL         "",IDC_SPIN_MAXWORKER,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNLEFT | UDS_AUTOBUDDY | UDS_ARROWKEYS | WS_GROUP,271,142,10,13
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,249,10
+    CONTROL         "Don't warn when replacing without creating backups",IDC_NOWARNINGIFNOBACKUP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,250,10
+    DEFPUSHBUTTON   "OK",IDOK,204,180,50,13
+    PUSHBUTTON      "Cancel",IDCANCEL,260,180,50,13
+    CONTROL         "Only one instance",IDC_ONLYONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,150,10
+    CONTROL         "Dark mode",IDC_DARKMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,157,10
+    LTEXT           "",IDC_DARKMODEINFO,17,170,180,23,WS_DISABLED
+    RTEXT           "Max # of concurrent worker",IDC_TEXT_NUMOFWORKER,156,156,107,9,0,WS_EX_RIGHT
+    EDITTEXT        IDC_MAXNUMWORKER,271,154,31,13,ES_RIGHT | ES_NUMBER | WS_GROUP,WS_EX_RIGHT
+    CONTROL         "",IDC_SPIN_MAXWORKER,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNLEFT | UDS_AUTOBUDDY | UDS_ARROWKEYS | WS_GROUP,271,154,10,13
 END
 
 
@@ -278,7 +270,7 @@ BEGIN
         VERTGUIDE, 13
         VERTGUIDE, 301
         TOPMARGIN, 7
-        BOTTOMMARGIN, 181
+        BOTTOMMARGIN, 201
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -316,6 +308,36 @@ END
 //
 
 IDR_INFODLG             HTML                    "infodlg.htm"
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "..\\resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""grepWin.rc2""\r\n"
+    "#endif\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -400,46 +422,6 @@ STRINGTABLE
 BEGIN
     IDS_ERR_PATHNOTEXIST    "Path does not exist or is not accessible!"
 END
-
-#endif        // Neutral resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Neutral resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-#pragma code_page(1252)
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "..\\resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""grepWin.rc2""\r\n"
-    "#endif\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
 
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////

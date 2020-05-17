@@ -156,6 +156,8 @@
 #define IDC_SPIN_MAXWORKER              1086
 #define IDC_MAXNUMWORKER                1087
 #define IDC_TEXT_NUMOFWORKER            1088
+#define IDC_BACKUPINFOLDER2             1089
+#define IDC_NOWARNINGIFNOBACKUP         1090
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775
@@ -168,7 +170,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        161
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1089
+#define _APS_NEXT_CONTROL_VALUE         1091
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
