@@ -2940,12 +2940,15 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
           if (n > msa->best_len) {
             msa->best_len = n;
             msa->best_s   = (UChar* )sstart;
+            goto set_region;
           }
           else
             goto end_best_len;
         }
 #endif
         best_len = n;
+
+      set_region:
         region = msa->region;
         if (region) {
           if (keep > s) keep = s;
@@ -3020,8 +3023,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
           best_len = ONIG_MISMATCH;
           goto fail; /* for retry */
         }
-        if (OPTON_FIND_LONGEST(option) && DATA_ENSURE_CHECK1) {
-          goto fail; /* for retry */
+        if (OPTON_FIND_LONGEST(option)) {
+          if (s >= in_right_range && msa->best_s == sstart)
+            best_len = msa->best_len;
+          else
+            goto fail; /* for retry */
         }
       }
 
@@ -4996,6 +5002,13 @@ onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,
 
     prev = (UChar* )onigenc_get_prev_char_head(reg->enc, str, at);
     r = match_at(reg, str, end, end, at, prev, &msa);
+#ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
+    if (OPTON_FIND_LONGEST(option) && r == ONIG_MISMATCH) {
+      if (msa.best_len >= 0) {
+        r = msa.best_len;
+      }
+    }
+#endif
   }
 
  end:
@@ -5302,18 +5315,6 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
   }
 
 
-#ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
-#define MATCH_AND_RETURN_CHECK(upper_range) \
-  r = match_at(reg, str, end, (upper_range), s, prev, &msa); \
-  if (r != ONIG_MISMATCH) {\
-    if (r >= 0) {\
-      if (! OPTON_FIND_LONGEST(reg->options)) {\
-        goto match;\
-      }\
-    }\
-    else goto finish; /* error */ \
-  }
-#else
 #define MATCH_AND_RETURN_CHECK(upper_range) \
   r = match_at(reg, str, end, (upper_range), s, prev, &msa); \
   if (r != ONIG_MISMATCH) {\
@@ -5322,7 +5323,6 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
     }\
     else goto finish; /* error */ \
   }
-#endif /* USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE */
 
 
   /* anchor optimize: resume search range */
