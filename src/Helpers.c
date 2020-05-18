@@ -158,7 +158,7 @@ static void _GetTrueWindowsVersion()
   void (WINAPI *pRtlGetVersion)(PRTL_OSVERSIONINFOW lpVersionInformation) = NULL;
 
   // load the System-DLL
-  HINSTANCE hNTdllDll = LoadLibrary(L"ntdll.dll");
+  HINSTANCE const hNTdllDll = LoadLibrary(L"ntdll.dll");
 
   if (hNTdllDll != NULL)
   {
@@ -170,6 +170,7 @@ static void _GetTrueWindowsVersion()
     }
     FreeLibrary(hNTdllDll);
   } // if (hNTdllDll != NULL)
+
 
 #pragma warning ( push )
 #pragma warning ( disable: 4996 )
