@@ -497,17 +497,20 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //
 size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchLength)
 {
-  char* pszText = NULL;
+  if (!pwchBuffer || (wchLength == 0)) { return 0; }
   size_t const selSize = SciCall_GetSelText(NULL);
-  if (selSize > 0) {
-    pszText = AllocMem(selSize, HEAP_ZERO_MEMORY);
+  if (1 < selSize) {
+    char* pszText = AllocMem(selSize, HEAP_ZERO_MEMORY);
     if (pszText) {
       SciCall_GetSelText(pszText);
-      size_t const length = (size_t)MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, -1, pwchBuffer, wchLength);
+      size_t const length = (size_t)MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pwchBuffer, (int)wchLength);
       FreeMem(pszText);
       return length;
     }
-    return 0;
+  }
+  if (wchLength > 0) {
+    pwchBuffer[0] = L'\0';
+    return selSize;
   }
   return 0;
 }
