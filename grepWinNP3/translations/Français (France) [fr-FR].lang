@@ -39,7 +39,7 @@ msgstr "%ld autres correspondances"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Le chemin n'existe pas ou est pas accessible!"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -144,7 +144,7 @@ msgstr "Mode sombre"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Veuillez d'abord activer le mode sombre dans les paramètres de Windows (> = Win10 v1803)."
+msgstr "Le mode sombre nécessite au moins Win10 v1803 et doit être activé dans les paramètres de Windows."
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -270,6 +270,10 @@ msgstr "OK"
 #. Resource IDs: (1080)
 msgid "Older than"
 msgstr "Plus ancien que"
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Ne pas avertir lors du remplacement sans créer de sauvegardes"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"

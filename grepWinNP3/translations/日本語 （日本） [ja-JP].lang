@@ -271,6 +271,10 @@ msgstr "OK"
 msgid "Older than"
 msgstr "より古い"
 
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr ""
+
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "複数インスタンスを禁止"
