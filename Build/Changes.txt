@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.514.(build_#) (2020-05-14)
+Current BETA Version 5.20.518.(build_#) (2020-05-18)
 =====================================================
 
 -----------------------------------------------------
@@ -81,6 +81,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Don't add recent file list (history) to taskbar's jump-list.
 - Scroll/normalize selection in view.
 - Fixing some CppCheck complaints.
 - Broken x86 (32-bit) build.
