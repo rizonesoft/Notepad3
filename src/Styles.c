@@ -322,7 +322,7 @@ void Style_DynamicThemesMenuCmd(int cmd)
         }
       }
     }
-    else if (PathFileExists(Theme_Files[Globals.idxSelectedTheme].szFilePath))
+    else if (PathIsExistingFile(Theme_Files[Globals.idxSelectedTheme].szFilePath))
     {
       Style_ExportToFile(Theme_Files[Globals.idxSelectedTheme].szFilePath, false);
     }
@@ -332,7 +332,7 @@ void Style_DynamicThemesMenuCmd(int cmd)
   StringCchCopy(Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName), Theme_Files[Globals.idxSelectedTheme].szName);
 
   bool result = true;
-  if ((Globals.idxSelectedTheme > 1) && PathFileExists(Theme_Files[Globals.idxSelectedTheme].szFilePath))
+  if ((Globals.idxSelectedTheme > 1) && PathIsExistingFile(Theme_Files[Globals.idxSelectedTheme].szFilePath))
   {
     result = Style_ImportFromFile(Theme_Files[Globals.idxSelectedTheme].szFilePath);
   }
@@ -836,7 +836,7 @@ bool Style_ExportToFile(const WCHAR* szFile, bool bForceAll)
   else {
     if (StrIsNotEmpty(szFilePathNorm))
     {
-      if (!PathFileExists(szFilePathNorm)) {
+      if (!PathIsExistingFile(szFilePathNorm)) {
         HANDLE hFile = CreateFile(szFilePathNorm,
           GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -3006,9 +3006,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
 
-  int iCharSet = 0;
+  int iCharSet = ANSI_CHARSET;
   if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
-    iCharSet = 0;
+    iCharSet = ANSI_CHARSET;
   }
     
   // is "size:" definition relative ?
@@ -3058,14 +3058,16 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   LOGFONT lf;
   ZeroMemory(&lf, sizeof(LOGFONT));
-  StringCchCopyN(lf.lfFaceName, COUNTOF(lf.lfFaceName), wchFontName, COUNTOF(wchFontName));
+
+
+  StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
   lf.lfCharSet = (BYTE)iCharSet;
   lf.lfHeight = iFontHeight;
   lf.lfWeight = iFontWeight;
   lf.lfItalic = (BYTE)(BOOL)bIsItalic;
   lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
   lf.lfStrikeOut = (BYTE)(BOOL)bIsStrikeout;
-  //~lf.lfQuality = (BYTE)iQuality;
+  lf.lfQuality = (BYTE)iQuality;
   //~lf.lfClipPrecision = (BYTE)CLIP_DEFAULT_PRECIS;
   //~lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
@@ -3081,14 +3083,14 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
   cf.iPointSize = (INT)iPointSize;
-  //~cf.nFontType = ((iFontWeight <= FW_MEDIUM) ? REGULAR_FONTTYPE : BOLD_FONTTYPE);
-  //~cf.nFontType |= (bIsItalic ? ITALIC_FONTTYPE : 0);
-  cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
-  cf.lCustData = (LPARAM)FontSelTitle;
+  cf.nFontType = SCREEN_FONTTYPE;
   //cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_SCREENFONTS | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
   //cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_USESTYLE | CF_SCALABLEONLY | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
   //cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_INACTIVEFONTS | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
   cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_ENABLEHOOK;
+
+  cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
+  cf.lCustData = (LPARAM)FontSelTitle;
 
   if (bGlobalDefaultStyle) {
     if (bRelFontSize)
@@ -3224,10 +3226,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   StringCchCat(szNewStyle, COUNTOF(szNewStyle), newSize);
 
   
-  if (bGlobalDefaultStyle &&
-    (lf.lfCharSet != DEFAULT_CHARSET) &&
-    (lf.lfCharSet != ANSI_CHARSET) &&
-    (lf.lfCharSet != 0)) {
+  if (bGlobalDefaultStyle && (lf.lfCharSet != DEFAULT_CHARSET) && (lf.lfCharSet != ANSI_CHARSET))
+  {
     WCHAR chset[32] = { L'\0' };
     if (lf.lfCharSet == iCharSet) {
       if (StrStrI(lpszStyle, L"charset:"))

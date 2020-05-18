@@ -113,6 +113,7 @@ BOOL DirList_IsFileSelected(HWND);
 
 BOOL ExecDDECommand(LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR);
 
+inline BOOL PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
 
 //==== StrNextTok methods ===================
 CHAR*  StrNextTokA(CHAR*, const CHAR*);

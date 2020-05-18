@@ -175,7 +175,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
       HWND hwnd = focus ? focus : Globals.hwndMain;
       s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
 
-      MessageBoxEx(hwnd, lpDisplayBuf, L"Notepad3 - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
+      MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
 
       FreeMem(lpDisplayBuf);
     }
@@ -1009,7 +1009,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
             ExtractFirstArgument(arg1, arg1, arg2, MAX_PATH);
 
             if (StringCchCompareNI(arg1, COUNTOF(arg1), _W(SAPPNAME), CSTRLEN(_W(SAPPNAME))) == 0 ||
-              StringCchCompareNI(arg1, COUNTOF(arg1), L"notepad3.exe", CSTRLEN(L"notepad3.exe")) == 0) {
+              StringCchCompareNI(arg1, COUNTOF(arg1), L"Notepad3.exe", CSTRLEN(L"Notepad3.exe")) == 0) {
               GetModuleFileName(NULL, arg1, COUNTOF(arg1));
               PathCanonicalizeEx(arg1, COUNTOF(arg1));
               bQuickExit = true;
@@ -1601,7 +1601,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
     if (ListView_GetItem(hwnd,&lvi)) 
     {
       DWORD dwAttr = 0;
-      if (PathIsUNC(tch) || !PathFileExists(tch)) {
+      if (PathIsUNC(tch) || !PathIsExistingFile(tch)) {
         dwFlags |= SHGFI_USEFILEATTRIBUTES;
         dwAttr = FILE_ATTRIBUTE_NORMAL;
         shfi.dwAttributes = 0;
@@ -1811,7 +1811,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
               ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
 
-              if (!PathFileExists(tch)) {
+              if (!PathIsExistingFile(tch)) {
                 dwFlags |= SHGFI_USEFILEATTRIBUTES;
                 dwAttr = FILE_ATTRIBUTE_NORMAL;
                 shfi.dwAttributes = 0;
@@ -1973,7 +1973,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
               PathUnquoteSpaces(tchFileName);
 
-              if (!PathFileExists(tchFileName) || (LOWORD(wParam) == IDC_REMOVE)) {
+              if (!PathIsExistingFile(tchFileName) || (LOWORD(wParam) == IDC_REMOVE)) {
 
                 // don't remove myself
                 int iCur = 0;
@@ -3445,7 +3445,7 @@ void DialogFileBrowse(HWND hwnd)
   if (PathIsRelative(tchExeFile)) {
     PathGetAppDirectory(tchTemp, COUNTOF(tchTemp));
     PathAppend(tchTemp, tchExeFile);
-    if (PathFileExists(tchTemp)) {
+    if (PathIsExistingFile(tchTemp)) {
       StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
     }
   }
@@ -3533,7 +3533,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     StringCchCopy(tchTemp, COUNTOF(tchTemp), tchNotepad3Path);
     PathCchRemoveFileSpec(tchTemp, COUNTOF(tchTemp));
     PathAppend(tchTemp, tchExeFile);
-    if (PathFileExists(tchTemp)) {
+    if (PathIsExistingFile(tchTemp)) {
       StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
     }
   }
@@ -3542,7 +3542,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   WCHAR tchGrepWinDir[MAX_PATH] = { L'\0' };
   WCHAR tchIniFilePath[MAX_PATH] = { L'\0' };
 
-  if (PathFileExists(tchExeFile)) 
+  if (PathIsExistingFile(tchExeFile))
   {
     StringCchCopy(tchGrepWinDir, COUNTOF(tchGrepWinDir), tchExeFile);
     PathCchRemoveFileSpec(tchGrepWinDir, COUNTOF(tchGrepWinDir));
@@ -3560,7 +3560,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
       PathAppend(tchIniFilePath, gwIniFileName);
     }
-    if (!PathFileExists(tchIniFilePath)) {
+    if (!PathIsExistingFile(tchIniFilePath)) {
       HANDLE hFile = CreateFile(tchIniFilePath,
         GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
         CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);

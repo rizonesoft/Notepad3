@@ -1067,7 +1067,7 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
     path = szTmp;
   }
 
-  if (!PathFileExists(path)) {
+  if (!PathIsExistingFile(path)) {
     return NULL;
   }
   HBITMAP const hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
@@ -2178,7 +2178,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_OPTIONS:
       OptionsPropSheet(hwnd, g_hLngResContainer);
-      bHasQuickview = PathFileExists(Settings.szQuickview);
+      bHasQuickview = PathIsExistingFile(Settings.szQuickview);
       break;
 
 
@@ -3072,7 +3072,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
   if (!PathGetLnkPath(pszLnkFile,szTmp,COUNTOF(szTmp)))
   {
     // Select lnk-file if target is not available
-    if (PathFileExists(pszLnkFile))
+    if (PathIsExistingFile(pszLnkFile))
     {
       SHFILEINFO shfi;
 
@@ -3159,7 +3159,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
   else
   {
     // Select lnk-file if target is not available
-    if (PathFileExists(pszLnkFile))
+    if (PathIsExistingFile(pszLnkFile))
     {
       SHFILEINFO shfi;
 
@@ -3469,7 +3469,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       lstrcpy(szTmp,szTargetApplication);
       PathAbsoluteFromApp(szTmp,szFile,COUNTOF(szFile),TRUE);
 
-      //~if (!PathFileExists(szFile)) {
+      //~if (!PathIsExistingFile(szFile)) {
       //~  if (!SearchPath(NULL,szTmp,NULL,COUNTOF(szFile),szFile,NULL)) {
       //~    GetModuleFileName(NULL,szFile,COUNTOF(szFile));
       //~    PathRemoveFileSpec(szFile);
@@ -3530,7 +3530,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
       //~if (PathIsRelative(szTmp)) {
       //~  PathAbsoluteFromApp(szTmp,szFile,COUNTOF(szFile),TRUE);
-      //~  if (!PathFileExists(szFile)) {
+      //~  if (!PathIsExistingFile(szFile)) {
       //~    if (!SearchPath(NULL,szTmp,NULL,COUNTOF(szFile),szFile,NULL)) {
       //~      GetModuleFileName(NULL,szFile,COUNTOF(szFile));
       //~      PathRemoveFileSpec(szFile);

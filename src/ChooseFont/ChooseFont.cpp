@@ -155,9 +155,11 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     const WCHAR* const fontFamilyName = m_chooseFontStruct->lpLogFont->lfFaceName;
     float const pointSize = static_cast<float>(m_chooseFontStruct->iPointSize) / 10.0f;
     auto const fontWeight = static_cast<DWRITE_FONT_WEIGHT>(m_chooseFontStruct->lpLogFont->lfWeight); // TODO: mapping?
-    DWRITE_FONT_STYLE const fontStyle = (m_chooseFontStruct->lpLogFont->lfItalic ?
-                                         DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL);
-    DWRITE_FONT_STRETCH const fontStretch = DWRITE_FONT_STRETCH_NORMAL;
+
+    //@@@ DWRITE_FONT_STYLE_OBLIQUE
+    DWRITE_FONT_STYLE const fontStyle = (m_chooseFontStruct->lpLogFont->lfItalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL);
+    
+    DWRITE_FONT_STRETCH const fontStretch = DWRITE_FONT_STRETCH_NORMAL; // CONDENSED - EXTENDED
 
     hr = g_dwrite->CreateTextFormat(
       fontFamilyName,

@@ -210,7 +210,9 @@ HRESULT GetFontFaceInfo(const std::vector<IDWriteFont*>& fonts, const WCHAR* loc
             info.emplace_back(L"Regular", DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL);
             info.emplace_back(L"Bold", DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL);
             info.emplace_back(L"Italic", DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_NORMAL);
+            info.emplace_back(L"Oblique", DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_OBLIQUE, DWRITE_FONT_STRETCH_NORMAL);
             info.emplace_back(L"Bold Italic", DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_NORMAL);
+            info.emplace_back(L"Bold Oblique", DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_OBLIQUE, DWRITE_FONT_STRETCH_NORMAL);
             return S_OK;
         }
 
