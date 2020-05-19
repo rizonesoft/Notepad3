@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.518.(build_#) (2020-05-18)
+Current BETA Version 5.20.519.(build_#) (2020-05-19)
 =====================================================
 
 -----------------------------------------------------
@@ -52,6 +52,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Dwrite font selection dialog.
 - Minor changes for dialog handling on DPI changed.
 - Preparations for dpi-aware resizable "Customize Schemes..." dialog.
 - DPI change handling: About & C-Schemes dialog.
@@ -81,6 +82,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Path is File check.
 - Don't add recent file list (history) to taskbar's jump-list.
 - Scroll/normalize selection in view.
 - Fixing some CppCheck complaints.
