@@ -101,6 +101,7 @@ if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" mkdir "%NP3_PORTAPP_D
 
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%\grepWinNP3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\grepWinNP3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Help\Changes.txt" /Y /V
 copy "%NP3_DISTRIB_DIR%\License.txt" "%NP3_PORTAPP_DIR%\Other\Help\License.txt" /Y /V
 copy "%NP3_DISTRIB_DIR%\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Help\Readme.txt" /Y /V
