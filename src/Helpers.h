@@ -571,6 +571,8 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
 // ----------------------------------------------------------------------------
 
+inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
+
 // including <pathcch.h> and linking against pathcch.lib
 // api-ms-win-core-path-l1-1-0.dll  library : Minimum supported client is Windows 8 :-/
 // so switch back to previous (deprecated) methods:

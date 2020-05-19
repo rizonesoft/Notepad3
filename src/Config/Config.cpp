@@ -177,7 +177,7 @@ extern "C" bool ResetIniFileCache() {
 
 extern "C" bool LoadIniFileCache(LPCWSTR lpIniFilePath)
 {
-  if (StrIsEmpty(lpIniFilePath)) { return false; }
+  if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath)) { return false; }
 
   ResetIniFileCache();
   
@@ -739,7 +739,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     // program directory
     StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
     StringCchCopy(PathFindFileName(tchBuild), COUNTOF(tchBuild), tchFileExpanded);
-    if (PathFileExists(tchBuild)) {
+    if (PathIsExistingFile(tchBuild)) {
       StringCchCopy(lpszFile, MAX_PATH, tchBuild);
       return true;
     }
@@ -748,14 +748,14 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild));
     StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
     StringCchCat(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-    if (PathFileExists(tchBuild)) {
+    if (PathIsExistingFile(tchBuild)) {
       StringCchCopy(lpszFile, MAX_PATH, tchBuild);
       return true;
     }
     // Application Data (%APPDATA%)
     if (GetKnownFolderPath(FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
       PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-      if (PathFileExists(tchBuild)) {
+      if (PathIsExistingFile(tchBuild)) {
         StringCchCopy(lpszFile, MAX_PATH, tchBuild);
         return true;
       }
@@ -763,7 +763,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     // Home (%HOMEPATH%) user's profile dir
     if (GetKnownFolderPath(FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
       PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-      if (PathFileExists(tchBuild)) {
+      if (PathIsExistingFile(tchBuild)) {
         StringCchCopy(lpszFile, MAX_PATH, tchBuild);
         return true;
       }
@@ -774,7 +774,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     //~  return true;
     //~}
   }
-  else if (PathFileExists(tchFileExpanded)) {
+  else if (PathIsExistingFile(tchFileExpanded)) {
     StringCchCopy(lpszFile, MAX_PATH, tchFileExpanded);
     return true;
   }
@@ -786,7 +786,7 @@ static bool _CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
 static bool _HandleIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
   WCHAR wchPath[MAX_PATH] = { L'\0' };
-  if (PathFileExists(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath)))
+  if (PathIsExistingFile(lpszFile) && IniFileGetString(lpszFile, lpszAppName, lpszKeyName, L"", wchPath, COUNTOF(wchPath)))
   {
     if (!_CheckIniFile(wchPath, lpszModule)) {
       PathCanonicalizeEx(wchPath, COUNTOF(wchPath));
@@ -871,9 +871,9 @@ extern "C" bool TestIniFile() {
     GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
     PathCchAppend(Globals.IniFile, COUNTOF(Globals.IniFile), PathFindFileName(wchModule));
     PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
-    if (!PathFileExists(Globals.IniFile)) {
-      StringCchCopy(PathFindFileName(Globals.IniFile), COUNTOF(Globals.IniFile), L"Notepad3.ini");
-      if (!PathFileExists(Globals.IniFile)) {
+    if (!PathIsExistingFile(Globals.IniFile)) {
+      StringCchCopy(PathFindFileName(Globals.IniFile), COUNTOF(Globals.IniFile), _W(SAPPNAME) L".ini");
+      if (!PathIsExistingFile(Globals.IniFile)) {
         StringCchCopy(PathFindFileName(Globals.IniFile), COUNTOF(Globals.IniFile), PathFindFileName(wchModule));
         PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
       }
@@ -908,7 +908,7 @@ extern "C" bool CreateIniFile()
     
     DWORD dwFileSize = 0UL;
 
-    if (!PathFileExists(Globals.IniFile))
+    if (!PathIsExistingFile(Globals.IniFile))
     {
       HANDLE hFile = CreateFile(Globals.IniFile,
         GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
@@ -944,7 +944,7 @@ extern "C" bool CreateIniFile()
     }
 
     if (dwFileSize == 0UL) {
-      result = IniFileSetString(Globals.IniFile, L"Notepad3", NULL, NULL);
+      result = IniFileSetString(Globals.IniFile, _W(SAPPNAME), NULL, NULL);
       Globals.bIniFileFromScratch = true;
     }
     else {

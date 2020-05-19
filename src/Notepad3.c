@@ -850,8 +850,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   (void)OleInitialize(NULL);
   
   INITCOMMONCONTROLSEX icex;
+  ZeroMemory(&icex, sizeof(INITCOMMONCONTROLSEX));
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-  icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
+  icex.dwICC = ICC_WIN95_CLASSES | ICC_USEREX_CLASSES | ICC_COOL_CLASSES | ICC_NATIVEFNTCTL_CLASS | ICC_STANDARD_CLASSES;
   InitCommonControlsEx(&icex);
 
   Scintilla_RegisterClasses(hInstance);
@@ -1342,7 +1343,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
             Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
           }
           // check for temp file and delete
-          if (s_IsThisAnElevatedRelaunch && PathFileExists(s_wchTmpFilePath)) 
+          if (s_IsThisAnElevatedRelaunch && PathIsExistingFile(s_wchTmpFilePath))
           {
             DeleteFile(s_wchTmpFilePath);
             // delete possible .tmp guard
@@ -1351,7 +1352,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
             if (p && *p) {
               StringCchCopy(p, (MAX_PATH - len), L".tmp");
             }
-            if (PathFileExists(s_wchTmpFilePath)) {
+            if (PathIsExistingFile(s_wchTmpFilePath)) {
               DeleteFile(s_wchTmpFilePath);
             }
           }
@@ -2170,7 +2171,7 @@ bool SelectExternalToolBar(HWND hwnd)
     StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
     PathRemoveExtension(szFile);
     StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
-    if (PathFileExists(szFile)) {
+    if (PathIsExistingFile(szFile)) {
       PathRelativeToApp(szFile, s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), true, true, true);
       IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", s_tchToolbarBitmapHot);
     }
@@ -2182,7 +2183,7 @@ bool SelectExternalToolBar(HWND hwnd)
     StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
     PathRemoveExtension(szFile);
     StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
-    if (PathFileExists(szFile)) {
+    if (PathIsExistingFile(szFile)) {
       PathRelativeToApp(szFile, s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), true, true, true);
       IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", s_tchToolbarBitmapDisabled);
     }
@@ -2213,7 +2214,7 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
     PathAppend(szTmp, path);
     path = szTmp;
   }
-  if (!PathFileExists(path)) { return NULL; }
+  if (!PathIsExistingFile(path)) { return NULL; }
 
   HBITMAP hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
 
@@ -2763,7 +2764,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
       FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
     }
   }
-  else if (PathFileExists(szDropStrgBuf)) {
+  else if (PathIsExistingFile(szDropStrgBuf)) {
     if (Flags.bReuseWindow) {
       FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szDropStrgBuf);
     }
@@ -3032,7 +3033,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetForegroundWindow(hwnd);
   }
 
-  if (PathFileExists(Globals.CurrentFile)) 
+  if (PathIsExistingFile(Globals.CurrentFile))
   {
     bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !IsSaveNeeded(ISN_GET));
 
@@ -5578,7 +5579,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!bCreateFailure) 
         {
           if (SaveAllSettings(true)) {
-            InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_SAVEDSETTINGS);
+            InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
           }
           else {
             Globals.dwLastError = GetLastError();
@@ -7314,7 +7315,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, tchFile);
           }
         }
-        else if (PathFileExists(szBuf)) {
+        else if (PathIsExistingFile(szBuf)) {
           FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, szBuf);
         }
       }
@@ -9458,7 +9459,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
   }
  
   // Ask to create a new file...
-  if (!bReload && !PathFileExists(szFilePath))
+  if (!bReload && !PathIsExistingFile(szFilePath))
   {
     bool bCreateFile = s_flagQuietCreate;
     if (!bCreateFile) {

@@ -8,6 +8,7 @@
 //
 //----------------------------------------------------------------------------
 
+#include <shlwapi.h>
 
 #include "ChooseFont.h"
 #include "FontEnumeration.h"
@@ -154,9 +155,11 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     const WCHAR* const fontFamilyName = m_chooseFontStruct->lpLogFont->lfFaceName;
     float const pointSize = static_cast<float>(m_chooseFontStruct->iPointSize) / 10.0f;
     auto const fontWeight = static_cast<DWRITE_FONT_WEIGHT>(m_chooseFontStruct->lpLogFont->lfWeight); // TODO: mapping?
-    DWRITE_FONT_STYLE const fontStyle = (m_chooseFontStruct->lpLogFont->lfItalic ?
-                                         DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL);
-    DWRITE_FONT_STRETCH const fontStretch = DWRITE_FONT_STRETCH_NORMAL;
+
+    //@@@ DWRITE_FONT_STYLE_OBLIQUE
+    DWRITE_FONT_STYLE const fontStyle = (m_chooseFontStruct->lpLogFont->lfItalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL);
+    
+    DWRITE_FONT_STRETCH const fontStretch = DWRITE_FONT_STRETCH_NORMAL; // CONDENSED - EXTENDED
 
     hr = g_dwrite->CreateTextFormat(
       fontFamilyName,
@@ -245,7 +248,7 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
   int currentSelection = ComboBox_GetCurSel(hwndFontFamilyNames);
 
   // Get the font family name
-  WCHAR fontFamilyName[100];
+  WCHAR fontFamilyName[128];
 
   UINT32 fontFamilyNameLength = ComboBox_GetLBTextLen(hwndFontFamilyNames, currentSelection) + 1;
   if (fontFamilyNameLength > _ARRAYSIZE(fontFamilyName))
@@ -260,9 +263,9 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
   std::vector<IDWriteFont*>   fonts;
 
   // Get the font variants for this family
-  if (currentSelection != CB_ERR)
+  if (currentSelection != CB_ERR) {
     hr = GetFonts(m_fontCollection, fontFamilyName, fonts);
-
+  }
   // Initialize the face name list
   std::vector<FontFaceInfo> fontFaceInfo;
   if (SUCCEEDED(hr)) {
@@ -372,20 +375,33 @@ HRESULT ChooseFontDialog::OnFontFamilyNameEdit(HWND hwndFontFamilies)
   int   editSelectionEnd = HIWORD(editSelection);
 
   // Get the text in the edit portion of the combo
-  WCHAR fontFamilyName[100];
-  ComboBox_GetText(hwndFontFamilies, &fontFamilyName[0], _ARRAYSIZE(fontFamilyName));
+  WCHAR fontFullName[128];
+  ComboBox_GetText(hwndFontFamilies, &fontFullName[0], _ARRAYSIZE(fontFullName));
 
   // Try to find an exact match (case-insensitive)
-  int matchingFontFamily = ComboBox_FindStringExact(hwndFontFamilies, -1, fontFamilyName);
+  WCHAR fontFamilyName[128];
+  StringCchCopyW(fontFamilyName, ARRAYSIZE(fontFamilyName), fontFullName);
+
+  int matchingFontFamily = CB_ERR;
+  PTSTR pSpc = NULL;
+  do {
+    //matchingFontFamily = ComboBox_FindStringExact(hwndFontFamilies, -1, fontFullName);
+    matchingFontFamily = ComboBox_FindString(hwndFontFamilies, -1, fontFamilyName);
+    if (matchingFontFamily == CB_ERR) { 
+      pSpc = StrRChrIW(fontFamilyName, NULL, L' ');
+      if (pSpc != NULL) { *pSpc = L'\0'; }
+    }
+  } while ((matchingFontFamily == CB_ERR) && (pSpc != NULL));
+  
   bool usedAltMatch = false;
 
   if (matchingFontFamily == CB_ERR) {
     // If a match isn't found, scan all for alternate forms in the font
     // collection.
     IDWriteFontFamily* fontFamily = nullptr;
-    hr = GetFontFamily(m_fontCollection, fontFamilyName, &fontFamily);
+    hr = GetFontFamily(m_fontCollection, fontFullName, &fontFamily);
 
-    if (hr == S_OK) {
+    if (SUCCEEDED(hr)) {
       // If a match is found, get the family name localized to the locale
       // we're using in the combo box and match against that.
       usedAltMatch = true;
@@ -406,15 +422,16 @@ HRESULT ChooseFontDialog::OnFontFamilyNameEdit(HWND hwndFontFamilies)
   }
 
   // Process the match, if any
-  if (SUCCEEDED(hr) && matchingFontFamily != CB_ERR) {
+  if (SUCCEEDED(hr) && matchingFontFamily != CB_ERR)
+  {
     ComboBox_SetCurSel(hwndFontFamilies, matchingFontFamily);
 
     // SetCurSel will update the edit text to match the text of the 
     // selected item.  If we matched against an alternate name put that
     // name back.
-    if (usedAltMatch)
-      ComboBox_SetText(hwndFontFamilies, fontFamilyName);
-
+    if (usedAltMatch) {
+      ComboBox_SetText(hwndFontFamilies, fontFullName);
+    }
     // Reset the edit selection to what is was before SetCurSel.
     ComboBox_SetEditSel(hwndFontFamilies, editSelectionBegin, editSelectionEnd);
 
@@ -714,9 +731,10 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
     selectedFontFamily = ComboBox_SelectString(hwndFamilyNames, -1, fontFamilyName.c_str());
   }
 
-  if (selectedFontFamily == CB_ERR)
+  if (selectedFontFamily == CB_ERR) {
     SetWindowText(hwndFamilyNames, fontFamilyName.c_str());
-
+    OnFontFamilyNameEdit(hwndFamilyNames);
+  }
   OnFontFamilySelect();
 
   CenterDlgInParent(m_dialog);

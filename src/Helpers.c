@@ -158,7 +158,7 @@ static void _GetTrueWindowsVersion()
   void (WINAPI *pRtlGetVersion)(PRTL_OSVERSIONINFOW lpVersionInformation) = NULL;
 
   // load the System-DLL
-  HINSTANCE hNTdllDll = LoadLibrary(L"ntdll.dll");
+  HINSTANCE const hNTdllDll = LoadLibrary(L"ntdll.dll");
 
   if (hNTdllDll != NULL)
   {
@@ -170,6 +170,7 @@ static void _GetTrueWindowsVersion()
     }
     FreeLibrary(hNTdllDll);
   } // if (hNTdllDll != NULL)
+
 
 #pragma warning ( push )
 #pragma warning ( disable: 4996 )
@@ -1105,7 +1106,7 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
   PathCchAppend(tchLnkFileName,COUNTOF(tchLnkFileName),pszName);
   StringCchCat(tchLnkFileName,COUNTOF(tchLnkFileName),L".lnk");
 
-  if (PathFileExists(tchLnkFileName))
+  if (PathIsExistingFile(tchLnkFileName))
     return false;
 
   if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
@@ -1379,7 +1380,7 @@ DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer)
 static DWORD_PTR _SHGetFileInfoEx(LPCWSTR pszPath, DWORD dwFileAttributes,
   SHFILEINFO* psfi, UINT cbFileInfo, UINT uFlags)
 {
-  if (PathFileExists(pszPath))
+  if (PathIsExistingFile(pszPath))
   {
     DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
     if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH))
@@ -1430,7 +1431,7 @@ DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSe
     StringCchCopyN(lpszPath, cchBuffer, Globals.WorkingDirectory, COUNTOF(Globals.WorkingDirectory));
     PathCchAppend(lpszPath, cchBuffer, tmpFilePath);
     if (bSearchPathIfRelative) {
-      if (!PathFileExists(lpszPath)) {
+      if (!PathIsExistingFile(lpszPath)) {
         PathStripPath(tmpFilePath);
         if (SearchPath(NULL, tmpFilePath, NULL, cchBuffer, lpszPath, NULL) == 0) {
           StringCchCopy(lpszPath, cchBuffer, tmpFilePath);

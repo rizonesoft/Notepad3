@@ -158,6 +158,8 @@ extern "C" BOOL ResetIniFileCache() {
 
 extern "C" BOOL LoadIniFileCache(LPCWSTR lpIniFilePath)
 {
+  if (StrIsEmpty(lpIniFilePath) || !PathIsExistingFile(lpIniFilePath)) { return FALSE; }
+
   ResetIniFileCache();
   
   s_INI.SetSpaces(s_bSetSpaces);
@@ -662,7 +664,7 @@ int CreateIniFile()
 
     DWORD dwFileSize = 0UL;
 
-    if (!PathFileExists(g_wchIniFile)) 
+    if (!PathIsExistingFile(g_wchIniFile))
     {
       HANDLE hFile = CreateFile(g_wchIniFile,
         GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
@@ -713,7 +715,7 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     // program directory
     lstrcpy(tchBuild, lpszModule);
     lstrcpy(PathFindFileName(tchBuild), tchFileExpanded);
-    if (PathFileExists(tchBuild)) {
+    if (PathIsExistingFile(tchBuild)) {
       lstrcpy(lpszFile, tchBuild);
       return 1;
     }
@@ -722,14 +724,14 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     PathRemoveFileSpec(tchBuild);
     lstrcat(tchBuild, L"\\np3\\");
     lstrcat(tchBuild, tchFileExpanded);
-    if (PathFileExists(tchBuild)) {
+    if (PathIsExistingFile(tchBuild)) {
       lstrcpy(lpszFile, tchBuild);
       return 1;
     }
     // Application Data (%APPDATA%)
     if (S_OK == SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, tchBuild)) {
       PathAppend(tchBuild, tchFileExpanded);
-      if (PathFileExists(tchBuild)) {
+      if (PathIsExistingFile(tchBuild)) {
         lstrcpy(lpszFile, tchBuild);
         return 1;
       }
@@ -737,13 +739,13 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     // Home (%HOMEPATH%)
     if (S_OK == SHGetFolderPath(nullptr, CSIDL_PROFILE, nullptr, SHGFP_TYPE_CURRENT, tchBuild)) {
       PathAppend(tchBuild, tchFileExpanded);
-      if (PathFileExists(tchBuild)) {
+      if (PathIsExistingFile(tchBuild)) {
         lstrcpy(lpszFile, tchBuild);
         return 1;
       }
     }
   }
-  else if (PathFileExists(tchFileExpanded)) {
+  else if (PathIsExistingFile(tchFileExpanded)) {
     lstrcpy(lpszFile, tchFileExpanded);
     return 1;
   }
@@ -860,9 +862,9 @@ int TestIniFile() {
     GetModuleFileName(nullptr, wchModule, COUNTOF(wchModule));
     PathAppend(g_wchIniFile, PathFindFileName(wchModule));
     PathRenameExtension(g_wchIniFile, L".ini");
-    if (!PathFileExists(g_wchIniFile)) {
+    if (!PathIsExistingFile(g_wchIniFile)) {
       lstrcpy(PathFindFileName(g_wchIniFile), L"minipath.ini");
-      if (!PathFileExists(g_wchIniFile)) {
+      if (!PathIsExistingFile(g_wchIniFile)) {
         lstrcpy(PathFindFileName(g_wchIniFile), PathFindFileName(wchModule));
         PathRenameExtension(g_wchIniFile, L".ini");
       }
@@ -876,15 +878,15 @@ int TestIniFile() {
     lstrcat(wchModule, L"\\Notepad3.exe");
     PathAppend(g_wchNP3IniFile, PathFindFileName(wchModule));
     PathRenameExtension(g_wchNP3IniFile, L".ini");
-    if (!PathFileExists(g_wchNP3IniFile)) {
+    if (!PathIsExistingFile(g_wchNP3IniFile)) {
       lstrcpy(PathFindFileName(g_wchNP3IniFile), L"notepad3.ini");
-      if (!PathFileExists(g_wchNP3IniFile)) {
+      if (!PathIsExistingFile(g_wchNP3IniFile)) {
         lstrcpy(PathFindFileName(g_wchNP3IniFile), PathFindFileName(wchModule));
         PathRenameExtension(g_wchNP3IniFile, L".ini");
       }
     }
   }
-  if (!PathFileExists(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile)) {
+  if (!PathIsExistingFile(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile)) {
     lstrcpy(g_wchNP3IniFile, L"");
   }
 
@@ -1007,7 +1009,7 @@ void LoadSettings()
   else
     PathAbsoluteFromApp(Settings.szQuickview, nullptr, COUNTOF(Settings.szQuickview), TRUE);
 
-  Settings.bHasQuickview = PathFileExists(Settings.szQuickview);
+  Settings.bHasQuickview = PathIsExistingFile(Settings.szQuickview);
 
   Defaults.szQuickviewParams[0] = L'\0';
   IniSectionGetString(Settings_Section, L"QuikviewParams", Defaults.szQuickviewParams,
