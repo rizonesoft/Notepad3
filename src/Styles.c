@@ -966,23 +966,55 @@ void Style_SetLexerSpecificProperties(const int lexerId)
 
 //=============================================================================
 //
-//  _IsItemInStyleString()
+//  Style_StrGetAttributeEx()
 //
-static inline bool _IsItemInStyleString(LPCWSTR lpszStyleStrg, LPCWSTR item)
+// zufuliu: parse a style attribute separated by ';'
+// e.g.: 'bold', 'bold;', '; bold' and '; bold;'
+//
+static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t keyLen)
 {
-  LPCWSTR pFound = StrStrI(lpszStyleStrg, item);
-  while (pFound) {
-    WCHAR const pre = (pFound == lpszStyleStrg) ? L' ' : pFound[-1];
-    if ((pre == L' ') || (pre == L';')) {
-      WCHAR const end = pFound[StringCchLenW(item, 0)];
-      if ((end == L'\0') || (end == L' ') || (end == L';')) {
+  LPCWSTR p = StrStr(lpszStyle, key);
+  while (p) {
+    WCHAR chPrev = (p == lpszStyle) ? L';' : p[-1];
+    if (chPrev == L' ') {
+      LPCWSTR t = p - 2;
+      while ((t > lpszStyle) && (*t == L' ')) { --t; }
+      chPrev = (t <= lpszStyle) ? L';' : *t;
+    }
+    p += keyLen;
+    if (chPrev == L';') {
+      while (*p == L' ') {
+        ++p;
+      }
+      if (*p == L'\0' || *p == L';') {
         return true;
       }
     }
-    pFound = StrStrI(pFound + 1, item);
+    p = StrStr(p, key);
   }
   return false;
 }
+
+#define Style_StrGetAttribute(lpszStyle, name)  Style_StrGetAttributeEx((lpszStyle), (name), StringCchLen((name),0))
+
+#define Style_StrGetAttrThin(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"thin")
+#define Style_StrGetAttrExtraLight(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"extralight")
+#define Style_StrGetAttrLight(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"light")
+#define Style_StrGetAttrNormal(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"normal")
+#define Style_StrGetAttrMedium(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"medium")
+#define Style_StrGetAttrSemiBold(lpszStyle)     Style_StrGetAttribute((lpszStyle), L"semibold")
+#define Style_StrGetAttrBold(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"bold")
+#define Style_StrGetAttrExtraBold(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extrabold")
+#define Style_StrGetAttrHeavy(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"heavy")
+
+#define Style_StrGetAttrItalic(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"italic")
+#define Style_StrGetAttrUnderline(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"underline")
+#define Style_StrGetAttrStrikeOut(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"strikeout")
+#define Style_StrGetAttrEOLFilled(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"eolfilled")
+ 
+#define Style_StrGetAttrOvrBlck(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"ovrblck")
+#define Style_StrGetAttrBlock(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"block")
+#define Style_StrGetAttrNoBlink(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"noblink")
 
 
 //=============================================================================
@@ -1212,7 +1244,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_NOALPHA*2/3, 0);
   }
 
-  if (_IsItemInStyleString(pCurrentStandard->Styles[STY_SEL_TXT].szValue, L"eolfilled")) // selection eolfilled
+  if (Style_StrGetAttrEOLFilled(pCurrentStandard->Styles[STY_SEL_TXT].szValue)) // selection eolfilled
     SendMessage(hwnd, SCI_SETSELEOLFILLED, 1, 0);
   else
     SendMessage(hwnd, SCI_SETSELEOLFILLED, 0, 0);
@@ -1926,7 +1958,7 @@ PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
   {
     for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex)
     {
-      if (_IsItemInStyleString(g_pLexArray[iLex]->szExtensions, lpszMatch)) 
+      if (Style_StrGetAttribute(g_pLexArray[iLex]->szExtensions, lpszMatch)) 
       {
         return g_pLexArray[iLex];
       }
@@ -2020,7 +2052,7 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     MultiByteToWideCharEx(Encoding_SciCP, 0, Globals.fvCurFile.chMode, -1, wchMode, MICRO_BUFFER);
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
-                         StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
+                              StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
       char tchText[256] = { '\0' };
       SciCall_GetText(COUNTOF(tchText), tchText);
       StrTrimA(tchText," \t\n\r");
@@ -2404,13 +2436,8 @@ bool Style_StrGetFont(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
       *p = L'\0';
     }
     TrimSpcW(lpszFont);
-    if (_IsItemInStyleString(lpszFont, L"Default")) {
-        if (IsFontAvailable(L"Consolas")) {
-        StringCchCopyN(lpszFont, cchFont, L"Consolas", cchFont);
-      }
-      else {
-        StringCchCopyN(lpszFont, cchFont, L"Lucida Console", cchFont);
-      }
+    if (StringCchCompareXI(lpszFont, L"Default")) {
+      StringCchCopyN(lpszFont, cchFont, IsFontAvailable(L"Consolas") ? L"Consolas" : L"Lucida Console", cchFont);
     }
     return true;
   }
@@ -2432,10 +2459,10 @@ bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
     if (p)
       *p = L'\0';
     TrimSpcW(tch);
-    if (_IsItemInStyleString(tch, L"none") ||
-      _IsItemInStyleString(tch, L"standard") ||
-      _IsItemInStyleString(tch, L"cleartype") ||
-      _IsItemInStyleString(tch, L"default"))
+    if (StringCchCompareX(tch, L"none") ||
+        StringCchCompareX(tch, L"standard") ||
+        StringCchCompareX(tch, L"cleartype") ||
+        StringCchCompareX(tch, L"default"))
     {
       StringCchCopyN(lpszQuality,cchQuality,tch,COUNTOF(tch));
       return true;
@@ -2578,23 +2605,23 @@ bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* i)
 {
   int iFontWeight = -1;
   
-  if (_IsItemInStyleString(lpszWeight, L"thin"))
+  if (Style_StrGetAttrThin(lpszWeight))
     iFontWeight = FW_THIN;
-  else if (_IsItemInStyleString(lpszWeight, L"extralight"))
+  else if (Style_StrGetAttrExtraLight(lpszWeight))
     iFontWeight = FW_EXTRALIGHT;
-  else if (_IsItemInStyleString(lpszWeight, L"light"))
+  else if (Style_StrGetAttrLight(lpszWeight))
     iFontWeight = FW_LIGHT;
-  else if (_IsItemInStyleString(lpszWeight, L"normal"))
+  else if (Style_StrGetAttrNormal(lpszWeight))
     iFontWeight = FW_NORMAL;
-  else if (_IsItemInStyleString(lpszWeight, L"medium"))
+  else if (Style_StrGetAttrMedium(lpszWeight))
     iFontWeight = FW_MEDIUM;
-  else if (_IsItemInStyleString(lpszWeight, L"semibold"))
+  else if (Style_StrGetAttrSemiBold(lpszWeight))
     iFontWeight = FW_SEMIBOLD;
-  else if (_IsItemInStyleString(lpszWeight, L"extrabold"))
-    iFontWeight = FW_EXTRABOLD;
-  else if (_IsItemInStyleString(lpszWeight, L"bold"))     // here, cause bold is in semibold and extrabold too
+  else if (Style_StrGetAttrBold(lpszWeight))
     iFontWeight = FW_BOLD;
-  else if (_IsItemInStyleString(lpszWeight, L"heavy"))
+  else if (Style_StrGetAttrExtraBold(lpszWeight))
+    iFontWeight = FW_EXTRABOLD;
+  else if (Style_StrGetAttrHeavy(lpszWeight))
     iFontWeight = FW_HEAVY;
 
   if (iFontWeight >= 0) {
@@ -2778,7 +2805,7 @@ bool Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 {
   if (*idx < 0) { // retrieve indicator style from string
     for (int i = COUNTOF(IndicatorTypes) - 1;  0 <= i;  --i) {
-      if (_IsItemInStyleString(lpszStyle, IndicatorTypes[i])) {
+      if (Style_StrGetAttribute(lpszStyle, IndicatorTypes[i])) {
         *idx = i;
         return true;
       }
@@ -2834,28 +2861,28 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
       }
     }
 
-    if (_IsItemInStyleString(lpszStyleSrc, L"thin") && !_IsItemInStyleString(lpszStyleDest, L"thin"))
+    if (Style_StrGetAttrThin(lpszStyleSrc) && !Style_StrGetAttrThin(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; thin");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"extralight") && !_IsItemInStyleString(lpszStyleDest, L"extralight"))
+    else if (Style_StrGetAttrExtraLight(lpszStyleSrc) && !Style_StrGetAttrExtraLight(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extralight");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"light") && !_IsItemInStyleString(lpszStyleDest, L"light"))
+    else if (Style_StrGetAttrLight(lpszStyleSrc) && !Style_StrGetAttrLight(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; light");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"normal") && !_IsItemInStyleString(lpszStyleDest, L"normal"))
+    else if (Style_StrGetAttrNormal(lpszStyleSrc) && !Style_StrGetAttrNormal(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"medium") && !_IsItemInStyleString(lpszStyleDest, L"medium"))
+    else if (Style_StrGetAttrMedium(lpszStyleSrc) && !Style_StrGetAttrMedium(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; medium");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"semibold") && !_IsItemInStyleString(lpszStyleDest, L"semibold"))
+    else if (Style_StrGetAttrSemiBold(lpszStyleSrc) && !Style_StrGetAttrSemiBold(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; semibold");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"extrabold") && !_IsItemInStyleString(lpszStyleDest, L"extrabold"))
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extrabold");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"bold") && !_IsItemInStyleString(lpszStyleDest, L"bold"))
+    else if (Style_StrGetAttrBold(lpszStyleSrc) && !Style_StrGetAttrBold(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; bold");
-    else if (_IsItemInStyleString(lpszStyleSrc, L"heavy") && !_IsItemInStyleString(lpszStyleDest, L"heavy"))
+    else if (Style_StrGetAttrExtraBold(lpszStyleSrc) && !Style_StrGetAttrExtraBold(lpszStyleDest))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extrabold");
+    else if (Style_StrGetAttrHeavy(lpszStyleSrc) && !Style_StrGetAttrHeavy(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; heavy");
     //else
-    //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
+    //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");  // -> default
 
-    if (_IsItemInStyleString(lpszStyleSrc, L"italic") && !_IsItemInStyleString(lpszStyleDest, L"italic")) {
+    if (Style_StrGetAttrItalic(lpszStyleSrc) && !Style_StrGetAttrItalic(lpszStyleDest)) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
     }
   }
@@ -2863,11 +2890,11 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   // ---------  Effects  ---------
   if (bWithEffects)
   {
-    if (_IsItemInStyleString(lpszStyleSrc, L"strikeout") && !_IsItemInStyleString(lpszStyleDest, L"strikeout")) {
+    if (Style_StrGetAttrStrikeOut(lpszStyleSrc) && !Style_StrGetAttrStrikeOut(lpszStyleDest)) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
     }
 
-    if (_IsItemInStyleString(lpszStyleSrc, L"underline") && !_IsItemInStyleString(lpszStyleDest, L"underline")) {
+    if (Style_StrGetAttrUnderline(lpszStyleSrc) && !Style_StrGetAttrUnderline(lpszStyleDest)) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; underline");
     }
 
@@ -2904,7 +2931,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     }
   }
 
-  if (_IsItemInStyleString(lpszStyleSrc, L"eolfilled") && !_IsItemInStyleString(lpszStyleDest, L"eolfilled")) {
+  if (Style_StrGetAttrEOLFilled(lpszStyleSrc) && !Style_StrGetAttrEOLFilled(lpszStyleDest)) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; eolfilled");
   }
 
@@ -2946,15 +2973,15 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
   }
 
   // --------   other style settings   --------
-  if (_IsItemInStyleString(lpszStyleSrc, L"ovrblck") && !_IsItemInStyleString(lpszStyleDest, L"ovrblck")) {
+  if (Style_StrGetAttrOvrBlck(lpszStyleSrc) && !Style_StrGetAttrOvrBlck(lpszStyleDest)) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrblck");
   }
 
-  if (_IsItemInStyleString(lpszStyleSrc, L"block") && !_IsItemInStyleString(lpszStyleDest, L"block")) {
+  if (Style_StrGetAttrBlock(lpszStyleSrc) && !Style_StrGetAttrBlock(lpszStyleDest)) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
   }
 
-  if (_IsItemInStyleString(lpszStyleSrc, L"noblink") && !_IsItemInStyleString(lpszStyleDest, L"noblink")) {
+  if (Style_StrGetAttrNoBlink(lpszStyleSrc) && !Style_StrGetAttrNoBlink(lpszStyleDest)) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; noblink");
   }
 
@@ -3033,9 +3060,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (!Style_StrGetWeightValue(lpszStyle, &iFontWeight)) {
     iFontWeight = FW_NORMAL;
   }
-  bool bIsItalic = (_IsItemInStyleString(lpszStyle, L"italic")) ? true : false;
-  bool bIsUnderline = (_IsItemInStyleString(lpszStyle, L"underline")) ? true : false;
-  bool bIsStrikeout = (_IsItemInStyleString(lpszStyle, L"strikeout")) ? true : false;
+  bool bIsItalic = Style_StrGetAttrItalic(lpszStyle);
+  bool bIsUnderline = Style_StrGetAttrUnderline(lpszStyle);
+  bool bIsStrikeout = Style_StrGetAttrStrikeOut(lpszStyle);
 
   int iQuality = g_FontQuality[Settings2.SciFontQuality];
   switch (iQuality) {
@@ -3087,7 +3114,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   //cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_SCREENFONTS | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
   //cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_USESTYLE | CF_SCALABLEONLY | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
   //cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_INACTIVEFONTS | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
-  cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS | CF_ENABLEHOOK;
+  cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_USESTYLE | CF_SCREENFONTS | CF_ENABLEHOOK;
 
   cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
   cf.lCustData = (LPARAM)FontSelTitle;
@@ -3119,6 +3146,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   }
 
   WCHAR szStyleStrg[80] = { L'\0' };
+  StringCchCopy(szStyleStrg, COUNTOF(szStyleStrg), L"Bold Italic");
   if (cf.Flags & CF_USESTYLE) {
     cf.lpszStyle = szStyleStrg;
   }
@@ -3165,7 +3193,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     WCHAR check[64] = { L'\0' };
     Style_AppendWeightStr(check, COUNTOF(check), lf.lfWeight);
     StrTrimW(check, L" ;");
-    if (_IsItemInStyleString(lpszStyle, check)) {
+    if (Style_StrGetAttribute(lpszStyle, check)) {
       Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
     }
   }
@@ -3244,7 +3272,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (lf.lfItalic) {
     if (bIsItalic) {
-      if (_IsItemInStyleString(lpszStyle, L"italic")) {
+      if (Style_StrGetAttrItalic(lpszStyle)) {
         StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
       }
     }
@@ -3258,7 +3286,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
     if (lf.lfUnderline) {
       if (bIsUnderline) {
-        if (_IsItemInStyleString(lpszStyle, L"underline")) {
+        if (Style_StrGetAttrUnderline(lpszStyle)) {
           StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
         }
       }
@@ -3269,7 +3297,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
     if (lf.lfStrikeOut) {
       if (bIsStrikeout) {
-        if (_IsItemInStyleString(lpszStyle, L"strikeout")) {
+        if (Style_StrGetAttrStrikeOut(lpszStyle)) {
           StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
         }
       }
@@ -3506,7 +3534,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Italic
-  if (_IsItemInStyleString(lpszStyle, L"italic")) {
+  if (Style_StrGetAttrItalic(lpszStyle)) {
     SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)true);
   }
   else if (bInitDefault) {
@@ -3514,7 +3542,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Underline
-  if (_IsItemInStyleString(lpszStyle, L"underline")) {
+  if (Style_StrGetAttrUnderline(lpszStyle)) {
     SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)true);
   }
   else if (bInitDefault) {
@@ -3522,7 +3550,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // StrikeOut does not exist in scintilla ???  / Hide instead (no good idea)
-  //if (_IsItemInStyleString(lpszStyle, L"strikeout")) {
+  //if (Style_StrGetAttrStrikeOut(lpszStyle)) {
   //  SendMessage(hwnd, SCI_STYLESETVISIBLE,iStyle,(LPARAM)false);
   //}
   //else if (bInitDefault) {
@@ -3530,7 +3558,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   //}
 
   // EOL Filled
-  if (_IsItemInStyleString(lpszStyle, L"eolfilled")) {
+  if (Style_StrGetAttrEOLFilled(lpszStyle)) {
     SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)true);
   }
   else if (bInitDefault) {
