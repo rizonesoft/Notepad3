@@ -52,6 +52,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Revised grepWinNP3.ini file creation.
 - Dwrite font selection dialog.
 - Minor changes for dialog handling on DPI changed.
 - Preparations for dpi-aware resizable "Customize Schemes..." dialog.
