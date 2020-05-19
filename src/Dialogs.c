@@ -3521,7 +3521,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   GetModuleFileName(NULL, tchNotepad3Path, COUNTOF(tchNotepad3Path));
   PathCanonicalizeEx(tchNotepad3Path, COUNTOF(tchNotepad3Path));
 
-  // grepWin executable
+  // find grepWin executable (side-by-side .ini file)
   if (StrIsNotEmpty(Settings2.GrepWinPath)) {
     ExtractFirstArgument(Settings2.GrepWinPath, tchExeFile, tchOptions, COUNTOF(tchExeFile));
     ExpandEnvironmentStringsEx(tchExeFile, COUNTOF(tchExeFile));
@@ -3554,36 +3554,27 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     // grepWin INI-File
     const WCHAR* const gwIniFileName = L"grepWinNP3.ini";
     StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), StrIsNotEmpty(Globals.IniFile) ? Globals.IniFile : Globals.IniFileDefault);
+
     PathRemoveFileSpec(tchIniFilePath);
     PathAppend(tchIniFilePath, gwIniFileName);
     if (PathIsRelative(tchIniFilePath)) {
       StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchGrepWinDir);
       PathAppend(tchIniFilePath, gwIniFileName);
     }
-    if (!PathIsExistingFile(tchIniFilePath)) {
-      HANDLE hFile = CreateFile(tchIniFilePath,
-        GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-      if (hFile != INVALID_HANDLE_VALUE) {
-        WriteFile(hFile, "\xEF\xBB\xBF", 3, NULL, NULL);
-        CloseHandle(hFile); // done
-      }
-    }
 
-
-    // get grepWin language
-    int lngIdx = -1;
-    for (int i = 0; i < grepWinLang_CountOf(); ++i) {
-      if (grepWinLangResName[i].lngid == Globals.iPrefLANGID) {
-        lngIdx = i;
-        break;
-      }
-    }
-
-    if (LoadIniFileCache(tchIniFilePath)) 
+    if (CreateIniFile(tchIniFilePath, NULL) && LoadIniFileCache(tchIniFilePath))
     {
       // preserve [global] user settings from last call
       const WCHAR* const globalSection = L"global";
+
+      // get grepWin language
+      int lngIdx = -1;
+      for (int i = 0; i < grepWinLang_CountOf(); ++i) {
+        if (grepWinLangResName[i].lngid == Globals.iPrefLANGID) {
+          lngIdx = i;
+          break;
+        }
+      }
 
       WCHAR value[HUGE_BUFFER];
       for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
@@ -3630,13 +3621,18 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
   }
 
   // grepWin arguments
-  const WCHAR* const tchParamFmt = L"/portable /content %s /inipath:\"%s\"";
-  WCHAR tchParams[MAX_PATH + 80] = { L'\0' };
-  // relative grepWinNP3.ini path (for shorter cmdline)
-  if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchIniFilePath, FILE_ATTRIBUTE_NORMAL)) {
-    StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchTemp);
+  WCHAR tchParams[2*MAX_PATH] = { L'\0' };
+  
+  if (PathIsExistingFile(tchIniFilePath)) {
+    // relative grepWinNP3.ini path (for shorter cmdline)
+    if (PathRelativePathTo(tchTemp, tchGrepWinDir, FILE_ATTRIBUTE_DIRECTORY, tchIniFilePath, FILE_ATTRIBUTE_NORMAL)) {
+      StringCchCopy(tchIniFilePath, COUNTOF(tchIniFilePath), tchTemp);
+    }
+    StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s /inipath:\"%s\"", tchOptions, tchIniFilePath);
   }
-  StringCchPrintf(tchParams, COUNTOF(tchParams), tchParamFmt, tchOptions, tchIniFilePath);
+  else {
+    StringCchPrintf(tchParams, COUNTOF(tchParams), L"/portable /content %s", tchOptions);
+  }
   //if (StrIsNotEmpty(searchPattern)) {
   //  SetClipboardTextW(hwnd, searchPattern, StringCchLen(searchPattern, 0));
   //}

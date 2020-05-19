@@ -316,7 +316,7 @@ void Style_DynamicThemesMenuCmd(int cmd)
     }
     else if (Globals.idxSelectedTheme == 1) {
       if (!Flags.bSettingsFileSoftLocked) {
-        CreateIniFile();
+        CreateIniFile(Globals.IniFile, NULL);
         if (StrIsNotEmpty(Globals.IniFile)) {
           Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
