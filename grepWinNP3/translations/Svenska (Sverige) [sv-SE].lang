@@ -39,7 +39,7 @@ msgstr "%ld fler träffar"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Sökvägen existerar inte, eller kan inte nås!"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -144,7 +144,7 @@ msgstr "Mörkt läge"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Aktivera mörkt läge i Windows syteminställningar (>= Win10 v1803)."
+msgstr "Mörkt läge kräver åtminstone Win10 v1803, och måste ha aktiverats i Windows systeminställningar."
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -289,7 +289,7 @@ msgstr "Öppna med editor"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr ""
+msgstr "Klistra in text att testa regex med:"
 
 #. Resource IDs: (137)
 msgid "Path"
