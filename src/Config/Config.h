@@ -28,7 +28,7 @@ extern "C" {
 
 bool FindIniFile();
 bool TestIniFile();
-bool CreateIniFile();
+bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out);
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);

@@ -232,7 +232,7 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 {
   if (StrIsNotEmpty(Globals.IniFile)) 
   {
-    CreateIniFile();
+    CreateIniFile(Globals.IniFile, NULL);
 
     if (!IsIniFileCached()) {
       LoadIniFileCache(Globals.IniFile);
@@ -858,33 +858,36 @@ extern "C" bool FindIniFile()
 //=============================================================================
 
 
-extern "C" bool TestIniFile() {
+extern "C" bool TestIniFile()
+{
+  LPWSTR const pszIniFilePath = Globals.IniFile;
+  size_t const pathBufCount = COUNTOF(Globals.IniFile);
 
-  if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
+  if (StringCchCompareXI(pszIniFilePath, L"*?") == 0) {
     StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
-    StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
+    StringCchCopy(pszIniFilePath, pathBufCount, L"");
     return false;
   }
 
-  if (PathIsDirectory(Globals.IniFile) || *CharPrev(Globals.IniFile, StrEnd(Globals.IniFile, COUNTOF(Globals.IniFile))) == L'\\') {
+  if (PathIsDirectory(pszIniFilePath) || *CharPrev(pszIniFilePath, StrEnd(pszIniFilePath, pathBufCount)) == L'\\') {
     WCHAR wchModule[MAX_PATH] = { L'\0' };
     GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
-    PathCchAppend(Globals.IniFile, COUNTOF(Globals.IniFile), PathFindFileName(wchModule));
-    PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
-    if (!PathIsExistingFile(Globals.IniFile)) {
-      StringCchCopy(PathFindFileName(Globals.IniFile), COUNTOF(Globals.IniFile), _W(SAPPNAME) L".ini");
-      if (!PathIsExistingFile(Globals.IniFile)) {
-        StringCchCopy(PathFindFileName(Globals.IniFile), COUNTOF(Globals.IniFile), PathFindFileName(wchModule));
-        PathCchRenameExtension(Globals.IniFile, COUNTOF(Globals.IniFile), L".ini");
+    PathCchAppend(pszIniFilePath, pathBufCount, PathFindFileName(wchModule));
+    PathCchRenameExtension(pszIniFilePath, pathBufCount, L".ini");
+    if (!PathIsExistingFile(pszIniFilePath)) {
+      StringCchCopy(PathFindFileName(pszIniFilePath), pathBufCount, _W(SAPPNAME) L".ini");
+      if (!PathIsExistingFile(pszIniFilePath)) {
+        StringCchCopy(PathFindFileName(pszIniFilePath), pathBufCount, PathFindFileName(wchModule));
+        PathCchRenameExtension(pszIniFilePath, pathBufCount, L".ini");
       }
     }
   }
 
-  NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
+  NormalizePathEx(pszIniFilePath, pathBufCount, true, false);
 
-  if (!PathFileExists(Globals.IniFile) || PathIsDirectory(Globals.IniFile)) {
-    StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), Globals.IniFile);
-    StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
+  if (!PathFileExists(pszIniFilePath) || PathIsDirectory(pszIniFilePath)) {
+    StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), pszIniFilePath);
+    StringCchCopy(pszIniFilePath, pathBufCount, L"");
     return false;
   }
 
@@ -893,24 +896,24 @@ extern "C" bool TestIniFile() {
 //=============================================================================
 
 
-extern "C" bool CreateIniFile()
+extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 {
   bool result = false;
-  if (StrIsNotEmpty(Globals.IniFile))
+  if (StrIsNotEmpty(pszIniFilePath))
   {
-    WCHAR* pwchTail = StrRChrW(Globals.IniFile, NULL, L'\\');
+    WCHAR* pwchTail = StrRChrW(pszIniFilePath, NULL, L'\\');
 
     if (pwchTail) {
-      *pwchTail = 0;
-      SHCreateDirectoryEx(NULL, Globals.IniFile, NULL);
+      *pwchTail = L'\0';
+      SHCreateDirectoryEx(NULL, pszIniFilePath, NULL);
       *pwchTail = L'\\';
     }
     
     DWORD dwFileSize = 0UL;
 
-    if (!PathIsExistingFile(Globals.IniFile))
+    if (!PathIsExistingFile(pszIniFilePath))
     {
-      HANDLE hFile = CreateFile(Globals.IniFile,
+      HANDLE hFile = CreateFile(pszIniFilePath,
         GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
         CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -920,12 +923,15 @@ extern "C" bool CreateIniFile()
       else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
-          L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", Globals.IniFile);
+          L"CreateIniFile(%s): FAILD TO CREATE INITIAL INI FILE!", pszIniFilePath);
         MsgBoxLastError(msg, 0);
       }
     }
-    else {
-      HANDLE hFile = CreateFile(Globals.IniFile,
+    else 
+    {
+      SetFileAttributes(pszIniFilePath, FILE_ATTRIBUTE_NORMAL);
+
+      HANDLE hFile = CreateFile(pszIniFilePath,
         GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -937,21 +943,20 @@ extern "C" bool CreateIniFile()
       else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
-          L"CreateIniFile(%s): FAILED TO GET FILESIZE!", Globals.IniFile);
+          L"CreateIniFile(%s): FAILED TO GET FILESIZE!", pszIniFilePath);
         MsgBoxLastError(msg, 0);
         dwFileSize = INVALID_FILE_SIZE;
       }
     }
+    if (pdwFileSize_out) { *pdwFileSize_out = dwFileSize; }
 
     if (dwFileSize == 0UL) {
-      result = IniFileSetString(Globals.IniFile, _W(SAPPNAME), NULL, NULL);
-      Globals.bIniFileFromScratch = true;
+      // Set at least Application Name Section
+      result = IniFileSetString(pszIniFilePath, _W(SAPPNAME), NULL, NULL);
     }
     else {
       result = true;
     }
-
-    return result;
   }
   return result;
 }

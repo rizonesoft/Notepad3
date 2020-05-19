@@ -832,7 +832,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   ParseCommandLine();
   FindIniFile();
   TestIniFile();
-  CreateIniFile();
+  DWORD dwFileSize = 0UL;
+  CreateIniFile(Globals.IniFile, &dwFileSize);
+  Globals.bIniFileFromScratch = (dwFileSize == 0UL);
   LoadSettings();
 
   // set AppUserModelID
@@ -5564,7 +5566,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
           if (StrIsNotEmpty(Globals.IniFileDefault)) {
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
-            if (CreateIniFile(Globals.IniFile)) {
+            if (CreateIniFile(Globals.IniFile, NULL)) {
               StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
