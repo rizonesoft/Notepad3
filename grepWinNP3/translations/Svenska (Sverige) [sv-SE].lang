@@ -47,7 +47,7 @@ msgstr "%path% ersätts med sökväg till filen, %line% med raden att hoppa till
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr "Om grepWinNP3"
+msgstr "Om grepWinNP3..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -273,7 +273,7 @@ msgstr "Äldre än"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Varna inte vid ersättning utan att skapa säkerhetskopia"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -386,7 +386,7 @@ msgstr "Sök %ld filer, hoppade över %ld filer. Hittade %ld träffar i %ld file
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Välj editor ..."
+msgstr "Välj editor..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
@@ -527,7 +527,7 @@ msgstr "sökväg(arna) söks rekursivt.\nSeparera sökvägar med '|' symbolen.\n
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\nExempelvis: ^(CVS|bilder)$\nMärk,, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
+msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\nExempelvis: ^(CVS|bilder)$\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
 
 #. Resource IDs: (1061)
 msgid "Reset"
