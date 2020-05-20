@@ -22,9 +22,6 @@
     <Filter Include="Source Files\Crypto">
       <UniqueIdentifier>{aad339da-f291-4358-9ab1-a0fdee012ac6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ChooseFont">
-      <UniqueIdentifier>{a6270a0b-5c38-4e68-b38c-5795ccb57302}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\tinyexpr">
       <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
     </Filter>
@@ -83,15 +80,6 @@
     </ClCompile>
     <ClCompile Include="..\tinyexpr\tinyexpr.c">
       <Filter>Source Files\tinyexpr</Filter>
-    </ClCompile>
-    <ClCompile Include="ChooseFont\ChooseFont.cpp">
-      <Filter>Source Files\ChooseFont</Filter>
-    </ClCompile>
-    <ClCompile Include="ChooseFont\FontEnumeration.cpp">
-      <Filter>Source Files\ChooseFont</Filter>
-    </ClCompile>
-    <ClCompile Include="ChooseFont\GdiTextRenderer.cpp">
-      <Filter>Source Files\ChooseFont</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexASM.c">
       <Filter>Source Files\StyleLexers</Filter>
@@ -463,15 +451,6 @@
     </ClInclude>
     <ClInclude Include="..\tinyexpr\tinyexpr.h">
       <Filter>Source Files\tinyexpr</Filter>
-    </ClInclude>
-    <ClInclude Include="ChooseFont\ChooseFont.h">
-      <Filter>Source Files\ChooseFont</Filter>
-    </ClInclude>
-    <ClInclude Include="ChooseFont\FontEnumeration.h">
-      <Filter>Source Files\ChooseFont</Filter>
-    </ClInclude>
-    <ClInclude Include="ChooseFont\GdiTextRenderer.h">
-      <Filter>Source Files\ChooseFont</Filter>
     </ClInclude>
     <ClInclude Include="StyleLexers\EditLexer.h">
       <Filter>Source Files\StyleLexers</Filter>
