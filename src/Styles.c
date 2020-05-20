@@ -42,7 +42,8 @@
 extern const int g_FontQuality[4];
 extern COLORREF  g_colorCustom[16];
 
-bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
+// removed from project, not MUI language compatible with ChooseFont()
+//~bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
 
 // ----------------------------------------------------------------------------
 
@@ -3042,12 +3043,12 @@ static UINT CALLBACK Style_FontDialogHook(
       if (pChooseFont->lCustData) {
         SetWindowText(hdlg, (WCHAR*)pChooseFont->lCustData);
       }
-      else {
-        // HACK: to get the full font name instead of font family name
-        // [see: ChooseFontDirectWrite() PostProcessing]
-        SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
-        PostMessage(hdlg, WM_CLOSE, 0, 0);
-      }
+      //~else {
+      //~  // HACK: to get the full font name instead of font family name
+      //~  // [see: ChooseFontDirectWrite() PostProcessing]
+      //~  SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
+      //~  PostMessage(hdlg, WM_CLOSE, 0, 0);
+      //~}
     }
     break;
 
@@ -3198,6 +3199,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   }
 
   // ---  open systems Font Selection dialog  ---
+#if 1
+  if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
+#else 
   if (Settings.RenderingTechnology > 0) {
     DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
     const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
@@ -3210,6 +3214,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   else {
     if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
   }
+#endif
 
   // ---  map back to lpszStyle  ---
 
