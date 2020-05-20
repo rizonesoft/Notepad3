@@ -3034,12 +3034,22 @@ static UINT CALLBACK Style_FontDialogHook(
   switch (uiMsg)
   {
     case WM_INITDIALOG:
+    {
       if (Globals.hDlgIconSmall) { SendMessage(hdlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall); }
-      SetWindowText(hdlg, (WCHAR*)((CHOOSEFONT*)lParam)->lCustData);
-      // if called from ChooseFont class:
-      SendMessage(hdlg, WM_CHOOSEFONT_SETFLAGS, 0, lParam);
-      SendMessage(hdlg, WM_CHOOSEFONT_SETLOGFONT, 0, (LPARAM)((CHOOSEFONT*)lParam)->lpLogFont);
-      break;
+
+      const CHOOSEFONT* const pChooseFont = ((CHOOSEFONT*)lParam);
+
+      if (pChooseFont->lCustData) {
+        SetWindowText(hdlg, (WCHAR*)pChooseFont->lCustData);
+      }
+      else {
+        // HACK: to get the full font name instead of font family name
+        // [see: ChooseFontDirectWrite() PostProcessing]
+        SendMessage(hdlg, WM_CHOOSEFONT_GETLOGFONT, 0, (LPARAM)pChooseFont->lpLogFont);
+        PostMessage(hdlg, WM_CLOSE, 0, 0);
+      }
+    }
+    break;
 
     default:
       break;
@@ -3087,14 +3097,11 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
-
-  int iFontHeight = 0;
-  int iPointSize = 0;
   float fFontSize = fBaseFontSize;
   if (!Style_StrGetSize(lpszStyle, &fFontSize)) { fFontSize = fBaseFontSize; }
   HDC const hdc = GetDC(hwnd);
-  iPointSize = float2int(fFontSize * 10.0f);
-  iFontHeight = -MulDiv(float2int(fFontSize * SC_FONT_SIZE_MULTIPLIER), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
+  int const iPointSize = float2int(fFontSize * 10.0f);
+  int const iFontHeight = -MulDiv(float2int(fFontSize * SC_FONT_SIZE_MULTIPLIER), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
   ReleaseDC(hwnd, hdc);
 
   // Font Weight
@@ -3127,7 +3134,6 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   LOGFONT lf;
   ZeroMemory(&lf, sizeof(LOGFONT));
-
   StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
   lf.lfCharSet = (BYTE)iCharSet;
   lf.lfHeight = iFontHeight;
@@ -3194,10 +3200,12 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
     DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, dpi, &cf) || StrIsEmpty(lf.lfFaceName))
-    {
-      return false; 
-    }
+    const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
+    if (!ChooseFontDirectWrite(Globals.hwndMain, localName, dpi, &cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
+    // HACK: to get the full font name instead of font family name
+    // [see: Style_FontDialogHook() WM_INITDIALOG]
+    cf.lCustData = (LPARAM)NULL;
+    ChooseFont(&cf);
   }
   else {
     if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
