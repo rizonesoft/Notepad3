@@ -52,6 +52,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Font style/face-name handling.
+- Font selection refactoring.
 - Revised grepWinNP3.ini file creation.
 - Dwrite font selection dialog.
 - Minor changes for dialog handling on DPI changed.
