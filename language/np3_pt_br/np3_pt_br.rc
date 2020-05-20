@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Portuguese (Brazil) resources
+// Portuguese Brazilian (Brazil) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
 LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
@@ -55,7 +55,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Portuguese (Brazil) resources
+#endif    // Portuguese Brazilian (Brazil) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

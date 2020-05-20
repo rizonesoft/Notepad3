@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Simplified Chinese (China) resources
+// Chinese Simplified (China) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE_SIMPLIFIED, SUBLANG_CHINESE_SIMPLIFIED
@@ -127,7 +127,7 @@ BEGIN
 END
 
 
-#endif    // Simplified Chinese (China) resources
+#endif    // Chinese Simplified (China) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

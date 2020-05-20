@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Traditional Chinese (Taiwan) resources
+// Chinese Traditional (Taiwan) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHT)
 LANGUAGE LANG_CHINESE_TRADITIONAL, SUBLANG_CHINESE_TRADITIONAL
@@ -523,7 +523,7 @@ BEGIN
     END
 END
 
-#endif    // Traditional Chinese (Taiwan) resources
+#endif    // Chinese Traditional (Taiwan) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
