@@ -52,7 +52,7 @@ class ChooseFontDialog
 {
 public:
 
-  ChooseFontDialog(HWND hParent, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI);
+  ChooseFontDialog(HWND hParent, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI, WCHAR* pFontFaceName_out);
   ~ChooseFontDialog();
   ChooseFontDialog() = delete;
 
@@ -69,6 +69,7 @@ private:
   IDWriteFontCollection*  m_fontCollection;
   IDWriteTextFormat*      m_currentTextFormat;
   IDWriteTextFormat*      m_renderTextFormat;
+  WCHAR*                  m_fontFaceName_out;
 
   HRESULT OnFontFamilySelect();
   HRESULT OnFontFaceSelect();
@@ -96,7 +97,7 @@ private:
 *                                                                 *
 ******************************************************************/
 
-ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const DPI_T dpi, LPCHOOSEFONT lpCFGDI)
+ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const DPI_T dpi, LPCHOOSEFONT lpCFGDI, WCHAR* pFontFaceName_out)
   : m_parent(hParent)
   , m_dialog(nullptr)
   , m_currentDPI(dpi)
@@ -104,6 +105,7 @@ ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const 
   , m_fontCollection(nullptr)
   , m_currentTextFormat(nullptr)
   , m_renderTextFormat(nullptr)
+  , m_fontFaceName_out(pFontFaceName_out)
 {
   if (localeName != nullptr) {
     StringCchCopy(m_localeName, _ARRAYSIZE(m_localeName), localeName);
@@ -113,6 +115,7 @@ ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const 
     //GetUserDefaultLocaleName(&m_localeName[0], COUNTOF(m_localeName));
     GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, &m_localeName[0], _ARRAYSIZE(m_localeName));
   }
+
 }
 
 
@@ -547,6 +550,10 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
     int selectedFontFace = ComboBox_GetCurSel(hwndFontFaces);
     auto packedAttributes = static_cast<ULONG>(ComboBox_GetItemData(hwndFontFaces, selectedFontFace));
 
+    if (m_fontFaceName_out) {
+      ComboBox_GetText(hwndFontFaces, m_fontFaceName_out, LF_FULLFACESIZE);
+    }
+
     // Get the font size
     WCHAR fontSizeText[100];
     GetWindowText(hwndFontSizes, &fontSizeText[0], _ARRAYSIZE(fontSizeText));
@@ -798,6 +805,7 @@ void ChooseFontDialog::OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT* lpDrawItem)
 
 static void  SetChosenFontFromTextFormat(
   IDWriteTextFormat* textFormat,
+  const WCHAR* fontFaceName,
   LPCHOOSEFONT lpCF, const DPI_T dpi)
 {
   if (textFormat != nullptr) {
@@ -809,13 +817,16 @@ static void  SetChosenFontFromTextFormat(
     DWRITE_FONT_WEIGHT const fontWeight = textFormat->GetFontWeight();
     DWRITE_FONT_STYLE const fontStyle = textFormat->GetFontStyle();
 
+    // TODO: @@@ need full font name here, not family name
     StringCchCopy(lpCF->lpLogFont->lfFaceName, LF_FACESIZE, fontFamilyName);
+
     lpCF->lpLogFont->lfHeight = -MulDiv(static_cast<int>(lround(pointSize)), GetDeviceCaps(lpCF->hDC, LOGPIXELSY), 72);
     lpCF->iPointSize = static_cast<INT>(lroundf(pointSize * 10.0f));
     lpCF->lpLogFont->lfWeight = static_cast<LONG>(fontWeight);
-    lpCF->lpLogFont->lfItalic = static_cast<BYTE>((((fontStyle == DWRITE_FONT_STYLE_ITALIC) ||
-      (fontStyle == DWRITE_FONT_STYLE_OBLIQUE)) ? TRUE : FALSE));
+    lpCF->lpLogFont->lfItalic = static_cast<BYTE>((((fontStyle == DWRITE_FONT_STYLE_ITALIC) || (fontStyle == DWRITE_FONT_STYLE_OBLIQUE)) ? TRUE : FALSE));
     lpCF->lpLogFont->lfQuality = static_cast<BYTE>(CLEARTYPE_QUALITY);
+
+    StringCchCopy(lpCF->lpszStyle, LF_FULLFACESIZE, fontFaceName);
 
     ReleaseDC(lpCF->hwndOwner, hdc);
   }
@@ -839,10 +850,11 @@ extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T 
   DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown **)&g_dwrite);
 
   IDWriteTextFormat* textFormatOut = nullptr;
-  ChooseFontDialog chooseFont(hwnd, localeName, dpi, lpCFGDI);
+  WCHAR fontFaceName[LF_FULLFACESIZE] = { L'\0' };
+  ChooseFontDialog chooseFont(hwnd, localeName, dpi, lpCFGDI, &fontFaceName[0]);
   chooseFont.GetTextFormat(&textFormatOut);
 
-  SetChosenFontFromTextFormat(textFormatOut, lpCFGDI, dpi);
+  SetChosenFontFromTextFormat(textFormatOut, fontFaceName, lpCFGDI, dpi);
 
   SafeRelease(&textFormatOut);
   SafeRelease(&g_dwrite);
