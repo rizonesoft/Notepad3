@@ -98,7 +98,7 @@ IF NOT EXIST %LNG% MD %LNG%
 IF NOT EXIST %THEMES% MD %THEMES%
 IF NOT EXIST %DOCS% MD %DOCS%
 XCOPY /E /Y /V "..\%1\lng" "%LNG%" /EXCLUDE:Ignore.txt
-XCOPY /E /Y /V "..\grepWinNP3\translations" "%GRP%"
+XCOPY /E /Y /V "..\grepWinNP3\translationsNP3" "%GRP%"
 XCOPY /E /Y /V "themes" "%THEMES%"
 XCOPY /E /Y /V "Docs" "%DOCS%"
 

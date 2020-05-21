@@ -76,7 +76,7 @@ BEGIN
     IDS_NUMFILES            "%s 項目"
     IDS_NUMFILES2           "%s 項目| フィルター使用"
     IDS_SAVEFILE            "保存中 ""%s""..."
-    IDS_OPEN_FILE_WITH      "%sで開く"
+    IDS_OPEN_FILE_WITH      "%s で開く"
 END
 
 STRINGTABLE
@@ -86,7 +86,7 @@ BEGIN
     IDS_ERR_NEW             "ファイルアクセスエラー\nファイルを作成できませんでした。\nディスクあるいはネットワーク接続を確認してください。"
     IDS_ERR_NEWDIR          "フォルダアクセスエラー\nフォルダを作成できませんでした。\nディスクあるいはネットワーク接続を確認してください。"
     IDS_ERR_SAVEAS1         "ファイル保存エラー\n""%s""の保存に失敗しました。\nファイルはおそらく書き込み保護されています。"
-    IDS_ERR_SAVEAS2         "ファイル保存エラー\nファイルの保存時に読み取り専用属性を除去できませんでした。"
+    IDS_ERR_SAVEAS2         "ファイル保存エラー\nファイルの保存時に読み取り専用属性を解除できませんでした。"
     IDS_ERR_CMDLINE         "MiniPath\nコマンドラインで指定されたファイルやフォルダにアクセスできません。"
     IDS_ERR_STARTUPDIR      "MiniPath\n起動時に読み込むフォルダがありません。\n設定から存在するフォルダを指定してください。"
     IDS_ERR_DROP1           "MiniPath\n\nドロップしたファイルやフォルダにアクセスできません。"
@@ -95,8 +95,8 @@ BEGIN
     IDS_ERR_LNK_GETPATH     "ショートカット作成エラー\nショートカットする対象のパスが正しくありません。\nおそらくファイルやフォルダではありません。"
     IDS_ERR_LNK_NOACCESS    "ショートカット作成エラー\nショートカットの対象のパスにアクセスできません。\nディスクあるいはネットワーク接続を確認してください。"
     IDS_ERR_CREATELINK      "ショートカット作成エラー\n指定したショートカットを作成できません。\nおそらくフォルダが書き込み保護されています。"
-    IDS_ERR_FILTER          "ファイルフィルター・エラー\n追加のフィルタの指定がありません。\nMiniPathのreadmeファイルに詳細が説明されています。(試訳)"
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPathウインドウがビジー状態、あるいはダイアログを使用しています。\n新しいMiniPathのウインドウを開きますか？"
+    IDS_ERR_FILTER          "ファイルフィルター・エラー\n追加のフィルタの指定がありません。\n詳細は MiniPath の readmeファイルを参照してください。"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPathウインドウがビジー状態、あるいはダイアログを使用しています。\n新しい MiniPath のウインドウを開きますか？"
 END
 
 STRINGTABLE
@@ -104,18 +104,18 @@ BEGIN
     IDS_ERR_TARGETDISABLED  "MiniPath\n対象ウインドウがビジー状態、あるいはダイアログを使用しています。\n新しいウインドウを開きますか？"
     IDS_ERR_INVALIDTARGET   "MiniPath\n必須項目の設定が完了していません。\n対象プログラムのウインドウを指定する必要があります。"
     IDS_ERR_INIOPEN         "MiniPath\n設定ファイルにアクセスできません。"
-    IDS_ERR_INICREATE       "設定の保存\n設定ファイル作成のエラー。"
-    IDS_ERR_INIWRITE        "設定の保存\n設定が保存されていません！\n設定ファイルに書き込み出来ませんでした。"
+    IDS_ERR_INICREATE       "設定の保存\n設定ファイル作成時にエラーが発生しました。"
+    IDS_ERR_INIWRITE        "設定の保存\n設定が保存されていません！\n設定ファイルに書き込めませんでした。"
 END
 
 STRINGTABLE
 BEGIN
     IDS_SEARCHEXE           "プログラムの指定"
-    IDS_GETQUICKVIEWER      "Quickviewの指定"
+    IDS_GETQUICKVIEWER      "Quickview の指定"
     IDS_GETTARGET           "エディターの指定"
     IDS_NEWFILE             "新規作成"
-    IDS_FILTER_ALL          "すべてのファイル(*.*)\n*.*\n"
-    IDS_FILTER_EXE          "実行ファイル(*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nすべてのファイル(*.*)\n*.*\n"
+    IDS_FILTER_ALL          "すべてのファイル (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "実行ファイル (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nすべてのファイル (*.*)\n*.*\n"
     IDS_GETDIRECTORY        "フォルダを選択"
     IDS_FAVORITES           "「お気に入り」フォルダの指定"
 END
