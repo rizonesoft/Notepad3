@@ -168,7 +168,7 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
 ) else (
 	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
 )
-copy /B "%NP3_GREPWIN_DIR%\translations\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\translationsNP3\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
@@ -176,7 +176,7 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
 ) else (
 	mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
 )
-copy /B "%NP3_GREPWIN_DIR%\translations\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
+copy /B "%NP3_GREPWIN_DIR%\translationsNP3\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: --------------------------------------------------------------------------------------------------------------------
