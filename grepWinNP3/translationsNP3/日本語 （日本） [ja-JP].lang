@@ -39,7 +39,7 @@ msgstr "%ld 以上の一致"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "パスが存在しないか、アクセスできません！"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -273,7 +273,7 @@ msgstr "より古い"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "バックアップを作成しない置換時に警告しない"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
