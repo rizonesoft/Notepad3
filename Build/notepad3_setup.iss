@@ -275,11 +275,13 @@ Type: files;      Name: {#quick_launch}\{#app_name}.lnk; Check: not IsTaskSelect
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\Readme.txt
 Type: files;      Name: {app}\minipath.ini
+Type: files;      Name: {app}\grepWinNP3.ini
 
 
 [UninstallDelete]
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\minipath.ini
+Type: files;      Name: {app}\grepWinNP3.ini
 Type: dirifempty; Name: {app}
 
 
@@ -422,6 +424,7 @@ procedure CleanUpSettings();
 begin
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\minipath.ini'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\grepWinNP3.ini'));
   RemoveDir(ExpandConstant('{userappdata}\Rizonesoft\Notepad3'));
 end;
 
