@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.520.(build_#) (2020-05-20)
+Current BETA Version 5.20.521.(build_#) (2020-05-21)
 =====================================================
 
 -----------------------------------------------------
@@ -85,6 +85,9 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- "vcxproj" should use the latest installed SDK.
+- Scintilla as DLL solution.
+- Extended font style selection.
 - Path is File check.
 - Don't add recent file list (history) to taskbar's jump-list.
 - Scroll/normalize selection in view.
@@ -110,18 +113,20 @@ FIXES:
 REMOVED:
 -----------------------------------------------------
 - 
-- 
+- Remove DWrite Font Choose Dialog - need to type fractional font sizes manually.
 
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
 - 
-- Chinese Taiwan (zh-TW) in progress...
+- Chinese Traditional (zh-TW) in progress...
 - Indonesian (id-ID) in progress...
-- Portuguese (pt-PT)
 - Portuguese Brazilian (pt-BR) in progress...
-- Slovak (sk-SK).
 - Vietnamese (vi-VN) in progress...
+- Korean (ko-KR) to resume...
+- Turkish (tr-TR) to resume...
+- Portuguese (pt-PT).
+- Slovak (sk-SK).
 
 
 =====================================================
