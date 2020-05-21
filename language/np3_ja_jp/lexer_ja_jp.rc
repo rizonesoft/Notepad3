@@ -131,7 +131,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STD_STYLE       "デフォルトのスタイル"
     IDS_LEX_STD_MARGIN      "行数"
-    IDS_LEX_STD_BRACE       "対応した括弧 (強調)"
+    IDS_LEX_STD_BRACE       "対応する括弧 (強調)"
     IDS_LEX_STD_BRACE_FAIL  "未対応の括弧 (強調)"
 END
 
@@ -147,7 +147,7 @@ BEGIN
     IDS_LEX_STD_X_SPC       "行間の余白 (サイズ)"
     IDS_LEX_2ND_STYLE       "第2 デフォルトのスタイル"
     IDS_LEX_2ND_MARGIN      "第2 行数"
-    IDS_LEX_2ND_BRACE       "第2 対応した括弧 (強調)"
+    IDS_LEX_2ND_BRACE       "第2 対応する括弧 (強調)"
     IDS_LEX_2ND_BRACE_FAIL  "第2 未対応の括弧 (強調)"
     IDS_LEX_2ND_CTRL_CHAR   "第2 制御文字 (フォント)"
     IDS_LEX_2ND_INDENT      "第2 インデントのガイド (色)"

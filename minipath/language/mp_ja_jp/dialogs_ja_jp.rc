@@ -141,7 +141,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "フォルダの作成"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "作成するフォルダ名を入力してください:",IDC_STATIC,7,7,158,8
+    LTEXT           "作成するフォルダ名を入力:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "キャンセル",IDCANCEL,115,45,50,14
@@ -191,18 +191,18 @@ END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "拡張"
+CAPTION "追加"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "MiniPath 拡張設定",IDC_STATIC,40,15,160,8
+    LTEXT           "MiniPath 追加設定",IDC_STATIC,40,15,160,8
     CONTROL         "起動時に表示するフォルダ(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,113,10
     CONTROL         "よく使用するもの(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,125,46,79,10
     CONTROL         "「お気に入り」(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,125,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "保存時にファイルの読み取り専用属性を消す(&C)",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,166,10
-    CONTROL         "移動時などファイル名の衝突時に自動で改名する(&N)",IDC_RENAMEONCOLLISION,
+    CONTROL         "移動時などファイル名の衝突時に自動で改名(&N)",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,185,10
     CONTROL         "削除したファイルをごみ箱へ移動(&M) (注意:オフで直接削除)",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,211,10
@@ -220,7 +220,7 @@ CAPTION "一覧項目"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "一覧項目のデザイン",IDC_STATIC,40,15,118,8
+    LTEXT           "一覧項目の表示",IDC_STATIC,40,15,118,8
     GROUPBOX        "配色",IDC_STATIC,10,41,205,134
     LTEXT           "フィルター未使用時の文字色:",IDC_STATIC,20,54,136,8
     CONTROL         "標準設定(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "対象プログラム"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "対象とするプログラムを指定せず、単にファイラーとして使う。",IDC_LAUNCH,
+    CONTROL         "対象プログラムを指定せず単にファイラーとして使用",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
     CONTROL         "次のプログラムで開く:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
     LTEXT           "Message:",IDC_STATIC,20,120,32,8
-    CONTROL         "その都度、対象プログラムでファイルを開く。",IDC_ALWAYSRUN,
+    CONTROL         "その都度、対象プログラムでファイルを開く",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
     CONTROL         "対象プログラムのウインドウでファイルを開く:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,185,10
