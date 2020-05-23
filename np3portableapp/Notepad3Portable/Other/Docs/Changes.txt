@@ -52,9 +52,6 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
-- Rename "Notepad3Portable\Other\Help" to "Notepad3Portable\Other\Docs"
-- Review the licenses files and synchronize them in all versions.
-- Enhancement of the "build_np3portableapp.cmd" file.
 - Font style/face-name handling.
 - Font selection refactoring.
 - Revised grepWinNP3.ini file creation.

@@ -41,7 +41,7 @@ AppCopyright={#app_copyright}
 UninstallDisplayIcon={app}\Notepad3.exe
 UninstallDisplayName={#app_name} {#app_version}
 DefaultDirName={pf}\Notepad3
-LicenseFile=License.txt
+LicenseFile="..\License.txt"
 OutputDir=.\Packages
 OutputBaseFilename={#app_name}_{#app_version}_x86_Setup
 WizardStyle=modern
@@ -109,10 +109,10 @@ Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescript
 
 [Files]
 Source: {#bindir}\Release_x86_v142\Notepad3.exe;                    DestDir: {app};                                     Flags: ignoreversion;
-Source: License.txt;                                                DestDir: {app};                                     Flags: ignoreversion
-Source: Readme.txt;                                                 DestDir: {app};                                     Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\minipath.exe;                    DestDir: {app};                                     Flags: ignoreversion;
-Source: "..\grepWinNP3\GPL_v3.0_LICENSE.txt";                       DestDir: {app};                                     Flags: ignoreversion;
+Source: "..\License.txt";                                           DestDir: {app};                                     Flags: ignoreversion
+Source: "..\Readme.txt";                                            DestDir: {app};                                     Flags: ignoreversion
+Source: "..\grepWinNP3\grepWinLicense.txt";                         DestDir: {app};                                     Flags: ignoreversion;
 Source: "..\grepWinNP3\translationsNP3\*.lang";                     DestDir: {app}\lng\gwLng;                           Flags: ignoreversion;
 Source: {#bindir}\Release_x86_v142\grepWinNP3.exe;                  DestDir: {app};                                     Flags: ignoreversion;
 Source: Notepad3.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3;         Flags: onlyifdoesntexist uninsneveruninstall
@@ -165,6 +165,7 @@ Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-TW\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-TW\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
+Source: Changes.txt;                                                DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\Oniguruma_RE.txt;                                      DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\Notepad3.txt;                                          DestDir: {app}\Docs;                                Flags: ignoreversion
