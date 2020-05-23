@@ -39,6 +39,7 @@ Current BETA Version 5.20.523.(build_#) (2020-05-23)
 NEW:
 -----------------------------------------------------
 - 
+- - Add another Dark Theme "Sombra".
 - Strip first char: allow multi-selection.
 - Open default browser while clicking hyperlink tooltip.
 - Regex multi-select feature.
