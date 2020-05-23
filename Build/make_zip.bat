@@ -18,6 +18,7 @@ CD /D %~dp0
 
 rem Check for the help switches
 IF /I "%~1" == "help"   GOTO SHOWHELP
+IF /I "%~1" == "help"   GOTO SHOWHELP
 IF /I "%~1" == "/help"  GOTO SHOWHELP
 IF /I "%~1" == "-help"  GOTO SHOWHELP
 IF /I "%~1" == "--help" GOTO SHOWHELP
@@ -87,8 +88,8 @@ IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "Packages"    MD "Packages"
 
-FOR %%A IN ("Changes.txt" "License.txt" "Readme.txt" "..\grepWinNP3\GPL_v3.0_LICENSE.txt" "Notepad3.ini" "minipath.ini"^
-    "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\grepWinNP3.exe" "..\grepWinNP3") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
+FOR %%A IN ("..\License.txt" "..\Readme.txt" "..\grepWinNP3\grepWinLicense.txt" "Notepad3.ini" "minipath.ini"^
+    "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\grepWinNP3.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "LNG=%TEMP_NAME%\lng"
 SET "GRP=%TEMP_NAME%\lng\gwLng\"
@@ -101,14 +102,15 @@ XCOPY /E /Y /V "..\%1\lng" "%LNG%" /EXCLUDE:Ignore.txt
 XCOPY /E /Y /V "..\grepWinNP3\translationsNP3" "%GRP%"
 XCOPY /E /Y /V "themes" "%THEMES%"
 XCOPY /E /Y /V "Docs" "%DOCS%"
+COPY /Y /V "Changes.txt" "%DOCS%"
 
 SET "FAVORITES=%TEMP_NAME%\Favorites"
 IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mx=9^
- "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "GPL_v3.0_LICENSE.txt" "Changes.txt"^
- "Readme.txt" "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "themes" "Docs">NUL
+ "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "grepWinLicense.txt" "Readme.txt"^
+ "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"

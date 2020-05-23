@@ -171,15 +171,15 @@ IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 are permitted provided that the following conditions are met:\\par\
 \\cf0 \\par\
 \\cf0 1. Redistributions of source code must retain the above copyright\\par\
-\\cf0 notice, this list of conditions and the following disclaimer.\\par\
+\\cf0     notice, this list of conditions and the following disclaimer.\\par\
 \\cf0 \\par\
 \\cf0 2. Redistributions in binary form must reproduce the above copyright\\par\
-\\cf0 notice, this list of conditions and the following disclaimer in the\\par\
-\\cf0 documentation and/or other materials provided with the distribution.\\par\
+\\cf0     notice, this list of conditions and the following disclaimer in the\\par\
+\\cf0     documentation and/or other materials provided with the distribution.\\par\
 \\cf0 \\par\
 \\cf0 3. Neither the name of Florian Balmer nor the names of its contributors\\par\
-\\cf0 may be used to endorse or promote products derived from this software\\par\
-\\cf0 without specific prior written permission.\\par\
+\\cf0     may be used to endorse or promote products derived from this software\\par\
+\\cf0     without specific prior written permission.\\par\
 \\cf0 \\par\
 \\cf0 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\\par\
 \\cf0 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED\\par\
