@@ -119,6 +119,7 @@ Source: Notepad3.ini;                                               DestDir: {us
 Source: minipath.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3;         Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Dark.ini;                                            DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Obsidian.ini;                                        DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
+Source: themes\Sombra.ini;                                          DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
 Source: {#bindir}\Release_x86_v142\lng\mplng.dll;                   DestDir: {app}\lng;                                 Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\np3lng.dll;                  DestDir: {app}\lng;                                 Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\af-ZA\mplng.dll.mui;         DestDir: {app}\lng\af-ZA;                           Flags: ignoreversion
