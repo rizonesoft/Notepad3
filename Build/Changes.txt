@@ -39,7 +39,7 @@ Current BETA Version 5.20.524.(build_#) (2020-05-24)
 NEW:
 -----------------------------------------------------
 - 
-- - Add another Dark Theme "Sombra".
+- Add another Dark Theme "Sombra".
 - Strip first char: allow multi-selection.
 - Open default browser while clicking hyperlink tooltip.
 - Regex multi-select feature.
@@ -54,8 +54,9 @@ CHANGES:
 -----------------------------------------------------
 - 
 - Remove duplicate readme.txt, license.txt and unused files.
-- Rename "Notepad3Portable\Other\Help" to "Notepad3Portable\Other\Docs"
-- Review the licenses files and synchronize them in all versions.
+- Move all readme.txt, license.txt, KeyboardShortcuts.txt, etc... files
+  from "Notepad3Portable\Other\Help" to "Notepad3Portable\App\Notepad3\Docs"
+- Review the license.txt file and format it for the INNO Installer.
 - Enhancement of the "build_np3portableapp.cmd" file.
 - Font style/face-name handling.
 - Font selection refactoring.
