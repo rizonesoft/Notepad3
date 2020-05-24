@@ -113,7 +113,6 @@ copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\
 copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Oniguruma_RE.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encryption-doc.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\read_me.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encrypt-read_me.txt" /Y /V
-cls
 
 :: clear Notepad3\x64 and Notepad3\x86 binary dir (except all .ini files)
 for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
