@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.523.(build_#) (2020-05-23)
+Current BETA Version 5.20.524.(build_#) (2020-05-24)
 =====================================================
 
 -----------------------------------------------------
@@ -53,6 +53,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Remove duplicate readme.txt, license.txt and unused files.
 - Rename "Notepad3Portable\Other\Help" to "Notepad3Portable\Other\Docs"
 - Review the licenses files and synchronize them in all versions.
 - Enhancement of the "build_np3portableapp.cmd" file.
