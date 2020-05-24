@@ -1,4 +1,5 @@
 @echo off
+@echo off
 setlocal enableextensions
 :: encoding: UTF-8
 chcp 65001 >nul 2>&1
@@ -86,34 +87,37 @@ if defined FILEVER set VERSION=%FILEVER%
 ::goto :END
 
 :: ---------------------------------------------------------------------------------------------------
-
+echo on
 :: --- Prepare Build ---
+if exist "%NP3_PORTAPP_DIR%\Data" rmdir "%NP3_PORTAPP_DIR%\Data" /S /Q
 
 if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
      mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
 ) else (
     del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\*.*"
 )
-
-if not exist "%NP3_PORTAPP_DIR%\Other\Docs\" (
-     mkdir "%NP3_PORTAPP_DIR%\Other\Docs\"
+echo on
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\" (
+     mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\"
 ) else (
-    del /s /f /q "%NP3_PORTAPP_DIR%\Other\Docs\*.*"
+    del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\*.*"
 )
 
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
-copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Docs\Changes.txt" /Y /V
-copy "%SCRIPT_DIR%..\License.txt" "%NP3_PORTAPP_DIR%\Other\Docs\License.txt" /Y /V
-copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Docs\Readme.txt" /Y /V
-copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\Other\Docs\Notepad3.txt" /Y /V
-copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\Other\Docs\KeyboardShortcuts.txt" /Y /V
-copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\Other\Docs\Oniguruma_RE.txt" /Y /V
-copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\Other\Docs\encryption-doc.txt" /Y /V
-copy "%NP3_DOC_DIR%\crypto\read_me.txt" "%NP3_PORTAPP_DIR%\Other\Docs\encrypt-read_me.txt" /Y /V
+copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Changes.txt" /Y /V
+copy "%SCRIPT_DIR%..\License.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\License.txt" /Y /V
+copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Readme.txt" /Y /V
+copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Notepad3.txt" /Y /V
+copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\KeyboardShortcuts.txt" /Y /V
+copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Oniguruma_RE.txt" /Y /V
+copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encryption-doc.txt" /Y /V
+copy "%NP3_DOC_DIR%\crypto\read_me.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encrypt-read_me.txt" /Y /V
+cls
 
-:: clear Notepad3 binary dir (except .ini files)
-for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\" /b /a-d /s ^| findstr /v .ini') do del "%%f"
+:: clear Notepad3\x64 and Notepad3\x86 binary dir (except all .ini files)
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
@@ -149,7 +153,7 @@ if exist %NP3_X64_DIR%\Scintilla.dll (
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: Copy all current "grepWinNP3" files
-copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\Other\Docs\grepWinLicense.txt" /Y /V
+copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\grepWinLicense.txt" /Y /V
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
 	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\*.*"
