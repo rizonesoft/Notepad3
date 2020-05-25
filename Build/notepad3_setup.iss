@@ -49,7 +49,7 @@ AppCopyright={#app_copyright}
 UninstallDisplayIcon={app}\Notepad3.exe
 UninstallDisplayName={#app_name} {#app_version}
 DefaultDirName={pf}\Notepad3
-LicenseFile=License.txt
+LicenseFile="..\License.txt"
 OutputDir=.\Packages
 OutputBaseFilename={#app_name}_{#app_version}_Setup
 WizardStyle=modern
@@ -118,11 +118,11 @@ Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescript
 [Files]
 Source: {#bindir}\Release_x64_v142\Notepad3.exe;                    DestDir: {app};                                     Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\Notepad3.exe;                    DestDir: {app};                                     Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: License.txt;                                                DestDir: {app};                                     Flags: ignoreversion
-Source: Readme.txt;                                                 DestDir: {app};                                     Flags: ignoreversion
 Source: {#bindir}\Release_x64_v142\minipath.exe;                    DestDir: {app};                                     Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\minipath.exe;                    DestDir: {app};                                     Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: "..\grepWinNP3\GPL_v3.0_LICENSE.txt";                       DestDir: {app};                                     Flags: ignoreversion;
+Source: "..\License.txt";                                           DestDir: {app};                                     Flags: ignoreversion
+Source: "..\Readme.txt";                                            DestDir: {app};                                     Flags: ignoreversion
+Source: "..\grepWinNP3\grepWinLicense.txt";                         DestDir: {app};                                     Flags: ignoreversion;
 Source: "..\grepWinNP3\translationsNP3\*.lang";                     DestDir: {app}\lng\gwLng;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: "..\grepWinNP3\translationsNP3\*.lang";                     DestDir: {app}\lng\gwLng;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\grepWinNP3.exe;                  DestDir: {app};                                     Flags: ignoreversion;                         Check: Is64BitInstallMode()
@@ -131,6 +131,7 @@ Source: Notepad3.ini;                                               DestDir: {us
 Source: minipath.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3;         Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Dark.ini;                                            DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
 Source: themes\Obsidian.ini;                                        DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
+Source: themes\Sombra.ini;                                          DestDir: {userappdata}\Rizonesoft\Notepad3\themes;  Flags: onlyifdoesntexist uninsneveruninstall
 Source: {#bindir}\Release_x64_v142\lng\mplng.dll;                   DestDir: {app}\lng;                                 Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\mplng.dll;                   DestDir: {app}\lng;                                 Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\np3lng.dll;                  DestDir: {app}\lng;                                 Flags: ignoreversion;                         Check: Is64BitInstallMode()
@@ -223,6 +224,7 @@ Source: {#bindir}\Release_x64_v142\lng\zh-TW\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\zh-TW\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v142\lng\zh-TW\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v142\lng\zh-TW\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: Changes.txt;                                                DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\Oniguruma_RE.txt;                                      DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\Notepad3.txt;                                          DestDir: {app}\Docs;                                Flags: ignoreversion
@@ -275,11 +277,13 @@ Type: files;      Name: {#quick_launch}\{#app_name}.lnk; Check: not IsTaskSelect
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\Readme.txt
 Type: files;      Name: {app}\minipath.ini
+Type: files;      Name: {app}\grepWinNP3.ini
 
 
 [UninstallDelete]
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\minipath.ini
+Type: files;      Name: {app}\grepWinNP3.ini
 Type: dirifempty; Name: {app}
 
 
@@ -422,6 +426,7 @@ procedure CleanUpSettings();
 begin
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\minipath.ini'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\grepWinNP3.ini'));
   RemoveDir(ExpandConstant('{userappdata}\Rizonesoft\Notepad3'));
 end;
 

@@ -1,17 +1,21 @@
 @echo off
+@echo off
 setlocal enableextensions
 :: encoding: UTF-8
 chcp 65001 >nul 2>&1
 
-:: ====================================================================================================================
-:: Build batch to create a PortableApps.com's (https://portableapps.com/development) 
+:: ===================================================================================================
+:: PortableApps.com's (https://portableapps.com/development) 
 ::
-::                              Notepad3Portable
+:: This "build_np3portableapp.cmd" batch file creates: 
+::	  - "Notepad3Portable_x.xx.xxx.x_zzzz.paf.exe"
+::	  - "Notepad3Portable_x.xx.xxx.x_zzzz.paf.exe.7z"
 ::
-:: --------------------------------------------------------------------------------------------------------------------
-:: Based on PortableApps.com's Application_Template
+:: ---------------------------------------------------------------------------------------------------
+:: Based on PortableApps.com's Application_Template:
 ::    (https://downloads.sourceforge.net/portableapps/PortableApps.com_Application_Template_3.4.1.zip)
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
+::
 :: Prerequisites: (portable) intallation of:
 :: -----------------------------------------
 :: + PortableApps.com App Compactor (https://portableapps.com/apps/utilities/appcompactor)
@@ -21,19 +25,11 @@ chcp 65001 >nul 2>&1
 ::
 :: + PortableApps.com Installer (https://portableapps.com/apps/development/portableapps.com_installer)
 ::
-:: ====================================================================================================================
-:: TODO:
-:: - (release) needs release version of Splasch img:  .\Notepad3Portable\App\AppInfo\Launcher\Splash.jpg
-:: - (release) adapt help files:  .\Notepad3Portable\Other\Help\
-:: - (release) review all distributed (Installed) text files
-:: - 
-:: - (optional?) needs distribution process to PortableApps.com's repository
-
-:: ====================================================================================================================
+:: ===================================================================================================
 
 set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW
 
-:: ====================================================================================================================
+:: ===================================================================================================
 
 :: --- Environment ---
 
@@ -54,10 +50,7 @@ set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\Porta
 
 call :RESOLVEPATH NP3_DISTRIB_DIR %SCRIPT_DIR%..\Build
 call :RESOLVEPATH NP3_DOC_DIR %SCRIPT_DIR%..\Build\Docs
-::call :RESOLVEPATH NP3_THEMES_DIR %SCRIPT_DIR%..\themes
 call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\themes
-::call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v141
-::call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v141
 call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v142
 call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v142
 
@@ -71,7 +64,7 @@ call :RESOLVEPATH NP3_BUILD_VER %SCRIPT_DIR%..\Versions\build.txt
 call :RESOLVEPATH NP3_BUILD_NAME %SCRIPT_DIR%_buildname.txt
 
 
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 set YY=00
 set MM=00
@@ -93,25 +86,37 @@ if defined FILEVER set VERSION=%FILEVER%
 ::pause
 ::goto :END
 
-:: --------------------------------------------------------------------------------------------------------------------
-
+:: ---------------------------------------------------------------------------------------------------
+echo on
 :: --- Prepare Build ---
+if exist "%NP3_PORTAPP_DIR%\Data" rmdir "%NP3_PORTAPP_DIR%\Data" /S /Q
 
-if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
+if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
+     mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
+) else (
+    del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\*.*"
+)
+echo on
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\" (
+     mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\"
+) else (
+    del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\*.*"
+)
 
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
-copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Help\Changes.txt" /Y /V
-copy "%NP3_DISTRIB_DIR%\License.txt" "%NP3_PORTAPP_DIR%\Other\Help\License.txt" /Y /V
-copy "%NP3_DISTRIB_DIR%\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Help\Readme.txt" /Y /V
-copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\Other\Help\Notepad3.txt" /Y /V
-copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\Other\Help\KeyboardShortcuts.txt" /Y /V
-copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\Other\Help\Oniguruma_RE.txt" /Y /V
-copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\Other\Help\encryption-doc.txt" /Y /V
+copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Changes.txt" /Y /V
+copy "%SCRIPT_DIR%..\License.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\License.txt" /Y /V
+copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Readme.txt" /Y /V
+copy "%NP3_DOC_DIR%\Notepad3.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Notepad3.txt" /Y /V
+copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\KeyboardShortcuts.txt" /Y /V
+copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Oniguruma_RE.txt" /Y /V
+copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encryption-doc.txt" /Y /V
+copy "%NP3_DOC_DIR%\crypto\read_me.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encrypt-read_me.txt" /Y /V
 
-
-:: clear Notepad3 binary dir (except .ini files)
-for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\" /b /a-d /s ^| findstr /v .ini') do del "%%f"
+:: clear Notepad3\x64 and Notepad3\x86 binary dir (except all .ini files)
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
@@ -127,15 +132,6 @@ if exist %NP3_WIN32_DIR%\Scintilla.dll (
     echo. Scintilla.dll does not exist
 )
 copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-::copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-::copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-
-::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-
-::del /s /f /q "%NP3_PORTAPP_DIR%\App\themes\*.*"
-::for /f "delims=" %%d in ('dir /ad /b "%NP3_PORTAPP_DIR%\App\themes\"') do rmdir /s /q "%NP3_PORTAPP_DIR%\App\themes\%%d"
-::xcopy "%NP3_THEMES_DIR%" "%NP3_PORTAPP_DIR%\App\themes" /C /V /I /S /Y
 
 del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes\*.*"
 xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes" /C /V /I /S /Y
@@ -154,14 +150,9 @@ if exist %NP3_X64_DIR%\Scintilla.dll (
     echo. Scintilla.dll does not exist
 )
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-::copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-::copy /B "%NP3_X64_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-
-::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: Copy all current "grepWinNP3" files
-copy "%NP3_GREPWIN_DIR%\GPL_v3.0_LICENSE.txt" "%NP3_PORTAPP_DIR%\Other\Help\grepWin_GPL_v3.0_LICENSE.txt" /Y /V
+copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\grepWinLicense.txt" /Y /V
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
 	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\*.*"
@@ -179,19 +170,16 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
 copy /B "%NP3_GREPWIN_DIR%\translationsNP3\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%_tmp.ini"
 
-:: DEVNAME need some more PortableApps preparation
-::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "_%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
-::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "_%DEVNAME%" "%NP3_PORTAPP_INSTALL%.ini"
 call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
 call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
 
 del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 :: --- build Launcher and Installer Package ---
 
@@ -207,7 +195,7 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 :: - build Installer -
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
-:: Signing "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" (".paf.exe" file is created by "Installer")
+:: Signing "Notepad3Portable_x.xx.xxx.x_zzzz.paf.exe" (".paf.exe" file is created by "Installer")
 :: call %SCRIPT_DIR%Signing_for_NP3P_2nd_EXE.cmd
 
 :: Creation of a "7-Zip" file by appending the extension ".7z"
@@ -218,11 +206,7 @@ if exist %Notepad3Portable.paf.exe% (
     echo. "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" does not exist
 )
 
-:: rename
-::echo rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
-::rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
-
-:: ====================================================================================================================
+:: ===================================================================================================
 goto :END
 :: REPLACE  strg(%1)  srcfile(%2)  replstrg(%3)  dstfile(%4) 
 :REPLACE
@@ -236,7 +220,7 @@ goto :END
         endlocal
     )
     goto :EOF
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 :GETDATE
     for /f "tokens=2 delims==" %%a in ('
@@ -250,7 +234,7 @@ goto :END
     ::echo timestamp: "%timestamp%"
     ::echo fullstamp: "%fullstamp%"
     goto :EOF
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 :GETFILEVER
     set "file=%~1"
@@ -262,7 +246,7 @@ goto :END
     ') do set "FILEVER=%%a"
     ::echo %file% = %FILEVER% 
     goto :EOF
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 :GETBUILD
     set /p nxbuild=<%NP3_BUILD_VER%
@@ -270,7 +254,7 @@ goto :END
     set /p DEVNAME=<%NP3_BUILD_NAME%
     set DEVNAME=%DEVNAME:"=%
     goto :EOF
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
 
 rem Resolve path to absolute.
 rem Param 1: Name of output variable.
@@ -279,11 +263,11 @@ rem Return: Resolved absolute path.
 :RESOLVEPATH
     set %1=%~dpfn2
     goto :EOF
-:: --------------------------------------------------------------------------------------------------------------------
+:: ---------------------------------------------------------------------------------------------------
     
-:: ====================================================================================================================
+:: ===================================================================================================
 :END
 endlocal
 ::pause
 ::exit
-:: ====================================================================================================================
+:: ===================================================================================================

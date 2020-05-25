@@ -6,7 +6,7 @@
 +  Title Indicator (Changed/Deleted file on disk (#2179)
 
 +  Migration to lexilla (Scintilla's Lexer library concept)
-   (Add Lexers: Kotlin, Julia, Fortran, ...)
+   (Add Lexers: Kotlin, Julia, Fortran, Rexx, ...)
    
 +  DPI Scaling issues (initial display, moving dialog, toolbar buttons, ...)
 
@@ -25,7 +25,7 @@
 
 -  Extending MiniPath.exe for "Search text in many files" capability ...
    (Search for free tools, which may be bound to Notepad3 (like minipath.exe) ... )
-=> Found, adapt and integrate "grepWin(NP3) from Stefan Kühn (author of BowPad)
+=> Found, adapt and integrate "grepWin(NP3)" from Stefan Küng (author of BowPad)
 
    
    
