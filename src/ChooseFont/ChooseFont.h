@@ -45,6 +45,10 @@
 #include <strsafe.h>
 
 
+/// ##############################################################################
+/// https://docs.microsoft.com/en-us/windows/win32/directwrite/introducing-directwrite
+/// ##############################################################################
+
 extern IDWriteFactory* g_dwrite;
 
 
