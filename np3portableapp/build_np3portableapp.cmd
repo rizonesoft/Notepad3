@@ -1,5 +1,4 @@
 @echo off
-@echo off
 setlocal enableextensions
 :: encoding: UTF-8
 chcp 65001 >nul 2>&1
@@ -32,7 +31,6 @@ set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU id-ID it-IT ja-JP
 :: ===================================================================================================
 
 :: --- Environment ---
-
 if exist D:\PortableApps\PortableApps.comInstaller\ (
     set PORTAPP_ROOT_DIR=D:\PortableApps
 ) else (
@@ -81,13 +79,12 @@ set FILEVER=
 call :GETFILEVER "%NP3_WIN32_DIR%\Notepad3.exe"
 if defined FILEVER set VERSION=%FILEVER%
 
-
 ::echo.VERSION=%VERSION%
 ::pause
 ::goto :END
 
 :: ---------------------------------------------------------------------------------------------------
-echo on
+
 :: --- Prepare Build ---
 if exist "%NP3_PORTAPP_DIR%\Data" rmdir "%NP3_PORTAPP_DIR%\Data" /S /Q
 
@@ -96,15 +93,21 @@ if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
 ) else (
     del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\*.*"
 )
-echo on
+
 if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\" (
      mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\"
 ) else (
     del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\*.*"
 )
 
-copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
-copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
+:: Delete all files in "Notepad3\x86" and "Notepad3\x64" folders, except all .ini files.
+:: Because "blank" in filenames, the files in "gwLng" folder is NOT deleted (done below)!
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
+
+:: ---------------------------------------------------------------------------------------------------
+
+:: Copy all current "Docs" files
 copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Changes.txt" /Y /V
 copy "%SCRIPT_DIR%..\License.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\License.txt" /Y /V
 copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Readme.txt" /Y /V
@@ -113,11 +116,23 @@ copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\
 copy "%NP3_DOC_DIR%\Oniguruma_RE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Oniguruma_RE.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encryption-doc.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\read_me.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\encrypt-read_me.txt" /Y /V
+copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\grepWinLicense.txt" /Y /V
 
-:: clear Notepad3\x64 and Notepad3\x86 binary dir (except all .ini files)
-for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
-for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /b /a-d /s ^| findstr /v /e .ini') do del "%%f"
+:: Copy all current "Notepad3.exe" and "MiniPath.exe" files
+copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
+:: Copy all current ".ini" files
+copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
+
+:: Copy all current "Themes" files
+del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes\*.*"
+xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes" /C /V /I /S /Y
+
+:: Copy all current "lng" files
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
   copy /B "%NP3_WIN32_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d\" /Y /V
@@ -125,35 +140,15 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
 copy /B "%NP3_WIN32_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\" /Y /V
 
-copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-if exist %NP3_WIN32_DIR%\Scintilla.dll (
-    copy /B "%NP3_WIN32_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-) else (
-    echo. Scintilla.dll does not exist
-)
-copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-
-del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes\*.*"
-xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\themes" /C /V /I /S /Y
-
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d"
   copy /B "%NP3_X64_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d\" /Y /V
-)
+) 
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
-copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-if exist %NP3_X64_DIR%\Scintilla.dll (
-    copy /B "%NP3_X64_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-) else (
-    echo. Scintilla.dll does not exist
-)
-copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-
 :: Copy all current "grepWinNP3" files
-copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\grepWinLicense.txt" /Y /V
-
+:: Because "blank" in filenames, the files in "gwLng" folder was NOT deleted (above)!
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" (
 	del /s /f /q "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\*.*"
 ) else (
@@ -169,6 +164,22 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" (
 )
 copy /B "%NP3_GREPWIN_DIR%\translationsNP3\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+
+:: ---------------------------------------------------------------------------------------------------
+
+:: Only fFor "Notepad3Portable_DLL" version
+:: Copy all current "Scintilla.dll" files
+if exist %NP3_WIN32_DIR%\Scintilla.dll (
+    copy /B "%NP3_WIN32_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+) else (
+    echo. \x86\Scintilla.dll does not exist
+)
+
+if exist %NP3_X64_DIR%\Scintilla.dll (
+    copy /B "%NP3_X64_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+) else (
+    echo. \x64\Scintilla.dll does not exist
+)
 
 :: ---------------------------------------------------------------------------------------------------
 
