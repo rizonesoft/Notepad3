@@ -1436,7 +1436,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (s_flagJumpTo)
         EditJumpTo(s_iInitialLine, s_iInitialColumn);
       else
-        EditEnsureSelectionVisible();
+        EditNormalizeView(Sci_GetCurrentLineNumber());
     }
   }
 
@@ -3050,7 +3050,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditEnsureSelectionVisible();
+        EditNormalizeView(Sci_GetCurrentLineNumber());
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -5319,7 +5319,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditEnsureSelectionVisible();
+          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5329,7 +5329,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditEnsureSelectionVisible();
+          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -9707,7 +9707,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+      EditNormalizeView(Sci_GetCurrentLineNumber());
     }
   }
 
@@ -9718,7 +9718,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+      EditNormalizeView(Sci_GetCurrentLineNumber());
     }
   }
 

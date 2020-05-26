@@ -5036,7 +5036,8 @@ void EditEnsureSelectionVisible()
   DocLn const iCurrentLine = SciCall_LineFromPosition(SciCall_GetCurrentPos());
   DocLn const iAnchorLine = SciCall_LineFromPosition(SciCall_GetAnchor());
   if (iAnchorLine != iCurrentLine) { SciCall_EnsureVisible(iAnchorLine); } 
-  EditNormalizeView(iCurrentLine);
+  //~EditNormalizeView(iCurrentLine);
+  SciCall_EnsureVisible(iCurrentLine);
 }
 
 

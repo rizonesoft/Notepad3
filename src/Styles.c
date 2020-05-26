@@ -998,6 +998,7 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
 
 #define Style_StrGetAttribute(lpszStyle, name)  Style_StrGetAttributeEx((lpszStyle), (name), StringCchLen((name),0))
 
+// font weight
 #define Style_StrGetAttrThin(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"thin")
 #define Style_StrGetAttrExtraLight(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"extralight")
 #define Style_StrGetAttrLight(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"light")
@@ -1008,11 +1009,18 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
 #define Style_StrGetAttrExtraBold(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extrabold")
 #define Style_StrGetAttrHeavy(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"heavy")
 
+//// font quality
+//#define Style_StrGetAttrNone(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"none")
+//#define Style_StrGetAttrStdType(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"standard")
+//#define Style_StrGetAttrClearType(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"cleartype")
+
+// font effects
 #define Style_StrGetAttrItalic(lpszStyle)       Style_StrGetAttribute((lpszStyle), L"italic")
 #define Style_StrGetAttrUnderline(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"underline")
 #define Style_StrGetAttrStrikeOut(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"strikeout")
 #define Style_StrGetAttrEOLFilled(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"eolfilled")
- 
+
+// caret style
 #define Style_StrGetAttrOvrBlck(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"ovrblck")
 #define Style_StrGetAttrBlock(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"block")
 #define Style_StrGetAttrNoBlink(lpszStyle)      Style_StrGetAttribute((lpszStyle), L"noblink")
@@ -2471,25 +2479,27 @@ bool Style_StrGetFontStyle(LPCWSTR lpszStyle, LPWSTR lpszFontStyle, int cchFontS
 //
 //  Style_StrGetFontQuality()
 //
-bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality)
+bool Style_StrGetFontQuality(LPCWSTR lpszStyle, LPWSTR lpszQuality, int cchQuality)
 {
   WCHAR *p = StrStr(lpszStyle, L"smoothing:");
   if (p) {
-    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"smoothing:"));
-    p = StrChr(tch, L';');
-    if (p)
+    p += CSTRLEN(L"smoothing:");
+    while (*p == L' ') { ++p; }
+    StringCchCopyN(lpszQuality, cchQuality, p, cchQuality);
+    if ((p = StrChr(lpszQuality, L';')) != NULL) {
       *p = L'\0';
-    TrimSpcW(tch);
-    if (StringCchCompareX(tch, L"none") == 0 ||
-        StringCchCompareX(tch, L"standard") == 0 ||
-        StringCchCompareX(tch, L"cleartype") == 0 ||
-        StringCchCompareX(tch, L"default") == 0)
+    }
+    TrimSpcW(lpszQuality);
+
+    if (StringCchCompareX(lpszQuality, L"none") == 0 ||
+        StringCchCompareX(lpszQuality, L"standard") == 0 ||
+        StringCchCompareX(lpszQuality, L"cleartype") == 0 ||
+        StringCchCompareX(lpszQuality, L"default") == 0)
     {
-      StringCchCopyN(lpszQuality,cchQuality,tch,COUNTOF(tch));
       return true;
     }
   }
+  StringCchCopy(lpszQuality, cchQuality, L"");
   return false;
 }
 
@@ -2910,7 +2920,7 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     else if (Style_StrGetAttrHeavy(lpszStyleSrc) && !Style_StrGetAttrHeavy(lpszStyleDest))
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; heavy");
     //else
-    //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");  // -> default
+    //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; regular");  // -> default
 
     if (Style_StrGetAttrItalic(lpszStyleSrc) && !Style_StrGetAttrItalic(lpszStyleDest)) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
@@ -3521,7 +3531,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 
     if (StringCchCompareNI(tch, COUNTOF(tch), L"none", COUNTOF(L"none")) == 0)
       wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
-    else if (StringCchCompareNI(tch, COUNTOF(tch), L"standardtype", COUNTOF(L"standardtype")) == 0)
+    else if (StringCchCompareNI(tch, COUNTOF(tch), L"standard", COUNTOF(L"standard")) == 0)
       wQuality = SC_EFF_QUALITY_ANTIALIASED;
     else if (StringCchCompareNI(tch, COUNTOF(tch), L"cleartype", COUNTOF(L"cleartype")) == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
@@ -3552,17 +3562,17 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   float fBaseFontSize = Style_GetCurrentFontSize();
 
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
     if (iStyle == STYLE_DEFAULT) {
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
       }
       _SetCurrentFontSize(fBaseFontSize);
     }
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
   }
   else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
     _SetBaseFontSize(fBaseFontSize);
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
   }
 
   // Character Set
