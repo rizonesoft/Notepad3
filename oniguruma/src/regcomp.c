@@ -632,7 +632,7 @@ mmcl_add(MinMaxCharLen* to, MinMaxCharLen* add)
   to->min = distance_add(to->min, add->min);
   to->max = distance_add(to->max, add->max);
 
-  to->min_is_sure = add->min_is_sure != 0 && to->min_is_sure != 0;
+  to->min_is_sure = add->min_is_sure != FALSE && to->min_is_sure != FALSE;
 }
 
 static void
@@ -844,7 +844,7 @@ node_char_len1(Node* node, regex_t* reg, MinMaxCharLen* ci, ScanEnv* env,
             en->min_char_len = ci->min;
             en->max_char_len = ci->max;
             NODE_STATUS_ADD(node, FIXED_CLEN);
-            if (ci->min_is_sure != 0)
+            if (ci->min_is_sure != FALSE)
               NODE_STATUS_ADD(node, FIXED_CLEN_MIN_SURE);
           }
         }
@@ -4729,7 +4729,7 @@ tune_look_behind(Node* node, regex_t* reg, int state, ScanEnv* env)
       return ONIGERR_INVALID_LOOK_BEHIND_PATTERN;
     }
 
-    if (ci.min == 0 && ci.min_is_sure != 0 && used == FALSE) {
+    if (ci.min == 0 && ci.min_is_sure != FALSE && used == FALSE) {
       if (an->type == ANCR_LOOK_BEHIND_NOT)
         r = onig_node_reset_fail(node);
       else
@@ -5005,17 +5005,18 @@ unravel_cf_look_behind_add(Node** rlist, Node** rsn,
 {
   int r, i, found;
 
-  found = 0;
+  found = FALSE;
   for (i = 0; i < n; i++) {
     OnigCaseFoldCodeItem* item = items + i;
     if (item->byte_len == one_len) {
       if (item->code_len == 1) {
-        found = 1;
+        found = TRUE;
+        break;
       }
     }
   }
 
-  if (found == 0) {
+  if (found == FALSE) {
     r = unravel_cf_string_add(rlist, rsn, s, s + one_len, 0 /* flag */);
   }
   else {
@@ -7237,15 +7238,6 @@ onig_compile(regex_t* reg, const UChar* pattern, const UChar* pattern_end,
   else
     reg->ops_used = 0;
 
-  reg->string_pool        = 0;
-  reg->string_pool_end    = 0;
-  reg->num_mem            = 0;
-  reg->num_repeat         = 0;
-  reg->num_empty_check    = 0;
-  reg->repeat_range_alloc = 0;
-  reg->repeat_range       = (RepeatRange* )NULL;
-  reg->empty_status_mem   = 0;
-
   r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
   if (r != 0) goto err;
 
@@ -7659,6 +7651,101 @@ onig_is_code_in_cc(OnigEncoding enc, OnigCodePoint code, CClassNode* cc)
     if (len < 0) return 0;
   }
   return onig_is_code_in_cc_len(len, code, cc);
+}
+
+static int
+node_detect_can_be_very_slow(Node* node)
+{
+  int r;
+
+  switch (NODE_TYPE(node)) {
+  case NODE_LIST:
+  case NODE_ALT:
+    do {
+      r = node_detect_can_be_very_slow(NODE_CAR(node));
+      if (r != 0) return r;
+    } while (IS_NOT_NULL(node = NODE_CDR(node)));
+    break;
+
+  case NODE_QUANT:
+    r = node_detect_can_be_very_slow(NODE_BODY(node));
+    break;
+
+  case NODE_ANCHOR:
+    if (IS_NOT_NULL(NODE_BODY(node)))
+      r = node_detect_can_be_very_slow(NODE_BODY(node));
+    else
+      r = 0;
+    break;
+
+  case NODE_BAG:
+    {
+      BagNode* en = BAG_(node);
+
+      r = node_detect_can_be_very_slow(NODE_BODY(node));
+      if (r != 0) return r;
+
+      if (en->type == BAG_IF_ELSE) {
+        if (IS_NOT_NULL(en->te.Then)) {
+          r = node_detect_can_be_very_slow(en->te.Then);
+          if (r != 0) return r;
+        }
+        if (IS_NOT_NULL(en->te.Else)) {
+          r = node_detect_can_be_very_slow(en->te.Else);
+          if (r != 0) return r;
+        }
+      }
+    }
+    break;
+
+#ifdef USE_BACKREF_WITH_LEVEL
+  case NODE_BACKREF:
+    if (NODE_IS_CHECKER(node) && NODE_IS_NEST_LEVEL(node))
+      r = 1;
+    else
+      r = 0;
+    break;
+#endif
+
+  default:
+    r = 0;
+    break;
+  }
+
+  return r;
+}
+
+extern int
+onig_detect_can_be_very_slow_pattern(const UChar* pattern,
+  const UChar* pattern_end, OnigOptionType option, OnigEncoding enc,
+  OnigSyntaxType* syntax)
+{
+  int r;
+  regex_t* reg;
+  Node* root;
+  ScanEnv scan_env;
+
+  reg = (regex_t* )xmalloc(sizeof(regex_t));
+  if (IS_NULL(reg)) return ONIGERR_MEMORY;
+
+  r = onig_reg_init(reg, option, ONIGENC_CASE_FOLD_DEFAULT, enc, syntax);
+  if (r != 0) {
+    xfree(reg);
+    return r;
+  }
+
+  root = 0;
+  r = onig_parse_tree(&root, pattern, pattern_end, reg, &scan_env);
+  if (r == 0) {
+    r = node_detect_can_be_very_slow(root);
+  }
+
+  if (IS_NOT_NULL(scan_env.mem_env_dynamic))
+    xfree(scan_env.mem_env_dynamic);
+
+  onig_node_free(root);
+  onig_free(reg);
+  return r;
 }
 
 

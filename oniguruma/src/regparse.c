@@ -8863,6 +8863,15 @@ onig_parse_tree(Node** root, const UChar* pattern, const UChar* end,
   RegexExt* ext;
 #endif
 
+  reg->string_pool        = 0;
+  reg->string_pool_end    = 0;
+  reg->num_mem            = 0;
+  reg->num_repeat         = 0;
+  reg->num_empty_check    = 0;
+  reg->repeat_range_alloc = 0;
+  reg->repeat_range       = (RepeatRange* )NULL;
+  reg->empty_status_mem   = 0;
+
   names_clear(reg);
 
   scan_env_clear(env);

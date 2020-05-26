@@ -79,9 +79,11 @@
 #define USE_WORD_BEGIN_END   /* "\<", "\>" */
 #define USE_CAPTURE_HISTORY
 #define USE_VARIABLE_META_CHARS
-#define USE_POSIX_API_REGION_OPTION
 #define USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
 /* #define USE_REPEAT_AND_EMPTY_CHECK_LOCAL_VAR */
+
+/* enabled by configure --enable-posix-api=yes */
+/* #define USE_POSIX_API_REGION_OPTION */
 
 #define INIT_MATCH_STACK_SIZE                160
 #define DEFAULT_MATCH_STACK_LIMIT_SIZE         0 /* unlimited */

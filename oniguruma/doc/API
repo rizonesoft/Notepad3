@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.5  2020/03/25
+Oniguruma API  Version 6.9.6  2020/05/20
 
 #include <oniguruma.h>
 
@@ -94,6 +94,10 @@ Oniguruma API  Version 6.9.5  2020/03/25
                                       word)
       ONIG_OPTION_TEXT_SEGMENT_EXTENDED_GRAPHEME_CLUSTER  Extended Grapheme Cluster mode
       ONIG_OPTION_TEXT_SEGMENT_WORD                       Word mode
+
+
+     * The ONIG_OPTION_FIND_LONGEST option doesn't work properly during backward search of onig_search().
+
 
   5 enc:        character encoding.
 
@@ -333,7 +337,6 @@ Oniguruma API  Version 6.9.5  2020/03/25
 
     ONIG_OPTION_NOTBOL        string head(str) isn't considered as begin of line
     ONIG_OPTION_NOTEOL        string end (end) isn't considered as end of line
-    ONIG_OPTION_POSIX_REGION  region argument is regmatch_t[] of POSIX API.
 
 
 # int onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
@@ -368,7 +371,6 @@ Oniguruma API  Version 6.9.5  2020/03/25
 
     ONIG_OPTION_NOTBOL       string head(str) isn't considered as begin of line
     ONIG_OPTION_NOTEOL       string end (end) isn't considered as end of line
-    ONIG_OPTION_POSIX_REGION region argument is regmatch_t[] type of POSIX API.
 
 
 # int onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,

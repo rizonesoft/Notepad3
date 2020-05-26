@@ -18,7 +18,7 @@ LINKFLAGS = -link -incremental:no -pdb:none
 INSTALL = install -c
 CP      = copy
 CC = cl
-DEFS = -DHAVE_CONFIG_H
+DEFS = -DHAVE_CONFIG_H -DUSE_POSIX_API_REGION_OPTION
 
 subdirs =
 

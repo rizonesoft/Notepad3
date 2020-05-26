@@ -96,4 +96,6 @@
 #define DLEXT ".so"
 #define DLEXT2 ".dll"
 
+#define USE_POSIX_API_REGION_OPTION 1
+
 #endif //_ONIGURUMA_CONFIG_H_
