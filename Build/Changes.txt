@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.525.(build_#) (2020-05-25)
+Current BETA Version 5.20.526.(build_#) (2020-05-26)
 =====================================================
 
 -----------------------------------------------------
@@ -130,7 +130,7 @@ TRANSLATIONS (MUI):
 - Portuguese Brazilian (pt-BR) in progress...
 - Vietnamese (vi-VN) in progress...
 - Korean (ko-KR) to resume...
-- Turkish (tr-TR) to resume...
+- Turkish (tr-TR) in progress...
 - Portuguese (pt-PT).
 - Slovak (sk-SK).
 
