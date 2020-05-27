@@ -2445,7 +2445,7 @@ bool Style_StrGetFontName(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
       *p = L'\0';
     }
     TrimSpcW(lpszFont);
-    if (StringCchCompareX(lpszFont, L"Default") == 0) {
+    if (StringCchCompareXI(lpszFont, L"Default") == 0) {
       StringCchCopyN(lpszFont, cchFont, IsFontAvailable(L"Consolas") ? L"Consolas" : L"Lucida Console", cchFont);
     }
     return true;
@@ -3096,10 +3096,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   WCHAR szStyleStrg[LF_FULLFACESIZE] = { L'\0' };
   Style_StrGetFontStyle(lpszStyle, szStyleStrg, COUNTOF(szStyleStrg));
 
-  int iCharSet = ANSI_CHARSET;
-  if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
-    iCharSet = ANSI_CHARSET;
-  }
+  int iCharSet = SC_CHARSET_DEFAULT;
+  Style_StrGetCharSet(lpszStyle, &iCharSet);
     
   // is "size:" definition relative ?
   bool const bRelFontSize = (!StrStr(lpszStyle, L"size:") || StrStr(lpszStyle, L"size:+") || StrStr(lpszStyle, L"size:-"));
@@ -3336,12 +3334,12 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     if (lf.lfCharSet == iCharSet) {
       if (StrStr(lpszStyle, L"charset:"))
       {
-        StringCchPrintf(chset, COUNTOF(chset), L"; charset:%i", lf.lfCharSet);
+        StringCchPrintf(chset, COUNTOF(chset), L"; charset:%i", GdiCharsetToSci(lf.lfCharSet));
         StringCchCat(szNewStyle, COUNTOF(szNewStyle), chset);
       }
     }
     else {
-      StringCchPrintf(chset, COUNTOF(chset), L"; charset:%i", lf.lfCharSet);
+      StringCchPrintf(chset, COUNTOF(chset), L"; charset:%i", GdiCharsetToSci(lf.lfCharSet));
       StringCchCat(szNewStyle, COUNTOF(szNewStyle), chset);
     }
   }

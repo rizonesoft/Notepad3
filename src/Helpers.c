@@ -1591,9 +1591,6 @@ LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 UINT CodePageFromCharSet(const UINT uCharSet)
 {
   if (ANSI_CHARSET == uCharSet) {
-    if (Globals.uConsoleCodePage != 0) {
-      return Globals.uConsoleCodePage;
-    }
     CPINFOEX cpinfo; ZeroMemory(&cpinfo, sizeof(CPINFOEX));
     if (GetCPInfoEx(CP_THREAD_ACP, 0, &cpinfo)) {
       return cpinfo.CodePage;
@@ -1608,7 +1605,7 @@ UINT CodePageFromCharSet(const UINT uCharSet)
   return GetACP(); // fallback: systems locale ANSI CP
 }
 
-
+#if 0
 //=============================================================================
 //
 //  CharSetFromCodePage()
@@ -1620,7 +1617,7 @@ UINT CharSetFromCodePage(const UINT uCodePage) {
   }
   return(ANSI_CHARSET);
 }
-
+#endif
 
 /**
  * Convert C style \0oo into their indicated characters.

@@ -1565,7 +1565,7 @@ void LoadSettings()
     Encoding_SetDefaultFlag(Settings.DefaultEncoding);
 
     // define default charset
-    Globals.iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
+    Globals.iDefaultCharSet = SC_CHARSET_DEFAULT;
 
     // File MRU
     Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);

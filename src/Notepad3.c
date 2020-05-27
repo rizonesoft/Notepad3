@@ -629,7 +629,6 @@ static void _InitGlobals()
   Globals.pFileMRU = NULL;
   Globals.pMRUfind = NULL;
   Globals.pMRUreplace = NULL;
-  Globals.uConsoleCodePage = 0;
   Globals.iAvailLngCount = 1;
   Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
   Globals.iWrapCol = 80;
@@ -791,11 +790,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
   _InitGlobals();
-
-  if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-    Globals.uConsoleCodePage = GetConsoleCP();
-    FreeConsole();
-  }
 
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;

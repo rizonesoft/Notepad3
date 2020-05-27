@@ -298,7 +298,6 @@ typedef struct _globals_t
   bool      bPrefLngNotAvail;
   HWND      hwndMain;
   HANDLE    hndlProcessHeap;
-  UINT      uConsoleCodePage;
   HWND      hwndEdit;
   HANDLE    hndlScintilla;
   HANDLE    hwndToolbar;
