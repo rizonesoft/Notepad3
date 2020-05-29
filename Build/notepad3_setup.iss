@@ -501,10 +501,10 @@ begin
   if CurStep = ssPostInstall then begin
     if IsTaskSelected('set_default') then
       RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
-    if IsTaskSelected('remove_default') then begin
+    if IsTaskSelected('remove_default') then
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegDeleteKeyIfEmpty(HKLM, IFEO);
-    if IsTaskSelected('set_openwith') then begin
+    if IsTaskSelected('set_openwith') then
       RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
       RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
     if IsTaskSelected('remove_openwith') then begin
@@ -513,7 +513,6 @@ begin
     // Always add Notepad3's AppUserModelID and the rest registry values
     AddReg();
   end;
-
 end;
 
 
