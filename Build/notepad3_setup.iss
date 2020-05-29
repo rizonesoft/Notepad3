@@ -339,7 +339,7 @@ var
   sOpenWith: String;
 begin
   if RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\Open with Notepad3', 'Icon', sOpenWith) and
-  (sOpenWith = (ExpandConstant('C:\Program Files\Notepad3\Notepad3.exe,0'))) then begin
+  (sOpenWith = (ExpandConstant('{app}\Notepad3.exe,0'))) then begin
     Log('Custom Code: {#app_name} Open with Notepad3 is set.');
     Result := True;
   end
