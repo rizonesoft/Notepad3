@@ -67,9 +67,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Sólo &lectura",                                 IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "&Establecer contraseña de encriptación...",     IDM_SETPASS
+        MENUITEM "&Establecer contraseña de cifrado...",           IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "Camino al portapapeles"
+        POPUP "Ruta al portapapeles"
         BEGIN
             MENUITEM "Copiar solo &nombre del archivo\tCtrl+F9",  IDM_EDIT_INSERT_FILENAME
             MENUITEM "Copiar solo &ruta-directorio",              IDM_EDIT_INSERT_DIRNAME
@@ -130,7 +130,7 @@ BEGIN
         MENUITEM "&Imprimir...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Propie&dades...",                         IDM_FILE_PROPERTIES
-        MENUITEM "Crear enlace en el escri&torio",          IDM_FILE_CREATELINK
+        MENUITEM "Crear acceso directo en el escri&torio",  IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "&Mini explorador externo...\tCtrl+M",     IDM_FILE_BROWSE
         POPUP "Fa&voritos"
@@ -151,7 +151,7 @@ BEGIN
         MENUITEM "Cor&tar\tCtrl+X",                         IDM_EDIT_CUT
         MENUITEM "&Copiar\tCtrl+C",                         IDM_EDIT_COPY
         MENUITEM "C&opiar todo\tAlt+C",                     IDM_EDIT_COPYALL
-        MENUITEM "Copiar A&ñadir\tCtrl+E",                  IDM_EDIT_COPYADD
+        MENUITEM "Copiar a&ñadiendo\tCtrl+E",               IDM_EDIT_COPYADD
         MENUITEM "&Pegar\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "Perm&utar\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "E&liminar\tDel",                          IDM_EDIT_CLEAR
@@ -160,12 +160,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&alabras"
         BEGIN
-            MENUITEM "Palabra &completa\tCtrl+Alt+Enter",               IDM_EDIT_COMPLETEWORD
+            MENUITEM "&Completar palabra\tCtrl+Alt+Enter",             IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
             MENUITEM "Cursor a la izquierda de la pa&labra\tCtrl+ ←",   CMD_CTRLLEFT
             MENUITEM "Cu&rsor a la derecha de la palabra\tCtrl+ →",     CMD_CTRLRIGHT
-            MENUITEM "&Eliminar la palabra a la izquierda\tCtrl+Back",  CMD_CTRLBACK
-            MENUITEM "Eliminar la &palabra a la derecha\tCtrl+Del",     CMD_CTRLDEL
+            MENUITEM "&Eliminar la palabra de la izquierda\tCtrl+Back", CMD_CTRLBACK
+            MENUITEM "Eliminar la &palabra de la derecha\tCtrl+Del",    CMD_CTRLDEL
         END
         POPUP "Lí&neas"
         BEGIN
@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Ir al inicio de la selecci&ón\tCtrl+,",           CMD_JUMP2SELSTART
             MENUITEM "Ir al final de la selecció&n\tCtrl+.",            CMD_JUMP2SELEND
             MENUITEM SEPARATOR
-            POPUP "&Incluir selección"
+            POPUP "&Envolver selección"
             BEGIN
                 MENUITEM "Comillas simples\tCtrl+1",                    CMD_STRINGIFY
                 MENUITEM "Comillas &dobles\tCtrl+2",                    CMD_STRINGIFY2
@@ -219,11 +219,11 @@ BEGIN
             END
             MENUITEM "&Duplicar Selección/Línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Bloc con blancos\tAlt+B",                        IDM_EDIT_PADWITHSPACES
+            MENUITEM "Com&pletar columna con espacios\tAlt+B",          IDM_EDIT_PADWITHSPACES
             MENUITEM "Eliminar el &primer carácter\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
             MENUITEM "Eliminar el ú&ltimo carácter\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Eliminar los blancos al &final de línea\tAlt+W",  IDM_EDIT_TRIMLINES
-            MENUITEM "&Comprimir blancos\tCtrl+Alt+P",                  IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Eliminar espacios al &final de la línea\tAlt+W",  IDM_EDIT_TRIMLINES
+            MENUITEM "&Eliminar espacios innecesarios\tCtrl+Alt+P",     IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modificar líneas...\tAlt+M",                     IDM_EDIT_MODIFYLINES
             MENUITEM "Alinear l&íneas...\tAlt+J",                       IDM_EDIT_ALIGN
