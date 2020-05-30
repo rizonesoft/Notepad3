@@ -34,6 +34,7 @@
 #define app_copyright "(c) Rizonesoft 2008-2020"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
+
 [Setup]
 AppId={#app_name}
 AppName={#app_name}
@@ -74,7 +75,6 @@ CloseApplications=true
 SetupMutex='{#app_name}' + '_setup_mutex'
 
 
-
 [Languages]
 Name: en; MessagesFile: compiler:Default.isl
 
@@ -98,13 +98,12 @@ en.tsk_AllUsers              =For all users
 en.tsk_CurrentUser           =For the current user only
 en.tsk_Other                 =Other tasks:
 en.tsk_ResetSettings         =Reset {#app_name}'s settings
-en.tsk_RemoveDefault         =Restore Windows notepad
-en.tsk_SetDefault            =Replace Windows notepad with {#app_name}
+en.tsk_RemoveDefault         =Restore Windows Notepad
+en.tsk_SetDefault            =Replace Windows Notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
 en.tsk_LaunchWelcomePage     =Important Release Information!
-
-en.tsk_RemoveOpenWith        =Remove Open With {#app_name}
-en.tsk_SetOpenWith           =Install Open With {#app_name}
+en.tsk_RemoveOpenWith        =Remove "Open with {#app_name}" to Context Menu
+en.tsk_SetOpenWith           =Install "Open with {#app_name}" to Context Menu
 
 
 [Tasks]
@@ -116,7 +115,6 @@ Name: quicklaunchicon;    Description: {cm:CreateQuickLaunchIcon}; GroupDescript
 Name: reset_settings;     Description: {cm:tsk_ResetSettings};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: SettingsExistCheck()
 Name: set_default;        Description: {cm:tsk_SetDefault};        GroupDescription: {cm:tsk_Other};                                     Check: not DefaulNotepadCheck()
 Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
-
 Name: set_openwith;       Description: {cm:tsk_SetOpenWith};       GroupDescription: {cm:tsk_Other};                                     Check: not OpenWithCheck()
 Name: remove_openwith;    Description: {cm:tsk_RemoveOpenWith};    GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: OpenWithCheck()
 
@@ -257,6 +255,7 @@ Source: Docs\uthash\utstring.txt;                                   DestDir: {ap
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
 Name: "{userappdata}\Rizonesoft\Notepad3\themes"
 
+
 [Icons]
 Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
 Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
@@ -333,7 +332,7 @@ begin
 end;
 
 
-// Check if Open With Notepad3 is installed.
+// Check if "Open with Notepad3" is installed.
 function OpenWithCheck(): Boolean;
 var
   sOpenWith: String;
