@@ -103,6 +103,9 @@ en.tsk_SetDefault            =Replace Windows notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
 en.tsk_LaunchWelcomePage     =Important Release Information!
 
+en.tsk_RemoveOpenWith        =Remove Open With {#app_name}
+en.tsk_SetOpenWith           =Install Open With {#app_name}
+
 
 [Tasks]
 Name: desktopicon;        Description: {cm:CreateDesktopIcon};     GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
@@ -113,6 +116,9 @@ Name: quicklaunchicon;    Description: {cm:CreateQuickLaunchIcon}; GroupDescript
 Name: reset_settings;     Description: {cm:tsk_ResetSettings};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: SettingsExistCheck()
 Name: set_default;        Description: {cm:tsk_SetDefault};        GroupDescription: {cm:tsk_Other};                                     Check: not DefaulNotepadCheck()
 Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
+
+Name: set_openwith;       Description: {cm:tsk_SetOpenWith};       GroupDescription: {cm:tsk_Other};                                     Check: not OpenWithCheck()
+Name: remove_openwith;    Description: {cm:tsk_RemoveOpenWith};    GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: OpenWithCheck()
 
 
 [Files]
@@ -266,7 +272,7 @@ Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
-Filename: https://rizone.tech/2Ho5UVQ; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent unchecked
+Filename: https://www.rizonesoft.com/downloads/notepad3/update/; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent unchecked
 
 
 [InstallDelete]
@@ -325,6 +331,24 @@ begin
     Result := False;
   end;
 end;
+
+
+// Check if Open With Notepad3 is installed.
+function OpenWithCheck(): Boolean;
+var
+  sOpenWith: String;
+begin
+  if RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\Open with Notepad3', 'Icon', sOpenWith) and
+  (sOpenWith = (ExpandConstant('{app}\Notepad3.exe,0'))) then begin
+    Log('Custom Code: {#app_name} Open with Notepad3 is set.');
+    Result := True;
+  end
+  else begin
+    Log('Custom Code: {#app_name} Open with Notepad3 is not set.');
+    Result := False;
+  end;
+end;
+
 
 #if defined(sse_required) || defined(sse2_required)
 function IsProcessorFeaturePresent(Feature: Integer): Boolean;
@@ -416,9 +440,6 @@ begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
-
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
 end;
 
 
@@ -435,7 +456,6 @@ procedure RemoveReg();
 begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
-  
   RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
 end;
 
@@ -476,21 +496,24 @@ begin
       // and the set_default task isn't selected
       if not IsTaskSelected('remove_default') then
         RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
-
     end;
   end;
 
   if CurStep = ssPostInstall then begin
     if IsTaskSelected('set_default') then
       RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
-    if IsTaskSelected('remove_default') then begin
+    if IsTaskSelected('remove_default') then
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegDeleteKeyIfEmpty(HKLM, IFEO);
+    if IsTaskSelected('set_openwith') then
+      RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
+      RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
+    if IsTaskSelected('remove_openwith') then begin
+      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
     end;
     // Always add Notepad3's AppUserModelID and the rest registry values
     AddReg();
   end;
-
 end;
 
 
