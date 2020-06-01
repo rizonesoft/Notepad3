@@ -547,7 +547,7 @@ bool CTextFile::CalculateLines(volatile LONG * bCancelled)
 
 long CTextFile::LineFromPosition(long pos) const
 {
-    auto lb     = std::lower_bound(linepositions.begin(), linepositions.end(), pos);
+    auto lb     = std::lower_bound(linepositions.begin(), linepositions.end(), static_cast<size_t>(pos));
     auto lbLine = lb - linepositions.begin();
     return long(lbLine + 1);
 }

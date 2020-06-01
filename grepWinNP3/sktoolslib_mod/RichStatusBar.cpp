@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017-2018 Stefan Kueng
+// Copyright (C) 2017-2018, 2020 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -97,7 +97,7 @@ bool CRichStatusBar::SetPart(int index, const CRichStatusBarItem& item, bool red
 {
     if (index >= (int)m_parts.size())
     {
-        for (auto i = m_parts.size(); i <= index; ++i)
+        for (auto i = (int)m_parts.size(); i <= index; ++i)
         {
             m_parts.push_back(std::move(CRichStatusBarItem()));
             m_partwidths.push_back({});

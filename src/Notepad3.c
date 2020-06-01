@@ -1685,6 +1685,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+    //case WM_LBUTTONDBLCLK:
+    //  //return DefWindowProc(hwnd, umsg, wParam, lParam);
+    //  break;
+
     case WM_MOUSEWHEEL:
       if (wParam & MK_CONTROL) { 
         ShowZoomCallTip(); 
