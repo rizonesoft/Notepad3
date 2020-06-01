@@ -1,0 +1,152 @@
+// Microsoft Visual C++ generated resource script.
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+#include "../common_res.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Hindi (India) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HIN)
+LANGUAGE LANG_HINDI, SUBLANG_HINDI_INDIA
+#pragma code_page(65001)  // UTF-8
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#include ""../common_res.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDT_HISTORY_BACK        "Back"
+    IDT_HISTORY_FORWARD     "Forward"
+    IDT_UPDIR               "Upper Directory"
+    IDT_ROOT                "Root Directory"
+    IDT_VIEW_FAVORITES      "Favourites"
+    IDT_FILE_PREV           "Previous File"
+    IDT_FILE_NEXT           "Next File"
+    IDT_FILE_RUN            "Run"
+    IDT_FILE_QUICKVIEW      "Quickview"
+    IDT_FILE_SAVEAS         "Save As"
+    IDT_FILE_COPYMOVE       "Copy/Move"
+    IDT_FILE_DELETE         "Delete"
+    IDT_FILE_DELETE2        "Delete (No Recycle)"
+    IDT_VIEW_FILTER         "Filter"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_APPTITLE            "MiniPath"
+    IDS_NUMFILES            "%s Object(s)"
+    IDS_NUMFILES2           "%s Object(s) | Filter"
+    IDS_SAVEFILE            "Saving ""%s""..."
+    IDS_OPEN_FILE_WITH      "Open with %s"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory.\nCheck the disk or the network connection."
+    IDS_ERR_FILE            "File Access Error\nNo access to ""%s"".\nThe file may be used by another application.\nCheck the disk or the network connection."
+    IDS_ERR_NEW             "File Access Error\nFile could not be created.\nCheck the disk or the network connection."
+    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created.\nCheck the disk or the network connection."
+    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s"".\nProbably an already existing file is write-protected."
+    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file."
+    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line."
+    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
+    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
+    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
+    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
+    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
+    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
+    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
+    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
+    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
+    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
+    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_SEARCHEXE           "Find Executable"
+    IDS_GETQUICKVIEWER      "Find Quickview"
+    IDS_GETTARGET           "Find Editor"
+    IDS_NEWFILE             "New File"
+    IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Select a new directory."
+    IDS_FAVORITES           "Specify the ""Favourites"" directory."
+END
+
+STRINGTABLE
+BEGIN
+    SC_ALWAYSONTOP          "&Keep on Top"
+    SC_ABOUT                "&Info..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_OPENWITH            "Select the directory with links to your favourite applications."
+    IDS_COPYMOVE            "Select a destination directory."
+    IDS_CREATELINK          "Select a destination directory for the new link."
+    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
+    IDS_MUI_TRANSL_AUTHOR   "(hi-IN) हिंदी अनुवाद Purvottar द्वारा"
+END
+
+
+#endif    // Hindi (India) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
