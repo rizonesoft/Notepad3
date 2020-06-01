@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "지정 프로그램 디렉토리 선택."
     IDS_CREATELINK          "새로 만들 링크의 디렉토리를 선택하세요."
     IDS_SAVESETTINGS        "설정 저장\n현재의 프로그램 설정이 저장 되었습니다."
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역 ghost"
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역 ohgree"
 END
 
 

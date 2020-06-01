@@ -26,6 +26,7 @@
 #define app_copyright "(c) Rizonesoft 2008-2020"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
+
 [Setup]
 AppId={#app_name}
 AppName={#app_name}
@@ -66,7 +67,6 @@ CloseApplications=true
 SetupMutex='{#app_name}' + '_setup_mutex'
 
 
-
 [Languages]
 Name: en; MessagesFile: compiler:Default.isl
 
@@ -90,10 +90,12 @@ en.tsk_AllUsers              =For all users
 en.tsk_CurrentUser           =For the current user only
 en.tsk_Other                 =Other tasks:
 en.tsk_ResetSettings         =Reset {#app_name}'s settings
-en.tsk_RemoveDefault         =Restore Windows notepad
-en.tsk_SetDefault            =Replace Windows notepad with {#app_name}
+en.tsk_RemoveDefault         =Restore Windows Notepad
+en.tsk_SetDefault            =Replace Windows Notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
 en.tsk_LaunchWelcomePage     =Important Release Information!
+en.tsk_RemoveOpenWith        =Remove "Open with {#app_name}" to Context Menu
+en.tsk_SetOpenWith           =Install "Open with {#app_name}" to Context Menu
 
 
 [Tasks]
@@ -105,6 +107,8 @@ Name: quicklaunchicon;    Description: {cm:CreateQuickLaunchIcon}; GroupDescript
 Name: reset_settings;     Description: {cm:tsk_ResetSettings};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: SettingsExistCheck()
 Name: set_default;        Description: {cm:tsk_SetDefault};        GroupDescription: {cm:tsk_Other};                                     Check: not DefaulNotepadCheck()
 Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
+Name: set_openwith;       Description: {cm:tsk_SetOpenWith};       GroupDescription: {cm:tsk_Other};                                     Check: not OpenWithCheck()
+Name: remove_openwith;    Description: {cm:tsk_RemoveOpenWith};    GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: OpenWithCheck()
 
 
 [Files]
@@ -136,8 +140,8 @@ Source: {#bindir}\Release_x86_v142\lng\fr-FR\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\fr-FR\np3lng.dll.mui;        DestDir: {app}\lng\fr-FR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\hu-HU\mplng.dll.mui;         DestDir: {app}\lng\hu-HU;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\hu-HU\np3lng.dll.mui;        DestDir: {app}\lng\hu-HU;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\id-ID\mplng.dll.mui;         DestDir: {app}\lng\hu-HU;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\id-ID\np3lng.dll.mui;        DestDir: {app}\lng\hu-HU;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\id-ID\mplng.dll.mui;         DestDir: {app}\lng\id-ID;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\id-ID\np3lng.dll.mui;        DestDir: {app}\lng\id-ID;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\it-IT\mplng.dll.mui;         DestDir: {app}\lng\it-IT;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\it-IT\np3lng.dll.mui;        DestDir: {app}\lng\it-IT;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ja-JP\mplng.dll.mui;         DestDir: {app}\lng\ja-JP;                           Flags: ignoreversion
@@ -150,8 +154,8 @@ Source: {#bindir}\Release_x86_v142\lng\pl-PL\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\pl-PL\np3lng.dll.mui;        DestDir: {app}\lng\pl-PL;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\pt-BR\mplng.dll.mui;         DestDir: {app}\lng\pt-BR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\pt-BR\np3lng.dll.mui;        DestDir: {app}\lng\pt-BR;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\pt-PT\mplng.dll.mui;         DestDir: {app}\lng\pt-BR;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\pt-PT\np3lng.dll.mui;        DestDir: {app}\lng\pt-BR;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\pt-PT\mplng.dll.mui;         DestDir: {app}\lng\pt-PT;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\pt-PT\np3lng.dll.mui;        DestDir: {app}\lng\pt-PT;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\mplng.dll.mui;         DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\ru-RU\np3lng.dll.mui;        DestDir: {app}\lng\ru-RU;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\sk-SK\mplng.dll.mui;         DestDir: {app}\lng\sk-SK;                           Flags: ignoreversion
@@ -160,12 +164,12 @@ Source: {#bindir}\Release_x86_v142\lng\sv-SE\mplng.dll.mui;         DestDir: {ap
 Source: {#bindir}\Release_x86_v142\lng\sv-SE\np3lng.dll.mui;        DestDir: {app}\lng\sv-SE;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\tr-TR\mplng.dll.mui;         DestDir: {app}\lng\tr-TR;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\tr-TR\np3lng.dll.mui;        DestDir: {app}\lng\tr-TR;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\vi-VN\mplng.dll.mui;         DestDir: {app}\lng\tr-TR;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\vi-VN\np3lng.dll.mui;        DestDir: {app}\lng\tr-TR;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\vi-VN\mplng.dll.mui;         DestDir: {app}\lng\vi-VN;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\vi-VN\np3lng.dll.mui;        DestDir: {app}\lng\vi-VN;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
 Source: {#bindir}\Release_x86_v142\lng\zh-CN\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\zh-TW\mplng.dll.mui;         DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
-Source: {#bindir}\Release_x86_v142\lng\zh-TW\np3lng.dll.mui;        DestDir: {app}\lng\zh-CN;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\zh-TW\mplng.dll.mui;         DestDir: {app}\lng\zh-TW;                           Flags: ignoreversion
+Source: {#bindir}\Release_x86_v142\lng\zh-TW\np3lng.dll.mui;        DestDir: {app}\lng\zh-TW;                           Flags: ignoreversion
 Source: Changes.txt;                                                DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\KeyboardShortcuts.txt;                                 DestDir: {app}\Docs;                                Flags: ignoreversion
 Source: Docs\Oniguruma_RE.txt;                                      DestDir: {app}\Docs;                                Flags: ignoreversion
@@ -193,6 +197,7 @@ Source: Docs\uthash\utstring.txt;                                   DestDir: {ap
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
 Name: "{userappdata}\Rizonesoft\Notepad3\themes"
 
+
 [Icons]
 Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
 Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: {#app_publisher}.{#app_name}; IconFilename: {app}\Notepad3.exe; IconIndex: 0
@@ -208,7 +213,7 @@ Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
-Filename: https://rizone.tech/2Ho5UVQ; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent unchecked
+Filename: https://www.rizonesoft.com/downloads/notepad3/update/; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent unchecked
 
 
 [InstallDelete]
@@ -267,6 +272,24 @@ begin
     Result := False;
   end;
 end;
+
+
+// Check if "Open with Notepad3" is installed.
+function OpenWithCheck(): Boolean;
+var
+  sOpenWith: String;
+begin
+  if RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\Open with Notepad3', 'Icon', sOpenWith) and
+  (sOpenWith = (ExpandConstant('{app}\Notepad3.exe,0'))) then begin
+    Log('Custom Code: {#app_name} Open with Notepad3 is set.');
+    Result := True;
+  end
+  else begin
+    Log('Custom Code: {#app_name} Open with Notepad3 is not set.');
+    Result := False;
+  end;
+end;
+
 
 #if defined(sse_required) || defined(sse2_required)
 function IsProcessorFeaturePresent(Feature: Integer): Boolean;
@@ -358,9 +381,6 @@ begin
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
-
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
-  RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
 end;
 
 
@@ -377,7 +397,6 @@ procedure RemoveReg();
 begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
-  
   RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
 end;
 
@@ -418,21 +437,24 @@ begin
       // and the set_default task isn't selected
       if not IsTaskSelected('remove_default') then
         RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
-
     end;
   end;
 
   if CurStep = ssPostInstall then begin
     if IsTaskSelected('set_default') then
       RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
-    if IsTaskSelected('remove_default') then begin
+    if IsTaskSelected('remove_default') then
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegDeleteKeyIfEmpty(HKLM, IFEO);
+    if IsTaskSelected('set_openwith') then
+      RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
+      RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
+    if IsTaskSelected('remove_openwith') then begin
+      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
     end;
     // Always add Notepad3's AppUserModelID and the rest registry values
     AddReg();
   end;
-
 end;
 
 
