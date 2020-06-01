@@ -2388,7 +2388,7 @@ void ScintillaWin::NotifyDoubleClick(Point pt, int modifiers) {
 	//Platform::DebugPrintf("ScintillaWin Double click 0\n");
 	ScintillaBase::NotifyDoubleClick(pt, modifiers);
 	// Send myself a WM_LBUTTONDBLCLK, so the container can handle it too.
-	::SendMessage(MainHWND(),
+	::SendMessage(::GetParent(MainHWND()),
 		WM_LBUTTONDBLCLK,
 		(modifiers & SCI_SHIFT) ? MK_SHIFT : 0,
 		MAKELPARAM(pt.x, pt.y));
