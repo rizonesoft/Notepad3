@@ -32,13 +32,14 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.528.(build_#) (2020-05-28)
+Current BETA Version 5.20.601.(build_#) (2020-06-01)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 - 
+- Add Install/Remove "Open with Notepad3" to Notepad3 Install version. 
 - Add another Dark Theme "Sombra".
 - Strip first char: allow multi-selection.
 - Open default browser while clicking hyperlink tooltip.
@@ -126,10 +127,11 @@ TRANSLATIONS (MUI):
 -----------------------------------------------------
 - 
 - Chinese Traditional (zh-TW) in progress...
+- Hindi (hi-IN) in progress...
 - Indonesian (id-ID) in progress...
 - Portuguese Brazilian (pt-BR) in progress...
 - Vietnamese (vi-VN) in progress...
-- Korean (ko-KR) to resume...
+- Korean (ko-KR)in progress...
 - Turkish (tr-TR) in progress...
 - Portuguese (pt-PT).
 - Slovak (sk-SK).
