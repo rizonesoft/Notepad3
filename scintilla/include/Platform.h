@@ -97,6 +97,22 @@
 
 namespace Scintilla {
 
+// official Scintilla use dynamic_cast, which requires RTTI.
+#ifdef NDEBUG
+#define USE_RTTI	0
+#else
+#define USE_RTTI	1
+#endif
+
+template<typename DerivedPointer, class Base>
+inline DerivedPointer down_cast(Base* ptr) noexcept {
+#if USE_RTTI
+	return dynamic_cast<DerivedPointer>(ptr);
+#else
+	return static_cast<DerivedPointer>(ptr);
+#endif
+}
+
 typedef float XYPOSITION;
 typedef double XYACCUMULATOR;
 
@@ -313,6 +329,7 @@ struct FontParameters {
 	const char *faceName;
 	float size;
 	int weight;
+	int stretch;
 	bool italic;
 	int extraFontFlag;
 	int technology;
@@ -323,6 +340,7 @@ struct FontParameters {
 		const char *faceName_,
 		float size_=10,
 		int weight_=400,
+		int stretch_=5,
 		bool italic_=false,
 		int extraFontFlag_=0,
 		int technology_=0,
@@ -332,6 +350,7 @@ struct FontParameters {
 		faceName(faceName_),
 		size(size_),
 		weight(weight_),
+		stretch(stretch_),
 		italic(italic_),
 		extraFontFlag(extraFontFlag_),
 		technology(technology_),

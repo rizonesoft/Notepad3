@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # make_unicode_property_data.py
-# Copyright (c) 2016-2019  K.Kosako
+# Copyright (c) 2016-2020  K.Kosako
 
 import sys
 import re
@@ -405,7 +405,7 @@ def set_max_prop_name(name):
 def entry_prop_name(name, index):
   set_max_prop_name(name)
   if OUTPUT_LIST_MODE and index >= len(POSIX_LIST):
-    print >> UPF, "%3d: %s" % (index, name)
+    print >> UPF, "%s" % (name)
 
 def entry_and_print_prop_and_index(name, index):
   entry_prop_name(name, index)

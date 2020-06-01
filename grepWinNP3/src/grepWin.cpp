@@ -35,8 +35,10 @@
 HINSTANCE g_hInst;            // current instance
 bool bPortable = false;
 CSimpleIni g_iniFile;
+HANDLE     hInitProtection = nullptr;
 
 ULONGLONG g_startTime = GetTickCount64();
+UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWinNP3_StartupMessage"));
 
 static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
 {
@@ -103,8 +105,14 @@ BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
     auto * pWnd = (HWND*)lParam;
     WCHAR buf[MAX_PATH] = {0};
     GetWindowText(hwnd, buf, _countof(buf));
-    if (_wcsnicmp(buf, L"grepwinnp3 :", 12) == 0)
+    if (_wcsnicmp(buf, L"grepwinnp3 :", 12) == 0) {
         *pWnd = hwnd;
+        if (SendMessage(hwnd, GREPWIN_STARTUPMSG, 1, 0))
+        {
+            // grepWin instance started moments ago, so use this one
+            return FALSE;
+        }
+    }
     return TRUE;
 }
 
@@ -142,6 +150,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         // An instance of grepWin is already running
         alreadyRunning = true;
     }
+    hInitProtection     = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
+    bool initInProgress = false;
+    if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
+    {
+        // An instance of grepWin is initializing
+        initInProgress = true;
+    }
 
     g_hInst = hInstance;
     ::OleInitialize(nullptr);
@@ -155,6 +170,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
 
     CCmdLineParser parser(lpCmdLine);
+
+    //MessageBox(NULL, L"", L"", MB_OK);
 
     if (parser.HasKey(L"register"))
     {
@@ -170,14 +187,36 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     bool bQuit = false;
     HWND hWnd = nullptr;
     int timeout = 20;
-    do
+    // find already running grepWin windows
+    if (alreadyRunning)
     {
-        EnumWindows(windowenumerator, (LPARAM)&hWnd);
-        if (alreadyRunning && (hWnd == nullptr))
-            Sleep(100);
-        timeout--;
-    } while ((hWnd == nullptr) && alreadyRunning && timeout);
-
+        do
+        {
+            if (EnumWindows(windowenumerator, (LPARAM)&hWnd) != FALSE)
+            {
+                // long running grepWin Window found:
+                // if a grepWin process is currently initializing,
+                // wait a while and enumerate again
+                while (initInProgress)
+                {
+                    CloseHandle(hInitProtection);
+                    Sleep(100);
+                    initInProgress = false;
+                    hInitProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
+                    if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
+                    {
+                        // An instance of grepWin is still initializing
+                        initInProgress = true;
+                    }
+                }
+                hWnd = nullptr;
+                EnumWindows(windowenumerator, (LPARAM)&hWnd);
+            }
+            if (alreadyRunning && (hWnd == nullptr))
+                Sleep(100);
+            timeout--;
+        } while ((hWnd == nullptr) && alreadyRunning && timeout);
+    }
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
     bPortable       = ((_tcsstr(modulename.c_str(), _T("portable"))) || 
                        (_tcsstr(modulename.c_str(), _T("NP3"))) || 
@@ -208,23 +247,39 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     {
         bool bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
                                     !!DWORD(CRegStdDWORD(_T("Software\\grepWinNP3\\onlyone"), 0));
-        UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWinNP3_StartupMessage"));
 
-        std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : 
-          (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
-        SearchReplace(spath, L"/", L"\\");
-        spath = SanitizeSearchPaths(spath);
-
-        std::wstring searchfor = parser.HasVal(_T("searchfor")) ? parser.GetVal(_T("searchfor")) : 
-          (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
-
-        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0) || bOnlyOne) // send the new path
+        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0)) // check if grepWin was started moments ago
         {
+            SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0); // reset the timer
+
+            // grepWin was started just moments ago:
+            // add the new path to the existing search path in that grepWin instance
+            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : 
+                (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
+            SearchReplace(spath, L"/", L"\\");
+            spath = SanitizeSearchPaths(spath);
+            std::wstring searchfor = parser.HasVal(_T("searchfor")) ? parser.GetVal(_T("searchfor")) : 
+                (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size() * sizeof(wchar_t);
-            SendMessage(hWnd, WM_COPYDATA, 0, (LPARAM)&CopyData);
-            CopyData.dwData = 0;
+            CopyData.lpData = (LPVOID)searchfor.c_str();
+            CopyData.cbData = (DWORD)searchfor.size() * sizeof(wchar_t);
+            SendMessage(hWnd, WM_COPYDATA, 2, (LPARAM)&CopyData);
+            SetForegroundWindow(hWnd); //set the window to front
+            bQuit = true;
+        }
+        else if (bOnlyOne)
+        {
+            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : 
+                (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
+            SearchReplace(spath, L"/", L"\\");
+            spath = SanitizeSearchPaths(spath);
+            std::wstring   searchfor = parser.HasVal(_T("searchfor")) ? parser.GetVal(_T("searchfor")) :
+                (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
+            COPYDATASTRUCT CopyData  = {0};
+            CopyData.lpData = (LPVOID)spath.c_str();
+            CopyData.cbData = (DWORD)spath.size() * sizeof(wchar_t);
             CopyData.lpData = (LPVOID)searchfor.c_str();
             CopyData.cbData = (DWORD)searchfor.size() * sizeof(wchar_t);
             SendMessage(hWnd, WM_COPYDATA, 2, (LPARAM)&CopyData);
@@ -262,6 +317,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
         if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
         {
+            if (hInitProtection)
+                CloseHandle(hInitProtection);
             CAboutDlg aboutDlg(nullptr);
             ret= (int)aboutDlg.DoModal(hInstance, IDD_ABOUT, nullptr, NULL);
         }

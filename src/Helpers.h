@@ -315,8 +315,12 @@ UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
 LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
 
 
+///////////////////////////////////////////////////////////////////////
+///  UINT  GDI CHARSET values  ==  Scintilla's  SC_CHARSET_XXX values
+///////////////////////////////////////////////////////////////////////
+#define GdiCharsetToSci(charset) ((int)(charset))
 UINT CodePageFromCharSet(const UINT uCharSet);
-UINT CharSetFromCodePage(const UINT uCodePage);
+//~UINT CharSetFromCodePage(const UINT uCodePage);
 
 
 //==== UnSlash Functions ======================================================

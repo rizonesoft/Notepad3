@@ -81,7 +81,7 @@ bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb);
 bool   Style_StrGetCase(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);
-void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest,bool,bool);
+void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc,LPWSTR lpszStyleDest,int cchSizeDest,bool);
 bool   Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,LPCWSTR sLexerName,LPCWSTR sStyleName,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND hwnd,bool,LPWSTR lpszStyle,int cchStyle,bool);
 void   Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle,bool);
@@ -99,8 +99,13 @@ INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
 HWND   Style_CustomizeSchemesDlg(HWND hwnd);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);
 void   Style_SelectLexerDlg(HWND hwnd);
-bool   Style_StrGetWeightValue(LPCWSTR lpszWeight,int* i);
+bool   Style_StrGetWeightValue(LPCWSTR lpszWeight,int* weight);
 void   Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight);
+
+#if 0
+bool   Style_StrGetStretchValue(LPCWSTR lpszWeight, int* stretch);
+void   Style_AppendStretchStr(LPWSTR lpszWeight, int cchSize, int fontStretch);
+#endif
 
 #endif //_NP3_STYLES_H_
 

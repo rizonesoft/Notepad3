@@ -133,7 +133,7 @@ inline int ScaleFloatFontSize(HWND hwnd, float fSize) {
 inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { 
   DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
   DPI_T const ppi = GetCurrentPPI(hwnd);
-  return (int)lroundf((fSize * 10.0f * dpi.y) / (float)ppi.y) * 10;
+  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y) * SC_FONT_SIZE_MULTIPLIER;
 }
 
 // ----------------------------------------------------------------------------

@@ -1952,6 +1952,13 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				rcUL.bottom = rcUL.top + 1;
 				surface->FillRectangle(rcUL, textFore);
 			}
+			// Added strike style, 2020-05-31
+			if (vsDraw.styles[styleMain].strike) {
+				 PRectangle rcUL = rcSegment;
+				 rcUL.top = rcUL.top + std::ceil((rcUL.bottom - rcUL.top) / 2);
+				 rcUL.bottom = rcUL.top + 1;
+				 surface->FillRectangle(rcUL, textFore);
+			}
 		} else if (rcSegment.left > rcLine.right) {
 			break;
 		}

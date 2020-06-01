@@ -225,14 +225,6 @@ static int const s_SciBidirectional[3] = {
   , SC_BIDIRECTIONAL_R2L
 };
 
-
-int const g_FontQuality[4] = {
-    SC_EFF_QUALITY_DEFAULT
-  , SC_EFF_QUALITY_NON_ANTIALIASED
-  , SC_EFF_QUALITY_ANTIALIASED
-  , SC_EFF_QUALITY_LCD_OPTIMIZED
-};
-
 //=============================================================================
 
 // static method declarations
@@ -629,7 +621,6 @@ static void _InitGlobals()
   Globals.pFileMRU = NULL;
   Globals.pMRUfind = NULL;
   Globals.pMRUreplace = NULL;
-  Globals.uConsoleCodePage = 0;
   Globals.iAvailLngCount = 1;
   Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
   Globals.iWrapCol = 80;
@@ -792,11 +783,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 {
   _InitGlobals();
 
-  if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-    Globals.uConsoleCodePage = GetConsoleCP();
-    FreeConsole();
-  }
-
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;
   Globals.hPrevInst = hPrevInstance;
@@ -861,6 +847,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   //SetProcessDPIAware(); -> .manifest
   //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+  Scintilla_LoadDpiForWindow();
 
   // ----------------------------------------------------
   // MultiLingual
@@ -1436,7 +1423,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       if (s_flagJumpTo)
         EditJumpTo(s_iInitialLine, s_iInitialColumn);
       else
-        EditEnsureSelectionVisible();
+        EditNormalizeView(Sci_GetCurrentLineNumber());
     }
   }
 
@@ -3050,7 +3037,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
-        EditEnsureSelectionVisible();
+        EditNormalizeView(Sci_GetCurrentLineNumber());
       }
       else {
         SciCall_GotoPos(iCurPos);
@@ -5013,6 +5000,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       UpdateMarginWidth();
       break;
 
+
     case IDM_VIEW_CURRENTSCHEME:
       if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
         Style_SetDefaultFont(Globals.hwndEdit, false);
@@ -5319,7 +5307,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = 250UL;
           UndoRedoRecordingStop();
           SciCall_SetEndAtLastLine(false);
-          EditEnsureSelectionVisible();
+          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
         else {
           s_flagChangeNotify = FileWatching.flagChangeNotify;
@@ -5329,7 +5317,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           FileWatching.AutoReloadTimeout = Settings2.AutoReloadTimeout;
           UndoRedoRecordingStart();
           SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-          EditEnsureSelectionVisible();
+          EditNormalizeView(Sci_GetCurrentLineNumber());
         }
 
         InstallFileWatching(Globals.CurrentFile); // force
@@ -9707,7 +9695,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     if (bIsAtDocEnd || FileWatching.MonitoringLog) {
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+      EditNormalizeView(Sci_GetCurrentLineNumber());
     }
   }
 
@@ -9718,7 +9706,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
       SciCall_ClearSelections();
       bPreserveView = false;
       SciCall_DocumentEnd();
-      EditEnsureSelectionVisible();
+      EditNormalizeView(Sci_GetCurrentLineNumber());
     }
   }
 

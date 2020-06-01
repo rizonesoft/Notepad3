@@ -33,8 +33,6 @@ extern "C" {
 // Scintilla
 #include "ILoader.h"
 
-
-extern "C" const int g_FontQuality[4];
 extern "C" WININFO   g_IniWinInfo;
 extern "C" WININFO   g_DefWinInfo;
 
@@ -1103,8 +1101,8 @@ void LoadSettings()
       Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
 
-    Defaults2.SciFontQuality = g_FontQuality[3];
-    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), 0, 3);
+    Defaults2.SciFontQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
+    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecSettings2, L"SciFontQuality", Defaults2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
     Defaults2.MarkOccurrencesMaxCount = 2000;
     Settings2.MarkOccurrencesMaxCount = IniSectionGetInt(IniSecSettings2, L"MarkOccurrencesMaxCount", Defaults2.MarkOccurrencesMaxCount);
@@ -1554,7 +1552,7 @@ void LoadSettings()
 
     WCHAR tchSciFontQuality[64];
     StringCchPrintf(tchSciFontQuality, COUNTOF(tchSciFontQuality), L"%ix%i SciFontQuality", ResX, ResY);
-    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), 0, 3);
+    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
     IniSectionGetString(Constants.Styles_Section, Constants.StylingThemeName, L"", Globals.SelectedThemeName, COUNTOF(Globals.SelectedThemeName));
 
@@ -1565,7 +1563,7 @@ void LoadSettings()
     Encoding_SetDefaultFlag(Settings.DefaultEncoding);
 
     // define default charset
-    Globals.iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
+    Globals.iDefaultCharSet = SC_CHARSET_DEFAULT;
 
     // File MRU
     Globals.pFileMRU = MRU_Create(_s_RecentFiles, MRU_NOCASE, MRU_ITEMSFILE);

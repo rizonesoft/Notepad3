@@ -397,7 +397,7 @@ DeclareSciCallV2(StyleSetHotspot, STYLESETHOTSPOT, int, iStyle, bool, hotspot)
 DeclareSciCallV2(SetHotspotActiveFore, SETHOTSPOTACTIVEFORE, bool, useSetting, int, colour)
 DeclareSciCallV2(SetHotspotActiveBack, SETHOTSPOTACTIVEBACK, bool, useSetting, int, colour)
 DeclareSciCallV1(SetHotspotActiveUnderline, SETHOTSPOTACTIVEUNDERLINE, bool, underline)
-DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, underline)
+DeclareSciCallV1(SetHotspotSigleLine, SETHOTSPOTSINGLELINE, bool, singleline)
 
 //=============================================================================
 //

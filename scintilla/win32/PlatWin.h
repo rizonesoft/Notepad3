@@ -5,8 +5,6 @@
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 #pragma once
-#ifndef PLATWIN_H
-#define PLATWIN_H
 
 // sdkddkver.h
 #ifndef _WIN32_WINNT_VISTA
@@ -23,6 +21,10 @@
 #endif
 #ifndef _WIN32_WINNT_WIN10
 #define _WIN32_WINNT_WIN10				0x0A00
+#endif
+
+#ifndef USER_DEFAULT_SCREEN_DPI
+#define USER_DEFAULT_SCREEN_DPI		96
 #endif
 
 #if !defined(DISABLE_D2D)
@@ -43,6 +45,9 @@
 #endif
 
 
+extern "C" DPI_T GetWindowDPI(HWND hwnd);
+extern "C" int  SystemMetricsForDpi(int nIndex, unsigned dpi);
+extern "C" BOOL DpiAdjustWindowRect(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi);
 
 namespace Scintilla {
 
@@ -71,8 +76,42 @@ inline HWND HwndFromWindow(const Window &w) noexcept {
 	return HwndFromWindowID(w.GetID());
 }
 
-void *PointerFromWindow(HWND hWnd) noexcept;
-void SetWindowPointer(HWND hWnd, void *ptr) noexcept;
+inline void *PointerFromWindow(HWND hWnd) noexcept {
+	return reinterpret_cast<void *>(::GetWindowLongPtr(hWnd, 0));
+}
+
+inline void SetWindowPointer(HWND hWnd, void *ptr) noexcept {
+	::SetWindowLongPtr(hWnd, 0, reinterpret_cast<LONG_PTR>(ptr));
+}
+
+// Find a function in a DLL and convert to a function pointer.
+/// This avoids undefined and conditionally defined behaviour.
+template<typename T>
+inline T DLLFunction(HMODULE hModule, LPCSTR lpProcName) noexcept {
+#if 1
+	return reinterpret_cast<T>(::GetProcAddress(hModule, lpProcName));
+#else
+	if (!hModule) {
+		return nullptr;
+	}
+	FARPROC function = ::GetProcAddress(hModule, lpProcName);
+	static_assert(sizeof(T) == sizeof(function));
+	T fp;
+	memcpy(&fp, &function, sizeof(T));
+	return fp;
+#endif
+}
+
+template<typename T>
+inline T DLLFunctionEx(LPCWSTR lpDllName, LPCSTR lpProcName) noexcept {
+	return DLLFunction<T>(::GetModuleHandleW(lpDllName), lpProcName);
+}
+
+inline UINT DpiForWindow(WindowID wid) noexcept {
+	return GetWindowDPI(HwndFromWindowID(wid)).y;
+}
+
+HCURSOR LoadReverseArrowCursor(DPI_T dpi) noexcept;
 
 #if defined(USE_D2D)
 extern bool LoadD2D() noexcept;
@@ -80,12 +119,4 @@ extern ID2D1Factory *pD2DFactory;
 extern IDWriteFactory *pIDWriteFactory;
 #endif
 
-
-DPI_T GetCurrentDPI(HWND hwnd);
-int GetSystemMetricsEx(HWND hwnd, int nIndex);
-inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = GetCurrentDPI(hwnd);  return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
-
 }
-
-#endif
