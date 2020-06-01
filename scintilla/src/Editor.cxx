@@ -5683,21 +5683,30 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		vs.styles[wParam].back = ColourDesired(static_cast<int>(lParam));
 		break;
 	case SCI_STYLESETBOLD:
+		vs.fontsValid = false;
 		vs.styles[wParam].weight = lParam != 0 ? SC_WEIGHT_BOLD : SC_WEIGHT_NORMAL;
 		break;
 	case SCI_STYLESETWEIGHT:
+		vs.fontsValid = false;
 		vs.styles[wParam].weight = static_cast<int>(lParam);
 		break;
+	case SCI_STYLESETSTRETCH:
+		vs.fontsValid = false;
+		vs.styles[wParam].stretch = static_cast<int>(lParam);
+		break;
 	case SCI_STYLESETITALIC:
+		vs.fontsValid = false;
 		vs.styles[wParam].italic = lParam != 0;
 		break;
 	case SCI_STYLESETEOLFILLED:
 		vs.styles[wParam].eolFilled = lParam != 0;
 		break;
 	case SCI_STYLESETSIZE:
+		vs.fontsValid = false;
 		vs.styles[wParam].size = static_cast<int>(lParam * SC_FONT_SIZE_MULTIPLIER);
 		break;
 	case SCI_STYLESETSIZEFRACTIONAL:
+		vs.fontsValid = false;
 		vs.styles[wParam].size = static_cast<int>(lParam);
 		break;
 	case SCI_STYLESETFONT:
@@ -5708,10 +5717,15 @@ void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 	case SCI_STYLESETUNDERLINE:
 		vs.styles[wParam].underline = lParam != 0;
 		break;
+		// Added strike style, 2020-05-31
+	case SCI_STYLESETSTRIKE:
+		vs.styles[wParam].strike = lParam != 0;
+		break;
 	case SCI_STYLESETCASE:
 		vs.styles[wParam].caseForce = static_cast<Style::ecaseForced>(lParam);
 		break;
 	case SCI_STYLESETCHARACTERSET:
+		vs.fontsValid = false;
 		vs.styles[wParam].characterSet = static_cast<int>(lParam);
 		pdoc->SetCaseFolder(nullptr);
 		break;
@@ -5739,6 +5753,8 @@ sptr_t Editor::StyleGetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPar
 		return vs.styles[wParam].weight > SC_WEIGHT_NORMAL;
 	case SCI_STYLEGETWEIGHT:
 		return vs.styles[wParam].weight;
+	case SCI_STYLEGETSTRETCH:
+		return vs.styles[wParam].stretch;
 	case SCI_STYLEGETITALIC:
 		return vs.styles[wParam].italic ? 1 : 0;
 	case SCI_STYLEGETEOLFILLED:
@@ -5751,6 +5767,9 @@ sptr_t Editor::StyleGetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPar
 		return StringResult(lParam, vs.styles[wParam].fontName);
 	case SCI_STYLEGETUNDERLINE:
 		return vs.styles[wParam].underline ? 1 : 0;
+		// Added strike style, 2020-05-31
+	case SCI_STYLEGETSTRIKE:
+		return vs.styles[wParam].strike ? 1 : 0;
 	case SCI_STYLEGETCASE:
 		return static_cast<int>(vs.styles[wParam].caseForce);
 	case SCI_STYLEGETCHARACTERSET:
@@ -6572,6 +6591,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_SETFONTQUALITY:
 		vs.extraFontFlag &= ~SC_EFF_QUALITY_MASK;
 		vs.extraFontFlag |= (wParam & SC_EFF_QUALITY_MASK);
+		vs.fontsValid = false;
 		InvalidateStyleRedraw();
 		break;
 
@@ -7114,12 +7134,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_STYLESETBACK:
 	case SCI_STYLESETBOLD:
 	case SCI_STYLESETWEIGHT:
+	case SCI_STYLESETSTRETCH:
 	case SCI_STYLESETITALIC:
 	case SCI_STYLESETEOLFILLED:
 	case SCI_STYLESETSIZE:
 	case SCI_STYLESETSIZEFRACTIONAL:
 	case SCI_STYLESETFONT:
 	case SCI_STYLESETUNDERLINE:
+	case SCI_STYLESETSTRIKE:
 	case SCI_STYLESETCASE:
 	case SCI_STYLESETCHARACTERSET:
 	case SCI_STYLESETVISIBLE:
@@ -7132,12 +7154,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_STYLEGETBACK:
 	case SCI_STYLEGETBOLD:
 	case SCI_STYLEGETWEIGHT:
+	case SCI_STYLEGETSTRETCH:
 	case SCI_STYLEGETITALIC:
 	case SCI_STYLEGETEOLFILLED:
 	case SCI_STYLEGETSIZE:
 	case SCI_STYLEGETSIZEFRACTIONAL:
 	case SCI_STYLEGETFONT:
 	case SCI_STYLEGETUNDERLINE:
+	case SCI_STYLEGETSTRIKE:
 	case SCI_STYLEGETCASE:
 	case SCI_STYLEGETCHARACTERSET:
 	case SCI_STYLEGETVISIBLE:
@@ -7676,6 +7700,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			if (zoomLevel != vs.zoomLevel) {
 				vs.zoomLevel = zoomLevel;
+				vs.fontsValid = false;
 				InvalidateStyleRedraw();
 				NotifyZoom();
 			}

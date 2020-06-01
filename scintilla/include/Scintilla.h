@@ -18,7 +18,8 @@ extern "C" {
 #if defined(_WIN32)
 /* Return false on failure: */
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-typedef struct _dpi_t {	int x;	int y; } DPI_T;
+typedef struct _dpi_t {	unsigned x;	unsigned y; } DPI_T;
+__declspec(dllexport) void  Scintilla_LoadDpiForWindow(void);
 __declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
 __declspec(dllexport) int   Scintilla_ReleaseResources(void);
 __declspec(dllexport) int   Scintilla_InputCodePage(void);
@@ -116,8 +117,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_ALPHA_OPAQUE 255
 #define SC_ALPHA_NOALPHA 256
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#define SCI_ISIMEOPEN 2900
-#define SCI_ISIMEMODECJK 2901
+#define SCI_ISIMEOPEN 3600
+#define SCI_ISIMEMODECJK 3601
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_CURSORNORMAL -1
 #define SC_CURSORARROW 2
@@ -244,6 +245,13 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_STYLESETEOLFILLED 2057
 #define SCI_STYLERESETDEFAULT 2058
 #define SCI_STYLESETUNDERLINE 2059
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#define SCI_STYLESETSTRIKE 3501
+#define SCI_STYLEGETSTRIKE 3502
+#define SCI_STYLESETSTRETCH 3503
+#define SCI_STYLEGETSTRETCH 3504
+#define SC_FONT_STRETCH_NORMAL 5
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_CASE_MIXED 0
 #define SC_CASE_UPPER 1
 #define SC_CASE_LOWER 2

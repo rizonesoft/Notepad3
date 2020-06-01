@@ -39,7 +39,6 @@
 
 #include "Styles.h"
 
-extern const int g_FontQuality[4];
 extern COLORREF  g_colorCustom[16];
 
 // removed from project, not MUI language compatible with ChooseFont()
@@ -784,13 +783,13 @@ void Style_ToIniSection(bool bForceAll, bool bIsStdIniFile)
     {
       // normalize defaults
       szTmpStyle[0] = L'\0'; // clear
-      Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].pszDefault, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+      Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].pszDefault, szTmpStyle, COUNTOF(szTmpStyle), true);
 
       if (bForceAll || (StringCchCompareX(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle) != 0))
       {
         // normalize value
         szTmpStyle[0] = L'\0'; // clear
-        Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+        Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true);
         IniSectionSetString(Lexer_Section, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
       }
       else {
@@ -1008,6 +1007,20 @@ static bool Style_StrGetAttributeEx(LPCWSTR lpszStyle, LPCWSTR key, const size_t
 #define Style_StrGetAttrBold(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"bold")
 #define Style_StrGetAttrExtraBold(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extrabold")
 #define Style_StrGetAttrHeavy(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"heavy")
+
+#if 0
+// font stretch
+#define Style_StrGetAttrUltraCondensed(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"ultracondensed")
+#define Style_StrGetAttrExtraCondensed(lpszStyle)   Style_StrGetAttribute((lpszStyle), L"extracondensed")
+#define Style_StrGetAttrCondensed(lpszStyle)        Style_StrGetAttribute((lpszStyle), L"condensed")
+#define Style_StrGetAttrSemiCondensed(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"semicondensed")
+#define Style_StrGetAttrNormalStretch(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"normalstretch")
+#define Style_StrGetAttrMediumStretch(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"mediumstretch")
+#define Style_StrGetAttrSemiExpanded(lpszStyle)     Style_StrGetAttribute((lpszStyle), L"semiexpanded")
+#define Style_StrGetAttrExpanded(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"expanded")
+#define Style_StrGetAttrExtraExpanded(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"extraexpanded")
+#define Style_StrGetAttrUltraExpanded(lpszStyle)    Style_StrGetAttribute((lpszStyle), L"ultraexpanded")
+#endif
 
 //// font quality
 //#define Style_StrGetAttrNone(lpszStyle)         Style_StrGetAttribute((lpszStyle), L"none")
@@ -2326,7 +2339,7 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
   GetLngString(pLexer->Styles[STY_DEFAULT].rid, styleName, COUNTOF(styleName));
 
   if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), lexerName, styleName,
-                       IsStyleStandardDefault(pLexerDefStyle), IsStyleSchemeDefault(pLexerDefStyle), false, true))
+                       IsStyleStandardDefault(pLexerDefStyle), IsStyleSchemeDefault(pLexerDefStyle), true, true))
   {
     // set new styles to current lexer's default text
     StringCchCopyW(pLexerDefStyle->szValue, COUNTOF(pLexerDefStyle->szValue), newStyle);
@@ -2633,7 +2646,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 //
 //  Style_StrGetWeightValue()
 //
-bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* i)
+bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* weight)
 {
   int iFontWeight = -1;
   
@@ -2657,10 +2670,11 @@ bool Style_StrGetWeightValue(LPCWSTR lpszWeight, int* i)
     iFontWeight = FW_HEAVY;
 
   if (iFontWeight >= 0) {
-    *i = iFontWeight;
+    *weight = iFontWeight;
   }
   return ((iFontWeight < 0) ? false : true);
 }
+
 
 //=============================================================================
 //
@@ -2678,10 +2692,12 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
     StringCchCat(lpszWeight, cchSize, L"; light");
   }
   else if (fontWeight <= FW_NORMAL) {
-    StringCchCat(lpszWeight, cchSize, L"; normal");
+    //~StringCchCat(lpszWeight, cchSize, L"; normal");
+    //StringCchCat(lpszWeight, cchSize, L""); // std
   }
   else if (fontWeight <= FW_MEDIUM) {
-    StringCchCat(lpszWeight, cchSize, L"; medium");
+    //~StringCchCat(lpszWeight, cchSize, L"; medium");
+    //StringCchCat(lpszWeight, cchSize, L""); // std
   }
   else if (fontWeight <= FW_SEMIBOLD) {
     StringCchCat(lpszWeight, cchSize, L"; semibold");
@@ -2697,6 +2713,82 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
   }
 }
 
+#if 0
+//=============================================================================
+//
+//  Style_StrGetStretchValue()
+//
+bool Style_StrGetStretchValue(LPCWSTR lpszStretch, int* stretch)
+{
+  int iFontStretch = FONT_STRETCH_UNDEFINED;
+
+  if (Style_StrGetAttrUltraCondensed(lpszStretch))
+    iFontStretch = FONT_STRETCH_ULTRA_CONDENSED;
+  else if (Style_StrGetAttrExtraCondensed(lpszStretch))
+    iFontStretch = FONT_STRETCH_EXTRA_CONDENSED;
+  else if (Style_StrGetAttrCondensed(lpszStretch))
+    iFontStretch = FONT_STRETCH_CONDENSED;
+  else if (Style_StrGetAttrSemiCondensed(lpszStretch))
+    iFontStretch = FONT_STRETCH_SEMI_CONDENSED;
+  else if (Style_StrGetAttrNormalStretch(lpszStretch))
+    iFontStretch = FONT_STRETCH_NORMAL;
+  else if (Style_StrGetAttrMediumStretch(lpszStretch))
+    iFontStretch = FONT_STRETCH_MEDIUM;
+  else if (Style_StrGetAttrSemiExpanded(lpszStretch))
+    iFontStretch = FONT_STRETCH_SEMI_EXPANDED;
+  else if (Style_StrGetAttrExpanded(lpszStretch))
+    iFontStretch = FONT_STRETCH_EXPANDED;
+  else if (Style_StrGetAttrExtraExpanded(lpszStretch))
+    iFontStretch = FONT_STRETCH_EXTRA_EXPANDED;
+  else if (Style_StrGetAttrUltraExpanded(lpszStretch))
+    iFontStretch = FONT_STRETCH_ULTRA_EXPANDED;
+
+  if (iFontStretch > FONT_STRETCH_UNDEFINED) {
+    *stretch = iFontStretch;
+  }
+  return ((iFontStretch <= FONT_STRETCH_UNDEFINED) ? false : true);
+}
+
+//=============================================================================
+//
+//  Style_AppendStretchStr()
+//
+void Style_AppendStretchStr(LPWSTR lpszStretch, int cchSize, int fontStretch)
+{
+  if (fontStretch <= FONT_STRETCH_ULTRA_CONDENSED) {
+    StringCchCat(lpszStretch, cchSize, L"; ultracondensed");
+  }
+  else if (fontStretch <= FONT_STRETCH_EXTRA_CONDENSED) {
+    StringCchCat(lpszStretch, cchSize, L"; extracondensed");
+  }
+  else if (fontStretch <= FONT_STRETCH_CONDENSED) {
+    StringCchCat(lpszStretch, cchSize, L"; condensed");
+  }
+  else if (fontStretch <= FONT_STRETCH_SEMI_CONDENSED) {
+    StringCchCat(lpszStretch, cchSize, L"; semicondensed");
+  }
+  else if (fontStretch <= FONT_STRETCH_NORMAL) {
+    //~StringCchCat(lpszStretch, cchSize, L"; normalstretch");
+    //StringCchCat(lpszStretch, cchSize, L""); // std
+  }
+  else if (fontStretch <= FONT_STRETCH_MEDIUM) {
+    //~StringCchCat(lpszStretch, cchSize, L"; mediumstretch");
+    //StringCchCat(lpszStretch, cchSize, L""); // std
+  }
+  else if (fontStretch <= FONT_STRETCH_SEMI_EXPANDED) {
+    StringCchCat(lpszStretch, cchSize, L"; semiexpanded");
+  }
+  else if (fontStretch <= FONT_STRETCH_EXPANDED) {
+    StringCchCat(lpszStretch, cchSize, L"; expanded");
+  }
+  else if (fontStretch <= FONT_STRETCH_EXTRA_EXPANDED) {
+    StringCchCat(lpszStretch, cchSize, L"; extraexpanded");
+  }
+  else { // (fontStretch >= FONT_STRETCH_ULTRA_EXPANDED)
+    StringCchCat(lpszStretch, cchSize, L"; ultraexpanded");
+  }
+}
+#endif
 
 //=============================================================================
 //
@@ -2861,7 +2953,7 @@ bool Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 //
 //  Style_CopyStyles_IfNotDefined()
 //
-void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, int cchSizeDest, bool bCopyFont, bool bWithEffects)
+void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, int cchSizeDest, bool bCopyFont)
 {
   int  iValue;
   COLORREF dColor;
@@ -2925,17 +3017,14 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     if (Style_StrGetAttrItalic(lpszStyleSrc) && !Style_StrGetAttrItalic(lpszStyleDest)) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
     }
-  }
 
-  // ---------  Effects  ---------
-  if (bWithEffects)
-  {
-    if (Style_StrGetAttrStrikeOut(lpszStyleSrc) && !Style_StrGetAttrStrikeOut(lpszStyleDest)) {
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
-    }
-
+    // ---------  Effects  ---------
     if (Style_StrGetAttrUnderline(lpszStyleSrc) && !Style_StrGetAttrUnderline(lpszStyleDest)) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; underline");
+    }
+
+    if (Style_StrGetAttrStrikeOut(lpszStyleSrc) && !Style_StrGetAttrStrikeOut(lpszStyleDest)) {
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
     }
 
     if (StrStr(lpszStyleSrc, L"fore:") && !StrStr(lpszStyleDest, L"fore:")) { // foreground
@@ -2953,7 +3042,32 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
       }
     }
+
   }
+
+#if 0
+  // not set by ChooseFont() dialog
+  if (Style_StrGetAttrUltraCondensed(lpszStyleSrc) && !Style_StrGetAttrUltraCondensed(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ultracondensed");
+  else if (Style_StrGetAttrExtraCondensed(lpszStyleSrc) && !Style_StrGetAttrExtraCondensed(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extracondensed");
+  else if (Style_StrGetAttrCondensed(lpszStyleSrc) && !Style_StrGetAttrCondensed(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; condensed");
+  else if (Style_StrGetAttrSemiCondensed(lpszStyleSrc) && !Style_StrGetAttrSemiCondensed(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; semicondensed");
+  else if (Style_StrGetAttrNormalStretch(lpszStyleSrc) && !Style_StrGetAttrNormalStretch(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normalstretch");
+  else if (Style_StrGetAttrMediumStretch(lpszStyleSrc) && !Style_StrGetAttrMediumStretch(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; mediumstretch");
+  else if (Style_StrGetAttrSemiExpanded(lpszStyleSrc) && !Style_StrGetAttrSemiExpanded(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; semiexpanded");
+  else if (Style_StrGetAttrExpanded(lpszStyleSrc) && !Style_StrGetAttrExpanded(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; expanded");
+  else if (Style_StrGetAttrExtraExpanded(lpszStyleSrc) && !Style_StrGetAttrExtraExpanded(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extraexpanded");
+  else if (Style_StrGetAttrUltraExpanded(lpszStyleSrc) && !Style_StrGetAttrUltraExpanded(lpszStyleDest))
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ultraexpanded");
+#endif
 
   // ---------  Special Styles  ---------
 
@@ -3118,11 +3232,19 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (!Style_StrGetWeightValue(lpszStyle, &iFontWeight)) {
     iFontWeight = FW_NORMAL;
   }
+
+#if 0
+  int iFontStretch = FONT_STRETCH_NORMAL;
+  if (!Style_StrGetStretchValue(lpszStyle, &iFontWeight)) {
+    iFontStretch = FONT_STRETCH_NORMAL;
+  }
+#endif
+
   bool bIsItalic = Style_StrGetAttrItalic(lpszStyle);
   bool bIsUnderline = Style_StrGetAttrUnderline(lpszStyle);
   bool bIsStrikeout = Style_StrGetAttrStrikeOut(lpszStyle);
 
-  int iQuality = g_FontQuality[Settings2.SciFontQuality];
+  int iQuality = Settings2.SciFontQuality;
   switch (iQuality) {
   case SC_EFF_QUALITY_NON_ANTIALIASED:
     iQuality = NONANTIALIASED_QUALITY;
@@ -3146,6 +3268,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   StringCchCopyN(lf.lfFaceName, LF_FACESIZE, wchFontName, COUNTOF(wchFontName));
   lf.lfCharSet = (BYTE)iCharSet;
   lf.lfHeight = iFontHeight;
+  lf.lfWidth = 0; // iFontStretch
   lf.lfWeight = iFontWeight;
   lf.lfItalic = (BYTE)(BOOL)bIsItalic;
   lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
@@ -3275,6 +3398,20 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
   }
 
+#if 0
+  // font stretch 
+  if (lf.lfWidth == 0) {
+    WCHAR check[64] = { L'\0' };
+    Style_AppendStretchStr(check, COUNTOF(check), /*lf.lfWidth*/ iFontStretch);
+    StrTrimW(check, L" ;");
+    if (Style_StrGetAttribute(lpszStyle, check)) {
+      Style_AppendStretchStr(szNewStyle, COUNTOF(szNewStyle), /*lf.lfWidth*/ iFontStretch);
+    }
+  }
+  else {
+    Style_AppendStretchStr(szNewStyle, COUNTOF(szNewStyle), /*lf.lfWidth*/ FONT_STRETCH_NORMAL);
+  }
+#endif
 
   float fNewFontSize = (float)(cf.iPointSize) / 10.0f;
   WCHAR newSize[64] = { L'\0' };
@@ -3410,7 +3547,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bPreserveStyles) {
     // copy all other styles
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
-    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle), false, !bWithEffects);
+    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle), false);
   }
 
   StrTrim(szNewStyle, L" ;");
@@ -3483,7 +3620,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
   if (bPreserveStyles) {
     // copy all other styles
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
-    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle), true, false);
+    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle), true);
   }
 
   StrTrim(szNewStyle, L" ;");
@@ -3508,36 +3645,34 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
 
   // Font
-  WCHAR wchFontName[80] = { L'\0' };
   char chFontName[80] = { '\0' };
+  WCHAR wchFontName[80] = { L'\0' };
+  Style_StrGetFontName(L"font:Default", wchFontName, COUNTOF(wchFontName));
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
+
   if (Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
     if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
       WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
-      SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
   }
   else if (bInitDefault) {
     Style_StrGetFontName(L"font:Default", wchFontName, COUNTOF(wchFontName));
     WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
-    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
   }
-  
+  SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
+
   // Font Quality
+  WPARAM wQuality = (WPARAM)Settings2.SciFontQuality;
   if (Style_StrGetFontQuality(lpszStyle, tch, COUNTOF(tch)))
   {
-    WPARAM wQuality = SC_EFF_QUALITY_DEFAULT;
-
     if (StringCchCompareNI(tch, COUNTOF(tch), L"none", COUNTOF(L"none")) == 0)
       wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
     else if (StringCchCompareNI(tch, COUNTOF(tch), L"standard", COUNTOF(L"standard")) == 0)
       wQuality = SC_EFF_QUALITY_ANTIALIASED;
     else if (StringCchCompareNI(tch, COUNTOF(tch), L"cleartype", COUNTOF(L"cleartype")) == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-
-    SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
   else if (bInitDefault) {
-    WPARAM wQuality = (WPARAM)g_FontQuality[Settings2.SciFontQuality];
     if (wQuality == SC_EFF_QUALITY_DEFAULT) {
       // undefined, use general settings, except for special fonts
       if (StringCchCompareXI(wchFontName, L"Calibri") == 0 ||
@@ -3553,8 +3688,8 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
         wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
       }
     }
-    SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
+  SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
 
   // Size values are relative to BaseFontSize/CurrentFontSize
   float fBaseFontSize = Style_GetCurrentFontSize();
@@ -3606,37 +3741,24 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)SC_WEIGHT_NORMAL);
   }
 
+#if 0
+  // Stretch
+  if (Style_StrGetStretchValue(lpszStyle, &iValue)) {
+    SendMessage(hwnd, SCI_STYLESETSTRETCH, iStyle, (LPARAM)iValue);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETSTRETCH, iStyle, (LPARAM)FONT_STRETCH_NORMAL);
+  }
+#endif
+
   // Italic
-  if (Style_StrGetAttrItalic(lpszStyle)) {
-    SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)true);
-  }
-  else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)false);
-  }
-
+  SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)Style_StrGetAttrItalic(lpszStyle));
   // Underline
-  if (Style_StrGetAttrUnderline(lpszStyle)) {
-    SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)true);
-  }
-  else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)false);
-  }
-
-  // StrikeOut does not exist in scintilla ???  / Hide instead (no good idea)
-  //if (Style_StrGetAttrStrikeOut(lpszStyle)) {
-  //  SendMessage(hwnd, SCI_STYLESETVISIBLE,iStyle,(LPARAM)false);
-  //}
-  //else if (bInitDefault) {
-  //  SendMessage(hwnd, SCI_STYLESETVISIBLE,iStyle,(LPARAM)true);
-  //}
-
+  SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)Style_StrGetAttrUnderline(lpszStyle));
+  // StrikeOut
+  SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)Style_StrGetAttrStrikeOut(lpszStyle));
   // EOL Filled
-  if (Style_StrGetAttrEOLFilled(lpszStyle)) {
-    SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)true);
-  }
-  else if (bInitDefault) {
-    SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)false);
-  }
+  SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)Style_StrGetAttrEOLFilled(lpszStyle));
 
   // Case
   if (Style_StrGetCase(lpszStyle, &iValue)) {
@@ -3823,7 +3945,7 @@ static bool  _ApplyDialogItemText(HWND hwnd,
   GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf));
   // normalize
   WCHAR szBufNorm[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
-  Style_CopyStyles_IfNotDefined(szBuf, szBufNorm, COUNTOF(szBufNorm), true, true);
+  Style_CopyStyles_IfNotDefined(szBuf, szBufNorm, COUNTOF(szBufNorm), true);
 
   if (StringCchCompareXI(szBufNorm, pCurrentStyle->szValue) != 0) {
     StringCchCopy(pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue), szBufNorm);
@@ -4357,7 +4479,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             GetLngString(pCurrentLexer->resID, lexerName, COUNTOF(lexerName));
             GetLngString(pCurrentStyle->rid, styleName, COUNTOF(styleName));
             if (Style_SelectFont(hwnd, tchTmpBuffer, COUNTOF(tchTmpBuffer), lexerName, styleName,
-                                 IsStyleStandardDefault(pCurrentStyle), IsStyleSchemeDefault(pCurrentStyle), false, true)) {
+                                 IsStyleStandardDefault(pCurrentStyle), IsStyleSchemeDefault(pCurrentStyle), true, true)) {
               SetDlgItemText(hwnd, IDC_STYLEEDIT, tchTmpBuffer);
             }
           }
@@ -4489,7 +4611,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               {
                 // normalize
                 tchTmpBuffer[0] = L'\0'; // clear
-                Style_CopyStyles_IfNotDefined(Style_StylesBackup[cnt], tchTmpBuffer, COUNTOF(tchTmpBuffer), true, true);
+                Style_CopyStyles_IfNotDefined(Style_StylesBackup[cnt], tchTmpBuffer, COUNTOF(tchTmpBuffer), true);
                 StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), tchTmpBuffer);
                 ++cnt;
                 ++i;
@@ -4739,8 +4861,8 @@ void Style_SelectLexerDlg(HWND hwnd)
 
   if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,
     MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
-    GetParent(hwnd), Style_SelectLexerDlgProc, 0)) {
-
+    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
+  {
     s_iDefaultLexer = _s_idefaultLexer;
     Style_SetLexer(Globals.hwndEdit, _s_selectedLexer);
   }

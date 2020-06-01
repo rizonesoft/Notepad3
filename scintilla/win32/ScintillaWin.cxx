@@ -105,6 +105,10 @@ Used by VSCode, Atom etc.
 #include "PlatWin.h"
 #include "HanjaDic.h"
 
+#ifndef WM_DPICHANGED_AFTERPARENT
+#define WM_DPICHANGED_AFTERPARENT	0x02E3
+#endif
+
 #ifndef SPI_GETWHEELSCROLLLINES
 #define SPI_GETWHEELSCROLLLINES   104
 #endif
@@ -360,6 +364,10 @@ public:
 		return attr;
 	}
 
+	LONG HasCompositionString(DWORD dwIndex) const noexcept {
+		return hIMC ? ::ImmGetCompositionStringW(hIMC, dwIndex, nullptr, 0) : 0;
+	}
+
 	std::wstring GetCompositionString(DWORD dwIndex) const {
 		const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, nullptr, 0);
 		std::wstring wcs(byteLen / sizeof(wchar_t), 0);
@@ -369,6 +377,37 @@ public:
 };
 
 class GlobalMemory;
+
+class ReverseArrowCursor {
+	DPI_T dpi = { USER_DEFAULT_SCREEN_DPI, USER_DEFAULT_SCREEN_DPI };
+	HCURSOR cursor {};
+
+public:
+	ReverseArrowCursor() noexcept = default;
+	// Deleted so ReverseArrowCursor objects can not be copied.
+	ReverseArrowCursor(const ReverseArrowCursor &) = delete;
+	ReverseArrowCursor(ReverseArrowCursor &&) = delete;
+	ReverseArrowCursor &operator=(const ReverseArrowCursor &) = delete;
+	ReverseArrowCursor &operator=(ReverseArrowCursor &&) = delete;
+	~ReverseArrowCursor() {
+		if (cursor) {
+			::DestroyCursor(cursor);
+		}
+	}
+
+	HCURSOR Load(DPI_T dpi_) noexcept {
+		if (cursor)	 {
+			if ((dpi.x == dpi_.x) && (dpi.y == dpi_.y)) {
+				return cursor;
+			}
+			::DestroyCursor(cursor);
+		}
+
+		dpi = dpi_;
+		cursor = LoadReverseArrowCursor(dpi_);
+		return cursor ? cursor : ::LoadCursor({}, IDC_ARROW);
+	}
+};
 
 }
 
@@ -388,6 +427,9 @@ class ScintillaWin :
 
 	unsigned int linesPerScroll;	///< Intellimouse support
 	int wheelDelta; ///< Wheel delta from roll
+
+	DPI_T dpi = { USER_DEFAULT_SCREEN_DPI, USER_DEFAULT_SCREEN_DPI };
+	ReverseArrowCursor reverseArrowCursor;
 
 	HRGN hRgnUpdate;
 
@@ -455,6 +497,7 @@ class ScintillaWin :
 		invalidTimerID, standardTimerID, idleTimerID, fineTimerStart
 	};
 
+	void DisplayCursor(Window::Cursor c) noexcept override;
 	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
 	void StartDrag() override;
 	static int MouseModifiers(uptr_t wParam) noexcept;
@@ -624,6 +667,8 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	linesPerScroll = 0;
 	wheelDelta = 0;   // Wheel delta from roll
+
+	dpi = GetWindowDPI(hwnd);
 
 	hRgnUpdate = {};
 
@@ -812,12 +857,23 @@ HWND ScintillaWin::MainHWND() const noexcept {
 	return HwndFromWindow(wMain);
 }
 
+void ScintillaWin::DisplayCursor(Window::Cursor c) noexcept {
+	if (cursorMode != SC_CURSORNORMAL) {
+		c = static_cast<Window::Cursor>(cursorMode);
+	}
+	if (c == Window::cursorReverseArrow) {
+		::SetCursor(reverseArrowCursor.Load(dpi));
+	} else {
+		wMain.SetCursor(c);
+	}
+}
+
 bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
-	return (xMove > GetSystemMetricsEx(MainHWND(), SM_CXDRAG)) ||
-		(yMove > GetSystemMetricsEx(MainHWND(), SM_CYDRAG));
+	return (xMove > SystemMetricsForDpi(SM_CXDRAG, dpi.x)) ||
+		   (yMove > SystemMetricsForDpi(SM_CYDRAG, dpi.y));
 }
 
 void ScintillaWin::StartDrag() {
@@ -1759,7 +1815,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				return 1;
 			} else {
 				wchar_t wcs[3] = { 0 };
-				const unsigned int wclen = UTF16FromUTF32Character(static_cast<unsigned int>(wParam), wcs);
+				const size_t wclen = UTF16FromUTF32Character(static_cast<unsigned int>(wParam), wcs);
 				AddWString(std::wstring_view(wcs, wclen), CharacterSource::directInput);
 				return FALSE;
 			}
@@ -1834,6 +1890,21 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			//Platform::DebugPrintf("Setting Changed\n");
 			InvalidateStyleData();
 			break;
+
+		case WM_DPICHANGED:
+			dpi.x = dpi.y = HIWORD(wParam);
+			vs.fontsValid = false;
+			InvalidateStyleRedraw();
+			break;
+
+		case WM_DPICHANGED_AFTERPARENT: {
+			DPI_T const dpiNow = GetWindowDPI(MainHWND());
+			if ((dpi.x != dpiNow.x) || (dpi.y != dpiNow.y)) {
+				dpi = dpiNow;
+				vs.fontsValid = false;
+				InvalidateStyleRedraw();
+			}
+		}
 
 		case WM_IME_STARTCOMPOSITION: 	// dbcs
 			if (imeInteraction == imeInline) {
@@ -2030,7 +2101,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 #endif
 					technology = technologyNew;
 					// Invalidate all cached information including layout.
-					//vs.fontsValid = false;
+					vs.fontsValid = false;
 					DropGraphics(true);
 					InvalidateStyleRedraw();
 				}
@@ -2874,15 +2945,11 @@ void ScintillaWin::ImeStartComposition() {
 			const int styleHere = pdoc->StyleIndexAt(sel.MainCaret());
 			LOGFONTW lf = { };
 			const int sizeZoomed = GetFontSizeZoomed(vs.styles[styleHere].size, vs.zoomLevel);
-			AutoSurface surface(this);
-			int deviceHeight = sizeZoomed;
-			if (surface) {
-				deviceHeight = (sizeZoomed * surface->LogPixelsY()) / 72;
-			}
 			// The negative is to allow for leading
-			lf.lfHeight = -(std::abs(deviceHeight / SC_FONT_SIZE_MULTIPLIER));
+			lf.lfHeight = -::MulDiv(sizeZoomed, dpi.y, 72 * SC_FONT_SIZE_MULTIPLIER);
+			lf.lfWidth = 0; // vs.styles[styleHere].stretch ?
 			lf.lfWeight = vs.styles[styleHere].weight;
-			lf.lfItalic = static_cast<BYTE>(vs.styles[styleHere].italic ? 1 : 0);
+			lf.lfItalic = vs.styles[styleHere].italic ? 1 : 0;
 			lf.lfCharSet = DEFAULT_CHARSET;
 			lf.lfFaceName[0] = L'\0';
 			if (vs.styles[styleHere].fontName) {
@@ -3802,11 +3869,12 @@ int Scintilla_InputCodePage(void) {
 
 extern "C" __declspec(dllexport)
 DPI_T Scintilla_GetCurrentDPI(void* hwnd) {
-	return GetCurrentDPI(static_cast<HWND>(hwnd));
+	return GetWindowDPI(static_cast<HWND>(hwnd));
 }
 
 extern "C" __declspec(dllexport)
 int Scintilla_GetSystemMetricsEx(void* hwnd, int nIndex) {
-	return GetSystemMetricsEx(static_cast<HWND>(hwnd), nIndex);
+	DPI_T const _dpi = GetWindowDPI(static_cast<HWND>(hwnd));
+	return SystemMetricsForDpi(nIndex, _dpi.y);
 }
 

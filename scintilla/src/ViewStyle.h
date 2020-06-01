@@ -96,6 +96,7 @@ public:
 	std::vector<Indicator> indicators;
 	bool indicatorsDynamic;
 	bool indicatorsSetFore;
+	bool fontsValid;
 	int technology;
 	int lineHeight;
 	int lineOverlap;

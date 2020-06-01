@@ -48,7 +48,7 @@ void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, cons
 	sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
-	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.italic, fs.extraFontFlag, technology, fs.characterSet);
+	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.stretch,  fs.italic, fs.extraFontFlag, technology, fs.characterSet);
 	font.Create(fp);
 
 	ascent = static_cast<unsigned int>(surface.Ascent(font));
@@ -284,32 +284,38 @@ void ViewStyle::Init(size_t stylesSize_) {
 }
 
 void ViewStyle::Refresh(Surface &surface, int tabInChars) {
-	fonts.clear();
+	if (!fontsValid) {
+		fontsValid = true;
+		fonts.clear();
+	
+		// Apply the extra font flag which controls text drawing quality to each style.
+		for (Style &style : styles) {
+			style.extraFontFlag = extraFontFlag;
+		}
+	
+		// Create a FontRealised object for each unique font in the styles.
+		CreateAndAddFont(styles[STYLE_DEFAULT]);
+		for (const Style &style : styles) {
+			CreateAndAddFont(style);
+		}
+	
+		// Ask platform to allocate each unique font.
+		for (std::pair<const FontSpecification, std::unique_ptr<FontRealised>> &font : fonts) {
+			font.second->Realise(surface, zoomLevel, technology, font.first);
+		}
+	
+		// Set the platform font handle and measurements for each style.
+		for (Style &style : styles) {
+			FontRealised *fr = Find(style);
+			style.Copy(fr->font, *fr);
+		}
+
+		aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
+		spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
+	}
 
 	selbar = Platform::Chrome();
 	selbarlight = Platform::ChromeHighlight();
-
-	// Apply the extra font flag which controls text drawing quality to each style.
-	for (Style &style : styles) {
-		style.extraFontFlag = extraFontFlag;
-	}
-
-	// Create a FontRealised object for each unique font in the styles.
-	CreateAndAddFont(styles[STYLE_DEFAULT]);
-	for (const Style &style : styles) {
-		CreateAndAddFont(style);
-	}
-
-	// Ask platform to allocate each unique font.
-	for (std::pair<const FontSpecification, std::unique_ptr<FontRealised>> &font : fonts) {
-		font.second->Realise(surface, zoomLevel, technology, font.first);
-	}
-
-	// Set the platform font handle and measurements for each style.
-	for (Style &style : styles) {
-		FontRealised *fr = Find(style);
-		style.Copy(fr->font, *fr);
-	}
 
 	indicatorsDynamic = std::any_of(indicators.cbegin(), indicators.cend(),
 		[](const Indicator &indicator) { return indicator.IsDynamic(); });
@@ -354,6 +360,7 @@ void ViewStyle::ReleaseAllExtendedStyles() noexcept {
 }
 
 int ViewStyle::AllocateExtendedStyles(int numberStyles) {
+	fontsValid = false;
 	const int startRange = nextExtendedStyle;
 	nextExtendedStyle += numberStyles;
 	EnsureStyle(nextExtendedStyle);
@@ -370,14 +377,16 @@ void ViewStyle::EnsureStyle(size_t index) {
 }
 
 void ViewStyle::ResetDefaultStyle() {
+	fontsValid = false;
 	styles[STYLE_DEFAULT].Clear(ColourDesired(0,0,0),
 	        ColourDesired(0xff,0xff,0xff),
 	        Platform::DefaultFontSize() * SC_FONT_SIZE_MULTIPLIER, fontNames.Save(Platform::DefaultFont()),
 	        SC_CHARSET_DEFAULT,
-	        SC_WEIGHT_NORMAL, false, false, false, Style::caseMixed, true, true, false);
+	        SC_WEIGHT_NORMAL, SC_FONT_STRETCH_NORMAL, false, false, false, false, Style::caseMixed, true, true, false);
 }
 
 void ViewStyle::ClearStyles() {
+	fontsValid = false;
 	// Reset all styles to be like the default style
 	for (size_t i=0; i<styles.size(); i++) {
 		if (i != STYLE_DEFAULT) {
@@ -392,6 +401,7 @@ void ViewStyle::ClearStyles() {
 }
 
 void ViewStyle::SetStyleFontName(int styleIndex, const char *name) {
+	fontsValid = false;
 	styles[styleIndex].fontName = fontNames.Save(name);
 }
 
@@ -587,6 +597,7 @@ bool ViewStyle::ZoomIn() noexcept {
 		level = std::min(level, SC_MAX_ZOOM_LEVEL);
 		if (level != zoomLevel) {
 			zoomLevel = level;
+			fontsValid = false;
 			return true;
 		}
 	}
@@ -605,6 +616,7 @@ bool ViewStyle::ZoomOut() noexcept {
 		level = std::max(level, SC_MIN_ZOOM_LEVEL);
 		if (level != zoomLevel) {
 			zoomLevel = level;
+			fontsValid = false;
 			return true;
 		}
 	}
@@ -614,6 +626,7 @@ bool ViewStyle::ZoomOut() noexcept {
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ViewStyle::AllocStyles(size_t sizeNew) {
+	fontsValid = false;
 	size_t i=styles.size();
 	styles.resize(sizeNew);
 	if (styles.size() > STYLE_DEFAULT) {

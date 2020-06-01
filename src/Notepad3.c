@@ -225,14 +225,6 @@ static int const s_SciBidirectional[3] = {
   , SC_BIDIRECTIONAL_R2L
 };
 
-
-int const g_FontQuality[4] = {
-    SC_EFF_QUALITY_DEFAULT
-  , SC_EFF_QUALITY_NON_ANTIALIASED
-  , SC_EFF_QUALITY_ANTIALIASED
-  , SC_EFF_QUALITY_LCD_OPTIMIZED
-};
-
 //=============================================================================
 
 // static method declarations
@@ -855,6 +847,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   //SetProcessDPIAware(); -> .manifest
   //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+  Scintilla_LoadDpiForWindow();
 
   // ----------------------------------------------------
   // MultiLingual
@@ -5006,6 +4999,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       UpdateStatusbar(true);
       UpdateMarginWidth();
       break;
+
 
     case IDM_VIEW_CURRENTSCHEME:
       if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
