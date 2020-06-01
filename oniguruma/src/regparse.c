@@ -304,6 +304,8 @@ static int
 backref_rel_to_abs(int rel_no, ScanEnv* env)
 {
   if (rel_no > 0) {
+    if (rel_no > ONIG_INT_MAX - env->num_mem)
+      return ONIGERR_INVALID_BACKREF;
     return env->num_mem + rel_no;
   }
   else {
@@ -7153,6 +7155,23 @@ parse_long(OnigEncoding enc, UChar* s, UChar* end, int sign_on, long max, long* 
   return ONIG_NORMAL;
 }
 
+static void
+clear_callout_args(int n, unsigned int types[], OnigValue vals[])
+{
+  int i;
+
+  for (i = 0; i < n; i++) {
+    switch (types[i]) {
+    case ONIG_TYPE_STRING:
+      if (IS_NOT_NULL(vals[i].s.start))
+        xfree(vals[i].s.start);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
 static int
 parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
                    int max_arg_num, unsigned int types[], OnigValue vals[],
@@ -7184,7 +7203,10 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
     bufend = buf;
     s = e = p;
     while (1) {
-      if (PEND) return ONIGERR_INVALID_CALLOUT_PATTERN;
+      if (PEND) {
+        r = ONIGERR_INVALID_CALLOUT_PATTERN;
+        goto err_clear;
+      }
 
       e = p;
       PFETCH_S(c);
@@ -7212,8 +7234,10 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
         add_char:
           if (skip_mode == FALSE) {
             clen = p - e;
-            if (bufend + clen > buf + MAX_CALLOUT_ARG_BYTE_LENGTH)
-              return ONIGERR_INVALID_CALLOUT_ARG; /* too long argument */
+            if (bufend + clen > buf + MAX_CALLOUT_ARG_BYTE_LENGTH) {
+              r = ONIGERR_INVALID_CALLOUT_ARG; /* too long argument */
+              goto err_clear;
+            }
 
             xmemcpy(bufend, e, clen);
             bufend += clen;
@@ -7224,8 +7248,10 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
     }
 
     if (cn != 0) {
-      if (max_arg_num >= 0 && n >= max_arg_num)
-        return ONIGERR_INVALID_CALLOUT_ARG;
+      if (max_arg_num >= 0 && n >= max_arg_num) {
+        r = ONIGERR_INVALID_CALLOUT_ARG;
+        goto err_clear;
+      }
 
       if (skip_mode == FALSE) {
         if ((types[n] & ONIG_TYPE_LONG) != 0) {
@@ -7242,8 +7268,10 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
 
           if (fixed == 0) {
             types[n] = (types[n] & ~ONIG_TYPE_LONG);
-            if (types[n] == ONIG_TYPE_VOID)
-              return ONIGERR_INVALID_CALLOUT_ARG;
+            if (types[n] == ONIG_TYPE_VOID) {
+              r = ONIGERR_INVALID_CALLOUT_ARG;
+              goto err_clear;
+            }
           }
         }
 
@@ -7252,22 +7280,29 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
           break;
 
         case ONIG_TYPE_CHAR:
-          if (cn != 1) return ONIGERR_INVALID_CALLOUT_ARG;
+          if (cn != 1) {
+            r = ONIGERR_INVALID_CALLOUT_ARG;
+            goto err_clear;
+          }
           vals[n].c = ONIGENC_MBC_TO_CODE(enc, buf, bufend);
           break;
 
         case ONIG_TYPE_STRING:
           {
             UChar* rs = onigenc_strdup(enc, buf, bufend);
-            CHECK_NULL_RETURN_MEMERR(rs);
+            if (IS_NULL(rs)) {
+              r = ONIGERR_MEMORY; goto err_clear;
+            }
             vals[n].s.start = rs;
             vals[n].s.end   = rs + (e - s);
           }
           break;
 
         case ONIG_TYPE_TAG:
-          if (eesc != 0 || ! is_allowed_callout_tag_name(enc, s, e))
-            return ONIGERR_INVALID_CALLOUT_TAG_NAME;
+          if (eesc != 0 || ! is_allowed_callout_tag_name(enc, s, e)) {
+            r = ONIGERR_INVALID_CALLOUT_TAG_NAME;
+            goto err_clear;
+          }
 
           vals[n].s.start = s;
           vals[n].s.end   = e;
@@ -7275,7 +7310,8 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
 
         case ONIG_TYPE_VOID:
         case ONIG_TYPE_POINTER:
-          return ONIGERR_PARSER_BUG;
+          r = ONIGERR_PARSER_BUG;
+          goto err_clear;
           break;
         }
       }
@@ -7286,10 +7322,18 @@ parse_callout_args(int skip_mode, int cterm, UChar** src, UChar* end,
     if (c == cterm) break;
   }
 
-  if (c != cterm) return ONIGERR_INVALID_CALLOUT_PATTERN;
+  if (c != cterm) {
+    r = ONIGERR_INVALID_CALLOUT_PATTERN;
+    goto err_clear;
+  }
 
   *src = p;
   return n;
+
+ err_clear:
+  if (skip_mode == FALSE)
+    clear_callout_args(n, types, vals);
+  return r;
 }
 
 /* (*name[TAG]) (*name[TAG]{a,b,..}) */
@@ -7376,7 +7420,10 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
     arg_num = parse_callout_args(FALSE, '}', &p, end, max_arg_num, types, vals, env);
     if (arg_num < 0) return arg_num;
 
-    if (PEND) return ONIGERR_END_PATTERN_IN_GROUP;
+    if (PEND) {
+      r = ONIGERR_END_PATTERN_IN_GROUP;
+      goto err_clear;
+    }
     PFETCH_S(c);
   }
   else {
@@ -7395,32 +7442,40 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
 
   in = onig_get_callout_in_by_name_id(name_id);
   opt_arg_num = get_callout_opt_arg_num_by_name_id(name_id);
-  if (arg_num > max_arg_num || arg_num < (max_arg_num - opt_arg_num))
-    return ONIGERR_INVALID_CALLOUT_ARG;
+  if (arg_num > max_arg_num || arg_num < (max_arg_num - opt_arg_num)) {
+    r = ONIGERR_INVALID_CALLOUT_ARG;
+    goto err_clear;
+  }
 
-  if (c != cterm)
-    return ONIGERR_INVALID_CALLOUT_PATTERN;
+  if (c != cterm) {
+    r = ONIGERR_INVALID_CALLOUT_PATTERN;
+    goto err_clear;
+  }
 
   r = reg_callout_list_entry(env, &num);
-  if (r != 0) return r;
+  if (r != 0) goto err_clear;
 
   ext = onig_get_regex_ext(env->reg);
-  CHECK_NULL_RETURN_MEMERR(ext);
+  if (IS_NULL(ext)) {
+    r = ONIGERR_MEMORY; goto err_clear;
+  }
   if (IS_NULL(ext->pattern)) {
     r = onig_ext_set_pattern(env->reg, env->pattern, env->pattern_end);
-    if (r != ONIG_NORMAL) return r;
+    if (r != ONIG_NORMAL) goto err_clear;
   }
 
   if (tag_start != tag_end) {
     r = callout_tag_entry(env, env->reg, tag_start, tag_end, num);
-    if (r != ONIG_NORMAL) return r;
+    if (r != ONIG_NORMAL) goto err_clear;
   }
 
   r = node_new_callout(&node, ONIG_CALLOUT_OF_NAME, num, name_id, env);
-  if (r != ONIG_NORMAL) return r;
+  if (r != ONIG_NORMAL) goto err_clear;
 
   e = onig_reg_callout_list_at(env->reg, num);
-  CHECK_NULL_RETURN_MEMERR(e);
+  if (IS_NULL(e)) {
+    r = ONIGERR_MEMORY; goto err_clear;
+  }
 
   e->of         = ONIG_CALLOUT_OF_NAME;
   e->in         = in;
@@ -7441,6 +7496,10 @@ parse_callout_of_name(Node** np, int cterm, UChar** src, UChar* end, ScanEnv* en
   *np = node;
   *src = p;
   return 0;
+
+ err_clear:
+  clear_callout_args(arg_num, types, vals);
+  return r;
 }
 #endif
 

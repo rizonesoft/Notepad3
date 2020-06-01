@@ -4,6 +4,8 @@
 #ifndef _ONIGURUMA_CONFIG_H_
 #define _ONIGURUMA_CONFIG_H_
 
+#define USE_POSIX_API 1
+
 #define STDC_HEADERS 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_STAT_H 1
@@ -95,7 +97,5 @@
 #define DEFAULT_KCODE KCODE_NONE
 #define DLEXT ".so"
 #define DLEXT2 ".dll"
-
-#define USE_POSIX_API_REGION_OPTION 1
 
 #endif //_ONIGURUMA_CONFIG_H_

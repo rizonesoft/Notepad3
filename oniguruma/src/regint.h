@@ -83,7 +83,7 @@
 /* #define USE_REPEAT_AND_EMPTY_CHECK_LOCAL_VAR */
 
 /* enabled by configure --enable-posix-api=yes */
-/* #define USE_POSIX_API_REGION_OPTION */
+/* #define USE_POSIX_API */
 
 #define INIT_MATCH_STACK_SIZE                160
 #define DEFAULT_MATCH_STACK_LIMIT_SIZE         0 /* unlimited */

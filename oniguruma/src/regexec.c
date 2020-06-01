@@ -2953,7 +2953,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         if (region) {
           if (keep > s) keep = s;
 
-#ifdef USE_POSIX_API_REGION_OPTION
+#ifdef USE_POSIX_API
           if (OPTON_POSIX_REGION(msa->options)) {
             posix_regmatch_t* rmt = (posix_regmatch_t* )region;
 
@@ -2970,7 +2970,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
             }
           }
           else {
-#endif /* USE_POSIX_API_REGION_OPTION */
+#endif /* USE_POSIX_API */
             region->beg[0] = (int )(keep - str);
             region->end[0] = (int )(s    - str);
             for (i = 1; i <= num_mem; i++) {
@@ -3007,7 +3007,7 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
               if (r < 0) MATCH_AT_ERROR_RETURN(r);
             }
 #endif /* USE_CAPTURE_HISTORY */
-#ifdef USE_POSIX_API_REGION_OPTION
+#ifdef USE_POSIX_API
           } /* else OPTON_POSIX_REGION() */
 #endif
         } /* if (region) */
@@ -4980,14 +4980,14 @@ onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,
   UChar *prev;
   MatchArg msa;
 
-#ifndef USE_POSIX_API_REGION_OPTION
+#ifndef USE_POSIX_API
   if (OPTON_POSIX_REGION(option)) return ONIGERR_INVALID_ARGUMENT;
 #endif
 
   ADJUST_MATCH_PARAM(reg, mp);
   MATCH_ARG_INIT(msa, reg, option, region, at, mp);
   if (region
-#ifdef USE_POSIX_API_REGION_OPTION
+#ifdef USE_POSIX_API
       && !OPTON_POSIX_REGION(option)
 #endif
       ) {
@@ -5300,7 +5300,7 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
 
   ADJUST_MATCH_PARAM(reg, mp);
 
-#ifndef USE_POSIX_API_REGION_OPTION
+#ifndef USE_POSIX_API
   if (OPTON_POSIX_REGION(option)) {
     r = ONIGERR_INVALID_ARGUMENT;
     goto finish_no_msa;
@@ -5308,7 +5308,7 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
 #endif
 
   if (region
-#ifdef USE_POSIX_API_REGION_OPTION
+#ifdef USE_POSIX_API
       && ! OPTON_POSIX_REGION(option)
 #endif
       ) {
@@ -5608,7 +5608,7 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
   /* If result is mismatch and no FIND_NOT_EMPTY option,
      then the region is not set in match_at(). */
   if (OPTON_FIND_NOT_EMPTY(reg->options) && region
-#ifdef USE_POSIX_API_REGION_OPTION
+#ifdef USE_POSIX_API
       && !OPTON_POSIX_REGION(option)
 #endif
       ) {
