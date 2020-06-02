@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.601.(build_#) (2020-06-01)
+Current BETA Version 5.20.602.(build_#) (2020-06-02)
 =====================================================
 
 -----------------------------------------------------
@@ -48,7 +48,7 @@ NEW:
 - "waifu2x" scaled std toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
-- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.6) (GRE).
+- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.10) (GRE).
 
 -----------------------------------------------------
 CHANGES:
@@ -75,9 +75,9 @@ CHANGES:
 - Installer to let the user select the target directory.
 - Default long-line wrap settings.
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).
-- "grepWinNP3": move packages.config to corresponding project folder(GRE).
+- "grepWinNP3": move packages.config to corresponding project folder (GRE).
 - Add filepath to message on file locking error.
-- Update Oniguruma Regex (ONI) engine version 6.9.5 (2020/04/20).
+- Update Oniguruma Regex (ONI) engine version 6.9.6 (2020/05/20).
 - Update Scintilla Library (SCI) version 4.3.3 (2020/04/27).
 
 -----------------------------------------------------
@@ -92,6 +92,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- "grepWinNP3" crash on invalid file path (GRE).
 - "vcxproj" should use the latest installed SDK.
 - Scintilla as DLL solution.
 - Extended font style selection.
