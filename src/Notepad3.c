@@ -10662,19 +10662,22 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void ShowZoomCallTip()
 {
-  int const iZoomLevelPercent = SciCall_GetZoom();
+  int const delayClr = Settings2.ZoomTooltipTimeout;
+  if (delayClr >= (10*USER_TIMER_MINIMUM)) {
+    int const iZoomLevelPercent = SciCall_GetZoom();
 
-  char chToolTip[32] = { '\0' };
-  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
+    char chToolTip[32] = { '\0' };
+    StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
 
-  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+    DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 
-  int const iXOff = SciCall_GetXOffset();
-  SciCall_SetXOffset(0);
-  SciCall_CallTipShow(iPos, chToolTip);
-  SciCall_SetXOffset(iXOff);
-  Globals.CallTipType = CT_ZOOM;
-  _DelayClearZoomCallTip(3200);
+    int const iXOff = SciCall_GetXOffset();
+    SciCall_SetXOffset(0);
+    SciCall_CallTipShow(iPos, chToolTip);
+    SciCall_SetXOffset(iXOff);
+    Globals.CallTipType = CT_ZOOM;
+    _DelayClearZoomCallTip(delayClr);
+  }
 }
 
 

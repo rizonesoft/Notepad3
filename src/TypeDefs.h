@@ -530,6 +530,7 @@ typedef struct _settings2_t
   bool   NoCutLineOnEmptySelection;
   bool   LexerSQLNumberSignAsComment;
   int    ExitOnESCSkipLevel;
+  int    ZoomTooltipTimeout;
 
   float  AnalyzeReliableConfidenceLevel;
   float  LocaleAnsiCodePageAnalysisBonus;
