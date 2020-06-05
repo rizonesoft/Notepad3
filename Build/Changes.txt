@@ -32,13 +32,14 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current BETA Version 5.20.602.(build_#) (2020-06-02)
+Current BETA Version 5.20.605.(build_#) (2020-06-05)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
 - 
+- Configurable Zoom-Tooltip clear delay ([Settings2] ZoomTooltipimeout=3200.
 - Add Install/Remove "Open with Notepad3" to Notepad3 Install version. 
 - Add another Dark Theme "Sombra".
 - Strip first char: allow multi-selection.
