@@ -93,6 +93,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Common base font inheritance for other styles.
 - "grepWinNP3" crash on invalid file path (GRE).
 - "vcxproj" should use the latest installed SDK.
 - Scintilla as DLL solution.
