@@ -94,8 +94,8 @@ en.tsk_RemoveDefault         =Restore Windows Notepad
 en.tsk_SetDefault            =Replace Windows Notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
 en.tsk_LaunchWelcomePage     =Important Release Information!
-en.tsk_RemoveOpenWith        =Remove "Open with {#app_name}" to Context Menu
-en.tsk_SetOpenWith           =Install "Open with {#app_name}" to Context Menu
+en.tsk_RemoveOpenWith        =Remove "Open with {#app_name}" from the context menu
+en.tsk_SetOpenWith           =Add "Open with {#app_name}" to the context menu
 
 
 [Tasks]
