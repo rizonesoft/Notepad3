@@ -3647,53 +3647,39 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   // Font
   char chFontName[80] = { '\0' };
   WCHAR wchFontName[80] = { L'\0' };
-  Style_StrGetFontName(L"font:Default", wchFontName, COUNTOF(wchFontName));
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
-
   if (Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
     if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
       WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
+      SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
   }
   else if (bInitDefault) {
     Style_StrGetFontName(L"font:Default", wchFontName, COUNTOF(wchFontName));
     WideCharToMultiByteEx(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
+    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
   }
-  SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
 
   // Font Quality
+  // default should be SC_EFF_QUALITY_LCD_OPTIMIZED
   WPARAM wQuality = (WPARAM)Settings2.SciFontQuality;
   if (Style_StrGetFontQuality(lpszStyle, tch, COUNTOF(tch)))
   {
-    if (StringCchCompareNI(tch, COUNTOF(tch), L"none", COUNTOF(L"none")) == 0)
+    if (StringCchCompareN(tch, COUNTOF(tch), L"none", COUNTOF(L"none")) == 0)
       wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
-    else if (StringCchCompareNI(tch, COUNTOF(tch), L"standard", COUNTOF(L"standard")) == 0)
+    else if (StringCchCompareN(tch, COUNTOF(tch), L"standard", COUNTOF(L"standard")) == 0)
       wQuality = SC_EFF_QUALITY_ANTIALIASED;
-    else if (StringCchCompareNI(tch, COUNTOF(tch), L"cleartype", COUNTOF(L"cleartype")) == 0)
+    else if (StringCchCompareN(tch, COUNTOF(tch), L"cleartype", COUNTOF(L"cleartype")) == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
+    else if (StringCchCompareN(tch, COUNTOF(tch), L"default", COUNTOF(L"default")) == 0)
+      wQuality = SC_EFF_QUALITY_DEFAULT;
+    SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
   else if (bInitDefault) {
-    if (wQuality == SC_EFF_QUALITY_DEFAULT) {
-      // undefined, use general settings, except for special fonts
-      if (StringCchCompareXI(wchFontName, L"Calibri") == 0 ||
-          StringCchCompareXI(wchFontName, L"Cambria") == 0 ||
-          StringCchCompareXI(wchFontName, L"Candara") == 0 ||
-          StringCchCompareXI(wchFontName, L"Consolas") == 0 ||
-          StringCchCompareXI(wchFontName, L"Constantia") == 0 ||
-          StringCchCompareXI(wchFontName, L"Corbel") == 0 ||
-          StringCchCompareXI(wchFontName, L"DejaVu Sans Mono") == 0 ||
-          StringCchCompareXI(wchFontName, L"Segoe UI") == 0 ||
-          StringCchCompareXI(wchFontName, L"Source Code Pro") == 0) 
-      {
-        wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-      }
-    }
+    SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
-  SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
 
   // Size values are relative to BaseFontSize/CurrentFontSize
   float fBaseFontSize = Style_GetCurrentFontSize();
-
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     if (iStyle == STYLE_DEFAULT) {
       if (bInitDefault) {
@@ -3752,14 +3738,33 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 #endif
 
   // Italic
-  SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)Style_StrGetAttrItalic(lpszStyle));
+  if (Style_StrGetAttrItalic(lpszStyle)) {
+    SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)false);
+  }
   // Underline
-  SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)Style_StrGetAttrUnderline(lpszStyle));
+  if (Style_StrGetAttrUnderline(lpszStyle)) {
+    SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)false);
+  }
   // StrikeOut
-  SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)Style_StrGetAttrStrikeOut(lpszStyle));
+  if (Style_StrGetAttrStrikeOut(lpszStyle)) {
+    SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETSTRIKE, iStyle, (LPARAM)false);
+  }
   // EOL Filled
-  SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)Style_StrGetAttrEOLFilled(lpszStyle));
-
+  if (Style_StrGetAttrEOLFilled(lpszStyle)) {
+    SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)false);
+  }
   // Case
   if (Style_StrGetCase(lpszStyle, &iValue)) {
     SendMessage(hwnd, SCI_STYLESETCASE, iStyle, (LPARAM)iValue);

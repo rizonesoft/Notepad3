@@ -10678,6 +10678,9 @@ void ShowZoomCallTip()
     Globals.CallTipType = CT_ZOOM;
     _DelayClearZoomCallTip(delayClr);
   }
+  else {
+    CancelCallTip();
+  }
 }
 
 
