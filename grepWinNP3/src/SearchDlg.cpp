@@ -114,6 +114,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bIncludeBinaryC(false)
     , m_bCreateBackup(false)
     , m_bCreateBackupC(false)
+    , m_bCreateBackupInFolders(false)
+    , m_bCreateBackupInFoldersC(false)
     , m_bConfirmationOnReplace(true)
     , m_bUTF8(false)
     , m_bUTF8C(false)
@@ -336,26 +338,28 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_EQUALTO).c_str());
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_GREATERTHAN).c_str());
             if (!m_bIncludeSubfoldersC)
-                m_bIncludeSubfolders = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSubfolders", L"1")) : !!DWORD(m_regIncludeSubfolders);
+                m_bIncludeSubfolders = bPortable ? g_iniFile.GetBoolValue(L"global", L"IncludeSubfolders", true) : !!DWORD(m_regIncludeSubfolders);
             if (!m_bIncludeSystemC)
-                m_bIncludeSystem = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSystem", L"1")) : !!DWORD(m_regIncludeSystem);
+                m_bIncludeSystem = bPortable ? g_iniFile.GetBoolValue(L"global", L"IncludeSystem", true) : !!DWORD(m_regIncludeSystem);
             if (!m_bIncludeHiddenC)
-                m_bIncludeHidden = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeHidden", L"0")) : !!DWORD(m_regIncludeHidden);
+                m_bIncludeHidden = bPortable ? g_iniFile.GetBoolValue(L"global", L"IncludeHidden", false) : !!DWORD(m_regIncludeHidden);
             if (!m_bIncludeBinaryC)
-                m_bIncludeBinaryC = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeBinary", L"0")) : !!DWORD(m_regIncludeBinary);
+                m_bIncludeBinaryC = bPortable ? g_iniFile.GetBoolValue(L"global", L"IncludeBinary", false) : !!DWORD(m_regIncludeBinary);
             if (!m_bCaseSensitiveC)
-                m_bCaseSensitive = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CaseSensitive", L"0")) : !!DWORD(m_regCaseSensitive);
+                m_bCaseSensitive = bPortable ? g_iniFile.GetBoolValue(L"global", L"CaseSensitive", false) : !!DWORD(m_regCaseSensitive);
             if (!m_bDotMatchesNewlineC)
-                m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!DWORD(m_regDotMatchesNewline);
+                m_bDotMatchesNewline = bPortable ? g_iniFile.GetBoolValue(L"global", L"DotMatchesNewline", false) : !!DWORD(m_regDotMatchesNewline);
             if (!m_bCreateBackupC)
-                m_bCreateBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CreateBackup", L"0")) : !!DWORD(m_regCreateBackup);
+                m_bCreateBackup = bPortable ? g_iniFile.GetBoolValue(L"global", L"CreateBackup", false) : !!DWORD(m_regCreateBackup);
+            if (!m_bCreateBackupInFoldersC)
+                m_bCreateBackupInFolders = bPortable ? g_iniFile.GetBoolValue(L"settings", L"backupinfolder", false) : !!DWORD(m_regBackupInFolder);
             if (!m_bUTF8C)
-                m_bUTF8 = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"UTF8", L"0")) : !!DWORD(m_regUTF8);
+                m_bUTF8 = bPortable ? g_iniFile.GetBoolValue(L"global", L"UTF8", false) : !!DWORD(m_regUTF8);
             if (!m_bDotMatchesNewlineC)
-                m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!DWORD(m_regDotMatchesNewline);
+                m_bDotMatchesNewline = bPortable ? g_iniFile.GetBoolValue(L"global", L"DotMatchesNewline", false) : !!DWORD(m_regDotMatchesNewline);
             if (!m_bSizeC)
             {
-                m_bAllSize = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"AllSize", L"0")) : !!DWORD(m_regAllSize);
+                m_bAllSize = bPortable ? g_iniFile.GetBoolValue(L"global", L"AllSize", false) : !!DWORD(m_regAllSize);
                 m_sizeCmp = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"SizeCombo", L"0")) : (int)DWORD(m_regSizeCombo);
             }
             if (!m_bDateLimitC)
@@ -367,7 +371,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_Date2.dwHighDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2High", L"0"), nullptr, 10) : DWORD(m_regDate2High);
             }
 
-            m_bUseRegex = (bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"UseRegex", L"0")) : DWORD(m_regUseRegex)) ? true : false;
+            m_bUseRegex = (bPortable ? g_iniFile.GetBoolValue(L"global", L"UseRegex", false) : DWORD(m_regUseRegex));
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
@@ -585,6 +589,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
             return 0;
+        }
+        break;
+    case WM_DPICHANGED:
+        {
+            const RECT* rect = reinterpret_cast<RECT*>(lParam);
+            SetWindowPos(*this, NULL, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+            ::RedrawWindow(*this, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
         }
         break;
     case WM_SETCURSOR:
@@ -1175,7 +1186,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             CSettingsDlg dlgSettings(*this);
             dlgSettings.DoModal(hResource, IDD_SETTINGS, *this);
-            m_regBackupInFolder.read();
+            if (bPortable)
+                m_bCreateBackupInFolders = g_iniFile.GetBoolValue(L"settings", L"backupinfolder", false);
+            else {
+                m_regBackupInFolder.read();
+                m_bCreateBackupInFolders = !!DWORD(m_regBackupInFolder);
+            }
             CLanguage::Instance().TranslateWindow(*this); // re-apply, cause update problems?
         }
         break;
@@ -2350,14 +2366,14 @@ bool CSearchDlg::SaveSettings()
     {
         g_iniFile.SetValue(L"global", L"searchfor", m_searchString.c_str());
         g_iniFile.SetValue(L"global", L"searchpath", m_searchpath.c_str());
-        g_iniFile.SetValue(L"global", L"IncludeSystem", m_bIncludeSystem ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"IncludeHidden", m_bIncludeHidden ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"IncludeBinary", m_bIncludeBinary ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"CreateBackup", m_bCreateBackup ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"UTF8", m_bUTF8 ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"CaseSensitive", m_bCaseSensitive ? L"1" : L"0");
-        g_iniFile.SetValue(L"global", L"DotMatchesNewline", m_bDotMatchesNewline ? L"1" : L"0");
+        g_iniFile.SetBoolValue(L"global", L"IncludeSystem", m_bIncludeSystem);
+        g_iniFile.SetBoolValue(L"global", L"IncludeHidden", m_bIncludeHidden);
+        g_iniFile.SetBoolValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders);
+        g_iniFile.SetBoolValue(L"global", L"IncludeBinary", m_bIncludeBinary);
+        g_iniFile.SetBoolValue(L"global", L"CreateBackup", m_bCreateBackup);
+        g_iniFile.SetBoolValue(L"global", L"UTF8", m_bUTF8);
+        g_iniFile.SetBoolValue(L"global", L"CaseSensitive", m_bCaseSensitive);
+        g_iniFile.SetBoolValue(L"global", L"DotMatchesNewline", m_bDotMatchesNewline);
         g_iniFile.SetValue(L"global", L"pattern", m_patternregex.c_str());
         g_iniFile.SetValue(L"global", L"ExcludeDirsPattern", m_excludedirspatternregex.c_str());
         g_iniFile.SetValue(L"global", L"DateLimit", std::to_wstring(m_DateLimit).c_str());
@@ -2366,7 +2382,7 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"Date2Low", std::to_wstring(m_Date2.dwLowDateTime).c_str());
         g_iniFile.SetValue(L"global", L"Date2High", std::to_wstring(m_Date2.dwHighDateTime).c_str());
         if (!m_showContentSet)
-            g_iniFile.SetValue(L"global", L"showcontent", m_showContent ? L"1" : L"0");
+            g_iniFile.SetBoolValue(L"global", L"showcontent", m_showContent);
     }
     else
     {
@@ -2693,7 +2709,7 @@ DWORD CSearchDlg::SearchThread()
                         m_bCaseSensitive,
                         m_bDotMatchesNewline,
                         m_bCreateBackup,
-                        (DWORD(m_regBackupInFolder) != 0),
+                        m_bCreateBackupInFolders,
                         m_bReplace
                     };
 
@@ -3104,7 +3120,7 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                         std::wstring backupfile = sinfoPtr->filepath + _T(".bak");
                         if (searchFlags.bBackupInFolder)
                         {
-                            std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
+                            std::wstring backupFolder = searchRoot + L"\\grepWinNP3_backup\\";
                             backupFolder += sinfoPtr->filepath.substr(searchRoot.size() + 1);
                             backupFolder = CPathUtils::GetParentDirectory(backupFolder);
                             CPathUtils::CreateRecursiveDirectory(backupFolder);
@@ -3300,7 +3316,7 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                         {
                             if (searchFlags.bBackupInFolder)
                             {
-                                std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
+                                std::wstring backupFolder = searchRoot + L"\\grepWinNP3_backup\\";
                                 backupFolder += sinfoPtr->filepath.substr(searchRoot.size() + 1);
                                 backupFolder = CPathUtils::GetParentDirectory(backupFolder);
                                 CPathUtils::CreateRecursiveDirectory(backupFolder);
