@@ -3491,7 +3491,7 @@ grepWin_t;
 
 static grepWin_t grepWinIniSettings[13] = 
 {
-  { L"onlyone",           L"true" },
+  { L"onlyone",           L"1" },
   { L"AllSize",           L"1" },
   { L"Size",              L"2000" },
   { L"CaseSensitive",     L"0" },
@@ -3596,10 +3596,10 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
       IniSectionSetString(globalSection, L"editorcmd", tchTemp);
 
       // [settings]
-      int const iEscClose = IniSectionSetInt(L"settings", L"escclose", (Settings.EscFunction == 2) ? 1 : 0);
-      IniSectionSetInt(L"settings", L"escclose", iEscClose);
-      int const iBackupFolder = IniSectionSetInt(L"settings", L"backupinfolder", 1);
-      IniSectionSetInt(L"settings", L"backupinfolder", iBackupFolder);
+      bool const bEscClose = IniSectionGetBool(L"settings", L"escclose", (Settings.EscFunction == 2));
+      IniSectionSetBool(L"settings", L"escclose", bEscClose);
+      bool const bBackupInFolder = IniSectionGetBool(L"settings", L"backupinfolder", true);
+      IniSectionSetBool(L"settings", L"backupinfolder", bBackupInFolder);
 
       // search directory
       WCHAR tchSearchDir[MAX_PATH] = { L'\0' };
