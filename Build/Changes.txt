@@ -93,6 +93,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Don't overwrite grepWinNP3's user settings for backup in folders (GRE).
 - Common base font inheritance for other styles.
 - "grepWinNP3" crash on invalid file path (GRE).
 - "vcxproj" should use the latest installed SDK.
