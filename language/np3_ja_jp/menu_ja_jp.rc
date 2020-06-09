@@ -492,6 +492,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "元に戻す(&U)",                               IDM_EDIT_UNDO
         MENUITEM "やり直し(&R)",                                IDM_EDIT_REDO
+        MENUITEM SEPARATOR
         MENUITEM "切り取り(&t)",                                IDM_EDIT_CUT
         MENUITEM "コピー(&C)",                                  IDM_EDIT_COPY
         MENUITEM "貼り付け(&P)",                                IDM_EDIT_PASTE
