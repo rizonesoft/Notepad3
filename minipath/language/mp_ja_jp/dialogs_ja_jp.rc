@@ -241,7 +241,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "Quickview/お気に入りの設定",IDC_STATIC,40,15,122,8
-    LTEXT           "既定のQuick Viewプログラム名(&D) (Ctrl+Q):",IDC_STATIC,10,41,158,8
+    LTEXT           "既定の Quick View プログラム名(&D) (Ctrl+Q):",IDC_STATIC,10,41,158,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "お気に入りフォルダ(&F) (F11):",IDC_STATIC,10,76,76,8
