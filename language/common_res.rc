@@ -57,7 +57,7 @@ IDI_MUI_STYLES          ICON                    "Preferences.ico"
 // Bitmap
 //
 
-IDR_RIZBITMAP           BITMAP                  "rizonesoft_t.bmp"
+IDR_RIZBITMAP           BITMAP                  "rizonesoft.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
