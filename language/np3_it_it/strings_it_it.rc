@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Vista focalizzata"
     IDT_VIEW_CHASING_DOCTAIL "Monitoraggio log"
     IDT_VIEW_PIN_ON_TOP      "Sempre in primo piano"
+    IDT_GREP_WIN_TOOL        "Cerca nei file"
 END
 
 STRINGTABLE
