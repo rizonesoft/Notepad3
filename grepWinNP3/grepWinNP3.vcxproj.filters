@@ -338,7 +338,7 @@
     <None Include="translationsNP3\Nederlands (Nederland) [nl-NL].lang">
       <Filter>translationsNP3</Filter>
     </None>
-    <None Include="translationsNP3\Polski (Polska)Polski [pl-PL].lang">
+    <None Include="translationsNP3\Polski (Polska) [pl-PL].lang">
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\Português (Portugal) [pt-PT].lang">

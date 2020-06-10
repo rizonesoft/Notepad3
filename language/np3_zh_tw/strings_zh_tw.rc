@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "僅顯示符合行"
     IDT_VIEW_CHASING_DOCTAIL "日誌監控"
     IDT_VIEW_PIN_ON_TOP      "總是置頂"
+    IDT_GREP_WIN_TOOL        "在檔案中查詢"
 END
 
 STRINGTABLE

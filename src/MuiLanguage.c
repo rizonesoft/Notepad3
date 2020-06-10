@@ -82,7 +82,7 @@ grepWinLng_t grepWinLangResName[] =
   { MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN),                    L".\\lng\\gwLng\\日本語 （日本）[ja-JP].lang"},
   { MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN),                              L".\\lng\\gwLng\\한국어 (대한민국) [ko-KR].lang"},
   { MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH),                                L".\\lng\\gwLng\\Nederlands (Nederland) [nl-NL].lang"},
-  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),                       L".\\lng\\gwLng\\Polski (Polska)Polski [pl-PL].lang"},
+  { MAKELANGID(LANG_POLISH, SUBLANG_POLISH_POLAND),                       L".\\lng\\gwLng\\Polski (Polska) [pl-PL].lang"},
   { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN),            L".\\lng\\gwLng\\Português Brasileiro (Brasil) [pt-BR].lang"},
   { MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE),                      L".\\lng\\gwLng\\Português (Portugal) [pt-PT].lang"},
   { MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA),                     L".\\lng\\gwLng\\Русский (Pоссия) [ru-RU].lang"},

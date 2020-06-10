@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Växla vy"
     IDT_VIEW_CHASING_DOCTAIL "Övervaknigslogg"
     IDT_VIEW_PIN_ON_TOP      "Alltid överst"
+    IDT_GREP_WIN_TOOL        "Sök i filer"
 END
 
 STRINGTABLE
