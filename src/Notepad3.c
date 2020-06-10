@@ -175,6 +175,8 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
+  { 29,IDT_GREP_WIN_TOOL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
@@ -201,12 +203,12 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
 };
-static const int NUMTOOLBITMAPS = 29;
+static const int NUMTOOLBITMAPS = 30;
 
 // ----------------------------------------------------------------------------
 
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
+const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
+const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //=============================================================================
 
@@ -6262,6 +6264,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_EDIT_REPLACE:
       if (IsCmdEnabled(hwnd,IDM_EDIT_REPLACE))
         SendWMCommand(hwnd, IDM_EDIT_REPLACE);
+      else
+        SimpleBeep();
+      break;
+
+
+    case IDT_GREP_WIN_TOOL:
+      if (IsCmdEnabled(hwnd, IDM_GREP_WIN_SEARCH))
+        SendWMCommand(hwnd, IDM_GREP_WIN_SEARCH);
       else
         SimpleBeep();
       break;

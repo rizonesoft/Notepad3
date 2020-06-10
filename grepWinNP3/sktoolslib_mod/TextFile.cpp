@@ -561,9 +561,9 @@ std::wstring CTextFile::GetLineString(long lineNumber) const
 
     long startpos = 0;
     if (lineNumber > 1)
-        startpos = (long)linepositions[lineNumber - 2];
+        startpos = (long)linepositions[lineNumber - 2] + 1;
     std::wstring endchars(L"\n\0", 2);
-    size_t       endpos = textcontent.find_first_of(endchars, startpos + 1);
+    size_t       endpos = textcontent.find_first_of(endchars, startpos);
     std::wstring line;
     if (endpos != std::wstring::npos)
         line = std::wstring(textcontent.begin() + startpos, textcontent.begin() + endpos);
