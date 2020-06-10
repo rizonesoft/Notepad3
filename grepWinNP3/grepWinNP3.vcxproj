@@ -307,7 +307,6 @@
     <None Include="translationsNP3\Magyar (Magyarország) [hu-HU].lang" />
     <None Include="translationsNP3\Nederlands (Nederland) [nl-NL].lang" />
     <None Include="translationsNP3\Polski (Polska)Polski [pl-PL].lang" />
-    <None Include="translationsNP3\Português (Brasil) [pt-BR].lang" />
     <None Include="translationsNP3\Português (Portugal) [pt-PT].lang" />
     <None Include="translationsNP3\Português Brasileiro (Brasil) [pt-BR].lang" />
     <None Include="translationsNP3\Slovenčina (Slovensko) [sk-SK].lang" />

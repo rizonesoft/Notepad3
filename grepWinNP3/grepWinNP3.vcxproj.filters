@@ -311,6 +311,9 @@
     <None Include="translationsNP3\Afrikaans (Suid-Afrika) [af-ZA].lang">
       <Filter>translationsNP3</Filter>
     </None>
+    <None Include="translationsNP3\Bahasa Indonesia (Indonesia) [id-ID].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
     <None Include="translationsNP3\Deutsch (Deutschland) [de-DE].lang">
       <Filter>translationsNP3</Filter>
     </None>
@@ -338,7 +341,10 @@
     <None Include="translationsNP3\Polski (Polska)Polski [pl-PL].lang">
       <Filter>translationsNP3</Filter>
     </None>
-    <None Include="translationsNP3\Português (Brasil) [pt-BR].lang">
+    <None Include="translationsNP3\Português (Portugal) [pt-PT].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Português Brasileiro (Brasil) [pt-BR].lang">
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\Slovenčina (Slovensko) [sk-SK].lang">
@@ -347,13 +353,22 @@
     <None Include="translationsNP3\Svenska (Sverige) [sv-SE].lang">
       <Filter>translationsNP3</Filter>
     </None>
+    <None Include="translationsNP3\Tiếng Việt (Việt Nam) [vi-VN].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
     <None Include="translationsNP3\Türkçe (Türkiye) [tr-TR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Ελληνικά (Ελλάδα) [el-GR].lang">
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\Беларуская (Беларусь) [be-BY].lang">
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\Русский (Pоссия) [ru-RU].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\हिन्दी (भारत) [hi-IN].lang">
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\한국어 (대한민국) [ko-KR].lang">
@@ -363,24 +378,6 @@
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\简体中文 （中国） [zh-CN].lang">
-      <Filter>translationsNP3</Filter>
-    </None>
-    <None Include="translationsNP3\Bahasa Indonesia (Indonesia) [id-ID].lang">
-      <Filter>translationsNP3</Filter>
-    </None>
-    <None Include="translationsNP3\Português (Portugal) [pt-PT].lang">
-      <Filter>translationsNP3</Filter>
-    </None>
-    <None Include="translationsNP3\Português Brasileiro (Brasil) [pt-BR].lang">
-      <Filter>translationsNP3</Filter>
-    </None>
-    <None Include="translationsNP3\Tiếng Việt (Việt Nam) [vi-VN].lang">
-      <Filter>translationsNP3</Filter>
-    </None>
-    <None Include="translationsNP3\Ελληνικά (Ελλάδα) [el-GR].lang">
-      <Filter>translationsNP3</Filter>
-    </None>
-    <None Include="translationsNP3\हिन्दी (भारत) [hi-IN].lang">
       <Filter>translationsNP3</Filter>
     </None>
     <None Include="translationsNP3\繁體中文 （台灣） [zh-TW].lang">
