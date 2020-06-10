@@ -19,7 +19,7 @@
     <Filter Include="sktoolslib_mod">
       <UniqueIdentifier>{9e218bba-f3cf-4af8-b8b0-538877ab3ae2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="translations">
+    <Filter Include="translationsNP3">
       <UniqueIdentifier>{5fd907ec-eafb-47ec-aa1a-6c84ea9ec37e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -307,65 +307,85 @@
     <None Include="src\Resources\grepWinNP3.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="translations\Afrikaans (Suid-Afrika) [af-ZA].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Deutsch (Deutschland) [de-DE].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\English (United Kingdom) [en-GB].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\English (United States) [en-US].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Español (España) [es-ES].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Français (France) [fr-FR].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Italiano (Italia) [it-IT].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Magyar (Magyarország) [hu-HU].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Nederlands (Nederland) [nl-NL].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Polski (Polska)Polski [pl-PL].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Português (Brasil) [pt-BR].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Slovenčina (Slovensko) [sk-SK].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Svenska (Sverige) [sv-SE].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Türkçe (Türkiye) [tr-TR].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Беларуская (Беларусь) [be-BY].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\Русский (Pоссия) [ru-RU].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\한국어 (대한민국) [ko-KR].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\日本語 （日本） [ja-JP].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="translations\简体中文 （中国） [zh-CN].lang">
-      <Filter>translations</Filter>
-    </None>
-    <None Include="packages.config" />
     <None Include=".editorconfig" />
+    <None Include="translationsNP3\Afrikaans (Suid-Afrika) [af-ZA].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Deutsch (Deutschland) [de-DE].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\English (United Kingdom) [en-GB].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\English (United States) [en-US].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Español (España) [es-ES].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Français (France) [fr-FR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Italiano (Italia) [it-IT].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Magyar (Magyarország) [hu-HU].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Nederlands (Nederland) [nl-NL].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Polski (Polska)Polski [pl-PL].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Português (Brasil) [pt-BR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Slovenčina (Slovensko) [sk-SK].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Svenska (Sverige) [sv-SE].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Türkçe (Türkiye) [tr-TR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Беларуская (Беларусь) [be-BY].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Русский (Pоссия) [ru-RU].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\한국어 (대한민국) [ko-KR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\日本語 （日本） [ja-JP].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\简体中文 （中国） [zh-CN].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Bahasa Indonesia (Indonesia) [id-ID].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Português (Portugal) [pt-PT].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Português Brasileiro (Brasil) [pt-BR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Tiếng Việt (Việt Nam) [vi-VN].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\Ελληνικά (Ελλάδα) [el-GR].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\हिन्दी (भारत) [hi-IN].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
+    <None Include="translationsNP3\繁體中文 （台灣） [zh-TW].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\Resources\grepWin.rc">
