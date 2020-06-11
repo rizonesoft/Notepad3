@@ -169,7 +169,7 @@ public:
 	XYPOSITION right;
 	XYPOSITION bottom;
 
-	constexpr explicit PRectangle(XYPOSITION left_=0, XYPOSITION top_=0, XYPOSITION right_=0, XYPOSITION bottom_ = 0) noexcept :
+	constexpr explicit PRectangle(XYPOSITION left_ = 0, XYPOSITION top_ = 0, XYPOSITION right_ = 0, XYPOSITION bottom_ = 0) noexcept :
 		left(left_), top(top_), right(right_), bottom(bottom_) {}
 
 	static constexpr PRectangle FromInts(int left_, int top_, int right_, int bottom_) noexcept {
@@ -189,8 +189,8 @@ public:
 	}
 	bool ContainsWholePixel(Point pt) const noexcept {
 		// Does the rectangle contain all of the pixel to left/below the point
-		return (pt.x >= left) && ((pt.x+1) <= right) &&
-			(pt.y >= top) && ((pt.y+1) <= bottom);
+		return (pt.x >= left) && ((pt.x + 1) <= right) &&
+			(pt.y >= top) && ((pt.y + 1) <= bottom);
 	}
 	bool Contains(PRectangle rc) const noexcept {
 		return (rc.left >= left) && (rc.right <= right) &&
@@ -387,16 +387,16 @@ public:
 
 class IScreenLine {
 public:
-	virtual std::string_view Text() const = 0;
-	virtual size_t Length() const = 0;
+	virtual std::string_view Text() const noexcept = 0;
+	virtual size_t Length() const noexcept = 0;
 	virtual size_t RepresentationCount() const = 0;
-	virtual XYPOSITION Width() const = 0;
-	virtual XYPOSITION Height() const = 0;
-	virtual XYPOSITION TabWidth() const = 0;
-	virtual XYPOSITION TabWidthMinimumPixels() const = 0;
-	virtual const Font *FontOfPosition(size_t position) const = 0;
-	virtual XYPOSITION RepresentationWidth(size_t position) const = 0;
-	virtual XYPOSITION TabPositionAfter(XYPOSITION xPosition) const = 0;
+	virtual XYPOSITION Width() const noexcept = 0;
+	virtual XYPOSITION Height() const noexcept = 0;
+	virtual XYPOSITION TabWidth() const noexcept = 0;
+	virtual XYPOSITION TabWidthMinimumPixels() const noexcept = 0;
+	virtual const Font *FontOfPosition(size_t position) const noexcept = 0;
+	virtual XYPOSITION RepresentationWidth(size_t position) const noexcept = 0;
+	virtual XYPOSITION TabPositionAfter(XYPOSITION xPosition) const noexcept = 0;
 };
 
 struct Interval {
@@ -426,12 +426,12 @@ public:
 	static Surface *Allocate(int technology);
 
 	virtual void Init(WindowID wid) noexcept = 0;
-	virtual void Init(SurfaceID sid, WindowID wid) noexcept = 0;
+	virtual void Init(SurfaceID sid, WindowID wid, bool printing = false) noexcept = 0;
 	virtual void InitPixMap(int width, int height, Surface *surface_, WindowID wid) noexcept = 0;
 
 	virtual void Release() noexcept = 0;
 	virtual bool Initialised() const noexcept = 0;
-	virtual void PenColour(ColourDesired fore)=0;
+	virtual void PenColour(ColourDesired fore) = 0;
 	virtual int LogPixelsY() const noexcept = 0;
 	virtual int DeviceHeightFont(int points) const noexcept = 0;
 	virtual void SCICALL MoveTo(int x_, int y_) noexcept = 0;
@@ -442,7 +442,7 @@ public:
 	virtual void SCICALL FillRectangle(PRectangle rc, Surface &surfacePattern) = 0;
 	virtual void SCICALL RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back) = 0;
 	virtual void SCICALL AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
-		ColourDesired outline, int alphaOutline, int flags)=0;
+		ColourDesired outline, int alphaOutline, int flags) = 0;
 	enum class GradientOptions {
 		leftToRight, topToBottom
 	};
@@ -468,7 +468,7 @@ public:
 	virtual void FlushCachedState() noexcept = 0;
 
 	virtual void SetUnicodeMode(bool unicodeMode_) noexcept = 0;
-	virtual void SetDBCSMode(int codePage) noexcept = 0;
+	//~virtual void SetDBCSMode(int codePage) noexcept = 0;
 	virtual void SetBidiR2L(bool bidiR2L_) noexcept = 0;
 };
 
@@ -479,6 +479,7 @@ public:
 class Window {
 protected:
 	WindowID wid;
+
 public:
 	Window() noexcept : wid(nullptr), cursorLast(cursorInvalid) {}
 	Window(const Window &source) = delete;
@@ -511,6 +512,7 @@ public:
 	};
 	void SetCursor(Cursor curs) noexcept;
 	PRectangle SCICALL GetMonitorRect(Point pt) const noexcept;
+
 private:
 	Cursor cursorLast;
 };
@@ -530,7 +532,7 @@ struct ListBoxEvent {
 
 class IListBoxDelegate {
 public:
-	virtual void ListNotify(ListBoxEvent *plbe)=0;
+	virtual void ListNotify(ListBoxEvent *plbe) = 0;
 };
 
 class ListBox : public Window {
@@ -545,20 +547,20 @@ public:
 	virtual void SetAverageCharWidth(int width) noexcept = 0;
 	virtual void SetVisibleRows(int rows) noexcept = 0;
 	virtual int GetVisibleRows() const noexcept = 0;
-	virtual PRectangle GetDesiredRect()=0;
+	virtual PRectangle GetDesiredRect() = 0;
 	virtual int CaretFromEdge() const = 0;
 	virtual void Clear() noexcept = 0;
 	virtual void Append(const char *s, int type = -1) const noexcept = 0;
 	virtual int Length() const noexcept = 0;
-	virtual void Select(int n)=0;
+	virtual void Select(int n) = 0;
 	virtual int GetSelection() const noexcept = 0;
 	virtual int Find(const char *prefix) const noexcept = 0;
-	virtual void GetValue(int n, char *value, int len) const = 0;
-	virtual void RegisterImage(int type, const char *xpm_data)=0;
+	virtual void GetValue(int n, char *value, int len) const noexcept = 0;
+	virtual void RegisterImage(int type, const char *xpm_data) = 0;
 	virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) = 0;
 	virtual void ClearRegisteredImages() noexcept = 0;
 	virtual void SetDelegate(IListBoxDelegate *lbDelegate) noexcept = 0;
-	virtual void SetList(const char* list, char separator, char typesep)=0;
+	virtual void SetList(const char* list, char separator, char typesep) = 0;
 };
 
 /**
@@ -584,23 +586,23 @@ public:
 	virtual ~DynamicLibrary() = default;
 
 	/// @return Pointer to function "name", or NULL on failure.
-	virtual Function FindFunction(const char* name) = 0;
+	virtual Function FindFunction(const char *name) = 0;
 
 	/// @return true if the library was loaded successfully.
 	virtual bool IsValid() = 0;
 
 	/// @return An instance of a DynamicLibrary subclass with "modulePath" loaded.
-	static DynamicLibrary* Load(const char* modulePath);
+	static DynamicLibrary *Load(const char *modulePath);
 };
 
 #if defined(__clang__)
-# if __has_feature(attribute_analyzer_noreturn)
-#  define CLANG_ANALYZER_NORETURN __attribute__((analyzer_noreturn))
-# else
-#  define CLANG_ANALYZER_NORETURN
-# endif
+	#if __has_feature(attribute_analyzer_noreturn)
+		#define CLANG_ANALYZER_NORETURN __attribute__((analyzer_noreturn))
+	#else
+		#define CLANG_ANALYZER_NORETURN
+	#endif
 #else
-# define CLANG_ANALYZER_NORETURN
+	#define CLANG_ANALYZER_NORETURN
 #endif
 
 /**

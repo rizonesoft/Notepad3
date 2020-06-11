@@ -1077,5 +1077,5 @@ typedef CKeyList<CRegStdString> CRegStdStringList;
 inline void CRegStdCompilerWarningDummyFunction()
 {
     std::wstring(CRegStdString(_T("TEST"))).clear();
-    CRegStdDWORD(_T("TEST"));
+    CRegStdDWORD test(_T("TEST"));
 }

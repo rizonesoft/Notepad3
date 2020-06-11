@@ -44,12 +44,22 @@
 #endif
 #endif
 
-
+#ifndef __cplusplus
 extern "C" DPI_T GetWindowDPI(HWND hwnd);
 extern "C" int  SystemMetricsForDpi(int nIndex, unsigned dpi);
 extern "C" BOOL DpiAdjustWindowRect(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi);
+#else
+DPI_T GetWindowDPI(HWND hwnd);
+int  SystemMetricsForDpi(int nIndex, unsigned dpi);
+BOOL DpiAdjustWindowRect(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi);
+#endif // !__cplusplus
+
 
 namespace Scintilla {
+
+#ifndef USER_DEFAULT_SCREEN_DPI
+#define USER_DEFAULT_SCREEN_DPI		96
+#endif
 
 extern void Platform_Initialise(void *hInstance) noexcept;
 extern void Platform_Finalise(bool fromDllMain) noexcept;
@@ -61,7 +71,7 @@ constexpr RECT RectFromPRectangle(PRectangle prc) noexcept {
 }
 
 constexpr POINT POINTFromPoint(Point pt) noexcept {
-	return POINT{ static_cast<LONG>(pt.x), static_cast<LONG>(pt.y) };
+	return POINT { static_cast<LONG>(pt.x), static_cast<LONG>(pt.y) };
 }
 
 constexpr Point PointFromPOINT(POINT pt) noexcept {
@@ -84,7 +94,7 @@ inline void SetWindowPointer(HWND hWnd, void *ptr) noexcept {
 	::SetWindowLongPtr(hWnd, 0, reinterpret_cast<LONG_PTR>(ptr));
 }
 
-// Find a function in a DLL and convert to a function pointer.
+/// Find a function in a DLL and convert to a function pointer.
 /// This avoids undefined and conditionally defined behaviour.
 template<typename T>
 inline T DLLFunction(HMODULE hModule, LPCSTR lpProcName) noexcept {
@@ -105,6 +115,25 @@ inline T DLLFunction(HMODULE hModule, LPCSTR lpProcName) noexcept {
 template<typename T>
 inline T DLLFunctionEx(LPCWSTR lpDllName, LPCSTR lpProcName) noexcept {
 	return DLLFunction<T>(::GetModuleHandleW(lpDllName), lpProcName);
+}
+
+// Release an IUnknown* and set to nullptr.
+// While IUnknown::Release must be noexcept, it isn't marked as such so produces
+// warnings which are avoided by the catch.
+template <class T>
+inline void ReleaseUnknown(T *&ppUnknown) noexcept {
+	if (ppUnknown) {
+#if 1
+		ppUnknown->Release();
+#else
+		try {
+			ppUnknown->Release();
+		} catch (...) {
+			// Never occurs
+		}
+#endif
+		ppUnknown = nullptr;
+	}
 }
 
 inline UINT DpiForWindow(WindowID wid) noexcept {

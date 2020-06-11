@@ -67,6 +67,7 @@ class SelectionText {
 public:
 	bool rectangular;
 	bool lineCopy;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	bool asBinary;
 	int codePage;
 	int characterSet;
@@ -76,6 +77,7 @@ public:
 		rectangular = false;
 		lineCopy = false;
 		asBinary = false;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		codePage = 0;
 		characterSet = 0;
 	}
@@ -248,7 +250,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	CaretPolicies caretPolicies;
 
-	CaretPolicy   visiblePolicy;
+	CaretPolicy visiblePolicy;
 
 	Sci::Position searchAnchor;
 
@@ -413,10 +415,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void ClearDocumentStyle();
 	virtual void Cut();
 	void PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Position len);
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	virtual void Copy(bool asBinary) = 0;
 	virtual void CopyAllowLine();
 	virtual bool CanPaste();
 	virtual void Paste(bool asBinary) = 0;
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void Clear();
 	virtual void SelectAll();
 	virtual void Undo();
@@ -647,7 +651,7 @@ public:
 			surf.reset(Surface::Allocate(technology != -1 ? technology : ed->technology));
 			surf->Init(ed->wMain.GetID());
 			surf->SetUnicodeMode(SC_CP_UTF8 == ed->CodePage());
-			surf->SetDBCSMode(ed->CodePage());
+			//~surf->SetDBCSMode(ed->CodePage());
 			surf->SetBidiR2L(ed->BidirectionalR2L());
 		}
 	}
@@ -656,7 +660,7 @@ public:
 			surf.reset(Surface::Allocate(technology != -1 ? technology : ed->technology));
 			surf->Init(sid, ed->wMain.GetID());
 			surf->SetUnicodeMode(SC_CP_UTF8 == ed->CodePage());
-			surf->SetDBCSMode(ed->CodePage());
+			//~surf->SetDBCSMode(ed->CodePage());
 			surf->SetBidiR2L(ed->BidirectionalR2L());
 		}
 	}

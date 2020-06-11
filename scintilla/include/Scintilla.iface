@@ -1189,13 +1189,13 @@ fun void EmptyUndoBuffer=2175(,)
 fun void Undo=2176(,)
 
 # Cut the selection to the clipboard.
-fun void Cut=2177(,)
+fun void Cut=2177(bool asBinary,)
 
 # Copy the selection to the clipboard.
-fun void Copy=2178(,)
+fun void Copy=2178(bool asBinary,)
 
 # Paste the contents of the clipboard into the document replacing the selection.
-fun void Paste=2179(,)
+fun void Paste=2179(bool asBinary,)
 
 # Clear the selection.
 fun void Clear=2180(,)
@@ -1658,6 +1658,7 @@ fun void LinesSplit=2289(int pixelWidth,)
 
 # Set one of the colours used as a chequerboard pattern in the fold margin
 fun void SetFoldMarginColour=2290(bool useSetting, colour back)
+
 # Set the other colour used as a chequerboard pattern in the fold margin
 fun void SetFoldMarginHiColour=2291(bool useSetting, colour fore)
 
@@ -3651,6 +3652,7 @@ val SCE_ERR_VALUE=21
 val SCE_ERR_GCC_INCLUDED_FROM=22
 val SCE_ERR_ESCSEQ=23
 val SCE_ERR_ESCSEQ_UNKNOWN=24
+val SCE_ERR_GCC_EXCERPT=25
 val SCE_ERR_ES_BLACK=40
 val SCE_ERR_ES_RED=41
 val SCE_ERR_ES_GREEN=42

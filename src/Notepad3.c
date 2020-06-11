@@ -1275,7 +1275,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
     SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
-  //~UpdateWindowLayoutForDPI(Globals.hwndMain, 0, 0, 0, 0);
+  //~UpdateWindowLayoutForDPI(Globals.hwndMain);
 
   SET_NP3_DLG_ICON_SMALL(Globals.hwndMain);
   SET_NP3_DLG_ICON_BIG(Globals.hwndMain);
@@ -2560,43 +2560,27 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam); //MainWndDPI.x = LOWORD(wParam); //MainWndDPI.y = HIWORD(wParam);
   UNUSED(lParam); 
+
+  DPI_T dpi;
+  dpi.x = LOWORD(wParam);
+  dpi.y = HIWORD(wParam);
+
+  const RECT* const rc = (RECT*)lParam;
 
   DocPos const pos = SciCall_GetCurrentPos();
 
-#if 0
-  char buf[128];
-  sprintf(buf, "WM_DPICHANGED: dpi=%u,%u  ppi=%u,%u\n", Globals.CurrentDPI.x, Globals.CurrentDPI.y, Globals.CurrentPPI.x, Globals.CurrentPPI.y);
-  SciCall_InsertText(0, buf);
-#endif
+  //~UpdateWindowLayoutForDPI(hwnd);
+  SetWindowPos(hwnd, NULL, rc->left, rc->top, rc->right - rc->left, rc->bottom - rc->top, SWP_NOZORDER | SWP_NOACTIVATE);
 
-  //RECT* const rc = (RECT*)lParam;
-  UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
+  SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 
-  Style_ResetCurrentLexer(Globals.hwndEdit);
-
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  MsgThemeChanged(hwnd, wParam, lParam);
 
   SciCall_GotoPos(pos);
   Sci_ScrollToCurrentLine();
-
-  if (Flags.bLargeFileLoaded) {
-    EditDoVisibleStyling();
-  }
-  else {
-    EditDoStyling(0, -1);
-  }
-  MarkAllOccurrences(0, false);
-
-  EditUpdateVisibleIndicators();
-
-  UpdateUI();
-
-  return 0;
+    
+  return !0;
 }
 
 
@@ -2649,7 +2633,12 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   CreateBars(hwnd,Globals.hInstance);
   SendWMSize(hwnd, NULL);
 
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  Style_ResetCurrentLexer(Globals.hwndEdit);
+
+  if (FocusedView.HideNonMatchedLines) {
+    EditToggleView(Globals.hwndEdit);
+  }
+
   MarkAllOccurrences(0, false);
 
   if (Flags.bLargeFileLoaded) {
@@ -2658,6 +2647,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   else {
     EditDoStyling(0, -1);
   }
+
+  EditUpdateVisibleIndicators();
 
   UpdateUI();
   UpdateToolbar();
@@ -7131,6 +7122,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         //}
         HandlePosChange();
         UpdateToolbar();
+        UpdateMarginWidth();
         UpdateStatusbar(false);
       }
       else if (iUpd & SC_UPDATE_V_SCROLL)

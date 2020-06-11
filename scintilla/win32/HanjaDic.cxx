@@ -22,7 +22,7 @@ interface IRadical;
 interface IHanja;
 interface IStrokes;
 
-typedef enum { HANJA_UNKNOWN = 0, HANJA_K0 = 1, HANJA_K1 = 2, HANJA_OTHER = 3 } HANJA_TYPE;
+enum HANJA_TYPE { HANJA_UNKNOWN = 0, HANJA_K0 = 1, HANJA_K1 = 2, HANJA_OTHER = 3 };
 
 interface IHanjaDic : IUnknown {
 	STDMETHOD(OpenMainDic)();
@@ -65,12 +65,12 @@ private:
 public:
 	IHanjaDic *HJinterface;
 
-	HanjaDic() : HJinterface(nullptr) {
+	HanjaDic() noexcept : HJinterface(nullptr) {
 		hr = CLSIDFromProgID(OLESTR("mshjdic.hanjadic"), &CLSID_HanjaDic);
 		if (SUCCEEDED(hr)) {
 			hr = CoCreateInstance(CLSID_HanjaDic, nullptr,
-					CLSCTX_INPROC_SERVER, IID_IHanjaDic,
-					(LPVOID *)& HJinterface);
+				CLSCTX_INPROC_SERVER, IID_IHanjaDic,
+				(LPVOID *)& HJinterface);
 			if (SUCCEEDED(hr)) {
 				hr = HJinterface->OpenMainDic();
 			}
@@ -84,11 +84,11 @@ public:
 		}
 	}
 
-	bool HJdictAvailable() {
+	bool HJdictAvailable() const noexcept {
 		return SUCCEEDED(hr);
 	}
 
-	bool IsHanja(int hanja) {
+	bool IsHanja(int hanja) noexcept {
 		HANJA_TYPE hanjaType;
 		hr = HJinterface->GetHanjaType(static_cast<unsigned short>(hanja), &hanjaType);
 		if (SUCCEEDED(hr)) {
@@ -98,16 +98,16 @@ public:
 	}
 };
 
-int GetHangulOfHanja(wchar_t *inout) {
+int GetHangulOfHanja(wchar_t *inout) noexcept {
 	// Convert every hanja to hangul.
 	// Return the number of characters converted.
 	int changed = 0;
 	HanjaDic dict;
 	if (dict.HJdictAvailable()) {
-		const size_t len = wcslen(inout);
-		wchar_t conv[UTF8MaxBytes] = {0};
+		const size_t len = lstrlenW(inout);
+		wchar_t conv[UTF8MaxBytes] = { 0 };
 		BSTR bstrHangul = SysAllocString(conv);
-		for (size_t i=0; i<len; i++) {
+		for (size_t i = 0; i < len; i++) {
 			if (dict.IsHanja(static_cast<int>(inout[i]))) { // Pass hanja only!
 				conv[0] = inout[i];
 				BSTR bstrHanja = SysAllocString(conv);
