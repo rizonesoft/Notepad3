@@ -7131,6 +7131,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         //}
         HandlePosChange();
         UpdateToolbar();
+        UpdateMarginWidth();
         UpdateStatusbar(false);
       }
       else if (iUpd & SC_UPDATE_V_SCROLL)
