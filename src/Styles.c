@@ -4147,7 +4147,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
     case WM_SIZE:
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return !0;
 
 #if 0
@@ -4671,7 +4671,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
   if (hDlg != INVALID_HANDLE_VALUE) {
-    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
+    UpdateWindowLayoutForDPI(hDlg);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;
@@ -4762,7 +4762,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_DPICHANGED:
       {
-        UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+        UpdateWindowLayoutForDPI(hwnd);
       }
       return !0;
 

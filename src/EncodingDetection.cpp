@@ -13,7 +13,6 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-
 #if !defined(WINVER)
 #define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
 #endif
@@ -27,19 +26,15 @@
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
-#include <shlwapi.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
-#include <math.h>
+#include <string_view>
 
 //~#include <future>                 // async detection
 
-#include "resource.h"
-
 extern "C" {
-#include "TypeDefs.h"
 #include "Helpers.h"
 #include "Encoding.h"
 #include "SciCall.h"
@@ -50,6 +45,8 @@ extern "C" {
 
 // UCHARDET - Universal Character Detection (by Mozilla)
 #include "uchardet/src/uchardet.h"
+
+#include "resource.h"
 
 //=============================================================================
 

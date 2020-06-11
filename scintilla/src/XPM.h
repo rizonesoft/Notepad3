@@ -66,7 +66,7 @@ public:
 	int CountBytes() const noexcept;
 	const unsigned char *Pixels() const noexcept;
 	void SetPixel(int x, int y, ColourDesired colour, int alpha) noexcept;
-	static void BGRAFromRGBA(unsigned char* pixelsBGRA, const unsigned char* pixelsRGBA, size_t count) noexcept;
+	static void BGRAFromRGBA(unsigned char *pixelsBGRA, const unsigned char *pixelsRGBA, size_t count) noexcept;
 };
 
 /**

@@ -155,8 +155,8 @@ public:
 	int annotationVisible;
 	int annotationStyleOffset;
 	bool braceHighlightIndicatorSet;
-	int braceHighlightIndicator;
 	bool braceBadLightIndicatorSet;
+	int braceHighlightIndicator;
 	int braceBadLightIndicator;
 	int edgeState;
 	EdgeProperties theEdge;
@@ -213,7 +213,6 @@ public:
 	bool IsCaretVisible() const noexcept;
 	bool DrawCaretInsideSelection(bool inOverstrike, bool imeCaretBlockOverride) const noexcept;
 	CaretShape CaretShapeForMode(bool inOverstrike) const noexcept;
-
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	bool ViewStyle::ZoomIn() noexcept;
 	bool ViewStyle::ZoomOut() noexcept;

@@ -46,7 +46,7 @@ public:
 			bset[i] = other.bset[i];
 		}
 	}
-	CharacterSet &operator=(CharacterSet &&other) {
+	CharacterSet &operator=(CharacterSet &&other) noexcept {
 		if (this != &other) {
 			delete []bset;
 			size = other.size;

@@ -132,7 +132,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hDlg);
       return true;
 
     case WM_COMMAND:
@@ -257,7 +257,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hDlg);
       return true;
 
     case WM_COMMAND:

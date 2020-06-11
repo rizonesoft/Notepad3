@@ -5850,7 +5850,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    UpdateWindowLayoutForDPI(hwnd);
     return !0; // further processing
   
   
@@ -6614,7 +6614,7 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
             (LPARAM) lpefr);
 
   if (hDlg != INVALID_HANDLE_VALUE) {
-    UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
+    UpdateWindowLayoutForDPI(hDlg);
     ShowWindow(hDlg, SW_SHOW);
   }
   CoUninitialize();
@@ -7912,7 +7912,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return true;
 
 
@@ -8057,7 +8057,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return true;
 
     case WM_DESTROY:
@@ -8235,7 +8235,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return true;
 
     case WM_COMMAND:
@@ -8319,7 +8319,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM w
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return true;
 
     case WM_COMMAND:
@@ -8406,7 +8406,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
       return false;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return true;
 
     case WM_COMMAND:
@@ -8596,7 +8596,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
       return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd);
       return true;
 
     case WM_COMMAND:
