@@ -852,24 +852,24 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             break;
           }
         }
-        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Locale: %s (CP:'%s')", 
+        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Locale -> %s (CP:'%s')", 
           wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding = '%s'", Encoding_GetLabel(Encoding_Current(CPI_GET)));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_Current(CPI_GET)));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution = %i x %i [pix]", ResX, ResY);
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution -> %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         DPI_T dpi = Scintilla_GetCurrentDPI(hwnd);
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI = %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI -> %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology = '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology -> '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom = %i%%.", SciCall_GetZoom());
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom -> %i%%.", SciCall_GetZoom());
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ?
@@ -880,7 +880,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
                                                        L"\n- User is not in Admin-Group"));
 
         Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), wchBuf, COUNTOF(wchBuf));
-        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Current Lexer: '%s'", wchBuf);
+        StringCchPrintf(wchBuf2, ARRAYSIZE(wchBuf2), L"\n- Current Lexer -> '%s'", wchBuf);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
