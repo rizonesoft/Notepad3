@@ -57,10 +57,6 @@ BOOL DpiAdjustWindowRect(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned
 
 namespace Scintilla {
 
-#ifndef USER_DEFAULT_SCREEN_DPI
-#define USER_DEFAULT_SCREEN_DPI		96
-#endif
-
 extern void Platform_Initialise(void *hInstance) noexcept;
 extern void Platform_Finalise(bool fromDllMain) noexcept;
 

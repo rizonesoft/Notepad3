@@ -3949,7 +3949,7 @@ int Editor::KeyDownWithModifiers(int key, int modifiers, bool *consumed) {
 	DwellEnd(false);
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if (hoverIndicatorPos != Sci::invalidPosition)
-		if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
+		if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::Cursor::cursorHand); }
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const int msg = kmap.Find(key, modifiers);
 	if (msg) {
@@ -4432,7 +4432,7 @@ Window::Cursor Editor::GetMarginCursor(Point pt) const noexcept {
 			return static_cast<Window::Cursor>(m.cursor);
 		x += m.width;
 	}
-	return Window::cursorReverseArrow;
+	return Window::Cursor::cursorReverseArrow;
 }
 
 void Editor::TrimAndSetSelection(Sci::Position currentPos_, Sci::Position anchor_) {
@@ -4526,7 +4526,7 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 	SetHoverIndicatorPoint(pt);
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if (hoverIndicatorPos != Sci::invalidPosition)
-		if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
+		if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::Cursor::cursorHand); }
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	//Platform::DebugPrintf("ButtonDown %d %d = %d alt=%d %d\n", curTime, lastClickTime, curTime - lastClickTime, alt, inDragDrop);
 	ptMouseLast = pt;
@@ -4873,7 +4873,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 
 		if (hotSpotClickPos != INVALID_POSITION && PositionFromLocation(pt, true, true) != hotSpotClickPos) {
 			if (inDragDrop == ddNone) {
-				DisplayCursor(Window::cursorText);
+				DisplayCursor(Window::Cursor::cursorText);
 			}
 			hotSpotClickPos = INVALID_POSITION;
 		}
@@ -4888,18 +4888,18 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 		}
 		// Display regular (drag) cursor over selection
 		if (PointInSelection(pt) && !SelectionEmpty()) {
-			DisplayCursor(Window::cursorArrow);
+			DisplayCursor(Window::Cursor::cursorArrow);
 		} else {
 			SetHoverIndicatorPoint(pt);
 			if (PointIsHotspot(pt)) {
-				DisplayCursor(Window::cursorHand);
+				DisplayCursor(Window::Cursor::cursorHand);
 				SetHotSpotRange(&pt);
 			} else {
 				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 				if (hoverIndicatorPos != Sci::invalidPosition)
-					if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::cursorHand); }
+					if (modifiers & (SCI_ALT | SCI_CTRL)) { DisplayCursor(Window::Cursor::cursorHand); }
 				else
-					DisplayCursor(Window::cursorText);
+					DisplayCursor(Window::Cursor::cursorText);
 				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				SetHotSpotRange(nullptr);
 			}
@@ -4930,7 +4930,7 @@ void Editor::ButtonUpWithModifiers(Point pt, unsigned int curTime, int modifiers
 		if (PointInSelMargin(pt)) {
 			DisplayCursor(GetMarginCursor(pt));
 		} else {
-			DisplayCursor(Window::cursorText);
+			DisplayCursor(Window::Cursor::cursorText);
 			SetHotSpotRange(nullptr);
 		}
 		ptMouseLast = pt;
@@ -7919,7 +7919,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_SETCURSOR:
 		cursorMode = static_cast<int>(wParam);
-		DisplayCursor(Window::cursorText);
+		DisplayCursor(Window::Cursor::cursorText);
 		break;
 
 	case SCI_GETCURSOR:

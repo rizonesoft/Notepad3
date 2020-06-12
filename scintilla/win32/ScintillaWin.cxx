@@ -865,7 +865,7 @@ void ScintillaWin::DisplayCursor(Window::Cursor c) noexcept {
 	if (cursorMode != SC_CURSORNORMAL) {
 		c = static_cast<Window::Cursor>(cursorMode);
 	}
-	if (c == Window::cursorReverseArrow) {
+	if (c == Window::Cursor::cursorReverseArrow) {
 		::SetCursor(reverseArrowCursor.Load(dpi));
 	} else {
 		wMain.SetCursor(c);
@@ -1562,7 +1562,7 @@ sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) const {
 
 Window::Cursor ScintillaWin::ContextCursor() {
 	if (inDragDrop == ddDragging) {
-		return Window::cursorUp;
+		return Window::Cursor::cursorUp;
 	} else {
 		// Display regular (drag) cursor over selection
 		POINT pt;
@@ -1571,13 +1571,13 @@ Window::Cursor ScintillaWin::ContextCursor() {
 			if (PointInSelMargin(PointFromPOINT(pt))) {
 				return GetMarginCursor(PointFromPOINT(pt));
 			} else if (PointInSelection(PointFromPOINT(pt)) && !SelectionEmpty()) {
-				return Window::cursorArrow;
+				return Window::Cursor::cursorArrow;
 			} else if (PointIsHotspot(PointFromPOINT(pt))) {
-				return Window::cursorHand;
+				return Window::Cursor::cursorHand;
 			}
 		}
 	}
-	return Window::cursorText;
+	return Window::Cursor::cursorText;
 }
 
 #if SCI_EnablePopupMenu
