@@ -132,8 +132,8 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     return true;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hDlg);
-      return true;
+      UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
+      return !0;
 
     case WM_COMMAND:
 
@@ -150,7 +150,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             }
             InvalidateRect(hDlg, NULL, TRUE);
           }
-          return true;
+          return !0;
         break;
 
         case IDOK:
@@ -223,10 +223,9 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         break;
 
     }
-
-    return false;
-
+    return 0;
 }
+
 //
 // helper for setting password when reading a file
 // the complication in this version is that the incoming text is unicode. We deal
@@ -254,11 +253,11 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT3 ) );
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT3));
       }
-      return true;
+      return !0;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hDlg);
-      return true;
+      UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
+      return !0;
 
     case WM_COMMAND:
 
@@ -273,8 +272,9 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
               SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
             }
             InvalidateRect(hDlg, NULL, TRUE);
-            return true;
           }
+          return !0;
+
         case IDOK:
           {
               bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
@@ -295,8 +295,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
               }
               EndDialog(hDlg, IDOK);
           }
-          return true;
-          break;
+          return !0;
 
         case IDCANCEL:
             EndDialog(hDlg, IDCANCEL);
@@ -304,7 +303,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         }
         break;
     }
-    return false;
+    return 0;
 }
 
 

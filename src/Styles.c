@@ -4146,8 +4146,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       return false;
 
     case WM_SIZE:
+      return !0;
+
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return !0;
 
 #if 0
@@ -4671,7 +4673,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
   if (hDlg != INVALID_HANDLE_VALUE) {
-    UpdateWindowLayoutForDPI(hDlg);
+    UpdateWindowLayoutForDPI(hDlg, NULL, NULL);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;
@@ -4754,16 +4756,12 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
 
     case WM_DESTROY:
-      {
         ResizeDlg_Destroy(hwnd, &s_cxStyleSelectDlg, &s_cyStyleSelectDlg);
-      }
       return 0;
 
 
     case WM_DPICHANGED:
-      {
-        UpdateWindowLayoutForDPI(hwnd);
-      }
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return !0;
 
 
@@ -4782,7 +4780,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         EndDeferWindowPos(hdwp);
     
         ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_STYLELIST), 0, LVSCW_AUTOSIZE_USEHEADER);
-    }
+      }
       return !0;
 
 
