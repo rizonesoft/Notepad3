@@ -669,7 +669,7 @@ void SurfaceGDI::Init(WindowID wid) noexcept {
 	hdc = ::CreateCompatibleDC({});
 	hdcOwned = true;
 	::SetTextAlign(hdc, TA_BASELINE);
-	logPixelsY = DpiForWindow(wid);
+	logPixelsY = DpiYForWindow(wid);
 }
 
 void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) noexcept {
@@ -677,7 +677,7 @@ void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) noexcept {
 	hdc = static_cast<HDC>(sid);
 	::SetTextAlign(hdc, TA_BASELINE);
 	//const bool printing = (::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY);
-	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiForWindow(wid);
+	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiYForWindow(wid);
 }
 
 void SurfaceGDI::InitPixMap(int width, int height, Surface *surface_, WindowID wid) noexcept {
@@ -692,7 +692,7 @@ void SurfaceGDI::InitPixMap(int width, int height, Surface *surface_, WindowID w
 	::SetTextAlign(hdc, TA_BASELINE);
 	SetUnicodeMode(psurfOther->unicodeMode);
 	//~SetDBCSMode(psurfOther->codePage);
-	logPixelsY = DpiForWindow(wid);
+	logPixelsY = DpiYForWindow(wid);
 }
 
 void SurfaceGDI::PenColour(ColourDesired fore) noexcept {
@@ -1343,19 +1343,19 @@ HRESULT SurfaceD2D::FlushDrawing() const noexcept {
 
 void SurfaceD2D::Init(WindowID wid) noexcept {
 	Release();
-	logPixelsY = DpiForWindow(wid);
+	logPixelsY = DpiYForWindow(wid);
 }
 
 void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) noexcept {
 	Release();
 	// printing always using GDI
-	logPixelsY = DpiForWindow(wid);
+	logPixelsY = DpiYForWindow(wid);
 	pRenderTarget = static_cast<ID2D1RenderTarget *>(sid);
 }
 
 void SurfaceD2D::InitPixMap(int width, int height, Surface *surface_, WindowID wid) noexcept {
 	Release();
-	logPixelsY = DpiForWindow(wid);
+	logPixelsY = DpiYForWindow(wid);
 	SurfaceD2D *psurfOther = down_cast<SurfaceD2D *>(surface_);
 	// Should only ever be called with a SurfaceD2D, not a SurfaceGDI
 	PLATFORM_ASSERT(psurfOther);

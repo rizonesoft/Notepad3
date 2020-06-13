@@ -132,10 +132,8 @@ inline void ReleaseUnknown(T *&ppUnknown) noexcept {
 	}
 }
 
-inline UINT DpiForWindow(WindowID wid) noexcept {
-	//~return GetWindowDPI(HwndFromWindowID(wid)).y;
-	// retrieving the logPixelsY per window may double the Font Size calculation
-	return USER_DEFAULT_SCREEN_DPI; // DPI_AWARENESS set by manifest
+inline UINT DpiYForWindow(WindowID wid) noexcept {
+	return GetWindowDPI(HwndFromWindowID(wid)).y;
 }
 
 HCURSOR LoadReverseArrowCursor(DPI_T dpi) noexcept;

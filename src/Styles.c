@@ -3687,11 +3687,11 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
       }
       _SetCurrentFontSize(fBaseFontSize);
     }
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, float2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
   }
   else if (bInitDefault) {
     _SetBaseFontSize(fBaseFontSize);
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(hwnd, fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, float2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
   }
 
   // Character Set
@@ -4768,15 +4768,13 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     case WM_SIZE:
       {
         ResizeDlg_Size(hwnd, lParam, &cxClient, &cyClient);
-
-        HDWP hdwp;
-        hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, cxClient, cyClient, SWP_NOSIZE);
+        HDWP hdwp = BeginDeferWindowPos(6);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, cyClient, SWP_NOMOVE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_DEFAULTSCHEME, cxClient, cyClient, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_AUTOSELECT, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, cxClient, cyClient, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, cxClient, cyClient, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
     
         ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_STYLELIST), 0, LVSCW_AUTOSIZE_USEHEADER);
