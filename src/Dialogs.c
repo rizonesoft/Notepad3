@@ -259,7 +259,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     return true;
 
 
@@ -460,7 +460,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     return true;
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     return true;
 
   case WM_COMMAND:
@@ -712,11 +712,16 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     break;
 
   case WM_SIZE:
+    return !0;
+
   case WM_DPICHANGED:
     {
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
 
-      DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+      DPI_T dpi;
+      dpi.x = LOWORD(wParam);
+      dpi.y = HIWORD(wParam);
+
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
 
       //~~// get current richedit box format
@@ -896,9 +901,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       EndDialog(hwnd, IDOK);
       break;
     }
-    return true;
+    return !0;
   }
-  return false;
+  return 0;
 }
 
 
@@ -926,7 +931,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -1108,7 +1113,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -1306,7 +1311,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -1471,7 +1476,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     break;
 
 
@@ -1718,7 +1723,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -2073,7 +2078,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     return true;
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     return true;
 
   case WM_COMMAND:
@@ -2154,7 +2159,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     return true;
 
 
@@ -2257,7 +2262,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     return true;
 
 
@@ -2360,7 +2365,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
   case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd);
+    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
     return true;
 
 
@@ -2479,7 +2484,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -2612,7 +2617,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -2759,7 +2764,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -2954,7 +2959,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return true;
 
 
@@ -4297,6 +4302,33 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
 }
 
 
+//=============================================================================
+//
+//  GetCurrentPPI()
+//  (font size) points per inch
+//
+DPI_T GetCurrentPPI(HWND hwnd) {
+  HDC const hDC = GetDC(hwnd);
+  DPI_T ppi;
+  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
+  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
+  ReleaseDC(hwnd, hDC);
+  return ppi;
+}
+
+/*
+if (!bSucceed) {
+  NONCLIENTMETRICS ncm;
+  ncm.cbSize = sizeof(NONCLIENTMETRICS);
+  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
+  if (ncm.lfMessageFont.lfHeight < 0)
+  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
+  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
+  if (*wSize == 0)
+    *wSize = 8;
+}*/
+
+
 /*
 
 Themed Dialogs
@@ -4496,42 +4528,20 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
 }
 
 
-
-
-//=============================================================================
-//
-//  GetCurrentPPI()
-//  (font size) points per inch
-//
-DPI_T GetCurrentPPI(HWND hwnd) {
-  HDC const hDC = GetDC(hwnd);
-  DPI_T ppi;
-  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
-  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
-  ReleaseDC(hwnd, hDC);
-  return ppi;
-}
-
-/*
-if (!bSucceed) {
-  NONCLIENTMETRICS ncm;
-  ncm.cbSize = sizeof(NONCLIENTMETRICS);
-  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
-  if (ncm.lfMessageFont.lfHeight < 0)
-  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
-  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
-  if (*wSize == 0)
-    *wSize = 8;
-}*/
-
-
 //=============================================================================
 //
 //  UpdateWindowLayoutForDPI()
 //
-void UpdateWindowLayoutForDPI(HWND hWnd)
+void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI)
 {
-  DPI_T const wndDPI = Scintilla_GetCurrentDPI(hWnd);
+  UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE; //~ | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION | SWP_FRAMECHANGED
+  if (pRC) {
+    SetWindowPos(hWnd, NULL, pRC->left, pRC->top, (pRC->right - pRC->left), (pRC->bottom - pRC->top), uWndFlags);
+    //~InvalidateRect(hWnd, NULL, TRUE);
+    return;
+  }
+ 
+  DPI_T const wndDPI = pDPI ? *pDPI : Scintilla_GetCurrentDPI(hWnd);
 
   RECT rc;
   GetWindowRect(hWnd, &rc);
@@ -4543,9 +4553,7 @@ void UpdateWindowLayoutForDPI(HWND hWnd)
   int dpiScaledWidth = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
   int dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
 
-  SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight,
-               SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION | SWP_FRAMECHANGED);
-
+  SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight, uWndFlags);
   //~InvalidateRect(hWnd, NULL, TRUE);
 }
 

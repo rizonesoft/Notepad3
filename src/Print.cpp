@@ -503,7 +503,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       break;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       break;
 
     case WM_COMMAND:
