@@ -152,8 +152,8 @@ before_package:
 
 # scripts to run after build
 after_build:
-#  - 7z a Notepad3_%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Output\%CONFIGURATION%\Notepad3.exe
-#  - appveyor PushArtifact Notepad3_%APPVEYOR_BUILD_VERSION%.zip
+  - 7z a Notepad3_%APPVEYOR_BUILD_VERSION%.zip .\Bin\**\*.exe .\Bin\**\lng
+  - appveyor PushArtifact Notepad3_%APPVEYOR_BUILD_VERSION%.zip
  
 # to run your custom scripts instead of automatic MSBuild
 build_script:
@@ -201,7 +201,7 @@ after_test:
 
 # Artifact paths are relative to C:\projects\notepad3\
 artifacts:
-  - path: bin\**\*.exe
+#  - path: bin\**\*.exe
 #  - name: All
 
 #deploy:
