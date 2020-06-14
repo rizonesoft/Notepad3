@@ -175,6 +175,8 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
+  { 29,IDT_GREP_WIN_TOOL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+  { 0,0,0,BTNS_SEP,{0},0,0 },
   { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 0,0,0,BTNS_SEP,{0},0,0 },
   { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
@@ -201,12 +203,12 @@ static TBBUTTON  s_tbbMainWnd[] = {
   { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
   { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
 };
-static const int NUMTOOLBITMAPS = 29;
+static const int NUMTOOLBITMAPS = 30;
 
 // ----------------------------------------------------------------------------
 
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
+const WCHAR* const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
+const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //=============================================================================
 
@@ -1273,7 +1275,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
     SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
-  //~UpdateWindowLayoutForDPI(Globals.hwndMain, 0, 0, 0, 0);
+  //~UpdateWindowLayoutForDPI(Globals.hwndMain, NULL, NULL);
 
   SET_NP3_DLG_ICON_SMALL(Globals.hwndMain);
   SET_NP3_DLG_ICON_BIG(Globals.hwndMain);
@@ -2558,43 +2560,24 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  UNUSED(wParam); //MainWndDPI.x = LOWORD(wParam); //MainWndDPI.y = HIWORD(wParam);
-  UNUSED(lParam); 
+  //DPI_T dpi;
+  //dpi.x = LOWORD(wParam);
+  //dpi.y = HIWORD(wParam);
+  UNUSED(wParam);
+  //const RECT* const rc = (RECT*)lParam;
 
   DocPos const pos = SciCall_GetCurrentPos();
 
-#if 0
-  char buf[128];
-  sprintf(buf, "WM_DPICHANGED: dpi=%u,%u  ppi=%u,%u\n", Globals.CurrentDPI.x, Globals.CurrentDPI.y, Globals.CurrentPPI.x, Globals.CurrentPPI.y);
-  SciCall_InsertText(0, buf);
-#endif
+  UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
 
-  //RECT* const rc = (RECT*)lParam;
-  UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
-  UpdateToolbar();
-  UpdateStatusbar(true);
-  UpdateMarginWidth();
+  SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 
-  Style_ResetCurrentLexer(Globals.hwndEdit);
-
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  MsgThemeChanged(hwnd, wParam, lParam);
 
   SciCall_GotoPos(pos);
   Sci_ScrollToCurrentLine();
-
-  if (Flags.bLargeFileLoaded) {
-    EditDoVisibleStyling();
-  }
-  else {
-    EditDoStyling(0, -1);
-  }
-  MarkAllOccurrences(0, false);
-
-  EditUpdateVisibleIndicators();
-
-  UpdateUI();
-
-  return 0;
+    
+  return !0;
 }
 
 
@@ -2647,7 +2630,12 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   CreateBars(hwnd,Globals.hInstance);
   SendWMSize(hwnd, NULL);
 
-  if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
+  Style_ResetCurrentLexer(Globals.hwndEdit);
+
+  if (FocusedView.HideNonMatchedLines) {
+    EditToggleView(Globals.hwndEdit);
+  }
+
   MarkAllOccurrences(0, false);
 
   if (Flags.bLargeFileLoaded) {
@@ -2656,6 +2644,8 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   else {
     EditDoStyling(0, -1);
   }
+
+  EditUpdateVisibleIndicators();
 
   UpdateUI();
   UpdateToolbar();
@@ -6267,6 +6257,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDT_GREP_WIN_TOOL:
+      if (IsCmdEnabled(hwnd, IDM_GREP_WIN_SEARCH))
+        SendWMCommand(hwnd, IDM_GREP_WIN_SEARCH);
+      else
+        SimpleBeep();
+      break;
+
+
     case IDT_VIEW_WORDWRAP:
       if (IsCmdEnabled(hwnd,IDM_VIEW_WORDWRAP))
         SendWMCommand(hwnd, IDM_VIEW_WORDWRAP);
@@ -6622,6 +6620,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 //
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation)
 {
+  if (position < 0) { return false; }
+
   //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
   CancelCallTip();
 
@@ -6631,6 +6631,8 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     DocPos const firstPos = SciCall_IndicatorStart(INDIC_NP3_HYPERLINK, position);
     DocPos const lastPos = SciCall_IndicatorEnd(INDIC_NP3_HYPERLINK, position);
     DocPos const length = min_p(lastPos - firstPos, INTERNET_MAX_URL_LENGTH);
+
+    if (length < 4) { return false; }
 
     const char* pszText = (const char*)SciCall_GetRangePointer(firstPos, length);
 
@@ -7121,6 +7123,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
         //}
         HandlePosChange();
         UpdateToolbar();
+        UpdateMarginWidth();
         UpdateStatusbar(false);
       }
       else if (iUpd & SC_UPDATE_V_SCROLL)

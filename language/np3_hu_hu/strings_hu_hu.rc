@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Fókuszált nézet"
     IDT_VIEW_CHASING_DOCTAIL "Naplófájl követése"
     IDT_VIEW_PIN_ON_TOP      "Mindig felül"
+    IDT_GREP_WIN_TOOL        "Keresés fájlokban"
 END
 
 STRINGTABLE

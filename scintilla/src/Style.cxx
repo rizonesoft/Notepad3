@@ -40,7 +40,9 @@ void FontAlias::ClearFont() noexcept {
 bool FontSpecification::operator==(const FontSpecification &other) const noexcept {
 	return fontName == other.fontName &&
 	       weight == other.weight &&
+	       // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	       stretch == other.stretch &&
+	       // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	       italic == other.italic &&
 	       size == other.size &&
 	       characterSet == other.characterSet &&
@@ -52,8 +54,10 @@ bool FontSpecification::operator<(const FontSpecification &other) const noexcept
 		return fontName < other.fontName;
 	if (weight != other.weight)
 		return weight < other.weight;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if (stretch != other.stretch)
 		return stretch < other.stretch;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	if (italic != other.italic)
 		return italic == false;
 	if (size != other.size)

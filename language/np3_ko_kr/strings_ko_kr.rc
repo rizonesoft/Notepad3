@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "집중"
     IDT_VIEW_CHASING_DOCTAIL "열람(&M)"
     IDT_VIEW_PIN_ON_TOP      "항상 위에"
+    IDT_GREP_WIN_TOOL        "Search in Files"
 END
 
 STRINGTABLE

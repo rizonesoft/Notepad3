@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Zamerať zobrazenie"
     IDT_VIEW_CHASING_DOCTAIL "Monitorovať logovanie"
     IDT_VIEW_PIN_ON_TOP      "Vždy na vrchu"
+    IDT_GREP_WIN_TOOL        "Vyhľadávať v súboroch"
 END
 
 STRINGTABLE

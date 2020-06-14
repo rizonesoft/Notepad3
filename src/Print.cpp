@@ -16,6 +16,24 @@
 *                                                                             *
 *******************************************************************************/
 
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#endif
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
+#include <windows.h>
+
+#include <commctrl.h>
+#include <commdlg.h>
+#include <string_view>
+
 extern "C" {
 #include "Helpers.h"
 #include "MuiLanguage.h"
@@ -23,22 +41,7 @@ extern "C" {
 #include "SciCall.h"
 }
 
-#include <commctrl.h>
-#include <shellapi.h>
-#include <shlwapi.h>
-#include <commdlg.h>
-#ifdef __cplusplus
-#include <cstring>
-#include <string_view>
-#else
-#include <string.h>
-#endif
-#include "Platform.h"
-#include "Scintilla.h"
-#include "SciLexer.h"
-
 #include "resource.h"
-
 
 extern "C" float Style_GetBaseFontSize();
 
@@ -500,7 +503,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       break;
 
     case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       break;
 
     case WM_COMMAND:

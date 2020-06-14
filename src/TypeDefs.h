@@ -32,7 +32,6 @@
 
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-
 #include <windows.h>
 
 #define STRSAFE_NO_CB_FUNCTIONS

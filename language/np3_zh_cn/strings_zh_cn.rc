@@ -92,6 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "仅显示匹配行"
     IDT_VIEW_CHASING_DOCTAIL "日志监控"
     IDT_VIEW_PIN_ON_TOP      "总是置顶"
+    IDT_GREP_WIN_TOOL        "在文件中查找"
 END
 
 STRINGTABLE

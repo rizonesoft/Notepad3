@@ -1,3 +1,5 @@
+https://travis-ci.org/Microsoft/vscode-nls.svg?branch=master
+
 # vscode-nls
 
 # Header 1

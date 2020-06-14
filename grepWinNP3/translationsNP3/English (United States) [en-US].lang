@@ -65,6 +65,10 @@ msgstr ""
 msgid "/"
 msgstr ""
 
+#. Resource IDs: (1093)
+msgid ">>>"
+msgstr ""
+
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
 msgstr ""
@@ -190,6 +194,14 @@ msgstr ""
 msgid "Ext"
 msgstr ""
 
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr "Resultate exportieren"
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr "Resultate exportieren..."
+
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
 msgstr ""
@@ -224,6 +236,10 @@ msgstr ""
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
+msgstr ""
+
+#. Resource IDs: (161)
+msgid "Inverse search (NOT searchstring)"
 msgstr ""
 
 #. Resource IDs: (1019)
@@ -371,6 +387,10 @@ msgstr ""
 msgid "Search in"
 msgstr ""
 
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr ""
@@ -474,6 +494,18 @@ msgstr ""
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr ""
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr ""
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr ""
+
+#. Resource IDs: (167)
+msgid "include match line text"
 msgstr ""
 
 #. Resource IDs: (132)

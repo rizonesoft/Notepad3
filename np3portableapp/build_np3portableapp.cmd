@@ -86,6 +86,8 @@ if defined FILEVER set VERSION=%FILEVER%
 :: ---------------------------------------------------------------------------------------------------
 
 :: --- Prepare Build ---
+del /f /q "Notepad3Portable_*.paf.exe*"
+
 if exist "%NP3_PORTAPP_DIR%\Data" rmdir "%NP3_PORTAPP_DIR%\Data" /S /Q
 
 if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
@@ -167,7 +169,7 @@ copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" 
 
 :: ---------------------------------------------------------------------------------------------------
 
-:: Only fFor "Notepad3Portable_DLL" version
+:: Only for "Notepad3Portable_DLL" version
 :: Copy all current "Scintilla.dll" files
 if exist %NP3_WIN32_DIR%\Scintilla.dll (
     copy /B "%NP3_WIN32_DIR%\Scintilla.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
@@ -188,7 +190,7 @@ call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP
 call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
 call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
 
-del /F "%NP3_PORTAPP_INFO%_tmp.ini"
+del /f /q "%NP3_PORTAPP_INFO%_tmp.ini"
 
 :: ---------------------------------------------------------------------------------------------------
 
