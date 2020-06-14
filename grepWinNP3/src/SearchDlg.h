@@ -118,7 +118,7 @@ protected:
     bool                    MatchPath(LPCTSTR pathbuf);
     void                    AutoSizeAllColumns();
     int                     GetSelectedListIndex(int index);
-
+    bool                    FailedShowMessage(HRESULT hr);
 private:
     static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
     static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
