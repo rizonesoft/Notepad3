@@ -39,7 +39,7 @@ msgstr "%ld további találat"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Az útvonal nem létezik vagy nem elérhető!"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -160,7 +160,7 @@ msgstr "A pont új sorra illeszkedik"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Dupla kattintás egy sablon kiválasztásához"
+msgstr "Kattintson duplán egy sablon kiválasztásához"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -236,7 +236,7 @@ msgstr "Nyelv:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr ""
+msgstr "Keresés korlátozása"
 
 #. Resource IDs: (134)
 msgid "Line"
@@ -273,7 +273,7 @@ msgstr "Régebbi mint"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Mentés nélküli cseréléskor ne figyelmeztessen"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -341,7 +341,7 @@ msgstr "Relatív útvonal nem megengedett. Kérem, adjon meg abszolút útvonala
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Sablo &törlése"
+msgstr "Sablon &törlése"
 
 #. Resource IDs: (106)
 msgid "Replace string"
@@ -373,7 +373,7 @@ msgstr "Keresés ebben"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "KEresési eredmények"
+msgstr "Keresési eredmények"
 
 #. Resource IDs: (105)
 msgid "Search string"
