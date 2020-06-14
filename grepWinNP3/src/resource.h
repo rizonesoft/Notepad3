@@ -71,6 +71,13 @@
 #define IDS_FILEEXT                     158
 #define IDS_DARKMODE_TT                 159
 #define IDS_ERR_PATHNOTEXIST            160
+#define IDS_INVERSESEARCH               161
+#define IDS_SEARCHINFOUNDFILES          162
+#define IDS_EXPORT_TT                   163
+#define IDS_EXPORTTITLE                 164
+#define IDS_EXPORTPATHS                 165
+#define IDS_EXPORTMATCHLINENUMBER       166
+#define IDS_EXPORTMATCHLINECONTENT      167
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -158,6 +165,9 @@
 #define IDC_TEXT_NUMOFWORKER            1088
 #define IDC_BACKUPINFOLDER2             1089
 #define IDC_NOWARNINGIFNOBACKUP         1090
+#define IDC_INVERSESEARCH               1091
+#define IDC_SEARCHINFOUNDFILES          1092
+#define IDC_EXPORT                      1093
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775
@@ -168,9 +178,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        161
+#define _APS_NEXT_RESOURCE_VALUE        168
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1091
+#define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

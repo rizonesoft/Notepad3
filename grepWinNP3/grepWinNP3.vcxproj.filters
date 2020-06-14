@@ -144,6 +144,9 @@
     <ClCompile Include="sktoolslib_mod\DarkModeHelper.cpp">
       <Filter>sktoolslib_mod</Filter>
     </ClCompile>
+    <ClCompile Include="sktoolslib_mod\PreserveChdir.cpp">
+      <Filter>sktoolslib_mod</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AboutDlg.h">
@@ -286,6 +289,15 @@
     </ClInclude>
     <ClInclude Include="src\last\version.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\PreserveChdir.h">
+      <Filter>sktoolslib_mod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\COMPtrs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sktoolslib_mod\OnOutOfScope.h">
+      <Filter>sktoolslib_mod</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
