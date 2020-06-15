@@ -577,6 +577,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIGERR_PARSE_DEPTH_LIMIT_OVER                        -16
 #define ONIGERR_RETRY_LIMIT_IN_MATCH_OVER                     -17
 #define ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER                    -18
+#define ONIGERR_SUBEXP_CALL_LIMIT_IN_SEARCH_OVER              -19
 #define ONIGERR_DEFAULT_ENCODING_IS_NOT_SETTED                -21
 #define ONIGERR_SPECIFIED_ENCODING_CANT_CONVERT_TO_WIDE_CHAR  -22
 #define ONIGERR_FAIL_TO_INITIALIZE                            -23
@@ -934,6 +935,10 @@ ONIG_EXTERN
 int onig_set_capture_num_limit P_((int num));
 ONIG_EXTERN
 int onig_set_parse_depth_limit P_((unsigned int depth));
+ONIG_EXTERN
+unsigned long onig_get_subexp_call_limit_in_search P_((void));
+ONIG_EXTERN
+int onig_set_subexp_call_limit_in_search P_((unsigned long n));
 ONIG_EXTERN
 int onig_get_subexp_call_max_nest_level P_((void));
 ONIG_EXTERN

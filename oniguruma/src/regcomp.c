@@ -266,10 +266,12 @@ ops_free(regex_t* reg)
     case OP_BACKREF1: case OP_BACKREF2: case OP_BACKREF_N: case OP_BACKREF_N_IC:
       break;
     case OP_BACKREF_MULTI:      case OP_BACKREF_MULTI_IC:
+    case OP_BACKREF_CHECK:
+#ifdef USE_BACKREF_WITH_LEVEL
     case OP_BACKREF_WITH_LEVEL:
     case OP_BACKREF_WITH_LEVEL_IC:
-    case OP_BACKREF_CHECK:
     case OP_BACKREF_CHECK_WITH_LEVEL:
+#endif
       if (op->backref_general.num != 1)
         xfree(op->backref_general.ns);
       break;

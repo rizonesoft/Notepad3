@@ -1297,7 +1297,9 @@ static int
 i_free_callout_name_entry(st_callout_name_key* key, CalloutNameEntry* e,
                           void* arg ARG_UNUSED)
 {
-  xfree(e->name);
+  if (IS_NOT_NULL(e)) {
+    xfree(e->name);
+  }
   /*xfree(key->s); */ /* is same as e->name */
   xfree(key);
   xfree(e);
@@ -7695,10 +7697,12 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
 
         if (IS_CODE_DIGIT_ASCII(enc, c)
             || c == '-' || c == '+' || c == '<' || c == '\'') {
-          UChar* name_end;
-          int back_num;
+#ifdef USE_BACKREF_WITH_LEVEL
           int exist_level;
           int level;
+#endif
+          UChar* name_end;
+          int back_num;
           enum REF_NUM num_type;
           int is_enclosed;
 
@@ -7706,8 +7710,8 @@ parse_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           if (! is_enclosed)
             PUNFETCH;
           prev = p;
-          exist_level = 0;
 #ifdef USE_BACKREF_WITH_LEVEL
+          exist_level = 0;
           name_end = NULL_UCHARP; /* no need. escape gcc warning. */
           r = fetch_name_with_level(
                     (OnigCodePoint )(is_enclosed != 0 ? c : '('),
