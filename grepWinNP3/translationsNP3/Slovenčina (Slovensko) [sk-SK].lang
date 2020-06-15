@@ -65,6 +65,10 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1093)
+msgid ">>>"
+msgstr ">>>"
+
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
 msgstr "O grepWinNP3"
@@ -190,6 +194,14 @@ msgstr "Vylúčené riadky (Regex):"
 msgid "Ext"
 msgstr "Ext"
 
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr ""
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr ""
+
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
 msgstr "Zhoda názvov súborov:\nznak '|' oddelí viac vzorov text. zhody, na &začiatok '-' na vylúčenie"
@@ -225,6 +237,10 @@ msgstr "Zahrnúť systémové položky"
 #. Resource IDs: (153)
 msgid "Invalid path!"
 msgstr "Neplatná cesta!"
+
+#. Resource IDs: (161)
+msgid "Inverse search (NOT searchstring)"
+msgstr ""
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -371,6 +387,10 @@ msgstr "Rozlíšiť malé a veľké písmená"
 msgid "Search in"
 msgstr "Hľadať v"
 
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Výsledky hľadania"
@@ -475,6 +495,18 @@ msgstr "Nastavenie grepWinNP3"
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
 msgstr "podržte stlačenú klávesu Shift a vyhľadajte súbory, ktoré neobsahujú hľadaný reťazec"
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr ""
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr ""
+
+#. Resource IDs: (167)
+msgid "include match line text"
+msgstr ""
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
