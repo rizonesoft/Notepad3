@@ -65,6 +65,10 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1093)
+msgid ">>>"
+msgstr ">>>"
+
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
 msgstr "Over grepWinNP3"
@@ -190,6 +194,14 @@ msgstr "Exclusief mappen (Regex):"
 msgid "Ext"
 msgstr ""
 
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr ""
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr ""
+
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
 msgstr "Bestand komt overeen:\nGebruik '|' om meerdere patronen te schei&den, zet '-' vooraan om uit te sluiten"
@@ -225,6 +237,10 @@ msgstr "Inclusief System items"
 #. Resource IDs: (153)
 msgid "Invalid path!"
 msgstr "Ongeldig pad!"
+
+#. Resource IDs: (161)
+msgid "Inverse search (NOT searchstring)"
+msgstr ""
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -371,6 +387,10 @@ msgstr "HOOFD/klein gevoelig"
 msgid "Search in"
 msgstr "Zoeken in"
 
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Zoekresultaat"
@@ -474,6 +494,18 @@ msgstr "grepWinNP3 instellingen"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr ""
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr ""
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr ""
+
+#. Resource IDs: (167)
+msgid "include match line text"
 msgstr ""
 
 #. Resource IDs: (132)
