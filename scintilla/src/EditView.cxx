@@ -1951,6 +1951,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				rcUL.top = rcUL.top + vsDraw.maxAscent + 1;
 				rcUL.bottom = rcUL.top + 1;
 				surface->FillRectangle(rcUL, textFore);
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			}
 			// Added strike style, 2020-05-31
 			if (vsDraw.styles[styleMain].strike) {
@@ -1958,6 +1959,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				 rcUL.top = rcUL.top + std::ceil((rcUL.bottom - rcUL.top) / 2);
 				 rcUL.bottom = rcUL.top + 1;
 				 surface->FillRectangle(rcUL, textFore);
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			}
 		} else if (rcSegment.left > rcLine.right) {
 			break;
@@ -2137,7 +2139,7 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, PRectan
 			PLATFORM_ASSERT(pixmapLine->Initialised());
 		}
 		surface->SetUnicodeMode(SC_CP_UTF8 == model.pdoc->dbcsCodePage);
-		surface->SetDBCSMode(model.pdoc->dbcsCodePage);
+		//~surface->SetDBCSMode(model.pdoc->dbcsCodePage);
 		surface->SetBidiR2L(model.BidirectionalR2L());
 
 		const Point ptOrigin = model.GetVisibleOriginInMain();

@@ -217,6 +217,7 @@
     <ClCompile Include="sktoolslib_mod\hyperlink.cpp" />
     <ClCompile Include="sktoolslib_mod\Language.cpp" />
     <ClCompile Include="sktoolslib_mod\PathUtils.cpp" />
+    <ClCompile Include="sktoolslib_mod\PreserveChdir.cpp" />
     <ClCompile Include="sktoolslib_mod\RegHistory.cpp" />
     <ClCompile Include="sktoolslib_mod\Registry.cpp" />
     <ClCompile Include="sktoolslib_mod\StringUtils.cpp" />
@@ -261,7 +262,9 @@
     <ClInclude Include="sktoolslib_mod\hyperlink.h" />
     <ClInclude Include="sktoolslib_mod\Language.h" />
     <ClInclude Include="sktoolslib_mod\maxpath.h" />
+    <ClInclude Include="sktoolslib_mod\OnOutOfScope.h" />
     <ClInclude Include="sktoolslib_mod\PathUtils.h" />
+    <ClInclude Include="sktoolslib_mod\PreserveChdir.h" />
     <ClInclude Include="sktoolslib_mod\RegHistory.h" />
     <ClInclude Include="sktoolslib_mod\Registry.h" />
     <ClInclude Include="sktoolslib_mod\ResString.h" />
@@ -275,6 +278,7 @@
     <ClInclude Include="src\AboutDlg.h" />
     <ClInclude Include="src\Bookmarks.h" />
     <ClInclude Include="src\BookmarksDlg.h" />
+    <ClInclude Include="src\COMPtrs.h" />
     <ClInclude Include="src\InfoDlg.h" />
     <ClInclude Include="src\last\version.h" />
     <ClInclude Include="src\LineData.h" />

@@ -41,12 +41,7 @@ FontRealised::~FontRealised() {
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, const FontSpecification &fs) {
 	PLATFORM_ASSERT(fs.fontName);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//sizeZoomed = fs.size + zoomLevel * SC_FONT_SIZE_MULTIPLIER;
-	//if (sizeZoomed <= 2 * SC_FONT_SIZE_MULTIPLIER)	// Hangs if sizeZoomed <= 1
-	//	sizeZoomed = 2 * SC_FONT_SIZE_MULTIPLIER;
 	sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.stretch,  fs.italic, fs.extraFontFlag, technology, fs.characterSet);
 	font.Create(fp);
@@ -318,10 +313,10 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	selbarlight = Platform::ChromeHighlight();
 
 	indicatorsDynamic = std::any_of(indicators.cbegin(), indicators.cend(),
-		[](const Indicator &indicator) { return indicator.IsDynamic(); });
+		[](const Indicator &indicator) noexcept { return indicator.IsDynamic(); });
 
 	indicatorsSetFore = std::any_of(indicators.cbegin(), indicators.cend(),
-		[](const Indicator &indicator) { return indicator.OverridesTextFore(); });
+		[](const Indicator &indicator) noexcept { return indicator.OverridesTextFore(); });
 
 	maxAscent = 1;
 	maxDescent = 1;
@@ -336,10 +331,10 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 		lineOverlap = lineHeight;
 
 	someStylesProtected = std::any_of(styles.cbegin(), styles.cend(),
-		[](const Style &style) { return style.IsProtected(); });
+		[](const Style &style) noexcept { return style.IsProtected(); });
 
 	someStylesForceCase = std::any_of(styles.cbegin(), styles.cend(),
-		[](const Style &style) { return style.caseForce != Style::caseMixed; });
+		[](const Style &style) noexcept { return style.caseForce != Style::caseMixed; });
 
 	aveCharWidth = styles[STYLE_DEFAULT].aveCharWidth;
 	spaceWidth = styles[STYLE_DEFAULT].spaceWidth;
@@ -360,7 +355,9 @@ void ViewStyle::ReleaseAllExtendedStyles() noexcept {
 }
 
 int ViewStyle::AllocateExtendedStyles(int numberStyles) {
+  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	fontsValid = false;
+  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const int startRange = nextExtendedStyle;
 	nextExtendedStyle += numberStyles;
 	EnsureStyle(nextExtendedStyle);
@@ -377,7 +374,9 @@ void ViewStyle::EnsureStyle(size_t index) {
 }
 
 void ViewStyle::ResetDefaultStyle() {
+  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	fontsValid = false;
+  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	styles[STYLE_DEFAULT].Clear(ColourDesired(0,0,0),
 	        ColourDesired(0xff,0xff,0xff),
 	        Platform::DefaultFontSize() * SC_FONT_SIZE_MULTIPLIER, fontNames.Save(Platform::DefaultFont()),
@@ -386,7 +385,9 @@ void ViewStyle::ResetDefaultStyle() {
 }
 
 void ViewStyle::ClearStyles() {
+  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	fontsValid = false;
+  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	// Reset all styles to be like the default style
 	for (size_t i=0; i<styles.size(); i++) {
 		if (i != STYLE_DEFAULT) {
@@ -401,7 +402,9 @@ void ViewStyle::ClearStyles() {
 }
 
 void ViewStyle::SetStyleFontName(int styleIndex, const char *name) {
+  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	fontsValid = false;
+  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	styles[styleIndex].fontName = fontNames.Save(name);
 }
 
@@ -584,7 +587,6 @@ ViewStyle::CaretShape ViewStyle::CaretShapeForMode(bool inOverstrike) const noex
 }
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-
 bool ViewStyle::ZoomIn() noexcept {
 	if (zoomLevel < SC_MAX_ZOOM_LEVEL) {
 		int level = zoomLevel;
@@ -622,11 +624,12 @@ bool ViewStyle::ZoomOut() noexcept {
 	}
 	return false;
 }
-
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ViewStyle::AllocStyles(size_t sizeNew) {
+  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	fontsValid = false;
+  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	size_t i=styles.size();
 	styles.resize(sizeNew);
 	if (styles.size() > STYLE_DEFAULT) {

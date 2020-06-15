@@ -157,7 +157,7 @@ int Document::AddRef() {
 
 // Decrease reference count and return its previous value.
 // Delete the document if reference count reaches zero.
-int SCI_METHOD Document::Release() {
+int SCI_METHOD Document::Release() noexcept {
 	const int curRefCount = --refCount;
 	if (curRefCount == 0)
 		delete this;
@@ -175,6 +175,13 @@ void Document::InsertLine(Sci::Line line) {
 	for (const std::unique_ptr<PerLine> &pl : perLineData) {
 		if (pl)
 			pl->InsertLine(line);
+	}
+}
+
+void Document::InsertLines(Sci::Line line, Sci::Line lines) {
+	for (const auto &pl : perLineData) {
+		if (pl)
+			pl->InsertLines(line, lines);
 	}
 }
 
@@ -377,7 +384,7 @@ int Document::MarkerHandleFromLine(Sci::Line line, int which) const noexcept {
 	return Markers()->HandleFromLine(line, which);
 }
 
-Sci_Position SCI_METHOD Document::LineStart(Sci_Position line) const {
+Sci_Position SCI_METHOD Document::LineStart(Sci_Position line) const noexcept {
 	return cb.LineStart(line);
 }
 
@@ -385,7 +392,7 @@ bool Document::IsLineStartPosition(Sci::Position position) const {
 	return LineStart(LineFromPosition(position)) == position;
 }
 
-Sci_Position SCI_METHOD Document::LineEnd(Sci_Position line) const {
+Sci_Position SCI_METHOD Document::LineEnd(Sci_Position line) const noexcept {
 	if (line >= LinesTotal() - 1) {
 		return LineStart(line + 1);
 	} else {
@@ -412,14 +419,14 @@ Sci_Position SCI_METHOD Document::LineEnd(Sci_Position line) const {
 	}
 }
 
-void SCI_METHOD Document::SetErrorStatus(int status) {
+void SCI_METHOD Document::SetErrorStatus(int status) noexcept {
 	// Tell the watchers an error has occurred.
 	for (const WatcherWithUserData &watcher : watchers) {
 		watcher.watcher->NotifyErrorOccurred(this, watcher.userData, status);
 	}
 }
 
-Sci_Position SCI_METHOD Document::LineFromPosition(Sci_Position pos) const {
+Sci_Position SCI_METHOD Document::LineFromPosition(Sci_Position pos) const noexcept {
 	return cb.LineFromPosition(pos);
 }
 
@@ -473,7 +480,7 @@ int SCI_METHOD Document::SetLevel(Sci_Position line, int level) {
 	return prev;
 }
 
-int SCI_METHOD Document::GetLevel(Sci_Position line) const {
+int SCI_METHOD Document::GetLevel(Sci_Position line) const noexcept {
 	return Levels()->GetLevel(line);
 }
 
@@ -907,7 +914,7 @@ Document::CharacterExtracted Document::CharacterBefore(Sci::Position position) c
 }
 
 // Return -1  on out-of-bounds
-Sci_Position SCI_METHOD Document::GetRelativePosition(Sci_Position positionStart, Sci_Position characterOffset) const {
+Sci_Position SCI_METHOD Document::GetRelativePosition(Sci_Position positionStart, Sci_Position characterOffset) const noexcept {
 	Sci::Position pos = positionStart;
 	if (dbcsCodePage) {
 		const int increment = (characterOffset > 0) ? 1 : -1;
@@ -947,7 +954,7 @@ Sci::Position Document::GetRelativePositionUTF16(Sci::Position positionStart, Sc
 	return pos;
 }
 
-int SCI_METHOD Document::GetCharacterAndWidth(Sci_Position position, Sci_Position *pWidth) const {
+int SCI_METHOD Document::GetCharacterAndWidth(Sci_Position position, Sci_Position *pWidth) const noexcept {
 	int character;
 	int bytesInCharacter = 1;
 	const unsigned char leadByte = cb.UCharAt(position);
@@ -987,11 +994,11 @@ int SCI_METHOD Document::GetCharacterAndWidth(Sci_Position position, Sci_Positio
 	return character;
 }
 
-int SCI_METHOD Document::CodePage() const {
+int SCI_METHOD Document::CodePage() const noexcept {
 	return dbcsCodePage;
 }
 
-bool SCI_METHOD Document::IsDBCSLeadByte(char ch) const {
+bool SCI_METHOD Document::IsDBCSLeadByte(char ch) const noexcept {
 	// Used by lexers so must match IDocument method exactly
 	return IsDBCSLeadByteNoExcept(ch);
 }
@@ -1292,7 +1299,7 @@ int SCI_METHOD Document::AddData(const char *data, Sci_Position length) {
 	return 0;
 }
 
-void * SCI_METHOD Document::ConvertToDocument() {
+void * SCI_METHOD Document::ConvertToDocument() noexcept {
 	return this;
 }
 
@@ -2189,7 +2196,7 @@ int Document::CharacterCategoryOptimization() const noexcept {
 	return charMap.Size();
 }
 
-void SCI_METHOD Document::StartStyling(Sci_Position position) {
+void SCI_METHOD Document::StartStyling(Sci_Position position) noexcept {
 	endStyled = position;
 }
 
@@ -2288,7 +2295,7 @@ int SCI_METHOD Document::SetLineState(Sci_Position line, int state) {
 	return statePrevious;
 }
 
-int SCI_METHOD Document::GetLineState(Sci_Position line) const {
+int SCI_METHOD Document::GetLineState(Sci_Position line) const noexcept {
 	return States()->GetLineState(line);
 }
 
@@ -2382,7 +2389,7 @@ void Document::IncrementStyleClock() noexcept {
 	styleClock = (styleClock + 1) % 0x100000;
 }
 
-void SCI_METHOD Document::DecorationSetCurrentIndicator(int indicator) {
+void SCI_METHOD Document::DecorationSetCurrentIndicator(int indicator) noexcept {
 	decorations->SetCurrentIndicator(indicator);
 }
 

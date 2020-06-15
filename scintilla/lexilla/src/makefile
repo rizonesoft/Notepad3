@@ -19,10 +19,12 @@ DIR_BIN=../../bin
 WARNINGS = -Wpedantic -Wall -Wextra
 
 ifdef windir
+    SHARED_NAME = lexilla
     SHAREDEXTENSION = dll
     WINDRES ?= windres
     VERSION_RESOURCE = LexillaVersion.o
 else
+    SHARED_NAME = liblexilla
     ifeq ($(shell uname),Darwin)
         CLANG := 1
         LDFLAGS += -dynamiclib
@@ -33,7 +35,7 @@ else
     BASE_FLAGS += -fvisibility=hidden
 endif
 
-LEXILLA=$(DIR_BIN)/lexilla.$(SHAREDEXTENSION)
+LEXILLA=$(DIR_BIN)/$(SHARED_NAME).$(SHAREDEXTENSION)
 LIBLEXILLA=$(DIR_BIN)/liblexilla.a
 
 BASE_FLAGS += --std=c++17

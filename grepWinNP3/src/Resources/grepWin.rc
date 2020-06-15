@@ -90,14 +90,15 @@ BEGIN
     CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,524,174,61,10
     PUSHBUTTON      "Settings",IDC_SETTINGSBUTTON,14,197,103,14
     PUSHBUTTON      "&Replace",IDC_REPLACE,457,198,62,14
-    DEFPUSHBUTTON   "Search",IDOK,523,198,62,14
+    CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,523,198,62,14
     GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,128,587,65
     CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,234,571,81
     LTEXT           "",IDC_SEARCHINFOLABEL,14,321,580,8
-    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,214,587,118
     RTEXT           "About grepWinNP3",IDC_ABOUTLINK,449,2,136,8
+    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,214,587,118
     CONTROL         "Files",IDC_RESULTFILES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,84,222,89,10
-    CONTROL         "Content",IDC_RESULTCONTENT,"Button",BS_AUTORADIOBUTTON,228,222,104,10
+    CONTROL         "Content",IDC_RESULTCONTENT,"Button",BS_AUTORADIOBUTTON,200,222,104,10
+    PUSHBUTTON      ">>>",IDC_EXPORT,316,222,28,10,NOT WS_VISIBLE
     CONTROL         "",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | PBS_SMOOTHREVERSE | PBS_MARQUEE | NOT WS_VISIBLE,130,198,310,14
 END
 
@@ -421,6 +422,13 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERR_PATHNOTEXIST    "Path does not exist or is not accessible!"
+    IDS_INVERSESEARCH       "Inverse search (NOT searchstring)"
+    IDS_SEARCHINFOUNDFILES  "Search in found files"
+    IDS_EXPORT_TT           "Export results..."
+    IDS_EXPORTTITLE         "Export resultlist"
+    IDS_EXPORTPATHS         "include file paths"
+    IDS_EXPORTMATCHLINENUMBER "include match line numbers"
+    IDS_EXPORTMATCHLINECONTENT "include match line text"
 END
 
 #endif    // Neutral resources
