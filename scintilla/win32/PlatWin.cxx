@@ -144,7 +144,7 @@ int SystemMetricsForDpi(int nIndex, unsigned dpi) {
 	return ((dpi == g_uSystemDPI) ? value : ::MulDiv(value, dpi, g_uSystemDPI));
 }
 
-BOOL DpiAdjustWindowRect(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi) {
+BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi) {
 	if (fnAdjustWindowRectExForDpi) {
 		return fnAdjustWindowRectExForDpi(lpRect, dwStyle, FALSE, dwExStyle, dpi);
 	}
@@ -2990,11 +2990,11 @@ void ListBoxX::SetList(const char *list, const char separator, const char typese
 void ListBoxX::AdjustWindowRect(PRectangle *rc, UINT dpi) noexcept {
 	RECT rcw = RectFromPRectangle(*rc);
 #if LISTBOXX_USE_THICKFRAME
-	DpiAdjustWindowRect(&rcw, WS_THICKFRAME, WS_EX_WINDOWEDGE, dpi);
+	AdjustWindowRectForDpi(&rcw, WS_THICKFRAME, WS_EX_WINDOWEDGE, dpi);
 #elif LISTBOXX_USE_BORDER
-	DpiAdjustWindowRect(&rcw, WS_BORDER, WS_EX_WINDOWEDGE, dpi);
+	AdjustWindowRectForDpi(&rcw, WS_BORDER, WS_EX_WINDOWEDGE, dpi);
 #else
-	DpiAdjustWindowRect(&rcw, 0, WS_EX_WINDOWEDGE, dpi);
+	AdjustWindowRectForDpi(&rcw, 0, WS_EX_WINDOWEDGE, dpi);
 #endif
 	*rc = PRectangle::FromInts(rcw.left, rcw.top, rcw.right, rcw.bottom);
 #if LISTBOXX_USE_FAKE_FRAME

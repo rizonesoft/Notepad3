@@ -18,15 +18,20 @@ extern "C" {
 #if defined(_WIN32)
 /* Return false on failure: */
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-typedef struct _dpi_t {	unsigned x;	unsigned y; } DPI_T;
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
+
+typedef struct _dpi_t { unsigned x;	unsigned y; } DPI_T;
 __declspec(dllexport) void  Scintilla_LoadDpiForWindow(void);
 __declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
 __declspec(dllexport) int   Scintilla_ReleaseResources(void);
 __declspec(dllexport) int   Scintilla_InputCodePage(void);
-__declspec(dllexport) DPI_T Scintilla_GetCurrentDPI(void* hwnd);
-__declspec(dllexport) int   Scintilla_GetSystemMetricsEx(void* hwnd, int nIndex);
+__declspec(dllexport) DPI_T Scintilla_GetWindowDPI(void* hwnd);
+__declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
+__declspec(dllexport) bool  Scintilla_AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, DPI_T dpi);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
+
 int Scintilla_LinkLexers(void);
 
 #ifdef __cplusplus

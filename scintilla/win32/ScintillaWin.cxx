@@ -4093,13 +4093,17 @@ int Scintilla_InputCodePage(void) {
 }
 
 extern "C" __declspec(dllexport)
-DPI_T Scintilla_GetCurrentDPI(void* hwnd) {
+DPI_T Scintilla_GetWindowDPI(void* hwnd) {
 	return GetWindowDPI(static_cast<HWND>(hwnd));
 }
 
 extern "C" __declspec(dllexport)
-int Scintilla_GetSystemMetricsEx(void* hwnd, int nIndex) {
-	DPI_T const _dpi = GetWindowDPI(static_cast<HWND>(hwnd));
-	return SystemMetricsForDpi(nIndex, _dpi.y);
+int Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi) {
+	return SystemMetricsForDpi(nIndex, dpi.y);
+}
+
+extern "C" __declspec(dllexport)
+bool Scintilla_AdjustWindowRectForDpi(RECT* lpRect, DWORD dwStyle, DWORD dwExStyle, DPI_T dpi) {
+	return AdjustWindowRectForDpi(lpRect, dwStyle, dwExStyle, dpi.y);
 }
 

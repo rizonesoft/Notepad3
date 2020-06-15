@@ -161,6 +161,8 @@ inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0x
 #define SendWMCommand(hwnd, id)           SendWMCommandEx(hwnd, (id), 1)
 #define PostWMCommand(hwnd, id)           PostMessage(hwnd, WM_COMMAND, MAKEWPARAM((id), 1), 0)
 
+#define SetWindowStyle(hwnd, style)			  SetWindowLong(hwnd, GWL_STYLE, (style))
+
 //==== StrIs(Not)Empty() =============================================
 
 inline bool StrIsEmptyA(LPCSTR s) { return (!s || (*s == '\0')); }

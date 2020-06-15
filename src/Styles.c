@@ -3334,7 +3334,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
 #else 
   if (Settings.RenderingTechnology > 0) {
-    DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
     const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
     if (!ChooseFontDirectWrite(Globals.hwndMain, localName, dpi, &cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
     // HACK: to get the full font name instead of font family name
