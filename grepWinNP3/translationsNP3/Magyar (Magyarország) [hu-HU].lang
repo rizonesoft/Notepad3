@@ -196,11 +196,11 @@ msgstr "Kit"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Eredménylista exportálása"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Eredmények exportálása..."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -240,7 +240,7 @@ msgstr "Érvénytelen útvonal!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "Inverz keresés (NOT kereső szüveg)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -389,7 +389,7 @@ msgstr "Keresés ebben"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Keresés a megtalált fájlokban"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -498,15 +498,15 @@ msgstr "tartsa lenyomva a Shift-et azon fájlok kereséséhez, ami NEM tartalmaz
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "fájl útvonalak beleértve"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "egyezés sorainak száma beleértve"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "egyező sorok tartalmát is beleértve"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
