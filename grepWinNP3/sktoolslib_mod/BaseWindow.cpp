@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2012-2013, 2015-2018 - Stefan Kueng
 
@@ -18,6 +18,7 @@
 //
 
 #include "stdafx.h"
+#include "DPIAware.h"
 #include "BaseWindow.h"
 #include <memory>
 #include <Shlwapi.h>
@@ -149,9 +150,7 @@ bool CWindow::CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent /* = nullp
         ::SetWindowLongPtr(m_hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(stWinMsgHandler));
     }
 
-    HDC hdc = GetDC(*this);
-    m_dpiScale = GetDeviceCaps(hdc, LOGPIXELSX) / 96.0f;
-    ReleaseDC(*this, hdc);
+    m_dpiScale = m_hwnd ? CDPIAware::Instance().GetDPI(m_hwnd) / float(USER_DEFAULT_SCREEN_DPI) : 1.0f;
 
     return (m_hwnd != nullptr);
 }

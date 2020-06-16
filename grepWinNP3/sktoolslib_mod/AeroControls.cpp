@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2012, 2014, 2017 - Stefan Kueng
 
@@ -494,7 +494,7 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
                             iState = GetStateFromBtnState(dwStyle, bHot, bFocus, dwCheckState, iPartId, FALSE);
 
-                            int bmWidth = int(ceil(13.0 * GetDeviceCaps(hdcPaint, LOGPIXELSX) / 96.0));
+                            int bmWidth = int(ceil(13.0 * GetDeviceCaps(hdcPaint, LOGPIXELSX) / USER_DEFAULT_SCREEN_DPI));
 
                             UINT uiHalfWidth = (RECTWIDTH(rcClient) - bmWidth)/2;
 
