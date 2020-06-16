@@ -125,30 +125,6 @@ inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_Get
 inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
 inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
 
-inline int ScaleIntFontSizeWidth(HWND hwnd, int val) { 
-  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);  
-  return MulDiv((val), dpi.x, ppi.x); 
-}
-
-inline int ScaleIntFontSizeHeight(HWND hwnd, int val) { 
-  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);  
-  return MulDiv((val), dpi.y, ppi.y); 
-}
-
-inline int ScaleFloatFontSize(HWND hwnd, float fSize) { 
-  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);
-  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y);
-}
-
-inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { 
-  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);
-  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y) * SC_FONT_SIZE_MULTIPLIER;
-}
-
 // ----------------------------------------------------------------------------
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);

@@ -4378,7 +4378,6 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
   return((int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 }
 
-
 //=============================================================================
 //
 //  GetCurrentPPI()
@@ -4417,7 +4416,8 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  DPI_T const ppi = GetCurrentPPI(NULL);
+  //~int const iLogPixelsY = Scintilla_GetWindowDPI(hWnd).y;
+  int const iLogPixelsY = GetCurrentPPI(NULL).y;
 
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
@@ -4426,7 +4426,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
       if (lf.lfHeight < 0) {
         lf.lfHeight = -lf.lfHeight;
       }
-      *wSize = (WORD)MulDiv(lf.lfHeight, 72, ppi.y);
+      *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
       if (*wSize == 0) { *wSize = 8; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;
@@ -4476,7 +4476,8 @@ inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
   return (BYTE*)pw;
 }
 
-DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance) 
+
+DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance)
 {
   DLGTEMPLATE* pTemplate = NULL;
 
@@ -4533,8 +4534,8 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   INT_PTR ret = (INT_PTR)NULL;
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   if (pDlgTemplate) {
     ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
@@ -4545,8 +4546,8 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   HWND hwnd = INVALID_HANDLE_VALUE;
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   if (pDlgTemplate) {
     hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
