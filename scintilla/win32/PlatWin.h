@@ -44,14 +44,14 @@
 #endif
 #endif
 
-#ifndef __cplusplus
-extern "C" DPI_T GetWindowDPI(HWND hwnd);
-extern "C" int  SystemMetricsForDpi(int nIndex, unsigned dpi);
-extern "C" BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi);
-#else
+#ifdef __cplusplus
 DPI_T GetWindowDPI(HWND hwnd);
 int  SystemMetricsForDpi(int nIndex, unsigned dpi);
 BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi);
+#else
+extern "C" DPI_T GetWindowDPI(HWND hwnd);
+extern "C" int  SystemMetricsForDpi(int nIndex, unsigned dpi);
+extern "C" BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi);
 #endif // !__cplusplus
 
 

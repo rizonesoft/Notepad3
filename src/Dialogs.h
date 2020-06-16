@@ -17,11 +17,7 @@
 #ifndef _NP3_DIALOGS_H_
 #define _NP3_DIALOGS_H_
 
-#ifdef __cplusplus
-#include <cmath>
-#else
 #include <math.h>
-#endif
 #include "TypeDefs.h"
 #include "Scintilla.h"
 
@@ -77,6 +73,10 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ_DLG_DIR;
 
 void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection);
+
+inline void ResizeDlg_Init0(HWND hwnd, int nIdGrip) {
+  ResizeDlg_InitEx(hwnd, 0, 0, nIdGrip, RSZ_NONE);
+}
 inline void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip) {
   ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH);
 }

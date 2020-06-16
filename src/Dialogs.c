@@ -15,6 +15,7 @@
 *******************************************************************************/
 #include "Helpers.h"
 
+#include <windowsx.h>
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
@@ -1093,7 +1094,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd, Settings.OpenWithDlgSizeX, Settings.OpenWithDlgSizeY, IDC_RESIZEGRIP);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1291,7 +1292,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd, Settings.FavoritesDlgSizeX, Settings.FavoritesDlgSizeY, IDC_RESIZEGRIP);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1464,7 +1465,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SET_NP3_DLG_ICON_SMALL(hwnd);
 
-      ResizeDlg_Init(hwnd, Settings.AddToFavDlgSizeX, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP, RSZ_ONLY_X);
+      ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
 
       LPCWSTR const pszName = (LPCWSTR)lParam;
       SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
@@ -1692,7 +1693,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
           lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
           lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
         }
-        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -2738,7 +2739,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd, pdd->cxDlg, pdd->cyDlg, IDC_RESIZEGRIP);
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
@@ -3983,7 +3984,12 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
   pm->cyClient = rc.bottom - rc.top;
 
  	const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
-	Scintilla_AdjustWindowRectForDpi(&rc, style, 0, pm->dpi);
+  
+  WRCT_T wrc;
+  wrc.left = rc.left; wrc.top = rc.top; wrc.right = rc.right;	wrc.bottom = rc.bottom;
+	Scintilla_AdjustWindowRectForDpi(&wrc, style, 0, pm->dpi);
+  rc.left = wrc.left; rc.top = wrc.top; rc.right = wrc.right;	rc.bottom = wrc.bottom;
+
   pm->mmiPtMinX = rc.right - rc.left;
   pm->mmiPtMinY = rc.bottom - rc.top;
   
@@ -4150,8 +4156,8 @@ int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2) {
   int const hMinX = MulDiv(pm->attrs[0], dpi.x, pm->dpi.x);
   int const hMinY = MulDiv(pm->attrs[1], dpi.y, pm->dpi.y);
 #else
-  int const hMin1 = pm->attrs[0];
-  int const hMin2 = pm->attrs[1];
+  int const hMinX = pm->attrs[0];
+  int const hMinY = pm->attrs[1];
 #endif
   int const h1 = GetDlgCtlHeight(hwnd, nCtlId1);
   int const h2 = GetDlgCtlHeight(hwnd, nCtlId2);

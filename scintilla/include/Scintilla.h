@@ -15,22 +15,21 @@
 extern "C" {
 #endif
 
-#if defined(_WIN32)
-/* Return false on failure: */
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-
+// ==============================================================
+// --- needed to bind Scintilla as dynamic link library (DLL) ---
+// ==============================================================
 typedef struct _dpi_t { unsigned x;	unsigned y; } DPI_T;
+typedef struct _wrct_t { long left; long top; long right; long bottom; } WRCT_T;
 __declspec(dllexport) void  Scintilla_LoadDpiForWindow(void);
 __declspec(dllexport) int   Scintilla_RegisterClasses(void *hInstance);
 __declspec(dllexport) int   Scintilla_ReleaseResources(void);
 __declspec(dllexport) int   Scintilla_InputCodePage(void);
 __declspec(dllexport) DPI_T Scintilla_GetWindowDPI(void* hwnd);
 __declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
-__declspec(dllexport) bool  Scintilla_AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, DPI_T dpi);
+__declspec(dllexport) int   Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi);
+__declspec(dllexport) int   Scintilla_AdjustWindowRectForDpi(WRCT_T* lpRect, unsigned long dwStyle, unsigned long  dwExStyle, DPI_T dpi);
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-#endif
 
 int Scintilla_LinkLexers(void);
 

@@ -3997,7 +3997,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       {
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd, 0, 0, IDC_RESIZEGRIP, RSZ_NONE);
+        ResizeDlg_Init0(hwnd, IDC_RESIZEGRIP);
 
         GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
@@ -4702,7 +4702,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       {
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP, RSZ_BOTH);
+        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 

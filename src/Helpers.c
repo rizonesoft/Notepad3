@@ -143,7 +143,6 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 //
 //  GetWinVersionString()
 //
-
 static OSVERSIONINFOEX s_OSversion = { 0 };
 
 static void _GetTrueWindowsVersion()
@@ -170,7 +169,6 @@ static void _GetTrueWindowsVersion()
     }
     FreeLibrary(hNTdllDll);
   } // if (hNTdllDll != NULL)
-
 
 #pragma warning ( push )
 #pragma warning ( disable: 4996 )

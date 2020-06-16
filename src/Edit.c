@@ -5681,7 +5681,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       EditSetCaretToSelectionStart(); // avoid search text selection jumps to next match (before ResizeDlg_InitX())
 
-      ResizeDlg_Init(hwnd, 0, 0, IDC_RESIZEGRIP, RSZ_NONE);
+      ResizeDlg_Init0(hwnd, IDC_RESIZEGRIP);
 
       sg_pefrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
 

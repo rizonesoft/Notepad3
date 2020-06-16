@@ -162,19 +162,11 @@ constexpr UINT SC_WORK_IDLE = 5002;
 #define SC_INDICATOR_CONVERTED (INDICATOR_IME + 2)
 #define SC_INDICATOR_UNKNOWN INDICATOR_IME_MAX
 
-#ifndef SCS_CAP_SETRECONVERTSTRING
-#define SCS_CAP_SETRECONVERTSTRING 0x00000004
-#define SCS_QUERYRECONVERTSTRING 0x00020000
-#define SCS_SETRECONVERTSTRING 0x00010000
-#endif
-
 #if _WIN32_WINNT < _WIN32_WINNT_WIN8
 DWORD	kSystemLibraryLoadFlags = 0;
 using SetCoalescableTimerSig = UINT_PTR (WINAPI *)(HWND hwnd, UINT_PTR nIDEvent,
 	UINT uElapse, TIMERPROC lpTimerFunc, ULONG uToleranceDelay);
 #endif
-
-// GCC has trouble with the standard COM ABI so do it the old C way with explicit vtables.
 
 using namespace Scintilla;
 
@@ -224,6 +216,14 @@ inline CLIPFORMAT GetClipboardFormat(LPCWSTR name) noexcept {
 	return static_cast<CLIPFORMAT>(::RegisterClipboardFormat(name));
 }
 
+#if 0
+inline void LazyGetClipboardFormat(UINT &fmt, LPCWSTR name) noexcept {
+	if (fmt == 0) {
+		fmt = ::RegisterClipboardFormat(name);
+	}
+}
+#endif
+
 }
 
 class ScintillaWin; 	// Forward declaration for COM interface subobjects
@@ -255,8 +255,8 @@ public:
  */
 class DropSource : public IDropSource {
 public:
-	ScintillaWin *sci;
-	DropSource() noexcept;
+	ScintillaWin *sci = nullptr;
+	DropSource() noexcept = default;
 	virtual ~DropSource() = default;
 
 	// IUnknown
@@ -273,8 +273,8 @@ public:
  */
 class DataObject : public IDataObject {
 public:
-	ScintillaWin *sci;
-	DataObject() noexcept;
+	ScintillaWin *sci = nullptr;
+	DataObject() noexcept = default;
 	virtual ~DataObject() = default;
 
 	// IUnknown
@@ -298,8 +298,8 @@ public:
  */
 class DropTarget : public IDropTarget {
 public:
-	ScintillaWin *sci;
-	DropTarget() noexcept;
+	ScintillaWin *sci = nullptr;
+	DropTarget() noexcept = default;
 	virtual ~DropTarget() = default;
 
 	// IUnknown
@@ -331,7 +331,7 @@ LANGID InputLanguage() noexcept {
 	LANGID inputLang;
 	WCHAR keyboard_layout[KL_NAMELENGTH];
 	if (::GetKeyboardLayoutNameW(keyboard_layout)) {
-		inputLang =  static_cast<LANGID>(wcstol(&keyboard_layout[KL_NAMELENGTH >> 1], nullptr, 16));
+		inputLang = static_cast<LANGID>(wcstol(&keyboard_layout[KL_NAMELENGTH >> 1], nullptr, 16));
 	} else {
 		/// TODO: Fallback to en-US?
 		HKL inputLocale = ::GetKeyboardLayout(0);
@@ -346,8 +346,7 @@ class IMContext {
 public:
 	HIMC hIMC;
 	explicit IMContext(HWND hwnd_) noexcept :
-		hwnd(hwnd_), hIMC(::ImmGetContext(hwnd_)) {
-	}
+		hwnd(hwnd_), hIMC(::ImmGetContext(hwnd_)) {}
 	// Deleted so IMContext objects can not be copied.
 	IMContext(const IMContext &) = delete;
 	IMContext(IMContext &&) = delete;
@@ -359,7 +358,7 @@ public:
 	}
 
 	operator bool() const noexcept {
-		return (hIMC != nullptr);
+		return hIMC != nullptr;
 	}
 
 	LONG GetImeCaretPos() const noexcept {
@@ -392,7 +391,7 @@ class ReverseArrowCursor {
 	HCURSOR cursor {};
 
 public:
-	ReverseArrowCursor() noexcept {}
+	ReverseArrowCursor() noexcept = default;
 	// Deleted so ReverseArrowCursor objects can not be copied.
 	ReverseArrowCursor(const ReverseArrowCursor &) = delete;
 	ReverseArrowCursor(ReverseArrowCursor &&) = delete;
@@ -1539,7 +1538,7 @@ sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) const {
 	Sci::Position sizeRequestedRange = pdoc->GetRelativePositionUTF16(0, lengthWanted);
 	if (sizeRequestedRange < 0) {
 		// Requested more text than there is in the document.
-		sizeRequestedRange = pdoc->CountUTF16(0, pdoc->Length());
+		sizeRequestedRange = pdoc->Length();
 	}
 	std::string docBytes(sizeRequestedRange, '\0');
 	pdoc->GetCharRange(&docBytes[0], 0, sizeRequestedRange);
@@ -2992,10 +2991,6 @@ STDMETHODIMP DropSource::GiveFeedback(DWORD) noexcept {
 	return DRAGDROP_S_USEDEFAULTCURSORS;
 }
 
-DropSource::DropSource() noexcept {
-	sci = nullptr;
-}
-
 /// Implement IUnkown
 STDMETHODIMP DataObject::QueryInterface(REFIID riid, PVOID *ppv) noexcept {
 	//Platform::DebugPrintf("DO QI %p\n", this);
@@ -3076,10 +3071,6 @@ STDMETHODIMP DataObject::EnumDAdvise(IEnumSTATDATA **) noexcept {
 	return E_FAIL;
 }
 
-DataObject::DataObject() noexcept {
-	sci = nullptr;
-}
-
 /// Implement IUnknown
 STDMETHODIMP DropTarget::QueryInterface(REFIID riid, PVOID *ppv) noexcept {
 	//Platform::DebugPrintf("DT QI %p\n", this);
@@ -3124,10 +3115,6 @@ STDMETHODIMP DropTarget::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState, POIN
 		sci->errorStatus = SC_STATUS_FAILURE;
 	}
 	return E_FAIL;
-}
-
-DropTarget::DropTarget() noexcept {
-	sci = nullptr;
 }
 
 /**
@@ -3950,8 +3937,10 @@ LRESULT CALLBACK ScintillaWin::CTWndProc(
 					}
 					// If above SUCCEEDED, then pCTRenderTarget not nullptr
 					assert(pCTRenderTarget);
-					surfaceWindow->Init(pCTRenderTarget, hWnd);
-					pCTRenderTarget->BeginDraw();
+					if (pCTRenderTarget) {
+						surfaceWindow->Init(pCTRenderTarget, hWnd);
+						pCTRenderTarget->BeginDraw();
+					}
 #endif
 				}
 				surfaceWindow->SetUnicodeMode(SC_CP_UTF8 == sciThis->ct.codePage);
@@ -4078,8 +4067,6 @@ int Scintilla_RegisterClasses(void *hInstance) {
 		return result;
 	}
 
-} // namespace Scintilla
-
 
 // This function is externally visible so it can be called from container when building statically.
 extern "C" __declspec(dllexport)
@@ -4103,7 +4090,12 @@ int Scintilla_GetSystemMetricsForDpi(int nIndex, DPI_T dpi) {
 }
 
 extern "C" __declspec(dllexport)
-bool Scintilla_AdjustWindowRectForDpi(RECT* lpRect, DWORD dwStyle, DWORD dwExStyle, DPI_T dpi) {
-	return AdjustWindowRectForDpi(lpRect, dwStyle, dwExStyle, dpi.y);
+int Scintilla_AdjustWindowRectForDpi(WRCT_T* lpRect, unsigned long dwStyle, unsigned long dwExStyle, DPI_T dpi) {
+	RECT rc;
+	rc.left = lpRect->left; rc.top = lpRect->top; rc.right = lpRect->right;	rc.bottom = lpRect->bottom;
+	BOOL const res =  AdjustWindowRectForDpi(&rc, dwStyle, dwExStyle, dpi.y);
+	lpRect->left = rc.left; lpRect->top = rc.top; lpRect->right = rc.right;	lpRect->bottom = rc.bottom;
+	return (int)res;
 }
 
+} // namespace Scintilla
