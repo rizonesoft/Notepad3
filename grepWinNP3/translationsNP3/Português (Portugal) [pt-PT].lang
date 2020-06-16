@@ -196,11 +196,11 @@ msgstr "Ext"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Exportar lista de resultados"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Exportar resultados..."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -240,7 +240,7 @@ msgstr "Caminho inválido!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "Procura inversa (NÃO cadeia de procura)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -289,7 +289,7 @@ msgstr "Mais velho que"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Não alertar ao substituir sem criar seguranças"
 
 #. Resource IDs: (1062)
 msgid "Only one instance"
@@ -389,7 +389,7 @@ msgstr "Procurar em"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Procurar nos ficheiros encontrados"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -498,15 +498,15 @@ msgstr "Mantenha pressionada a tecla shift para localizar ficheiros que NÃO con
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "incluir caminhos dos ficheiros"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "incluir números de linha correspondentes"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "incluir linha de texto correspondente"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
