@@ -72,7 +72,20 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 // resize dialog directions
 typedef enum { RSZ_NONE = -1, RSZ_BOTH = 0, RSZ_ONLY_X = 1, RSZ_ONLY_Y = 2 } RSZ_DLG_DIR;
 
-void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection);
+void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection);
+
+inline void ResizeDlg_Init0(HWND hwnd, int nIdGrip) {
+  ResizeDlg_InitEx(hwnd, 0, 0, nIdGrip, RSZ_NONE);
+}
+inline void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip) {
+  ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH);
+}
+inline void ResizeDlg_InitX(HWND hwnd, int cxFrame, int nIdGrip) {
+  ResizeDlg_InitEx(hwnd, cxFrame, 0, nIdGrip, RSZ_ONLY_X);
+}
+inline void ResizeDlg_InitY(HWND hwnd, int cyFrame, int nIdGrip) {
+  ResizeDlg_InitEx(hwnd, 0, cyFrame, nIdGrip, RSZ_ONLY_Y);
+}
 void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame);
 void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy);
 void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam);
@@ -106,35 +119,11 @@ int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
 
 DPI_T GetCurrentPPI(HWND hwnd);
 
-inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_X(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return MulDiv((val), dpi.x, USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleIntToDPI_Y(HWND hwnd, int val) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return MulDiv((val), dpi.y, USER_DEFAULT_SCREEN_DPI); }
 
-inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
-inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
-
-inline int ScaleIntFontSizeWidth(HWND hwnd, int val) { 
-  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);  
-  return MulDiv((val), dpi.x, ppi.x); 
-}
-
-inline int ScaleIntFontSizeHeight(HWND hwnd, int val) { 
-  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);  
-  return MulDiv((val), dpi.y, ppi.y); 
-}
-
-inline int ScaleFloatFontSize(HWND hwnd, float fSize) { 
-  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);
-  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y);
-}
-
-inline int ScaleFractionalFontSize(HWND hwnd, float fSize) { 
-  DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
-  DPI_T const ppi = GetCurrentPPI(hwnd);
-  return (int)lroundf((fSize * (float)dpi.y) / (float)ppi.y) * SC_FONT_SIZE_MULTIPLIER;
-}
+inline int ScaleFloatToDPI_X(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return (int)lroundf((fVal * dpi.x) / (float)USER_DEFAULT_SCREEN_DPI); }
+inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintilla_GetWindowDPI(hwnd); return (int)lroundf((fVal * dpi.y) / (float)USER_DEFAULT_SCREEN_DPI); }
 
 // ----------------------------------------------------------------------------
 

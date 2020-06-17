@@ -5681,8 +5681,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
       EditSetCaretToSelectionStart(); // avoid search text selection jumps to next match (before ResizeDlg_InitX())
 
-      ResizeDlg_Init(hwnd, 0, 0, IDC_RESIZEGRIP, RSZ_NONE);
-
       sg_pefrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
 
       Globals.iReplacedOccurrences = 0;
@@ -5849,11 +5847,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     return !0; // (!) further processing
 
 
-  case WM_DPICHANGED:
-    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-    return !0; // further processing
-  
-  
   case WM_DESTROY:
     {
       _SetSearchFlags(hwnd, sg_pefrData); // sync
@@ -5916,44 +5909,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       DeleteObject(hBrushRed);
       DeleteObject(hBrushGreen);
       DeleteObject(hBrushBlue);
-      ResizeDlg_Destroy(hwnd, NULL, NULL);
       sg_pefrData = NULL;
       Globals.hwndDlgFindReplace = NULL;
     }
     return 0;
 
 
-#if 0
-  case WM_SIZE: {
-      int dx;
-      bool const isReplace = (GetDlgItem(hwnd, IDC_REPLACETEXT) != NULL);
-      ResizeDlg_Size(hwnd, lParam, &dx, NULL);
-      HDWP hdwp = BeginDeferWindowPos(isReplace ? 15 : 12);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, 0, SWP_NOSIZE);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, 0, SWP_NOSIZE);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, 0, SWP_NOSIZE);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDC_FINDTEXT, dx, 0, SWP_NOMOVE);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDC_FINDPREV, dx, 0, SWP_NOSIZE);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDC_TOGGLE_VISIBILITY, dx, 0, SWP_NOSIZE);
-      hdwp = DeferCtlPos(hdwp, hwnd, IDS_FR_STATUS_TEXT, dx, 0, SWP_NOMOVE);
-      if (isReplace) {
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACETEXT, dx, 0, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_SWAPSTRG, dx, 0, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACE, dx, 0, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACEINSEL, dx, 0, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACEALL, dx, 0, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REPLACEINSEL, dx, 0, SWP_NOSIZE);
-      }
-      EndDeferWindowPos(hdwp);
-    }
-    return true;
-#endif
+    case WM_DPICHANGED:
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+        return !0; // further processing
 
-
-  case WM_GETMINMAXINFO:
-    ResizeDlg_GetMinMaxInfo(hwnd, lParam);
-    return true;
-  
 
   case WM_ACTIVATE:
     {
@@ -6614,7 +6579,6 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
             (LPARAM) lpefr);
 
   if (hDlg != INVALID_HANDLE_VALUE) {
-    UpdateWindowLayoutForDPI(hDlg, NULL, NULL);
     ShowWindow(hDlg, SW_SHOW);
   }
   CoUninitialize();

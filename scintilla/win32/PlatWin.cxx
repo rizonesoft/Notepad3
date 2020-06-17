@@ -144,7 +144,7 @@ int SystemMetricsForDpi(int nIndex, unsigned dpi) {
 	return ((dpi == g_uSystemDPI) ? value : ::MulDiv(value, dpi, g_uSystemDPI));
 }
 
-BOOL DpiAdjustWindowRect(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi) {
+BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, unsigned dpi) {
 	if (fnAdjustWindowRectExForDpi) {
 		return fnAdjustWindowRectExForDpi(lpRect, dwStyle, FALSE, dwExStyle, dpi);
 	}
@@ -241,9 +241,8 @@ static BOOL CALLBACK LoadD2DOnce(PINIT_ONCE initOnce, PVOID parameter, PVOID *lp
 		}
 
 		hr = pIDWriteFactory->GetGdiInterop(&gdiInterop);
-		if (!SUCCEEDED(hr) && gdiInterop) {
-			gdiInterop->Release();
-			gdiInterop = nullptr;
+		if (!SUCCEEDED(hr)) {
+			ReleaseUnknown(gdiInterop);
 		}
 	}
 	return TRUE;
@@ -314,11 +313,6 @@ struct FormatAndMetrics {
 HFONT FormatAndMetrics::HFont() const noexcept {
 	return ::CreateFontIndirectW(&lf);
 }
-
-#ifndef CLEARTYPE_QUALITY
-#define CLEARTYPE_QUALITY 5
-#endif
-
 
 namespace {
 
@@ -666,22 +660,24 @@ bool SurfaceGDI::Initialised() const noexcept {
 
 void SurfaceGDI::Init(WindowID wid) noexcept {
 	Release();
+	logPixelsY = DpiYForWindow(wid);
 	hdc = ::CreateCompatibleDC({});
 	hdcOwned = true;
 	::SetTextAlign(hdc, TA_BASELINE);
-	logPixelsY = DpiYForWindow(wid);
 }
 
 void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) noexcept {
 	Release();
 	hdc = static_cast<HDC>(sid);
-	::SetTextAlign(hdc, TA_BASELINE);
+	// Windows on screen are scaled but printers are not.
 	//const bool printing = (::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY);
 	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiYForWindow(wid);
+    ::SetTextAlign(hdc, TA_BASELINE);
 }
 
 void SurfaceGDI::InitPixMap(int width, int height, Surface *surface_, WindowID wid) noexcept {
 	Release();
+	logPixelsY = DpiYForWindow(wid);
 	SurfaceGDI *psurfOther = down_cast<SurfaceGDI *>(surface_);
 	// Should only ever be called with a SurfaceGDI, not a SurfaceD2D
 	PLATFORM_ASSERT(psurfOther);
@@ -692,7 +688,6 @@ void SurfaceGDI::InitPixMap(int width, int height, Surface *surface_, WindowID w
 	::SetTextAlign(hdc, TA_BASELINE);
 	SetUnicodeMode(psurfOther->unicodeMode);
 	//~SetDBCSMode(psurfOther->codePage);
-	logPixelsY = DpiYForWindow(wid);
 }
 
 void SurfaceGDI::PenColour(ColourDesired fore) noexcept {
@@ -734,7 +729,7 @@ int SurfaceGDI::LogPixelsY() const noexcept {
 }
 
 int SurfaceGDI::DeviceHeightFont(int points) const noexcept {
-	return ::MulDiv(points, LogPixelsY(), 72);
+	return ::MulDiv(points, logPixelsY, 72);
 }
 
 void SurfaceGDI::MoveTo(int x_, int y_) noexcept {
@@ -1430,7 +1425,7 @@ int SurfaceD2D::LogPixelsY() const noexcept {
 }
 
 int SurfaceD2D::DeviceHeightFont(int points) const noexcept {
-	return ::MulDiv(points, LogPixelsY(), 72);
+	return ::MulDiv(points, logPixelsY, 72);
 }
 
 void SurfaceD2D::MoveTo(int x_, int y_) noexcept {
@@ -2990,11 +2985,11 @@ void ListBoxX::SetList(const char *list, const char separator, const char typese
 void ListBoxX::AdjustWindowRect(PRectangle *rc, UINT dpi) noexcept {
 	RECT rcw = RectFromPRectangle(*rc);
 #if LISTBOXX_USE_THICKFRAME
-	DpiAdjustWindowRect(&rcw, WS_THICKFRAME, WS_EX_WINDOWEDGE, dpi);
+	AdjustWindowRectForDpi(&rcw, WS_THICKFRAME, WS_EX_WINDOWEDGE, dpi);
 #elif LISTBOXX_USE_BORDER
-	DpiAdjustWindowRect(&rcw, WS_BORDER, WS_EX_WINDOWEDGE, dpi);
+	AdjustWindowRectForDpi(&rcw, WS_BORDER, WS_EX_WINDOWEDGE, dpi);
 #else
-	DpiAdjustWindowRect(&rcw, 0, WS_EX_WINDOWEDGE, dpi);
+	AdjustWindowRectForDpi(&rcw, 0, WS_EX_WINDOWEDGE, dpi);
 #endif
 	*rc = PRectangle::FromInts(rcw.left, rcw.top, rcw.right, rcw.bottom);
 #if LISTBOXX_USE_FAKE_FRAME

@@ -15,6 +15,7 @@
 *******************************************************************************/
 #include "Helpers.h"
 
+#include <windowsx.h>
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
@@ -706,13 +707,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   }
   break;
 
-
   case WM_DESTROY:
     if (hVersionFont) { DeleteObject(hVersionFont); }
     break;
-
-  case WM_SIZE:
-    return !0;
 
   case WM_DPICHANGED:
     {
@@ -867,7 +864,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution -> %i x %i [pix]", ResX, ResY);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-        DPI_T dpi = Scintilla_GetCurrentDPI(hwnd);
+        DPI_T dpi = Scintilla_GetWindowDPI(hwnd);
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI -> %i x %i  (Scale: %i%%).", dpi.x, dpi.y, ScaleIntToDPI_X(hwnd, 100));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
@@ -1093,7 +1090,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd, Settings.OpenWithDlgSizeX, Settings.OpenWithDlgSizeY, IDC_RESIZEGRIP);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1291,7 +1288,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd, Settings.FavoritesDlgSizeX, Settings.FavoritesDlgSizeY, IDC_RESIZEGRIP);
 
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1464,7 +1461,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SET_NP3_DLG_ICON_SMALL(hwnd);
 
-      ResizeDlg_Init(hwnd, Settings.AddToFavDlgSizeX, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP, RSZ_ONLY_X);
+      ResizeDlg_InitX(hwnd, Settings.AddToFavDlgSizeX, IDC_RESIZEGRIP);
 
       LPCWSTR const pszName = (LPCWSTR)lParam;
       SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, MAX_PATH - 1, 0);
@@ -1692,7 +1689,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
           lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
           lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
         }
-        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -2738,7 +2735,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         PENCODEDLG const pdd = (PENCODEDLG)lParam;
         LVCOLUMN lvc = { LVCF_FMT | LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
-        ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP,RSZ_BOTH);
+        ResizeDlg_Init(hwnd, pdd->cxDlg, pdd->cyDlg, IDC_RESIZEGRIP);
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
@@ -3918,6 +3915,8 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 //
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 {
+  if (!hDlg) { return; }
+
   RECT rcDlg;
   GetWindowRect(hDlg, &rcDlg);
 
@@ -3950,8 +3949,14 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 // Resize Dialog Helpers()
 //
 #define RESIZEDLG_PROP_KEY	L"ResizeDlg"
+#define MAX_RESIZEDLG_ATTR_COUNT	2
+// temporary fix for moving dialog to monitor with different DPI
+// TODO: all dimensions no longer valid after window DPI changed.
+#define NP3_ENABLE_RESIZEDLG_TEMP_FIX	1
+
 typedef struct _resizeDlg {
   int direction;
+  DPI_T dpi;
   int cxClient;
   int cyClient;
   int mmiPtMinX;
@@ -3963,21 +3968,23 @@ typedef struct _resizeDlg {
 
 typedef const RESIZEDLG* LPCRESIZEDLG;
 
-void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection)
+void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection)
 {
   RESIZEDLG* const pm = (RESIZEDLG*)AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
   pm->direction = iDirection;
+  pm->dpi = Scintilla_GetWindowDPI(hwnd);
 
   RECT rc;
   GetClientRect(hwnd, &rc);
   pm->cxClient = rc.right - rc.left;
   pm->cyClient = rc.bottom - rc.top;
 
-
-  if (pm->direction < 0)
-    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) & ~WS_THICKFRAME, FALSE, 0);
-  else  
-    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, FALSE, 0);
+ 	const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
+  
+  WRCT_T wrc;
+  wrc.left = rc.left; wrc.top = rc.top; wrc.right = rc.right;	wrc.bottom = rc.bottom;
+	Scintilla_AdjustWindowRectForDpi(&wrc, style, 0, pm->dpi);
+  rc.left = wrc.left; rc.top = wrc.top; rc.right = wrc.right;	rc.bottom = wrc.bottom;
 
   pm->mmiPtMinX = rc.right - rc.left;
   pm->mmiPtMinY = rc.bottom - rc.top;
@@ -3999,11 +4006,7 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DI
 
   SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
 
-  if (pm->direction < 0)
-    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) & ~WS_THICKFRAME);
-  else  
-    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
-
+  SetWindowStyle(hwnd, style);
   SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
   WCHAR wch[MAX_PATH];
@@ -4011,11 +4014,11 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DI
   InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
   InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
 
-  if ((pm->direction >= 0)) {
+  if (pm->direction >= 0) {
     HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
     if (hwndCtl) {
-      SetWindowLongPtr(hwndCtl, GWL_STYLE, GetWindowLongPtr(hwndCtl, GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-      const int cGrip = Scintilla_GetSystemMetricsEx(hwnd, SM_CXHTHUMB);
+      SetWindowStyle(hwndCtl, GetWindowStyle(hwndCtl) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+      int const cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
       SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
     }
   }
@@ -4043,6 +4046,19 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
   PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
   const int cxClient = LOWORD(lParam);
   const int cyClient = HIWORD(lParam);
+#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
+  const DPI_T dpi = Scintilla_GetWindowDPI(hwnd);
+  const DPI_T old = pm->dpi;
+  if (cx) {
+    *cx = cxClient - MulDiv(pm->cxClient, dpi.x, old.x);
+  }
+  if (cy) {
+    *cy = cyClient - MulDiv(pm->cyClient, dpi.y, old.y);
+  }
+  // store in original DPI.
+  pm->cxClient = MulDiv(cxClient, old.x, dpi.x);
+  pm->cyClient = MulDiv(cyClient, old.y, dpi.y);
+#else
   if (cx) {
     *cx = cxClient - pm->cxClient;
   }
@@ -4051,13 +4067,31 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
   }
   pm->cxClient = cxClient;
   pm->cyClient = cyClient;
+#endif
 }
 
 void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
 {
   LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
-
   LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
+#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
+  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+  DPI_T const old = pm->dpi;
+
+  lpmmi->ptMinTrackSize.x = MulDiv(pm->mmiPtMinX, dpi.x, old.x);
+  lpmmi->ptMinTrackSize.y = MulDiv(pm->mmiPtMinY, dpi.y, old.y);
+
+  // only one direction
+  switch (pm->direction) {
+  case RSZ_ONLY_X:
+    lpmmi->ptMaxTrackSize.y = MulDiv(pm->mmiPtMaxY, dpi.x, old.x);
+    break;
+
+  case RSZ_ONLY_Y:
+    lpmmi->ptMaxTrackSize.x = MulDiv(pm->mmiPtMaxX, dpi.y, old.y);
+    break;
+  }
+#else
   lpmmi->ptMinTrackSize.x = pm->mmiPtMinX;
   lpmmi->ptMinTrackSize.y = pm->mmiPtMinY;
 
@@ -4066,10 +4100,12 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
   case RSZ_ONLY_X:
     lpmmi->ptMaxTrackSize.y = pm->mmiPtMaxY;
     break;
+
   case RSZ_ONLY_Y:
     lpmmi->ptMaxTrackSize.x = pm->mmiPtMaxX;
     break;
   }
+#endif
 }
 
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value) {
@@ -4094,13 +4130,40 @@ static inline int GetDlgCtlHeight(HWND hwndDlg, int nCtlId) {
   return height;
 }
 
-void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
-  HWND const hwndCtl = GetDlgItem(hwndDlg, nCtlId);
-  RECT rc;
-  GetWindowRect(hwndCtl, &rc);
-  MapWindowPoints(NULL, hwndDlg, (LPPOINT)& rc, 2);
-  SetWindowPos(hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE);
-  InvalidateRect(hwndCtl, NULL, TRUE);
+void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection, int nCtlId1, int nCtlId2) {
+  const int hMin1 = GetDlgCtlHeight(hwnd, nCtlId1);
+  const int hMin2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  ResizeDlg_InitEx(hwnd, cxFrame, cyFrame, nIdGrip, iDirection);
+  PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+  pm->attrs[0] = hMin1;
+  pm->attrs[1] = hMin2;
+}
+
+int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2) {
+  if (dy == 0) {
+    return 0;
+  }
+  if (dy > 0) {
+    return MulDiv(dy, cy, 100);
+  }
+  const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
+  DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+  int const hMinX = MulDiv(pm->attrs[0], dpi.x, pm->dpi.x);
+  int const hMinY = MulDiv(pm->attrs[1], dpi.y, pm->dpi.y);
+#else
+  int const hMinX = pm->attrs[0];
+  int const hMinY = pm->attrs[1];
+#endif
+  int const h1 = GetDlgCtlHeight(hwnd, nCtlId1);
+  int const h2 = GetDlgCtlHeight(hwnd, nCtlId2);
+  // cy + h1 >= hMin1			cy >= hMin1 - h1
+  // dy - cy + h2 >= hMin2	cy <= dy + h2 - hMin2
+  int const cyMin = hMinX - h1;
+  int const cyMax = dy + h2 - hMinY;
+  cy = dy - MulDiv(dy, 100 - cy, 100);
+  cy = clampi(cy, cyMin, cyMax);
+  return cy;
 }
 
 
@@ -4113,6 +4176,16 @@ HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlag
     return DeferWindowPos(hdwp, hwndCtl, NULL, rc.left + dx, rc.top + dy, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
   }
   return DeferWindowPos(hdwp, hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE);
+}
+
+
+void ResizeDlgCtl(HWND hwndDlg, int nCtlId, int dx, int dy) {
+  HWND const hwndCtl = GetDlgItem(hwndDlg, nCtlId);
+  RECT rc;
+  GetWindowRect(hwndCtl, &rc);
+  MapWindowPoints(NULL, hwndDlg, (LPPOINT)&rc, 2);
+  SetWindowPos(hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE);
+  InvalidateRect(hwndCtl, NULL, TRUE);
 }
 
 
@@ -4301,7 +4374,6 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
   return((int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 }
 
-
 //=============================================================================
 //
 //  GetCurrentPPI()
@@ -4340,7 +4412,8 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  DPI_T const ppi = GetCurrentPPI(NULL);
+  //~int const iLogPixelsY = Scintilla_GetWindowDPI(hWnd).y;
+  int const iLogPixelsY = GetCurrentPPI(NULL).y;
 
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
@@ -4349,7 +4422,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
       if (lf.lfHeight < 0) {
         lf.lfHeight = -lf.lfHeight;
       }
-      *wSize = (WORD)MulDiv(lf.lfHeight, 72, ppi.y);
+      *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
       if (*wSize == 0) { *wSize = 8; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;
@@ -4399,7 +4472,8 @@ inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
   return (BYTE*)pw;
 }
 
-DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance) 
+
+DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance)
 {
   DLGTEMPLATE* pTemplate = NULL;
 
@@ -4456,8 +4530,8 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   INT_PTR ret = (INT_PTR)NULL;
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   if (pDlgTemplate) {
     ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
@@ -4468,8 +4542,8 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   HWND hwnd = INVALID_HANDLE_VALUE;
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
   if (pDlgTemplate) {
     hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
@@ -4541,7 +4615,7 @@ void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI)
     return;
   }
  
-  DPI_T const wndDPI = pDPI ? *pDPI : Scintilla_GetCurrentDPI(hWnd);
+  DPI_T const wndDPI = pDPI ? *pDPI : Scintilla_GetWindowDPI(hWnd);
 
   RECT rc;
   GetWindowRect(hWnd, &rc);

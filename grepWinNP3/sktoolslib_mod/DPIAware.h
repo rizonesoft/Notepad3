@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2018 - Stefan Kueng
+// Copyright (C) 2018, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -38,38 +38,46 @@ public:
     }
 
     // Get screen DPI.
-    int GetDPI() { _Init(); return m_dpi; }
-
+    int GetDPI(HWND hWnd)
+    {
+        _Init();
+        if (pfnGetDpiForWindow && hWnd)
+        {
+            return pfnGetDpiForWindow(hWnd);
+        }
+        return m_dpi;
+    }
     // Convert between raw pixels and relative pixels.
-    int Scale(int x) { _Init(); return MulDiv(x, m_dpi, 96); }
-    float ScaleFactor() { _Init(); return m_dpi / 96.0f; }
-    int Unscale(int x) { _Init(); return MulDiv(x, 96, m_dpi); }
+    int Scale(HWND hWnd, int x) { return MulDiv(x, GetDPI(hWnd), 96); }
+    float ScaleFactor(HWND hWnd) { return GetDPI(hWnd) / 96.0f; }
+    float ScaleFactorSystemToWindow(HWND hWnd) { return (float)GetDPI(hWnd) / (float)m_dpi; }
+    int Unscale(HWND hWnd, int x) { return MulDiv(x, 96, GetDPI(hWnd)); }
 
     // Determine the screen dimensions in relative pixels.
     int ScaledScreenWidth() { return _ScaledSystemMetric(SM_CXSCREEN); }
     int ScaledScreenHeight() { return _ScaledSystemMetric(SM_CYSCREEN); }
 
     // Scale rectangle from raw pixels to relative pixels.
-    void ScaleRect(__inout RECT *pRect)
+    void ScaleRect(HWND hWnd, __inout RECT *pRect)
     {
-        pRect->left = Scale(pRect->left);
-        pRect->right = Scale(pRect->right);
-        pRect->top = Scale(pRect->top);
-        pRect->bottom = Scale(pRect->bottom);
+        pRect->left = Scale(hWnd, pRect->left);
+        pRect->right = Scale(hWnd, pRect->right);
+        pRect->top = Scale(hWnd, pRect->top);
+        pRect->bottom = Scale(hWnd, pRect->bottom);
     }
 
     // Scale Point from raw pixels to relative pixels.
-    void ScalePoint(__inout POINT *pPoint)
+    void ScalePoint(HWND hWnd, __inout POINT *pPoint)
     {
-        pPoint->x = Scale(pPoint->x);
-        pPoint->y = Scale(pPoint->y);
+        pPoint->x = Scale(hWnd, pPoint->x);
+        pPoint->y = Scale(hWnd, pPoint->y);
     }
 
     // Scale Size from raw pixels to relative pixels.
-    void ScaleSize(__inout SIZE *pSize)
+    void ScaleSize(HWND hWnd, __inout SIZE *pSize)
     {
-        pSize->cx = Scale(pSize->cx);
-        pSize->cy = Scale(pSize->cy);
+        pSize->cx = Scale(hWnd, pSize->cx);
+        pSize->cy = Scale(hWnd, pSize->cy);
     }
 
     // Determine if screen resolution meets minimum requirements in relative pixels.
@@ -79,7 +87,7 @@ public:
     }
 
     // Convert a point size (1/72 of an inch) to raw pixels.
-    int PointsToPixels(int pt) { _Init(); return MulDiv(pt, m_dpi, 72); }
+    int PointsToPixels(HWND hWnd, int pt) { return MulDiv(pt, GetDPI(hWnd), 72); }
 
     // returns the system metrics. For Windows 10, it returns the metrics dpi scaled.
     UINT GetSystemMetrics(int nIndex)

@@ -85,11 +85,12 @@
 /* enabled by configure --enable-posix-api=yes */
 /* #define USE_POSIX_API */
 
+#define DEFAULT_PARSE_DEPTH_LIMIT           4096
 #define INIT_MATCH_STACK_SIZE                160
 #define DEFAULT_MATCH_STACK_LIMIT_SIZE         0 /* unlimited */
 #define DEFAULT_RETRY_LIMIT_IN_MATCH    10000000
 #define DEFAULT_RETRY_LIMIT_IN_SEARCH          0 /* unlimited */
-#define DEFAULT_PARSE_DEPTH_LIMIT           4096
+#define DEFAULT_SUBEXP_CALL_LIMIT_IN_SEARCH    0 /* unlimited */
 #define DEFAULT_SUBEXP_CALL_MAX_NEST_LEVEL    20
 
 
@@ -565,10 +566,14 @@ enum OpCode {
   OP_BACKREF_N_IC,
   OP_BACKREF_MULTI,
   OP_BACKREF_MULTI_IC,
+#ifdef USE_BACKREF_WITH_LEVEL
   OP_BACKREF_WITH_LEVEL,        /* \k<xxx+n>, \k<xxx-n> */
   OP_BACKREF_WITH_LEVEL_IC,     /* \k<xxx+n>, \k<xxx-n> */
+#endif
   OP_BACKREF_CHECK,             /* (?(n)), (?('name')) */
+#ifdef USE_BACKREF_WITH_LEVEL
   OP_BACKREF_CHECK_WITH_LEVEL,  /* (?(n-level)), (?('name-level')) */
+#endif
   OP_MEM_START,
   OP_MEM_START_PUSH,     /* push back-tracker to stack */
   OP_MEM_END_PUSH,       /* push back-tracker to stack */

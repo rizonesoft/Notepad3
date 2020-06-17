@@ -2245,7 +2245,7 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
   HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
   ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
 
-  DPI_T dpi = Scintilla_GetCurrentDPI(hWnd);
+  DPI_T dpi = Scintilla_GetWindowDPI(hWnd);
   if (!Settings.DpiScaleToolBar || 
       ((dpi.x == USER_DEFAULT_SCREEN_DPI) && (dpi.y == USER_DEFAULT_SCREEN_DPI)))
   {

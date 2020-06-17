@@ -3334,7 +3334,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (!ChooseFont(&cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
 #else 
   if (Settings.RenderingTechnology > 0) {
-    DPI_T const dpi = Scintilla_GetCurrentDPI(hwnd);
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
     const WCHAR* const localName = Settings2.PreferredLanguageLocaleName;
     if (!ChooseFontDirectWrite(Globals.hwndMain, localName, dpi, &cf) || StrIsEmpty(lf.lfFaceName)) { return false; }
     // HACK: to get the full font name instead of font family name
@@ -3976,688 +3976,668 @@ static bool  _ApplyDialogItemText(HWND hwnd,
 }
 
 
-INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  static HWND hwndTV;
-  static bool fDragging;
-  static PEDITLEXER pCurrentLexer = NULL;
-  static PEDITSTYLE pCurrentStyle = NULL;
-  static int iCurStyleIdx = -1;
-  static HBRUSH hbrFore;
-  static HBRUSH hbrBack;
-  static bool bIsStyleSelected = false;
-  static bool bWarnedNoIniFile = false;
-  static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
+    static HWND       hwndTV;
+    static bool       fDragging;
+    static PEDITLEXER pCurrentLexer = NULL;
+    static PEDITSTYLE pCurrentStyle = NULL;
+    static int        iCurStyleIdx  = -1;
+    static HBRUSH     hbrFore;
+    static HBRUSH     hbrBack;
+    static bool       bIsStyleSelected = false;
+    static bool       bWarnedNoIniFile = false;
+    static WCHAR*     Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
 
-  static WCHAR tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
+    static WCHAR tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
 
-  switch(umsg)
-  {
-    case WM_INITDIALOG:
-      {
-        SET_NP3_DLG_ICON_SMALL(hwnd);
-
-        ResizeDlg_Init(hwnd, 0, 0, IDC_RESIZEGRIP, RSZ_NONE);
-
-        GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
-        SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
-
-        // Backup Styles
-        ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
-        int cnt = 0;
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-          Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->szExtensions);
-          int i = 0;
-          while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-            Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->Styles[i].szValue);
-            ++i;
-          }
-        }
-
-        hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
-        fDragging = false;
-
-        SHFILEINFO shfi;
-        ZeroMemory(&shfi, sizeof(SHFILEINFO));
-        TreeView_SetImageList(hwndTV,
-          (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
-            SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),TVSIL_NORMAL);
-
-        // findlexer
-        int found = -1;
-        for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-          if (g_pLexArray[i] == s_pLexCurrent) {
-            found = i;
-            break;
-          }
-        }
-
-        // Build lexer tree view
-        HTREEITEM hCurrentTVLex = NULL;
-        for (int i = 0; i < COUNTOF(g_pLexArray); i++)
+    switch (umsg)
+    {
+        case WM_INITDIALOG:
         {
-          if (i == found)
-            hCurrentTVLex = Style_AddLexerToTreeView(hwndTV,g_pLexArray[i]);
-          else
-            Style_AddLexerToTreeView(hwndTV,g_pLexArray[i]);
-        }
-        if (!hCurrentTVLex) 
-        {
-          hCurrentTVLex = TreeView_GetRoot(hwndTV);
-          if (Style_GetUse2ndDefault()) 
-            hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex);
-        }
-        TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
+            SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+            SET_NP3_DLG_ICON_SMALL(hwnd);
 
-        pCurrentLexer = (found >= 0) ? s_pLexCurrent : GetDefaultLexer();
-        pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
-        iCurStyleIdx = STY_DEFAULT;
+            GetLngString(IDS_MUI_STYLEEDIT_HELP, tchTmpBuffer, COUNTOF(tchTmpBuffer));
+            SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, tchTmpBuffer);
 
-        SendDlgItemMessage(hwnd,IDC_STYLEEDIT,EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)-1,0);
-
-        MakeBitmapButton(hwnd,IDC_PREVSTYLE,Globals.hInstance,IDB_PREV);
-        MakeBitmapButton(hwnd,IDC_NEXTSTYLE,Globals.hInstance,IDB_NEXT);
-
-        if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
-        {
-          CenterDlgInParent(hwnd, NULL);
-        }
-        else {
-          SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
-        }
-        HMENU hmenu = GetSystemMenu(hwnd, false);
-        GetLngString(IDS_MUI_PREVIEW, tchTmpBuffer, COUNTOF(tchTmpBuffer));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchTmpBuffer);
-        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-        GetLngString(IDS_MUI_SAVEPOS, tchTmpBuffer, COUNTOF(tchTmpBuffer));
-        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, tchTmpBuffer);
-        GetLngString(IDS_MUI_RESETPOS, tchTmpBuffer, COUNTOF(tchTmpBuffer));
-        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchTmpBuffer);
-        InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-
-        bWarnedNoIniFile = false;
-
-        PostMessage(hwnd, WM_PAINT, 0, 0);
-      }
-      return !0;
-
-    case WM_PAINT:
-      {
-        HDC const hDC = GetWindowDC(hwnd);
-      
-        int const iconSize = 64;
-        int const dpiWidth = ScaleIntToDPI_X(hwnd, iconSize);
-        int const dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
-        HICON const hicon = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
-        if (hicon) {
-          DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 340), ScaleIntToDPI_Y(hwnd, 62), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
-        }
-
-        // Set title font
-        static HFONT hFontTitle = NULL;
-        int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-        if (hFontTitle) { DeleteObject(hFontTitle); }
-        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-        LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-        lf.lfWeight = FW_BOLD;
-        lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
-        lf.lfWidth = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-        hFontTitle = CreateFontIndirect(&lf);
-        SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
-
-        ReleaseDC(hwnd, hDC);
-      }
-      return 0;
-
-    case WM_ACTIVATE:
-      DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
-      return !0;
-
-    case WM_DESTROY:
-      {
-        DeleteBitmapButton(hwnd, IDC_STYLEFORE);
-        DeleteBitmapButton(hwnd, IDC_STYLEBACK);
-        DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
-        DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
-        ResizeDlg_Destroy(hwnd, NULL, NULL);
-
-        // free old backup
-        int cnt = 0;
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-          if (Style_StylesBackup[cnt]) {
-            LocalFree(Style_StylesBackup[cnt]);  // StrDup()
-            Style_StylesBackup[cnt] = NULL;
-          }
-          ++cnt;
-          int i = 0;
-          while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-            if (Style_StylesBackup[cnt]) {
-              LocalFree(Style_StylesBackup[cnt]);  // StrDup()
-              Style_StylesBackup[cnt] = NULL;
+            // Backup Styles
+            ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
+            int cnt = 0;
+            for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
+            {
+                Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->szExtensions);
+                int i                     = 0;
+                while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+                {
+                    Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->Styles[i].szValue);
+                    ++i;
+                }
             }
-            ++cnt;
-            ++i;
-          }
+
+            hwndTV    = GetDlgItem(hwnd, IDC_STYLELIST);
+            fDragging = false;
+
+            SHFILEINFO shfi;
+            ZeroMemory(&shfi, sizeof(SHFILEINFO));
+            TreeView_SetImageList(hwndTV,
+                                  (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
+                                                            SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
+                                  TVSIL_NORMAL);
+
+            // findlexer
+            int found = -1;
+            for (int i = 0; i < COUNTOF(g_pLexArray); ++i)
+            {
+                if (g_pLexArray[i] == s_pLexCurrent)
+                {
+                    found = i;
+                    break;
+                }
+            }
+
+            // Build lexer tree view
+            HTREEITEM hCurrentTVLex = NULL;
+            for (int i = 0; i < COUNTOF(g_pLexArray); i++)
+            {
+                if (i == found)
+                    hCurrentTVLex = Style_AddLexerToTreeView(hwndTV, g_pLexArray[i]);
+                else
+                    Style_AddLexerToTreeView(hwndTV, g_pLexArray[i]);
+            }
+            if (!hCurrentTVLex)
+            {
+                hCurrentTVLex = TreeView_GetRoot(hwndTV);
+                if (Style_GetUse2ndDefault())
+                    hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex);
+            }
+            TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
+
+            pCurrentLexer = (found >= 0) ? s_pLexCurrent : GetDefaultLexer();
+            pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+            iCurStyleIdx  = STY_DEFAULT;
+
+            SendDlgItemMessage(hwnd, IDC_STYLEEDIT, EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS) - 1, 0);
+
+            MakeBitmapButton(hwnd, IDC_PREVSTYLE, Globals.hInstance, IDB_PREV);
+            MakeBitmapButton(hwnd, IDC_NEXTSTYLE, Globals.hInstance, IDB_NEXT);
+
+            if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
+            {
+                CenterDlgInParent(hwnd, NULL);
+            }
+            else
+            {
+                SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
+            }
+            HMENU hmenu = GetSystemMenu(hwnd, false);
+            GetLngString(IDS_MUI_PREVIEW, tchTmpBuffer, COUNTOF(tchTmpBuffer));
+            InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchTmpBuffer);
+            InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+            GetLngString(IDS_MUI_SAVEPOS, tchTmpBuffer, COUNTOF(tchTmpBuffer));
+            InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, tchTmpBuffer);
+            GetLngString(IDS_MUI_RESETPOS, tchTmpBuffer, COUNTOF(tchTmpBuffer));
+            InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchTmpBuffer);
+            InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+
+            bWarnedNoIniFile = false;
+
+            //UpdateWindowLayoutForDPI(hwnd, NULL, NULL);
         }
-        pCurrentLexer = NULL;
-        pCurrentStyle = NULL;
-        iCurStyleIdx = -1;
-      }
-      return false;
-
-    case WM_SIZE:
-      return !0;
-
-    case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
-      return !0;
-
-#if 0
-    case WM_SIZE: 
-      {
-        int dx;
-        int dy;
-        ResizeDlg_Size(hwnd, lParam, &dx, &dy);
-        HDWP hdwp = BeginDeferWindowPos(18);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, dy, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_INFO_GROUPBOX, dx, dy, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_TITLE, dx, 0, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL_ROOT, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_ROOT, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELABEL, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEFORE, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEBACK, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEFONT, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PREVIEW, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEDEFAULT, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PREVSTYLE, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_NEXTSTYLE, dx, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_IMPORT, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_EXPORT, 0, dy, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLEEDIT_HELP, dx, dy, SWP_NOSIZE);
-        EndDeferWindowPos(hdwp);
-      }
-      return !0;
-#endif
-
-    case WM_GETMINMAXINFO:
-      ResizeDlg_GetMinMaxInfo(hwnd, lParam);
-      return !0;
-
-
-    case WM_SYSCOMMAND:
-      if (wParam == IDS_MUI_SAVEPOS) {
-        PostWMCommand(hwnd, IDACC_SAVEPOS);
         return !0;
-      }
-      else if (wParam == IDS_MUI_RESETPOS) {
-        PostWMCommand(hwnd, IDACC_RESETPOS);
-        return !0;
-      }
-      else
+
+        case WM_PAINT:
+        {
+            HDC const hDC = GetWindowDC(hwnd);
+
+            int const   iconSize  = 64;
+            int const   dpiWidth  = ScaleIntToDPI_X(hwnd, iconSize);
+            int const   dpiHeight = ScaleIntToDPI_Y(hwnd, iconSize);
+            HICON const hicon     = (dpiHeight > 128) ? Globals.hDlgIconPrefs256 : ((dpiHeight > 64) ? Globals.hDlgIconPrefs128 : Globals.hDlgIconPrefs64);
+            if (hicon)
+            {
+                DrawIconEx(hDC, ScaleIntToDPI_X(hwnd, 340), ScaleIntToDPI_Y(hwnd, 62), hicon, dpiWidth, dpiHeight, 0, NULL, DI_NORMAL);
+            }
+
+            // Set title font
+            static HFONT hFontTitle = NULL;
+            int const    height     = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
+            if (hFontTitle)
+            {
+                DeleteObject(hFontTitle);
+            }
+            hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+            LOGFONT lf;
+            GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+            lf.lfWeight = FW_BOLD;
+            lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
+            lf.lfWidth  = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+            hFontTitle  = CreateFontIndirect(&lf);
+            SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
+
+            ReleaseDC(hwnd, hDC);
+        }
         return 0;
 
+        case WM_ACTIVATE:
+            DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
+            return !0;
 
-    case WM_NOTIFY:
-
-      if (((LPNMHDR)(lParam))->idFrom == IDC_STYLELIST)
-      {
-        LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW)lParam;
-
-        switch (lpnmtv->hdr.code)
+        case WM_DESTROY:
         {
+            DeleteBitmapButton(hwnd, IDC_STYLEFORE);
+            DeleteBitmapButton(hwnd, IDC_STYLEBACK);
+            DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
+            DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
 
-          case TVN_SELCHANGED:
+            // free old backup
+            int cnt = 0;
+            for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
             {
-              if (pCurrentLexer && pCurrentStyle) {
-                _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-              }
-
-              WCHAR name[80] = { L'\0' };
-              WCHAR label[128] = { L'\0' };
-
-              //DialogEnableWindow(hwnd, IDC_STYLEEDIT, true);
-              //DialogEnableWindow(hwnd, IDC_STYLEFONT, true);
-              //DialogEnableWindow(hwnd, IDC_STYLEFORE, true);
-              //DialogEnableWindow(hwnd, IDC_STYLEBACK, true);
-              //DialogEnableWindow(hwnd, IDC_STYLEDEFAULT, true);
-
-              // a lexer has been selected
-              if (!TreeView_GetParent(hwndTV,lpnmtv->itemNew.hItem))
-              {
-                pCurrentLexer = (PEDITLEXER)lpnmtv->itemNew.lParam;
-
-                if (pCurrentLexer)
+                if (Style_StylesBackup[cnt])
                 {
-                  bIsStyleSelected = false;
-                  GetLngString(IDS_MUI_ASSOCIATED_EXT, label, COUNTOF(label));
-                  SetDlgItemText(hwnd,IDC_STYLELABEL_ROOT, label);
-                  DialogEnableControl(hwnd,IDC_STYLEEDIT_ROOT,true);
-                  SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
-                  DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, true);
-
-                  if (IsLexerStandard(pCurrentLexer)) 
-                  {
-                    pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
-                    iCurStyleIdx = STY_DEFAULT;
-
-                    if (pCurrentStyle->rid == IDS_LEX_STD_STYLE) {
-                      GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
-                    }
-                    else {
-                      GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
-                      DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
-                    }
-                    DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
-                  }
-                  else {
-                    pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
-                    iCurStyleIdx = STY_DEFAULT;
-                    GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
-                    FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
-                    DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, true);
-                  }
-                  SetDlgItemText(hwnd, IDC_STYLELABEL, label);
-                  SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
+                    LocalFree(Style_StylesBackup[cnt]); // StrDup()
+                    Style_StylesBackup[cnt] = NULL;
                 }
-                else
+                ++cnt;
+                int i = 0;
+                while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
                 {
-                  SetDlgItemText(hwnd,IDC_STYLELABEL_ROOT,L"");
-                  DialogEnableControl(hwnd,IDC_STYLEEDIT_ROOT,false);
-                  SetDlgItemText(hwnd, IDC_STYLELABEL, L"");
-                  DialogEnableControl(hwnd, IDC_STYLEEDIT, false);
-                }
-                DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
-              }
-              // a style has been selected
-              else
-              {
-                if (pCurrentLexer) {
-                  if (IsLexerStandard(pCurrentLexer)) {
-                    if (pCurrentLexer->Styles[STY_DEFAULT].rid == IDS_LEX_STD_STYLE)
-                      GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
-                    else
-                      GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
-                  }
-                  else {
-                    GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
-                    FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
-                  }
-                  SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
-
-                  SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->Styles[STY_DEFAULT].szValue);
-                  DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
-
-                  pCurrentStyle = (PEDITSTYLE)lpnmtv->itemNew.lParam;
-                  iCurStyleIdx = -1;
-                  int i = 0;
-                  while (pCurrentLexer->Styles[i].iStyle != -1) {
-                    if (pCurrentLexer->Styles[i].rid == pCurrentStyle->rid) {
-                      iCurStyleIdx = i;
-                      break;
+                    if (Style_StylesBackup[cnt])
+                    {
+                        LocalFree(Style_StylesBackup[cnt]); // StrDup()
+                        Style_StylesBackup[cnt] = NULL;
                     }
+                    ++cnt;
                     ++i;
-                  }
-                  assert(iCurStyleIdx != -1);
                 }
-                if (pCurrentStyle)
+            }
+            pCurrentLexer = NULL;
+            pCurrentStyle = NULL;
+            iCurStyleIdx  = -1;
+        }
+            return false;
+
+        case WM_DPICHANGED:
+            UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
+            return !0;
+
+        case WM_SYSCOMMAND:
+            if (wParam == IDS_MUI_SAVEPOS)
+            {
+                PostWMCommand(hwnd, IDACC_SAVEPOS);
+                return !0;
+            }
+            else if (wParam == IDS_MUI_RESETPOS)
+            {
+                PostWMCommand(hwnd, IDACC_RESETPOS);
+                return !0;
+            }
+            else
+                return 0;
+
+        case WM_NOTIFY:
+
+            if (((LPNMHDR)(lParam))->idFrom == IDC_STYLELIST)
+            {
+                LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW)lParam;
+
+                switch (lpnmtv->hdr.code)
                 {
-                  bIsStyleSelected = true;
-                  GetLngString(pCurrentStyle->rid, name, COUNTOF(name));
-                  FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXSTYLE, name);
-                  SetDlgItemText(hwnd, IDC_STYLELABEL, label);
-                  SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
+                    case TVN_SELCHANGED:
+                    {
+                        if (pCurrentLexer && pCurrentStyle)
+                        {
+                            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                        }
+
+                        WCHAR name[80]   = {L'\0'};
+                        WCHAR label[128] = {L'\0'};
+
+                        //DialogEnableWindow(hwnd, IDC_STYLEEDIT, true);
+                        //DialogEnableWindow(hwnd, IDC_STYLEFONT, true);
+                        //DialogEnableWindow(hwnd, IDC_STYLEFORE, true);
+                        //DialogEnableWindow(hwnd, IDC_STYLEBACK, true);
+                        //DialogEnableWindow(hwnd, IDC_STYLEDEFAULT, true);
+
+                        // a lexer has been selected
+                        if (!TreeView_GetParent(hwndTV, lpnmtv->itemNew.hItem))
+                        {
+                            pCurrentLexer = (PEDITLEXER)lpnmtv->itemNew.lParam;
+
+                            if (pCurrentLexer)
+                            {
+                                bIsStyleSelected = false;
+                                GetLngString(IDS_MUI_ASSOCIATED_EXT, label, COUNTOF(label));
+                                SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
+                                DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, true);
+                                SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
+                                DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, true);
+
+                                if (IsLexerStandard(pCurrentLexer))
+                                {
+                                    pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+                                    iCurStyleIdx  = STY_DEFAULT;
+
+                                    if (pCurrentStyle->rid == IDS_LEX_STD_STYLE)
+                                    {
+                                        GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
+                                    }
+                                    else
+                                    {
+                                        GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
+                                        DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
+                                    }
+                                    DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
+                                }
+                                else
+                                {
+                                    pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+                                    iCurStyleIdx  = STY_DEFAULT;
+                                    GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+                                    FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
+                                    DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, true);
+                                }
+                                SetDlgItemText(hwnd, IDC_STYLELABEL, label);
+                                SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
+                            }
+                            else
+                            {
+                                SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, L"");
+                                DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
+                                SetDlgItemText(hwnd, IDC_STYLELABEL, L"");
+                                DialogEnableControl(hwnd, IDC_STYLEEDIT, false);
+                            }
+                            DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
+                        }
+                        // a style has been selected
+                        else
+                        {
+                            if (pCurrentLexer)
+                            {
+                                if (IsLexerStandard(pCurrentLexer))
+                                {
+                                    if (pCurrentLexer->Styles[STY_DEFAULT].rid == IDS_LEX_STD_STYLE)
+                                        GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
+                                    else
+                                        GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
+                                }
+                                else
+                                {
+                                    GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+                                    FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
+                                }
+                                SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
+
+                                SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->Styles[STY_DEFAULT].szValue);
+                                DialogEnableControl(hwnd, IDC_STYLEEDIT_ROOT, false);
+
+                                pCurrentStyle = (PEDITSTYLE)lpnmtv->itemNew.lParam;
+                                iCurStyleIdx  = -1;
+                                int i         = 0;
+                                while (pCurrentLexer->Styles[i].iStyle != -1)
+                                {
+                                    if (pCurrentLexer->Styles[i].rid == pCurrentStyle->rid)
+                                    {
+                                        iCurStyleIdx = i;
+                                        break;
+                                    }
+                                    ++i;
+                                }
+                                assert(iCurStyleIdx != -1);
+                            }
+                            if (pCurrentStyle)
+                            {
+                                bIsStyleSelected = true;
+                                GetLngString(pCurrentStyle->rid, name, COUNTOF(name));
+                                FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXSTYLE, name);
+                                SetDlgItemText(hwnd, IDC_STYLELABEL, label);
+                                SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
+                            }
+                            else
+                            {
+                                iCurStyleIdx = -1;
+                                SetDlgItemText(hwnd, IDC_STYLELABEL, L"");
+                                DialogEnableControl(hwnd, IDC_STYLEEDIT, false);
+                            }
+                        }
+                    }
+                    break;
+
+                    case TVN_BEGINDRAG:
+                    {
+                        TreeView_Select(hwndTV, lpnmtv->itemNew.hItem, TVGN_CARET);
+
+                        if (bIsStyleSelected)
+                            DestroyCursor(SetCursor(LoadCursor(Globals.hInstance, MAKEINTRESOURCE(IDC_COPY))));
+                        else
+                            DestroyCursor(SetCursor(LoadCursor(NULL, IDC_NO)));
+
+                        SetCapture(hwnd);
+                        fDragging = true;
+                    }
                 }
-                else
-                {
-                  iCurStyleIdx = -1;
-                  SetDlgItemText(hwnd, IDC_STYLELABEL, L"");
-                  DialogEnableControl(hwnd, IDC_STYLEEDIT, false);
-                }
-              }
             }
             break;
 
-          case TVN_BEGINDRAG:
+        case WM_MOUSEMOVE:
+        {
+            HTREEITEM     htiTarget;
+            TVHITTESTINFO tvht;
+
+            if (fDragging && bIsStyleSelected)
             {
-              TreeView_Select(hwndTV,lpnmtv->itemNew.hItem,TVGN_CARET);
+                LONG xCur = (LONG)(short)LOWORD(lParam);
+                LONG yCur = (LONG)(short)HIWORD(lParam);
 
-              if (bIsStyleSelected)
-                DestroyCursor(SetCursor(LoadCursor(Globals.hInstance,MAKEINTRESOURCE(IDC_COPY))));
-              else
-                DestroyCursor(SetCursor(LoadCursor(NULL,IDC_NO)));
+                //ImageList_DragMove(xCur,yCur);
+                //ImageList_DragShowNolock(false);
 
-              SetCapture(hwnd);
-              fDragging = true;
+                tvht.pt.x = xCur;
+                tvht.pt.y = yCur;
+
+                //ClientToScreen(hwnd,&tvht.pt);
+                //ScreenToClient(hwndTV,&tvht.pt);
+                MapWindowPoints(hwnd, hwndTV, &tvht.pt, 1);
+
+                if ((htiTarget = TreeView_HitTest(hwndTV, &tvht)) != NULL &&
+                    TreeView_GetParent(hwndTV, htiTarget) != NULL)
+                {
+                    TreeView_SelectDropTarget(hwndTV, htiTarget);
+                    //TreeView_Expand(hwndTV,htiTarget,TVE_EXPAND);
+                    TreeView_EnsureVisible(hwndTV, htiTarget);
+                }
+                else
+                    TreeView_SelectDropTarget(hwndTV, NULL);
+
+                //ImageList_DragShowNolock(true);
             }
-
         }
-      }
-      break;
+        break;
 
-
-    case WM_MOUSEMOVE:
-      {
-        HTREEITEM htiTarget;
-        TVHITTESTINFO tvht;
-
-        if (fDragging && bIsStyleSelected)
+        case WM_LBUTTONUP:
         {
-          LONG xCur = (LONG)(short)LOWORD(lParam);
-          LONG yCur = (LONG)(short)HIWORD(lParam);
+            if (fDragging && bIsStyleSelected)
+            {
+                //ImageList_EndDrag();
+                HTREEITEM htiTarget = TreeView_GetDropHilight(hwndTV);
+                if (htiTarget)
+                {
+                    WCHAR tchCopy[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
+                    TreeView_SelectDropTarget(hwndTV, NULL);
+                    GetDlgItemText(hwnd, IDC_STYLEEDIT, tchCopy, COUNTOF(tchCopy));
+                    TreeView_Select(hwndTV, htiTarget, TVGN_CARET);
 
-          //ImageList_DragMove(xCur,yCur);
-          //ImageList_DragShowNolock(false);
-
-          tvht.pt.x = xCur;
-          tvht.pt.y = yCur;
-
-          //ClientToScreen(hwnd,&tvht.pt);
-          //ScreenToClient(hwndTV,&tvht.pt);
-          MapWindowPoints(hwnd,hwndTV,&tvht.pt,1);
-
-          if ((htiTarget = TreeView_HitTest(hwndTV,&tvht)) != NULL &&
-               TreeView_GetParent(hwndTV,htiTarget) != NULL)
-          {
-            TreeView_SelectDropTarget(hwndTV,htiTarget);
-            //TreeView_Expand(hwndTV,htiTarget,TVE_EXPAND);
-            TreeView_EnsureVisible(hwndTV,htiTarget);
-          }
-          else
-            TreeView_SelectDropTarget(hwndTV,NULL);
-
-          //ImageList_DragShowNolock(true);
+                    // after select, this is new current item
+                    SetDlgItemText(hwnd, IDC_STYLEEDIT, tchCopy);
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                }
+                ReleaseCapture();
+                DestroyCursor(SetCursor(LoadCursor(NULL, IDC_ARROW)));
+                fDragging = false;
+            }
         }
-      }
-      break;
+        break;
 
-
-    case WM_LBUTTONUP:
-      {
-        if (fDragging && bIsStyleSelected)
+        case WM_CANCELMODE:
         {
-          //ImageList_EndDrag();
-          HTREEITEM htiTarget = TreeView_GetDropHilight(hwndTV);
-          if (htiTarget)
-          {
-            WCHAR tchCopy[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
-            TreeView_SelectDropTarget(hwndTV,NULL);
-            GetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy,COUNTOF(tchCopy));
-            TreeView_Select(hwndTV,htiTarget,TVGN_CARET);
-
-            // after select, this is new current item
-            SetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy);
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-          }
-          ReleaseCapture();
-          DestroyCursor(SetCursor(LoadCursor(NULL,IDC_ARROW)));
-          fDragging = false;
+            if (fDragging)
+            {
+                //ImageList_EndDrag();
+                TreeView_SelectDropTarget(hwndTV, NULL);
+                ReleaseCapture();
+                DestroyCursor(SetCursor(LoadCursor(NULL, IDC_ARROW)));
+                fDragging = false;
+            }
         }
-      }
-      break;
+        break;
 
-
-    case WM_CANCELMODE:
-      {
-        if (fDragging)
+        case WM_COMMAND:
         {
-          //ImageList_EndDrag();
-          TreeView_SelectDropTarget(hwndTV,NULL);
-          ReleaseCapture();
-          DestroyCursor(SetCursor(LoadCursor(NULL,IDC_ARROW)));
-          fDragging = false;
-        }
-      }
-      break;
+            switch (LOWORD(wParam))
+            {
+                case IDC_SETCURLEXERTV:
+                {
+                    // find current lexer's tree entry
+                    HTREEITEM hCurrentTVLex = TreeView_GetRoot(hwndTV);
+                    for (int i = 0; i < COUNTOF(g_pLexArray); ++i)
+                    {
+                        if (g_pLexArray[i] == s_pLexCurrent)
+                        {
+                            break;
+                        }
+                        hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex); // next
+                    }
+                    if (s_pLexCurrent == pCurrentLexer)
+                        break; // no change
 
+                    // collaps current node
+                    HTREEITEM hSel = TreeView_GetSelection(hwndTV);
+                    if (hSel)
+                    {
+                        HTREEITEM hPar = TreeView_GetParent(hwndTV, hSel);
+                        TreeView_Expand(hwndTV, hSel, TVE_COLLAPSE);
+                        if (hPar)
+                            TreeView_Expand(hwndTV, hPar, TVE_COLLAPSE);
+                    }
 
-    case WM_COMMAND:
-      {
-        switch (LOWORD(wParam)) 
-        {
-        case IDC_SETCURLEXERTV:
-          {
-            // find current lexer's tree entry
-            HTREEITEM hCurrentTVLex = TreeView_GetRoot(hwndTV);
-            for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-              if (g_pLexArray[i] == s_pLexCurrent) {
+                    // set new lexer
+                    TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
+                    TreeView_Expand(hwndTV, hCurrentTVLex, TVE_EXPAND);
+
+                    pCurrentLexer = s_pLexCurrent;
+                    pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+                    iCurStyleIdx  = STY_DEFAULT;
+
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                }
                 break;
-              }
-              hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex); // next
-            }
-            if (s_pLexCurrent == pCurrentLexer)
-              break; // no change
 
-            // collaps current node
-            HTREEITEM hSel = TreeView_GetSelection(hwndTV);
-            if (hSel) {
-              HTREEITEM hPar = TreeView_GetParent(hwndTV, hSel);
-              TreeView_Expand(hwndTV, hSel, TVE_COLLAPSE);
-              if (hPar)
-                TreeView_Expand(hwndTV, hPar, TVE_COLLAPSE);
-            }
+                case IDC_STYLEFORE:
+                    if (pCurrentStyle)
+                    {
+                        WCHAR tch[BUFSIZE_STYLE_VALUE] = {L'\0'};
+                        GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
+                        if (Style_SelectColor(hwnd, true, tch, COUNTOF(tch), true))
+                        {
+                            SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
+                        }
+                    }
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                    break;
 
-            // set new lexer
-            TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
-            TreeView_Expand(hwndTV, hCurrentTVLex, TVE_EXPAND);
+                case IDC_STYLEBACK:
+                    if (pCurrentStyle)
+                    {
+                        WCHAR tch[BUFSIZE_STYLE_VALUE] = {L'\0'};
+                        GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
+                        if (Style_SelectColor(hwnd, false, tch, COUNTOF(tch), true))
+                        {
+                            SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
+                        }
+                    }
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                    break;
 
-            pCurrentLexer = s_pLexCurrent;
-            pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
-            iCurStyleIdx = STY_DEFAULT;
+                case IDC_STYLEFONT:
+                    if (pCurrentStyle)
+                    {
+                        WCHAR lexerName[BUFSIZE_STYLE_VALUE] = {L'\0'};
+                        WCHAR styleName[BUFSIZE_STYLE_VALUE] = {L'\0'};
+                        GetDlgItemText(hwnd, IDC_STYLEEDIT, tchTmpBuffer, COUNTOF(tchTmpBuffer));
+                        GetLngString(pCurrentLexer->resID, lexerName, COUNTOF(lexerName));
+                        GetLngString(pCurrentStyle->rid, styleName, COUNTOF(styleName));
+                        if (Style_SelectFont(hwnd, tchTmpBuffer, COUNTOF(tchTmpBuffer), lexerName, styleName,
+                                             IsStyleStandardDefault(pCurrentStyle), IsStyleSchemeDefault(pCurrentStyle), true, true))
+                        {
+                            SetDlgItemText(hwnd, IDC_STYLEEDIT, tchTmpBuffer);
+                        }
+                    }
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                    break;
 
-            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          }
-          break;
-        
+                case IDC_STYLEDEFAULT:
+                {
+                    SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
+                    if (!bIsStyleSelected)
+                    {
+                        SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
+                    }
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                }
+                break;
 
-        case IDC_STYLEFORE:
-          if (pCurrentStyle) {
-            WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-            GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
-            if (Style_SelectColor(hwnd, true, tch, COUNTOF(tch), true)) {
-              SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
-            }
-          }
-          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          break;
+                case IDC_STYLEEDIT:
+                {
+                    if (HIWORD(wParam) == EN_CHANGE)
+                    {
+                        WCHAR tch[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = {L'\0'};
 
+                        GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
 
-        case IDC_STYLEBACK:
-          if (pCurrentStyle) {
-            WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-            GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
-            if (Style_SelectColor(hwnd, false, tch, COUNTOF(tch), true)) {
-              SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
-            }
-          }
-          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          break;
+                        COLORREF cr = COLORREF_MAX; // SciCall_StyleGetFore(STYLE_DEFAULT);
+                        Style_StrGetColor(tch, FOREGROUND_LAYER, &cr);
+                        MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
 
+                        cr = COLORREF_MAX; // SciCall_StyleGetBack(STYLE_DEFAULT);
+                        Style_StrGetColor(tch, BACKGROUND_LAYER, &cr);
+                        MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
+                    }
+                }
+                break;
 
-        case IDC_STYLEFONT:
-          if (pCurrentStyle) {
-            WCHAR lexerName[BUFSIZE_STYLE_VALUE] = { L'\0' };
-            WCHAR styleName[BUFSIZE_STYLE_VALUE] = { L'\0' };
-            GetDlgItemText(hwnd, IDC_STYLEEDIT, tchTmpBuffer, COUNTOF(tchTmpBuffer));
-            GetLngString(pCurrentLexer->resID, lexerName, COUNTOF(lexerName));
-            GetLngString(pCurrentStyle->rid, styleName, COUNTOF(styleName));
-            if (Style_SelectFont(hwnd, tchTmpBuffer, COUNTOF(tchTmpBuffer), lexerName, styleName,
-                                 IsStyleStandardDefault(pCurrentStyle), IsStyleSchemeDefault(pCurrentStyle), true, true)) {
-              SetDlgItemText(hwnd, IDC_STYLEEDIT, tchTmpBuffer);
-            }
-          }
-          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          break;
+                case IDC_IMPORT:
+                {
+                    hwndTV = GetDlgItem(hwnd, IDC_STYLELIST);
 
+                    if (Style_Import(hwnd))
+                    {
+                        SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
+                        if (!bIsStyleSelected)
+                        {
+                            SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
+                        }
+                        TreeView_Select(hwndTV, TreeView_GetRoot(hwndTV), TVGN_CARET);
+                        Style_ResetCurrentLexer(Globals.hwndEdit);
+                    }
+                }
+                break;
 
-        case IDC_STYLEDEFAULT:
-          {
-            SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
-            if (!bIsStyleSelected) {
-              SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
-            }
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          }
-          break;
+                case IDC_EXPORT:
+                {
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                    Style_Export(hwnd);
+                }
+                break;
 
+                case IDC_PREVIEW:
+                {
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                }
+                break;
 
-        case IDC_STYLEEDIT:
-          {
-            if (HIWORD(wParam) == EN_CHANGE) {
-              WCHAR tch[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)] = { L'\0' };
+                case IDC_PREVSTYLE:
+                {
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                    HTREEITEM hSel = TreeView_GetSelection(hwndTV);
+                    if (hSel)
+                    {
+                        HTREEITEM hPrev = TreeView_GetPrevVisible(hwndTV, hSel);
+                        if (hPrev)
+                            TreeView_Select(hwndTV, hPrev, TVGN_CARET);
+                    }
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                }
+                break;
 
-              GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
+                case IDC_NEXTSTYLE:
+                {
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+                    HTREEITEM hSel = TreeView_GetSelection(hwndTV);
+                    if (hSel)
+                    {
+                        HTREEITEM hNext = TreeView_GetNextVisible(hwndTV, hSel);
+                        if (hNext)
+                            TreeView_Select(hwndTV, hNext, TVGN_CARET);
+                    }
+                    PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+                }
+                break;
 
-              COLORREF cr = COLORREF_MAX; // SciCall_StyleGetFore(STYLE_DEFAULT);
-              Style_StrGetColor(tch, FOREGROUND_LAYER, &cr);
-              MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
+                case IDOK:
+                {
+                    _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-              cr = COLORREF_MAX; // SciCall_StyleGetBack(STYLE_DEFAULT);
-              Style_StrGetColor(tch, BACKGROUND_LAYER, &cr);
-              MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
-            }
-          }
-          break;
+                    if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[Globals.idxSelectedTheme].szFilePath)) && (Globals.idxSelectedTheme > 0))
+                    {
+                        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
+                        bWarnedNoIniFile = true;
+                    }
+                    //EndDialog(hwnd,IDOK);
+                    DestroyWindow(hwnd);
+                }
+                break;
 
+                case IDCANCEL:
+                    if (fDragging)
+                    {
+                        SendMessage(hwnd, WM_CANCELMODE, 0, 0);
+                    }
+                    else
+                    {
+                        _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-        case IDC_IMPORT:
-          {
-            hwndTV = GetDlgItem(hwnd, IDC_STYLELIST);
+                        // Restore Styles from Backup
+                        int cnt = 0;
+                        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
+                        {
+                            StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), Style_StylesBackup[cnt]);
 
-            if (Style_Import(hwnd)) {
-              SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
-              if (!bIsStyleSelected) {
-                SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
-              }
-              TreeView_Select(hwndTV, TreeView_GetRoot(hwndTV), TVGN_CARET);
-              Style_ResetCurrentLexer(Globals.hwndEdit);
-            }
-          }
-          break;
+                            ++cnt;
+                            int i = 0;
+                            while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+                            {
+                                // normalize
+                                tchTmpBuffer[0] = L'\0'; // clear
+                                Style_CopyStyles_IfNotDefined(Style_StylesBackup[cnt], tchTmpBuffer, COUNTOF(tchTmpBuffer), true);
+                                StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), tchTmpBuffer);
+                                ++cnt;
+                                ++i;
+                            }
+                        }
+                        Style_ResetCurrentLexer(Globals.hwndEdit);
+                        //EndDialog(hwnd,IDCANCEL);
+                        DestroyWindow(hwnd);
+                    }
+                    break;
 
+                case IDACC_VIEWSCHEMECONFIG:
+                    PostWMCommand(hwnd, IDC_SETCURLEXERTV);
+                    break;
 
-        case IDC_EXPORT:
-          {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-            Style_Export(hwnd);
-          }
-          break;
+                case IDACC_PREVIEW:
+                    PostWMCommand(hwnd, IDC_PREVIEW);
+                    break;
 
+                case IDACC_SAVEPOS:
+                    GetDlgPos(hwnd, &Settings.CustomSchemesDlgPosX, &Settings.CustomSchemesDlgPosY);
+                    break;
 
-        case IDC_PREVIEW:
-          {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-          }
-          break;
+                case IDACC_RESETPOS:
+                    CenterDlgInParent(hwnd, NULL);
+                    Settings.CustomSchemesDlgPosX = Settings.CustomSchemesDlgPosY = CW_USEDEFAULT;
+                    break;
 
+                default:
+                    // return false???
+                    break;
 
-        case IDC_PREVSTYLE:
-          {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-            HTREEITEM hSel = TreeView_GetSelection(hwndTV);
-            if (hSel) {
-              HTREEITEM hPrev = TreeView_GetPrevVisible(hwndTV, hSel);
-              if (hPrev)
-                TreeView_Select(hwndTV, hPrev, TVGN_CARET);
-            }
-            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          }
-          break;
-
-
-        case IDC_NEXTSTYLE:
-          {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-            HTREEITEM hSel = TreeView_GetSelection(hwndTV);
-            if (hSel) {
-              HTREEITEM hNext = TreeView_GetNextVisible(hwndTV, hSel);
-              if (hNext)
-                TreeView_Select(hwndTV, hNext, TVGN_CARET);
-            }
-            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-          }
-          break;
-
-
-        case IDOK:
-          {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-
-            if ((!bWarnedNoIniFile && StrIsEmpty(Theme_Files[Globals.idxSelectedTheme].szFilePath)) && (Globals.idxSelectedTheme > 0))
-            {
-              InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SETTINGSNOTSAVED);
-              bWarnedNoIniFile = true;
-            }
-            //EndDialog(hwnd,IDOK);
-            DestroyWindow(hwnd);
-          }
-          break;
-
-
-        case IDCANCEL:
-          if (fDragging) {
-            SendMessage(hwnd, WM_CANCELMODE, 0, 0);
-          }
-          else {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
-
-            // Restore Styles from Backup
-            int cnt = 0;
-            for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) 
-            {
-              StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), Style_StylesBackup[cnt]);
-
-              ++cnt;
-              int i = 0;
-              while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) 
-              {
-                // normalize
-                tchTmpBuffer[0] = L'\0'; // clear
-                Style_CopyStyles_IfNotDefined(Style_StylesBackup[cnt], tchTmpBuffer, COUNTOF(tchTmpBuffer), true);
-                StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), tchTmpBuffer);
-                ++cnt;
-                ++i;
-              }
-            }
-            Style_ResetCurrentLexer(Globals.hwndEdit);
-            //EndDialog(hwnd,IDCANCEL);
-            DestroyWindow(hwnd);
-          }
-          break;
-
-
-        case IDACC_VIEWSCHEMECONFIG:
-          PostWMCommand(hwnd, IDC_SETCURLEXERTV);
-          break;
-
-        case IDACC_PREVIEW:
-          PostWMCommand(hwnd, IDC_PREVIEW);
-          break;
-
-        case IDACC_SAVEPOS:
-          GetDlgPos(hwnd, &Settings.CustomSchemesDlgPosX, &Settings.CustomSchemesDlgPosY);
-          break;
-
-        case IDACC_RESETPOS:
-          CenterDlgInParent(hwnd, NULL);
-          Settings.CustomSchemesDlgPosX = Settings.CustomSchemesDlgPosY = CW_USEDEFAULT;
-          break;
-
-
-        default:
-          // return false???
-          break;
-
-        } // switch()
-      } // WM_COMMAND
-      return true;
-  }
-  return false;
+            } // switch()
+        }     // WM_COMMAND
+            return true;
+    }
+    return false;
 }
 
 
@@ -4671,9 +4651,8 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
-                                      (LPARAM)NULL);
+                                      (LPARAM)hwnd);
   if (hDlg != INVALID_HANDLE_VALUE) {
-    UpdateWindowLayoutForDPI(hDlg, NULL, NULL);
     ShowWindow(hDlg, SW_SHOW);
   }
   return hDlg;
@@ -4700,9 +4679,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
-
-        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP, RSZ_BOTH);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
@@ -4755,11 +4733,6 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       return !0;
 
 
-    case WM_DESTROY:
-        ResizeDlg_Destroy(hwnd, &s_cxStyleSelectDlg, &s_cyStyleSelectDlg);
-      return 0;
-
-
     case WM_DPICHANGED:
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return !0;
@@ -4767,23 +4740,12 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_SIZE:
       {
-        ResizeDlg_Size(hwnd, lParam, &cxClient, &cyClient);
-        HDWP hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, cyClient, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_DEFAULTSCHEME, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_AUTOSELECT, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, cxClient, cyClient, SWP_NOSIZE);
-        EndDeferWindowPos(hdwp);
-    
         ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_STYLELIST), 0, LVSCW_AUTOSIZE_USEHEADER);
       }
       return !0;
 
 
     case WM_GETMINMAXINFO:
-      ResizeDlg_GetMinMaxInfo(hwnd, lParam);
       return !0;
 
 
