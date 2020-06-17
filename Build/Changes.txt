@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.615.(build_#) (2020-06-15)
+Current RC1 Version 5.20.617.(build_#) (2020-06-17)
 =====================================================
 
 -----------------------------------------------------
@@ -99,6 +99,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- DPI: awareness for Find/Replace-Dlg (remove resize property).
+- DPI: awareness for Lexer-Selection-Dlg (remove resize property).
 - DPI scaling for Scintilla surface component (thanx zufuliu).
 - Unexpected selection of hyperlink in first line on empty doubleclick.
 - Missing UI update (Margin Width).
