@@ -707,13 +707,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   }
   break;
 
-
   case WM_DESTROY:
     if (hVersionFont) { DeleteObject(hVersionFont); }
     break;
-
-  case WM_SIZE:
-    return !0;
 
   case WM_DPICHANGED:
     {

@@ -4700,9 +4700,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   {
     case WM_INITDIALOG:
       {
+        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
         SET_NP3_DLG_ICON_SMALL(hwnd);
-
-        ResizeDlg_Init(hwnd, s_cxStyleSelectDlg, s_cyStyleSelectDlg, IDC_RESIZEGRIP);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
@@ -4755,11 +4754,6 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       return !0;
 
 
-    case WM_DESTROY:
-        ResizeDlg_Destroy(hwnd, &s_cxStyleSelectDlg, &s_cyStyleSelectDlg);
-      return 0;
-
-
     case WM_DPICHANGED:
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
       return !0;
@@ -4767,23 +4761,12 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_SIZE:
       {
-        ResizeDlg_Size(hwnd, lParam, &cxClient, &cyClient);
-        HDWP hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_STYLELIST, 0, cyClient, SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_DEFAULTSCHEME, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_AUTOSELECT, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDOK, cxClient, cyClient, SWP_NOSIZE);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, cxClient, cyClient, SWP_NOSIZE);
-        EndDeferWindowPos(hdwp);
-    
         ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_STYLELIST), 0, LVSCW_AUTOSIZE_USEHEADER);
       }
       return !0;
 
 
     case WM_GETMINMAXINFO:
-      ResizeDlg_GetMinMaxInfo(hwnd, lParam);
       return !0;
 
 

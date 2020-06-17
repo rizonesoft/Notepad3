@@ -234,92 +234,92 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 //
 INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-    UNUSED(lParam);
+  UNUSED(lParam);
 
-    const WCHAR wDot = (WCHAR)0x25CF;
+  const WCHAR wDot = (WCHAR)0x25CF;
 
-    switch (umsg) {
+  switch (umsg) {
 
-    case WM_INITDIALOG:
+  case WM_INITDIALOG:
+    {
+      SET_NP3_DLG_ICON_SMALL(hDlg);
+      int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
+      ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
+      ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
+      //~SetDlgItemText( hDlg, IDC_PWD_EDIT3, fileKey );
+      SetDlgItemText(hDlg, IDC_PWD_EDIT3, unicodeFileKey);
+      CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED);
+      CenterDlgInParent(hDlg, NULL);
+      // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT3 ) );
+      SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT3));
+    }
+    return !0;
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
+    return !0;
+
+  case WM_COMMAND:
+
+    switch (LOWORD(wParam))
+    {
+    case IDC_PWD_CHECK4:
       {
-        SET_NP3_DLG_ICON_SMALL(hDlg);
-        int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
-        ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
-        ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
-        //~SetDlgItemText( hDlg, IDC_PWD_EDIT3, fileKey );
-        SetDlgItemText(hDlg, IDC_PWD_EDIT3, unicodeFileKey);
-        CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED);
-        CenterDlgInParent(hDlg, NULL);
-        // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT3 ) );
-        SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT3));
+        if (IsButtonChecked(hDlg, IDC_PWD_CHECK4)) {
+          SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
+        }
+        else {
+          SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+        }
+        InvalidateRect(hDlg, NULL, TRUE);
       }
       return !0;
 
-    case WM_DPICHANGED:
-      UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, NULL);
+    case IDOK:
+      {
+        bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
+        WCHAR newKey[WKEY_LEN] = { L'\0' };
+        GetDlgItemText(hDlg, IDC_PWD_EDIT3, newKey, COUNTOF(newKey));
+
+        if (useMas) {
+          memcpy(unicodeMasterKey, newKey, sizeof(unicodeMasterKey));
+          unicodeStringCpy(masterKey, unicodeMasterKey, sizeof(masterKey));
+          useFileKey = false;
+          useMasterKey = true;
+        }
+        else {
+          memcpy(unicodeFileKey, newKey, sizeof(unicodeFileKey));
+          unicodeStringCpy(fileKey, unicodeFileKey, sizeof(fileKey));
+          useFileKey = true;
+          useMasterKey = false;
+        }
+        EndDialog(hDlg, IDOK);
+      }
       return !0;
 
-    case WM_COMMAND:
-
-        switch (LOWORD(wParam)) 
-        {
-        case IDC_PWD_CHECK4:
-          {
-            if (IsButtonChecked(hDlg, IDC_PWD_CHECK4)) {
-              SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
-            }
-            else {
-              SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
-            }
-            InvalidateRect(hDlg, NULL, TRUE);
-          }
-          return !0;
-
-        case IDOK:
-          {
-              bool const useMas = IsButtonChecked(hDlg, IDC_PWD_CHECK3);
-              WCHAR newKey[WKEY_LEN] = { L'\0' };
-              GetDlgItemText(hDlg, IDC_PWD_EDIT3, newKey, COUNTOF(newKey));
-
-              if (useMas) {
-                  memcpy(unicodeMasterKey, newKey, sizeof(unicodeMasterKey));
-                  unicodeStringCpy(masterKey, unicodeMasterKey, sizeof(masterKey));
-                  useFileKey = false;
-                  useMasterKey = true;
-              }
-              else {
-                  memcpy(unicodeFileKey, newKey, sizeof(unicodeFileKey));
-                  unicodeStringCpy(fileKey, unicodeFileKey, sizeof(fileKey));
-                  useFileKey = true;
-                  useMasterKey = false;
-              }
-              EndDialog(hDlg, IDOK);
-          }
-          return !0;
-
-        case IDCANCEL:
-            EndDialog(hDlg, IDCANCEL);
-            break;
-        }
-        break;
+    case IDCANCEL:
+      EndDialog(hDlg, IDCANCEL);
+      break;
     }
-    return 0;
+    break;
+  }
+  return 0;
 }
 
 
 // set passphrases for output
 bool GetFileKey(HWND hwnd)
 {
-    return (IDOK == DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
-                                   GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd));
+  return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
+                                       GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd));
 }
 
 // set passphrases for file being input
 bool ReadFileKey(HWND hwnd, bool master)
 {
     masterKeyAvailable = master;
-    return (IDOK == DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
-                                   GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd));
+    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
+                                         GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd));
 }
 
 
