@@ -3896,6 +3896,8 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 {
   if (!hDlg) { return; }
 
+  DPI_T const dpi = Scintilla_GetWindowDPI(hDlg); 
+
   RECT rcDlg;
   GetWindowRect(hDlg, &rcDlg);
 
@@ -3903,9 +3905,15 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
   RECT rcParent;
   GetWindowRect(hParent, &rcParent);
 
-  // return positions relative to parent window
-  if (xDlg) { *xDlg = (rcDlg.left - rcParent.left); }
-  if (yDlg) { *yDlg = (rcDlg.top - rcParent.top); }
+  // return positions relative to parent window (normalized DPI)
+  if (xDlg)
+  {
+      *xDlg = MulDiv((rcDlg.left - rcParent.left), USER_DEFAULT_SCREEN_DPI, (dpi.x ? dpi.x : USER_DEFAULT_SCREEN_DPI));
+  }
+  if (yDlg)
+  {
+      *yDlg = MulDiv((rcDlg.top - rcParent.top), USER_DEFAULT_SCREEN_DPI, (dpi.y ? dpi.y : USER_DEFAULT_SCREEN_DPI));
+  }
 }
 
 
@@ -3916,6 +3924,8 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 {
   if (!hDlg) { return; }
+
+  DPI_T const dpi = Scintilla_GetWindowDPI(hDlg); 
 
   RECT rcDlg;
   GetWindowRect(hDlg, &rcDlg);
@@ -3936,9 +3946,9 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
   int const xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
   int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
 
-  // desired positions relative to parent window
-  int const x = rcParent.left + xDlg;
-  int const y = rcParent.top + yDlg;
+  // desired positions relative to parent window (normalized DPI)
+  int const x = rcParent.left + MulDiv(xDlg, dpi.x, USER_DEFAULT_SCREEN_DPI);
+  int const y = rcParent.top + MulDiv(yDlg, dpi.y, USER_DEFAULT_SCREEN_DPI);
 
   SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
