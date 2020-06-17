@@ -59,10 +59,12 @@ try
 		# locally: we have no commit ID, create an arificial one
 		$CommitID = [string](Get-Content "Versions\commit_id.txt")
 		if ($CommitID -eq "computername") {
-			$CommitID = ([string]($env:computername)).substring(0,8).ToLower()
+            $length = ([string]($env:computername)).length
+			$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
 		}
 		else {
-			$CommitID = $CommitID.substring(0,8)
+		    $length = $CommitID.length
+			$CommitID = $CommitID.substring(0,[math]::min($length,8))
 		}
 	}
 	if (!$CommitID) { $CommitID = "---" }
