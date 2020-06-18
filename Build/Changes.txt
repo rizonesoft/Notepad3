@@ -99,6 +99,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Limit length of (manual) commit ID.
+- DPI Aware relative positioning of position managed dialog boxes.
 - DPI: awareness for Find/Replace-Dlg (remove resize property).
 - DPI: awareness for Lexer-Selection-Dlg (remove resize property).
 - DPI scaling for Scintilla surface component (thanx zufuliu).
