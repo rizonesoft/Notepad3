@@ -616,6 +616,7 @@
     <None Include="..\uchardet\uchardet\src\JISFreq.tab">
       <Filter>Source Files\uchardet\LangModels</Filter>
     </None>
+    <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico">

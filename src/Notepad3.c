@@ -7388,11 +7388,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case TBN_RESET:
         {
-          int i; int c = (int)SendMessage(Globals.hwndToolbar, TB_BUTTONCOUNT, 0, 0);
-          for (i = 0; i < c; i++) {
+          int const count = (int)SendMessage(Globals.hwndToolbar, TB_BUTTONCOUNT, 0, 0);
+          for (int i = 0; i < count; i++) {
             SendMessage(Globals.hwndToolbar, TB_DELETEBUTTON, 0, 0);
           }
-          SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+          if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
+            SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+          }
         }
         GUARD_RETURN(0);
 
@@ -9717,14 +9719,14 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     }
   }
 
-  if (bPreserveView) {
-    EditJumpTo(curLineNum, 0);
-  }
-
   SciCall_SetSavePoint();
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
+
+  if (bPreserveView) {
+    EditJumpTo(curLineNum + 1, 0);
+  }
 
   return true;
 }
