@@ -58,6 +58,7 @@ try
 		$Build = $Build + 1
 		# locally: we have no commit ID, create an arificial one
 		$CommitID = [string](Get-Content "Versions\commit_id.txt")
+		if (!$CommitID) { $CommitID = "---" }
 		if ($CommitID -eq "computername") {
             $length = ([string]($env:computername)).length
 			$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
@@ -67,6 +68,9 @@ try
 			$CommitID = $CommitID.substring(0,[math]::min($length,8))
 		}
 	}
+	if (!$CommitID) { $CommitID = "---" }
+	$CommitID = $CommitID -replace '"', ''
+	$CommitID = $CommitID -replace "'", ''
 	if (!$CommitID) { $CommitID = "---" }
 	$Build | Set-Content "Versions\build.txt"
 
