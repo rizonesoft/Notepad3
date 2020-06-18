@@ -9717,14 +9717,14 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     }
   }
 
-  if (bPreserveView) {
-    EditJumpTo(curLineNum, 0);
-  }
-
   SciCall_SetSavePoint();
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
+
+  if (bPreserveView) {
+    EditJumpTo(curLineNum + 1, 0);
+  }
 
   return true;
 }

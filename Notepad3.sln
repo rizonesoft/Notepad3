@@ -215,6 +215,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_it_it", "minipath\langua
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notepad3", "Notepad3", "{C3735E17-6EAE-4CC5-980E-30BCEF094862}"
+	ProjectSection(SolutionItems) = preProject
+		src\.clang-format = src\.clang-format
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiniPath", "MiniPath", "{D21C1F85-6FA3-4695-82CD-DDC5690E2D66}"
 	ProjectSection(SolutionItems) = preProject
