@@ -122,15 +122,17 @@ DPI_T GetWindowDPI(HWND hwnd) {
 	DPI_T _dpi;
 	_dpi.x = g_uSystemDPI;
 	_dpi.y = g_uSystemDPI;
-	if (fnGetDpiForWindow) {
-		_dpi.y = fnGetDpiForWindow(hwnd);
-		_dpi.x = _dpi.y;
-	}
-	else if (pfnGetDpiForMonitor) {
-		HMONITOR hMonitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-		if (FAILED(pfnGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &(_dpi.x), &(_dpi.y)))) {
-			_dpi.x = g_uSystemDPI;
-			_dpi.y = g_uSystemDPI;
+	if (hwnd) {
+		if (fnGetDpiForWindow) {
+			_dpi.y = fnGetDpiForWindow(hwnd);
+			_dpi.x = _dpi.y;
+		}
+		else if (pfnGetDpiForMonitor) {
+			HMONITOR hMonitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+			if (FAILED(pfnGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &(_dpi.x), &(_dpi.y)))) {
+				_dpi.x = g_uSystemDPI;
+				_dpi.y = g_uSystemDPI;
+			}
 		}
 	}
 	return _dpi;

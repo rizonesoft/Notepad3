@@ -67,42 +67,54 @@
 //
 static HHOOK s_hCBThook = NULL;
 
-static LRESULT CALLBACK CenterInParentHook(INT nCode, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPARAM lParam)
 {
   // notification that a window is about to be activated  
-  if (nCode == HCBT_CREATEWND) 
+  if (nCode == HCBT_CREATEWND)
   {
-    // get window handles
-    LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
-    
     HWND const hThisWnd = (HWND)wParam;
-    HWND const hParentWnd = pCreateStructure->hwndParent; // GetParent(hThisWnd);
+    if (hThisWnd) {
+      // set Notepad3 dialog icon
+      SET_NP3_DLG_ICON_SMALL(hThisWnd);
 
-    if (hParentWnd && hThisWnd) 
-    {
-      RECT rcParent;  GetWindowRect(hParentWnd, &rcParent);
+      // get window handles
+      LPCREATESTRUCT const pCreateStructure = ((LPCBT_CREATEWND)lParam)->lpcs;
+      HWND const           hParentWnd       = pCreateStructure->hwndParent; // GetParent(hThisWnd);
 
-      RECT rcDlg;
-      rcDlg.left   = pCreateStructure->x;
-      rcDlg.top    = pCreateStructure->y;
-      rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
-      rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
-      
-      POINT ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
+      if (hParentWnd) {
+        RECT rcParent;
+        GetWindowRect(hParentWnd, &rcParent);
 
-      // set new coordinates
-      pCreateStructure->x = ptTopLeft.x;
-      pCreateStructure->y = ptTopLeft.y;
+        // set new coordinates
+        DPI_T const dpi = Scintilla_GetWindowDPI(hParentWnd);
+
+        if (dpi.y == USER_DEFAULT_SCREEN_DPI) {
+        
+          RECT rcDlg;
+          rcDlg.left   = pCreateStructure->x;
+          rcDlg.top    = pCreateStructure->y;
+          rcDlg.right  = pCreateStructure->x + pCreateStructure->cx;
+          rcDlg.bottom = pCreateStructure->y + pCreateStructure->cy;
+
+           POINT const ptTL = GetCenterOfDlgInParent(&rcDlg, &rcParent);
+
+          pCreateStructure->x = ptTL.x;
+          pCreateStructure->y = ptTL.y;
+        }
+        else {
+          // don't know how to handle DPI Awareness
+          //pCreateStructure->x = rcParent.left + 20;
+          //pCreateStructure->y = rcParent.top + 20;
+          //pCreateStructure->x = MulDiv(rcParent.left + (rcParent.right - rcParent.left)/8, USER_DEFAULT_SCREEN_DPI, dpi.x);
+          //pCreateStructure->y = MulDiv(rcParent.top + (rcParent.bottom - rcParent.top)/2, USER_DEFAULT_SCREEN_DPI, dpi.y);
+        }
+      }
 
       // we are done
       if (s_hCBThook) {
         UnhookWindowsHookEx(s_hCBThook);
         s_hCBThook = NULL;
       }
-      
-      // set Notepad3 dialog icon
-      SET_NP3_DLG_ICON_SMALL(hThisWnd);
-
     }
     else if (s_hCBThook) {
       // continue with any possible chained hooks
@@ -134,7 +146,7 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
   uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
   // center message box to focus or main
-  s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
+  s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
   return MessageBoxEx(hwnd, szText, szTitle, uType, Globals.iPrefLANGID);
 }
@@ -174,7 +186,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
       // center message box to main
       HWND focus = GetFocus();
       HWND hwnd = focus ? focus : Globals.hwndMain;
-      s_hCBThook = SetWindowsHookEx(WH_CBT, &CenterInParentHook, 0, GetCurrentThreadId());
+      s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
       MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", MB_ICONERROR, Globals.iPrefLANGID);
 
@@ -3836,31 +3848,19 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLeve
 POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent)
 {
   HMONITOR const hMonitor = MonitorFromRect(rcParent, MONITOR_DEFAULTTONEAREST);
-
   MONITORINFO mi;  mi.cbSize = sizeof(MONITORINFO);  GetMonitorInfo(hMonitor, &mi);
 
   int const xMin = mi.rcWork.left;
-  int const yMin = mi.rcWork.top;
-
   int const xMax = (mi.rcWork.right) - (rcDlg->right - rcDlg->left);
+  int const yMin = mi.rcWork.top;
   int const yMax = (mi.rcWork.bottom) - (rcDlg->bottom - rcDlg->top);
 
-  int x;
-  if ((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left) > 20) {
-    x = rcParent->left + (((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left)) / 2);
-  }
-  else {
-    x = rcParent->left + 60;
-  }
-  int y;
-  if ((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top) > 20) {
-    y = rcParent->top + (((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top)) / 2);
-  }
-  else {
-    y = rcParent->top + 60;
-  }
+  int const x = rcParent->left + max_i(20, ((rcParent->right - rcParent->left) - (rcDlg->right - rcDlg->left)) / 2);
+  int const y = rcParent->top + max_i(20, ((rcParent->bottom - rcParent->top) - (rcDlg->bottom - rcDlg->top)) / 2);
 
-  POINT ptRet;  ptRet.x = clampi(x, xMin, xMax);  ptRet.y = clampi(y, yMin, yMax);
+  POINT ptRet;
+  ptRet.x = clampi(x, xMin, xMax);
+  ptRet.y = clampi(y, yMin, yMax);
   return ptRet;
 }
 
@@ -3879,10 +3879,9 @@ void CenterDlgInParent(HWND hDlg, HWND hDlgParent)
   RECT rcParent;
   BOOL const bFoundRect = hParent ? GetWindowRect(hParent, &rcParent) :
                                     GetWindowRect(GetDesktopWindow(), &rcParent);
-  if (bFoundRect)
-  {
+  if (bFoundRect) {
     POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, &rcParent);
-    SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE);
+    SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
     //~SnapToDefaultButton(hDlg);
   }
 }
@@ -4618,7 +4617,7 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
 //
 void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI)
 {
-  UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE; //~ | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION | SWP_FRAMECHANGED
+  UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED; //~ SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION
   if (pRC) {
     SetWindowPos(hWnd, NULL, pRC->left, pRC->top, (pRC->right - pRC->left), (pRC->bottom - pRC->top), uWndFlags);
     //~InvalidateRect(hWnd, NULL, TRUE);
