@@ -6378,10 +6378,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         }
 
         if (bIsFindDlg && (sg_pefrData->bFindClose)) {
-          DestroyWindow(hwnd);   //~EndDialog(hwnd,LOWORD(wParam));
+          //~EndDialog(hwnd, LOWORD(wParam)); ~ not running own message loop
+          DestroyWindow(hwnd);
         }
         else if ((LOWORD(wParam) != IDOK) && sg_pefrData->bReplaceClose) {
-          DestroyWindow(hwnd);   //~EndDialog(hwnd, LOWORD(wParam));
+          //~EndDialog(hwnd, LOWORD(wParam)); ~ not running own message loop
+          DestroyWindow(hwnd);
         }
       }
       _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
@@ -6389,7 +6391,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
       case IDCANCEL:
-        DestroyWindow(hwnd);   //~EndDialog(hwnd,IDCANCEL);
+        //~EndDialog(hwnd, IDCANCEL); ~ not running own message loop
+        DestroyWindow(hwnd);
         break;
 
       case IDC_SWAPSTRG:
