@@ -374,7 +374,7 @@ BEGIN
             MENUITEM "Show &Statusbar",                 IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "&Load Toolbar Theme...",          IDM_VIEW_LOADTHEMETB
-            MENUITEM "&Customize Toolbar...",           IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Customise Toolbar...",           IDM_VIEW_CUSTOMIZETB
             MENUITEM "To&ggle Toolbars",                IDM_VIEW_TOGGLETB
             MENUITEM "&DPI Scale Toolbar",              IDM_VIEW_DPISCALETB
         END
@@ -512,7 +512,7 @@ BEGIN
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "To&ggle Toolbars",            IDM_VIEW_TOGGLETB
         MENUITEM "&DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
     END
