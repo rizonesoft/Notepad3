@@ -583,6 +583,7 @@
     <None Include="..\uchardet\uchardet\src\JISFreq.tab" />
     <None Include="..\Versions\Notepad3.exe.manifest.tpl" />
     <None Include="..\Versions\VersionEx.h.tpl" />
+    <None Include=".clang-format" />
     <None Include="Notepad3.ver" />
   </ItemGroup>
   <ItemGroup>

@@ -5047,15 +5047,16 @@ void EditEnsureSelectionVisible()
 //
 void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
 {
+  // Line maximum is iMaxLine - 1 (doc line count starts with 0)
+  DocLn const iMaxLine = SciCall_GetLineCount() - 1;
+
   // jump to end with line set to -1
-  if (iNewLine < 0) {
+  if ((iNewLine < 0) || (iNewLine > iMaxLine)) {
     SciCall_DocumentEnd();
     return;
   }
   if (iNewLine == 0) { iNewLine = 1; }
 
-  DocLn const iMaxLine = SciCall_GetLineCount();
-  // Line maximum is iMaxLine - 1 (doc line count starts with 0)
   iNewLine = (min_ln(iNewLine, iMaxLine) - 1);
   DocPos const iLineEndPos = SciCall_GetLineEndPosition(iNewLine);
   
@@ -5065,7 +5066,6 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  EditEnsureSelectionVisible();
 }
 
 
@@ -6335,18 +6335,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         if (!s_bSwitchedFindReplace) {
           SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetFocus()), 1);
         }
-        bool bCloseDlg = false;
-        if (bIsFindDlg) {
-          bCloseDlg = sg_pefrData->bFindClose;
-        }
-        else if (LOWORD(wParam) != IDOK) {
-          bCloseDlg = sg_pefrData->bReplaceClose;
-        }
-
-        if (bCloseDlg) {
-          //EndDialog(hwnd,LOWORD(wParam));
-          DestroyWindow(hwnd);
-        }
 
         switch (LOWORD(wParam)) {
           case IDOK: // find next
@@ -6388,14 +6376,20 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             }
             break;
         }
+
+        if (bIsFindDlg && (sg_pefrData->bFindClose)) {
+          DestroyWindow(hwnd);   //~EndDialog(hwnd,LOWORD(wParam));
+        }
+        else if ((LOWORD(wParam) != IDOK) && sg_pefrData->bReplaceClose) {
+          DestroyWindow(hwnd);   //~EndDialog(hwnd, LOWORD(wParam));
+        }
       }
       _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
       break;
 
 
       case IDCANCEL:
-        //EndDialog(hwnd,IDCANCEL);
-        DestroyWindow(hwnd);
+        DestroyWindow(hwnd);   //~EndDialog(hwnd,IDCANCEL);
         break;
 
       case IDC_SWAPSTRG:
