@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.617.(build_#) (2020-06-17)
+Current RC1 Version 5.20.618.(build_#) (2020-06-18)
 =====================================================
 
 -----------------------------------------------------
@@ -99,6 +99,12 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Printing scaling problem related to DPI awareness changes.
+- System MessageBox "save before close" positioning.
+- Reset of toolbar configuration dialog.
+- Crash if "close after find" is enabled.
+- Keep current line on reverting file.
+- Hardening commit_id.txt file input for version string assembling.
 - Limit length of (manual) commit ID.
 - DPI Aware relative positioning of position managed dialog boxes.
 - DPI: awareness for Find/Replace-Dlg (remove resize property).
