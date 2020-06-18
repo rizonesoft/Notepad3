@@ -64,13 +64,13 @@ try
 			$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
 		}
 		else {
+			if (!$CommitID) { $CommitID = "---" }
+			$CommitID = $CommitID -replace '"', ''
+			$CommitID = $CommitID -replace "'", ''
 		    $length = $CommitID.length
 			$CommitID = $CommitID.substring(0,[math]::min($length,8))
 		}
 	}
-	if (!$CommitID) { $CommitID = "---" }
-	$CommitID = $CommitID -replace '"', ''
-	$CommitID = $CommitID -replace "'", ''
 	if (!$CommitID) { $CommitID = "---" }
 	$Build | Set-Content "Versions\build.txt"
 
