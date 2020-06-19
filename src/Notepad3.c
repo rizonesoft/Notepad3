@@ -7322,9 +7322,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     default:
       return 0;
   }
-  return -1LL;
+  return !0;
 }
-
 
 
 
@@ -7335,6 +7334,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
 static bool s_mod_ctrl_pressed = false;
+static bool s_tb_reset_already = false;
 
 LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
@@ -7373,6 +7373,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           // (!) must exist and return true 
           GUARD_RETURN(!0);
 
+        case TBN_BEGINADJUST:
+          s_tb_reset_already = false;
+          GUARD_RETURN(0);
+
         case TBN_GETBUTTONINFO:
         {
           if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(s_tbbMainWnd))
@@ -7392,9 +7396,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           for (int i = 0; i < count; i++) {
             SendMessage(Globals.hwndToolbar, TB_DELETEBUTTON, 0, 0);
           }
-          if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
-            SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+          if (s_tb_reset_already) {
+            if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Defaults.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
+              SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+            }
           }
+          else {
+            if (Toolbar_SetButtons(Globals.hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, s_tbbMainWnd, COUNTOF(s_tbbMainWnd)) == 0) {
+              SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
+            }
+          }
+          s_tb_reset_already = !s_tb_reset_already;
         }
         GUARD_RETURN(0);
 
@@ -7413,7 +7425,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       switch(pnmh->code)
       {
-
         case NM_CLICK:
           {
             LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
