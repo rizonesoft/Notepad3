@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr "无效路径！"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT searchstring)"
+msgid "Inverse search (NOT search string)"
 msgstr "否定搜索（选定不符合条件的行）"
 
 #. Resource IDs: (1019)
