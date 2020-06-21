@@ -1089,12 +1089,17 @@ void LoadSettings()
     // deprecated
 
     Defaults.RenderingTechnology = IniSectionGetInt(IniSecSettings2, L"SciDirectWriteTech", -111);
-    if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
-      // cleanup
-      IniSectionDelete(IniSecSettings2, L"SciDirectWriteTech", false);
-      bDirtyFlag = true;
+    if (Defaults.RenderingTechnology != -111) {
+      if (Settings.SaveSettings) {
+        // cleanup
+        IniSectionDelete(IniSecSettings2, L"SciDirectWriteTech", false); // old deprecated
+        bDirtyFlag = true;
+      }
+      Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, 0, 3);
     }
-    Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, 0, 3);
+    else {
+      Defaults.RenderingTechnology = 1; // new default DirectWrite (D2D)
+    }
 
     // Settings2 deprecated
     Defaults.Bidirectional = IniSectionGetInt(IniSecSettings2, L"EnableBidirectionalSupport", -111);
@@ -1396,8 +1401,8 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
     GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
     GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
-    GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // set before
-    Defaults.RenderingTechnology = 0; // reset
+    GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3); // default set before
+    Defaults.RenderingTechnology = 1; // DirectWrite (D2D) - reset, if set by deprecated SciDirectWriteTech
     GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
     Defaults.Bidirectional = SC_BIDIRECTIONAL_DISABLED; // reset
     GET_BOOL_VALUE_FROM_INISECTION(MuteMessageBeep, false);
