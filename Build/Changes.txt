@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.618.(build_#) (2020-06-18)
+Current RC1 Version 5.20.621.(build_#) (2020-06-21)
 =====================================================
 
 -----------------------------------------------------
@@ -58,6 +58,8 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
+- Set DirectWite (D2D) rendering technology as new default.
 - Two stage Toolbar reset (customizing): 1st -> settings  2nd -> factory default.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox.
 - DPI_CHANGED msg handler.
