@@ -9918,17 +9918,13 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
     WCHAR tch[MAX_PATH] = { L'\0' };
     if (StrIsNotEmpty(Globals.CurrentFile)) {
       StringCchCopy(tch, COUNTOF(tch), PathFindFileName(Globals.CurrentFile));
-      if (Settings.MuteMessageBeep) { PathStripPath(tch); } // need shorter string for custom msgbox
+      PathStripPath(tch);
     }
     else {
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
 
-    INT_PTR const btn = Settings.MuteMessageBeep ?
-      InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch) :
-      MessageBoxLng(Globals.hwndMain, MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, tch);
-
-    switch (btn)
+    switch (InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, tch))
     {
     case IDCANCEL:
       return false;
