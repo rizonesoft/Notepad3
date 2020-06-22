@@ -1538,33 +1538,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   switch(umsg)
   {
-    // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
-    // Cool idea, don't know if this has any effect... ;-)
-    case WM_MOVE:
-    case WM_MOUSEACTIVATE:
-    case WM_NCHITTEST:
-    case WM_NCCALCSIZE:
-    case WM_NCPAINT:
-    case WM_PAINT:
-    case WM_ERASEBKGND:
-    case WM_NCMOUSEMOVE:
-    case WM_NCLBUTTONDOWN:
-    case WM_WINDOWPOSCHANGING:
-    case WM_WINDOWPOSCHANGED:
-    case WM_TIMER:
-    case WM_KILLFOCUS:
-    case WM_ENTERIDLE:
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
-    // never send 
-    case WM_SYSKEYDOWN:
-    case WM_SYSKEYUP:
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
-    // -------------------------------------------------
-
     case WM_CREATE:
       return MsgCreate(hwnd, wParam, lParam);
 
@@ -1719,7 +1692,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-  return 0; // 0 = swallow message
+  return 0;
 }
 
 
