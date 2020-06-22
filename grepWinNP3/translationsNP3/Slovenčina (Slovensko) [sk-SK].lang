@@ -39,7 +39,7 @@ msgstr "%ld viac výskytov"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Cesta neexistuje alebo nie je prístupná!"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -148,7 +148,7 @@ msgstr "Tmavý režim"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Prosím, najskôr v nastaveniach systému Windows povoľte tmavý režim (>= Win10 v1803)."
+msgstr "Tmavý režim vyžaduje aspoň Win10 v1803 a musí byť povolený v nastaveniach systému Windows."
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -196,11 +196,11 @@ msgstr "Ext"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Export výsledkov"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Export výsledkov..."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -240,7 +240,7 @@ msgstr "Neplatná cesta!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT search string)"
-msgstr ""
+msgstr "Inverzné hľadanie (nie pre reťazec)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -289,7 +289,7 @@ msgstr "Staršie ako"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Nezobrazovať upozornenie pri zámene bez vytvorenia záloh"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -389,7 +389,7 @@ msgstr "Hľadať v"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Hľadať v nájdených súboroch"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -498,15 +498,15 @@ msgstr "podržte stlačenú klávesu Shift a vyhľadajte súbory, ktoré neobsah
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "zahrnúť cesty k súborom"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "zahrnúť čísla riadkov zhody"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "zahrnúť text riadku zhody"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"

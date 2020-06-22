@@ -461,6 +461,9 @@ BEGIN
     IDS_LEX_STR_63361       "Substitution"
     IDS_LEX_STR_63362       "Modifier"
     IDS_LEX_STR_63363       "Tag"
+    IDS_LEX_STR_63364       "Property Name"
+    IDS_LEX_STR_63365       "LD Keyword"
+    IDS_LEX_STR_63366       "ESC Sequence"
 END
 
 STRINGTABLE
