@@ -16,7 +16,7 @@ LEGEND:
 2) CHANGES:
 3) ENHANCEMENT: (Optimize)
 4) FIXES: (Debug)
-5) REMOVED: 
+5) REMOVED:
 6) TRANSLATIONS (MUI): (New Language)
 
 -----------------------------------------------------
@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.621.(build_#) (2020-06-21)
+Current RC1 Version 5.20.622.(build_#) (2020-06-22)
 =====================================================
 
 -----------------------------------------------------
