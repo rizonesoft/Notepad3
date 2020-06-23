@@ -8,7 +8,7 @@ GNU General Public License v3.0, All Rights Reserved.
 Original "grepWin" binaries (currently v1.9.2) and corresponding source code (according GPL to v3.0)
 can be retrived at folowing location https://github.com/stefankueng/grepWin/releases/tag/1.9.2.
 
-Modified "grepWinNP3" binaries (Notepad3 MOD, currently v2.0.x) and corresponding source code
+Modified "grepWinNP3" binaries (Notepad3 MOD, currently v2.x.x.x) and corresponding source code
 (according to GPL v3.0) can be retrived at folowing location:
 https://github.com/rizonesoft/Notepad3/tree/master/grepWinNP3.
 
