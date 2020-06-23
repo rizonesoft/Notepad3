@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FIRST Translator: Tilt, 2018.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -148,7 +148,7 @@ msgstr "ダークモード"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "先に Windows の色の設定から「黒」を選択してください (Win 10 v1803 以上)"
+msgstr "ダークモードにはWin 10 v1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -192,14 +192,14 @@ msgstr "除外ディレクトリ(正規表現):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "拡張子"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "検索結果の一覧のエクスポート"
 
 #. Resource IDs: (163)
-msgid "Export results..."
+msgid "結果のエクスポート..."
 msgstr ""
 
 #. Resource IDs: (1039)
@@ -240,7 +240,7 @@ msgstr "無効なパスです!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT search string)"
-msgstr ""
+msgstr "検索結果を反転 (検索語句ではなく)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -289,7 +289,7 @@ msgstr "より古い"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr "バックアップを作成しない置換時に警告しない"
+msgstr "バックアップ作成なしの置換時に警告しない"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -389,7 +389,7 @@ msgstr "内部検索"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "見つかったファイルから検索"
 
 #. Resource IDs: (1018)
 msgid "Search results"

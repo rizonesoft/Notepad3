@@ -305,7 +305,7 @@ IDS_MUI_STYLEEDIT_HELP "\
 設定書式(各指定は省略可能, foreは文字色):\r\n\
 font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-コピー&ペーストやドラッグ&ドロップでも指定が変更できます。\
+コピーペーストやドラッグドロップでも指定を変更できます。\
 "
 
 END
