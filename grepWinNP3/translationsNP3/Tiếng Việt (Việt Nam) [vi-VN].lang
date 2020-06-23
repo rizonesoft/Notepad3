@@ -212,7 +212,7 @@ msgstr ""
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
-msgstr ""
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -486,7 +486,7 @@ msgstr ""
 
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
-msgstr ""
+msgstr "grepWinNP3"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"

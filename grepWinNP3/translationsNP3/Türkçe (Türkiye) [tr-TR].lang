@@ -47,7 +47,7 @@ msgstr "%path% dosyanın yolu, %line% ile atlanacak satırla değiştirilir, %pa
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr "%GrepWin hakkında ..."
+msgstr "&GrepWinNP3 hakkında ..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -71,7 +71,7 @@ msgstr ">>>"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
-msgstr "GrepWin Hakkında"
+msgstr "GrepWinNP3 Hakkında"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
