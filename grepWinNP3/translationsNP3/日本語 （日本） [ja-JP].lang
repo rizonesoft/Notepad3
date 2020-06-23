@@ -199,8 +199,8 @@ msgid "Export resultlist"
 msgstr "検索結果の一覧のエクスポート"
 
 #. Resource IDs: (163)
-msgid "結果のエクスポート..."
-msgstr ""
+msgid "Export results..."
+msgstr "結果のエクスポート..."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -406,11 +406,11 @@ msgstr "計 %ld 個のファイルを検索, %ld 個のファイルをスキッ�
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "カスタム エディタを指定..."
+msgstr "お好みのエディタを選択..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "選択するパスを選択"
+msgstr "検索するパスを選択"
 
 #. Resource IDs: (1071)
 msgid "Settings"
@@ -450,7 +450,7 @@ msgstr "置換後のテキスト:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "コンテキストメニュー項目に新規エントリを追加 - 'エディタで開く'"
+msgstr "コンテキストメニューに「エディタで開く」という新規項目を追加"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -458,7 +458,7 @@ msgstr "ファイルを UTF-8 として扱う"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
-msgstr "公式サイトへ行く"
+msgstr "公式サイトを開く"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -498,15 +498,15 @@ msgstr "検索文字列が含まれていない場合は Shift キーでファ�
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "ファイルパスを出力"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "一致行の行数を出力"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "一致行のテキストを出力"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
