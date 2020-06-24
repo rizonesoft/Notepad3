@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FIRST Translator: Tilt, 2018.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -148,7 +148,7 @@ msgstr "ダークモード"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "先に Windows の色の設定から「黒」を選択してください (Win 10 v1803 以上)"
+msgstr "ダークモードにはWin 10 v1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -192,15 +192,15 @@ msgstr "除外ディレクトリ(正規表現):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "拡張子"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "検索結果の一覧のエクスポート"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "結果のエクスポート..."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -240,7 +240,7 @@ msgstr "無効なパスです!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT search string)"
-msgstr ""
+msgstr "検索結果を反転 (検索語句ではなく)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -289,7 +289,7 @@ msgstr "より古い"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr "バックアップを作成しない置換時に警告しない"
+msgstr "バックアップ作成なしの置換時に警告しない"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -389,7 +389,7 @@ msgstr "内部検索"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "見つかったファイルから検索"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -406,11 +406,11 @@ msgstr "計 %ld 個のファイルを検索, %ld 個のファイルをスキッ�
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "カスタム エディタを指定..."
+msgstr "お好みのエディタを選択..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "選択するパスを選択"
+msgstr "検索するパスを選択"
 
 #. Resource IDs: (1071)
 msgid "Settings"
@@ -450,7 +450,7 @@ msgstr "置換後のテキスト:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "コンテキストメニュー項目に新規エントリを追加 - 'エディタで開く'"
+msgstr "コンテキストメニューに「エディタで開く」という新規項目を追加"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
@@ -458,7 +458,7 @@ msgstr "ファイルを UTF-8 として扱う"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
-msgstr "公式サイトへ行く"
+msgstr "公式サイトを開く"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -498,15 +498,15 @@ msgstr "検索文字列が含まれていない場合は Shift キーでファ�
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "ファイルパスを出力"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "一致行の行数を出力"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "一致行のテキストを出力"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
