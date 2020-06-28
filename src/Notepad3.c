@@ -2139,25 +2139,29 @@ bool SelectExternalToolBar(HWND hwnd)
     StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
     PathRemoveExtension(szFile);
     StringCchCat(szFile, COUNTOF(szFile), L"Hot.bmp");
-    if (PathIsExistingFile(szFile)) {
-      PathRelativeToApp(szFile, s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), true, true, true);
-      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", s_tchToolbarBitmapHot);
-    }
-    else {
-      StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
-      IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapHot", false);
+    if (Globals.bCanSaveIniFile) {
+      if (PathIsExistingFile(szFile)) {
+        PathRelativeToApp(szFile, s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), true, true, true);
+        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapHot", s_tchToolbarBitmapHot);
+      }
+      else {
+        StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+        IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapHot", false);
+      }
     }
 
     StringCchCopy(szFile, COUNTOF(szFile), s_tchToolbarBitmap);
     PathRemoveExtension(szFile);
     StringCchCat(szFile, COUNTOF(szFile), L"Disabled.bmp");
-    if (PathIsExistingFile(szFile)) {
-      PathRelativeToApp(szFile, s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), true, true, true);
-      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", s_tchToolbarBitmapDisabled);
-    }
-    else {
-      StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
-      IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
+    if (Globals.bCanSaveIniFile) {
+      if (PathIsExistingFile(szFile)) {
+        PathRelativeToApp(szFile, s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), true, true, true);
+        IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", s_tchToolbarBitmapDisabled);
+      }
+      else {
+        StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
+        IniFileDelete(Globals.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
+      }
     }
     Settings.ToolBarTheme = 2;
     return true;
@@ -3139,6 +3143,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   HMENU const hmenu = wParam ? (HMENU)wParam : GetMenu(hwnd);
   if (!hmenu) { return 0; }
 
+  bool const sav = Globals.bCanSaveIniFile;
   bool const ro = SciCall_GetReadOnly();
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
@@ -3429,12 +3434,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
   CheckCmd(hmenu, IDM_VIEW_SHOW_HYPLNK_CALLTIP, Settings.ShowHypLnkToolTip);
 
-  bool b = Flags.bReuseWindow;
-  CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, b);
-  b = Flags.bSingleFileInstance;
-  CheckCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, b);
-  b = Flags.bStickyWindowPosition;
-  CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, b);
+  CheckCmd(hmenu, IDM_VIEW_REUSEWINDOW, Flags.bReuseWindow);
+  EnableCmd(hmenu, IDM_VIEW_REUSEWINDOW, sav);
+  CheckCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, Flags.bSingleFileInstance);
+  EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, sav);
+  CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, Flags.bStickyWindowPosition);
+  EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, sav);
 
   CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
   CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
@@ -3459,10 +3464,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
 
   CheckCmd(hmenu, IDM_VIEW_NOSAVERECENT, Settings.SaveRecentFiles);
+  EnableCmd(hmenu, IDM_VIEW_NOSAVERECENT, sav);
   CheckCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
-  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles);
+  EnableCmd(hmenu, IDM_VIEW_NOPRESERVECARET, Settings.SaveRecentFiles && sav);
   CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
+  EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, sav);
   CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
+  EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, sav);
 
   CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
 
@@ -3672,8 +3680,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
         }
         dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
-        if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
-          s_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+        s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
         UpdateToolbar();
       }
@@ -5348,7 +5355,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_STICKYWINPOS:
-      {
+      if (IsCmdEnabled(hwnd, IDM_VIEW_STICKYWINPOS)) {
         Flags.bStickyWindowPosition = !Flags.bStickyWindowPosition; // toggle
 
         if (Flags.bStickyWindowPosition) { InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS); }
@@ -5372,23 +5379,27 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_REUSEWINDOW:
-      Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
-      if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
-        IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
-      }
-      else {
-        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
+      if (IsCmdEnabled(hwnd, IDM_VIEW_REUSEWINDOW)) {
+        Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
+        if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
+          IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
+        }
+        else {
+          IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
+        }
       }
       break;
 
 
     case IDM_VIEW_SINGLEFILEINSTANCE:
-      Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
-      if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
-        IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
-      }
-      else {
-        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
+      if (IsCmdEnabled(hwnd, IDM_VIEW_SINGLEFILEINSTANCE)) {
+        Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
+        if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
+          IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
+        }
+        else {
+          IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
+        }
       }
       break;
 
@@ -5516,9 +5527,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGSNOW)) {
 
         bool bCreateFailure = false;
-
         if (StrIsEmpty(Globals.IniFile)) {
-
           if (StrIsNotEmpty(Globals.IniFileDefault)) {
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
             if (CreateIniFile(Globals.IniFile, NULL)) {
@@ -6096,7 +6105,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL);
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
-        IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+        if (Globals.bCanSaveIniFile) {
+          IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+        }
         g_DefWinInfo = GetWinInfoByFlag(-1); // use current win pos as new default
       }
       break;
@@ -8835,7 +8846,7 @@ void UpdateMarginWidth()
 void UpdateSaveSettingsCmds()
 {
     CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileSoftLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
+    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !Flags.bSettingsFileSoftLocked);
     EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileSoftLocked);
     EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
 }
@@ -9307,7 +9318,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,
   }
 
   DWORD const dwFileAttributes = GetFileAttributes(pszFileName);
-  s_bFileReadOnly = ((dwFileAttributes != INVALID_FILE_ATTRIBUTES) && (dwFileAttributes & FILE_ATTRIBUTE_READONLY));
+  s_bFileReadOnly = ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY));
 
   EndWaitCursor();
 
@@ -9912,9 +9923,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   // Read only...
   if (!bSaveAs && !bSaveCopy && StrIsNotEmpty(Globals.CurrentFile))
   {
-    DWORD dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
-    if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
-      s_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+    DWORD const dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
+    s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (s_bFileReadOnly) {
       INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, PathFindFileName(Globals.CurrentFile));
       if ((IDOK == answer) || (IDYES == answer)) {

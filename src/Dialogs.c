@@ -287,7 +287,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       case IDIGNORE:
       case IDTRYAGAIN:
       case IDCONTINUE:
-        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
+        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) ) {
           IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
         }
       case IDNO:
@@ -336,7 +336,9 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
       break;
 
     default:
-      IniFileDelete(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
+      if (Globals.bCanSaveIniFile) {
+        IniFileDelete(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
+      }
       break;
   }
 
@@ -385,8 +387,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   }
 
   msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
-  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
-
+  msgBox.bDisableCheckBox = (!Globals.bCanSaveIniFile || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
 
   int idDlg;
   switch (uType & MB_TYPEMASK) {
