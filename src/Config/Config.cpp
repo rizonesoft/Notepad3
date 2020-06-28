@@ -162,14 +162,12 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
       MsgBoxLastError(msg, 0);
     }
   }
-#ifdef DEBUG
   else {
     wchar_t msg[MAX_PATH + 128] = { 0 };
     StringCchPrintf(msg, ARRAYSIZE(msg),
       L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
     MsgBoxLastError(msg, 0);
   }
-#endif
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
 
@@ -197,14 +195,12 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
       MsgBoxLastError(msg, 0);
     }
   }
-#ifdef DEBUG
   else {
     wchar_t msg[MAX_PATH + 128] = { 0 };
     StringCchPrintf(msg, ARRAYSIZE(msg),
       L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
     MsgBoxLastError(msg, 0);
   }
-#endif
   return (bLocked ? hFile : INVALID_HANDLE_VALUE);
 }
 
