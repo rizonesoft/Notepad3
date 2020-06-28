@@ -39,7 +39,7 @@ msgstr "больше %ld совпадений"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Путь не существует или недоступен!"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -148,7 +148,7 @@ msgstr "Темная тема"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Для начала включите темный режим в настройках Windows (>= Win10 v1803)."
+msgstr "Для темной темы необходима Win10 v1803 или выше, а также она должна быть включена в настройках Windows."
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -196,11 +196,11 @@ msgstr "Тип"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Экспорт результатов"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Экспорт результатов..."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -239,8 +239,8 @@ msgid "Invalid path!"
 msgstr "Неверный путь!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
-msgstr ""
+msgid "Inverse search (NOT searchstring)"
+msgstr "Обратный поиск (НЕ искомая фраза)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -289,7 +289,7 @@ msgstr "Старше чем"
 
 #. Resource IDs: (1090)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Не предупреждать при замене без создания бэкапов"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -389,7 +389,7 @@ msgstr "Искать в"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Искать в найденных файлах"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -498,15 +498,15 @@ msgstr "Удерживайте Shift, чтобы найти файлы, кото
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "включить путь к файлу"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "включить номера строк с совпадениями"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "включить текст строк с совпадениями"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
