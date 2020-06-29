@@ -37,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "%ld か所のさらなる一致"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "パスが存在しないかアクセスできません！"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% はファイルのパス - %line% は移動先の行番号 - %pattern% は検索語句 で置換されます"
@@ -102,6 +98,10 @@ msgstr "期間内"
 msgid "Cancel"
 msgstr "キャンセル"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "最新版を確認"
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "指定行をエディタで開くためのコマンドライン:"
@@ -146,10 +146,6 @@ msgstr "フォルダを作成してバックアップ"
 msgid "Dark mode"
 msgstr "ダークモード"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "ダークモードには Windonws 10 バージョン1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "更新日時"
@@ -157,6 +153,10 @@ msgstr "更新日時"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "ダイアログ"
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "バックアップせず置換しても警告しない"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -190,10 +190,6 @@ msgstr "ESC キーで grepWinNP3 を閉じる"
 msgid "Exclude dirs (Regex):"
 msgstr "除外するフォルダ (正規表現):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "拡張子"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "検索結果の一覧のエクスポート"
@@ -201,6 +197,10 @@ msgstr "検索結果の一覧のエクスポート"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "結果のエクスポート..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "拡張子"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -287,10 +287,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "より古い"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "バックアップせず置換しても警告しない"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "多重に起動しない(注・無効)"
@@ -310,6 +306,10 @@ msgstr "正規表現テスト用のテキスト:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "パス"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "パスが存在しないかアクセスできません！"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "ファイルを UTF-8 として処理"
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "公式サイトを開く"
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Stefan Küng の良ソフト grepWin の Notepad3 用改造版"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -476,6 +476,10 @@ msgstr "バイナリ"
 msgid "click to edit the text as a multiline text"
 msgstr "クリックで複数行の文字列として編集できます。"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "ダークモードには Windonws 10 バージョン1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "等しい"
@@ -487,6 +491,11 @@ msgstr "以下より大きい"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr "最新の grepWin %s があります。"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -568,3 +577,8 @@ msgstr "初期化"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "最大スレッド数"
+
+#. Resource IDs: (1045)
+msgid "Visit Stefan Küng's website"
+msgstr "Stefan Küng のサイトを開く" 
+
