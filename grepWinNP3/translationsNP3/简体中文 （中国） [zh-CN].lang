@@ -37,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "还有 %ld 个匹配"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "路径不存在或无法访问！"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% 被替换为文件的路径，%line% 被替换为要转至的行号，%pattern% 被替换为查找的字符串。"
@@ -102,6 +98,10 @@ msgstr "起止于"
 msgid "Cancel"
 msgstr "取消"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "用于编辑指定的行的命令："
@@ -146,10 +146,6 @@ msgstr "在单独的目录创建备份文件"
 msgid "Dark mode"
 msgstr "暗色模式"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "请先在 Windows 设置中启用暗色模式。（>= Win10 v1803）"
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
@@ -157,6 +153,10 @@ msgstr "修改日期"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "对话框"
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "当替换时若不创建备份不要显示警告"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -190,10 +190,6 @@ msgstr "Esc 键关闭 grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "排除目录（正则）："
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "扩展名"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "导出结果列表"
@@ -201,6 +197,10 @@ msgstr "导出结果列表"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "导出结果..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "扩展名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -287,10 +287,6 @@ msgstr "确定"
 msgid "Older than"
 msgstr "早于"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "当替换时若不创建备份不要显示警告"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "仅单实例"
@@ -310,6 +306,10 @@ msgstr "粘贴文本以测试正则："
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "路径"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "路径不存在或无法访问！"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -476,6 +476,10 @@ msgstr "二进制"
 msgid "click to edit the text as a multiline text"
 msgstr "点击这里将该文本作为多行文本来编辑"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "请先在 Windows 设置中启用暗色模式。（>= Win10 v1803）"
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "等于"
@@ -487,6 +491,11 @@ msgstr "大于"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -568,3 +577,4 @@ msgstr "重置"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "并发任务上限数"
+
