@@ -568,3 +568,10 @@ msgstr "初期化"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "最大スレッド数"
+
+#. Modification of Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Stefan Küng の良ソフト grepWin の Notepad3 用改造版"
+
+msgid "Visit Stefan Küng's website"
+msgstr "Stefan Küng のサイトを開く"
