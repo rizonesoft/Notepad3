@@ -37,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "mais %ld encontrados"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Caminho não encontrado ou não acessível"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% é substituído com o caminho do arquivo, %line% a linha para saltar para, %pattern% com a sequência procurada."
@@ -102,6 +98,10 @@ msgstr "Entre"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "Linha de comando para iniciar no editor em uma linha específica:"
@@ -146,10 +146,6 @@ msgstr "Criar arquivos de backup em uma pasta separada"
 msgid "Dark mode"
 msgstr "Modo escuro"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Modo escuro requer Win10 v1803 no mínimo, e precisa ser habilitado nas configuraçoes do sistema operacional."
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Modificado em"
@@ -157,6 +153,10 @@ msgstr "Modificado em"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Diálogo"
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Não alertar quando substituindo sem criar backups"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -190,10 +190,6 @@ msgstr "Tecla Esc fecha grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "Excluir diretórios (Regex):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Ext"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "Exportar lista de resultados"
@@ -201,6 +197,10 @@ msgstr "Exportar lista de resultados"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "Exportar resultados..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -287,10 +287,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Mais velho que"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "Não alertar quando substituindo sem criar backups"
-
 #. Resource IDs: (1062)
 msgid "Only one instance"
 msgstr "Somente uma instância"
@@ -310,6 +306,10 @@ msgstr "Colar texto para testar o regex com:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "Caminho"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "Caminho não encontrado ou não acessível"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -476,6 +476,10 @@ msgstr "binário"
 msgid "click to edit the text as a multiline text"
 msgstr "clique para editar texto como um texto de múltiplas linhas"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "Modo escuro requer Win10 v1803 no mínimo, e precisa ser habilitado nas configuraçoes do sistema operacional."
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "igual a"
@@ -487,6 +491,11 @@ msgstr "maior que"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -568,3 +577,4 @@ msgstr "Resetar"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "Max # de trabalhadores simultâneos"
+
