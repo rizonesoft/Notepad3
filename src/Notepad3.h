@@ -42,7 +42,7 @@ typedef struct np3params {
   int                 flagTitleExcerpt;
   int                 flagMatchText;
   WCHAR               wchData;
-} 
+}
 np3params, *LPnp3params;
 
 
@@ -60,7 +60,7 @@ typedef struct _undoSel
   UT_array* curPos_redo;
   UT_array* anchorVS_redo;
   UT_array* curVS_redo;
-} 
+}
 UndoRedoSelection_t;
 #pragma pack(pop)
 
@@ -198,11 +198,11 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
-#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
+#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent();
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
 
 
-#define BeginWaitCursor(cond,text)   if (cond) { __try { SciCall_SetCursor(SC_CURSORWAIT);  StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); 
+#define BeginWaitCursor(cond,text)   if (cond) { __try { SciCall_SetCursor(SC_CURSORWAIT);  StatusSetText(Globals.hwndStatus, STATUS_HELP, (text));
 #define EndWaitCursor()   } __finally { SciCall_SetCursor(SC_CURSORNORMAL); POINT pt;  GetCursorPos(&pt);  SetCursorPos(pt.x, pt.y);  UpdateStatusbar(true); } }
 
 

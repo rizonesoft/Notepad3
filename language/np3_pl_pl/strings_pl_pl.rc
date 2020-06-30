@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyć ten duży plik?\n\t(rozmiar: %s >= %s)!\n(Projekt i podświetlenie składni nie będzie zastosowane!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Nie można przetworzyć tego pliku, jest zbyt duży (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Nieznane rozszerzenie nazwy pliku (%s)!\nCzy mimo to załadować?"

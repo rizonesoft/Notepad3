@@ -502,7 +502,7 @@ public:
     }
 
     // Trim container T of values in T2.
-    // T1 can at least be a string, wstring, vector, 
+    // T1 can at least be a string, wstring, vector,
     // T2 can be simiar but initializer_list is the typical type used.
     template<typename T, typename T2> static void TrimLeadingAndTrailing(T& s, const T2& vals)
     {

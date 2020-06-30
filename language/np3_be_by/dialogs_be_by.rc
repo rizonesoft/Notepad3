@@ -352,7 +352,7 @@ BEGIN
     GROUPBOX        "Статыстыка па радкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
     LTEXT           "Табуляцыя[%i]:",IDC_INDENT_WIDTH_TAB,40,18,66,8
     LTEXT           "Прабелы[%i]:",IDC_INDENT_WIDTH_SPC,44,30,66,8
-    LTEXT           "Змешаныя[x]:",IDC_STATIC,39,42,66,8    
+    LTEXT           "Змешаныя[x]:",IDC_STATIC,39,42,66,8
     RTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     RTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     RTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8

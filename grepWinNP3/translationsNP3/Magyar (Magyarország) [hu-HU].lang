@@ -460,8 +460,8 @@ msgstr "Fájlok UTF-8-ként kezelése"
 msgid "Visit Stefan Küng's website"
 msgstr "Ugrás Stefan Küng weboldalára"
 
-#. Resource IDs: (116)	
-msgid "a regular expression used for searching. Press F1 for more info."	
+#. Resource IDs: (116)
+msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "Egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
 
 #. Resource IDs: (125)

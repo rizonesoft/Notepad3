@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Can't handle that huge file (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Unknown file name extension (%s)!\nLoading data anyway?"

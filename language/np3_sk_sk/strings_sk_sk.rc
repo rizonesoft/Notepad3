@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Nenašiel sa žiadny spustiteľný súbor správy.\nSkontrolujte webovú stránku https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Súbor je príliš veľký. Chcete ho otvoriť?\n\t(veľkosť: %s >= %s)!\n(Štýly a zvýraznenie syntaxie sa nepoužijú!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Nedá sa spracovať tento veľký súbor (veľkosť: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Neznáma prípona názvu súboru (%s)!\nNačítať aj napriek tomu?"

@@ -76,7 +76,7 @@ extern "C" {
   // ----------------------------------------------------------------------------
 
   // ==========================================
-  // open file , get/set value, save(set) file 
+  // open file , get/set value, save(set) file
   // ==========================================
 
   size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,

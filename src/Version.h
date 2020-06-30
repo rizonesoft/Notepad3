@@ -132,13 +132,13 @@
             #define VER_CPL     MS Visual C++ 2017 v15.9.11
         #elif(_MSC_FULL_VER >= 191627027)
             #define VER_CPL     MS Visual C++ 2017 v15.9.(7-10)
-        #elif(_MSC_FULL_VER >= 191627026) 
+        #elif(_MSC_FULL_VER >= 191627026)
             #define VER_CPL     MS Visual C++ 2017 v15.9.(5-6)
-        #elif(_MSC_FULL_VER >= 191627025) 
+        #elif(_MSC_FULL_VER >= 191627025)
             #define VER_CPL     MS Visual C++ 2017 v15.9.4
-        #elif(_MSC_FULL_VER >= 191627024) 
+        #elif(_MSC_FULL_VER >= 191627024)
             #define VER_CPL     MS Visual C++ 2017 v15.9.(2-3)
-        #elif(_MSC_FULL_VER >= 191627023) 
+        #elif(_MSC_FULL_VER >= 191627023)
             #define VER_CPL     MS Visual C++ 2017 v15.9.(0-1)
         #endif
     #elif (_MSC_VER == 1915)
