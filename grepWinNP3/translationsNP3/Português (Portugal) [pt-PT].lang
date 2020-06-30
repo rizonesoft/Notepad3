@@ -100,7 +100,7 @@ msgstr "Cancelar"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Procurar actualizações"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -458,7 +458,7 @@ msgstr "Tratar ficheiros como UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
-msgstr ""
+msgstr "Visitar o site de Stefan Küng"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -478,7 +478,7 @@ msgstr "clique para editar texto como um texto multi-linha"
 
 #. Resource IDs: (159)
 msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "O Modo Escuro requer pelo menos o Win10 v1803 e tem que estar activado nas definições do sistema"
+msgstr "O Modo Escuro requer pelo menos o Win10 v1803 e tem que estar activado nas definições do sistema."
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "Está disponível o grepWin %s"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -515,7 +515,7 @@ msgstr "incluir números de linha correspondentes"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "incluir linha de texto correspondente"
+msgstr "incluir texto da linha correspondente"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -580,5 +580,5 @@ msgstr "# máx. de trabalhos concorrentes"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+msgstr "grepWin(NP3)-mod Notepad3 da grande ferramenta de Stefan Küng"
 
