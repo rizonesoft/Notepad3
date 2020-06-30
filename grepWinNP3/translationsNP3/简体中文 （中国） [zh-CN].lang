@@ -100,7 +100,7 @@ msgstr "取消"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "检查更新"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -458,7 +458,7 @@ msgstr "将文件视为 UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
-msgstr ""
+msgstr "访问 Stefan Küng 的网站"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s 可用"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -580,5 +580,5 @@ msgstr "并发任务上限数"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+msgstr "Notepad3 基于 Stefan Küng 的优秀工具 grepWin(NP3) 的修改版！"
 
