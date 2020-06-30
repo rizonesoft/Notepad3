@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr "パスが無効です!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "検索結果を反転 (検索語句ではなく)"
 
 #. Resource IDs: (1019)

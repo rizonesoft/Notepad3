@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr "Μη έγκυρη διαδρομή!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr ""
 
 #. Resource IDs: (1019)
@@ -318,7 +318,7 @@ msgstr "Προκαθορισμένο όνομα"
 #. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "Αποθηκευμένα"
-        
+
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
 msgstr "Πιέστε F1 για βοήθεια"

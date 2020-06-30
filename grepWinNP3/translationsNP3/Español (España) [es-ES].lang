@@ -100,7 +100,7 @@ msgstr "Cancelar"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Comprobar actualizaciones"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr "¡Ruta invalida!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "Búsqueda inversa (NO cadena de búsqueda)"
 
 #. Resource IDs: (1019)
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s está disponible"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -580,5 +580,5 @@ msgstr "Max # de trabajador concurrente"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "¡grepWin(NP3)-mod de Notepad3 de la gran herramienta de Stefan Küng!"
+msgstr "¡grepWin(NP3)-mod de la gran herramienta de Stefan Küng!"
 
