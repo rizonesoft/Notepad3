@@ -100,7 +100,7 @@ msgstr "Annuler"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Vérifier les mises à jour"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s est disponible"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -580,5 +580,5 @@ msgstr "Max # de travailleurs concurrent"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "grepWin(NP3)-mod de Notepad3 du grand outil de Stefan Küng!"
+msgstr "grepWin(NP3)-mod du grand outil de Stefan Küng!"
 

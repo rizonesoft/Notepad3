@@ -100,7 +100,7 @@ msgstr "Abbrechen"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Auf Updates prüfen"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s ist erhältlich"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
