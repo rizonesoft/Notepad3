@@ -118,7 +118,7 @@ inline BOOL PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath
 //==== StrNextTok methods ===================
 CHAR*  StrNextTokA(CHAR*, const CHAR*);
 WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
-#if defined(UNICODE) || defined(_UNICODE)  
+#if defined(UNICODE) || defined(_UNICODE)
 #define StrNextTok StrNextTokW
 #else
 #define StrNextTok _StrNextTokA

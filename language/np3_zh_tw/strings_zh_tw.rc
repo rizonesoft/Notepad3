@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "無管理工具可用。\n\n訪問 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否確實要打開一個如此龐大的檔案？\n\t（大小 %s >= %s）\n樣式和語法高亮將被禁用。"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "無法處理如此龐大的檔案（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "副檔名「%s」不是已知的文字檔案。仍然要嘗試打開嗎？"

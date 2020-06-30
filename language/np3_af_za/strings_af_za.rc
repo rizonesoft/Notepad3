@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Is jy seker jy wil hierdie groot lêer oopmaak?\n\t(Grootte: %s >= %s)!\n(Styling en sintaksis-uitlig word nie toegepas nie!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Kan nie daardie groot lêer hanteer nie (Grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"

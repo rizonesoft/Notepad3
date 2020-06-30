@@ -144,7 +144,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //     - Press LeftAlt Shift to switch out of the IME (taskbar shows your original language code).
 //
 // --------------------------------------------------------------------------------------------------------------------
-// 
+//
 // GLOBAL INTERCEPTED HOTKEYS:
 //
 // - Ctrl+Alt+Shift+F
@@ -272,7 +272,7 @@ BEGIN
     //VK_END,         CMD_VKEND,                        VIRTKEY, NOINVERT
     //VK_HOME,        CMD_VKEND,                        VIRTKEY, NOINVERT
     //VK_PRIOR,       CMD_VKEND,                        VIRTKEY, NOINVERT    /// PAGE UP Key
-    //VK_NEXT,        CMD_VKEND,                        VIRTKEY, NOINVERT    /// PAGE NEXT Key 
+    //VK_NEXT,        CMD_VKEND,                        VIRTKEY, NOINVERT    /// PAGE NEXT Key
     //~VK_LEFT,        CMD_LEFT,                         VIRTKEY, NOINVERT
     VK_LEFT,        CMD_CTRLLEFT,                     VIRTKEY, CONTROL, NOINVERT
     VK_LEFT,        CMD_FOLDCOLLAPSE,                 VIRTKEY, ALT, NOINVERT
@@ -375,10 +375,10 @@ BEGIN
     VK_TAB,         CMD_BACKTAB,                      VIRTKEY, SHIFT, NOINVERT
     VK_TAB,         CMD_CTRLTAB,                      VIRTKEY, CONTROL, NOINVERT
     VK_INSERT,      CMD_VK_INSERT,                    VIRTKEY, NOINVERT
-END                                                   
-                                                      
-IDR_ACCFINDREPLACE ACCELERATORS                       
-BEGIN                                                 
+END
+
+IDR_ACCFINDREPLACE ACCELERATORS
+BEGIN
     "F",            IDACC_FIND,                       VIRTKEY, CONTROL, NOINVERT
     "H",            IDACC_REPLACE,                    VIRTKEY, CONTROL, NOINVERT
     "S",            IDACC_SAVEPOS,                    VIRTKEY, CONTROL, NOINVERT
@@ -389,10 +389,10 @@ BEGIN
     VK_F3,          IDACC_SAVEFIND,                   VIRTKEY, ALT, NOINVERT
     VK_F3,          IDACC_FINDPREV,                   VIRTKEY, SHIFT, NOINVERT
     VK_F4,          IDACC_REPLACENEXT,                VIRTKEY, NOINVERT
-END                                                   
-                                                      
-IDR_ACCCUSTOMSCHEMES ACCELERATORS                     
-BEGIN                                                 
+END
+
+IDR_ACCCUSTOMSCHEMES ACCELERATORS
+BEGIN
     "S",            IDACC_SAVEPOS,                    VIRTKEY, CONTROL, NOINVERT
     "R",            IDACC_RESETPOS,                   VIRTKEY, CONTROL, NOINVERT
     "S",            IDACC_PREVIEW,                    VIRTKEY, CONTROL, NOINVERT

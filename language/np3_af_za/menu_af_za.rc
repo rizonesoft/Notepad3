@@ -510,7 +510,7 @@ BEGIN
         MENUITEM "Wys &Menubalk",                           IDM_VIEW_MENUBAR
         MENUITEM "Wys &Nutsbalk",                           IDM_VIEW_TOOLBAR
         MENUITEM "Wys &Statusbalk",                         IDM_VIEW_STATUSBAR
-        MENUITEM SEPARATOR                                 
+        MENUITEM SEPARATOR
         MENUITEM "&Laai Toolbar Tema...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "Pas&maak Nutsbalk...",                    IDM_VIEW_CUSTOMIZETB
         MENUITEM "To&ggle Nutsbalke",                       IDM_VIEW_TOGGLETB

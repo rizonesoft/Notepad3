@@ -77,7 +77,7 @@ private:
     HRESULT STDMETHODCALLTYPE GetPixelsPerDip(
         void* clientDrawingContext,
         OUT FLOAT* pixelsPerDip) override;
-    
+
 public:
 
     HRESULT STDMETHODCALLTYPE QueryInterface( 
