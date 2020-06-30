@@ -461,9 +461,9 @@ BEGIN
     IDS_LEX_STR_63361       "Helyettesítés"
     IDS_LEX_STR_63362       "Módosító"
     IDS_LEX_STR_63363       "Tag"
-    IDS_LEX_STR_63364       "Property Name"
-    IDS_LEX_STR_63365       "LD Keyword"
-    IDS_LEX_STR_63366       "ESC Sequence"
+    IDS_LEX_STR_63364       "Tulajdonság név"
+    IDS_LEX_STR_63365       "LD Kulcsszó"
+    IDS_LEX_STR_63366       "ESC Sekvencia"
 END
 
 STRINGTABLE
