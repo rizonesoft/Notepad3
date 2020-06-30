@@ -100,7 +100,7 @@ msgstr "Mégsem"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Frissítések keresése"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -458,10 +458,10 @@ msgstr "Fájlok UTF-8-ként kezelése"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
-msgstr ""
+msgstr "Ugrás Stefan Küng weboldalára"
 
-#. Resource IDs: (116)
-msgid "a regular expression used for searching. Press F1 for more info."
+#. Resource IDs: (116)	
+msgid "a regular expression used for searching. Press F1 for more info."	
 msgstr "Egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
 
 #. Resource IDs: (125)
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s elérhető"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -580,5 +580,5 @@ msgstr "Párhuzamos feldolgozók max. száma"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+msgstr "Notepad3 grepWin(NP3)-mod egy nagyszerű eszköz Stefan Küng-től!"
 
