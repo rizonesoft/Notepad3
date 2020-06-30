@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "Traiter les fichiers comme UTF-8"
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Visiter notre site Web"
+msgid "Visit Stefan Küng's website"
+msgstr "Visiter le site web Stefan Küng"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -577,4 +577,8 @@ msgstr "Réinitialiser"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "Max # de travailleurs concurrent"
+
+#. Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "grepWin(NP3)-mod de Notepad3 du grand outil de Stefan Küng!"
 

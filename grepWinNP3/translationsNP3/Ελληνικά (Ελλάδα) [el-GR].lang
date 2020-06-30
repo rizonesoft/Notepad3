@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "Αντιμετώπιση αρχείων ως UTF8"
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Επίσκεψη ιστοσελίδας"
+msgid "Visit Stefan Küng's website"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -576,5 +576,9 @@ msgstr ""
 
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
+msgstr ""
+
+#. Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
 msgstr ""
 

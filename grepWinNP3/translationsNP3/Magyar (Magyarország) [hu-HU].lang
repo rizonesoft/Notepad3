@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "Fájlok UTF-8-ként kezelése"
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Weblapunk meglátogatása"
+msgid "Visit Stefan Küng's website"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -577,4 +577,8 @@ msgstr "Visszaállítás"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "Párhuzamos feldolgozók max. száma"
+
+#. Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
 

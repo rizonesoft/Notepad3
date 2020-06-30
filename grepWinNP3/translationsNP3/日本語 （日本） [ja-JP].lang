@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "ファイルを UTF-8 として処理"
 
 #. Resource IDs: (1045)
-msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "Stefan Küng の良ソフト grepWin の Notepad3 用改造版"
+msgid "Visit Stefan Küng's website"
+msgstr "Stefan Küng のサイトを開く" 
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -579,6 +579,6 @@ msgid "Max # of concurrent worker"
 msgstr "最大スレッド数"
 
 #. Resource IDs: (1045)
-msgid "Visit Stefan Küng's website"
-msgstr "Stefan Küng のサイトを開く" 
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Stefan Küng の良ソフト grepWin の Notepad3 用改造版"
 
