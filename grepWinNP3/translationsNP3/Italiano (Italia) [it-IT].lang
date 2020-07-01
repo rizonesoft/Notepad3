@@ -100,7 +100,7 @@ msgstr "Annulla"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Controlla aggiornamenti"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -458,7 +458,7 @@ msgstr "Tratta i file come UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
-msgstr ""
+msgstr "Visita il sito web di Stefan Küng"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s è disponibile"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -580,5 +580,5 @@ msgstr "N° max di task concorrenti"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+msgstr "grepWin(NP3)-mod dell'ottimo tool di Stefan Küng per Notepad3!"
 
