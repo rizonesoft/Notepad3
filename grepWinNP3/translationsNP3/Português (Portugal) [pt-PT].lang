@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: Portuguese (Portugal) resources
-# Last-Translator: (pt-PT) Tradução para português por Lacn0755
+# Translator: (pt-PT) Tradução para português por Lacn0755
 #
 
 #, fuzzy
@@ -36,10 +36,6 @@ msgstr ""
 #, c-format
 msgid "%ld more matches"
 msgstr "%ld mais correspondências"
-
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "O caminho não existe ou não está acessível"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -102,6 +98,10 @@ msgstr "Entre"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "Procurar actualizações"
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "Linha de comando para iniciar um editor numa linha específica:"
@@ -146,10 +146,6 @@ msgstr "Criar seguranças numa pasta separada"
 msgid "Dark mode"
 msgstr "Modo escuro"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "O Modo Escuro requer pelo menos o Win10 v1803 e tem que estar activado nas definições do sistema"
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Data de modificação"
@@ -157,6 +153,10 @@ msgstr "Data de modificação"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Diálogo"
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Não alertar ao substituir sem criar seguranças"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -190,10 +190,6 @@ msgstr "Tecla escape fecha o grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "Excluir pastas (Regex):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Ext"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "Exportar lista de resultados"
@@ -201,6 +197,10 @@ msgstr "Exportar lista de resultados"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "Exportar resultados..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr "Caminho inválido!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "Procura inversa (NÃO cadeia de procura)"
 
 #. Resource IDs: (1019)
@@ -287,10 +287,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Mais velho que"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "Não alertar ao substituir sem criar seguranças"
-
 #. Resource IDs: (1062)
 msgid "Only one instance"
 msgstr "Só uma instância"
@@ -310,6 +306,10 @@ msgstr "Colar texto para testar o regex com:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "Caminho"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "O caminho não existe ou não está acessível"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "Tratar ficheiros como UTF-8"
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Visite o nosso site"
+msgid "Visit Stefan Küng's website"
+msgstr "Visitar o site de Stefan Küng"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -476,6 +476,10 @@ msgstr "binário"
 msgid "click to edit the text as a multiline text"
 msgstr "clique para editar texto como um texto multi-linha"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "O Modo Escuro requer pelo menos o Win10 v1803 e tem que estar activado nas definições do sistema."
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "igual a"
@@ -487,6 +491,11 @@ msgstr "maior que"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr "Está disponível o grepWin %s"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -506,7 +515,7 @@ msgstr "incluir números de linha correspondentes"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "incluir linha de texto correspondente"
+msgstr "incluir texto da linha correspondente"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -568,3 +577,8 @@ msgstr "Repor"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "# máx. de trabalhos concorrentes"
+
+#. Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "grepWin(NP3)-mod Notepad3 da grande ferramenta de Stefan Küng"
+

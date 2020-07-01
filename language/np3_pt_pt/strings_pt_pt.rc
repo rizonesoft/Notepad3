@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Não foi encontrado nenhum executável de administração.\nVerifique na página https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Tem a certeza que deseja abrir este ficheiro grande?\n\t(tamanho: %s >= %s)!\n(Não serão aplicados realces de estilo e sintaxe!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Não é possível manusear este enorme ficheiro (tamanho: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Extensão de ficheiro desconhecida (%s)!\nCarregar dados mesmo assim?"

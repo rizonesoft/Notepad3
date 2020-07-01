@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.623.(build_#) (2020-06-23)
+Current RC1 Version 5.20.626.(build_#) (2020-06-26)
 =====================================================
 
 -----------------------------------------------------
@@ -42,7 +42,7 @@ NEW:
 - Current grepWin dev:  add feature:  export search results (GRE).
 - Update the grepWinNP3 icon (GRE).
 - Add a grepWinNP3 Toolbar icon (GRE).
-- Configurable Zoom-Tooltip clear delay ([Settings2] ZoomTooltipimeout=3200.
+- Configurable Zoom-Tooltip clear delay ([Settings2] ZoomTooltipTimeout=3200.
 - Add Install/Remove "Open with Notepad3" to Notepad3 Install version. 
 - Add another Dark Theme "Sombra".
 - Strip first char: allow multi-selection.

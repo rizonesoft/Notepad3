@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы уверены, что хотите открыть этот очень большой файл?\n\t(размер: %s >= %s)!\n(Стили и схема синтаксиса не будут применены!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Невозможно обработать этот большой файл (размер: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"

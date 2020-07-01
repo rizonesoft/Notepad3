@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: English (United States) resources
-# Last-Translator: (en-US) English translation by stefankueng
+# Translator: (en-US) English translation by stefankueng
 #
 
 #, fuzzy
@@ -35,10 +35,6 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr ""
-
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
 msgstr ""
 
 #. Resource IDs: (1069)
@@ -102,6 +98,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr ""
@@ -146,16 +146,16 @@ msgstr ""
 msgid "Dark mode"
 msgstr ""
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr ""
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr ""
 
 #. Resource IDs: (137)
 msgid "Dialog"
+msgstr ""
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
 msgstr ""
 
 #. Resource IDs: (1051)
@@ -190,16 +190,16 @@ msgstr ""
 msgid "Exclude dirs (Regex):"
 msgstr ""
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr ""
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr ""
 
 #. Resource IDs: (163)
 msgid "Export results..."
+msgstr ""
+
+#. Resource IDs: (158)
+msgid "Ext"
 msgstr ""
 
 #. Resource IDs: (1039)
@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr ""
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr ""
 
 #. Resource IDs: (1019)
@@ -287,10 +287,6 @@ msgstr ""
 msgid "Older than"
 msgstr ""
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr ""
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr ""
@@ -309,6 +305,10 @@ msgstr ""
 
 #. Resource IDs: (137)
 msgid "Path"
+msgstr ""
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
 msgstr ""
 
 #. Resource IDs: (131)
@@ -457,7 +457,7 @@ msgid "Treat files as UTF-8"
 msgstr ""
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
+msgid "Visit Stefan Küng's website"
 msgstr ""
 
 #. Resource IDs: (116)
@@ -476,6 +476,10 @@ msgstr ""
 msgid "click to edit the text as a multiline text"
 msgstr ""
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr ""
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr ""
@@ -486,6 +490,11 @@ msgstr ""
 
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
+msgstr ""
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
 msgstr ""
 
 #. Resource IDs: (138)
@@ -568,3 +577,8 @@ msgstr ""
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr ""
+
+#. Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+

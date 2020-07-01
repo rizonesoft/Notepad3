@@ -9,7 +9,7 @@
 #
 # encoding: UTF-8
 # Language: Slovak (Slovakia) resources
-# Last-Translator: (sk-SK) Slovenský preklad Rudolfin
+# Translator: (sk-SK) Slovenský preklad Rudolfin
 #
 
 #, fuzzy
@@ -36,10 +36,6 @@ msgstr ""
 #, c-format
 msgid "%ld more matches"
 msgstr "%ld viac výskytov"
-
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Cesta neexistuje alebo nie je prístupná!"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -102,6 +98,10 @@ msgstr "Medzi"
 msgid "Cancel"
 msgstr "Zrušiť"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "Príkazový riadok na spustenie editora na konkrétnom riadku:"
@@ -146,10 +146,6 @@ msgstr "Vytvoriť záložné súbory v samostatnom priečinku"
 msgid "Dark mode"
 msgstr "Tmavý režim"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Tmavý režim vyžaduje aspoň Win10 v1803 a musí byť povolený v nastaveniach systému Windows."
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Zmena dátumu"
@@ -157,6 +153,10 @@ msgstr "Zmena dátumu"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Dialóg"
+
+#. Resource IDs: (1090)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Nezobrazovať upozornenie pri zámene bez vytvorenia záloh"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -190,10 +190,6 @@ msgstr "Klávesou Esc zatvoriť grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "Vylúčené riadky (Regex):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Ext"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "Export výsledkov"
@@ -201,6 +197,10 @@ msgstr "Export výsledkov"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "Export výsledkov..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -239,7 +239,7 @@ msgid "Invalid path!"
 msgstr "Neplatná cesta!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "Inverzné hľadanie (nie pre reťazec)"
 
 #. Resource IDs: (1019)
@@ -287,10 +287,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Staršie ako"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "Nezobrazovať upozornenie pri zámene bez vytvorenia záloh"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Len jedna inštancia"
@@ -310,6 +306,10 @@ msgstr "Vložiť text na otestovanie regex:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "Cesta"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "Cesta neexistuje alebo nie je prístupná!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -457,8 +457,8 @@ msgid "Treat files as UTF-8"
 msgstr "Považovať súbory ako UTF-8"
 
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Navštívte našu webovú stránku"
+msgid "Visit Stefan Küng's website"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -476,6 +476,10 @@ msgstr "binárny"
 msgid "click to edit the text as a multiline text"
 msgstr "kliknutím upravte text na viacriadkový text"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "Tmavý režim vyžaduje aspoň Win10 v1803 a musí byť povolený v nastaveniach systému Windows."
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "rovná sa"
@@ -487,6 +491,11 @@ msgstr "väčšie ako"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -568,3 +577,8 @@ msgstr "Reset"
 #. Resource IDs: (1088)
 msgid "Max # of concurrent worker"
 msgstr "Max # súbežných pracovníkov"
+
+#. Resource IDs: (1045)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+

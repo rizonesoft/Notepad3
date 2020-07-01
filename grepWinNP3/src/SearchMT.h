@@ -23,7 +23,7 @@
 #include <condition_variable>
 
 // ---------------------------------------
-// a semaphore class 
+// a semaphore class
 // (until C++20  std::counting_semaphore)
 // ---------------------------------------
 class Semaphore
@@ -75,7 +75,7 @@ public:
         m_cndvar.notify_all();
     }
 
-private:    
+private:
     mutable std::mutex      m_mtx;
     std::condition_variable m_cndvar;
     unsigned int            m_max;
@@ -109,7 +109,7 @@ public:
         return (m_set.find(filePath) != m_set.end());
     }
     // auto unlock (lock_guard, RAII)
-    
+
 private:
     mutable std::mutex     m_mtx;
     std::set<std::wstring> m_set;
@@ -144,8 +144,8 @@ public:
         m_threadFutureMap.insert(std::make_pair(sInfoPtr, sFuturePtr));
     }
 
-    inline bool empty() 
-    { 
+    inline bool empty()
+    {
         std::lock_guard<std::mutex> lock(m_mtx);
         return (m_threadReadyMap.empty() && m_threadFutureMap.empty());
     }
