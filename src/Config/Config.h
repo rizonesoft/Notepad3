@@ -28,6 +28,7 @@ extern "C" {
 
 bool FindIniFile();
 bool TestIniFile();
+bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights);
 bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out);
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);

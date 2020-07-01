@@ -93,6 +93,49 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 
 // ============================================================================
 
+
+bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
+{
+  bool bRet = false;
+  if (StrIsEmpty(lpIniFilePath)) {
+    return bRet;
+  }
+  DWORD                      length  = 0;
+  SECURITY_INFORMATION const secInfo = OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
+
+  if (!::GetFileSecurity(lpIniFilePath, secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
+    PSECURITY_DESCRIPTOR security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
+    if (security && ::GetFileSecurity(lpIniFilePath, secInfo, security, length, &length)) {
+      HANDLE hToken = NULL;
+      if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken)) {
+        HANDLE hImpersonatedToken = NULL;
+        if (::DuplicateToken(hToken, SecurityImpersonation, &hImpersonatedToken)) {
+          GENERIC_MAPPING mapping       = {0xFFFFFFFF};
+          PRIVILEGE_SET   privileges    = {0};
+          DWORD           grantedAccess = 0, privilegesLength = sizeof(privileges);
+          BOOL            result = FALSE;
+
+          mapping.GenericRead    = FILE_GENERIC_READ;
+          mapping.GenericWrite   = FILE_GENERIC_WRITE;
+          mapping.GenericExecute = FILE_GENERIC_EXECUTE;
+          mapping.GenericAll     = FILE_ALL_ACCESS;
+
+          ::MapGenericMask(&genericAccessRights, &mapping);
+          if (::AccessCheck(security, hImpersonatedToken, genericAccessRights,
+                            &mapping, &privileges, &privilegesLength, &grantedAccess, &result)) {
+            bRet = (result == TRUE);
+          }
+          ::CloseHandle(hImpersonatedToken);
+        }
+        ::CloseHandle(hToken);
+      }
+      FreeMem(security);
+    }
+  }
+  return bRet;
+}
+
+
 // ----------------------------------------------------------------------------
 // No mechanism for  EXCLUSIVE WRITE / SHARD READ:
 // cause we need completely synchronized exclusive access for READ _and_ WRITE
@@ -265,13 +308,13 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 //
 extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
 {
-  if (StrIsEmpty(Globals.IniFile) || !IsIniFileCached()) { return false; }
+  if (!Globals.bCanSaveIniFile || !IsIniFileCached()) { return false; }
   
-  bool const ok = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : true;
+  bool const bSaved = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : false;
 
   if (!keepCached) { ResetIniFileCache(); }
 
-  return ok;
+  return bSaved;
 }
 
 
@@ -961,7 +1004,9 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
     }
     if (pdwFileSize_out) { *pdwFileSize_out = dwFileSize; }
 
-    if (dwFileSize == 0UL) {
+    Globals.bCanSaveIniFile = CanAccessPath(pszIniFilePath, GENERIC_WRITE);
+
+    if ((dwFileSize == 0UL) && Globals.bCanSaveIniFile) {
       // Set at least Application Name Section
       result = IniFileSetString(pszIniFilePath, _W(SAPPNAME), NULL, NULL);
     }
@@ -999,7 +1044,7 @@ void LoadSettings()
     Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
 
     Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
-    Settings.SaveSettings = IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
+    Settings.SaveSettings = Defaults.SaveSettings && IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
 
     // ---  first set "hard coded" .ini-Settings  ---
 
@@ -1979,7 +2024,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 {
   if (Flags.bDoRelaunchElevated) { return true; } // already saved before relaunch
   if (Flags.bSettingsFileSoftLocked) { return false; }
-
+  
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
 
@@ -1996,7 +2041,7 @@ __try {
 
       _SaveSettings(bForceSaveSettings);
 
-      if (StrIsNotEmpty(Globals.IniFile))
+      if (Globals.bCanSaveIniFile)
       {
         if (!Settings.SaveRecentFiles) {
           // Cleanup unwanted MRUs
@@ -2032,7 +2077,8 @@ __try {
   }
 
   // separate INI files for Style-Themes
-  if (Globals.idxSelectedTheme >= 2) {
+  if (Globals.idxSelectedTheme >= 2)
+  {
     Style_SaveSettings(bForceSaveSettings);
   }
 
