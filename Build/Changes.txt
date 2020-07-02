@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.626.(build_#) (2020-06-26)
+Current RC1 Version 5.20.702.(build_#) (2020-07-02)
 =====================================================
 
 -----------------------------------------------------
@@ -52,12 +52,14 @@ NEW:
 - "waifu2x" scaled std Toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
-- Integration of "grepWinNP3", a Search Tool in files (v2.1.0.10) (GRE).
+- Integration of "grepWinNP3", a Search Tool in files (v2.1.2.16) (GRE).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
 - 
+- Re-enable messages if File-Locking failded.
+- Silent ignore write permissions missing on Inifile.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
 - Set DirectWite (D2D) rendering technology as new default.
 - Two stage Toolbar reset (customizing): 1st -> settings  2nd -> factory default.
