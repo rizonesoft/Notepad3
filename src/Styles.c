@@ -4074,6 +4074,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
         return !0;
 
+        case WM_ENABLE:
+          // modal child dialog should disable main window too
+          EnableWindow(Globals.hwndMain, (BOOL)wParam);
+          return !0;
+
         case WM_PAINT:
         {
             HDC const hDC = GetWindowDC(hwnd);
