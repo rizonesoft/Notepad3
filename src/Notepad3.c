@@ -6919,18 +6919,27 @@ static bool  _IsIMEOpenInNoNativeMode()
 //
 inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* const scn)
 {
+  static int _mod_insdel_token = -1;
   // --- check only mandatory events (must be fast !!!) ---
   if (pnmh->idFrom == IDC_EDIT) {
     if (pnmh->code == SCN_MODIFIED) {
       bool bModified = true;
       int const iModType = scn->modificationType;
-      if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-          if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
-            _SaveRedoSelection(_SaveUndoSelection());
+      if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
+        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+          if (!_InUndoRedoTransaction()) {
+            _mod_insdel_token = _SaveUndoSelection();
           }
         }
         bModified = false; // not yet
+      }
+      if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
+        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+          if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
+            _SaveRedoSelection(_mod_insdel_token);
+            _mod_insdel_token = -1;
+          }
+        }
       }
       // check for ADDUNDOACTION step
       if (iModType & SC_MOD_CONTAINER)
@@ -6978,6 +6987,7 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
 static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotification* const scn)
 {
   static int  _s_indic_click_modifiers = SCMOD_NORM;
+  static int _mod_insdel_token         = -1;
 
   switch (pnmh->code)
   {
@@ -7019,13 +7029,21 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
     {
       int const iModType = scn->modificationType;
       bool bModified = true;
-      if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-        if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-          if ((!_InUndoRedoTransaction() && !SciCall_IsSelectionEmpty()) || Sci_IsMultiOrRectangleSelection()) {
-            _SaveRedoSelection(_SaveUndoSelection());
+      if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
+        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+          if (!_InUndoRedoTransaction()) {
+            _mod_insdel_token = _SaveUndoSelection();
           }
         }
         bModified = false; // not yet
+      }
+      else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
+        if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+          if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
+            _SaveRedoSelection(_mod_insdel_token);
+            _mod_insdel_token = -1;
+          }
+        }
       }
       if (iModType & SC_MOD_CONTAINER) {
         if (iModType & SC_PERFORMED_UNDO) {
@@ -9073,6 +9091,9 @@ static void  _SaveRedoSelection(int token)
         utarray_push_back(pSel->anchorPos_redo, &anchorPos);
         DocPos const curPos = SciCall_GetCurrentPos();
         utarray_push_back(pSel->curPos_redo, &curPos);
+        //~DocPos const dummy = (DocPos)-1;
+        //~utarray_push_back(pSel->anchorVS_redo, &dummy);
+        //~utarray_push_back(pSel->curVS_redo, &dummy);
       }
       break;
     }
