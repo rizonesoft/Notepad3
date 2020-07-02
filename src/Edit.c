@@ -5846,6 +5846,10 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     }
     return !0; // (!) further processing
 
+  case WM_ENABLE:
+    // modal child dialog should disable main window too
+    EnableWindow(Globals.hwndMain, (BOOL)wParam);
+    return !0;
 
   case WM_DESTROY:
     {
