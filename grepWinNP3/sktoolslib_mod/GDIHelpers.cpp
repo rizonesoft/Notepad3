@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2017 - Stefan Kueng
+// Copyright (C) 2012-2013, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -259,7 +259,7 @@ bool GDIHelpers::ShortHexStringToCOLORREF(const std::string& s, COLORREF* clr)
         }
     }
     auto color = RGB(rgb[0], rgb[1], rgb[2]);
-    *clr = (RGB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF)) | (color & 0xFF000000);
+    *clr = color;
     return true;
 }
 

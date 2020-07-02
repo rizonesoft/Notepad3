@@ -39,7 +39,6 @@ void   Style_ToIniSection(bool bForceAll, bool bIsStdIniFile);
 bool   Style_ExportToFile(const WCHAR* szFile, bool bForceAll);
 
 unsigned ThemeItems_CountOf();
-void     Style_SetIniFile(LPCWSTR szIniFile);
 bool     Style_InsertThemesMenu(HMENU hMenuBar);
 void     Style_DynamicThemesMenuCmd(int cmd);
 

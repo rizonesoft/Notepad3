@@ -293,12 +293,13 @@ void SetPreferredLanguage(LANGID iPreferredLanguageID)
     {
       StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
 
-      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0)
-      {
-        IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
-      }
-      else {
-        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
+      if (Globals.bCanSaveIniFile) {
+        if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+          IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+        }
+        else {
+          IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
+        }
       }
     }
   }

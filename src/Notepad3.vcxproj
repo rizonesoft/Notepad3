@@ -434,7 +434,12 @@
     <ClCompile Include="..\uchardet\uchardet\src\nsUniversalDetector.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsUTF8Prober.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\uchardet.cpp" />
-    <ClCompile Include="AccelKeys.c" />
+    <ClCompile Include="AccelKeys.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
@@ -545,7 +550,12 @@
     <ClInclude Include="..\uthash\utringbuffer.h" />
     <ClInclude Include="..\uthash\utstack.h" />
     <ClInclude Include="..\uthash\utstring.h" />
-    <ClInclude Include="AccelKeys.h" />
+    <ClInclude Include="AccelKeys.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Config\Config.h" />
     <ClInclude Include="Config\SimpleIni.h" />
     <ClInclude Include="Dialogs.h" />

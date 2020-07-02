@@ -184,6 +184,9 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, bPortable ? g_iniFile.GetBoolValue(L"settings", L"backupinfolder", false) : !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_NOWARNINGIFNOBACKUP, BM_SETCHECK, bPortable ? g_iniFile.GetBoolValue(L"settings", L"nowarnifnobackup", false) : !!DWORD(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", false) : !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+#ifdef NP3_ALLOW_UPDATE
+            SendDlgItemMessage(hwndDlg, IDC_DOUPDATECHECKS, BM_SETCHECK, bPortable ? g_iniFile.GetBoolValue(L"global", L"CheckForUpdates", false) : !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\CheckForUpdates", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+#endif
             SendDlgItemMessage(hwndDlg, IDC_DARKMODE, BM_SETCHECK, CTheme::Instance().IsDarkTheme() ? BST_CHECKED : BST_UNCHECKED, 0);
             EnableWindow(GetDlgItem(*this, IDC_DARKMODE), CTheme::Instance().IsDarkModeAllowed());
 
@@ -212,6 +215,9 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_resizer.AddControl(hwndDlg, IDC_BACKUPINFOLDER, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_NOWARNINGIFNOBACKUP, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFTRIGHT);
+#ifdef NP3_ALLOW_UPDATE
+            m_resizer.AddControl(hwndDlg, IDC_DOUPDATECHECKS, RESIZER_TOPLEFTRIGHT);
+#endif
             m_resizer.AddControl(hwndDlg, IDC_DARKMODE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_DARKMODEINFO, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
@@ -302,6 +308,9 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 g_iniFile.SetBoolValue(L"settings", L"backupinfolder", (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED));
                 g_iniFile.SetBoolValue(L"settings", L"nowarnifnobackup", (IsDlgButtonChecked(*this, IDC_NOWARNINGIFNOBACKUP) == BST_CHECKED));
                 g_iniFile.SetBoolValue(L"global", L"onlyone", (IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED));
+#ifdef NP3_ALLOW_UPDATE
+                g_iniFile.SetBoolValue(L"global", L"CheckForUpdates", (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED));
+#endif
                 g_iniFile.SetLongValue(L"global", L"MaxNumOfWorker", nWorker);
             }
             else
@@ -314,6 +323,10 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 nowarn = (IsDlgButtonChecked(*this, IDC_NOWARNINGIFNOBACKUP) == BST_CHECKED);
                 CRegStdDWORD regOnlyOne(L"Software\\grepWinNP3\\onlyone", FALSE);
                 regOnlyOne = (IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED);
+#ifdef NP3_ALLOW_UPDATE
+                CRegStdDWORD regCheckForUpdates(L"Software\\grepWinNP3\\CheckForUpdates", FALSE);
+                regCheckForUpdates = (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED);
+#endif
                 CRegStdDWORD nwrk(L"Software\\grepWinNP3\\MaxNumOfWorker", 1);
                 nwrk = nWorker;
             }

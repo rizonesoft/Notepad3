@@ -199,6 +199,7 @@
       </buildfiles>
     </nant>
     <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
+    <property name="verstringfull" value="${verstring}.${environment::get-variable('WCREV')}" />
     <copy file="bin\Release\grepWin.exe" tofile="bin\grepWin-${verstring}_portable.exe" />
     <copy file="bin\Release64\grepWin.exe" tofile="bin\grepWin-x64-${verstring}_portable.exe" />
 
@@ -216,6 +217,10 @@
       <arg value="bin\grepWin-${verstring}-x64.msi" />
     </exec>
     <loadfile file="bin\checksum64.txt" property="checksum64" />
+    <!-- now write the version.txt file -->
+    <echo file="version.txt">${verstringfull}
+https://tools.stefankueng.com/grepWin.html
+</echo>
 
     <loadfile file="choco\grepwin.nuspec" property="nuspecfile">
       <filterchain>

@@ -293,6 +293,7 @@ typedef struct _globals_t
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
   HINSTANCE hLngResContainer;
+  bool      bCanSaveIniFile;
   int       iAvailLngCount;
   bool      bPrefLngNotAvail;
   HWND      hwndMain;
