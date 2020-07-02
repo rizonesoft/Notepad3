@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013 - Stefan Kueng
+// Copyright (C) 2012-2013, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -76,10 +76,12 @@ public:
     CFileDropTarget(HWND hTargetWnd)
         : CIDropTarget(hTargetWnd)
         , m_hParent(NULL)
+        , m_concat(0)
     {}
     CFileDropTarget(HWND hTargetWnd, HWND hParent)
         : CIDropTarget(hTargetWnd)
         , m_hParent(hParent)
+        , m_concat(0)
     {
         RegisterDragDrop(hTargetWnd, this);
         // create the supported format:
@@ -90,6 +92,7 @@ public:
         ftetc.tymed    = TYMED_HGLOBAL;
         AddSuportedFormat(ftetc);
     }
+    void SetMultipathConcatenate(wchar_t ch) { m_concat = ch; }
     virtual bool OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium, DWORD * /*pdwEffect*/)
     {
         if (m_hParent && (pFmtEtc->cfFormat == CF_HDROP) && (medium.tymed == TYMED_HGLOBAL))
@@ -189,11 +192,22 @@ public:
                 std::unique_ptr<TCHAR[]> szFileName(new TCHAR[MAX_PATH_NEW]);
 
                 UINT cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+                std::wstring concatPaths;
                 for (UINT i = 0; i < cFiles; ++i)
                 {
                     DragQueryFile(hDrop, i, szFileName.get(), MAX_PATH_NEW);
-                    ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)szFileName.get());
+                    if (m_concat)
+                    {
+                        if (!concatPaths.empty())
+                            concatPaths += m_concat;
+                        concatPaths += szFileName.get();
+                    }
+                    else
+                        ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)szFileName.get());
                 }
+                if (!concatPaths.empty())
+                    ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)concatPaths.c_str());
+
                 //DragFinish(hDrop); // base class calls ReleaseStgMedium
             }
             GlobalUnlock(medium.hGlobal);
@@ -202,4 +216,5 @@ public:
     }
 private:
     HWND    m_hParent;
+    wchar_t m_concat;
 };

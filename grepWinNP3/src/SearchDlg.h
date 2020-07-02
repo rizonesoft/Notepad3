@@ -31,6 +31,9 @@
 #include <vector>
 #include <set>
 #include <mutex>
+#ifdef NP3_ALLOW_UPDATE
+#include <thread>
+#endif
 
 
 #define SEARCH_START         (WM_APP+1)
@@ -119,6 +122,11 @@ protected:
     void                    AutoSizeAllColumns();
     int                     GetSelectedListIndex(int index);
     bool                    FailedShowMessage(HRESULT hr);
+#ifdef NP3_ALLOW_UPDATE
+    void                    CheckForUpdates(bool force = false);
+    void                    ShowUpdateAvailable();
+    bool                    IsVersionNewer(const std::wstring& sVer);
+#endif
 private:
     static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
     static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
@@ -198,6 +206,10 @@ private:
     CFileDropTarget *       m_pDropTarget;
 
     static UINT             GREPWIN_STARTUPMSG;
+
+#ifdef NP3_ALLOW_UPDATE
+   std::thread             m_updateCheckThread;
+#endif
 
     CAutoComplete           m_AutoCompleteFilePatterns;
     CAutoComplete           m_AutoCompleteExcludeDirsPatterns;
