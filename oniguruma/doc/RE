@@ -366,7 +366,7 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
 
   (?~|absent)        Absent stopper (* original)
                      After passed this operator, string right range is limited
-                     at the point that does not include the string match whth
+                     at the point that does not include the string match with
                      <absent>.
 
   (?~|)              Range clear

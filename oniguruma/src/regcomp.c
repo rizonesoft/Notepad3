@@ -4787,7 +4787,10 @@ tune_look_behind(Node* node, regex_t* reg, int state, ScanEnv* env)
 static int
 tune_next(Node* node, Node* next_node, regex_t* reg)
 {
+  int called;
   NodeType type;
+
+  called = FALSE;
 
  retry:
   type = NODE_TYPE(node);
@@ -4795,10 +4798,12 @@ tune_next(Node* node, Node* next_node, regex_t* reg)
     QuantNode* qn = QUANT_(node);
     if (qn->greedy && IS_INFINITE_REPEAT(qn->upper)) {
 #ifdef USE_QUANT_PEEK_NEXT
-      Node* n = get_tree_head_literal(next_node, 1, reg);
-      /* '\0': for UTF-16BE etc... */
-      if (IS_NOT_NULL(n) && STR_(n)->s[0] != '\0') {
-        qn->next_head_exact = n;
+      if (called == FALSE) {
+        Node* n = get_tree_head_literal(next_node, 1, reg);
+        /* '\0': for UTF-16BE etc... */
+        if (IS_NOT_NULL(n) && STR_(n)->s[0] != '\0') {
+          qn->next_head_exact = n;
+        }
       }
 #endif
       /* automatic posseivation a*b ==> (?>a*)b */
@@ -4823,6 +4828,8 @@ tune_next(Node* node, Node* next_node, regex_t* reg)
   else if (type == NODE_BAG) {
     BagNode* en = BAG_(node);
     if (en->type == BAG_MEMORY) {
+      if (NODE_IS_CALLED(node))
+        called = TRUE;
       node = NODE_BODY(node);
       goto retry;
     }
@@ -5235,7 +5242,7 @@ check_call_reference(CallNode* cn, ScanEnv* env, int state)
   MemEnv* mem_env = SCANENV_MEMENV(env);
 
   if (cn->by_number != 0) {
-    int gnum = cn->group_num;
+    int gnum = cn->called_gnum;
 
     if (env->num_named > 0 &&
         IS_SYNTAX_BV(env->syntax, ONIG_SYN_CAPTURE_ONLY_NAMED_GROUP) &&
@@ -5250,7 +5257,7 @@ check_call_reference(CallNode* cn, ScanEnv* env, int state)
     }
 
   set_call_attr:
-    NODE_CALL_BODY(cn) = mem_env[cn->group_num].mem_node;
+    NODE_CALL_BODY(cn) = mem_env[cn->called_gnum].mem_node;
     if (IS_NULL(NODE_CALL_BODY(cn))) {
       onig_scan_env_set_error_string(env, ONIGERR_UNDEFINED_NAME_REFERENCE,
                                      cn->name, cn->name_end);
@@ -5274,7 +5281,7 @@ check_call_reference(CallNode* cn, ScanEnv* env, int state)
       return ONIGERR_MULTIPLEX_DEFINITION_NAME_CALL;
     }
     else {
-      cn->group_num = refs[0];
+      cn->called_gnum = refs[0];
       goto set_call_attr;
     }
   }
@@ -7936,6 +7943,7 @@ print_indent_tree(FILE* f, Node* node, int indent)
     {
       CallNode* cn = CALL_(node);
       fprintf(f, "<call:%p>", node);
+      fprintf(f, " num: %d, name", cn->called_gnum);
       p_string(f, cn->name_end - cn->name, cn->name);
     }
     break;
