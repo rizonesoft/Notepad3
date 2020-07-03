@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.702.(build_#) (2020-07-02)
+Current RC1 Version 5.20.703.(build_#) (2020-07-03)
 =====================================================
 
 -----------------------------------------------------
@@ -58,6 +58,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
+- Change: FONT 8, "MS Shell Dlg" to: FONT 9, "Segoe UI".
 - Re-enable messages if File-Locking failded.
 - Silent ignore write permissions missing on Inifile.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
