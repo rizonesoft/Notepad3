@@ -316,7 +316,7 @@ Callouts API  Version 6.8.2 2018/06/08
   because it doesn't use this function.
 
 
-(8) Callout data (used in apllications)
+(8) Callout data (used in applications)
 
 # int onig_get_callout_data(OnigRegex reg, OnigMatchParam* mp, int callout_num, int slot, OnigType* type, OnigValue* val)
 

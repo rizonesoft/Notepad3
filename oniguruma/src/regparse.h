@@ -164,7 +164,7 @@ typedef struct {
   struct _Node* body; /* to BagNode : BAG_MEMORY */
 
   int     by_number;
-  int     group_num;
+  int     called_gnum;
   UChar*  name;
   UChar*  name_end;
   int     entry_count;
