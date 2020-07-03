@@ -105,6 +105,8 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Multiple line-/stream-selection undo/redo.
+- Disabled Find/Replace or Customize Schemes (by modal child) dialog should disable main window.
 - Printing scaling problem related to DPI awareness changes.
 - System MessageBox "save before close" positioning.
 - Reset of Toolbar configuration dialog.
