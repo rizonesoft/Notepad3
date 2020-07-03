@@ -58,7 +58,7 @@ NEW:
 CHANGES:
 -----------------------------------------------------
 - 
-- Change FONT 8, "MS Shell Dlg" to: FONT 9, "Segoe UI".
+- Change: FONT 8, "MS Shell Dlg" to: FONT 9, "Segoe UI".
 - Re-enable messages if File-Locking failded.
 - Silent ignore write permissions missing on Inifile.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
