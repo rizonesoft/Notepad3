@@ -461,9 +461,9 @@ BEGIN
     IDS_LEX_STR_63361       "Zastąpienie"
     IDS_LEX_STR_63362       "Modyfikator"
     IDS_LEX_STR_63363       "Tag"
-    IDS_LEX_STR_63364       "Property Name"
-    IDS_LEX_STR_63365       "LD Keyword"
-    IDS_LEX_STR_63366       "ESC Sequence"
+    IDS_LEX_STR_63364       "Nazwa własności"
+    IDS_LEX_STR_63365       "Klucz LD"
+    IDS_LEX_STR_63366       "Sekwencja ESC"
 END
 
 STRINGTABLE
