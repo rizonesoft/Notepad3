@@ -92,13 +92,13 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "집중"
     IDT_VIEW_CHASING_DOCTAIL "열람(&M)"
     IDT_VIEW_PIN_ON_TOP      "항상 위에"
-    IDT_GREP_WIN_TOOL        "Search in Files"
+    IDT_GREP_WIN_TOOL        "파일에서 찾기"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevated)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (상승된 권한)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 클립 보드"
     IDS_MUI_UNTITLED        "제목 없음"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -107,7 +107,7 @@ BEGIN
     IDS_MUI_SAVEFILE        "저장 ""%s""..."
     IDS_MUI_PRINTFILE       "인쇄 페이지 %i..."
     IDS_MUI_SAVINGSETTINGS  "설정 저장..."
-    IDS_MUI_LINKDESCRIPTION "Notepad3으로 편집"
+    IDS_MUI_LINKDESCRIPTION "Notepad3로 편집"
 END
 
 STRINGTABLE
@@ -129,7 +129,7 @@ BEGIN
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 도중 오류가 발생하였습니다."
     IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "파일 브라우저 플러그인을 찾을 수 없습니다.\nMiniPath 파일 브라우저 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
-    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다.\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드 할 수 있습니다."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거할까요?"
     IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED
@@ -151,9 +151,9 @@ BEGIN
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 대용량 파일을 열겠습니까?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "Can't handle that huge file (size: %s)!"
+                            "파일의 크기(%s)가 너무 큽니다!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "알 수 없는 확장자 (%s)!\n데이터를 로딩 하시겠습니까?"
+                            "알 수 없는 확장자(%s)입니다!\n데이터를 로딩하시겠습니까?"
     IDS_MUI_INDENT_CONSISTENT   "들여쓰기가 일관적입니다!"
     IDS_MUI_EOLMODENAME_CRLF    "윈도우 (CR+LF)"
     IDS_MUI_EOLMODENAME_LF      "유닉스/Mac (LF)"
@@ -162,9 +162,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "이 작업은 사각형 선택 내에서 수행 할 수 없습니다."
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_SELRECT         "이 작업은 사각형 선택 중에 수행 할 수 없습니다."
+    IDS_MUI_SELMULTI        "이 작업은 다중 선택 중에 수행 할 수 없습니다."
+    IDS_MUI_SELRECTORMULTI  "이 작업은 사각형 선택 혹은 다중 선택 중에 수행 할 수 없습니다."
     IDS_MUI_BUFFERTOOSMALL  "이 작업은 수행 할 수 없습니다 (너무 긴 줄)."
     IDS_MUI_FIND_WRAPFW     "문서 끝에 도달하여 처음부터 다시 찾습니다."
     IDS_MUI_FIND_WRAPRE     "문서의 처음 부분에 도달하여 끝에서 부터 다시 찾습니다."
@@ -186,15 +186,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by application relaunch ?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_RELOADSETTINGS   "저장된 설정을 적용하기 위해 재시작할까요?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "재시작하지 않는 경우, 저장된 설정은 적용되지 못하고 프로그램이 종료될 때 덮어씌워집니다!"
     IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""(으)로 내보내는 중 오류가 발생하였습니다."
     IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 중 오류가 발생하였습니다. 표현식이 유효하지 않습니다!"
     IDS_MUI_DROP_NO_FILE     "가져온 파일 이름이 올바르지 않습니다.\n32 비트 응용 프로그램에서 끌어 오는 경우\nNotepad3의 도구 모음에 드래그 앤 드롭하십시오."
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click 파일 열기."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click 브라우저에서 링크 열기."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+                             "기존의 파일 수정 타임스탬프를 보존합니다.\n이 옵션은 이 세션에 한에서만 적용됩니다!"
 END
 
 STRINGTABLE
@@ -205,7 +205,7 @@ BEGIN
     IDS_MUI_ASK_CREATE      """%s"" 파일이 존재하지 않습니다.\n이 파일을 생성하시겠습니까?"
     IDS_MUI_PRINT_HEADER    "파일 이름, 현재 날짜 및 시간|파일 이름, 현재 날짜|파일 이름|비워 두기"
     IDS_MUI_PRINT_FOOTER    "페이지 번호|비워 두기."
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Color on white|Color on white (except line numbers)|Screen Colors"
+    IDS_MUI_PRINT_COLOR     "일반|색 반전 (어두운 배경)|흑백(흰 배경)|색깔(흰 배경)|색깔(라인 번호 제외, 흰 배경)|스크린 색상"
     IDS_MUI_PRINT_PAGENUM   "페이지 %i"
 END
 
@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_PASS_FAILURE    "암호가 올바르지 않습니다.\n다른 암호 문구를 다시 입력 하시겠습니까?"
     IDS_MUI_NOPASS          "해독 취소됨!\n암호화 된 원시 데이터 읽기?"
     IDS_MUI_STY_BASESTD     "BASE (기본 스타일):"
-    IDS_MUI_STY_BASE2ND     "BASE (2nd 기본 스타일):"
+    IDS_MUI_STY_BASE2ND     "BASE (두 번째 기본 스타일):"
     IDS_MUI_STY_LEXDEF      "%s - 기본 스타일:"
     IDS_MUI_STY_LEXSTYLE    "%s - 스타일:"
     IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
@@ -237,8 +237,8 @@ BEGIN
     IDS_MUI_TITLE_RELARB    " +++ Style '%s' - (%s) +++"
     IDS_MUI_TITLE_FIXARB    " Style '%s' - (%s)"
     IDS_MUI_ASSOCIATED_EXT  "연결된 확장자:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\r\n빠른 갈색 여우가 느린 개를 뛰어 넘었다.\r\n\\ * & ^ % $ # @ ! ~"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
+    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789.\r\n얍삽한 귤빛 여우가 퍼진 코요테를 뛰어넘는다.\r\n\\ * & ^ % $ # @ ! ~"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length 매치"
     IDS_MUI_GOTO_LINE       "행 (1 - %ti):"
     IDS_MUI_GOTO_COLUMN     "열 (1 - %ti):"
 END
