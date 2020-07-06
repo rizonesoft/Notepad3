@@ -94,7 +94,7 @@ BEGIN
     CONTROL         "A&uto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
     CONTROL         "정규 표현식 검색(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "점 모두 일치(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "&Overlapping search",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
+    CONTROL         "중복 찾기(&O)",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "반복 찾기 안함(&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "찾은 후 닫기(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,65,10
     CONTROL         "선택 항목 강조(&O)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
@@ -126,7 +126,7 @@ BEGIN
     CONTROL         "단어 단위 일치(&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "시작 부분 일치 단어(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "백슬래시 변환(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "A&uto Esc Ctrl Chr",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
+    CONTROL         "자동 Esc Ctrl 문자(&U)",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
     CONTROL         "정규 표현식 검색(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "점 모두 일치(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "중복된 찾기",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
@@ -185,20 +185,20 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "기본 인코딩 (새 파일):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "판별 실패 대체(&F).",IDC_USEASREADINGFALLBACK,
+    CONTROL         "판별 실패 대체(&F)",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "인코딩 판별: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "7-bit &ASCII 파일을 UTF-8 모드로 열기.",IDC_ASCIIASUTF8,
+    CONTROL         "7-bit &ASCII 파일을 UTF-8 모드로 열기",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,164,10
-    CONTROL         "신뢰할 수 있는 판별 결과만 사용(&R).",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "신뢰할 수 있는 판별 결과만 사용(&R)",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,164,10
-    CONTROL         "8-bit *.&Nfo/Diz 파일을 DOS-437 모드로 열기.",IDC_NFOASOEM,
+    CONTROL         "8-bit *.&Nfo/Diz 파일을 DOS-437 모드로 열기",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,164,10
-    CONTROL         "인코딩 파일 태그 구문 분석(&T).",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "인코딩 파일 태그 구문 분석(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,164,10
-    CONTROL         "ANSI 코드 페이지 분석(&A).",IDC_NOANSICPDETECTION,
+    CONTROL         "ANSI 코드 페이지 분석(&A)",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,164,10
-    CONTROL         "유니코드 감지 사용(&U).",IDC_NOUNICODEDETECTION,
+    CONTROL         "유니코드 감지 사용(&U)",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,164,10
     DEFPUSHBUTTON   "확인",IDOK,87,151,50,14
     PUSHBUTTON      "취소",IDCANCEL,140,151,50,14
@@ -211,11 +211,11 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "기본 줄 끝 모드(&D):",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "일관되지 않은 줄 바꿈 경고 표시.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "일관되지 않은 줄 바꿈 경고",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,171,10
-    CONTROL         "저장시 줄 바꿈 일관성 확인(&E).",IDC_CONSISTENT_EOLS,
+    CONTROL         "저장시 줄 바꿈 일관성 확인(&E)",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,171,10
-    CONTROL         "저장시 뒤의 공백을 제거(&S).",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "저장시 뒤의 공백을 제거(&S)",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,171,10
     DEFPUSHBUTTON   "확인",IDOK,139,7,50,14
     PUSHBUTTON      "취소",IDCANCEL,139,24,50,14
@@ -230,14 +230,14 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC,10,18,34,8
     RTEXT           "CR:",IDC_STATIC,10,28,34,8
     RTEXT           "LF:",IDC_STATIC,10,38,34,8
-    LTEXT           "%s 줄.",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s 줄.",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s 줄.",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s 줄",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s 줄",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s 줄",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "줄 끝을 정상화 하겠습니까?(&D)",IDC_STATIC,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "예(&Y)",IDOK,138,63,50,14
     PUSHBUTTON      "아니오(&N)",IDCANCEL,138,80,50,14
-    CONTROL         "항상 이 대화 상자를 표시합니다(&A).",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "항상 이 대화 상자를 표시합니다(&A)",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -275,10 +275,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "파일 변경 알림"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "없음(&N).",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,115,10
-    CONTROL         "메시지 표시(&D).",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,115,10
-    CONTROL         "미 수정시 자동 다시 읽기(&A).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,115,10
-    CONTROL         "파일이 새로 열리면 설정을 초기화 합니다(&R).",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,163,10
+    CONTROL         "없음(&N)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,115,10
+    CONTROL         "메시지 표시(&D)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,115,10
+    CONTROL         "미 수정시 자동 다시 읽기(&A)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,115,10
+    CONTROL         "파일이 새로 열리면 설정을 초기화 합니다(&R)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,163,10
     DEFPUSHBUTTON   "확인",IDOK,127,7,50,14
     PUSHBUTTON      "취소",IDCANCEL,127,24,50,14
 END
@@ -289,9 +289,9 @@ CAPTION "스키마 선택"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
-    CONTROL         "선택한 스키마를 기본으로 설정(&D).",IDC_DEFAULTSCHEME,
+    CONTROL         "선택한 스키마를 기본으로 설정(&D)",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10
-    CONTROL         "확장자로 자동 선택(&A).",IDC_AUTOSELECT,
+    CONTROL         "확장자로 자동 선택(&A)",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,131,10
     DEFPUSHBUTTON   "확인",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,108,173,50,14
@@ -455,10 +455,10 @@ END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "즐겨 찾기에 추가"
+CAPTION "즐겨찾기에 추가"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "새 즐겨 찾기 항목의 이름을 입력하십시오.",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "새 즐겨찾기 항목의 이름을 입력하십시오.",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "확인",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,115,45,50,14
@@ -520,13 +520,13 @@ BEGIN
     PUSHBUTTON      "취소",IDCANCEL,125,24,50,14
     LTEXT           "$(L)",200,7,72,15,8
     LTEXT           "$(0L)",201,30,72,20,8
-    LTEXT           "줄 번호.",IDC_STATIC,57,72,109,8
+    LTEXT           "줄 번호",IDC_STATIC,57,72,109,8
     LTEXT           "$(N)",202,7,82,15,8
     LTEXT           "$(0N)",203,30,82,20,8
-    LTEXT           "연속 번호.",IDC_STATIC,57,82,109,8
+    LTEXT           "연속 번호",IDC_STATIC,57,82,109,8
     LTEXT           "$(I)",204,7,92,15,8
     LTEXT           "$(0I)",205,30,92,20,8
-    LTEXT           "연속 번호 (0부터).",IDC_STATIC,57,92,109,8
+    LTEXT           "연속 번호 (0부터)",IDC_STATIC,57,92,109,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -673,11 +673,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "줄 맞춤"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    CONTROL         "왼쪽(&L).",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,59,10
-    CONTROL         "오른쪽(&R).",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,59,10
-    CONTROL         "가운데(&C).",102,"Button",BS_AUTORADIOBUTTON,7,31,59,10
-    CONTROL         "균등 맞춤(&J).",103,"Button",BS_AUTORADIOBUTTON,7,43,59,10
-    CONTROL         "균등 맞춤 (단락 모드)(&P).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "왼쪽(&L)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,59,10
+    CONTROL         "오른쪽(&R)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,59,10
+    CONTROL         "가운데(&C)",102,"Button",BS_AUTORADIOBUTTON,7,31,59,10
+    CONTROL         "균등 맞춤(&J)",103,"Button",BS_AUTORADIOBUTTON,7,43,59,10
+    CONTROL         "균등 맞춤 (단락 모드)(&P)",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "확인",IDOK,127,7,50,14
     PUSHBUTTON      "취소",IDCANCEL,127,24,50,14
 END
