@@ -6927,13 +6927,17 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
       int const iModType = scn->modificationType;
       if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
         if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction()) {
-            _mod_insdel_token = _SaveUndoSelection();
+          if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) && 
+             (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection())) {
+            int const tok = _SaveUndoSelection();
+            if (tok >= 0) {
+              _mod_insdel_token = tok;
+            }
           }
         }
         bModified = false; // not yet
       }
-      if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
+      else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
         if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
           if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
             _SaveRedoSelection(_mod_insdel_token);
@@ -7031,7 +7035,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
       bool bModified = true;
       if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
         if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-          if (!_InUndoRedoTransaction()) {
+          if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0) &&
+             (!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection())) {
             _mod_insdel_token = _SaveUndoSelection();
           }
         }
@@ -9014,6 +9019,8 @@ static int _SaveUndoSelection()
     //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
     SciCall_AddUndoAction(token, UNDO_NONE);
   }
+  _s_iSelection = 0; // reset
+
   return token;
 }
 
