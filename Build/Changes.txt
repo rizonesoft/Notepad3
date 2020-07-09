@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.706.(build_#) (2020-07-06)
+Current RC1 Version 5.20.708.(build_#) (2020-07-09)
 =====================================================
 
 -----------------------------------------------------
@@ -106,6 +106,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Undo/redo empty selection redundancy.
 - Multiple line-/stream-selection undo/redo.
 - Disabled Find/Replace or Customize Schemes (by modal child) dialog should disable main window.
 - Printing scaling problem related to DPI awareness changes.
