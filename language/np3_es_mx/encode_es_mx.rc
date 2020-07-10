@@ -1,0 +1,177 @@
+// Microsoft Visual C++ generated resource script.
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+#include "../common_res.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Spanish Mexican (Mexico) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
+#pragma code_page(65001)  // UTF-8
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#include ""../common_res.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ENC_ANSI                   "A0;ANSI;ANSI"
+    IDS_ENC_OEM                    "A1;OEM;OEM"
+    IDS_ENC_UTF16LEBOM             "A2;Unicode (UTF-16 LE BOM);Unicode (UTF-16) LE BOM"
+    IDS_ENC_UTF16BEBOM             "A3;Unicode (UTF-16 BE BOM);Unicode (UTF-16) BE BOM"
+    IDS_ENC_UTF16LE                "A4;Unicode (UTF-16 LE);Unicode (UTF-16) LE"
+    IDS_ENC_UTF16BE                "A5;Unicode (UTF-16 BE);Unicode (UTF-16) BE"
+    IDS_ENC_UTF8                   "A6;UTF-8;Unicode (UTF-8)"
+    IDS_ENC_UTF8SIG                "A7;UTF-8 Signature;Unicode (UTF-8) Signature"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ENC_UTF7                   "A8;UTF-7;Unicode (UTF-7)"
+    IDS_ENC_DOS_720                "C;Arabic (DOS-720);DOS-720"
+    IDS_ENC_ISO_8859_6             "C;Arabic (ISO-8859-6);ISO-8859-6"
+    IDS_ENC_MAC_ARABIC             "C;Arabic (Mac);Mac (Arabic)"
+    IDS_ENC_WIN_1256               "C;Arabic (Windows-1256);Windows-1256"
+    IDS_ENC_DOS_775                "C;Baltic (DOS-775);DOS-775"
+    IDS_ENC_ISO_8859_4             "C;Baltic (ISO-8859-4);ISO-8859-4"
+    IDS_ENC_WIN_1257               "C;Baltic (Windows-1257);Windows-1257"
+    IDS_ENC_DOS_852                "C;Central European (DOS-852);DOS-852"
+    IDS_ENC_ISO_8859_2             "C;Central European (ISO-8859-2);ISO-8859-2"
+    IDS_ENC_MAC_CENTRAL_EUROP      "C;Central European (Mac);Mac (Central)"
+    IDS_ENC_WIN_1250               "C;Central European (Windows-1250);Windows-1250"
+    IDS_ENC_GB18030                "C;Chinese (GB18030);GB-18030"
+    IDS_ENC_GBK_936                "C;Chinese (GBK);GBK-936"
+    IDS_ENC_GB2312_80              "C;Chinese Simplified (GB2312-80);GB-2312-80"
+    IDS_ENC_MAC_ZH_CN              "C;Chinese Simplified (Mac);Mac (zh-cn)"
+    IDS_ENC_BIG5                   "C;Chinese Traditional (Big5);Big5"
+    IDS_ENC_MAC_ZH_TW              "C;Chinese Traditional (Mac);Mac (zh-tw)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ENC_MAC_CROATIAN           "C;Croatian (Mac);Mac (Croatian)"
+    IDS_ENC_DOS_866                "C;Cyrillic (DOS-866);DOS-866"
+    IDS_ENC_ISO_8859_5             "C;Cyrillic (ISO-8859-5);ISO-8859-5"
+    IDS_ENC_KOI8_R                 "C;Cyrillic (KOI8-R);KOI8-R"
+    IDS_ENC_KOI8_U                 "C;Cyrillic (KOI8-U);KOI8-U"
+    IDS_ENC_MAC_CYRILLIC           "C;Cyrillic (Mac);Mac (Cyrillic)"
+    IDS_ENC_WIN_1251               "C;Cyrillic (Windows-1251);Windows-1251"
+    IDS_ENC_ISO_8859_13            "C;Estonian (ISO-8859-13);ISO-8859-13"
+    IDS_ENC_DOS_863                "C;French Canadian (DOS-863);DOS-863"
+    IDS_ENC_DOS_737                "C;Greek (DOS-737);DOS-737"
+    IDS_ENC_ISO_8859_7             "C;Greek (ISO-8859-7);ISO-8859-7"
+    IDS_ENC_MAC_GREEK              "C;Greek (Mac);Mac (Greek)"
+    IDS_ENC_WIN_1253               "C;Greek (Windows-1253);Windows-1253"
+    IDS_ENC_DOS_869                "C;Greek, Modern (DOS-869);DOS-869"
+    IDS_ENC_DOS_862                "C;Hebrew (DOS-862);DOS-862"
+    IDS_ENC_ISO_8859_8_I           "C;Hebrew (ISO-8859-8-I);ISO-8859-8-I"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ENC_ISO_8859_8             "C;Hebrew (ISO-8859-8);ISO-8859-8"
+    IDS_ENC_MAC_HEBREW             "C;Hebrew (Mac);Mac (Hebrew)"
+    IDS_ENC_WIN_1255               "C;Hebrew (Windows-1255);Windows-1255"
+    IDS_ENC_DOS_861                "C;Icelandic (DOS-861);DOS-861"
+    IDS_ENC_MAC_ICELANDIC          "C;Icelandic (Mac);Mac (Icelandic)"
+    IDS_ENC_MAC_JAPANESE           "C;Japanese (Mac);Mac (Japanese)"
+    IDS_ENC_SHIFT_JIS              "C;Japanese (Shift-JIS);Shift-JIS"
+    IDS_ENC_MAC_KOREAN             "C;Korean (Mac);Mac (Korean)"
+    IDS_ENC_WIN_949                "C;Korean (Windows-949);Windows-949"
+    IDS_ENC_ISO_8859_3             "C;Latin 3 (ISO-8859-3);ISO-8859-3"
+    IDS_ENC_ISO_8859_15            "C;Latin 9 (ISO-8859-15);ISO-8859-15"
+    IDS_ENC_DOS_865                "C;Nordic (DOS-865);DOS-865"
+    IDS_ENC_DOS_437                "C;OEM United States (DOS-437);DOS-437"
+    IDS_ENC_DOS_858                "C;OEM Multilingual Latin 1 (DOS-858);DOS-858"
+    IDS_ENC_DOS_860                "C;Portuguese (DOS-860);DOS-860"
+    IDS_ENC_MAC_ROMANIAN           "C;Romanian (Mac);Mac (Romanian)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ENC_MAC_THAI               "C;Thai (Mac);Mac (Thai)"
+    IDS_ENC_WIN_874                "C;Thai (Windows-874);Windows-874"
+    IDS_ENC_DOS_857                "C;Turkish (DOS-857);DOS-857"
+    IDS_ENC_ISO_8859_9             "C;Turkish (ISO-8859-9);ISO-8859-9"
+    IDS_ENC_MAC_TURKISH            "C;Turkish (Mac);Mac (Turkish)"
+    IDS_ENC_WIN_1254               "C;Turkish (Windows-1254);Windows-1254"
+    IDS_ENC_MAC_UKRAINIAN          "C;Ukrainian (Mac);Mac (Ukrainian)"
+    IDS_ENC_WIN_1258               "C;Vietnamese (Windows-1258);Windows-1258"
+    IDS_ENC_DOS_850                "B;Western European (DOS-850);DOS-850"
+    IDS_ENC_ISO_8859_1             "B;Western European (ISO-8859-1);ISO-8859-1"
+    IDS_ENC_MAC_WESTERN_EUROP      "B;Western European (Mac);Mac (Western)"
+    IDS_ENC_WIN_1252               "B;Western European (Windows-1252);Windows-1252"
+    IDS_ENC_IBM_EBCDIC_US          "D0;IBM EBCDIC (US-Canada);EBCDIC (US)"
+    IDS_ENC_IBM_EBCDIC_INT         "D1;IBM EBCDIC (International);EBCDIC (Int.)"
+    IDS_ENC_IBM_EBCDIC_GR          "D2;IBM EBCDIC (Greek Modern);EBCDIC (GR)"
+    IDS_ENC_IBM_EBCDIC_LAT_5       "D3;IBM EBCDIC (Turkish Latin-5);EBCDIC (Latin-5)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ENC_EUC_JAPANESE           "C;Japanese (EUC);Japanese (EUC)"
+    IDS_ENC_EUC_KOREAN             "C;Korean (EUC);Korean (EUC)"
+    IDS_ENC_ISO_2022_CN            "C;Chinese (ISO-2022);ISO-2022-CN"
+    IDS_ENC_HZ_GB2312              "C;Chinese Simplified (GB2312);HZ-GB2312"
+    IDS_ENC_ISO_2022_JP            "C;Japanese (ISO-2022);ISO-2022-JP"
+    IDS_ENC_ISO_2022_KR            "C;Korean (ISO-2022);ISO-2022-KR"
+    IDS_ENC_X_CHINESE_CNS          "C;Chinese Traditional (CNS);x-chinese-cns"
+    IDS_ENC_JOHAB                  "C;Korean (Johab);Korean (Johab)"
+    IDS_ENC_ISO_8859_10            "B;Nordic (ISO-8859-10);ISO-8859-10"
+    IDS_ENC_BIG5_HKSCS             "C;Chinese Traditional (Big5HKSCS);Big5HKSCS"
+END
+
+
+#endif    // Spanish Mexican (Mexico) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
