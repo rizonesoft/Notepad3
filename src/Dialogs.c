@@ -61,6 +61,11 @@
 #define OIC_SHIELD          32518
 #endif /* WINVER >= 0x0600 */
 
+
+#ifndef TMT_MSGBOXFONT
+#define TMT_MSGBOXFONT 805
+#endif
+
 //=============================================================================
 //
 //  MessageBoxLng()
@@ -287,7 +292,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       case IDIGNORE:
       case IDTRYAGAIN:
       case IDCONTINUE:
-        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) ) {
+        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
           IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
         }
       case IDNO:
@@ -4394,18 +4399,16 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  //~int const iLogPixelsY = Scintilla_GetWindowDPI(hWnd).y;
   int const iLogPixelsY = GetCurrentPPI(NULL).y;
-
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
     LOGFONT lf;
-    if (S_OK == GetThemeSysFont(hTheme,/*TMT_MSGBOXFONT*/805, &lf)) {
+    if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
       if (lf.lfHeight < 0) {
         lf.lfHeight = -lf.lfHeight;
       }
       *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 8; }
+      if (*wSize == 0) { *wSize = 9; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;
     }
@@ -4480,6 +4483,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
     if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
       return(pTemplate);
     }
+
     bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
     bool bHasFont = DialogTemplate_HasFont(pTemplate);
     size_t cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
