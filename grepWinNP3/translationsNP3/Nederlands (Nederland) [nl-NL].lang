@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWinNP3 %s is available"
-msgstr "grepWin %s is beschikbaar"
+msgstr "grepWinNP3 %s is beschikbaar"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -580,5 +580,5 @@ msgstr "Max # gelijktijdige werkers"
 
 #. Resource IDs: (1045)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "grepWin(NP3)-mod van de geweldige tool van Stefan Küng!"
+msgstr "grepWin(NP3)-mod in Notepad3 van de geweldige tool van Stefan Küng!"
 

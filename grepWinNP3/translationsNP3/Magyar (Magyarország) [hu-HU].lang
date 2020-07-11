@@ -495,7 +495,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWinNP3 %s is available"
-msgstr "grepWin %s elérhető"
+msgstr "grepWinNP3 %s elérhető"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
