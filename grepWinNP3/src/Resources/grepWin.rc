@@ -153,8 +153,8 @@ BEGIN
     ICON            IDI_GREPWIN,IDC_STATIC,17,18,20,20,SS_CENTERIMAGE
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
-    LTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,50,47,198,8
-    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,68,150,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,14,47,235,8
+    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,65,150,8
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135
