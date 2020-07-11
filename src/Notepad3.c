@@ -821,8 +821,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   FindIniFile();
   TestIniFile();
   DWORD dwFileSize = 0UL;
-  CreateIniFile(Globals.IniFile, &dwFileSize);
+  Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
   Globals.bIniFileFromScratch = (dwFileSize == 0UL);
+  if (Globals.bIniFileFromScratch && Globals.bCanSaveIniFile) {
+    // Set at least Application Name Section
+    IniFileSetString(Globals.IniFile, _W(SAPPNAME), NULL, NULL);
+  }
   LoadSettings();
 
   // set AppUserModelID
@@ -2131,7 +2135,9 @@ bool SelectExternalToolBar(HWND hwnd)
       StringCchCat(szFile, COUNTOF(szFile), szArg2);
     }
     PathRelativeToApp(szFile, s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), true,true, true);
-    IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDefault", s_tchToolbarBitmap);
+    if (Globals.bCanSaveIniFile) {
+      IniFileSetString(Globals.IniFile, L"Toolbar Images", L"BitmapDefault", s_tchToolbarBitmap);
+    }
   }
 
   if (StrIsNotEmpty(s_tchToolbarBitmap))
@@ -3440,6 +3446,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_SINGLEFILEINSTANCE, sav);
   CheckCmd(hmenu, IDM_VIEW_STICKYWINPOS, Flags.bStickyWindowPosition);
   EnableCmd(hmenu, IDM_VIEW_STICKYWINPOS, sav);
+  EnableCmd(hmenu, CMD_SAVEASDEFWINPOS, sav);
 
   CheckCmd(hmenu, IDM_VIEW_ALWAYSONTOP, ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
   CheckCmd(hmenu, IDM_VIEW_MINTOTRAY, Settings.MinimizeToTray);
@@ -3680,8 +3687,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, PathFindFileName(Globals.CurrentFile));
         }
         dwFileAttributes = GetFileAttributes(Globals.CurrentFile);
-        s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
+        s_bFileReadOnly = (dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+        
+        if (Flags.bSettingsFileSoftLocked) {
+          Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+          UpdateSaveSettingsCmds();
+        }
         UpdateToolbar();
       }
       break;
@@ -5381,11 +5393,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_REUSEWINDOW:
       if (IsCmdEnabled(hwnd, IDM_VIEW_REUSEWINDOW)) {
         Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
-        if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
-          IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
-        }
-        else {
-          IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
+        if (Globals.bCanSaveIniFile) {
+          if (Flags.bReuseWindow != DefaultFlags.bReuseWindow) {
+            IniFileSetBool(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", Flags.bReuseWindow);
+          }
+          else {
+            IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"ReuseWindow", false);
+          }
         }
       }
       break;
@@ -5394,11 +5408,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SINGLEFILEINSTANCE:
       if (IsCmdEnabled(hwnd, IDM_VIEW_SINGLEFILEINSTANCE)) {
         Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
-        if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
-          IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
-        }
-        else {
-          IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
+        if (Globals.bCanSaveIniFile) {
+          if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
+            IniFileSetInt(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
+          }
+          else {
+            IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
+          }
         }
       }
       break;
@@ -5513,11 +5529,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SAVESETTINGS:
       if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS)) {
         Settings.SaveSettings = !Settings.SaveSettings;
-        if (Settings.SaveSettings == Defaults.SaveSettings) {
-          IniFileDelete(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", false);
-        }
-        else {
-          IniFileSetBool(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
+        if (Globals.bCanSaveIniFile) {
+          if (Settings.SaveSettings == Defaults.SaveSettings) {
+            IniFileDelete(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", false);
+          }
+          else {
+            IniFileSetBool(Globals.IniFile, Constants.Settings_Section, L"SaveSettings", Settings.SaveSettings);
+          }
         }
       }
       break;
@@ -5530,11 +5548,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (StrIsEmpty(Globals.IniFile)) {
           if (StrIsNotEmpty(Globals.IniFileDefault)) {
             StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
-            if (CreateIniFile(Globals.IniFile, NULL)) {
+            DWORD dwFileSize = 0UL;
+            Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
+            if (Globals.bCanSaveIniFile) {
+              Globals.bIniFileFromScratch = (dwFileSize == 0UL);
               StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
             }
             else {
               StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
+              Globals.bCanSaveIniFile = false;
               bCreateFailure = true;
             }
           }
@@ -5544,6 +5566,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (!bCreateFailure) 
         {
+          SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
+
           if (SaveAllSettings(true)) {
             InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
           }
@@ -8868,10 +8892,13 @@ void UpdateMarginWidth()
 //
 void UpdateSaveSettingsCmds()
 {
-    CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !Flags.bSettingsFileSoftLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !Flags.bSettingsFileSoftLocked);
-    EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (StrIsNotEmpty(Globals.IniFile) || StrIsNotEmpty(Globals.IniFileDefault)) && !Flags.bSettingsFileSoftLocked);
-    EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, StrIsNotEmpty(Globals.IniFile) && !Flags.bSettingsFileSoftLocked);
+  bool const bSoftLocked = Flags.bSettingsFileSoftLocked;
+  bool const bHaveIniFile = StrIsNotEmpty(Globals.IniFile);
+  bool const bHaveFallbackIniFile = StrIsNotEmpty(Globals.IniFileDefault);
+  CheckCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && !bSoftLocked);
+  EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGS, Globals.bCanSaveIniFile && !bSoftLocked);
+  EnableCmd(Globals.hMainMenu, IDM_VIEW_SAVESETTINGSNOW, (bHaveIniFile || bHaveFallbackIniFile) && !bSoftLocked);
+  EnableCmd(Globals.hMainMenu, CMD_OPENINIFILE, bHaveIniFile && !bSoftLocked);
 }
 
 
@@ -9629,7 +9656,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     SetSaveNeeded(bReload);
 
     // consistent settings file handling (if loaded in editor)
-    Flags.bSettingsFileSoftLocked = (StringCchCompareNIW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), Globals.IniFile, COUNTOF(Globals.IniFile)) == 0);
+    Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Globals.CurrentFile, Globals.IniFile) == 0);
     UpdateSaveSettingsCmds();
     COND_SHOW_ZOOM_CALLTIP();
 

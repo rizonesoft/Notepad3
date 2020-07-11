@@ -306,8 +306,8 @@ void Style_DynamicThemesMenuCmd(int cmd)
     }
     else if (Globals.idxSelectedTheme == 1) {
       if (!Flags.bSettingsFileSoftLocked) {
-        CreateIniFile(Globals.IniFile, NULL);
-        if (StrIsNotEmpty(Globals.IniFile)) {
+        Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
+        if (Globals.bCanSaveIniFile) {
           Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
       }

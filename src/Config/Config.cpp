@@ -98,11 +98,22 @@ bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
 {
   bool bRet = false;
   if (StrIsEmpty(lpIniFilePath)) {
-    return bRet;
+    return false;
   }
   DWORD                      length  = 0;
   SECURITY_INFORMATION const secInfo = OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
 
+  // check for read-only file attribute
+  if (genericAccessRights & GENERIC_WRITE) 
+  {
+    DWORD const dwFileAttributes = GetFileAttributes(lpIniFilePath);
+    if ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY))
+    {
+      return false;
+    }
+  }
+
+  // check security tokens
   if (!::GetFileSecurity(lpIniFilePath, secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
     PSECURITY_DESCRIPTOR security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
     if (security && ::GetFileSecurity(lpIniFilePath, secInfo, security, length, &length)) {
@@ -258,7 +269,9 @@ extern "C" bool IsIniFileCached() { return s_bIniFileCacheLoaded; }
 
 extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 {
-  if (!s_bIniFileCacheLoaded) { return false; }
+  if (!s_bIniFileCacheLoaded || StrIsEmpty(lpIniFilePath)) {
+    return false;
+  }
 
   OVERLAPPED ovrLpd = { 0 };
   HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
@@ -286,7 +299,7 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 {
   if (StrIsNotEmpty(Globals.IniFile)) 
   {
-    CreateIniFile(Globals.IniFile, NULL);
+    Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
 
     if (!IsIniFileCached()) {
       LoadIniFileCache(Globals.IniFile);
@@ -298,6 +311,9 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
       *keepCached = true;
     }
   }
+  else {
+    Globals.bCanSaveIniFile = false;
+  }
   return IsIniFileCached();
 }
 
@@ -308,13 +324,20 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 //
 extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
 {
-  if (!Globals.bCanSaveIniFile || !IsIniFileCached()) { return false; }
-  
-  bool const bSaved = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : false;
-
-  if (!keepCached) { ResetIniFileCache(); }
-
-  return bSaved;
+  if (Globals.bCanSaveIniFile) {
+    if (!IsIniFileCached()) {
+      return false;
+    }
+    bool const bSaved = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : false;
+    if (!keepCached) {
+      ResetIniFileCache();
+    }
+    return bSaved;
+  }
+  if (!keepCached) {
+    ResetIniFileCache();
+  }
+  return false;
 }
 
 
@@ -952,7 +975,6 @@ extern "C" bool TestIniFile()
 
 extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 {
-  bool result = false;
   if (StrIsNotEmpty(pszIniFilePath))
   {
     WCHAR* pwchTail = StrRChrW(pszIniFilePath, NULL, L'\\');
@@ -983,8 +1005,6 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
     }
     else 
     {
-      SetFileAttributes(pszIniFilePath, FILE_ATTRIBUTE_NORMAL);
-
       HANDLE hFile = CreateFile(pszIniFilePath,
         GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -997,24 +1017,16 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
       else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
-          L"CreateIniFile(%s): FAILED TO GET FILESIZE!", pszIniFilePath);
+          L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
         MsgBoxLastError(msg, 0);
         dwFileSize = INVALID_FILE_SIZE;
       }
     }
     if (pdwFileSize_out) { *pdwFileSize_out = dwFileSize; }
 
-    Globals.bCanSaveIniFile = CanAccessPath(pszIniFilePath, GENERIC_WRITE);
-
-    if ((dwFileSize == 0UL) && Globals.bCanSaveIniFile) {
-      // Set at least Application Name Section
-      result = IniFileSetString(pszIniFilePath, _W(SAPPNAME), NULL, NULL);
-    }
-    else {
-      result = true;
-    }
+    return CanAccessPath(Globals.IniFile, GENERIC_WRITE);
   }
-  return result;
+  return false;
 }
 //=============================================================================
 
