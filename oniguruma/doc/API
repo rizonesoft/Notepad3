@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.6  2020/05/20
+Oniguruma API  Version 6.9.6  2020/07/05
 
 #include <oniguruma.h>
 
@@ -335,8 +335,11 @@ Oniguruma API  Version 6.9.6  2020/05/20
   6 region: address for return group match range info (NULL is allowed)
   7 option: search time option
 
-    ONIG_OPTION_NOTBOL        string head(str) isn't considered as begin of line
-    ONIG_OPTION_NOTEOL        string end (end) isn't considered as end of line
+    ONIG_OPTION_NOTBOL        (str) isn't considered as begin of line and begin of string (* ONIG_OPTION_NOT_BEGIN_STRING)
+    ONIG_OPTION_NOTEOL        (end) isn't considered as end of line and end of string (* ONIG_OPTION_NOT_END_STRING)
+    ONIG_OPTION_NOT_BEGIN_STRING    (str) isn't considered as begin of string (* fail \A)
+    ONIG_OPTION_NOT_END_STRING      (end) isn't considered as end of string (* fail \z, \Z)
+    ONIG_OPTION_NOT_BEGIN_POSITION  (start) isn't considered as start position of search (* fail \G)
 
 
 # int onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
@@ -369,8 +372,11 @@ Oniguruma API  Version 6.9.6  2020/05/20
   5 region: address for return group match range info (NULL is allowed)
   6 option: search time option
 
-    ONIG_OPTION_NOTBOL       string head(str) isn't considered as begin of line
-    ONIG_OPTION_NOTEOL       string end (end) isn't considered as end of line
+    ONIG_OPTION_NOTBOL        (str) isn't considered as begin of line and begin of string (* ONIG_OPTION_NOT_BEGIN_STRING)
+    ONIG_OPTION_NOTEOL        (end) isn't considered as end of line and end of string (* ONIG_OPTION_NOT_END_STRING)
+    ONIG_OPTION_NOT_BEGIN_STRING    (str) isn't considered as begin of string (* fail \A)
+    ONIG_OPTION_NOT_END_STRING      (end) isn't considered as end of string (* fail \z, \Z)
+    ONIG_OPTION_NOT_BEGIN_POSITION  (at) isn't considered as start position of search (* fail \G)
 
 
 # int onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,
@@ -502,8 +508,12 @@ Oniguruma API  Version 6.9.6  2020/05/20
       ONIG_REGSET_REGEX_LEAD    (returns most left position)
       ONIG_REGSET_PRIORITY_TO_REGEX_ORDER (returns first match regex)
   7 option: search time option
-      ONIG_OPTION_NOTBOL    string head(str) isn't considered as begin of line
-      ONIG_OPTION_NOTEOL    string end (end) isn't considered as end of line
+      ONIG_OPTION_NOTBOL        (str) isn't considered as begin of line and begin of string (* ONIG_OPTION_NOT_BEGIN_STRING)
+      ONIG_OPTION_NOTEOL        end (end) isn't considered as end of line and end of string (* ONIG_OPTION_NOT_END_STRING)
+      ONIG_OPTION_NOT_BEGIN_STRING    (str) isn't considered as begin of string (* fail \A)
+      ONIG_OPTION_NOT_END_STRING      (end) isn't considered as end of string (* fail \z, \Z)
+      ONIG_OPTION_NOT_BEGIN_POSITION  (start) isn't considered as start position of search (* fail \G)
+
   8 rmatch_pos: return address of match position (match_address - str)
 
   * ONIG_REGSET_POSITION_LEAD and ONIG_REGSET_REGEX_LEAD return the same result.
@@ -531,8 +541,12 @@ Oniguruma API  Version 6.9.6  2020/05/20
       ONIG_REGSET_REGEX_LEAD    (returns most left position)
       ONIG_REGSET_PRIORITY_TO_REGEX_ORDER (returns first match regex)
   7 option: search time option
-      ONIG_OPTION_NOTBOL    string head(str) isn't considered as begin of line
-      ONIG_OPTION_NOTEOL    string end (end) isn't considered as end of line
+      ONIG_OPTION_NOTBOL        (str) isn't considered as begin of line and begin of string (* ONIG_OPTION_NOT_BEGIN_STRING)
+      ONIG_OPTION_NOTEOL        (end) isn't considered as end of line and end of string (* ONIG_OPTION_NOT_END_STRING)
+      ONIG_OPTION_NOT_BEGIN_STRING    (str) isn't considered as begin of string (* fail \A)
+      ONIG_OPTION_NOT_END_STRING      (end) isn't considered as end of string (* fail \z, \Z)
+      ONIG_OPTION_NOT_BEGIN_POSITION  (start) isn't considered as start position of search (* fail \G)
+
   8 mps:    array of match-params
   9 rmatch_pos: return address of match position (match_address - str)
 
