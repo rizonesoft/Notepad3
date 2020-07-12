@@ -55,15 +55,15 @@ msgstr ""
 
 #. Resource IDs: (1013)
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #. Resource IDs: (1061, 1063, 1064, 1066, 1067)
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #. Resource IDs: (1093)
 msgid ">>>"
-msgstr ""
+msgstr ">>>"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
@@ -96,6 +96,10 @@ msgstr ""
 
 #. Resource IDs: (2)
 msgid "Cancel"
+msgstr ""
+
+#. Resource IDs: (169)
+msgid "Capture search"
 msgstr ""
 
 #. Resource IDs: (1088)
@@ -212,7 +216,7 @@ msgstr ""
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
-msgstr ""
+msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -224,6 +228,10 @@ msgstr ""
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
+msgstr ""
+
+#. Resource IDs: (1062)
+msgid "Include search path"
 msgstr ""
 
 #. Resource IDs: (1011)
@@ -364,7 +372,7 @@ msgid "Replace string"
 msgstr ""
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
+msgid "Replace with/\nCapture format:"
 msgstr ""
 
 #. Resource IDs: (126)
@@ -448,12 +456,12 @@ msgstr ""
 msgid "The resulting text after replacing:"
 msgstr ""
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr ""
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
+msgstr ""
+
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
 msgstr ""
 
 #. Resource IDs: (1045)
@@ -490,7 +498,7 @@ msgstr ""
 
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
-msgstr ""
+msgstr "grepWinNP3"
 
 #. Resource IDs: (168)
 #, c-format
@@ -535,6 +543,10 @@ msgstr ""
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
+msgstr ""
+
+#. Resource IDs: (1074)
+msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
 msgstr ""
 
 #. Resource IDs: (112)

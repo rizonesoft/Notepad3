@@ -43,7 +43,7 @@ msgstr "%path% dosyanın yolu, %line% ile atlanacak satırla değiştirilir, %pa
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr "&GrepWinNP3 hakkında ..."
+msgstr "&grepWinNP3 Hakkında ..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -67,7 +67,7 @@ msgstr ">>>"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWinNP3"
-msgstr "GrepWinNP3 Hakkında"
+msgstr "grepWinNP3 Hakkında"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -97,6 +97,10 @@ msgstr "Arasında"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "İptal"
+
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr ""
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -225,6 +229,10 @@ msgstr "Çift Dosyaları Dahil Rt"
 #. Resource IDs: (1010)
 msgid "Include hidden items"
 msgstr "Gizli Öğeleri Dahil Et"
+
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr ""
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -364,7 +372,7 @@ msgid "Replace string"
 msgstr "Dizeyi Değiştir"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
+msgid "Replace with/\nCapture format:"
 msgstr "Değiştirin:"
 
 #. Resource IDs: (126)
@@ -448,13 +456,13 @@ msgstr "Regex arama dizesi şu şekilde eşleştir:"
 msgid "The resulting text after replacing:"
 msgstr "Değiştirdikten sonra ortaya çıkan metin:"
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr ""Editörle Aç" içerik menüsüne yeni bir giriş ekler."
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "Dosyaları UTF-8 Olarak Kabul Et"
+
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr ""
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -536,6 +544,10 @@ msgstr "ile değiştirilecek metin yok"
 #. Resource IDs: (107)
 msgid "no text to test with available"
 msgstr "test edilecek metin yok"
+
+#. Resource IDs: (1074)
+msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr ""
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"

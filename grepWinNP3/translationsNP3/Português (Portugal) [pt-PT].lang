@@ -98,6 +98,10 @@ msgstr "Entre"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr ""
+
 #. Resource IDs: (1088)
 msgid "Check for updates"
 msgstr "Procurar actualizações"
@@ -225,6 +229,10 @@ msgstr "Incluir ficheiros binários"
 #. Resource IDs: (1010)
 msgid "Include hidden items"
 msgstr "Incluir itens ocultos"
+
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr ""
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -364,7 +372,7 @@ msgid "Replace string"
 msgstr "Substituir cadeia"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
+msgid "Replace with/\nCapture format:"
 msgstr "Substituir com:"
 
 #. Resource IDs: (126)
@@ -448,13 +456,13 @@ msgstr "A cadeia de procura regex corresponde:"
 msgid "The resulting text after replacing:"
 msgstr "O texto resultante após substituição:"
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "Isto adiciona uma nova entrada ao menu de contexto 'Abrir com o Editor'"
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "Tratar ficheiros como UTF-8"
+
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr ""
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -495,7 +503,7 @@ msgstr "grepWinNP3"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWinNP3 %s is available"
-msgstr "Está disponível o grepWin %s"
+msgstr "Está disponível o grepWinNP3 %s"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -536,6 +544,10 @@ msgstr "nenhum texto para substituir com"
 #. Resource IDs: (107)
 msgid "no text to test with available"
 msgstr "nenhum texto para testar disponível"
+
+#. Resource IDs: (1074)
+msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr ""
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
