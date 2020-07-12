@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "현재 프로그램 설정이 저장되었습니다."
     IDS_MUI_CREATEINI_FAIL  "설정 파일을 만드는 중 오류가 발생하였습니다."
     IDS_MUI_WRITEINI_FAIL   "설정을 저장 하는 중 오류가 발생하였습니다."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "기존 설정 파일이 없습니다.\n스타일 설정을 유지하려면 저장(F7) 하거나 스키마 편집(Ctrl+F12) 에서 스타일을 내보내기 하면 됩니다."
 END

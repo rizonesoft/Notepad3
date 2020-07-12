@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "目前設定已儲存。"
     IDS_MUI_CREATEINI_FAIL  "建立配置檔案失敗。"
     IDS_MUI_WRITEINI_FAIL   "將設定寫入配置檔案失敗。"
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "目前無配置檔案可用。\n\n若要儲存已修改的樣式，請按 F7 儲存設定，或按 Ctrl+F12 匯出樣式。"
 END

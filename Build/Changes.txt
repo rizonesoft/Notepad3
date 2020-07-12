@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.711.(build_#) (2020-07-11)
+Current RC1 Version 5.20.712.(build_#) (2020-07-12)
 =====================================================
 
 -----------------------------------------------------
@@ -52,13 +52,13 @@ NEW:
 - "waifu2x" scaled std Toolbar bitmaps.
 - Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
-- Integration of "grepWinNP3", a Search Tool in files (v2.1.2.16) (GRE).
+- Integration of a Search Tool in files "grepWinNP3" (GRE).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
 - 
-- Change: FONT 8, "MS Shell Dlg" to: FONT 9, "Segoe UI".
+- Change: "FONT 8, MS Shell Dlg" to: "FONT 9, Segoe UI".
 - Re-enable messages if File-Locking failded.
 - Silent ignore write permissions missing on Inifile.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
@@ -91,6 +91,7 @@ CHANGES:
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).
 - "grepWinNP3": move packages.config to corresponding project folder (GRE).
 - Add filepath to message on file locking error.
+- Update grepWinNP3 (GRE) version 2.1.2.17 (2020-07-12).
 - Update Oniguruma Regex (ONI) engine version 6.9.6 (2020/07/05).
 - Update Scintilla Library (SCI) version 4.4.3 (2020/06/03).
 
@@ -106,6 +107,7 @@ ENHANCEMENT:
 FIXES:
 -----------------------------------------------------
 - 
+- Ask before overriding read-only protected configuration file.
 - Respect read-only file attribute of .ini-settings-file (configuration).
 - Undo/redo empty selection redundancy.
 - Multiple line-/stream-selection undo/redo.

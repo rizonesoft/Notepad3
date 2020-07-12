@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Текущие настройки приложения были сохранены."
     IDS_MUI_CREATEINI_FAIL  "Ошибка создания конфигурационного файла."
     IDS_MUI_WRITEINI_FAIL   "Ошибка записи настроек в конфигурационный файл."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Конфигурационный файл не найден.\nДля сохранения изменений стилей сохраните настройки (F7) или вернитесь к настройке схем (Ctrl+F12) и экспортируйте их."
 END
