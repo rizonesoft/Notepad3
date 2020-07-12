@@ -5542,43 +5542,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SAVESETTINGSNOW:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGSNOW)) {
-
-        bool bCreateFailure = false;
-        if (StrIsEmpty(Globals.IniFile)) {
-          if (StrIsNotEmpty(Globals.IniFileDefault)) {
-            StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
-            DWORD dwFileSize = 0UL;
-            Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
-            if (Globals.bCanSaveIniFile) {
-              Globals.bIniFileFromScratch = (dwFileSize == 0UL);
-              StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
-            }
-            else {
-              StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
-              Globals.bCanSaveIniFile = false;
-              bCreateFailure = true;
-            }
-          }
-          else
-            break;
-        }
-
-        if (!bCreateFailure) 
-        {
-          SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
-
-          if (SaveAllSettings(true)) {
-            InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
-          }
-          else {
-            Globals.dwLastError = GetLastError();
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_WRITEINI_FAIL);
-          }
-        }
-        else {
-          InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
-        }
+      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGSNOW))
+      {
+        CmdSaveSettingsNow();
       }
       break;
 

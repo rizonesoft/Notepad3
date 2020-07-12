@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Die aktuellen Notepad3 Einstellungen wurden gespeichert."
     IDS_MUI_CREATEINI_FAIL  "Fehler bei der Erzeugung einer Konfigurationsdatei."
     IDS_MUI_WRITEINI_FAIL   "Fehler beim schreiben der Einstellungen in die Konfigurationsdatei."
+    IDS_MUI_INIFILE_READONLY
+                            "Die Konfigurationsdatei ist schreibgeschützt - ignorieren und Konfiguration überschreiben?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Es wurde keine Konfigurationsdatei gefunden.\nUm die Veränderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder über die Schematakonfiguration (Ctrl+F12) exportiert werden."
 END
