@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Aktuálne nastavenie programu bolo uložené."
     IDS_MUI_CREATEINI_FAIL  "Chyba pri vytváraní konfiguračného súboru."
     IDS_MUI_WRITEINI_FAIL   "Chyba pri zápise do konfiguračného súboru."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Nebol nájdený žiadny existujúci konfiguračný súbor.\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly."
 END
