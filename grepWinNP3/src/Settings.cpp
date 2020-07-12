@@ -189,6 +189,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 #endif
             SendDlgItemMessage(hwndDlg, IDC_DARKMODE, BM_SETCHECK, CTheme::Instance().IsDarkTheme() ? BST_CHECKED : BST_UNCHECKED, 0);
             EnableWindow(GetDlgItem(*this, IDC_DARKMODE), CTheme::Instance().IsDarkModeAllowed());
+            SetDlgItemText(*this, IDC_NUMNULL, bPortable ? g_iniFile.GetValue(L"settings", L"nullbytes", L"0") : std::to_wstring(DWORD(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0))).c_str());
 
             DWORD const nMaxWorker = std::thread::hardware_concurrency() << 2;
             SendDlgItemMessage(hwndDlg, IDC_SPIN_MAXWORKER, UDM_SETRANGE, 0, MAKELPARAM(nMaxWorker, 1));
@@ -210,6 +211,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_resizer.AddControl(hwndDlg, IDC_STATIC2, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC3, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC4, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_NUMNULL, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_LANGUAGE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ESCKEY, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_BACKUPINFOLDER, RESIZER_TOPLEFTRIGHT);
@@ -220,11 +222,11 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 #endif
             m_resizer.AddControl(hwndDlg, IDC_DARKMODE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_DARKMODEINFO, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_TEXT_NUMOFWORKER, RESIZER_TOPRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_MAXNUMWORKER, RESIZER_TOPRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_SPIN_MAXWORKER, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
-            m_resizer.AddControl(hwndDlg, IDC_TEXT_NUMOFWORKER, RESIZER_BOTTOMRIGHT);
-            m_resizer.AddControl(hwndDlg, IDC_MAXNUMWORKER, RESIZER_BOTTOMRIGHT);
-            m_resizer.AddControl(hwndDlg, IDC_SPIN_MAXWORKER, RESIZER_BOTTOMRIGHT);
         }
         return TRUE;
     case WM_COMMAND:
@@ -301,6 +303,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             wchar_t worker[32];
             SendDlgItemMessage(*this, IDC_MAXNUMWORKER, WM_GETTEXT, (LPARAM)32, (WPARAM)worker);
             long const nWorker = _wtol((wchar_t*)worker);
+            std::wstring sNumNull = GetDlgItemText(IDC_NUMNULL).get();
 
             if (bPortable)
             {
@@ -311,6 +314,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
 #ifdef NP3_ALLOW_UPDATE
                 g_iniFile.SetBoolValue(L"global", L"CheckForUpdates", (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED));
 #endif
+                g_iniFile.SetValue(L"settings", L"nullbytes", sNumNull.c_str());
                 g_iniFile.SetLongValue(L"global", L"MaxNumOfWorker", nWorker);
             }
             else
@@ -327,8 +331,10 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 CRegStdDWORD regCheckForUpdates(L"Software\\grepWinNP3\\CheckForUpdates", FALSE);
                 regCheckForUpdates = (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED);
 #endif
-                CRegStdDWORD nwrk(L"Software\\grepWinNP3\\MaxNumOfWorker", 1);
-                nwrk = nWorker;
+                CRegStdDWORD regNumNull(L"Software\\grepWinNP3\\nullbytes", FALSE);
+                regNumNull = _wtoi(sNumNull.c_str());
+                CRegStdDWORD regNumWorker(L"Software\\grepWinNP3\\MaxNumOfWorker", 1);
+                regNumWorker = nWorker;
             }
             CTheme::Instance().SetDarkTheme(IsDlgButtonChecked(*this, IDC_DARKMODE) == BST_CHECKED);
         }

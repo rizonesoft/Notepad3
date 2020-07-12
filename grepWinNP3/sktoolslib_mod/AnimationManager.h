@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017 - Stefan Kueng
+// Copyright (C) 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -60,6 +60,7 @@
 #include <UIAnimation.h>
 #include <functional>
 #include <vector>
+#include <memory>
 #include <comip.h>
 #include <comdefsp.h>
 

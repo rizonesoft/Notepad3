@@ -222,7 +222,7 @@ void CRegexTestDlg::DoRegex()
                 while (boost::regex_search(start, end, whatc, expression, flags))
                 {
                     if (!searchresult.empty())
-                        searchresult = searchresult + _T("\r\n----------------------------\r\n");
+                        searchresult = searchresult + L"\r\n----------------------------\r\n";
                     std::wstring c(whatc[0].first, whatc[0].second);
                     searchresult = searchresult + c;
                     // update search position:

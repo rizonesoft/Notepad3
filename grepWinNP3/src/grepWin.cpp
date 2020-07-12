@@ -38,7 +38,7 @@ CSimpleIni g_iniFile;
 HANDLE     hInitProtection = nullptr;
 
 ULONGLONG g_startTime = GetTickCount64();
-UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWinNP3_StartupMessage"));
+UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWinNP3_StartupMessage");
 
 static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
 {
@@ -167,7 +167,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     icex.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
     InitCommonControlsEx(&icex);
 
-    HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
+    HMODULE hRichEdt = LoadLibrary(L"Riched20.dll");
 
     CCmdLineParser parser(lpCmdLine);
 
@@ -218,9 +218,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         } while ((hWnd == nullptr) && alreadyRunning && timeout);
     }
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
-    bPortable       = ((_tcsstr(modulename.c_str(), _T("portable"))) || 
-                       (_tcsstr(modulename.c_str(), _T("NP3"))) || 
-                       (parser.HasKey(_T("portable"))));
+    bPortable       = ((_tcsstr(modulename.c_str(), L"portable")) || 
+                       (_tcsstr(modulename.c_str(), L"NP3")) || 
+                       (parser.HasKey(L"portable")));
 
     std::wstring iniPath = CPathUtils::GetModuleDir(nullptr);
     iniPath += L"\\grepWinNP3.ini";
@@ -246,7 +246,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     if (hWnd)
     {
         bool bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
-                                    !!DWORD(CRegStdDWORD(_T("Software\\grepWinNP3\\onlyone"), 0));
+                                    !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
 
         if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0)) // check if grepWin was started moments ago
         {
@@ -254,11 +254,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
             // grepWin was started just moments ago:
             // add the new path to the existing search path in that grepWin instance
-            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : 
+            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
                 (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
             SearchReplace(spath, L"/", L"\\");
             spath = SanitizeSearchPaths(spath);
-            std::wstring searchfor = parser.HasVal(_T("searchfor")) ? parser.GetVal(_T("searchfor")) : 
+            std::wstring searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
                 (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
@@ -271,11 +271,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         }
         else if (bOnlyOne)
         {
-            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : 
+            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
                 (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
             SearchReplace(spath, L"/", L"\\");
             spath = SanitizeSearchPaths(spath);
-            std::wstring   searchfor = parser.HasVal(_T("searchfor")) ? parser.GetVal(_T("searchfor")) :
+            std::wstring   searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") :
                 (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
             COPYDATASTRUCT CopyData  = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
@@ -315,7 +315,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         else
             CLanguage::Instance().LoadFile(std::wstring(CRegStdString(L"Software\\grepWinNP3\\languagefile")));
 
-        if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
+        if (parser.HasKey(L"about")||parser.HasKey(_T("?"))||parser.HasKey(L"help"))
         {
             if (hInitProtection)
                 CloseHandle(hInitProtection);
@@ -326,55 +326,57 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         {
             CSearchDlg   searchDlg(nullptr);
 
-            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : 
+            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
               (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
             SearchReplace(spath, L"/", L"\\");
             spath = SanitizeSearchPaths(spath);
             searchDlg.SetSearchPath(spath);
 
-            std::wstring searchfor = parser.HasVal(_T("searchfor")) ? parser.GetVal(_T("searchfor")) : 
+            std::wstring searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
               (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
             searchDlg.SetSearchString(searchfor);
 
-            if (parser.HasVal(_T("filemaskregex")))
-                searchDlg.SetFileMask(parser.GetVal(_T("filemaskregex")), true);
-            if (parser.HasVal(_T("filemask")))
-                searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
-            if (parser.HasVal(_T("direxcluderegex")))
-                searchDlg.SetDirExcludeRegexMask(parser.GetVal(_T("direxcluderegex")));
-            else if (parser.HasVal(_T("filemaskexclude")))
-                searchDlg.SetDirExcludeRegexMask(parser.GetVal(_T("filemaskexclude")));
-            if (parser.HasVal(_T("replacewith")))
-                searchDlg.SetReplaceWith(parser.GetVal(_T("replacewith")));
-            if (parser.HasVal(_T("preset")))
-                searchDlg.SetPreset(parser.GetVal(_T("preset")));
+            if (parser.HasVal(L"filemaskregex"))
+                searchDlg.SetFileMask(parser.GetVal(L"filemaskregex"), true);
+            if (parser.HasVal(L"filemask"))
+                searchDlg.SetFileMask(parser.GetVal(L"filemask"), false);
+            if (parser.HasVal(L"direxcluderegex"))
+                searchDlg.SetDirExcludeRegexMask(parser.GetVal(L"direxcluderegex"));
+            else if (parser.HasVal(L"filemaskexclude"))
+                searchDlg.SetDirExcludeRegexMask(parser.GetVal(L"filemaskexclude"));
+            if (parser.HasVal(L"replacewith"))
+                searchDlg.SetReplaceWith(parser.GetVal(L"replacewith"));
+            if (parser.HasVal(L"preset"))
+                searchDlg.SetPreset(parser.GetVal(L"preset"));
 
-            if (parser.HasVal(_T("i")))
-                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes"))!=0);
-            if (parser.HasVal(_T("n")))
-                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(_T("n")), _T("yes"))==0);
-            if (parser.HasVal(_T("k")))
-                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(_T("k")), _T("yes"))==0);
-            if (parser.HasVal(_T("utf8")))
-                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(_T("utf8")), _T("yes"))==0);
-            if (parser.HasVal(_T("size")))
+            if (parser.HasVal(L"i"))
+                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(L"i"), L"yes")!=0);
+            if (parser.HasVal(L"n"))
+                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(L"n"), L"yes")==0);
+            if (parser.HasVal(L"k"))
+                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(L"k"), L"yes")==0);
+            if (parser.HasVal(L"utf8"))
+                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(L"utf8"), L"yes")==0);
+            if (parser.HasVal(L"binary"))
+                searchDlg.SetBinary(_tcsicmp(parser.GetVal(L"binary"), L"yes") == 0);
+            if (parser.HasVal(L"size"))
             {
                 int cmp = 0;
-                if (parser.HasVal(_T("sizecmp")))
-                    cmp = parser.GetLongVal(_T("sizecmp"));
-                searchDlg.SetSize(parser.GetLongVal(_T("size")), cmp);
+                if (parser.HasVal(L"sizecmp"))
+                    cmp = parser.GetLongVal(L"sizecmp");
+                searchDlg.SetSize(parser.GetLongVal(L"size"), cmp);
             }
-            if (parser.HasVal(_T("s")))
-                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(_T("s")), _T("yes"))==0);
-            if (parser.HasVal(_T("h")))
-                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(_T("h")), _T("yes"))==0);
-            if (parser.HasVal(_T("u")))
-                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(_T("u")), _T("yes"))==0);
-            if (parser.HasVal(_T("b")))
-                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(_T("b")), _T("yes"))==0);
-            if (parser.HasVal(_T("regex")))
-                searchDlg.SetUseRegex(_tcsicmp(parser.GetVal(_T("regex")), _T("yes")) == 0);
-            else if(parser.HasVal(_T("searchfor")))
+            if (parser.HasVal(L"s"))
+                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(L"s"), L"yes")==0);
+            if (parser.HasVal(L"h"))
+                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(L"h"), L"yes")==0);
+            if (parser.HasVal(L"u"))
+                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(L"u"), L"yes")==0);
+            if (parser.HasVal(L"b"))
+                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(L"b"), L"yes")==0);
+            if (parser.HasVal(L"regex"))
+                searchDlg.SetUseRegex(_tcsicmp(parser.GetVal(L"regex"), L"yes") == 0);
+            else if(parser.HasVal(L"searchfor"))
                 searchDlg.SetUseRegex(true);
 
             if (parser.HasKey(L"execute") || parser.HasKey(L"executesearch"))

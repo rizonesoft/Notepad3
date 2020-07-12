@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by D:\_projects\_github\Notepad3\grepWinNP3\src\Resources\grepWin.rc
+// Used by Notepad3\grepWinNP3\src\Resources\grepWin.rc
 // encoding: CP-1252
 #define IDS_APP_TITLE                   103
 #define IDS_NAME                        104
@@ -79,6 +79,7 @@
 #define IDS_EXPORTMATCHLINENUMBER       166
 #define IDS_EXPORTMATCHLINECONTENT      167
 #define IDS_UPDATEAVAILABLE             168
+#define IDS_CAPTURESEARCH               169
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -125,7 +126,8 @@
 #define IDC_DOTMATCHNEWLINE             1051
 #define IDC_ABOUTLINK                   1052
 #define IDC_UTF8                        1053
-#define IDC_RESETDEFAULT                1054
+#define IDC_UTF9                        1054
+#define IDC_BINARY                      1054
 #define IDC_INFOLABEL                   1056
 #define IDC_RESULTFILES                 1059
 #define IDC_RADIO2                      1060
@@ -135,6 +137,7 @@
 #define IDC_EDITMULTILINE1              1061
 #define IDC_CHECK1                      1062
 #define IDC_ESCKEY                      1062
+#define IDC_INCLUDEPATH                 1062
 #define IDC_EDITMULTILINE2              1063
 #define IDC_ONLYONE                     1063
 #define IDC_PATHMRU                     1064
@@ -154,36 +157,43 @@
 #define IDC_DWM                         1076
 #define IDC_BACKUPINFOLDER              1077
 #define IDC_RADIO_DATE_ALL              1078
+#define IDC_BACKUPINFOLDER2             1078
+#define IDC_NOWARNINGIFNOBACKUP         1078
 #define IDC_RADIO_DATE_NEWER            1079
 #define IDC_RADIO_DATE_OLDER            1080
 #define IDC_RADIO_DATE_BETWEEN          1081
 #define IDC_DATEPICK1                   1082
 #define IDC_DATEPICK2                   1083
-#define IDC_DARKMODEINFO                1084
-#define IDC_NP3_DISCLAIMER              1085
-#define IDC_SPIN_MAXWORKER              1086
-#define IDC_MAXNUMWORKER                1087
-#define IDC_TEXT_NUMOFWORKER            1088
-#define IDC_BACKUPINFOLDER2             1089
-#define IDC_NOWARNINGIFNOBACKUP         1090
-#define IDC_INVERSESEARCH               1091
-#define IDC_SEARCHINFOUNDFILES          1092
-#define IDC_EXPORT                      1093
-#define IDC_UPDATELINK                  1094
-#define IDC_DOUPDATECHECKS              1095
+#define IDC_DARKMODEINFO                1083
+#define IDC_INVERSESEARCH               1084
+#define IDC_SEARCHINFOUNDFILES          1085
+#define IDC_EXPORT                      1086
+#define IDC_UPDATELINK                  1087
+#define IDC_DOUPDATECHECKS              1088
+#define IDC_CAPTURESEARCH               1089
+#define IDC_STATIC5                     1090
+#define IDC_NUMNULL                     1091
+
+#define IDC_RESETDEFAULT                3000
+#define IDC_NP3_DISCLAIMER              3001
+#define IDC_SPIN_MAXWORKER              3002
+#define IDC_MAXNUMWORKER                3003
+#define IDC_TEXT_NUMOFWORKER            3004
+
+
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        169
+#define _APS_NEXT_RESOURCE_VALUE        139
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1096
+#define _APS_NEXT_CONTROL_VALUE         1091
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

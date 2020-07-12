@@ -47,10 +47,10 @@ void CBookmarks::Load()
     {
         SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path.get());
         m_iniPath = path.get();
-        m_iniPath += _T("\\grepWinNP3");
+        m_iniPath += L"\\grepWinNP3";
     }
     CreateDirectory(m_iniPath.c_str(), NULL);
-    m_iniPath += _T("\\bookmarks");
+    m_iniPath += L"\\bookmarks";
     SetUnicode();
     SetMultiLine();
     SetSpaces(false);
@@ -70,62 +70,63 @@ void CBookmarks::Save()
     {
         SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path.get());
         m_iniPath = path.get();
-        m_iniPath += _T("\\grepWinNP3");
+        m_iniPath += L"\\grepWinNP3";
     }
     CreateDirectory(m_iniPath.c_str(), NULL);
-    m_iniPath += _T("\\bookmarks");
+    m_iniPath += L"\\bookmarks";
 
     SaveFile(m_iniPath.c_str(), true);
 }
 
 void CBookmarks::AddBookmark(const Bookmark& bm)
 {
-    std::wstring val = _T("\"");
+    std::wstring val = L"\"";
     val += bm.Search;
-    val += _T("\"");
-    SetValue(bm.Name.c_str(), _T("searchString"), val.c_str());
+    val += L"\"";
+    SetValue(bm.Name.c_str(), L"searchString", val.c_str());
 
-    val = _T("\"");
+    val = L"\"";
     val += bm.Replace;
-    val += _T("\"");
-    SetValue(bm.Name.c_str(), _T("replaceString"),      val.c_str());
-    SetValue(bm.Name.c_str(), _T("useregex"),           bm.UseRegex ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("casesensitive"),      bm.CaseSensitive ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("dotmatchesnewline"),  bm.DotMatchesNewline ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("backup"),             bm.Backup ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("utf8"),               bm.Utf8 ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("includesystem"),      bm.IncludeSystem ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("includefolder"),      bm.IncludeFolder ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("includehidden"),      bm.IncludeHidden ? _T("true") : _T("false"));
-    SetValue(bm.Name.c_str(), _T("includebinary"),      bm.IncludeBinary ? _T("true") : _T("false"));
-    val = _T("\"");
+    val += L"\"";
+    SetValue(bm.Name.c_str(), L"replaceString",      val.c_str());
+    SetValue(bm.Name.c_str(), L"useregex",           bm.UseRegex ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"casesensitive",      bm.CaseSensitive ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"dotmatchesnewline",  bm.DotMatchesNewline ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"backup",             bm.Backup ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"utf8",               bm.Utf8 ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includesystem",      bm.IncludeSystem ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includefolder",      bm.IncludeFolder ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includehidden",      bm.IncludeHidden ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includebinary",      bm.IncludeBinary ? L"true" : L"false");
+    val = L"\"";
     val += bm.ExcludeDirs;
-    val += _T("\"");
-    SetValue(bm.Name.c_str(), _T("excludedirs"),        val.c_str());
-    val = _T("\"");
+    val += L"\"";
+    SetValue(bm.Name.c_str(), L"excludedirs",        val.c_str());
+    val = L"\"";
     val += bm.FileMatch;
-    val += _T("\"");
-    SetValue(bm.Name.c_str(), _T("filematch"),          val.c_str());
-    SetValue(bm.Name.c_str(), _T("filematchregex"),     bm.FileMatchRegex ? _T("true") : _T("false"));
-
+    val += L"\"";
+    SetValue(bm.Name.c_str(), L"filematch",          val.c_str());
+    SetValue(bm.Name.c_str(), L"filematchregex",     bm.FileMatchRegex ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"searchpath",         bm.Path.c_str());
 }
 
 void CBookmarks::RemoveBookmark(const std::wstring& name)
 {
-    Delete(name.c_str(), _T("searchString"),        true);
-    Delete(name.c_str(), _T("replaceString"),       true);
-    Delete(name.c_str(), _T("useregex"),            true);
-    Delete(name.c_str(), _T("casesensitive"),       true);
-    Delete(name.c_str(), _T("dotmatchesnewline"),   true);
-    Delete(name.c_str(), _T("backup"),              true);
-    Delete(name.c_str(), _T("utf8"),                true);
-    Delete(name.c_str(), _T("includesystem"),       true);
-    Delete(name.c_str(), _T("includefolder"),       true);
-    Delete(name.c_str(), _T("includehidden"),       true);
-    Delete(name.c_str(), _T("includebinary"),       true);
-    Delete(name.c_str(), _T("excludedirs"),         true);
-    Delete(name.c_str(), _T("filematch"),           true);
-    Delete(name.c_str(), _T("filematchregex"),      true);
+    Delete(name.c_str(), L"searchString",        true);
+    Delete(name.c_str(), L"replaceString",       true);
+    Delete(name.c_str(), L"useregex",            true);
+    Delete(name.c_str(), L"casesensitive",       true);
+    Delete(name.c_str(), L"dotmatchesnewline",   true);
+    Delete(name.c_str(), L"backup",              true);
+    Delete(name.c_str(), L"utf8",                true);
+    Delete(name.c_str(), L"includesystem",       true);
+    Delete(name.c_str(), L"includefolder",       true);
+    Delete(name.c_str(), L"includehidden",       true);
+    Delete(name.c_str(), L"includebinary",       true);
+    Delete(name.c_str(), L"excludedirs",         true);
+    Delete(name.c_str(), L"filematch",           true);
+    Delete(name.c_str(), L"filematchregex",      true);
+    Delete(name.c_str(), L"searchpath",          true);
 }
 
 Bookmark CBookmarks::GetBookmark( const std::wstring& name )
@@ -148,6 +149,7 @@ Bookmark CBookmarks::GetBookmark( const std::wstring& name )
         bk.ExcludeDirs          = GetValue(name.c_str(), L"excludedirs",        L"");
         bk.FileMatch            = GetValue(name.c_str(), L"filematch",          L"");
         bk.FileMatchRegex       = wcscmp(GetValue(name.c_str(), L"filematchregex",     L"false"), L"true") == 0;
+        bk.Path                 = GetValue(name.c_str(), L"searchpath", L"");
     }
 
     return bk;
