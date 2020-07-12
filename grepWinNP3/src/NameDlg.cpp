@@ -30,6 +30,7 @@
 CNameDlg::CNameDlg(HWND hParent)
     : m_hParent(hParent)
     , m_themeCallbackId(0)
+    , m_bIncludePath(false)
 {
 }
 
@@ -91,8 +92,9 @@ LRESULT CNameDlg::DoCommand(int id, int /*msg*/)
     {
         case IDOK:
         {
-            auto buf = GetDlgItemText(IDC_NAME);
-            m_name   = buf.get();
+            auto buf       = GetDlgItemText(IDC_NAME);
+            m_name         = buf.get();
+            m_bIncludePath = IsDlgButtonChecked(*this, IDC_INCLUDEPATH);
         }
             // fall through
         case IDCANCEL:

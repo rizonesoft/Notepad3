@@ -37,11 +37,13 @@ public:
     std::wstring GetName() { return m_name; }
     std::wstring GetSelectedSearchString() const { return m_searchString; }
     std::wstring GetSelectedReplaceString() const { return m_replaceString; }
+    std::wstring GetPath() const { return m_path; }
     bool         GetSelectedUseRegex() const { return m_bUseRegex; }
     bool         GetSelectedSearchCase() const { return m_bCaseSensitive; }
     bool         GetSelectedDotMatchNewline() const { return m_bDotMatchesNewline; }
     bool         GetSelectedBackup() const { return m_bBackup; }
     bool         GetSelectedTreatAsUtf8() const { return m_bUtf8; }
+    bool         GetSelectedTreatAsBinary() const { return m_bForceBinary; }
     bool         GetSelectedIncludeSystem() const { return m_bIncludeSystem; }
     bool         GetSelectedIncludeFolder() const { return m_bIncludeFolder; }
     bool         GetSelectedIncludeHidden() const { return m_bIncludeHidden; }
@@ -63,11 +65,13 @@ private:
 
     std::wstring m_searchString;
     std::wstring m_replaceString;
+    std::wstring m_path;
     bool         m_bUseRegex;
     bool         m_bCaseSensitive;
     bool         m_bDotMatchesNewline;
     bool         m_bBackup;
     bool         m_bUtf8;
+    bool         m_bForceBinary;
     bool         m_bIncludeSystem;
     bool         m_bIncludeFolder;
     bool         m_bIncludeHidden;

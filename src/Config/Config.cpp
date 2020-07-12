@@ -2099,6 +2099,70 @@ __try {
 }
 
 
+
+//=============================================================================
+//
+//  CmdSaveSettingsNow()
+//
+void CmdSaveSettingsNow()
+{
+  bool bCreateFailure = false;
+  if (StrIsEmpty(Globals.IniFile)) {
+    if (StrIsNotEmpty(Globals.IniFileDefault)) {
+      StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+      DWORD dwFileSize        = 0UL;
+      Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
+      if (Globals.bCanSaveIniFile) {
+        Globals.bIniFileFromScratch = (dwFileSize == 0UL);
+        StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
+      }
+      else {
+        StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
+        Globals.bCanSaveIniFile = false;
+        bCreateFailure          = true;
+      }
+    }
+    else {
+      return;
+    }
+  }
+  if (bCreateFailure) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
+    return;
+  }
+  DWORD dwFileAttributes = 0;
+  if (!Globals.bCanSaveIniFile) {
+    dwFileAttributes = GetFileAttributes(Globals.IniFile);
+    if (dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
+      return;
+    }
+    if (dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY);
+      if ((IDOK == answer) || (IDYES == answer)) {
+        SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
+        Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+      }
+    }
+    else {
+      dwFileAttributes = 0; // no need to change the file attributes
+    }
+  }
+  if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
+    InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
+    if (dwFileAttributes != 0) {
+      SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
+      Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+    }
+  }
+  else {
+    Globals.dwLastError = GetLastError();
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_WRITEINI_FAIL);
+    return;
+  }
+}
+ 
+
 //=============================================================================
 //=============================================================================
 

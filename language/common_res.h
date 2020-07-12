@@ -110,6 +110,7 @@
 #define IDS_MUI_DROP_NO_FILE            14018
 #define IDS_MUI_SELMULTI                14019
 #define IDS_MUI_SELRECTORMULTI          14020
+#define IDS_MUI_INIFILE_READONLY        14021
 
 #define IDS_MUI_ASK_SAVE                15000
 #define IDS_MUI_ASK_REVERT              15001

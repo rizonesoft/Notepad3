@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2015, 2017 - Stefan Kueng
+// Copyright (C) 2007-2015, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -272,15 +272,15 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         case 1:
             {
                 // This is the command line for explorer which tells it to select the given file
-                std::wstring sFolder = _T( "/Select,\"" ) + m_strVector[0].filepath + _T("\"");
+                std::wstring sFolder = L"/Select,\""  + m_strVector[0].filepath + L"\"";
 
                 // Prepare shell execution params
                 SHELLEXECUTEINFO shExecInfo   = { 0 };
                 shExecInfo.cbSize             = sizeof(shExecInfo);
-                shExecInfo.lpFile             = _T("explorer.exe");
+                shExecInfo.lpFile             = L"explorer.exe";
                 shExecInfo.lpParameters       = sFolder.c_str();
                 shExecInfo.nShow              = SW_SHOWNORMAL;
-                shExecInfo.lpVerb             = _T("open"); // Context menu item
+                shExecInfo.lpVerb             = L"open"; // Context menu item
                 shExecInfo.fMask              = SEE_MASK_INVOKEIDLIST | SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI;
 
                 // Select file in explorer
@@ -293,7 +293,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
                     if (!pathnames.empty())
-                        pathnames += _T("\r\n");
+                        pathnames += L"\r\n";
                     pathnames += it->filepath;
                 }
                 WriteAsciiStringToClipboard(pathnames.c_str(), hWnd);
@@ -305,7 +305,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
                     if (!pathnames.empty())
-                        pathnames += _T("\r\n");
+                        pathnames += L"\r\n";
                     std::wstring p = it->filepath;
                     p = p.substr(p.find_last_of('\\')+1);
                     pathnames += p;
@@ -319,7 +319,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 for (auto it = m_lineVector.begin(); it != m_lineVector.end(); ++it)
                 {
                     if (!lines.empty())
-                        lines += _T("\r\n");
+                        lines += L"\r\n";
                     for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                     {
                         std::wstring l = it2->text;

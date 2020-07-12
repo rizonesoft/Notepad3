@@ -38,6 +38,7 @@ CTextFile::CTextFile(void)
     , filelen(0)
     , hasBOM(false)
     , encoding(AUTOTYPE)
+    , m_NullByteCount(2)
 {
 }
 
@@ -430,7 +431,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb)
         if (0x00 == *pVal8++)
             ++nNull;
     }
-    if (nDblNull > 2) // arbitrary value: allow two double null chars to account for 'broken' text files
+    if (nDblNull > m_NullByteCount) // configured value: allow double null chars to account for 'broken' text files
         return BINARY;
     pVal16 = (UINT16 *)pBuffer;
     pVal8  = (UINT8 *)(pVal16 + 1);
@@ -438,7 +439,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb)
         return UNICODE_LE;
     if (*pVal16 == 0xFFFE)
         return UNICODE_BE;
-    if ((nNull > 3) && ((cb % 2) == 0)) // arbitrary value: allow three null chars to account for 'broken' text files
+    if ((nNull > 3) && ((cb % 2) == 0)) // arbitrary value: allow three null chars to account for 'broken' ANSI/UTF8 text files, otherwise consider the file UTF16-LE
         return UNICODE_LE;
     if (cb < 3)
         return ANSI;

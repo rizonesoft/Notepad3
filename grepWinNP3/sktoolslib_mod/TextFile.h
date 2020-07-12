@@ -115,6 +115,13 @@ public:
 
     bool HasBOM() const { return hasBOM; }
 
+    /**
+     * Sets the number of null bytes that are allowed for
+     * a file to still be considered text instead of binary
+     * in the encoding detection. Default is 2.
+     */
+    void SetNullbyteCountForBinary(int count) { m_NullByteCount = count; }
+
 protected:
     /**
      * Tries to find out the encoding of the file (utf8, utf16, ansi)
@@ -134,4 +141,5 @@ private:
     UnicodeType             encoding;
     std::wstring            filename;
     bool                    hasBOM;
+    int                     m_NullByteCount;
 };

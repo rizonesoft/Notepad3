@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
     IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
     IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
 END
