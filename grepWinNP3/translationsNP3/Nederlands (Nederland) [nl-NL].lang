@@ -219,7 +219,7 @@ msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
-msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
 msgstr "Indien ingeschakeld, wordt er een backup map gemaakt in de map die wordt doorzocht/vervangen en van de bestanden wordt een backup gemaakt in die map"
 
 #. Resource IDs: (1050)
@@ -546,7 +546,7 @@ msgid "no text to test with available"
 msgstr "geen tekst om te testen beschikbaar"
 
 #. Resource IDs: (1074)
-msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
 msgstr "aantal NULL-bytes per MB dat ervoor zorgde dat een bestand nog steeds als tekst in plaats van binair werd beschouwd"
 
 #. Resource IDs: (112)
