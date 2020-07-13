@@ -220,7 +220,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Si está activado, una carpeta de respaldo se crea dentro de la cual se busca/reemplaza, y los archivos son colocados en esta"
+msgstr "si está activado, una carpeta de respaldo se crea dentro de la cual se busca/reemplaza, y los archivos son colocados en esta"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -547,7 +547,7 @@ msgstr "no hay texto disponible para probar"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "número de bytes NULL por MB permitido para un archivo de texto todavía ser considerado en lugar de binario"
+msgstr "Número de bytes NULL por MB permitido para un archivo de texto todavía ser considerado en lugar de binario"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -592,7 +592,7 @@ msgstr "¡La gran herramienta grepWin(NP3)-mod en Notepad3 de Stefan Küng!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Max. n° de trabajadores concurrentes"
+msgstr "Max # de trabajadores concurrentes"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
