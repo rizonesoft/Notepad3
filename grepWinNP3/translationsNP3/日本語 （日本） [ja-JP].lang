@@ -100,7 +100,7 @@ msgstr "キャンセル"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Capture 検索"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -232,7 +232,7 @@ msgstr "隠し属性ファイルを含める"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "検索パスを含める"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -297,7 +297,7 @@ msgstr "より古い"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "多重に起動しない(注・無効)"
+msgstr "多重に起動しない(注・常にオン)"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
@@ -373,7 +373,7 @@ msgstr "置換文字列"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "置換文字列(&R):"
+msgstr "置換文字列(&R)/\nCapture format:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -462,7 +462,7 @@ msgstr "ファイルを UTF-8 として処理"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "ファイルをバイナリとして処理"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -547,7 +547,7 @@ msgstr "テスト用のテキストがありません"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "ファイルをバイナリでなくテキストと認識するための MB あたりの NULL バイトの数"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -563,7 +563,7 @@ msgstr "正規表現 - OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances"
-msgstr "grepWinNP3 のインスタンスを再利用します。(注: grepWinNP3 では無効)"
+msgstr "grepWinNP3 のインスタンスを再利用します。(注: grepWinNP3 では設定無効で常に再利用)"
 
 #. Resource IDs: (151)
 #, c-format
