@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Los parámetros actuales del programa se han guardado."
     IDS_MUI_CREATEINI_FAIL  "Error al crear el archivo de configuración."
     IDS_MUI_WRITEINI_FAIL   "Error al escribir los parámetros en el archivo de configuración."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Ningún archivo de configuración existente encontrado.\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl+F12) y exportar sus estilos."
 END

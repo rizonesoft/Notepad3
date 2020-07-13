@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Die huidige program instellings is gestoor."
     IDS_MUI_CREATEINI_FAIL  "Kon nie konfigurasielêer skep nie."
     IDS_MUI_WRITEINI_FAIL   "Kon nie instellings na konfigurasielêer skryf nie."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Geen bestaande konfigurasielêer is gevind nie.\nOm jou stylwysigings te hou, stoor instellings nou (F7) of gaan terug na skemakonfigurasie (Ctrl + F12) en voer jou styl uit."
 END

@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Le impostazioni correnti di Notepad3 sono state salvate."
     IDS_MUI_CREATEINI_FAIL  "Errore nella creazione del file delle impostazioni."
     IDS_MUI_WRITEINI_FAIL   "Errore nella scrittura del file delle impostazioni."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Non è stato trovato un file delle impostazioni.\nPer conservare le modifiche agli Stili, salva le impostazioni adesso (F7) oppure ritorna alla configurazione degli Schemi (Ctrl+F12) ed esporta i tuoi Stili."
 END
