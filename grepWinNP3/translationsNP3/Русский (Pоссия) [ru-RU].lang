@@ -61,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -158,7 +158,7 @@ msgstr "Изменен"
 msgid "Dialog"
 msgstr "Диалог"
 
-#. Resource IDs: (1090)
+#. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
 msgstr "Не предупреждать при замене без создания бэкапов"
 
@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "Regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances."
+msgid "reuse grepWinNP3 instances"
 msgstr "Использовать текущее окно grepWinNP3"
 
 #. Resource IDs: (151)
@@ -582,15 +582,19 @@ msgstr "Рекурсивный поиск путей.\nРазделение пу
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Можно исключать папки, например, CVS и images.\nПример: ^(CVS|images)$\nВнимание: папки '.svn' скрыты в Windows, поэтому они обычно не сканируются."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Сброс"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Макс. параллельных воркеров"
 
-#. Resource IDs: (1045)
-msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Добавляет пункт в контекстное меню с названием 'Открыть в редакторе'"
 

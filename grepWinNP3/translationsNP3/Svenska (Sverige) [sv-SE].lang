@@ -61,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -158,7 +158,7 @@ msgstr "Datum modifierad"
 msgid "Dialog"
 msgstr "Dialogruta"
 
-#. Resource IDs: (1090)
+#. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
 msgstr "Varna inte vid ersättning utan att skapa säkerhetskopia"
 
@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances."
+msgid "reuse grepWinNP3 instances"
 msgstr "återanvänd grepWinNP3-instanser."
 
 #. Resource IDs: (151)
@@ -582,15 +582,19 @@ msgstr "sökväg(arna) söks rekursivt.\nSeparera sökvägar med '|' symbolen.\n
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\nExempelvis: ^(CVS|bilder)$\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Återställ"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Maximalt # samtidiga instanser"
 
-#. Resource IDs: (1045)
-msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Lägger till ny post i snabbmenyn med rubriken 'Öppna med editor'"
 
