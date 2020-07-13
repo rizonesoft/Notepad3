@@ -61,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -158,7 +158,7 @@ msgstr "Datum gewijzigd"
 msgid "Dialog"
 msgstr "Dialoog"
 
-#. Resource IDs: (1090)
+#. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
 msgstr ""
 
@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "Regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances."
+msgid "reuse grepWinNP3 instances"
 msgstr "gebruik grepWinNP3 instanties"
 
 #. Resource IDs: (151)
@@ -582,15 +582,19 @@ msgstr "het pad wordt recursief doorzocht.\nScheidt de paden met het '|' symbool
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Je kunt mappen uitsluiten, bv. CVS en afbeeldingen.\nVoorbeeld: ^(CVS|images)$\nOpmerking: '.svn' mappen zijn in Windows normaal verborgen en worden daarom normaal niet doorzocht."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr ""
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr ""
 
-#. Resource IDs: (1045)
-msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Dit voegt in het Context menu toe: 'Openen in Editor'"
 
