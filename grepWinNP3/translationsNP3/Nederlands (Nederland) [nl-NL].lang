@@ -220,7 +220,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Indien ingeschakeld, wordt er een backup map gemaakt in de map die wordt doorzocht/vervangen en van de bestanden wordt een backup gemaakt in die map"
+msgstr "indien ingeschakeld, wordt er een backup map gemaakt in de map die wordt doorzocht/vervangen en van de bestanden wordt een backup gemaakt in die map"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -547,7 +547,7 @@ msgstr "geen tekst om te testen beschikbaar"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "aantal NULL-bytes per MB dat ervoor zorgde dat een bestand nog steeds als tekst in plaats van binair werd beschouwd"
+msgstr "Aantal NULL-bytes per MB dat ervoor zorgde dat een bestand nog steeds als tekst in plaats van binair werd beschouwd"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"

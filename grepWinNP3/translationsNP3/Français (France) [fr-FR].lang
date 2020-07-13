@@ -220,7 +220,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Si activé, un sous-dossier backup est créé dans le dossier des recherches / les remplacements sont réalisés, et les fichiers y sont sauvegardés"
+msgstr "si activé, un sous-dossier backup est créé dans le dossier des recherches / les remplacements sont réalisés, et les fichiers y sont sauvegardés"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -458,11 +458,11 @@ msgstr "Texte après remplacement:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
-msgstr "Traiter les fichiers comme UTF-8"
+msgstr "Traiter fichiers comme UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Traiter les fichiers comme binaires"
+msgstr "Traiter fichiers comme binaires"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -547,7 +547,7 @@ msgstr "Aucun texte à tester n'est disponible."
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "nombre d'octets NULL par MO autorisé pour qu'un fichier soit toujours considéré comme du texte au lieu de binaire"
+msgstr "Nombre d'octets NULL par MO autorisé pour qu'un fichier soit toujours considéré comme du texte au lieu de binaire"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -588,11 +588,11 @@ msgstr "Réinitialiser"
 
 #. Resource IDs: (3001)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Le grand outil grepWin(NP3)-mod dans Notepad3 de Stefan Küng!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Max # de travailleurs concurrent"
-msgstr "Le grand outil grepWin(NP3)-mod dans Notepad3 de Stefan Küng!"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
