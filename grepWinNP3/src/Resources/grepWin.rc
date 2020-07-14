@@ -52,45 +52,44 @@ BEGIN
     CONTROL         "Regex search",IDC_REGEXRADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,84,50,100,10
     CONTROL         "Text search",IDC_TEXTRADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,198,50,105,10
     RTEXT           "",IDC_REGEXOKLABEL,476,50,98,8
-    LTEXT           "Search &for:",IDC_SEARCHFORLABEL,14,65,46,8
+    LTEXT           "Search &for:",IDC_SEARCHFORLABEL,14,65,64,8
     EDITTEXT        IDC_SEARCHTEXT,83,64,484,12,ES_AUTOHSCROLL
     PUSHBUTTON      "/",IDC_EDITMULTILINE1,572,64,13,12
-    LTEXT           "Replace with:",IDC_REPLACEWITHLABEL,14,83,64,8
+    LTEXT           "Replace with/\nCapture format:",IDC_REPLACEWITHLABEL,14,78,64,18
     EDITTEXT        IDC_REPLACETEXT,83,81,484,12,ES_AUTOHSCROLL
     PUSHBUTTON      "/",IDC_EDITMULTILINE2,572,81,13,12
-    CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,90,10
+    CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,98,10
     CONTROL         "Dot matches newline",IDC_DOTMATCHNEWLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,97,100,10
-    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,225,97,100,10
-    CONTROL         "Treat files as UTF-8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,340,97,100,10
-    CONTROL         "Treat files as binary",IDC_BINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,450,97,82,10
+    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,225,97,108,10
+    CONTROL         "Treat files as UTF-8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,340,97,104,10
     PUSHBUTTON      "Test regex",IDC_TESTREGEX,14,109,69,14
     PUSHBUTTON      "Add to Presets",IDC_ADDTOBOOKMARKS,117,109,76,14
     PUSHBUTTON      "Presets",IDC_BOOKMARKS,195,109,50,14
     CONTROL         "",IDC_UPDATELINK,"SysLink",LWS_RIGHT | NOT WS_VISIBLE | WS_TABSTOP | WS_DISABLED,262,110,292,11
     GROUPBOX        "Search",IDC_GROUPSEARCHFOR,7,41,587,86
-    CONTROL         "All sizes",IDC_ALLSIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,139,103,10
-    CONTROL         "Size is",IDC_SIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,152,44,10
+    CONTROL         "All sizes",IDC_ALLSIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,139,98,10
+    CONTROL         "Size is",IDC_SIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,152,48,10
     COMBOBOX        IDC_SIZECOMBO,65,150,73,41,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     EDITTEXT        IDC_SIZEEDIT,143,150,40,12,ES_AUTOHSCROLL,WS_EX_RIGHT
     LTEXT           "KB",IDC_KBTEXT,186,152,9,8
-    CONTROL         "Include system items",IDC_INCLUDESYSTEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,166,103,10
+    CONTROL         "Include system items",IDC_INCLUDESYSTEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,166,98,10
     CONTROL         "Include hidden items",IDC_INCLUDEHIDDEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,117,166,104,10
-    CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,178,103,10
+    CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,178,98,10
     CONTROL         "Include binary files",IDC_INCLUDEBINARY,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,117,178,104,10
-    CONTROL         "All dates",IDC_RADIO_DATE_ALL,"Button",BS_AUTORADIOBUTTON,228,139,104,10
-    CONTROL         "Newer than",IDC_RADIO_DATE_NEWER,"Button",BS_AUTORADIOBUTTON,228,152,104,10
-    CONTROL         "Older than",IDC_RADIO_DATE_OLDER,"Button",BS_AUTORADIOBUTTON,228,165,104,10
-    CONTROL         "Between",IDC_RADIO_DATE_BETWEEN,"Button",BS_AUTORADIOBUTTON,228,178,104,10
+    CONTROL         "All dates",IDC_RADIO_DATE_ALL,"Button",BS_AUTORADIOBUTTON,228,139,100,10
+    CONTROL         "Newer than",IDC_RADIO_DATE_NEWER,"Button",BS_AUTORADIOBUTTON,228,152,100,10
+    CONTROL         "Older than",IDC_RADIO_DATE_OLDER,"Button",BS_AUTORADIOBUTTON,228,165,100,10
+    CONTROL         "Between",IDC_RADIO_DATE_BETWEEN,"Button",BS_AUTORADIOBUTTON,228,178,100,10
     CONTROL         "",IDC_DATEPICK1,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,285,154,59,15
     CONTROL         "",IDC_DATEPICK2,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | NOT WS_VISIBLE | WS_TABSTOP,285,173,59,15
-    LTEXT           "Exclude dirs (Regex):",IDC_EXCLUDE_DIRS_PATTERNLABEL,350,138,100,8
+    LTEXT           "Exclude dirs (Regex):",IDC_EXCLUDE_DIRS_PATTERNLABEL,350,138,104,8
     EDITTEXT        IDC_EXCLUDEDIRSPATTERN,458,136,109,12,ES_AUTOHSCROLL
     PUSHBUTTON      "/",IDC_EXCLUDEDIRMRU,573,136,12,12
-    LTEXT           "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude",IDC_PATTERNLABEL,350,153,100,36
+    LTEXT           "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude",IDC_PATTERNLABEL,350,153,104,36
     EDITTEXT        IDC_PATTERN,458,155,109,12,ES_AUTOHSCROLL
     PUSHBUTTON      "/",IDC_PATTERNMRU,573,155,12,12
     CONTROL         "Regex match",IDC_FILEPATTERNREGEX,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,458,174,61,10
-    CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,524,174,61,10
+    CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,524,174,68,10
     PUSHBUTTON      "Settings",IDC_SETTINGSBUTTON,14,197,103,14
     PUSHBUTTON      "&Replace",IDC_REPLACE,457,198,62,14
     CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,523,198,62,14
@@ -100,8 +99,9 @@ BEGIN
     GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,214,587,118
     CONTROL         "Files",IDC_RESULTFILES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,84,222,89,10
     CONTROL         "Content",IDC_RESULTCONTENT,"Button",BS_AUTORADIOBUTTON,200,222,104,10
-    PUSHBUTTON      ">>>",IDC_EXPORT,316,222,28,10,NOT WS_VISIBLE
     CONTROL         "",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | PBS_SMOOTHREVERSE | PBS_MARQUEE | NOT WS_VISIBLE,130,198,310,14
+    PUSHBUTTON      ">>>",IDC_EXPORT,316,222,28,10,NOT WS_VISIBLE
+    CONTROL         "Treat files as binary",IDC_BINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,450,97,134,10
 END
 
 IDD_REGEXTEST DIALOGEX 0, 0, 401, 316
@@ -130,9 +130,9 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Enter a name for the regex:",IDC_INFOLABEL,7,7,172,8
     EDITTEXT        IDC_NAME,7,20,172,14,ES_AUTOHSCROLL
-    CONTROL         "Include search path",IDC_INCLUDEPATH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,38,172,10
     DEFPUSHBUTTON   "OK",IDOK,37,64,68,14
     PUSHBUTTON      "Cancel",IDCANCEL,111,64,68,14
+    CONTROL         "Include search path",IDC_INCLUDEPATH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,38,172,10
 END
 
 IDD_BOOKMARKS DIALOGEX 0, 0, 240, 129
@@ -155,8 +155,8 @@ BEGIN
     ICON            IDI_GREPWIN,IDC_STATIC,17,18,20,20,SS_CENTERIMAGE
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
-    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,14,47,235,8
     LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,65,150,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,14,47,235,8
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135
@@ -180,14 +180,14 @@ BEGIN
     EDITTEXT        IDC_EDITORCMD,13,31,269,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,286,31,15,14
     LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string.",IDC_STATIC2,13,47,288,17
-    LTEXT           "This adds a new entry to the context menu named 'Open with Editor'",IDC_STATIC3,13,66,288,16
+    LTEXT           "This adds a new entry to the context menu named 'Open with Editor'",IDC_ENTRYCONTEXTMENU,13,66,288,16
     LTEXT           "Language:",IDC_STATIC4,16,92,119,8
     COMBOBOX        IDC_LANGUAGE,151,90,159,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary",IDC_STATIC5,16,108,221,17
+    LTEXT           "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary",IDC_STATIC3,16,108,240,17
     EDITTEXT        IDC_NUMNULL,261,108,40,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
-    CONTROL         "Escape key closes grepWinNP3",IDC_ESCKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,128,252,10
+    CONTROL         "Escape key closes grepWinNP3",IDC_ESCKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,128,250,10
     CONTROL         "Create backup files in a separate folder",IDC_BACKUPINFOLDER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,141,249,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,141,250,10
     CONTROL         "Don't warn when replacing without creating backups",IDC_NOWARNINGIFNOBACKUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,153,250,10
     CONTROL         "Only one instance",IDC_ONLYONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,165,150,10
@@ -419,7 +419,7 @@ BEGIN
     IDS_ERR_INVALID_PATH    "Invalid path!"
     IDS_PROGRAMS            "Programs"
     IDS_ALLFILES            "All Files"
-    IDS_BACKUPINFOLDER_TT   "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+    IDS_BACKUPINFOLDER_TT   "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
     IDS_SHIFT_NOTSEARCH     "hold down the shift key to find files that DO NOT contain the search string"
     IDS_FILEEXT             "Ext"
     IDS_DARKMODE_TT         "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."

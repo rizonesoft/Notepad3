@@ -171,14 +171,15 @@
 #define IDC_UPDATELINK                  1087
 #define IDC_DOUPDATECHECKS              1088
 #define IDC_CAPTURESEARCH               1089
-#define IDC_STATIC5                     1090
-#define IDC_NUMNULL                     1091
+#define IDC_EDIT1                       1090
+#define IDC_NUMNULL                     1090
 
 #define IDC_RESETDEFAULT                3000
 #define IDC_NP3_DISCLAIMER              3001
 #define IDC_SPIN_MAXWORKER              3002
 #define IDC_MAXNUMWORKER                3003
 #define IDC_TEXT_NUMOFWORKER            3004
+#define IDC_ENTRYCONTEXTMENU            3005
 
 
 #define ID_REMOVEBOOKMARK               32771

@@ -61,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -158,7 +158,7 @@ msgstr "Modifiziert am"
 msgid "Dialog"
 msgstr "Dialog"
 
-#. Resource IDs: (1090)
+#. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
 msgstr "Keine Warnung bei Textersetzung ohne Backup"
 
@@ -219,7 +219,7 @@ msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
-msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
 msgstr "Wenn aktiviert, wird ein Backup-Ordner innerhalb des Ordners erstellt, in dem gesucht/ersetzt wird, und die Dateien werden in diesen Ordner gesichert."
 
 #. Resource IDs: (1050)
@@ -546,7 +546,7 @@ msgid "no text to test with available"
 msgstr "Kein Text zum Testen mit verfügbar"
 
 #. Resource IDs: (1074)
-msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
 msgstr "Anzahl erlaubte NULL Bytes pro MB damit eine Datei als Text statt binär erkannt wird"
 
 #. Resource IDs: (112)
@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "Regex OK"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances."
+msgid "reuse grepWinNP3 instances"
 msgstr "grepWinNP3-Instanzen wiederverwenden."
 
 #. Resource IDs: (151)
@@ -582,15 +582,19 @@ msgstr "Der Pfad bzw. die Pfade, der bzw. die rekursiv gesucht wird bzw. werden.
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Sie können Verzeichnisse ausschließen, z.B. CVS und Images.\nBeispiel: ^(CVS|images)$\nHinweis´, '.svn'-Ordner sind in Windows 'versteckt', so werden diese üblicherweise nicht gescannt."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Standard"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Notepad3s grepWin(NP3)-mod von Stefan Küngs großartigem Tool!"
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Max # an gleichz. Worker"
 
-#. Resource IDs: (1045)
-msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "Notepad3s grepWin(NP3)-mod von Stefan Küngs großartigem Tool!"
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Dies fügt dem Kontetxmenü einen neuen Eintrag hinzu, benannt 'Mit Editor öffnen'."
 

@@ -61,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -158,7 +158,7 @@ msgstr "Zmena dátumu"
 msgid "Dialog"
 msgstr "Dialóg"
 
-#. Resource IDs: (1090)
+#. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
 msgstr "Nezobrazovať upozornenie pri zámene bez vytvorenia záloh"
 
@@ -219,7 +219,7 @@ msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
-msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
 msgstr "Ak je povolené, vytvorí sa v priečinku, v ktorom sa vyhľadáva/nahrádza, záložný priečinok a súbory sa zálohujú do tohto priečinka"
 
 #. Resource IDs: (1050)
@@ -546,7 +546,7 @@ msgid "no text to test with available"
 msgstr "žiadny text nie je dostupný na testovanie"
 
 #. Resource IDs: (1074)
-msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
 msgstr ""
 
 #. Resource IDs: (112)
@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances."
+msgid "reuse grepWinNP3 instances"
 msgstr "znovu použiť inštancie grepWinNP3."
 
 #. Resource IDs: (151)
@@ -582,15 +582,19 @@ msgstr "cesta(y), ktorá je prehľadávaná rekurzívne.\nOddeľte cesty týmto 
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "môžete vylúčiť adresáre, napr. CVS a obrázky.\nPríklad: ^(CVS|obrázky)$\nPoznámka, '.svn' priečinky sú v systéme Windows 'skryté', takže zvyčajne nie sú skenované."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Reset"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "grepWin(NP3)-mod programu Notepad3 - skvelý nástroj od Stefan Küng!"
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Max # súbežných pracovníkov"
 
-#. Resource IDs: (1045)
-msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "grepWin(NP3)-mod programu Notepad3 - skvelý nástroj od Stefan Küng!"
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Týmto sa pridá nová položka do kontextovej ponuky s názvom 'Otvoriť v Editore'"
 
