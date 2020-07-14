@@ -258,44 +258,81 @@ static double ncr(double n, double r) {
     }
     return result;
 }
-static double npr(double n, double r) {return ncr(n, r) * fac(r);}
+
+static double add(double a, double b) { return a + b; }
+static double sub(double a, double b) { return a - b; }
+static double mul(double a, double b) { return a * b; }
+static double divide(double a, double b) { return a / b; }
+static double negate(double a) { return -a; }
+static double comma(double a, double b) { (void)a; return b; }
+static double percent(double a) { return a / 100.0; }
+
+static double greater(double a, double b) { return a > b; }
+static double greater_eq(double a, double b) { return a >= b; }
+static double lower(double a, double b) { return a < b; }
+static double lower_eq(double a, double b) { return a <= b; }
+static double equal(double a, double b) { return a == b; }
+static double not_equal(double a, double b) { return a != b; }
+static double logical_and(double a, double b) { return a != 0.0 && b != 0.0; }
+static double logical_or(double a, double b) { return a != 0.0 || b != 0.0; }
+static double logical_not(double a) { return a == 0.0; }
+static double logical_notnot(double a) { return a != 0.0; }
+static double negate_logical_not(double a) { return -(a == 0.0); }
+static double negate_logical_notnot(double a) { return -(a != 0.0); }
+
+static double npr(double n, double r) { return ncr(n, r) * fac(r); }
+static double ceilx(double n) { return (double)ceil(n); }
+static double floorx(double n) { return (double)floor(n); }
+
+#ifndef COUNTOF
+#define COUNTOF(A) (sizeof(A)/sizeof((A)[0]))
+#endif
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
-    {"abs",    (const void*)fabs,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"acos",   (const void*)acos,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"asin",   (const void*)asin,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"atan",   (const void*)atan,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"atan2",  (const void*)atan2, TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"ceil",   (const void*)ceil,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"cos",    (const void*)cos,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"cosh",   (const void*)cosh,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"e",      (const void*)e,     TE_FUNCTION0 | TE_FLAG_PURE, 0},
-    {"exp",    (const void*)exp,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"fac",    (const void*)fac,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"floor",  (const void*)floor, TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"ln",     (const void*)log,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"abs",     (const void*)fabs,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"acos",    (const void*)acos,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"add",     (const void*)add,         TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"asin",    (const void*)asin,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"atan",    (const void*)atan,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"atan2",   (const void*)atan2,       TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"ceil",    (const void*)ceilx,       TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"comma",   (const void*)comma,       TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"cos",     (const void*)cos,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"cosh",    (const void*)cosh,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"div",     (const void*)divide,      TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"e",       (const void*)e,           TE_FUNCTION0 | TE_FLAG_PURE, 0},
+    {"exp",     (const void*)exp,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"fac",     (const void*)fac,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"floor",   (const void*)floorx,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"ln",      (const void*)log,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
 #ifdef TE_NAT_LOG
-    {"log",    (const void*)log,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"log",     (const void*)log,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
 #else
-    {"log",    (const void*)log10, TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"log",     (const void*)log10,       TE_FUNCTION1 | TE_FLAG_PURE, 0},
 #endif
-    {"log10",  (const void*)log10,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"ncr",    (const void*)ncr,    TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"npr",    (const void*)npr,    TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"pi",     (const void*)pi,     TE_FUNCTION0 | TE_FLAG_PURE, 0},
-    {"pow",    (const void*)pow,    TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"sin",    (const void*)sin,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"sinh",   (const void*)sinh,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"sqrt",   (const void*)sqrt,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"tan",    (const void*)tan,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"tanh",   (const void*)tanh,   TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"log10",   (const void*)log10,       TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"mod",     (const void*)fmod,        TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"mul",     (const void*)mul,         TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"ncr",     (const void*)ncr,         TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"neg",     (const void*)negate,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"npr",     (const void*)npr,         TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"percent", (const void*)percent,     TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"pi",      (const void*)pi,          TE_FUNCTION0 | TE_FLAG_PURE, 0},
+    {"pow",     (const void*)pow,         TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"sin",     (const void*)sin,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"sinh",    (const void*)sinh,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"sqrt",    (const void*)sqrt,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"sub",     (const void*)sub,         TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"tan",     (const void*)tan,         TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"tanh",    (const void*)tanh,        TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {0, 0, 0, 0}
 };
 
+
 static const te_variable *find_builtin(const char *name, size_t len) {
     int imin = 0;
-    int imax = sizeof(functions) / sizeof(te_variable) - 2;
+    int imax = COUNTOF(functions) - 1;
 
     /*Binary search.*/
     while (imax >= imin) {
@@ -326,28 +363,6 @@ static const te_variable *find_lookup(const state *s, const char *name, size_t l
     }
     return 0;
 }
-
-
-
-static double add(double a, double b) {return a + b;}
-static double sub(double a, double b) {return a - b;}
-static double mul(double a, double b) {return a * b;}
-static double divide(double a, double b) {return a / b;}
-static double negate(double a) {return -a;}
-static double comma(double a, double b) {(void)a; return b;}
-
-static double greater(double a, double b) {return a > b;}
-static double greater_eq(double a, double b) {return a >= b;}
-static double lower(double a, double b) {return a < b;}
-static double lower_eq(double a, double b) {return a <= b;}
-static double equal(double a, double b) {return a == b;}
-static double not_equal(double a, double b) {return a != b;}
-static double logical_and(double a, double b) {return a != 0.0 && b != 0.0;}
-static double logical_or(double a, double b) {return a != 0.0 || b != 0.0;}
-static double logical_not(double a) {return a == 0.0;}
-static double logical_notnot(double a) {return a != 0.0;}
-static double negate_logical_not(double a) {return -(a == 0.0);}
-static double negate_logical_notnot(double a) {return -(a != 0.0);}
 
 
 void next_token(state *s) {
@@ -403,13 +418,28 @@ void next_token(state *s) {
                     case '*': s->type = TOK_INFIX; s->function = get_function_pointer_2d(mul); break;
                     case '/': s->type = TOK_INFIX; s->function = get_function_pointer_2d(divide); break;
                     case '^': s->type = TOK_INFIX; s->function = get_function_pointer_2d(pow); break;
-                    case '%': s->type = TOK_INFIX; s->function = get_function_pointer_2d(fmod); break;
+                    case '%':
+                        if (s->next++[0] == '%') {
+                          s->type = TOK_INFIX; s->function = get_function_pointer_1d(percent);
+                        }
+                        else {
+                          s->next--;
+                          s->type = TOK_INFIX; s->function = get_function_pointer_2d(fmod);
+                        }
+                        break;
                     case '!':
                         if (s->next++[0] == '=') {
-                            s->type = TOK_INFIX; s->function = get_function_pointer_2d(not_equal);
-                        } else {
+                          s->type = TOK_INFIX; s->function = get_function_pointer_2d(not_equal);
+                        }
+                        else {
+                          s->next--;
+                          if (s->next++[0] == '*') {
+                            s->type = TOK_INFIX; s->function = get_function_pointer_1d(fac);
+                          }
+                          else {
                             s->next--;
                             s->type = TOK_INFIX; s->function = get_function_pointer_1d(logical_not);
+                          }
                         }
                         break;
                     case '=':
@@ -466,7 +496,7 @@ static te_expr *expr(state *s);
 static te_expr *power(state *s);
 
 static te_expr *base(state *s) {
-    /* <base>      =    <constant> | <variable> | <function-0> {"(" ")"} | <function-1> <power> | <function-X> "(" <expr> {"," <expr>} ")" | "(" <list> ")" */
+    /* <base>      =    <constant> | <variable> | <constant> { "%%" | "!*" } | <function-0> {"(" ")"} | <function-1> <power> | <function-X> "(" <expr> {"," <expr>} ")" | "(" <list> ")" */
     te_expr *ret = NULL;
     int arity = 0;
 
@@ -476,6 +506,16 @@ static te_expr *base(state *s) {
             if (ret) {
                 ret->value = s->value;
                 next_token(s);
+                if (s->type == TOK_INFIX && (
+                     check_is_equal_function_pointer_1d(s->function, percent) ||
+                     check_is_equal_function_pointer_1d(s->function, fac))) {
+                    te_expr* ret_new = NEW_EXPR(TE_FUNCTION1, ret);
+                    if (ret_new) {
+                      ret = ret_new;
+                      ret->function = s->function;
+                      next_token(s);
+                    }
+                }
             }
             break;
 
