@@ -419,7 +419,7 @@ BEGIN
     IDS_ERR_INVALID_PATH    "Invalid path!"
     IDS_PROGRAMS            "Programs"
     IDS_ALLFILES            "All Files"
-    IDS_BACKUPINFOLDER_TT   "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+    IDS_BACKUPINFOLDER_TT   "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
     IDS_SHIFT_NOTSEARCH     "hold down the shift key to find files that DO NOT contain the search string"
     IDS_FILEEXT             "Ext"
     IDS_DARKMODE_TT         "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."

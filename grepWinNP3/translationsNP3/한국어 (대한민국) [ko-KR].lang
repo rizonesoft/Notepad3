@@ -219,7 +219,7 @@ msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
-msgid "if enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
 msgstr "설정된 경우, 검색/덮어씌워진 위치에 백업 폴더가 생성되어 파일들을 백업합니다"
 
 #. Resource IDs: (1050)
