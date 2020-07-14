@@ -71,7 +71,7 @@ msgstr "A grepWinNP3 névjegye"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Hozzáadás a sablonokhoz"
+msgstr "Sablonokhoz ad"
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -204,11 +204,11 @@ msgstr "Eredmények exportálása..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Kit"
+msgstr "Kit."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Illeszkedő fájlnevek:\nHasználja a '|' jelet a különböző illeszkedési minták elválasztására, tegye elé a '-' jelet a kihagyáshoz"
+msgstr "Illeszkedő fájlnevek:\nKülönböző illeszkedési minták elválasztásához: '|', előtta '-' jel a kihagyáshoz"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -232,7 +232,7 @@ msgstr "Rejtett elemek is"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Keresési útvonalak is"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -269,7 +269,7 @@ msgstr "Sor"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr "%5ld : %30s sorok\n"
+msgstr "%5ld : %30s sor\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -373,7 +373,7 @@ msgstr "Szöveg cseréje"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Csere erre:"
+msgstr "Csere erre...\nTalálat formátum:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -450,7 +450,7 @@ msgstr "Szövegkeresés"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "A regex keresési szöveg illeszkedik:"
+msgstr "A regex keresési szöveg illeszkedés:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
@@ -470,7 +470,7 @@ msgstr "Ugrás Stefan Küng weboldalára"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "Egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
+msgstr "Egy reguláris kifejezés amire keresünk. További információ: F1."
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -535,15 +535,15 @@ msgstr "kisebb, mint"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "nincs találat"
+msgstr "Nincs találat"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "nincs miben cserélni"
+msgstr "Nincs miben cserélni"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "nincs mivel tesztelni"
+msgstr "Nincs mivel tesztelni"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
@@ -551,15 +551,15 @@ msgstr "A NULL bájtok megengedett száma, amíg a fájlt szövegnek tekintjük,
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
-msgstr "csak azokban a fájlokban keresünk, amik erre a mintára illeszkednek.\nHasználja a '|'-t elválasztásra\nPéldául: *.cpp|*.h"
+msgstr "Csak azokban a fájlokban keresünk, amik erre a mintára illeszkednek.\nHasználja a '|'-t elválasztásra\nPéldául: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "olvasási hiba"
+msgstr "Olvasási hiba"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "regex ok"
+msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances"
@@ -572,15 +572,15 @@ msgstr "Keresés itt: '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "a keresett szöveg üres"
+msgstr "A keresett szöveg üres"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
-msgstr "az útvonal(ak), amit keresünk rekurzívan.\nElválasztásra használja a '|' jelet.\nPéldául: c:\\temp|d:\\logs"
+msgstr "Az útvonal(ak), ahol rekurzívan keresünk.\nElválasztásra használja a '|' jelet.\nPéldául: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "ki lehet hagyni könyvtárakat, pl. CVS és a képek.\nPéldául: ^(CVS|images)$\nFigyelem: az svn mappái rejtettek Windows-on, í]y bennük általában nem keres."
+msgstr "Ki lehet hagyni könyvtárakat, pl. CVS fájlokat és képeket.\nPéldául: ^(CVS|images)$\nFigyelem: a '.svn' mappák rejtettek Windows-on, így bennük általában nem keres."
 
 #. Resource IDs: (3000)
 msgid "Reset"
