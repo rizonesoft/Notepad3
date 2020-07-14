@@ -232,7 +232,7 @@ msgstr "Rejtett elemek is"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Keresési útvonalak is"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -373,7 +373,7 @@ msgstr "Szöveg cseréje"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Csere erre:"
+msgstr "Csere erre...\nTalálat formátum:"
 
 #. Resource IDs: (126)
 msgid "S&top"
