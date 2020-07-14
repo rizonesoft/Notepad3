@@ -220,7 +220,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "si activé, un sous-dossier backup est créé dans le dossier des recherches / les remplacements sont réalisés, et les fichiers y sont sauvegardés"
+msgstr "Si activé, un sous-dossier backup est créé dans le dossier des recherches / les remplacements sont réalisés, et les fichiers y sont sauvegardés"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"

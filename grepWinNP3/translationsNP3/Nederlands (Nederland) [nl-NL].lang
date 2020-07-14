@@ -220,7 +220,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "indien ingeschakeld, wordt er een backup map gemaakt in de map die wordt doorzocht/vervangen en van de bestanden wordt een backup gemaakt in die map"
+msgstr "Indien ingeschakeld, wordt er een backup map gemaakt in de map die wordt doorzocht/vervangen en van de bestanden wordt een backup gemaakt in die map"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"

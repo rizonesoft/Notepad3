@@ -32,7 +32,7 @@ GRE - (GRE)pWinNP3 Search in Files Tool
 
 
 =====================================================
-Current RC1 Version 5.20.713.(build_#) (2020-07-13)
+Current RC1 Version 5.20.714.(build_#) (2020-07-14)
 =====================================================
 
 -----------------------------------------------------
@@ -91,7 +91,7 @@ CHANGES:
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).
 - "grepWinNP3": move packages.config to corresponding project folder (GRE).
 - Add filepath to message on file locking error.
-- Update grepWinNP3 (GRE) version 2.1.2.17 (2020-07-12).
+- Update grepWinNP3 (GRE) version 2.1.3.18 (2020-07-14).
 - Update Oniguruma Regex (ONI) engine version 6.9.6 (2020/07/05).
 - Update Scintilla Library (SCI) version 4.4.3 (2020/06/03).
 
