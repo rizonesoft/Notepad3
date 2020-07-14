@@ -208,7 +208,7 @@ msgstr "Kit."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Illeszkedő fájlnevek:\nKülönböző illeszkedési minták elválasztásához:  '|', előtta '-' jel a kihagyáshoz"
+msgstr "Illeszkedő fájlnevek:\nKülönböző illeszkedési minták elválasztásához: '|', előtta '-' jel a kihagyáshoz"
 
 #. Resource IDs: (1059)
 msgid "Files"
