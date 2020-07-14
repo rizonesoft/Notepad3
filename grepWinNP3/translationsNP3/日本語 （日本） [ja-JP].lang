@@ -100,7 +100,7 @@ msgstr "キャンセル"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr "Capture 検索"
+msgstr "キャプチャと後方参照を使用"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -232,7 +232,7 @@ msgstr "隠し属性ファイルを含める"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "検索パスを含める"
+msgstr "検索場所も保存"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -373,7 +373,7 @@ msgstr "置換文字列"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "置換文字列(&R)/\nCapture format:"
+msgstr "置換文字列(&H)/\n後方参照:"
 
 #. Resource IDs: (126)
 msgid "S&top"
