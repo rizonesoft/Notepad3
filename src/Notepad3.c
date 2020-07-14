@@ -152,7 +152,7 @@ static bool      s_bPrevFullScreenFlag = false;
 
 // for tiny expression calculation
 static double    s_dExpression = 0.0;
-static int       s_iExprError = -1;
+static te_xint_t s_iExprError  = -1;
 
 static WIN32_FIND_DATA s_fdCurFile;
 
@@ -6860,7 +6860,7 @@ static void  _HandleTinyExpr()
       DocPos const iLnCaretPos = SciCall_GetCurLine((unsigned int)lineLen, lineBuf);
       lineBuf[(iLnCaretPos > 1) ? (iLnCaretPos - 2) : 0] = '\0'; // break before "=?"
 
-      int iExprErr = 1;
+      te_xint_t iExprErr  = 1;
       const char* pBegin = lineBuf;
       double dExprEval = 0.0;
 
@@ -8273,7 +8273,7 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
 //  _InterpMultiSelectionTinyExpr()
 //
 //
-static double  _InterpMultiSelectionTinyExpr(int* piExprError)
+static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
 {
   #define _tmpBufCnt 128
   char tmpRectSelN[_tmpBufCnt] = { '\0' };
@@ -8520,7 +8520,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_TINYEXPR])
   {
     static WCHAR tchExpression[32] = { L'\0' };
-    static int s_iExErr = -3;
+    static te_xint_t s_iExErr          = -3;
     s_dExpression = 0.0;
     tchExpression[0] = L'-';
     tchExpression[1] = L'-';
