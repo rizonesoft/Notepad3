@@ -171,7 +171,6 @@
 #define IDC_UPDATELINK                  1087
 #define IDC_DOUPDATECHECKS              1088
 #define IDC_CAPTURESEARCH               1089
-#define IDC_EDIT1                       1090
 #define IDC_NUMNULL                     1090
 
 #define IDC_RESETDEFAULT                3000
