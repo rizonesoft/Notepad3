@@ -181,7 +181,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "Hiba a beállításfájl létrehozásakor."
     IDS_MUI_WRITEINI_FAIL   "Hiba a beállítások fájlba írásakor."
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "A beállításfájl csak olvasható - Kihagyás és beállítások felülbírálása?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Nincs létező beállításfájl..\nAhhoz, hogy megtartsa a stílusbéli módosításokat, mentse a beállításokat most (F7) vagy menjen vissza a színkiemelés konfigurációjához (Ctrl+F12) és exportálja a stílusokat."
 END
