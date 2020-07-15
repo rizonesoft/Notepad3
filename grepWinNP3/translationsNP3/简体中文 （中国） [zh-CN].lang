@@ -100,7 +100,7 @@ msgstr "取消"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "查找但显示替换后的结果"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -232,7 +232,7 @@ msgstr "包含隐藏项目"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "包含查找路径"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -462,7 +462,7 @@ msgstr "将文件视为 UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "将文件视为二进制"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -547,7 +547,7 @@ msgstr "没有要测试的文本"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "若将文件视为文本而不是二进制，每 MB 中允许的最大 NUL 字节数量"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
