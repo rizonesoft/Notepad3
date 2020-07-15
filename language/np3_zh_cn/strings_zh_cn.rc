@@ -181,7 +181,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "创建配置文件失败。"
     IDS_MUI_WRITEINI_FAIL   "将设置写入配置文件失败。"
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "配置文件是只读的。是否忽略并替换设置？"
     IDS_MUI_SETTINGSNOTSAVED
                             "当前无配置文件可用。\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式。"
 END
