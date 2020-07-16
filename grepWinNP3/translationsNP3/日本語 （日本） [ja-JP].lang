@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "正規表現 - OK"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances"
+msgid "reuse grepWinNP3 instances."
 msgstr "grepWinNP3 のインスタンスを再利用します。(注: grepWinNP3 では設定無効で常に再利用)"
 
 #. Resource IDs: (151)

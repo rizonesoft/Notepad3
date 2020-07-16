@@ -100,7 +100,7 @@ msgstr "Zrušiť"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Zachytiť vyhľadávanie"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -232,7 +232,7 @@ msgstr "Zahrnúť skryté položky"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Zahrnúť vyhľadávaciu cestu"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -373,7 +373,7 @@ msgstr "Nahradiť reťazec"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Nahradiť s:"
+msgstr "Nahradiť s/\nZachytiť formát:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -462,7 +462,7 @@ msgstr "Považovať súbory ako UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Považovať súbory ako binárne"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -547,7 +547,7 @@ msgstr "žiadny text nie je dostupný na testovanie"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "Počet NULL bajtov na MB, ktorý umožňuje, aby sa súbor považoval za text namiesto binárneho súboru"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -562,7 +562,7 @@ msgid "regex ok"
 msgstr "regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances"
+msgid "reuse grepWinNP3 instances."
 msgstr "znovu použiť inštancie grepWinNP3."
 
 #. Resource IDs: (151)

@@ -409,8 +409,8 @@ msgstr "Arama Dizesi"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files"
-msgstr "%ld dosya arandı, %ld dosya atlandı. %ld dosyalarında %ld eşleşmesi bulundu"
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+msgstr "%ld dosya arandı, %ld dosya atlandı. %ld dosyalarında %ld eşleşmesi bulundu."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -469,8 +469,8 @@ msgid "Visit Stefan Küng's website"
 msgstr ""
 
 #. Resource IDs: (116)
-msgid "a regular expression used for searching. Press F1 for more info"
-msgstr "arama yapmak için kullanılan normal bir ifadedir. Daha fazla bilgi için F1 tuşuna basın"
+msgid "a regular expression used for searching. Press F1 for more info."
+msgstr "arama yapmak için kullanılan normal bir ifadedir. Daha fazla bilgi için F1 tuşuna basın."
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -485,7 +485,7 @@ msgid "click to edit the text as a multiline text"
 msgstr "metni çok satırlı bir metin olarak düzenlemek için tıklayın"
 
 #. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings"
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
 msgstr ""
 
 #. Resource IDs: (121)
@@ -562,8 +562,8 @@ msgid "regex ok"
 msgstr "regex Seçildi"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances"
-msgstr "grepWinNP3 örneklerini yeniden kullanın"
+msgid "reuse grepWinNP3 instances."
+msgstr "grepWinNP3 örneklerini yeniden kullanın."
 
 #. Resource IDs: (151)
 #, c-format
@@ -579,8 +579,8 @@ msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' s
 msgstr "özyinelemede aranan yollar.\n| sembolü ile ayrı yollar.\nÖrnek: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned"
-msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\nÖrnek: ^(CVS|images)$\nNot: '.svn' klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar"
+msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\nÖrnek: ^(CVS|images)$\nNot: '.svn' klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar."
 
 #. Resource IDs: (3000)
 msgid "Reset"
