@@ -562,8 +562,8 @@ msgid "regex ok"
 msgstr "정규식 ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances"
-msgstr "grepWinNP3 인스턴스 재사용"
+msgid "reuse grepWinNP3 instances."
+msgstr "grepWinNP3 인스턴스 재사용."
 
 #. Resource IDs: (151)
 #, c-format
