@@ -29,6 +29,7 @@ ONI - (ONI)guruma Regex engine
 SCI - (SCI)ntilla Library
 UCD - (UCD)ARDET is an Encoding Detector Library
 GRE - (GRE)pWinNP3 Search in Files Tool
+SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
@@ -39,47 +40,41 @@ Current RC2 Version 5.20.716.(build_#) (2020-07-16)
 NEW:
 -----------------------------------------------------
 - 
-- Current grepWin dev:  add feature:  export search results (GRE).
-- Update the grepWinNP3 icon (GRE).
-- Add a grepWinNP3 Toolbar icon (GRE).
-- Configurable Zoom-Tooltip clear delay ([Settings2] ZoomTooltipTimeout=3200.
-- Add Install/Remove "Open with Notepad3" to Notepad3 Install version. 
-- Add another Dark Theme "Sombra".
+- grepWin: export search results (GRE).
+- changed grepWinNP3 icon (GRE).
+- Add Toolbar icon for grepWinNP3.
+- Configurable Zoom-Tooltip display timeout ([Settings2] ZoomTooltipTimeout=3200).
+- Add Install/Remove "Open with Notepad3" to Notepad3 Setup/Installer (SUP). 
+- Add additional Dark Theme "Sombra".
 - Strip first char: allow multi-selection.
-- Open default browser while clicking hyperlink tooltip.
+- Open default browser while clicking tooltip (hovering hyperlink).
 - Regex multi-select feature.
-- Toolbar hint for zoomed view.
-- "waifu2x" scaled std Toolbar bitmaps.
-- Call Notepad3 with case-sensitive and dot-match-all flag (if applicable).
+- Toolbar hot-button if view is zoomed (<>100%).
+- Call-Back Notepad3 (from GrepWinNP3) with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
-- Integration of a Search Tool in files "grepWinNP3" (GRE).
+- Integration of external Search-In-Files tool named "grepWinNP3" (GRE).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
 - 
-- Change: "FONT 8, MS Shell Dlg" to: "FONT 9, Segoe UI".
-- Re-enable messages if File-Locking failded.
 - Silent ignore write permissions missing on Inifile.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
 - Set DirectWite (D2D) rendering technology as new default.
-- Two stage Toolbar reset (customizing): 1st -> settings  2nd -> factory default.
-- Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox.
+- Two stage Toolbar reset (customizing dialog): 1st -> settings  2nd -> factory default.
 - DPI_CHANGED msg handler.
-- Workaround for DPI_AWARENESS Font Size problem on DPI_CHANGE.
-- Non scaled transparent image on help dialog control for Rizonesoft (standard DPI resolution).
 - Enhancement of the "build_np3portableapp.cmd" file.
 - Remove duplicate readme.txt, license.txt and unused files.
 - Move all readme.txt, license.txt, KeyboardShortcuts.txt, etc... files
   from "Notepad3Portable\Other\Help" to "Notepad3Portable\App\Notepad3\Docs"
 - Review and format the license.txt file for the dialogbox of INNO Installer.
 - Font style/face-name handling.
+- Extended Font selection dialog (Effects).
 - Font selection refactoring.
 - Revised grepWinNP3.ini file creation.
-- Dwrite font selection dialog.
 - Minor changes for dialog handling on DPI changed.
 - Preparations for dpi-aware resizable "Customize Schemes..." dialog.
-- DPI change handling: About & C-Schemes dialog.
+- DPI change handling: About & Schemes dialog.
 - Markdown Lexer: new defaults for Header lines.
 - Strip first char: do not apply on all text (empty selection).
 - Reorganization Context menu.
@@ -87,9 +82,8 @@ CHANGES:
 - Hyperlink double-click and MMB-click behavior.
 - Filevar tag "fill-column" changes to support multi-column marker.
 - Installer to let the user select the target directory.
-- Default long-line wrap settings.
+- Changed Default long-line wrap settings.
 - Remove spinning wait-cursor for text operations (may need reactivation for long operations).
-- "grepWinNP3": move packages.config to corresponding project folder (GRE).
 - Add filepath to message on file locking error.
 - Update grepWinNP3 (GRE) version 2.1.3.18 (2020-07-14).
 - Update Oniguruma Regex (ONI) engine version 6.9.6 (2020/07/05).
@@ -117,7 +111,6 @@ FIXES:
 - Reset of Toolbar configuration dialog.
 - Crash if "close after find" is enabled.
 - Keep current line on reverting file.
-- Hardening commit_id.txt file input for version string assembling.
 - Limit length of (manual) commit ID.
 - DPI Aware relative positioning of position managed dialog boxes.
 - DPI: awareness for Find/Replace-Dlg (remove resize property).
@@ -131,9 +124,7 @@ FIXES:
 - "vcxproj" should use the latest installed SDK.
 - Scintilla as DLL solution.
 - Extended font style selection.
-- Path is File check.
 - Don't add recent file list (history) to taskbar's jump-list.
-- Scroll/normalize selection in view.
 - Fixing some CppCheck complaints.
 - Broken x86 (32-bit) build.
 - Theme scheme file handling (file extension inheritance).
