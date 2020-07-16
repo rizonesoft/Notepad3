@@ -164,7 +164,7 @@ msgstr "Keine Warnung bei Textersetzung ohne Backup"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Punkt entspricht Zeilenvorschub"
+msgstr "Punkt entspricht Zeilenumbruch"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
