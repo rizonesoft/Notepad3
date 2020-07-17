@@ -2362,7 +2362,6 @@ LPCTSTR const lpszUnsafeChars = L" \"\\<>{|}^`";
 void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved)
 {
 #if (NTDDI_VERSION >= NTDDI_WIN8)
-  UNREFERENCED_PARAMETER(bEscReserved);
   UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_URI_COMPONENT));
 #else
   //UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8));
