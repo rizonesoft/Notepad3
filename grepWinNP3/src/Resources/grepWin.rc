@@ -156,7 +156,7 @@ BEGIN
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
     LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,65,150,8
-    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,14,47,235,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,7,47,249,8
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135

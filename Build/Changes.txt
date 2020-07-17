@@ -33,13 +33,12 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current RC2 Version 5.20.716.(build_#) (2020-07-16)
+Version 5.20.717.x (17 July 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- 
 - grepWin: export search results (GRE).
 - changed grepWinNP3 icon (GRE).
 - Add Toolbar icon for grepWinNP3.
@@ -50,14 +49,13 @@ NEW:
 - Open default browser while clicking tooltip (hovering hyperlink).
 - Regex multi-select feature.
 - Toolbar hot-button if view is zoomed (<>100%).
-- Call-Back Notepad3 (from GrepWinNP3) with case-sensitive and dot-match-all flag (if applicable).
+- Call-Back Notepad3 (from grepWinNP3) with case-sensitive and dot-match-all flag (if applicable).
 - Add "Overlapping Search" in Find/Replace dialog window.
 - Integration of external Search-In-Files tool named "grepWinNP3" (GRE).
 
 -----------------------------------------------------
 CHANGES:
 -----------------------------------------------------
-- 
 - Silent ignore write permissions missing on Inifile.
 - Replace non DPI Aware MessageBox for "Save on Close" by internal InfoBox
 - Set DirectWite (D2D) rendering technology as new default.
@@ -92,7 +90,6 @@ CHANGES:
 -----------------------------------------------------
 ENHANCEMENT:
 -----------------------------------------------------
-- 
 - "grepWinNP3": add "Dark mode" settings (GRE).
 - "grepWinNP3": asynchronous search & replace version (GRE).
 - DPI awareness and multi monitor handling.
@@ -100,7 +97,6 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
-- 
 - Ask before overriding read-only protected configuration file.
 - Respect read-only file attribute of .ini-settings-file (configuration).
 - Undo/redo empty selection redundancy.
@@ -146,20 +142,11 @@ FIXES:
 -----------------------------------------------------
 REMOVED:
 -----------------------------------------------------
-- 
 - Remove DWrite Font Choose Dialog - need to type fractional font sizes manually.
 
 -----------------------------------------------------
 TRANSLATIONS (MUI):
 -----------------------------------------------------
-- 
-- Chinese Traditional (zh-TW) in progress...
-- Hindi (hi-IN) in progress...
-- Indonesian (id-ID) in progress...
-- Portuguese Brazilian (pt-BR) in progress...
-- Spanish Mexican (es-MX) in progress...
-- Turkish (tr-TR) in progress...
-- Vietnamese (vi-VN) in progress...
 - Korean (ko-KR).
 - Portuguese (pt-PT).
 - Slovak (sk-SK).
