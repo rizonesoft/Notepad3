@@ -7892,7 +7892,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
           //~BOOL fTranslated = TRUE;
           //~DocLn iNewLine = (DocLn)GetDlgItemInt(hwnd, IDC_LINENUM, &fTranslated, FALSE);
 
-          int iExprError = 0;
+          intptr_t iExprError    = 0;
           bool bLnTranslated = true;
           DocLn iNewLine = 0;
           if (SendDlgItemMessage(hwnd, IDC_LINENUM, WM_GETTEXTLENGTH, 0, 0) > 0) 
