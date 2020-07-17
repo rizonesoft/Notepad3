@@ -2507,7 +2507,7 @@ node_new_call(UChar* name, UChar* name_end, int gnum, int by_number)
   CALL_(node)->by_number   = by_number;
   CALL_(node)->name        = name;
   CALL_(node)->name_end    = name_end;
-  CALL_(node)->group_num   = gnum;
+  CALL_(node)->called_gnum = gnum;
   CALL_(node)->entry_count = 1;
   return node;
 }

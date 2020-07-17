@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable.\n¿Consultar website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "¿Seguro que quiere abrir este archivo tan grande?\n\t(tamaño: %s >= %s)!\n(¡No se aplicarán el estilo y el resaltado de sintaxis!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "No puedo manejar ese archivo enorme (tamaño: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Los parámetros actuales del programa se han guardado."
     IDS_MUI_CREATEINI_FAIL  "Error al crear el archivo de configuración."
     IDS_MUI_WRITEINI_FAIL   "Error al escribir los parámetros en el archivo de configuración."
+    IDS_MUI_INIFILE_READONLY
+                            "El archivo de configuración es de sólo lectura: ¿ignorar y anular la configuración?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Ningún archivo de configuración existente encontrado.\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl+F12) y exportar sus estilos."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 Desarrollo:\\ul0\\b0\\fs18\\par\

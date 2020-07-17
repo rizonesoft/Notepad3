@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyć ten duży plik?\n\t(rozmiar: %s >= %s)!\n(Projekt i podświetlenie składni nie będzie zastosowane!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Nie można przetworzyć tego pliku, jest zbyt duży (size: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Nieznane rozszerzenie nazwy pliku (%s)!\nCzy mimo to załadować?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Bieżące ustawienia programu zostały zapisane."
     IDS_MUI_CREATEINI_FAIL  "Błąd podczas tworzenia pliku konfiguracyjnego."
     IDS_MUI_WRITEINI_FAIL   "Błąd zapisywania ustawień do pliku konfiguracyjnego."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Nie znaleziono istniejącego pliku konfiguracyjnego.\nAby zachować zmiany stylów, zapisz ustawienia (F7) lub wróć do schematu konfiguracji (Ctrl+F12) i eksportuj style."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset238 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset238 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 \\f1Rozw\\'f3j\\f0 :\\ul0\\b0\\fs18\\par\

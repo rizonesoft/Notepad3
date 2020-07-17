@@ -23,7 +23,7 @@ typedef struct _muilanguage
   UINT    rid;
   const WCHAR* szLocaleName;
   const WCHAR* szMenuItem;
-  // !!! WARNING:  LCID is DEPRECATED 
+  // !!! WARNING:  LCID is DEPRECATED
   LANGID  LangId;
   bool    bHasDLL;
   bool    bIsActive;

@@ -31,6 +31,9 @@
 #include <vector>
 #include <set>
 #include <mutex>
+#ifdef NP3_ALLOW_UPDATE
+#include <thread>
+#endif
 
 
 #define SEARCH_START         (WM_APP+1)
@@ -51,6 +54,7 @@ typedef struct _SearchFlags_t
 {
     bool bSearchAlways;
     bool bUTF8;
+    bool bForceBinary;
     bool bIncludeBinary;
     bool bUseRegex;
     bool bCaseSensitive;
@@ -58,6 +62,7 @@ typedef struct _SearchFlags_t
     bool bCreateBackup;
     bool bBackupInFolder;
     bool bReplace;
+    bool bCaptureSearch;
 
 } SearchFlags_t;
 
@@ -85,7 +90,8 @@ public:
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
     void                    SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
     void                    SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
-    void                    SetUTF8(bool bSet) {m_bUTF8C = true;m_bUTF8 = bSet;}
+    void                    SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
+    void                    SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
     void                    SetSize(uint64_t size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (uint64_t)-1);}
     void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
     void                    SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
@@ -119,6 +125,11 @@ protected:
     void                    AutoSizeAllColumns();
     int                     GetSelectedListIndex(int index);
     bool                    FailedShowMessage(HRESULT hr);
+#ifdef NP3_ALLOW_UPDATE
+    void                    CheckForUpdates(bool force = false);
+    void                    ShowUpdateAvailable();
+    bool                    IsVersionNewer(const std::wstring& sVer);
+#endif
 private:
     static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
     static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
@@ -165,10 +176,13 @@ private:
     bool                    m_bCreateBackupInFoldersC;
     bool                    m_bUTF8;
     bool                    m_bUTF8C;
+    bool                    m_bForceBinary;
     bool                    m_bCaseSensitive;
     bool                    m_bCaseSensitiveC;
     bool                    m_bDotMatchesNewline;
     bool                    m_bDotMatchesNewlineC;
+    bool                    m_bNOTSearch;
+    bool                    m_bCaptureSearch;
     bool                    m_bSizeC;
     bool                    m_endDialog;
     ExecuteAction           m_ExecuteImmediately;
@@ -199,6 +213,10 @@ private:
 
     static UINT             GREPWIN_STARTUPMSG;
 
+#ifdef NP3_ALLOW_UPDATE
+   std::thread             m_updateCheckThread;
+#endif
+
     CAutoComplete           m_AutoCompleteFilePatterns;
     CAutoComplete           m_AutoCompleteExcludeDirsPatterns;
     CAutoComplete           m_AutoCompleteSearchPatterns;
@@ -221,6 +239,7 @@ private:
     CRegStdDWORD            m_regIncludeBinary;
     CRegStdDWORD            m_regCreateBackup;
     CRegStdDWORD            m_regUTF8;
+    CRegStdDWORD            m_regBinary;
     CRegStdDWORD            m_regCaseSensitive;
     CRegStdDWORD            m_regDotMatchesNewline;
     CRegStdDWORD            m_regUseRegexForPaths;

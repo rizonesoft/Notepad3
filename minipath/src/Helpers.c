@@ -91,10 +91,14 @@ int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
 int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 {
   WCHAR* pBuffer = LocalAlloc(LPTR, sizeof(WCHAR)*nOutput);
+  va_list args;
+
   if (pBuffer) {
     if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
-      int t = vswprintf_s(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+      va_start(args, uIdFormat);
+      int t = vswprintf_s(lpOutput, nOutput, pBuffer, args);
       lpOutput[t] = L'\0';
+      va_end(args);
     }
     LocalFree(pBuffer);
     return (int)lstrlen(lpOutput);

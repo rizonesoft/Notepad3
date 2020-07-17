@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Kon geen administrasie uitvoerbaar vind nie. \nGaan na https://www.rizonesoft.com vir meer?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Is jy seker jy wil hierdie groot lêer oopmaak?\n\t(Grootte: %s >= %s)!\n(Styling en sintaksis-uitlig word nie toegepas nie!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Kan nie daardie groot lêer hanteer nie (Grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Die huidige program instellings is gestoor."
     IDS_MUI_CREATEINI_FAIL  "Kon nie konfigurasielêer skep nie."
     IDS_MUI_WRITEINI_FAIL   "Kon nie instellings na konfigurasielêer skryf nie."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Geen bestaande konfigurasielêer is gevind nie.\nOm jou stylwysigings te hou, stoor instellings nou (F7) of gaan terug na skemakonfigurasie (Ctrl + F12) en voer jou styl uit."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 Ontwikkeling:\\ul0\\b0\\fs18\\par\

@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST Translator: stefankueng, 2018.
-# LAST Translator: lhmouse, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "还有 %ld 个匹配"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "路径不存在或无法访问！"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% 被替换为文件的路径，%line% 被替换为要转至的行号，%pattern% 被替换为查找的字符串。"
@@ -66,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -102,6 +97,14 @@ msgstr "起止于"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "取消"
+
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr "查找但显示替换后的结果"
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "检查更新"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -147,10 +150,6 @@ msgstr "在单独的目录创建备份文件"
 msgid "Dark mode"
 msgstr "暗色模式"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "请先在 Windows 设置中启用暗色模式。（>= Win10 v1803）"
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
@@ -158,6 +157,10 @@ msgstr "修改日期"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "对话框"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr "当替换时若不创建备份不要显示警告"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -191,10 +194,6 @@ msgstr "Esc 键关闭 grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "排除目录（正则）："
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "扩展名"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "导出结果列表"
@@ -202,6 +201,10 @@ msgstr "导出结果列表"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "导出结果..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "扩展名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -227,6 +230,10 @@ msgstr "包含二进制文件"
 msgid "Include hidden items"
 msgstr "包含隐藏项目"
 
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr "包含查找路径"
+
 #. Resource IDs: (1011)
 msgid "Include subfolders"
 msgstr "包含子文件夹"
@@ -240,7 +247,7 @@ msgid "Invalid path!"
 msgstr "无效路径！"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "否定搜索（选定不符合条件的行）"
 
 #. Resource IDs: (1019)
@@ -288,10 +295,6 @@ msgstr "确定"
 msgid "Older than"
 msgstr "早于"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "当替换时若不创建备份不要显示警告"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "仅单实例"
@@ -311,6 +314,10 @@ msgstr "粘贴文本以测试正则："
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "路径"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "路径不存在或无法访问！"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -365,7 +372,7 @@ msgid "Replace string"
 msgstr "替换字符串"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
+msgid "Replace with/\nCapture format:"
 msgstr "替换为："
 
 #. Resource IDs: (126)
@@ -449,17 +456,17 @@ msgstr "正则表达式匹配："
 msgid "The resulting text after replacing:"
 msgstr "替换后的结果："
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "这将在上下文菜单中添加一个名为“使用编辑器打开”的选项。"
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "将文件视为 UTF-8"
 
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr "将文件视为二进制"
+
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "访问我们的网站"
+msgid "Visit Stefan Küng's website"
+msgstr "访问 Stefan Küng 的网站"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -477,6 +484,10 @@ msgstr "二进制"
 msgid "click to edit the text as a multiline text"
 msgstr "点击这里将该文本作为多行文本来编辑"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "请先在 Windows 设置中启用暗色模式。（>= Win10 v1803）"
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "等于"
@@ -488,6 +499,11 @@ msgstr "大于"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWinNP3 %s is available"
+msgstr "grepWinNP3 %s 可用"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -529,6 +545,10 @@ msgstr "没有要替换的文本"
 msgid "no text to test with available"
 msgstr "没有要测试的文本"
 
+#. Resource IDs: (1074)
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr "若将文件视为文本而不是二进制，每 MB 中允许的最大 NUL 字节数量"
+
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "仅查找特定类型的文件。\n使用 | 作为分隔符。\n例如：*.cpp|*.h"
@@ -543,7 +563,7 @@ msgstr "正则 OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "复用 grepWinNP3 实例"
+msgstr "复用 grepWinNP3 实例。"
 
 #. Resource IDs: (151)
 #, c-format
@@ -562,10 +582,19 @@ msgstr "要递归查找的路径。\n使用 | 来分隔路径。\n例如：c:\\t
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录，例如 CVS 和图片。\n例如：^(CVS|images)$\n注意：.svn 目录在 Windows 中是隐藏的，所以通常不会扫描。"
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "重置"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Notepad3 基于 Stefan Küng 的优秀工具 grepWin(NP3) 的修改版！"
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "并发任务上限数"
+
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "这将在上下文菜单中添加一个名为“使用编辑器打开”的选项。"
+

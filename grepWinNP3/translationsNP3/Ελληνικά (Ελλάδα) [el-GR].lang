@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST Translator: stefankueng, 2018.
-# LAST Translator: Petewg, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "%ld περισσότερα ταιριάσματα"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr ""
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "Το %path% αντικαθίσταται με τη διαδρομή του αρχείου, το %line% με τη γραμμή μετάβασης"
@@ -66,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -102,6 +97,14 @@ msgstr "Μεταξύ"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Άκυρο"
+
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr ""
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -147,10 +150,6 @@ msgstr "Δημιουργία αντιγράφων αρχείων σε ξεχωρ
 msgid "Dark mode"
 msgstr ""
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr ""
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Ημερ/νία τροποποίησης"
@@ -159,9 +158,13 @@ msgstr "Ημερ/νία τροποποίησης"
 msgid "Dialog"
 msgstr "Παράθυρο διαλόγου"
 
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr ""
+
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Η τελεία αντιστοιχεί σε νέα γραμμή"
+msgstr "Σημείο αντιστοιχεί σε νέα γραμμή"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
@@ -191,16 +194,16 @@ msgstr "Το πλήκτρο Escape τερματίζει το grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "Εξαιρούμενοι κατάλογοι (Regex):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr ""
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr ""
 
 #. Resource IDs: (163)
 msgid "Export results..."
+msgstr ""
+
+#. Resource IDs: (158)
+msgid "Ext"
 msgstr ""
 
 #. Resource IDs: (1039)
@@ -227,6 +230,10 @@ msgstr "Δυαδικά αρχεία"
 msgid "Include hidden items"
 msgstr "Κρυφά αρχεία"
 
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr ""
+
 #. Resource IDs: (1011)
 msgid "Include subfolders"
 msgstr "Υποκατάλογοι"
@@ -240,7 +247,7 @@ msgid "Invalid path!"
 msgstr "Μη έγκυρη διαδρομή!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr ""
 
 #. Resource IDs: (1019)
@@ -288,10 +295,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Παλαιότερο από"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr ""
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Μόνο μία εμφάνιση"
@@ -312,6 +315,10 @@ msgstr "Επικολήστε κείμενο δοκιμής του regex:"
 msgid "Path"
 msgstr "Διαδρομή"
 
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Προκαθορισμένο όνομα"
@@ -319,7 +326,7 @@ msgstr "Προκαθορισμένο όνομα"
 #. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "Αποθηκευμένα"
-        
+
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
 msgstr "Πιέστε F1 για βοήθεια"
@@ -365,8 +372,8 @@ msgid "Replace string"
 msgstr "Συμβολοσειρά αντικατάστασης"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
-msgstr "Αντικατάσταση με:"
+msgid "Replace with/\nCapture format:"
+msgstr ""
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -449,17 +456,17 @@ msgstr "Η regex συμβολοσειρά αναζήτησης ταιριάζε�
 msgid "The resulting text after replacing:"
 msgstr "Το προκύπτον κείμενο μετά την αντικατάσταση:"
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "Αυτό προσθέτει ένα νέο στοιχείο στο μενού που ονομάζεται \"Ανοιγμα με επεξεργαστή κειμένου\""
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "Αντιμετώπιση αρχείων ως UTF8"
 
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr ""
+
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Επίσκεψη ιστοσελίδας"
+msgid "Visit Stefan Küng's website"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -477,6 +484,10 @@ msgstr "δυαδικό"
 msgid "click to edit the text as a multiline text"
 msgstr "κάντε κλικ για να επεξεργαστείτε το κείμενο ως κείμενο πολλαπλών γραμμών"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr ""
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "ίσον με"
@@ -488,6 +499,11 @@ msgstr "μεγαλλίτερο από"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWinNP3 %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -529,6 +545,10 @@ msgstr "κανένα κείμενο προς αντικατάσταση"
 msgid "no text to test with available"
 msgstr "κανένα κείμενο για δοκιμή"
 
+#. Resource IDs: (1074)
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr ""
+
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "αναζητούνται μόνο αρχεία που ταιριάζουν με αυτό το μοτίβο.\nΧρήση του \"|\" ως διαχωριστικό.\r\nΠαράδειγμα: *.cpp|*.h"
@@ -562,10 +582,19 @@ msgstr "διαδρομές που αναζητούνται διαδοχικά. \
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\r\nΠαράδειγμα: ^(CVS|images)$\r\nΣημείωση, οι φάκελοι '.svn' είναι 'κρυφοί' στα Windows, επομένως συνήθως δεν σαρώνονται."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr ""
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr ""
+
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Αυτό προσθέτει ένα νέο στοιχείο στο μενού που ονομάζεται 'Ανοιγμα με επεξεργαστή κειμένου'"
+

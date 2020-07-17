@@ -41,6 +41,7 @@ MUILANGUAGE MUI_LanguageDLLs[] =
   { IDS_MUI_LANG_DE_DE, L"de-DE", L"Deutsch (Deutschland)\t\t\t[%s]",            MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
   { IDS_MUI_LANG_EN_GB, L"en-GB", L"English (United Kingdom)\t\t\t[%s]",         MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
   { IDS_MUI_LANG_ES_ES, L"es-ES", L"Español (España)\t\t\t[%s]",                 MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
+  { IDS_MUI_LANG_ES_MX, L"es-MX", L"Español Mexicano (Mexico)\t\t\t[%s]",        MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MEXICAN), false, false },
   { IDS_MUI_LANG_FR_FR, L"fr-FR", L"Français (France)\t\t\t[%s]",                MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
   { IDS_MUI_LANG_HI_IN, L"hi-IN", L"हिन्दी (भारत)\t\t\t[%s]",                       MAKELANGID(LANG_HINDI, SUBLANG_HINDI_INDIA), false, false },
   { IDS_MUI_LANG_HU_HU, L"hu-HU", L"Magyar (Magyarország)\t\t\t[%s]",            MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
@@ -74,6 +75,7 @@ grepWinLng_t grepWinLangResName[] =
   { MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),                              L".\\lng\\gwLng\\Deutsch (Deutschland) [de-DE].lang"},
   { MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK),                         L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang"},
   { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN),                     L".\\lng\\gwLng\\Español (España) [es-ES].lang"},
+  { MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MEXICAN),                    L".\\lng\\gwLng\\Español Mexicano (Mexico) [es-MX].lang"},
   { MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH),                              L".\\lng\\gwLng\\Français (France) [fr-FR].lang"},
   { MAKELANGID(LANG_HINDI, SUBLANG_HINDI_INDIA),                          L".\\lng\\gwLng\\हिन्दी (भारत) [hi-IN].lang"},
   { MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY),                L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang"},
@@ -293,12 +295,13 @@ void SetPreferredLanguage(LANGID iPreferredLanguageID)
     {
       StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), szLocaleName);
 
-      if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0)
-      {
-        IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
-      }
-      else {
-        IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
+      if (Globals.bCanSaveIniFile) {
+        if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Defaults2.PreferredLanguageLocaleName) != 0) {
+          IniFileSetString(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+        }
+        else {
+          IniFileDelete(Globals.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", false);
+        }
       }
     }
   }
@@ -476,7 +479,10 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
   WCHAR* pBuffer = AllocMem(sizeof(WCHAR) * nOutput, HEAP_ZERO_MEMORY);
   if (pBuffer) {
     if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
-      StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)& uIdFormat + 1));
+      va_list args;
+      va_start(args, uIdFormat);
+      StringCchVPrintfW(lpOutput, nOutput, pBuffer, args);
+      va_end(args);
     }
     FreeMem(pBuffer);
     return (int)StringCchLenW(lpOutput, nOutput);

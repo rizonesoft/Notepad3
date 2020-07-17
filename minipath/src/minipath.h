@@ -132,9 +132,9 @@ typedef struct _settings_t
   int       cxOpenWithDlg;
   int       cyOpenWithDlg;
   int       cxCopyMoveDlg;
-  
+
   BOOL      bHasQuickview;
-  
+
   WCHAR     tchFilter[DL_FILTER_BUFSIZE];
   BOOL      bNegFilter;
   BOOL      bDefCrNoFilt;
@@ -142,14 +142,14 @@ typedef struct _settings_t
   COLORREF  crNoFilt;
   COLORREF  crFilter;
   COLORREF  crCustom[16];
-  
+
   WININFO   wi;
-  
+
   WCHAR     szCurDir[MAX_PATH + 40];
   DWORD     dwFillMask;
   int       nSortFlags;
   BOOL      fSortRev;
-  
+
 } SETTINGS_T, * PSETTINGS_T;
 
 extern SETTINGS_T Settings;

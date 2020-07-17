@@ -489,10 +489,10 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Otwórz łącze",                              CMD_OPEN_HYPERLINK
-        MENUITEM SEPARATOR 
+        MENUITEM SEPARATOR
         MENUITEM "&Cofnij",                                   IDM_EDIT_UNDO
         MENUITEM "&Do przodu",                                IDM_EDIT_REDO
-        MENUITEM SEPARATOR 
+        MENUITEM SEPARATOR
         MENUITEM "Wytnij",                                    IDM_EDIT_CUT
         MENUITEM "&Kopiuj",                                   IDM_EDIT_COPY
         MENUITEM "&Wklej",                                    IDM_EDIT_PASTE

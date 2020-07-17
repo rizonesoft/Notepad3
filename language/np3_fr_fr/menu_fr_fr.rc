@@ -510,7 +510,7 @@ BEGIN
         MENUITEM "Afficher la barre de &menus",             IDM_VIEW_MENUBAR
         MENUITEM "&Afficher la barre à outils",             IDM_VIEW_TOOLBAR
         MENUITEM "Affic&her la barre d'état",               IDM_VIEW_STATUSBAR
-        MENUITEM SEPARATOR                                  
+        MENUITEM SEPARATOR
         MENUITEM "&Charger un thème d'outils...",           IDM_VIEW_LOADTHEMETB
         MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
         MENUITEM "Al&terner les barres à outils",           IDM_VIEW_TOGGLETB

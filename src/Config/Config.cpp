@@ -93,6 +93,60 @@ constexpr bool SI_Success(const SI_Error rc) noexcept {
 
 // ============================================================================
 
+
+bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights)
+{
+  bool bRet = false;
+  if (StrIsEmpty(lpIniFilePath)) {
+    return false;
+  }
+  DWORD                      length  = 0;
+  SECURITY_INFORMATION const secInfo = OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
+
+  // check for read-only file attribute
+  if (genericAccessRights & GENERIC_WRITE) 
+  {
+    DWORD const dwFileAttributes = GetFileAttributes(lpIniFilePath);
+    if ((dwFileAttributes == INVALID_FILE_ATTRIBUTES) || (dwFileAttributes & FILE_ATTRIBUTE_READONLY))
+    {
+      return false;
+    }
+  }
+
+  // check security tokens
+  if (!::GetFileSecurity(lpIniFilePath, secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
+    PSECURITY_DESCRIPTOR security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
+    if (security && ::GetFileSecurity(lpIniFilePath, secInfo, security, length, &length)) {
+      HANDLE hToken = NULL;
+      if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken)) {
+        HANDLE hImpersonatedToken = NULL;
+        if (::DuplicateToken(hToken, SecurityImpersonation, &hImpersonatedToken)) {
+          GENERIC_MAPPING mapping       = {0xFFFFFFFF};
+          PRIVILEGE_SET   privileges    = {0};
+          DWORD           grantedAccess = 0, privilegesLength = sizeof(privileges);
+          BOOL            result = FALSE;
+
+          mapping.GenericRead    = FILE_GENERIC_READ;
+          mapping.GenericWrite   = FILE_GENERIC_WRITE;
+          mapping.GenericExecute = FILE_GENERIC_EXECUTE;
+          mapping.GenericAll     = FILE_ALL_ACCESS;
+
+          ::MapGenericMask(&genericAccessRights, &mapping);
+          if (::AccessCheck(security, hImpersonatedToken, genericAccessRights,
+                            &mapping, &privileges, &privilegesLength, &grantedAccess, &result)) {
+            bRet = (result == TRUE);
+          }
+          ::CloseHandle(hImpersonatedToken);
+        }
+        ::CloseHandle(hToken);
+      }
+      FreeMem(security);
+    }
+  }
+  return bRet;
+}
+
+
 // ----------------------------------------------------------------------------
 // No mechanism for  EXCLUSIVE WRITE / SHARD READ:
 // cause we need completely synchronized exclusive access for READ _and_ WRITE
@@ -215,7 +269,9 @@ extern "C" bool IsIniFileCached() { return s_bIniFileCacheLoaded; }
 
 extern "C" bool SaveIniFileCache(LPCWSTR lpIniFilePath)
 {
-  if (!s_bIniFileCacheLoaded) { return false; }
+  if (!s_bIniFileCacheLoaded || StrIsEmpty(lpIniFilePath)) {
+    return false;
+  }
 
   OVERLAPPED ovrLpd = { 0 };
   HANDLE hIniFile = AcquireWriteFileLock(lpIniFilePath, ovrLpd);
@@ -243,7 +299,7 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 {
   if (StrIsNotEmpty(Globals.IniFile)) 
   {
-    CreateIniFile(Globals.IniFile, NULL);
+    Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
 
     if (!IsIniFileCached()) {
       LoadIniFileCache(Globals.IniFile);
@@ -255,6 +311,9 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
       *keepCached = true;
     }
   }
+  else {
+    Globals.bCanSaveIniFile = false;
+  }
   return IsIniFileCached();
 }
 
@@ -265,13 +324,20 @@ extern "C" bool OpenSettingsFile(bool* keepCached)
 //
 extern "C" bool CloseSettingsFile(bool bSaveChanges, bool keepCached)
 {
-  if (StrIsEmpty(Globals.IniFile) || !IsIniFileCached()) { return false; }
-  
-  bool const ok = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : true;
-
-  if (!keepCached) { ResetIniFileCache(); }
-
-  return ok;
+  if (Globals.bCanSaveIniFile) {
+    if (!IsIniFileCached()) {
+      return false;
+    }
+    bool const bSaved = bSaveChanges ? SaveIniFileCache(Globals.IniFile) : false;
+    if (!keepCached) {
+      ResetIniFileCache();
+    }
+    return bSaved;
+  }
+  if (!keepCached) {
+    ResetIniFileCache();
+  }
+  return false;
 }
 
 
@@ -909,7 +975,6 @@ extern "C" bool TestIniFile()
 
 extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
 {
-  bool result = false;
   if (StrIsNotEmpty(pszIniFilePath))
   {
     WCHAR* pwchTail = StrRChrW(pszIniFilePath, NULL, L'\\');
@@ -940,8 +1005,6 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
     }
     else 
     {
-      SetFileAttributes(pszIniFilePath, FILE_ATTRIBUTE_NORMAL);
-
       HANDLE hFile = CreateFile(pszIniFilePath,
         GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
@@ -954,22 +1017,16 @@ extern "C" bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out)
       else {
         wchar_t msg[MAX_PATH + 128] = { 0 };
         StringCchPrintf(msg, ARRAYSIZE(msg),
-          L"CreateIniFile(%s): FAILED TO GET FILESIZE!", pszIniFilePath);
+          L"CreateIniFile(%s): FAILED TO READ FILESIZE!", pszIniFilePath);
         MsgBoxLastError(msg, 0);
         dwFileSize = INVALID_FILE_SIZE;
       }
     }
     if (pdwFileSize_out) { *pdwFileSize_out = dwFileSize; }
 
-    if (dwFileSize == 0UL) {
-      // Set at least Application Name Section
-      result = IniFileSetString(pszIniFilePath, _W(SAPPNAME), NULL, NULL);
-    }
-    else {
-      result = true;
-    }
+    return CanAccessPath(Globals.IniFile, GENERIC_WRITE);
   }
-  return result;
+  return false;
 }
 //=============================================================================
 
@@ -999,7 +1056,7 @@ void LoadSettings()
     Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
 
     Defaults.SaveSettings = StrIsNotEmpty(Globals.IniFile);
-    Settings.SaveSettings = IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
+    Settings.SaveSettings = Defaults.SaveSettings && IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
 
     // ---  first set "hard coded" .ini-Settings  ---
 
@@ -1979,7 +2036,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 {
   if (Flags.bDoRelaunchElevated) { return true; } // already saved before relaunch
   if (Flags.bSettingsFileSoftLocked) { return false; }
-
+  
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
 
@@ -1996,7 +2053,7 @@ __try {
 
       _SaveSettings(bForceSaveSettings);
 
-      if (StrIsNotEmpty(Globals.IniFile))
+      if (Globals.bCanSaveIniFile)
       {
         if (!Settings.SaveRecentFiles) {
           // Cleanup unwanted MRUs
@@ -2032,7 +2089,8 @@ __try {
   }
 
   // separate INI files for Style-Themes
-  if (Globals.idxSelectedTheme >= 2) {
+  if (Globals.idxSelectedTheme >= 2)
+  {
     Style_SaveSettings(bForceSaveSettings);
   }
 
@@ -2040,6 +2098,70 @@ __try {
   return ok;
 }
 
+
+
+//=============================================================================
+//
+//  CmdSaveSettingsNow()
+//
+void CmdSaveSettingsNow()
+{
+  bool bCreateFailure = false;
+  if (StrIsEmpty(Globals.IniFile)) {
+    if (StrIsNotEmpty(Globals.IniFileDefault)) {
+      StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), Globals.IniFileDefault);
+      DWORD dwFileSize        = 0UL;
+      Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, &dwFileSize);
+      if (Globals.bCanSaveIniFile) {
+        Globals.bIniFileFromScratch = (dwFileSize == 0UL);
+        StringCchCopy(Globals.IniFileDefault, COUNTOF(Globals.IniFileDefault), L"");
+      }
+      else {
+        StringCchCopy(Globals.IniFile, COUNTOF(Globals.IniFile), L"");
+        Globals.bCanSaveIniFile = false;
+        bCreateFailure          = true;
+      }
+    }
+    else {
+      return;
+    }
+  }
+  if (bCreateFailure) {
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
+    return;
+  }
+  DWORD dwFileAttributes = 0;
+  if (!Globals.bCanSaveIniFile) {
+    dwFileAttributes = GetFileAttributes(Globals.IniFile);
+    if (dwFileAttributes == INVALID_FILE_ATTRIBUTES) {
+      InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_CREATEINI_FAIL);
+      return;
+    }
+    if (dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
+      INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_INIFILE_READONLY);
+      if ((IDOK == answer) || (IDYES == answer)) {
+        SetFileAttributes(Globals.IniFile, FILE_ATTRIBUTE_NORMAL); // override read-only attrib
+        Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+      }
+    }
+    else {
+      dwFileAttributes = 0; // no need to change the file attributes
+    }
+  }
+  if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
+    InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
+    if (dwFileAttributes != 0) {
+      SetFileAttributes(Globals.IniFile, dwFileAttributes); // reset
+      Globals.bCanSaveIniFile = CanAccessPath(Globals.IniFile, GENERIC_WRITE);
+    }
+  }
+  else {
+    Globals.dwLastError = GetLastError();
+    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_WRITEINI_FAIL);
+    return;
+  }
+}
+ 
 
 //=============================================================================
 //=============================================================================

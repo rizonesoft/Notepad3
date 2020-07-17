@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Vill du öppna denna stora fil?\n\t(storlek: %s >= %s)!\n(Stil och syntaxmarkering kommer inte användas!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Kan inte hantera så stor fil (storlek: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Okändt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Inställningarna har sparats."
     IDS_MUI_CREATEINI_FAIL  "Kunde inte skapa konfigurationsfil."
     IDS_MUI_WRITEINI_FAIL   "Kunde inte skriva inställningar till konigurationsfil."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Inga existerande konfigurationsfiler kunde hittas.\nFör att spara dina stiländringar, spara nu (F7) eller gå tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 Utveckling:\\ul0\\b0\\fs18\\par\

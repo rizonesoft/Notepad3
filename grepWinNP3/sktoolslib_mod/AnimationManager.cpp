@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017 - Stefan Kueng
+// Copyright (C) 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,8 @@
 #include "AnimationManager.h"
 #include <algorithm>
 #include <vector>
+#include <map>
+#include <cassert>
 
 /// Object to handle the timer callback.
 class CTimerEventHandler : public IUIAnimationTimerEventHandler

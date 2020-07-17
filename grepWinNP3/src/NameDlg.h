@@ -32,6 +32,7 @@ public:
 
     std::wstring GetName() const { return m_name; }
     void         SetName(const std::wstring& n) { m_name = n; }
+    bool         IncludePath() const { return m_bIncludePath; }
 
 protected:
     LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -40,6 +41,7 @@ protected:
 private:
     HWND         m_hParent;
     std::wstring m_name;
+    bool         m_bIncludePath;
     int          m_themeCallbackId;
     CDlgResizer  m_resizer;
 };

@@ -61,6 +61,11 @@
 #define OIC_SHIELD          32518
 #endif /* WINVER >= 0x0600 */
 
+
+#ifndef TMT_MSGBOXFONT
+#define TMT_MSGBOXFONT 805
+#endif
+
 //=============================================================================
 //
 //  MessageBoxLng()
@@ -135,13 +140,11 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
   GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
 
   WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
-  if (argp && *argp) {
-    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
-  }
-  else {
-    StringCchCopy(szText, COUNTOF(szText), szFormat);
-  }
+
+  va_list         args;
+  va_start(args, uidMsg);
+  StringCchVPrintfW(szText, COUNTOF(szText), szFormat, args);
+  va_end(args);
 
   uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
@@ -287,7 +290,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
       case IDIGNORE:
       case IDTRYAGAIN:
       case IDCONTINUE:
-        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting)) {
+        if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
           IniFileSetInt(Globals.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
         }
       case IDNO:
@@ -336,7 +339,9 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
       break;
 
     default:
-      IniFileDelete(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
+      if (Globals.bCanSaveIniFile) {
+        IniFileDelete(Globals.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, false);
+      }
       break;
   }
 
@@ -347,13 +352,10 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   msgBox.uType = uType;
   msgBox.lpstrMessage = AllocMem((COUNTOF(wchMessage)+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
-  const PUINT_PTR argp = (PUINT_PTR)& uidMsg + 1;
-  if (argp && *argp) {
-    StringCchVPrintfW(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage, (LPVOID)argp);
-  }
-  else {
-    StringCchCopy(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage);
-  }
+  va_list args;
+  va_start(args, uidMsg);
+  StringCchVPrintfW(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage, args);
+  va_end(args);
 
   if (uidMsg == IDS_MUI_ERR_LOADFILE || uidMsg == IDS_MUI_ERR_SAVEFILE ||
     uidMsg == IDS_MUI_CREATEINI_FAIL || uidMsg == IDS_MUI_WRITEINI_FAIL ||
@@ -385,8 +387,7 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   }
 
   msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
-  msgBox.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
-
+  msgBox.bDisableCheckBox = (!Globals.bCanSaveIniFile || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
 
   int idDlg;
   switch (uType & MB_TYPEMASK) {
@@ -4393,18 +4394,16 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  //~int const iLogPixelsY = Scintilla_GetWindowDPI(hWnd).y;
   int const iLogPixelsY = GetCurrentPPI(NULL).y;
-
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
     LOGFONT lf;
-    if (S_OK == GetThemeSysFont(hTheme,/*TMT_MSGBOXFONT*/805, &lf)) {
+    if (S_OK == GetThemeSysFont(hTheme, TMT_MSGBOXFONT, &lf)) {
       if (lf.lfHeight < 0) {
         lf.lfHeight = -lf.lfHeight;
       }
       *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-      if (*wSize == 0) { *wSize = 8; }
+      if (*wSize == 0) { *wSize = 9; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;
     }
@@ -4479,6 +4478,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
     if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
       return(pTemplate);
     }
+
     bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
     bool bHasFont = DialogTemplate_HasFont(pTemplate);
     size_t cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);

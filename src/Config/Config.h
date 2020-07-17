@@ -28,12 +28,14 @@ extern "C" {
 
 bool FindIniFile();
 bool TestIniFile();
+bool CanAccessPath(LPCWSTR lpIniFilePath, DWORD genericAccessRights);
 bool CreateIniFile(LPCWSTR pszIniFilePath, DWORD* pdwFileSize_out);
 void LoadSettings();
 bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);
+void CmdSaveSettingsNow();
 
-bool OpenSettingsFile(bool* keepCached);
+  bool OpenSettingsFile(bool* keepCached);
 bool CloseSettingsFile(bool bSaveChanges, bool keepCached);
 
 // ----------------------------------------------------------------------------
@@ -92,7 +94,7 @@ bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty);
 
 size_t IniFileGetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
                         LPWSTR lpReturnedString, size_t cchReturnedString);
-bool  IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
+bool IniFileSetString(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 
 int  IniFileGetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
 bool IniFileSetInt(LPCWSTR lpFilePath, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);

@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3 の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか？\n\t(サイズ: %s >= %s)!\n(配色や構文ハイライトは適用されません!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "大容量すぎて処理できません！ (サイズ: %s)"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "%s は設定のない拡張子です。\n読み込みますか？"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "設定が保存されました。"
     IDS_MUI_CREATEINI_FAIL  "設定ファイルの作成に失敗しました。"
     IDS_MUI_WRITEINI_FAIL   "設定ファイルへの書き込みに失敗しました。"
+    IDS_MUI_INIFILE_READONLY
+                            "設定ファイルは読み取り専用です。無視して設定を上書しますか？"
     IDS_MUI_SETTINGSNOTSAVED
                             "設定ファイルがありません。\n配色の変更を保存するには、すぐに設定を保存するか(F7)、配色の設定(Ctrl+F12)から配色設定をエクスポートしてください。"
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset134 Arial;}{\\f2\\fswiss\\fcharset128 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset134 Segoe UI;}{\\f2\\fswiss\\fcharset128 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'e9\\'5f\\'b0\\'6b\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\

@@ -688,24 +688,22 @@ bool VerifyContrast(COLORREF cr1,COLORREF cr2)
 //  IsFontAvailable()
 //  Test if a certain font is installed on the system
 //
-int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontType,LPARAM lParam)
+static int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontType,LPARAM lParam)
 {
-  *((PBOOL)lParam) = true;
   UNUSED(plf);
   UNUSED(ptm);
   UNUSED(FontType);
+  *((PBOOL)lParam) = true;
   return 0;
 }
 
 bool IsFontAvailable(LPCWSTR lpszFontName)
 {
   BOOL fFound = FALSE;
-
-  HDC hDC = GetDC(NULL);
+  HDC const hDC = GetDC(NULL);
   EnumFonts(hDC,lpszFontName,EnumFontsProc,(LPARAM)&fFound);
   ReleaseDC(NULL,hDC);
-
-  return (bool)(fFound);
+  return fFound;
 }
 
 
@@ -713,22 +711,12 @@ bool IsFontAvailable(LPCWSTR lpszFontName)
 //
 //  IsCmdEnabled()
 //
-bool IsCmdEnabled(HWND hwnd,UINT uId)
+bool IsCmdEnabled(HWND hwnd, UINT uId)
 {
-
-  HMENU hmenu;
-  UINT ustate;
-
-  hmenu = GetMenu(hwnd);
-
-  SendMessage(hwnd,WM_INITMENU,(WPARAM)hmenu,0);
-
-  ustate = GetMenuState(hmenu,uId,MF_BYCOMMAND);
-
-  if (ustate == 0xFFFFFFFF) {
-    return true;
-  }
-  return (!(ustate & (MF_GRAYED|MF_DISABLED)));
+  HMENU const hmenu = GetMenu(hwnd);
+  SendMessage(hwnd, WM_INITMENU,(WPARAM)hmenu, 0);
+  UINT const ustate = GetMenuState(hmenu, uId, MF_BYCOMMAND);
+  return ((ustate == 0xFFFFFFFF) ? true : (!(ustate & (MF_GRAYED | MF_DISABLED))));
 }
 
 

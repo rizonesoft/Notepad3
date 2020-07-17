@@ -66,6 +66,7 @@ m4/*.m4
 /sample/count
 /sample/bug_fix
 /sample/regset
+/sample/scan
 /sample/log*
 
 /harnesses/utf16*.dict

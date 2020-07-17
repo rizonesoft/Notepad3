@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST Translator: stefankueng, 2018.
-# LAST Translator: Crane70, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "... %ld więcej dopasowań"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Ścieżka nie istnieje lub jest niedostępna!"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% jest zastępowana ścieżką pliku, %line% z linią, aby przejść do, %pattern% with the search string."
@@ -66,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -102,6 +97,14 @@ msgstr "Pomiędzy"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Anuluj"
+
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr ""
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "Sprawdź aktualizacje"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -147,10 +150,6 @@ msgstr "Twórz zapasowe kopie plików w osobnym folderze"
 msgid "Dark mode"
 msgstr "Tryb ciemny"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Tryb ciemny wymaga co najmniej Win10 v1803, i musi być włączony w ustawieniach systemu Windows."
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Data modyfikacji"
@@ -158,6 +157,10 @@ msgstr "Data modyfikacji"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Dialog"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Nie ostrzegaj kiedy zamieniasz bez tworzenia kopii zapasowej"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -191,10 +194,6 @@ msgstr "Klawisz Escape zamyka grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "Wyklucz katalogi (Regex):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Rozszerz."
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "Eksportuj listę wyników"
@@ -202,6 +201,10 @@ msgstr "Eksportuj listę wyników"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "Eksportuj wyniki"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Rozszerz."
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -227,6 +230,10 @@ msgstr "Uwzględnij pliki binarne"
 msgid "Include hidden items"
 msgstr "Uwzględnij ukryte"
 
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr ""
+
 #. Resource IDs: (1011)
 msgid "Include subfolders"
 msgstr "Uwzględnij podfoldery"
@@ -240,7 +247,7 @@ msgid "Invalid path!"
 msgstr "Niewłaściwa ścieżka!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "Wyszukiwanie odwrotne (nie szukaj ciągu)"
 
 #. Resource IDs: (1019)
@@ -288,10 +295,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Starsze niż"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "Nie ostrzegaj kiedy zamieniasz bez tworzenia kopii zapasowej"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Tylko jedna instancja"
@@ -311,6 +314,10 @@ msgstr "Wklej tekst, aby przetestować wyrażenie regularne przy pomocy:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "Ścieżka"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "Ścieżka nie istnieje lub jest niedostępna!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -365,7 +372,7 @@ msgid "Replace string"
 msgstr "Zastąp ciąg"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
+msgid "Replace with/\nCapture format:"
 msgstr "Zastąp z:"
 
 #. Resource IDs: (126)
@@ -449,17 +456,17 @@ msgstr "Łańcuch wyszukiwania regex pasuje do:"
 msgid "The resulting text after replacing:"
 msgstr "Tekst wynikowy po zamianie:"
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "Spowoduje to dodanie nowego wpisu do menu kontekstowego o nazwie 'Otwórz za pomocą edytora""
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "Traktuj pliki jako UTF-8"
 
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr ""
+
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Odwiedź naszą stronę internetową"
+msgid "Visit Stefan Küng's website"
+msgstr "Odwiedź stronę Stafana Küng'a"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -477,6 +484,10 @@ msgstr "dwójkowy"
 msgid "click to edit the text as a multiline text"
 msgstr "kliknij, aby edytować tekst jako tekst wielowierszowy"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "Tryb ciemny wymaga co najmniej Win10 v1803, i musi być włączony w ustawieniach systemu Windows."
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "równy"
@@ -488,6 +499,11 @@ msgstr "większy niż"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWinNP3 %s is available"
+msgstr "grepWinNP3 %s jest dostępny"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -529,6 +545,10 @@ msgstr "brak tekstu do zastąpienia"
 msgid "no text to test with available"
 msgstr "brak tekstu do przetestowania z dostępnymi"
 
+#. Resource IDs: (1074)
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr ""
+
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "Wyszukiwane są tylko pliki odpowiadające temu wzorcowi.\nJako separatora użyj '|' \nPrzykład: *.cpp|*."
@@ -543,7 +563,7 @@ msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "Użycie instancji grepWinNP3"
+msgstr "Użycie instancji grepWinNP3."
 
 #. Resource IDs: (151)
 #, c-format
@@ -562,10 +582,19 @@ msgstr "Ścieżka(-i), która(-e) jest(są) przeszukiwana(-e) regularnie.\nOddzi
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Można wykluczyć katalogi, np. CVS i obrazy.\nPrzykład: ^(CVS|obrazy)$\nUwaga, foldery '.svn' są ukryte w Windows, więc zwykle nie są one skanowane."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Resetuj"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Najlepsze narzędzie Stefan Küng dla Notepad3 to grepWin(NP3)-mod!"
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Maks. # jednoczesnych sesji"
+
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Spowoduje to dodanie nowego wpisu do menu kontekstowego o nazwie 'Otwórz za pomocą edytora""
+

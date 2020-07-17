@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "無管理工具可用。\n\n訪問 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否確實要打開一個如此龐大的檔案？\n\t（大小 %s >= %s）\n樣式和語法高亮將被禁用。"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "無法處理如此龐大的檔案（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "副檔名「%s」不是已知的文字檔案。仍然要嘗試打開嗎？"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "目前設定已儲存。"
     IDS_MUI_CREATEINI_FAIL  "建立配置檔案失敗。"
     IDS_MUI_WRITEINI_FAIL   "將設定寫入配置檔案失敗。"
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "目前無配置檔案可用。\n\n若要儲存已修改的樣式，請按 F7 儲存設定，或按 Ctrl+F12 匯出樣式。"
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset134 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset134 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'cf\\'ee\\'c4\\'bf\\'c0\\'fa\\'ca\\'b7\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\

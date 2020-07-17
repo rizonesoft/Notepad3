@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST Translator: stefankueng, 2018.
-# LAST Translator: ThreeLightsBeyond, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "%ld fler träffar"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Sökvägen existerar inte, eller kan inte nås!"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% ersätts med sökväg till filen, %line% med raden att hoppa till, %pattern% med söksträngen."
@@ -66,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -102,6 +97,14 @@ msgstr "Mellan"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Avbryt"
+
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr ""
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -147,10 +150,6 @@ msgstr "Kopiera säkerhetskopior i separat mapp"
 msgid "Dark mode"
 msgstr "Mörkt läge"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "Mörkt läge kräver åtminstone Win10 v1803, och måste ha aktiverats i Windows systeminställningar."
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Datum modifierad"
@@ -158,6 +157,10 @@ msgstr "Datum modifierad"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Dialogruta"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr "Varna inte vid ersättning utan att skapa säkerhetskopia"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -191,10 +194,6 @@ msgstr "Esc-tangenten stänger grepWinNP3"
 msgid "Exclude dirs (Regex):"
 msgstr "Exkludera mappar (Regex):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "Ext"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr ""
@@ -202,6 +201,10 @@ msgstr ""
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr ""
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -227,6 +230,10 @@ msgstr "Inkludera binära filer"
 msgid "Include hidden items"
 msgstr "Inkludera gömda filer"
 
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr ""
+
 #. Resource IDs: (1011)
 msgid "Include subfolders"
 msgstr "Inkludera undermappar"
@@ -240,7 +247,7 @@ msgid "Invalid path!"
 msgstr "Ogiltig mapp!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr ""
 
 #. Resource IDs: (1019)
@@ -288,10 +295,6 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Äldre än"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "Varna inte vid ersättning utan att skapa säkerhetskopia"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Bara en instans"
@@ -311,6 +314,10 @@ msgstr "Klistra in text att testa regex med:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "Sökväg"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "Sökvägen existerar inte, eller kan inte nås!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -365,7 +372,7 @@ msgid "Replace string"
 msgstr "Ersätt sträng"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
+msgid "Replace with/\nCapture format:"
 msgstr "Ersätt med:"
 
 #. Resource IDs: (126)
@@ -449,17 +456,17 @@ msgstr "Regex sökning matchar:"
 msgid "The resulting text after replacing:"
 msgstr "Text efter ersättning:"
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "Lägger till ny post i snabbmenyn med rubriken 'Öppna med editor'"
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "Behandlar filer som UTF-8"
 
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr ""
+
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Besök vår webbsida"
+msgid "Visit Stefan Küng's website"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -477,6 +484,10 @@ msgstr "binär"
 msgid "click to edit the text as a multiline text"
 msgstr "klicka för att redigera text som multiradstext"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "Mörkt läge kräver åtminstone Win10 v1803, och måste ha aktiverats i Windows systeminställningar."
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "lika med"
@@ -488,6 +499,11 @@ msgstr "större än"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWinNP3 %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -529,6 +545,10 @@ msgstr "ingen text att ersätta med"
 msgid "no text to test with available"
 msgstr "ingen text att testa med"
 
+#. Resource IDs: (1074)
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr ""
+
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "söker bara efter filer som matchar detta mönster.\nAnvänd '|' som avgränsare.\nExempelvis: *.cpp|*.h"
@@ -562,10 +582,19 @@ msgstr "sökväg(arna) söks rekursivt.\nSeparera sökvägar med '|' symbolen.\n
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\nExempelvis: ^(CVS|bilder)$\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "Återställ"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr ""
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "Maximalt # samtidiga instanser"
+
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "Lägger till ny post i snabbmenyn med rubriken 'Öppna med editor'"
+

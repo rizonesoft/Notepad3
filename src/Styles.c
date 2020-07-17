@@ -174,8 +174,6 @@ static void _FillThemesMenuTable()
 {
   Theme_Files[0].rid = IDM_THEMES_DEFAULT;    // factory default
   Theme_Files[1].rid = IDM_THEMES_FILE_ITEM;  // NP3.ini settings
-  // names are filled by Style_InsertThemesMenu()
-  StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), Globals.IniFile);
 
   unsigned iTheme = 1; // Standard
 
@@ -183,6 +181,8 @@ static void _FillThemesMenuTable()
   // find "themes" sub-dir (side-by-side to Notepad3.ini)
   if (StrIsNotEmpty(Globals.IniFile)) {
     StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFile);
+    // names are filled by Style_InsertThemesMenu()
+    StringCchCopy(Theme_Files[iTheme].szFilePath, COUNTOF(Theme_Files[iTheme].szFilePath), Globals.IniFile);
   }
   else if (StrIsNotEmpty(Globals.IniFileDefault)) {
     StringCchCopy(tchThemeDir, COUNTOF(tchThemeDir), Globals.IniFileDefault);
@@ -231,16 +231,6 @@ static void _FillThemesMenuTable()
 }
 
 
-
-//=============================================================================
-//
-//  Style_SetIniFile()
-//
-void Style_SetIniFile(LPCWSTR szIniFile)
-{
-  StringCchCopy(Theme_Files[1].szFilePath, COUNTOF(Theme_Files[1].szFilePath), szIniFile);
-  _FillThemesMenuTable();
-}
 
 
 //=============================================================================
@@ -316,8 +306,8 @@ void Style_DynamicThemesMenuCmd(int cmd)
     }
     else if (Globals.idxSelectedTheme == 1) {
       if (!Flags.bSettingsFileSoftLocked) {
-        CreateIniFile(Globals.IniFile, NULL);
-        if (StrIsNotEmpty(Globals.IniFile)) {
+        Globals.bCanSaveIniFile = CreateIniFile(Globals.IniFile, NULL);
+        if (Globals.bCanSaveIniFile) {
           Style_ExportToFile(Globals.IniFile, Globals.bIniFileFromScratch);
         }
       }
@@ -483,8 +473,6 @@ void Style_Load()
   }
 
   _FillThemesMenuTable();
-
-  // get theme name from settings
 
   unsigned iTheme = 1;
   if (StrIsNotEmpty(Globals.SelectedThemeName)) {
@@ -4085,6 +4073,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             //UpdateWindowLayoutForDPI(hwnd, NULL, NULL);
         }
         return !0;
+
+        case WM_ENABLE:
+          // modal child dialog should disable main window too
+          EnableWindow(Globals.hwndMain, (BOOL)wParam);
+          return !0;
 
         case WM_PAINT:
         {

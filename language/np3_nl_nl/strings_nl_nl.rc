@@ -100,7 +100,7 @@ BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED "%s (Verhoogde)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Klembord"
-    IDS_MUI_UNTITLED        "Naanloos"
+    IDS_MUI_UNTITLED        "Naamloos"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Alleen lezen)"
     IDS_MUI_LOADFILE        "Laden ""%s""..."
@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Geen administratief uitvoerbaar bestand gevonden.\nControleer website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Weet je zeker dat je dit grote bestand wilt openen?\n\t(grootte: %s >= %s)!\n(Styling en syntax highlighting wordt niet toegepast!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Kan dat enorme bestand niet aan (grootte: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Onbekende bestandsnaamextensie (%s)!\nGegevens toch laden?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "De huidige programma instellingen zijn opgeslagen."
     IDS_MUI_CREATEINI_FAIL  "Fout bij het maken van het configuratiebestand."
     IDS_MUI_WRITEINI_FAIL   "Fout bij het schrijven van instellingen naar het configuratiebestand."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuratie bestand alleen-lezen is - negeren en override-instellingen?"
     IDS_MUI_SETTINGSNOTSAVED
                             "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 Ontwikkeling:\\ul0\\b0\\fs18\\par\

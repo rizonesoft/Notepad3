@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Не знойдены інструмент адміністратара\nНаведаць сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?\n\t(памер: %s >= %s)!\n(Стылі і схема сінтаксісу не будуць скарыстаны!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Немагчыма апрацаваць гэты вялікі файл (памер: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Цяперашнія налады праграмы былі захаваны."
     IDS_MUI_CREATEINI_FAIL  "Памылка падчас стварэння файла наладаў."
     IDS_MUI_WRITEINI_FAIL   "Памылка пісання наладаў у файл."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Файл наладаў не знойдзены.\nКаб захаваць змяненні стыляў, захавайце налады (F7) альбо вярніцеся да наладаў схемаў (Ctrl+F12) і эспартуйце іх."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset204 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset204 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 \\f1\\'d0\\'e0\\'f1\\'ef\\'f0\\'e0\\'f6\\'ee\\'a2\\'ea\\'e0\\f0 :\\ul0\\b0\\fs18\\par\

@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST Translator: Tilt, 2018.
-# LAST Translator: maboroshin, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,10 +37,6 @@ msgstr ""
 msgid "%ld more matches"
 msgstr "%ld か所のさらなる一致"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "パスが存在しないかアクセスできません！"
-
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
 msgstr "%path% はファイルのパス - %line% は移動先の行番号 - %pattern% は検索語句 で置換されます"
@@ -66,7 +61,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (1093)
+#. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
@@ -102,6 +97,14 @@ msgstr "期間内"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "キャンセル"
+
+#. Resource IDs: (169)
+msgid "Capture search"
+msgstr "キャプチャと後方参照を使用"
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "最新版を確認"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -147,10 +150,6 @@ msgstr "フォルダを作成してバックアップ"
 msgid "Dark mode"
 msgstr "ダークモード"
 
-#. Resource IDs: (159)
-msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
-msgstr "ダークモードには Windonws 10 バージョン1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
-
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "更新日時"
@@ -158,6 +157,10 @@ msgstr "更新日時"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "ダイアログ"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr "バックアップせず置換しても警告しない"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -191,10 +194,6 @@ msgstr "ESC キーで grepWinNP3 を閉じる"
 msgid "Exclude dirs (Regex):"
 msgstr "除外するフォルダ (正規表現):"
 
-#. Resource IDs: (158)
-msgid "Ext"
-msgstr "拡張子"
-
 #. Resource IDs: (164)
 msgid "Export resultlist"
 msgstr "検索結果の一覧のエクスポート"
@@ -202,6 +201,10 @@ msgstr "検索結果の一覧のエクスポート"
 #. Resource IDs: (163)
 msgid "Export results..."
 msgstr "結果のエクスポート..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "拡張子"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -227,6 +230,10 @@ msgstr "バイナリファイルを含める"
 msgid "Include hidden items"
 msgstr "隠し属性ファイルを含める"
 
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr "検索場所も保存"
+
 #. Resource IDs: (1011)
 msgid "Include subfolders"
 msgstr "サブフォルダを含める"
@@ -240,7 +247,7 @@ msgid "Invalid path!"
 msgstr "パスが無効です!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT search string)"
+msgid "Inverse search (NOT searchstring)"
 msgstr "検索結果を反転 (検索語句ではなく)"
 
 #. Resource IDs: (1019)
@@ -288,13 +295,9 @@ msgstr "OK"
 msgid "Older than"
 msgstr "より古い"
 
-#. Resource IDs: (1090)
-msgid "Don't warn when replacing without creating backups"
-msgstr "バックアップせず置換しても警告しない"
-
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "多重に起動しない(注・無効)"
+msgstr "多重に起動しない(注・常にオン)"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
@@ -311,6 +314,10 @@ msgstr "正規表現テスト用のテキスト:"
 #. Resource IDs: (137)
 msgid "Path"
 msgstr "パス"
+
+#. Resource IDs: (160)
+msgid "Path does not exist or is not accessible!"
+msgstr "パスが存在しないかアクセスできません！"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -365,8 +372,8 @@ msgid "Replace string"
 msgstr "置換文字列"
 
 #. Resource IDs: (1027)
-msgid "Replace with:"
-msgstr "置換文字列(&R):"
+msgid "Replace with/\nCapture format:"
+msgstr "置換文字列(&H)/\n後方参照:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -449,17 +456,17 @@ msgstr "正規表現に一致した文字列:"
 msgid "The resulting text after replacing:"
 msgstr "置換後のテキスト:"
 
-#. Resource IDs: (1074)
-msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "これにより右クリックメニューに「エディタで開く」という新規項目を追加します"
-
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
 msgstr "ファイルを UTF-8 として処理"
 
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr "ファイルをバイナリとして処理"
+
 #. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "公式サイトを開く"
+msgid "Visit Stefan Küng's website"
+msgstr "Stefan Küng のサイトを開く"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -477,6 +484,10 @@ msgstr "バイナリ"
 msgid "click to edit the text as a multiline text"
 msgstr "クリックで複数行の文字列として編集できます。"
 
+#. Resource IDs: (159)
+msgid "Dark Mode requires at least Win10 v1803, and it must be enabled in the Windows system settings."
+msgstr "ダークモードには Windonws 10 バージョン1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "等しい"
@@ -488,6 +499,11 @@ msgstr "以下より大きい"
 #. Resource IDs: (103, 129)
 msgid "grepWinNP3"
 msgstr "grepWinNP3"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWinNP3 %s is available"
+msgstr "最新の grepWinNP3 %s があります。"
 
 #. Resource IDs: (138)
 msgid "grepWinNP3 Settings"
@@ -529,6 +545,10 @@ msgstr "置換文字列がありません"
 msgid "no text to test with available"
 msgstr "テスト用のテキストがありません"
 
+#. Resource IDs: (1074)
+msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr "ファイルをバイナリでなくテキストと認識するための MB あたりの NULL バイトの数"
+
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "このパターンに一致するファイルから検索されます。\n区切りに「|」が使えます。\n指定例: *.cpp|*.h"
@@ -543,7 +563,7 @@ msgstr "正規表現 - OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "grepWinNP3 のインスタンスを再利用します。(注: grepWinNP3 では無効)"
+msgstr "grepWinNP3 のインスタンスを再利用します。(注: grepWinNP3 では設定無効で常に再利用)"
 
 #. Resource IDs: (151)
 #, c-format
@@ -562,10 +582,19 @@ msgstr "パスは再帰的に検索されます。\nパスを「|」で区切る
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "フォルダを除外できます。CVS と images を除外する例です。\n指定例: ^(CVS|images)$\n注: Windows では「.svn」フォルダは隠されているため、通常はスキャンされません。"
 
-#. Resource IDs: (1061)
+#. Resource IDs: (3000)
 msgid "Reset"
 msgstr "初期化"
 
-#. Resource IDs: (1088)
+#. Resource IDs: (3001)
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Stefan Küng の良ソフト grepWin の Notepad3 用改造版"
+
+#. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
 msgstr "最大スレッド数"
+
+#. Resource IDs: (3005)
+msgid "This adds a new entry to the context menu named 'Open with Editor'"
+msgstr "これにより右クリックメニューに「エディタで開く」という新規項目を追加します"
+

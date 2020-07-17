@@ -150,7 +150,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE    "Nenašiel sa žiadny spustiteľný súbor správy.\nSkontrolujte webovú stránku https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Súbor je príliš veľký. Chcete ho otvoriť?\n\t(veľkosť: %s >= %s)!\n(Štýly a zvýraznenie syntaxie sa nepoužijú!)"
-    IDS_MUI_ERR_FILE_TOO_LARGE 
+    IDS_MUI_ERR_FILE_TOO_LARGE
                             "Nedá sa spracovať tento veľký súbor (veľkosť: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Neznáma prípona názvu súboru (%s)!\nNačítať aj napriek tomu?"
@@ -180,6 +180,8 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS   "Aktuálne nastavenie programu bolo uložené."
     IDS_MUI_CREATEINI_FAIL  "Chyba pri vytváraní konfiguračného súboru."
     IDS_MUI_WRITEINI_FAIL   "Chyba pri zápise do konfiguračného súboru."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Nebol nájdený žiadny existujúci konfiguračný súbor.\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly."
 END
@@ -314,7 +316,7 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset238 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset238 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
 \\cf0 \\fs20\\b1\\ul1 Vývojári:\\ul0\\b0\\fs18\\par\
