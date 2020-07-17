@@ -2773,8 +2773,14 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
   if (!GetLngString(uIdMsg, szText, COUNTOF(szText)))
     return(0);
 
-  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
-  int const t = clampi(vswprintf_s(szTitle, COUNTOF(szTitle), szText, (LPVOID)((PUINT_PTR)&uIdMsg + 1)), 0, 1023);
+  // int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  // Don't do (LPVOID)((PUINT_PTR)&uIdMsg + 1); this crashes on arm64
+  // Use va_list
+  va_list args;
+  va_start(args, uIdMsg);
+  int const t = clampi(vswprintf_s(szTitle, COUNTOF(szTitle), szText, args), 0, 1023);
+  va_end(args);
+
   szTitle[t] = L'\0';
 
   WCHAR* c = StrChr(szTitle, L'\n');

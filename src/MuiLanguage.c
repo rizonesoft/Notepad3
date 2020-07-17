@@ -479,7 +479,10 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
   WCHAR* pBuffer = AllocMem(sizeof(WCHAR) * nOutput, HEAP_ZERO_MEMORY);
   if (pBuffer) {
     if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
-      StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)& uIdFormat + 1));
+      va_list args;
+      va_start(args, uIdFormat);
+      StringCchVPrintfW(lpOutput, nOutput, pBuffer, args);
+      va_end(args);
     }
     FreeMem(pBuffer);
     return (int)StringCchLenW(lpOutput, nOutput);
