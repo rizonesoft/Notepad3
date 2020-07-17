@@ -140,13 +140,11 @@ int MessageBoxLng(HWND hwnd, UINT uType, UINT uidMsg, ...)
   GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
 
   WCHAR szText[HUGE_BUFFER] = { L'\0' };
-  const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
-  if (argp && *argp) {
-    StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
-  }
-  else {
-    StringCchCopy(szText, COUNTOF(szText), szFormat);
-  }
+
+  va_list         args;
+  va_start(args, uidMsg);
+  StringCchVPrintfW(szText, COUNTOF(szText), szFormat, args);
+  va_end(args);
 
   uType |= MB_SETFOREGROUND;  //~ not MB_TOPMOST
 
@@ -354,13 +352,10 @@ INT_PTR InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
   msgBox.uType = uType;
   msgBox.lpstrMessage = AllocMem((COUNTOF(wchMessage)+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
-  const PUINT_PTR argp = (PUINT_PTR)& uidMsg + 1;
-  if (argp && *argp) {
-    StringCchVPrintfW(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage, (LPVOID)argp);
-  }
-  else {
-    StringCchCopy(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage);
-  }
+  va_list args;
+  va_start(args, uidMsg);
+  StringCchVPrintfW(msgBox.lpstrMessage, COUNTOF(wchMessage), wchMessage, args);
+  va_end(args);
 
   if (uidMsg == IDS_MUI_ERR_LOADFILE || uidMsg == IDS_MUI_ERR_SAVEFILE ||
     uidMsg == IDS_MUI_CREATEINI_FAIL || uidMsg == IDS_MUI_WRITEINI_FAIL ||
