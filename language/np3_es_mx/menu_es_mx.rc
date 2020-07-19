@@ -217,7 +217,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Con...\tAlt+Q",                              IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicar Selección/Línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplicar selección/línea\tCtrl+D",               IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "Com&pletar columna con espacios\tAlt+B",          IDM_EDIT_PADWITHSPACES
             MENUITEM "Eliminar el &primer carácter\tAlt+Z",             IDM_EDIT_STRIP1STCHAR
@@ -244,11 +244,11 @@ BEGIN
             MENUITEM "Ta&bular la sangría\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
             MENUITEM "Destabular la &sangría\tCtrl+Alt+S",              IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
+            MENUITEM "&Codificar URL\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
+            MENUITEM "D&ecodificar URL\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "Char To He&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
+            MENUITEM "Char a he&x\tCtrl+Alt+X",                        IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hex a char\tCtrl+Alt+C",                        IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insertar"
         BEGIN
