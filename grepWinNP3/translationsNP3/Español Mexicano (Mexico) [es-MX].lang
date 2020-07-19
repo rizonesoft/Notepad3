@@ -100,7 +100,7 @@ msgstr "Cancelar"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Capturar búsqueda"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -160,7 +160,7 @@ msgstr "Diálogo"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "No advertir al reemplazar sin crear copias de seguridad"
+msgstr "No advertir al reemplazar sin haber creado copias de seguridad"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -232,7 +232,7 @@ msgstr "Incluir archivos ocultos"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Incluir ruta de búsqueda"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -256,7 +256,7 @@ msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Idioma :"
+msgstr "Idioma:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
@@ -389,7 +389,7 @@ msgstr "Buscar por:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Distinguir entre mayúsculas-minúsculas"
+msgstr "Distinguir entre mayúsculas y minúsculas"
 
 #. Resource IDs: (1015)
 msgid "Search in"
@@ -414,7 +414,7 @@ msgstr "Se buscó en %ld archivos, y se omitieron %ld archivos. Se encontraron %
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Seleccione aplicación de editor..."
+msgstr "Seleccione una aplicación de editor..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
@@ -462,7 +462,7 @@ msgstr "Tratar archivos como UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Tratar archivos como binario"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -539,7 +539,7 @@ msgstr "sin coincidencia"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "no hay texto por reemplazar"
+msgstr "no hay texto para reemplazar"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
@@ -547,11 +547,11 @@ msgstr "no hay texto disponible para probar"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "Número de bytes NULL por MB permitidos en un archivo para seguir considerándolo como texto en lugar de binario"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
-msgstr "solo archivos que coincidan con el patrón son utilizados.\nUsar '|' como delimitador.\nEjemplo: *.cpp|*.h"
+msgstr "solo archivos que coincidan con este patrón son buscados.\nUse '|' como el delimitador.\nEjemplo: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
