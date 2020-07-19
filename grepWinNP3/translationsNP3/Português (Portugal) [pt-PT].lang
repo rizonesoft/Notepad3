@@ -100,7 +100,7 @@ msgstr "Cancelar"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Capturar procura"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -232,7 +232,7 @@ msgstr "Incluir itens ocultos"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Incluir caminho da procura"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -373,7 +373,7 @@ msgstr "Substituir cadeia"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Substituir com:"
+msgstr "Substituir com/\nCapturar formato:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -462,7 +462,7 @@ msgstr "Tratar ficheiros como UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Tratar ficheiros como binários"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
@@ -547,7 +547,7 @@ msgstr "nenhum texto para testar disponível"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "Número de bytes NULL por MB permititos para um ficheiro ser considerado texto em vez de binário"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
@@ -563,7 +563,7 @@ msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "reutilizar instâncias do grepWinNP3."
+msgstr "reutilizar instâncias do grepWinNP3"
 
 #. Resource IDs: (151)
 #, c-format
