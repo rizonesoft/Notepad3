@@ -60,20 +60,20 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,330,256,50,14
     EDITTEXT        IDC_VERSION,80,7,220,14,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    LTEXT           "Scintilla Versión Biblioteca:",IDC_SCI_VERSION,80,24,219,8
+    LTEXT           "Versión de biblioteca Scintilla:",IDC_SCI_VERSION,80,24,219,8
     LTEXT           "Compilado con:",IDC_COMPILER,80,35,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,52,218,8
     LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,80,64,218,8
     LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE | SS_REALSIZECONTROL,300,7,84,24,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Copiar Versión Texto",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
+    PUSHBUTTON      "Copiar texto de versión",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ayuda de la línea de comando"
+CAPTION "Ayuda de la línea de comandos"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,239,187,55,16
@@ -87,24 +87,24 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Buscar:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Respetar Mayúsculas/minúsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
-    CONTROL         "Respetar la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,100,10
-    CONTROL         "Re&spetar principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
+    CONTROL         "&Coincidir Mayúsculas/minúsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
+    CONTROL         "Coincidir la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,100,10
+    CONTROL         "Co&incidir principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transformar backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
     CONTROL         "&Auto Esc Ctrl Car",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,85,10
-    CONTROL         "Con &Expresión Regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
+    CONTROL         "Con &expresión regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
     CONTROL         "P&unto coincide con todos",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
     CONTROL         "Bús&queda superpuesta",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,85,10
     CONTROL         "No &hacer bucle",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "Ce&rrar tras encontrar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,80,10
-    CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
+    CONTROL         "Marcar &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,97,63,10
     CONTROL         "Modo transparente al perder el foco",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,124,10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Cerrar",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Ir a Reemplazar (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
+    CONTROL         "<a>Ir a reemplazar (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,115,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
@@ -122,12 +122,12 @@ BEGIN
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Reempla&zar con:",IDC_STATIC,7,36,44,8
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Respetar Mayúsculas/minúsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
-    CONTROL         "Respetar la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,100,10
-    CONTROL         "Re&spetar principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
+    CONTROL         "&Coincidir mayúsculas y minúsculas",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
+    CONTROL         "Coincidir la &palabra completa",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,100,10
+    CONTROL         "Co&incidir principio de la palabra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transformar backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "&Auto Esc Ctrl Car",IDC_FINDAUTOESCCTRLCHR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,85,10
-    CONTROL         "Con &Expresión Regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "Con &expresión regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
     CONTROL         "P&unto coincide con todos",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,90,10
     CONTROL         "Bús&queda superpuesta",IDC_FIND_OVERLAPPING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,85,10
     CONTROL         "&No &hacer bucle",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
@@ -172,7 +172,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Cliquear aquí para especificar la carpeta \ncon enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,162,18
+    LTEXT           "Clic aquí para especificar la carpeta \ncon enlaces a sus aplicaciones favoritas.",IDC_OPENWITHDESCR,26,83,162,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -285,7 +285,7 @@ END
 
 IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 194
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Seleccionar Esquema"
+CAPTION "Seleccionar esquema"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
@@ -299,7 +299,7 @@ END
 
 IDD_MUI_STYLECONFIG DIALOGEX 0, 0, 467, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Personalizar Esquemas"
+CAPTION "Personalizar esquemas"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
@@ -472,14 +472,14 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,184,98,50,14
-    CONTROL         "Establecer una nueva Clave",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,100,10
+    CONTROL         "Establecer una nueva clave",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,100,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Clave Maestra opcional:",IDC_STATIC,17,61,88,10,NOT WS_GROUP
-    CONTROL         "Cifrar usando la Frase de Contraseña",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,140,10
-    CONTROL         "Reutilizar la Clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
-    GROUPBOX        "Frase de Contraseña",IDC_STATIC,7,7,297,108
-    CONTROL         "Mostrar la Frase de Contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,120,10
+    LTEXT           "Clave maestra opcional:",IDC_STATIC,17,61,88,10,NOT WS_GROUP
+    CONTROL         "Cifrar usando la frase de contraseña",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,140,10
+    CONTROL         "Reutilizar la clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    GROUPBOX        "Frase de contraseña",IDC_STATIC,7,7,297,108
+    CONTROL         "Mostrar la frase de contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,120,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -490,10 +490,10 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "Descifrar utilizando la Clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,125,10
-    LTEXT           "Este archivo tiene una Clave Maestra",IDC_PWD_STATMPW,16,41,120,11,NOT WS_GROUP
-    GROUPBOX        "Frase de Contraseña",IDC_STATIC,8,6,283,69
-    CONTROL         "Mostrar la Frase de Contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,120,10
+    CONTROL         "Descifrar utilizando la clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,125,10
+    LTEXT           "Este archivo tiene una clave maestra",IDC_PWD_STATMPW,16,41,120,11,NOT WS_GROUP
+    GROUPBOX        "Frase de contraseña",IDC_STATIC,8,6,283,69
+    CONTROL         "Mostrar la frase de contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,120,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
