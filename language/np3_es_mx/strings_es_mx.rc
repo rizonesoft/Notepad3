@@ -72,8 +72,8 @@ BEGIN
     IDT_EDIT_FIND           "Buscar"
     IDT_EDIT_REPLACE        "Reemplazar"
     IDT_VIEW_WORDWRAP       "Ajuste automático de línea"
-    IDT_VIEW_ZOOMIN         "Zoom Acercar"
-    IDT_VIEW_ZOOMOUT        "Zoom Alejar"
+    IDT_VIEW_ZOOMIN         "Acercar zoom"
+    IDT_VIEW_ZOOMOUT        "Alejar zoom"
     IDT_VIEW_SCHEME         "Seleccionar esquema"
     IDT_VIEW_SCHEMECONFIG   "Personalizar esquemas"
     IDT_FILE_EXIT           "Salir"
@@ -88,9 +88,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Ejecutar Documento"
+    IDT_FILE_LAUNCH          "Ejecutar documento"
     IDT_VIEW_TOGGLE_VIEW     "Vista enfocada"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoreo de Log"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoreo de log"
     IDT_VIEW_PIN_ON_TOP      "Siempre visible"
     IDT_GREP_WIN_TOOL        "Buscar en archivos"
 END
@@ -98,7 +98,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Elevada)"
+    IDS_MUI_APPTITLE_ELEVATED "%s (elevado)"
     IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Portapapeles"
     IDS_MUI_UNTITLED        "Sin título"
     IDS_MUI_TITLEEXCERPT    """%s"""
@@ -223,10 +223,10 @@ BEGIN
     IDS_MUI_PREVIEW         "Vista &previa configuración\tCtrl+P"
     IDS_MUI_PASS_FAILURE    "La frase de contraseña es incorrecta.\n¿Reintentar otra frase de contraseña?"
     IDS_MUI_NOPASS          "¡Descifrado cancelado!\n¿Leer la información encriptada en bruto?"
-    IDS_MUI_STY_BASESTD     "BASE (Estilo por Defecto ):"
-    IDS_MUI_STY_BASE2ND     "BASE (2º Estilo por Defecto ):"
+    IDS_MUI_STY_BASESTD     "BASE (estilo por defecto ):"
+    IDS_MUI_STY_BASE2ND     "BASE (2º estilo por defecto ):"
     IDS_MUI_STY_LEXDEF      "%s - Estilo por Defecto:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Estilo:"
+    IDS_MUI_STY_LEXSTYLE    "%s's  estilo:"
     IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
 END
 
