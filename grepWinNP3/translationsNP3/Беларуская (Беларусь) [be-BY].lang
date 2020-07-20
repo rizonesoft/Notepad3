@@ -588,7 +588,7 @@ msgstr "Скінуць"
 
 #. Resource IDs: (3001)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr ""
+msgstr "grepWin(NP3) для Notepad3 на аснове выдатнага інструмента ад Stefan Küng!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
