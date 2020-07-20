@@ -345,7 +345,7 @@ msgstr "Prueba regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Búsqueda regex"
+msgstr "Modelo Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -373,7 +373,7 @@ msgstr "Reemplazar cadena"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Reemplazar con:"
+msgstr "Reemplazar con/\ncapturar formato:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -389,7 +389,7 @@ msgstr "Buscar por:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Distinguir entre mayúsculas y minúsculas"
+msgstr "Distinguir mayús.-minús."
 
 #. Resource IDs: (1015)
 msgid "Search in"
@@ -442,7 +442,7 @@ msgstr "Texto"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Coincidencia de texto"
+msgstr "Modelo de texto"
 
 #. Resource IDs: (1002)
 msgid "Text search"
