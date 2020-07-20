@@ -2558,7 +2558,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   MsgThemeChanged(hwnd, wParam, lParam);
 
   SciCall_GotoPos(pos);
-  Sci_ScrollToCurrentLine();
+  SciCall_ChooseCaretX();
     
   return !0;
 }
@@ -3018,7 +3018,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       else {
         SciCall_GotoPos(iCurPos);
-        Sci_ScrollToCurrentLine();
+        SciCall_ChooseCaretX();
       }
     }
   }
@@ -5595,16 +5595,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
-          SciCall_GotoPos(iCurPos);
           _END_UNDO_ACTION_;
+          SciCall_GotoPos(iCurPos);
           s_bInMultiEditMode = false;
           --skipLevel;
         }
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
-          _BEGIN_UNDO_ACTION_;
           SciCall_GotoPos(iCurPos);
-          _END_UNDO_ACTION_;
+          SciCall_ChooseCaretX();
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
 
@@ -5620,9 +5619,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           default:
-            _BEGIN_UNDO_ACTION_;
             SciCall_GotoPos(iCurPos);
-            _END_UNDO_ACTION_;
+            SciCall_ChooseCaretX();
             break;
           }
         }
@@ -9527,10 +9525,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
     if (bReload && !FileWatching.MonitoringLog) 
     {
-      _BEGIN_UNDO_ACTION_;
       SciCall_GotoPos(0);
-      Sci_ScrollToCurrentLine();
-      _END_UNDO_ACTION_;
+      SciCall_ChooseCaretX();
 
       _BEGIN_UNDO_ACTION_;
       fSuccess = FileIO(true, szFilePath, bSkipUnicodeDetect, bSkipANSICPDetection, bForceEncDetection, !bReload , &fioStatus, false, false);
@@ -9548,6 +9544,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     BeginWaitCursor(true, L"Styling...");
 
     SciCall_GotoPos(0);
+    SciCall_ChooseCaretX();
 
     if (!s_IsThisAnElevatedRelaunch) {
       Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
