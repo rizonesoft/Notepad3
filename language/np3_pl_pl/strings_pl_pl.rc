@@ -181,7 +181,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "Błąd podczas tworzenia pliku konfiguracyjnego."
     IDS_MUI_WRITEINI_FAIL   "Błąd zapisywania ustawień do pliku konfiguracyjnego."
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "Plik konfiguracyjny tylko do odczytu - zignorować pominąć ustawienia?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Nie znaleziono istniejącego pliku konfiguracyjnego.\nAby zachować zmiany stylów, zapisz ustawienia (F7) lub wróć do schematu konfiguracji (Ctrl+F12) i eksportuj style."
 END

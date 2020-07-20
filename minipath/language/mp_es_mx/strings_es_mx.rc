@@ -66,15 +66,15 @@ BEGIN
     IDT_FILE_SAVEAS         "Guardar como"
     IDT_FILE_COPYMOVE       "Copiar/Mover"
     IDT_FILE_DELETE         "Eliminar"
-    IDT_FILE_DELETE2        "Eliminar (Permanente)"
+    IDT_FILE_DELETE2        "Eliminar (permanente)"
     IDT_VIEW_FILTER         "Filtro"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Objeto(s)"
-    IDS_NUMFILES2           "%s Objeto(s) | Filtro"
+    IDS_NUMFILES            "%s objeto(s)"
+    IDS_NUMFILES2           "%s objeto(s) | filtro"
     IDS_SAVEFILE            "Guardar ""%s""..."
     IDS_OPEN_FILE_WITH      "Abrir con %s"
 END
