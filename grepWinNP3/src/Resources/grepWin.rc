@@ -58,10 +58,10 @@ BEGIN
     LTEXT           "Replace with/\nCapture format:",IDC_REPLACEWITHLABEL,14,78,64,18
     EDITTEXT        IDC_REPLACETEXT,83,81,484,12,ES_AUTOHSCROLL
     PUSHBUTTON      "/",IDC_EDITMULTILINE2,572,81,13,12
-    CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,98,10
-    CONTROL         "Dot matches newline",IDC_DOTMATCHNEWLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,97,100,10
-    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,225,97,108,10
-    CONTROL         "Treat files as UTF-8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,340,97,104,10
+    CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,104,10
+    CONTROL         "Dot matches newline",IDC_DOTMATCHNEWLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,123,97,110,10
+    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,236,97,104,10
+    CONTROL         "Treat files as UTF-8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,342,97,104,10
     PUSHBUTTON      "Test regex",IDC_TESTREGEX,14,109,69,14
     PUSHBUTTON      "Add to Presets",IDC_ADDTOBOOKMARKS,117,109,76,14
     PUSHBUTTON      "Presets",IDC_BOOKMARKS,195,109,50,14
@@ -156,7 +156,7 @@ BEGIN
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
     LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,65,150,8
-    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,14,47,235,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,7,47,249,8
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135

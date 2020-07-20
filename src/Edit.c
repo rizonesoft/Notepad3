@@ -2137,10 +2137,8 @@ void EditFindMatchingBrace()
   }
   if (iMatchingBracePos != (DocPos)-1) {
     iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
-    _BEGIN_UNDO_ACTION_;
     SciCall_GotoPos(iMatchingBracePos);
-    Sci_ScrollToCurrentLine();
-    _END_UNDO_ACTION_;
+    SciCall_ChooseCaretX();
   }
 }
 
@@ -3082,7 +3080,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
   }
   else {
     SciCall_GotoPos(iInitialPos);
-    Sci_ScrollToCurrentLine();
+    SciCall_ChooseCaretX();
   }
 
   _END_UNDO_ACTION_;
@@ -5066,6 +5064,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
+  SciCall_ChooseCaretX();
 }
 
 
