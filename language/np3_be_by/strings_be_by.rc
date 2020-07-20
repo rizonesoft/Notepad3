@@ -181,7 +181,7 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "Памылка падчас стварэння файла наладаў."
     IDS_MUI_WRITEINI_FAIL   "Памылка пісання наладаў у файл."
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "Файл наладаў толькі для чытання - ігнараваць і перазапісаць налады?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Файл наладаў не знойдзены.\nКаб захаваць змяненні стыляў, захавайце налады (F7) альбо вярніцеся да наладаў схемаў (Ctrl+F12) і эспартуйце іх."
 END
