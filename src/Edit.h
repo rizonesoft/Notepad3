@@ -57,8 +57,8 @@ void  EditModifyNumber(HWND hwnd, bool bIncrease);
 void  EditUpdateTimestamps();
 void  EditInsertTimestamps(bool bShortFmt);
 
-void  EditTabsToSpaces(int nTabWidth,bool);
-void  EditSpacesToTabs(int nTabWidth,bool);
+void  EditTabsToSpaces(int nTabWidth, bool bOnlyIndentingWS);
+void  EditSpacesToTabs(int nTabWidth, bool bOnlyIndentingWS);
 
 void  EditMoveUp(HWND hwnd);
 void  EditMoveDown(HWND hwnd);
@@ -68,13 +68,13 @@ void  EditModifyLines(LPCWSTR pwszPrefix,LPCWSTR pwszAppend);
 void  EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
 void  EditAlignText(int nMode);
 void  EditEncloseSelection(LPCWSTR pwszOpen,LPCWSTR pwszClose);
-void  EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,bool);
-void  EditPadWithSpaces(HWND hwnd,bool,bool);
+void  EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart);
+void  EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup);
 void  EditStripFirstCharacter(HWND hwnd);
-void  EditStripLastCharacter(HWND hwnd,bool,bool);
+void  EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly);
 void  EditCompressBlanks();
-void  EditRemoveBlankLines(HWND hwnd,bool,bool);
-void  EditRemoveDuplicateLines(HWND hwnd,bool);
+void  EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
+void  EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
 void  EditWrapToColumn(DocPosU nColumn);
 //void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
 
