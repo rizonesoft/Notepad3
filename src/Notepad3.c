@@ -3276,7 +3276,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, CMD_JUMP2SELSTART, !se || mrs);
   EnableCmd(hmenu, CMD_JUMP2SELEND, !se || mrs);
 
-  EnableCmd(hmenu, IDM_EDIT_PADWITHSPACES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_PADWITHSPACES, !ro && !se);
   EnableCmd(hmenu, IDM_EDIT_STRIP1STCHAR, !ro && !se);
   EnableCmd(hmenu, IDM_EDIT_STRIPLASTCHAR, !ro && !se);
   EnableCmd(hmenu, IDM_EDIT_TRIMLINES, !ro);

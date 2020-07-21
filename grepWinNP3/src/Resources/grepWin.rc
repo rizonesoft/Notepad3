@@ -156,17 +156,17 @@ BEGIN
     LTEXT           "Double-Click to select a preset",IDC_INFOLABEL,7,7,226,8
 END
 
-IDD_ABOUT DIALOGEX 0, 0, 263, 98
+IDD_ABOUT DIALOGEX 0, 0, 230, 98
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About grepWinNP3"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,206,73,50,14
+    DEFPUSHBUTTON   "OK",IDOK,170,73,50,14
     //~ICON            IDI_GREPWIN,IDC_STATIC,7,7,24,24,SS_CENTERIMAGE
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
-    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,73,150,8
-    CTEXT           "Notepad3's grepWin(NP3)-mod of \nStefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,7,47,249,18
+    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,12,73,150,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,50,47,150,18
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135
@@ -266,7 +266,7 @@ BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 256
+        RIGHTMARGIN, 223
         VERTGUIDE, 50
         TOPMARGIN, 7
         BOTTOMMARGIN, 91

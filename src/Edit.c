@@ -2282,7 +2282,7 @@ static BOOL CALLBACK _GetDateFormatProc(LPWSTR lpDateFormatString, CALID Calenda
 static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen, bool bShortFmt)
 {
   WCHAR wchTemplate[SMALL_BUFFER] = { L'\0' };
-  StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), bShortFmt ? Settings2.DateTimeShort : Settings2.DateTimeLong);
+  StringCchCopyW(wchTemplate, COUNTOF(wchTemplate), Settings2.DateTimeFormat);
 
   SYSTEMTIME st;
   GetLocalTime(&st);
@@ -2326,13 +2326,21 @@ void EditInsertTimestamps(bool bShortFmt)
 {
   //~~~_BEGIN_UNDO_ACTION_;
 
-
   WCHAR wchDateTime[SMALL_BUFFER] = { L'\0' };
+  StringCchCopyW(wchDateTime, COUNTOF(wchDateTime), Settings2.DateTimeFormat);
   _GetCurrentDateTimeString(wchDateTime, COUNTOF(wchDateTime), bShortFmt);
 
-  char chDateTime[MIDSZ_BUFFER] = { '\0' };
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wchDateTime, -1, chDateTime, COUNTOF(chDateTime), NULL, NULL);
-  EditReplaceSelection(chDateTime, false);
+  char chTimeStamp[MIDSZ_BUFFER] = { '\0' };
+  if (StrIsEmpty(Settings2.DateTimeFormat)) {
+    WCHAR wchTS[MIDSZ_BUFFER] = { L'\0' };
+    StringCchPrintfW(wchTS, COUNTOF(wchTS), L"$Date: %s $", wchDateTime);
+    WideCharToMultiByteEx(Encoding_SciCP, 0, wchTS, -1, chTimeStamp, COUNTOF(chTimeStamp), NULL, NULL);
+  }
+  else {
+    WideCharToMultiByteEx(Encoding_SciCP, 0, wchDateTime, -1, chTimeStamp, COUNTOF(chTimeStamp), NULL, NULL);
+  }
+
+  EditReplaceSelection(chTimeStamp, false);
 
   //~~~_END_UNDO_ACTION_;
 }
@@ -2344,46 +2352,31 @@ void EditInsertTimestamps(bool bShortFmt)
 //
 void EditUpdateTimestamps()
 {
-  //WCHAR wchTempBuf[SMALL_BUFFER] = { L'\0' };
-  WCHAR wchFindLong[SMALL_BUFFER] = { L'\0' };
-  WCHAR wchFindShort[SMALL_BUFFER] = { L'\0' };
-  if (StrIsNotEmpty(Settings2.TimeStampRegExLong)) {
-    StringCchCopy(wchFindLong, COUNTOF(wchFindLong), Settings2.TimeStampRegExLong);
-    StrTrim(wchFindLong, L" ");
+  WCHAR wchFindTimeStamp[SMALL_BUFFER] = { L'\0' };
+  if (StrIsNotEmpty(Settings2.TimeStampRegEx)) {
+    StringCchCopy(wchFindTimeStamp, COUNTOF(wchFindTimeStamp), Settings2.TimeStampRegEx);
   }
-  if (StrIsNotEmpty(Settings2.TimeStampRegExShort)) {
-    StringCchCopy(wchFindShort, COUNTOF(wchFindShort), Settings2.TimeStampRegExShort);
-    StrTrim(wchFindShort, L" ");
+  else {
+    StringCchCopy(wchFindTimeStamp, COUNTOF(wchFindTimeStamp), Defaults2.TimeStampRegEx);
   }
+  
+  WCHAR wchDateTime[SMALL_BUFFER] = { L'\0' };
+  StringCchCopyW(wchDateTime, COUNTOF(wchDateTime), Settings2.DateTimeFormat);
+  _GetCurrentDateTimeString(wchDateTime, COUNTOF(wchDateTime), true);
 
-  if (StrIsEmpty(wchFindLong)) 
-  {
-    _DateFmtIdx = 0; // Settings2.DateFormatLong;
-    EnumDateFormatsExEx(_GetDateFormatProc, Settings2.PreferredLanguageLocaleName, DATE_LONGDATE, (LPARAM)wchFindLong);
-
-    // TODO: replace Format by corresponding RegEx Pattern
-    //StringCchCopy(wchFindLong, COUNTOF(wchFindLong), wchTempBuf);
+  WCHAR wchReplaceStrg[MIDSZ_BUFFER] = { L'\0' };
+  if (StrIsEmpty(Settings2.DateTimeFormat)) {
+    StringCchPrintfW(wchReplaceStrg, COUNTOF(wchReplaceStrg), L"$Date: %s $", wchDateTime);
   }
-
-  if (StrIsEmpty(wchFindShort))
-  {
-    _DateFmtIdx = 0; // Settings2.DateFormatShort;
-    EnumDateFormatsExEx(_GetDateFormatProc, Settings2.PreferredLanguageLocaleName, DATE_SHORTDATE, (LPARAM)wchFindShort);
-
-    // TODO: replace Format by corresponding RegEx Pattern
-    //StringCchCopy(wchFindShort, COUNTOF(wchFindShort), wchTempBuf);
+  else {
+    StringCchCopyW(wchReplaceStrg, COUNTOF(wchReplaceStrg), wchDateTime);
   }
-
-  // -----------------------------------------------
-
-  WCHAR wchReplaceLong[SMALL_BUFFER] = { L'\0' };
-  _GetCurrentDateTimeString(wchReplaceLong, COUNTOF(wchReplaceLong), false);
 
   EDITFINDREPLACE efrTS_L = INIT_EFR_DATA;
   efrTS_L.hwnd = Globals.hwndEdit;
   efrTS_L.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFindLong, -1, efrTS_L.szFind, COUNTOF(efrTS_L.szFind), NULL, NULL);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplaceLong, -1, efrTS_L.szReplace, COUNTOF(efrTS_L.szReplace), NULL, NULL);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFindTimeStamp, -1, efrTS_L.szFind, COUNTOF(efrTS_L.szFind), NULL, NULL);
+  WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplaceStrg, -1, efrTS_L.szReplace, COUNTOF(efrTS_L.szReplace), NULL, NULL);
 
   if (!SciCall_IsSelectionEmpty())
   {
@@ -2392,26 +2385,6 @@ void EditUpdateTimestamps()
   else {
     EditReplaceAll(Globals.hwndEdit, &efrTS_L, true);
   }
-
-  // -----------------------------------------------
-
-  WCHAR wchReplaceShort[SMALL_BUFFER] = { L'\0' };
-  _GetCurrentDateTimeString(wchReplaceLong, COUNTOF(wchReplaceLong), true);
-
-  EDITFINDREPLACE efrTS_S = INIT_EFR_DATA;
-  efrTS_S.hwnd = Globals.hwndEdit;
-  efrTS_S.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wchFindShort, -1, efrTS_S.szFind, COUNTOF(efrTS_S.szFind), NULL, NULL);
-  WideCharToMultiByteEx(Encoding_SciCP, 0, wchReplaceShort, -1, efrTS_S.szReplace, COUNTOF(efrTS_S.szReplace), NULL, NULL);
-
-  if (!SciCall_IsSelectionEmpty())
-  {
-    EditReplaceAllInSelection(Globals.hwndEdit, &efrTS_S, true);
-  }
-  else {
-    EditReplaceAll(Globals.hwndEdit, &efrTS_S, true);
-  }
-
 }
 
 
