@@ -32,6 +32,16 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 // remains consistent on all systems.
 IDI_GREPWIN             ICON                    "grepWinNP3.ico"
 
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -146,17 +156,17 @@ BEGIN
     LTEXT           "Double-Click to select a preset",IDC_INFOLABEL,7,7,226,8
 END
 
-IDD_ABOUT DIALOGEX 0, 0, 263, 86
+IDD_ABOUT DIALOGEX 0, 0, 263, 98
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About grepWinNP3"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,206,65,50,14
-    ICON            IDI_GREPWIN,IDC_STATIC,17,18,20,20,SS_CENTERIMAGE
+    DEFPUSHBUTTON   "OK",IDOK,206,73,50,14
+    //~ICON            IDI_GREPWIN,IDC_STATIC,7,7,24,24,SS_CENTERIMAGE
     LTEXT           "",IDC_VERSIONINFO,50,18,206,8
     LTEXT           "",IDC_DATE,50,30,206,8
-    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,65,150,8
-    CTEXT           "Notepad3's grepWin(NP3)-mod of Stefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,14,47,235,8
+    LTEXT           "Visit Stefan K\xFCng's website",IDC_WEBLINK,50,73,150,8
+    CTEXT           "Notepad3's grepWin(NP3)-mod of \nStefan K\xFCng's great tool!",IDC_NP3_DISCLAIMER,7,47,249,18
 END
 
 IDD_MULTILINEEDIT DIALOGEX 0, 0, 317, 135
@@ -259,7 +269,7 @@ BEGIN
         RIGHTMARGIN, 256
         VERTGUIDE, 50
         TOPMARGIN, 7
-        BOTTOMMARGIN, 79
+        BOTTOMMARGIN, 91
     END
 
     IDD_MULTILINEEDIT, DIALOG
@@ -315,36 +325,6 @@ END
 //
 
 IDR_INFODLG             HTML                    "infodlg.htm"
-
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE
-BEGIN
-    "..\\resource.h\0"
-END
-
-2 TEXTINCLUDE
-BEGIN
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""grepWin.rc2""\r\n"
-    "#endif\0"
-END
-
-3 TEXTINCLUDE
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -438,6 +418,45 @@ BEGIN
     IDS_UPDATEAVAILABLE     "grepWinNP3 %s is available"
     IDS_CAPTURESEARCH       "Capture search"
 END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "..\\resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""grepWin.rc2""\r\n"
+    "#endif\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
 
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////

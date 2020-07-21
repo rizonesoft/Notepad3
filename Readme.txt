@@ -64,7 +64,7 @@ Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 Development:
 ------------
 - Florian 'Flo' Balmer (Notepad2)       http://www.flos-freeware.ch/
-- RaiKoHoff                        	    https://github.com/RaiKoHoff/
+- RaiKoHoff                             https://github.com/RaiKoHoff/
 
 --------------------------------------------------------------------------------
 Contributors:
@@ -87,36 +87,37 @@ N.Hodgson (Scintilla)           https://www.scintilla.org/
 K.Kosako (Oniguruma Regex)      https://github.com/kkos/oniguruma/
 Stefan Küng (grepWin)           https://github.com/stefankueng/grepWin/
 D.Dyer (NotepadCrypt)           https://www.real-me.net/ddyer/notepad/NotepadCrypt.html
-T.D.Hanson (uthash)            	https://troydhanson.github.io/uthash/
+T.D.Hanson (uthash)             https://troydhanson.github.io/uthash/
 Carbo Kuo (Mozilla's uchardet)  https://www.freedesktop.org/wiki/Software/uchardet/
 Lewis Van Winkle (TinyExpr)     https://github.com/codeplea/tinyexpr/
 
 --------------------------------------------------------------------------------
 Acknowledgments:
 ----------------
-alexantr            	https://github.com/alexantr/
-AlexIljin           	https://github.com/AlexIljin/
-craigo-             	https://github.com/craigo-/
-Crane70             	https://github.com/Crane70/
-engelhro            	https://github.com/engelhro/
-Hexaae              	https://github.com/Hexaae/
-hpwamr              	https://github.com/hpwamr/
-it4u                	https://github.com/it4u/
-jupester            	https://github.com/jupester/
-kofifus             	https://github.com/kofifus/
-Lacn0755            	https://github.com/Lacn0755/
-leeoniya            	https://github.com/leeoniya/
-lhmouse             	https://github.com/lhmouse/
-ltGuillaume         	https://github.com/ltGuillaume/
-maboroshin          	https://github.com/maboroshin/
-MadDogVachon        	https://github.com/MadDogVachon/
+alexantr                https://github.com/alexantr/
+AlexIljin               https://github.com/AlexIljin/
+craigo-                 https://github.com/craigo-/
+Crane70                 https://github.com/Crane70/
+engelhro                https://github.com/engelhro/
+Hexaae                  https://github.com/Hexaae/
+hpwamr                  https://github.com/hpwamr/
+it4u                    https://github.com/it4u/
+jmacasd                 https://github.com/jmacasd/
+jupester                https://github.com/jupester/
+kofifus                 https://github.com/kofifus/
+Lacn0755                https://github.com/Lacn0755/
+leeoniya                https://github.com/leeoniya/
+lhmouse                 https://github.com/lhmouse/
+ltGuillaume             https://github.com/ltGuillaume/
+maboroshin              https://github.com/maboroshin/
+MadDogVachon            https://github.com/MadDogVachon/
 ohgree                  https://github.com/ohgree/
-RaffaeleBianc0      	https://github.com/RaffaeleBianc0/
-rizonesoft          	https://github.com/rizonesoft/
-Rudolfin            	https://github.com/Rudolfin/
-ThreeLightsBeyond   	https://github.com/ThreeLightsBeyond/
-xsak                	https://github.com/xsak/
-zufuliu             	https://github.com/zufuliu/
+RaffaeleBianc0          https://github.com/RaffaeleBianc0/
+rizonesoft              https://github.com/rizonesoft/
+Rudolfin                https://github.com/Rudolfin/
+ThreeLightsBeyond       https://github.com/ThreeLightsBeyond/
+xsak                    https://github.com/xsak/
+zufuliu                 https://github.com/zufuliu/
 
 --------------------------------------------------------------------------------
 Resources:

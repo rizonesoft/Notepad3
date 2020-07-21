@@ -903,6 +903,9 @@ typedef struct {
     } update_var;
     struct {
       AbsAddrType addr;
+#ifdef ONIG_DEBUG_MATCH_COUNTER
+      MemNumType called_mem;
+#endif
     } call;
 #ifdef USE_CALLOUT
     struct {
