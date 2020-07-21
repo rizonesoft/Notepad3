@@ -1,4 +1,4 @@
-﻿// sktoolslib - common files for SK tools
+// sktoolslib - common files for SK tools
 
 // Copyright (C) 2018, 2020 - Stefan Kueng
 
@@ -48,10 +48,10 @@ public:
         return m_dpi;
     }
     // Convert between raw pixels and relative pixels.
-    int Scale(HWND hWnd, int x) { return MulDiv(x, GetDPI(hWnd), 96); }
-    float ScaleFactor(HWND hWnd) { return GetDPI(hWnd) / 96.0f; }
+    int   Scale(HWND hWnd, int x) { return MulDiv(x, GetDPI(hWnd), USER_DEFAULT_SCREEN_DPI); }
+    float ScaleFactor(HWND hWnd) { return (float)GetDPI(hWnd) / (float)USER_DEFAULT_SCREEN_DPI; }
     float ScaleFactorSystemToWindow(HWND hWnd) { return (float)GetDPI(hWnd) / (float)m_dpi; }
-    int Unscale(HWND hWnd, int x) { return MulDiv(x, 96, GetDPI(hWnd)); }
+    int   Unscale(HWND hWnd, int x) { return MulDiv(x, USER_DEFAULT_SCREEN_DPI, GetDPI(hWnd)); }
 
     // Determine the screen dimensions in relative pixels.
     int ScaledScreenWidth() { return _ScaledSystemMetric(SM_CXSCREEN); }
