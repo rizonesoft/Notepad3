@@ -587,8 +587,8 @@ msgid "Reset"
 msgstr "Reset"
 
 #. Resource IDs: (3001)
-msgid "Notepad3 se grepWin(NP3)-mod van Stefan Küng se wonderlike tool!"
-msgstr ""
+msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
+msgstr "Notepad3 se grepWin(NP3)-mod van Stefan Küng se wonderlike tool!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
