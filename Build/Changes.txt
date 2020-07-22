@@ -33,7 +33,7 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
-Current RC2 Version 5.20.721.(build_#) (2020-07-21)
+Version 5.20.722.1 (22 July 2020)
 =====================================================
 
 -----------------------------------------------------
@@ -98,6 +98,7 @@ ENHANCEMENT:
 -----------------------------------------------------
 FIXES:
 -----------------------------------------------------
+- Alt+W (strip trailing blanks) should work w/o selection.
 - TimeStamp handling.
 - Menu selection operation (disable w/o selection).
 - Move view to matching brace (even if outside current work area).
