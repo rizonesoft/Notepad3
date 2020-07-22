@@ -1265,22 +1265,15 @@ void LoadSettings()
     Defaults2.LineCommentPostfixStrg[0] = L'\0';
     IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", Defaults2.LineCommentPostfixStrg,
       Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
-    StrTrimW(Settings2.LineCommentPostfixStrg, L"\"");
+    StrTrimW(Settings2.LineCommentPostfixStrg, L"\"'");
 
-    //Defaults2.DateFormatLong = 0;
-    //Settings2.DateFormatLong = clampi(IniSectionGetInt(IniSecSettings2, L"DateFormatLong", Defaults2.DateFormatLong), 0, 100);
-    //Defaults2.DateFormatShort = 0;
-    //Settings2.DateFormatShort = clampi(IniSectionGetInt(IniSecSettings2, L"DateFormatShort", Defaults2.DateFormatShort), 0, 100);
+    Defaults2.DateTimeFormat[0] = L'\0';
+    IniSectionGetString(IniSecSettings2, L"DateTimeFormat", Defaults2.DateTimeFormat, Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
+    StrTrim(Settings2.DateTimeFormat, L"\"'");
 
-    Defaults2.DateTimeLong[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DateTimeLong", Defaults2.DateTimeLong, Settings2.DateTimeLong, COUNTOF(Settings2.DateTimeLong));
-    Defaults2.TimeStampRegExLong[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"TimeStampRegExLong", Defaults2.TimeStampRegExLong, Settings2.TimeStampRegExLong, COUNTOF(Settings2.TimeStampRegExLong));
-
-    Defaults2.DateTimeShort[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
-    Defaults2.TimeStampRegExShort[0] = L'\0';
-    IniSectionGetString(IniSecSettings2, L"TimeStampRegExShort", Defaults2.TimeStampRegExShort, Settings2.TimeStampRegExShort, COUNTOF(Settings2.TimeStampRegExShort));
+    StringCchCopyW(Defaults2.TimeStampRegEx, COUNTOF(Defaults2.TimeStampRegEx), L"\\$Date:[^\\$]+\\$");
+    IniSectionGetString(IniSecSettings2, L"TimeStampRegEx", Defaults2.TimeStampRegEx, Settings2.TimeStampRegEx, COUNTOF(Settings2.TimeStampRegEx));
+    StrTrim(Settings2.TimeStampRegEx, L"\"'");
 
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(IniSecSettings2, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
@@ -1451,7 +1444,9 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);
+    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
@@ -1886,6 +1881,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     IniSectionDelete(IniSecSettings, L"PrintMarginBottom", false);
   }
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);

@@ -588,7 +588,7 @@ msgstr "Сброс"
 
 #. Resource IDs: (3001)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "grepWin(NP3) для Notepad3 на основе отличного инструмента от Stefan Küng!"
+msgstr  "grepWin(NP3)-mod для Notepad3 на основе отличного инструмента от Stefan Küng!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"

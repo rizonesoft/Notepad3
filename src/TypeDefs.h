@@ -427,6 +427,7 @@ typedef struct _settings_t
   int PrintColorMode;
   int PrintZoom;
   bool SaveBeforeRunningTools;
+  bool EvalTinyExprOnSelection;
   FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
   int EscFunction;
@@ -548,10 +549,8 @@ typedef struct _settings2_t
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
 
-  WCHAR DateTimeShort[128];
-  WCHAR TimeStampRegExShort[256];
-  WCHAR DateTimeLong[128];
-  WCHAR TimeStampRegExLong[256];
+  WCHAR DateTimeFormat[128];
+  WCHAR TimeStampRegEx[256];
 
   WCHAR WebTemplate1[MAX_PATH];
   WCHAR WebTemplate2[MAX_PATH];
