@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "E&xit Notepad3",              IDM_VIEW_ESCEXIT
         END
         MENUITEM "Save &Before Running Tools",      IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Remember"
         BEGIN

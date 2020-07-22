@@ -3477,6 +3477,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, Settings.SaveFindReplace);
   EnableCmd(hmenu, IDM_VIEW_NOSAVEFINDREPL, sav);
   CheckCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
+  CheckCmd(hmenu, IDM_VIEW_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
   EnableCmd(hmenu, IDM_VIEW_SAVEBEFORERUNNINGTOOLS, sav);
 
   CheckCmd(hmenu, IDM_VIEW_CHANGENOTIFY, Settings.FileWatchingMode);
@@ -5510,6 +5511,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SAVEBEFORERUNNINGTOOLS:
       Settings.SaveBeforeRunningTools = !Settings.SaveBeforeRunningTools;
+      break;
+
+    case IDM_VIEW_EVALTINYEXPRONSEL:
+      Settings.EvalTinyExprOnSelection = !Settings.EvalTinyExprOnSelection;
+      UpdateStatusbar(false);
       break;
 
     case IDM_VIEW_CHANGENOTIFY:
@@ -8524,28 +8530,31 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     tchExpression[1] = L'-';
     tchExpression[2] = L'\0';
 
-    if (bIsSelCharCountable)
+    if (Settings.EvalTinyExprOnSelection)
     {
-      static char chSelectionBuffer[XHUGE_BUFFER];
-      DocPos const iSelSize = SciCall_GetSelText(NULL);
-      if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
-      {
-        SciCall_GetSelText(chSelectionBuffer);
-        //~StrDelChrA(chExpression, " \r\n\t\v");
-        StrDelChrA(chSelectionBuffer, "\r\n");
-        s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
+      if (bIsSelCharCountable) {
+        static char  chSelectionBuffer[XHUGE_BUFFER];
+        DocPos const iSelSize = SciCall_GetSelText(NULL);
+        if (iSelSize < COUNTOF(chSelectionBuffer)) // should be fast !
+        {
+          SciCall_GetSelText(chSelectionBuffer);
+          //~StrDelChrA(chExpression, " \r\n\t\v");
+          StrDelChrA(chSelectionBuffer, "\r\n");
+          s_dExpression = te_interp(chSelectionBuffer, &s_iExprError);
+        }
+        else {
+          s_iExprError = -1;
+        }
       }
-      else {
-        s_iExprError = -1;
+      else if (Sci_IsMultiOrRectangleSelection() && !bIsSelectionEmpty) {
+        s_dExpression = _InterpMultiSelectionTinyExpr(&s_iExprError);
       }
+      else
+        s_iExprError = -2;
     }
-    else if (Sci_IsMultiOrRectangleSelection() && !bIsSelectionEmpty)
-    {
-      s_dExpression = _InterpMultiSelectionTinyExpr(&s_iExprError);
+    else {
+      s_iExprError = -3;
     }
-    else
-      s_iExprError = -2;
-
 
     if (!s_iExprError) {
       if (fabs(s_dExpression) > 99999999.9999)

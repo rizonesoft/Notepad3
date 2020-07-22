@@ -332,7 +332,7 @@ static const te_variable functions[] = {
 
 static const te_variable *find_builtin(const char *name, size_t len) {
     int imin = 0;
-    int imax = COUNTOF(functions) - 1;
+    int imax = COUNTOF(functions) - 2;
 
     /*Binary search.*/
     while (imax >= imin) {
@@ -347,7 +347,6 @@ static const te_variable *find_builtin(const char *name, size_t len) {
             imax = i - 1;
         }
     }
-
     return 0;
 }
 
