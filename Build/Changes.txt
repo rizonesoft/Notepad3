@@ -16,7 +16,7 @@ LEGEND:
 2) CHANGES:
 3) ENHANCEMENT: (Optimize)
 4) FIXES: (Debug)
-5) REMOVED:
+5) REMOVED: 
 6) TRANSLATIONS (MUI): (New Language)
 
 -----------------------------------------------------
@@ -33,13 +33,58 @@ SUP - (S)et(UP) / Installer Package
 
 
 =====================================================
+Current BETA Version 5.20.722.(build_#) (2020-07-22)
+=====================================================
+
+-----------------------------------------------------
+NEW:
+-----------------------------------------------------
+- 
+- ARM64_Build branch (Xperimental)
+
+-----------------------------------------------------
+CHANGES:
+-----------------------------------------------------
+- 
+- 
+
+-----------------------------------------------------
+ENHANCEMENT:
+-----------------------------------------------------
+- 
+
+-----------------------------------------------------
+FIXES:
+-----------------------------------------------------
+- 
+- 
+
+-----------------------------------------------------
+REMOVED:
+-----------------------------------------------------
+- 
+- 
+
+-----------------------------------------------------
+TRANSLATIONS (MUI):
+-----------------------------------------------------
+- 
+- Chinese Traditional (zh-TW) in progress...
+- Hindi (hi-IN) in progress...
+- Indonesian (id-ID) in progress...
+- Portuguese Brazilian (pt-BR) in progress...
+- Turkish (tr-TR) in progress...
+- Vietnamese (vi-VN) in progress...
+
+
+=====================================================
 Version 5.20.722.1 (22 July 2020)
 =====================================================
 
 -----------------------------------------------------
 NEW:
 -----------------------------------------------------
-- grepWin: export search results (GRE).
+- grepWinNP3: export search results (GRE).
 - changed grepWinNP3 icon (GRE).
 - Add Toolbar icon for grepWinNP3.
 - Configurable Zoom-Tooltip display timeout ([Settings2] ZoomTooltipTimeout=3200).
