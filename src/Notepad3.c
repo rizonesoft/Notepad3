@@ -4307,7 +4307,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_PADWITHSPACES:
-      EditPadWithSpaces(Globals.hwndEdit,false,false);
+      EditPadWithSpaces(Globals.hwndEdit, false, false);
       break;
 
 
