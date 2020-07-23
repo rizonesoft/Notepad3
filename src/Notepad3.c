@@ -5569,19 +5569,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           --skipLevel;
         }
         else if (s_bInMultiEditMode) {
-          _BEGIN_UNDO_ACTION_;
+          //~_BEGIN_UNDO_ACTION_;
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
-          _END_UNDO_ACTION_;
+          //~_END_UNDO_ACTION_;
           SciCall_GotoPos(iCurPos);
           s_bInMultiEditMode = false;
           --skipLevel;
         }
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
+          //~_BEGIN_UNDO_ACTION_;
           SciCall_GotoPos(iCurPos);
           SciCall_ChooseCaretX();
+          //~_END_UNDO_ACTION_;
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
 
@@ -5593,7 +5595,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case 2:
-            CloseApplication(true);
+            CloseApplication();
             break;
 
           default:
@@ -5602,9 +5604,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
           }
         }
-        _BEGIN_UNDO_ACTION_;
         SciCall_Cancel();
-        _END_UNDO_ACTION_;
       }
       break;
 
