@@ -1,5 +1,4 @@
-// encoding: UTF-8
-/*
+/* encoding: UTF-8
  * TINYEXPR - Tiny recursive descent parser and evaluation engine in C
  *
  * Copyright (c) 2015-2018 Lewis Van Winkle
@@ -26,17 +25,35 @@
 #ifndef __TINYEXPR_H__
 #define __TINYEXPR_H__
 
+// CFG:
+#undef TINYEXPR_USE_STATIC_MEMORY
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#if defined(TINYEXPR_USE_STATIC_MEMORY)
+    #if !defined(TINYEXPR_MAX_EXPRESSIONS)
+        #define TINYEXPR_MAX_EXPRESSIONS    64
+    #endif
 
+    #define TINYEXPR_MAX_PARAMETERS         8
+#endif
+
+#ifdef _WIN64
+  typedef __int64          te_xint_t;
+#else
+  typedef int              te_xint_t;
+#endif
 
 typedef struct te_expr {
     int type;
     union {double value; const double *bound; const void *function;};
+#if defined(TINYEXPR_USE_STATIC_MEMORY)
+    void *parameters[TINYEXPR_MAX_PARAMETERS];
+#else
     void *parameters[1];
+#endif
 } te_expr;
 
 
@@ -60,14 +77,21 @@ typedef struct te_variable {
 } te_variable;
 
 
+/* Static memory unit test supporting functions. */
+#if defined(TINYEXPR_USE_STATIC_MEMORY) && defined(TINYEXPR_UNIT_TEST)
+/* Cleans internal static memory and supporting variables. */
+void te_expr_clean_up(void);
+/* Returns memory usage for static memory test. */
+void te_expr_memory_usage(unsigned int *count, unsigned int *count_max, unsigned int *free_error_count);
+#endif
 
 /* Parses the input expression, evaluates it, and frees it. */
 /* Returns NaN on error. */
-double te_interp(const char *expression, int *error);
+double te_interp(const char *expression, te_xint_t* error);
 
 /* Parses the input expression and binds variables. */
 /* Returns NULL on error. */
-te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, int *error);
+te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_xint_t* error);
 
 /* Evaluates the expression. */
 double te_eval(const te_expr *n);

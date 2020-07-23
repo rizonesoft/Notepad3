@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.6  2020/07/05
+Oniguruma API  Version 6.9.6  2020/07/12
 
 #include <oniguruma.h>
 
@@ -145,7 +145,6 @@ Oniguruma API  Version 6.9.6  2020/07/05
       ONIG_SYNTAX_JAVA              Java (Sun java.util.regex)
       ONIG_SYNTAX_PERL              Perl
       ONIG_SYNTAX_PERL_NG           Perl + named group
-      ONIG_SYNTAX_RUBY              Ruby
       ONIG_SYNTAX_ONIGURUMA         Oniguruma
       ONIG_SYNTAX_DEFAULT           default (== ONIG_SYNTAX_ONIGURUMA)
                                    onig_set_default_syntax()
@@ -920,6 +919,21 @@ Oniguruma API  Version 6.9.6  2020/07/05
 
   Set a retry limit count of a search process.
   0 means unlimited.
+
+  normal return: ONIG_NORMAL
+
+
+# unsigned long onig_get_subexp_call_limit_in_search(void)
+
+  Return the limit of subexp call count.
+  (default: 0:unlimited)
+
+  normal return: current limit value
+
+
+# int onig_set_subexp_call_limit_in_search(unsigned long n)
+
+  Set a limit count of subexp call.
 
   normal return: ONIG_NORMAL
 

@@ -1444,7 +1444,9 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
-    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);  FileWatching.FileWatchingMode = Settings.FileWatchingMode;
+    GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
+    GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_DONT_CARE, FWM_DONT_CARE, FWM_AUTORELOAD);
+    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);   FileWatching.ResetFileWatching = Settings.ResetFileWatching;
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
@@ -1879,6 +1881,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     IniSectionDelete(IniSecSettings, L"PrintMarginBottom", false);
   }
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveBeforeRunningTools);
+  SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EvalTinyExprOnSelection);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
   SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, EscFunction);
