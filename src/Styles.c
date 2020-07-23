@@ -2068,7 +2068,7 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
-        if ((Encoding_Current(CPI_GET) != Globals.DOSEncoding) || !IsLexerStandard(pLexSniffed) || (
+        if ((Encoding_GetCurrent() != Globals.DOSEncoding) || !IsLexerStandard(pLexSniffed) || (
           (StringCchCompareXI(lpszExt,L"nfo") == 0) && (StringCchCompareXI(lpszExt,L"diz") == 0))) {
           // Although .nfo and .diz were removed from the default lexer's
           // default extensions list, they may still presist in the user's INI
@@ -2152,7 +2152,7 @@ bool Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
   }
 
-  if (!bFound && (Encoding_Current(CPI_GET) == Globals.DOSEncoding)) {
+  if (!bFound && (Encoding_GetCurrent() == Globals.DOSEncoding)) {
     pLexNew = &lexANSI;
   }
   
