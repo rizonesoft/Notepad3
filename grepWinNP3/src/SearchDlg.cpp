@@ -3362,10 +3362,10 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                             if (searchFlags.bCaptureSearch)
                             {
                                 auto out = whatc.format(replaceString, flags);
-                                sinfoPtr->matchlines.push_back(out);
+                                sinfoPtr->matchlines.push_back(std::move(out));
                             }
                             else
-                                sinfoPtr->matchlines.push_back(sLine.substr(0, 1024));
+                                sinfoPtr->matchlines.push_back(std::move(sLine));
                             sinfoPtr->matchlinesnumbers.push_back(l);
                         }
                     }
