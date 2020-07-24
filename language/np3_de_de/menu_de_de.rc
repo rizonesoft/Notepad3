@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "&Verlasse Notepad3",                      IDM_VIEW_ESCEXIT
         END
         MENUITEM "Speichern vor Werkzeug Start",                IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Berechne Tiny-Expressions",                   IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Erinnern an"
         BEGIN

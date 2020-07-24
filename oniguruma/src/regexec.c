@@ -175,7 +175,7 @@ typedef struct {
   UChar* best_s;
 #endif
 #ifdef USE_CALL
-  unsigned long  subexp_call_limit_in_search_counter;
+  unsigned long  subexp_call_in_search_counter;
 #endif
 } MatchArg;
 
@@ -1226,7 +1226,7 @@ struct OnigCalloutArgsStruct {
 
 #if defined(USE_CALL)
 #define SUBEXP_CALL_IN_MATCH_ARG_INIT(msa,mpv) \
-  (msa).subexp_call_limit_in_search_counter = 0;
+  (msa).subexp_call_in_search_counter = 0;
 
 #define POP_CALL  else if (stk->type == STK_RETURN) {subexp_call_nest_counter++;} else if (stk->type == STK_CALL_FRAME) {subexp_call_nest_counter--;}
 #else
@@ -2754,7 +2754,13 @@ typedef struct {
 } while(0)
 
 #define MATCH_COUNTER_OUT(title) do {\
-  fprintf(DBGFP, "%s: retry limit: %8lu, subexp_call: %8lu\n", (title), retry_in_match_counter, msa->subexp_call_limit_in_search_counter);\
+  int i;\
+  fprintf(DBGFP, "%s: retry limit: %8lu, subexp_call: %8lu\n", (title), retry_in_match_counter, msa->subexp_call_in_search_counter);\
+  fprintf(DBGFP, "      ");\
+  for (i = 0; i < MAX_SUBEXP_CALL_COUNTERS; i++) {\
+    fprintf(DBGFP, " %6lu", subexp_call_counters[i]);\
+  }\
+  fprintf(DBGFP, "\n");\
   fflush(DBGFP);\
 } while (0)
 
@@ -2902,6 +2908,10 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #ifdef USE_CALLOUT
   int of;
 #endif
+#ifdef ONIG_DEBUG_MATCH_COUNTER
+#define MAX_SUBEXP_CALL_COUNTERS  9
+  unsigned long subexp_call_counters[MAX_SUBEXP_CALL_COUNTERS];
+#endif
 
   Operation* p = reg->ops;
   OnigOptionType option = reg->options;
@@ -2914,6 +2924,12 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 
 #ifdef ONIG_DEBUG_MATCH
   static unsigned int counter = 1;
+#endif
+
+#ifdef ONIG_DEBUG_MATCH_COUNTER
+  for (i = 0; i < MAX_SUBEXP_CALL_COUNTERS; i++) {
+    subexp_call_counters[i] = 0;
+  }
 #endif
 
 #ifdef USE_DIRECT_THREADED_CODE
@@ -4107,12 +4123,14 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       subexp_call_nest_counter++;
 
       if (SubexpCallLimitInSearch != 0) {
-        msa->subexp_call_limit_in_search_counter++;
+        msa->subexp_call_in_search_counter++;
 #ifdef ONIG_DEBUG_MATCH_COUNTER
-        if (msa->subexp_call_limit_in_search_counter % 1000 == 0)
+	if (p->call.called_mem < MAX_SUBEXP_CALL_COUNTERS)
+	  subexp_call_counters[p->call.called_mem]++;
+        if (msa->subexp_call_in_search_counter % 1000 == 0)
           MATCH_COUNTER_OUT("CALL");
 #endif
-        if (msa->subexp_call_limit_in_search_counter >
+        if (msa->subexp_call_in_search_counter >
             SubexpCallLimitInSearch) {
           MATCH_AT_ERROR_RETURN(ONIGERR_SUBEXP_CALL_LIMIT_IN_SEARCH_OVER);
         }

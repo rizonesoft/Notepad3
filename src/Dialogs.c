@@ -876,7 +876,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
           wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_Current(CPI_GET)));
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_GetCurrent()));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Screen-Resolution -> %i x %i [pix]", ResX, ResY);

@@ -44,11 +44,13 @@ cpi_enc_t Encoding_Current(cpi_enc_t iEncoding)
 {
   static cpi_enc_t CurrentEncoding = CPI_NONE;
 
-  if (iEncoding >= 0) {
-    if (Encoding_IsValid(iEncoding))
+  if (iEncoding >= CPI_NONE) {
+    if (Encoding_IsValid(iEncoding)) {
       CurrentEncoding = iEncoding;
-    else
+    }
+    else {
       CurrentEncoding = CPI_PREFERRED_ENCODING;
+    }
   }
   return CurrentEncoding;
 }
@@ -90,17 +92,6 @@ cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc)
 }
 // ============================================================================
 
-
-bool Encoding_HasChanged(cpi_enc_t iOriginalEncoding)
-{
-  static cpi_enc_t OriginalEncoding = CPI_NONE;
-
-  if (iOriginalEncoding >= CPI_NONE) {
-    OriginalEncoding = iOriginalEncoding;
-  }
-  return (bool)(OriginalEncoding != Encoding_Current(CPI_GET));
-}
-// ============================================================================
 
 void Encoding_InitDefaults()
 {

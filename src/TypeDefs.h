@@ -427,6 +427,7 @@ typedef struct _settings_t
   int PrintColorMode;
   int PrintZoom;
   bool SaveBeforeRunningTools;
+  bool EvalTinyExprOnSelection;
   FILE_WATCHING_MODE FileWatchingMode;
   bool ResetFileWatching;
   int EscFunction;
