@@ -435,7 +435,8 @@ DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, li
 DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
 DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
 
-DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
+DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, pos)
+DeclareSciCallR2(BraceMatchNext, BRACEMATCHNEXT, DocPos, DocPos, pos, DocPos, posStart)
 DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2)
 DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos)
 DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, int, indic)
