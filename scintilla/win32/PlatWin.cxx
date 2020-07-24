@@ -19,7 +19,9 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <iterator>
 #include <memory>
+//#include <mutex>
 
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
@@ -60,7 +62,7 @@
 #endif
 
 #ifndef LOAD_LIBRARY_SEARCH_SYSTEM32
-#define LOAD_LIBRARY_SEARCH_SYSTEM32 0x00000800
+#define LOAD_LIBRARY_SEARCH_SYSTEM32	0x00000800
 #endif
 
 #if _WIN32_WINNT < _WIN32_WINNT_WIN8
@@ -82,7 +84,7 @@ GetDpiForWindowSig fnGetDpiForWindow = nullptr;
 
 using GetDpiForMonitorSig = HRESULT (WINAPI *)(HMONITOR hmonitor, /*MONITOR_DPI_TYPE*/int dpiType, UINT *dpiX, UINT *dpiY);
 HMODULE hShcoreDLL {};
-GetDpiForMonitorSig pfnGetDpiForMonitor = nullptr;
+GetDpiForMonitorSig fnGetDpiForMonitor = nullptr;
 
 using GetSystemMetricsForDpiSig = int (WINAPI *)(int nIndex, UINT dpi);
 GetSystemMetricsForDpiSig fnGetSystemMetricsForDpi = nullptr;
@@ -113,7 +115,7 @@ void Scintilla_LoadDpiForWindow(void) {
 	if (!fnGetDpiForWindow) {
 		hShcoreDLL = ::LoadLibraryExW(L"shcore.dll", {}, LOAD_LIBRARY_SEARCH_SYSTEM32);
 		if (hShcoreDLL) {
-			pfnGetDpiForMonitor = DLLFunction<GetDpiForMonitorSig>(hShcoreDLL, "GetDpiForMonitor");
+			fnGetDpiForMonitor = DLLFunction<GetDpiForMonitorSig>(hShcoreDLL, "GetDpiForMonitor");
 		}
 	}
 }
@@ -127,9 +129,9 @@ DPI_T GetWindowDPI(HWND hwnd) {
 			_dpi.y = fnGetDpiForWindow(hwnd);
 			_dpi.x = _dpi.y;
 		}
-		else if (pfnGetDpiForMonitor) {
+		else if (fnGetDpiForMonitor) {
 			HMONITOR hMonitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-			if (FAILED(pfnGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &(_dpi.x), &(_dpi.y)))) {
+			if (FAILED(fnGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &(_dpi.x), &(_dpi.y)))) {
 				_dpi.x = g_uSystemDPI;
 				_dpi.y = g_uSystemDPI;
 			}
@@ -403,14 +405,14 @@ bool GetDWriteFontProperties(const LOGFONTW &lf, std::wstring &wsFamily,
 					wsFamily.resize(length + 1);
 					names->GetString(index, wsFamily.data(), length + 1);
 
-					names->Release();
+					ReleaseUnknown(names);
 					success = wsFamily[0] != L'\0';
 				}
 
-				family->Release();
+				ReleaseUnknown(family);
 			}
 
-			font->Release();
+			ReleaseUnknown(font);
 		}
 	}
 	return success;
@@ -448,7 +450,7 @@ FontID CreateFontFromParameters(const FontParameters &fp) {
 			IDWriteTextLayout *pTextLayout = nullptr;
 			hr = pIDWriteFactory->CreateTextLayout(L"X", 1, pTextFormat,
 				100.0f, 100.0f, &pTextLayout);
-			if (SUCCEEDED(hr)) {
+			if (SUCCEEDED(hr) && pTextLayout) {
 				constexpr int maxLines = 2;
 				DWRITE_LINE_METRICS lineMetrics[maxLines]{};
 				UINT32 lineCount = 0;
@@ -463,7 +465,7 @@ FontID CreateFontFromParameters(const FontParameters &fp) {
 						yInternalLeading = lineMetrics[0].height - emHeight;
 					}
 				}
-				pTextLayout->Release();
+				ReleaseUnknown(pTextLayout);
 				pTextFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, lineMetrics[0].height, lineMetrics[0].baseline);
 			}
 			fid = new FormatAndMetrics(lf, pTextFormat, fp.extraFontFlag, fp.characterSet, yAscent, yDescent, yInternalLeading);
@@ -674,7 +676,7 @@ void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing /*=false*/) noe
 	// Windows on screen are scaled but printers are not.
 	//const bool printing = (::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY);
 	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiYForWindow(wid);
-    ::SetTextAlign(hdc, TA_BASELINE);
+  ::SetTextAlign(hdc, TA_BASELINE);
 }
 
 void SurfaceGDI::InitPixMap(int width, int height, Surface *surface_, WindowID wid) noexcept {
@@ -711,8 +713,9 @@ void SurfaceGDI::BrushColour(ColourDesired back) noexcept {
 		brushOld = {};
 	}
 	// Only ever want pure, non-dithered brushes
-	const ColourDesired colourNearest = ColourDesired(::GetNearestColor(hdc, back.AsInteger()));
-	brush = ::CreateSolidBrush(colourNearest.AsInteger());
+	//const ColourDesired colourNearest = ColourDesired(::GetNearestColor(hdc, back.AsInteger()));
+	//brush = ::CreateSolidBrush(colourNearest.AsInteger());
+	brush = ::CreateSolidBrush(back.AsInteger());
 	brushOld = SelectBrush(hdc, brush);
 }
 
@@ -797,7 +800,7 @@ constexpr byte AlphaScaled(unsigned char component, unsigned int alpha) noexcept
 	return static_cast<byte>(component * alpha / 255);
 }
 
-DWORD dwordMultiplied(ColourDesired colour, unsigned int alpha) noexcept {
+const inline DWORD dwordMultiplied(ColourDesired colour, unsigned int alpha) noexcept {
 	return dwordFromBGRA(
 		AlphaScaled(colour.GetBlue(), alpha),
 		AlphaScaled(colour.GetGreen(), alpha),
@@ -1197,35 +1200,44 @@ void SurfaceGDI::SetBidiR2L(bool) noexcept {
 
 #if defined(USE_D2D)
 
+namespace {
+
+constexpr D2D1_RECT_F RectangleFromPRectangle(PRectangle rc) noexcept {
+	return { rc.left, rc.top, rc.right, rc.bottom };
+}
+
+}
+
 class BlobInline;
 
 class SurfaceD2D : public Surface {
-	bool unicodeMode;
-	int x;
-	int y;
+	bool unicodeMode = false;
+	int x = 0;
+	int y = 0;
 
-	int codePage;
-	int codePageText;
+	int codePage = 0;
+	int codePageText =0;
 
-	ID2D1RenderTarget *pRenderTarget;
-	ID2D1BitmapRenderTarget *pBitmapRenderTarget;
-	bool ownRenderTarget;
-	int clipsActive;
+	ID2D1RenderTarget *pRenderTarget = nullptr;
+	ID2D1BitmapRenderTarget *pBitmapRenderTarget = nullptr;
+	bool ownRenderTarget = false;
+	int clipsActive = 0;
 
-	IDWriteTextFormat *pTextFormat;
-	FLOAT yAscent;
-	FLOAT yDescent;
-	FLOAT yInternalLeading;
+	// From selected font
+	IDWriteTextFormat *pTextFormat = nullptr;
+	FLOAT yAscent = 2;
+	FLOAT yDescent = 1;
+	FLOAT yInternalLeading = 0;
 
-	ID2D1SolidColorBrush *pBrush;
+	ID2D1SolidColorBrush *pBrush = nullptr;
 
-	int logPixelsY;
+	int logPixelsY = USER_DEFAULT_SCREEN_DPI;
 
 	void Clear() noexcept;
 	void SetFont(const Font &font_) noexcept;
 
 public:
-	SurfaceD2D() noexcept;
+	SurfaceD2D() noexcept = default;
 	// Deleted so SurfaceD2D objects can not be copied.
 	SurfaceD2D(const SurfaceD2D &) = delete;
 	SurfaceD2D(SurfaceD2D &&) = delete;
@@ -1281,29 +1293,6 @@ public:
 	//~void SetDBCSMode(int codePage_) noexcept override;
 	void SetBidiR2L(bool bidiR2L_) noexcept override;
 };
-
-SurfaceD2D::SurfaceD2D() noexcept :
-	unicodeMode(false),
-	x(0), y(0) {
-
-	codePage = 0;
-	codePageText = 0;
-
-	pRenderTarget = nullptr;
-	pBitmapRenderTarget = nullptr;
-	ownRenderTarget = false;
-	clipsActive = 0;
-
-	// From selected font
-	pTextFormat = nullptr;
-	yAscent = 2;
-	yDescent = 1;
-	yInternalLeading = 0;
-
-	pBrush = nullptr;
-
-	logPixelsY = USER_DEFAULT_SCREEN_DPI;
-}
 
 SurfaceD2D::~SurfaceD2D() noexcept {
 	Clear();
@@ -1390,9 +1379,8 @@ void SurfaceD2D::D2DPenColour(ColourDesired fore, int alpha) {
 			pBrush->SetColor(col);
 		} else {
 			const HRESULT hr = pRenderTarget->CreateSolidColorBrush(col, &pBrush);
-			if (!SUCCEEDED(hr) && pBrush) {
-				pBrush->Release();
-				pBrush = nullptr;
+			if (!SUCCEEDED(hr)) {
+				ReleaseUnknown(pBrush);
 			}
 		}
 	}
@@ -1476,22 +1464,25 @@ void SurfaceD2D::LineTo(int x_, int y_) noexcept {
 }
 
 void SurfaceD2D::Polygon(const Point *pts, size_t npts, ColourDesired fore, ColourDesired back) {
+	PLATFORM_ASSERT(pRenderTarget && (npts > 2));
 	if (pRenderTarget) {
 		ID2D1Factory *pFactory = nullptr;
 		pRenderTarget->GetFactory(&pFactory);
+		PLATFORM_ASSERT(pFactory);
 		ID2D1PathGeometry *geometry = nullptr;
 		HRESULT hr = pFactory->CreatePathGeometry(&geometry);
-		if (SUCCEEDED(hr)) {
+		PLATFORM_ASSERT(geometry);
+		if (SUCCEEDED(hr) && geometry) {
 			ID2D1GeometrySink *sink = nullptr;
 			hr = geometry->Open(&sink);
-			if (SUCCEEDED(hr)) {
+			if (SUCCEEDED(hr) && sink) {
 				sink->BeginFigure(D2D1::Point2F(pts[0].x + 0.5f, pts[0].y + 0.5f), D2D1_FIGURE_BEGIN_FILLED);
 				for (size_t i = 1; i < npts; i++) {
 					sink->AddLine(D2D1::Point2F(pts[i].x + 0.5f, pts[i].y + 0.5f));
 				}
 				sink->EndFigure(D2D1_FIGURE_END_CLOSED);
 				sink->Close();
-				sink->Release();
+				ReleaseUnknown(sink);
 
 				D2DPenColour(back);
 				pRenderTarget->FillGeometry(geometry, pBrush);
@@ -1499,7 +1490,7 @@ void SurfaceD2D::Polygon(const Point *pts, size_t npts, ColourDesired fore, Colo
 				pRenderTarget->DrawGeometry(geometry, pBrush);
 			}
 
-			geometry->Release();
+			ReleaseUnknown(geometry);
 		}
 	}
 }
@@ -1528,19 +1519,19 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 	psurfOther->FlushDrawing();
 	ID2D1Bitmap *pBitmap = nullptr;
 	HRESULT hr = psurfOther->pBitmapRenderTarget->GetBitmap(&pBitmap);
-	if (SUCCEEDED(hr)) {
+	if (SUCCEEDED(hr) && pBitmap) {
 		ID2D1BitmapBrush *pBitmapBrush = nullptr;
 		const D2D1_BITMAP_BRUSH_PROPERTIES brushProperties =
 			D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP,
 				D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 		// Create the bitmap brush.
 		hr = pRenderTarget->CreateBitmapBrush(pBitmap, brushProperties, &pBitmapBrush);
-		pBitmap->Release();
-		if (SUCCEEDED(hr)) {
+		ReleaseUnknown(pBitmap);
+		if (SUCCEEDED(hr) && pBitmapBrush) {
 			pRenderTarget->FillRectangle(
 				D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom),
 				pBitmapBrush);
-			pBitmapBrush->Release();
+			ReleaseUnknown(pBitmapBrush);
 		}
 	}
 }
@@ -1625,18 +1616,18 @@ void SurfaceD2D::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 		ID2D1GradientStopCollection *pGradientStops = nullptr;
 		HRESULT hr = pRenderTarget->CreateGradientStopCollection(
 			gradientStops.data(), static_cast<UINT32>(gradientStops.size()), &pGradientStops);
-		if (FAILED(hr)) {
+		if (FAILED(hr) || !pGradientStops) {
 			return;
 		}
 		ID2D1LinearGradientBrush *pBrushLinear = nullptr;
 		hr = pRenderTarget->CreateLinearGradientBrush(
 			lgbp, pGradientStops, &pBrushLinear);
-		if (SUCCEEDED(hr)) {
+		if (SUCCEEDED(hr) && pBrushLinear) {
 			const D2D1_RECT_F rectangle = D2D1::RectF(std::round(rc.left), rc.top, std::round(rc.right), rc.bottom);
 			pRenderTarget->FillRectangle(&rectangle, pBrushLinear);
-			pBrushLinear->Release();
+			ReleaseUnknown(pBrushLinear);
 		}
-		pGradientStops->Release();
+		ReleaseUnknown(pBrushLinear);
 	}
 }
 
@@ -1659,9 +1650,9 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 		const HRESULT hr = pRenderTarget->CreateBitmap(size, image.data(),
 			width * 4, &props, &bitmap);
 		if (SUCCEEDED(hr)) {
-			D2D1_RECT_F rcDestination = { rc.left, rc.top, rc.right, rc.bottom };
+			const D2D1_RECT_F rcDestination = RectangleFromPRectangle(rc);
 			pRenderTarget->DrawBitmap(bitmap, rcDestination);
-			bitmap->Release();
+			ReleaseUnknown(bitmap);
 		}
 	}
 }
@@ -1685,10 +1676,11 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 	surfOther.FlushDrawing();
 	ID2D1BitmapRenderTarget *pCompatibleRenderTarget = reinterpret_cast<ID2D1BitmapRenderTarget *>(
 		surfOther.pRenderTarget);
+	PLATFORM_ASSERT(pCompatibleRenderTarget);
 	ID2D1Bitmap *pBitmap = nullptr;
 	HRESULT hr = pCompatibleRenderTarget->GetBitmap(&pBitmap);
 	if (SUCCEEDED(hr)) {
-		D2D1_RECT_F rcDestination = { rc.left, rc.top, rc.right, rc.bottom };
+		const D2D1_RECT_F rcDestination = RectangleFromPRectangle(rc);
 		D2D1_RECT_F rcSource = { from.x, from.y, from.x + rc.Width(), from.y + rc.Height() };
 		pRenderTarget->DrawBitmap(pBitmap, rcDestination, 1.0f,
 			D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR, rcSource);
@@ -1696,7 +1688,7 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 		if (FAILED(hr)) {
 			//Platform::DebugPrintf("Failed Flush 0x%lx\n", hr);
 		}
-		pBitmap->Release();
+		ReleaseUnknown(pBitmap);
 	}
 }
 
@@ -1730,6 +1722,9 @@ public:
 
 /// Implement IUnknown
 STDMETHODIMP BlobInline::QueryInterface(REFIID riid, PVOID *ppv) noexcept {
+	if (!ppv) {
+		return E_POINTER;
+	}
 	// Never called so not checked.
 	*ppv = nullptr;
 	if (riid == IID_IUnknown)
@@ -1769,6 +1764,9 @@ COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE BlobInline::Draw(
 COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE BlobInline::GetMetrics(
 	DWRITE_INLINE_OBJECT_METRICS *metrics
 ) {
+	if (!metrics) {
+		return E_POINTER;
+	}
 	metrics->width = width;
 	metrics->height = 2;
 	metrics->baseline = 1;
@@ -1779,6 +1777,9 @@ COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE BlobInline::GetMetrics(
 COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE BlobInline::GetOverhangMetrics(
 	DWRITE_OVERHANG_METRICS *overhangs
 ) {
+	if (!overhangs) {
+		return E_POINTER;
+	}
 	overhangs->left = 0;
 	overhangs->top = 0;
 	overhangs->right = 0;
@@ -1790,6 +1791,9 @@ COM_DECLSPEC_NOTHROW HRESULT STDMETHODCALLTYPE BlobInline::GetBreakConditions(
 	DWRITE_BREAK_CONDITION *breakConditionBefore,
 	DWRITE_BREAK_CONDITION *breakConditionAfter
 ) {
+	if (!breakConditionBefore || !breakConditionAfter) {
+		return E_POINTER;
+	}
 	// Since not performing 2D layout, not necessary to implement
 	*breakConditionBefore = DWRITE_BREAK_CONDITION_NEUTRAL;
 	*breakConditionAfter = DWRITE_BREAK_CONDITION_NEUTRAL;
@@ -1858,21 +1862,25 @@ void ScreenLineLayout::FillTextLayoutFormats(const IScreenLine *screenLine, IDWr
 		FormatAndMetrics *pfm =
 			static_cast<FormatAndMetrics *>(screenLine->FontOfPosition(bytePosition)->GetID());
 
-		const unsigned int fontFamilyNameSize = pfm->pTextFormat->GetFontFamilyNameLength();
-		std::vector<WCHAR> fontFamilyName(fontFamilyNameSize + 1);
+		const UINT32 fontFamilyNameSize = pfm->pTextFormat->GetFontFamilyNameLength();
+		std::wstring fontFamilyName(fontFamilyNameSize + 1, L'\0');
 
-		pfm->pTextFormat->GetFontFamilyName(fontFamilyName.data(), fontFamilyNameSize + 1);
-		textLayout->SetFontFamilyName(fontFamilyName.data(), textRange);
+		const HRESULT hrFamily = pfm->pTextFormat->GetFontFamilyName(fontFamilyName.data(), fontFamilyNameSize + 1);
+		if (SUCCEEDED(hrFamily)) {
+			textLayout->SetFontFamilyName(fontFamilyName.c_str(), textRange);
+		}
 
 		textLayout->SetFontSize(pfm->pTextFormat->GetFontSize(), textRange);
 		textLayout->SetFontWeight(pfm->pTextFormat->GetFontWeight(), textRange);
 		textLayout->SetFontStyle(pfm->pTextFormat->GetFontStyle(), textRange);
 
-		const unsigned int localeNameSize = pfm->pTextFormat->GetLocaleNameLength();
-		std::vector<WCHAR> localeName(localeNameSize + 1);
+		const UINT32 localeNameSize = pfm->pTextFormat->GetLocaleNameLength();
+		std::wstring localeName(localeNameSize + 1, L'\0');
 
-		pfm->pTextFormat->GetLocaleName(localeName.data(), localeNameSize);
-		textLayout->SetLocaleName(localeName.data(), textRange);
+		const HRESULT hrLocale = pfm->pTextFormat->GetLocaleName(localeName.data(), localeNameSize);
+		if (SUCCEEDED(hrLocale)) {
+			textLayout->SetLocaleName(localeName.c_str(), textRange);
+		}
 
 		textLayout->SetFontStretch(pfm->pTextFormat->GetFontStretch(), textRange);
 
@@ -1905,8 +1913,9 @@ size_t ScreenLineLayout::GetPositionInLayout(std::string_view text, size_t posit
 
 ScreenLineLayout::ScreenLineLayout(const IScreenLine *screenLine) {
 	// If the text is empty, then no need to go through this function
-	if (!screenLine->Length())
+	if (!screenLine || !screenLine->Length()) {
 		return;
+	}
 
 	text = screenLine->Text();
 
@@ -2088,7 +2097,7 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, const Font &font_, XYPOSITION yba
 	const TextWide tbuf(text, unicodeMode, codePageText);
 	if (pRenderTarget && pTextFormat && pBrush) {
 		if (fuOptions & ETO_CLIPPED) {
-			D2D1_RECT_F rcClip = { rc.left, rc.top, rc.right, rc.bottom };
+			const D2D1_RECT_F rcClip = RectangleFromPRectangle(rc);
 			pRenderTarget->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 		}
 
@@ -2099,7 +2108,7 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, const Font &font_, XYPOSITION yba
 		if (SUCCEEDED(hr)) {
 			D2D1_POINT_2F origin = { rc.left, ybase - yAscent };
 			pRenderTarget->DrawTextLayout(origin, pTextLayout, pBrush, d2dDrawTextOptions);
-			pTextLayout->Release();
+			ReleaseUnknown(pTextLayout);
 		}
 
 		if (fuOptions & ETO_CLIPPED) {
@@ -2148,11 +2157,11 @@ XYPOSITION SurfaceD2D::WidthText(const Font &font_, std::string_view text) {
 		// Create a layout
 		IDWriteTextLayout *pTextLayout = nullptr;
 		const HRESULT hr = pIDWriteFactory->CreateTextLayout(tbuf.buffer, tbuf.tlen, pTextFormat, 1000.0, 1000.0, &pTextLayout);
-		if (SUCCEEDED(hr)) {
+		if (SUCCEEDED(hr) && pTextLayout) {
 			DWRITE_TEXT_METRICS textMetrics;
 			if (SUCCEEDED(pTextLayout->GetMetrics(&textMetrics)))
 				width = textMetrics.widthIncludingTrailingWhitespace;
-			pTextLayout->Release();
+			ReleaseUnknown(pTextLayout);
 		}
 	}
 	return width;
@@ -2171,14 +2180,14 @@ void SurfaceD2D::MeasureWidths(const Font &font_, std::string_view text, XYPOSIT
 	// Create a layout
 	IDWriteTextLayout *pTextLayout = nullptr;
 	const HRESULT hrCreate = pIDWriteFactory->CreateTextLayout(tbuf.buffer, tbuf.tlen, pTextFormat, 10000.0, 1000.0, &pTextLayout);
-	if (!SUCCEEDED(hrCreate)) {
+	if (!SUCCEEDED(hrCreate) || !pTextLayout) {
 		return;
 	}
 	constexpr int clusters = stackBufferLength;
 	DWRITE_CLUSTER_METRICS clusterMetrics[clusters];
 	UINT32 count = 0;
 	const HRESULT hrGetCluster = pTextLayout->GetClusterMetrics(clusterMetrics, clusters, &count);
-	pTextLayout->Release();
+	ReleaseUnknown(pTextLayout);
 	if (!SUCCEEDED(hrGetCluster)) {
 		return;
 	}
@@ -2273,11 +2282,11 @@ XYPOSITION SurfaceD2D::AverageCharWidth(const Font &font_) {
 		constexpr size_t lenAllAlpha = (sizeof(wszAllAlpha) / sizeof(WCHAR)) - 1;
 		const HRESULT hr = pIDWriteFactory->CreateTextLayout(wszAllAlpha, static_cast<UINT32>(lenAllAlpha),
 			pTextFormat, 1000.0, 1000.0, &pTextLayout);
-		if (SUCCEEDED(hr)) {
+		if (SUCCEEDED(hr) && pTextLayout) {
 			DWRITE_TEXT_METRICS textMetrics;
 			if (SUCCEEDED(pTextLayout->GetMetrics(&textMetrics)))
 				width = textMetrics.width / lenAllAlpha;
-			pTextLayout->Release();
+			ReleaseUnknown(pTextLayout);
 		}
 	}
 	return width;
@@ -2285,7 +2294,7 @@ XYPOSITION SurfaceD2D::AverageCharWidth(const Font &font_) {
 
 void SurfaceD2D::SetClip(PRectangle rc) noexcept {
 	if (pRenderTarget) {
-		D2D1_RECT_F rcClip = { rc.left, rc.top, rc.right, rc.bottom };
+		const D2D1_RECT_F rcClip = RectangleFromPRectangle(rc);
 		pRenderTarget->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
 		clipsActive++;
 	}
@@ -2904,7 +2913,7 @@ void ListBoxX::Draw(const DRAWITEMSTRUCT *pDrawItem) {
 				);
 				ID2D1DCRenderTarget *pDCRT = nullptr;
 				HRESULT hr = pD2DFactory->CreateDCRenderTarget(&props, &pDCRT);
-				if (SUCCEEDED(hr)) {
+				if (SUCCEEDED(hr) && pDCRT) {
 					RECT rcWindow;
 					GetClientRect(pDrawItem->hwndItem, &rcWindow);
 					hr = pDCRT->BindDC(pDrawItem->hDC, &rcWindow);
@@ -2917,7 +2926,7 @@ void ListBoxX::Draw(const DRAWITEMSTRUCT *pDrawItem) {
 						surfaceItem->DrawRGBAImage(rcImage,
 							pimage->GetWidth(), pimage->GetHeight(), pimage->Pixels());
 						pDCRT->EndDraw();
-						pDCRT->Release();
+						ReleaseUnknown(pDCRT);
 					}
 				}
 #endif
@@ -3682,26 +3691,11 @@ void Platform_Initialise(void *hInstance) noexcept {
 void Platform_Finalise(bool fromDllMain) noexcept {
 #if defined(USE_D2D)
 	if (!fromDllMain) {
-		if (defaultRenderingParams) {
-			defaultRenderingParams->Release();
-			defaultRenderingParams = nullptr;
-		}
-		if (customClearTypeRenderingParams) {
-			customClearTypeRenderingParams->Release();
-			customClearTypeRenderingParams = nullptr;
-		}
-		if (gdiInterop) {
-			gdiInterop->Release();
-			gdiInterop = nullptr;
-		}
-		if (pIDWriteFactory) {
-			pIDWriteFactory->Release();
-			pIDWriteFactory = nullptr;
-		}
-		if (pD2DFactory) {
-			pD2DFactory->Release();
-			pD2DFactory = nullptr;
-		}
+		ReleaseUnknown(defaultRenderingParams);
+		ReleaseUnknown(customClearTypeRenderingParams);
+		ReleaseUnknown(gdiInterop);
+		ReleaseUnknown(pIDWriteFactory);
+		ReleaseUnknown(pD2DFactory);
 		if (hDLLDWrite) {
 			FreeLibrary(hDLLDWrite);
 			hDLLDWrite = {};
@@ -3711,7 +3705,6 @@ void Platform_Finalise(bool fromDllMain) noexcept {
 			hDLLD2D = {};
 		}
 	}
-	
 #endif
 	if (!fromDllMain && hShcoreDLL) {
 		FreeLibrary(hShcoreDLL);

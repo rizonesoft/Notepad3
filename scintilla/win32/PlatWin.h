@@ -119,15 +119,11 @@ inline T DLLFunctionEx(LPCWSTR lpDllName, LPCSTR lpProcName) noexcept {
 template <class T>
 inline void ReleaseUnknown(T *&ppUnknown) noexcept {
 	if (ppUnknown) {
-#if 1
-		ppUnknown->Release();
-#else
 		try {
 			ppUnknown->Release();
 		} catch (...) {
 			// Never occurs
 		}
-#endif
 		ppUnknown = nullptr;
 	}
 }
