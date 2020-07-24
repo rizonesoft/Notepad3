@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <memory>
 #include <chrono>
+//#include <mutex>
 
 // Want to use std::min and std::max so don't want Windows.h version of min and max
 #if !defined(NOMINMAX)
@@ -3819,8 +3820,8 @@ bool ScintillaWin::Register(HINSTANCE hInstance_) noexcept {
 	wndclass.hInstance = hInstance;
 	wndclass.lpszClassName = L"Scintilla";
 	scintillaClassAtom = ::RegisterClassExW(&wndclass);
-
-	const bool result = 0 != scintillaClassAtom;
+	
+	const bool result = (0 != scintillaClassAtom);
 	return result;
 }
 

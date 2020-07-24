@@ -23,7 +23,7 @@ class LineLevels;
 class LineState;
 class LineAnnotation;
 
-enum EncodingFamily { efEightBit, efUnicode, efDBCS };
+enum class EncodingFamily { eightBit, unicode, dbcs };
 
 /**
  * The range class represents a range of text in a document.
@@ -249,13 +249,14 @@ private:
 	std::vector<WatcherWithUserData> watchers;
 
 	// ldSize is not real data - it is for dimensions and loops
-	enum lineData { ldMarkers, ldLevels, ldState, ldMargin, ldAnnotation, ldSize };
+	enum lineData { ldMarkers, ldLevels, ldState, ldMargin, ldAnnotation, ldEOLAnnotation, ldSize };
 	std::unique_ptr<PerLine> perLineData[ldSize];
 	LineMarkers *Markers() const noexcept;
 	LineLevels *Levels() const noexcept;
 	LineState *States() const noexcept;
 	LineAnnotation *Margins() const noexcept;
 	LineAnnotation *Annotations() const noexcept;
+	LineAnnotation *EOLAnnotations() const noexcept;
 
 	bool matchesValid;
 	std::unique_ptr<RegexSearchBase> regex;
@@ -371,7 +372,7 @@ public:
 	bool TentativeActive() const noexcept { return cb.TentativeActive(); }
 
 	const char * SCI_METHOD BufferPointer() override { return cb.BufferPointer(); }
-	const char *RangePointer(Sci::Position position, Sci::Position rangeLength) { return cb.RangePointer(position, rangeLength); }
+	const char *RangePointer(Sci::Position position, Sci::Position rangeLength) noexcept { return cb.RangePointer(position, rangeLength); }
 	Sci::Position GapPosition() const noexcept { return cb.GapPosition(); }
 
 	int SCI_METHOD GetLineIndentation(Sci_Position line) override;
@@ -488,6 +489,11 @@ public:
 	int AnnotationLines(Sci::Line line) const noexcept;
 	void AnnotationClearAll();
 
+	StyledText EOLAnnotationStyledText(Sci::Line line) const noexcept;
+	void EOLAnnotationSetStyle(Sci::Line line, int style);
+	void EOLAnnotationSetText(Sci::Line line, const char *text);
+	void EOLAnnotationClearAll();
+
 	bool AddWatcher(DocWatcher *watcher, void *userData);
 	bool RemoveWatcher(DocWatcher *watcher, void *userData);
 
@@ -500,7 +506,7 @@ public:
 	Sci::Position ParaUp(Sci::Position pos) const;
 	Sci::Position ParaDown(Sci::Position pos) const;
 	int IndentSize() const noexcept { return actualIndentInChars; }
-	Sci::Position BraceMatch(Sci::Position position, Sci::Position maxReStyle) noexcept;
+	Sci::Position BraceMatch(Sci::Position position, Sci::Position maxReStyle, Sci::Position startPos, bool useStartPos) noexcept;
 
 private:
 	void NotifyModifyAttempt();

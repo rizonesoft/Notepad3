@@ -5610,6 +5610,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_SHIFTESC:
+      FileSave(false, false, false, false, Flags.bPreserveFileModTime);
+    case IDT_FILE_EXIT:
       CloseApplication();
       break;
 
@@ -6260,11 +6262,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
       else
         SimpleBeep();
-      break;
-
-
-    case IDT_FILE_EXIT:
-      CloseApplication();
       break;
 
 
