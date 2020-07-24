@@ -554,47 +554,27 @@ static void  _UpdateToolbarDelayed();
 //  Save Needed Flag
 //
 //
-typedef enum { ISN_GET = -1, ISN_SET = 1, ISN_CLEAR = 0 } SAVE_NEEDED_QUERY;
+static bool s_DocNeedSaving = false; // dirty-flag
 
-inline bool IsSaveNeeded(const SAVE_NEEDED_QUERY query) 
+bool GetDocModified()
 {
-  static bool bIsSaveNeeded = false;
-  switch (query) {
-  case ISN_CLEAR: bIsSaveNeeded = false; break;
-  case ISN_SET:   bIsSaveNeeded = true;  break;
-  default: break;
-  }
-  return (bIsSaveNeeded || Encoding_HasChanged(CPI_GET));
+  return (SciCall_GetModify() || s_DocNeedSaving);
 }
 
-static void SetSaveNeeded(const bool setSaveNeeded)
+static void SetSaveNeeded()
 {
-  bool const bGetModify = SciCall_GetModify();
-  bool const isDocModified = setSaveNeeded || bGetModify; // consistency
-
-  // update on change
-  if (IsSaveNeeded(ISN_GET) != isDocModified) 
-  {
-    IsSaveNeeded(isDocModified ? ISN_SET : ISN_CLEAR);
-    UpdateToolbar();
-    UpdateStatusbar(true);
-  }
-
-  if (setSaveNeeded) {
-    // Force trigger modified (e.g. RelaunchElevated)
-    if (!bGetModify) {
-      DocPos const posDocEnd = Sci_GetDocEndPosition();
-      SciCall_AppendText(1, "\v"); // trigger dirty flag
-      SciCall_DeleteRange(posDocEnd, 1);
-    }
-    // notify Search/Replace dialog
+  if (!GetDocModified()) {
     if (IsWindow(Globals.hwndDlgFindReplace)) {
       PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
     }
   }
-  else {
-    Encoding_HasChanged(Encoding_Current(CPI_GET));
-  }
+  s_DocNeedSaving = true;
+}
+
+void SetSavePoint()
+{
+  s_DocNeedSaving = false;
+  if (SciCall_GetModify()) { SciCall_SetSavePoint(); }
 }
 
 //==============================================================================
@@ -1326,7 +1306,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
       LPCWSTR lpFileToOpen = s_IsThisAnElevatedRelaunch ? s_wchTmpFilePath : s_lpFileArg;
       bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, false, lpFileToOpen);
       if (bOpened) {
-        if (s_IsThisAnElevatedRelaunch) {
+        if (s_IsThisAnElevatedRelaunch)
+        {
           if (StrIsNotEmpty(s_lpFileArg)) {
             StringCchCopy(Globals.CurrentFile, COUNTOF(Globals.CurrentFile), s_lpFileArg);
             InstallFileWatching(Globals.CurrentFile);
@@ -1337,6 +1318,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           if (!s_flagLexerSpecified) {
             Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
           }
+
           // check for temp file and delete
           if (s_IsThisAnElevatedRelaunch && PathIsExistingFile(s_wchTmpFilePath))
           {
@@ -1351,8 +1333,10 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
               DeleteFile(s_wchTmpFilePath);
             }
           }
-          SciCall_SetSavePoint();
-          SetSaveNeeded(true);
+
+          UndoRedoReset();
+          SetSaveNeeded();
+
           if (StrIsNotEmpty(Globals.CurrentFile)) {
             if (s_flagSaveOnRelaunch) {
               FileSave(true, false, false, false, Flags.bPreserveFileModTime); // issued from elevation instances
@@ -1394,7 +1378,6 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     cpi_enc_t const forcedEncoding = Encoding_Forced(CPI_GET);
     if (Encoding_IsValid(forcedEncoding)) {
       Encoding_Current(forcedEncoding);
-      Encoding_HasChanged(forcedEncoding);
     }
   }
 
@@ -2995,13 +2978,13 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   DocPos const iCurPos = SciCall_GetCurrentPos();
 
-  if (FileWatching.FileWatchingMode == FWM_MSGBOX || IsSaveNeeded(ISN_GET)) {
+  if (FileWatching.FileWatchingMode == FWM_MSGBOX || GetDocModified()) {
     SetForegroundWindow(hwnd);
   }
 
   if (PathIsExistingFile(Globals.CurrentFile))
   {
-    bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !IsSaveNeeded(ISN_GET));
+    bool bRevertFile = (FileWatching.FileWatchingMode == FWM_AUTORELOAD && !GetDocModified());
 
     if (!bRevertFile) {
       INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
@@ -3010,7 +2993,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     if (bRevertFile) 
     {
-      FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
+      FileRevert(Globals.CurrentFile, /*Encoding_Changed(CPI_GET)*/false);
       if (FileWatching.MonitoringLog) 
       {
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
@@ -3202,19 +3185,19 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   int i;
 
-  if (Encoding_IsUNICODE_REVERSE(Encoding_Current(CPI_GET))) {
+  if (Encoding_IsUNICODE_REVERSE(Encoding_GetCurrent())) {
     i = IDM_ENCODING_UNICODEREV;
   }
-  else if (Encoding_IsUNICODE(Encoding_Current(CPI_GET))) {
+  else if (Encoding_IsUNICODE(Encoding_GetCurrent())) {
     i = IDM_ENCODING_UNICODE;
   }
-  else if (Encoding_IsUTF8_SIGN(Encoding_Current(CPI_GET))) {
+  else if (Encoding_IsUTF8_SIGN(Encoding_GetCurrent())) {
     i = IDM_ENCODING_UTF8SIGN;
   }
-  else if (Encoding_IsUTF8(Encoding_Current(CPI_GET))) {
+  else if (Encoding_IsUTF8(Encoding_GetCurrent())) {
     i = IDM_ENCODING_UTF8;
   }
-  else if (Encoding_IsANSI(Encoding_Current(CPI_GET))) {
+  else if (Encoding_IsANSI(Encoding_GetCurrent())) {
     i = IDM_ENCODING_ANSI;
   }
   else {
@@ -3328,7 +3311,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
-  EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_Current(CPI_GET)) != NULL) && !ro);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_GetCurrent()) != NULL) && !ro);
 
   EnableCmd(hmenu, IDM_EDIT_INSERT_SHORTDATE, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_LONGDATE, !ro);
@@ -3632,16 +3615,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      if (IsSaveNeeded(ISN_GET)) {
+      if (GetDocModified()) {
         INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT);
         if (!((IDOK == answer) || (IDYES == answer))) {
           break;
         }
         //~ don't revert if no save needed
-        //~FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET)); 
+        //~FileRevert(Globals.CurrentFile, Encoding_Changed(CPI_GET)); 
       }
       // revert in any case (manually forced)
-      FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
+      FileRevert(Globals.CurrentFile, /*Encoding_Changed(CPI_GET)*/true);
       break;
 
 
@@ -3767,8 +3750,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_LAUNCH_ELEVATED:
       {
         EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
-        fioStatus.iEncoding = Encoding_Current(CPI_GET);
-        fioStatus.iEOLMode = SciCall_GetEOLMode();
+        fioStatus.iEncoding        = Encoding_GetCurrent();
+        fioStatus.iEOLMode         = SciCall_GetEOLMode();
 
         if (DoElevatedRelaunch(&fioStatus, false))
         {
@@ -3930,7 +3913,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_ENCODING_SELECT:
       {
         cpi_enc_t iNewEncoding = (HIWORD(wParam) >= IDM_ENCODING_SELECT) ? 
-          (cpi_enc_t)(HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_Current(CPI_GET);
+          (cpi_enc_t)(HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_GetCurrent();
 
         if (iLoWParam == IDM_ENCODING_SELECT) {
           if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
@@ -3948,21 +3931,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           }
         }
         BeginWaitCursor(true,L"Recoding...");
-        _IGNORE_NOTIFY_CHANGE_;
-        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
-
-          if (Sci_IsDocEmpty()) {
-            Encoding_Current(iNewEncoding);
-            Encoding_HasChanged(iNewEncoding);
-          }
-          else {
-            if (Encoding_IsANSI(Encoding_Current(CPI_GET)) || Encoding_IsANSI(iNewEncoding)) {
-              Encoding_HasChanged(CPI_NONE);
-            }
-            Encoding_Current(iNewEncoding);
-          }
+        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE)))
+        {
+          SetSaveNeeded();
         }
-        _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -3974,9 +3946,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StrIsNotEmpty(Globals.CurrentFile))
         {
-          cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_Current(CPI_GET));
+          cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_GetCurrent());
 
-          if (IsSaveNeeded(ISN_GET)) {
+          if (GetDocModified()) {
             INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE);
             if (!((IDOK == answer) || (IDYES == answer))) {
               break;
@@ -4308,7 +4280,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_PADWITHSPACES:
-      EditPadWithSpaces(Globals.hwndEdit,false,false);
+      EditPadWithSpaces(Globals.hwndEdit, false, false);
       break;
 
 
@@ -4477,7 +4449,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INSERT_ENCODING:
       {
-        cpi_enc_t const iEncoding = Encoding_Current(CPI_GET);
+        cpi_enc_t const iEncoding = Encoding_GetCurrent();
         char chEncStrg[128] = { '\0' };
         WideCharToMultiByteEx(Encoding_SciCP, 0, Encoding_GetLabel(iEncoding), -1, chEncStrg, COUNTOF(chEncStrg), NULL, NULL);
         EditReplaceSelection(chEncStrg, false);
@@ -5572,7 +5544,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SETPASS:
       if (GetFileKey(Globals.hwndEdit)) {
-        SetSaveNeeded(true);
+        SetSaveNeeded();
       }
       break;
 
@@ -5597,19 +5569,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           --skipLevel;
         }
         else if (s_bInMultiEditMode) {
-          _BEGIN_UNDO_ACTION_;
+          //~_BEGIN_UNDO_ACTION_;
           SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
           SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
           SciCall_ClearSelections();
-          _END_UNDO_ACTION_;
+          //~_END_UNDO_ACTION_;
           SciCall_GotoPos(iCurPos);
           s_bInMultiEditMode = false;
           --skipLevel;
         }
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
+          //~_BEGIN_UNDO_ACTION_;
           SciCall_GotoPos(iCurPos);
           SciCall_ChooseCaretX();
+          //~_END_UNDO_ACTION_;
           skipLevel -= Defaults2.ExitOnESCSkipLevel;
         }
 
@@ -5621,7 +5595,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case 2:
-            CloseApplication(true);
+            CloseApplication();
             break;
 
           default:
@@ -5630,9 +5604,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
           }
         }
-        _BEGIN_UNDO_ACTION_;
         SciCall_Cancel();
-        _END_UNDO_ACTION_;
       }
       break;
 
@@ -6959,14 +6931,13 @@ inline static LRESULT _MsgNotifyLean(const LPNMHDR pnmh, const SCNotification* c
             _SplitUndoTransaction(iModType);
           }
         }
-        SetSaveNeeded(true);
       }
     }
     else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-      SetSaveNeeded(false);
+      SetSavePoint();
     }
     else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-      SetSaveNeeded(true);
+      SetSaveNeeded();
     }
     else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
       if (FocusedView.HideNonMatchedLines) { EditToggleView(Globals.hwndEdit); }
@@ -7072,7 +7043,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
             _SplitUndoTransaction(iModType);
           }
         }
-        SetSaveNeeded(true);
       }
 
       if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
@@ -7282,12 +7252,12 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const LPNMHDR pnmh, const SCNotific
 
 
     case SCN_SAVEPOINTREACHED:
-      SetSaveNeeded(false);
+      SetSavePoint();
       break;
 
 
     case SCN_SAVEPOINTLEFT:
-      SetSaveNeeded(true);
+      SetSaveNeeded();
       break;
 
 
@@ -8071,13 +8041,13 @@ void UpdateToolbar()
 static void  _UpdateToolbarDelayed()
 {
   SetWindowTitle(Globals.hwndMain, s_uidsAppTitle, s_bIsProcessElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 Settings.PathNameFormat, IsSaveNeeded(ISN_GET),
+                 Settings.PathNameFormat, GetDocModified(),
                  IDS_MUI_READONLY, s_bFileReadOnly, s_wchTitleExcerpt);
 
   if (!Settings.ShowToolbar) { return; }
 
   EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, StrIsNotEmpty(Globals.CurrentFile));
-  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsSaveNeeded(ISN_GET) /*&& !bReadOnly*/);
+  EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, GetDocModified() /*&& !bReadOnly*/);
   EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
   CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
@@ -8662,7 +8632,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_CODEPAGE])
   {
     static cpi_enc_t s_iEncoding = CPI_NONE;
-    cpi_enc_t const iEncoding = Encoding_Current(CPI_GET);
+    cpi_enc_t const  iEncoding   = Encoding_GetCurrent();
     if (bForceRedraw || (s_iEncoding != iEncoding)) 
     {
       StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
@@ -8932,6 +8902,16 @@ void UndoRedoRecordingStop()
   SciCall_EmptyUndoBuffer();
 }
 
+
+//=============================================================================
+//
+//  UndoRedoReset()
+//
+void UndoRedoReset()
+{
+  UndoRedoRecordingStop();
+  UndoRedoRecordingStart();
+}
 
 //=============================================================================
 //
@@ -9436,12 +9416,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
 
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     Encoding_Current(Settings.DefaultEncoding);
-    Encoding_HasChanged(Settings.DefaultEncoding);
     
     Style_SetDefaultLexer(Globals.hwndEdit);
 
     s_bFileReadOnly = false;
-    SciCall_SetSavePoint();
+    SetSavePoint();
 
     UpdateToolbar();
     UpdateStatusbar(true);
@@ -9505,12 +9484,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
         if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
           fioStatus.iEncoding = Encoding_Forced(CPI_GET);
           Encoding_Current(fioStatus.iEncoding);
-          Encoding_HasChanged(fioStatus.iEncoding);
         }
         else {
           fioStatus.iEncoding = Globals.fvCurFile.iEncoding;
           Encoding_Current(Globals.fvCurFile.iEncoding);
-          Encoding_HasChanged(Globals.fvCurFile.iEncoding);
         }
         s_bFileReadOnly = false;
       }
@@ -9530,7 +9507,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       }
     }
     else {
-      fioStatus.iEncoding = Encoding_Current(CPI_GET);
+      fioStatus.iEncoding = Encoding_GetCurrent();
     }
     if (bReload && !FileWatching.MonitoringLog) 
     {
@@ -9572,7 +9549,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
     }
     SciCall_SetEOLMode(fioStatus.iEOLMode);
     Encoding_Current(fioStatus.iEncoding); // load may change encoding
-    Encoding_HasChanged(fioStatus.iEncoding);
 
     int idx = 0;
     DocPos iCaretPos = -1;
@@ -9624,8 +9600,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload,
       EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
     }
 
-    //bReadOnly = false;
-    SetSaveNeeded(bReload);
+    SetSavePoint();
 
     // consistent settings file handling (if loaded in editor)
     Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Globals.CurrentFile, Globals.IniFile) == 0);
@@ -9711,8 +9686,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
   if (bIgnoreCmdLnEnc) {
     Encoding_Forced(CPI_NONE);  // ignore history too
   }
-  else if (Encoding_HasChanged(Encoding_Current(CPI_GET))) {
-    Encoding_SrcWeak(Encoding_Current(CPI_GET));
+  else {
+    Encoding_SrcWeak(Encoding_GetCurrent());
   }
 
   WCHAR tchFileName2[MAX_PATH] = { L'\0' };
@@ -9741,7 +9716,8 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     }
   }
 
-  SciCall_SetSavePoint();
+  SetSavePoint();
+
   UpdateToolbar();
   UpdateStatusbar(true);
   UpdateMarginWidth();
@@ -9840,7 +9816,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     {
       // preserve encoding
       WCHAR wchEncoding[80] = { L'\0' };
-      Encoding_GetNameW(Encoding_Current(CPI_GET), wchEncoding, COUNTOF(wchEncoding));
+      Encoding_GetNameW(Encoding_GetCurrent(), wchEncoding, COUNTOF(wchEncoding));
 
       StringCchPrintf(szArguments, COUNTOF(szArguments),
         L"%s/%s /pos %i,%i,%i,%i,%i /g %i,%i /%s\"%s\" %s", 
@@ -9858,8 +9834,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 
   if (RelaunchElevated(szArguments)) {
     // set no change and quit
-    SciCall_SetSavePoint();
-    SetSaveNeeded(false);
+    SetSavePoint();
   }
   else {
     Globals.dwLastError = GetLastError();
@@ -9883,8 +9858,8 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   bool fSuccess = false;
 
   EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
-  fioStatus.iEncoding = Encoding_Current(CPI_GET);
-  fioStatus.iEOLMode = SciCall_GetEOLMode();
+  fioStatus.iEncoding        = Encoding_GetCurrent();
+  fioStatus.iEOLMode         = SciCall_GetEOLMode();
 
 #if 0
   bool bIsEmptyNewFile = false;
@@ -9907,13 +9882,13 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
 #endif
 
 
-  if (!bSaveAlways && (!IsSaveNeeded(ISN_GET) || bIsEmptyNewFile) && !bSaveAs) {
+  if (!bSaveAlways && (!GetDocModified() || bIsEmptyNewFile) && !bSaveAs) {
     int idx;
     if (MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &idx)) {
-      Globals.pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
-      Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
+      Globals.pFileMRU->iEncoding[idx]   = Encoding_GetCurrent();
+      Globals.pFileMRU->iCaretPos[idx]   = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
       Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetAnchor() : -1;
-      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+      WCHAR wchBookMarks[MRU_BMRK_SIZE]  = {L'\0'};
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       if (Globals.pFileMRU->pszBookMarks[idx]) {
         LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
@@ -10010,15 +9985,14 @@ bool FileSave(bool bSaveAlways, bool bAsk, bool bSaveAs, bool bSaveCopy, bool bP
   {
     if (!(bSaveCopy || Flags.bDoRelaunchElevated))
     {
-      cpi_enc_t iCurrEnc = Encoding_Current(CPI_GET);
-      Encoding_HasChanged(iCurrEnc);
+      cpi_enc_t iCurrEnc = Encoding_GetCurrent();
       const DocPos iCaretPos = SciCall_GetCurrentPos();
       const DocPos iAnchorPos = Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor();
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       MRU_AddFile(Globals.pFileMRU, Globals.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
 
-      SciCall_SetSavePoint();
+      SetSavePoint();
 
       // Install watching of the current file
       if (bSaveAs && Settings.ResetFileWatching) {
@@ -10665,7 +10639,7 @@ void SetNotifyIconTitle(HWND hwnd)
   else {
     GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
   }
-  if (IsSaveNeeded(ISN_GET)) {
+  if (GetDocModified()) {
     StringCchCopy(nid.szTip, COUNTOF(nid.szTip), L"* ");
   }
   else {
