@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "&Закрыць Notepad3",             IDM_VIEW_ESCEXIT
         END
         MENUITEM "Захоўваць перад запускам прыладаў", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",       IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Гісторыя"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Адлюстраванне"
             BEGIN
-                MENUITEM "Звычайны &GDI (без лігатураў)",    IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",          IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",              IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",              IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (без лігатураў)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "&Накіраванне пісьма"
             BEGIN

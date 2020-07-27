@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "&Quitter Notepad3",                               IDM_VIEW_ESCEXIT
         END
         MENUITEM "Enregistrer &avant d'exécuter",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculer des Mini-E&xpressions",                      IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Se souvenir"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Rendu"
             BEGIN
-                MENUITEM "Défaut &GDI (pas de ligatures)",  IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",             IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (pas de ligatures)",         IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "Bidirectionnelle"
             BEGIN

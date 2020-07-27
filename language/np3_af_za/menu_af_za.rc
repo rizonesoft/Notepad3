@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "M&aak Notepad3 Toe",                      IDM_VIEW_ESCEXIT
         END
         MENUITEM "Stoor Voor L&opende Tools",                   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",                 IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Ont&hou"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Lewering"
             BEGIN
-                MENUITEM "Verstek &GDI (Geen ligature nie)",    IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",         	IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Behou",              	IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",             	IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (Geen ligature nie)",            IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "Bidirectionele"
             BEGIN

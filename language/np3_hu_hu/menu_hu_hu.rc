@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "Kilé&pés a Notepad3-ból",      IDM_VIEW_ESCEXIT
         END
         MENUITEM "Eszközök &futtatása előtt mentés", IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",      IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Renderelés"
             BEGIN
-                MENUITEM "Alapértelmezett &GDI (ligatúrák nélkül)", IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",             IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",                 IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",                 IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (ligatúrák nélkül)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "K&étirányú"
             BEGIN
