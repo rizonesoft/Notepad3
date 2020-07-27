@@ -428,7 +428,7 @@ BEGIN
             MENUITEM "終了(&X)",                              IDM_VIEW_ESCEXIT
         END
         MENUITEM "ツール実行前に保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Calculate Tiny-E&xpressions",               IDM_VIEW_EVALTINYEXPRONSEL
+        MENUITEM "数式を計算 (TinyExpr)(&X)",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
         BEGIN
