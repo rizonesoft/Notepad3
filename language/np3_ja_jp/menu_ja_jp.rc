@@ -415,7 +415,7 @@ BEGIN
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_VIEW_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",             IDM_VIEW_ACCELWORDNAV
+        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_VIEW_ACCELWORDNAV
         MENUITEM "矩形/複数選択時もコメント切替(&C)",               IDM_VIEW_EDIT_LINECOMMENT
         MENUITEM SEPARATOR
         MENUITEM "単一インスタンスでファイルを開く(&F)",                IDM_VIEW_SINGLEFILEINSTANCE
@@ -423,11 +423,12 @@ BEGIN
         MENUITEM "メッセージの効果音をミュート(&B)",                  IDM_VIEW_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&K)"
         BEGIN
-            MENUITEM "なし(&N)",                          IDM_VIEW_NOESCFUNC
+            MENUITEM "なし(&N)",                              IDM_VIEW_NOESCFUNC
             MENUITEM "最小化(&M)",                            IDM_VIEW_ESCMINIMIZE
             MENUITEM "終了(&X)",                              IDM_VIEW_ESCEXIT
         END
         MENUITEM "ツール実行前に保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "描画方式(&R)"
             BEGIN
-                MENUITEM "標準GDI (合字未対応)(&G)",     IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D)(&D)",      IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",          IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",          IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI (合字未対応)(&G)",             IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "書字方向"
             BEGIN

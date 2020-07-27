@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "Notepad3 종료(&X)",                 IDM_VIEW_ESCEXIT
         END
         MENUITEM "도구 실행 전에 저장(&B)",                IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",           IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
-                MENUITEM "GDI 기본(&G) (no ligatures)",     IDM_SET_RENDER_TECH_DEFAULT
-                MENUITEM "DirectWrite (&Direct2D)",        IDM_SET_RENDER_TECH_D2D
+                MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "GDI DC 직접 쓰기(&W)",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI (합자 없음) (&G)",            IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "양방향"
             BEGIN
