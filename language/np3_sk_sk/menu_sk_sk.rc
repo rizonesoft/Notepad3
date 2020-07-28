@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "&Ukončiť Notepad3",                   IDM_VIEW_ESCEXIT
         END
         MENUITEM "Uložiť pred spustením &nástrojov",        IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",     IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "&Pamätať si"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "&Vykresľovanie"
             BEGIN
-                MENUITEM "Predvolené &GDI",                 IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (&Direct2D)",         IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &Retain",             IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "Direct&Write GDI DC",             IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "&GDI (bez ligatúr)",              IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "Obojsmerne"
             BEGIN

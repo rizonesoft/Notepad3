@@ -428,6 +428,7 @@ BEGIN
             MENUITEM "退出 Notepad3(&X)",                     IDM_VIEW_ESCEXIT
         END
         MENUITEM "运行工具前先保存(&B)",                       IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Calculate Tiny-E&xpressions",               IDM_VIEW_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "记忆(&R)"
         BEGIN
@@ -453,10 +454,10 @@ BEGIN
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
-                MENUITEM "默认 GDI（无连字）(&G)",       IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D) (&D)",       IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",            IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",            IDM_SET_RENDER_TECH_D2DDC
+                MENUITEM "GDI（无连字）(&G)",                 IDM_SET_RENDER_TECH_DEFAULT
             END
             POPUP "双向(&B)"
             BEGIN
