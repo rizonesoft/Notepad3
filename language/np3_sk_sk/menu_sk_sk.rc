@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "O&tvoriť"
         BEGIN
-            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Alt+F",  IDM_GREP_WIN_SEARCH
+            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nové okno\tAlt+N",                   IDM_FILE_NEWWINDOW
             MENUITEM "N&ové prázdne okno\tAlt+Shift+N",     IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Z&ameniť ďalej\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "Pr&ejsť na...\tCtrl+G",                   IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Alt+F",      IDM_GREP_WIN_SEARCH
+            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Zobraziť"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "&Skladanie"
         BEGIN
             MENUITEM "Skladacia &väzba",                         IDM_VIEW_FOLDING
-            MENUITEM "Zvinúť všetky &uzly\tCtrl+Shift+F",        IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Zvinúť všetky &uzly\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Prejsť na ď&alší uzol\tAlt+ +",            CMD_FOLDJUMPDOWN
             MENUITEM "Prejsť na p&redchádzajúci uzol\tAlt+ –",   CMD_FOLDJUMPUP

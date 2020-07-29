@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "啟動(&L)"
         BEGIN
-            MENUITEM "在檔案中查詢(&S)...\tCtrl+Alt+F",           IDM_GREP_WIN_SEARCH
+            MENUITEM "在檔案中查詢(&S)...\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "新視窗(&N)\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "空視窗(&E)\tAlt+Shift+N",                IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "替換下一個(&X)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳到(&G)...\tCtrl+G",                  IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "在檔案中查詢(&S)...\tCtrl+Alt+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "在檔案中查詢(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "檢視(&V)"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "摺疊(&F)"
         BEGIN
             MENUITEM "啟用摺疊(&F)",                         IDM_VIEW_FOLDING
-            MENUITEM "切換摺疊(&T)\tCtrl+Shift+F",           IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "切換摺疊(&T)\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "跳到下一折疊點(&N)\tAlt++",            CMD_FOLDJUMPDOWN
             MENUITEM "跳到上一折疊點(&P)\tAlt+-",            CMD_FOLDJUMPUP
