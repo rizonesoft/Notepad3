@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Alt+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "同じファイルを開く(&N)\tAlt+N",             IDM_FILE_NEWWINDOW
             MENUITEM "新規ウィンドウ(&E)\tAlt+Shift+N",           IDM_FILE_NEWWINDOW2
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "置換し次へ(&X)\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Alt+F",              IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "表示(&V)"
@@ -352,7 +352,7 @@ BEGIN
         POPUP "折りたたみ(&F)"
         BEGIN
             MENUITEM "コード折りたたみを表示(&F)",                   IDM_VIEW_FOLDING
-            MENUITEM "すべて折りたたみ(&T)\tCtrl+Shift+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "すべて折りたたみ(&T)\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "次の折りたたみへ移動(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
             MENUITEM "前の折りたたみへ移動(&P)\tAlt+ –",         CMD_FOLDJUMPUP
