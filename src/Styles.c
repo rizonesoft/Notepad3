@@ -3967,6 +3967,7 @@ static bool  _ApplyDialogItemText(HWND hwnd,
 INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     static HWND       hwndTV;
+    static HFONT      hFontTitle = NULL;
     static bool       fDragging;
     static PEDITLEXER pCurrentLexer = NULL;
     static PEDITSTYLE pCurrentStyle = NULL;
@@ -4070,14 +4071,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
             bWarnedNoIniFile = false;
 
-            //UpdateWindowLayoutForDPI(hwnd, NULL, NULL);
+            //~UpdateWindowLayoutForDPI(hwnd, NULL, NULL);
+            PostMessage(hwnd, WM_DPICHANGED, (WPARAM)NULL, (LPARAM)NULL);
         }
         return !0;
-
-        case WM_ENABLE:
-          // modal child dialog should disable main window too
-          EnableWindow(Globals.hwndMain, (BOOL)wParam);
-          return !0;
 
         case WM_PAINT:
         {
@@ -4093,48 +4090,40 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
 
             // Set title font
-            static HFONT hFontTitle = NULL;
-            int const    height     = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
-            if (hFontTitle)
-            {
-                DeleteObject(hFontTitle);
-            }
+            if (hFontTitle) { DeleteObject(hFontTitle); }
             hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-            LOGFONT lf;
-            GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+            LOGFONT lf;  GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+            int const newHeight = -MulDiv(MulDiv(lf.lfHeight,3,2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
             lf.lfWeight = FW_BOLD;
-            lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
-            lf.lfWidth  = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-            hFontTitle  = CreateFontIndirect(&lf);
+            lf.lfHeight = ScaleIntToDPI_Y(hwnd, newHeight);
+            lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+            StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
+            hFontTitle = CreateFontIndirect(&lf);
             SendDlgItemMessage(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
 
             ReleaseDC(hwnd, hDC);
         }
         return 0;
 
+        case WM_ENABLE:
+          // modal child dialog should disable main window too
+          EnableWindow(Globals.hwndMain, (BOOL)wParam);
+          return !0;
+
         case WM_ACTIVATE:
             DialogEnableControl(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
             return !0;
 
         case WM_DESTROY:
-        {
-            DeleteBitmapButton(hwnd, IDC_STYLEFORE);
-            DeleteBitmapButton(hwnd, IDC_STYLEBACK);
-            DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
-            DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
-
-            // free old backup
-            int cnt = 0;
-            for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
             {
-                if (Style_StylesBackup[cnt])
-                {
-                    LocalFree(Style_StylesBackup[cnt]); // StrDup()
-                    Style_StylesBackup[cnt] = NULL;
-                }
-                ++cnt;
-                int i = 0;
-                while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+                DeleteBitmapButton(hwnd, IDC_STYLEFORE);
+                DeleteBitmapButton(hwnd, IDC_STYLEBACK);
+                DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
+                DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
+
+                // free old backup
+                int cnt = 0;
+                for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer)
                 {
                     if (Style_StylesBackup[cnt])
                     {
@@ -4142,13 +4131,26 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                         Style_StylesBackup[cnt] = NULL;
                     }
                     ++cnt;
-                    ++i;
+                    int i = 0;
+                    while (g_pLexArray[iLexer]->Styles[i].iStyle != -1)
+                    {
+                        if (Style_StylesBackup[cnt])
+                        {
+                            LocalFree(Style_StylesBackup[cnt]); // StrDup()
+                            Style_StylesBackup[cnt] = NULL;
+                        }
+                        ++cnt;
+                        ++i;
+                    }
                 }
+                if (hFontTitle) {
+                  DeleteObject(hFontTitle);
+                  hFontTitle = NULL;
+                }
+                pCurrentLexer = NULL;
+                pCurrentStyle = NULL;
+                iCurStyleIdx  = -1;
             }
-            pCurrentLexer = NULL;
-            pCurrentStyle = NULL;
-            iCurStyleIdx  = -1;
-        }
             return false;
 
         case WM_DPICHANGED:

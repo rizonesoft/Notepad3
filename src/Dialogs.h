@@ -129,9 +129,9 @@ inline int ScaleFloatToDPI_Y(HWND hwnd, float fVal) { DPI_T const dpi = Scintill
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 void SetUACIcon(const HMENU hMenu, const UINT nItem);
-void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI);
-//#define HandleDpiChangedMessage(hW, wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
-//                                             UpdateWindowLayoutForDPI(hW, (RECT*)lP, pRC, DPI_T* pDPI); }
+void UpdateWindowLayoutForDPI(HWND hWnd, const RECT* pRC, const DPI_T* pDPI);
+//#define HandleDpiChangedMessage(hW,wP,lP) { DPI_T dpi; dpi.x = LOWORD(wP); dpi.y = HIWORD(wP); \
+//                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, &dpi); }
 HBITMAP ResizeImageForCurrentDPI(HWND hwnd, HBITMAP hbmp);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
 

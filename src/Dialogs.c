@@ -715,13 +715,22 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
     StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
 
-    // paint richedit box
+    // paint rich-edit box
     pAboutInfo = pAboutResource;
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
+    DPI_T const dpi = Scintilla_GetWindowDPI(hwnd);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
+
     CenterDlgInParent(hwnd, NULL);
 
+    // TODO: Handle initial DPI-Aware Bitmap drawing
+    //HWND const hCtrlBmp = GetDlgItem(hwnd, IDC_RIZONEBMP);
+    //if (hCtrlBmp) {
+    //  UpdateWindowLayoutForDPI(hCtrlBmp, NULL, &dpi);
+    //}
+    //PostMessage(hwnd, WM_DPICHANGED, (WPARAM)NULL, (LPARAM)NULL);
   }
   break;
 
@@ -733,27 +742,16 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     {
       UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, NULL);
 
-      DPI_T dpi;
+      DPI_T          dpi;
       dpi.x = LOWORD(wParam);
       dpi.y = HIWORD(wParam);
-
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, (WPARAM)dpi.y, (LPARAM)USER_DEFAULT_SCREEN_DPI);
-
-      //~~// get current richedit box format
-      //~~CHARFORMAT2 currentFormat;  ZeroMemory(&currentFormat, sizeof(CHARFORMAT2));  currentFormat.cbSize = sizeof(CHARFORMAT2);
-      //~~currentFormat.dwMask = CFM_ALL2; // CFM_SIZE | CFM_FACE | CFM_CHARSET | CFM_LCID;  CFM_ALL;  CFM_ALL2;
-      //~~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&currentFormat);
-      //~~      
-      //~~//CHARFORMAT dpiCharFmt;  ZeroMemory(&dpiCharFmt, sizeof(CHARFORMAT));  dpiCharFmt.cbSize = sizeof(CHARFORMAT);
-      //~~//dpiCharFmt.dwMask = CFM_ALL; CFM_SIZE; //~ | CFM_FACE;
-      //~~CHARFORMAT2 dpiCharFmt = currentFormat;
-      //~~dpiCharFmt.yHeight = (currentFormat.yHeight == 180) ? ScaleIntToDPI_Y(hwnd, 180) : currentFormat.yHeight; // keep size
-      //~~//~StringCchCopy(dpiCharFmt.szFaceName, COUNTOF(dpiCharFmt.szFaceName), L"Segoe UI");
-      //~~SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&dpiCharFmt);
+      if ((dpi.x == USER_DEFAULT_SCREEN_DPI) || (dpi.y == USER_DEFAULT_SCREEN_DPI)) {
+        SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0); // rich edit problem
+      }
     }
     break;
 
-
+#if TRUE
   case WM_PAINT:
     {
       HDC const hDC = GetWindowDC(hwnd);
@@ -767,24 +765,99 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       }
 
       // --- larger bold condensed version string
-      int const height = -MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72);
       if (hVersionFont) { DeleteObject(hVersionFont); }
       hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
       LOGFONT lf;  GetObject(hVersionFont, sizeof(LOGFONT), &lf);
+      int const newHeight = -MulDiv(MulDiv(lf.lfHeight, 3, 2), GetDeviceCaps(hDC, LOGPIXELSY), 72);
       lf.lfWeight = FW_BOLD;
-      lf.lfHeight = ScaleIntToDPI_Y(hwnd, height);
-      lf.lfWidth = 0; // the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
-      //StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Segoe UI");
+      lf.lfHeight = ScaleIntToDPI_Y(hwnd, newHeight);
+      lf.lfWidth  = ScaleIntToDPI_X(hwnd, 8); // =0: the aspect ratio of the device is matched against the digitization aspect ratio of the available fonts
+      StringCchCopy(lf.lfFaceName, LF_FACESIZE, L"Tahoma");
       hVersionFont = CreateFontIndirect(&lf);
       SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
 
       ReleaseDC(hwnd, hDC);
-
-      // rich edit control
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETZOOM, 0, 0);
     }
     return 0;
+#else
+    case WM_PAINT:
+    {
+      PAINTSTRUCT ps;
 
+      // Get a paint DC for current window.
+      // Paint DC contains the right scaling to match
+      // the monitor DPI where the window is located.
+      HDC hdc = BeginPaint(hwnd, &ps);
+
+      RECT rect;
+      GetClientRect(hwnd, &rect);
+
+      UINT cx = (rect.right - rect.left);
+      UINT cy = (rect.bottom - rect.top);
+
+      // Create a compatible bitmap using paint DC.
+      // Compatible bitmap will be properly scaled in size internally and
+      // transparently to the app to match current monitor DPI where
+      // the window is located.
+      HBITMAP memBitmap = CreateCompatibleBitmap(hdc, cx, cy);
+
+      // Create a compatible DC, even without a bitmap selected,
+      // compatible DC will inherit the paint DC GDI scaling
+      // matching the window monitor DPI.
+      HDC memDC = CreateCompatibleDC(hdc);
+
+      // Selecting GDI scaled compatible bitmap in the
+      // GDI scaled compatible DC.
+      HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, memBitmap);
+
+      // Setting some properties in the compatible GDI scaled DC.
+      if (hVersionFont) {
+        DeleteObject(hVersionFont);
+      }
+      hVersionFont = GetStockObject(DEFAULT_GUI_FONT);
+
+      SetTextColor(memDC, GetSysColor(COLOR_INFOTEXT));
+      SetBkMode(memDC, TRANSPARENT);
+      SelectObject(memDC, hVersionFont);
+
+      // Drawing content on the compatible GDI scaled DC.
+      // If the monitor DPI was 150% or 200%, text internally will
+      // be draw at next integral scaling value, in current example
+      // 200%.
+      DrawText(memDC, ctx.balloonText, -1, &rect,
+               DT_NOCLIP | DT_LEFT | DT_NOPREFIX | DT_WORDBREAK);
+
+      // Copying the content back from compatible DC to paint DC.
+      // Since both compatible DC and paint DC are GDI scaled,
+      // content is copied without any stretching thus preserving
+      // the quality of the rendering.
+      BitBlt(hdc, 0, 0, cx, cy, memDC, 0, 0);
+
+      // Cleanup.
+      SelectObject(memDC, oldBitmap);
+      DeleteObject(memBitmap);
+      DeleteDC(memDC);
+
+      // At this time the content is presented to the screen.
+      // DWM (Desktop Window Manager) will scale down if required the
+      // content to actual monitor DPI.
+      // If the monitor DPI is already an integral one, for example 200%,
+      // there would be no DWM down scaling.
+      // If the monitor DPI is 150%, DWM will scale down rendered content
+      // from 200% to 150%.
+      // While not a perfect solution, it's better to scale-down content
+      // instead of scaling-up since a lot of the details will be preserved
+      // during scale-down.
+      // The end result is that with GDI Scaling enabled, the content will
+      // look less blurry on screen and in case of monitors with DPI setting
+      // set to an integral value (200%, 300%) the vector based and text
+      // content will be rendered natively at the monitor DPI looking crisp
+      // on screen.
+
+      EndPaint(hwnd, &ps);
+    } break;
+
+#endif
 
   case WM_NOTIFY:
   {
@@ -4592,7 +4665,7 @@ void SetUACIcon(const HMENU hMenu, const UINT nItem)
 //
 //  UpdateWindowLayoutForDPI()
 //
-void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI)
+void UpdateWindowLayoutForDPI(HWND hWnd, const RECT* pRC, const DPI_T* pDPI)
 {
   UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED; //~ SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION
   if (pRC) {
@@ -4604,13 +4677,13 @@ void UpdateWindowLayoutForDPI(HWND hWnd, RECT* pRC, DPI_T* pDPI)
 
   RECT rc;
   GetWindowRect(hWnd, &rc);
-  //MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
+  //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
   LONG const width = rc.right - rc.left;
   LONG const height = rc.bottom - rc.top;
-  int dpiScaledX = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledY = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledWidth = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
-  int dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+  int const  dpiScaledX      = MulDiv(rc.left, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
+  int const  dpiScaledY      = MulDiv(rc.top, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
+  int const  dpiScaledWidth  = MulDiv(width, wndDPI.x, USER_DEFAULT_SCREEN_DPI);
+  int const  dpiScaledHeight = MulDiv(height, wndDPI.y, USER_DEFAULT_SCREEN_DPI);
 
   SetWindowPos(hWnd, NULL, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledHeight, uWndFlags);
 }
